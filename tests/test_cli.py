@@ -192,6 +192,7 @@ def test_cli_can_save_new_smoke_state_and_load_it_for_later_actions(tmp_path):
     )
 
     assert saved.returncode == 0
+    assert "업적 달성: 첫 신호 확인" in saved.stdout
     assert save_path.exists()
     assert f"저장: {save_path}" in saved.stdout
 
@@ -202,6 +203,7 @@ def test_cli_can_save_new_smoke_state_and_load_it_for_later_actions(tmp_path):
     assert "이동 실행: 개발팀 사무실" in loaded.stdout
     assert "== 턴 2 ==" in loaded.stdout
     assert "위치: 개발팀 사무실" in loaded.stdout
+    assert "첫 신호 확인" in loaded.stdout
 
 
 def test_cli_version_prints_package_version():

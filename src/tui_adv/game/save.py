@@ -51,6 +51,7 @@ def _state_to_save_data(state: GameState) -> dict[str, Any]:
             "clues": list(state.clues),
             "flags": list(state.flags),
             "seen_encounters": list(state.seen_encounters),
+            "unlocked_achievements": list(state.unlocked_achievements),
             "log": list(state.log),
         },
     }
@@ -87,6 +88,7 @@ def _state_from_save_data(data: Mapping[str, Any]) -> GameState:
         clues=_string_list(state_data.get("clues", [])),
         flags=_string_list(state_data.get("flags", [])),
         seen_encounters=_string_list(state_data.get("seen_encounters", [])),
+        unlocked_achievements=_string_list(state_data.get("unlocked_achievements", [])),
         log=_string_list(state_data.get("log", [])),
     )
 

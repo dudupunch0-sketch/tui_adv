@@ -2,6 +2,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass, replace
 
+from tui_adv.game.achievements import (
+    format_achievement_summary,
+    format_unlocked_achievements,
+    unlock_new_achievements,
+)
 from tui_adv.game.encounters import ChoiceResolution
 from tui_adv.game.endings import Ending, evaluate_ending, format_ending_summary
 from tui_adv.game.locations import DEFAULT_LOCATIONS
@@ -51,6 +56,8 @@ def render_tui_layout_snapshot(turn: GameTurn) -> str:
         format_local_status(turn.state.player),
         "",
     ]
+    if achievement_summary := format_achievement_summary(turn.state):
+        lines.extend([achievement_summary, ""])
     if turn.ending is not None:
         lines.extend(["[엔딩]", format_ending_summary(turn.ending)])
     elif turn.encounter is not None:
@@ -87,6 +94,8 @@ def resolve_tui_choice(turn: GameTurn, choice_index: int) -> TuiChoiceResult:
         raise ValueError(f"선택지를 찾을 수 없다: {choice_index}")
     choice = choices[selected_index]
     resolution = turn.encounter.resolve_choice_result(choice.id, turn.state)
+    unlock_result = unlock_new_achievements(resolution.state)
+    resolution = replace(resolution, state=unlock_result.state)
     ending = evaluate_ending(resolution.state)
     return TuiChoiceResult(
         choice_label=choice.label,
@@ -155,7 +164,12 @@ def _format_tui_action_result(result: TurnActionResult) -> str:
         lines = [f"선택 실행: {result.action.label}"]
         if result.choice_resolution is not None:
             lines.append(format_choice_resolution(result.choice_resolution))
-        return "\n".join(lines)
-    if result.action.kind == "move":
-        return f"이동 실행: {result.action.label}"
-    return f"행동 실행: {result.action.label}"
+    elif result.action.kind == "move":
+        lines = [f"이동 실행: {result.action.label}"]
+    else:
+        lines = [f"행동 실행: {result.action.label}"]
+
+    achievement_text = format_unlocked_achievements(result.unlocked_achievements)
+    if achievement_text:
+        lines.extend(["", achievement_text])
+    return "\n".join(lines)

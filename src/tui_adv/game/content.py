@@ -16,6 +16,7 @@ if TYPE_CHECKING:
         Encounter,
         Outcome,
     )
+    from tui_adv.game.achievements import Achievement
     from tui_adv.game.locations import Location
 
 DATA_DIR = files("tui_adv.data")
@@ -32,6 +33,10 @@ def load_default_encounters() -> dict[str, Encounter]:
 
 def load_default_endings():
     return load_endings(DATA_DIR.joinpath("endings.yaml"))
+
+
+def load_default_achievements() -> dict[str, Achievement]:
+    return load_achievements(DATA_DIR.joinpath("achievements.yaml"))
 
 
 def load_locations(path: Path | Any) -> dict[str, Location]:
@@ -78,6 +83,25 @@ def load_endings(path: Path | Any):
     return endings
 
 
+def load_achievements(path: Path | Any) -> dict[str, Achievement]:
+    from tui_adv.game.achievements import Achievement
+
+    data = _read_yaml(path)
+    achievements: dict[str, Achievement] = {}
+    for entry in data.get("achievements", []):
+        achievement = Achievement(
+            id=entry["id"],
+            name=entry["name"],
+            description=entry.get("description", ""),
+            conditions=_conditions_from_data(entry.get("conditions", {})),
+            hidden=bool(entry.get("hidden", False)),
+        )
+        if achievement.id in achievements:
+            raise ValueError(f"duplicate achievement id: {achievement.id}")
+        achievements[achievement.id] = achievement
+    return achievements
+
+
 def validate_public_content() -> list[str]:
     """Return validation errors for committed public YAML content."""
 
@@ -86,6 +110,7 @@ def validate_public_content() -> list[str]:
         locations = load_default_locations()
         encounters = load_default_encounters()
         endings = load_default_endings()
+        achievements = load_default_achievements()
     except Exception as exc:  # pragma: no cover - test output needs message, not traceback.
         return [f"content load failed: {exc}"]
 
@@ -117,6 +142,11 @@ def validate_public_content() -> list[str]:
     for ending in endings.values():
         _validate_conditions_locations(
             errors, f"ending:{ending.id}", ending.conditions, locations
+        )
+
+    for achievement in achievements.values():
+        _validate_conditions_locations(
+            errors, f"achievement:{achievement.id}", achievement.conditions, locations
         )
 
     secrets_data = _read_yaml(DATA_DIR.joinpath("secrets.example.yaml"))
@@ -185,6 +215,7 @@ def _conditions_from_data(entry: dict[str, Any]) -> Conditions:
         locations=_tuple(entry.get("locations", ())),
         disaster_types=_tuple(entry.get("disaster_types", ())),
         required_items=_tuple(entry.get("required_items", entry.get("has_items", ()))),
+        required_clues=_tuple(entry.get("required_clues", entry.get("has_clues", ()))),
         required_flags=_tuple(entry.get("required_flags", entry.get("has_flags", ()))),
         forbidden_flags=_tuple(entry.get("forbidden_flags", entry.get("missing_flags", ()))),
         min_resources=dict(entry.get("min_resources", {})),

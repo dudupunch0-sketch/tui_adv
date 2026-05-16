@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
+from tui_adv.game.achievements import Achievement, unlock_new_achievements
 from tui_adv.game.encounters import ChoiceResolution, Encounter, select_encounter
 from tui_adv.game.endings import Ending, evaluate_ending
 from tui_adv.game.locations import DEFAULT_LOCATIONS
@@ -37,6 +38,7 @@ class TurnActionResult:
     before_turn: GameTurn
     turn: GameTurn
     choice_resolution: ChoiceResolution | None = None
+    unlocked_achievements: tuple[Achievement, ...] = ()
 
 
 def build_game_turn(state: GameState) -> GameTurn:
@@ -104,19 +106,24 @@ def resolve_turn_action_result(turn: GameTurn, action_id: str) -> TurnActionResu
         if turn.encounter is None:
             raise ValueError(f"지금 실행할 수 없는 행동: {action_id}")
         resolution = turn.encounter.resolve_choice_result(action.target_id, turn.state)
+        unlock_result = unlock_new_achievements(resolution.state)
+        updated_resolution = replace(resolution, state=unlock_result.state)
         return TurnActionResult(
             action=action,
             before_turn=turn,
-            turn=build_game_turn(resolution.state),
-            choice_resolution=resolution,
+            turn=build_game_turn(unlock_result.state),
+            choice_resolution=updated_resolution,
+            unlocked_achievements=unlock_result.unlocked,
         )
 
     if action.kind == "move":
         moved = turn.state.move_to(action.target_id)
+        unlock_result = unlock_new_achievements(moved)
         return TurnActionResult(
             action=action,
             before_turn=turn,
-            turn=build_game_turn(moved),
+            turn=build_game_turn(unlock_result.state),
+            unlocked_achievements=unlock_result.unlocked,
         )
 
     raise ValueError(f"알 수 없는 행동 유형: {action.kind}")

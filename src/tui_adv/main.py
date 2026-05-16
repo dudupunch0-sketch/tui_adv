@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 import argparse
+from dataclasses import replace
 
 from tui_adv import __version__
 from tui_adv.game.encounters import Choice, select_encounter
+from tui_adv.game.endings import evaluate_ending, format_ending_summary
 from tui_adv.game.locations import DEFAULT_LOCATIONS
 from tui_adv.game.state import GameState
+from tui_adv.tui.app import build_tui_turn, render_tui_layout_snapshot, run_textual_tui
 from tui_adv.tui.encounter import format_choice_resolution, format_encounter_turn
 from tui_adv.tui.status import format_local_status
 
@@ -21,6 +24,23 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--choice",
         help="execute an available choice by 1-based index during --new smoke",
+    )
+    parser.add_argument(
+        "--location",
+        default="dev_desk",
+        help="starting location id for --new smoke",
+    )
+    parser.add_argument(
+        "--flag",
+        action="append",
+        default=[],
+        help="preload a state flag for deterministic smoke paths; may repeat",
+    )
+    parser.add_argument("--tui", action="store_true", help="launch the interactive Textual TUI")
+    parser.add_argument(
+        "--tui-smoke",
+        action="store_true",
+        help="print the Textual layout model without launching an interactive screen",
     )
     return parser
 
@@ -52,6 +72,9 @@ def render_new_game_smoke(state: GameState, choice_argument: str | None = None) 
                 format_local_status(resolution.state.player),
             ]
         )
+        ending = evaluate_ending(resolution.state)
+        if ending is not None:
+            lines.extend(["", format_ending_summary(ending)])
     return "\n".join(lines)
 
 
@@ -71,8 +94,34 @@ def main(argv: list[str] | None = None) -> int:
         print(f"tui-adv {__version__}")
         return 0
 
+    if args.location not in DEFAULT_LOCATIONS:
+        parser.error(f"알 수 없는 위치: {args.location}")
+
+    if args.tui_smoke:
+        turn = build_tui_turn(
+            seed=args.seed,
+            location_id=args.location,
+            flags=tuple(args.flag),
+        )
+        print(render_tui_layout_snapshot(turn))
+        return 0
+
+    if args.tui:
+        try:
+            run_textual_tui(
+                seed=args.seed,
+                location_id=args.location,
+                flags=tuple(args.flag),
+            )
+        except RuntimeError as exc:
+            parser.error(str(exc))
+        return 0
+
     if args.new:
-        state = GameState.new(seed=args.seed)
+        state = replace(
+            GameState.new(seed=args.seed, location_id=args.location),
+            flags=list(args.flag),
+        )
         try:
             print(render_new_game_smoke(state, choice_argument=args.choice))
         except ValueError as exc:

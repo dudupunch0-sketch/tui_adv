@@ -6,8 +6,8 @@ TUI 기반 랜덤 인카운터 선택지 생존 게임.
 
 ## 현재 단계
 
-현재는 Phase 4 인카운터/선택지 도메인 엔진의 4차 골격까지 구현된 단계다.
-게임 구조와 안전한 현실 연결 원칙을 문서화했고, 순수 게임 상태 모델, 자원 임계치/실패 판정, 1차 사무실 위치 모델, 인접 위치 이동, 인카운터/선택지 조건·비용·결과 적용, 능력치 기반 선택지, 2d6 성공/실패 분기, 현재 상태 기반 인카운터 선택, 탕비실 커피머신 인카운터, CLI 한 턴 인카운터 표시, 선택지 결과 포맷터, CLI 선택지 실행 smoke를 추가했다.
+현재는 Phase 6 TUI 수직 슬라이스의 첫 골격까지 구현된 단계다.
+게임 구조와 안전한 현실 연결 원칙을 문서화했고, 순수 게임 상태 모델, 자원 임계치/실패 판정, 1차 사무실 위치 모델, 인접 위치 이동, 인카운터/선택지 조건·비용·결과 적용, 능력치 기반 선택지, 2d6 성공/실패 분기, 현재 상태 기반 인카운터 선택, 탕비실 커피머신 인카운터, 공간 왜곡 탈출/실패 엔딩 판정, YAML 공개 콘텐츠 로더/검증, 로컬 비공개 현실 힌트 로더, CLI 한 턴 실행, Textual 레이아웃 smoke를 추가했다.
 
 ## 실행/테스트
 
@@ -16,6 +16,9 @@ TUI 기반 랜덤 인카운터 선택지 생존 게임.
 ```bash
 PYTHONPATH=src python -m tui_adv --new --seed 123
 PYTHONPATH=src python -m tui_adv --new --seed 123 --choice 1
+PYTHONPATH=src python -m tui_adv --new --seed 123 --location emergency_stairs --flag escape_puzzle_ready --choice 1
+PYTHONPATH=src python -m tui_adv --tui-smoke --seed 123
+PYTHONPATH=src python -m tui_adv --tui --seed 123  # Textual 설치 환경에서 실행
 PYTHONPATH=src python -m tui_adv --version
 ```
 
@@ -73,7 +76,7 @@ python -m pytest tests -q
 
 ## 다음 작업 후보
 
-1. 첫 엔딩 판정과 실패/탈출 smoke 추가
-2. YAML 데이터 파일 분리 준비
-3. 로컬 비공개 현실 힌트 로더 설계
-4. Textual 기반 실제 TUI 입력/레이아웃 연결
+1. 위치/아이템 YAML까지 런타임 기본 데이터로 완전 전환
+2. 이동/인카운터/엔딩을 잇는 다중 턴 플레이 루프
+3. 현실 힌트 루트를 실제 게임 선택지/엔딩 보상에 연결
+4. Textual 설치 환경에서 전체 화면 상호작용 smoke와 종료 키 처리

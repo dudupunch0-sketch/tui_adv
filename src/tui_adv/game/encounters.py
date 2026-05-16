@@ -442,6 +442,34 @@ DEFAULT_ENCOUNTERS: dict[str, Encounter] = {
             ),
         ),
     ),
+    "spatial_exit_puzzle": Encounter(
+        id="spatial_exit_puzzle",
+        title="비상계단 공간 왜곡",
+        body="층수 표시는 4, 4, 4, 4를 반복한다. 한 칸만 진짜 계단처럼 숨을 쉰다.",
+        conditions=Conditions(
+            locations=("emergency_stairs",),
+            required_flags=("escape_puzzle_ready",),
+        ),
+        choices=(
+            Choice(
+                id="solve_distorted_floor",
+                label="반복되는 층수의 비밀을 풀고 문을 통과한다",
+                outcome=Outcome(
+                    add_flags=("escape_route_completed",),
+                    log="층수 표시가 한 번 거꾸로 흐른 뒤 비상문이 열렸다.",
+                ),
+            ),
+            Choice(
+                id="walk_down_wrong_stairs",
+                label="아래라고 믿고 계속 내려간다",
+                outcome=Outcome(
+                    sanity=-25,
+                    add_flags=("spatial_exit_failed",),
+                    log="내려갈수록 계단은 회사 안쪽으로 더 깊게 접혔다.",
+                ),
+            ),
+        ),
+    ),
 }
 
 

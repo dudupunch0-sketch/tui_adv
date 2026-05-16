@@ -54,6 +54,56 @@ def test_cli_new_game_rejects_invalid_choice_without_traceback():
     assert "Traceback" not in result.stderr
 
 
+def test_cli_escape_ending_smoke_prints_first_ending():
+    result = run_module(
+        "--new",
+        "--seed",
+        "123",
+        "--location",
+        "emergency_stairs",
+        "--flag",
+        "escape_puzzle_ready",
+        "--choice",
+        "1",
+    )
+
+    assert result.returncode == 0
+    assert "인카운터: 비상계단 공간 왜곡" in result.stdout
+    assert "선택 실행: 반복되는 층수의 비밀을 풀고 문을 통과한다" in result.stdout
+    assert "엔딩: 퇴근 성공" in result.stdout
+    assert "공간 왜곡" in result.stdout
+
+
+def test_cli_game_over_smoke_prints_spatial_failure():
+    result = run_module(
+        "--new",
+        "--seed",
+        "123",
+        "--location",
+        "emergency_stairs",
+        "--flag",
+        "escape_puzzle_ready",
+        "--choice",
+        "2",
+    )
+
+    assert result.returncode == 0
+    assert "선택 실행: 아래라고 믿고 계속 내려간다" in result.stdout
+    assert "게임오버: 게임오버: 계단이 접혔다" in result.stdout
+    assert "계단은 아래가 아니라 당신 안쪽" in result.stdout
+
+
+def test_cli_tui_smoke_prints_textual_layout_snapshot():
+    result = run_module("--tui-smoke", "--seed", "123")
+
+    assert result.returncode == 0
+    assert "escape from the office" in result.stdout
+    assert "[LOCAL STATUS]" in result.stdout
+    assert "[현재 인카운터]" in result.stdout
+    assert "최근 로그" in result.stdout
+    assert "1. 메시지를 확인한다" in result.stdout
+
+
 def test_cli_version_prints_package_version():
     result = run_module("--version")
 

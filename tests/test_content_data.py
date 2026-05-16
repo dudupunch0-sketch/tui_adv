@@ -65,12 +65,16 @@ def test_default_achievements_yaml_loads_truth_route_reward():
 def test_default_locations_yaml_loads_connections_and_tags():
     locations = load_default_locations()
     security_room = locations["security_room"]
+    server_room = locations["server_room"]
 
     assert DATA_DIR.joinpath("locations.yaml").name == "locations.yaml"
     assert security_room.name == "보안실"
     assert security_room.connections == ("hallway",)
     assert security_room.tags == ("security", "surveillance", "truth")
     assert "security_room" in locations["hallway"].connections
+    assert server_room.name == "서버실 내부"
+    assert server_room.connections == ("server_room_front",)
+    assert "server_room" in locations["server_room_front"].connections
 
 
 def test_locations_yaml_rejects_unknown_connections(tmp_path):

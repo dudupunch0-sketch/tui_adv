@@ -60,6 +60,9 @@ conditions:
     sanity: 40
   max_resources:
     thirst: 79
+  min_abilities:
+    interface: 4
+    logic: 3
   has_items:
     - employee_badge
   missing_items:
@@ -342,14 +345,19 @@ outcome:
 
 ### check
 
-상태 기반 성공/실패다.
+2d6 + 능력치 기반 성공/실패다.
 
 ```yaml
 outcome:
   type: check
+  base_effects:
+    resources:
+      battery: -2
+    log:
+      - "휴대폰을 사내망에 붙였다."
   check:
-    resource: sanity
-    min: 45
+    ability: interface
+    difficulty: 10
   success:
     effects:
       add_flags:
@@ -470,7 +478,15 @@ secrets:
     "sanity": 61,
     "battery": 34,
     "hunger": 43,
-    "thirst": 58
+    "thirst": 58,
+    "abilities": {
+      "logic": 2,
+      "empathy": 2,
+      "volition": 2,
+      "composure": 2,
+      "interface": 4,
+      "physical": 2
+    }
   },
   "inventory": ["employee_badge", "crumpled_printout"],
   "clues": ["printer_page_mentions_you"],

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field, replace
+import random
 from typing import Mapping
 
 from tui_adv.game.state import GameState
@@ -27,6 +28,7 @@ class Conditions:
     forbidden_flags: tuple[str, ...] = ()
     min_resources: Mapping[str, int] = field(default_factory=dict)
     max_resources: Mapping[str, int] = field(default_factory=dict)
+    min_abilities: Mapping[str, int] = field(default_factory=dict)
 
     def unavailable_reasons(self, state: GameState) -> tuple[str, ...]:
         reasons: list[str] = []
@@ -49,6 +51,9 @@ class Conditions:
         for resource_name, maximum in self.max_resources.items():
             if _resource_value(state, resource_name) > maximum:
                 reasons.append(f"{resource_name}>{maximum}")
+        for ability_id, minimum in self.min_abilities.items():
+            if state.player.ability(ability_id) < minimum:
+                reasons.append(f"{ability_id}<{minimum}")
         return tuple(reasons)
 
     def is_satisfied_by(self, state: GameState) -> bool:
@@ -75,6 +80,23 @@ class Outcome:
 
 
 @dataclass(frozen=True, slots=True)
+class AbilityCheck:
+    """A two-dice ability check that branches into success or failure."""
+
+    ability: str
+    difficulty: int
+    success: Outcome
+    failure: Outcome
+
+    def resolve(self, state: GameState, rng: random.Random) -> Outcome:
+        roll = rng.randint(1, 6) + rng.randint(1, 6)
+        total = roll + state.player.ability(self.ability)
+        if total >= self.difficulty:
+            return self.success
+        return self.failure
+
+
+@dataclass(frozen=True, slots=True)
 class Choice:
     """A selectable action within an encounter."""
 
@@ -83,6 +105,7 @@ class Choice:
     outcome: Outcome
     conditions: Conditions = field(default_factory=Conditions)
     cost: Mapping[str, int] = field(default_factory=dict)
+    check: AbilityCheck | None = None
 
     def unavailable_reasons(self, state: GameState) -> tuple[str, ...]:
         reasons = list(self.conditions.unavailable_reasons(state))
@@ -97,27 +120,49 @@ class Choice:
     def is_available(self, state: GameState) -> bool:
         return not self.unavailable_reasons(state)
 
-    def apply(self, state: GameState, *, encounter_id: str) -> GameState:
+    def apply(
+        self,
+        state: GameState,
+        *,
+        encounter_id: str,
+        rng: random.Random | None = None,
+    ) -> GameState:
+        rng = rng or _rng_for_state(state, encounter_id, self.id, "check")
+        outcomes = self._resolved_outcomes(state, rng)
         player = state.player.apply_delta(
-            health=self.outcome.health - self.cost.get("health", 0),
-            sanity=self.outcome.sanity - self.cost.get("sanity", 0),
-            battery=self.outcome.battery - self.cost.get("battery", 0),
-            hunger=self.outcome.hunger + self.cost.get("hunger", 0),
-            thirst=self.outcome.thirst + self.cost.get("thirst", 0),
+            health=sum(outcome.health for outcome in outcomes)
+            - self.cost.get("health", 0),
+            sanity=sum(outcome.sanity for outcome in outcomes)
+            - self.cost.get("sanity", 0),
+            battery=sum(outcome.battery for outcome in outcomes)
+            - self.cost.get("battery", 0),
+            hunger=sum(outcome.hunger for outcome in outcomes)
+            + self.cost.get("hunger", 0),
+            thirst=sum(outcome.thirst for outcome in outcomes)
+            + self.cost.get("thirst", 0),
         )
-        inventory = _remove_all(state.inventory, self.outcome.remove_items)
-        inventory = _append_unique(inventory, self.outcome.add_items)
-        flags = _remove_all(state.flags, self.outcome.remove_flags)
-        flags = _append_unique(flags, self.outcome.add_flags)
-        clues = _append_unique(state.clues, self.outcome.add_clues)
-        seen_encounters = _append_unique(state.seen_encounters, (encounter_id,))
+        inventory = list(state.inventory)
+        flags = list(state.flags)
+        clues = list(state.clues)
         log = [*state.log]
-        if self.outcome.log:
-            log.append(self.outcome.log)
+        destination_id = state.location_id
+        danger_delta = 0
+        for outcome in outcomes:
+            inventory = _remove_all(inventory, outcome.remove_items)
+            inventory = _append_unique(inventory, outcome.add_items)
+            flags = _remove_all(flags, outcome.remove_flags)
+            flags = _append_unique(flags, outcome.add_flags)
+            clues = _append_unique(clues, outcome.add_clues)
+            if outcome.destination_id:
+                destination_id = outcome.destination_id
+            danger_delta += outcome.danger
+            if outcome.log:
+                log.append(outcome.log)
+        seen_encounters = _append_unique(state.seen_encounters, (encounter_id,))
         return replace(
             state,
-            location_id=self.outcome.destination_id or state.location_id,
-            danger=max(0, state.danger + self.outcome.danger),
+            location_id=destination_id,
+            danger=max(0, state.danger + danger_delta),
             player=player,
             inventory=inventory,
             clues=clues,
@@ -125,6 +170,15 @@ class Choice:
             seen_encounters=seen_encounters,
             log=log,
         )
+
+    def _resolved_outcomes(
+        self,
+        state: GameState,
+        rng: random.Random,
+    ) -> tuple[Outcome, ...]:
+        if self.check is None:
+            return (self.outcome,)
+        return (self.outcome, self.check.resolve(state, rng))
 
 
 @dataclass(frozen=True, slots=True)
@@ -147,7 +201,13 @@ class Encounter:
     def available_choices(self, state: GameState) -> tuple[Choice, ...]:
         return tuple(choice for choice in self.choices if choice.is_available(state))
 
-    def resolve_choice(self, choice_id: str, state: GameState) -> GameState:
+    def resolve_choice(
+        self,
+        choice_id: str,
+        state: GameState,
+        *,
+        rng: random.Random | None = None,
+    ) -> GameState:
         if not self.is_eligible(state):
             raise ValueError(f"encounter {self.id} is not eligible")
         choice = self._choice_by_id(choice_id)
@@ -155,7 +215,7 @@ class Encounter:
         if reasons:
             reason_text = ", ".join(reasons)
             raise ValueError(f"choice {choice_id} is not available: {reason_text}")
-        return choice.apply(state, encounter_id=self.id).advance_turn()
+        return choice.apply(state, encounter_id=self.id, rng=rng).advance_turn()
 
     def _choice_by_id(self, choice_id: str) -> Choice:
         for choice in self.choices:
@@ -165,6 +225,11 @@ class Encounter:
 
 
 EncounterMap = Mapping[str, Encounter]
+
+
+def _rng_for_state(state: GameState, *parts: str) -> random.Random:
+    seed_parts = ":".join((str(state.seed), str(state.turn), *parts))
+    return random.Random(seed_parts)
 
 
 def _append_unique(existing: list[str], values: tuple[str, ...]) -> list[str]:
@@ -214,6 +279,27 @@ DEFAULT_ENCOUNTERS: dict[str, Encounter] = {
                     log="사내망 캐시에 남은 전임자의 흔적을 찾았다.",
                 ),
             ),
+            Choice(
+                id="trace_packet_delay",
+                label="[인터페이스] 알림 지연 시간을 역추적한다",
+                conditions=Conditions(min_abilities={"interface": 4}),
+                cost={"battery": 2},
+                outcome=Outcome(log="알림 패킷을 조심스럽게 붙잡았다."),
+                check=AbilityCheck(
+                    ability="interface",
+                    difficulty=10,
+                    success=Outcome(
+                        add_clues=("delayed_packet_route",),
+                        add_flags=("network_truth_hint",),
+                        log="지연 시간 사이에서 숨은 라우팅을 찾았다.",
+                    ),
+                    failure=Outcome(
+                        sanity=-4,
+                        danger=1,
+                        log="패킷이 역으로 당신의 단말을 훑고 지나갔다.",
+                    ),
+                ),
+            ),
         ),
     ),
     "printer_prints_alone": Encounter(
@@ -253,3 +339,37 @@ DEFAULT_ENCOUNTERS: dict[str, Encounter] = {
         ),
     ),
 }
+
+
+def eligible_encounters(
+    state: GameState,
+    encounters: EncounterMap | None = None,
+) -> tuple[Encounter, ...]:
+    encounter_map = DEFAULT_ENCOUNTERS if encounters is None else encounters
+    return tuple(
+        encounter for encounter in encounter_map.values() if encounter.is_eligible(state)
+    )
+
+
+def select_encounter(
+    state: GameState,
+    encounters: EncounterMap | None = None,
+    *,
+    rng: random.Random | None = None,
+) -> Encounter | None:
+    candidates = tuple(
+        encounter
+        for encounter in eligible_encounters(state, encounters)
+        if encounter.weight > 0 and encounter.available_choices(state)
+    )
+    total_weight = sum(encounter.weight for encounter in candidates)
+    if total_weight <= 0:
+        return None
+    rng = rng or _rng_for_state(state, "encounter")
+    picked = rng.randrange(total_weight)
+    running_total = 0
+    for encounter in candidates:
+        running_total += encounter.weight
+        if picked < running_total:
+            return encounter
+    return candidates[-1]

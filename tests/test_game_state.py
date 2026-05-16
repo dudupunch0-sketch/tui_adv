@@ -93,3 +93,17 @@ def test_low_resources_expose_choice_rule_hooks():
     assert distorted.should_distort_choices is True
     assert distorted.should_trigger_thirst_hallucination is True
     assert distorted.can_spend_battery(1) is False
+
+
+def test_player_state_tracks_discernment_abilities_for_choice_variants():
+    baseline = PlayerState()
+    tuned = baseline.with_abilities(interface=5, logic=4, empathy=-1, volition=9)
+
+    assert baseline.ability("interface") == 2
+    assert baseline.ability("logic") == 2
+    assert baseline.ability("unknown") == 0
+    assert tuned.ability("interface") == 5
+    assert tuned.ability("logic") == 4
+    assert tuned.ability("empathy") == 0
+    assert tuned.ability("volition") == 6
+    assert baseline.ability("interface") == 2

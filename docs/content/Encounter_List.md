@@ -51,6 +51,12 @@
    - 조건: 배터리 >= 8
    - 결과: 퇴사자의 메모 또는 진실 루트 플래그
 
+4. [인터페이스] 알림 지연 시간을 역추적한다
+   - 조건: interface >= 4, 배터리 >= 2
+   - 판정: 2d6 + interface >= 10
+   - 성공: 단서 `delayed_packet_route`, 플래그 `network_truth_hint`
+   - 실패: 정신력 피해, 위험도 증가
+
 ### printer_prints_alone: 복합기가 혼자 출력한다
 
 위치:

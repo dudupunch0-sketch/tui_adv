@@ -107,25 +107,52 @@ encounters:
           add_flags: [coffee_machine_back_panel, pantry_hint_seen]
           log: 커피머신 뒤쪽 패널에 복합기 출력물과 같은 표식이 있었다.
 
-  - id: emergency_stairs_exit_sign
-    title: 비상계단 문틈 표식
-    body: 비상계단 문틈의 초록색 표식이 층수 표시와 같은 박자로 숨을 쉰다.
+  - id: meeting_room_all_hands
+    title: 존재하지 않는 부서의 전체회의
+    body: 회의실 화면에는 방금 저장된 회의록이 떠 있다. 참석자는 전 직원, 발언자는 당신 하나다.
     conditions:
-      locations: [emergency_stairs]
-      forbidden_flags: [escape_puzzle_ready]
+      locations: [meeting_room]
+      required_flags: [truth_route_started]
     choices:
-      - id: align_breathing_floor
-        label: 계단문 틈의 숨소리와 층수 표시를 맞춘다
+      - id: save_impossible_minutes
+        label: 회의록을 저장하고 패턴을 표시한다
         cost:
-          sanity: 3
+          battery: 4
+          sanity: 5
         outcome:
-          add_flags: [escape_puzzle_ready]
-          log: 초록 표식이 한 번 꺼졌다 켜지자 반복되는 층수의 규칙이 드러났다.
-      - id: ignore_exit_sign
-        label: 표식과 눈을 마주치지 않고 계단을 살핀다
+          add_flags: [impossible_meeting_saved]
+          add_clues: [meeting_pattern_noticed]
+          log: 회의록의 발언 시간이 모두 같은 초 단위로 반복된다는 것을 표시했다.
+      - id: leave_without_saving
+        label: 저장하지 않고 회의실을 나간다
         outcome:
-          sanity: 1
-          log: 표식은 시야 가장자리에 초록빛 잔상을 남겼지만 더는 따라오지 않았다.
+          resources:
+            sanity: 1
+          log: 회의실 문이 닫히자 방금 전 회의 알림이 취소되었다.
+
+  - id: security_room_delayed_cctv
+    title: 지연된 CCTV 화면
+    body: 보안실 모니터들은 복도보다 한 박자 늦은 장면을 반복한다. 조금 전 당신이 한 선택도 녹화되어 있다.
+    conditions:
+      locations: [security_room]
+      required_flags: [impossible_meeting_saved]
+      required_clues: [meeting_pattern_noticed]
+    choices:
+      - id: replay_delayed_cctv
+        label: 지연된 CCTV 화면을 되감는다
+        cost:
+          battery: 6
+          sanity: 4
+        outcome:
+          add_flags: [security_camera_mapped, isolation_protocol_revealed]
+          add_clues: [server_log_fragment]
+          log: CCTV 지연 프레임 사이에서 격리 프로토콜 로그 조각을 읽었다.
+      - id: cover_cameras
+        label: 모니터를 덮고 보안실을 떠난다
+        outcome:
+          resources:
+            sanity: 2
+          log: 꺼진 모니터들이 천천히 당신을 놓아주었다.
 
   - id: spatial_exit_puzzle
     title: 비상계단 공간 왜곡
@@ -167,3 +194,34 @@ encounters:
         outcome:
           sanity: 1
           log: 무전기 소리가 잠깐 당신의 목소리를 흉내 내다가 멈췄다.
+      - id: follow_cold_air
+        label: 문틈의 찬 공기를 따라 안쪽으로 들어간다
+        cost:
+          sanity: 2
+        outcome:
+          destination_id: server_room
+          add_flags: [server_room_entered]
+          log: 서버실 문은 열리지 않았지만, 당신은 이미 문 안쪽에 서 있었다.
+
+  - id: server_room_console
+    title: 관리자 콘솔
+    body: 랙 사이 KVM 콘솔에는 관리자 세션이 잠들지 않은 채 남아 있다.
+    conditions:
+      locations: [server_room]
+    choices:
+      - id: assume_admin_console
+        label: 관리자 콘솔에 격리 규칙을 덮어쓴다
+        cost:
+          battery: 10
+          sanity: 6
+        outcome:
+          add_flags: [network_admin_claimed, internal_network_access]
+          add_clues: [admin_console_signature]
+          log: 관리자 콘솔의 격리 규칙을 당신의 퇴근 규칙으로 덮어썼다.
+      - id: pull_network_cable
+        label: 가장 두꺼운 케이블을 뽑는다
+        outcome:
+          resources:
+            sanity: -8
+          add_flags: [network_backlash]
+          log: 케이블을 뽑자 서버실 전체가 당신의 심장 박동으로 재부팅했다.

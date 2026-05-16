@@ -1,0 +1,22 @@
+endings:
+  - id: game_over_spatial_collapse
+    name: "게임오버: 계단이 접혔다"
+    kind: failure
+    priority: 100
+    conditions:
+      required_flags: [spatial_exit_failed]
+    text: 공간 왜곡의 규칙을 틀렸다. 계단은 아래가 아니라 당신 안쪽으로 접혔다.
+
+  - id: escape_commute
+    name: 퇴근 성공
+    kind: escape
+    priority: 60
+    conditions:
+      locations: [emergency_stairs]
+      required_flags: [escape_route_completed]
+      min_resources:
+        health: 1
+        sanity: 1
+    text: >
+      공간 왜곡 속에서 반복되는 층수를 맞춰 풀었다.
+      비상문 너머의 평범한 밤공기가 당신을 퇴근시켰다.

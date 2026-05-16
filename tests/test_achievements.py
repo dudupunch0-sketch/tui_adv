@@ -46,7 +46,7 @@ def test_scripted_choice_unlocks_first_signal_achievement():
     ]
 
 
-def test_default_achievements_include_reality_and_conquest_route_rewards():
+def test_default_achievements_include_reality_conquest_and_truth_route_rewards():
     assert DEFAULT_ACHIEVEMENTS["first_signal_received"].conditions.required_clues == (
         "ex_employee_contacted",
     )
@@ -56,6 +56,9 @@ def test_default_achievements_include_reality_and_conquest_route_rewards():
     assert DEFAULT_ACHIEVEMENTS[
         "broadcast_channel_captured"
     ].conditions.required_flags == ("server_room_broadcast_controlled",)
+    assert DEFAULT_ACHIEVEMENTS[
+        "truth_protocol_understood"
+    ].conditions.required_flags == ("isolation_protocol_revealed",)
 
 
 def test_format_unlocked_achievements_renders_korean_unlock_lines():

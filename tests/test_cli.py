@@ -80,6 +80,37 @@ def test_cli_new_game_actions_execute_multi_turn_route_and_print_ending():
     assert "엔딩: 사내 방송 장악" in result.stdout
 
 
+def test_cli_truth_route_prints_protocol_ending_and_achievement():
+    result = run_module(
+        "--new",
+        "--seed",
+        "123",
+        "--action",
+        "choice:3",
+        "--action",
+        "move:dev_office",
+        "--action",
+        "move:meeting_room",
+        "--action",
+        "choice:1",
+        "--action",
+        "move:dev_office",
+        "--action",
+        "move:hallway",
+        "--action",
+        "move:security_room",
+        "--action",
+        "choice:1",
+    )
+
+    assert result.returncode == 0
+    assert "선택 실행: 전임자의 이름을 사내망에서 검색한다" in result.stdout
+    assert "선택 실행: 회의록을 저장하고 패턴을 표시한다" in result.stdout
+    assert "선택 실행: 지연된 CCTV 화면을 되감는다" in result.stdout
+    assert "업적 달성: 격리 프로토콜 독해" in result.stdout
+    assert "엔딩: 격리 프로토콜의 진실" in result.stdout
+
+
 def test_cli_reality_hint_route_prints_copier_ip_digit_sum():
     result = run_module(
         "--new",

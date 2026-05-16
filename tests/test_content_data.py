@@ -2,6 +2,7 @@ import pytest
 
 from tui_adv.game.content import (
     DATA_DIR,
+    load_default_achievements,
     load_default_encounters,
     load_default_endings,
     load_default_locations,
@@ -19,6 +20,8 @@ def test_default_encounter_yaml_loads_choice_conditions_and_checks():
     trace_choice = next(
         choice for choice in messenger.choices if choice.id == "trace_packet_delay"
     )
+    meeting = encounters["meeting_room_all_hands"]
+    cctv = encounters["security_room_delayed_cctv"]
 
     assert DATA_DIR.joinpath("encounters.yaml").name == "encounters.yaml"
     assert messenger.title == "퇴사자의 메신저"
@@ -26,17 +29,37 @@ def test_default_encounter_yaml_loads_choice_conditions_and_checks():
     assert trace_choice.conditions.min_abilities == {"interface": 4}
     assert trace_choice.check is not None
     assert trace_choice.check.success.add_flags == ("network_truth_hint",)
+    assert meeting.conditions.required_flags == ("truth_route_started",)
+    assert meeting.choices[0].outcome.add_flags == ("impossible_meeting_saved",)
+    assert cctv.conditions.required_flags == ("impossible_meeting_saved",)
+    assert cctv.choices[0].outcome.add_clues == ("server_log_fragment",)
 
 
 def test_default_endings_yaml_loads_escape_route_conditions():
     endings = load_default_endings()
     escape = endings["escape_commute"]
+    truth = endings["truth_isolation_protocol"]
 
     assert escape.kind == "escape"
     assert escape.priority == 60
     assert escape.conditions.locations == ("emergency_stairs",)
     assert escape.conditions.required_flags == ("escape_route_completed",)
     assert "공간 왜곡" in escape.text
+    assert truth.kind == "truth"
+    assert truth.priority == 70
+    assert truth.conditions.required_items == ("ex_employee_memo",)
+    assert truth.conditions.required_clues == (
+        "meeting_pattern_noticed",
+        "server_log_fragment",
+    )
+
+
+def test_default_achievements_yaml_loads_truth_route_reward():
+    achievements = load_default_achievements()
+    truth = achievements["truth_protocol_understood"]
+
+    assert truth.name == "격리 프로토콜 독해"
+    assert truth.conditions.required_flags == ("isolation_protocol_revealed",)
 
 
 def test_default_locations_yaml_loads_connections_and_tags():

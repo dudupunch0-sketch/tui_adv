@@ -36,6 +36,22 @@ endings:
       출력물의 마지막 문장은 더 이상 게임 속 장소만을 말하지 않았다.
       커피 냄새와 복합기 표식이 하나의 계산으로 이어졌다.
 
+  - id: truth_isolation_protocol
+    name: 격리 프로토콜의 진실
+    kind: truth
+    priority: 70
+    conditions:
+      required_items: [ex_employee_memo]
+      required_clues: [meeting_pattern_noticed, server_log_fragment]
+      required_flags: [impossible_meeting_saved, isolation_protocol_revealed]
+      min_resources:
+        health: 1
+        sanity: 1
+    text: >
+      삭제된 출입 기록과 회의록은 같은 결론을 가리켰다.
+      사라진 것은 직원들이 아니라 당신이 접속한 업무공간이었다.
+      회사는 이 현상을 격리 프로토콜이라고 불렀다.
+
   - id: conquest_broadcast_channel
     name: 사내 방송 장악
     kind: conquest

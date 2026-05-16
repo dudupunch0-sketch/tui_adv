@@ -17,3 +17,10 @@ achievements:
     description: 제한된 사내 방송 채널을 붙잡았다.
     conditions:
       required_flags: [server_room_broadcast_controlled]
+
+  - id: truth_protocol_understood
+    name: 격리 프로토콜 독해
+    description: 회의록과 CCTV 지연 프레임에서 격리 프로토콜의 실체를 읽었다.
+    hidden: true
+    conditions:
+      required_flags: [isolation_protocol_revealed]

@@ -4,14 +4,26 @@ from __future__ import annotations
 
 from importlib.resources import files
 from pathlib import Path
-from typing import Any, Iterable
+from typing import TYPE_CHECKING, Any, Iterable
 
 import yaml
 
-from tui_adv.game.locations import DEFAULT_LOCATIONS
+if TYPE_CHECKING:
+    from tui_adv.game.encounters import (
+        AbilityCheck,
+        Choice,
+        Conditions,
+        Encounter,
+        Outcome,
+    )
+    from tui_adv.game.locations import Location
 
 DATA_DIR = files("tui_adv.data")
 _RESOURCE_NAMES = ("health", "sanity", "battery", "hunger", "thirst")
+
+
+def load_default_locations() -> dict[str, Location]:
+    return load_locations(DATA_DIR.joinpath("locations.yaml"))
 
 
 def load_default_encounters() -> dict[str, Encounter]:
@@ -20,6 +32,18 @@ def load_default_encounters() -> dict[str, Encounter]:
 
 def load_default_endings():
     return load_endings(DATA_DIR.joinpath("endings.yaml"))
+
+
+def load_locations(path: Path | Any) -> dict[str, Location]:
+    data = _read_yaml(path)
+    locations: dict[str, Location] = {}
+    for entry in data.get("locations", []):
+        location = _location_from_data(entry)
+        if location.id in locations:
+            raise ValueError(f"duplicate location id: {location.id}")
+        locations[location.id] = location
+    _validate_location_connections(locations)
+    return locations
 
 
 def load_encounters(path: Path | Any) -> dict[str, Encounter]:
@@ -59,6 +83,7 @@ def validate_public_content() -> list[str]:
 
     errors: list[str] = []
     try:
+        locations = load_default_locations()
         encounters = load_default_encounters()
         endings = load_default_endings()
     except Exception as exc:  # pragma: no cover - test output needs message, not traceback.
@@ -66,35 +91,52 @@ def validate_public_content() -> list[str]:
 
     for encounter in encounters.values():
         _validate_conditions_locations(
-            errors, f"encounter:{encounter.id}", encounter.conditions
+            errors, f"encounter:{encounter.id}", encounter.conditions, locations
         )
         for choice in encounter.choices:
             _validate_conditions_locations(
-                errors, f"choice:{encounter.id}.{choice.id}", choice.conditions
+                errors, f"choice:{encounter.id}.{choice.id}", choice.conditions, locations
             )
             _validate_outcome_destination(
-                errors, f"choice:{encounter.id}.{choice.id}.outcome", choice.outcome
+                errors, f"choice:{encounter.id}.{choice.id}.outcome", choice.outcome, locations
             )
             if choice.check is not None:
                 _validate_outcome_destination(
                     errors,
                     f"choice:{encounter.id}.{choice.id}.success",
                     choice.check.success,
+                    locations,
                 )
                 _validate_outcome_destination(
                     errors,
                     f"choice:{encounter.id}.{choice.id}.failure",
                     choice.check.failure,
+                    locations,
                 )
 
     for ending in endings.values():
-        _validate_conditions_locations(errors, f"ending:{ending.id}", ending.conditions)
+        _validate_conditions_locations(
+            errors, f"ending:{ending.id}", ending.conditions, locations
+        )
 
     secrets_data = _read_yaml(DATA_DIR.joinpath("secrets.example.yaml"))
     for secret in secrets_data.get("secrets", []):
         if "final_hint" in secret:
             errors.append(f"public secret {secret.get('id', '<missing>')} has final_hint")
     return errors
+
+
+def _location_from_data(entry: dict[str, Any]) -> Location:
+    from tui_adv.game.locations import Location
+
+    return Location(
+        id=entry["id"],
+        name=entry["name"],
+        description=entry["description"],
+        connections=_tuple(entry.get("connections", entry.get("exits", ()))),
+        tags=_tuple(entry.get("tags", ())),
+        danger=int(entry.get("danger", entry.get("danger_modifier", 0))),
+    )
 
 
 def _encounter_from_data(entry: dict[str, Any]) -> Encounter:
@@ -175,13 +217,23 @@ def _outcome_from_data(entry: dict[str, Any]) -> Outcome:
     )
 
 
+def _validate_location_connections(locations: dict[str, Location]) -> None:
+    for location in locations.values():
+        for connection_id in location.connections:
+            if connection_id not in locations:
+                raise ValueError(
+                    f"location {location.id} references unknown connection: {connection_id}"
+                )
+
+
 def _validate_conditions_locations(
     errors: list[str],
     label: str,
     conditions: Conditions,
+    locations: dict[str, Location],
 ) -> None:
     for location_id in conditions.locations:
-        if location_id not in DEFAULT_LOCATIONS:
+        if location_id not in locations:
             errors.append(f"{label} references unknown location: {location_id}")
 
 
@@ -189,8 +241,9 @@ def _validate_outcome_destination(
     errors: list[str],
     label: str,
     outcome: Outcome,
+    locations: dict[str, Location],
 ) -> None:
-    if outcome.destination_id and outcome.destination_id not in DEFAULT_LOCATIONS:
+    if outcome.destination_id and outcome.destination_id not in locations:
         errors.append(f"{label} references unknown destination: {outcome.destination_id}")
 
 

@@ -17,6 +17,7 @@
 | printer_area | 복합기 구역 | 현실 연결 루트 시작 |
 | server_room_front | 서버실 앞 | 정보/정복/진실 관문 |
 | emergency_stairs | 비상계단 | 탈출 루트, 반복 공간 위험 |
+| security_room | 보안실 | CCTV/출입 기록, 진실 단서 |
 
 ## 연결 구조
 
@@ -24,8 +25,8 @@
              [meeting_room]
                    |
 [dev_desk] - [dev_office] - [hallway] - [emergency_stairs]
-                   |           |
-              [printer_area]  [server_room_front]
+                   |           | \
+              [printer_area]  [server_room_front] [security_room]
                    |
                 [pantry]
 ```
@@ -108,6 +109,7 @@
 - dev_office
 - server_room_front
 - emergency_stairs
+- security_room
 
 주요 인카운터:
 
@@ -246,11 +248,35 @@
 - 같은 층으로 되돌아옴
 - 비상구 표시등의 꺼짐
 
+### security_room: 보안실
+
+설명:
+
+```text
+꺼진 CCTV 모니터들이 복도보다 한 박자 늦은 장면을 보여준다.
+출입 기록 프린터는 아직 종이를 물고 있지만, 기록된 이름은 지워져 있다.
+```
+
+태그:
+
+- security
+- surveillance
+- truth
+
+연결:
+
+- hallway
+
+주요 인카운터:
+
+- 지연된 CCTV 화면
+- 삭제된 출입 기록
+- 보안실 인터폰
+
 ## 확장 후보
 
 2차 이후 추가할 수 있는 위치:
 
-- security_room: 보안실
 - server_room: 서버실/전산실 내부
 - elevator: 엘리베이터
 - rooftop: 옥상

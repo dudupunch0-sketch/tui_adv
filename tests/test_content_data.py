@@ -1,7 +1,11 @@
+import pytest
+
 from tui_adv.game.content import (
     DATA_DIR,
     load_default_encounters,
     load_default_endings,
+    load_default_locations,
+    load_locations,
     validate_public_content,
 )
 from tui_adv.game.encounters import DEFAULT_ENCOUNTERS, select_encounter
@@ -33,6 +37,36 @@ def test_default_endings_yaml_loads_escape_route_conditions():
     assert escape.conditions.locations == ("emergency_stairs",)
     assert escape.conditions.required_flags == ("escape_route_completed",)
     assert "공간 왜곡" in escape.text
+
+
+def test_default_locations_yaml_loads_connections_and_tags():
+    locations = load_default_locations()
+    security_room = locations["security_room"]
+
+    assert DATA_DIR.joinpath("locations.yaml").name == "locations.yaml"
+    assert security_room.name == "보안실"
+    assert security_room.connections == ("hallway",)
+    assert security_room.tags == ("security", "surveillance", "truth")
+    assert "security_room" in locations["hallway"].connections
+
+
+def test_locations_yaml_rejects_unknown_connections(tmp_path):
+    path = tmp_path / "locations.yaml"
+    path.write_text(
+        """
+locations:
+  - id: lonely_room
+    name: 고립된 방
+    description: 문 하나만 보인다.
+    connections: [missing_room]
+""".strip(),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(
+        ValueError, match="location lonely_room references unknown connection: missing_room"
+    ):
+        load_locations(path)
 
 
 def test_public_yaml_content_references_are_valid_and_private_safe():

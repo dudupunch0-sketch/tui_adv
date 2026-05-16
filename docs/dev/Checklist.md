@@ -236,7 +236,7 @@
 
 ### 5.2 데이터 파일
 
-- [ ] `locations.yaml` 또는 `locations.json` 생성
+- [x] `locations.yaml` 또는 `locations.json` 생성
 - [ ] `items.yaml` 또는 `items.json` 생성
 - [ ] `encounters.yaml` 또는 `encounters.json` 생성
 - [ ] `endings.yaml` 또는 `endings.json` 생성

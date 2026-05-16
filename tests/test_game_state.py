@@ -34,7 +34,7 @@ def test_new_game_uses_seeded_unknown_isolation_start_state():
 
     assert state.seed == 12345
     assert state.turn == 0
-    assert state.location_id == "desk"
+    assert state.location_id == "dev_desk"
     assert state.disaster_type == "unknown_isolation"
     assert state.danger == 0
     assert state.player == PlayerState()

@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field, replace
 
+from tui_adv.game.locations import DEFAULT_LOCATIONS, LocationMap
+
 
 _RESOURCE_MIN = 0
 _RESOURCE_MAX = 100
@@ -105,7 +107,7 @@ class GameState:
         cls,
         *,
         seed: int,
-        location_id: str = "desk",
+        location_id: str = "dev_desk",
         disaster_type: str = "unknown_isolation",
     ) -> GameState:
         return cls(
@@ -130,6 +132,33 @@ class GameState:
             seen_encounters=list(self.seen_encounters),
             log=list(self.log),
         )
+
+    def available_move_ids(
+        self,
+        locations: LocationMap = DEFAULT_LOCATIONS,
+    ) -> tuple[str, ...]:
+        current_location = locations[self.location_id]
+        return current_location.connections
+
+    def move_to(
+        self,
+        destination_id: str,
+        locations: LocationMap = DEFAULT_LOCATIONS,
+    ) -> GameState:
+        current_location = locations[self.location_id]
+        if destination_id not in current_location.connections:
+            raise ValueError(f"cannot move from {self.location_id} to {destination_id}")
+        destination = locations[destination_id]
+        moved = replace(
+            self,
+            location_id=destination_id,
+            inventory=list(self.inventory),
+            clues=list(self.clues),
+            flags=list(self.flags),
+            seen_encounters=list(self.seen_encounters),
+            log=[*self.log, f"{destination.name}로 이동했다."],
+        )
+        return moved.advance_turn()
 
     def advance_turn(self) -> GameState:
         """Apply the baseline turn pressure without mutating the current state."""

@@ -439,12 +439,16 @@ secrets:
       - pantry_hint_seen
     public_hint_steps:
       - "커피 냄새가 남아 있는 방."
-      - "차가운 문 옆."
-      - "붙어 있는 것 아래."
+      - "차가운 문과 종이 냄새 사이의 반복 표식."
+      - "복합기에 붙은 IP 주소 표의 숫자들을 모두 더한다."
+    puzzle_prompt: "복합기에 붙은 IP 주소 표의 숫자들을 모두 더한다."
+    placeholder_ip_address: "192.168.0.42"
     final_hint_policy: private_only
     reward_text: >
       이 힌트는 게임 안의 장소만을 말하는 것 같지 않다.
 ```
+
+`placeholder_ip_address`는 공개 저장소용 더미 값이다. 실제 사무실 IP 주소를 쓸 때는 공개 파일 대신 로컬 secret 파일의 `actual_ip_address`에 둔다.
 
 ## private/secrets.local.yaml
 
@@ -455,9 +459,12 @@ secrets:
 secrets:
   - id: real_note_001
     final_hint: "로컬 비공개 환경에서만 표시할 최종 힌트 문장"
+    actual_ip_address: "10.20.30.40"
     safety_checked: true
     notes: "공용 공간, 위험 없음, 개인 물건 아님."
 ```
+
+`actual_ip_address` 역시 내부망 정보일 수 있으므로 로컬 비공개 파일에만 둔다. 런타임은 IP 문자열의 숫자를 모두 더한 값을 퍼즐 답으로 계산한다.
 
 공개 예시에는 `final_hint` 필드를 넣지 않는다.
 

@@ -133,6 +133,19 @@ class GameState:
             log=list(self.log),
         )
 
+    def with_seen_encounter(self, encounter_id: str) -> GameState:
+        seen_encounters = list(self.seen_encounters)
+        if encounter_id not in seen_encounters:
+            seen_encounters.append(encounter_id)
+        return replace(
+            self,
+            inventory=list(self.inventory),
+            clues=list(self.clues),
+            flags=list(self.flags),
+            seen_encounters=seen_encounters,
+            log=list(self.log),
+        )
+
     def available_move_ids(
         self,
         locations: LocationMap = DEFAULT_LOCATIONS,

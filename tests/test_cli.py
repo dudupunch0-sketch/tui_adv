@@ -178,6 +178,32 @@ def test_cli_tui_smoke_actions_can_print_hidden_reality_hint_ending():
     assert "숫자 합계: 33" in result.stdout
 
 
+def test_cli_can_save_new_smoke_state_and_load_it_for_later_actions(tmp_path):
+    save_path = tmp_path / "office-save.json"
+
+    saved = run_module(
+        "--new",
+        "--seed",
+        "123",
+        "--action",
+        "choice:1",
+        "--save",
+        str(save_path),
+    )
+
+    assert saved.returncode == 0
+    assert save_path.exists()
+    assert f"저장: {save_path}" in saved.stdout
+
+    loaded = run_module("--load", str(save_path), "--action", "move:dev_office")
+
+    assert loaded.returncode == 0
+    assert "== 턴 1 ==" in loaded.stdout
+    assert "이동 실행: 개발팀 사무실" in loaded.stdout
+    assert "== 턴 2 ==" in loaded.stdout
+    assert "위치: 개발팀 사무실" in loaded.stdout
+
+
 def test_cli_version_prints_package_version():
     result = run_module("--version")
 

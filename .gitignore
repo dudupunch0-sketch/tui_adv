@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Local runtime files
+*.log
+*.tmp
+*.bak
+
+# Save games / generated local state
+saves/
+*.save.json
+
+# Reality-link / ARG private data
+# These may contain actual office locations or physical treasure/note placement.
+private/
+*.local.md
+*.local.yaml
+*.local.yml
+*.local.json
+src/tui_adv/data/secrets.local.*
+
+# Editor / OS
+.DS_Store
+.vscode/
+.idea/

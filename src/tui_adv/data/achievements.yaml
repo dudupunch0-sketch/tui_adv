@@ -24,3 +24,9 @@ achievements:
     hidden: true
     conditions:
       required_flags: [isolation_protocol_revealed]
+
+  - id: network_admin_claimed
+    name: 사내망 관리자
+    description: 서버실 내부 콘솔에서 격리 규칙을 덮어썼다.
+    conditions:
+      required_flags: [network_admin_claimed]

@@ -136,6 +136,33 @@ def test_cli_reality_hint_route_prints_copier_ip_digit_sum():
     assert "숫자 합계:" in result.stdout
 
 
+def test_cli_escape_route_is_playable_without_manual_flag_injection():
+    result = run_module(
+        "--new",
+        "--seed",
+        "123",
+        "--action",
+        "choice:1",
+        "--action",
+        "move:dev_office",
+        "--action",
+        "move:hallway",
+        "--action",
+        "move:emergency_stairs",
+        "--action",
+        "choice:1",
+        "--action",
+        "choice:1",
+    )
+
+    assert result.returncode == 0
+    assert "인카운터: 비상계단 문틈 표식" in result.stdout
+    assert "선택 실행: 계단문 틈의 숨소리와 층수 표시를 맞춘다" in result.stdout
+    assert "위치: 비상계단" in result.stdout
+    assert "선택 실행: 반복되는 층수의 비밀을 풀고 문을 통과한다" in result.stdout
+    assert "엔딩: 퇴근 성공" in result.stdout
+
+
 def test_cli_escape_ending_smoke_prints_first_ending():
     result = run_module(
         "--new",

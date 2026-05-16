@@ -56,6 +56,9 @@ def test_default_achievements_include_reality_and_conquest_route_rewards():
     assert DEFAULT_ACHIEVEMENTS[
         "broadcast_channel_captured"
     ].conditions.required_flags == ("server_room_broadcast_controlled",)
+    assert DEFAULT_ACHIEVEMENTS[
+        "network_admin_claimed"
+    ].conditions.required_flags == ("network_admin_claimed",)
 
 
 def test_format_unlocked_achievements_renders_korean_unlock_lines():

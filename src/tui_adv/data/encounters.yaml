@@ -147,3 +147,34 @@ encounters:
         outcome:
           sanity: 1
           log: 무전기 소리가 잠깐 당신의 목소리를 흉내 내다가 멈췄다.
+      - id: follow_cold_air
+        label: 문틈의 찬 공기를 따라 안쪽으로 들어간다
+        cost:
+          sanity: 2
+        outcome:
+          destination_id: server_room
+          add_flags: [server_room_entered]
+          log: 서버실 문은 열리지 않았지만, 당신은 이미 문 안쪽에 서 있었다.
+
+  - id: server_room_console
+    title: 관리자 콘솔
+    body: 랙 사이 KVM 콘솔에는 관리자 세션이 잠들지 않은 채 남아 있다.
+    conditions:
+      locations: [server_room]
+    choices:
+      - id: assume_admin_console
+        label: 관리자 콘솔에 격리 규칙을 덮어쓴다
+        cost:
+          battery: 10
+          sanity: 6
+        outcome:
+          add_flags: [network_admin_claimed, internal_network_access]
+          add_clues: [admin_console_signature]
+          log: 관리자 콘솔의 격리 규칙을 당신의 퇴근 규칙으로 덮어썼다.
+      - id: pull_network_cable
+        label: 가장 두꺼운 케이블을 뽑는다
+        outcome:
+          resources:
+            sanity: -8
+          add_flags: [network_backlash]
+          log: 케이블을 뽑자 서버실 전체가 당신의 심장 박동으로 재부팅했다.

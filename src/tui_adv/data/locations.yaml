@@ -44,9 +44,16 @@ locations:
   - id: server_room_front
     name: 서버실 앞
     description: 닫힌 문틈에서 차가운 바람이 나온다.
-    connections: [hallway]
+    connections: [hallway, server_room]
     tags: [restricted, network, truth, conquest]
     danger: 2
+
+  - id: server_room
+    name: 서버실 내부
+    description: 랙 LED가 별자리처럼 깜빡이고, 냉기는 일정한 박자로 숨을 쉰다.
+    connections: [server_room_front]
+    tags: [restricted, network, conquest, cold]
+    danger: 3
 
   - id: emergency_stairs
     name: 비상계단

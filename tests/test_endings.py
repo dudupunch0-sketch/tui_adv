@@ -59,6 +59,22 @@ def test_hidden_reality_hint_ending_includes_public_secret_summary(tmp_path):
     assert "로컬 비공개 파일" in summary
 
 
+def test_server_room_console_triggers_network_admin_conquest_ending():
+    state = GameState.new(seed=1, location_id="server_room_front")
+    radio = DEFAULT_ENCOUNTERS["server_room_radio"]
+    entered = radio.resolve_choice("follow_cold_air", state)
+    console = DEFAULT_ENCOUNTERS["server_room_console"]
+
+    conquered = console.resolve_choice("assume_admin_console", entered)
+    ending = evaluate_ending(conquered)
+
+    assert conquered.location_id == "server_room"
+    assert ending is not None
+    assert ending.id == "conquest_network_admin"
+    assert ending.kind == "conquest"
+    assert "관리자" in format_ending_summary(ending)
+
+
 def test_resource_failure_takes_priority_over_escape_flags():
     state = replace(
         GameState.new(seed=1, location_id="emergency_stairs").with_player(

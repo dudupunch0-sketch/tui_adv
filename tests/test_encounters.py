@@ -1,3 +1,5 @@
+from dataclasses import replace
+
 import pytest
 
 from tui_adv.game.encounters import (
@@ -109,6 +111,38 @@ def test_choice_outcome_can_update_inventory_flags_danger_and_location():
     assert next_state.danger == 1
     assert next_state.turn == 1
     assert next_state.log == ["사원증을 챙기고 자리에서 벗어났다."]
+
+
+def test_pantry_coffee_machine_restores_focus_and_unlocks_reality_hint():
+    encounter = DEFAULT_ENCOUNTERS["pantry_coffee_machine"]
+    state = GameState.new(seed=1, location_id="pantry").with_player(
+        PlayerState(sanity=50, hunger=30, thirst=20)
+    )
+
+    assert [choice.id for choice in encounter.available_choices(state)] == [
+        "brew_coffee",
+        "inspect_water_tank",
+    ]
+
+    caffeinated = encounter.resolve_choice("brew_coffee", state)
+
+    assert caffeinated.player.sanity == 54
+    assert caffeinated.player.hunger == 28
+    assert caffeinated.player.thirst == 27
+    assert caffeinated.log == ["커피는 아직 따뜻했고, 컵 바닥에는 작은 검은 점이 남았다."]
+
+    hidden_state = replace(state, flags=["printer_secret_started"])
+    assert [choice.id for choice in encounter.available_choices(hidden_state)] == [
+        "brew_coffee",
+        "inspect_water_tank",
+        "look_behind_machine",
+    ]
+
+    revealed = encounter.resolve_choice("look_behind_machine", hidden_state)
+
+    assert revealed.clues == ["reality_link_hint_2"]
+    assert revealed.flags == ["printer_secret_started", "coffee_machine_back_panel"]
+    assert revealed.log == ["커피머신 뒤쪽 패널에 복합기 출력물과 같은 표식이 있었다."]
 
 
 def test_eligible_encounters_filter_current_state_and_seen_history():

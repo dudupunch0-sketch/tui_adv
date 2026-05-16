@@ -8,7 +8,6 @@ from typing import Any, Iterable
 
 import yaml
 
-from tui_adv.game.encounters import AbilityCheck, Choice, Conditions, Encounter, Outcome
 from tui_adv.game.locations import DEFAULT_LOCATIONS
 
 DATA_DIR = files("tui_adv.data")
@@ -99,6 +98,8 @@ def validate_public_content() -> list[str]:
 
 
 def _encounter_from_data(entry: dict[str, Any]) -> Encounter:
+    from tui_adv.game.encounters import Encounter
+
     return Encounter(
         id=entry["id"],
         title=entry["title"],
@@ -111,6 +112,8 @@ def _encounter_from_data(entry: dict[str, Any]) -> Encounter:
 
 
 def _choice_from_data(entry: dict[str, Any]) -> Choice:
+    from tui_adv.game.encounters import Choice
+
     check_data = entry.get("check")
     return Choice(
         id=entry["id"],
@@ -123,6 +126,8 @@ def _choice_from_data(entry: dict[str, Any]) -> Choice:
 
 
 def _check_from_data(entry: dict[str, Any]) -> AbilityCheck:
+    from tui_adv.game.encounters import AbilityCheck
+
     return AbilityCheck(
         ability=entry["ability"],
         difficulty=int(entry["difficulty"]),
@@ -132,6 +137,8 @@ def _check_from_data(entry: dict[str, Any]) -> AbilityCheck:
 
 
 def _conditions_from_data(entry: dict[str, Any]) -> Conditions:
+    from tui_adv.game.encounters import Conditions
+
     return Conditions(
         locations=_tuple(entry.get("locations", ())),
         disaster_types=_tuple(entry.get("disaster_types", ())),
@@ -145,6 +152,8 @@ def _conditions_from_data(entry: dict[str, Any]) -> Conditions:
 
 
 def _outcome_from_data(entry: dict[str, Any]) -> Outcome:
+    from tui_adv.game.encounters import Outcome
+
     resources = dict(entry.get("resources", {}))
     for resource_name in _RESOURCE_NAMES:
         if resource_name in entry:

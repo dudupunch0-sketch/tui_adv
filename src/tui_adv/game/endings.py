@@ -37,32 +37,15 @@ _FAILURE_ENDINGS: dict[str, Ending] = {
     ),
 }
 
-DEFAULT_ENDINGS: dict[str, Ending] = {
-    "game_over_spatial_collapse": Ending(
-        id="game_over_spatial_collapse",
-        name="게임오버: 계단이 접혔다",
-        kind="failure",
-        priority=100,
-        conditions=Conditions(required_flags=("spatial_exit_failed",)),
-        text="공간 왜곡의 규칙을 틀렸다. 계단은 아래가 아니라 당신 안쪽으로 접혔다.",
-    ),
-    "escape_commute": Ending(
-        id="escape_commute",
-        name="퇴근 성공",
-        kind="escape",
-        priority=60,
-        conditions=Conditions(
-            locations=("emergency_stairs",),
-            required_flags=("escape_route_completed",),
-            min_resources={"health": 1, "sanity": 1},
-        ),
-        text=(
-            "공간 왜곡 속에서 반복되는 층수를 맞춰 풀었다. "
-            "비상문 너머의 평범한 밤공기가 당신을 퇴근시켰다."
-        ),
-    ),
-}
+def load_runtime_default_endings() -> dict[str, Ending]:
+    """Load runtime default route endings from packaged YAML content."""
 
+    from tui_adv.game.content import load_default_endings
+
+    return load_default_endings()
+
+
+DEFAULT_ENDINGS: dict[str, Ending] = load_runtime_default_endings()
 
 def evaluate_ending(
     state: GameState,

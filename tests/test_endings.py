@@ -38,6 +38,27 @@ def test_spatial_exit_puzzle_failure_triggers_game_over():
     assert "게임오버" in format_ending_summary(ending)
 
 
+def test_hidden_reality_hint_ending_includes_public_secret_summary(tmp_path):
+    state = replace(
+        GameState.new(seed=1, location_id="pantry"),
+        inventory=["crumpled_printout"],
+        flags=["printer_secret_started", "pantry_hint_seen"],
+    )
+
+    ending = evaluate_ending(state)
+
+    assert ending is not None
+    assert ending.id == "hidden_reality_hint_001"
+    assert ending.kind == "hidden"
+    assert ending.local_hint_id == "real_note_001"
+    summary = format_ending_summary(ending, local_hint_path=tmp_path / "missing.yaml")
+    assert "현실 연결 힌트: 첫 번째 현실 연결 힌트" in summary
+    assert "복합기에 붙은 IP 주소 표의 숫자들을 모두 더한다." in summary
+    assert "IP 주소: 192.168.0.42" in summary
+    assert "숫자 합계: 33" in summary
+    assert "로컬 비공개 파일" in summary
+
+
 def test_resource_failure_takes_priority_over_escape_flags():
     state = replace(
         GameState.new(seed=1, location_id="emergency_stairs").with_player(

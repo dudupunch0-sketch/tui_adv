@@ -21,6 +21,21 @@ endings:
       공간 왜곡 속에서 반복되는 층수를 맞춰 풀었다.
       비상문 너머의 평범한 밤공기가 당신을 퇴근시켰다.
 
+  - id: hidden_reality_hint_001
+    name: 첫 번째 현실 연결 힌트
+    kind: hidden
+    priority: 80
+    conditions:
+      required_items: [crumpled_printout]
+      required_flags: [printer_secret_started, pantry_hint_seen]
+      min_resources:
+        health: 1
+        sanity: 1
+    local_hint_id: real_note_001
+    text: >
+      출력물의 마지막 문장은 더 이상 게임 속 장소만을 말하지 않았다.
+      커피 냄새와 복합기 표식이 하나의 계산으로 이어졌다.
+
   - id: conquest_broadcast_channel
     name: 사내 방송 장악
     kind: conquest

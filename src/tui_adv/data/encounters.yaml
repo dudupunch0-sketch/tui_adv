@@ -104,7 +104,7 @@ encounters:
           required_flags: [printer_secret_started]
         outcome:
           add_clues: [reality_link_hint_2]
-          add_flags: [coffee_machine_back_panel]
+          add_flags: [coffee_machine_back_panel, pantry_hint_seen]
           log: 커피머신 뒤쪽 패널에 복합기 출력물과 같은 표식이 있었다.
 
   - id: spatial_exit_puzzle

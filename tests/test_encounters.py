@@ -141,7 +141,11 @@ def test_pantry_coffee_machine_restores_focus_and_unlocks_reality_hint():
     revealed = encounter.resolve_choice("look_behind_machine", hidden_state)
 
     assert revealed.clues == ["reality_link_hint_2"]
-    assert revealed.flags == ["printer_secret_started", "coffee_machine_back_panel"]
+    assert revealed.flags == [
+        "printer_secret_started",
+        "coffee_machine_back_panel",
+        "pantry_hint_seen",
+    ]
     assert revealed.log == ["커피머신 뒤쪽 패널에 복합기 출력물과 같은 표식이 있었다."]
 
 

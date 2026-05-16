@@ -80,6 +80,31 @@ def test_cli_new_game_actions_execute_multi_turn_route_and_print_ending():
     assert "엔딩: 사내 방송 장악" in result.stdout
 
 
+def test_cli_reality_hint_route_prints_copier_ip_digit_sum():
+    result = run_module(
+        "--new",
+        "--seed",
+        "123",
+        "--location",
+        "printer_area",
+        "--action",
+        "choice:2",
+        "--action",
+        "move:pantry",
+        "--action",
+        "choice:3",
+    )
+
+    assert result.returncode == 0
+    assert "선택 실행: 출력물을 챙긴다" in result.stdout
+    assert "선택 실행: 커피머신 뒤를 본다" in result.stdout
+    assert "엔딩: 첫 번째 현실 연결 힌트" in result.stdout
+    assert "현실 연결 힌트: 첫 번째 현실 연결 힌트" in result.stdout
+    assert "복합기에 붙은 IP 주소 표의 숫자들을 모두 더한다." in result.stdout
+    assert "IP 주소:" in result.stdout
+    assert "숫자 합계:" in result.stdout
+
+
 def test_cli_escape_ending_smoke_prints_first_ending():
     result = run_module(
         "--new",

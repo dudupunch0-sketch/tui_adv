@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Mapping
+from pathlib import Path
+from typing import Any, Mapping
 
 from tui_adv.game.encounters import Conditions
 from tui_adv.game.state import GameState
@@ -67,8 +68,41 @@ def evaluate_ending(
     return max(candidates, key=lambda ending: ending.priority)
 
 
-def format_ending_summary(ending: Ending) -> str:
+def format_ending_summary(
+    ending: Ending,
+    *,
+    local_hint_path: Path | Any | None = None,
+) -> str:
     """Render an ending in a CLI/TUI-friendly Korean block."""
 
     label = "게임오버" if ending.kind == "failure" else "엔딩"
-    return "\n".join([f"{label}: {ending.name}", ending.text])
+    lines = [f"{label}: {ending.name}", ending.text]
+    if ending.local_hint_id:
+        lines.extend(["", _format_physical_hint_reveal(ending.local_hint_id, local_hint_path)])
+    return "\n".join(lines)
+
+
+def _format_physical_hint_reveal(
+    local_hint_id: str,
+    local_hint_path: Path | Any | None,
+) -> str:
+    from tui_adv.game.secrets import reveal_physical_hint
+
+    reveal = reveal_physical_hint(local_hint_id, local_path=local_hint_path)
+    lines = [
+        f"현실 연결 힌트: {reveal.title}",
+        reveal.reward_text,
+        "공개 단서:",
+    ]
+    lines.extend(f"- {step}" for step in reveal.public_hint_steps)
+    if reveal.puzzle_prompt:
+        lines.append(f"퍼즐: {reveal.puzzle_prompt}")
+    if reveal.puzzle_ip_address:
+        lines.append(f"IP 주소: {reveal.puzzle_ip_address}")
+    if reveal.puzzle_answer is not None:
+        lines.append(f"숫자 합계: {reveal.puzzle_answer}")
+    if reveal.final_hint_available:
+        lines.append(f"최종 힌트: {reveal.final_hint}")
+    else:
+        lines.append("최종 힌트: 로컬 비공개 파일이 있을 때만 표시된다.")
+    return "\n".join(lines)

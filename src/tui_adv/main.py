@@ -7,6 +7,12 @@ from tui_adv import __version__
 from tui_adv.game.encounters import Choice, select_encounter
 from tui_adv.game.endings import evaluate_ending, format_ending_summary
 from tui_adv.game.locations import DEFAULT_LOCATIONS
+from tui_adv.game.loop import (
+    GameTurn,
+    TurnActionResult,
+    build_game_turn,
+    resolve_turn_action_result,
+)
 from tui_adv.game.state import GameState
 from tui_adv.tui.app import build_tui_turn, render_tui_layout_snapshot, run_textual_tui
 from tui_adv.tui.encounter import format_choice_resolution, format_encounter_turn
@@ -24,6 +30,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--choice",
         help="execute an available choice by 1-based index during --new smoke",
+    )
+    parser.add_argument(
+        "--action",
+        action="append",
+        default=[],
+        help="execute a scripted multi-turn action during --new smoke, e.g. choice:1 or move:dev_office; may repeat",
     )
     parser.add_argument(
         "--location",
@@ -78,6 +90,51 @@ def render_new_game_smoke(state: GameState, choice_argument: str | None = None) 
     return "\n".join(lines)
 
 
+def render_scripted_game_smoke(state: GameState, action_arguments: list[str]) -> str:
+    turn = build_game_turn(state)
+    lines = ["escape from the office", "", _format_game_turn(turn)]
+    for action_argument in action_arguments:
+        result = resolve_turn_action_result(turn, action_argument)
+        lines.extend(["", _format_turn_action_result(result), "", _format_game_turn(result.turn)])
+        turn = result.turn
+        if turn.ending is not None:
+            break
+    return "\n".join(lines)
+
+
+def _format_game_turn(turn: GameTurn) -> str:
+    location_info = DEFAULT_LOCATIONS.get(turn.state.location_id)
+    location = location_info.name if location_info else turn.state.location_id
+    lines = [
+        f"== 턴 {turn.state.turn} ==",
+        f"위치: {location}",
+        f"재난: {turn.state.disaster_type}",
+        format_local_status(turn.state.player),
+    ]
+    if turn.ending is not None:
+        lines.extend(["", format_ending_summary(turn.ending)])
+    elif turn.encounter is not None:
+        lines.extend(["", format_encounter_turn(turn.encounter, turn.state)])
+    elif turn.available_actions:
+        lines.extend(["", "이동:"])
+        for action in turn.available_actions:
+            lines.append(f"- {action.id} {action.label}")
+    else:
+        lines.extend(["", "가능한 행동 없음"])
+    return "\n".join(lines)
+
+
+def _format_turn_action_result(result: TurnActionResult) -> str:
+    if result.action.kind == "choice":
+        lines = [f"선택 실행: {result.action.label}"]
+        if result.choice_resolution is not None:
+            lines.append(format_choice_resolution(result.choice_resolution))
+        return "\n".join(lines)
+    if result.action.kind == "move":
+        return f"이동 실행: {result.action.label}"
+    return f"행동 실행: {result.action.label}"
+
+
 def _choice_from_argument(choices: tuple[Choice, ...], argument: str) -> Choice:
     if argument.isdecimal():
         index = int(argument) - 1
@@ -118,18 +175,25 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.new:
+        if args.choice and args.action:
+            parser.error("--choice와 --action은 함께 사용할 수 없다")
         state = replace(
             GameState.new(seed=args.seed, location_id=args.location),
             flags=list(args.flag),
         )
         try:
-            print(render_new_game_smoke(state, choice_argument=args.choice))
+            if args.action:
+                print(render_scripted_game_smoke(state, args.action))
+            else:
+                print(render_new_game_smoke(state, choice_argument=args.choice))
         except ValueError as exc:
             parser.error(str(exc))
         return 0
 
     if args.choice:
         parser.error("--choice requires --new")
+    if args.action:
+        parser.error("--action requires --new")
 
     parser.print_help()
     return 0

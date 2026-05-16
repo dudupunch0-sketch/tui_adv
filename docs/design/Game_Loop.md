@@ -107,6 +107,7 @@
 런타임 기본 인카운터와 루트 엔딩은 `src/tui_adv/data/encounters.yaml`, `src/tui_adv/data/endings.yaml`에서 로드한다.
 CLI smoke는 새 게임 상태에서 현재 위치 인카운터를 선택해 제목, 본문, 선택지, 비용/판정 정보를 함께 출력한다.
 `--choice <번호>`를 함께 주면 현재 표시된 선택지를 1부터 시작하는 번호로 실행하고, 결과 로그/자원 변화/다음 턴 상태를 출력한다.
+`--action choice:<번호>`와 `--action move:<location_id>`를 반복해서 주면 이동, 인카운터, 엔딩 판정을 이어 붙인 다중 턴 스크립트 smoke를 실행한다.
 `--location <id>`와 반복 가능한 `--flag <id>`를 함께 주면 탈출/실패 같은 결정적 smoke 상태를 만들 수 있다.
 선택지 실행 결과는 판정 메타데이터, 새 로그, 자원 변화를 포맷터가 렌더링한다.
 엔딩 판정은 턴 종료 후 실행하며, 1차 구현은 공간 왜곡 퍼즐 성공 시 `escape_commute`, 잘못된 계단 선택 시 `game_over_spatial_collapse`, 서버실 앞 무전기 장악 시 `conquest_broadcast_channel`을 출력한다.

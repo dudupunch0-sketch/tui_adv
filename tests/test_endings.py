@@ -22,6 +22,21 @@ def test_spatial_exit_puzzle_success_triggers_first_escape_ending():
     assert "퇴근" in format_ending_summary(ending)
 
 
+def test_emergency_exit_sign_opens_playable_escape_route():
+    state = GameState.new(seed=1, location_id="emergency_stairs")
+    encounter = DEFAULT_ENCOUNTERS["emergency_stairs_exit_sign"]
+
+    routed = encounter.resolve_choice("align_breathing_floor", state)
+    puzzle = DEFAULT_ENCOUNTERS["spatial_exit_puzzle"]
+    escaped = puzzle.resolve_choice("solve_distorted_floor", routed)
+    ending = evaluate_ending(escaped)
+
+    assert routed.location_id == "emergency_stairs"
+    assert "escape_puzzle_ready" in routed.flags
+    assert ending is not None
+    assert ending.id == "escape_commute"
+
+
 def test_spatial_exit_puzzle_failure_triggers_game_over():
     state = replace(
         GameState.new(seed=1, location_id="emergency_stairs"),

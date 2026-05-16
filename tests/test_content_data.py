@@ -19,6 +19,10 @@ def test_default_encounter_yaml_loads_choice_conditions_and_checks():
     trace_choice = next(
         choice for choice in messenger.choices if choice.id == "trace_packet_delay"
     )
+    exit_sign = encounters["emergency_stairs_exit_sign"]
+    open_route_choice = next(
+        choice for choice in exit_sign.choices if choice.id == "align_breathing_floor"
+    )
 
     assert DATA_DIR.joinpath("encounters.yaml").name == "encounters.yaml"
     assert messenger.title == "퇴사자의 메신저"
@@ -26,6 +30,9 @@ def test_default_encounter_yaml_loads_choice_conditions_and_checks():
     assert trace_choice.conditions.min_abilities == {"interface": 4}
     assert trace_choice.check is not None
     assert trace_choice.check.success.add_flags == ("network_truth_hint",)
+    assert exit_sign.conditions.locations == ("emergency_stairs",)
+    assert open_route_choice.outcome.destination_id is None
+    assert open_route_choice.outcome.add_flags == ("escape_puzzle_ready",)
 
 
 def test_default_endings_yaml_loads_escape_route_conditions():

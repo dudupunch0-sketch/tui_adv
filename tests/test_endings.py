@@ -59,20 +59,26 @@ def test_hidden_reality_hint_ending_includes_public_secret_summary(tmp_path):
     assert "로컬 비공개 파일" in summary
 
 
-def test_server_room_console_triggers_network_admin_conquest_ending():
-    state = GameState.new(seed=1, location_id="server_room_front")
-    radio = DEFAULT_ENCOUNTERS["server_room_radio"]
-    entered = radio.resolve_choice("follow_cold_air", state)
-    console = DEFAULT_ENCOUNTERS["server_room_console"]
+def test_truth_route_reveals_isolation_protocol_ending():
+    state = GameState.new(seed=1, location_id="dev_desk")
+    messenger = DEFAULT_ENCOUNTERS["ex_employee_messenger"]
+    meeting = DEFAULT_ENCOUNTERS["meeting_room_all_hands"]
+    cctv = DEFAULT_ENCOUNTERS["security_room_delayed_cctv"]
 
-    conquered = console.resolve_choice("assume_admin_console", entered)
-    ending = evaluate_ending(conquered)
+    started = messenger.resolve_choice("search_ex_employee", state)
+    in_meeting_room = started.move_to("dev_office").move_to("meeting_room")
+    minutes_saved = meeting.resolve_choice("save_impossible_minutes", in_meeting_room)
+    in_security_room = (
+        minutes_saved.move_to("dev_office").move_to("hallway").move_to("security_room")
+    )
+    revealed = cctv.resolve_choice("replay_delayed_cctv", in_security_room)
 
-    assert conquered.location_id == "server_room"
+    ending = evaluate_ending(revealed)
+
     assert ending is not None
-    assert ending.id == "conquest_network_admin"
-    assert ending.kind == "conquest"
-    assert "관리자" in format_ending_summary(ending)
+    assert ending.id == "truth_isolation_protocol"
+    assert ending.kind == "truth"
+    assert "격리 프로토콜" in format_ending_summary(ending)
 
 
 def test_resource_failure_takes_priority_over_escape_flags():

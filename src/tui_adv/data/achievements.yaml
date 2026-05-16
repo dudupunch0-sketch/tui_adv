@@ -18,8 +18,9 @@ achievements:
     conditions:
       required_flags: [server_room_broadcast_controlled]
 
-  - id: network_admin_claimed
-    name: 사내망 관리자
-    description: 서버실 내부 콘솔에서 격리 규칙을 덮어썼다.
+  - id: truth_protocol_understood
+    name: 격리 프로토콜 독해
+    description: 회의록과 CCTV 지연 프레임에서 격리 프로토콜의 실체를 읽었다.
+    hidden: true
     conditions:
-      required_flags: [network_admin_claimed]
+      required_flags: [isolation_protocol_revealed]

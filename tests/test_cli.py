@@ -155,6 +155,29 @@ def test_cli_tui_smoke_prints_textual_layout_snapshot():
     assert "1. 메시지를 확인한다" in result.stdout
 
 
+def test_cli_tui_smoke_actions_can_print_hidden_reality_hint_ending():
+    result = run_module(
+        "--tui-smoke",
+        "--seed",
+        "123",
+        "--location",
+        "printer_area",
+        "--action",
+        "choice:2",
+        "--action",
+        "move:pantry",
+        "--action",
+        "choice:3",
+    )
+
+    assert result.returncode == 0
+    assert "[엔딩]" in result.stdout
+    assert "엔딩: 첫 번째 현실 연결 힌트" in result.stdout
+    assert "현실 연결 힌트: 첫 번째 현실 연결 힌트" in result.stdout
+    assert "복합기에 붙은 IP 주소 표의 숫자들을 모두 더한다." in result.stdout
+    assert "숫자 합계: 33" in result.stdout
+
+
 def test_cli_version_prints_package_version():
     result = run_module("--version")
 

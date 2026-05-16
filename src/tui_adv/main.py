@@ -160,6 +160,14 @@ def main(argv: list[str] | None = None) -> int:
             location_id=args.location,
             flags=tuple(args.flag),
         )
+        try:
+            for action_argument in args.action:
+                result = resolve_turn_action_result(turn, action_argument)
+                turn = result.turn
+                if turn.ending is not None:
+                    break
+        except ValueError as exc:
+            parser.error(str(exc))
         print(render_tui_layout_snapshot(turn))
         return 0
 

@@ -23,6 +23,7 @@
 - [x] `docs/design/Player_State.md` 생성
 - [x] `docs/design/Game_Loop.md` 생성
 - [x] `docs/design/Map.md` 생성
+- [x] `docs/design/UI_Rules.md` 생성
 - [x] `docs/dev/Architecture.md` 생성
 - [x] `docs/dev/Data_Schema.md` 생성
 - [x] `docs/dev/TUI_Layout.md` 생성
@@ -51,6 +52,8 @@
 - [x] `docs/content/Encounter_List.md` 생성
 - [x] `docs/content/Ending_List.md` 생성
 - [x] `docs/content/Secret_List.md` 생성
+- [x] `docs/content/Horror_Ideas.md` 생성
+- [x] `docs/archive/idea_0515.md` 원본 아이디어 노트 보존
 
 ## Phase 1: 프로젝트 스캐폴딩과 기술 확정
 

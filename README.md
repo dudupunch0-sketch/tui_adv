@@ -28,6 +28,7 @@ TUI 기반 랜덤 인카운터 선택지 생존 게임.
 - `docs/design/Player_State.md`: 플레이어 상태 규칙
 - `docs/design/Game_Loop.md`: 턴/선택/인카운터 루프
 - `docs/design/Map.md`: 1차 맵 설계
+- `docs/design/UI_Rules.md`: 사내 시스템형 TUI, 글리치, 선택지 오염 규칙
 - `docs/dev/Development_Plan.md`: 전체 개발 계획
 - `docs/dev/Checklist.md`: 단계별 체크리스트
 - `docs/content/Location_List.md`: 1차 위치 목록
@@ -35,9 +36,11 @@ TUI 기반 랜덤 인카운터 선택지 생존 게임.
 - `docs/content/Encounter_List.md`: 1차 인카운터 목록
 - `docs/content/Ending_List.md`: 1차 엔딩 목록
 - `docs/content/Secret_List.md`: 공개 가능한 히든 루트/비밀 목록
+- `docs/content/Horror_Ideas.md`: 호러 연출 아이디어 저장소
 - `docs/dev/Architecture.md`: 코드 구조와 모듈 경계
 - `docs/dev/Data_Schema.md`: YAML/JSON 데이터 스키마
 - `docs/dev/TUI_Layout.md`: TUI 화면 설계
+- `docs/archive/idea_0515.md`: 2026-05-15 원본 아이디어 노트
 
 ## 현실 연결 안전 원칙
 
@@ -51,8 +54,8 @@ TUI 기반 랜덤 인카운터 선택지 생존 게임.
 
 ## 다음 작업 후보
 
-1. `docs/content/Location_List.md`
-2. `docs/content/Item_List.md`
-3. `docs/content/Encounter_List.md`
-4. `docs/content/Ending_List.md`
+1. `docs/story/Disaster_Types.md`
+2. `docs/design/Encounters.md`
+3. `docs/design/Choices.md`
+4. `docs/design/Flags.md`
 5. 실제 Python 프로젝트 스캐폴딩

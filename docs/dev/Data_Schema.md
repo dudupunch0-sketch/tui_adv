@@ -225,6 +225,18 @@ encounters:
     description: >
       복합기는 절전 모드다. 그런데 내부에서 롤러가 돌아가는 소리가 난다.
       잠시 뒤, 아무도 요청하지 않은 출력물이 한 장 나온다.
+    presentation:
+      visual_frames:
+        - printer_idle
+        - printer_warmup
+      stream_text: true
+      ambient_messages:
+        - "[printer] 대기열에 없는 작업을 수신했습니다."
+      glitch_rules:
+        - type: text_corruption
+          when:
+            min_danger: 2
+          intensity: low
     choices:
       - id: read_page
         text: 출력물을 읽는다
@@ -270,7 +282,37 @@ encounters:
 | once | no | 한 번만 발생 여부 |
 | conditions | no | 발생 조건 |
 | description | yes | 이벤트 본문 |
+| presentation | no | ASCII 프레임, 스트리밍 텍스트, 글리치 같은 TUI 표현 힌트 |
 | choices | yes | 선택지 목록 |
+
+### presentation
+
+`presentation`은 엔진 결과에 영향을 주지 않는 표현 레이어 데이터다.
+TUI는 이 필드를 사용해 사내 시스템/로그/글리치 감각을 강화할 수 있다.
+1차 구현에서는 모든 필드를 optional로 두고, 미지원 필드는 무시한다.
+
+```yaml
+presentation:
+  visual_frames:
+    - elevator_normal
+    - elevator_shadow_1
+  stream_text: true
+  ambient_messages:
+    - "[NETWORK QUALITY: POOR]"
+  glitch_rules:
+    - type: choice_text_mutation
+      when:
+        max_sanity: 30
+      intensity: low
+```
+
+표현 데이터 원칙:
+
+- `visual_frames`는 ASCII asset id만 참조한다.
+- `stream_text`는 본문을 한 번에 출력하지 않고 순차 출력할지 나타낸다.
+- `ambient_messages`는 사내망/시스템 로그처럼 보이는 주변 문구다.
+- `glitch_rules`는 `docs/design/UI_Rules.md`의 허용 범위 안에서만 동작해야 한다.
+- 입력 왜곡 같은 강한 개입은 기본 데이터 스키마에 넣지 않고, 별도 scripted encounter로 분리한다.
 
 ## Choice
 

@@ -35,6 +35,7 @@ docs/
     Choices.md                      # 선택지 비용, 조건, 성공/실패 규칙
     Items.md                        # 아이템 설계 규칙
     Flags.md                        # 플래그, 단서, 히든 루트 조건
+    UI_Rules.md                     # 사내 시스템형 TUI, 글리치, 선택지 오염 규칙
     Balance.md                      # 난이도와 자원 밸런스 기준
 
   content/
@@ -43,6 +44,7 @@ docs/
     Location_List.md                # 실제 위치 목록
     Ending_List.md                  # 실제 엔딩 목록
     Secret_List.md                  # 게임 내 비밀 목록. 실제 현실 위치 제외
+    Horror_Ideas.md                 # 호러 연출 아이디어 저장소
 
   dev/
     Development_Plan.md             # 전체 개발 계획
@@ -53,6 +55,9 @@ docs/
     Save_Load.md                    # 저장/불러오기 설계
     Testing.md                      # 테스트 전략과 검증 명령
     Roadmap.md                      # 마일스톤 단위 로드맵
+
+  archive/
+    idea_0515.md                    # 2026-05-15 원본 아이디어 노트
 
 private/
   Real_Office_Secrets.local.md      # 실제 사무실 위치. .gitignore로 커밋 차단
@@ -76,16 +81,19 @@ private/
 - `docs/design/Player_State.md`
 - `docs/design/Game_Loop.md`
 - `docs/design/Map.md`
+- `docs/design/UI_Rules.md`
 - `docs/content/Location_List.md`
 - `docs/content/Item_List.md`
 - `docs/content/Encounter_List.md`
 - `docs/content/Ending_List.md`
 - `docs/content/Secret_List.md`
+- `docs/content/Horror_Ideas.md`
 - `docs/dev/Architecture.md`
 - `docs/dev/Data_Schema.md`
 - `docs/dev/TUI_Layout.md`
 - `docs/dev/Development_Plan.md`
 - `docs/dev/Checklist.md`
+- `docs/archive/idea_0515.md`
 
 ## 다음에 만들 문서 우선순위
 

@@ -20,3 +20,16 @@ endings:
     text: >
       공간 왜곡 속에서 반복되는 층수를 맞춰 풀었다.
       비상문 너머의 평범한 밤공기가 당신을 퇴근시켰다.
+
+  - id: conquest_broadcast_channel
+    name: 사내 방송 장악
+    kind: conquest
+    priority: 50
+    conditions:
+      required_flags: [server_room_broadcast_controlled]
+      min_resources:
+        health: 1
+        sanity: 1
+    text: >
+      당신은 제한된 사내 방송 채널을 붙잡았다.
+      이제 회사는 더 이상 알 수 없는 목소리만으로 명령하지 못한다.

@@ -4,6 +4,9 @@ from tui_adv.game.content import (
     load_default_endings,
     validate_public_content,
 )
+from tui_adv.game.encounters import DEFAULT_ENCOUNTERS, select_encounter
+from tui_adv.game.endings import DEFAULT_ENDINGS, evaluate_ending
+from tui_adv.game.state import GameState
 
 
 def test_default_encounter_yaml_loads_choice_conditions_and_checks():
@@ -34,3 +37,30 @@ def test_default_endings_yaml_loads_escape_route_conditions():
 
 def test_public_yaml_content_references_are_valid_and_private_safe():
     assert validate_public_content() == []
+
+
+def test_runtime_default_encounters_are_loaded_from_yaml_content():
+    encounters = load_default_encounters()
+
+    assert "server_room_radio" in encounters
+    assert "server_room_radio" in DEFAULT_ENCOUNTERS
+    state = GameState.new(seed=123, location_id="server_room_front")
+
+    selected = select_encounter(state)
+
+    assert selected is not None
+    assert selected.id == "server_room_radio"
+
+
+def test_runtime_default_endings_are_loaded_from_yaml_content():
+    endings = load_default_endings()
+
+    assert "conquest_broadcast_channel" in endings
+    assert "conquest_broadcast_channel" in DEFAULT_ENDINGS
+    state = GameState.new(seed=123, location_id="server_room_front")
+    state.flags.append("server_room_broadcast_controlled")
+
+    ending = evaluate_ending(state)
+
+    assert ending is not None
+    assert ending.id == "conquest_broadcast_channel"

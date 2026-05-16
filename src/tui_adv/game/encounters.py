@@ -24,6 +24,7 @@ class Conditions:
     locations: tuple[str, ...] = ()
     disaster_types: tuple[str, ...] = ()
     required_items: tuple[str, ...] = ()
+    required_clues: tuple[str, ...] = ()
     required_flags: tuple[str, ...] = ()
     forbidden_flags: tuple[str, ...] = ()
     min_resources: Mapping[str, int] = field(default_factory=dict)
@@ -39,6 +40,9 @@ class Conditions:
         for item_id in self.required_items:
             if item_id not in state.inventory:
                 reasons.append(f"missing_item:{item_id}")
+        for clue_id in self.required_clues:
+            if clue_id not in state.clues:
+                reasons.append(f"missing_clue:{clue_id}")
         for flag_id in self.required_flags:
             if flag_id not in state.flags:
                 reasons.append(f"missing_flag:{flag_id}")
@@ -217,6 +221,7 @@ class Choice:
             clues=clues,
             flags=flags,
             seen_encounters=seen_encounters,
+            unlocked_achievements=list(state.unlocked_achievements),
             log=log,
         )
         return ChoiceResolution(

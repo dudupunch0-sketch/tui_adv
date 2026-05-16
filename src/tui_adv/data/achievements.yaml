@@ -1,0 +1,19 @@
+achievements:
+  - id: first_signal_received
+    name: 첫 신호 확인
+    description: 퇴사자의 첫 메시지를 확인했다.
+    conditions:
+      required_clues: [ex_employee_contacted]
+
+  - id: reality_link_discovered
+    name: 현실과 접속한 사람
+    description: 게임 속 단서가 현실 사무실의 단서와 이어졌다.
+    hidden: true
+    conditions:
+      required_flags: [pantry_hint_seen]
+
+  - id: broadcast_channel_captured
+    name: 사내 방송 장악자
+    description: 제한된 사내 방송 채널을 붙잡았다.
+    conditions:
+      required_flags: [server_room_broadcast_controlled]

@@ -4,6 +4,11 @@ import argparse
 from dataclasses import replace
 
 from tui_adv import __version__
+from tui_adv.game.achievements import (
+    format_achievement_summary,
+    format_unlocked_achievements,
+    unlock_new_achievements,
+)
 from tui_adv.game.encounters import Choice, select_encounter
 from tui_adv.game.endings import evaluate_ending, format_ending_summary
 from tui_adv.game.locations import DEFAULT_LOCATIONS
@@ -86,6 +91,8 @@ def render_new_game_smoke_result(
     if choice_argument is not None:
         choice = _choice_from_argument(encounter.available_choices(state), choice_argument)
         resolution = encounter.resolve_choice_result(choice.id, state)
+        unlock_result = unlock_new_achievements(resolution.state)
+        resolution = replace(resolution, state=unlock_result.state)
         final_state = resolution.state
         lines.extend(
             [
@@ -97,6 +104,9 @@ def render_new_game_smoke_result(
                 format_local_status(resolution.state.player),
             ]
         )
+        achievement_text = format_unlocked_achievements(unlock_result.unlocked)
+        if achievement_text:
+            lines.extend(["", achievement_text])
         ending = evaluate_ending(resolution.state)
         if ending is not None:
             lines.extend(["", format_ending_summary(ending)])
@@ -139,6 +149,9 @@ def _format_game_turn(turn: GameTurn) -> str:
         f"재난: {turn.state.disaster_type}",
         format_local_status(turn.state.player),
     ]
+    achievement_summary = format_achievement_summary(turn.state)
+    if achievement_summary:
+        lines.extend(["", achievement_summary])
     if turn.ending is not None:
         lines.extend(["", format_ending_summary(turn.ending)])
     elif turn.encounter is not None:
@@ -157,10 +170,15 @@ def _format_turn_action_result(result: TurnActionResult) -> str:
         lines = [f"선택 실행: {result.action.label}"]
         if result.choice_resolution is not None:
             lines.append(format_choice_resolution(result.choice_resolution))
-        return "\n".join(lines)
-    if result.action.kind == "move":
-        return f"이동 실행: {result.action.label}"
-    return f"행동 실행: {result.action.label}"
+    elif result.action.kind == "move":
+        lines = [f"이동 실행: {result.action.label}"]
+    else:
+        lines = [f"행동 실행: {result.action.label}"]
+
+    achievement_text = format_unlocked_achievements(result.unlocked_achievements)
+    if achievement_text:
+        lines.extend(["", achievement_text])
+    return "\n".join(lines)
 
 
 def _choice_from_argument(choices: tuple[Choice, ...], argument: str) -> Choice:

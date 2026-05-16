@@ -136,6 +136,7 @@ class GameState:
     clues: list[str] = field(default_factory=list)
     flags: list[str] = field(default_factory=list)
     seen_encounters: list[str] = field(default_factory=list)
+    unlocked_achievements: list[str] = field(default_factory=list)
     log: list[str] = field(default_factory=list)
 
     @classmethod
@@ -166,6 +167,7 @@ class GameState:
             clues=list(self.clues),
             flags=list(self.flags),
             seen_encounters=list(self.seen_encounters),
+            unlocked_achievements=list(self.unlocked_achievements),
             log=list(self.log),
         )
 
@@ -179,6 +181,7 @@ class GameState:
             clues=list(self.clues),
             flags=list(self.flags),
             seen_encounters=seen_encounters,
+            unlocked_achievements=list(self.unlocked_achievements),
             log=list(self.log),
         )
 
@@ -205,6 +208,7 @@ class GameState:
             clues=list(self.clues),
             flags=list(self.flags),
             seen_encounters=list(self.seen_encounters),
+            unlocked_achievements=list(self.unlocked_achievements),
             log=[*self.log, f"{destination.name}로 이동했다."],
         )
         return moved.advance_turn()
@@ -220,5 +224,6 @@ class GameState:
             clues=list(self.clues),
             flags=list(self.flags),
             seen_encounters=list(self.seen_encounters),
+            unlocked_achievements=list(self.unlocked_achievements),
             log=list(self.log),
         )

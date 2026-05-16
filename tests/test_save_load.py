@@ -24,6 +24,7 @@ def test_save_game_state_round_trips_full_state(tmp_path):
         clues=["printer_ip_digits"],
         flags=["printer_secret_started", "pantry_hint_seen"],
         seen_encounters=["printer_ip_label", "pantry_reality_hint"],
+        unlocked_achievements=["first_signal_received", "reality_link_discovered"],
         log=["따뜻한 출력물을 접어 주머니에 넣었다.", "탕비실로 이동했다."],
     )
     save_path = tmp_path / "office-save.json"

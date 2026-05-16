@@ -6,8 +6,25 @@ TUI 기반 랜덤 인카운터 선택지 생존 게임.
 
 ## 현재 단계
 
-현재는 구현 전 기획/설계 문서화 단계다.
-코드는 아직 작성하지 않았고, 게임 구조와 안전한 현실 연결 원칙을 먼저 정리하고 있다.
+현재는 초기 Python 프로젝트 스캐폴딩 단계다.
+게임 구조와 안전한 현실 연결 원칙을 문서화했고, 순수 게임 상태 모델과 CLI smoke entry point를 추가했다.
+
+## 실행/테스트
+
+개발 중에는 설치 없이 다음처럼 실행할 수 있다.
+
+```bash
+PYTHONPATH=src python -m tui_adv --new --seed 123
+PYTHONPATH=src python -m tui_adv --version
+```
+
+테스트:
+
+```bash
+python -m pytest tests -q
+```
+
+패키지 설치 후에는 `tui-adv` console script를 사용할 수 있다.
 
 ## 핵심 설정
 

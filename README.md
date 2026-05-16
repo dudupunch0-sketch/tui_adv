@@ -6,8 +6,8 @@ TUI 기반 랜덤 인카운터 선택지 생존 게임.
 
 ## 현재 단계
 
-현재는 Phase 7 콘텐츠 런타임 전환의 첫 골격까지 구현된 단계다.
-게임 구조와 안전한 현실 연결 원칙을 문서화했고, 순수 게임 상태 모델, 자원 임계치/실패 판정, 1차 사무실 위치 모델, 인접 위치 이동, 인카운터/선택지 조건·비용·결과 적용, 능력치 기반 선택지, 2d6 성공/실패 분기, 현재 상태 기반 인카운터 선택, 공간 왜곡 탈출/실패 엔딩 판정, YAML 공개 콘텐츠 로더/검증, YAML 기반 런타임 기본 위치/인카운터/엔딩, 로컬 비공개 현실 힌트 로더, CLI 한 턴 실행, Textual 레이아웃 smoke를 추가했다.
+현재는 Phase 7 콘텐츠 런타임 전환의 첫 골격 이후, 스크립트 기반 다중 턴 루프까지 구현된 단계다.
+게임 구조와 안전한 현실 연결 원칙을 문서화했고, 순수 게임 상태 모델, 자원 임계치/실패 판정, 1차 사무실 위치 모델, 인접 위치 이동, 인카운터/선택지 조건·비용·결과 적용, 능력치 기반 선택지, 2d6 성공/실패 분기, 현재 상태 기반 인카운터 선택, 공간 왜곡 탈출/실패 엔딩 판정, YAML 공개 콘텐츠 로더/검증, YAML 기반 런타임 기본 위치/인카운터/엔딩, 로컬 비공개 현실 힌트 로더, CLI 한 턴 실행, CLI 다중 턴 스크립트 실행, Textual 레이아웃 smoke를 추가했다.
 
 ## 실행/테스트
 
@@ -16,6 +16,7 @@ TUI 기반 랜덤 인카운터 선택지 생존 게임.
 ```bash
 PYTHONPATH=src python -m tui_adv --new --seed 123
 PYTHONPATH=src python -m tui_adv --new --seed 123 --choice 1
+PYTHONPATH=src python -m tui_adv --new --seed 123 --action choice:1 --action move:dev_office --action move:hallway --action move:server_room_front --action choice:1
 PYTHONPATH=src python -m tui_adv --new --seed 123 --location emergency_stairs --flag escape_puzzle_ready --choice 1
 PYTHONPATH=src python -m tui_adv --tui-smoke --seed 123
 PYTHONPATH=src python -m tui_adv --tui --seed 123  # Textual 설치 환경에서 실행
@@ -76,6 +77,6 @@ python -m pytest tests -q
 
 ## 다음 작업 후보
 
-1. 이동/인카운터/엔딩을 잇는 다중 턴 플레이 루프
-2. 현실 힌트 루트를 실제 게임 선택지/엔딩 보상에 연결
-3. Textual 설치 환경에서 전체 화면 상호작용 smoke와 종료 키 처리
+1. 현실 힌트 루트를 실제 게임 선택지/엔딩 보상에 연결
+2. Textual 설치 환경에서 전체 화면 상호작용 smoke와 종료 키 처리
+3. 다중 턴 루프를 저장/불러오기와 더 풍부한 이동 행동으로 확장

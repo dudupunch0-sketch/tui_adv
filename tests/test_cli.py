@@ -54,6 +54,32 @@ def test_cli_new_game_rejects_invalid_choice_without_traceback():
     assert "Traceback" not in result.stderr
 
 
+def test_cli_new_game_actions_execute_multi_turn_route_and_print_ending():
+    result = run_module(
+        "--new",
+        "--seed",
+        "123",
+        "--action",
+        "choice:1",
+        "--action",
+        "move:dev_office",
+        "--action",
+        "move:hallway",
+        "--action",
+        "move:server_room_front",
+        "--action",
+        "choice:1",
+    )
+
+    assert result.returncode == 0
+    assert "== 턴 0 ==" in result.stdout
+    assert "선택 실행: 메시지를 확인한다" in result.stdout
+    assert "이동 실행: 개발팀 사무실" in result.stdout
+    assert "이동 실행: 서버실 앞" in result.stdout
+    assert "== 턴 5 ==" in result.stdout
+    assert "엔딩: 사내 방송 장악" in result.stdout
+
+
 def test_cli_escape_ending_smoke_prints_first_ending():
     result = run_module(
         "--new",

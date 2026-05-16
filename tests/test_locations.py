@@ -27,6 +27,7 @@ def test_default_office_map_contains_start_and_core_connections():
         "dev_office",
         "server_room_front",
         "emergency_stairs",
+        "security_room",
     )
 
 
@@ -61,3 +62,14 @@ def test_move_to_unconnected_location_is_rejected_without_mutation():
     assert state.location_id == "dev_desk"
     assert state.turn == 0
     assert state.log == []
+
+
+def test_runtime_default_locations_are_loaded_from_yaml_content():
+    assert "security_room" in DEFAULT_LOCATIONS
+    state = GameState.new(seed=7, location_id="hallway")
+
+    assert "security_room" in state.available_move_ids()
+    moved = state.move_to("security_room")
+
+    assert moved.location_id == "security_room"
+    assert moved.log == ["보안실로 이동했다."]

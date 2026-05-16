@@ -123,9 +123,9 @@ locations:
       - office
       - safeish
       - start
-    exits:
+    connections:
       - dev_office
-    danger_modifier: 0
+    danger: 0
     encounter_tags:
       - desk
       - messenger
@@ -139,8 +139,8 @@ locations:
 | name | yes | 표시 이름 |
 | description | yes | 위치 설명 |
 | tags | no | 위치 분류 태그 |
-| exits | yes | 이동 가능한 위치 id 목록 |
-| danger_modifier | no | 위험도 보정치, 기본 0 |
+| connections | yes | 이동 가능한 위치 id 목록 |
+| danger | no | 위치 위험도, 기본 0 |
 | encounter_tags | no | 인카운터 매칭용 태그 |
 
 ### 1차 위치 id
@@ -154,6 +154,7 @@ locations:
 - printer_area
 - server_room_front
 - emergency_stairs
+- security_room
 ```
 
 ## items.yaml

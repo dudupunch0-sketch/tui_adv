@@ -19,69 +19,10 @@ class Location:
 LocationMap = Mapping[str, Location]
 
 
-DEFAULT_LOCATIONS: dict[str, Location] = {
-    "dev_desk": Location(
-        id="dev_desk",
-        name="내 자리",
-        description="당신의 모니터는 아직 켜져 있다.",
-        connections=("dev_office",),
-        tags=("office", "start", "messenger", "personal"),
-        danger=0,
-    ),
-    "dev_office": Location(
-        id="dev_office",
-        name="개발팀 사무실",
-        description="개발팀 사무실은 정상적으로 켜져 있지만 사람만 없다.",
-        connections=("dev_desk", "hallway", "meeting_room", "printer_area"),
-        tags=("office", "hub", "workstations"),
-        danger=0,
-    ),
-    "hallway": Location(
-        id="hallway",
-        name="복도",
-        description="복도 비상등이 일정하지 않은 간격으로 깜빡인다.",
-        connections=("dev_office", "server_room_front", "emergency_stairs"),
-        tags=("transit", "exposed", "cctv"),
-        danger=1,
-    ),
-    "pantry": Location(
-        id="pantry",
-        name="탕비실",
-        description="탕비실에는 커피 냄새가 남아 있다.",
-        connections=("printer_area",),
-        tags=("survival", "food", "drink", "reality_link"),
-        danger=0,
-    ),
-    "meeting_room": Location(
-        id="meeting_room",
-        name="회의실",
-        description="회의실 예약 패널에는 방금 생성된 일정이 떠 있다.",
-        connections=("dev_office",),
-        tags=("meeting", "sanity_risk", "truth"),
-        danger=1,
-    ),
-    "printer_area": Location(
-        id="printer_area",
-        name="복합기 구역",
-        description="복합기는 절전 모드지만 출력 트레이에는 따뜻한 종이가 있다.",
-        connections=("dev_office", "pantry"),
-        tags=("printer", "clue", "reality_link"),
-        danger=0,
-    ),
-    "server_room_front": Location(
-        id="server_room_front",
-        name="서버실 앞",
-        description="닫힌 문틈에서 차가운 바람이 나온다.",
-        connections=("hallway",),
-        tags=("restricted", "network", "truth", "conquest"),
-        danger=2,
-    ),
-    "emergency_stairs": Location(
-        id="emergency_stairs",
-        name="비상계단",
-        description="계단 아래에서는 위층에서 들려야 할 발소리가 올라온다.",
-        connections=("hallway",),
-        tags=("escape", "dark", "loop", "danger"),
-        danger=2,
-    ),
-}
+def _load_runtime_default_locations() -> dict[str, Location]:
+    from tui_adv.game.content import load_default_locations
+
+    return load_default_locations()
+
+
+DEFAULT_LOCATIONS: dict[str, Location] = _load_runtime_default_locations()

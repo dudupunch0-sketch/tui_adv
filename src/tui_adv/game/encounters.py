@@ -80,6 +80,19 @@ class Outcome:
 
 
 @dataclass(frozen=True, slots=True)
+class CheckResult:
+    """A resolved ability check for UI/result formatting."""
+
+    ability: str
+    difficulty: int
+    rolls: tuple[int, int]
+    ability_score: int
+    total: int
+    succeeded: bool
+    outcome: Outcome
+
+
+@dataclass(frozen=True, slots=True)
 class AbilityCheck:
     """A two-dice ability check that branches into success or failure."""
 
@@ -88,12 +101,39 @@ class AbilityCheck:
     success: Outcome
     failure: Outcome
 
+    def roll(self, state: GameState, rng: random.Random) -> CheckResult:
+        first = rng.randint(1, 6)
+        second = rng.randint(1, 6)
+        ability_score = state.player.ability(self.ability)
+        total = first + second + ability_score
+        succeeded = total >= self.difficulty
+        return CheckResult(
+            ability=self.ability,
+            difficulty=self.difficulty,
+            rolls=(first, second),
+            ability_score=ability_score,
+            total=total,
+            succeeded=succeeded,
+            outcome=self.success if succeeded else self.failure,
+        )
+
     def resolve(self, state: GameState, rng: random.Random) -> Outcome:
-        roll = rng.randint(1, 6) + rng.randint(1, 6)
-        total = roll + state.player.ability(self.ability)
-        if total >= self.difficulty:
-            return self.success
-        return self.failure
+        return self.roll(state, rng).outcome
+
+
+@dataclass(frozen=True, slots=True)
+class ChoiceResolution:
+    """A choice result paired with check metadata for rendering."""
+
+    encounter_id: str
+    choice_id: str
+    before_state: GameState
+    state: GameState
+    check_result: CheckResult | None = None
+
+    @property
+    def new_logs(self) -> tuple[str, ...]:
+        return tuple(self.state.log[len(self.before_state.log) :])
 
 
 @dataclass(frozen=True, slots=True)
@@ -127,8 +167,17 @@ class Choice:
         encounter_id: str,
         rng: random.Random | None = None,
     ) -> GameState:
+        return self.resolve(state, encounter_id=encounter_id, rng=rng).state
+
+    def resolve(
+        self,
+        state: GameState,
+        *,
+        encounter_id: str,
+        rng: random.Random | None = None,
+    ) -> ChoiceResolution:
         rng = rng or _rng_for_state(state, encounter_id, self.id, "check")
-        outcomes = self._resolved_outcomes(state, rng)
+        outcomes, check_result = self._resolved_outcomes(state, rng)
         player = state.player.apply_delta(
             health=sum(outcome.health for outcome in outcomes)
             - self.cost.get("health", 0),
@@ -159,7 +208,7 @@ class Choice:
             if outcome.log:
                 log.append(outcome.log)
         seen_encounters = _append_unique(state.seen_encounters, (encounter_id,))
-        return replace(
+        next_state = replace(
             state,
             location_id=destination_id,
             danger=max(0, state.danger + danger_delta),
@@ -170,15 +219,23 @@ class Choice:
             seen_encounters=seen_encounters,
             log=log,
         )
+        return ChoiceResolution(
+            encounter_id=encounter_id,
+            choice_id=self.id,
+            before_state=state,
+            state=next_state,
+            check_result=check_result,
+        )
 
     def _resolved_outcomes(
         self,
         state: GameState,
         rng: random.Random,
-    ) -> tuple[Outcome, ...]:
+    ) -> tuple[tuple[Outcome, ...], CheckResult | None]:
         if self.check is None:
-            return (self.outcome,)
-        return (self.outcome, self.check.resolve(state, rng))
+            return (self.outcome,), None
+        check_result = self.check.roll(state, rng)
+        return (self.outcome, check_result.outcome), check_result
 
 
 @dataclass(frozen=True, slots=True)
@@ -208,6 +265,15 @@ class Encounter:
         *,
         rng: random.Random | None = None,
     ) -> GameState:
+        return self.resolve_choice_result(choice_id, state, rng=rng).state
+
+    def resolve_choice_result(
+        self,
+        choice_id: str,
+        state: GameState,
+        *,
+        rng: random.Random | None = None,
+    ) -> ChoiceResolution:
         if not self.is_eligible(state):
             raise ValueError(f"encounter {self.id} is not eligible")
         choice = self._choice_by_id(choice_id)
@@ -215,7 +281,8 @@ class Encounter:
         if reasons:
             reason_text = ", ".join(reasons)
             raise ValueError(f"choice {choice_id} is not available: {reason_text}")
-        return choice.apply(state, encounter_id=self.id, rng=rng).advance_turn()
+        resolution = choice.resolve(state, encounter_id=self.id, rng=rng)
+        return replace(resolution, state=resolution.state.advance_turn())
 
     def _choice_by_id(self, choice_id: str) -> Choice:
         for choice in self.choices:
@@ -334,6 +401,43 @@ DEFAULT_ENCOUNTERS: dict[str, Encounter] = {
                     add_clues=("reality_link_hint_1",),
                     add_flags=("reality_link_started",),
                     log="토너 카트리지 안쪽에서 이상한 표식을 봤다.",
+                ),
+            ),
+        ),
+    ),
+    "pantry_coffee_machine": Encounter(
+        id="pantry_coffee_machine",
+        title="탕비실 커피머신",
+        body="커피머신 화면에 '물을 보충하십시오'가 반복된다. 물통은 가득 차 있다.",
+        conditions=Conditions(locations=("pantry",)),
+        choices=(
+            Choice(
+                id="brew_coffee",
+                label="커피를 뽑는다",
+                outcome=Outcome(
+                    sanity=4,
+                    hunger=-3,
+                    thirst=5,
+                    log="커피는 아직 따뜻했고, 컵 바닥에는 작은 검은 점이 남았다.",
+                ),
+            ),
+            Choice(
+                id="inspect_water_tank",
+                label="물통을 확인한다",
+                outcome=Outcome(
+                    sanity=-2,
+                    add_clues=("full_water_tank_warning",),
+                    log="물통은 가득 차 있는데 센서는 계속 빈 상태를 보고했다.",
+                ),
+            ),
+            Choice(
+                id="look_behind_machine",
+                label="커피머신 뒤를 본다",
+                conditions=Conditions(required_flags=("printer_secret_started",)),
+                outcome=Outcome(
+                    add_clues=("reality_link_hint_2",),
+                    add_flags=("coffee_machine_back_panel",),
+                    log="커피머신 뒤쪽 패널에 복합기 출력물과 같은 표식이 있었다.",
                 ),
             ),
         ),

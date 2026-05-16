@@ -20,7 +20,7 @@ def run_module(*args: str) -> subprocess.CompletedProcess[str]:
     )
 
 
-def test_cli_new_game_smoke_prints_initial_status():
+def test_cli_new_game_smoke_prints_initial_status_and_seeded_encounter():
     result = run_module("--new", "--seed", "123")
 
     assert result.returncode == 0
@@ -28,6 +28,8 @@ def test_cli_new_game_smoke_prints_initial_status():
     assert "위치: 내 자리" in result.stdout
     assert "재난: unknown_isolation" in result.stdout
     assert "[LOCAL STATUS]" in result.stdout
+    assert "인카운터: 퇴사자의 메신저" in result.stdout
+    assert "1. 메시지를 확인한다" in result.stdout
 
 
 def test_cli_version_prints_package_version():

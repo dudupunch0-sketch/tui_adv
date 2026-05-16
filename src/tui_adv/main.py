@@ -3,9 +3,12 @@ from __future__ import annotations
 import argparse
 
 from tui_adv import __version__
+from tui_adv.game.encounters import select_encounter
 from tui_adv.game.locations import DEFAULT_LOCATIONS
 from tui_adv.game.state import GameState
+from tui_adv.tui.encounter import format_encounter_turn
 from tui_adv.tui.status import format_local_status
+
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
@@ -21,14 +24,16 @@ def build_parser() -> argparse.ArgumentParser:
 def render_new_game_smoke(state: GameState) -> str:
     location_info = DEFAULT_LOCATIONS.get(state.location_id)
     location = location_info.name if location_info else state.location_id
-    return "\n".join(
-        [
-            "escape from the office",
-            f"위치: {location}",
-            f"재난: {state.disaster_type}",
-            format_local_status(state.player),
-        ]
-    )
+    lines = [
+        "escape from the office",
+        f"위치: {location}",
+        f"재난: {state.disaster_type}",
+        format_local_status(state.player),
+    ]
+    encounter = select_encounter(state)
+    if encounter is not None:
+        lines.extend(["", format_encounter_turn(encounter, state)])
+    return "\n".join(lines)
 
 
 def main(argv: list[str] | None = None) -> int:

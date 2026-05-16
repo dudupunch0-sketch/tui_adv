@@ -1,16 +1,31 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field, replace
+from typing import Mapping
 
 from tui_adv.game.locations import DEFAULT_LOCATIONS, LocationMap
 
 
 _RESOURCE_MIN = 0
 _RESOURCE_MAX = 100
+_ABILITY_MIN = 0
+_ABILITY_MAX = 6
+_DEFAULT_ABILITIES: dict[str, int] = {
+    "logic": 2,
+    "empathy": 2,
+    "volition": 2,
+    "composure": 2,
+    "interface": 2,
+    "physical": 2,
+}
 
 
 def _clamp_resource(value: int) -> int:
     return max(_RESOURCE_MIN, min(_RESOURCE_MAX, value))
+
+
+def _clamp_ability(value: int) -> int:
+    return max(_ABILITY_MIN, min(_ABILITY_MAX, value))
 
 
 @dataclass(frozen=True, slots=True)
@@ -26,6 +41,9 @@ class PlayerState:
     battery: int = 100
     hunger: int = 0
     thirst: int = 0
+    abilities: Mapping[str, int] = field(
+        default_factory=lambda: dict(_DEFAULT_ABILITIES)
+    )
 
     def __post_init__(self) -> None:
         for field_name in ("health", "sanity", "battery", "hunger", "thirst"):
@@ -33,6 +51,23 @@ class PlayerState:
             clamped = _clamp_resource(value)
             if value != clamped:
                 object.__setattr__(self, field_name, clamped)
+        normalized_abilities = dict(_DEFAULT_ABILITIES)
+        normalized_abilities.update(self.abilities)
+        normalized_abilities = {
+            ability: _clamp_ability(score)
+            for ability, score in normalized_abilities.items()
+        }
+        object.__setattr__(self, "abilities", normalized_abilities)
+
+    def ability(self, ability_id: str) -> int:
+        """Return a Disco Elysium-style discernment score for branching choices."""
+
+        return self.abilities.get(ability_id, 0)
+
+    def with_abilities(self, **abilities: int) -> PlayerState:
+        updated = dict(self.abilities)
+        updated.update(abilities)
+        return replace(self, abilities=updated)
 
     @property
     def failure_reason(self) -> str | None:
@@ -70,6 +105,7 @@ class PlayerState:
             battery=self.battery + battery,
             hunger=self.hunger + hunger,
             thirst=self.thirst + thirst,
+            abilities=self.abilities,
         )
 
     def apply_turn_pressure(self) -> PlayerState:

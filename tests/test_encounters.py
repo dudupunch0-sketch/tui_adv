@@ -1,6 +1,15 @@
 import pytest
 
-from tui_adv.game.encounters import DEFAULT_ENCOUNTERS, Choice, Conditions, Encounter, Outcome
+from tui_adv.game.encounters import (
+    DEFAULT_ENCOUNTERS,
+    AbilityCheck,
+    Choice,
+    Conditions,
+    Encounter,
+    Outcome,
+    eligible_encounters,
+    select_encounter,
+)
 from tui_adv.game.state import GameState, PlayerState
 
 
@@ -100,3 +109,147 @@ def test_choice_outcome_can_update_inventory_flags_danger_and_location():
     assert next_state.danger == 1
     assert next_state.turn == 1
     assert next_state.log == ["사원증을 챙기고 자리에서 벗어났다."]
+
+
+def test_eligible_encounters_filter_current_state_and_seen_history():
+    encounters = {
+        "desk": Encounter(
+            id="desk",
+            title="자리 이벤트",
+            body="책상 위 모니터가 깜빡인다.",
+            conditions=Conditions(locations=("dev_desk",)),
+            choices=(Choice(id="wait", label="기다린다", outcome=Outcome()),),
+        ),
+        "printer": Encounter(
+            id="printer",
+            title="복합기 이벤트",
+            body="복합기 쪽에서 종이 냄새가 난다.",
+            conditions=Conditions(locations=("printer_area",)),
+            choices=(Choice(id="wait", label="기다린다", outcome=Outcome()),),
+        ),
+        "repeatable": Encounter(
+            id="repeatable",
+            title="반복 이벤트",
+            body="슬랙 알림이 또 울린다.",
+            conditions=Conditions(locations=("dev_desk",)),
+            choices=(Choice(id="wait", label="기다린다", outcome=Outcome()),),
+            repeatable=True,
+        ),
+    }
+    state = GameState.new(seed=1).with_seen_encounter("desk")
+
+    assert [encounter.id for encounter in eligible_encounters(state, encounters)] == [
+        "repeatable"
+    ]
+
+
+def test_select_encounter_uses_weights_after_eligibility_filtering():
+    class FixedRng:
+        def randrange(self, stop: int) -> int:
+            assert stop == 4
+            return 1
+
+    light = Encounter(
+        id="light",
+        title="가벼운 이벤트",
+        body="가벼운 이벤트",
+        conditions=Conditions(locations=("dev_desk",)),
+        choices=(Choice(id="wait", label="기다린다", outcome=Outcome()),),
+        weight=1,
+    )
+    heavy = Encounter(
+        id="heavy",
+        title="무거운 이벤트",
+        body="무거운 이벤트",
+        conditions=Conditions(locations=("dev_desk",)),
+        choices=(Choice(id="wait", label="기다린다", outcome=Outcome()),),
+        weight=3,
+    )
+    wrong_location = Encounter(
+        id="wrong_location",
+        title="다른 장소 이벤트",
+        body="다른 장소 이벤트",
+        conditions=Conditions(locations=("printer_area",)),
+        choices=(Choice(id="wait", label="기다린다", outcome=Outcome()),),
+        weight=50,
+    )
+
+    selected = select_encounter(
+        GameState.new(seed=1),
+        {"light": light, "heavy": heavy, "wrong_location": wrong_location},
+        rng=FixedRng(),
+    )
+
+    assert selected is heavy
+
+
+def test_ability_gated_choices_expand_default_encounter_options():
+    encounter = DEFAULT_ENCOUNTERS["ex_employee_messenger"]
+    baseline = GameState.new(seed=1)
+    interface_ready = baseline.with_player(PlayerState().with_abilities(interface=4))
+
+    assert "trace_packet_delay" not in [
+        choice.id for choice in encounter.available_choices(baseline)
+    ]
+    assert "trace_packet_delay" in [
+        choice.id for choice in encounter.available_choices(interface_ready)
+    ]
+
+
+def test_ability_check_choice_branches_into_success_or_failure_outcome():
+    class FixedRolls:
+        def __init__(self, rolls: tuple[int, int]) -> None:
+            self._rolls = list(rolls)
+
+        def randint(self, start: int, stop: int) -> int:
+            assert (start, stop) == (1, 6)
+            return self._rolls.pop(0)
+
+    encounter = Encounter(
+        id="test_skill_check",
+        title="패킷의 유령",
+        body="제한된 사내망 패킷이 같은 문장을 반복한다.",
+        choices=(
+            Choice(
+                id="read_packet",
+                label="[인터페이스] 패킷 지연을 읽는다",
+                cost={"battery": 2},
+                outcome=Outcome(log="휴대폰을 사내망에 붙였다."),
+                check=AbilityCheck(
+                    ability="interface",
+                    difficulty=10,
+                    success=Outcome(
+                        add_clues=("packet_ghost_route",),
+                        add_flags=("network_truth_hint",),
+                        log="지연 시간 사이에서 숨은 라우팅을 찾았다.",
+                    ),
+                    failure=Outcome(
+                        sanity=-5,
+                        danger=1,
+                        log="화면이 역으로 당신의 시선을 추적했다.",
+                    ),
+                ),
+            ),
+        ),
+    )
+    state = GameState.new(seed=1).with_player(PlayerState().with_abilities(interface=4))
+
+    success = encounter.resolve_choice("read_packet", state, rng=FixedRolls((3, 3)))
+    failure = encounter.resolve_choice("read_packet", state, rng=FixedRolls((1, 1)))
+
+    assert success.player.battery == 98
+    assert success.clues == ["packet_ghost_route"]
+    assert success.flags == ["network_truth_hint"]
+    assert success.log == [
+        "휴대폰을 사내망에 붙였다.",
+        "지연 시간 사이에서 숨은 라우팅을 찾았다.",
+    ]
+
+    assert failure.player.battery == 98
+    assert failure.player.sanity == 95
+    assert failure.danger == 1
+    assert failure.clues == []
+    assert failure.log == [
+        "휴대폰을 사내망에 붙였다.",
+        "화면이 역으로 당신의 시선을 추적했다.",
+    ]

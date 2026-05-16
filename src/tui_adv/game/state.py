@@ -32,6 +32,25 @@ class PlayerState:
             if value != clamped:
                 object.__setattr__(self, field_name, clamped)
 
+    @property
+    def failure_reason(self) -> str | None:
+        if self.health <= 0:
+            return "health_depleted"
+        if self.sanity <= 0:
+            return "sanity_depleted"
+        return None
+
+    @property
+    def should_distort_choices(self) -> bool:
+        return 0 < self.sanity < 40
+
+    @property
+    def should_trigger_thirst_hallucination(self) -> bool:
+        return self.thirst >= 60
+
+    def can_spend_battery(self, amount: int) -> bool:
+        return amount <= 0 or self.battery >= amount
+
     def apply_delta(
         self,
         *,
@@ -50,6 +69,19 @@ class PlayerState:
             hunger=self.hunger + hunger,
             thirst=self.thirst + thirst,
         )
+
+    def apply_turn_pressure(self) -> PlayerState:
+        """Apply baseline hunger/thirst decay and limit penalties."""
+
+        next_state = self.apply_delta(hunger=1, thirst=2)
+        health_penalty = 0
+        sanity_penalty = 0
+        if next_state.hunger >= 100:
+            health_penalty -= 2
+        if next_state.thirst >= 100:
+            health_penalty -= 4
+            sanity_penalty -= 2
+        return next_state.apply_delta(health=health_penalty, sanity=sanity_penalty)
 
 
 @dataclass(frozen=True, slots=True)
@@ -84,13 +116,28 @@ class GameState:
             danger=0,
         )
 
+    @property
+    def failure_reason(self) -> str | None:
+        return self.player.failure_reason
+
+    def with_player(self, player: PlayerState) -> GameState:
+        return replace(
+            self,
+            player=player,
+            inventory=list(self.inventory),
+            clues=list(self.clues),
+            flags=list(self.flags),
+            seen_encounters=list(self.seen_encounters),
+            log=list(self.log),
+        )
+
     def advance_turn(self) -> GameState:
         """Apply the baseline turn pressure without mutating the current state."""
 
         return replace(
             self,
             turn=self.turn + 1,
-            player=self.player.apply_delta(hunger=1, thirst=2),
+            player=self.player.apply_turn_pressure(),
             inventory=list(self.inventory),
             clues=list(self.clues),
             flags=list(self.flags),

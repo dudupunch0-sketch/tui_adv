@@ -204,6 +204,7 @@ class GameState:
         moved = replace(
             self,
             location_id=destination_id,
+            danger=max(0, self.danger + destination.danger),
             inventory=list(self.inventory),
             clues=list(self.clues),
             flags=list(self.flags),

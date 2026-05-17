@@ -53,6 +53,16 @@ def test_move_to_connected_location_advances_turn_and_records_log():
     assert state.log == []
 
 
+def test_move_to_location_applies_destination_danger_without_mutating_source():
+    state = GameState.new(seed=7, location_id="dev_office")
+
+    moved = state.move_to("hallway")
+
+    assert moved.location_id == "hallway"
+    assert moved.danger == 1
+    assert state.danger == 0
+
+
 def test_move_to_unconnected_location_is_rejected_without_mutation():
     state = GameState.new(seed=7)
 

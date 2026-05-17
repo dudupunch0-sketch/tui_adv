@@ -56,6 +56,44 @@ def test_tui_action_input_resolves_choice_then_movement_action():
     assert after_move.turn.state.turn == 2
 
 
+def test_tui_layout_snapshot_renders_inventory_and_clue_summary():
+    state = replace(
+        GameState.new(seed=123, location_id="pantry"),
+        inventory=["crumpled_printout", "office_keycard", "flashlight"],
+        clues=[
+            "printer_ip_digits",
+            "coffee_machine_back_panel",
+            "server_log_fragment",
+            "meeting_pattern_noticed",
+        ],
+    )
+    turn = build_game_turn(state)
+
+    snapshot = render_tui_layout_snapshot(turn)
+
+    assert "[소지품]" in snapshot
+    assert "- crumpled_printout" in snapshot
+    assert "- office_keycard" in snapshot
+    assert "- flashlight" in snapshot
+    assert "[단서]" in snapshot
+    assert "- printer_ip_digits" in snapshot
+    assert "- coffee_machine_back_panel" in snapshot
+    assert "- server_log_fragment" in snapshot
+    assert "+1 more" in snapshot
+    assert "meeting_pattern_noticed" not in snapshot
+
+
+def test_tui_layout_snapshot_renders_empty_inventory_and_clue_placeholders():
+    turn = build_tui_turn(seed=123)
+
+    snapshot = render_tui_layout_snapshot(turn)
+
+    assert "[소지품]" in snapshot
+    assert "- 없음" in snapshot
+    assert "[단서]" in snapshot
+    assert "- 아직 확보한 단서 없음" in snapshot
+
+
 def test_tui_layout_snapshot_renders_hidden_reality_hint_ending_reward():
     state = replace(
         GameState.new(seed=123, location_id="pantry"),

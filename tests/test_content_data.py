@@ -22,6 +22,11 @@ def test_default_encounter_yaml_loads_choice_conditions_and_checks():
     )
     meeting = encounters["meeting_room_all_hands"]
     cctv = encounters["security_room_delayed_cctv"]
+    radio = encounters["server_room_radio"]
+    cold_air_choice = next(
+        choice for choice in radio.choices if choice.id == "follow_cold_air"
+    )
+    console = encounters["server_room_console"]
 
     assert DATA_DIR.joinpath("encounters.yaml").name == "encounters.yaml"
     assert messenger.title == "퇴사자의 메신저"
@@ -33,12 +38,19 @@ def test_default_encounter_yaml_loads_choice_conditions_and_checks():
     assert meeting.choices[0].outcome.add_flags == ("impossible_meeting_saved",)
     assert cctv.conditions.required_flags == ("impossible_meeting_saved",)
     assert cctv.choices[0].outcome.add_clues == ("server_log_fragment",)
+    assert cold_air_choice.outcome.destination_id == "server_room"
+    assert console.conditions.locations == ("server_room",)
+    assert console.choices[0].outcome.add_flags == (
+        "network_admin_claimed",
+        "internal_network_access",
+    )
 
 
 def test_default_endings_yaml_loads_escape_route_conditions():
     endings = load_default_endings()
     escape = endings["escape_commute"]
     truth = endings["truth_isolation_protocol"]
+    conquest = endings["conquest_network_admin"]
 
     assert escape.kind == "escape"
     assert escape.priority == 60
@@ -52,14 +64,21 @@ def test_default_endings_yaml_loads_escape_route_conditions():
         "meeting_pattern_noticed",
         "server_log_fragment",
     )
+    assert conquest.kind == "conquest"
+    assert conquest.priority == 70
+    assert conquest.conditions.locations == ("server_room",)
+    assert conquest.conditions.required_flags == ("network_admin_claimed",)
 
 
 def test_default_achievements_yaml_loads_truth_route_reward():
     achievements = load_default_achievements()
     truth = achievements["truth_protocol_understood"]
+    network_admin = achievements["network_admin_claimed"]
 
     assert truth.name == "격리 프로토콜 독해"
     assert truth.conditions.required_flags == ("isolation_protocol_revealed",)
+    assert network_admin.name == "사내망 관리자"
+    assert network_admin.conditions.required_flags == ("network_admin_claimed",)
 
 
 def test_default_locations_yaml_loads_connections_and_tags():

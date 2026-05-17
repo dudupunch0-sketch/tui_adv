@@ -80,6 +80,33 @@ def test_cli_new_game_actions_execute_multi_turn_route_and_print_ending():
     assert "엔딩: 사내 방송 장악" in result.stdout
 
 
+def test_cli_server_room_conquest_route_prints_network_admin_ending():
+    result = run_module(
+        "--new",
+        "--seed",
+        "123",
+        "--action",
+        "choice:1",
+        "--action",
+        "move:dev_office",
+        "--action",
+        "move:hallway",
+        "--action",
+        "move:server_room_front",
+        "--action",
+        "choice:3",
+        "--action",
+        "choice:1",
+    )
+
+    assert result.returncode == 0
+    assert "선택 실행: 문틈의 찬 공기를 따라 안쪽으로 들어간다" in result.stdout
+    assert "위치: 서버실 내부" in result.stdout
+    assert "선택 실행: 관리자 콘솔에 격리 규칙을 덮어쓴다" in result.stdout
+    assert "업적 달성: 사내망 관리자" in result.stdout
+    assert "엔딩: 사내망 관리자 권한" in result.stdout
+
+
 def test_cli_truth_route_prints_protocol_ending_and_achievement():
     result = run_module(
         "--new",

@@ -59,6 +59,9 @@ def test_default_achievements_include_reality_conquest_and_truth_route_rewards()
     assert DEFAULT_ACHIEVEMENTS[
         "truth_protocol_understood"
     ].conditions.required_flags == ("isolation_protocol_revealed",)
+    assert DEFAULT_ACHIEVEMENTS[
+        "network_admin_claimed"
+    ].conditions.required_flags == ("network_admin_claimed",)
 
 
 def test_format_unlocked_achievements_renders_korean_unlock_lines():

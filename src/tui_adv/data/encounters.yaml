@@ -154,6 +154,26 @@ encounters:
             sanity: 2
           log: 꺼진 모니터들이 천천히 당신을 놓아주었다.
 
+  - id: emergency_stairs_exit_sign
+    title: 비상계단 문틈 표식
+    body: 비상계단 문틈의 초록색 표식이 층수 표시와 같은 박자로 숨을 쉰다.
+    conditions:
+      locations: [emergency_stairs]
+      forbidden_flags: [escape_puzzle_ready]
+    choices:
+      - id: align_breathing_floor
+        label: 계단문 틈의 숨소리와 층수 표시를 맞춘다
+        cost:
+          sanity: 3
+        outcome:
+          add_flags: [escape_puzzle_ready]
+          log: 초록 표식이 한 번 꺼졌다 켜지자 반복되는 층수의 규칙이 드러났다.
+      - id: ignore_exit_sign
+        label: 표식과 눈을 마주치지 않고 계단을 살핀다
+        outcome:
+          sanity: 1
+          log: 표식은 시야 가장자리에 초록빛 잔상을 남겼지만 더는 따라오지 않았다.
+
   - id: spatial_exit_puzzle
     title: 비상계단 공간 왜곡
     body: 층수 표시는 4, 4, 4, 4를 반복한다. 한 칸만 진짜 계단처럼 숨을 쉰다.

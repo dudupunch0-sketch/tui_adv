@@ -52,6 +52,20 @@ endings:
       사라진 것은 직원들이 아니라 당신이 접속한 업무공간이었다.
       회사는 이 현상을 격리 프로토콜이라고 불렀다.
 
+  - id: conquest_network_admin
+    name: 사내망 관리자 권한
+    kind: conquest
+    priority: 70
+    conditions:
+      locations: [server_room]
+      required_flags: [network_admin_claimed]
+      min_resources:
+        health: 1
+        sanity: 1
+    text: >
+      관리자 콘솔은 당신을 임시 예외가 아니라 규칙 작성자로 받아들였다.
+      이제 회사의 격리 공간은 당신의 퇴근 절차를 승인해야 한다.
+
   - id: conquest_broadcast_channel
     name: 사내 방송 장악
     kind: conquest

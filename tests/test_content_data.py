@@ -5,6 +5,7 @@ from tui_adv.game.content import (
     load_default_achievements,
     load_default_encounters,
     load_default_endings,
+    load_default_items,
     load_default_locations,
     load_locations,
     validate_public_content,
@@ -79,6 +80,19 @@ def test_default_achievements_yaml_loads_truth_route_reward():
     assert truth.conditions.required_flags == ("isolation_protocol_revealed",)
     assert network_admin.name == "사내망 관리자"
     assert network_admin.conditions.required_flags == ("network_admin_claimed",)
+
+
+def test_default_items_yaml_loads_display_metadata():
+    items = load_default_items()
+    printout = items["crumpled_printout"]
+    memo = items["ex_employee_memo"]
+
+    assert DATA_DIR.joinpath("items.yaml").name == "items.yaml"
+    assert printout.name == "구겨진 출력물"
+    assert printout.kind == "clue"
+    assert printout.tags == ("printer", "reality_link")
+    assert memo.name == "퇴사자의 메모"
+    assert memo.kind == "clue"
 
 
 def test_default_locations_yaml_loads_connections_and_tags():

@@ -217,7 +217,11 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.tui_smoke:
         if args.load:
-            turn = build_game_turn(load_game_state(args.load))
+            try:
+                loaded_state = load_game_state(args.load)
+            except ValueError as exc:
+                parser.error(str(exc))
+            turn = build_game_turn(loaded_state)
         else:
             turn = build_tui_turn(
                 seed=args.seed,
@@ -253,7 +257,10 @@ def main(argv: list[str] | None = None) -> int:
     if args.load:
         if args.choice:
             parser.error("--choice requires --new")
-        state = load_game_state(args.load)
+        try:
+            state = load_game_state(args.load)
+        except ValueError as exc:
+            parser.error(str(exc))
         try:
             output, final_state = render_loaded_game_smoke(state, args.action)
         except ValueError as exc:

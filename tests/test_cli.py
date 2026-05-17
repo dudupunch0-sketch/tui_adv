@@ -54,6 +54,17 @@ def test_cli_new_game_rejects_invalid_choice_without_traceback():
     assert "Traceback" not in result.stderr
 
 
+def test_cli_load_rejects_invalid_save_without_traceback(tmp_path):
+    save_path = tmp_path / "future-save.json"
+    save_path.write_text('{"schema_version": 999, "state": {}}', encoding="utf-8")
+
+    result = run_module("--load", str(save_path))
+
+    assert result.returncode == 2
+    assert "지원하지 않는 저장 파일 버전: 999" in result.stderr
+    assert "Traceback" not in result.stderr
+
+
 def test_cli_new_game_actions_execute_multi_turn_route_and_print_ending():
     result = run_module(
         "--new",

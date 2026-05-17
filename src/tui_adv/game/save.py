@@ -26,7 +26,7 @@ def load_game_state(path: str | Path) -> GameState:
 
     raw_data = json.loads(Path(path).read_text(encoding="utf-8"))
     if not isinstance(raw_data, Mapping):
-        raise ValueError("저장 파일 형식이 올바르지 않다")
+        raise ValueError("저장 파일 루트는 객체여야 한다")
     return _state_from_save_data(raw_data)
 
 

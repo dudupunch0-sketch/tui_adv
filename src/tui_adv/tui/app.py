@@ -58,6 +58,8 @@ def render_tui_layout_snapshot(turn: GameTurn) -> str:
     ]
     if achievement_summary := format_achievement_summary(turn.state):
         lines.extend([achievement_summary, ""])
+    lines.extend(_format_inventory_and_clues(turn.state))
+    lines.append("")
     if turn.ending is not None:
         lines.extend(["[엔딩]", format_ending_summary(turn.ending)])
     elif turn.encounter is not None:
@@ -75,6 +77,26 @@ def render_tui_layout_snapshot(turn: GameTurn) -> str:
     else:
         lines.append("- 아직 기록 없음")
     return "\n".join(lines)
+
+
+def _format_inventory_and_clues(state: GameState) -> list[str]:
+    lines = ["[소지품]"]
+    lines.extend(_format_limited_list(state.inventory, empty="없음", limit=5))
+    lines.append("")
+    lines.append("[단서]")
+    lines.extend(_format_limited_list(state.clues, empty="아직 확보한 단서 없음", limit=3))
+    return lines
+
+
+def _format_limited_list(values: list[str], *, empty: str, limit: int) -> list[str]:
+    if not values:
+        return [f"- {empty}"]
+    visible = values[:limit]
+    lines = [f"- {value}" for value in visible]
+    remaining_count = len(values) - len(visible)
+    if remaining_count > 0:
+        lines.append(f"+{remaining_count} more")
+    return lines
 
 
 def resolve_tui_action(turn: GameTurn, action_index: int) -> TurnActionResult:

@@ -41,3 +41,11 @@ def test_load_game_state_rejects_unsupported_schema_version(tmp_path):
 
     with pytest.raises(ValueError, match="지원하지 않는 저장 파일 버전"):
         load_game_state(save_path)
+
+
+def test_load_game_state_rejects_non_mapping_json(tmp_path):
+    save_path = tmp_path / "not-a-save.json"
+    save_path.write_text("[]", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="저장 파일 루트는 객체여야 한다"):
+        load_game_state(save_path)

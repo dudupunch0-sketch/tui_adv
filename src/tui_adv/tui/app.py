@@ -9,6 +9,7 @@ from tui_adv.game.achievements import (
 )
 from tui_adv.game.encounters import ChoiceResolution
 from tui_adv.game.endings import Ending, evaluate_ending, format_ending_summary
+from tui_adv.game.items import DEFAULT_ITEMS
 from tui_adv.game.locations import DEFAULT_LOCATIONS
 from tui_adv.game.loop import (
     GameTurn,
@@ -81,22 +82,43 @@ def render_tui_layout_snapshot(turn: GameTurn) -> str:
 
 def _format_inventory_and_clues(state: GameState) -> list[str]:
     lines = ["[소지품]"]
-    lines.extend(_format_limited_list(state.inventory, empty="없음", limit=5))
+    lines.extend(
+        _format_limited_list(
+            state.inventory,
+            empty="없음",
+            limit=5,
+            formatter=_format_inventory_item,
+        )
+    )
     lines.append("")
     lines.append("[단서]")
     lines.extend(_format_limited_list(state.clues, empty="아직 확보한 단서 없음", limit=3))
     return lines
 
 
-def _format_limited_list(values: list[str], *, empty: str, limit: int) -> list[str]:
+def _format_limited_list(
+    values: list[str],
+    *,
+    empty: str,
+    limit: int,
+    formatter=None,
+) -> list[str]:
     if not values:
         return [f"- {empty}"]
     visible = values[:limit]
-    lines = [f"- {value}" for value in visible]
+    format_value = formatter or (lambda value: value)
+    lines = [f"- {format_value(value)}" for value in visible]
     remaining_count = len(values) - len(visible)
     if remaining_count > 0:
         lines.append(f"+{remaining_count} more")
     return lines
+
+
+def _format_inventory_item(item_id: str) -> str:
+    item = DEFAULT_ITEMS.get(item_id)
+    if item is None:
+        return item_id
+    return f"{item.name} ({item.id})"
 
 
 def resolve_tui_action(turn: GameTurn, action_index: int) -> TurnActionResult:

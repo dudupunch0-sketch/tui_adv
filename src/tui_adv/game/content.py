@@ -17,6 +17,7 @@ if TYPE_CHECKING:
         Outcome,
     )
     from tui_adv.game.achievements import Achievement
+    from tui_adv.game.items import Item
     from tui_adv.game.locations import Location
 
 DATA_DIR = files("tui_adv.data")
@@ -29,6 +30,10 @@ def load_default_locations() -> dict[str, Location]:
 
 def load_default_encounters() -> dict[str, Encounter]:
     return load_encounters(DATA_DIR.joinpath("encounters.yaml"))
+
+
+def load_default_items() -> dict[str, Item]:
+    return load_items(DATA_DIR.joinpath("items.yaml"))
 
 
 def load_default_endings():
@@ -49,6 +54,17 @@ def load_locations(path: Path | Any) -> dict[str, Location]:
         locations[location.id] = location
     _validate_location_connections(locations)
     return locations
+
+
+def load_items(path: Path | Any) -> dict[str, Item]:
+    data = _read_yaml(path)
+    items: dict[str, Item] = {}
+    for entry in data.get("items", []):
+        item = _item_from_data(entry)
+        if item.id in items:
+            raise ValueError(f"duplicate item id: {item.id}")
+        items[item.id] = item
+    return items
 
 
 def load_encounters(path: Path | Any) -> dict[str, Encounter]:
@@ -108,6 +124,7 @@ def validate_public_content() -> list[str]:
     errors: list[str] = []
     try:
         locations = load_default_locations()
+        items = load_default_items()
         encounters = load_default_encounters()
         endings = load_default_endings()
         achievements = load_default_achievements()
@@ -118,12 +135,21 @@ def validate_public_content() -> list[str]:
         _validate_conditions_locations(
             errors, f"encounter:{encounter.id}", encounter.conditions, locations
         )
+        _validate_conditions_items(
+            errors, f"encounter:{encounter.id}", encounter.conditions, items
+        )
         for choice in encounter.choices:
             _validate_conditions_locations(
                 errors, f"choice:{encounter.id}.{choice.id}", choice.conditions, locations
             )
+            _validate_conditions_items(
+                errors, f"choice:{encounter.id}.{choice.id}", choice.conditions, items
+            )
             _validate_outcome_destination(
                 errors, f"choice:{encounter.id}.{choice.id}.outcome", choice.outcome, locations
+            )
+            _validate_outcome_items(
+                errors, f"choice:{encounter.id}.{choice.id}.outcome", choice.outcome, items
             )
             if choice.check is not None:
                 _validate_outcome_destination(
@@ -132,21 +158,39 @@ def validate_public_content() -> list[str]:
                     choice.check.success,
                     locations,
                 )
+                _validate_outcome_items(
+                    errors,
+                    f"choice:{encounter.id}.{choice.id}.success",
+                    choice.check.success,
+                    items,
+                )
                 _validate_outcome_destination(
                     errors,
                     f"choice:{encounter.id}.{choice.id}.failure",
                     choice.check.failure,
                     locations,
                 )
+                _validate_outcome_items(
+                    errors,
+                    f"choice:{encounter.id}.{choice.id}.failure",
+                    choice.check.failure,
+                    items,
+                )
 
     for ending in endings.values():
         _validate_conditions_locations(
             errors, f"ending:{ending.id}", ending.conditions, locations
         )
+        _validate_conditions_items(
+            errors, f"ending:{ending.id}", ending.conditions, items
+        )
 
     for achievement in achievements.values():
         _validate_conditions_locations(
             errors, f"achievement:{achievement.id}", achievement.conditions, locations
+        )
+        _validate_conditions_items(
+            errors, f"achievement:{achievement.id}", achievement.conditions, items
         )
 
     secrets_data = _read_yaml(DATA_DIR.joinpath("secrets.example.yaml"))
@@ -166,6 +210,19 @@ def _location_from_data(entry: dict[str, Any]) -> Location:
         connections=_tuple(entry.get("connections", entry.get("exits", ()))),
         tags=_tuple(entry.get("tags", ())),
         danger=int(entry.get("danger", entry.get("danger_modifier", 0))),
+    )
+
+
+def _item_from_data(entry: dict[str, Any]) -> Item:
+    from tui_adv.game.items import Item
+
+    return Item(
+        id=entry["id"],
+        name=entry["name"],
+        description=entry.get("description", ""),
+        kind=entry["type"],
+        tags=_tuple(entry.get("tags", ())),
+        usable=bool(entry.get("usable", False)),
     )
 
 
@@ -268,6 +325,17 @@ def _validate_conditions_locations(
             errors.append(f"{label} references unknown location: {location_id}")
 
 
+def _validate_conditions_items(
+    errors: list[str],
+    label: str,
+    conditions: Conditions,
+    items: dict[str, Item],
+) -> None:
+    for item_id in conditions.required_items:
+        if item_id not in items:
+            errors.append(f"{label} references unknown item: {item_id}")
+
+
 def _validate_outcome_destination(
     errors: list[str],
     label: str,
@@ -276,6 +344,17 @@ def _validate_outcome_destination(
 ) -> None:
     if outcome.destination_id and outcome.destination_id not in locations:
         errors.append(f"{label} references unknown destination: {outcome.destination_id}")
+
+
+def _validate_outcome_items(
+    errors: list[str],
+    label: str,
+    outcome: Outcome,
+    items: dict[str, Item],
+) -> None:
+    for item_id in (*outcome.add_items, *outcome.remove_items):
+        if item_id not in items:
+            errors.append(f"{label} references unknown item: {item_id}")
 
 
 def _read_yaml(path: Path | Any) -> dict[str, Any]:

@@ -72,9 +72,9 @@ def test_tui_layout_snapshot_renders_inventory_and_clue_summary():
     snapshot = render_tui_layout_snapshot(turn)
 
     assert "[소지품]" in snapshot
-    assert "- crumpled_printout" in snapshot
+    assert "- 구겨진 출력물 (crumpled_printout)" in snapshot
     assert "- office_keycard" in snapshot
-    assert "- flashlight" in snapshot
+    assert "- 손전등 (flashlight)" in snapshot
     assert "[단서]" in snapshot
     assert "- printer_ip_digits" in snapshot
     assert "- coffee_machine_back_panel" in snapshot

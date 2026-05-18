@@ -1,0 +1,70 @@
+items:
+  - id: bottled_water
+    name: 생수
+    description: 아직 밀봉된 생수병. 지금은 복지보다 생존에 가깝다.
+    type: consumable
+    tags: [survival, drink]
+    usable: true
+
+  - id: coffee
+    name: 커피
+    description: 식어가는 커피. 회사에서 가장 흔한 각성제이자 가장 약한 위로.
+    type: consumable
+    tags: [survival, office]
+    usable: true
+
+  - id: snack
+    name: 과자
+    description: 누군가 비상용으로 숨겨둔 과자. 이제 정말 비상용이 되었다.
+    type: consumable
+    tags: [survival, food]
+    usable: true
+
+  - id: cup_noodle
+    name: 컵라면
+    description: 야근의 오래된 동료. 물을 넣을 수 있다면 아직 희망이 있다.
+    type: consumable
+    tags: [survival, food]
+    usable: true
+
+  - id: first_aid_kit
+    name: 구급상자
+    description: 비상용 구급상자. 누군가 한 번 열어본 흔적이 있다.
+    type: consumable
+    tags: [survival, medical]
+    usable: true
+
+  - id: power_bank
+    name: 보조배터리
+    description: 충전량이 애매하게 남은 보조배터리. 그래도 어둠 속에서는 애매한 희망도 희망이다.
+    type: tool
+    tags: [battery, tool]
+    usable: true
+
+  - id: flashlight
+    name: 손전등
+    description: 작은 손전등. 회사 지급품은 아니고 누군가의 개인 물건 같다.
+    type: tool
+    tags: [light]
+    usable: false
+
+  - id: employee_badge
+    name: 사원증
+    description: 당신의 사원증. 사진 속 당신은 아직 이 상황을 모른다.
+    type: key
+    tags: [access]
+    usable: false
+
+  - id: crumpled_printout
+    name: 구겨진 출력물
+    description: 복합기에서 나온 구겨진 출력물. 문서 양식은 사내 표준인데, 내용은 아직 일어나지 않은 일을 말한다.
+    type: clue
+    tags: [printer, reality_link]
+    usable: false
+
+  - id: ex_employee_memo
+    name: 퇴사자의 메모
+    description: 사내망 캐시에 남은 전임자의 메모. 문장은 회사 업무 양식처럼 차분하지만 내용은 격리 프로토콜을 가리킨다.
+    type: clue
+    tags: [truth, internal_network]
+    usable: false

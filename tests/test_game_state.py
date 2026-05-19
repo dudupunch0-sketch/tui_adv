@@ -81,6 +81,32 @@ def test_hunger_and_thirst_limits_apply_damage_during_turn_pressure():
     assert next_state.failure_reason is None
 
 
+def test_turn_pressure_logs_high_thirst_warning_once():
+    state = GameState.new(seed=1).with_player(PlayerState(thirst=59))
+
+    warned = state.advance_turn()
+    warned_again = warned.advance_turn()
+
+    assert warned.player.thirst == 61
+    assert "pressure_thirst_warning_seen" in warned.flags
+    assert any("정수기" in entry and "목" in entry for entry in warned.log)
+    assert warned_again.log == warned.log
+    assert warned_again.flags.count("pressure_thirst_warning_seen") == 1
+
+
+def test_turn_pressure_logs_low_sanity_distortion_warning_once():
+    state = GameState.new(seed=1).with_player(PlayerState(sanity=39))
+
+    warned = state.advance_turn()
+    warned_again = warned.advance_turn()
+
+    assert warned.player.sanity == 39
+    assert "pressure_low_sanity_warning_seen" in warned.flags
+    assert any("선택지" in entry and "흐려" in entry for entry in warned.log)
+    assert warned_again.log == warned.log
+    assert warned_again.flags.count("pressure_low_sanity_warning_seen") == 1
+
+
 def test_low_resources_expose_choice_rule_hooks():
     stable = PlayerState(sanity=40, thirst=59, battery=1)
     distorted = PlayerState(sanity=39, thirst=60, battery=0)

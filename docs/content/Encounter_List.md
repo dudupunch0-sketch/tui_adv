@@ -17,7 +17,8 @@
 | strange_water_dispenser | 정수기의 이상한 물 | 탕비실 | 갈증 회복 위험 |
 | cold_server_door | 서버실 앞의 차가운 바람 | 서버실 앞 | 정보/정복 관문 |
 | stairwell_footsteps | 비상계단의 발소리 | 비상계단 | 탈출 위험 |
-| elevator_nonexistent_floor | 존재하지 않는 층의 엘리베이터 | 엘리베이터 홀 | 옥상 루트 진입 |
+| elevator_nonexistent_floor | 존재하지 않는 층의 엘리베이터 | 엘리베이터 홀 | 옥상/보안실 분기 |
+| security_room_floor_mismatch_console | 어긋난 층수의 보안 콘솔 | 보안실 | 서버실 우회권한/정복 루트 |
 | office_broadcast | 사내 방송 | 복도/사무실 | 위험도/회사 괴담 |
 | minutes_with_my_name | 회의록에 적힌 내 이름 | 회의실 | 정신력/진실 단서 |
 | fridge_note | 냉장고 안의 쪽지 | 탕비실 | 현실 연결 후속 |
@@ -203,6 +204,11 @@
 3. 문에서 물러난다
    - 결과: 안전
 
+4. 보안실 우회권한으로 서버실 문을 연다
+   - 조건: 아이템 `security_override_badge`, 플래그 `security_override_unlocked`
+   - 비용: 배터리 -2
+   - 결과: 위치 `server_room`, 플래그 `security_override_used`
+
 ### stairwell_footsteps: 비상계단의 발소리
 
 위치:
@@ -246,6 +252,40 @@
 
 2. 문틈을 벌려 현재 층으로 돌아온다
    - 결과: 보안실로 이동, 체력 -4, 단서 `security_floor_misalignment`, 플래그 `elevator_returned_wrong_floor`
+
+### security_room_floor_mismatch_console: 어긋난 층수의 보안 콘솔
+
+위치:
+
+- security_room
+
+조건:
+
+- 단서 `security_floor_misalignment`
+- 플래그 `elevator_returned_wrong_floor`
+
+설명 요약:
+
+엘리베이터에서 억지로 돌아온 보안실의 출입 기록이 서로 다른 현재 층을 가리킨다.
+틀린 층수 하나가 서버실과 연결되어, 보안실 단서가 서버실 정복 루트로 이어진다.
+
+선택지:
+
+1. 보안실 층수 로그에서 서버실 우회권한을 뽑는다
+   - 비용: 배터리 -6, 정신력 -3
+   - 결과: 아이템 `security_override_badge`, 단서 `security_override_route`, 플래그 `security_override_unlocked`
+
+2. 지연된 CCTV를 서버실 앞에 고정한다
+   - 비용: 배터리 -3
+   - 결과: 단서 `server_room_cctv_blindspot`, 플래그 `cctv_delay_looped`
+
+3. 층수 기록을 닫고 보안실을 나간다
+   - 결과: 정신력 +1
+
+후속:
+
+- 서버실 앞에서 우회권한을 사용하면 위치 `server_room`으로 진입하고 플래그 `security_override_used`를 얻는다.
+- 서버실 관리자 콘솔에서 `security_override_used`가 있으면 `security_lockdown_claimed`를 얻는 정복 선택지가 열린다.
 
 ### office_broadcast: 사내 방송
 

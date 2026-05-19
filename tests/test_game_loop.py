@@ -96,6 +96,27 @@ def test_high_thirst_pantry_turn_surfaces_water_dispenser_hallucination():
     assert "thirst_hallucination_seen" in result.turn.state.flags
 
 
+def test_security_floor_mismatch_can_unlock_lockdown_conquest_route():
+    turn = build_game_turn(GameState.new(seed=123, location_id="elevator_hall"))
+
+    for action in (
+        "choice:2",
+        "choice:1",
+        "move:hallway",
+        "move:server_room_front",
+        "choice:4",
+        "choice:3",
+    ):
+        turn = resolve_turn_action(turn, action)
+
+    assert turn.state.location_id == "server_room"
+    assert "security_override_badge" in turn.state.inventory
+    assert "security_override_unlocked" in turn.state.flags
+    assert "security_lockdown_claimed" in turn.state.flags
+    assert turn.ending is not None
+    assert turn.ending.id == "conquest_security_lockdown"
+
+
 def test_forcing_elevator_doors_returns_through_security_room_with_clue():
     turn = build_game_turn(GameState.new(seed=123, location_id="elevator_hall"))
 

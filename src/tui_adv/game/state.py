@@ -217,14 +217,29 @@ class GameState:
     def advance_turn(self) -> GameState:
         """Apply the baseline turn pressure without mutating the current state."""
 
+        player = self.player.apply_turn_pressure()
+        flags = list(self.flags)
+        log = list(self.log)
+        if (
+            player.should_trigger_thirst_hallucination
+            and "pressure_thirst_warning_seen" not in flags
+        ):
+            flags.append("pressure_thirst_warning_seen")
+            log.append("목이 마르자 가장 가까운 정수기 물소리가 한 박자 늦게 따라온다.")
+        if (
+            player.should_distort_choices
+            and "pressure_low_sanity_warning_seen" not in flags
+        ):
+            flags.append("pressure_low_sanity_warning_seen")
+            log.append("선택지 문장이 화면 가장자리에서 흐려지기 시작했다.")
         return replace(
             self,
             turn=self.turn + 1,
-            player=self.player.apply_turn_pressure(),
+            player=player,
             inventory=list(self.inventory),
             clues=list(self.clues),
-            flags=list(self.flags),
+            flags=flags,
             seen_encounters=list(self.seen_encounters),
             unlocked_achievements=list(self.unlocked_achievements),
-            log=list(self.log),
+            log=log,
         )

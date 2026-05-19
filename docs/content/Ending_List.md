@@ -12,6 +12,7 @@
 |---:|---|
 | 100 | 즉시 실패 |
 | 80 | 히든/현실 연결 |
+| 75 | 보안 정복 |
 | 70 | 진실/정복 |
 | 65 | 옥상 신호 탈출 |
 | 60 | 비상계단 탈출 |
@@ -196,6 +197,37 @@ IP 주소: 192.168.0.42
 - security_camera_mapped
 - internal_network_access
 - broadcast_control
+
+### conquest_security_lockdown: 보안 격리 권한 장악
+
+유형:
+
+- conquest
+
+priority:
+
+- 75
+
+조건:
+
+- 위치: server_room
+- 플래그: `security_lockdown_claimed`
+- 체력 > 0
+- 정신력 > 0
+
+본문 톤:
+
+```text
+어긋난 층수의 보안 기록과 서버실 격리 규칙이 하나의 예외 권한으로 묶였다.
+이제 회사는 당신을 감시 대상이 아니라 잠금 절차의 소유자로 취급한다.
+```
+
+루트 요약:
+
+1. 엘리베이터 문틈을 벌려 보안실로 잘못 돌아온다.
+2. 보안실 층수 로그에서 `security_override_badge`와 `security_override_unlocked`를 얻는다.
+3. 서버실 앞에서 우회권한을 사용해 `security_override_used`를 얻는다.
+4. 서버실 관리자 콘솔에서 출입 로그와 격리 규칙을 함께 잠근다.
 
 ### truth_isolation_protocol: 격리 프로토콜의 진실
 

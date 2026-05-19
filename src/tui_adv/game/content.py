@@ -223,6 +223,8 @@ def _item_from_data(entry: dict[str, Any]) -> Item:
         kind=entry["type"],
         tags=_tuple(entry.get("tags", ())),
         usable=bool(entry.get("usable", False)),
+        use_effects=dict(entry.get("use_effects", entry.get("effects", {}))),
+        use_log=entry.get("use_log", ""),
     )
 
 

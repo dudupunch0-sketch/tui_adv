@@ -1,5 +1,7 @@
-from tui_adv.game.loop import build_game_turn, resolve_turn_action
-from tui_adv.game.state import GameState
+from dataclasses import replace
+
+from tui_adv.game.loop import build_game_turn, resolve_turn_action, resolve_turn_action_result
+from tui_adv.game.state import GameState, PlayerState
 
 
 def test_game_turn_shows_encounter_first_then_moves_after_seen_encounter():
@@ -54,3 +56,23 @@ def test_invalid_turn_action_is_rejected_without_mutating_state():
     assert turn.state.turn == 0
     assert turn.state.location_id == "dev_desk"
     assert turn.state.log == []
+
+
+def test_game_turn_allows_using_inventory_item_between_moves():
+    state = replace(
+        GameState.new(seed=123, location_id="pantry"),
+        player=PlayerState(thirst=70),
+        inventory=["bottled_water"],
+        seen_encounters=["pantry_coffee_machine"],
+    )
+    turn = build_game_turn(state)
+
+    assert "use:bottled_water" in [action.id for action in turn.available_actions]
+
+    result = resolve_turn_action_result(turn, "use:bottled_water")
+
+    assert result.action.kind == "item"
+    assert result.turn.state.turn == 1
+    assert result.turn.state.inventory == []
+    assert result.turn.state.player.thirst == 37
+    assert "생수" in result.turn.state.log[-1]

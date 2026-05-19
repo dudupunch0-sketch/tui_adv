@@ -5,6 +5,9 @@ items:
     type: consumable
     tags: [survival, drink]
     usable: true
+    use_effects:
+      thirst: -35
+    use_log: 생수를 마셨다. 목 안쪽에서 사무실 먼지 맛이 조금 사라졌다.
 
   - id: coffee
     name: 커피
@@ -12,6 +15,10 @@ items:
     type: consumable
     tags: [survival, office]
     usable: true
+    use_effects:
+      sanity: 5
+      thirst: 8
+    use_log: 커피를 마셨다. 정신은 조금 돌아왔지만 입안은 더 말랐다.
 
   - id: snack
     name: 과자
@@ -19,6 +26,9 @@ items:
     type: consumable
     tags: [survival, food]
     usable: true
+    use_effects:
+      hunger: -25
+    use_log: 과자를 먹었다. 부스러기가 키보드보다 바닥에 더 많이 떨어졌다.
 
   - id: cup_noodle
     name: 컵라면
@@ -26,6 +36,11 @@ items:
     type: consumable
     tags: [survival, food]
     usable: true
+    use_effects:
+      hunger: -45
+      thirst: 10
+      sanity: 3
+    use_log: 컵라면을 먹었다. 익숙한 야근 맛이 잠깐 현실감을 붙잡아 주었다.
 
   - id: first_aid_kit
     name: 구급상자
@@ -33,6 +48,9 @@ items:
     type: consumable
     tags: [survival, medical]
     usable: true
+    use_effects:
+      health: 30
+    use_log: 구급상자를 사용했다. 플라스틱 붕대 냄새가 상처보다 먼저 덮였다.
 
   - id: power_bank
     name: 보조배터리
@@ -40,6 +58,9 @@ items:
     type: tool
     tags: [battery, tool]
     usable: true
+    use_effects:
+      battery: 35
+    use_log: 보조배터리를 연결했다. 단말기가 짧게 진동하며 아직 살아 있음을 알렸다.
 
   - id: flashlight
     name: 손전등

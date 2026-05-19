@@ -192,7 +192,7 @@ items:
 | usable | no | 직접 사용 가능 여부 |
 | use_effects | no | 사용 시 효과 |
 
-### 1차 아이템 id
+### 주요 아이템 id
 
 ```yaml
 - bottled_water
@@ -203,8 +203,11 @@ items:
 - power_bank
 - flashlight
 - employee_badge
+- security_override_badge
+- parking_key_fob
+- visitor_badge
 - crumpled_printout
-- ex_employee_note
+- ex_employee_memo
 ```
 
 ## encounters.yaml

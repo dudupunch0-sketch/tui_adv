@@ -2,7 +2,7 @@
 
 ## 목적
 
-이 문서는 1차 수직 슬라이스에서 사용할 아이템 10개를 정의한다.
+이 문서는 1차 수직 슬라이스와 1차 확장 콘텐츠 팩에서 사용할 아이템을 정의한다.
 아이템은 생존, 정보 접근, 루트 해금 중 하나 이상의 역할을 가진다.
 
 ## 아이템 목록
@@ -19,8 +19,9 @@
 | employee_badge | 사원증 | key | 기본 출입 권한 |
 | security_override_badge | 보안실 우회권한 | key | 서버실 우회/보안 정복 루트 |
 | parking_key_fob | 지하주차장 키태그 | key | 지하주차장 차단기 탈출 루트 |
+| visitor_badge | 임시 방문증 | key | 로비 출구 게이트 탈출 루트 |
 | crumpled_printout | 구겨진 출력물 | clue | 현실 연결/진실 루트 시작 |
-| ex_employee_note | 퇴사자의 메모 | clue | 진실 루트 단서 |
+| ex_employee_memo | 퇴사자의 메모 | clue | 진실 루트 단서 |
 
 ## 상세 목록
 
@@ -271,6 +272,30 @@
 
 - 지하주차장 `parking_ignition`
 
+### visitor_badge: 임시 방문증
+
+유형:
+
+- key
+- lobby
+- access
+
+설명:
+
+```text
+무인 로비 키오스크가 방금 뱉어낸 방문증.
+방문 목적은 '퇴근 승인 대기'로 인쇄되어 있다.
+```
+
+효과 초안:
+
+- 로비 출구 게이트 선택지 해금
+- `escape_lobby_revolving_door` 탈출 조건 일부
+
+발견 위치:
+
+- 로비 `lobby_reception_kiosk`
+
 ### crumpled_printout: 구겨진 출력물
 
 유형:
@@ -295,7 +320,7 @@
 
 - 복합기 구역
 
-### ex_employee_note: 퇴사자의 메모
+### ex_employee_memo: 퇴사자의 메모
 
 유형:
 

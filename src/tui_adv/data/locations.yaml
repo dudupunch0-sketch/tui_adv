@@ -16,7 +16,7 @@ locations:
   - id: hallway
     name: 복도
     description: 복도 비상등이 일정하지 않은 간격으로 깜빡인다.
-    connections: [dev_office, server_room_front, emergency_stairs, security_room, elevator_hall, parking_lot]
+    connections: [dev_office, server_room_front, emergency_stairs, security_room, elevator_hall, parking_lot, lobby]
     tags: [transit, exposed, cctv]
     danger: 1
 
@@ -95,4 +95,18 @@ locations:
     description: 지하주차장의 형광등은 시동음과 다른 박자로 깜빡인다.
     connections: [hallway]
     tags: [escape, parking, dark]
+    danger: 3
+
+  - id: lobby
+    name: 로비
+    description: 로비 회전문은 바깥을 보여주지만 같은 장면을 세 번씩 반복한다.
+    connections: [hallway, executive_office]
+    tags: [escape, reception, public_border]
+    danger: 2
+
+  - id: executive_office
+    name: 대표실
+    description: 대표실 책상 위 결재판에는 아직 작성하지 않은 당신의 퇴근 승인서가 놓여 있다.
+    connections: [lobby]
+    tags: [conquest, approval, restricted]
     danger: 3

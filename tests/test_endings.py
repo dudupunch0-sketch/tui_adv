@@ -153,6 +153,44 @@ def test_parking_lot_ramp_route_reveals_escape_ending():
     assert "지하주차장" in format_ending_summary(ending)
 
 
+def test_lobby_gate_route_reveals_escape_ending():
+    state = GameState.new(seed=1, location_id="lobby")
+    kiosk = DEFAULT_ENCOUNTERS["lobby_reception_kiosk"]
+    exit_gate = DEFAULT_ENCOUNTERS["lobby_exit_gate"]
+
+    issued = kiosk.resolve_choice("print_visitor_badge", state)
+    escaped = exit_gate.resolve_choice("scan_visitor_badge", issued)
+    ending = evaluate_ending(escaped)
+
+    assert issued.location_id == "lobby"
+    assert "visitor_badge" in issued.inventory
+    assert "lobby_exit_opened" in escaped.flags
+    assert "outside_lobby_reflection" in escaped.clues
+    assert ending is not None
+    assert ending.id == "escape_lobby_revolving_door"
+    assert ending.kind == "escape"
+    assert "로비" in format_ending_summary(ending)
+
+
+def test_executive_console_route_reveals_conquest_ending():
+    state = GameState.new(seed=1, location_id="lobby")
+    kiosk = DEFAULT_ENCOUNTERS["lobby_reception_kiosk"]
+    console = DEFAULT_ENCOUNTERS["executive_approval_console"]
+
+    at_executive = kiosk.resolve_choice("press_executive_call", state)
+    conquered = console.resolve_choice("claim_executive_approval", at_executive)
+    ending = evaluate_ending(conquered)
+
+    assert at_executive.location_id == "executive_office"
+    assert "executive_route_started" in at_executive.flags
+    assert "executive_approval_claimed" in conquered.flags
+    assert "executive_signature_loop" in conquered.clues
+    assert ending is not None
+    assert ending.id == "conquest_executive_approval"
+    assert ending.kind == "conquest"
+    assert "대표 승인" in format_ending_summary(ending)
+
+
 def test_resource_failure_takes_priority_over_escape_flags():
     state = replace(
         GameState.new(seed=1, location_id="emergency_stairs").with_player(

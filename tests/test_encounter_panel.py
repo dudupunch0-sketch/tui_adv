@@ -28,6 +28,17 @@ def test_format_encounter_turn_lists_available_choices_and_check_details():
     assert "판정: 2d6 + interface >= 10" in rendered
 
 
+def test_format_encounter_turn_distorts_choice_labels_when_sanity_is_low():
+    state = GameState.new(seed=1).with_player(PlayerState(sanity=30))
+    encounter = DEFAULT_ENCOUNTERS["ex_employee_messenger"]
+
+    rendered = format_encounter_turn(encounter, state)
+
+    assert "집중도가 흔들려 선택지가 부분적으로 왜곡된다" in rendered
+    assert "1. 메시▒를 확▒한다" in rendered
+    assert "1. 메시지를 확인한다" not in rendered
+
+
 def test_format_choice_resolution_summarizes_check_result_logs_and_resource_delta():
     state = GameState.new(seed=1).with_player(
         PlayerState().with_abilities(interface=4)

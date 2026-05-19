@@ -162,16 +162,23 @@
 정수기에서 물소리가 나지만 컵에는 물이 차지 않는다.
 갈증이 높을수록 유혹적으로 보인다.
 
+조건:
+
+- 위치: pantry
+- 갈증 60 이상
+- 플래그 `thirst_hallucination_seen` 없음
+
 선택지:
 
 1. 물을 마신다
-   - 결과: 갈증 -25 또는 정신력 -8
+   - 결과: 갈증 -25, 정신력 -8, 플래그 `thirst_hallucination_seen`
 
 2. 생수병을 찾는다
-   - 결과: 아이템 `bottled_water` 확률 획득
+   - 비용: 정신력 -2
+   - 결과: 아이템 `bottled_water`, 플래그 `thirst_hallucination_seen`
 
 3. 정수기 전원을 뽑는다
-   - 결과: 위험도 -1 또는 체력 -3
+   - 결과: 위험도 -1, 단서 `water_dispenser_false_sound`, 플래그 `thirst_hallucination_seen`
 
 ### cold_server_door: 서버실 앞의 차가운 바람
 
@@ -238,7 +245,7 @@
    - 결과: 위치 `rooftop`, 플래그 `rooftop_accessed`, 단서 `nonexistent_rooftop_button`
 
 2. 문틈을 벌려 현재 층으로 돌아온다
-   - 결과: 체력 -4
+   - 결과: 보안실로 이동, 체력 -4, 단서 `security_floor_misalignment`, 플래그 `elevator_returned_wrong_floor`
 
 ### office_broadcast: 사내 방송
 

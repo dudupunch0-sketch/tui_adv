@@ -112,6 +112,39 @@ encounters:
           add_items: [bottled_water]
           log: 탕비실 냉장고 문 안쪽에서 밀봉된 생수 한 병을 꺼냈다.
 
+  - id: strange_water_dispenser
+    title: 정수기의 이상한 물
+    body: 정수기에서 물소리가 나지만 컵에는 물이 차지 않는다. 목이 마를수록 빈 컵 안쪽이 출렁이는 것처럼 보인다.
+    conditions:
+      locations: [pantry]
+      min_resources:
+        thirst: 60
+      forbidden_flags: [thirst_hallucination_seen]
+    choices:
+      - id: drink_false_water
+        label: 물을 마신다
+        outcome:
+          resources:
+            thirst: -25
+            sanity: -8
+          add_flags: [thirst_hallucination_seen]
+          log: 빈 컵을 삼키자 목은 잠깐 식었지만 정수기 표시등이 당신의 이름을 깜빡였다.
+      - id: search_for_bottled_water
+        label: 생수병을 찾는다
+        cost:
+          sanity: 2
+        outcome:
+          add_items: [bottled_water]
+          add_flags: [thirst_hallucination_seen]
+          log: 정수기 아래 수납칸에서 실제로 밀봉된 생수 한 병을 찾았다.
+      - id: unplug_dispenser
+        label: 정수기 전원을 뽑는다
+        outcome:
+          danger: -1
+          add_clues: [water_dispenser_false_sound]
+          add_flags: [thirst_hallucination_seen]
+          log: 플러그를 뽑자 물소리는 멈췄지만 컵 안쪽의 물결은 한 박자 늦게 사라졌다.
+
   - id: supply_closet_cache
     title: 물품창고 비상 보급함
     body: 물품창고 안쪽 선반에 '재난 대응 키트'라고 적힌 박스가 열려 있다. 누군가 필요한 것만 가져가라는 듯 세 칸을 비워 두었다.
@@ -292,9 +325,12 @@ encounters:
       - id: force_elevator_doors
         label: 문틈을 벌려 현재 층으로 돌아온다
         outcome:
+          destination_id: security_room
           resources:
             health: -4
-          log: 엘리베이터 문틈을 억지로 벌리자 손바닥에 차가운 금속 자국이 남았다.
+          add_clues: [security_floor_misalignment]
+          add_flags: [elevator_returned_wrong_floor]
+          log: 엘리베이터 문틈을 억지로 벌리자 보안실 모니터들이 방금 전의 현재 층을 되감아 보여 주었다.
 
   - id: rooftop_signal
     title: 옥상의 제한된 외부 신호

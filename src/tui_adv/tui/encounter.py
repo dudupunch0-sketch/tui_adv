@@ -20,9 +20,11 @@ def format_encounter_turn(encounter: Encounter, state: GameState) -> str:
     if not choices:
         lines.append("(가능한 선택지가 없다)")
         return "\n".join(lines)
+    if state.player.should_distort_choices:
+        lines.append("(집중도가 흔들려 선택지가 부분적으로 왜곡된다)")
 
     for index, choice in enumerate(choices, start=1):
-        lines.append(f"{index}. {choice.label}")
+        lines.append(f"{index}. {_format_choice_label(choice, state)}")
         detail = _format_choice_detail(choice)
         if detail:
             lines.append(f"   {detail}")
@@ -46,6 +48,27 @@ def format_choice_resolution(resolution: ChoiceResolution) -> str:
         lines.extend(f"- {delta}" for delta in deltas)
 
     return "\n".join(lines)
+
+
+def _format_choice_label(choice: Choice, state: GameState) -> str:
+    if not state.player.should_distort_choices:
+        return choice.label
+    return _distort_text(choice.label)
+
+
+def _distort_text(text: str) -> str:
+    distorted: list[str] = []
+    visible_index = 0
+    for character in text:
+        if character.isspace():
+            distorted.append(character)
+            continue
+        visible_index += 1
+        if visible_index % 3 == 0:
+            distorted.append("▒")
+        else:
+            distorted.append(character)
+    return "".join(distorted)
 
 
 def _format_choice_detail(choice: Choice) -> str:

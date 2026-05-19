@@ -21,18 +21,19 @@
 | supply_closet | 물품창고 | 보급품 획득, 생존 루프 보강 |
 | elevator_hall | 엘리베이터 홀 | 옥상/확장 이동 관문 |
 | rooftop | 옥상 | 제한된 외부 신호 탈출 루트 |
+| parking_lot | 지하주차장 | 키태그/차단기 탈출 루트 |
 
 ## 연결 구조
 
 ```text
              [meeting_room]
                    |
-[dev_desk] - [dev_office] - [hallway] - [emergency_stairs]
-                   |   |       | \
-       [supply_closet] |  [server_room_front] [security_room]
-                       |       |
-              [printer_area]  [elevator_hall] - [rooftop]
-                   |
+[dev_desk] - [dev_office] - [hallway]
+                   |             ├─ [server_room_front]
+          [supply_closet]        ├─ [emergency_stairs]
+                   |             ├─ [security_room]
+              [printer_area]     ├─ [elevator_hall] - [rooftop]
+                   |             └─ [parking_lot]
                 [pantry]
 ```
 
@@ -117,6 +118,7 @@
 - emergency_stairs
 - security_room
 - elevator_hall
+- parking_lot
 
 주요 인카운터:
 
@@ -347,11 +349,33 @@
 
 - 옥상의 제한된 외부 신호
 
+### parking_lot: 지하주차장
+
+설명:
+
+```text
+지하주차장의 형광등은 시동음과 다른 박자로 깜빡인다.
+```
+
+태그:
+
+- escape
+- parking
+- dark
+
+연결:
+
+- hallway
+
+주요 인카운터:
+
+- 지하주차장의 시동음
+- 지하주차장 차단기
+
 ## 확장 후보
 
 2차 이후 추가할 수 있는 위치:
 
 - lobby: 로비
-- parking_lot: 지하주차장
 - executive_office: 임원실
 - restroom: 화장실

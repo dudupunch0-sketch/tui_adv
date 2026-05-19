@@ -117,6 +117,28 @@ def test_security_floor_mismatch_can_unlock_lockdown_conquest_route():
     assert turn.ending.id == "conquest_security_lockdown"
 
 
+def test_parking_lot_key_and_ramp_sequence_reaches_escape_ending():
+    turn = build_game_turn(GameState.new(seed=123))
+
+    for action in (
+        "choice:1",
+        "move:dev_office",
+        "move:hallway",
+        "move:parking_lot",
+        "choice:1",
+        "choice:1",
+    ):
+        turn = resolve_turn_action(turn, action)
+
+    assert turn.state.location_id == "parking_lot"
+    assert "parking_key_fob" in turn.state.inventory
+    assert "parking_key_found" in turn.state.flags
+    assert "parking_ramp_opened" in turn.state.flags
+    assert "parking_exit_route" in turn.state.clues
+    assert turn.ending is not None
+    assert turn.ending.id == "escape_parking_lot"
+
+
 def test_forcing_elevator_doors_returns_through_security_room_with_clue():
     turn = build_game_turn(GameState.new(seed=123, location_id="elevator_hall"))
 

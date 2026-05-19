@@ -96,3 +96,10 @@ items:
     type: clue
     tags: [truth, internal_network]
     usable: false
+
+  - id: parking_key_fob
+    name: 지하주차장 키태그
+    description: 시동이 켜진 차 안쪽에서 발견한 작은 키태그. 차종 로고 대신 사내 자산번호가 붙어 있다.
+    type: key
+    tags: [escape, parking, access]
+    usable: false

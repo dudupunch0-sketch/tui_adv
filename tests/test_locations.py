@@ -30,6 +30,7 @@ def test_default_office_map_contains_start_and_core_connections():
         "emergency_stairs",
         "security_room",
         "elevator_hall",
+        "parking_lot",
     )
 
 

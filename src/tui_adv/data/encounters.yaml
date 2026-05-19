@@ -413,3 +413,51 @@ encounters:
             sanity: -4
           add_clues: [wrong_skyline_recording]
           log: 녹화된 야경에는 회사 건물이 바깥에서 보이지 않았다.
+
+  - id: parking_ignition
+    title: 지하주차장의 시동음
+    body: 지하주차장 어딘가에서 시동이 걸린 차가 낮게 떨고 있다. 운전석에는 아무도 없고, 대시보드에는 사내망 출입 안내가 떠 있다.
+    conditions:
+      locations: [parking_lot]
+    choices:
+      - id: follow_idling_engine
+        label: 켜져 있는 차의 키태그를 찾는다
+        cost:
+          battery: 4
+          sanity: 3
+        outcome:
+          add_items: [parking_key_fob]
+          add_clues: [idling_engine_trace]
+          add_flags: [parking_key_found]
+          log: 시동음이 가장 크게 울리는 차의 컵홀더에서 작은 키태그를 찾았다.
+      - id: silence_engine
+        label: 시동음을 무시하고 차 사이를 지나간다
+        outcome:
+          resources:
+            sanity: 1
+          log: 시동음은 등 뒤에서 계속 따라왔지만, 잠깐은 모른 척할 수 있었다.
+
+  - id: parking_exit_ramp
+    title: 지하주차장 차단기
+    body: 출구 차단기는 올라가다 만 상태로 멈췄다. 키태그를 가까이 대자 외부 도로의 습기가 아주 얇게 흘러든다.
+    conditions:
+      locations: [parking_lot]
+      required_items: [parking_key_fob]
+      required_flags: [parking_key_found]
+    choices:
+      - id: open_exit_ramp
+        label: 주차장 차단기를 임시 개방한다
+        cost:
+          battery: 5
+          sanity: 4
+        outcome:
+          add_clues: [parking_exit_route]
+          add_flags: [parking_ramp_opened]
+          log: 차단기가 정상 근무 종료 알림처럼 짧게 울리고, 지하주차장 출구가 실제 도로와 맞물렸다.
+      - id: wedge_ramp_with_cart
+        label: 청소 카트로 차단기를 받쳐 둔다
+        outcome:
+          resources:
+            health: -3
+          add_flags: [parking_ramp_jammed]
+          log: 카트는 차단기를 붙잡았지만, 출구 밖 풍경은 아직 한 프레임씩 밀려 있다.

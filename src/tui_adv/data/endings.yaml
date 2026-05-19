@@ -107,3 +107,19 @@ endings:
     text: >
       제한된 외부 신호가 옥상 비상등을 실제 밤하늘과 동기화했다.
       누군가 회사 바깥에서 이 건물이 아직 있다는 사실을 확인했다.
+
+  - id: escape_parking_lot
+    name: 지하주차장 탈출
+    kind: escape
+    priority: 64
+    conditions:
+      locations: [parking_lot]
+      required_items: [parking_key_fob]
+      required_clues: [parking_exit_route]
+      required_flags: [parking_ramp_opened]
+      min_resources:
+        health: 1
+        sanity: 1
+    text: >
+      지하주차장 차단기가 한 번 더 흔들리더니 회사의 격리 경계가 출구 램프를 놓쳤다.
+      헤드라이트가 켜진 빈 차들 사이로, 실제 도로의 습한 공기가 당신을 밀어냈다.

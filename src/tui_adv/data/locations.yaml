@@ -16,7 +16,7 @@ locations:
   - id: hallway
     name: 복도
     description: 복도 비상등이 일정하지 않은 간격으로 깜빡인다.
-    connections: [dev_office, server_room_front, emergency_stairs, security_room, elevator_hall]
+    connections: [dev_office, server_room_front, emergency_stairs, security_room, elevator_hall, parking_lot]
     tags: [transit, exposed, cctv]
     danger: 1
 
@@ -88,4 +88,11 @@ locations:
     description: 옥상 문 너머의 밤공기는 실제 바깥보다 한 프레임 늦게 움직인다.
     connections: [elevator_hall]
     tags: [escape, signal, open_air]
+    danger: 3
+
+  - id: parking_lot
+    name: 지하주차장
+    description: 지하주차장의 형광등은 시동음과 다른 박자로 깜빡인다.
+    connections: [hallway]
+    tags: [escape, parking, dark]
     danger: 3

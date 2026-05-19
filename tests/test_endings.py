@@ -135,6 +135,24 @@ def test_server_room_console_triggers_network_admin_conquest_ending():
     assert "관리자" in format_ending_summary(ending)
 
 
+def test_parking_lot_ramp_route_reveals_escape_ending():
+    state = GameState.new(seed=1, location_id="parking_lot")
+    ignition = DEFAULT_ENCOUNTERS["parking_ignition"]
+    ramp = DEFAULT_ENCOUNTERS["parking_exit_ramp"]
+
+    keyed = ignition.resolve_choice("follow_idling_engine", state)
+    escaped = ramp.resolve_choice("open_exit_ramp", keyed)
+    ending = evaluate_ending(escaped)
+
+    assert keyed.location_id == "parking_lot"
+    assert "parking_key_fob" in keyed.inventory
+    assert "parking_exit_route" in escaped.clues
+    assert ending is not None
+    assert ending.id == "escape_parking_lot"
+    assert ending.kind == "escape"
+    assert "지하주차장" in format_ending_summary(ending)
+
+
 def test_resource_failure_takes_priority_over_escape_flags():
     state = replace(
         GameState.new(seed=1, location_id="emergency_stairs").with_player(

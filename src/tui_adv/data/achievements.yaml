@@ -36,3 +36,9 @@ achievements:
     description: 옥상에서 제한된 외부 인터넷 신호를 송신했다.
     conditions:
       required_flags: [rooftop_signal_sent]
+
+  - id: parking_lot_escape_driver
+    name: 지하주차장 탈출자
+    description: 지하주차장 차단기를 열고 회사 격리 경계 밖으로 빠져나갔다.
+    conditions:
+      required_flags: [parking_ramp_opened]

@@ -22,12 +22,14 @@ def test_default_office_map_contains_start_and_core_connections():
         "hallway",
         "meeting_room",
         "printer_area",
+        "supply_closet",
     )
     assert hallway.connections == (
         "dev_office",
         "server_room_front",
         "emergency_stairs",
         "security_room",
+        "elevator_hall",
     )
 
 

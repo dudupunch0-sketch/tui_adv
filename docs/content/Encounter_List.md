@@ -2,7 +2,7 @@
 
 ## 목적
 
-이 문서는 1차 수직 슬라이스에 들어갈 인카운터 15개의 초안을 정의한다.
+이 문서는 1차 수직 슬라이스와 1차 확장 콘텐츠 팩에 들어갈 인카운터 초안을 정의한다.
 각 인카운터는 나중에 `encounters.yaml`로 옮기기 쉽도록 id, 위치, 핵심 선택, 주요 결과를 가진다.
 
 ## 목록 요약
@@ -13,16 +13,17 @@
 | printer_prints_alone | 복합기가 혼자 출력한다 | 복합기 구역 | 현실 연결 시작 |
 | meeting_room_booking | 회의실 예약 패널 | 회의실 | 코스믹/진실 단서 |
 | pantry_coffee_machine | 탕비실 커피머신 | 탕비실 | 회복과 괴현상 |
+| supply_closet_cache | 물품창고 비상 보급함 | 물품창고 | 보급품 획득 |
 | strange_water_dispenser | 정수기의 이상한 물 | 탕비실 | 갈증 회복 위험 |
 | cold_server_door | 서버실 앞의 차가운 바람 | 서버실 앞 | 정보/정복 관문 |
 | stairwell_footsteps | 비상계단의 발소리 | 비상계단 | 탈출 위험 |
-| impossible_elevator_floor | 엘리베이터의 존재하지 않는 층 | 복도 | 확장 떡밥 |
+| elevator_nonexistent_floor | 존재하지 않는 층의 엘리베이터 | 엘리베이터 홀 | 옥상 루트 진입 |
 | office_broadcast | 사내 방송 | 복도/사무실 | 위험도/회사 괴담 |
 | minutes_with_my_name | 회의록에 적힌 내 이름 | 회의실 | 정신력/진실 단서 |
 | fridge_note | 냉장고 안의 쪽지 | 탕비실 | 현실 연결 후속 |
 | flashlight_under_desk | 책상 아래 손전등 | 개발팀 사무실 | 도구 획득 |
 | camera_watches | 보안 카메라의 시선 | 복도 | 정복/보안 떡밥 |
-| rooftop_signal | 옥상의 신호 | 사내망/복도 | 확장 탈출 떡밥 |
+| rooftop_signal | 옥상의 제한된 외부 신호 | 옥상 | 외부 신호 탈출 |
 | parking_ignition | 지하주차장의 시동음 | 비상계단/복도 | 확장 탈출 떡밥 |
 
 ## 상세 초안
@@ -128,6 +129,28 @@
    - 조건: `printer_secret_started`
    - 결과: 현실 연결 힌트 후속
 
+### supply_closet_cache: 물품창고 비상 보급함
+
+위치:
+
+- supply_closet
+
+설명 요약:
+
+물품창고 비상 보급함에 구급상자, 보조배터리, 과자 봉지가 남아 있다.
+소모품 사용 루프를 자연스럽게 경험시키는 안전한 보급 인카운터다.
+
+선택지:
+
+1. 구급상자를 챙긴다
+   - 결과: 아이템 `first_aid_kit`
+
+2. 보조배터리를 챙긴다
+   - 결과: 아이템 `power_bank`
+
+3. 비상 간식 봉지를 챙긴다
+   - 결과: 아이템 `snack`
+
 ### strange_water_dispenser: 정수기의 이상한 물
 
 위치:
@@ -197,25 +220,25 @@
    - 비용: 배터리 -4
    - 결과: 진실 단서
 
-### impossible_elevator_floor: 엘리베이터의 존재하지 않는 층
+### elevator_nonexistent_floor: 존재하지 않는 층의 엘리베이터
 
 위치:
 
-- hallway
+- elevator_hall
 
 설명 요약:
 
-엘리베이터 표시가 존재하지 않는 층을 가리킨다.
-1차 맵에는 엘리베이터가 없지만 확장 떡밥으로 등장한다.
+엘리베이터 버튼 패널에 없던 R층이 켜져 있다.
+외부 인터넷 아이콘은 한 칸만 떠 있고, 버튼을 누르면 옥상 루트로 이어진다.
 
 선택지:
 
-1. 표시를 확인한다
-   - 비용: 정신력 -3
-   - 결과: 단서
+1. 존재하지 않는 R층 버튼을 누른다
+   - 비용: 배터리 -4, 정신력 -3
+   - 결과: 위치 `rooftop`, 플래그 `rooftop_accessed`, 단서 `nonexistent_rooftop_button`
 
-2. 무시한다
-   - 결과: 안전
+2. 문틈을 벌려 현재 층으로 돌아온다
+   - 결과: 체력 -4
 
 ### office_broadcast: 사내 방송
 
@@ -330,25 +353,30 @@
    - 비용: 배터리 -2
    - 결과: 정복 루트 단서
 
-### rooftop_signal: 옥상의 신호
+### rooftop_signal: 옥상의 제한된 외부 신호
 
 위치:
 
-- hallway
+- rooftop
+
+조건:
+
+- 플래그 `rooftop_accessed`
 
 설명 요약:
 
-사내망에 옥상 안테나 관련 알림이 순간적으로 뜬다.
-1차에서는 직접 이동하지 않고 확장 루트 떡밥으로 사용한다.
+옥상 난간 너머로 도시의 불빛이 보이고, 휴대폰은 외부 인터넷을 한 번만 보낼 수 있을 만큼의 신호를 붙잡는다.
+제한된 신호를 보내면 옥상 외부 신호 탈출 엔딩으로 이어진다.
 
 선택지:
 
-1. 알림을 저장한다
-   - 비용: 배터리 -3
-   - 결과: 탈출 확장 단서
+1. 제한된 외부 신호를 짧게 송신한다
+   - 비용: 배터리 -12, 정신력 -5
+   - 결과: 플래그 `rooftop_signal_sent`, 단서 `outside_signal_ack`
 
-2. 무시한다
-   - 결과: 없음
+2. 어긋난 도시 야경을 녹화한다
+   - 비용: 배터리 -5
+   - 결과: 단서 `wrong_skyline_recording`, 정신력 피해
 
 ### parking_ignition: 지하주차장의 시동음
 

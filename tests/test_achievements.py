@@ -62,6 +62,9 @@ def test_default_achievements_include_reality_conquest_and_truth_route_rewards()
     assert DEFAULT_ACHIEVEMENTS[
         "network_admin_claimed"
     ].conditions.required_flags == ("network_admin_claimed",)
+    assert DEFAULT_ACHIEVEMENTS[
+        "rooftop_signal_sent"
+    ].conditions.required_flags == ("rooftop_signal_sent",)
 
 
 def test_format_unlocked_achievements_renders_korean_unlock_lines():

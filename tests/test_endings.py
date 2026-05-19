@@ -96,6 +96,29 @@ def test_truth_route_reveals_isolation_protocol_ending():
     assert "격리 프로토콜" in format_ending_summary(ending)
 
 
+def test_rooftop_signal_route_reveals_escape_ending():
+    state = GameState.new(seed=1, location_id="dev_desk")
+    messenger = DEFAULT_ENCOUNTERS["ex_employee_messenger"]
+    elevator = DEFAULT_ENCOUNTERS["elevator_nonexistent_floor"]
+    rooftop_signal = DEFAULT_ENCOUNTERS["rooftop_signal"]
+
+    contacted = messenger.resolve_choice("check_message", state)
+    at_elevator = (
+        contacted.move_to("dev_office").move_to("hallway").move_to("elevator_hall")
+    )
+    at_rooftop = elevator.resolve_choice("press_rooftop_button", at_elevator)
+    signaled = rooftop_signal.resolve_choice("send_limited_signal", at_rooftop)
+
+    ending = evaluate_ending(signaled)
+
+    assert at_rooftop.location_id == "rooftop"
+    assert "outside_signal_ack" in signaled.clues
+    assert ending is not None
+    assert ending.id == "escape_rooftop_signal"
+    assert ending.kind == "escape"
+    assert "옥상" in format_ending_summary(ending)
+
+
 def test_server_room_console_triggers_network_admin_conquest_ending():
     state = GameState.new(seed=1, location_id="server_room_front")
     radio = DEFAULT_ENCOUNTERS["server_room_radio"]

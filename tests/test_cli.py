@@ -260,6 +260,59 @@ def test_cli_can_take_and_use_bottled_water_from_pantry():
     assert "== 턴 2 ==" in result.stdout
 
 
+def test_cli_supply_closet_cache_can_collect_and_use_power_bank():
+    result = run_module(
+        "--new",
+        "--seed",
+        "123",
+        "--action",
+        "choice:1",
+        "--action",
+        "move:dev_office",
+        "--action",
+        "move:supply_closet",
+        "--action",
+        "choice:2",
+        "--action",
+        "use:power_bank",
+    )
+
+    assert result.returncode == 0
+    assert "이동 실행: 물품창고" in result.stdout
+    assert "인카운터: 물품창고 비상 보급함" in result.stdout
+    assert "선택 실행: 보조배터리를 챙긴다" in result.stdout
+    assert "아이템 사용: 보조배터리" in result.stdout
+    assert "배터리: 97 -> 100" in result.stdout
+
+
+def test_cli_rooftop_signal_route_prints_escape_ending_and_achievement():
+    result = run_module(
+        "--new",
+        "--seed",
+        "123",
+        "--action",
+        "choice:1",
+        "--action",
+        "move:dev_office",
+        "--action",
+        "move:hallway",
+        "--action",
+        "move:elevator_hall",
+        "--action",
+        "choice:1",
+        "--action",
+        "choice:1",
+    )
+
+    assert result.returncode == 0
+    assert "이동 실행: 엘리베이터 홀" in result.stdout
+    assert "선택 실행: 존재하지 않는 R층 버튼을 누른다" in result.stdout
+    assert "위치: 옥상" in result.stdout
+    assert "선택 실행: 제한된 외부 신호를 짧게 송신한다" in result.stdout
+    assert "업적 달성: 외부 신호 송신" in result.stdout
+    assert "엔딩: 옥상 외부 신호" in result.stdout
+
+
 def test_cli_tui_smoke_prints_textual_layout_snapshot():
     result = run_module("--tui-smoke", "--seed", "123")
 
@@ -292,6 +345,31 @@ def test_cli_tui_smoke_actions_can_print_hidden_reality_hint_ending():
     assert "현실 연결 힌트: 첫 번째 현실 연결 힌트" in result.stdout
     assert "복합기에 붙은 IP 주소 표의 숫자들을 모두 더한다." in result.stdout
     assert "숫자 합계: 33" in result.stdout
+
+
+def test_cli_tui_smoke_actions_can_print_rooftop_signal_ending():
+    result = run_module(
+        "--tui-smoke",
+        "--seed",
+        "123",
+        "--action",
+        "choice:1",
+        "--action",
+        "move:dev_office",
+        "--action",
+        "move:hallway",
+        "--action",
+        "move:elevator_hall",
+        "--action",
+        "choice:1",
+        "--action",
+        "choice:1",
+    )
+
+    assert result.returncode == 0
+    assert "[엔딩]" in result.stdout
+    assert "엔딩: 옥상 외부 신호" in result.stdout
+    assert "옥상" in result.stdout
 
 
 def test_cli_can_save_new_smoke_state_and_load_it_for_later_actions(tmp_path):

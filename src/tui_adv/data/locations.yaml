@@ -9,15 +9,22 @@ locations:
   - id: dev_office
     name: 개발팀 사무실
     description: 개발팀 사무실은 정상적으로 켜져 있지만 사람만 없다.
-    connections: [dev_desk, hallway, meeting_room, printer_area]
+    connections: [dev_desk, hallway, meeting_room, printer_area, supply_closet]
     tags: [office, hub, workstations]
     danger: 0
 
   - id: hallway
     name: 복도
     description: 복도 비상등이 일정하지 않은 간격으로 깜빡인다.
-    connections: [dev_office, server_room_front, emergency_stairs, security_room]
+    connections: [dev_office, server_room_front, emergency_stairs, security_room, elevator_hall]
     tags: [transit, exposed, cctv]
+    danger: 1
+
+  - id: supply_closet
+    name: 물품창고
+    description: 물품창고 선반에는 라벨이 붙은 비상 보급품 박스들이 남아 있다.
+    connections: [dev_office]
+    tags: [survival, storage, supplies]
     danger: 1
 
   - id: pantry
@@ -68,3 +75,17 @@ locations:
     connections: [hallway]
     tags: [security, surveillance, truth]
     danger: 2
+
+  - id: elevator_hall
+    name: 엘리베이터 홀
+    description: 엘리베이터 층수 표시가 존재하지 않는 R층과 4층 사이에서 떨린다.
+    connections: [hallway, rooftop]
+    tags: [transit, elevator, anomaly]
+    danger: 2
+
+  - id: rooftop
+    name: 옥상
+    description: 옥상 문 너머의 밤공기는 실제 바깥보다 한 프레임 늦게 움직인다.
+    connections: [elevator_hall]
+    tags: [escape, signal, open_air]
+    danger: 3

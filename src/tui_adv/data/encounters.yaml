@@ -112,6 +112,28 @@ encounters:
           add_items: [bottled_water]
           log: 탕비실 냉장고 문 안쪽에서 밀봉된 생수 한 병을 꺼냈다.
 
+  - id: supply_closet_cache
+    title: 물품창고 비상 보급함
+    body: 물품창고 안쪽 선반에 '재난 대응 키트'라고 적힌 박스가 열려 있다. 누군가 필요한 것만 가져가라는 듯 세 칸을 비워 두었다.
+    conditions:
+      locations: [supply_closet]
+    choices:
+      - id: take_first_aid_kit
+        label: 구급상자를 챙긴다
+        outcome:
+          add_items: [first_aid_kit]
+          log: 비상 보급함에서 구급상자를 꺼냈다.
+      - id: take_power_bank
+        label: 보조배터리를 챙긴다
+        outcome:
+          add_items: [power_bank]
+          log: 비상 보급함 아래칸에서 충전 케이블이 묶인 보조배터리를 챙겼다.
+      - id: take_emergency_snack
+        label: 비상 간식 봉지를 챙긴다
+        outcome:
+          add_items: [snack]
+          log: 유통기한이 오늘로 끝나는 과자 봉지를 챙겼다.
+
   - id: meeting_room_all_hands
     title: 존재하지 않는 부서의 전체회의
     body: 회의실 화면에는 방금 저장된 회의록이 떠 있다. 참석자는 전 직원, 발언자는 당신 하나다.
@@ -250,3 +272,52 @@ encounters:
             sanity: -8
           add_flags: [network_backlash]
           log: 케이블을 뽑자 서버실 전체가 당신의 심장 박동으로 재부팅했다.
+
+  - id: elevator_nonexistent_floor
+    title: 존재하지 않는 층의 엘리베이터
+    body: 엘리베이터 버튼 패널에는 없던 R층이 켜져 있다. 외부 인터넷 아이콘은 한 칸만 떠 있지만, 층수 표시는 계속 옥상을 가리킨다.
+    conditions:
+      locations: [elevator_hall]
+    choices:
+      - id: press_rooftop_button
+        label: 존재하지 않는 R층 버튼을 누른다
+        cost:
+          battery: 4
+          sanity: 3
+        outcome:
+          destination_id: rooftop
+          add_flags: [rooftop_accessed]
+          add_clues: [nonexistent_rooftop_button]
+          log: 버튼을 누르자 엘리베이터는 움직이지 않았지만 문 밖이 옥상으로 바뀌었다.
+      - id: force_elevator_doors
+        label: 문틈을 벌려 현재 층으로 돌아온다
+        outcome:
+          resources:
+            health: -4
+          log: 엘리베이터 문틈을 억지로 벌리자 손바닥에 차가운 금속 자국이 남았다.
+
+  - id: rooftop_signal
+    title: 옥상의 제한된 외부 신호
+    body: 옥상 난간 너머로 도시의 불빛이 보인다. 휴대폰은 외부 인터넷을 한 번만 보낼 수 있을 만큼의 신호를 붙잡았다.
+    conditions:
+      locations: [rooftop]
+      required_flags: [rooftop_accessed]
+    choices:
+      - id: send_limited_signal
+        label: 제한된 외부 신호를 짧게 송신한다
+        cost:
+          battery: 12
+          sanity: 5
+        outcome:
+          add_flags: [rooftop_signal_sent]
+          add_clues: [outside_signal_ack]
+          log: 짧은 구조 신호가 전송되자 옥상 비상등이 실제 밤하늘과 같은 박자로 깜빡였다.
+      - id: record_wrong_skyline
+        label: 어긋난 도시 야경을 녹화한다
+        cost:
+          battery: 5
+        outcome:
+          resources:
+            sanity: -4
+          add_clues: [wrong_skyline_recording]
+          log: 녹화된 야경에는 회사 건물이 바깥에서 보이지 않았다.

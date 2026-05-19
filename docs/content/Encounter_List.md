@@ -25,7 +25,8 @@
 | flashlight_under_desk | 책상 아래 손전등 | 개발팀 사무실 | 도구 획득 |
 | camera_watches | 보안 카메라의 시선 | 복도 | 정복/보안 떡밥 |
 | rooftop_signal | 옥상의 제한된 외부 신호 | 옥상 | 외부 신호 탈출 |
-| parking_ignition | 지하주차장의 시동음 | 비상계단/복도 | 확장 탈출 떡밥 |
+| parking_ignition | 지하주차장의 시동음 | 지하주차장 | 키태그 획득 |
+| parking_exit_ramp | 지하주차장 차단기 | 지하주차장 | 차단기 탈출 |
 
 ## 상세 초안
 
@@ -429,18 +430,43 @@
 
 위치:
 
-- emergency_stairs
-- hallway
+- parking_lot
 
 설명 요약:
 
-아래쪽 어딘가에서 자동차 시동음이 들린다.
-건물 안에는 아무도 없어야 한다.
+지하주차장 어딘가에서 시동이 걸린 차가 낮게 떨고 있다.
+운전석에는 아무도 없고, 대시보드에는 사내망 출입 안내가 떠 있다.
 
 선택지:
 
-1. 소리를 따라간다
-   - 결과: 위험도 +1, 확장 루트 단서
+1. 켜져 있는 차의 키태그를 찾는다
+   - 비용: 배터리 -4, 정신력 -3
+   - 결과: 아이템 `parking_key_fob`, 단서 `idling_engine_trace`, 플래그 `parking_key_found`
 
-2. 돌아간다
-   - 결과: 안전
+2. 시동음을 무시하고 차 사이를 지나간다
+   - 결과: 정신력 +1
+
+### parking_exit_ramp: 지하주차장 차단기
+
+위치:
+
+- parking_lot
+
+조건:
+
+- 아이템 `parking_key_fob`
+- 플래그 `parking_key_found`
+
+설명 요약:
+
+출구 차단기는 올라가다 만 상태로 멈췄다.
+키태그를 가까이 대자 외부 도로의 습기가 아주 얇게 흘러든다.
+
+선택지:
+
+1. 주차장 차단기를 임시 개방한다
+   - 비용: 배터리 -5, 정신력 -4
+   - 결과: 단서 `parking_exit_route`, 플래그 `parking_ramp_opened`
+
+2. 청소 카트로 차단기를 받쳐 둔다
+   - 결과: 체력 -3, 플래그 `parking_ramp_jammed`

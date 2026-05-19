@@ -109,6 +109,7 @@ def test_default_items_yaml_loads_display_metadata():
     printout = items["crumpled_printout"]
     memo = items["ex_employee_memo"]
     security_badge = items["security_override_badge"]
+    parking_key = items["parking_key_fob"]
 
     assert DATA_DIR.joinpath("items.yaml").name == "items.yaml"
     assert printout.name == "구겨진 출력물"
@@ -118,6 +119,8 @@ def test_default_items_yaml_loads_display_metadata():
     assert memo.kind == "clue"
     assert security_badge.name == "보안실 우회권한"
     assert security_badge.kind == "key"
+    assert parking_key.name == "지하주차장 키태그"
+    assert parking_key.kind == "key"
 
 
 def test_default_locations_yaml_loads_connections_and_tags():
@@ -127,6 +130,7 @@ def test_default_locations_yaml_loads_connections_and_tags():
     supply_closet = locations["supply_closet"]
     elevator_hall = locations["elevator_hall"]
     rooftop = locations["rooftop"]
+    parking_lot = locations["parking_lot"]
 
     assert DATA_DIR.joinpath("locations.yaml").name == "locations.yaml"
     assert security_room.name == "보안실"
@@ -142,6 +146,35 @@ def test_default_locations_yaml_loads_connections_and_tags():
     assert elevator_hall.connections == ("hallway", "rooftop")
     assert "elevator_hall" in locations["hallway"].connections
     assert rooftop.tags == ("escape", "signal", "open_air")
+    assert parking_lot.name == "지하주차장"
+    assert parking_lot.connections == ("hallway",)
+    assert "parking_lot" in locations["hallway"].connections
+    assert parking_lot.tags == ("escape", "parking", "dark")
+
+
+def test_default_parking_lot_escape_content_is_wired():
+    encounters = load_default_encounters()
+    endings = load_default_endings()
+    achievements = load_default_achievements()
+    ignition = encounters["parking_ignition"]
+    ramp = encounters["parking_exit_ramp"]
+    parking_escape = endings["escape_parking_lot"]
+    achievement = achievements["parking_lot_escape_driver"]
+
+    assert ignition.conditions.locations == ("parking_lot",)
+    assert ignition.choices[0].outcome.add_items == ("parking_key_fob",)
+    assert ignition.choices[0].outcome.add_flags == ("parking_key_found",)
+    assert ramp.conditions.locations == ("parking_lot",)
+    assert ramp.conditions.required_items == ("parking_key_fob",)
+    assert ramp.conditions.required_flags == ("parking_key_found",)
+    assert ramp.choices[0].outcome.add_clues == ("parking_exit_route",)
+    assert ramp.choices[0].outcome.add_flags == ("parking_ramp_opened",)
+    assert parking_escape.kind == "escape"
+    assert parking_escape.conditions.locations == ("parking_lot",)
+    assert parking_escape.conditions.required_items == ("parking_key_fob",)
+    assert parking_escape.conditions.required_clues == ("parking_exit_route",)
+    assert parking_escape.conditions.required_flags == ("parking_ramp_opened",)
+    assert achievement.conditions.required_flags == ("parking_ramp_opened",)
 
 
 def test_locations_yaml_rejects_unknown_connections(tmp_path):

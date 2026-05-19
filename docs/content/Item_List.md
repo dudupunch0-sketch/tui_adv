@@ -18,6 +18,7 @@
 | flashlight | 손전등 | tool | 어두운 구역 선택지 해금, 배터리 소모 |
 | employee_badge | 사원증 | key | 기본 출입 권한 |
 | security_override_badge | 보안실 우회권한 | key | 서버실 우회/보안 정복 루트 |
+| parking_key_fob | 지하주차장 키태그 | key | 지하주차장 차단기 탈출 루트 |
 | crumpled_printout | 구겨진 출력물 | clue | 현실 연결/진실 루트 시작 |
 | ex_employee_note | 퇴사자의 메모 | clue | 진실 루트 단서 |
 
@@ -245,6 +246,30 @@
 발견 위치:
 
 - 보안실 `security_room_floor_mismatch_console`
+
+### parking_key_fob: 지하주차장 키태그
+
+유형:
+
+- key
+- parking
+- access
+
+설명:
+
+```text
+시동이 켜진 차 안쪽에서 발견한 작은 키태그.
+차종 로고 대신 사내 자산번호가 붙어 있다.
+```
+
+효과 초안:
+
+- 지하주차장 차단기 개방 선택지 해금
+- `escape_parking_lot` 탈출 조건 일부
+
+발견 위치:
+
+- 지하주차장 `parking_ignition`
 
 ### crumpled_printout: 구겨진 출력물
 

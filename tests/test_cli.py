@@ -313,6 +313,34 @@ def test_cli_rooftop_signal_route_prints_escape_ending_and_achievement():
     assert "엔딩: 옥상 외부 신호" in result.stdout
 
 
+def test_cli_parking_lot_escape_route_prints_ending_and_achievement():
+    result = run_module(
+        "--new",
+        "--seed",
+        "123",
+        "--action",
+        "choice:1",
+        "--action",
+        "move:dev_office",
+        "--action",
+        "move:hallway",
+        "--action",
+        "move:parking_lot",
+        "--action",
+        "choice:1",
+        "--action",
+        "choice:1",
+    )
+
+    assert result.returncode == 0
+    assert "이동 실행: 지하주차장" in result.stdout
+    assert "인카운터: 지하주차장의 시동음" in result.stdout
+    assert "선택 실행: 켜져 있는 차의 키태그를 찾는다" in result.stdout
+    assert "선택 실행: 주차장 차단기를 임시 개방한다" in result.stdout
+    assert "업적 달성: 지하주차장 탈출자" in result.stdout
+    assert "엔딩: 지하주차장 탈출" in result.stdout
+
+
 def test_cli_resource_preload_can_trigger_thirst_hallucination_route():
     result = run_module(
         "--new",

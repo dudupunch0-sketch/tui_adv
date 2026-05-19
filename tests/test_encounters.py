@@ -122,6 +122,7 @@ def test_pantry_coffee_machine_restores_focus_and_unlocks_reality_hint():
     assert [choice.id for choice in encounter.available_choices(state)] == [
         "brew_coffee",
         "inspect_water_tank",
+        "take_bottled_water",
     ]
 
     caffeinated = encounter.resolve_choice("brew_coffee", state)
@@ -136,6 +137,7 @@ def test_pantry_coffee_machine_restores_focus_and_unlocks_reality_hint():
         "brew_coffee",
         "inspect_water_tank",
         "look_behind_machine",
+        "take_bottled_water",
     ]
 
     revealed = encounter.resolve_choice("look_behind_machine", hidden_state)
@@ -147,6 +149,11 @@ def test_pantry_coffee_machine_restores_focus_and_unlocks_reality_hint():
         "pantry_hint_seen",
     ]
     assert revealed.log == ["커피머신 뒤쪽 패널에 복합기 출력물과 같은 표식이 있었다."]
+
+    stocked = encounter.resolve_choice("take_bottled_water", state)
+
+    assert stocked.inventory == ["bottled_water"]
+    assert stocked.log == ["탕비실 냉장고 문 안쪽에서 밀봉된 생수 한 병을 꺼냈다."]
 
 
 def test_eligible_encounters_filter_current_state_and_seen_history():

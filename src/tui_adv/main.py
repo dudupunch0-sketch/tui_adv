@@ -11,6 +11,7 @@ from tui_adv.game.achievements import (
 )
 from tui_adv.game.encounters import Choice, select_encounter
 from tui_adv.game.endings import evaluate_ending, format_ending_summary
+from tui_adv.game.items import ItemUseResult
 from tui_adv.game.locations import DEFAULT_LOCATIONS
 from tui_adv.game.loop import (
     GameTurn,
@@ -156,13 +157,28 @@ def _format_game_turn(turn: GameTurn) -> str:
         lines.extend(["", format_ending_summary(turn.ending)])
     elif turn.encounter is not None:
         lines.extend(["", format_encounter_turn(turn.encounter, turn.state)])
+        _append_action_group(lines, turn, kind="item", title="소지품 사용:")
     elif turn.available_actions:
-        lines.extend(["", "이동:"])
-        for action in turn.available_actions:
-            lines.append(f"- {action.id} {action.label}")
+        _append_action_group(lines, turn, kind="move", title="이동:")
+        _append_action_group(lines, turn, kind="item", title="소지품 사용:")
     else:
         lines.extend(["", "가능한 행동 없음"])
     return "\n".join(lines)
+
+
+def _append_action_group(
+    lines: list[str],
+    turn: GameTurn,
+    *,
+    kind: str,
+    title: str,
+) -> None:
+    actions = [action for action in turn.available_actions if action.kind == kind]
+    if not actions:
+        return
+    lines.extend(["", title])
+    for action in actions:
+        lines.append(f"- {action.id} {action.label}")
 
 
 def _format_turn_action_result(result: TurnActionResult) -> str:
@@ -172,6 +188,11 @@ def _format_turn_action_result(result: TurnActionResult) -> str:
             lines.append(format_choice_resolution(result.choice_resolution))
     elif result.action.kind == "move":
         lines = [f"이동 실행: {result.action.label}"]
+    elif result.action.kind == "item":
+        lines = [f"아이템 사용: {result.action.label}"]
+        if result.item_use_result is not None:
+            lines.extend(result.item_use_result.new_logs)
+            lines.extend(_format_item_resource_deltas(result.item_use_result))
     else:
         lines = [f"행동 실행: {result.action.label}"]
 
@@ -179,6 +200,25 @@ def _format_turn_action_result(result: TurnActionResult) -> str:
     if achievement_text:
         lines.extend(["", achievement_text])
     return "\n".join(lines)
+
+
+def _format_item_resource_deltas(result: ItemUseResult) -> list[str]:
+    labels = {
+        "health": "체력",
+        "sanity": "정신력",
+        "battery": "배터리",
+        "hunger": "허기",
+        "thirst": "갈증",
+    }
+    before = result.before_state.player
+    after = result.state.player
+    lines: list[str] = []
+    for resource_name, label in labels.items():
+        before_value = getattr(before, resource_name)
+        after_value = getattr(after, resource_name)
+        if before_value != after_value:
+            lines.append(f"{label}: {before_value} -> {after_value}")
+    return lines
 
 
 def _choice_from_argument(choices: tuple[Choice, ...], argument: str) -> Choice:

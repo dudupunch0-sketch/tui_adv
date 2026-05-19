@@ -5,6 +5,7 @@ from dataclasses import dataclass, replace
 from tui_adv.game.achievements import Achievement, unlock_new_achievements
 from tui_adv.game.encounters import ChoiceResolution, Encounter, select_encounter
 from tui_adv.game.endings import Ending, evaluate_ending
+from tui_adv.game.items import DEFAULT_ITEMS, ItemUseResult, use_item_result
 from tui_adv.game.locations import DEFAULT_LOCATIONS
 from tui_adv.game.state import GameState
 
@@ -38,6 +39,7 @@ class TurnActionResult:
     before_turn: GameTurn
     turn: GameTurn
     choice_resolution: ChoiceResolution | None = None
+    item_use_result: ItemUseResult | None = None
     unlocked_achievements: tuple[Achievement, ...] = ()
 
 
@@ -55,8 +57,9 @@ def build_game_turn(state: GameState) -> GameTurn:
         )
 
     encounter = select_encounter(state)
+    item_actions = _usable_item_actions(state)
     if encounter is not None:
-        actions = tuple(
+        choice_actions = tuple(
             TurnAction(
                 id=f"choice:{index}",
                 label=choice.label,
@@ -70,11 +73,11 @@ def build_game_turn(state: GameState) -> GameTurn:
             encounter=encounter,
             ending=None,
             available_move_ids=(),
-            available_actions=actions,
+            available_actions=(*choice_actions, *item_actions),
         )
 
     move_ids = state.available_move_ids()
-    actions = tuple(
+    move_actions = tuple(
         TurnAction(
             id=f"move:{location_id}",
             label=DEFAULT_LOCATIONS[location_id].name,
@@ -88,8 +91,29 @@ def build_game_turn(state: GameState) -> GameTurn:
         encounter=None,
         ending=None,
         available_move_ids=move_ids,
-        available_actions=actions,
+        available_actions=(*move_actions, *item_actions),
     )
+
+
+def _usable_item_actions(state: GameState) -> tuple[TurnAction, ...]:
+    actions: list[TurnAction] = []
+    seen_item_ids: set[str] = set()
+    for item_id in state.inventory:
+        if item_id in seen_item_ids:
+            continue
+        seen_item_ids.add(item_id)
+        item = DEFAULT_ITEMS.get(item_id)
+        if item is None or not item.usable or not item.use_effects:
+            continue
+        actions.append(
+            TurnAction(
+                id=f"use:{item_id}",
+                label=item.name,
+                kind="item",
+                target_id=item_id,
+            )
+        )
+    return tuple(actions)
 
 
 def resolve_turn_action(turn: GameTurn, action_id: str) -> GameTurn:
@@ -123,6 +147,18 @@ def resolve_turn_action_result(turn: GameTurn, action_id: str) -> TurnActionResu
             action=action,
             before_turn=turn,
             turn=build_game_turn(unlock_result.state),
+            unlocked_achievements=unlock_result.unlocked,
+        )
+
+    if action.kind == "item":
+        item_result = use_item_result(turn.state, action.target_id)
+        unlock_result = unlock_new_achievements(item_result.state)
+        item_result = replace(item_result, state=unlock_result.state)
+        return TurnActionResult(
+            action=action,
+            before_turn=turn,
+            turn=build_game_turn(unlock_result.state),
+            item_use_result=item_result,
             unlocked_achievements=unlock_result.unlocked,
         )
 

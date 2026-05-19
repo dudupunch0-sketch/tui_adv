@@ -65,10 +65,11 @@ def render_tui_layout_snapshot(turn: GameTurn) -> str:
         lines.extend(["[엔딩]", format_ending_summary(turn.ending)])
     elif turn.encounter is not None:
         lines.extend(["[현재 인카운터]", format_encounter_turn(turn.encounter, turn.state)])
+        _append_numbered_action_group(lines, turn, kind="item", title="소지품 사용")
     elif turn.available_actions:
-        lines.extend(["[현재 행동]", "이동:"])
-        for index, action in enumerate(turn.available_actions, start=1):
-            lines.append(f"{index}. {action.label}")
+        lines.append("[현재 행동]")
+        _append_numbered_action_group(lines, turn, kind="move", title="이동")
+        _append_numbered_action_group(lines, turn, kind="item", title="소지품 사용")
     else:
         lines.extend(["[현재 행동]", "가능한 행동 없음"])
 
@@ -78,6 +79,25 @@ def render_tui_layout_snapshot(turn: GameTurn) -> str:
     else:
         lines.append("- 아직 기록 없음")
     return "\n".join(lines)
+
+
+def _append_numbered_action_group(
+    lines: list[str],
+    turn: GameTurn,
+    *,
+    kind: str,
+    title: str,
+) -> None:
+    indexed_actions = [
+        (index, action)
+        for index, action in enumerate(turn.available_actions, start=1)
+        if action.kind == kind
+    ]
+    if not indexed_actions:
+        return
+    lines.append(f"{title}:")
+    for index, action in indexed_actions:
+        lines.append(f"{index}. {action.label}")
 
 
 def _format_inventory_and_clues(state: GameState) -> list[str]:
@@ -210,6 +230,10 @@ def _format_tui_action_result(result: TurnActionResult) -> str:
             lines.append(format_choice_resolution(result.choice_resolution))
     elif result.action.kind == "move":
         lines = [f"이동 실행: {result.action.label}"]
+    elif result.action.kind == "item":
+        lines = [f"아이템 사용: {result.action.label}"]
+        if result.item_use_result is not None:
+            lines.extend(result.item_use_result.new_logs)
     else:
         lines = [f"행동 실행: {result.action.label}"]
 

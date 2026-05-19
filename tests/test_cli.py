@@ -240,6 +240,26 @@ def test_cli_game_over_smoke_prints_spatial_failure():
     assert "계단은 아래가 아니라 당신 안쪽" in result.stdout
 
 
+def test_cli_can_take_and_use_bottled_water_from_pantry():
+    result = run_module(
+        "--new",
+        "--seed",
+        "123",
+        "--location",
+        "pantry",
+        "--action",
+        "choice:3",
+        "--action",
+        "use:bottled_water",
+    )
+
+    assert result.returncode == 0
+    assert "선택 실행: 밀봉된 생수 한 병을 챙긴다" in result.stdout
+    assert "아이템 사용: 생수" in result.stdout
+    assert "생수를 마셨다." in result.stdout
+    assert "== 턴 2 ==" in result.stdout
+
+
 def test_cli_tui_smoke_prints_textual_layout_snapshot():
     result = run_module("--tui-smoke", "--seed", "123")
 

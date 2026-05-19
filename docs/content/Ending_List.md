@@ -13,7 +13,8 @@
 | 100 | 즉시 실패 |
 | 80 | 히든/현실 연결 |
 | 70 | 진실/정복 |
-| 60 | 탈출 |
+| 65 | 옥상 신호 탈출 |
+| 60 | 비상계단 탈출 |
 | 10 | 중간/메타 |
 
 ## 1차 엔딩
@@ -109,6 +110,31 @@ priority:
 그 침묵이 이렇게 안심되는 것인 줄 몰랐다.
 ```
 
+### escape_rooftop_signal: 옥상 외부 신호
+
+유형:
+
+- escape
+
+priority:
+
+- 65
+
+조건:
+
+- 위치: rooftop
+- 플래그: `rooftop_signal_sent`
+- 단서: `outside_signal_ack`
+- 체력 > 0
+- 정신력 > 0
+
+본문 톤:
+
+```text
+제한된 외부 신호가 옥상 비상등을 실제 밤하늘과 동기화했다.
+누군가 회사 바깥에서 이 건물이 아직 있다는 사실을 확인했다.
+```
+
 ### hidden_reality_hint_001: 첫 번째 현실 연결 힌트
 
 유형:
@@ -187,16 +213,6 @@ IP 주소: 192.168.0.42
 - impossible_meeting_saved
 - meeting_pattern_noticed
 - server_log_fragment
-
-### escape_rooftop_signal: 옥상 신호 탈출
-
-유형:
-
-- escape
-
-방향:
-
-옥상 안테나 또는 외부 신호를 이용해 격리 공간 밖과 접촉한다.
 
 ### escape_parking_lot: 지하주차장 탈출
 

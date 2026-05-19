@@ -18,6 +18,9 @@
 | server_room_front | 서버실 앞 | 정보/정복/진실 관문 |
 | emergency_stairs | 비상계단 | 탈출 루트, 반복 공간 위험 |
 | security_room | 보안실 | CCTV/출입 기록, 진실 단서 |
+| supply_closet | 물품창고 | 보급품 획득, 생존 루프 보강 |
+| elevator_hall | 엘리베이터 홀 | 옥상/확장 이동 관문 |
+| rooftop | 옥상 | 제한된 외부 신호 탈출 루트 |
 
 ## 연결 구조
 
@@ -25,8 +28,10 @@
              [meeting_room]
                    |
 [dev_desk] - [dev_office] - [hallway] - [emergency_stairs]
-                   |           | \
-              [printer_area]  [server_room_front] [security_room]
+                   |   |       | \
+       [supply_closet] |  [server_room_front] [security_room]
+                       |       |
+              [printer_area]  [elevator_hall] - [rooftop]
                    |
                 [pantry]
 ```
@@ -82,6 +87,7 @@
 - hallway
 - meeting_room
 - printer_area
+- supply_closet
 
 주요 인카운터:
 
@@ -110,6 +116,7 @@
 - server_room_front
 - emergency_stairs
 - security_room
+- elevator_hall
 
 주요 인카운터:
 
@@ -273,13 +280,78 @@
 - 삭제된 출입 기록
 - 보안실 인터폰
 
+### supply_closet: 물품창고
+
+설명:
+
+```text
+물품창고 선반에는 라벨이 붙은 비상 보급품 박스들이 남아 있다.
+```
+
+태그:
+
+- survival
+- storage
+- supplies
+
+연결:
+
+- dev_office
+
+주요 인카운터:
+
+- 물품창고 비상 보급함
+
+### elevator_hall: 엘리베이터 홀
+
+설명:
+
+```text
+엘리베이터 층수 표시가 존재하지 않는 R층과 4층 사이에서 떨린다.
+```
+
+태그:
+
+- transit
+- elevator
+- anomaly
+
+연결:
+
+- hallway
+- rooftop
+
+주요 인카운터:
+
+- 존재하지 않는 층의 엘리베이터
+
+### rooftop: 옥상
+
+설명:
+
+```text
+옥상 문 너머의 밤공기는 실제 바깥보다 한 프레임 늦게 움직인다.
+```
+
+태그:
+
+- escape
+- signal
+- open_air
+
+연결:
+
+- elevator_hall
+
+주요 인카운터:
+
+- 옥상의 제한된 외부 신호
+
 ## 확장 후보
 
 2차 이후 추가할 수 있는 위치:
 
-- server_room: 서버실/전산실 내부
-- elevator: 엘리베이터
-- rooftop: 옥상
 - lobby: 로비
 - parking_lot: 지하주차장
 - executive_office: 임원실
+- restroom: 화장실

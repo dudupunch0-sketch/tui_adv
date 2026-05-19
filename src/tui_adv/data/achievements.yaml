@@ -30,3 +30,9 @@ achievements:
     description: 서버실 내부 콘솔에서 격리 규칙을 덮어썼다.
     conditions:
       required_flags: [network_admin_claimed]
+
+  - id: rooftop_signal_sent
+    name: 외부 신호 송신
+    description: 옥상에서 제한된 외부 인터넷 신호를 송신했다.
+    conditions:
+      required_flags: [rooftop_signal_sent]

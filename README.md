@@ -6,8 +6,8 @@ TUI 기반 랜덤 인카운터 선택지 생존 게임.
 
 ## 현재 단계
 
-현재는 Phase 7 콘텐츠 런타임 전환의 첫 골격 이후, 스크립트 기반 다중 턴 루프까지 구현된 단계다.
-게임 구조와 안전한 현실 연결 원칙을 문서화했고, 순수 게임 상태 모델, 자원 임계치/실패 판정, 1차 사무실 위치 모델, 인접 위치 이동, 인카운터/선택지 조건·비용·결과 적용, 능력치 기반 선택지, 2d6 성공/실패 분기, 현재 상태 기반 인카운터 선택, 공간 왜곡 탈출/실패 엔딩 판정, YAML 공개 콘텐츠 로더/검증, YAML 기반 런타임 기본 위치/인카운터/엔딩, 로컬 비공개 현실 힌트 로더, 복합기 IP 숫자 합계 퍼즐 더미 값, 현실 연결 히든 엔딩 보상 출력, CLI 한 턴 실행, CLI 다중 턴 스크립트 실행, Textual 레이아웃 smoke를 추가했다.
+현재는 Phase 7 콘텐츠 런타임 전환 이후, 스크립트 기반 다중 턴 루프와 1차 확장 콘텐츠 팩까지 구현된 단계다.
+게임 구조와 안전한 현실 연결 원칙을 문서화했고, 순수 게임 상태 모델, 자원 임계치/실패 판정, 1차 사무실 위치 모델, 인접 위치 이동, 인카운터/선택지 조건·비용·결과 적용, 능력치 기반 선택지, 2d6 성공/실패 분기, 현재 상태 기반 인카운터 선택, 공간 왜곡 탈출/실패 엔딩 판정, YAML 공개 콘텐츠 로더/검증, YAML 기반 런타임 기본 위치/인카운터/엔딩, 로컬 비공개 현실 힌트 로더, 복합기 IP 숫자 합계 퍼즐 더미 값, 현실 연결 히든 엔딩 보상 출력, CLI 한 턴 실행, CLI 다중 턴 스크립트 실행, Textual 레이아웃 smoke, 소모품 아이템 사용, 물품창고 보급품, 엘리베이터/옥상 경로, 옥상 외부 신호 탈출 엔딩을 추가했다.
 
 ## 실행/테스트
 
@@ -19,6 +19,8 @@ PYTHONPATH=src python -m tui_adv --new --seed 123 --choice 1
 PYTHONPATH=src python -m tui_adv --new --seed 123 --action choice:1 --action move:dev_office --action move:hallway --action move:server_room_front --action choice:1
 PYTHONPATH=src python -m tui_adv --new --seed 123 --location printer_area --action choice:2 --action move:pantry --action choice:3
 PYTHONPATH=src python -m tui_adv --new --seed 123 --location emergency_stairs --flag escape_puzzle_ready --choice 1
+PYTHONPATH=src python -m tui_adv --new --seed 123 --action choice:1 --action move:dev_office --action move:supply_closet --action choice:2 --action use:power_bank
+PYTHONPATH=src python -m tui_adv --new --seed 123 --action choice:1 --action move:dev_office --action move:hallway --action move:elevator_hall --action choice:1 --action choice:1
 PYTHONPATH=src python -m tui_adv --tui-smoke --seed 123
 PYTHONPATH=src python -m tui_adv --tui --seed 123  # Textual 설치 환경에서 실행
 PYTHONPATH=src python -m tui_adv --version
@@ -78,6 +80,6 @@ python -m pytest tests -q
 
 ## 다음 작업 후보
 
-1. Textual TUI에 다중 턴 선택/이동 루프와 히든 엔딩 보상 출력 연결
-2. 저장/불러오기와 다중 턴 루프 연결
-3. 회의실/보안실/진실 루트 콘텐츠 확장
+1. Textual TUI에 저장/불러오기, 종료 단축키, 자동 저장 UX 연결
+2. 옥상/엘리베이터 루트의 실패·우회 분기와 보안실 연계 확장
+3. 저정신력/고갈증 상태의 텍스트 왜곡과 위험 인카운터 추가

@@ -99,6 +99,9 @@ def test_default_locations_yaml_loads_connections_and_tags():
     locations = load_default_locations()
     security_room = locations["security_room"]
     server_room = locations["server_room"]
+    supply_closet = locations["supply_closet"]
+    elevator_hall = locations["elevator_hall"]
+    rooftop = locations["rooftop"]
 
     assert DATA_DIR.joinpath("locations.yaml").name == "locations.yaml"
     assert security_room.name == "보안실"
@@ -108,6 +111,12 @@ def test_default_locations_yaml_loads_connections_and_tags():
     assert server_room.name == "서버실 내부"
     assert server_room.connections == ("server_room_front",)
     assert "server_room" in locations["server_room_front"].connections
+    assert supply_closet.name == "물품창고"
+    assert supply_closet.connections == ("dev_office",)
+    assert "supply_closet" in locations["dev_office"].connections
+    assert elevator_hall.connections == ("hallway", "rooftop")
+    assert "elevator_hall" in locations["hallway"].connections
+    assert rooftop.tags == ("escape", "signal", "open_air")
 
 
 def test_locations_yaml_rejects_unknown_connections(tmp_path):
@@ -137,6 +146,9 @@ def test_runtime_default_encounters_are_loaded_from_yaml_content():
     encounters = load_default_encounters()
 
     assert "server_room_radio" in encounters
+    assert "supply_closet_cache" in encounters
+    assert "elevator_nonexistent_floor" in encounters
+    assert "rooftop_signal" in encounters
     assert "server_room_radio" in DEFAULT_ENCOUNTERS
     state = GameState.new(seed=123, location_id="server_room_front")
 

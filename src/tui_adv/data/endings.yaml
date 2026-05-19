@@ -66,6 +66,20 @@ endings:
       관리자 콘솔은 당신을 임시 예외가 아니라 규칙 작성자로 받아들였다.
       이제 회사의 격리 공간은 당신의 퇴근 절차를 승인해야 한다.
 
+  - id: conquest_security_lockdown
+    name: 보안 격리 권한 장악
+    kind: conquest
+    priority: 75
+    conditions:
+      locations: [server_room]
+      required_flags: [security_lockdown_claimed]
+      min_resources:
+        health: 1
+        sanity: 1
+    text: >
+      어긋난 층수의 보안 기록과 서버실 격리 규칙이 하나의 예외 권한으로 묶였다.
+      이제 회사는 당신을 감시 대상이 아니라 잠금 절차의 소유자로 취급한다.
+
   - id: conquest_broadcast_channel
     name: 사내 방송 장악
     kind: conquest

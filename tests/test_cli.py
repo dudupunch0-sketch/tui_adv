@@ -333,6 +333,35 @@ def test_cli_resource_preload_can_trigger_thirst_hallucination_route():
     assert "갈증: 70 -> 47" in result.stdout
 
 
+def test_cli_security_override_route_prints_lockdown_conquest_ending():
+    result = run_module(
+        "--new",
+        "--seed",
+        "123",
+        "--location",
+        "elevator_hall",
+        "--action",
+        "choice:2",
+        "--action",
+        "choice:1",
+        "--action",
+        "move:hallway",
+        "--action",
+        "move:server_room_front",
+        "--action",
+        "choice:4",
+        "--action",
+        "choice:3",
+    )
+
+    assert result.returncode == 0
+    assert "인카운터: 어긋난 층수의 보안 콘솔" in result.stdout
+    assert "선택 실행: 보안실 층수 로그에서 서버실 우회권한을 뽑는다" in result.stdout
+    assert "선택 실행: 보안실 우회권한으로 서버실 문을 연다" in result.stdout
+    assert "선택 실행: 출입 로그와 격리 규칙을 함께 잠근다" in result.stdout
+    assert "엔딩: 보안 격리 권한 장악" in result.stdout
+
+
 def test_cli_elevator_force_door_route_prints_security_room_bypass():
     result = run_module(
         "--new",

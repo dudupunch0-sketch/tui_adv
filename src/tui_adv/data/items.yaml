@@ -76,6 +76,13 @@ items:
     tags: [access]
     usable: false
 
+  - id: security_override_badge
+    name: 보안실 우회권한
+    description: 보안실 콘솔에서 임시로 발급한 출입 권한. 층수 기록이 맞지 않는 문에만 통한다.
+    type: key
+    tags: [security, access, conquest]
+    usable: false
+
   - id: crumpled_printout
     name: 구겨진 출력물
     description: 복합기에서 나온 구겨진 출력물. 문서 양식은 사내 표준인데, 내용은 아직 일어나지 않은 일을 말한다.

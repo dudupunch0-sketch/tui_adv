@@ -28,6 +28,7 @@ def test_default_encounter_yaml_loads_choice_conditions_and_checks():
         choice for choice in radio.choices if choice.id == "follow_cold_air"
     )
     console = encounters["server_room_console"]
+    security_override = encounters["security_room_floor_mismatch_console"]
     water = encounters["strange_water_dispenser"]
 
     assert DATA_DIR.joinpath("encounters.yaml").name == "encounters.yaml"
@@ -46,6 +47,16 @@ def test_default_encounter_yaml_loads_choice_conditions_and_checks():
         "network_admin_claimed",
         "internal_network_access",
     )
+    assert security_override.conditions.locations == ("security_room",)
+    assert security_override.conditions.required_clues == (
+        "security_floor_misalignment",
+    )
+    assert security_override.conditions.required_flags == (
+        "elevator_returned_wrong_floor",
+    )
+    assert security_override.choices[0].outcome.add_items == (
+        "security_override_badge",
+    )
     assert water.conditions.locations == ("pantry",)
     assert water.conditions.min_resources == {"thirst": 60}
     assert water.conditions.forbidden_flags == ("thirst_hallucination_seen",)
@@ -57,6 +68,7 @@ def test_default_endings_yaml_loads_escape_route_conditions():
     escape = endings["escape_commute"]
     truth = endings["truth_isolation_protocol"]
     conquest = endings["conquest_network_admin"]
+    security_conquest = endings["conquest_security_lockdown"]
 
     assert escape.kind == "escape"
     assert escape.priority == 60
@@ -74,6 +86,11 @@ def test_default_endings_yaml_loads_escape_route_conditions():
     assert conquest.priority == 70
     assert conquest.conditions.locations == ("server_room",)
     assert conquest.conditions.required_flags == ("network_admin_claimed",)
+    assert security_conquest.kind == "conquest"
+    assert security_conquest.priority > conquest.priority
+    assert security_conquest.conditions.required_flags == (
+        "security_lockdown_claimed",
+    )
 
 
 def test_default_achievements_yaml_loads_truth_route_reward():
@@ -91,6 +108,7 @@ def test_default_items_yaml_loads_display_metadata():
     items = load_default_items()
     printout = items["crumpled_printout"]
     memo = items["ex_employee_memo"]
+    security_badge = items["security_override_badge"]
 
     assert DATA_DIR.joinpath("items.yaml").name == "items.yaml"
     assert printout.name == "구겨진 출력물"
@@ -98,6 +116,8 @@ def test_default_items_yaml_loads_display_metadata():
     assert printout.tags == ("printer", "reality_link")
     assert memo.name == "퇴사자의 메모"
     assert memo.kind == "clue"
+    assert security_badge.name == "보안실 우회권한"
+    assert security_badge.kind == "key"
 
 
 def test_default_locations_yaml_loads_connections_and_tags():
@@ -155,6 +175,7 @@ def test_runtime_default_encounters_are_loaded_from_yaml_content():
     assert "elevator_nonexistent_floor" in encounters
     assert "rooftop_signal" in encounters
     assert "strange_water_dispenser" in encounters
+    assert "security_room_floor_mismatch_console" in encounters
     assert "server_room_radio" in DEFAULT_ENCOUNTERS
     state = GameState.new(seed=123, location_id="server_room_front")
 
@@ -181,6 +202,7 @@ def test_runtime_default_endings_are_loaded_from_yaml_content():
     endings = load_default_endings()
 
     assert "conquest_broadcast_channel" in endings
+    assert "conquest_security_lockdown" in endings
     assert "conquest_broadcast_channel" in DEFAULT_ENDINGS
     state = GameState.new(seed=123, location_id="server_room_front")
     state.flags.append("server_room_broadcast_controlled")

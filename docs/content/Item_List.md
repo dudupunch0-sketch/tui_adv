@@ -17,6 +17,7 @@
 | power_bank | 보조배터리 | consumable/tool | 배터리 회복 |
 | flashlight | 손전등 | tool | 어두운 구역 선택지 해금, 배터리 소모 |
 | employee_badge | 사원증 | key | 기본 출입 권한 |
+| security_override_badge | 보안실 우회권한 | key | 서버실 우회/보안 정복 루트 |
 | crumpled_printout | 구겨진 출력물 | clue | 현실 연결/진실 루트 시작 |
 | ex_employee_note | 퇴사자의 메모 | clue | 진실 루트 단서 |
 
@@ -219,6 +220,31 @@
 시작 보유:
 
 - yes
+
+### security_override_badge: 보안실 우회권한
+
+유형:
+
+- key
+- security
+- access
+- conquest
+
+설명:
+
+```text
+보안실 콘솔에서 임시로 발급한 출입 권한.
+층수 기록이 맞지 않는 문에만 통한다.
+```
+
+효과 초안:
+
+- 서버실 앞의 우회 진입 선택지 해금
+- 보안실-서버실 정복 루트의 후속 선택지 조건
+
+발견 위치:
+
+- 보안실 `security_room_floor_mismatch_console`
 
 ### crumpled_printout: 구겨진 출력물
 

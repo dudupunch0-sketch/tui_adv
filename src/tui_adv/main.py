@@ -21,7 +21,7 @@ from tui_adv.game.loop import (
 )
 from tui_adv.game.save import load_game_state, save_game_state
 from tui_adv.game.state import GameState
-from tui_adv.tui.app import build_tui_turn, render_tui_layout_snapshot, run_textual_tui
+from tui_adv.tui.app import render_tui_layout_snapshot, run_textual_tui
 from tui_adv.tui.encounter import format_choice_resolution, format_encounter_turn
 from tui_adv.tui.status import format_local_status
 
@@ -54,6 +54,12 @@ def build_parser() -> argparse.ArgumentParser:
         action="append",
         default=[],
         help="preload a state flag for deterministic smoke paths; may repeat",
+    )
+    parser.add_argument(
+        "--resource",
+        action="append",
+        default=[],
+        help="preload a resource as name=value for deterministic smoke paths; may repeat",
     )
     parser.add_argument("--save", help="write the final smoke game state to a JSON file")
     parser.add_argument("--load", help="load a JSON smoke game state instead of starting new")
@@ -229,6 +235,38 @@ def _choice_from_argument(choices: tuple[Choice, ...], argument: str) -> Choice:
     raise ValueError(f"선택지를 찾을 수 없다: {argument}")
 
 
+_RESOURCE_OVERRIDE_NAMES = {"health", "sanity", "battery", "hunger", "thirst"}
+
+
+def _new_state_from_args(args: argparse.Namespace) -> GameState:
+    state = replace(
+        GameState.new(seed=args.seed, location_id=args.location),
+        flags=list(args.flag),
+    )
+    return _apply_resource_overrides(state, args.resource)
+
+
+def _apply_resource_overrides(
+    state: GameState,
+    resource_arguments: list[str],
+) -> GameState:
+    if not resource_arguments:
+        return state
+    updates: dict[str, int] = {}
+    for argument in resource_arguments:
+        if "=" not in argument:
+            raise ValueError(f"자원 설정은 name=value 형식이어야 한다: {argument}")
+        resource_name, value_text = argument.split("=", 1)
+        resource_name = resource_name.strip()
+        if resource_name not in _RESOURCE_OVERRIDE_NAMES:
+            raise ValueError(f"알 수 없는 자원: {resource_name}")
+        try:
+            updates[resource_name] = int(value_text)
+        except ValueError:
+            raise ValueError(f"자원 값은 정수여야 한다: {argument}") from None
+    return state.with_player(replace(state.player, **updates))
+
+
 def _print_output_and_maybe_save(
     output: str,
     state: GameState,
@@ -254,6 +292,10 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--new와 --load은 함께 사용할 수 없다")
     if args.load and args.tui:
         parser.error("--load은 --tui와 아직 함께 사용할 수 없다")
+    if args.resource and args.load:
+        parser.error("--resource는 --load와 함께 사용할 수 없다")
+    if args.resource and not (args.new or args.tui_smoke):
+        parser.error("--resource requires --new or --tui-smoke")
 
     if args.tui_smoke:
         if args.load:
@@ -263,11 +305,11 @@ def main(argv: list[str] | None = None) -> int:
                 parser.error(str(exc))
             turn = build_game_turn(loaded_state)
         else:
-            turn = build_tui_turn(
-                seed=args.seed,
-                location_id=args.location,
-                flags=tuple(args.flag),
-            )
+            try:
+                state = _new_state_from_args(args)
+            except ValueError as exc:
+                parser.error(str(exc))
+            turn = build_game_turn(state)
         try:
             for action_argument in args.action:
                 result = resolve_turn_action_result(turn, action_argument)
@@ -311,11 +353,8 @@ def main(argv: list[str] | None = None) -> int:
     if args.new:
         if args.choice and args.action:
             parser.error("--choice와 --action은 함께 사용할 수 없다")
-        state = replace(
-            GameState.new(seed=args.seed, location_id=args.location),
-            flags=list(args.flag),
-        )
         try:
+            state = _new_state_from_args(args)
             if args.action:
                 output, final_state = render_scripted_game_smoke_result(state, args.action)
             else:

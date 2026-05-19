@@ -76,3 +76,32 @@ def test_game_turn_allows_using_inventory_item_between_moves():
     assert result.turn.state.inventory == []
     assert result.turn.state.player.thirst == 37
     assert "생수" in result.turn.state.log[-1]
+
+
+def test_high_thirst_pantry_turn_surfaces_water_dispenser_hallucination():
+    state = replace(
+        GameState.new(seed=123, location_id="pantry").with_player(PlayerState(thirst=70)),
+        seen_encounters=["pantry_coffee_machine"],
+    )
+    turn = build_game_turn(state)
+
+    assert turn.encounter is not None
+    assert turn.encounter.id == "strange_water_dispenser"
+
+    result = resolve_turn_action_result(turn, "choice:1")
+
+    assert result.choice_resolution is not None
+    assert result.turn.state.player.thirst == 47
+    assert result.turn.state.player.sanity == 92
+    assert "thirst_hallucination_seen" in result.turn.state.flags
+
+
+def test_forcing_elevator_doors_returns_through_security_room_with_clue():
+    turn = build_game_turn(GameState.new(seed=123, location_id="elevator_hall"))
+
+    result = resolve_turn_action_result(turn, "choice:2")
+
+    assert result.choice_resolution is not None
+    assert result.turn.state.location_id == "security_room"
+    assert "security_floor_misalignment" in result.turn.state.clues
+    assert "elevator_returned_wrong_floor" in result.turn.state.flags

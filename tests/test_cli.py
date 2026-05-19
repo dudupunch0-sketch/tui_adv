@@ -313,6 +313,57 @@ def test_cli_rooftop_signal_route_prints_escape_ending_and_achievement():
     assert "엔딩: 옥상 외부 신호" in result.stdout
 
 
+def test_cli_resource_preload_can_trigger_thirst_hallucination_route():
+    result = run_module(
+        "--new",
+        "--seed",
+        "123",
+        "--location",
+        "pantry",
+        "--resource",
+        "thirst=70",
+        "--action",
+        "choice:1",
+    )
+
+    assert result.returncode == 0
+    assert "인카운터: 정수기의 이상한 물" in result.stdout
+    assert "선택 실행: 물을 마신다" in result.stdout
+    assert "정신력: 100 -> 92" in result.stdout
+    assert "갈증: 70 -> 47" in result.stdout
+
+
+def test_cli_elevator_force_door_route_prints_security_room_bypass():
+    result = run_module(
+        "--new",
+        "--seed",
+        "123",
+        "--location",
+        "elevator_hall",
+        "--action",
+        "choice:2",
+    )
+
+    assert result.returncode == 0
+    assert "선택 실행: 문틈을 벌려 현재 층으로 돌아온다" in result.stdout
+    assert "위치: 보안실" in result.stdout
+    assert "보안실 모니터" in result.stdout
+
+
+def test_cli_tui_smoke_resource_preload_shows_distorted_low_sanity_choices():
+    result = run_module(
+        "--tui-smoke",
+        "--seed",
+        "123",
+        "--resource",
+        "sanity=30",
+    )
+
+    assert result.returncode == 0
+    assert "집중도가 흔들려 선택지가 부분적으로 왜곡된다" in result.stdout
+    assert "1. 메시▒를 확▒한다" in result.stdout
+
+
 def test_cli_tui_smoke_prints_textual_layout_snapshot():
     result = run_module("--tui-smoke", "--seed", "123")
 

@@ -12,7 +12,7 @@ from tui_adv.game.content import (
 )
 from tui_adv.game.encounters import DEFAULT_ENCOUNTERS, select_encounter
 from tui_adv.game.endings import DEFAULT_ENDINGS, evaluate_ending
-from tui_adv.game.state import GameState
+from tui_adv.game.state import GameState, PlayerState
 
 
 def test_default_encounter_yaml_loads_choice_conditions_and_checks():
@@ -28,6 +28,7 @@ def test_default_encounter_yaml_loads_choice_conditions_and_checks():
         choice for choice in radio.choices if choice.id == "follow_cold_air"
     )
     console = encounters["server_room_console"]
+    water = encounters["strange_water_dispenser"]
 
     assert DATA_DIR.joinpath("encounters.yaml").name == "encounters.yaml"
     assert messenger.title == "퇴사자의 메신저"
@@ -45,6 +46,10 @@ def test_default_encounter_yaml_loads_choice_conditions_and_checks():
         "network_admin_claimed",
         "internal_network_access",
     )
+    assert water.conditions.locations == ("pantry",)
+    assert water.conditions.min_resources == {"thirst": 60}
+    assert water.conditions.forbidden_flags == ("thirst_hallucination_seen",)
+    assert water.choices[0].outcome.add_flags == ("thirst_hallucination_seen",)
 
 
 def test_default_endings_yaml_loads_escape_route_conditions():
@@ -149,6 +154,7 @@ def test_runtime_default_encounters_are_loaded_from_yaml_content():
     assert "supply_closet_cache" in encounters
     assert "elevator_nonexistent_floor" in encounters
     assert "rooftop_signal" in encounters
+    assert "strange_water_dispenser" in encounters
     assert "server_room_radio" in DEFAULT_ENCOUNTERS
     state = GameState.new(seed=123, location_id="server_room_front")
 
@@ -156,6 +162,19 @@ def test_runtime_default_encounters_are_loaded_from_yaml_content():
 
     assert selected is not None
     assert selected.id == "server_room_radio"
+
+
+def test_strange_water_dispenser_only_appears_when_thirst_is_high():
+    water = DEFAULT_ENCOUNTERS["strange_water_dispenser"]
+    stable = GameState.new(seed=123, location_id="pantry").with_player(
+        PlayerState(thirst=59)
+    )
+    thirsty = GameState.new(seed=123, location_id="pantry").with_player(
+        PlayerState(thirst=60)
+    )
+
+    assert water.is_eligible(stable) is False
+    assert water.is_eligible(thirsty) is True
 
 
 def test_runtime_default_endings_are_loaded_from_yaml_content():

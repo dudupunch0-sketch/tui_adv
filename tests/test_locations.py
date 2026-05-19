@@ -31,7 +31,10 @@ def test_default_office_map_contains_start_and_core_connections():
         "security_room",
         "elevator_hall",
         "parking_lot",
+        "lobby",
     )
+    assert DEFAULT_LOCATIONS["lobby"].connections == ("hallway", "executive_office")
+    assert DEFAULT_LOCATIONS["executive_office"].connections == ("lobby",)
 
 
 def test_new_game_starts_at_dev_desk_and_exposes_available_moves():

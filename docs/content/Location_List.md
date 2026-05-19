@@ -2,7 +2,7 @@
 
 ## 목적
 
-이 문서는 1차 수직 슬라이스에서 사용할 실제 위치 목록을 정의한다.
+이 문서는 1차 수직 슬라이스와 1차 확장 콘텐츠 팩에서 사용할 실제 위치 목록을 정의한다.
 실제 회사 배치를 복제하지 않고, 연구개발동 사무실의 기능적 구역을 게임용으로 추상화한다.
 
 ## 위치 id 목록
@@ -22,6 +22,8 @@
 | elevator_hall | 엘리베이터 홀 | 옥상/확장 이동 관문 |
 | rooftop | 옥상 | 제한된 외부 신호 탈출 루트 |
 | parking_lot | 지하주차장 | 키태그/차단기 탈출 루트 |
+| lobby | 로비 | 방문증/회전문 탈출 루트 |
+| executive_office | 대표실 | 결재 콘솔 정복 루트 |
 
 ## 연결 구조
 
@@ -33,8 +35,8 @@
           [supply_closet]        ├─ [emergency_stairs]
                    |             ├─ [security_room]
               [printer_area]     ├─ [elevator_hall] - [rooftop]
-                   |             └─ [parking_lot]
-                [pantry]
+                   |             ├─ [parking_lot]
+                [pantry]         └─ [lobby] - [executive_office]
 ```
 
 ## 상세 목록
@@ -372,10 +374,54 @@
 - 지하주차장의 시동음
 - 지하주차장 차단기
 
+### lobby: 로비
+
+설명:
+
+```text
+로비 회전문은 바깥을 보여주지만 같은 장면을 세 번씩 반복한다.
+```
+
+태그:
+
+- escape
+- reception
+- public_border
+
+연결:
+
+- hallway
+- executive_office
+
+주요 인카운터:
+
+- 무인 로비 안내 키오스크
+- 로비 출구 게이트
+
+### executive_office: 대표실
+
+설명:
+
+```text
+대표실 책상 위 결재판에는 아직 작성하지 않은 당신의 퇴근 승인서가 놓여 있다.
+```
+
+태그:
+
+- conquest
+- approval
+- restricted
+
+연결:
+
+- lobby
+
+주요 인카운터:
+
+- 대표실 결재 콘솔
+
 ## 확장 후보
 
 2차 이후 추가할 수 있는 위치:
 
-- lobby: 로비
-- executive_office: 임원실
 - restroom: 화장실

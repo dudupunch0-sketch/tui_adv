@@ -27,6 +27,9 @@
 | rooftop_signal | 옥상의 제한된 외부 신호 | 옥상 | 외부 신호 탈출 |
 | parking_ignition | 지하주차장의 시동음 | 지하주차장 | 키태그 획득 |
 | parking_exit_ramp | 지하주차장 차단기 | 지하주차장 | 차단기 탈출 |
+| lobby_reception_kiosk | 무인 로비 안내 키오스크 | 로비 | 방문증/대표실 분기 |
+| lobby_exit_gate | 로비 출구 게이트 | 로비 | 회전문 탈출 |
+| executive_approval_console | 대표실 결재 콘솔 | 대표실 | 대표 승인권 정복 |
 
 ## 상세 초안
 
@@ -470,3 +473,74 @@
 
 2. 청소 카트로 차단기를 받쳐 둔다
    - 결과: 체력 -3, 플래그 `parking_ramp_jammed`
+
+### lobby_reception_kiosk: 무인 로비 안내 키오스크
+
+위치:
+
+- lobby
+
+설명 요약:
+
+로비 안내 키오스크가 꺼진 화면으로 플레이어의 얼굴을 인식한다.
+방문 목적 입력란에는 이미 '퇴근 승인'이 떠 있다.
+
+선택지:
+
+1. 방문증 프린터를 깨운다
+   - 비용: 배터리 -3, 정신력 -2
+   - 결과: 아이템 `visitor_badge`, 단서 `lobby_reception_log`, 플래그 `visitor_badge_printed`
+
+2. 대표실 호출 버튼을 길게 누른다
+   - 비용: 배터리 -5, 정신력 -4
+   - 결과: 위치 `executive_office`, 단서 `executive_call_route`, 플래그 `executive_route_started`
+
+3. 방문자 명부에서 내 이름을 지운다
+   - 결과: 정신력 +1, 플래그 `lobby_guestbook_wiped`
+
+### lobby_exit_gate: 로비 출구 게이트
+
+위치:
+
+- lobby
+
+조건:
+
+- 아이템 `visitor_badge`
+- 플래그 `visitor_badge_printed`
+
+설명 요약:
+
+로비 출구 게이트는 바깥 도로를 비추지만, 바코드 리더는 사내 방문증만 읽겠다는 듯 붉게 깜빡인다.
+
+선택지:
+
+1. 방문증 바코드를 출구 게이트에 읽힌다
+   - 비용: 배터리 -2, 정신력 -3
+   - 결과: 단서 `outside_lobby_reflection`, 플래그 `lobby_exit_opened`
+
+2. 회전문을 몸으로 밀어 멈춘다
+   - 결과: 체력 -4, 플래그 `lobby_door_jammed`
+
+### executive_approval_console: 대표실 결재 콘솔
+
+위치:
+
+- executive_office
+
+조건:
+
+- 플래그 `executive_route_started`
+
+설명 요약:
+
+대표실 결재 콘솔은 회사의 생존 규칙을 문서번호 없이 열어 둔 채, 마지막 승인자 칸만 비워 두었다.
+
+선택지:
+
+1. 대표 승인란에 내 이름을 입력한다
+   - 비용: 배터리 -8, 정신력 -6
+   - 결과: 단서 `executive_signature_loop`, 플래그 `executive_approval_claimed`, `company_policy_overwritten`
+
+2. 생존 규칙 문서를 반려한다
+   - 결과: 정신력 -5, 플래그 `executive_policy_rejected`

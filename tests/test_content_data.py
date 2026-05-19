@@ -177,6 +177,47 @@ def test_default_parking_lot_escape_content_is_wired():
     assert achievement.conditions.required_flags == ("parking_ramp_opened",)
 
 
+def test_default_lobby_and_executive_route_content_is_wired():
+    locations = load_default_locations()
+    items = load_default_items()
+    encounters = load_default_encounters()
+    endings = load_default_endings()
+    achievements = load_default_achievements()
+    kiosk = encounters["lobby_reception_kiosk"]
+    exit_gate = encounters["lobby_exit_gate"]
+    executive_console = encounters["executive_approval_console"]
+
+    assert locations["lobby"].connections == ("hallway", "executive_office")
+    assert "lobby" in locations["hallway"].connections
+    assert locations["executive_office"].connections == ("lobby",)
+    assert items["visitor_badge"].name == "임시 방문증"
+    assert items["visitor_badge"].kind == "key"
+    assert kiosk.conditions.locations == ("lobby",)
+    assert kiosk.choices[0].outcome.add_items == ("visitor_badge",)
+    assert kiosk.choices[0].outcome.add_flags == ("visitor_badge_printed",)
+    assert kiosk.choices[1].outcome.destination_id == "executive_office"
+    assert exit_gate.conditions.required_items == ("visitor_badge",)
+    assert exit_gate.choices[0].outcome.add_flags == ("lobby_exit_opened",)
+    assert executive_console.conditions.required_flags == ("executive_route_started",)
+    assert executive_console.choices[0].outcome.add_flags == (
+        "executive_approval_claimed",
+        "company_policy_overwritten",
+    )
+    assert endings["escape_lobby_revolving_door"].conditions.required_flags == (
+        "lobby_exit_opened",
+    )
+    assert endings["conquest_executive_approval"].conditions.required_flags == (
+        "executive_approval_claimed",
+        "company_policy_overwritten",
+    )
+    assert achievements["lobby_exit_commuter"].conditions.required_flags == (
+        "lobby_exit_opened",
+    )
+    assert achievements["executive_approval_holder"].conditions.required_flags == (
+        "executive_approval_claimed",
+    )
+
+
 def test_locations_yaml_rejects_unknown_connections(tmp_path):
     path = tmp_path / "locations.yaml"
     path.write_text(

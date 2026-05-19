@@ -461,3 +461,86 @@ encounters:
             health: -3
           add_flags: [parking_ramp_jammed]
           log: 카트는 차단기를 붙잡았지만, 출구 밖 풍경은 아직 한 프레임씩 밀려 있다.
+
+  - id: lobby_reception_kiosk
+    title: 무인 로비 안내 키오스크
+    body: 로비 안내 키오스크가 꺼진 화면으로 당신의 얼굴을 인식한다. 방문 목적 입력란에는 이미 '퇴근 승인'이 떠 있다.
+    conditions:
+      locations: [lobby]
+    choices:
+      - id: print_visitor_badge
+        label: 방문증 프린터를 깨운다
+        cost:
+          battery: 3
+          sanity: 2
+        outcome:
+          add_items: [visitor_badge]
+          add_clues: [lobby_reception_log]
+          add_flags: [visitor_badge_printed]
+          log: 프린터가 열을 올리더니 당신을 방문객으로 분류한 임시 방문증을 뱉었다.
+      - id: press_executive_call
+        label: 대표실 호출 버튼을 길게 누른다
+        cost:
+          battery: 5
+          sanity: 4
+        outcome:
+          destination_id: executive_office
+          add_clues: [executive_call_route]
+          add_flags: [executive_route_started]
+          log: 호출 버튼을 누르자 로비 천장의 스피커가 결재 대기음을 내고, 다음 문은 대표실로 바뀌었다.
+      - id: wipe_guestbook
+        label: 방문자 명부에서 내 이름을 지운다
+        outcome:
+          resources:
+            sanity: 1
+          add_flags: [lobby_guestbook_wiped]
+          log: 명부에서 이름을 지우자 회전문 유리에 비친 당신도 한 박자 늦게 사라졌다.
+
+  - id: lobby_exit_gate
+    title: 로비 출구 게이트
+    body: 로비 출구 게이트는 바깥 도로를 비추지만, 바코드 리더는 사내 방문증만 읽겠다는 듯 붉게 깜빡인다.
+    conditions:
+      locations: [lobby]
+      required_items: [visitor_badge]
+      required_flags: [visitor_badge_printed]
+    choices:
+      - id: scan_visitor_badge
+        label: 방문증 바코드를 출구 게이트에 읽힌다
+        cost:
+          battery: 2
+          sanity: 3
+        outcome:
+          add_clues: [outside_lobby_reflection]
+          add_flags: [lobby_exit_opened]
+          log: 게이트가 방문객 퇴실 절차를 승인하자 로비 회전문 바깥의 도로가 더는 반복되지 않았다.
+      - id: brace_revolving_door
+        label: 회전문을 몸으로 밀어 멈춘다
+        outcome:
+          resources:
+            health: -4
+          add_flags: [lobby_door_jammed]
+          log: 회전문은 잠깐 멈췄지만 바깥 풍경은 여전히 같은 택시를 세 번씩 지나가게 했다.
+
+  - id: executive_approval_console
+    title: 대표실 결재 콘솔
+    body: 대표실 결재 콘솔은 회사의 생존 규칙을 문서번호 없이 열어 둔 채, 마지막 승인자 칸만 비워 두었다.
+    conditions:
+      locations: [executive_office]
+      required_flags: [executive_route_started]
+    choices:
+      - id: claim_executive_approval
+        label: 대표 승인란에 내 이름을 입력한다
+        cost:
+          battery: 8
+          sanity: 6
+        outcome:
+          add_clues: [executive_signature_loop]
+          add_flags: [executive_approval_claimed, company_policy_overwritten]
+          log: 결재 콘솔이 당신의 이름을 대표 승인권자로 복제하자 회사 규칙의 결재선이 거꾸로 접혔다.
+      - id: reject_survival_policy
+        label: 생존 규칙 문서를 반려한다
+        outcome:
+          resources:
+            sanity: -5
+          add_flags: [executive_policy_rejected]
+          log: 반려 버튼을 누르자 문서는 반려 사유에 당신의 다음 생각을 자동으로 적기 시작했다.

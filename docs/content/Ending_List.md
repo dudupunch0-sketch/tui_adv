@@ -279,6 +279,70 @@ priority:
 2. 시동음이 나는 차에서 `parking_key_fob`와 `parking_key_found`를 얻는다.
 3. 주차장 차단기에서 `parking_exit_route`와 `parking_ramp_opened`를 얻어 탈출한다.
 
+### escape_lobby_revolving_door: 로비 회전문 탈출
+
+유형:
+
+- escape
+
+priority:
+
+- 66
+
+조건:
+
+- 위치: lobby
+- 아이템: `visitor_badge`
+- 단서: `outside_lobby_reflection`
+- 플래그: `lobby_exit_opened`
+- 체력 > 0
+- 정신력 > 0
+
+본문 톤:
+
+```text
+방문객 퇴실 절차가 회사의 격리 규칙보다 먼저 처리되었다.
+로비 회전문은 같은 풍경을 반복하는 일을 멈추고, 당신을 실제 도로 쪽으로 밀어냈다.
+```
+
+루트 요약:
+
+1. 복도에서 로비로 이동한다.
+2. 무인 로비 안내 키오스크에서 `visitor_badge`와 `visitor_badge_printed`를 얻는다.
+3. 로비 출구 게이트에서 `outside_lobby_reflection`과 `lobby_exit_opened`를 얻어 탈출한다.
+
+### conquest_executive_approval: 대표 승인권 장악
+
+유형:
+
+- conquest
+
+priority:
+
+- 76
+
+조건:
+
+- 위치: executive_office
+- 단서: `executive_signature_loop`
+- 플래그: `executive_approval_claimed`
+- 플래그: `company_policy_overwritten`
+- 체력 > 0
+- 정신력 > 0
+
+본문 톤:
+
+```text
+대표 승인란에 입력된 이름이 회사의 생존 규칙 위로 번졌다.
+이제 모든 결재선은 당신의 퇴근 여부를 묻기 전에 먼저 당신에게 승인받아야 한다.
+```
+
+루트 요약:
+
+1. 복도에서 로비로 이동한다.
+2. 무인 로비 안내 키오스크의 대표실 호출 버튼으로 `executive_office`에 진입한다.
+3. 대표실 결재 콘솔에서 `executive_approval_claimed`와 `company_policy_overwritten`를 얻어 회사를 장악한다.
+
 ## 엔딩 작성 원칙
 
 - 실패 엔딩도 정보를 조금 남긴다.

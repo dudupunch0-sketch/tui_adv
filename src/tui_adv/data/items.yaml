@@ -103,3 +103,10 @@ items:
     type: key
     tags: [escape, parking, access]
     usable: false
+
+  - id: visitor_badge
+    name: 임시 방문증
+    description: 무인 로비 키오스크가 방금 뱉어낸 방문증. 방문 목적은 '퇴근 승인 대기'로 인쇄되어 있다.
+    type: key
+    tags: [escape, lobby, access]
+    usable: false

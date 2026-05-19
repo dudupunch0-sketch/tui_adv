@@ -68,6 +68,12 @@ def test_default_achievements_include_reality_conquest_and_truth_route_rewards()
     assert DEFAULT_ACHIEVEMENTS[
         "parking_lot_escape_driver"
     ].conditions.required_flags == ("parking_ramp_opened",)
+    assert DEFAULT_ACHIEVEMENTS[
+        "lobby_exit_commuter"
+    ].conditions.required_flags == ("lobby_exit_opened",)
+    assert DEFAULT_ACHIEVEMENTS[
+        "executive_approval_holder"
+    ].conditions.required_flags == ("executive_approval_claimed",)
 
 
 def test_format_unlocked_achievements_renders_korean_unlock_lines():

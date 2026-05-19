@@ -341,6 +341,87 @@ def test_cli_parking_lot_escape_route_prints_ending_and_achievement():
     assert "엔딩: 지하주차장 탈출" in result.stdout
 
 
+def test_cli_lobby_gate_escape_route_prints_ending_and_achievement():
+    result = run_module(
+        "--new",
+        "--seed",
+        "123",
+        "--action",
+        "choice:1",
+        "--action",
+        "move:dev_office",
+        "--action",
+        "move:hallway",
+        "--action",
+        "move:lobby",
+        "--action",
+        "choice:1",
+        "--action",
+        "choice:1",
+    )
+
+    assert result.returncode == 0
+    assert "이동 실행: 로비" in result.stdout
+    assert "인카운터: 무인 로비 안내 키오스크" in result.stdout
+    assert "선택 실행: 방문증 프린터를 깨운다" in result.stdout
+    assert "선택 실행: 방문증 바코드를 출구 게이트에 읽힌다" in result.stdout
+    assert "업적 달성: 로비 게이트 통과자" in result.stdout
+    assert "엔딩: 로비 회전문 탈출" in result.stdout
+
+
+def test_cli_executive_approval_route_prints_conquest_ending_and_achievement():
+    result = run_module(
+        "--new",
+        "--seed",
+        "123",
+        "--action",
+        "choice:1",
+        "--action",
+        "move:dev_office",
+        "--action",
+        "move:hallway",
+        "--action",
+        "move:lobby",
+        "--action",
+        "choice:2",
+        "--action",
+        "choice:1",
+    )
+
+    assert result.returncode == 0
+    assert "이동 실행: 로비" in result.stdout
+    assert "선택 실행: 대표실 호출 버튼을 길게 누른다" in result.stdout
+    assert "위치: 대표실" in result.stdout
+    assert "선택 실행: 대표 승인란에 내 이름을 입력한다" in result.stdout
+    assert "업적 달성: 대표 승인권자" in result.stdout
+    assert "엔딩: 대표 승인권 장악" in result.stdout
+
+
+def test_cli_tui_smoke_actions_can_print_executive_conquest_ending():
+    result = run_module(
+        "--tui-smoke",
+        "--seed",
+        "123",
+        "--action",
+        "choice:1",
+        "--action",
+        "move:dev_office",
+        "--action",
+        "move:hallway",
+        "--action",
+        "move:lobby",
+        "--action",
+        "choice:2",
+        "--action",
+        "choice:1",
+    )
+
+    assert result.returncode == 0
+    assert "[엔딩]" in result.stdout
+    assert "엔딩: 대표 승인권 장악" in result.stdout
+    assert "대표 승인" in result.stdout
+
+
 def test_cli_resource_preload_can_trigger_thirst_hallucination_route():
     result = run_module(
         "--new",

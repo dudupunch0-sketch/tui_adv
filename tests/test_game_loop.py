@@ -139,6 +139,50 @@ def test_parking_lot_key_and_ramp_sequence_reaches_escape_ending():
     assert turn.ending.id == "escape_parking_lot"
 
 
+def test_lobby_gate_sequence_reaches_escape_ending():
+    turn = build_game_turn(GameState.new(seed=123))
+
+    for action in (
+        "choice:1",
+        "move:dev_office",
+        "move:hallway",
+        "move:lobby",
+        "choice:1",
+        "choice:1",
+    ):
+        turn = resolve_turn_action(turn, action)
+
+    assert turn.state.location_id == "lobby"
+    assert "visitor_badge" in turn.state.inventory
+    assert "visitor_badge_printed" in turn.state.flags
+    assert "lobby_exit_opened" in turn.state.flags
+    assert "outside_lobby_reflection" in turn.state.clues
+    assert turn.ending is not None
+    assert turn.ending.id == "escape_lobby_revolving_door"
+
+
+def test_lobby_to_executive_sequence_reaches_conquest_ending():
+    turn = build_game_turn(GameState.new(seed=123))
+
+    for action in (
+        "choice:1",
+        "move:dev_office",
+        "move:hallway",
+        "move:lobby",
+        "choice:2",
+        "choice:1",
+    ):
+        turn = resolve_turn_action(turn, action)
+
+    assert turn.state.location_id == "executive_office"
+    assert "executive_route_started" in turn.state.flags
+    assert "executive_approval_claimed" in turn.state.flags
+    assert "company_policy_overwritten" in turn.state.flags
+    assert "executive_signature_loop" in turn.state.clues
+    assert turn.ending is not None
+    assert turn.ending.id == "conquest_executive_approval"
+
+
 def test_forcing_elevator_doors_returns_through_security_room_with_clue():
     turn = build_game_turn(GameState.new(seed=123, location_id="elevator_hall"))
 

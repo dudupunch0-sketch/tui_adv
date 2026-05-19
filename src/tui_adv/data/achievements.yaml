@@ -42,3 +42,15 @@ achievements:
     description: 지하주차장 차단기를 열고 회사 격리 경계 밖으로 빠져나갔다.
     conditions:
       required_flags: [parking_ramp_opened]
+
+  - id: lobby_exit_commuter
+    name: 로비 게이트 통과자
+    description: 임시 방문증으로 로비 출구 게이트를 열고 퇴실 절차를 통과했다.
+    conditions:
+      required_flags: [lobby_exit_opened]
+
+  - id: executive_approval_holder
+    name: 대표 승인권자
+    description: 대표실 결재 콘솔에서 회사 생존 규칙의 승인권을 장악했다.
+    conditions:
+      required_flags: [executive_approval_claimed]

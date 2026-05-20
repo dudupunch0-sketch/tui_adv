@@ -40,3 +40,29 @@ def test_tui_smoke_save_path_renders_discovered_save_slots(capsys, tmp_path):
     assert "broken.json — 읽기 실패" in output
     assert f"저장: {autosave_path}" in output
     assert autosave_path.exists()
+
+
+def test_third_reality_hint_route_cli_smoke(capsys):
+    result = main_module.main(
+        [
+            "--new",
+            "--seed",
+            "123",
+            "--location",
+            "printer_area",
+            "--action",
+            "choice:1",
+            "--action",
+            "move:dev_office",
+            "--action",
+            "move:meeting_room",
+            "--action",
+            "choice:1",
+        ]
+    )
+
+    output = capsys.readouterr().out
+    assert result == 0
+    assert "세 번째 현실 연결 힌트" in output
+    assert "화이트보드" in output
+    assert "숫자 합계: 30" in output

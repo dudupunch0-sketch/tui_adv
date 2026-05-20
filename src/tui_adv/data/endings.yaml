@@ -51,6 +51,21 @@ endings:
       토너 안쪽 표식과 커피머신 점검 라벨의 숫자가 같은 현실 좌표를 향했다.
       이번 단서는 출력물 없이도 사무실 어딘가에 남은 두 번째 메모를 가리킨다.
 
+  - id: hidden_reality_hint_003
+    name: 세 번째 현실 연결 힌트
+    kind: hidden
+    priority: 84
+    conditions:
+      required_clues: [future_choice_printout, reality_link_hint_3]
+      required_flags: [reality_link_third_seen, meeting_marker_seen]
+      min_resources:
+        health: 1
+        sanity: 1
+    local_hint_id: real_note_003
+    text: >
+      출력물이 예고한 빈 선택지가 회의실 화이트보드 모서리와 정확히 겹쳤다.
+      세 번째 단서는 회의 기록이 아니라 현실 사무실에 남겨진 작은 표식을 향한다.
+
   - id: truth_isolation_protocol
     name: 격리 프로토콜의 진실
     kind: truth

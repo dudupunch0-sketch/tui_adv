@@ -21,6 +21,7 @@
 | security_room_floor_mismatch_console | 어긋난 층수의 보안 콘솔 | 보안실 | 서버실 우회권한/정복 루트 |
 | office_broadcast | 사내 방송 | 복도/사무실 | 위험도/회사 괴담 |
 | minutes_with_my_name | 회의록에 적힌 내 이름 | 회의실 | 정신력/진실 단서 |
+| meeting_room_whiteboard_marker | 회의실 화이트보드 모서리 | 회의실 | 세 번째 현실 연결 표식 |
 | fridge_note | 냉장고 안의 쪽지 | 탕비실 | 현실 연결 후속 |
 | flashlight_under_desk | 책상 아래 손전등 | 개발팀 사무실 | 도구 획득 |
 | camera_watches | 보안 카메라의 시선 | 복도 | 정복/보안 떡밥 |
@@ -337,6 +338,35 @@
 
 3. 회의록을 찢는다
    - 결과: 위험도 +1, 정신력 +2 가능
+
+### meeting_room_whiteboard_marker: 회의실 화이트보드 모서리
+
+위치:
+
+- meeting_room
+
+조건:
+
+- 단서 `future_choice_printout`
+
+설명 요약:
+
+회의실 화이트보드 모서리에 지워지지 않는 작은 사각형이 남아 있다.
+복합기에서 혼자 출력된 종이의 빈 선택지와 같은 모양이다.
+
+선택지:
+
+1. 출력물의 빈 선택지를 화이트보드 표식에 겹친다
+   - 비용: 정신력 -3
+   - 결과: 단서 `reality_link_hint_3`, 플래그 `reality_link_third_seen`, `meeting_marker_seen`
+
+2. 표식을 지우개로 문질러 본다
+   - 결과: 정신력 -2, 플래그 `meeting_marker_smudged`
+
+후속:
+
+- `future_choice_printout`, `reality_link_hint_3`, `reality_link_third_seen`, `meeting_marker_seen`이 있으면 `hidden_reality_hint_003`이 열린다.
+- 공개 힌트는 더미 값 `172.16.5.8`의 숫자 합계까지만 표시하고, 실제 최종 위치는 로컬 비공개 파일에만 둔다.
 
 ### fridge_note: 냉장고 안의 쪽지
 

@@ -175,6 +175,29 @@ encounters:
           add_items: [snack]
           log: 유통기한이 오늘로 끝나는 과자 봉지를 챙겼다.
 
+  - id: meeting_room_whiteboard_marker
+    title: 회의실 화이트보드 모서리
+    body: 회의실 화이트보드 모서리에 지워지지 않는 작은 사각형이 남아 있다. 방금 본 출력물의 빈 선택지와 같은 모양이다.
+    conditions:
+      locations: [meeting_room]
+      required_clues: [future_choice_printout]
+    choices:
+      - id: decode_whiteboard_marker
+        label: 출력물의 빈 선택지를 화이트보드 표식에 겹친다
+        cost:
+          sanity: 3
+        outcome:
+          add_clues: [reality_link_hint_3]
+          add_flags: [reality_link_third_seen, meeting_marker_seen]
+          log: 화이트보드 모서리의 지워지지 않는 사각형이 출력물의 빈 선택지와 겹치며 세 번째 현실 표식이 되었다.
+      - id: erase_marker_corner
+        label: 표식을 지우개로 문질러 본다
+        outcome:
+          resources:
+            sanity: -2
+          add_flags: [meeting_marker_smudged]
+          log: 표식은 지워지지 않고 지우개 가루만 작은 화살표처럼 남겼다.
+
   - id: meeting_room_all_hands
     title: 존재하지 않는 부서의 전체회의
     body: 회의실 화면에는 방금 저장된 회의록이 떠 있다. 참석자는 전 직원, 발언자는 당신 하나다.

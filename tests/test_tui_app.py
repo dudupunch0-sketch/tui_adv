@@ -7,9 +7,12 @@ from tui_adv.game.state import GameState
 from tui_adv.tui.app import (
     build_tui_turn,
     discover_save_slots,
+    movement_shortcuts_for_turn,
     render_tui_layout_snapshot,
     resolve_tui_action,
     resolve_tui_choice,
+    resolve_tui_key,
+    resolve_tui_save_slot,
     save_tui_turn_state,
 )
 
@@ -58,6 +61,44 @@ def test_tui_action_input_resolves_choice_then_movement_action():
     assert after_move.action.id == "move:dev_office"
     assert after_move.turn.state.location_id == "dev_office"
     assert after_move.turn.state.turn == 2
+
+
+def test_tui_layout_snapshot_renders_help_panel_and_movement_shortcuts():
+    turn = build_tui_turn(seed=123)
+    after_choice = resolve_tui_action(turn, 1)
+
+    snapshot = render_tui_layout_snapshot(after_choice.turn)
+
+    assert "[도움말]" in snapshot
+    assert "숫자: 현재 선택/행동 실행" in snapshot
+    assert "?: 도움말" in snapshot
+    assert "이동 단축키: a=개발팀 사무실" in snapshot
+
+
+def test_tui_letter_key_resolves_movement_shortcut():
+    turn = build_tui_turn(seed=123)
+    after_choice = resolve_tui_action(turn, 1)
+
+    shortcuts = movement_shortcuts_for_turn(after_choice.turn)
+    resolved = resolve_tui_key(after_choice.turn, "a")
+
+    assert shortcuts["a"].id == "move:dev_office"
+    assert resolved.action.id == "move:dev_office"
+    assert resolved.turn.state.location_id == "dev_office"
+
+
+def test_tui_unknown_letter_key_rejects_without_mutating_state():
+    turn = build_tui_turn(seed=123)
+    after_choice = resolve_tui_action(turn, 1)
+
+    try:
+        resolve_tui_key(after_choice.turn, "?")
+    except ValueError as exc:
+        assert "행동 단축키를 찾을 수 없다: ?" in str(exc)
+    else:
+        raise AssertionError("expected unknown TUI shortcut to fail")
+
+    assert after_choice.turn.state.location_id == "dev_desk"
 
 
 def test_tui_layout_snapshot_renders_inventory_and_clue_summary():
@@ -223,6 +264,47 @@ def test_tui_layout_snapshot_renders_save_slot_list(tmp_path):
 
     assert "[저장 파일 목록]" in snapshot
     assert "1. office-save.json — 턴 0 / 로비" in snapshot
+
+
+def test_tui_start_snapshot_prompts_numbered_save_slot_loading(tmp_path):
+    save_path = tmp_path / "office-save.json"
+    save_game_state(GameState.new(seed=123, location_id="lobby"), save_path)
+    turn = build_tui_turn(seed=123)
+
+    snapshot = render_tui_layout_snapshot(
+        turn,
+        save_path=tmp_path / "autosave.json",
+        save_slots=discover_save_slots(tmp_path),
+        start_mode=True,
+    )
+
+    assert "[시작]" in snapshot
+    assert "숫자: 저장 파일 불러오기" in snapshot
+    assert "n: 새 게임" in snapshot
+    assert "1. office-save.json — 턴 0 / 로비" in snapshot
+
+
+def test_tui_save_slot_selection_loads_numbered_save(tmp_path):
+    save_path = tmp_path / "office-save.json"
+    save_game_state(GameState.new(seed=123, location_id="lobby"), save_path)
+    slots = discover_save_slots(tmp_path)
+
+    loaded_state = resolve_tui_save_slot(slots, 1)
+
+    assert loaded_state.location_id == "lobby"
+
+
+def test_tui_save_slot_selection_rejects_broken_slot(tmp_path):
+    broken_save = tmp_path / "broken.json"
+    broken_save.write_text("not json", encoding="utf-8")
+    slots = discover_save_slots(tmp_path)
+
+    try:
+        resolve_tui_save_slot(slots, 1)
+    except ValueError as exc:
+        assert "저장 슬롯을 읽을 수 없다: broken.json" in str(exc)
+    else:
+        raise AssertionError("expected broken save slot selection to fail")
 
 
 def test_tui_layout_snapshot_renders_pressure_warning_panel():

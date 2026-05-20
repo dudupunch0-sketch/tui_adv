@@ -7,7 +7,7 @@ TUI 기반 랜덤 인카운터 선택지 생존 게임.
 ## 현재 단계
 
 현재는 Phase 7 콘텐츠 런타임 전환 이후, 스크립트 기반 다중 턴 루프와 1차 확장 콘텐츠 팩까지 구현된 단계다.
-게임 구조와 안전한 현실 연결 원칙을 문서화했고, 순수 게임 상태 모델, 자원 임계치/실패 판정, 1차 사무실 위치 모델, 인접 위치 이동, 인카운터/선택지 조건·비용·결과 적용, 능력치 기반 선택지, 2d6 성공/실패 분기, 현재 상태 기반 인카운터 선택, 공간 왜곡 탈출/실패 엔딩 판정, YAML 공개 콘텐츠 로더/검증, YAML 기반 런타임 기본 위치/인카운터/엔딩, 로컬 비공개 현실 힌트 로더, 복합기 IP 숫자 합계 퍼즐 더미 값, 현실 연결 히든 엔딩 보상 출력, CLI 한 턴 실행, CLI 다중 턴 스크립트 실행, Textual 레이아웃 smoke, 소모품 아이템 사용, 물품창고 보급품, 엘리베이터/옥상 경로, 옥상 외부 신호 탈출 엔딩, 저정신력 선택지 왜곡, 고갈증 정수기 환각, 엘리베이터-보안실 우회 분기, 임계 자원 1회성 경고 로그, 보안실-서버실 격리 권한 정복 루트, 지하주차장 키태그/차단기 탈출 루트, 로비 방문증/회전문 탈출 루트, 대표실 결재 콘솔 정복 루트를 추가했다.
+게임 구조와 안전한 현실 연결 원칙을 문서화했고, 순수 게임 상태 모델, 자원 임계치/실패 판정, 1차 사무실 위치 모델, 인접 위치 이동, 인카운터/선택지 조건·비용·결과 적용, 능력치 기반 선택지, 2d6 성공/실패 분기, 현재 상태 기반 인카운터 선택, 공간 왜곡 탈출/실패 엔딩 판정, YAML 공개 콘텐츠 로더/검증, YAML 기반 런타임 기본 위치/인카운터/엔딩, 로컬 비공개 현실 힌트 로더, 복합기 IP 숫자 합계 퍼즐 더미 값, 현실 연결 히든 엔딩 보상 출력, CLI 한 턴 실행, CLI 다중 턴 스크립트 실행, Textual 레이아웃 smoke, Textual 저장/불러오기 연결, TUI 저장/종료 단축키, 소모품 아이템 사용, 물품창고 보급품, 엘리베이터/옥상 경로, 옥상 외부 신호 탈출 엔딩, 저정신력 선택지 왜곡, 고갈증 정수기 환각, 엘리베이터-보안실 우회 분기, 임계 자원 1회성 경고 로그, 보안실-서버실 격리 권한 정복 루트, 지하주차장 키태그/차단기 탈출 루트, 로비 방문증/회전문 탈출 루트, 대표실 결재 콘솔 정복 루트를 추가했다.
 
 ## 실행/테스트
 
@@ -28,7 +28,8 @@ PYTHONPATH=src python -m tui_adv --new --seed 123 --action choice:1 --action mov
 PYTHONPATH=src python -m tui_adv --new --seed 123 --location pantry --resource thirst=70 --action choice:1
 PYTHONPATH=src python -m tui_adv --tui-smoke --seed 123 --resource sanity=30
 PYTHONPATH=src python -m tui_adv --tui-smoke --seed 123
-PYTHONPATH=src python -m tui_adv --tui --seed 123  # Textual 설치 환경에서 실행
+PYTHONPATH=src python -m tui_adv --tui --seed 123 --save saves/autosave.json  # Textual 설치 환경에서 실행, s 저장/q 종료
+PYTHONPATH=src python -m tui_adv --tui --load saves/autosave.json --save saves/autosave.json
 PYTHONPATH=src python -m tui_adv --version
 ```
 
@@ -86,6 +87,6 @@ python -m pytest tests -q
 
 ## 다음 작업 후보
 
-1. Textual TUI에 저장/불러오기, 종료 단축키, 자동 저장 UX 연결
+1. Textual 시작 화면/저장 파일 목록 UX 연결
 2. 고갈증/저정신력 연출의 단계별 화면 연출 강화
 3. 추가 현실 연결 힌트 체인과 로컬 비공개 힌트 파일 예시 확장

@@ -1,12 +1,14 @@
 from dataclasses import replace
 
 from tui_adv.game.loop import build_game_turn
+from tui_adv.game.save import load_game_state
 from tui_adv.game.state import GameState
 from tui_adv.tui.app import (
     build_tui_turn,
     render_tui_layout_snapshot,
     resolve_tui_action,
     resolve_tui_choice,
+    save_tui_turn_state,
 )
 
 
@@ -109,6 +111,29 @@ def test_tui_layout_snapshot_renders_hidden_reality_hint_ending_reward():
     assert "현실 연결 힌트: 첫 번째 현실 연결 힌트" in snapshot
     assert "숫자 합계: 33" in snapshot
     assert "[현재 인카운터]" not in snapshot
+
+
+def test_tui_layout_snapshot_renders_save_controls_when_path_is_configured(tmp_path):
+    turn = build_tui_turn(seed=123)
+    save_path = tmp_path / "office-save.json"
+
+    snapshot = render_tui_layout_snapshot(turn, save_path=save_path)
+
+    assert "[저장]" in snapshot
+    assert f"저장 파일: {save_path}" in snapshot
+    assert "s: 저장" in snapshot
+    assert "q: 종료" in snapshot
+
+
+def test_tui_save_turn_state_writes_file_and_appends_log(tmp_path):
+    turn = build_tui_turn(seed=123)
+    save_path = tmp_path / "office-save.json"
+
+    saved_turn = save_tui_turn_state(turn, save_path)
+
+    loaded_state = load_game_state(save_path)
+    assert saved_turn.state.log[-1] == f"저장: {save_path}"
+    assert loaded_state == saved_turn.state
 
 
 def test_tui_choice_input_rejects_out_of_range_index_without_mutating_state():

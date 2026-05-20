@@ -191,6 +191,25 @@ def test_executive_console_route_reveals_conquest_ending():
     assert "대표 승인" in format_ending_summary(ending)
 
 
+def test_third_reality_hint_route_reveals_hidden_ending():
+    state = GameState.new(seed=1, location_id="printer_area")
+    printer = DEFAULT_ENCOUNTERS["printer_prints_alone"]
+    marker = DEFAULT_ENCOUNTERS["meeting_room_whiteboard_marker"]
+
+    printed = printer.resolve_choice("read_printout", state)
+    in_meeting_room = printed.move_to("dev_office").move_to("meeting_room")
+    revealed = marker.resolve_choice("decode_whiteboard_marker", in_meeting_room)
+    ending = evaluate_ending(revealed)
+
+    assert "future_choice_printout" in printed.clues
+    assert "reality_link_hint_3" in revealed.clues
+    assert "reality_link_third_seen" in revealed.flags
+    assert ending is not None
+    assert ending.id == "hidden_reality_hint_003"
+    assert ending.kind == "hidden"
+    assert "화이트보드" in format_ending_summary(ending)
+
+
 def test_resource_failure_takes_priority_over_escape_flags():
     state = replace(
         GameState.new(seed=1, location_id="emergency_stairs").with_player(

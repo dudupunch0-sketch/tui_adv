@@ -14,6 +14,7 @@ from tui_adv.game.items import DEFAULT_ITEMS
 from tui_adv.game.locations import DEFAULT_LOCATIONS
 from tui_adv.game.loop import (
     GameTurn,
+    TurnAction,
     TurnActionResult,
     build_game_turn,
     resolve_turn_action_result,
@@ -24,6 +25,8 @@ from tui_adv.tui.encounter import format_choice_resolution, format_encounter_tur
 from tui_adv.tui.status import format_local_status, format_pressure_warnings
 
 TuiTurn = GameTurn
+_MOVE_SHORTCUT_KEYS = tuple("adfghjklzxcvbrtyuop")
+_RESERVED_TUI_KEYS = {"s", "q", "n", "i", "?"}
 
 
 @dataclass(frozen=True, slots=True)
@@ -102,6 +105,7 @@ def render_tui_layout_snapshot(
     *,
     save_path: str | Path | None = None,
     save_slots: tuple[SaveSlot, ...] | None = None,
+    start_mode: bool = False,
 ) -> str:
     """Render the same panels the Textual shell mounts, without requiring Textual."""
 
@@ -127,8 +131,18 @@ def render_tui_layout_snapshot(
             ]
         )
     if save_slots is not None:
+        if start_mode:
+            lines.extend(
+                [
+                    "[시작]",
+                    "숫자: 저장 파일 불러오기 / n: 새 게임",
+                    "",
+                ]
+            )
         lines.extend(_format_save_slot_panel(save_slots))
         lines.append("")
+    lines.extend(_format_help_panel(turn, start_mode=start_mode))
+    lines.append("")
     if achievement_summary := format_achievement_summary(turn.state):
         lines.extend([achievement_summary, ""])
     lines.extend(_format_inventory_and_clues(turn.state))
@@ -164,6 +178,32 @@ def _format_save_slot_panel(save_slots: tuple[SaveSlot, ...]) -> list[str]:
         else:
             lines.append(f"{index}. {slot.path.name} — 턴 {slot.turn} / {slot.location_name}")
     return lines
+
+
+def _format_help_panel(turn: GameTurn, *, start_mode: bool = False) -> list[str]:
+    lines = ["[도움말]"]
+    if start_mode:
+        lines.append("숫자: 저장 파일 불러오기 / n: 새 게임")
+    else:
+        lines.append("숫자: 현재 선택/행동 실행")
+    lines.append("?: 도움말 / s: 저장 / q: 종료")
+    shortcuts = movement_shortcuts_for_turn(turn)
+    if shortcuts:
+        shortcut_text = " / ".join(
+            f"{key}={action.label}" for key, action in shortcuts.items()
+        )
+        lines.append(f"이동 단축키: {shortcut_text}")
+    return lines
+
+
+def movement_shortcuts_for_turn(turn: GameTurn) -> dict[str, TurnAction]:
+    move_actions = [action for action in turn.available_actions if action.kind == "move"]
+    shortcuts: dict[str, TurnAction] = {}
+    for key, action in zip(_MOVE_SHORTCUT_KEYS, move_actions):
+        if key in _RESERVED_TUI_KEYS:
+            continue
+        shortcuts[key] = action
+    return shortcuts
 
 
 def _append_numbered_action_group(
@@ -226,11 +266,31 @@ def _format_inventory_item(item_id: str) -> str:
     return f"{item.name} ({item.id})"
 
 
+def resolve_tui_save_slot(save_slots: tuple[SaveSlot, ...], slot_index: int) -> GameState:
+    selected_index = slot_index - 1
+    if selected_index < 0 or selected_index >= len(save_slots):
+        raise ValueError(f"저장 슬롯을 찾을 수 없다: {slot_index}")
+    slot = save_slots[selected_index]
+    if slot.error is not None:
+        raise ValueError(f"저장 슬롯을 읽을 수 없다: {slot.path.name}")
+    return load_game_state(slot.path)
+
+
 def resolve_tui_action(turn: GameTurn, action_index: int) -> TurnActionResult:
     selected_index = action_index - 1
     if selected_index < 0 or selected_index >= len(turn.available_actions):
         raise ValueError(f"행동을 찾을 수 없다: {action_index}")
     action = turn.available_actions[selected_index]
+    return resolve_turn_action_result(turn, action.id)
+
+
+def resolve_tui_key(turn: GameTurn, key: str) -> TurnActionResult:
+    if key.isdecimal():
+        return resolve_tui_action(turn, int(key))
+    shortcuts = movement_shortcuts_for_turn(turn)
+    action = shortcuts.get(key.lower())
+    if action is None:
+        raise ValueError(f"행동 단축키를 찾을 수 없다: {key}")
     return resolve_turn_action_result(turn, action.id)
 
 
@@ -308,6 +368,8 @@ def run_textual_tui(
         def __init__(self) -> None:
             super().__init__()
             self.save_path = save_path
+            self.save_slots = _save_slots_for_path(save_path) or ()
+            self.selecting_save_slot = initial_state is None and bool(self.save_slots)
             self.turn = (
                 build_game_turn(initial_state)
                 if initial_state is not None
@@ -320,19 +382,41 @@ def run_textual_tui(
                 render_tui_layout_snapshot(
                     self.turn,
                     save_path=self.save_path,
-                    save_slots=_save_slots_for_path(self.save_path),
+                    save_slots=self.save_slots,
+                    start_mode=self.selecting_save_slot,
                 ),
                 id="game",
             )
             yield Footer()
 
         def on_key(self, event) -> None:
+            if self.selecting_save_slot:
+                if event.key == "n":
+                    self.selecting_save_slot = False
+                    self._refresh_game_panel()
+                    return
+                if not event.key.isdecimal():
+                    return
+                try:
+                    slot_index = int(event.key)
+                    loaded_state = resolve_tui_save_slot(self.save_slots, slot_index)
+                except ValueError as exc:
+                    self._append_message(str(exc))
+                    return
+                self.save_path = self.save_slots[slot_index - 1].path
+                self.turn = build_game_turn(loaded_state)
+                self.selecting_save_slot = False
+                self._refresh_game_panel()
+                return
             if self.turn.ending is not None:
                 return
-            if not event.key.isdecimal():
+            if event.key in {"?", "question_mark"}:
+                self._refresh_game_panel()
+                return
+            if event.key in _RESERVED_TUI_KEYS:
                 return
             try:
-                result = resolve_tui_action(self.turn, int(event.key))
+                result = resolve_tui_key(self.turn, event.key)
             except ValueError as exc:
                 self._append_message(str(exc))
                 return
@@ -345,6 +429,7 @@ def run_textual_tui(
                     self.save_path,
                     message_prefix="자동 저장",
                 )
+                self.save_slots = _save_slots_for_path(self.save_path) or ()
             self._refresh_game_panel()
 
         def action_save_game(self) -> None:
@@ -352,6 +437,7 @@ def run_textual_tui(
                 self._append_message("저장 파일 경로가 설정되지 않았다.")
                 return
             self.turn = save_tui_turn_state(self.turn, self.save_path)
+            self.save_slots = _save_slots_for_path(self.save_path) or ()
             self._refresh_game_panel()
 
         def _append_message(self, message: str) -> None:
@@ -364,7 +450,8 @@ def run_textual_tui(
                 render_tui_layout_snapshot(
                     self.turn,
                     save_path=self.save_path,
-                    save_slots=_save_slots_for_path(self.save_path),
+                    save_slots=self.save_slots,
+                    start_mode=self.selecting_save_slot,
                 )
             )
 

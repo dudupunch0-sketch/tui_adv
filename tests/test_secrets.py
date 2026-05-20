@@ -30,6 +30,17 @@ def test_second_public_secret_uses_maintenance_label_placeholder(tmp_path: Path)
     assert reveal.puzzle_answer == 13
 
 
+def test_third_public_secret_uses_whiteboard_label_placeholder(tmp_path: Path):
+    reveal = reveal_physical_hint("real_note_003", local_path=tmp_path / "missing.yaml")
+
+    assert reveal.id == "real_note_003"
+    assert reveal.final_hint_available is False
+    assert reveal.title == "세 번째 현실 연결 힌트"
+    assert reveal.puzzle_prompt == "회의실 화이트보드 모서리의 더미 라벨 숫자들을 모두 더한다."
+    assert reveal.puzzle_ip_address == "172.16.5.8"
+    assert reveal.puzzle_answer == 30
+
+
 def test_local_secret_file_merges_safety_checked_final_hint(tmp_path: Path):
     local_file = tmp_path / "secrets.local.yaml"
     local_file.write_text(

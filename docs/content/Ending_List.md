@@ -11,7 +11,9 @@
 | priority | 종류 |
 |---:|---|
 | 100 | 즉시 실패 |
-| 80 | 히든/현실 연결 |
+| 84 | 세 번째 히든/현실 연결 |
+| 82 | 두 번째 히든/현실 연결 |
+| 80 | 첫 번째 히든/현실 연결 |
 | 75 | 보안 정복 |
 | 70 | 진실/정복 |
 | 65 | 옥상 신호 탈출 |
@@ -178,6 +180,71 @@ IP 주소: 192.168.0.42
 로컬 private 데이터 활성화 시:
 
 - 더 구체적인 최종 힌트를 표시할 수 있다.
+
+### hidden_reality_hint_002: 두 번째 현실 연결 힌트
+
+유형:
+
+- hidden
+- reality_link
+
+priority:
+
+- 82
+
+조건:
+
+- 단서: `reality_link_hint_1`
+- 단서: `reality_link_hint_2`
+- 플래그: `reality_link_started`
+- 플래그: `reality_link_second_seen`
+- 플래그: `pantry_hint_seen`
+- 체력 > 0
+- 정신력 > 0
+- `local_hint_id`: `real_note_002`
+
+본문 톤:
+
+```text
+토너 안쪽 표식과 커피머신 점검 라벨의 숫자가 같은 현실 좌표를 향했다.
+이번 단서는 출력물 없이도 사무실 어딘가에 남은 두 번째 메모를 가리킨다.
+```
+
+공개 배포판:
+
+- 점검 라벨 더미 IP `10.30.0.45`와 숫자 합계까지만 표시한다.
+
+### hidden_reality_hint_003: 세 번째 현실 연결 힌트
+
+유형:
+
+- hidden
+- reality_link
+
+priority:
+
+- 84
+
+조건:
+
+- 단서: `future_choice_printout`
+- 단서: `reality_link_hint_3`
+- 플래그: `reality_link_third_seen`
+- 플래그: `meeting_marker_seen`
+- 체력 > 0
+- 정신력 > 0
+- `local_hint_id`: `real_note_003`
+
+본문 톤:
+
+```text
+출력물이 예고한 빈 선택지가 회의실 화이트보드 모서리와 정확히 겹쳤다.
+세 번째 단서는 회의 기록이 아니라 현실 사무실에 남겨진 작은 표식을 향한다.
+```
+
+공개 배포판:
+
+- 화이트보드 모서리 더미 라벨 `172.16.5.8`과 숫자 합계까지만 표시한다.
 - 실제 최종 위치는 공개 저장소에 포함하지 않는다.
 
 ## 확장 엔딩

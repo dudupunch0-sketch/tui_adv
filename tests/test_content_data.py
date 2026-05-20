@@ -242,6 +242,37 @@ def test_second_reality_hint_content_is_wired():
     )
 
 
+def test_third_reality_hint_content_is_wired():
+    encounters = load_default_encounters()
+    endings = load_default_endings()
+    achievements = load_default_achievements()
+    marker = encounters["meeting_room_whiteboard_marker"]
+    ending = endings["hidden_reality_hint_003"]
+
+    assert marker.conditions.locations == ("meeting_room",)
+    assert marker.conditions.required_clues == ("future_choice_printout",)
+    assert marker.choices[0].id == "decode_whiteboard_marker"
+    assert marker.choices[0].outcome.add_clues == ("reality_link_hint_3",)
+    assert marker.choices[0].outcome.add_flags == (
+        "reality_link_third_seen",
+        "meeting_marker_seen",
+    )
+    assert ending.kind == "hidden"
+    assert ending.priority > endings["hidden_reality_hint_002"].priority
+    assert ending.local_hint_id == "real_note_003"
+    assert ending.conditions.required_clues == (
+        "future_choice_printout",
+        "reality_link_hint_3",
+    )
+    assert ending.conditions.required_flags == (
+        "reality_link_third_seen",
+        "meeting_marker_seen",
+    )
+    assert achievements["reality_link_third_marker"].conditions.required_flags == (
+        "reality_link_third_seen",
+    )
+
+
 def test_locations_yaml_rejects_unknown_connections(tmp_path):
     path = tmp_path / "locations.yaml"
     path.write_text(

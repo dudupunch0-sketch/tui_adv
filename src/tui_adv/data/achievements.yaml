@@ -20,6 +20,14 @@ achievements:
       required_flags: [reality_link_second_seen]
       required_clues: [reality_link_hint_1, reality_link_hint_2]
 
+  - id: reality_link_third_marker
+    name: 세 번째 현실 표식
+    description: 출력물의 빈 선택지와 회의실 화이트보드 표식을 이어 세 번째 현실 힌트를 열었다.
+    hidden: true
+    conditions:
+      required_flags: [reality_link_third_seen]
+      required_clues: [future_choice_printout, reality_link_hint_3]
+
   - id: broadcast_channel_captured
     name: 사내 방송 장악자
     description: 제한된 사내 방송 채널을 붙잡았다.

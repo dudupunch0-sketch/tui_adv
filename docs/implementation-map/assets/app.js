@@ -89,13 +89,13 @@
 
   function renderRoutes() {
     const graph = $("#route-graph");
-    const nodes = data.routes.nodes.filter((node) => includesQuery([node.label, node.kind, node.summary, node.files.join(" ")]));
-    graph.innerHTML = nodes.map((node) => `
-      <button class="node-button" type="button" data-node-id="${node.id}" data-kind="${node.kind}" aria-pressed="${node.id === activeNodeId}" role="listitem">
-        <strong>${highlight(node.label)}</strong>
-        <span>${highlight(node.summary)}</span>
-      </button>
-    `).join("") || emptyState("검색에 맞는 노드가 없습니다.");
+    const nodes = data.routes.nodes;
+    graph.innerHTML = `
+      <div class="graph-map" role="list" aria-label="연결선이 있는 루트 노드 지도">
+        ${renderGraphLines(nodes)}
+        ${nodes.map(renderNodeButton).join("")}
+      </div>
+    `;
 
     $$(".node-button", graph).forEach((button) => {
       button.addEventListener("click", () => {
@@ -108,19 +108,136 @@
     renderRouteList();
   }
 
+  function renderGraphLines(nodes) {
+    const nodeById = new Map(nodes.map((node) => [node.id, node]));
+    const edges = [];
+    const seen = new Set();
+    nodes.forEach((source) => {
+      const targetIds = new Set([
+        ...(source.links || []),
+        ...(source.scene?.choices || [])
+          .map((choice) => choice.next)
+          .filter((id) => id && id !== source.id && nodeById.has(id))
+      ]);
+      targetIds.forEach((targetId) => {
+        if (targetId === source.id) return;
+        const target = nodeById.get(targetId);
+        if (!target) return;
+        const key = [source.id, target.id].sort().join("::");
+        if (seen.has(key)) return;
+        seen.add(key);
+        edges.push({ source, target });
+      });
+    });
+
+    return `
+      <svg class="graph-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        ${edges.map(({ source, target }) => {
+          const active = source.id === activeNodeId || target.id === activeNodeId;
+          const dimmed = query && !nodeMatchesQuery(source) && !nodeMatchesQuery(target);
+          return `<path class="graph-line ${active ? "is-active" : ""} ${dimmed ? "is-dimmed" : ""}" data-kind="${source.kind}" d="${edgePath(source, target)}" />`;
+        }).join("")}
+      </svg>
+    `;
+  }
+
+  function renderNodeButton(node) {
+    const active = node.id === activeNodeId;
+    const related = isRelatedToActive(node);
+    const filtered = query && !nodeMatchesQuery(node);
+    return `
+      <button class="node-button flow-node ${related ? "is-related" : ""} ${filtered ? "is-filtered-out" : ""}" type="button"
+        data-node-id="${node.id}" data-kind="${node.kind}" aria-pressed="${active}"
+        style="--x: ${node.x}%; --y: ${node.y}%;" role="listitem"
+        aria-label="${escapeHtml(node.label)} 노드 보기">
+        <strong>${highlight(node.label)}</strong>
+        <span>${highlight(node.summary)}</span>
+      </button>
+    `;
+  }
+
+  function edgePath(source, target) {
+    const curve = Math.max(6, Math.abs(target.x - source.x) * 0.32);
+    const c1x = source.x + curve;
+    const c2x = target.x - curve;
+    return `M ${source.x} ${source.y} C ${c1x} ${source.y}, ${c2x} ${target.y}, ${target.x} ${target.y}`;
+  }
+
   function renderNodeDetail() {
     const node = data.routes.nodes.find((item) => item.id === activeNodeId) || data.routes.nodes[0];
     if (!node) return;
+    const choices = node.scene?.choices || [];
+    const graphNextIds = collectGraphNextIds(node);
+    const endpointNext = collectEndpointNext(node);
+
     $("#node-detail").innerHTML = `
       <span class="eyebrow">selected node</span>
-      <h3>${node.label}</h3>
-      <p>${node.summary}</p>
+      <h3>${highlight(node.label)}</h3>
+      <p>${highlight(node.summary)}</p>
+
+      <section class="scene-block">
+        <h4>배경</h4>
+        <p>${highlight(node.scene?.background || "아직 배경 설명이 등록되지 않았습니다.")}</p>
+      </section>
+
+      <section class="scene-block dialogue-block">
+        <h4>대사</h4>
+        <p>${highlight(node.scene?.dialogue || "아직 대사나 상황문이 등록되지 않았습니다.")}</p>
+      </section>
+
+      <section class="scene-block">
+        <h4>선택지</h4>
+        <div class="choice-list">
+          ${choices.map(renderChoiceCard).join("") || `<p>이 노드는 엔딩 또는 설명용 노드라 선택지가 없습니다.</p>`}
+        </div>
+      </section>
+
+      <section class="scene-block">
+        <h4>가능한 다음 상황</h4>
+        <div class="next-node-list">
+          ${graphNextIds.map((id) => renderNextNodeButton(id)).join("")}
+          ${endpointNext.map((item) => `<span class="next-chip next-chip-static">${highlight(item.label)}</span>`).join("")}
+          ${graphNextIds.length + endpointNext.length === 0 ? `<span class="next-chip next-chip-static">루트 종료</span>` : ""}
+        </div>
+      </section>
+
       <dl>
         <div><dt>종류</dt><dd>${categoryLabel(node.kind)}</dd></div>
-        <div><dt>관련 파일</dt><dd>${node.files.map((file) => `<code>${file}</code>`).join(" ")}</dd></div>
-        <div><dt>연결 노드</dt><dd>${node.links.map((id) => labelForNode(id)).join(", ") || "없음"}</dd></div>
+        <div><dt>관련 파일</dt><dd>${node.files.map((file) => `<code>${highlight(file)}</code>`).join(" ")}</dd></div>
       </dl>
     `;
+
+    $$(".next-node-button", $("#node-detail")).forEach((button) => {
+      button.addEventListener("click", () => {
+        activeNodeId = button.dataset.nodeId;
+        renderRoutes();
+      });
+    });
+  }
+
+  function renderChoiceCard(choice, index) {
+    const nextNode = data.routes.nodes.find((node) => node.id === choice.next);
+    const nextLabel = nextNode ? nextNode.label : (choice.nextLabel || choice.next);
+    return `
+      <article class="choice-card">
+        <div class="choice-index">${String(index + 1).padStart(2, "0")}</div>
+        <div>
+          <h5>${highlight(choice.label)}</h5>
+          <p>${highlight(choice.line)}</p>
+          <dl>
+            <div><dt>조건</dt><dd>${highlight(choice.requirements || "없음")}</dd></div>
+            <div><dt>결과</dt><dd>${highlight(choice.result || "상태 변화 없음")}</dd></div>
+            <div><dt>다음</dt><dd>${nextNode ? `<button class="inline-node-link next-node-button" type="button" data-node-id="${choice.next}">${highlight(nextLabel)}</button>` : `<span>${highlight(nextLabel || "루트 종료")}</span>`}</dd></div>
+          </dl>
+        </div>
+      </article>
+    `;
+  }
+
+  function renderNextNodeButton(id) {
+    const node = data.routes.nodes.find((item) => item.id === id);
+    if (!node) return "";
+    return `<button class="next-node-button next-chip" type="button" data-node-id="${id}">${highlight(node.label)}</button>`;
   }
 
   function renderRouteList() {
@@ -178,8 +295,49 @@
     $$("[data-section-title]").forEach((section) => observer.observe(section));
   }
 
-  function labelForNode(id) {
-    return data.routes.nodes.find((node) => node.id === id)?.label || id;
+  function collectGraphNextIds(node) {
+    const graphIds = new Set(data.routes.nodes.map((item) => item.id));
+    return [...new Set((node.scene?.choices || [])
+      .map((choice) => choice.next)
+      .filter((id) => id && id !== node.id && graphIds.has(id)))];
+  }
+
+  function collectEndpointNext(node) {
+    const graphIds = new Set(data.routes.nodes.map((item) => item.id));
+    const endpoints = new Map();
+    (node.scene?.choices || []).forEach((choice) => {
+      if (!choice.next) return;
+      if (graphIds.has(choice.next)) {
+        if (choice.next === node.id) endpoints.set("current", "현재 상황 유지");
+        return;
+      }
+      endpoints.set(choice.next, choice.nextLabel || choice.next);
+    });
+    return [...endpoints.entries()].map(([id, label]) => ({ id, label }));
+  }
+
+  function isRelatedToActive(node) {
+    if (node.id === activeNodeId) return false;
+    const active = data.routes.nodes.find((item) => item.id === activeNodeId);
+    if (!active) return false;
+    const activeLinks = active.links || [];
+    const nodeLinks = node.links || [];
+    const activeToNode = activeLinks.includes(node.id) || (active.scene?.choices || []).some((choice) => choice.next === node.id);
+    const nodeToActive = nodeLinks.includes(active.id) || (node.scene?.choices || []).some((choice) => choice.next === active.id);
+    return activeToNode || nodeToActive;
+  }
+
+  function nodeMatchesQuery(node) {
+    const choices = node.scene?.choices || [];
+    return includesQuery([
+      node.label,
+      node.kind,
+      node.summary,
+      node.files.join(" "),
+      node.scene?.background || "",
+      node.scene?.dialogue || "",
+      choices.map((choice) => [choice.label, choice.line, choice.requirements, choice.result, choice.next].join(" ")).join(" ")
+    ]);
   }
 
   function categoryLabel(value) {
@@ -212,7 +370,7 @@
   }
 
   function escapeHtml(text) {
-    return text.replace(/[&<>"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[char]));
+    return String(text).replace(/[&<>"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[char]));
   }
 
   init();

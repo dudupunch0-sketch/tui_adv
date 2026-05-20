@@ -34,7 +34,7 @@ window.TUI_ADV_IMPLEMENTATION.overview = {
     { title: "상호작용", path: "docs/implementation-map/assets/app.js", description: "검색, 필터, 노드 클릭, 섹션 하이라이트를 담당한다." },
     { title: "개요 데이터", path: "docs/implementation-map/data/overview.js", description: "프로젝트 요약, 지표, 다음 작업, 갱신 규칙." },
     { title: "시스템 데이터", path: "docs/implementation-map/data/systems.js", description: "엔진, TUI, 저장, 안전, 테스트 기능 카드." },
-    { title: "루트 데이터", path: "docs/implementation-map/data/routes.js", description: "탈출, 정복, 진실, 현실 연결 루트와 그래프 노드." },
+    { title: "루트 데이터", path: "docs/implementation-map/data/routes.js", description: "탈출, 정복, 진실, 현실 연결 루트와 연결선 노드, 원본 YAML 기준 배경/대사/전체 선택지/다음 상황." },
     { title: "콘텐츠 데이터", path: "docs/implementation-map/data/content.js", description: "위치, 인카운터, 엔딩, 아이템, 업적 목록." }
   ]
 };

@@ -9,23 +9,30 @@
 <body>
   <a class="skip-link" href="#main-content">본문으로 건너뛰기</a>
   <div class="app-shell">
-    <aside class="sidebar" aria-label="구현 지도 탐색">
-      <div class="brand-block">
-        <span class="eyebrow">implementation map</span>
-        <h1>escape from the office</h1>
-        <p>현재 구현을 한 번에 훑고, 다음 수정 위치를 바로 찾기 위한 개발자용 위키.</p>
-      </div>
+    <aside class="sidebar" id="sidebar" aria-label="구현 지도 탐색">
+      <button class="sidebar-toggle" id="sidebar-toggle" type="button" aria-controls="sidebar-body" aria-expanded="true">
+        <span class="sidebar-toggle-icon" aria-hidden="true">‹</span>
+        <span class="sidebar-toggle-label">탐색 닫기</span>
+      </button>
 
-      <label class="search-box" for="global-search">
-        <span>검색</span>
-        <input id="global-search" type="search" placeholder="루트, 파일, 기능 검색" autocomplete="off" />
-      </label>
+      <div class="sidebar-body" id="sidebar-body">
+        <div class="brand-block">
+          <span class="eyebrow">implementation map</span>
+          <h1>escape from the office</h1>
+          <p>현재 구현을 한 번에 훑고, 다음 수정 위치를 바로 찾기 위한 개발자용 위키.</p>
+        </div>
 
-      <nav class="nav-list" id="section-nav" aria-label="섹션 바로가기"></nav>
+        <label class="search-box" for="global-search">
+          <span>검색</span>
+          <input id="global-search" type="search" placeholder="루트, 파일, 기능 검색" autocomplete="off" />
+        </label>
 
-      <div class="maintenance-card">
-        <strong>업데이트 규칙</strong>
-        <p>새 구현 slice가 끝나면 관련 data 파일만 갱신한다. 화면 구조를 바꾸지 않아도 대부분의 내용이 갱신된다.</p>
+        <nav class="nav-list" id="section-nav" aria-label="섹션 바로가기"></nav>
+
+        <div class="maintenance-card">
+          <strong>업데이트 규칙</strong>
+          <p>새 구현 slice가 끝나면 관련 data 파일만 갱신한다. 화면 구조를 바꾸지 않아도 대부분의 내용이 갱신된다.</p>
+        </div>
       </div>
     </aside>
 

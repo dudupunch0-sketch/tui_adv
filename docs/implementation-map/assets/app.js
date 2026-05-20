@@ -6,11 +6,13 @@
   let activeFeatureFilter = "all";
   let activeNodeId = data.routes.nodes[0]?.id;
   let query = "";
+  const sidebarStorageKey = "tui_adv_implementation_map_sidebar";
 
   const normalize = (value) => String(value ?? "").toLowerCase();
   const includesQuery = (parts) => !query || parts.some((part) => normalize(part).includes(query));
 
   function init() {
+    initSidebarToggle();
     renderShell();
     renderOverview();
     renderStatus();
@@ -29,6 +31,57 @@
     nav.innerHTML = sections.map((section, index) => `
       <a href="#${section.id}" ${index === 0 ? 'aria-current="true"' : ""}>${section.dataset.sectionTitle}</a>
     `).join("");
+  }
+
+  function initSidebarToggle() {
+    const initialCollapsed = readSidebarPreference() === "collapsed";
+    applySidebarState(initialCollapsed);
+
+    $("#sidebar-toggle")?.addEventListener("click", () => {
+      const shell = $(".app-shell");
+      applySidebarState(!shell?.classList.contains("is-sidebar-collapsed"), true);
+    });
+  }
+
+  function applySidebarState(collapsed, persist = false) {
+    const shell = $(".app-shell");
+    const sidebarBody = $("#sidebar-body");
+    const button = $("#sidebar-toggle");
+    if (!shell || !sidebarBody || !button) return;
+    const label = $(".sidebar-toggle-label", button);
+    const icon = $(".sidebar-toggle-icon", button);
+
+    shell.classList.toggle("is-sidebar-collapsed", collapsed);
+    button.setAttribute("aria-expanded", String(!collapsed));
+    button.setAttribute("aria-label", collapsed ? "탐색 열기" : "탐색 닫기");
+    if (label) label.textContent = collapsed ? "탐색 열기" : "탐색 닫기";
+    if (icon) icon.textContent = collapsed ? "☰" : "‹";
+
+    if (collapsed) {
+      sidebarBody.setAttribute("aria-hidden", "true");
+      sidebarBody.setAttribute("inert", "");
+    } else {
+      sidebarBody.removeAttribute("aria-hidden");
+      sidebarBody.removeAttribute("inert");
+    }
+
+    if (persist) writeSidebarPreference(collapsed);
+  }
+
+  function readSidebarPreference() {
+    try {
+      return window.localStorage.getItem(sidebarStorageKey);
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function writeSidebarPreference(collapsed) {
+    try {
+      window.localStorage.setItem(sidebarStorageKey, collapsed ? "collapsed" : "expanded");
+    } catch (error) {
+      // The toggle still works when storage is unavailable.
+    }
   }
 
   function renderOverview() {

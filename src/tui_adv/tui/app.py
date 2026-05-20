@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
+from pathlib import Path
 
 from tui_adv.game.achievements import (
     format_achievement_summary,
@@ -17,6 +18,7 @@ from tui_adv.game.loop import (
     build_game_turn,
     resolve_turn_action_result,
 )
+from tui_adv.game.save import save_game_state
 from tui_adv.game.state import GameState
 from tui_adv.tui.encounter import format_choice_resolution, format_encounter_turn
 from tui_adv.tui.status import format_local_status
@@ -44,7 +46,11 @@ def build_tui_turn(
     return build_game_turn(state)
 
 
-def render_tui_layout_snapshot(turn: GameTurn) -> str:
+def render_tui_layout_snapshot(
+    turn: GameTurn,
+    *,
+    save_path: str | Path | None = None,
+) -> str:
     """Render the same panels the Textual shell mounts, without requiring Textual."""
 
     location = DEFAULT_LOCATIONS[turn.state.location_id]
@@ -57,6 +63,15 @@ def render_tui_layout_snapshot(turn: GameTurn) -> str:
         format_local_status(turn.state.player),
         "",
     ]
+    if save_path is not None:
+        lines.extend(
+            [
+                "[저장]",
+                f"저장 파일: {Path(save_path)}",
+                "s: 저장 / q: 종료",
+                "",
+            ]
+        )
     if achievement_summary := format_achievement_summary(turn.state):
         lines.extend([achievement_summary, ""])
     lines.extend(_format_inventory_and_clues(turn.state))
@@ -169,11 +184,33 @@ def resolve_tui_choice(turn: GameTurn, choice_index: int) -> TuiChoiceResult:
     )
 
 
+def save_tui_turn_state(
+    turn: GameTurn,
+    save_path: str | Path,
+    *,
+    message_prefix: str = "저장",
+) -> GameTurn:
+    saved_path = Path(save_path)
+    saved_state = replace(
+        turn.state,
+        inventory=list(turn.state.inventory),
+        clues=list(turn.state.clues),
+        flags=list(turn.state.flags),
+        seen_encounters=list(turn.state.seen_encounters),
+        unlocked_achievements=list(turn.state.unlocked_achievements),
+        log=[*turn.state.log, f"{message_prefix}: {saved_path}"],
+    )
+    save_game_state(saved_state, saved_path)
+    return build_game_turn(saved_state)
+
+
 def run_textual_tui(
     *,
     seed: int,
     location_id: str = "dev_desk",
     flags: tuple[str, ...] = (),
+    initial_state: GameState | None = None,
+    save_path: str | Path | None = None,
 ) -> None:
     """Launch the interactive Textual shell when the optional dependency exists."""
 
@@ -186,6 +223,7 @@ def run_textual_tui(
         ) from exc
 
     class OfficeEscapeApp(App[None]):  # pragma: no cover - interactive shell smoke only.
+        BINDINGS = [("s", "save_game", "저장"), ("q", "quit", "종료")]
         CSS = """
         Screen { layout: vertical; }
         #game { height: 1fr; overflow-y: auto; padding: 1 2; }
@@ -193,11 +231,19 @@ def run_textual_tui(
 
         def __init__(self) -> None:
             super().__init__()
-            self.turn = build_tui_turn(seed=seed, location_id=location_id, flags=flags)
+            self.save_path = save_path
+            self.turn = (
+                build_game_turn(initial_state)
+                if initial_state is not None
+                else build_tui_turn(seed=seed, location_id=location_id, flags=flags)
+            )
 
         def compose(self) -> ComposeResult:
             yield Header(show_clock=True)
-            yield Static(render_tui_layout_snapshot(self.turn), id="game")
+            yield Static(
+                render_tui_layout_snapshot(self.turn, save_path=self.save_path),
+                id="game",
+            )
             yield Footer()
 
         def on_key(self, event) -> None:
@@ -213,12 +259,30 @@ def run_textual_tui(
             log = [_format_tui_action_result(result)]
             next_state = replace(result.turn.state, log=[*result.turn.state.log, *log])
             self.turn = build_game_turn(next_state)
-            self.query_one("#game", Static).update(render_tui_layout_snapshot(self.turn))
+            if self.save_path is not None:
+                self.turn = save_tui_turn_state(
+                    self.turn,
+                    self.save_path,
+                    message_prefix="자동 저장",
+                )
+            self._refresh_game_panel()
+
+        def action_save_game(self) -> None:
+            if self.save_path is None:
+                self._append_message("저장 파일 경로가 설정되지 않았다.")
+                return
+            self.turn = save_tui_turn_state(self.turn, self.save_path)
+            self._refresh_game_panel()
 
         def _append_message(self, message: str) -> None:
             state = replace(self.turn.state, log=[*self.turn.state.log, message])
             self.turn = build_game_turn(state)
-            self.query_one("#game", Static).update(render_tui_layout_snapshot(self.turn))
+            self._refresh_game_panel()
+
+        def _refresh_game_panel(self) -> None:
+            self.query_one("#game", Static).update(
+                render_tui_layout_snapshot(self.turn, save_path=self.save_path)
+            )
 
     OfficeEscapeApp().run()
 

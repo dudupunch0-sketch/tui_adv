@@ -290,8 +290,6 @@ def main(argv: list[str] | None = None) -> int:
         parser.error(f"알 수 없는 위치: {args.location}")
     if args.new and args.load:
         parser.error("--new와 --load은 함께 사용할 수 없다")
-    if args.load and args.tui:
-        parser.error("--load은 --tui와 아직 함께 사용할 수 없다")
     if args.resource and args.load:
         parser.error("--resource는 --load와 함께 사용할 수 없다")
     if args.resource and not (args.new or args.tui_smoke):
@@ -326,11 +324,19 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.tui:
+        initial_state = None
+        if args.load:
+            try:
+                initial_state = load_game_state(args.load)
+            except ValueError as exc:
+                parser.error(str(exc))
         try:
             run_textual_tui(
                 seed=args.seed,
                 location_id=args.location,
                 flags=tuple(args.flag),
+                initial_state=initial_state,
+                save_path=args.save,
             )
         except RuntimeError as exc:
             parser.error(str(exc))

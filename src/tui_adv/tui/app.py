@@ -26,7 +26,7 @@ from tui_adv.tui.status import format_local_status, format_pressure_warnings
 
 TuiTurn = GameTurn
 _MOVE_SHORTCUT_KEYS = tuple("adfghjklzxcvbrtyuop")
-_RESERVED_TUI_KEYS = {"s", "q", "n", "i", "?"}
+_RESERVED_TUI_KEYS = {"s", "q", "n", "i", "l", "?"}
 
 
 @dataclass(frozen=True, slots=True)
@@ -106,6 +106,8 @@ def render_tui_layout_snapshot(
     save_path: str | Path | None = None,
     save_slots: tuple[SaveSlot, ...] | None = None,
     start_mode: bool = False,
+    detail_panel: str | None = None,
+    delete_slot_mode: bool = False,
 ) -> str:
     """Render the same panels the Textual shell mounts, without requiring Textual."""
 
@@ -132,20 +134,27 @@ def render_tui_layout_snapshot(
         )
     if save_slots is not None:
         if start_mode:
+            start_prompt = (
+                "숫자: 저장 파일 삭제 / n: 새 게임"
+                if delete_slot_mode
+                else "숫자: 저장 파일 불러오기 / n: 새 게임 / d: 저장 파일 삭제 모드"
+            )
             lines.extend(
                 [
                     "[시작]",
-                    "숫자: 저장 파일 불러오기 / n: 새 게임",
+                    start_prompt,
                     "",
                 ]
             )
         lines.extend(_format_save_slot_panel(save_slots))
         lines.append("")
-    lines.extend(_format_help_panel(turn, start_mode=start_mode))
+    lines.extend(_format_help_panel(turn, start_mode=start_mode, delete_slot_mode=delete_slot_mode))
     lines.append("")
     if achievement_summary := format_achievement_summary(turn.state):
         lines.extend([achievement_summary, ""])
     lines.extend(_format_inventory_and_clues(turn.state))
+    if detail_lines := _format_detail_panel(turn, detail_panel):
+        lines.extend(["", *detail_lines])
     lines.append("")
     if turn.ending is not None:
         lines.extend(["[엔딩]", format_ending_summary(turn.ending)])
@@ -180,13 +189,21 @@ def _format_save_slot_panel(save_slots: tuple[SaveSlot, ...]) -> list[str]:
     return lines
 
 
-def _format_help_panel(turn: GameTurn, *, start_mode: bool = False) -> list[str]:
+def _format_help_panel(
+    turn: GameTurn,
+    *,
+    start_mode: bool = False,
+    delete_slot_mode: bool = False,
+) -> list[str]:
     lines = ["[도움말]"]
     if start_mode:
-        lines.append("숫자: 저장 파일 불러오기 / n: 새 게임")
+        if delete_slot_mode:
+            lines.append("숫자: 저장 파일 삭제 / n: 새 게임")
+        else:
+            lines.append("숫자: 저장 파일 불러오기 / n: 새 게임 / d: 저장 파일 삭제 모드")
     else:
         lines.append("숫자: 현재 선택/행동 실행")
-    lines.append("?: 도움말 / s: 저장 / q: 종료")
+    lines.append("?: 도움말 / i: 소지품/단서 / l: 최근 로그 / s: 저장 / q: 종료")
     shortcuts = movement_shortcuts_for_turn(turn)
     if shortcuts:
         shortcut_text = " / ".join(
@@ -199,9 +216,12 @@ def _format_help_panel(turn: GameTurn, *, start_mode: bool = False) -> list[str]
 def movement_shortcuts_for_turn(turn: GameTurn) -> dict[str, TurnAction]:
     move_actions = [action for action in turn.available_actions if action.kind == "move"]
     shortcuts: dict[str, TurnAction] = {}
-    for key, action in zip(_MOVE_SHORTCUT_KEYS, move_actions):
-        if key in _RESERVED_TUI_KEYS:
-            continue
+    shortcut_keys = (key for key in _MOVE_SHORTCUT_KEYS if key not in _RESERVED_TUI_KEYS)
+    for action in move_actions:
+        try:
+            key = next(shortcut_keys)
+        except StopIteration:
+            break
         shortcuts[key] = action
     return shortcuts
 
@@ -266,6 +286,67 @@ def _format_inventory_item(item_id: str) -> str:
     return f"{item.name} ({item.id})"
 
 
+def _format_detail_panel(turn: GameTurn, detail_panel: str | None) -> list[str]:
+    if detail_panel is None:
+        return []
+    if detail_panel == "help":
+        return _format_help_detail_panel(turn)
+    if detail_panel == "inventory":
+        return _format_inventory_detail_panel(turn.state)
+    if detail_panel == "log":
+        return _format_log_detail_panel(turn.state)
+    raise ValueError(f"알 수 없는 상세 패널: {detail_panel}")
+
+
+def _format_help_detail_panel(turn: GameTurn) -> list[str]:
+    lines = [
+        "[상세 도움말]",
+        "- 숫자: 현재 선택지, 이동, 소지품 사용을 실행한다.",
+        "- i: 소지품/단서 상세",
+        "- l: 최근 로그 상세",
+        "- ?: 이 도움말 다시 보기",
+        "- s: 현재 저장 경로에 저장",
+        "- q: 종료",
+    ]
+    shortcuts = movement_shortcuts_for_turn(turn)
+    if shortcuts:
+        shortcut_text = " / ".join(
+            f"{key}={action.label}" for key, action in shortcuts.items()
+        )
+        lines.append(f"- 이동 단축키: {shortcut_text}")
+    return lines
+
+
+def _format_inventory_detail_panel(state: GameState) -> list[str]:
+    lines = ["[상세 소지품]"]
+    if state.inventory:
+        lines.extend(_format_inventory_item_detail(item_id) for item_id in state.inventory)
+    else:
+        lines.append("- 없음")
+    lines.extend(["", "[상세 단서]"])
+    if state.clues:
+        lines.extend(f"- {clue}" for clue in state.clues)
+    else:
+        lines.append("- 아직 확보한 단서 없음")
+    return lines
+
+
+def _format_inventory_item_detail(item_id: str) -> str:
+    item = DEFAULT_ITEMS.get(item_id)
+    if item is None:
+        return f"- {item_id}: 등록되지 않은 물품"
+    return f"- {item.name} ({item.id}): {item.description}"
+
+
+def _format_log_detail_panel(state: GameState) -> list[str]:
+    lines = ["[상세 로그]"]
+    if not state.log:
+        lines.append("- 아직 기록 없음")
+        return lines
+    lines.extend(f"{index}. {entry}" for index, entry in enumerate(state.log, start=1))
+    return lines
+
+
 def resolve_tui_save_slot(save_slots: tuple[SaveSlot, ...], slot_index: int) -> GameState:
     selected_index = slot_index - 1
     if selected_index < 0 or selected_index >= len(save_slots):
@@ -274,6 +355,18 @@ def resolve_tui_save_slot(save_slots: tuple[SaveSlot, ...], slot_index: int) -> 
     if slot.error is not None:
         raise ValueError(f"저장 슬롯을 읽을 수 없다: {slot.path.name}")
     return load_game_state(slot.path)
+
+
+def delete_tui_save_slot(save_slots: tuple[SaveSlot, ...], slot_index: int) -> Path:
+    selected_index = slot_index - 1
+    if selected_index < 0 or selected_index >= len(save_slots):
+        raise ValueError(f"저장 슬롯을 찾을 수 없다: {slot_index}")
+    path = save_slots[selected_index].path
+    try:
+        path.unlink()
+    except OSError as exc:
+        raise ValueError(f"저장 슬롯을 삭제할 수 없다: {path.name}") from exc
+    return path
 
 
 def resolve_tui_action(turn: GameTurn, action_index: int) -> TurnActionResult:
@@ -370,6 +463,8 @@ def run_textual_tui(
             self.save_path = save_path
             self.save_slots = _save_slots_for_path(save_path) or ()
             self.selecting_save_slot = initial_state is None and bool(self.save_slots)
+            self.deleting_save_slot = False
+            self.detail_panel: str | None = None
             self.turn = (
                 build_game_turn(initial_state)
                 if initial_state is not None
@@ -384,6 +479,8 @@ def run_textual_tui(
                     save_path=self.save_path,
                     save_slots=self.save_slots,
                     start_mode=self.selecting_save_slot,
+                    detail_panel=self.detail_panel,
+                    delete_slot_mode=self.deleting_save_slot,
                 ),
                 id="game",
             )
@@ -393,12 +490,23 @@ def run_textual_tui(
             if self.selecting_save_slot:
                 if event.key == "n":
                     self.selecting_save_slot = False
+                    self.deleting_save_slot = False
+                    self._refresh_game_panel()
+                    return
+                if event.key == "d":
+                    self.deleting_save_slot = True
                     self._refresh_game_panel()
                     return
                 if not event.key.isdecimal():
                     return
                 try:
                     slot_index = int(event.key)
+                    if self.deleting_save_slot:
+                        deleted_path = delete_tui_save_slot(self.save_slots, slot_index)
+                        self.save_slots = discover_save_slots(deleted_path.parent)
+                        self.deleting_save_slot = False
+                        self._append_message(f"저장 슬롯 삭제: {deleted_path.name}")
+                        return
                     loaded_state = resolve_tui_save_slot(self.save_slots, slot_index)
                 except ValueError as exc:
                     self._append_message(str(exc))
@@ -406,11 +514,21 @@ def run_textual_tui(
                 self.save_path = self.save_slots[slot_index - 1].path
                 self.turn = build_game_turn(loaded_state)
                 self.selecting_save_slot = False
+                self.deleting_save_slot = False
                 self._refresh_game_panel()
                 return
             if self.turn.ending is not None:
                 return
             if event.key in {"?", "question_mark"}:
+                self.detail_panel = "help"
+                self._refresh_game_panel()
+                return
+            if event.key == "i":
+                self.detail_panel = "inventory"
+                self._refresh_game_panel()
+                return
+            if event.key == "l":
+                self.detail_panel = "log"
                 self._refresh_game_panel()
                 return
             if event.key in _RESERVED_TUI_KEYS:
@@ -423,6 +541,7 @@ def run_textual_tui(
             log = [_format_tui_action_result(result)]
             next_state = replace(result.turn.state, log=[*result.turn.state.log, *log])
             self.turn = build_game_turn(next_state)
+            self.detail_panel = None
             if self.save_path is not None:
                 self.turn = save_tui_turn_state(
                     self.turn,
@@ -452,6 +571,8 @@ def run_textual_tui(
                     save_path=self.save_path,
                     save_slots=self.save_slots,
                     start_mode=self.selecting_save_slot,
+                    detail_panel=self.detail_panel,
+                    delete_slot_mode=self.deleting_save_slot,
                 )
             )
 

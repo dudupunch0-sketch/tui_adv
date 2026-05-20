@@ -57,6 +57,12 @@ docs/
     Testing.md                      # 테스트 전략과 검증 명령
     Roadmap.md                      # 마일스톤 단위 로드맵
 
+  implementation-map/
+    index.html                       # 현재 구현을 한 번에 보는 interactive HTML 구현 지도
+    README.md                        # 구현 지도 업데이트 방법
+    assets/                          # 구현 지도 CSS/JS
+    data/                            # 카테고리별 구현 지도 데이터
+
   archive/
     idea_0515.md                    # 2026-05-15 원본 아이디어 노트
 
@@ -92,6 +98,8 @@ private/
 - `docs/dev/Architecture.md`
 - `docs/dev/Data_Schema.md`
 - `docs/dev/TUI_Layout.md`
+- `docs/implementation-map/index.html`
+- `docs/implementation-map/README.md`
 - `docs/dev/Reality_Secret_Safety_Checklist.md`
 - `docs/templates/local-secrets.template.yaml`
 - `docs/dev/Development_Plan.md`

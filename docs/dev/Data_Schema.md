@@ -457,6 +457,8 @@ secrets:
 
 비공개 로컬 파일이다.
 이 파일은 `.gitignore`로 차단한다.
+커밋 가능한 출발점은 `docs/templates/local-secrets.template.yaml`이다.
+템플릿은 `template_only: true`, `safety_checked: false`, `TODO` 문장만 포함해야 한다.
 
 ```yaml
 secrets:

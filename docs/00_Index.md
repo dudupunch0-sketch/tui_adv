@@ -52,6 +52,7 @@ docs/
     Architecture.md                 # 코드 구조와 모듈 경계
     Data_Schema.md                  # YAML/JSON 데이터 스키마
     TUI_Layout.md                   # 화면 배치, 입력, 위젯 설계
+    Reality_Secret_Safety_Checklist.md # 로컬 현실 힌트 안전 점검
     Save_Load.md                    # 저장/불러오기 설계
     Testing.md                      # 테스트 전략과 검증 명령
     Roadmap.md                      # 마일스톤 단위 로드맵
@@ -91,6 +92,8 @@ private/
 - `docs/dev/Architecture.md`
 - `docs/dev/Data_Schema.md`
 - `docs/dev/TUI_Layout.md`
+- `docs/dev/Reality_Secret_Safety_Checklist.md`
+- `docs/templates/local-secrets.template.yaml`
 - `docs/dev/Development_Plan.md`
 - `docs/dev/Checklist.md`
 - `docs/archive/idea_0515.md`

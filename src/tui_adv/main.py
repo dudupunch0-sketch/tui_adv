@@ -22,7 +22,12 @@ from tui_adv.game.loop import (
 )
 from tui_adv.game.save import load_game_state, save_game_state
 from tui_adv.game.state import GameState
-from tui_adv.tui.app import discover_save_slots, render_tui_layout_snapshot, run_textual_tui
+from tui_adv.tui.app import (
+    delete_tui_save_slot,
+    discover_save_slots,
+    render_tui_layout_snapshot,
+    run_textual_tui,
+)
 from tui_adv.tui.encounter import format_choice_resolution, format_encounter_turn
 from tui_adv.tui.status import format_local_status
 
@@ -69,6 +74,11 @@ def build_parser() -> argparse.ArgumentParser:
         "--tui-smoke",
         action="store_true",
         help="print the Textual layout model without launching an interactive screen",
+    )
+    parser.add_argument(
+        "--delete-save-slot",
+        type=int,
+        help="delete a numbered TUI save slot during --tui-smoke --save rendering",
     )
     return parser
 
@@ -295,6 +305,8 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--resource는 --load와 함께 사용할 수 없다")
     if args.resource and not (args.new or args.tui_smoke):
         parser.error("--resource requires --new or --tui-smoke")
+    if args.delete_save_slot is not None and not args.tui_smoke:
+        parser.error("--delete-save-slot requires --tui-smoke")
 
     if args.tui_smoke:
         if args.load:
@@ -318,6 +330,20 @@ def main(argv: list[str] | None = None) -> int:
         except ValueError as exc:
             parser.error(str(exc))
         save_slots = discover_save_slots(Path(args.save).parent) if args.save else None
+        if args.delete_save_slot is not None:
+            if save_slots is None:
+                parser.error("--delete-save-slot requires --tui-smoke --save")
+            try:
+                deleted_path = delete_tui_save_slot(save_slots, args.delete_save_slot)
+            except ValueError as exc:
+                parser.error(str(exc))
+            turn = build_game_turn(
+                replace(
+                    turn.state,
+                    log=[*turn.state.log, f"저장 슬롯 삭제: {deleted_path.name}"],
+                )
+            )
+            save_slots = discover_save_slots(deleted_path.parent)
         _print_output_and_maybe_save(
             render_tui_layout_snapshot(
                 turn,

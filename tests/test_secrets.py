@@ -1,6 +1,8 @@
 from pathlib import Path
 
-from tui_adv.game.secrets import reveal_physical_hint, sum_ip_address_digits
+import yaml
+
+from tui_adv.game.secrets import load_local_secrets, reveal_physical_hint, sum_ip_address_digits
 
 
 def test_ip_address_digit_sum_ignores_dots():
@@ -96,3 +98,16 @@ secrets:
 
     assert reveal.final_hint_available is False
     assert reveal.final_hint is None
+
+
+def test_local_secret_template_is_placeholder_only_and_unchecked():
+    template_path = Path("docs/templates/local-secrets.template.yaml")
+    data = yaml.safe_load(template_path.read_text(encoding="utf-8"))
+    secrets = load_local_secrets(template_path)
+
+    assert data["template_only"] is True
+    assert set(secrets) == {"real_note_001", "real_note_002", "real_note_003"}
+    for secret in secrets.values():
+        assert secret.safety_checked is False
+        assert "TODO" in secret.final_hint
+        assert secret.actual_ip_address in {None, "192.0.2.10"}

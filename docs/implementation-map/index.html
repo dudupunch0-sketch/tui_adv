@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>escape from the office 구현 지도</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main-content">본문으로 건너뛰기</a>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="구현 지도 탐색">
+      <button class="sidebar-toggle" id="sidebar-toggle" type="button" aria-controls="sidebar-body" aria-expanded="true">
+        <span class="sidebar-toggle-icon" aria-hidden="true">‹</span>
+        <span class="sidebar-toggle-label">탐색 닫기</span>
+      </button>
+
+      <div class="sidebar-body" id="sidebar-body">
+        <div class="brand-block">
+          <span class="eyebrow">implementation map</span>
+          <h1>escape from the office</h1>
+          <p>현재 구현을 한 번에 훑고, 다음 수정 위치를 바로 찾기 위한 개발자용 위키.</p>
+        </div>
+
+        <label class="search-box" for="global-search">
+          <span>검색</span>
+          <input id="global-search" type="search" placeholder="루트, 파일, 기능 검색" autocomplete="off" />
+        </label>
+
+        <nav class="nav-list" id="section-nav" aria-label="섹션 바로가기"></nav>
+
+        <div class="maintenance-card">
+          <strong>업데이트 규칙</strong>
+          <p>새 구현 slice가 끝나면 관련 data 파일만 갱신한다. 화면 구조를 바꾸지 않아도 대부분의 내용이 갱신된다.</p>
+        </div>
+      </div>
+    </aside>
+
+    <main id="main-content" class="main-content" tabindex="-1">
+      <section class="hero-section section-panel" id="overview" data-section-title="개요">
+        <div class="hero-copy">
+          <span class="eyebrow">developer follow-up wiki</span>
+          <h2 id="project-title">구현 지도 로딩 중</h2>
+          <p id="project-summary"></p>
+        </div>
+        <div class="hero-meta" id="hero-meta" aria-label="프로젝트 지표"></div>
+      </section>
+
+      <section class="section-panel" id="status" data-section-title="상태판">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">status board</span>
+            <h2>현재 구현 상태</h2>
+          </div>
+          <p>완료된 시스템, 다음 작업 후보, 유지보수 원칙을 나눠 본다.</p>
+        </div>
+        <div class="status-grid" id="status-grid"></div>
+      </section>
+
+      <section class="section-panel" id="features" data-section-title="기능">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">feature catalog</span>
+            <h2>기능 카탈로그</h2>
+          </div>
+          <p>게임 엔진, TUI, 저장, 현실 연결, 테스트를 카드 단위로 관리한다.</p>
+        </div>
+        <div class="filter-row" id="feature-filters" aria-label="기능 카테고리 필터"></div>
+        <div class="card-grid" id="feature-grid"></div>
+      </section>
+
+      <section class="section-panel" id="routes" data-section-title="루트 그래프">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">route graph</span>
+            <h2>루트 그래프</h2>
+          </div>
+          <p>노드를 클릭하면 해당 상황의 배경, 대사, 실제 선택지, 선택 결과 기준 다음 상황이 오른쪽 패널에 표시된다.</p>
+        </div>
+        <div class="route-layout">
+          <div class="graph-card">
+            <div id="route-graph" class="route-graph" role="list" aria-label="루트 노드"></div>
+          </div>
+          <article class="detail-card" id="node-detail" aria-live="polite"></article>
+        </div>
+        <div class="route-list" id="route-list"></div>
+      </section>
+
+      <section class="section-panel" id="content" data-section-title="콘텐츠">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">content inventory</span>
+            <h2>콘텐츠 인벤토리</h2>
+          </div>
+          <p>위치, 인카운터, 엔딩, 아이템, 업적을 목록으로 확인한다. 대사 수정 전 출처 파일을 찾는 용도다.</p>
+        </div>
+        <div class="content-columns" id="content-columns"></div>
+      </section>
+
+      <section class="section-panel" id="sources" data-section-title="소스와 업데이트">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">maintenance</span>
+            <h2>소스 파일과 갱신 방법</h2>
+          </div>
+          <p>카테고리별 데이터 파일을 나눠 두어 다음 slice마다 부분 업데이트한다.</p>
+        </div>
+        <div class="source-grid" id="source-grid"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="data/overview.js"></script>
+  <script src="data/systems.js"></script>
+  <script src="data/routes.js"></script>
+  <script src="data/content.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>

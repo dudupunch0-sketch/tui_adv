@@ -77,6 +77,8 @@ python -m pytest tests -q
 - `docs/dev/Architecture.md`: 코드 구조와 모듈 경계
 - `docs/dev/Data_Schema.md`: YAML/JSON 데이터 스키마
 - `docs/dev/TUI_Layout.md`: TUI 화면 설계
+- `docs/implementation-map/index.html`: 현재 구현을 한 번에 보는 interactive HTML 구현 지도
+- `docs/implementation-map/README.md`: 구현 지도 업데이트 방법
 - `docs/dev/Reality_Secret_Safety_Checklist.md`: 로컬 현실 힌트 안전 점검
 - `docs/templates/local-secrets.template.yaml`: `private/secrets.local.yaml` 작성용 공개 안전 템플릿
 - `docs/archive/idea_0515.md`: 2026-05-15 원본 아이디어 노트

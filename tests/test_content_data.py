@@ -218,6 +218,30 @@ def test_default_lobby_and_executive_route_content_is_wired():
     )
 
 
+def test_second_reality_hint_content_is_wired():
+    encounters = load_default_encounters()
+    endings = load_default_endings()
+    achievements = load_default_achievements()
+    pantry = encounters["pantry_coffee_machine"]
+    trace_choice = next(choice for choice in pantry.choices if choice.id == "trace_toner_symbol")
+    ending = endings["hidden_reality_hint_002"]
+
+    assert trace_choice.conditions.required_flags == ("reality_link_started",)
+    assert trace_choice.outcome.add_flags == ("reality_link_second_seen", "pantry_hint_seen")
+    assert trace_choice.outcome.add_clues == ("reality_link_hint_2",)
+    assert ending.kind == "hidden"
+    assert ending.local_hint_id == "real_note_002"
+    assert ending.conditions.required_clues == ("reality_link_hint_1", "reality_link_hint_2")
+    assert ending.conditions.required_flags == (
+        "reality_link_started",
+        "reality_link_second_seen",
+        "pantry_hint_seen",
+    )
+    assert achievements["reality_link_second_marker"].conditions.required_flags == (
+        "reality_link_second_seen",
+    )
+
+
 def test_locations_yaml_rejects_unknown_connections(tmp_path):
     path = tmp_path / "locations.yaml"
     path.write_text(

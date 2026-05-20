@@ -19,6 +19,17 @@ def test_public_secret_reveal_omits_final_hint_without_local_file(tmp_path: Path
     assert reveal.puzzle_answer == 33
 
 
+def test_second_public_secret_uses_maintenance_label_placeholder(tmp_path: Path):
+    reveal = reveal_physical_hint("real_note_002", local_path=tmp_path / "missing.yaml")
+
+    assert reveal.id == "real_note_002"
+    assert reveal.final_hint_available is False
+    assert reveal.title == "두 번째 현실 연결 힌트"
+    assert reveal.puzzle_prompt == "커피머신 점검 라벨의 IP 주소 숫자들을 모두 더한다."
+    assert reveal.puzzle_ip_address == "10.30.0.45"
+    assert reveal.puzzle_answer == 13
+
+
 def test_local_secret_file_merges_safety_checked_final_hint(tmp_path: Path):
     local_file = tmp_path / "secrets.local.yaml"
     local_file.write_text(

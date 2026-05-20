@@ -12,6 +12,14 @@ achievements:
     conditions:
       required_flags: [pantry_hint_seen]
 
+  - id: reality_link_second_marker
+    name: 두 번째 현실 표식
+    description: 토너 표식과 커피머신 점검 라벨을 이어 두 번째 현실 힌트를 열었다.
+    hidden: true
+    conditions:
+      required_flags: [reality_link_second_seen]
+      required_clues: [reality_link_hint_1, reality_link_hint_2]
+
   - id: broadcast_channel_captured
     name: 사내 방송 장악자
     description: 제한된 사내 방송 채널을 붙잡았다.

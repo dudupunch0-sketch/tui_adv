@@ -18,10 +18,10 @@ from tui_adv.game.loop import (
     build_game_turn,
     resolve_turn_action_result,
 )
-from tui_adv.game.save import save_game_state
+from tui_adv.game.save import load_game_state, save_game_state
 from tui_adv.game.state import GameState
 from tui_adv.tui.encounter import format_choice_resolution, format_encounter_turn
-from tui_adv.tui.status import format_local_status
+from tui_adv.tui.status import format_local_status, format_pressure_warnings
 
 TuiTurn = GameTurn
 
@@ -32,6 +32,57 @@ class TuiChoiceResult:
     resolution: ChoiceResolution
     state: GameState
     ending: Ending | None
+
+
+@dataclass(frozen=True, slots=True)
+class SaveSlot:
+    path: Path
+    modified_time: float
+    turn: int | None = None
+    location_id: str | None = None
+    location_name: str | None = None
+    error: str | None = None
+
+
+def discover_save_slots(directory: str | Path, *, limit: int = 5) -> tuple[SaveSlot, ...]:
+    """Return recent JSON save files for the TUI start/save panel."""
+
+    if limit <= 0:
+        return ()
+    save_dir = Path(directory)
+    if not save_dir.exists() or not save_dir.is_dir():
+        return ()
+
+    candidates: list[tuple[Path, float]] = []
+    for path in save_dir.glob("*.json"):
+        try:
+            if not path.is_file():
+                continue
+            modified_time = path.stat().st_mtime
+        except OSError:
+            continue
+        candidates.append((path, modified_time))
+
+    slots: list[SaveSlot] = []
+    for path, modified_time in sorted(candidates, key=lambda item: item[1], reverse=True):
+        try:
+            state = load_game_state(path)
+        except (OSError, ValueError, KeyError, TypeError, OverflowError) as exc:
+            slots.append(SaveSlot(path=path, modified_time=modified_time, error=str(exc)))
+        else:
+            location = DEFAULT_LOCATIONS.get(state.location_id)
+            slots.append(
+                SaveSlot(
+                    path=path,
+                    modified_time=modified_time,
+                    turn=state.turn,
+                    location_id=state.location_id,
+                    location_name=location.name if location else state.location_id,
+                )
+            )
+        if len(slots) >= limit:
+            break
+    return tuple(slots)
 
 
 def build_tui_turn(
@@ -50,6 +101,7 @@ def render_tui_layout_snapshot(
     turn: GameTurn,
     *,
     save_path: str | Path | None = None,
+    save_slots: tuple[SaveSlot, ...] | None = None,
 ) -> str:
     """Render the same panels the Textual shell mounts, without requiring Textual."""
 
@@ -61,8 +113,10 @@ def render_tui_layout_snapshot(
         f"{location.name} — {location.description}",
         "",
         format_local_status(turn.state.player),
-        "",
     ]
+    if pressure_warnings := format_pressure_warnings(turn.state.player):
+        lines.extend(["", pressure_warnings])
+    lines.append("")
     if save_path is not None:
         lines.extend(
             [
@@ -72,6 +126,9 @@ def render_tui_layout_snapshot(
                 "",
             ]
         )
+    if save_slots is not None:
+        lines.extend(_format_save_slot_panel(save_slots))
+        lines.append("")
     if achievement_summary := format_achievement_summary(turn.state):
         lines.extend([achievement_summary, ""])
     lines.extend(_format_inventory_and_clues(turn.state))
@@ -94,6 +151,19 @@ def render_tui_layout_snapshot(
     else:
         lines.append("- 아직 기록 없음")
     return "\n".join(lines)
+
+
+def _format_save_slot_panel(save_slots: tuple[SaveSlot, ...]) -> list[str]:
+    lines = ["[저장 파일 목록]"]
+    if not save_slots:
+        lines.append("- 저장 파일 없음")
+        return lines
+    for index, slot in enumerate(save_slots, start=1):
+        if slot.error is not None:
+            lines.append(f"{index}. {slot.path.name} — 읽기 실패")
+        else:
+            lines.append(f"{index}. {slot.path.name} — 턴 {slot.turn} / {slot.location_name}")
+    return lines
 
 
 def _append_numbered_action_group(
@@ -204,6 +274,12 @@ def save_tui_turn_state(
     return build_game_turn(saved_state)
 
 
+def _save_slots_for_path(save_path: str | Path | None) -> tuple[SaveSlot, ...] | None:
+    if save_path is None:
+        return None
+    return discover_save_slots(Path(save_path).parent)
+
+
 def run_textual_tui(
     *,
     seed: int,
@@ -241,7 +317,11 @@ def run_textual_tui(
         def compose(self) -> ComposeResult:
             yield Header(show_clock=True)
             yield Static(
-                render_tui_layout_snapshot(self.turn, save_path=self.save_path),
+                render_tui_layout_snapshot(
+                    self.turn,
+                    save_path=self.save_path,
+                    save_slots=_save_slots_for_path(self.save_path),
+                ),
                 id="game",
             )
             yield Footer()
@@ -281,7 +361,11 @@ def run_textual_tui(
 
         def _refresh_game_panel(self) -> None:
             self.query_one("#game", Static).update(
-                render_tui_layout_snapshot(self.turn, save_path=self.save_path)
+                render_tui_layout_snapshot(
+                    self.turn,
+                    save_path=self.save_path,
+                    save_slots=_save_slots_for_path(self.save_path),
+                )
             )
 
     OfficeEscapeApp().run()

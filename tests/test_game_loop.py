@@ -183,6 +183,24 @@ def test_lobby_to_executive_sequence_reaches_conquest_ending():
     assert turn.ending.id == "conquest_executive_approval"
 
 
+def test_toner_symbol_sequence_reaches_second_reality_hint_ending():
+    turn = build_game_turn(GameState.new(seed=123, location_id="printer_area"))
+
+    for action in (
+        "choice:3",
+        "move:pantry",
+        "choice:3",
+    ):
+        turn = resolve_turn_action(turn, action)
+
+    assert "reality_link_started" in turn.state.flags
+    assert "reality_link_second_seen" in turn.state.flags
+    assert "reality_link_hint_1" in turn.state.clues
+    assert "reality_link_hint_2" in turn.state.clues
+    assert turn.ending is not None
+    assert turn.ending.id == "hidden_reality_hint_002"
+
+
 def test_forcing_elevator_doors_returns_through_security_room_with_clue():
     turn = build_game_turn(GameState.new(seed=123, location_id="elevator_hall"))
 

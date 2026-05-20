@@ -110,49 +110,60 @@ private/local 데이터가 있을 때:
 - 잠긴 공간이나 위험 설비 근처를 쓰지 않는다.
 - 공개 저장소에는 최종 위치를 쓰지 않는다.
 
-## Secret 002 후보: 존재하지 않는 회의의 참석자
+## Secret 002: 두 번째 현실 연결 힌트
 
 id:
 
-- impossible_meeting_attendee
+- real_note_002
 
 상태:
 
-- 2차 이후 후보
+- 구현됨
 
 목적:
 
-회의실 예약 패널과 회의록을 통해 플레이어가 “사람들이 사라진 것이 아니라 다른 회의 상태로 편입되었을 수 있다”는 진실 루트 단서를 얻는다.
+토너 카트리지 안쪽 표식과 커피머신 점검 라벨을 이어, 첫 번째 출력물 루트와 다른 방식으로 현실 사무실의 두 번째 안전한 메모 후보를 암시한다.
 
 관련 위치:
 
-- meeting_room
-- dev_desk
+- printer_area
+- pantry
 
 관련 인카운터:
 
-- meeting_room_booking
-- minutes_with_my_name
-- ex_employee_messenger
+- printer_prints_alone
+- pantry_coffee_machine
 
-관련 플래그 후보:
+관련 플래그:
 
 ```text
-impossible_meeting_saved
-minutes_include_player
-meeting_pattern_noticed
+reality_link_started
+reality_link_second_seen
+pantry_hint_seen
 ```
 
-공개 힌트 방향:
+unlock 조건:
 
-- 회의록의 참석자 목록
-- 존재하지 않는 부서명
-- 플레이어가 아직 하지 않은 발언
+1. 복합기 구역에서 토너 카트리지를 확인해 `reality_link_hint_1`과 `reality_link_started`를 얻는다.
+2. 탕비실 커피머신 점검 라벨의 표식을 확인해 `reality_link_hint_2`와 `reality_link_second_seen`을 얻는다.
+3. 두 단서와 플래그가 모두 있으면 `hidden_reality_hint_002`가 열린다.
 
-현실 연결 여부:
+공개 힌트 단계:
 
-- 기본은 게임 내부 진실 루트다.
-- 현실 연결로 확장할 경우에도 최종 위치는 private/local에만 둔다.
+```text
+1. 토너 카트리지 안쪽 표식과 커피머신 점검 라벨을 같은 방향으로 본다.
+2. 점검 라벨에 적힌 사내망 IP 주소의 숫자들을 모두 더한다.
+3. 첫 번째 힌트와 다른 숫자라면 두 번째 메모를 찾는 좌표가 된다.
+```
+
+현재 공개 샘플 IP 주소는 더미 값 `10.30.0.45`이다.
+실제 점검 라벨 또는 사내망 주소는 내부 정보일 수 있으므로 `private/secrets.local.yaml`의 `actual_ip_address`에만 둔다.
+
+안전 체크:
+
+- 공용 물품 또는 개발자가 설치한 메모만 사용한다.
+- 개인 물건, 잠긴 공간, 위험 설비 근처를 쓰지 않는다.
+- 공개 저장소에는 최종 위치를 쓰지 않는다.
 
 ## Secret 003 후보: 사내망의 반대편
 

@@ -22,3 +22,21 @@ def test_tui_mode_accepts_loaded_state_and_save_path(monkeypatch, tmp_path):
     assert result == 0
     assert captured_kwargs["initial_state"] == loaded_state
     assert captured_kwargs["save_path"] == str(autosave_path)
+
+
+def test_tui_smoke_save_path_renders_discovered_save_slots(capsys, tmp_path):
+    old_save = tmp_path / "old.json"
+    broken_save = tmp_path / "broken.json"
+    autosave_path = tmp_path / "autosave.json"
+    save_game_state(GameState.new(seed=77, location_id="lobby"), old_save)
+    broken_save.write_text("not json", encoding="utf-8")
+
+    result = main_module.main(["--tui-smoke", "--seed", "123", "--save", str(autosave_path)])
+
+    output = capsys.readouterr().out
+    assert result == 0
+    assert "[저장 파일 목록]" in output
+    assert "old.json — 턴 0 / 로비" in output
+    assert "broken.json — 읽기 실패" in output
+    assert f"저장: {autosave_path}" in output
+    assert autosave_path.exists()

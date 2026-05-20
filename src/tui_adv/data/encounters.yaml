@@ -98,6 +98,14 @@ encounters:
             sanity: -2
           add_clues: [full_water_tank_warning]
           log: 물통은 가득 차 있는데 센서는 계속 빈 상태를 보고했다.
+      - id: trace_toner_symbol
+        label: 점검 라벨의 표식을 토너 표식과 맞춰 본다
+        conditions:
+          required_flags: [reality_link_started]
+        outcome:
+          add_clues: [reality_link_hint_2]
+          add_flags: [reality_link_second_seen, pantry_hint_seen]
+          log: 커피머신 점검 라벨의 작은 숫자들이 토너 안쪽 표식과 같은 방향으로 접혔다.
       - id: look_behind_machine
         label: 커피머신 뒤를 본다
         conditions:

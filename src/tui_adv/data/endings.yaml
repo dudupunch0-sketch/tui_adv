@@ -36,6 +36,21 @@ endings:
       출력물의 마지막 문장은 더 이상 게임 속 장소만을 말하지 않았다.
       커피 냄새와 복합기 표식이 하나의 계산으로 이어졌다.
 
+  - id: hidden_reality_hint_002
+    name: 두 번째 현실 연결 힌트
+    kind: hidden
+    priority: 82
+    conditions:
+      required_clues: [reality_link_hint_1, reality_link_hint_2]
+      required_flags: [reality_link_started, reality_link_second_seen, pantry_hint_seen]
+      min_resources:
+        health: 1
+        sanity: 1
+    local_hint_id: real_note_002
+    text: >
+      토너 안쪽 표식과 커피머신 점검 라벨의 숫자가 같은 현실 좌표를 향했다.
+      이번 단서는 출력물 없이도 사무실 어딘가에 남은 두 번째 메모를 가리킨다.
+
   - id: truth_isolation_protocol
     name: 격리 프로토콜의 진실
     kind: truth

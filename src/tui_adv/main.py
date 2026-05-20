@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 from dataclasses import replace
+from pathlib import Path
 
 from tui_adv import __version__
 from tui_adv.game.achievements import (
@@ -21,7 +22,7 @@ from tui_adv.game.loop import (
 )
 from tui_adv.game.save import load_game_state, save_game_state
 from tui_adv.game.state import GameState
-from tui_adv.tui.app import render_tui_layout_snapshot, run_textual_tui
+from tui_adv.tui.app import discover_save_slots, render_tui_layout_snapshot, run_textual_tui
 from tui_adv.tui.encounter import format_choice_resolution, format_encounter_turn
 from tui_adv.tui.status import format_local_status
 
@@ -316,8 +317,13 @@ def main(argv: list[str] | None = None) -> int:
                     break
         except ValueError as exc:
             parser.error(str(exc))
+        save_slots = discover_save_slots(Path(args.save).parent) if args.save else None
         _print_output_and_maybe_save(
-            render_tui_layout_snapshot(turn),
+            render_tui_layout_snapshot(
+                turn,
+                save_path=args.save,
+                save_slots=save_slots,
+            ),
             turn.state,
             args.save,
         )

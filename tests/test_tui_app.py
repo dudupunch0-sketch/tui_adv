@@ -1,10 +1,12 @@
+import os
 from dataclasses import replace
 
 from tui_adv.game.loop import build_game_turn
-from tui_adv.game.save import load_game_state
+from tui_adv.game.save import load_game_state, save_game_state
 from tui_adv.game.state import GameState
 from tui_adv.tui.app import (
     build_tui_turn,
+    discover_save_slots,
     render_tui_layout_snapshot,
     resolve_tui_action,
     resolve_tui_choice,
@@ -123,6 +125,119 @@ def test_tui_layout_snapshot_renders_save_controls_when_path_is_configured(tmp_p
     assert f"저장 파일: {save_path}" in snapshot
     assert "s: 저장" in snapshot
     assert "q: 종료" in snapshot
+
+
+def test_tui_save_slot_discovery_sorts_recent_json_saves(tmp_path):
+    old_save = tmp_path / "old.json"
+    recent_save = tmp_path / "recent.json"
+    broken_save = tmp_path / "broken.json"
+    save_game_state(GameState.new(seed=123, location_id="pantry"), old_save)
+    save_game_state(GameState.new(seed=123, location_id="lobby"), recent_save)
+    broken_save.write_text("not json", encoding="utf-8")
+    old_time = 1_700_000_000
+    recent_time = old_time + 10
+    broken_time = old_time + 20
+    os.utime(old_save, (old_time, old_time))
+    os.utime(recent_save, (recent_time, recent_time))
+    os.utime(broken_save, (broken_time, broken_time))
+
+    slots = discover_save_slots(tmp_path)
+
+    assert [slot.path.name for slot in slots] == ["broken.json", "recent.json", "old.json"]
+    assert slots[0].error is not None
+    assert slots[1].turn == 0
+    assert slots[1].location_name == "로비"
+
+
+def test_tui_save_slot_discovery_marks_schema_invalid_json_as_unreadable(tmp_path):
+    invalid_save = tmp_path / "invalid-schema.json"
+    invalid_save.write_text('{"schema_version": 1, "state": {}}', encoding="utf-8")
+
+    slots = discover_save_slots(tmp_path)
+
+    assert len(slots) == 1
+    assert slots[0].path.name == "invalid-schema.json"
+    assert slots[0].error is not None
+
+
+def test_tui_save_slot_discovery_marks_overflowing_json_number_as_unreadable(tmp_path):
+    invalid_save = tmp_path / "overflowing-number.json"
+    invalid_save.write_text(
+        """
+{
+  "schema_version": 1,
+  "state": {
+    "seed": 1e10000,
+    "turn": 0,
+    "location_id": "lobby",
+    "disaster_type": "unknown_isolation",
+    "danger": 0,
+    "player": {
+      "health": 100,
+      "sanity": 100,
+      "battery": 100,
+      "hunger": 0,
+      "thirst": 0,
+      "abilities": {}
+    }
+  }
+}
+""",
+        encoding="utf-8",
+    )
+
+    slots = discover_save_slots(tmp_path)
+
+    assert len(slots) == 1
+    assert slots[0].path.name == "overflowing-number.json"
+    assert slots[0].error is not None
+
+
+def test_tui_save_slot_discovery_limit_applies_to_broken_slots(tmp_path):
+    base_time = 1_700_000_000
+    for index in range(5):
+        path = tmp_path / f"broken-{index}.json"
+        path.write_text("not json", encoding="utf-8")
+        slot_time = base_time + index
+        os.utime(path, (slot_time, slot_time))
+
+    slots = discover_save_slots(tmp_path, limit=3)
+
+    assert [slot.path.name for slot in slots] == [
+        "broken-4.json",
+        "broken-3.json",
+        "broken-2.json",
+    ]
+    assert all(slot.error is not None for slot in slots)
+
+
+def test_tui_layout_snapshot_renders_save_slot_list(tmp_path):
+    save_path = tmp_path / "office-save.json"
+    save_game_state(GameState.new(seed=123, location_id="lobby"), save_path)
+    turn = build_tui_turn(seed=123)
+
+    snapshot = render_tui_layout_snapshot(
+        turn,
+        save_slots=discover_save_slots(tmp_path),
+    )
+
+    assert "[저장 파일 목록]" in snapshot
+    assert "1. office-save.json — 턴 0 / 로비" in snapshot
+
+
+def test_tui_layout_snapshot_renders_pressure_warning_panel():
+    state = GameState.new(seed=123).with_player(
+        replace(GameState.new(seed=123).player, sanity=30, battery=12, hunger=82, thirst=70)
+    )
+    turn = build_game_turn(state)
+
+    snapshot = render_tui_layout_snapshot(turn)
+
+    assert "[압박 경고]" in snapshot
+    assert "선택지 왜곡" in snapshot
+    assert "단말기 전원" in snapshot
+    assert "정수기 환청" in snapshot
+    assert "영양 상태" in snapshot
 
 
 def test_tui_save_turn_state_writes_file_and_appends_log(tmp_path):

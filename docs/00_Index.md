@@ -38,6 +38,7 @@ docs/
     Player_State.md                 # 체력/정신력/배터리/허기/갈증 규칙
     Map.md                          # 사무실 위치, 연결, 구역별 역할
     UI_Rules.md                     # 사내 시스템형 TUI, 글리치, 선택지 오염 규칙
+    TUI_Storybook_GlyphFX_Concept.md # TUI풍 스토리북 + GlyphFX 컨셉 후보
 
   content/
     Location_List.md                # 런타임 위치 목록
@@ -91,6 +92,7 @@ private/
 - `docs/design/Game_Loop.md`
 - `docs/design/Map.md`
 - `docs/design/UI_Rules.md`
+- `docs/design/TUI_Storybook_GlyphFX_Concept.md`
 - `docs/content/Location_List.md`
 - `docs/content/Item_List.md`
 - `docs/content/Encounter_List.md`

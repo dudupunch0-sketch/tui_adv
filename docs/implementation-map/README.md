@@ -6,6 +6,8 @@
 - `data/systems.js`: 엔진, TUI, 저장, 안전, 테스트 기능 카드
 - `data/routes.js`: 루트 그래프 노드, 원본 YAML 기준 노드별 배경/대사/전체 선택지/다음 상황, 루트별 smoke 흐름
 - `data/content.js`: 위치, 인카운터, 엔딩, 아이템, 업적 목록
+- `web/`: Vite 기반 브라우저 fake-TUI 수직 슬라이스
+- `scripts/export_web_data.py`: YAML→브라우저 JSON export/check
 - `assets/app.js`: 검색, 필터, 노드 클릭 상호작용
 - `assets/styles.css`: Notion식 위키 레이아웃과 디자인 토큰
 
@@ -14,5 +16,6 @@
 1. 새 기능이 시스템 성격이면 `data/systems.js`에 카드 추가.
 2. 새 루트나 엔딩이면 `data/routes.js`의 `nodes`, `scene.choices`, `links`, `routes`를 함께 갱신.
 3. YAML 콘텐츠 수량이나 이름이 바뀌면 `data/content.js`와 `data/overview.js` 지표 갱신.
-4. 출처 파일이 바뀌면 카드의 `files` 항목을 갱신.
-5. 브라우저에서 검색, 필터, 노드 클릭을 확인.
+4. 브라우저 앱이나 export 경계가 바뀌면 `data/systems.js`, `data/routes.js`, `data/content.js`에 웹 카드/루트/산출물 항목을 갱신.
+5. 출처 파일이 바뀌면 카드의 `files` 항목을 갱신.
+6. 브라우저에서 검색, 필터, 노드 클릭을 확인.

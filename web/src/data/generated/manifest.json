@@ -1,0 +1,12 @@
+{
+  "counts": {
+    "achievements": 11,
+    "encounters": 20,
+    "endings": 13,
+    "items": 13,
+    "locations": 16,
+    "secrets": 3
+  },
+  "schema_version": 1,
+  "source": "src/tui_adv/data/*.yaml"
+}

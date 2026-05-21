@@ -23,6 +23,11 @@ env/
 *.tmp
 *.bak
 
+# Node / browser build artifacts
+node_modules/
+web/node_modules/
+web/dist/
+
 # Save games / generated local state
 saves/
 *.save.json

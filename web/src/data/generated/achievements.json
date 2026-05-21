@@ -1,0 +1,124 @@
+[
+  {
+    "conditions": {
+      "required_clues": [
+        "ex_employee_contacted"
+      ]
+    },
+    "description": "퇴사자의 첫 메시지를 확인했다.",
+    "id": "first_signal_received",
+    "name": "첫 신호 확인"
+  },
+  {
+    "conditions": {
+      "required_flags": [
+        "pantry_hint_seen"
+      ]
+    },
+    "description": "게임 속 단서가 현실 사무실의 단서와 이어졌다.",
+    "hidden": true,
+    "id": "reality_link_discovered",
+    "name": "현실과 접속한 사람"
+  },
+  {
+    "conditions": {
+      "required_clues": [
+        "reality_link_hint_1",
+        "reality_link_hint_2"
+      ],
+      "required_flags": [
+        "reality_link_second_seen"
+      ]
+    },
+    "description": "토너 표식과 커피머신 점검 라벨을 이어 두 번째 현실 힌트를 열었다.",
+    "hidden": true,
+    "id": "reality_link_second_marker",
+    "name": "두 번째 현실 표식"
+  },
+  {
+    "conditions": {
+      "required_clues": [
+        "future_choice_printout",
+        "reality_link_hint_3"
+      ],
+      "required_flags": [
+        "reality_link_third_seen"
+      ]
+    },
+    "description": "출력물의 빈 선택지와 회의실 화이트보드 표식을 이어 세 번째 현실 힌트를 열었다.",
+    "hidden": true,
+    "id": "reality_link_third_marker",
+    "name": "세 번째 현실 표식"
+  },
+  {
+    "conditions": {
+      "required_flags": [
+        "server_room_broadcast_controlled"
+      ]
+    },
+    "description": "제한된 사내 방송 채널을 붙잡았다.",
+    "id": "broadcast_channel_captured",
+    "name": "사내 방송 장악자"
+  },
+  {
+    "conditions": {
+      "required_flags": [
+        "isolation_protocol_revealed"
+      ]
+    },
+    "description": "회의록과 CCTV 지연 프레임에서 격리 프로토콜의 실체를 읽었다.",
+    "hidden": true,
+    "id": "truth_protocol_understood",
+    "name": "격리 프로토콜 독해"
+  },
+  {
+    "conditions": {
+      "required_flags": [
+        "network_admin_claimed"
+      ]
+    },
+    "description": "서버실 내부 콘솔에서 격리 규칙을 덮어썼다.",
+    "id": "network_admin_claimed",
+    "name": "사내망 관리자"
+  },
+  {
+    "conditions": {
+      "required_flags": [
+        "rooftop_signal_sent"
+      ]
+    },
+    "description": "옥상에서 제한된 외부 인터넷 신호를 송신했다.",
+    "id": "rooftop_signal_sent",
+    "name": "외부 신호 송신"
+  },
+  {
+    "conditions": {
+      "required_flags": [
+        "parking_ramp_opened"
+      ]
+    },
+    "description": "지하주차장 차단기를 열고 회사 격리 경계 밖으로 빠져나갔다.",
+    "id": "parking_lot_escape_driver",
+    "name": "지하주차장 탈출자"
+  },
+  {
+    "conditions": {
+      "required_flags": [
+        "lobby_exit_opened"
+      ]
+    },
+    "description": "임시 방문증으로 로비 출구 게이트를 열고 퇴실 절차를 통과했다.",
+    "id": "lobby_exit_commuter",
+    "name": "로비 게이트 통과자"
+  },
+  {
+    "conditions": {
+      "required_flags": [
+        "executive_approval_claimed"
+      ]
+    },
+    "description": "대표실 결재 콘솔에서 회사 생존 규칙의 승인권을 장악했다.",
+    "id": "executive_approval_holder",
+    "name": "대표 승인권자"
+  }
+]

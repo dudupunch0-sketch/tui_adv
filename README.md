@@ -6,8 +6,8 @@ TUI 기반 랜덤 인카운터 선택지 생존 게임.
 
 ## 현재 단계
 
-현재는 Phase 7 콘텐츠 런타임 전환 이후, 스크립트 기반 다중 턴 루프와 확장 콘텐츠 팩을 계속 쌓는 단계다.
-게임 구조와 안전한 현실 연결 원칙을 문서화했고, 순수 게임 상태 모델, 자원 임계치/실패 판정, 1차 사무실 위치 모델, 인접 위치 이동, 인카운터/선택지 조건·비용·결과 적용, 능력치 기반 선택지, 2d6 성공/실패 분기, 현재 상태 기반 인카운터 선택, 공간 왜곡 탈출/실패 엔딩 판정, YAML 공개 콘텐츠 로더/검증, YAML 기반 런타임 기본 위치/인카운터/엔딩, 로컬 비공개 현실 힌트 로더, 복합기/커피머신/화이트보드 더미 숫자 합계 퍼즐, 현실 연결 히든 엔딩 보상 출력, CLI 한 턴 실행, CLI 다중 턴 스크립트 실행, Textual 레이아웃 smoke, Textual 저장/불러오기 연결, TUI 저장/종료 단축키, TUI 저장 파일 목록·시작 슬롯 선택·삭제 패널, 도움말/이동 단축키/상세 도움말·인벤토리·로그 패널, 압박 경고 패널, 소모품 아이템 사용, 물품창고 보급품, 엘리베이터/옥상 경로, 옥상 외부 신호 탈출 엔딩, 저정신력 선택지 왜곡, 고갈증 정수기 환각, 엘리베이터-보안실 우회 분기, 임계 자원 1회성 경고 로그, 보안실-서버실 격리 권한 정복 루트, 지하주차장 키태그/차단기 탈출 루트, 로비 방문증/회전문 탈출 루트, 대표실 결재 콘솔 정복 루트, 세 번째 현실 연결 힌트 체인, 로컬 secret 템플릿과 현실 연결 안전 점검 문서까지 추가했다.
+현재는 Phase 7 콘텐츠 런타임 전환 이후, 기존 Python/Textual TUI를 유지하면서 브라우저 fake-TUI 수직 슬라이스를 추가한 단계다.
+게임 구조와 안전한 현실 연결 원칙을 문서화했고, 순수 게임 상태 모델, 자원 임계치/실패 판정, 1차 사무실 위치 모델, 인접 위치 이동, 인카운터/선택지 조건·비용·결과 적용, 능력치 기반 선택지, 2d6 성공/실패 분기, 현재 상태 기반 인카운터 선택, 공간 왜곡 탈출/실패 엔딩 판정, YAML 공개 콘텐츠 로더/검증, YAML 기반 런타임 기본 위치/인카운터/엔딩, 로컬 비공개 현실 힌트 로더, 복합기/커피머신/화이트보드 더미 숫자 합계 퍼즐, 현실 연결 히든 엔딩 보상 출력, CLI 한 턴 실행, CLI 다중 턴 스크립트 실행, Textual 레이아웃 smoke, Textual 저장/불러오기 연결, TUI 저장/종료 단축키, TUI 저장 파일 목록·시작 슬롯 선택·삭제 패널, 도움말/이동 단축키/상세 도움말·인벤토리·로그 패널, 압박 경고 패널, 소모품 아이템 사용, 물품창고 보급품, 엘리베이터/옥상 경로, 옥상 외부 신호 탈출 엔딩, 저정신력 선택지 왜곡, 고갈증 정수기 환각, 엘리베이터-보안실 우회 분기, 임계 자원 1회성 경고 로그, 보안실-서버실 격리 권한 정복 루트, 지하주차장 키태그/차단기 탈출 루트, 로비 방문증/회전문 탈출 루트, 대표실 결재 콘솔 정복 루트, 세 번째 현실 연결 힌트 체인, 로컬 secret 템플릿과 현실 연결 안전 점검 문서, YAML→브라우저 JSON export, Vite 기반 fake-TUI 브라우저 셸, localStorage 저장, 복합기 현실 연결 pretext/Canvas 장면까지 추가했다.
 
 ## 실행/테스트
 
@@ -43,18 +43,32 @@ PYTHONPATH=src python -m tui_adv --version
 python -m pytest tests -q
 ```
 
+브라우저 fake-TUI 수직 슬라이스:
+
+```bash
+python scripts/export_web_data.py --write
+cd web
+npm install
+npm test
+npm run build
+npm run dev -- --port 8765
+```
+
+브라우저 앱은 `src/tui_adv/data/*.yaml`을 `web/src/data/generated/*.json`으로 export해서 사용한다. 공개 secret JSON에는 실제 사무실 최종 위치나 `final_hint`를 넣지 않는다.
+
 패키지 설치 후에는 `tui-adv` console script를 사용할 수 있다.
 
 ## 핵심 설정
 
 - 제목: `escape from the office`
-- 장르: TUI 선택지 생존 게임
+- 장르: TUI 선택지 생존 게임 + 브라우저 fake-TUI 수직 슬라이스
 - 톤: 블랙코미디 회사 괴담 + 코스믹 호러
 - 1차 재난 타입: 불명 재난
 - 상황: 사람 실종, 연구개발동 규모의 공간/차원 격리, 제한된 외부 인터넷, 간헐적 사내망 연락
 - 핵심 자원: 체력, 정신력, 배터리, 허기, 갈증
 - 판정 능력치: 논리, 공감, 의지, 침착, 인터페이스, 신체
 - 주요 루트: 탈출, 정복, 진실 발견, 히든 현실 연결
+- 브라우저 범위: `dev_desk`, `printer_area`, `pantry` 중심의 현실 연결 루트, localStorage 저장, 복합기 pretext/Canvas anomaly panel
 
 ## 문서
 
@@ -79,6 +93,8 @@ python -m pytest tests -q
 - `docs/dev/TUI_Layout.md`: TUI 화면 설계
 - `docs/implementation-map/index.html`: 현재 구현을 한 번에 보는 interactive HTML 구현 지도
 - `docs/implementation-map/README.md`: 구현 지도 업데이트 방법
+- `web/`: Vite 기반 브라우저 fake-TUI 수직 슬라이스
+- `scripts/export_web_data.py`: Python YAML 콘텐츠를 브라우저 JSON으로 export/check하는 스크립트
 - `docs/dev/Reality_Secret_Safety_Checklist.md`: 로컬 현실 힌트 안전 점검
 - `docs/templates/local-secrets.template.yaml`: `private/secrets.local.yaml` 작성용 공개 안전 템플릿
 - `docs/archive/idea_0515.md`: 2026-05-15 원본 아이디어 노트

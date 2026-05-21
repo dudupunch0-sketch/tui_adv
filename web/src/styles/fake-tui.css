@@ -74,9 +74,15 @@ button {
 
 .grid {
   display: grid;
-  grid-template-columns: 320px 1fr;
+  grid-template-columns: 340px 1fr;
   gap: 16px;
   margin-top: 16px;
+}
+
+.sidebar {
+  display: grid;
+  align-content: start;
+  gap: 16px;
 }
 
 .panel {
@@ -115,6 +121,45 @@ button {
 
 .encounter {
   min-height: 420px;
+}
+
+.compact-panel {
+  padding: 12px;
+}
+
+.compact-panel p {
+  margin: 0.45rem 0;
+}
+
+.compact-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.compact-list li {
+  display: grid;
+  gap: 4px;
+}
+
+.compact-list small {
+  color: #9ad9ad;
+  line-height: 1.45;
+}
+
+.inline-action {
+  width: fit-content;
+  padding: 3px 8px;
+  border: 1px solid var(--green-dim);
+  background: var(--green-faint);
+  color: var(--amber);
+  cursor: pointer;
+}
+
+.pressure-warning {
+  color: var(--amber);
 }
 
 .choices {

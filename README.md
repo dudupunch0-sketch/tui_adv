@@ -72,6 +72,7 @@ npm run dev -- --port 8765
 
 ## 문서
 
+- `AGENTS.md`: agent 작업 지침과 `idea_box` 확인 우선순위
 - `docs/00_Index.md`: 전체 문서 구조
 - `docs/01_Game_Overview.md`: 게임 개요
 - `docs/story/Story.md`: 스토리와 오프닝
@@ -98,6 +99,15 @@ npm run dev -- --port 8765
 - `docs/dev/Reality_Secret_Safety_Checklist.md`: 로컬 현실 힌트 안전 점검
 - `docs/templates/local-secrets.template.yaml`: `private/secrets.local.yaml` 작성용 공개 안전 템플릿
 - `docs/archive/idea_0515.md`: 2026-05-15 원본 아이디어 노트
+- `idea_box/README.md`: 별도 세션에서 떠오른 아이디어를 보관하고 처리하는 규칙
+
+## idea_box
+
+사용자가 별도 세션에서 떠오르는 아이디어를 저장하기 위해 `idea_box/`를 사용한다.
+
+중요한 원칙: 모든 작업 시작 전에 `idea_box`를 확인하지 않는다. 남아 있는 plan, todo list, 또는 명시된 사용자 지시가 있으면 그것을 먼저 처리한다. 현재 세션에서 더 이상 진행할 plan/todo가 없을 때만 `idea_box`를 확인해 다음 설계/개발 후보를 찾는다.
+
+자세한 운영 규칙은 `idea_box/README.md`와 `AGENTS.md`를 따른다.
 
 ## 현실 연결 안전 원칙
 

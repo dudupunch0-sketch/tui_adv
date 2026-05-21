@@ -81,6 +81,7 @@ npm run dev -- --port 8765
 - `docs/design/Game_Loop.md`: 턴/선택/인카운터 루프
 - `docs/design/Map.md`: 1차 맵 설계
 - `docs/design/UI_Rules.md`: 사내 시스템형 TUI, 글리치, 선택지 오염 규칙
+- `docs/design/TUI_Storybook_GlyphFX_Concept.md`: TUI풍 스토리북 + GlyphFX 컨셉 후보
 - `docs/dev/Development_Plan.md`: 전체 개발 계획
 - `docs/dev/Checklist.md`: 단계별 체크리스트
 - `docs/content/Location_List.md`: 1차 위치 목록

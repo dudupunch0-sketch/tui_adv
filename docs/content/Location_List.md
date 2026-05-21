@@ -1,427 +1,155 @@
 # 위치 목록
 
-## 목적
+이 문서는 런타임 기본 위치 데이터 `src/tui_adv/data/locations.yaml`의 공개 문서판이다.
+실제 구현 기준 현재 위치 수는 16개다.
 
-이 문서는 1차 수직 슬라이스와 1차 확장 콘텐츠 팩에서 사용할 실제 위치 목록을 정의한다.
-실제 회사 배치를 복제하지 않고, 연구개발동 사무실의 기능적 구역을 게임용으로 추상화한다.
+## 목록 요약
 
-## 위치 id 목록
+| id | 이름 | 연결 | 위험도 | 태그 |
+|---|---|---|---:|---|
+| `dev_desk` | 내 자리 | `dev_office` | 0 | `office`, `start`, `messenger`, `personal` |
+| `dev_office` | 개발팀 사무실 | `dev_desk`, `hallway`, `meeting_room`, `printer_area`, `supply_closet` | 0 | `office`, `hub`, `workstations` |
+| `hallway` | 복도 | `dev_office`, `server_room_front`, `emergency_stairs`, `security_room`, `elevator_hall`, `parking_lot`, `lobby` | 1 | `transit`, `exposed`, `cctv` |
+| `supply_closet` | 물품창고 | `dev_office` | 1 | `survival`, `storage`, `supplies` |
+| `pantry` | 탕비실 | `printer_area` | 0 | `survival`, `food`, `drink`, `reality_link` |
+| `meeting_room` | 회의실 | `dev_office` | 1 | `meeting`, `sanity_risk`, `truth` |
+| `printer_area` | 복합기 구역 | `dev_office`, `pantry` | 0 | `printer`, `clue`, `reality_link` |
+| `server_room_front` | 서버실 앞 | `hallway`, `server_room` | 2 | `restricted`, `network`, `truth`, `conquest` |
+| `server_room` | 서버실 내부 | `server_room_front` | 3 | `restricted`, `network`, `conquest`, `cold` |
+| `emergency_stairs` | 비상계단 | `hallway` | 2 | `escape`, `dark`, `loop`, `danger` |
+| `security_room` | 보안실 | `hallway` | 2 | `security`, `surveillance`, `truth` |
+| `elevator_hall` | 엘리베이터 홀 | `hallway`, `rooftop` | 2 | `transit`, `elevator`, `anomaly` |
+| `rooftop` | 옥상 | `elevator_hall` | 3 | `escape`, `signal`, `open_air` |
+| `parking_lot` | 지하주차장 | `hallway` | 3 | `escape`, `parking`, `dark` |
+| `lobby` | 로비 | `hallway`, `executive_office` | 2 | `escape`, `reception`, `public_border` |
+| `executive_office` | 대표실 | `lobby` | 3 | `conquest`, `approval`, `restricted` |
 
-| id | 이름 | 역할 |
-|---|---|---|
-| dev_desk | 내 자리 | 시작 지점, 개인 단서 |
-| dev_office | 개발팀 사무실 | 허브, 사무실 부재감 |
-| hallway | 복도 | 이동 허브, 위험도 상승 |
-| pantry | 탕비실 | 허기/갈증 회복, 현실 연결 힌트 |
-| meeting_room | 회의실 | 정신력 위험, 진실 단서 |
-| printer_area | 복합기 구역 | 현실 연결 루트 시작 |
-| server_room_front | 서버실 앞 | 정보/정복/진실 관문 |
-| emergency_stairs | 비상계단 | 탈출 루트, 반복 공간 위험 |
-| security_room | 보안실 | CCTV/출입 기록, 진실 단서 |
-| supply_closet | 물품창고 | 보급품 획득, 생존 루프 보강 |
-| elevator_hall | 엘리베이터 홀 | 옥상/확장 이동 관문 |
-| rooftop | 옥상 | 제한된 외부 신호 탈출 루트 |
-| parking_lot | 지하주차장 | 키태그/차단기 탈출 루트 |
-| lobby | 로비 | 방문증/회전문 탈출 루트 |
-| executive_office | 대표실 | 결재 콘솔 정복 루트 |
-
-## 연결 구조
-
-```text
-             [meeting_room]
-                   |
-[dev_desk] - [dev_office] - [hallway]
-                   |             ├─ [server_room_front]
-          [supply_closet]        ├─ [emergency_stairs]
-                   |             ├─ [security_room]
-              [printer_area]     ├─ [elevator_hall] - [rooftop]
-                   |             ├─ [parking_lot]
-                [pantry]         └─ [lobby] - [executive_office]
-```
-
-## 상세 목록
+## 상세
 
 ### dev_desk: 내 자리
 
-설명:
-
-```text
 당신의 모니터는 아직 켜져 있다.
-커서가 사내 메신저 입력창에서 깜빡인다.
-방금 전까지 누군가 옆자리에 있었던 것처럼 공기가 미묘하게 따뜻하다.
-```
 
-태그:
-
-- office
-- start
-- messenger
-- personal
-
-연결:
-
-- dev_office
-
-주요 인카운터:
-
-- 퇴사자의 메신저
-- 책상 아래 손전등
-- 자동 빌드 실패 알림
+- 위험도: `0`
+- 연결: `dev_office`
+- 태그: `office`, `start`, `messenger`, `personal`
 
 ### dev_office: 개발팀 사무실
 
-설명:
+개발팀 사무실은 정상적으로 켜져 있지만 사람만 없다.
 
-```text
-개발팀 사무실은 정상적으로 켜져 있다.
-모니터, 키보드, 의자, 커피컵은 모두 사람의 흔적을 남기고 있지만 사람만 없다.
-어딘가에서 키보드 치는 소리가 한 번 들린다.
-```
-
-태그:
-
-- office
-- hub
-- workstations
-
-연결:
-
-- dev_desk
-- hallway
-- meeting_room
-- printer_area
-- supply_closet
-
-주요 인카운터:
-
-- 사내 방송
-- 보안 카메라의 시선
-- 책상 아래 손전등
+- 위험도: `0`
+- 연결: `dev_desk`, `hallway`, `meeting_room`, `printer_area`, `supply_closet`
+- 태그: `office`, `hub`, `workstations`
 
 ### hallway: 복도
 
-설명:
-
-```text
 복도 비상등이 일정하지 않은 간격으로 깜빡인다.
-출입 게이트 쪽에서는 아무도 찍지 않은 사원증 인식음이 들린다.
-```
 
-태그:
-
-- transit
-- exposed
-- cctv
-
-연결:
-
-- dev_office
-- server_room_front
-- emergency_stairs
-- security_room
-- elevator_hall
-- parking_lot
-
-주요 인카운터:
-
-- 보안 카메라의 시선
-- 사내 방송
-- 비상계단의 발소리
-
-### pantry: 탕비실
-
-설명:
-
-```text
-탕비실에는 커피 냄새가 남아 있다.
-정수기 표시등은 정상인데, 물 흐르는 소리는 회의실 쪽에서 들린다.
-```
-
-태그:
-
-- survival
-- food
-- drink
-- reality_link
-
-연결:
-
-- printer_area
-
-주요 인카운터:
-
-- 탕비실 커피머신
-- 정수기의 이상한 물
-- 냉장고 안의 쪽지
-
-### meeting_room: 회의실
-
-설명:
-
-```text
-회의실 예약 패널에는 현재 시간이 표시되어 있다.
-그 아래에는 방금 생성된 일정이 떠 있다.
-참석자: 전 직원.
-```
-
-태그:
-
-- meeting
-- sanity_risk
-- truth
-
-연결:
-
-- dev_office
-
-주요 인카운터:
-
-- 회의실 예약 패널
-- 회의록에 적힌 내 이름
-- 존재하지 않는 부서의 전체회의
-
-### printer_area: 복합기 구역
-
-설명:
-
-```text
-복합기는 절전 모드다.
-하지만 출력 트레이에는 아직 따뜻한 종이가 한 장 놓여 있다.
-```
-
-태그:
-
-- printer
-- clue
-- reality_link
-
-연결:
-
-- dev_office
-- pantry
-
-주요 인카운터:
-
-- 복합기가 혼자 출력한다
-- 구겨진 출력물
-- 프린트 대기열의 알 수 없는 문서
-
-### server_room_front: 서버실 앞
-
-설명:
-
-```text
-문은 닫혀 있다.
-서버실인지 전산실인지 장비실인지 알 수 없지만, 문틈에서 차가운 바람이 나온다.
-패널은 사원증을 요구한다.
-```
-
-태그:
-
-- restricted
-- network
-- truth
-- conquest
-
-연결:
-
-- hallway
-
-주요 인카운터:
-
-- 서버실 앞의 차가운 바람
-- 보안 패널의 알 수 없는 안내문
-- 사내망 로그 조각
-
-### emergency_stairs: 비상계단
-
-설명:
-
-```text
-비상계단 문은 열려 있다.
-아래층을 가리키는 표지판은 정상인데, 계단 아래에서는 위층에서 들려야 할 발소리가 올라온다.
-```
-
-태그:
-
-- escape
-- dark
-- loop
-- danger
-
-연결:
-
-- hallway
-
-주요 인카운터:
-
-- 비상계단의 발소리
-- 같은 층으로 되돌아옴
-- 비상구 표시등의 꺼짐
-
-### security_room: 보안실
-
-설명:
-
-```text
-꺼진 CCTV 모니터들이 복도보다 한 박자 늦은 장면을 보여준다.
-출입 기록 프린터는 아직 종이를 물고 있지만, 기록된 이름은 지워져 있다.
-```
-
-태그:
-
-- security
-- surveillance
-- truth
-
-연결:
-
-- hallway
-
-주요 인카운터:
-
-- 지연된 CCTV 화면
-- 삭제된 출입 기록
-- 보안실 인터폰
+- 위험도: `1`
+- 연결: `dev_office`, `server_room_front`, `emergency_stairs`, `security_room`, `elevator_hall`, `parking_lot`, `lobby`
+- 태그: `transit`, `exposed`, `cctv`
 
 ### supply_closet: 물품창고
 
-설명:
-
-```text
 물품창고 선반에는 라벨이 붙은 비상 보급품 박스들이 남아 있다.
-```
 
-태그:
+- 위험도: `1`
+- 연결: `dev_office`
+- 태그: `survival`, `storage`, `supplies`
 
-- survival
-- storage
-- supplies
+### pantry: 탕비실
 
-연결:
+탕비실에는 커피 냄새가 남아 있다.
 
-- dev_office
+- 위험도: `0`
+- 연결: `printer_area`
+- 태그: `survival`, `food`, `drink`, `reality_link`
 
-주요 인카운터:
+### meeting_room: 회의실
 
-- 물품창고 비상 보급함
+회의실 예약 패널에는 방금 생성된 일정이 떠 있다.
+
+- 위험도: `1`
+- 연결: `dev_office`
+- 태그: `meeting`, `sanity_risk`, `truth`
+
+### printer_area: 복합기 구역
+
+복합기는 절전 모드지만 출력 트레이에는 따뜻한 종이가 있다.
+
+- 위험도: `0`
+- 연결: `dev_office`, `pantry`
+- 태그: `printer`, `clue`, `reality_link`
+
+### server_room_front: 서버실 앞
+
+닫힌 문틈에서 차가운 바람이 나온다.
+
+- 위험도: `2`
+- 연결: `hallway`, `server_room`
+- 태그: `restricted`, `network`, `truth`, `conquest`
+
+### server_room: 서버실 내부
+
+랙 LED가 별자리처럼 깜빡이고, 냉기는 일정한 박자로 숨을 쉰다.
+
+- 위험도: `3`
+- 연결: `server_room_front`
+- 태그: `restricted`, `network`, `conquest`, `cold`
+
+### emergency_stairs: 비상계단
+
+계단 아래에서는 위층에서 들려야 할 발소리가 올라온다.
+
+- 위험도: `2`
+- 연결: `hallway`
+- 태그: `escape`, `dark`, `loop`, `danger`
+
+### security_room: 보안실
+
+꺼진 CCTV 모니터들이 복도보다 한 박자 늦은 장면을 보여준다.
+
+- 위험도: `2`
+- 연결: `hallway`
+- 태그: `security`, `surveillance`, `truth`
 
 ### elevator_hall: 엘리베이터 홀
 
-설명:
-
-```text
 엘리베이터 층수 표시가 존재하지 않는 R층과 4층 사이에서 떨린다.
-```
 
-태그:
-
-- transit
-- elevator
-- anomaly
-
-연결:
-
-- hallway
-- rooftop
-
-주요 인카운터:
-
-- 존재하지 않는 층의 엘리베이터
+- 위험도: `2`
+- 연결: `hallway`, `rooftop`
+- 태그: `transit`, `elevator`, `anomaly`
 
 ### rooftop: 옥상
 
-설명:
-
-```text
 옥상 문 너머의 밤공기는 실제 바깥보다 한 프레임 늦게 움직인다.
-```
 
-태그:
-
-- escape
-- signal
-- open_air
-
-연결:
-
-- elevator_hall
-
-주요 인카운터:
-
-- 옥상의 제한된 외부 신호
+- 위험도: `3`
+- 연결: `elevator_hall`
+- 태그: `escape`, `signal`, `open_air`
 
 ### parking_lot: 지하주차장
 
-설명:
-
-```text
 지하주차장의 형광등은 시동음과 다른 박자로 깜빡인다.
-```
 
-태그:
-
-- escape
-- parking
-- dark
-
-연결:
-
-- hallway
-
-주요 인카운터:
-
-- 지하주차장의 시동음
-- 지하주차장 차단기
+- 위험도: `3`
+- 연결: `hallway`
+- 태그: `escape`, `parking`, `dark`
 
 ### lobby: 로비
 
-설명:
-
-```text
 로비 회전문은 바깥을 보여주지만 같은 장면을 세 번씩 반복한다.
-```
 
-태그:
-
-- escape
-- reception
-- public_border
-
-연결:
-
-- hallway
-- executive_office
-
-주요 인카운터:
-
-- 무인 로비 안내 키오스크
-- 로비 출구 게이트
+- 위험도: `2`
+- 연결: `hallway`, `executive_office`
+- 태그: `escape`, `reception`, `public_border`
 
 ### executive_office: 대표실
 
-설명:
-
-```text
 대표실 책상 위 결재판에는 아직 작성하지 않은 당신의 퇴근 승인서가 놓여 있다.
-```
 
-태그:
-
-- conquest
-- approval
-- restricted
-
-연결:
-
-- lobby
-
-주요 인카운터:
-
-- 대표실 결재 콘솔
-
-## 확장 후보
-
-2차 이후 추가할 수 있는 위치:
-
-- restroom: 화장실
+- 위험도: `3`
+- 연결: `lobby`
+- 태그: `conquest`, `approval`, `restricted`

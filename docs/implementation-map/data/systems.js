@@ -20,7 +20,7 @@ window.TUI_ADV_IMPLEMENTATION.systems = {
       title: "YAML 콘텐츠 런타임",
       description: "위치, 인카운터, 엔딩, 아이템, 업적을 공개 YAML에서 읽어 기본 런타임 데이터로 사용한다.",
       tags: ["YAML", "loader", "content"],
-      files: ["src/tui_adv/game/content_loader.py", "src/tui_adv/data/*.yaml"]
+      files: ["src/tui_adv/game/content.py", "src/tui_adv/data/*.yaml"]
     },
     {
       category: "tui",

@@ -66,8 +66,8 @@ window.TUI_ADV_IMPLEMENTATION.systems = {
     },
     {
       category: "web",
-      title: "브라우저 fake-TUI 수직 슬라이스",
-      description: "Vite/TypeScript 앱이 Python YAML에서 생성된 JSON을 읽어 회사 아포칼립스 fake terminal UI를 렌더링하고, 숫자 키/버튼 입력과 localStorage 저장을 지원한다.",
+      title: "브라우저 fake-TUI parity shell",
+      description: "Vite/TypeScript 앱이 Python YAML에서 생성된 JSON을 읽어 대표 terminal 루트, 소모품, 업적, 능력치 판정, 압박 상태를 mirror core로 실행하고 숫자 키/버튼 입력과 localStorage 저장을 지원한다.",
       tags: ["Vite", "TypeScript", "fake-TUI", "localStorage"],
       files: ["web/src/main.ts", "web/src/game/actions.ts", "web/src/ui/render.ts", "web/src/styles/fake-tui.css"]
     },
@@ -88,7 +88,7 @@ window.TUI_ADV_IMPLEMENTATION.systems = {
     {
       category: "test",
       title: "대표 루트 smoke와 회귀 테스트",
-      description: "탈출, 정복, 진실, 현실 연결 루트를 CLI 경로로 검증하고, 저장 슬롯과 TUI 패널은 단위 테스트로 고정한다. 브라우저 수직 슬라이스는 Vitest로 게임 루프, secret guard, renderer, pretext fallback을 검증한다.",
+      description: "탈출, 정복, 진실, 현실 연결 루트를 CLI 경로로 검증하고, 저장 슬롯과 TUI 패널은 단위 테스트로 고정한다. 브라우저 fake-TUI는 Vitest로 terminal route parity, item/achievement/check/pressure mechanics, secret guard, renderer, pretext fallback을 검증한다.",
       tags: ["pytest", "vitest", "route smoke", "regression"],
       files: ["tests/test_cli.py", "tests/test_tui_app.py", "tests/test_secrets.py", "web/src/**/*.test.ts"]
     }

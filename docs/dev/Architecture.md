@@ -10,7 +10,7 @@
 - 언어: Python 3.x + TypeScript
 - 엔진: 표준 라이브러리 중심의 순수 Python 모듈, 브라우저 수직 슬라이스는 TypeScript mirror core
 - TUI: Textual 기반 앱을 기본 목표로 한다.
-- 브라우저: Vite 기반 fake-TUI shell, 특수 장면만 Canvas + `@chenglou/pretext`
+- 브라우저: Vite 기반 fake-TUI shell, TypeScript mirror core, 특수 장면은 Canvas + `@chenglou/pretext`
 - 콘텐츠 데이터: YAML 파일, 브라우저 앱은 생성 JSON 사용
 - 저장 데이터: Python은 JSON 파일, 브라우저는 localStorage
 - 테스트: pytest + Vitest
@@ -90,7 +90,7 @@ web/
   index.html
   src/
     main.ts                       # Vite 브라우저 진입점
-    game/                         # TypeScript mirror core
+    game/                         # TypeScript mirror core: actions/items/achievements/endings/pressure
     ui/                           # fake-TUI HTML renderer와 키 입력
     effects/                      # pretext/Canvas anomaly panel
     security/                     # public secret guard
@@ -226,6 +226,7 @@ check_endings(state, content) -> EndingResult | None
 2. `web/src/data/generated/*.json` 갱신
 3. `python scripts/export_web_data.py --check`로 stale 여부와 public secret private-only 필드 누출 확인
 4. Vite 앱이 생성 JSON을 import해 TypeScript mirror core에서 사용
+5. `cd web && npm test`가 대표 terminal 루트 parity, 소모품, 업적, 능력치 판정, 압박 UI, secret guard를 검증
 
 private/local secret 파일이 없어도 게임은 실행되어야 한다.
 그 경우 현실 연결 루트는 중간 힌트까지만 표시한다.
@@ -263,8 +264,7 @@ private/local secret 파일이 없어도 게임은 실행되어야 한다.
 7. 데이터 로더와 참조 무결성
 8. 저장/불러오기 동일성
 
-TUI 테스트는 최소 스모크 중심으로 둔다.
-대부분의 게임 규칙 테스트는 `game/` 모듈만 호출한다.
+브라우저 쪽 Vitest는 `web/src/game/parity.test.ts`에서 대표 terminal 루트(탈출·정복·진실·히든), 소모품 사용, 업적 해금, 고갈증/저정신력 압박, 능력치 판정 분기를 mirror core로 검증하고, `web/src/ui/render.test.ts`에서 인벤토리·업적·컨트롤·압박 fake-TUI 패널을 검증한다.
 
 ## 1차 구현 비범위
 

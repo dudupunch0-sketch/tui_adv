@@ -282,7 +282,7 @@ web/src/data/generated/secrets.example.json
 web/src/data/generated/manifest.json
 ```
 
-`manifest.json`은 schema_version과 각 루트 키의 항목 수를 담는다. 브라우저 테스트는 이 JSON을 import해서 TypeScript mirror core, secret guard, fake-TUI renderer를 검증한다.
+`manifest.json`은 schema_version과 각 루트 키의 항목 수를 담는다. 브라우저 테스트는 이 JSON을 import해서 TypeScript mirror core, secret guard, fake-TUI renderer를 검증한다. 현재 mirror core는 생성 JSON 위에서 대표 terminal 루트 parity, 아이템 사용, 업적 해금, 능력치 판정, 자원 압박 상태를 다룬다.
 
 ## private/secrets.local.yaml
 

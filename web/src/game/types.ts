@@ -64,12 +64,20 @@ export interface Outcome {
   log?: string;
 }
 
+export interface AbilityCheckData {
+  ability: string;
+  difficulty: number;
+  success: Outcome;
+  failure: Outcome;
+}
+
 export interface ChoiceData {
   id: string;
   label: string;
   conditions?: Conditions;
   cost?: ResourceDelta;
   outcome?: Outcome;
+  check?: AbilityCheckData;
 }
 
 export interface EncounterData {
@@ -103,10 +111,29 @@ export interface PublicSecret {
   reward_text?: string;
 }
 
+export interface ItemData {
+  id: string;
+  name: string;
+  description: string;
+  type: string;
+  tags?: string[];
+  usable?: boolean;
+  use_effects?: ResourceDelta;
+  use_log?: string;
+}
+
+export interface AchievementData {
+  id: string;
+  name: string;
+  description: string;
+  conditions?: Conditions;
+  hidden?: boolean;
+}
+
 export interface GameAction {
   id: string;
   label: string;
-  kind: 'choice' | 'move';
+  kind: 'choice' | 'move' | 'item';
   targetId?: string;
 }
 
@@ -122,6 +149,7 @@ export interface ActionResult {
   action: GameAction;
   state: GameState;
   turn: GameTurn;
+  unlockedAchievements: AchievementData[];
 }
 
 export interface ResolvedEnding extends EndingData {

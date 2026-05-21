@@ -6,7 +6,7 @@
 - `data/systems.js`: 엔진, TUI, 저장, 안전, 테스트 기능 카드
 - `data/routes.js`: 루트 그래프 노드, 원본 YAML 기준 노드별 배경/대사/전체 선택지/다음 상황, 루트별 smoke 흐름
 - `data/content.js`: 위치, 인카운터, 엔딩, 아이템, 업적 목록
-- `web/`: Vite 기반 브라우저 fake-TUI 수직 슬라이스
+- `web/`: Vite 기반 브라우저 fake-TUI parity shell
 - `scripts/export_web_data.py`: YAML→브라우저 JSON export/check
 - `assets/app.js`: 검색, 필터, 노드 클릭 상호작용
 - `assets/styles.css`: Notion식 위키 레이아웃과 디자인 토큰

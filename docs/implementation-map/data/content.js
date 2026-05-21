@@ -103,6 +103,8 @@ window.TUI_ADV_IMPLEMENTATION.content = {
       title: "브라우저 산출물",
       items: [
         { id: "web_app", name: "Vite fake-TUI 브라우저 앱" },
+        { id: "web_terminal_parity", name: "브라우저 terminal 루트 parity mirror core" },
+        { id: "web_inventory_achievement_panels", name: "브라우저 인벤토리·업적·컨트롤·압박 패널" },
         { id: "web_data_export", name: "YAML→JSON export/check 스크립트" },
         { id: "printer_pretext_effect", name: "복합기 pretext/Canvas anomaly panel" },
         { id: "public_secret_guard", name: "공개 secret private-only 필드 차단" }

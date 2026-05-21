@@ -31,7 +31,7 @@ id:
 
 상태:
 
-- 1차 수직 슬라이스 대상
+- 구현됨
 
 목적:
 
@@ -51,30 +51,28 @@ id:
 
 - printer_prints_alone
 - pantry_coffee_machine
-- fridge_note
 
 관련 플래그:
 
 ```text
 printer_secret_started
-printer_page_read
 pantry_hint_seen
-reality_link_001_unlocked
 ```
 
 unlock 조건 초안:
 
 1. 복합기 구역에서 `printer_prints_alone` 인카운터를 본다.
 2. 출력물을 챙겨 `crumpled_printout`을 얻는다.
-3. 탕비실에서 커피머신 뒤 또는 냉장고 안쪽 단서를 확인한다.
+3. 탕비실에서 커피머신 뒤쪽 패널을 확인해 `pantry_hint_seen`을 얻는다.
 4. `printer_secret_started`와 `pantry_hint_seen`이 모두 있으면 히든 힌트 엔딩이 열린다.
 
 공개 힌트 단계:
 
 ```text
-1. 커피 냄새가 남아 있는 방.
-2. 차가운 문과 종이 냄새 사이의 반복 표식.
+1. 커피 냄새가 남아 있는 방을 기억한다.
+2. 차가운 문과 종이 냄새 사이의 반복 표식을 찾는다.
 3. 복합기에 붙은 IP 주소 표의 숫자들을 모두 더한다.
+4. 마지막 문장은 로컬 비공개 파일이 있을 때만 완성된다.
 ```
 
 현재 공개 샘플 IP 주소는 더미 값 `192.168.0.42`이다.
@@ -88,6 +86,7 @@ unlock 조건 초안:
 커피 냄새가 남아 있는 방.
 차가운 문과 종이 냄새 사이의 반복 표식.
 복합기에 붙은 IP 주소 표의 숫자들을 모두 더한다.
+마지막 문장은 로컬 비공개 파일이 있을 때만 완성된다.
 
 당신은 이 힌트가 화면 밖을 향하고 있다는 사실을 깨닫는다.
 ```
@@ -154,6 +153,7 @@ unlock 조건:
 1. 토너 카트리지 안쪽 표식과 커피머신 점검 라벨을 같은 방향으로 본다.
 2. 점검 라벨에 적힌 사내망 IP 주소의 숫자들을 모두 더한다.
 3. 첫 번째 힌트와 다른 숫자라면 두 번째 메모를 찾는 좌표가 된다.
+4. 마지막 문장은 로컬 비공개 파일이 있을 때만 완성된다.
 ```
 
 현재 공개 샘플 IP 주소는 더미 값 `10.30.0.45`이다.
@@ -208,6 +208,7 @@ unlock 조건:
 1. 혼자 출력된 종이의 빈 선택지를 회의실 화이트보드 모서리에 겹친다.
 2. 지워지지 않는 작은 사각형 주변의 더미 라벨 숫자들을 모두 더한다.
 3. 숫자가 맞으면 회의 기록이 아니라 현실 메모를 찾는 세 번째 좌표가 된다.
+4. 마지막 문장은 로컬 비공개 파일이 있을 때만 완성된다.
 ```
 
 현재 공개 샘플 IP 주소는 더미 값 `172.16.5.8`이다.
@@ -242,9 +243,9 @@ id:
 관련 인카운터:
 
 - ex_employee_messenger
-- cold_server_door
-- camera_watches
-- office_broadcast
+- server_room_radio
+- security_room_delayed_cctv
+- server_room_console
 
 관련 플래그 후보:
 
@@ -283,7 +284,8 @@ id:
 
 관련 인카운터:
 
-- stairwell_footsteps
+- emergency_stairs_exit_sign
+- spatial_exit_puzzle
 - parking_ignition
 
 관련 플래그 후보:

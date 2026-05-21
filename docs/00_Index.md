@@ -1,6 +1,7 @@
 # escape from the office 문서 인덱스
 
 이 문서는 `tui_adv` 프로젝트의 문서 계층과 각 문서의 책임 범위를 정의한다.
+현재 실제 구현 기준 문서와 데이터 파일만 “현재 생성된 문서”로 나열한다.
 
 ## 현재 핵심 컨셉
 
@@ -9,6 +10,17 @@
 - 핵심 자원: 체력, 정신력, 배터리, 허기, 갈증
 - 주요 목표: 탈출, 정복, 진실 발견, 히든 현실 연결 루트
 - 특별 요소: 게임 속 단서를 통해 실제 사무실에 숨겨진 메모/보물 위치를 자연스럽게 안내하는 ARG식 현실 연결
+
+## 현재 구현 지표
+
+| 항목 | 수 |
+|---|---:|
+| 위치 YAML | 16 |
+| 아이템 YAML | 13 |
+| 인카운터 YAML | 20 |
+| 엔딩 YAML | 13 |
+| 업적 YAML | 11 |
+| 공개 현실 힌트 예시 | 3 |
 
 ## 문서 계층
 
@@ -19,65 +31,55 @@ docs/
 
   story/
     Story.md                        # 메인 서사와 시작 상황
-    World.md                        # 회사 아포칼립스 세계관 규칙
-    Disaster_Types.md               # 좀비, 외계인, 코스믹 호러, 백룸 등 재난 타입
-    Factions.md                     # 생존자, 사내 시스템, 괴현상 세력
-    Endings.md                      # 탈출/정복/진실/히든 엔딩 설계
-    Hidden_Routes.md                # 숨겨진 루트와 조건 체인
     Reality_Link.md                 # 현실세계 연결 원칙. 실제 위치는 넣지 않음
 
   design/
     Game_Loop.md                    # 턴 진행, 인카운터, 선택지 처리 루프
     Player_State.md                 # 체력/정신력/배터리/허기/갈증 규칙
-    Resources.md                    # 자원 간 상호작용과 임계치 효과
     Map.md                          # 사무실 위치, 연결, 구역별 역할
-    Encounters.md                   # 인카운터 설계 규칙
-    Choices.md                      # 선택지 비용, 조건, 성공/실패 규칙
-    Items.md                        # 아이템 설계 규칙
-    Flags.md                        # 플래그, 단서, 히든 루트 조건
     UI_Rules.md                     # 사내 시스템형 TUI, 글리치, 선택지 오염 규칙
-    Balance.md                      # 난이도와 자원 밸런스 기준
 
   content/
-    Encounter_List.md               # 실제 인카운터 목록
-    Item_List.md                    # 실제 아이템 목록
-    Location_List.md                # 실제 위치 목록
-    Ending_List.md                  # 실제 엔딩 목록
+    Location_List.md                # 런타임 위치 목록
+    Item_List.md                    # 런타임 아이템 목록
+    Encounter_List.md               # 런타임 인카운터 목록
+    Ending_List.md                  # 런타임 엔딩 목록
     Secret_List.md                  # 게임 내 비밀 목록. 실제 현실 위치 제외
     Horror_Ideas.md                 # 호러 연출 아이디어 저장소
 
   dev/
-    Development_Plan.md             # 전체 개발 계획
+    Development_Plan.md             # 전체 개발 계획과 현황 메모
     Checklist.md                    # 단계별 체크리스트
     Architecture.md                 # 코드 구조와 모듈 경계
     Data_Schema.md                  # YAML/JSON 데이터 스키마
     TUI_Layout.md                   # 화면 배치, 입력, 위젯 설계
     Reality_Secret_Safety_Checklist.md # 로컬 현실 힌트 안전 점검
-    Save_Load.md                    # 저장/불러오기 설계
-    Testing.md                      # 테스트 전략과 검증 명령
-    Roadmap.md                      # 마일스톤 단위 로드맵
+
+  templates/
+    local-secrets.template.yaml     # private/secrets.local.yaml 작성용 공개 안전 템플릿
 
   implementation-map/
-    index.html                       # 현재 구현을 한 번에 보는 interactive HTML 구현 지도
-    README.md                        # 구현 지도 업데이트 방법
-    assets/                          # 구현 지도 CSS/JS
-    data/                            # 카테고리별 구현 지도 데이터
+    index.html                      # 현재 구현을 한 번에 보는 interactive HTML 구현 지도
+    README.md                       # 구현 지도 업데이트 방법
+    assets/                         # 구현 지도 CSS/JS
+    data/                           # 카테고리별 구현 지도 데이터
 
   archive/
     idea_0515.md                    # 2026-05-15 원본 아이디어 노트
 
 private/
-  Real_Office_Secrets.local.md      # 실제 사무실 위치. .gitignore로 커밋 차단
+  secrets.local.yaml                # 실제 사무실 위치. .gitignore로 커밋 차단
 ```
 
 ## 문서 작성 원칙
 
 1. `story/`는 서사와 분위기만 다룬다. 구현 세부사항은 넣지 않는다.
 2. `design/`은 게임 규칙과 시스템 설계를 다룬다. 실제 코드 구조는 넣지 않는다.
-3. `content/`는 실제 데이터 목록을 관리한다. 인카운터/아이템/위치/엔딩은 가능하면 데이터 파일로 옮길 수 있게 쓴다.
-4. `dev/`는 구현 계획, 코드 구조, 테스트, 검증 방식을 다룬다.
+3. `content/`는 실제 YAML 데이터 목록을 공개 문서 형태로 설명한다.
+4. `dev/`는 구현 계획, 코드 구조, 데이터 스키마, 테스트·검증 방식을 다룬다.
 5. `private/`에는 실제 사무실 위치와 보물 위치만 둔다. 이 정보는 공개 저장소에 커밋하지 않는다.
 6. 현실 연결 힌트는 단계적으로 공개한다. 위험한 장소, 개인 책상, 잠긴 공간, 전기설비 근처는 사용하지 않는다.
+7. 새 런타임 콘텐츠를 추가하면 `src/tui_adv/data/*.yaml`, `docs/content/*.md`, `docs/implementation-map/data/*.js`를 함께 갱신한다.
 
 ## 현재 생성된 문서
 
@@ -98,21 +100,20 @@ private/
 - `docs/dev/Architecture.md`
 - `docs/dev/Data_Schema.md`
 - `docs/dev/TUI_Layout.md`
-- `docs/implementation-map/index.html`
-- `docs/implementation-map/README.md`
 - `docs/dev/Reality_Secret_Safety_Checklist.md`
-- `docs/templates/local-secrets.template.yaml`
 - `docs/dev/Development_Plan.md`
 - `docs/dev/Checklist.md`
+- `docs/templates/local-secrets.template.yaml`
+- `docs/implementation-map/index.html`
+- `docs/implementation-map/README.md`
 - `docs/archive/idea_0515.md`
 
-## 다음에 만들 문서 우선순위
+## 다음 문서/정리 후보
 
-1. `docs/story/Disaster_Types.md`
-2. `docs/design/Encounters.md`
-3. `docs/design/Choices.md`
-4. `docs/design/Items.md`
-5. `docs/design/Flags.md`
-6. `docs/dev/Testing.md`
-7. 실제 Python 프로젝트 스캐폴딩
-8. YAML 데이터 파일 작성
+현재 없는 문서명을 인덱스에 현재 문서처럼 나열하지 않는다.
+다음 주제가 커지면 별도 문서로 분리하고, 그때 이 인덱스와 implementation-map도 같이 갱신한다.
+
+1. 재난 타입 확장 규칙
+2. 선택 불가 이유 표시와 색상 테마 규칙
+3. 생존자/시스템 제압·설득 루트
+4. Textual 실제 화면 수동 QA 기록

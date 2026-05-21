@@ -1,576 +1,331 @@
 # 인카운터 목록
 
-## 목적
-
-이 문서는 1차 수직 슬라이스와 1차 확장 콘텐츠 팩에 들어갈 인카운터 초안을 정의한다.
-각 인카운터는 나중에 `encounters.yaml`로 옮기기 쉽도록 id, 위치, 핵심 선택, 주요 결과를 가진다.
+이 문서는 런타임 기본 인카운터 데이터 `src/tui_adv/data/encounters.yaml`의 공개 문서판이다.
+실제 구현 기준 현재 인카운터 수는 20개다.
 
 ## 목록 요약
 
-| id | 이름 | 주요 위치 | 핵심 역할 |
-|---|---|---|---|
-| ex_employee_messenger | 퇴사자의 메신저 | 내 자리 | 진실 루트 시작 |
-| printer_prints_alone | 복합기가 혼자 출력한다 | 복합기 구역 | 현실 연결 시작 |
-| meeting_room_booking | 회의실 예약 패널 | 회의실 | 코스믹/진실 단서 |
-| pantry_coffee_machine | 탕비실 커피머신 | 탕비실 | 회복과 괴현상 |
-| supply_closet_cache | 물품창고 비상 보급함 | 물품창고 | 보급품 획득 |
-| strange_water_dispenser | 정수기의 이상한 물 | 탕비실 | 갈증 회복 위험 |
-| cold_server_door | 서버실 앞의 차가운 바람 | 서버실 앞 | 정보/정복 관문 |
-| stairwell_footsteps | 비상계단의 발소리 | 비상계단 | 탈출 위험 |
-| elevator_nonexistent_floor | 존재하지 않는 층의 엘리베이터 | 엘리베이터 홀 | 옥상/보안실 분기 |
-| security_room_floor_mismatch_console | 어긋난 층수의 보안 콘솔 | 보안실 | 서버실 우회권한/정복 루트 |
-| office_broadcast | 사내 방송 | 복도/사무실 | 위험도/회사 괴담 |
-| minutes_with_my_name | 회의록에 적힌 내 이름 | 회의실 | 정신력/진실 단서 |
-| meeting_room_whiteboard_marker | 회의실 화이트보드 모서리 | 회의실 | 세 번째 현실 연결 표식 |
-| fridge_note | 냉장고 안의 쪽지 | 탕비실 | 현실 연결 후속 |
-| flashlight_under_desk | 책상 아래 손전등 | 개발팀 사무실 | 도구 획득 |
-| camera_watches | 보안 카메라의 시선 | 복도 | 정복/보안 떡밥 |
-| rooftop_signal | 옥상의 제한된 외부 신호 | 옥상 | 외부 신호 탈출 |
-| parking_ignition | 지하주차장의 시동음 | 지하주차장 | 키태그 획득 |
-| parking_exit_ramp | 지하주차장 차단기 | 지하주차장 | 차단기 탈출 |
-| lobby_reception_kiosk | 무인 로비 안내 키오스크 | 로비 | 방문증/대표실 분기 |
-| lobby_exit_gate | 로비 출구 게이트 | 로비 | 회전문 탈출 |
-| executive_approval_console | 대표실 결재 콘솔 | 대표실 | 대표 승인권 정복 |
+| id | 이름 | 조건 요약 | 선택지 수 |
+|---|---|---|---:|
+| `ex_employee_messenger` | 퇴사자의 메신저 | 위치: `dev_desk` | 4 |
+| `printer_prints_alone` | 복합기가 혼자 출력한다 | 위치: `printer_area` | 3 |
+| `pantry_coffee_machine` | 탕비실 커피머신 | 위치: `pantry` | 5 |
+| `strange_water_dispenser` | 정수기의 이상한 물 | 위치: `pantry`; 금지 플래그: `thirst_hallucination_seen`; 최소 자원: `thirst>=60` | 3 |
+| `supply_closet_cache` | 물품창고 비상 보급함 | 위치: `supply_closet` | 3 |
+| `meeting_room_whiteboard_marker` | 회의실 화이트보드 모서리 | 위치: `meeting_room`; 필수 단서: `future_choice_printout` | 2 |
+| `meeting_room_all_hands` | 존재하지 않는 부서의 전체회의 | 위치: `meeting_room`; 필수 플래그: `truth_route_started` | 2 |
+| `security_room_delayed_cctv` | 지연된 CCTV 화면 | 위치: `security_room`; 필수 단서: `meeting_pattern_noticed`; 필수 플래그: `impossible_meeting_saved` | 2 |
+| `security_room_floor_mismatch_console` | 어긋난 층수의 보안 콘솔 | 위치: `security_room`; 필수 단서: `security_floor_misalignment`; 필수 플래그: `elevator_returned_wrong_floor` | 3 |
+| `emergency_stairs_exit_sign` | 비상계단 문틈 표식 | 위치: `emergency_stairs`; 금지 플래그: `escape_puzzle_ready` | 2 |
+| `spatial_exit_puzzle` | 비상계단 공간 왜곡 | 위치: `emergency_stairs`; 필수 플래그: `escape_puzzle_ready` | 2 |
+| `server_room_radio` | 서버실 문 앞 무전기 | 위치: `server_room_front` | 4 |
+| `server_room_console` | 관리자 콘솔 | 위치: `server_room` | 3 |
+| `elevator_nonexistent_floor` | 존재하지 않는 층의 엘리베이터 | 위치: `elevator_hall` | 2 |
+| `rooftop_signal` | 옥상의 제한된 외부 신호 | 위치: `rooftop`; 필수 플래그: `rooftop_accessed` | 2 |
+| `parking_ignition` | 지하주차장의 시동음 | 위치: `parking_lot` | 2 |
+| `parking_exit_ramp` | 지하주차장 차단기 | 위치: `parking_lot`; 필수 아이템: `parking_key_fob`; 필수 플래그: `parking_key_found` | 2 |
+| `lobby_reception_kiosk` | 무인 로비 안내 키오스크 | 위치: `lobby` | 3 |
+| `lobby_exit_gate` | 로비 출구 게이트 | 위치: `lobby`; 필수 아이템: `visitor_badge`; 필수 플래그: `visitor_badge_printed` | 2 |
+| `executive_approval_console` | 대표실 결재 콘솔 | 위치: `executive_office`; 필수 플래그: `executive_route_started` | 2 |
 
-## 상세 초안
+## 상세
 
 ### ex_employee_messenger: 퇴사자의 메신저
 
-위치:
+퇴사한 전임자에게서 사내 메신저가 도착했다.
 
-- dev_desk
-
-설명 요약:
-
-퇴사한 전임자에게서 사내 메신저가 온다.
-외부 인터넷은 끊겼지만 사내망 알림은 도착한다.
+- 조건: 위치: `dev_desk`
 
 선택지:
-
-1. 메시지를 확인한다
-   - 비용: 배터리 -3, 정신력 -2
-   - 결과: 단서 `ex_employee_contacted`
-
-2. 무시하고 휴대폰을 엎어둔다
-   - 결과: 정신력 +2, 단서 놓침
-
-3. 전임자의 이름을 사내망에서 검색한다
-   - 조건: 배터리 >= 8
-   - 결과: 퇴사자의 메모 또는 진실 루트 플래그
-
-4. [인터페이스] 알림 지연 시간을 역추적한다
-   - 조건: interface >= 4, 배터리 >= 2
-   - 판정: 2d6 + interface >= 10
-   - 성공: 단서 `delayed_packet_route`, 플래그 `network_truth_hint`
-   - 실패: 정신력 피해, 위험도 증가
+1. `check_message` — 메시지를 확인한다
+   - 비용: `battery: -3`, `sanity: -2`
+   - 결과: 단서+ `ex_employee_contacted`; 로그: 퇴사자의 메시지를 확인했다.
+2. `ignore_phone` — 무시하고 휴대폰을 엎어둔다
+   - 결과: 자원 `sanity: +2`; 로그: 휴대폰을 엎어두자 알림음이 한 박자 늦게 멈췄다.
+3. `search_ex_employee` — 전임자의 이름을 사내망에서 검색한다
+   - 비용: `battery: -8`
+   - 결과: 아이템+ `ex_employee_memo`; 플래그+ `truth_route_started`; 로그: 사내망 캐시에 남은 전임자의 흔적을 찾았다.
+4. `trace_packet_delay` — [인터페이스] 알림 지연 시간을 역추적한다
+   - 조건: 최소 능력치: `interface>=4`
+   - 비용: `battery: -2`
+   - 결과: 로그: 알림 패킷을 조심스럽게 붙잡았다.
+   - 판정: `2d6 + interface >= 10`
+   - 성공: 단서+ `delayed_packet_route`; 플래그+ `network_truth_hint`; 로그: 지연 시간 사이에서 숨은 라우팅을 찾았다.
+   - 실패: 자원 `sanity: -4`; 위험도 `+1`; 로그: 패킷이 역으로 당신의 단말을 훑고 지나갔다.
 
 ### printer_prints_alone: 복합기가 혼자 출력한다
 
-위치:
+꺼져 있던 복합기가 아직 하지 않은 선택을 출력한다.
 
-- printer_area
-
-설명 요약:
-
-꺼져 있던 복합기가 출력물을 뱉는다.
-출력물에는 플레이어가 아직 하지 않은 선택이 적혀 있다.
+- 조건: 위치: `printer_area`
 
 선택지:
-
-1. 출력물을 읽는다
-   - 비용: 정신력 -3
-   - 결과: 단서 획득
-
-2. 출력물을 챙긴다
-   - 결과: 아이템 `crumpled_printout`, 플래그 `printer_secret_started`
-
-3. 토너 카트리지를 확인한다
-   - 조건: 정신력 >= 40
-   - 결과: 현실 연결 힌트 1단계
-
-### meeting_room_booking: 회의실 예약 패널
-
-위치:
-
-- meeting_room
-
-설명 요약:
-
-예약 패널에 “전 직원 참석” 회의가 표시된다.
-주최 부서는 존재하지 않는다.
-
-선택지:
-
-1. 회의에 참석한다
-   - 비용: 정신력 -10
-   - 결과: 진실 단서, 위험도 +1
-
-2. 예약 내용을 촬영한다
-   - 비용: 배터리 -5
-   - 결과: 단서 `impossible_meeting_saved`
-
-3. 회의실을 나간다
-   - 결과: 안전하지만 단서 없음
+1. `read_printout` — 출력물을 읽는다
+   - 비용: `sanity: -3`
+   - 결과: 단서+ `future_choice_printout`; 로그: 출력물에는 아직 고르지 않은 선택지가 적혀 있었다.
+2. `take_printout` — 출력물을 챙긴다
+   - 결과: 아이템+ `crumpled_printout`; 플래그+ `printer_secret_started`; 로그: 따뜻한 출력물을 접어 주머니에 넣었다.
+3. `check_toner` — 토너 카트리지를 확인한다
+   - 조건: 최소 자원: `sanity>=40`
+   - 결과: 단서+ `reality_link_hint_1`; 플래그+ `reality_link_started`; 로그: 토너 카트리지 안쪽에서 이상한 표식을 봤다.
 
 ### pantry_coffee_machine: 탕비실 커피머신
 
-위치:
+커피머신 화면에 '물을 보충하십시오'가 반복된다. 물통은 가득 차 있다.
 
-- pantry
-
-설명 요약:
-
-커피머신 화면에 “물을 보충하십시오”가 반복된다.
-물통은 가득 차 있다.
+- 조건: 위치: `pantry`
 
 선택지:
-
-1. 커피를 뽑는다
-   - 결과: 아이템 또는 즉시 효과 `coffee`
-
-2. 물통을 확인한다
-   - 결과: 갈증 관련 단서 또는 정신력 -2
-
-3. 커피머신 뒤를 본다
-   - 조건: `printer_secret_started`
-   - 결과: 현실 연결 힌트 후속
-
-### supply_closet_cache: 물품창고 비상 보급함
-
-위치:
-
-- supply_closet
-
-설명 요약:
-
-물품창고 비상 보급함에 구급상자, 보조배터리, 과자 봉지가 남아 있다.
-소모품 사용 루프를 자연스럽게 경험시키는 안전한 보급 인카운터다.
-
-선택지:
-
-1. 구급상자를 챙긴다
-   - 결과: 아이템 `first_aid_kit`
-
-2. 보조배터리를 챙긴다
-   - 결과: 아이템 `power_bank`
-
-3. 비상 간식 봉지를 챙긴다
-   - 결과: 아이템 `snack`
+1. `brew_coffee` — 커피를 뽑는다
+   - 결과: 자원 `sanity: +4`, `hunger: -3`, `thirst: +5`; 로그: 커피는 아직 따뜻했고, 컵 바닥에는 작은 검은 점이 남았다.
+2. `inspect_water_tank` — 물통을 확인한다
+   - 결과: 자원 `sanity: -2`; 단서+ `full_water_tank_warning`; 로그: 물통은 가득 차 있는데 센서는 계속 빈 상태를 보고했다.
+3. `trace_toner_symbol` — 점검 라벨의 표식을 토너 표식과 맞춰 본다
+   - 조건: 필수 플래그: `reality_link_started`
+   - 결과: 단서+ `reality_link_hint_2`; 플래그+ `reality_link_second_seen`, `pantry_hint_seen`; 로그: 커피머신 점검 라벨의 작은 숫자들이 토너 안쪽 표식과 같은 방향으로 접혔다.
+4. `look_behind_machine` — 커피머신 뒤를 본다
+   - 조건: 필수 플래그: `printer_secret_started`
+   - 결과: 단서+ `reality_link_hint_2`; 플래그+ `coffee_machine_back_panel`, `pantry_hint_seen`; 로그: 커피머신 뒤쪽 패널에 복합기 출력물과 같은 표식이 있었다.
+5. `take_bottled_water` — 밀봉된 생수 한 병을 챙긴다
+   - 결과: 아이템+ `bottled_water`; 로그: 탕비실 냉장고 문 안쪽에서 밀봉된 생수 한 병을 꺼냈다.
 
 ### strange_water_dispenser: 정수기의 이상한 물
 
-위치:
+정수기에서 물소리가 나지만 컵에는 물이 차지 않는다. 목이 마를수록 빈 컵 안쪽이 출렁이는 것처럼 보인다.
 
-- pantry
-
-설명 요약:
-
-정수기에서 물소리가 나지만 컵에는 물이 차지 않는다.
-갈증이 높을수록 유혹적으로 보인다.
-
-조건:
-
-- 위치: pantry
-- 갈증 60 이상
-- 플래그 `thirst_hallucination_seen` 없음
+- 조건: 위치: `pantry`; 금지 플래그: `thirst_hallucination_seen`; 최소 자원: `thirst>=60`
 
 선택지:
+1. `drink_false_water` — 물을 마신다
+   - 결과: 자원 `thirst: -25`, `sanity: -8`; 플래그+ `thirst_hallucination_seen`; 로그: 빈 컵을 삼키자 목은 잠깐 식었지만 정수기 표시등이 당신의 이름을 깜빡였다.
+2. `search_for_bottled_water` — 생수병을 찾는다
+   - 비용: `sanity: -2`
+   - 결과: 아이템+ `bottled_water`; 플래그+ `thirst_hallucination_seen`; 로그: 정수기 아래 수납칸에서 실제로 밀봉된 생수 한 병을 찾았다.
+3. `unplug_dispenser` — 정수기 전원을 뽑는다
+   - 결과: 단서+ `water_dispenser_false_sound`; 플래그+ `thirst_hallucination_seen`; 위험도 `-1`; 로그: 플러그를 뽑자 물소리는 멈췄지만 컵 안쪽의 물결은 한 박자 늦게 사라졌다.
 
-1. 물을 마신다
-   - 결과: 갈증 -25, 정신력 -8, 플래그 `thirst_hallucination_seen`
+### supply_closet_cache: 물품창고 비상 보급함
 
-2. 생수병을 찾는다
-   - 비용: 정신력 -2
-   - 결과: 아이템 `bottled_water`, 플래그 `thirst_hallucination_seen`
+물품창고 안쪽 선반에 '재난 대응 키트'라고 적힌 박스가 열려 있다. 누군가 필요한 것만 가져가라는 듯 세 칸을 비워 두었다.
 
-3. 정수기 전원을 뽑는다
-   - 결과: 위험도 -1, 단서 `water_dispenser_false_sound`, 플래그 `thirst_hallucination_seen`
-
-### cold_server_door: 서버실 앞의 차가운 바람
-
-위치:
-
-- server_room_front
-
-설명 요약:
-
-문틈에서 냉기가 흘러나오고, 안쪽에서 키보드 소리가 들린다.
+- 조건: 위치: `supply_closet`
 
 선택지:
-
-1. 사원증을 찍는다
-   - 조건: `employee_badge`
-   - 결과: 접근 실패 로그 또는 플래그 `server_access_attempted`
-
-2. 패널을 촬영한다
-   - 비용: 배터리 -4
-   - 결과: 단서 `server_panel_symbols`
-
-3. 문에서 물러난다
-   - 결과: 안전
-
-4. 보안실 우회권한으로 서버실 문을 연다
-   - 조건: 아이템 `security_override_badge`, 플래그 `security_override_unlocked`
-   - 비용: 배터리 -2
-   - 결과: 위치 `server_room`, 플래그 `security_override_used`
-
-### stairwell_footsteps: 비상계단의 발소리
-
-위치:
-
-- emergency_stairs
-
-설명 요약:
-
-아래층에서 위로 올라오는 발소리가 들린다.
-층수 표시는 변하지 않는다.
-
-선택지:
-
-1. 아래로 내려간다
-   - 조건: 배터리 또는 손전등이 있으면 유리
-   - 결과: 탈출 루트 진행 또는 체력/정신력 피해
-
-2. 문을 닫고 막는다
-   - 결과: 위험도 -1, 턴 경과
-
-3. 발소리를 녹음한다
-   - 비용: 배터리 -4
-   - 결과: 진실 단서
-
-### elevator_nonexistent_floor: 존재하지 않는 층의 엘리베이터
-
-위치:
-
-- elevator_hall
-
-설명 요약:
-
-엘리베이터 버튼 패널에 없던 R층이 켜져 있다.
-외부 인터넷 아이콘은 한 칸만 떠 있고, 버튼을 누르면 옥상 루트로 이어진다.
-
-선택지:
-
-1. 존재하지 않는 R층 버튼을 누른다
-   - 비용: 배터리 -4, 정신력 -3
-   - 결과: 위치 `rooftop`, 플래그 `rooftop_accessed`, 단서 `nonexistent_rooftop_button`
-
-2. 문틈을 벌려 현재 층으로 돌아온다
-   - 결과: 보안실로 이동, 체력 -4, 단서 `security_floor_misalignment`, 플래그 `elevator_returned_wrong_floor`
-
-### security_room_floor_mismatch_console: 어긋난 층수의 보안 콘솔
-
-위치:
-
-- security_room
-
-조건:
-
-- 단서 `security_floor_misalignment`
-- 플래그 `elevator_returned_wrong_floor`
-
-설명 요약:
-
-엘리베이터에서 억지로 돌아온 보안실의 출입 기록이 서로 다른 현재 층을 가리킨다.
-틀린 층수 하나가 서버실과 연결되어, 보안실 단서가 서버실 정복 루트로 이어진다.
-
-선택지:
-
-1. 보안실 층수 로그에서 서버실 우회권한을 뽑는다
-   - 비용: 배터리 -6, 정신력 -3
-   - 결과: 아이템 `security_override_badge`, 단서 `security_override_route`, 플래그 `security_override_unlocked`
-
-2. 지연된 CCTV를 서버실 앞에 고정한다
-   - 비용: 배터리 -3
-   - 결과: 단서 `server_room_cctv_blindspot`, 플래그 `cctv_delay_looped`
-
-3. 층수 기록을 닫고 보안실을 나간다
-   - 결과: 정신력 +1
-
-후속:
-
-- 서버실 앞에서 우회권한을 사용하면 위치 `server_room`으로 진입하고 플래그 `security_override_used`를 얻는다.
-- 서버실 관리자 콘솔에서 `security_override_used`가 있으면 `security_lockdown_claimed`를 얻는 정복 선택지가 열린다.
-
-### office_broadcast: 사내 방송
-
-위치:
-
-- hallway
-- dev_office
-
-설명 요약:
-
-아무도 없는 사무실에 정상 근무 안내 방송이 나온다.
-
-선택지:
-
-1. 방송을 끝까지 듣는다
-   - 비용: 정신력 -5
-   - 결과: 단서 또는 위험도 +1
-
-2. 스피커를 찾는다
-   - 결과: 위치/보안 단서
-
-3. 귀를 막고 지나간다
-   - 결과: 정신력 피해 감소
-
-### minutes_with_my_name: 회의록에 적힌 내 이름
-
-위치:
-
-- meeting_room
-
-설명 요약:
-
-회의록에는 플레이어가 참석했고 발언했다는 기록이 있다.
-아직 회의에 들어간 적이 없다.
-
-선택지:
-
-1. 회의록을 읽는다
-   - 비용: 정신력 -8
-   - 결과: 진실 단서
-
-2. 사진을 찍는다
-   - 비용: 배터리 -3
-   - 결과: 단서 보존
-
-3. 회의록을 찢는다
-   - 결과: 위험도 +1, 정신력 +2 가능
+1. `take_first_aid_kit` — 구급상자를 챙긴다
+   - 결과: 아이템+ `first_aid_kit`; 로그: 비상 보급함에서 구급상자를 꺼냈다.
+2. `take_power_bank` — 보조배터리를 챙긴다
+   - 결과: 아이템+ `power_bank`; 로그: 비상 보급함 아래칸에서 충전 케이블이 묶인 보조배터리를 챙겼다.
+3. `take_emergency_snack` — 비상 간식 봉지를 챙긴다
+   - 결과: 아이템+ `snack`; 로그: 유통기한이 오늘로 끝나는 과자 봉지를 챙겼다.
 
 ### meeting_room_whiteboard_marker: 회의실 화이트보드 모서리
 
-위치:
+회의실 화이트보드 모서리에 지워지지 않는 작은 사각형이 남아 있다. 방금 본 출력물의 빈 선택지와 같은 모양이다.
 
-- meeting_room
-
-조건:
-
-- 단서 `future_choice_printout`
-
-설명 요약:
-
-회의실 화이트보드 모서리에 지워지지 않는 작은 사각형이 남아 있다.
-복합기에서 혼자 출력된 종이의 빈 선택지와 같은 모양이다.
+- 조건: 위치: `meeting_room`; 필수 단서: `future_choice_printout`
 
 선택지:
+1. `decode_whiteboard_marker` — 출력물의 빈 선택지를 화이트보드 표식에 겹친다
+   - 비용: `sanity: -3`
+   - 결과: 단서+ `reality_link_hint_3`; 플래그+ `reality_link_third_seen`, `meeting_marker_seen`; 로그: 화이트보드 모서리의 지워지지 않는 사각형이 출력물의 빈 선택지와 겹치며 세 번째 현실 표식이 되었다.
+2. `erase_marker_corner` — 표식을 지우개로 문질러 본다
+   - 결과: 자원 `sanity: -2`; 플래그+ `meeting_marker_smudged`; 로그: 표식은 지워지지 않고 지우개 가루만 작은 화살표처럼 남겼다.
 
-1. 출력물의 빈 선택지를 화이트보드 표식에 겹친다
-   - 비용: 정신력 -3
-   - 결과: 단서 `reality_link_hint_3`, 플래그 `reality_link_third_seen`, `meeting_marker_seen`
+### meeting_room_all_hands: 존재하지 않는 부서의 전체회의
 
-2. 표식을 지우개로 문질러 본다
-   - 결과: 정신력 -2, 플래그 `meeting_marker_smudged`
+회의실 화면에는 방금 저장된 회의록이 떠 있다. 참석자는 전 직원, 발언자는 당신 하나다.
 
-후속:
-
-- `future_choice_printout`, `reality_link_hint_3`, `reality_link_third_seen`, `meeting_marker_seen`이 있으면 `hidden_reality_hint_003`이 열린다.
-- 공개 힌트는 더미 값 `172.16.5.8`의 숫자 합계까지만 표시하고, 실제 최종 위치는 로컬 비공개 파일에만 둔다.
-
-### fridge_note: 냉장고 안의 쪽지
-
-위치:
-
-- pantry
-
-설명 요약:
-
-냉장고 안쪽에 얼어붙은 쪽지가 있다.
+- 조건: 위치: `meeting_room`; 필수 플래그: `truth_route_started`
 
 선택지:
+1. `save_impossible_minutes` — 회의록을 저장하고 패턴을 표시한다
+   - 비용: `battery: -4`, `sanity: -5`
+   - 결과: 단서+ `meeting_pattern_noticed`; 플래그+ `impossible_meeting_saved`; 로그: 회의록의 발언 시간이 모두 같은 초 단위로 반복된다는 것을 표시했다.
+2. `leave_without_saving` — 저장하지 않고 회의실을 나간다
+   - 결과: 자원 `sanity: +1`; 로그: 회의실 문이 닫히자 방금 전 회의 알림이 취소되었다.
 
-1. 쪽지를 꺼낸다
-   - 결과: 단서 또는 갈증 -/정신력 변화
+### security_room_delayed_cctv: 지연된 CCTV 화면
 
-2. 냉장고 문을 닫는다
-   - 결과: 안전
+보안실 모니터들은 복도보다 한 박자 늦은 장면을 반복한다. 조금 전 당신이 한 선택도 녹화되어 있다.
 
-3. 출력물과 대조한다
-   - 조건: `crumpled_printout`
-   - 결과: 현실 연결 힌트 2단계
-
-### flashlight_under_desk: 책상 아래 손전등
-
-위치:
-
-- dev_office
-
-설명 요약:
-
-책상 아래에 손전등이 굴러와 있다.
-방금 누군가 떨어뜨린 것 같다.
+- 조건: 위치: `security_room`; 필수 단서: `meeting_pattern_noticed`; 필수 플래그: `impossible_meeting_saved`
 
 선택지:
+1. `replay_delayed_cctv` — 지연된 CCTV 화면을 되감는다
+   - 비용: `battery: -6`, `sanity: -4`
+   - 결과: 단서+ `server_log_fragment`; 플래그+ `security_camera_mapped`, `isolation_protocol_revealed`; 로그: CCTV 지연 프레임 사이에서 격리 프로토콜 로그 조각을 읽었다.
+2. `cover_cameras` — 모니터를 덮고 보안실을 떠난다
+   - 결과: 자원 `sanity: +2`; 로그: 꺼진 모니터들이 천천히 당신을 놓아주었다.
 
-1. 손전등을 줍는다
-   - 결과: 아이템 `flashlight`
+### security_room_floor_mismatch_console: 어긋난 층수의 보안 콘솔
 
-2. 책상 아래를 더 본다
-   - 비용: 정신력 -2
-   - 결과: 추가 단서 또는 위험 로그
+엘리베이터가 토해낸 보안실의 출입 기록은 현재 층을 서로 다른 세 숫자로 적고 있다. 틀린 층수 하나가 서버실 문과 같은 색으로 깜빡인다.
 
-### camera_watches: 보안 카메라의 시선
-
-위치:
-
-- hallway
-- dev_office
-
-설명 요약:
-
-보안 카메라가 플레이어를 따라 움직인다.
-녹화등은 꺼져 있다.
+- 조건: 위치: `security_room`; 필수 단서: `security_floor_misalignment`; 필수 플래그: `elevator_returned_wrong_floor`
 
 선택지:
+1. `extract_security_override` — 보안실 층수 로그에서 서버실 우회권한을 뽑는다
+   - 비용: `battery: -6`, `sanity: -3`
+   - 결과: 아이템+ `security_override_badge`; 단서+ `security_override_route`; 플래그+ `security_override_unlocked`; 로그: 어긋난 층수 로그를 하나로 접자 서버실 우회권한이 임시 배지처럼 발급되었다.
+2. `loop_cctv_delay` — 지연된 CCTV를 서버실 앞에 고정한다
+   - 비용: `battery: -3`
+   - 결과: 단서+ `server_room_cctv_blindspot`; 플래그+ `cctv_delay_looped`; 로그: 서버실 앞 CCTV가 당신보다 한 박자 늦게 감시하도록 루프를 걸었다.
+3. `leave_misaligned_room` — 층수 기록을 닫고 보안실을 나간다
+   - 결과: 자원 `sanity: +1`; 로그: 보안실 문패가 다시 현재 층을 모르는 척했다.
 
-1. 카메라를 향해 손을 흔든다
-   - 결과: 사내망 메시지 트리거 가능
+### emergency_stairs_exit_sign: 비상계단 문틈 표식
 
-2. 카메라를 피한다
-   - 결과: 위험도 감소 가능
+비상계단 문틈의 초록색 표식이 층수 표시와 같은 박자로 숨을 쉰다.
 
-3. 카메라 위치를 기록한다
-   - 비용: 배터리 -2
-   - 결과: 정복 루트 단서
+- 조건: 위치: `emergency_stairs`; 금지 플래그: `escape_puzzle_ready`
+
+선택지:
+1. `align_breathing_floor` — 계단문 틈의 숨소리와 층수 표시를 맞춘다
+   - 비용: `sanity: -3`
+   - 결과: 플래그+ `escape_puzzle_ready`; 로그: 초록 표식이 한 번 꺼졌다 켜지자 반복되는 층수의 규칙이 드러났다.
+2. `ignore_exit_sign` — 표식과 눈을 마주치지 않고 계단을 살핀다
+   - 결과: 자원 `sanity: +1`; 로그: 표식은 시야 가장자리에 초록빛 잔상을 남겼지만 더는 따라오지 않았다.
+
+### spatial_exit_puzzle: 비상계단 공간 왜곡
+
+층수 표시는 4, 4, 4, 4를 반복한다. 한 칸만 진짜 계단처럼 숨을 쉰다.
+
+- 조건: 위치: `emergency_stairs`; 필수 플래그: `escape_puzzle_ready`
+
+선택지:
+1. `solve_distorted_floor` — 반복되는 층수의 비밀을 풀고 문을 통과한다
+   - 결과: 플래그+ `escape_route_completed`; 로그: 층수 표시가 한 번 거꾸로 흐른 뒤 비상문이 열렸다.
+2. `walk_down_wrong_stairs` — 아래라고 믿고 계속 내려간다
+   - 결과: 자원 `sanity: -25`; 플래그+ `spatial_exit_failed`; 로그: 내려갈수록 계단은 회사 안쪽으로 더 깊게 접혔다.
+
+### server_room_radio: 서버실 문 앞 무전기
+
+닫힌 서버실 문틈에서 사내 방송이 거꾸로 새어 나온다.
+
+- 조건: 위치: `server_room_front`
+
+선택지:
+1. `tune_internal_channel` — 제한된 주파수를 맞춘다
+   - 비용: `battery: -5`, `sanity: -3`
+   - 결과: 단서+ `internal_channel_key`; 플래그+ `server_room_broadcast_controlled`; 로그: 사내 방송의 잡음 뒤에서 통제 채널을 붙잡았다.
+2. `back_away_from_signal` — 신호에서 물러난다
+   - 결과: 자원 `sanity: +1`; 로그: 무전기 소리가 잠깐 당신의 목소리를 흉내 내다가 멈췄다.
+3. `follow_cold_air` — 문틈의 찬 공기를 따라 안쪽으로 들어간다
+   - 비용: `sanity: -2`
+   - 결과: 플래그+ `server_room_entered`; 이동 `server_room`; 로그: 서버실 문은 열리지 않았지만, 당신은 이미 문 안쪽에 서 있었다.
+4. `enter_with_security_override` — 보안실 우회권한으로 서버실 문을 연다
+   - 조건: 필수 아이템: `security_override_badge`; 필수 플래그: `security_override_unlocked`
+   - 비용: `battery: -2`
+   - 결과: 플래그+ `server_room_entered`, `security_override_used`; 이동 `server_room`; 로그: 우회권한을 대자 서버실 문은 잠금 해제가 아니라 예외 처리로 당신을 통과시켰다.
+
+### server_room_console: 관리자 콘솔
+
+랙 사이 KVM 콘솔에는 관리자 세션이 잠들지 않은 채 남아 있다.
+
+- 조건: 위치: `server_room`
+
+선택지:
+1. `assume_admin_console` — 관리자 콘솔에 격리 규칙을 덮어쓴다
+   - 비용: `battery: -10`, `sanity: -6`
+   - 결과: 단서+ `admin_console_signature`; 플래그+ `network_admin_claimed`, `internal_network_access`; 로그: 관리자 콘솔의 격리 규칙을 당신의 퇴근 규칙으로 덮어썼다.
+2. `pull_network_cable` — 가장 두꺼운 케이블을 뽑는다
+   - 결과: 자원 `sanity: -8`; 플래그+ `network_backlash`; 로그: 케이블을 뽑자 서버실 전체가 당신의 심장 박동으로 재부팅했다.
+3. `lock_isolation_with_security_override` — 출입 로그와 격리 규칙을 함께 잠근다
+   - 조건: 필수 아이템: `security_override_badge`; 필수 플래그: `security_override_used`
+   - 비용: `battery: -8`, `sanity: -5`
+   - 결과: 단서+ `security_lockdown_signature`; 플래그+ `network_admin_claimed`, `internal_network_access`, `security_lockdown_claimed`; 로그: 출입 로그와 격리 규칙이 같은 해시로 묶이자 보안실과 서버실이 당신을 예외 관리자라고 불렀다.
+
+### elevator_nonexistent_floor: 존재하지 않는 층의 엘리베이터
+
+엘리베이터 버튼 패널에는 없던 R층이 켜져 있다. 외부 인터넷 아이콘은 한 칸만 떠 있지만, 층수 표시는 계속 옥상을 가리킨다.
+
+- 조건: 위치: `elevator_hall`
+
+선택지:
+1. `press_rooftop_button` — 존재하지 않는 R층 버튼을 누른다
+   - 비용: `battery: -4`, `sanity: -3`
+   - 결과: 단서+ `nonexistent_rooftop_button`; 플래그+ `rooftop_accessed`; 이동 `rooftop`; 로그: 버튼을 누르자 엘리베이터는 움직이지 않았지만 문 밖이 옥상으로 바뀌었다.
+2. `force_elevator_doors` — 문틈을 벌려 현재 층으로 돌아온다
+   - 결과: 자원 `health: -4`; 단서+ `security_floor_misalignment`; 플래그+ `elevator_returned_wrong_floor`; 이동 `security_room`; 로그: 엘리베이터 문틈을 억지로 벌리자 보안실 모니터들이 방금 전의 현재 층을 되감아 보여 주었다.
 
 ### rooftop_signal: 옥상의 제한된 외부 신호
 
-위치:
+옥상 난간 너머로 도시의 불빛이 보인다. 휴대폰은 외부 인터넷을 한 번만 보낼 수 있을 만큼의 신호를 붙잡았다.
 
-- rooftop
-
-조건:
-
-- 플래그 `rooftop_accessed`
-
-설명 요약:
-
-옥상 난간 너머로 도시의 불빛이 보이고, 휴대폰은 외부 인터넷을 한 번만 보낼 수 있을 만큼의 신호를 붙잡는다.
-제한된 신호를 보내면 옥상 외부 신호 탈출 엔딩으로 이어진다.
+- 조건: 위치: `rooftop`; 필수 플래그: `rooftop_accessed`
 
 선택지:
-
-1. 제한된 외부 신호를 짧게 송신한다
-   - 비용: 배터리 -12, 정신력 -5
-   - 결과: 플래그 `rooftop_signal_sent`, 단서 `outside_signal_ack`
-
-2. 어긋난 도시 야경을 녹화한다
-   - 비용: 배터리 -5
-   - 결과: 단서 `wrong_skyline_recording`, 정신력 피해
+1. `send_limited_signal` — 제한된 외부 신호를 짧게 송신한다
+   - 비용: `battery: -12`, `sanity: -5`
+   - 결과: 단서+ `outside_signal_ack`; 플래그+ `rooftop_signal_sent`; 로그: 짧은 구조 신호가 전송되자 옥상 비상등이 실제 밤하늘과 같은 박자로 깜빡였다.
+2. `record_wrong_skyline` — 어긋난 도시 야경을 녹화한다
+   - 비용: `battery: -5`
+   - 결과: 자원 `sanity: -4`; 단서+ `wrong_skyline_recording`; 로그: 녹화된 야경에는 회사 건물이 바깥에서 보이지 않았다.
 
 ### parking_ignition: 지하주차장의 시동음
 
-위치:
+지하주차장 어딘가에서 시동이 걸린 차가 낮게 떨고 있다. 운전석에는 아무도 없고, 대시보드에는 사내망 출입 안내가 떠 있다.
 
-- parking_lot
-
-설명 요약:
-
-지하주차장 어딘가에서 시동이 걸린 차가 낮게 떨고 있다.
-운전석에는 아무도 없고, 대시보드에는 사내망 출입 안내가 떠 있다.
+- 조건: 위치: `parking_lot`
 
 선택지:
-
-1. 켜져 있는 차의 키태그를 찾는다
-   - 비용: 배터리 -4, 정신력 -3
-   - 결과: 아이템 `parking_key_fob`, 단서 `idling_engine_trace`, 플래그 `parking_key_found`
-
-2. 시동음을 무시하고 차 사이를 지나간다
-   - 결과: 정신력 +1
+1. `follow_idling_engine` — 켜져 있는 차의 키태그를 찾는다
+   - 비용: `battery: -4`, `sanity: -3`
+   - 결과: 아이템+ `parking_key_fob`; 단서+ `idling_engine_trace`; 플래그+ `parking_key_found`; 로그: 시동음이 가장 크게 울리는 차의 컵홀더에서 작은 키태그를 찾았다.
+2. `silence_engine` — 시동음을 무시하고 차 사이를 지나간다
+   - 결과: 자원 `sanity: +1`; 로그: 시동음은 등 뒤에서 계속 따라왔지만, 잠깐은 모른 척할 수 있었다.
 
 ### parking_exit_ramp: 지하주차장 차단기
 
-위치:
+출구 차단기는 올라가다 만 상태로 멈췄다. 키태그를 가까이 대자 외부 도로의 습기가 아주 얇게 흘러든다.
 
-- parking_lot
-
-조건:
-
-- 아이템 `parking_key_fob`
-- 플래그 `parking_key_found`
-
-설명 요약:
-
-출구 차단기는 올라가다 만 상태로 멈췄다.
-키태그를 가까이 대자 외부 도로의 습기가 아주 얇게 흘러든다.
+- 조건: 위치: `parking_lot`; 필수 아이템: `parking_key_fob`; 필수 플래그: `parking_key_found`
 
 선택지:
-
-1. 주차장 차단기를 임시 개방한다
-   - 비용: 배터리 -5, 정신력 -4
-   - 결과: 단서 `parking_exit_route`, 플래그 `parking_ramp_opened`
-
-2. 청소 카트로 차단기를 받쳐 둔다
-   - 결과: 체력 -3, 플래그 `parking_ramp_jammed`
+1. `open_exit_ramp` — 주차장 차단기를 임시 개방한다
+   - 비용: `battery: -5`, `sanity: -4`
+   - 결과: 단서+ `parking_exit_route`; 플래그+ `parking_ramp_opened`; 로그: 차단기가 정상 근무 종료 알림처럼 짧게 울리고, 지하주차장 출구가 실제 도로와 맞물렸다.
+2. `wedge_ramp_with_cart` — 청소 카트로 차단기를 받쳐 둔다
+   - 결과: 자원 `health: -3`; 플래그+ `parking_ramp_jammed`; 로그: 카트는 차단기를 붙잡았지만, 출구 밖 풍경은 아직 한 프레임씩 밀려 있다.
 
 ### lobby_reception_kiosk: 무인 로비 안내 키오스크
 
-위치:
+로비 안내 키오스크가 꺼진 화면으로 당신의 얼굴을 인식한다. 방문 목적 입력란에는 이미 '퇴근 승인'이 떠 있다.
 
-- lobby
-
-설명 요약:
-
-로비 안내 키오스크가 꺼진 화면으로 플레이어의 얼굴을 인식한다.
-방문 목적 입력란에는 이미 '퇴근 승인'이 떠 있다.
+- 조건: 위치: `lobby`
 
 선택지:
-
-1. 방문증 프린터를 깨운다
-   - 비용: 배터리 -3, 정신력 -2
-   - 결과: 아이템 `visitor_badge`, 단서 `lobby_reception_log`, 플래그 `visitor_badge_printed`
-
-2. 대표실 호출 버튼을 길게 누른다
-   - 비용: 배터리 -5, 정신력 -4
-   - 결과: 위치 `executive_office`, 단서 `executive_call_route`, 플래그 `executive_route_started`
-
-3. 방문자 명부에서 내 이름을 지운다
-   - 결과: 정신력 +1, 플래그 `lobby_guestbook_wiped`
+1. `print_visitor_badge` — 방문증 프린터를 깨운다
+   - 비용: `battery: -3`, `sanity: -2`
+   - 결과: 아이템+ `visitor_badge`; 단서+ `lobby_reception_log`; 플래그+ `visitor_badge_printed`; 로그: 프린터가 열을 올리더니 당신을 방문객으로 분류한 임시 방문증을 뱉었다.
+2. `press_executive_call` — 대표실 호출 버튼을 길게 누른다
+   - 비용: `battery: -5`, `sanity: -4`
+   - 결과: 단서+ `executive_call_route`; 플래그+ `executive_route_started`; 이동 `executive_office`; 로그: 호출 버튼을 누르자 로비 천장의 스피커가 결재 대기음을 내고, 다음 문은 대표실로 바뀌었다.
+3. `wipe_guestbook` — 방문자 명부에서 내 이름을 지운다
+   - 결과: 자원 `sanity: +1`; 플래그+ `lobby_guestbook_wiped`; 로그: 명부에서 이름을 지우자 회전문 유리에 비친 당신도 한 박자 늦게 사라졌다.
 
 ### lobby_exit_gate: 로비 출구 게이트
 
-위치:
-
-- lobby
-
-조건:
-
-- 아이템 `visitor_badge`
-- 플래그 `visitor_badge_printed`
-
-설명 요약:
-
 로비 출구 게이트는 바깥 도로를 비추지만, 바코드 리더는 사내 방문증만 읽겠다는 듯 붉게 깜빡인다.
 
+- 조건: 위치: `lobby`; 필수 아이템: `visitor_badge`; 필수 플래그: `visitor_badge_printed`
+
 선택지:
-
-1. 방문증 바코드를 출구 게이트에 읽힌다
-   - 비용: 배터리 -2, 정신력 -3
-   - 결과: 단서 `outside_lobby_reflection`, 플래그 `lobby_exit_opened`
-
-2. 회전문을 몸으로 밀어 멈춘다
-   - 결과: 체력 -4, 플래그 `lobby_door_jammed`
+1. `scan_visitor_badge` — 방문증 바코드를 출구 게이트에 읽힌다
+   - 비용: `battery: -2`, `sanity: -3`
+   - 결과: 단서+ `outside_lobby_reflection`; 플래그+ `lobby_exit_opened`; 로그: 게이트가 방문객 퇴실 절차를 승인하자 로비 회전문 바깥의 도로가 더는 반복되지 않았다.
+2. `brace_revolving_door` — 회전문을 몸으로 밀어 멈춘다
+   - 결과: 자원 `health: -4`; 플래그+ `lobby_door_jammed`; 로그: 회전문은 잠깐 멈췄지만 바깥 풍경은 여전히 같은 택시를 세 번씩 지나가게 했다.
 
 ### executive_approval_console: 대표실 결재 콘솔
 
-위치:
-
-- executive_office
-
-조건:
-
-- 플래그 `executive_route_started`
-
-설명 요약:
-
 대표실 결재 콘솔은 회사의 생존 규칙을 문서번호 없이 열어 둔 채, 마지막 승인자 칸만 비워 두었다.
 
+- 조건: 위치: `executive_office`; 필수 플래그: `executive_route_started`
+
 선택지:
-
-1. 대표 승인란에 내 이름을 입력한다
-   - 비용: 배터리 -8, 정신력 -6
-   - 결과: 단서 `executive_signature_loop`, 플래그 `executive_approval_claimed`, `company_policy_overwritten`
-
-2. 생존 규칙 문서를 반려한다
-   - 결과: 정신력 -5, 플래그 `executive_policy_rejected`
+1. `claim_executive_approval` — 대표 승인란에 내 이름을 입력한다
+   - 비용: `battery: -8`, `sanity: -6`
+   - 결과: 단서+ `executive_signature_loop`; 플래그+ `executive_approval_claimed`, `company_policy_overwritten`; 로그: 결재 콘솔이 당신의 이름을 대표 승인권자로 복제하자 회사 규칙의 결재선이 거꾸로 접혔다.
+2. `reject_survival_policy` — 생존 규칙 문서를 반려한다
+   - 결과: 자원 `sanity: -5`; 플래그+ `executive_policy_rejected`; 로그: 반려 버튼을 누르자 문서는 반려 사유에 당신의 다음 생각을 자동으로 적기 시작했다.

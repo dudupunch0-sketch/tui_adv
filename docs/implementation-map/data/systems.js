@@ -65,11 +65,32 @@ window.TUI_ADV_IMPLEMENTATION.systems = {
       files: ["src/tui_adv/game/secrets.py", "docs/dev/Reality_Secret_Safety_Checklist.md", "docs/templates/local-secrets.template.yaml"]
     },
     {
+      category: "web",
+      title: "브라우저 fake-TUI 수직 슬라이스",
+      description: "Vite/TypeScript 앱이 Python YAML에서 생성된 JSON을 읽어 회사 아포칼립스 fake terminal UI를 렌더링하고, 숫자 키/버튼 입력과 localStorage 저장을 지원한다.",
+      tags: ["Vite", "TypeScript", "fake-TUI", "localStorage"],
+      files: ["web/src/main.ts", "web/src/game/actions.ts", "web/src/ui/render.ts", "web/src/styles/fake-tui.css"]
+    },
+    {
+      category: "web",
+      title: "복합기 pretext/Canvas anomaly panel",
+      description: "현실 연결 복합기 장면에서 @chenglou/pretext를 CDN ESM으로 불러오고, 실패 시 안전한 텍스트 fallback을 보여준다. 공개 secret guard가 final_hint 같은 private-only 필드를 차단한다.",
+      tags: ["pretext", "Canvas", "reality link", "secret guard"],
+      files: ["web/src/effects/printerFlow.ts", "web/src/security/publicSecretGuard.ts", "web/src/data/generated/secrets.example.json"]
+    },
+    {
+      category: "content",
+      title: "YAML→브라우저 JSON export",
+      description: "scripts/export_web_data.py가 공개 YAML 콘텐츠를 web/src/data/generated/*.json으로 쓰고 --check로 stale 여부와 public secret 안전성을 검증한다.",
+      tags: ["export", "JSON", "generated data"],
+      files: ["scripts/export_web_data.py", "tests/test_web_data_export.py", "web/src/data/generated/*.json"]
+    },
+    {
       category: "test",
       title: "대표 루트 smoke와 회귀 테스트",
-      description: "탈출, 정복, 진실, 현실 연결 루트를 CLI 경로로 검증하고, 저장 슬롯과 TUI 패널은 단위 테스트로 고정한다.",
-      tags: ["pytest", "route smoke", "regression"],
-      files: ["tests/test_cli.py", "tests/test_tui_app.py", "tests/test_secrets.py"]
+      description: "탈출, 정복, 진실, 현실 연결 루트를 CLI 경로로 검증하고, 저장 슬롯과 TUI 패널은 단위 테스트로 고정한다. 브라우저 수직 슬라이스는 Vitest로 게임 루프, secret guard, renderer, pretext fallback을 검증한다.",
+      tags: ["pytest", "vitest", "route smoke", "regression"],
+      files: ["tests/test_cli.py", "tests/test_tui_app.py", "tests/test_secrets.py", "web/src/**/*.test.ts"]
     }
   ]
 };

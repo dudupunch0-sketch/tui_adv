@@ -1,0 +1,173 @@
+[
+  {
+    "description": "아직 밀봉된 생수병. 지금은 복지보다 생존에 가깝다.",
+    "id": "bottled_water",
+    "name": "생수",
+    "tags": [
+      "survival",
+      "drink"
+    ],
+    "type": "consumable",
+    "usable": true,
+    "use_effects": {
+      "thirst": -35
+    },
+    "use_log": "생수를 마셨다. 목 안쪽에서 사무실 먼지 맛이 조금 사라졌다."
+  },
+  {
+    "description": "식어가는 커피. 회사에서 가장 흔한 각성제이자 가장 약한 위로.",
+    "id": "coffee",
+    "name": "커피",
+    "tags": [
+      "survival",
+      "office"
+    ],
+    "type": "consumable",
+    "usable": true,
+    "use_effects": {
+      "sanity": 5,
+      "thirst": 8
+    },
+    "use_log": "커피를 마셨다. 정신은 조금 돌아왔지만 입안은 더 말랐다."
+  },
+  {
+    "description": "누군가 비상용으로 숨겨둔 과자. 이제 정말 비상용이 되었다.",
+    "id": "snack",
+    "name": "과자",
+    "tags": [
+      "survival",
+      "food"
+    ],
+    "type": "consumable",
+    "usable": true,
+    "use_effects": {
+      "hunger": -25
+    },
+    "use_log": "과자를 먹었다. 부스러기가 키보드보다 바닥에 더 많이 떨어졌다."
+  },
+  {
+    "description": "야근의 오래된 동료. 물을 넣을 수 있다면 아직 희망이 있다.",
+    "id": "cup_noodle",
+    "name": "컵라면",
+    "tags": [
+      "survival",
+      "food"
+    ],
+    "type": "consumable",
+    "usable": true,
+    "use_effects": {
+      "hunger": -45,
+      "sanity": 3,
+      "thirst": 10
+    },
+    "use_log": "컵라면을 먹었다. 익숙한 야근 맛이 잠깐 현실감을 붙잡아 주었다."
+  },
+  {
+    "description": "비상용 구급상자. 누군가 한 번 열어본 흔적이 있다.",
+    "id": "first_aid_kit",
+    "name": "구급상자",
+    "tags": [
+      "survival",
+      "medical"
+    ],
+    "type": "consumable",
+    "usable": true,
+    "use_effects": {
+      "health": 30
+    },
+    "use_log": "구급상자를 사용했다. 플라스틱 붕대 냄새가 상처보다 먼저 덮였다."
+  },
+  {
+    "description": "충전량이 애매하게 남은 보조배터리. 그래도 어둠 속에서는 애매한 희망도 희망이다.",
+    "id": "power_bank",
+    "name": "보조배터리",
+    "tags": [
+      "battery",
+      "tool"
+    ],
+    "type": "tool",
+    "usable": true,
+    "use_effects": {
+      "battery": 35
+    },
+    "use_log": "보조배터리를 연결했다. 단말기가 짧게 진동하며 아직 살아 있음을 알렸다."
+  },
+  {
+    "description": "작은 손전등. 회사 지급품은 아니고 누군가의 개인 물건 같다.",
+    "id": "flashlight",
+    "name": "손전등",
+    "tags": [
+      "light"
+    ],
+    "type": "tool",
+    "usable": false
+  },
+  {
+    "description": "당신의 사원증. 사진 속 당신은 아직 이 상황을 모른다.",
+    "id": "employee_badge",
+    "name": "사원증",
+    "tags": [
+      "access"
+    ],
+    "type": "key",
+    "usable": false
+  },
+  {
+    "description": "보안실 콘솔에서 임시로 발급한 출입 권한. 층수 기록이 맞지 않는 문에만 통한다.",
+    "id": "security_override_badge",
+    "name": "보안실 우회권한",
+    "tags": [
+      "security",
+      "access",
+      "conquest"
+    ],
+    "type": "key",
+    "usable": false
+  },
+  {
+    "description": "복합기에서 나온 구겨진 출력물. 문서 양식은 사내 표준인데, 내용은 아직 일어나지 않은 일을 말한다.",
+    "id": "crumpled_printout",
+    "name": "구겨진 출력물",
+    "tags": [
+      "printer",
+      "reality_link"
+    ],
+    "type": "clue",
+    "usable": false
+  },
+  {
+    "description": "사내망 캐시에 남은 전임자의 메모. 문장은 회사 업무 양식처럼 차분하지만 내용은 격리 프로토콜을 가리킨다.",
+    "id": "ex_employee_memo",
+    "name": "퇴사자의 메모",
+    "tags": [
+      "truth",
+      "internal_network"
+    ],
+    "type": "clue",
+    "usable": false
+  },
+  {
+    "description": "시동이 켜진 차 안쪽에서 발견한 작은 키태그. 차종 로고 대신 사내 자산번호가 붙어 있다.",
+    "id": "parking_key_fob",
+    "name": "지하주차장 키태그",
+    "tags": [
+      "escape",
+      "parking",
+      "access"
+    ],
+    "type": "key",
+    "usable": false
+  },
+  {
+    "description": "무인 로비 키오스크가 방금 뱉어낸 방문증. 방문 목적은 '퇴근 승인 대기'로 인쇄되어 있다.",
+    "id": "visitor_badge",
+    "name": "임시 방문증",
+    "tags": [
+      "escape",
+      "lobby",
+      "access"
+    ],
+    "type": "key",
+    "usable": false
+  }
+]

@@ -1335,6 +1335,19 @@ window.TUI_ADV_IMPLEMENTATION.routes = {
         "숫자 합계 30과 세 번째 현실 연결 엔딩"
       ],
       "command": "--location printer_area --action choice:1 --action move:dev_office --action move:meeting_room --action choice:1"
+    },
+    {
+      "title": "브라우저 fake-TUI 현실 연결 수직 슬라이스",
+      "type": "reality",
+      "status": "Vitest/build 통과",
+      "outcome": "web/src/game/actions.ts에서 hidden_reality_hint_001까지 도달",
+      "steps": [
+        "scripts/export_web_data.py로 공개 YAML을 web/src/data/generated JSON으로 변환",
+        "Vite 앱에서 dev_desk 시작, 숫자 키/버튼으로 인카운터 선택",
+        "printer_area → take_printout → pantry → look_behind_machine로 첫 현실 연결 힌트 도달",
+        "복합기 장면은 @chenglou/pretext Canvas anomaly panel과 텍스트 fallback을 함께 제공"
+      ],
+      "command": "cd web && npm test && npm run build"
     }
   ]
 };

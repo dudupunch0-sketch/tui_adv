@@ -98,6 +98,15 @@ window.TUI_ADV_IMPLEMENTATION.content = {
         { id: "lobby_exit_commuter", name: "로비 게이트 통과자" },
         { id: "executive_approval_holder", name: "대표 승인권자" }
       ]
+    },
+    {
+      title: "브라우저 산출물",
+      items: [
+        { id: "web_app", name: "Vite fake-TUI 브라우저 앱" },
+        { id: "web_data_export", name: "YAML→JSON export/check 스크립트" },
+        { id: "printer_pretext_effect", name: "복합기 pretext/Canvas anomaly panel" },
+        { id: "public_secret_guard", name: "공개 secret private-only 필드 차단" }
+      ]
     }
   ]
 };

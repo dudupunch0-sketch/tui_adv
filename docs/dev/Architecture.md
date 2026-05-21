@@ -7,12 +7,13 @@
 
 ## 선택한 접근
 
-- 언어: Python 3.x
-- 엔진: 표준 라이브러리 중심의 순수 Python 모듈
+- 언어: Python 3.x + TypeScript
+- 엔진: 표준 라이브러리 중심의 순수 Python 모듈, 브라우저 수직 슬라이스는 TypeScript mirror core
 - TUI: Textual 기반 앱을 기본 목표로 한다.
-- 콘텐츠 데이터: YAML 파일
-- 저장 데이터: JSON 파일
-- 테스트: pytest
+- 브라우저: Vite 기반 fake-TUI shell, 특수 장면만 Canvas + `@chenglou/pretext`
+- 콘텐츠 데이터: YAML 파일, 브라우저 앱은 생성 JSON 사용
+- 저장 데이터: Python은 JSON 파일, 브라우저는 localStorage
+- 테스트: pytest + Vitest
 
 Textual을 선택하는 이유:
 
@@ -25,6 +26,8 @@ Textual을 선택하는 이유:
 - 게임 엔진은 Textual을 import하지 않는다.
 - TUI 없이도 테스트와 headless 실행이 가능해야 한다.
 - YAML 로더와 데이터 검증은 앱 시작 전에 독립적으로 실행 가능해야 한다.
+- 브라우저 앱은 공개 YAML을 직접 수정하지 않고 `scripts/export_web_data.py`로 생성한 JSON만 읽는다.
+- 브라우저 번들에는 실제 사무실 최종 위치나 local secret이 들어가지 않는다.
 
 ## 상위 구조
 
@@ -78,6 +81,20 @@ tests/
   data/
   save/
   tui/
+
+scripts/
+  export_web_data.py              # 공개 YAML을 브라우저 JSON으로 export/check
+
+web/
+  package.json
+  index.html
+  src/
+    main.ts                       # Vite 브라우저 진입점
+    game/                         # TypeScript mirror core
+    ui/                           # fake-TUI HTML renderer와 키 입력
+    effects/                      # pretext/Canvas anomaly panel
+    security/                     # public secret guard
+    data/generated/               # export된 공개 JSON
 ```
 
 ## 컴포넌트 경계
@@ -87,6 +104,8 @@ YAML content files
         |
         v
  data.loader + data.validate
+        |
+        +----> scripts/export_web_data.py ---> web/src/data/generated/*.json ---> Vite fake-TUI
         |
         v
  pure game models + engine  <---- tests call this directly
@@ -200,6 +219,13 @@ check_endings(state, content) -> EndingResult | None
 5. private/local secret 파일이 있으면 선택적으로 로드
 6. 공개 데이터와 private 데이터의 충돌 검사
 7. 새 게임 생성
+
+브라우저 앱은 앱 시작 전에 다음 흐름을 사용한다.
+
+1. `python scripts/export_web_data.py --write`
+2. `web/src/data/generated/*.json` 갱신
+3. `python scripts/export_web_data.py --check`로 stale 여부와 public secret private-only 필드 누출 확인
+4. Vite 앱이 생성 JSON을 import해 TypeScript mirror core에서 사용
 
 private/local secret 파일이 없어도 게임은 실행되어야 한다.
 그 경우 현실 연결 루트는 중간 힌트까지만 표시한다.

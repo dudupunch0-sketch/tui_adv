@@ -18,6 +18,8 @@ DATA_FILES: tuple[tuple[str, str, str], ...] = (
     ("achievements", "achievements", "achievements.json"),
     ("secrets.example", "secrets", "secrets.example.json"),
 )
+CONTENT_BUNDLE_SCHEMA_VERSION = 1
+CONTENT_BUNDLE_KIND = "tui_adv.content_bundle"
 PRIVATE_SECRET_FIELDS = {"final_hint", "actual_ip_address", "office_location", "treasure_location"}
 
 
@@ -63,6 +65,45 @@ def write_web_data(root: str | Path, out_dir: str | Path) -> list[Path]:
     return written
 
 
+def build_content_bundle(root: str | Path) -> dict[str, Any]:
+    """Return renderer-neutral runtime content for Rust/web core loading."""
+
+    web_data = build_web_data(root)
+    content = {
+        root_key: web_data[root_key]
+        for _source_name, root_key, _output_name in DATA_FILES
+    }
+    return {
+        "schema_version": CONTENT_BUNDLE_SCHEMA_VERSION,
+        "kind": CONTENT_BUNDLE_KIND,
+        "source": "src/tui_adv/data/*.yaml",
+        "manifest": web_data["manifest"],
+        "content": content,
+    }
+
+
+def write_content_bundle(root: str | Path, bundle_path: str | Path) -> Path:
+    """Write one renderer-neutral runtime content bundle."""
+
+    output_path = Path(bundle_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    _write_json(output_path, build_content_bundle(root))
+    return output_path
+
+
+def check_content_bundle(root: str | Path, bundle_path: str | Path) -> list[str]:
+    """Return differences between source YAML and a generated content bundle."""
+
+    output_path = Path(bundle_path)
+    if not output_path.exists():
+        return [f"missing generated file: {output_path}"]
+    expected_text = _json_text(build_content_bundle(root))
+    actual_text = output_path.read_text(encoding="utf-8")
+    if actual_text != expected_text:
+        return [f"stale generated file: {output_path}"]
+    return []
+
+
 def check_web_data(root: str | Path, out_dir: str | Path) -> list[str]:
     """Return differences between source YAML and generated JSON files."""
 
@@ -94,6 +135,11 @@ def main(argv: list[str] | None = None) -> int:
         default=Path(__file__).resolve().parents[1] / "web" / "src" / "data" / "generated",
         type=Path,
     )
+    parser.add_argument(
+        "--bundle",
+        type=Path,
+        help="optional renderer-neutral content.bundle.json path for Rust/web runtime loading",
+    )
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--write", action="store_true", help="write generated JSON files")
     mode.add_argument("--check", action="store_true", help="verify generated JSON files are up to date")
@@ -102,15 +148,26 @@ def main(argv: list[str] | None = None) -> int:
     if args.write:
         written = write_web_data(args.root, args.out_dir)
         print(f"wrote {len(written)} web data files to {args.out_dir}")
+        if args.bundle:
+            bundle_path = write_content_bundle(args.root, args.bundle)
+            print(f"wrote content bundle to {bundle_path}")
         return 0
 
     errors = check_web_data(args.root, args.out_dir)
+    bundle_errors = check_content_bundle(args.root, args.bundle) if args.bundle else []
     if errors:
         print("web data is stale:")
         for error in errors:
             print(f"- {error}")
+    if bundle_errors:
+        print("content bundle is stale:")
+        for error in bundle_errors:
+            print(f"- {error}")
+    if errors or bundle_errors:
         return 1
     print("web data is up to date")
+    if args.bundle:
+        print("content bundle is up to date")
     return 0
 
 

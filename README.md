@@ -58,10 +58,11 @@ PYTHONPATH=src python -m tui_adv --version
 python -m pytest tests -q
 ```
 
-브라우저 fake-TUI 수직 슬라이스:
+브라우저 fake-TUI 수직 슬라이스 및 renderer-neutral content bundle:
 
 ```bash
-python scripts/export_web_data.py --write
+python scripts/export_web_data.py --write --bundle crates/escape-core/fixtures/content/content.bundle.json
+python scripts/export_web_data.py --check --bundle crates/escape-core/fixtures/content/content.bundle.json
 cd web
 npm install
 npm test
@@ -69,7 +70,7 @@ npm run build
 npm run dev -- --port 8765
 ```
 
-브라우저 앱은 `src/tui_adv/data/*.yaml`을 `web/src/data/generated/*.json`으로 export해서 사용한다. TypeScript mirror core는 terminal 원본의 대표 탈출/정복/진실/히든 루트, 소모품, 업적, 능력치 판정, 압박 상태를 Vitest parity 테스트로 검증한다. 공개 secret JSON에는 실제 사무실 최종 위치나 `final_hint`를 넣지 않는다.
+브라우저 앱은 `src/tui_adv/data/*.yaml`을 `web/src/data/generated/*.json`으로 export해서 사용한다. Rust/Web 공통 runtime 전환용 bundle은 `crates/escape-core/fixtures/content/content.bundle.json`에 생성한다. TypeScript mirror core는 terminal 원본의 대표 탈출/정복/진실/히든 루트, 소모품, 업적, 능력치 판정, 압박 상태를 Vitest parity 테스트로 검증한다. 공개 secret JSON과 content bundle에는 실제 사무실 최종 위치나 `final_hint`를 넣지 않는다.
 
 패키지 설치 후에는 `tui-adv` console script를 사용할 수 있다.
 

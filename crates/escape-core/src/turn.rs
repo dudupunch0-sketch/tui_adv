@@ -3,6 +3,7 @@ use crate::content::{
 };
 use crate::effects::{printer_glyph_anomaly_cue, EffectCue};
 use crate::state::{GameState, PlayerState};
+use serde::Serialize;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ActionView {
@@ -30,7 +31,7 @@ pub struct TurnView {
     pub effect_cues: Vec<EffectCue>,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ActionResult {
     pub encounter_id: String,
     pub action_id: String,

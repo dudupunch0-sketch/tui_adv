@@ -10,3 +10,8 @@ path = "src/main.rs"
 
 [dependencies]
 escape-core = { path = "../escape-core" }
+slt = { package = "superlighttui", version = "0.20.1", default-features = false }
+
+[dev-dependencies]
+escape-wasm = { path = "../escape-wasm" }
+serde_json = "1"

@@ -48,9 +48,9 @@
 - [x] `docs/design/UI_Rules.md`와 `docs/dev/TUI_Layout.md`에 Web Storybook/SuperLightTUI renderer UX contract 기록
 - [x] `escape-core`에 renderer-safe `ScenePage` contract 추가
 - [x] Web Storybook renderer skeleton 추가
-- [ ] `escape-wasm` JSON-string boundary 추가
-- [ ] `escape-terminal`을 SuperLightTUI renderer로 전환
-- [ ] Web/terminal 모두 같은 Rust core action id를 표시하는 parity smoke 추가
+- [x] `escape-wasm` JSON-string boundary 추가
+- [x] `escape-terminal`을 SuperLightTUI renderer로 전환
+- [x] Web/terminal 모두 같은 Rust core action id를 표시하는 parity smoke 추가
 
 ### 0.3 완료 기준
 

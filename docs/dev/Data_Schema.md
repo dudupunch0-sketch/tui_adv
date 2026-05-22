@@ -211,16 +211,25 @@ Renderer 규칙:
 }
 ```
 
-`ActionResult` 초안:
+`ActionResult` 현재 JSON shape:
 
 ```json
 {
+  "encounter_id": "ex_employee_messenger",
   "action_id": "choice:check_message",
-  "source_id": "ex_employee_messenger",
   "state": { "...": "GameState" },
   "logs": ["메시지 마지막 줄만 도착했다."],
-  "newly_unlocked_achievements": [],
-  "effect_cues": []
+  "effect_cues": [
+    {
+      "kind": "glyph_anomaly",
+      "source": "copier_output",
+      "intensity": 0.72,
+      "stable_terms": ["비상계단", "토너", "접힌 방향"],
+      "distortion": "reflow_then_stabilize",
+      "duration_hint_ms": null,
+      "fallback_text": null
+    }
+  ]
 }
 ```
 

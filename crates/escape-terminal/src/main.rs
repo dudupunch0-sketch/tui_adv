@@ -1,7 +1,8 @@
 use escape_core::{
     apply_action_from_content, index_content_bundle, load_content_bundle, new_game,
-    new_game_from_content, turn_view, turn_view_from_content, ActionView, BlockedActionView,
-    ContentIndex, EffectCue, GameState, TurnView,
+    new_game_from_content, scene_page_from_content, turn_view, turn_view_from_content, ActionView,
+    BlockedActionView, ContentIndex, EffectCue, GameState, SceneAction, SceneBlockedAction,
+    SceneEffectCue, SceneMode, ScenePage, TurnView,
 };
 use std::io::{self, Write};
 use std::path::PathBuf;
@@ -112,8 +113,8 @@ fn run_content_scene(options: &CliOptions) -> Result<(), String> {
     }
 
     if options.tui_smoke {
-        let location_name = display_location_name(&content, &state);
-        print_tui_snapshot(&view, &state, &location_name, &recent_logs);
+        let page = scene_page_from_content(&state, &content).map_err(|error| error.to_string())?;
+        print_scene_page_snapshot(&page, &recent_logs);
     }
 
     Ok(())
@@ -134,8 +135,8 @@ fn run_content_play_loop(
     println!("입력: 번호 또는 action id, q 종료");
 
     loop {
-        let location_name = display_location_name(content, &state);
-        print_tui_snapshot(&view, &state, &location_name, &recent_logs);
+        let page = scene_page_from_content(&state, content).map_err(|error| error.to_string())?;
+        print_scene_page_snapshot(&page, &recent_logs);
         print!("입력> ");
         io::stdout()
             .flush()
@@ -183,13 +184,6 @@ fn resolve_play_action<'a>(view: &'a TurnView, input: &str) -> Option<&'a Action
             .and_then(|offset| view.actions.get(offset));
     }
     find_available_action(view, input)
-}
-
-fn display_location_name(content: &ContentIndex, state: &GameState) -> String {
-    content
-        .location(&state.location_id)
-        .map(|location| location.name.clone())
-        .unwrap_or_else(|| state.location_id.clone())
 }
 
 fn parse_args<I>(args: I) -> Result<CliOptions, String>
@@ -354,42 +348,230 @@ fn print_blocked_action(action: &BlockedActionView, include_action_ids: bool) {
 }
 
 fn print_tui_snapshot(view: &TurnView, state: &GameState, location_name: &str, logs: &[String]) {
-    println!("[TUI Snapshot]");
-    println!();
-    println!("[상태]");
-    println!("턴: {}", state.turn);
-    println!("위치: {location_name} ({})", state.location_id);
-    println!(
-        "체력: {}  정신력: {}  배터리: {}  위험도: {}",
-        state.player.health, state.player.sanity, state.player.battery, state.danger
-    );
-    println!();
-
-    if view.encounter_id.is_some() {
-        println!("[현재 인카운터]");
-        println!("{}", view.title);
-        println!("{}", view.body);
-        println!();
+    println!("[SuperLightTUI Snapshot]");
+    let snapshot = render_turn_view_snapshot(view, state, location_name, logs);
+    if !snapshot.is_empty() {
+        println!("{snapshot}");
     }
+}
 
-    println!("[현재 행동]");
-    if view.encounter_id.is_none() {
-        println!("{}", view.title);
-        println!("{}", view.body);
+fn print_scene_page_snapshot(page: &ScenePage, logs: &[String]) {
+    println!("[SuperLightTUI Snapshot]");
+    let snapshot = render_scene_page_snapshot(page, logs);
+    if !snapshot.is_empty() {
+        println!("{snapshot}");
     }
-    for (index, action) in view.actions.iter().enumerate() {
-        print_action(index + 1, action, true);
-    }
-    print_blocked_actions(&view.blocked_actions, true);
-    println!();
+}
 
-    println!("[최근 로그]");
-    if logs.is_empty() {
-        println!("- 아직 기록된 로그가 없다.");
-    } else {
-        for log in logs {
-            println!("- {log}");
+fn render_scene_page_snapshot(page: &ScenePage, logs: &[String]) -> String {
+    let mut backend = slt::TestBackend::new(120, 36);
+    backend.render(|ui| render_scene_page(ui, page, logs));
+    backend.to_string_trimmed()
+}
+
+fn render_scene_page(ui: &mut slt::Context, page: &ScenePage, logs: &[String]) {
+    let _ = ui.col(|ui| {
+        ui.text("ESCAPE OFFICE // SuperLightTUI HORROR EDITION");
+        ui.text(format!(
+            "{} · {}",
+            page.chapter_label,
+            scene_mode_label(&page.mode)
+        ));
+        ui.text("[상태]");
+        ui.text(format!("턴: {}", page.status_summary.turn));
+        ui.text(format!(
+            "위치: {} ({})",
+            page.location.name, page.location.id
+        ));
+        ui.text(format!(
+            "체력: {}  정신력: {}  배터리: {}  위험도: {}",
+            resource_value(page, "health"),
+            resource_value(page, "sanity"),
+            resource_value(page, "battery"),
+            page.status_summary.danger
+        ));
+        for warning in &page.status_summary.warnings {
+            ui.text(format!("! {warning}"));
         }
+
+        ui.text("[비주얼]");
+        ui.text(format!(
+            "{} / {} / {}",
+            page.visual.kind, page.visual.id, page.visual.alt
+        ));
+        ui.text(glyphfx_line(&page.effect_cues));
+
+        if matches!(page.mode, SceneMode::Encounter) {
+            ui.text("[현재 인카운터]");
+            ui.text(page.title.as_str());
+            render_scene_body(ui, page);
+        }
+
+        ui.text("[현재 행동]");
+        if !matches!(page.mode, SceneMode::Encounter) {
+            ui.text(page.title.as_str());
+            render_scene_body(ui, page);
+        }
+        for (index, action) in page.actions.iter().enumerate() {
+            ui.text(scene_action_line(index + 1, action));
+        }
+        if !page.blocked_actions.is_empty() {
+            ui.text("[잠긴 선택지]");
+            for action in &page.blocked_actions {
+                ui.text(scene_blocked_action_line(action));
+                ui.text(format!("   이유: {}", action.reasons.join(", ")));
+            }
+        }
+
+        ui.text("[최근 로그]");
+        if logs.is_empty() {
+            ui.text("- 아직 기록된 로그가 없다.");
+        } else {
+            for log in logs {
+                ui.text(format!("- {log}"));
+            }
+        }
+    });
+}
+
+fn render_scene_body(ui: &mut slt::Context, page: &ScenePage) {
+    for entry in &page.dialogue_entries {
+        ui.text(format!("{}: {}", entry.speaker, entry.text));
+    }
+    for block in &page.body_blocks {
+        ui.text(block.text.as_str());
+    }
+}
+
+fn render_turn_view_snapshot(
+    view: &TurnView,
+    state: &GameState,
+    location_name: &str,
+    logs: &[String],
+) -> String {
+    let mut backend = slt::TestBackend::new(120, 32);
+    backend.render(|ui| {
+        let _ = ui.col(|ui| {
+            ui.text("ESCAPE OFFICE // SuperLightTUI HORROR EDITION");
+            ui.text("legacy printer scene · TurnView bridge");
+            ui.text("[상태]");
+            ui.text(format!("턴: {}", state.turn));
+            ui.text(format!("위치: {location_name} ({})", state.location_id));
+            ui.text(format!(
+                "체력: {}  정신력: {}  배터리: {}  위험도: {}",
+                state.player.health, state.player.sanity, state.player.battery, state.danger
+            ));
+            ui.text("[비주얼]");
+            ui.text(glyphfx_turn_line(&view.effect_cues));
+
+            if view.encounter_id.is_some() {
+                ui.text("[현재 인카운터]");
+                ui.text(view.title.as_str());
+                ui.text(view.body.as_str());
+            }
+
+            ui.text("[현재 행동]");
+            if view.encounter_id.is_none() {
+                ui.text(view.title.as_str());
+                ui.text(view.body.as_str());
+            }
+            for (index, action) in view.actions.iter().enumerate() {
+                ui.text(turn_action_line(index + 1, action));
+            }
+            if !view.blocked_actions.is_empty() {
+                ui.text("[잠긴 선택지]");
+                for action in &view.blocked_actions {
+                    ui.text(turn_blocked_action_line(action));
+                    ui.text(format!("   이유: {}", action.reasons.join(", ")));
+                }
+            }
+
+            ui.text("[최근 로그]");
+            if logs.is_empty() {
+                ui.text("- 아직 기록된 로그가 없다.");
+            } else {
+                for log in logs {
+                    ui.text(format!("- {log}"));
+                }
+            }
+        });
+    });
+    backend.to_string_trimmed()
+}
+
+fn scene_mode_label(mode: &SceneMode) -> &'static str {
+    match mode {
+        SceneMode::Encounter => "인카운터",
+        SceneMode::Movement => "이동",
+        SceneMode::Ending => "엔딩",
+    }
+}
+
+fn resource_value(page: &ScenePage, id: &str) -> i32 {
+    page.status_summary
+        .resources
+        .iter()
+        .find(|resource| resource.id == id)
+        .map(|resource| resource.value)
+        .unwrap_or_default()
+}
+
+fn glyphfx_line(effect_cues: &[SceneEffectCue]) -> String {
+    if effect_cues.is_empty() {
+        return "GlyphFX: terminal-native fallback idle".to_string();
+    }
+    let cues = effect_cues
+        .iter()
+        .map(|cue| format!("{}:{} {}", cue.kind, cue.intensity, cue.distortion))
+        .collect::<Vec<_>>()
+        .join(" | ");
+    format!("GlyphFX: {cues}")
+}
+
+fn glyphfx_turn_line(effect_cues: &[EffectCue]) -> String {
+    if effect_cues.is_empty() {
+        return "GlyphFX: terminal-native fallback idle".to_string();
+    }
+    let cues = effect_cues
+        .iter()
+        .map(|cue| match cue {
+            EffectCue::GlyphAnomaly(details) => format!(
+                "{}:{} {}",
+                cue.kind_label(),
+                details.intensity,
+                details.distortion
+            ),
+        })
+        .collect::<Vec<_>>()
+        .join(" | ");
+    format!("GlyphFX: {cues}")
+}
+
+fn scene_action_line(index: usize, action: &SceneAction) -> String {
+    match &action.cost_text {
+        Some(cost) => format!("{index}. {} / {} / {cost}", action.id, action.label),
+        None => format!("{index}. {} / {}", action.id, action.label),
+    }
+}
+
+fn scene_blocked_action_line(action: &SceneBlockedAction) -> String {
+    match &action.cost_text {
+        Some(cost) => format!("- [잠김] {} / {} / {cost}", action.id, action.label),
+        None => format!("- [잠김] {} / {}", action.id, action.label),
+    }
+}
+
+fn turn_action_line(index: usize, action: &ActionView) -> String {
+    match &action.cost_summary {
+        Some(cost) => format!("{index}. {} / {} / {cost}", action.id, action.label),
+        None => format!("{index}. {} / {}", action.id, action.label),
+    }
+}
+
+fn turn_blocked_action_line(action: &BlockedActionView) -> String {
+    match &action.cost_summary {
+        Some(cost) => format!("- [잠김] {} / {} / {cost}", action.id, action.label),
+        None => format!("- [잠김] {} / {}", action.id, action.label),
     }
 }
 

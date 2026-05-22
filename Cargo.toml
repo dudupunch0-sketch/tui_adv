@@ -2,6 +2,7 @@
 members = [
     "crates/escape-core",
     "crates/escape-terminal",
+    "crates/escape-wasm",
 ]
 resolver = "2"
 

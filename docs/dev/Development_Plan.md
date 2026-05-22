@@ -538,13 +538,13 @@ src/tui_adv/data/secrets.example.yaml
 1. 문서와 계획에 Web Storybook primary + SuperLightTUI terminal renderer 방향을 명확히 고정했다.
 2. `escape-core`에 renderer-safe `ScenePage` contract를 추가했다.
 3. Web Storybook renderer skeleton을 세워 visual/body/history/choice/status region과 GlyphFX reduced-motion fallback을 검증했다.
+4. `escape-wasm` JSON-string boundary를 추가해 Rust GameCore의 `GameState`, `ScenePage`, `ActionResult`, save envelope를 JSON으로 노출했다.
+5. `escape-terminal` content TUI snapshot/play loop를 SuperLightTUI renderer로 전환했다.
+6. Web/terminal action id parity smoke를 추가했다.
 
 현재 최우선 남은 작업:
 
-1. `escape-wasm` JSON-string boundary를 추가해 Web Storybook이 Rust GameCore를 직접 호출하게 한다.
-2. `escape-terminal`을 SuperLightTUI renderer로 전환해 terminal-native fallback/horror edition을 만든다.
-3. Web/terminal action id parity smoke를 추가한다.
-4. route parity를 Rust GameCore 기준으로 확장한다.
+1. route parity를 Rust GameCore 기준으로 확장한다.
 
 전환 중 유지:
 
@@ -604,6 +604,4 @@ Web 또는 terminal renderer가 게임 규칙을 다시 구현하면 Rust GameCo
 ## 10. 다음 액션
 
 1. `docs/dev/Checklist.md`의 0.2b 렌더러/런타임 체크리스트를 기준으로 남은 구현 slice를 나눈다.
-2. 다음 구현 항목은 `escape-wasm` JSON-string boundary다.
-3. 그 다음 `escape-terminal`을 SuperLightTUI renderer로 전환한다.
-4. Web/terminal 모두 같은 Rust core action id를 표시하는 parity smoke를 추가한다.
+2. 다음 구현 항목은 route parity를 Rust GameCore 기준으로 확장하는 것이다.

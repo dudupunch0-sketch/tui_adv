@@ -1,4 +1,5 @@
 use crate::content::ContentIndex;
+use serde::{Deserialize, Serialize};
 
 pub const DEFAULT_START_LOCATION_ID: &str = "dev_desk";
 
@@ -19,21 +20,21 @@ impl std::fmt::Display for NewGameError {
 
 impl std::error::Error for NewGameError {}
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct PlayerState {
     pub health: i32,
     pub sanity: i32,
     pub battery: i32,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct GameHistoryEntry {
     pub kind: String,
     pub text: String,
     pub source_id: Option<String>,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct GameState {
     pub seed: u64,
     pub turn: u32,

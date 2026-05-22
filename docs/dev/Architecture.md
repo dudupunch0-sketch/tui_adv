@@ -134,7 +134,7 @@ crates/escape-core
         |
         +--> ScenePage / TurnView / ActionResult / EffectCue
         |
-        +--> web Storybook renderer via future escape-wasm
+        +--> web Storybook renderer via escape-wasm
         |
         +--> escape-terminal SuperLightTUI renderer
 
@@ -248,11 +248,11 @@ check_endings(state, content) -> EndingResult | None
 
 브라우저/Rust 앱은 앱 시작 전 또는 CI에서 다음 흐름을 사용한다.
 
-1. `python scripts/export_web_data.py --write --bundle crates/escape-core/fixtures/content/content.bundle.json`
-2. `web/src/data/generated/*.json`와 Rust content bundle 갱신
-3. `python scripts/export_web_data.py --check --bundle crates/escape-core/fixtures/content/content.bundle.json`로 stale 여부와 public secret private-only 필드 누출 확인
+1. `python scripts/export_web_data.py --write --bundle crates/escape-core/fixtures/content/content.bundle.json --bundle web/src/data/generated/content.bundle.json`
+2. `web/src/data/generated/*.json`, Web content bundle, Rust content bundle 갱신
+3. `python scripts/export_web_data.py --check --bundle crates/escape-core/fixtures/content/content.bundle.json --bundle web/src/data/generated/content.bundle.json`로 stale 여부와 public secret private-only 필드 누출 확인
 4. Legacy Vite fake-TUI는 생성 JSON을 import해 TypeScript mirror core에서 사용한다.
-5. Future Web Storybook은 generated content bundle + `escape-wasm`을 통해 Rust GameCore를 호출한다.
+5. Web Storybook은 현재 generated content bundle과 `escape-wasm` boundary를 연결할 준비 상태이며, 실제 wasm 호출 연결은 다음 slice다.
 6. `cd web && npm test`가 현재 TypeScript parity, 소모품, 업적, 능력치 판정, 압박 UI, secret guard를 검증한다.
 7. `cargo test --workspace`가 Rust content/core/terminal contract를 검증한다.
 
@@ -313,11 +313,10 @@ private/local secret 파일이 없어도 게임은 실행되어야 한다.
 2. `escape-core`에 renderer-safe `ScenePage` contract를 추가했다.
 3. YAML/content bundle에 optional presentation metadata(`visual_id`, speaker/effect hints)를 추가했다.
 4. Web Storybook renderer skeleton과 visual/history/choice region을 추가했다.
+5. `escape-wasm` JSON-string boundary와 Web용 generated content bundle을 추가했다.
+6. `escape-terminal`의 content TUI snapshot/play loop를 SuperLightTUI renderer로 전환했다.
+7. Web/terminal action id parity smoke를 추가했다.
 
 남은 구현 순서:
 
-1. `escape-wasm` JSON-string boundary를 추가해 Web Storybook이 Rust GameCore contract를 직접 소비하게 한다.
-2. `escape-terminal`을 SuperLightTUI 기반 renderer로 전환한다.
-3. terminal renderer는 `ScenePage`를 받아 ASCII/Unicode visual card와 terminal-native GlyphFX를 표시한다.
-4. Web/terminal action id parity smoke를 추가한다.
-5. route parity를 Rust core 기준으로 확장하고, legacy Python/Textual/TS mirror는 검증 oracle로 점진 축소한다.
+1. route parity를 Rust core 기준으로 확장하고, legacy Python/Textual/TS mirror는 검증 oracle로 점진 축소한다.

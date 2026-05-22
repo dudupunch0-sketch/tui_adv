@@ -31,6 +31,7 @@ docs/
 
   story/
     Story.md                        # 메인 서사와 시작 상황
+    Disaster_Cause.md               # 재난 원인과 진실 루트 공개-safe 설계
     Reality_Link.md                 # 현실세계 연결 원칙. 실제 위치는 넣지 않음
 
   design/
@@ -46,6 +47,7 @@ docs/
     Item_List.md                    # 런타임 아이템 목록
     Encounter_List.md               # 런타임 인카운터 목록
     Ending_List.md                  # 런타임 엔딩 목록
+    Survivor_System_Routes.md       # 생존자 설득과 시스템 제압 루트 설계
     Secret_List.md                  # 게임 내 비밀 목록. 실제 현실 위치 제외
     Horror_Ideas.md                 # 호러 연출 아이디어 저장소
 
@@ -55,6 +57,7 @@ docs/
     Architecture.md                 # 코드 구조와 모듈 경계
     Data_Schema.md                  # YAML/JSON 데이터 스키마
     TUI_Layout.md                   # 화면 배치, 입력, 위젯 설계
+    Balance_QA_Packaging.md         # 밸런싱, QA smoke, 패키징/릴리즈 기준
     Reality_Secret_Safety_Checklist.md # 로컬 현실 힌트 안전 점검
 
   templates/
@@ -88,6 +91,7 @@ private/
 - `docs/00_Index.md`
 - `docs/01_Game_Overview.md`
 - `docs/story/Story.md`
+- `docs/story/Disaster_Cause.md`
 - `docs/story/Reality_Link.md`
 - `docs/design/Player_State.md`
 - `docs/design/Character_Stats_and_Generator.md`
@@ -99,11 +103,13 @@ private/
 - `docs/content/Item_List.md`
 - `docs/content/Encounter_List.md`
 - `docs/content/Ending_List.md`
+- `docs/content/Survivor_System_Routes.md`
 - `docs/content/Secret_List.md`
 - `docs/content/Horror_Ideas.md`
 - `docs/dev/Architecture.md`
 - `docs/dev/Data_Schema.md`
 - `docs/dev/TUI_Layout.md`
+- `docs/dev/Balance_QA_Packaging.md`
 - `docs/dev/Reality_Secret_Safety_Checklist.md`
 - `docs/dev/Development_Plan.md`
 - `docs/dev/Checklist.md`
@@ -119,5 +125,4 @@ private/
 
 1. 재난 타입 확장 규칙
 2. 선택 불가 이유 표시와 색상 테마 규칙
-3. 생존자/시스템 제압·설득 루트
-4. Textual 실제 화면 수동 QA 기록
+3. Textual 실제 화면 수동 QA 기록

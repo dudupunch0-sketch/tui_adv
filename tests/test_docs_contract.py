@@ -13,4 +13,73 @@ def test_readme_next_work_does_not_list_completed_unavailable_reason_slice():
     next_work = readme.split("## 다음 작업 후보", 1)[1]
 
     assert "선택 불가 선택지의 이유 표시" not in next_work
-    assert "색상 테마" in next_work
+    assert "색상 테마" not in next_work
+    assert "밸런싱" in next_work
+
+
+def test_phase6_textual_style_slice_is_checklisted_and_documented():
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    layout_doc = Path("docs/dev/TUI_Layout.md").read_text(encoding="utf-8")
+
+    assert "- [x] 분리된 Textual 위젯/그리드 패널 스타일링" in checklist
+    assert "- [x] Textual CSS 색상 테마 위젯 연결" in checklist
+    assert "#game-grid" in layout_doc
+    assert "office-panel--wide" in layout_doc
+
+
+def test_phase9_story_route_design_docs_are_indexed_and_checklisted():
+    index = Path("docs/00_Index.md").read_text(encoding="utf-8")
+    readme = Path("README.md").read_text(encoding="utf-8")
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    disaster_doc = Path("docs/story/Disaster_Cause.md")
+    route_doc = Path("docs/content/Survivor_System_Routes.md")
+
+    assert disaster_doc.exists()
+    assert route_doc.exists()
+    assert "docs/story/Disaster_Cause.md" in index
+    assert "docs/content/Survivor_System_Routes.md" in index
+    assert "docs/story/Disaster_Cause.md" in readme
+    assert "docs/content/Survivor_System_Routes.md" in readme
+    assert "- [x] 생존자 또는 시스템 제압/설득 설계" in checklist
+    assert "- [x] 재난 원인 문서 설계" in checklist
+
+
+def test_phase9_story_route_design_docs_define_public_safe_runtime_hooks():
+    disaster_doc = Path("docs/story/Disaster_Cause.md")
+    route_doc = Path("docs/content/Survivor_System_Routes.md")
+
+    disaster_text = disaster_doc.read_text(encoding="utf-8")
+    route_text = route_doc.read_text(encoding="utf-8")
+
+    assert "격리 프로토콜" in disaster_text
+    assert "공개 저장소 금지 정보" in disaster_text
+    assert "isolation_protocol_revealed" in disaster_text
+    assert "truth_isolation_protocol" in disaster_text
+    assert "생존자 설득 루트" in route_text
+    assert "시스템 제압 루트" in route_text
+    assert "server_room_broadcast_controlled" in route_text
+    assert "public-safe" in route_text
+
+
+def test_phase10_balance_qa_packaging_doc_script_and_checklist_are_synced():
+    index = Path("docs/00_Index.md").read_text(encoding="utf-8")
+    readme = Path("README.md").read_text(encoding="utf-8")
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    qa_doc = Path("docs/dev/Balance_QA_Packaging.md")
+    qa_script = Path("scripts/qa_smoke.py")
+
+    assert qa_doc.exists()
+    assert qa_script.exists()
+    assert "docs/dev/Balance_QA_Packaging.md" in index
+    assert "docs/dev/Balance_QA_Packaging.md" in readme
+    assert "scripts/qa_smoke.py" in qa_doc.read_text(encoding="utf-8")
+    assert "PYTHONPATH=src python scripts/qa_smoke.py" in readme
+    assert "- [x] 턴당 허기 증가량 조정" in checklist
+    assert "- [x] 턴당 갈증 증가량 조정" in checklist
+    assert "- [x] 엔딩 도달 난이도 조정" in checklist
+    assert "- [x] 탈출 엔딩 도달 테스트" in checklist
+    assert "- [x] 실패 엔딩 도달 테스트" in checklist
+    assert "- [x] 히든 힌트 도달 테스트" in checklist
+    assert "- [x] 저장/로드 반복 테스트" in checklist
+    assert "- [x] 키 입력 오류 처리 확인" in checklist
+    assert "- [x] 릴리즈 전 비밀 정보 검사" in checklist

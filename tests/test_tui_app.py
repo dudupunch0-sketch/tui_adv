@@ -5,6 +5,8 @@ from tui_adv.game.loop import GameTurn, TurnAction, build_game_turn
 from tui_adv.game.save import load_game_state, save_game_state
 from tui_adv.game.state import GameState
 from tui_adv.tui.app import (
+    TEXTUAL_APP_CSS,
+    build_tui_panel_snapshots,
     build_tui_turn,
     delete_tui_save_slot,
     discover_save_slots,
@@ -28,6 +30,40 @@ def test_tui_layout_snapshot_contains_status_encounter_choices_and_log_panel():
     assert "선택지" in snapshot
     assert "최근 로그" in snapshot
     assert "1. 메시지를 확인한다" in snapshot
+
+
+def test_tui_textual_panels_split_snapshot_into_grid_widgets():
+    turn = build_tui_turn(seed=123)
+
+    panels = build_tui_panel_snapshots(turn)
+
+    assert [panel.widget_id for panel in panels] == [
+        "panel-status",
+        "panel-controls",
+        "panel-inventory",
+        "panel-main",
+        "panel-log",
+    ]
+    assert all("office-panel" in panel.css_class for panel in panels)
+    assert any("office-panel--wide" in panel.css_class for panel in panels)
+    assert "[위치]" in panels[0].render_text()
+    assert "[도움말]" in panels[1].render_text()
+    assert "[소지품]" in panels[2].render_text()
+    assert "[현재 인카운터]" in panels[3].render_text()
+    assert "[최근 로그]" in panels[4].render_text()
+
+
+def test_textual_css_defines_terminal_theme_grid_and_panel_classes():
+    assert "#game-grid" in TEXTUAL_APP_CSS
+    assert "layout: grid" in TEXTUAL_APP_CSS
+    assert "grid-size: 2" in TEXTUAL_APP_CSS
+    assert ".office-panel" in TEXTUAL_APP_CSS
+    assert ".office-panel--wide" in TEXTUAL_APP_CSS
+    assert "border:" in TEXTUAL_APP_CSS
+
+
+def test_textual_css_uses_textual_supported_static_subset():
+    assert "@media" not in TEXTUAL_APP_CSS
 
 
 def test_tui_choice_input_resolves_current_choice_and_ending():

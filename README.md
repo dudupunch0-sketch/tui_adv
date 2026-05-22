@@ -7,7 +7,7 @@ TUI 기반 랜덤 인카운터 선택지 생존 게임.
 ## 현재 단계
 
 현재는 Phase 7 콘텐츠 런타임 전환 이후, 기존 Python/Textual TUI를 유지하면서 브라우저 fake-TUI를 terminal 구현의 대표 루트 parity 수준으로 확장한 단계다.
-게임 구조와 안전한 현실 연결 원칙을 문서화했고, 순수 게임 상태 모델, 자원 임계치/실패 판정, 1차 사무실 위치 모델, 인접 위치 이동과 위험도 누적, 인카운터/선택지 조건·비용·결과 적용, 선택 불가 선택지의 이유 표시, 능력치 기반 선택지, 2d6 성공/실패 분기, 현재 상태 기반 인카운터 선택, 공간 왜곡 탈출/실패 엔딩 판정, YAML 공개 콘텐츠 로더/검증, YAML 기반 런타임 기본 위치/인카운터/엔딩, 로컬 비공개 현실 힌트 로더, 복합기/커피머신/화이트보드 더미 숫자 합계 퍼즐, 현실 연결 히든 엔딩 보상 출력, CLI 한 턴 실행, CLI 다중 턴 스크립트 실행, Textual 레이아웃 smoke, Textual 저장/불러오기 연결, TUI 저장/종료 단축키, TUI 저장 파일 목록·시작 슬롯 선택·삭제 패널, 도움말/이동 단축키/상세 도움말·인벤토리·로그 패널, 압박 경고 패널, 소모품 아이템 사용, 물품창고 보급품, 엘리베이터/옥상 경로, 옥상 외부 신호 탈출 엔딩, 저정신력 선택지 왜곡, 고갈증 정수기 환각, 엘리베이터-보안실 우회 분기, 임계 자원 1회성 경고 로그, 보안실-서버실 격리 권한 정복 루트, 지하주차장 키태그/차단기 탈출 루트, 로비 방문증/회전문 탈출 루트, 대표실 결재 콘솔 정복 루트, 세 번째 현실 연결 힌트 체인, 로컬 secret 템플릿과 현실 연결 안전 점검 문서, YAML→브라우저 JSON export, Vite 기반 fake-TUI 브라우저 셸, localStorage 저장, 복합기 현실 연결 pretext/Canvas 장면, 전 루트 웹 parity 테스트, 브라우저 아이템 사용·업적·능력치 판정·압박 UI, 인벤토리·업적·컨트롤·압박 패널, Rust content runner의 잠긴 선택지/위험도 parity까지 추가했다.
+게임 구조와 안전한 현실 연결 원칙을 문서화했고, 순수 게임 상태 모델, 자원 임계치/실패 판정, 1차 사무실 위치 모델, 인접 위치 이동과 위험도 누적, 인카운터/선택지 조건·비용·결과 적용, 선택 불가 선택지의 이유 표시, 능력치 기반 선택지, 2d6 성공/실패 분기, 현재 상태 기반 인카운터 선택, 공간 왜곡 탈출/실패 엔딩 판정, YAML 공개 콘텐츠 로더/검증, YAML 기반 런타임 기본 위치/인카운터/엔딩, 로컬 비공개 현실 힌트 로더, 복합기/커피머신/화이트보드 더미 숫자 합계 퍼즐, 현실 연결 히든 엔딩 보상 출력, CLI 한 턴 실행, CLI 다중 턴 스크립트 실행, Textual 레이아웃 smoke, Textual 저장/불러오기 연결, TUI 저장/종료 단축키, TUI 저장 파일 목록·시작 슬롯 선택·삭제 패널, 도움말/이동 단축키/상세 도움말·인벤토리·로그 패널, 압박 경고 패널, Textual 그리드 패널과 터미널 테마 CSS, 소모품 아이템 사용, 물품창고 보급품, 엘리베이터/옥상 경로, 옥상 외부 신호 탈출 엔딩, 저정신력 선택지 왜곡, 고갈증 정수기 환각, 엘리베이터-보안실 우회 분기, 임계 자원 1회성 경고 로그, 보안실-서버실 격리 권한 정복 루트, 지하주차장 키태그/차단기 탈출 루트, 로비 방문증/회전문 탈출 루트, 대표실 결재 콘솔 정복 루트, 진실 루트의 재난 원인 문서, 생존자 설득/시스템 제압 설계, 세 번째 현실 연결 힌트 체인, 로컬 secret 템플릿과 현실 연결 안전 점검 문서, YAML→브라우저 JSON export, Vite 기반 fake-TUI 브라우저 셸, localStorage 저장, 복합기 현실 연결 pretext/Canvas 장면, 전 루트 웹 parity 테스트, 브라우저 아이템 사용·업적·능력치 판정·압박 UI, 인벤토리·업적·컨트롤·압박 패널, Rust content runner의 잠긴 선택지/위험도 parity까지 추가했다.
 
 ## 실행/테스트
 
@@ -69,6 +69,7 @@ PYTHONPATH=src python -m tui_adv --version
 
 ```bash
 python -m pytest tests -q
+PYTHONPATH=src python scripts/qa_smoke.py
 ```
 
 브라우저 fake-TUI 수직 슬라이스 및 renderer-neutral content bundle:
@@ -105,6 +106,7 @@ npm run dev -- --port 8765
 - `docs/00_Index.md`: 전체 문서 구조
 - `docs/01_Game_Overview.md`: 게임 개요
 - `docs/story/Story.md`: 스토리와 오프닝
+- `docs/story/Disaster_Cause.md`: 재난 원인과 진실 루트 공개-safe 설계
 - `docs/story/Reality_Link.md`: 현실 연결 원칙
 - `docs/design/Player_State.md`: 플레이어 상태 규칙
 - `docs/design/Character_Stats_and_Generator.md`: 6스탯 등장인물/LLM 생성기 설계 후보
@@ -118,11 +120,13 @@ npm run dev -- --port 8765
 - `docs/content/Item_List.md`: 1차 아이템 목록
 - `docs/content/Encounter_List.md`: 1차 인카운터 목록
 - `docs/content/Ending_List.md`: 1차 엔딩 목록
+- `docs/content/Survivor_System_Routes.md`: 생존자 설득과 시스템 제압 루트 설계
 - `docs/content/Secret_List.md`: 공개 가능한 히든 루트/비밀 목록
 - `docs/content/Horror_Ideas.md`: 호러 연출 아이디어 저장소
 - `docs/dev/Architecture.md`: 코드 구조와 모듈 경계
 - `docs/dev/Data_Schema.md`: YAML/JSON 데이터 스키마
 - `docs/dev/TUI_Layout.md`: TUI 화면 설계
+- `docs/dev/Balance_QA_Packaging.md`: 밸런싱, QA smoke, 패키징/릴리즈 기준
 - `docs/implementation-map/index.html`: 현재 구현을 한 번에 보는 interactive HTML 구현 지도
 - `docs/implementation-map/README.md`: 구현 지도 업데이트 방법
 - `web/`: Vite 기반 브라우저 fake-TUI 수직 슬라이스
@@ -153,5 +157,5 @@ npm run dev -- --port 8765
 ## 다음 작업 후보
 
 1. 시작 화면 저장 슬롯 UX를 실제 Textual 환경에서 수동 QA하고, 슬롯 이름 변경 같은 관리 기능을 검토한다.
-2. 재난 원인 문서와 생존자/시스템 제압·설득 루트를 추가한다.
-3. 색상 테마와 분리된 그리드 패널 스타일링을 실제 Textual 위젯 스타일로 연결한다.
+2. 밸런싱/QA/패키징 체크리스트를 자동 스모크와 릴리즈 전 검증 문서로 묶는다.
+3. 재난 타입 확장 규칙을 별도 문서로 분리하고, 새 타입 후보를 콘텐츠 백로그로 정리한다.

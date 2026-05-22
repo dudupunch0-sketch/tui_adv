@@ -1,8 +1,13 @@
+mod content;
 mod effects;
 mod save;
 mod state;
 mod turn;
 
+pub use content::{
+    load_content_bundle, validate_content_bundle, ContentBundle, ContentBundleError,
+    ContentManifest, ContentSections, CONTENT_BUNDLE_KIND, CONTENT_BUNDLE_SCHEMA_VERSION,
+};
 pub use effects::{printer_glyph_anomaly_cue, EffectCue, GlyphAnomalyCue};
 pub use save::{load_state, save_state, SaveEnvelope, SaveError, SAVE_SCHEMA_VERSION};
 pub use state::{GameState, PlayerState};

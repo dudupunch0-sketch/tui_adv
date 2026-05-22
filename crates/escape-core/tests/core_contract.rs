@@ -137,6 +137,12 @@ fn content_backed_turn_view_renders_start_encounter_choices() {
         .actions
         .iter()
         .any(|action| action.id == "choice:trace_packet_delay"));
+    assert_eq!(view.blocked_actions.len(), 1);
+    assert_eq!(view.blocked_actions[0].id, "choice:trace_packet_delay");
+    assert_eq!(
+        view.blocked_actions[0].reasons,
+        vec!["능력 조건 미충족: interface >= 4".to_string()]
+    );
 }
 
 #[test]
@@ -224,6 +230,25 @@ fn content_backed_movement_action_changes_location_and_logs() {
     assert_eq!(result.state.location_id, "dev_office");
     assert_eq!(result.logs, vec!["개발팀 사무실로 이동했다.".to_string()]);
     assert!(result.effect_cues.is_empty());
+}
+
+#[test]
+fn content_backed_movement_action_accumulates_destination_danger() {
+    let bundle = load_content_bundle(CONTENT_BUNDLE).expect("content bundle should load");
+    let index = index_content_bundle(&bundle).expect("content bundle should index");
+    let mut state = new_game_from_content_at(123, &index, "dev_office")
+        .expect("content-backed game should start at office");
+    state.seen_encounters = index
+        .encounters()
+        .map(|encounter| encounter.id.clone())
+        .collect();
+
+    let result = apply_action_from_content(&state, &index, "move:hallway")
+        .expect("content-backed movement should resolve");
+
+    assert_eq!(state.danger, 0);
+    assert_eq!(result.state.location_id, "hallway");
+    assert_eq!(result.state.danger, 1);
 }
 
 #[test]

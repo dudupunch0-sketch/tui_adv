@@ -12,12 +12,21 @@ pub struct ActionView {
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
+pub struct BlockedActionView {
+    pub id: String,
+    pub label: String,
+    pub cost_summary: Option<String>,
+    pub reasons: Vec<String>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct TurnView {
     pub location_id: String,
     pub encounter_id: Option<String>,
     pub title: String,
     pub body: String,
     pub actions: Vec<ActionView>,
+    pub blocked_actions: Vec<BlockedActionView>,
     pub effect_cues: Vec<EffectCue>,
 }
 
@@ -100,6 +109,7 @@ pub fn content_turn_view(
             title: location.name.clone(),
             body: location.description.clone(),
             actions: movement_action_views(location, content),
+            blocked_actions: Vec::new(),
             effect_cues: Vec::new(),
         });
     };
@@ -114,6 +124,12 @@ pub fn content_turn_view(
             .iter()
             .filter(|choice| choice_is_available(choice, state))
             .map(choice_action_view)
+            .collect(),
+        blocked_actions: encounter
+            .choices
+            .iter()
+            .filter(|choice| !choice_is_available(choice, state))
+            .map(|choice| blocked_choice_action_view(choice, state))
             .collect(),
         effect_cues: Vec::new(),
     })
@@ -180,6 +196,7 @@ pub fn printer_turn_view(state: &GameState) -> TurnView {
                 cost_summary: None,
             },
         ],
+        blocked_actions: Vec::new(),
         effect_cues: vec![printer_glyph_anomaly_cue()],
     }
 }
@@ -262,6 +279,7 @@ fn apply_movement_action(
     let mut next_state = state.clone();
     next_state.turn += 1;
     next_state.location_id = destination_id.to_string();
+    next_state.danger = (next_state.danger + destination.danger).max(0);
 
     Ok(ActionResult {
         encounter_id: "movement".to_string(),
@@ -291,6 +309,7 @@ fn apply_outcome(state: &mut GameState, outcome: &OutcomeDef) {
     for (resource, amount) in &outcome.resources {
         apply_player_resource_delta(&mut state.player, resource, *amount);
     }
+    state.danger = (state.danger + outcome.danger).max(0);
     for flag in &outcome.add_flags {
         state.add_flag_once(flag);
     }
@@ -328,7 +347,63 @@ fn encounter_is_available(encounter: &EncounterDef, state: &GameState) -> bool {
 }
 
 fn choice_is_available(choice: &ChoiceDef, state: &GameState) -> bool {
-    conditions_match(&choice.conditions, state) && can_pay_cost(&choice.cost, &state.player)
+    choice_unavailable_reasons(choice, state).is_empty()
+}
+
+fn choice_unavailable_reasons(choice: &ChoiceDef, state: &GameState) -> Vec<String> {
+    let mut reasons = conditions_unavailable_reasons(&choice.conditions, state);
+    reasons.extend(cost_unavailable_reasons(&choice.cost, &state.player));
+    reasons
+}
+
+fn conditions_unavailable_reasons(
+    conditions: &ContentConditions,
+    state: &GameState,
+) -> Vec<String> {
+    let mut reasons = Vec::new();
+    if !conditions.locations.is_empty() && !conditions.locations.contains(&state.location_id) {
+        reasons.push("현재 위치 조건 불일치".to_string());
+    }
+    for flag in &conditions.required_flags {
+        if !state.flags.contains(flag) {
+            reasons.push(format!("필요 플래그 없음: {flag}"));
+        }
+    }
+    for flag in &conditions.forbidden_flags {
+        if state.flags.contains(flag) {
+            reasons.push(format!("이미 발생한 플래그: {flag}"));
+        }
+    }
+    for clue in &conditions.required_clues {
+        if !state.clues.contains(clue) {
+            reasons.push(format!("필요 단서 없음: {clue}"));
+        }
+    }
+    for (resource, minimum) in &conditions.min_resources {
+        let current = player_resource(&state.player, resource);
+        if current < *minimum {
+            reasons.push(format!(
+                "{} 부족: {current}/{minimum}",
+                resource_label(resource)
+            ));
+        }
+    }
+    for (ability, minimum) in &conditions.min_abilities {
+        if *minimum > 0 {
+            reasons.push(format!("능력 조건 미충족: {ability} >= {minimum}"));
+        }
+    }
+    reasons
+}
+
+fn cost_unavailable_reasons(cost: &ResourceMap, player: &PlayerState) -> Vec<String> {
+    cost.iter()
+        .filter(|(resource, amount)| **amount > 0 && player_resource(player, resource) < **amount)
+        .map(|(resource, amount)| {
+            let current = player_resource(player, resource);
+            format!("{} 부족: {current}/{amount}", resource_label(resource))
+        })
+        .collect()
 }
 
 fn conditions_match(conditions: &ContentConditions, state: &GameState) -> bool {
@@ -355,16 +430,20 @@ fn conditions_match(conditions: &ContentConditions, state: &GameState) -> bool {
             .all(|(_ability, minimum)| *minimum <= 0)
 }
 
-fn can_pay_cost(cost: &ResourceMap, player: &PlayerState) -> bool {
-    cost.iter()
-        .all(|(resource, amount)| *amount <= 0 || player_resource(player, resource) >= *amount)
-}
-
 fn choice_action_view(choice: &ChoiceDef) -> ActionView {
     ActionView {
         id: format!("choice:{}", choice.id),
         label: choice.label.clone(),
         cost_summary: format_cost_summary(&choice.cost),
+    }
+}
+
+fn blocked_choice_action_view(choice: &ChoiceDef, state: &GameState) -> BlockedActionView {
+    BlockedActionView {
+        id: format!("choice:{}", choice.id),
+        label: choice.label.clone(),
+        cost_summary: format_cost_summary(&choice.cost),
+        reasons: choice_unavailable_reasons(choice, state),
     }
 }
 

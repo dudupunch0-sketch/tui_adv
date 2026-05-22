@@ -138,6 +138,8 @@ pub struct OutcomeDef {
     #[serde(default)]
     pub destination_id: Option<String>,
     #[serde(default)]
+    pub danger: i32,
+    #[serde(default)]
     pub resources: ResourceMap,
 }
 

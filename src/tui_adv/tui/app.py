@@ -28,6 +28,42 @@ TuiTurn = GameTurn
 _MOVE_SHORTCUT_KEYS = tuple("adfghjklzxcvbrtyuop")
 _RESERVED_TUI_KEYS = {"s", "q", "n", "i", "l", "?"}
 
+TEXTUAL_APP_CSS = """
+Screen {
+    background: #05070a;
+    color: #d7ffe8;
+    layout: vertical;
+}
+
+#game-grid {
+    layout: grid;
+    grid-size: 2;
+    grid-columns: 1fr 1fr;
+    grid-gutter: 1 2;
+    overflow-y: auto;
+    padding: 1 2;
+}
+
+.office-panel {
+    border: round #4ee6a0;
+    padding: 1 2;
+    background: #07110e;
+    color: #d7ffe8;
+}
+
+.office-panel--main {
+    border: heavy #a6f3ff;
+}
+
+.office-panel--wide {
+    column-span: 2;
+}
+
+.office-panel--log {
+    color: #b8c7c0;
+}
+"""
+
 
 @dataclass(frozen=True, slots=True)
 class TuiChoiceResult:
@@ -45,6 +81,17 @@ class SaveSlot:
     location_id: str | None = None
     location_name: str | None = None
     error: str | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class TuiPanelSnapshot:
+    widget_id: str
+    title: str
+    lines: tuple[str, ...]
+    css_class: str = "office-panel"
+
+    def render_text(self) -> str:
+        return "\n".join((f"[{self.title}]", *self.lines)).rstrip()
 
 
 def discover_save_slots(directory: str | Path, *, limit: int = 5) -> tuple[SaveSlot, ...]:
@@ -111,20 +158,42 @@ def render_tui_layout_snapshot(
 ) -> str:
     """Render the same panels the Textual shell mounts, without requiring Textual."""
 
+    lines = ["escape from the office", ""]
+    for panel in build_tui_panel_snapshots(
+        turn,
+        save_path=save_path,
+        save_slots=save_slots,
+        start_mode=start_mode,
+        detail_panel=detail_panel,
+        delete_slot_mode=delete_slot_mode,
+    ):
+        lines.extend([panel.render_text(), ""])
+    return "\n".join(lines).rstrip()
+
+
+def build_tui_panel_snapshots(
+    turn: GameTurn,
+    *,
+    save_path: str | Path | None = None,
+    save_slots: tuple[SaveSlot, ...] | None = None,
+    start_mode: bool = False,
+    detail_panel: str | None = None,
+    delete_slot_mode: bool = False,
+) -> tuple[TuiPanelSnapshot, ...]:
+    """Return stable panel snapshots used by Textual widgets and smoke output."""
+
     location = DEFAULT_LOCATIONS[turn.state.location_id]
-    lines = [
-        "escape from the office",
-        "",
-        "[위치]",
+    status_lines = [
         f"{location.name} — {location.description}",
         "",
-        format_local_status(turn.state.player),
+        *format_local_status(turn.state.player).splitlines(),
     ]
     if pressure_warnings := format_pressure_warnings(turn.state.player):
-        lines.extend(["", pressure_warnings])
-    lines.append("")
+        status_lines.extend(["", *pressure_warnings.splitlines()])
+
+    control_lines: list[str] = []
     if save_path is not None:
-        lines.extend(
+        control_lines.extend(
             [
                 "[저장]",
                 f"저장 파일: {Path(save_path)}",
@@ -139,41 +208,79 @@ def render_tui_layout_snapshot(
                 if delete_slot_mode
                 else "숫자: 저장 파일 불러오기 / n: 새 게임 / d: 저장 파일 삭제 모드"
             )
-            lines.extend(
+            control_lines.extend(
                 [
                     "[시작]",
                     start_prompt,
                     "",
                 ]
             )
-        lines.extend(_format_save_slot_panel(save_slots))
-        lines.append("")
-    lines.extend(_format_help_panel(turn, start_mode=start_mode, delete_slot_mode=delete_slot_mode))
-    lines.append("")
+        control_lines.extend(_format_save_slot_panel(save_slots))
+        control_lines.append("")
+    control_lines.extend(
+        _format_help_panel(turn, start_mode=start_mode, delete_slot_mode=delete_slot_mode)
+    )
     if achievement_summary := format_achievement_summary(turn.state):
-        lines.extend([achievement_summary, ""])
-    lines.extend(_format_inventory_and_clues(turn.state))
-    if detail_lines := _format_detail_panel(turn, detail_panel):
-        lines.extend(["", *detail_lines])
-    lines.append("")
-    if turn.ending is not None:
-        lines.extend(["[엔딩]", format_ending_summary(turn.ending)])
-    elif turn.encounter is not None:
-        lines.extend(["[현재 인카운터]", format_encounter_turn(turn.encounter, turn.state)])
-        _append_numbered_action_group(lines, turn, kind="item", title="소지품 사용")
-    elif turn.available_actions:
-        lines.append("[현재 행동]")
-        _append_numbered_action_group(lines, turn, kind="move", title="이동")
-        _append_numbered_action_group(lines, turn, kind="item", title="소지품 사용")
-    else:
-        lines.extend(["[현재 행동]", "가능한 행동 없음"])
+        control_lines.extend(["", achievement_summary])
 
-    lines.extend(["", "[최근 로그]"])
-    if turn.state.log:
-        lines.extend(f"- {entry}" for entry in turn.state.log[-5:])
+    inventory_lines = _format_inventory_and_clues(turn.state)
+    if detail_lines := _format_detail_panel(turn, detail_panel):
+        inventory_lines.extend(["", *detail_lines])
+
+    if turn.ending is not None:
+        main_title = "엔딩"
+        main_lines = format_ending_summary(turn.ending).splitlines()
+    elif turn.encounter is not None:
+        main_title = "현재 인카운터"
+        main_lines = format_encounter_turn(turn.encounter, turn.state).splitlines()
+        _append_numbered_action_group(main_lines, turn, kind="item", title="소지품 사용")
+    elif turn.available_actions:
+        main_title = "현재 행동"
+        main_lines: list[str] = []
+        _append_numbered_action_group(main_lines, turn, kind="move", title="이동")
+        _append_numbered_action_group(main_lines, turn, kind="item", title="소지품 사용")
     else:
-        lines.append("- 아직 기록 없음")
-    return "\n".join(lines)
+        main_title = "현재 행동"
+        main_lines = ["가능한 행동 없음"]
+
+    log_lines: list[str] = []
+    if turn.state.log:
+        log_lines.extend(f"- {entry}" for entry in turn.state.log[-5:])
+    else:
+        log_lines.append("- 아직 기록 없음")
+
+    return (
+        TuiPanelSnapshot(
+            widget_id="panel-status",
+            title="위치",
+            lines=tuple(status_lines),
+            css_class="office-panel office-panel--status",
+        ),
+        TuiPanelSnapshot(
+            widget_id="panel-controls",
+            title="컨트롤",
+            lines=tuple(control_lines),
+            css_class="office-panel office-panel--controls",
+        ),
+        TuiPanelSnapshot(
+            widget_id="panel-inventory",
+            title="소지품/단서",
+            lines=tuple(inventory_lines),
+            css_class="office-panel office-panel--inventory",
+        ),
+        TuiPanelSnapshot(
+            widget_id="panel-main",
+            title=main_title,
+            lines=tuple(main_lines),
+            css_class="office-panel office-panel--main office-panel--wide",
+        ),
+        TuiPanelSnapshot(
+            widget_id="panel-log",
+            title="최근 로그",
+            lines=tuple(log_lines),
+            css_class="office-panel office-panel--log office-panel--wide",
+        ),
+    )
 
 
 def _format_save_slot_panel(save_slots: tuple[SaveSlot, ...]) -> list[str]:
@@ -445,6 +552,7 @@ def run_textual_tui(
 
     try:
         from textual.app import App, ComposeResult  # type: ignore[import-not-found]
+        from textual.containers import Container  # type: ignore[import-not-found]
         from textual.widgets import Footer, Header, Static  # type: ignore[import-not-found]
     except ModuleNotFoundError as exc:  # pragma: no cover - depends on local install.
         raise RuntimeError(
@@ -453,10 +561,7 @@ def run_textual_tui(
 
     class OfficeEscapeApp(App[None]):  # pragma: no cover - interactive shell smoke only.
         BINDINGS = [("s", "save_game", "저장"), ("q", "quit", "종료")]
-        CSS = """
-        Screen { layout: vertical; }
-        #game { height: 1fr; overflow-y: auto; padding: 1 2; }
-        """
+        CSS = TEXTUAL_APP_CSS
 
         def __init__(self) -> None:
             super().__init__()
@@ -473,16 +578,12 @@ def run_textual_tui(
 
         def compose(self) -> ComposeResult:
             yield Header(show_clock=True)
-            yield Static(
-                render_tui_layout_snapshot(
-                    self.turn,
-                    save_path=self.save_path,
-                    save_slots=self.save_slots,
-                    start_mode=self.selecting_save_slot,
-                    detail_panel=self.detail_panel,
-                    delete_slot_mode=self.deleting_save_slot,
+            yield Container(
+                *(
+                    Static(panel.render_text(), id=panel.widget_id, classes=panel.css_class)
+                    for panel in self._panel_snapshots()
                 ),
-                id="game",
+                id="game-grid",
             )
             yield Footer()
 
@@ -565,15 +666,17 @@ def run_textual_tui(
             self._refresh_game_panel()
 
         def _refresh_game_panel(self) -> None:
-            self.query_one("#game", Static).update(
-                render_tui_layout_snapshot(
-                    self.turn,
-                    save_path=self.save_path,
-                    save_slots=self.save_slots,
-                    start_mode=self.selecting_save_slot,
-                    detail_panel=self.detail_panel,
-                    delete_slot_mode=self.deleting_save_slot,
-                )
+            for panel in self._panel_snapshots():
+                self.query_one(f"#{panel.widget_id}", Static).update(panel.render_text())
+
+        def _panel_snapshots(self) -> tuple[TuiPanelSnapshot, ...]:
+            return build_tui_panel_snapshots(
+                self.turn,
+                save_path=self.save_path,
+                save_slots=self.save_slots,
+                start_mode=self.selecting_save_slot,
+                detail_panel=self.detail_panel,
+                delete_slot_mode=self.deleting_save_slot,
             )
 
     OfficeEscapeApp().run()

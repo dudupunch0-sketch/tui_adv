@@ -3,6 +3,11 @@ status: open
 created: 2026-05-22
 source: user
 source_ref: origin/main:idea_box/dream_ending_branch_ideas.md
+backlog_order: 002
+git_added_at: 2026-05-22T03:01:30+00:00
+git_added_commit: f6fc8173
+source_git_added_at: 2026-05-22T11:46:00+09:00
+source_git_added_commit: 59745ca7
 related_docs:
   - idea_box/dream_ending_branch_ideas.md
   - docs/content/Ending_List.md

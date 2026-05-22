@@ -1,12 +1,20 @@
 ---
-status: open
+status: done
 created: 2026-05-22
 source: user
 source_ref: origin/main:idea_box/semiconductor_sw_storypacks.md
 related_docs:
   - idea_box/semiconductor_sw_storypacks.md
+  - docs/design/Storypack_Encounter_DB.md
+  - docs/content/storypacks/isolation_pack.md
+  - docs/content/encounter_db/isolation_pack.md
+  - docs/content/characters/recurrent_npcs.md
 used_by:
-done_at:
+  - docs/design/Storypack_Encounter_DB.md
+  - docs/content/storypacks/isolation_pack.md
+  - docs/content/encounter_db/isolation_pack.md
+  - docs/content/characters/recurrent_npcs.md
+done_at: 2026-05-22
 ---
 
 # 반도체 대기업 SW 중심 스토리팩 후보
@@ -259,3 +267,4 @@ Test Case: Reality_Current_Office_Isolation / Status: Flaky
 ## 처리 기록
 
 - 2026-05-22: 원격 `origin/main:idea_box/semiconductor_sw_storypacks.md`에 추가된 원문을 확인하고, 다른 agent가 검토/설계/개발 후보로 사용할 수 있도록 이 구조화된 `idea_box/inbox` 아이디어 문서로 새로 정리했다. 아직 실제 설계 문서, 런타임 콘텐츠, 코드, 데이터에 반영된 것은 아니므로 `open` 상태를 유지한다.
+- 2026-05-22: 반도체/SW 특화 소재 중 TUI/system surface가 강한 메신저, 서버 로그, build_log, worldline branch, 반복 NPC 후보를 `docs/design/Storypack_Encounter_DB.md`, `docs/content/storypacks/isolation_pack.md`, `docs/content/encounter_db/isolation_pack.md`, `docs/content/characters/recurrent_npcs.md`에 흡수했다. 별도 산업 특화 런타임 팩이 아니라 일반 대기업 기반 차원격리팩의 재료로 병합했으므로 `done` 처리한다.

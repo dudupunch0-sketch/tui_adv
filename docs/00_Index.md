@@ -59,14 +59,15 @@ docs/
     encounter_db/                   # 런타임 승격 전 인카운터 상황 카드 DB
 
   dev/
-    Development_Plan.md             # 전체 개발 계획과 현황 메모
-    Checklist.md                    # 단계별 체크리스트
+    Development_Plan.md             # canonical main plan: 현재 방향, 다음 작업, 우선순위
+    Checklist.md                    # 완료 여부 추적용 체크리스트
     Architecture.md                 # 코드 구조와 모듈 경계
     Rust_Core_Dual_Renderer_Architecture.md # Rust GameCore + Web Storybook + SuperLightTUI terminal 활성 방향
     Data_Schema.md                  # YAML/JSON 데이터 스키마 + renderer-neutral ScenePage/WASM contract
     TUI_Layout.md                   # 화면 배치, 입력, 위젯 설계
     Save_Slot_UX.md                 # 저장 슬롯 이름 변경 UX 후보
     Balance_QA_Packaging.md         # 밸런싱, QA smoke, 패키징/릴리즈 기준
+    Web_Distribution_Decision.md    # Web-only 배포 표면과 Tauri/Electron defer 결정
     Final_QA_Log.md                 # 실제 Textual/터미널 크기/10회 새 게임 QA 기록
     Reality_Secret_Safety_Checklist.md # 로컬 현실 힌트 안전 점검
 
@@ -130,6 +131,7 @@ private/
 - `docs/dev/TUI_Layout.md`
 - `docs/dev/Save_Slot_UX.md`
 - `docs/dev/Balance_QA_Packaging.md`
+- `docs/dev/Web_Distribution_Decision.md`
 - `docs/dev/Final_QA_Log.md`
 - `docs/dev/Reality_Secret_Safety_Checklist.md`
 - `docs/dev/Development_Plan.md`

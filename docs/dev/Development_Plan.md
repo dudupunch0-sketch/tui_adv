@@ -1,6 +1,17 @@
 # escape from the office 전체 개발 계획
 
-> 이 문서는 처음 작성된 구현 전 기준점을 포함한다. 현재 활성 렌더러/런타임 방향은 아래 “2026-05-22 방향 갱신”을 우선한다.
+> **Canonical main plan:** 이 repo의 현재 개발 우선순위, 다음 작업 순서, active direction은 이 파일이 기준이다. 다른 LLM/agent에게 작업을 맡길 때는 “`docs/dev/Development_Plan.md`를 메인 플랜으로 보고 다음 작업을 진행해”라고 지시한다.
+>
+> 이 문서는 처음 작성된 구현 전 기준점도 포함하므로, 충돌이 있으면 상단의 최신 방향/다음 액션을 우선한다. `README.md`는 요약/실행법, `docs/dev/Checklist.md`는 완료 여부 추적, 아키텍처/스키마 문서는 계약 참조, `idea_box/`는 active plan이 없을 때 보는 backlog다. `.hermes/plans/`는 세션용 작업 계획이며 canonical source가 아니다.
+
+## 0.0 계획 문서 우선순위
+
+1. `docs/dev/Development_Plan.md`: 단일 메인 플랜. 현재 방향, 다음 작업, 우선순위, phase 순서를 여기서 판단한다.
+2. `docs/dev/Checklist.md`: 완료 여부 추적용 체크리스트. 독립적인 다음 계획을 두지 않는다.
+3. `docs/dev/Rust_Core_Dual_Renderer_Architecture.md`, `docs/dev/Data_Schema.md`, `docs/design/UI_Rules.md`, `docs/dev/TUI_Layout.md`: 설계 계약/참조 문서. 작업 순서의 source of truth가 아니다.
+4. `README.md`: 사람용 빠른 안내와 실행법. 긴 다음 작업 목록은 이 파일로 복제하지 않는다.
+5. `idea_box/`: active plan/todo가 없거나 사용자가 명시적으로 요청했을 때 처리하는 backlog.
+6. `.hermes/plans/`: 일회성 세션 artifact. 완료되었거나 이 파일에 흡수된 계획은 정리한다.
 
 ## 0. 2026-05-22 방향 갱신
 
@@ -543,22 +554,26 @@ src/tui_adv/data/secrets.example.yaml
 6. Web/terminal action id parity smoke를 추가했다.
 7. Rust GameCore가 movement pages, usable items, ability checks, major endings, achievement unlock metadata, hunger/thirst pressure cues, public-safe reality-link reward metadata를 처리한다.
 8. Web Storybook runtime이 `escape-wasm` JSON boundary와 generated content bundle을 통해 Rust `ScenePage`를 소비한다. generated wasm package가 없는 개발 환경에서는 legacy TS mirror fallback만 사용한다.
+9. Web WASM build/preview 표준화 완료: `web/package.json`의 `wasm:build`가 `wasm-pack build ../crates/escape-wasm --target web --out-dir ../../web/src/core/wasm-pkg`를 실행하고, `build:wasm` / `preview:wasm`이 Rust/WASM-primary Web 검증 경로를 제공한다.
+10. legacy TypeScript mirror는 fallback/parity oracle로 freeze했고, Python/Textual도 legacy smoke/parity oracle로만 유지한다.
+11. SuperLightTUI terminal visual card/GlyphFX/input polish 완료: `escape-terminal`은 `ScenePage.visual`을 ASCII/Unicode card로 표시하고, `glyph_anomaly`의 intensity meter/stable terms/fallback text와 현재 턴 입력 범위를 노출한다.
+12. Web/Tauri/Electron 패키징 결정 완료: 현재 플레이어 배포 표면은 Web-only이며, `web/package.json`의 `build:player` / `preview:player` alias가 Rust/WASM-primary Web artifact(`web/dist/`)를 기준으로 한다. Tauri/Electron은 desktop wrapper 고유 가치가 생길 때까지 deferred다.
 
 현재 최우선 남은 작업:
 
-1. Web 배포/preview 환경의 wasm-pack build step을 표준화하고, legacy Python/Textual/TS mirror 축소 범위를 결정한다.
+1. terminal full-screen app loop와 tick/raw-draw GlyphFX slice: Web-only 배포 표면이 결정되었으므로, `escape-terminal`의 snapshot/play renderer를 다음 단계의 terminal-native horror edition loop로 확장할지 검토하고 구현한다.
 
 전환 중 유지:
 
-1. Python/Textual 직접 플레이와 smoke는 legacy/parity oracle로 유지한다.
+1. Python/Textual 직접 플레이와 smoke는 legacy/parity oracle로 유지하되 새 gameplay rule을 추가하지 않는다.
 2. TypeScript mirror core와 fake-TUI browser shell은 generated wasm package가 없는 개발 환경의 fallback/parity oracle로 유지한다.
-3. 새 게임 규칙은 renderer가 아니라 Rust core에 추가한다.
+3. 새 게임 규칙, route truth, eligibility, outcome, ending, achievement는 renderer가 아니라 Rust core에 추가한다.
 
 나중:
 
-1. Python/Textual과 TypeScript mirror의 freeze/retire 여부 결정
+1. 대표 Web/Rust route smoke가 legacy coverage를 대체하면 Python/Textual과 TypeScript mirror retire 여부를 다시 결정한다.
 2. 정복/진실/재난 타입별 변형 콘텐츠 확대
-3. Web/Tauri/Electron 패키징 검토
+3. Tauri/Electron desktop wrapper 재검토: native file dialog, offline file import/export, OS-level 알림/업데이트 같은 Web-only 한계를 실제 요구로 확인한 뒤 별도 slice로 연다.
 4. terminal inline image optional 지원 검토
 5. 여러 히든 현실 보물
 
@@ -605,5 +620,5 @@ Web 또는 terminal renderer가 게임 규칙을 다시 구현하면 Rust GameCo
 
 ## 10. 다음 액션
 
-1. Web 배포용 wasm-pack build/preview 절차를 문서화하고 CI 또는 release smoke에 연결한다.
-2. legacy mirror retire/freeze 범위를 정한다.
+1. terminal full-screen app loop와 tick/raw-draw GlyphFX slice를 진행한다.
+2. optional inline image 지원은 terminal cell/GlyphFX baseline 이후 별도 slice로 검토한다.

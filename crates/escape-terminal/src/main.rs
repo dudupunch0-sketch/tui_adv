@@ -137,6 +137,7 @@ fn run_content_play_loop(
     loop {
         let page = scene_page_from_content(&state, content).map_err(|error| error.to_string())?;
         print_scene_page_snapshot(&page, &recent_logs);
+        println!("{}", input_hint_for_actions(&view.actions));
         print!("입력> ");
         io::stdout()
             .flush()
@@ -161,7 +162,10 @@ fn run_content_play_loop(
         }
 
         let Some(action) = resolve_play_action(&view, input) else {
-            println!("잘못된 입력: {input}");
+            println!(
+                "잘못된 입력: {input} ({})",
+                invalid_input_hint(&view.actions)
+            );
             continue;
         };
         let action_id = action.id.clone();
@@ -402,11 +406,9 @@ fn render_scene_page(ui: &mut slt::Context, page: &ScenePage, logs: &[String]) {
         }
 
         ui.text("[비주얼]");
-        ui.text(format!(
-            "{} / {} / {}",
-            page.visual.kind, page.visual.id, page.visual.alt
-        ));
-        ui.text(glyphfx_line(&page.effect_cues));
+        for line in scene_visual_card_lines(page) {
+            ui.text(line);
+        }
 
         if matches!(page.mode, SceneMode::Encounter) {
             ui.text("[현재 인카운터]");
@@ -448,6 +450,52 @@ fn render_scene_body(ui: &mut slt::Context, page: &ScenePage) {
     for block in &page.body_blocks {
         ui.text(block.text.as_str());
     }
+}
+
+fn scene_visual_card_lines(page: &ScenePage) -> Vec<String> {
+    let mut lines = vec![
+        "╭─ VISUAL CARD ─────────────────────────╮".to_string(),
+        format!("│ visual id: {}", page.visual.id),
+        format!("│ layout: {}", page.visual.kind),
+        format!("│ alt: {}", page.visual.alt),
+    ];
+    lines.extend(glyphfx_card_lines(&page.effect_cues));
+    lines.push("╰────────────────────────────────────────╯".to_string());
+    lines
+}
+
+fn glyphfx_card_lines(effect_cues: &[SceneEffectCue]) -> Vec<String> {
+    if effect_cues.is_empty() {
+        return vec!["│ glyphfx signal: idle · terminal-native fallback".to_string()];
+    }
+
+    let mut lines = Vec::new();
+    for cue in effect_cues {
+        let percent = glyphfx_intensity_percent(cue.intensity);
+        lines.push(format!(
+            "│ glyphfx signal: {} [{}] {}% {}",
+            cue.kind,
+            glyphfx_meter(percent),
+            percent,
+            cue.distortion
+        ));
+        if !cue.stable_terms.is_empty() {
+            lines.push(format!("│ stable terms: {}", cue.stable_terms.join(" / ")));
+        }
+        if let Some(fallback) = &cue.fallback_text {
+            lines.push(format!("│ fallback: {fallback}"));
+        }
+    }
+    lines
+}
+
+fn glyphfx_intensity_percent(intensity: f32) -> u32 {
+    (intensity.clamp(0.0, 1.0) * 100.0).round() as u32
+}
+
+fn glyphfx_meter(percent: u32) -> String {
+    let filled = (percent / 10).min(10) as usize;
+    format!("{}{}", "#".repeat(filled), "-".repeat(10 - filled))
 }
 
 fn render_turn_view_snapshot(
@@ -523,16 +571,26 @@ fn resource_value(page: &ScenePage, id: &str) -> i32 {
         .unwrap_or_default()
 }
 
-fn glyphfx_line(effect_cues: &[SceneEffectCue]) -> String {
-    if effect_cues.is_empty() {
-        return "GlyphFX: terminal-native fallback idle".to_string();
+fn input_hint_for_actions(actions: &[ActionView]) -> String {
+    format!(
+        "입력 안내: {} 또는 action id, q/quit 종료",
+        action_number_range(actions)
+    )
+}
+
+fn invalid_input_hint(actions: &[ActionView]) -> String {
+    format!(
+        "사용 가능한 번호: {} 또는 action id",
+        action_number_range(actions)
+    )
+}
+
+fn action_number_range(actions: &[ActionView]) -> String {
+    match actions.len() {
+        0 => "없음".to_string(),
+        1 => "1".to_string(),
+        count => format!("1-{count}"),
     }
-    let cues = effect_cues
-        .iter()
-        .map(|cue| format!("{}:{} {}", cue.kind, cue.intensity, cue.distortion))
-        .collect::<Vec<_>>()
-        .join(" | ");
-    format!("GlyphFX: {cues}")
 }
 
 fn glyphfx_turn_line(effect_cues: &[EffectCue]) -> String {

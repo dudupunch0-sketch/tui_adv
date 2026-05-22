@@ -11,7 +11,7 @@ TUI 기반 랜덤 인카운터 선택지 생존 게임.
 중요한 기준:
 
 - Web Storybook + GlyphFX가 플레이어용 메인 UX 후보다. 이미지/장면 컷, 대화 내역, 읽기 중심 선택지, Canvas/GlyphFX는 이 경로에서 먼저 구현한다.
-- Rust terminal 경로는 버리지 않는다. `escape-terminal`의 content 경로는 SuperLightTUI snapshot/play renderer로 전환되었고, 다음 목표는 visual card/GlyphFX/input polish를 키워 **terminal-native horror edition**으로 만드는 것이다. terminal은 fallback이지만 debug dump가 아니다.
+- Rust terminal 경로는 버리지 않는다. `escape-terminal`의 content 경로는 SuperLightTUI snapshot/play renderer로 전환되었고, visual card/GlyphFX/input 안내 polish가 추가되어 **terminal-native horror edition** 기준을 강화했다. terminal은 fallback이지만 debug dump가 아니다.
 - Python/Textual과 기존 Web fake-TUI dashboard는 당분간 legacy/parity oracle로 유지하되, 새 시각/상호작용 투자는 `docs/dev/Rust_Core_Dual_Renderer_Architecture.md`의 방향을 따른다.
 
 게임 구조와 안전한 현실 연결 원칙을 문서화했고, 순수 게임 상태 모델, 자원 임계치/실패 판정, 1차 사무실 위치 모델, 인접 위치 이동과 위험도 누적, 인카운터/선택지 조건·비용·결과 적용, 선택 불가 선택지의 이유 표시, 능력치 기반 선택지, 2d6 성공/실패 분기, 현재 상태 기반 인카운터 선택, 공간 왜곡 탈출/실패 엔딩 판정, YAML 공개 콘텐츠 로더/검증, YAML 기반 런타임 기본 위치/인카운터/엔딩, 로컬 비공개 현실 힌트 로더, 복합기/커피머신/화이트보드 더미 숫자 합계 퍼즐, 현실 연결 히든 엔딩 보상 출력, CLI 한 턴 실행, CLI 다중 턴 스크립트 실행, Textual 레이아웃 smoke, Textual 저장/불러오기 연결, TUI 저장/종료 단축키, TUI 저장 파일 목록·시작 슬롯 선택·삭제 패널, 도움말/이동 단축키/상세 도움말·인벤토리·로그 패널, 압박 경고 패널, Textual 그리드 패널과 터미널 테마 CSS, 소모품 아이템 사용, 물품창고 보급품, 엘리베이터/옥상 경로, 옥상 외부 신호 탈출 엔딩, 저정신력 선택지 왜곡, 고갈증 정수기 환각, 엘리베이터-보안실 우회 분기, 임계 자원 1회성 경고 로그, 보안실-서버실 격리 권한 정복 루트, 지하주차장 키태그/차단기 탈출 루트, 로비 방문증/회전문 탈출 루트, 대표실 결재 콘솔 정복 루트, 진실 루트의 재난 원인 문서, 생존자 설득/시스템 제압 설계, 세 번째 현실 연결 힌트 체인, 로컬 secret 템플릿과 현실 연결 안전 점검 문서, YAML→브라우저 JSON export, Vite 기반 fake-TUI 브라우저 셸, localStorage 저장, 복합기 현실 연결 pretext/Canvas 장면, 전 루트 웹 parity 테스트, 브라우저 아이템 사용·업적·능력치 판정·압박 UI, 인벤토리·업적·컨트롤·압박 패널, Rust content runner의 잠긴 선택지/위험도 parity까지 추가했다.
@@ -32,11 +32,15 @@ Rust content-backed 직접 플레이:
 cargo run -p escape-terminal -- --scene content --content-bundle crates/escape-core/fixtures/content/content.bundle.json --seed 123 --play
 ```
 
-주의: 현재 Rust 직접 플레이는 SuperLightTUI snapshot 기반의 content renderer를 사용한다. 아직 전체 화면 app loop와 terminal-native GlyphFX polish는 확장 전이다. 개인 서버/WSL에서 `cargo`가 없다면 일반적으로 `rustup`으로 설치한다.
+주의: 현재 Rust 직접 플레이는 SuperLightTUI snapshot 기반의 content renderer를 사용한다. visual card는 `ScenePage.visual`의 id/layout/alt를 terminal card로 표시하고, GlyphFX fallback은 intensity meter와 stable terms/fallback text를 보존한다. 전체 화면 app loop와 tick/raw-draw animation은 후속 확장 대상이다. 개인 서버/WSL에서 `cargo`가 없고 `/home` 용량이 부족하면 Rust/Cargo 경로를 `/tmp`로 돌려 구성한다.
 
 ```bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal
-source "$HOME/.cargo/env"
+export RUSTUP_HOME="/tmp/$USER-rustup"
+export CARGO_HOME="/tmp/$USER-cargo"
+export CARGO_TARGET_DIR="/tmp/$USER-tui-adv-target"
+export PATH="$CARGO_HOME/bin:$PATH"
+mkdir -p "$RUSTUP_HOME" "$CARGO_HOME" "$CARGO_TARGET_DIR"
+rustup toolchain install stable --profile minimal --component rustfmt --component clippy
 ```
 
 `cloud_server_only.sh`는 이 repo를 작업하던 제한된 개발 서버에서 Rust 캐시/빌드 산출물을 `/tmp`로 돌리기 위한 helper다. 일반 개인 서버나 WSL 실행법의 기본값이 아니다.
@@ -51,6 +55,7 @@ Rust headless smoke:
 ```bash
 cargo run -p escape-terminal -- --scene content --content-bundle crates/escape-core/fixtures/content/content.bundle.json --seed 123 --smoke --action choice:check_message --action move:dev_office
 cargo run -p escape-terminal -- --scene content --content-bundle crates/escape-core/fixtures/content/content.bundle.json --seed 123 --tui-smoke --action choice:check_message
+cargo run -p escape-terminal -- --scene content --content-bundle crates/escape-core/fixtures/content/content.bundle.json --seed 123 --tui-smoke --action choice:check_message --action move:dev_office --action move:printer_area
 ```
 
 스크립트/스모크 실행:
@@ -87,7 +92,7 @@ PYTHONPATH=src python scripts/qa_smoke.py
 PYTHONPATH=src python scripts/textual_qa_smoke.py  # Textual 설치 환경에서 실행
 ```
 
-브라우저 legacy fake-TUI / 향후 Web Storybook 및 renderer-neutral content bundle:
+브라우저 Web Storybook / renderer-neutral content bundle:
 
 ```bash
 python scripts/export_web_data.py --write --bundle crates/escape-core/fixtures/content/content.bundle.json --bundle web/src/data/generated/content.bundle.json
@@ -99,7 +104,22 @@ npm run build
 npm run dev -- --host 127.0.0.1 --port 8765
 ```
 
-현재 브라우저 앱은 Web Storybook + GlyphFX renderer를 기본 화면으로 사용하며, `web/src/core/wasmRuntime.ts`가 generated content bundle(`web/src/data/generated/content.bundle.json`)을 `escape-wasm` JSON-string boundary에 전달해 Rust GameCore의 `ScenePage`/`ActionResult`를 소비한다. generated wasm package가 없는 개발 환경에서는 legacy TypeScript mirror가 임시 fallback/parity oracle로 동작하지만, 새 게임 규칙은 Rust GameCore에만 추가한다. 공개 secret JSON과 content bundle에는 실제 사무실 최종 위치나 `final_hint`를 넣지 않는다.
+Rust/WASM-primary Web preview/build는 generated wasm package를 먼저 만든다.
+
+```bash
+cd web
+npm run wasm:build
+npm run build:wasm
+npm run preview:wasm
+npm run build:player
+npm run preview:player
+```
+
+`npm run wasm:build`는 `wasm-pack build ../crates/escape-wasm --target web --out-dir ../../web/src/core/wasm-pkg`를 실행한다. 생성되는 `web/src/core/wasm-pkg/`는 로컬 build artifact라서 Git에 커밋하지 않는다.
+
+현재 브라우저 앱은 Web Storybook + GlyphFX renderer를 기본 화면으로 사용하며, `web/src/core/wasmRuntime.ts`가 generated content bundle(`web/src/data/generated/content.bundle.json`)을 `escape-wasm` JSON-string boundary에 전달해 Rust GameCore의 `ScenePage`/`ActionResult`를 소비한다. Rust/WASM-primary preview는 `npm run build:wasm` 또는 `npm run preview:wasm` 경로로 확인한다. generated wasm package가 없거나 `wasm-pack`/Rust toolchain이 없는 개발 환경에서는 legacy TypeScript mirror가 fallback/parity oracle로 동작한다. legacy TypeScript mirror와 Python/Textual은 freeze 상태이며, 새 게임 규칙은 Rust GameCore에만 추가한다. 공개 secret JSON과 content bundle에는 실제 사무실 최종 위치나 `final_hint`를 넣지 않는다.
+
+배포 표면은 현재 Web-only로 결정했다. `npm run build:player`는 Rust/WASM-primary Web 정적 산출물(`web/dist/`)을 만들고, `npm run preview:player`는 같은 경로를 로컬 preview한다. Tauri/Electron은 desktop wrapper의 고유 가치가 생길 때까지 deferred 상태이며, 결정 기록은 `docs/dev/Web_Distribution_Decision.md`에 둔다.
 
 패키지 설치 후에는 `tui-adv` console script를 사용할 수 있다.
 
@@ -130,8 +150,8 @@ npm run dev -- --host 127.0.0.1 --port 8765
 - `docs/design/Map.md`: 1차 맵 설계
 - `docs/design/UI_Rules.md`: 사내 시스템형 TUI, 글리치, 선택지 오염 규칙
 - `docs/design/TUI_Storybook_GlyphFX_Concept.md`: Web primary UX로 채택한 TUI풍 스토리북 + GlyphFX 방향
-- `docs/dev/Development_Plan.md`: 전체 개발 계획
-- `docs/dev/Checklist.md`: 단계별 체크리스트
+- `docs/dev/Development_Plan.md`: canonical main plan. 현재 방향, 다음 작업, 우선순위의 source of truth
+- `docs/dev/Checklist.md`: 단계별 완료 여부 추적용 체크리스트
 - `docs/content/Location_List.md`: 1차 위치 목록
 - `docs/content/Item_List.md`: 1차 아이템 목록
 - `docs/content/Encounter_List.md`: 1차 인카운터 목록
@@ -145,6 +165,7 @@ npm run dev -- --host 127.0.0.1 --port 8765
 - `docs/dev/TUI_Layout.md`: TUI 화면 설계
 - `docs/dev/Save_Slot_UX.md`: 저장 슬롯 이름 변경 UX 후보
 - `docs/dev/Balance_QA_Packaging.md`: 밸런싱, QA smoke, 패키징/릴리즈 기준
+- `docs/dev/Web_Distribution_Decision.md`: Web-only 배포 표면과 Tauri/Electron defer 결정
 - `docs/dev/Final_QA_Log.md`: 실제 Textual/터미널 크기/10회 새 게임 QA 기록
 - `docs/implementation-map/index.html`: 현재 구현을 한 번에 보는 interactive HTML 구현 지도
 - `docs/implementation-map/README.md`: 구현 지도 업데이트 방법
@@ -173,17 +194,20 @@ npm run dev -- --host 127.0.0.1 --port 8765
 - `private/`와 local secret 파일은 `.gitignore`로 커밋을 차단한다.
 - 개인 책상, 잠긴 공간, 위험 설비, 회사 기밀과 관련된 위치는 사용하지 않는다.
 
-## 다음 작업 후보
+## 다음 작업 기준
 
-현재 활성 계획 기준 완료된 기반 작업은 다음이다.
+다음 작업의 source of truth는 `docs/dev/Development_Plan.md`다. README에는 실행법과 문서 입구만 유지하고, 긴 next-task 목록을 복제하지 않는다.
 
-1. renderer-neutral `ScenePage` contract, YAML `presentation`/`EffectCue` metadata, Web Storybook renderer skeleton.
-2. `escape-wasm` JSON-string boundary와 Web/Rust content bundle export.
-3. `escape-terminal` SuperLightTUI snapshot/play renderer.
-4. Web/terminal action id parity smoke.
-5. Rust GameCore 기준 route parity 확장: movement pages, item use, ability checks, 주요 endings, achievements, pressure cues, public reality-link reward metadata.
-6. Web Storybook runtime의 `escape-wasm` boundary 연결과 Rust state localStorage 저장.
+다른 LLM/agent에게 이어서 작업을 맡길 때는 다음처럼 지시한다.
 
-다음 구현 순서는 Python/Textual과 TypeScript mirror를 legacy/parity oracle로 더 축소하고, Web 배포 환경에서 `wasm-pack build crates/escape-wasm --target web --out-dir ../../web/src/core/wasm-pkg`를 표준 build step으로 고정하는 것이다.
+```text
+docs/dev/Development_Plan.md를 메인 플랜으로 보고, 그 안의 “현재 최우선 남은 작업”과 “다음 액션”부터 진행해라.
+```
 
-`idea_box`의 storypack 후보와 legacy Textual UX 조정은 활성 renderer/core 계획이 끝났거나 명시적으로 요청받았을 때 검토한다.
+역할 구분:
+
+- `docs/dev/Development_Plan.md`: 현재 방향, 우선순위, 다음 작업 순서.
+- `docs/dev/Checklist.md`: 완료 여부 체크만 추적.
+- `docs/dev/Rust_Core_Dual_Renderer_Architecture.md`, `docs/dev/Data_Schema.md`: 구현 계약 참조.
+- `idea_box/`: active plan/todo가 없거나 사용자가 명시적으로 요청했을 때 보는 backlog.
+- `.hermes/plans/`: 일회성 세션 artifact이며 canonical 계획이 아니다.

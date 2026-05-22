@@ -8,14 +8,38 @@ def test_checklist_tracks_completed_terminal_ux_slices():
     assert "- [x] 선택 불가 선택지 이유 표시" in checklist
 
 
-def test_readme_next_work_does_not_list_completed_unavailable_reason_slice():
+def test_superlighttui_terminal_polish_is_checklisted_and_documented():
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
     readme = Path("README.md").read_text(encoding="utf-8")
-    next_work = readme.split("## 다음 작업 후보", 1)[1]
+    architecture = Path("docs/dev/Rust_Core_Dual_Renderer_Architecture.md").read_text(
+        encoding="utf-8"
+    )
+
+    assert "- [x] terminal visual card가 visual_id/layout/alt를 ASCII/Unicode card로 표시" in checklist
+    assert "- [x] GlyphFX fallback이 intensity meter, stable terms, fallback text를 보존" in checklist
+    assert "- [x] 직접 플레이 입력 안내가 현재 턴 번호 범위와 action id 사용법을 표시" in checklist
+    assert "SuperLightTUI terminal visual card/GlyphFX/input polish 완료" in plan
+    next_slice = plan.split("현재 최우선 남은 작업:", 1)[1]
+    assert "Web/Tauri/Electron 패키징 결정 완료" in plan
+    assert "terminal full-screen app loop" in next_slice
+    assert "tick/raw-draw GlyphFX" in next_slice
+    assert "Web/Tauri/Electron 패키징 검토" not in next_slice
+    assert "visual card/GlyphFX/input 안내 polish" in readme
+    assert "printer_anomaly stable terms를 terminal visual card 안에 보존" in architecture
+
+
+def test_readme_next_work_points_to_canonical_main_plan_instead_of_completed_slice_list():
+    readme = Path("README.md").read_text(encoding="utf-8")
+    next_work = readme.split("## 다음 작업 기준", 1)[1]
 
     assert "선택 불가 선택지의 이유 표시" not in next_work
     assert "색상 테마" not in next_work
     assert "밸런싱" not in next_work
-    assert "storypack" in next_work
+    assert "docs/dev/Development_Plan.md" in next_work
+    assert "source of truth" in next_work
+    assert "긴 next-task 목록을 복제하지 않는다" in next_work
+    assert "## 다음 작업 후보" not in readme
 
 
 def test_phase6_textual_style_slice_is_checklisted_and_documented():
@@ -104,15 +128,17 @@ def test_final_qa_leftover_checks_are_documented_and_completed():
     assert "- [ ]" not in checklist
 
 
-def test_readme_next_work_does_not_list_completed_final_qa_slices():
+def test_readme_next_work_keeps_role_split_instead_of_final_qa_queue():
     readme = Path("README.md").read_text(encoding="utf-8")
-    next_work = readme.split("## 다음 작업 후보", 1)[1]
+    next_work = readme.split("## 다음 작업 기준", 1)[1]
 
     assert "시작 화면 저장 슬롯 UX" not in next_work
     assert "밸런싱/QA/패키징" not in next_work
     assert "재난 타입 확장" not in next_work
     assert "저장 슬롯 이름 변경" not in next_work
-    assert "storypack" in next_work
+    assert "docs/dev/Checklist.md" in next_work
+    assert "구현 계약 참조" in next_work
+    assert ".hermes/plans/" in next_work
 
 
 def test_disaster_type_extension_doc_is_indexed_and_runtime_bound():

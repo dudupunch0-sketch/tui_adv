@@ -5,9 +5,17 @@
 ## 프로젝트 성격
 
 - 한국어 회사-아포칼립스 선택지 게임이다.
-- 시각 정체성은 TUI/fake-terminal 분위기를 유지한다.
-- 특수 효과가 필요할 때도 브라우저 fake-TUI, Canvas, `@chenglou/pretext` 계열 접근을 우선 고려한다.
+- 시각 정체성은 TUI/fake-terminal 분위기를 유지하되, 현재 활성 방향은 Web Storybook + GlyphFX primary UX와 SuperLightTUI terminal-native horror edition이다.
+- 특수 효과는 Web Storybook의 Canvas/GlyphFX와 SuperLightTUI terminal cell/GlyphFX 쪽으로 흡수한다. 기존 browser fake-TUI는 legacy/parity fallback으로만 취급한다.
 - 실제 사용자의 메모/사적 노트는 공개 산출물로 옮기지 않는다.
+
+## 계획 문서 우선순위
+
+- `docs/dev/Development_Plan.md`가 이 저장소의 canonical main plan이다. 현재 방향, 다음 작업, 우선순위, phase 순서는 이 파일을 기준으로 판단한다.
+- 사용자가 “다음 작업”, “계속해”, “계획대로 해”처럼 말하면 먼저 `docs/dev/Development_Plan.md`의 상단 우선순위와 “현재 최우선 남은 작업” / “다음 액션”을 확인한다.
+- `docs/dev/Checklist.md`는 완료 여부 추적용이며, 독립적인 다음 계획 source가 아니다.
+- 아키텍처/스키마 문서는 구현 계약 참조이고, README는 실행법과 문서 입구다.
+- `.hermes/plans/`는 일회성 세션 artifact이며 canonical 계획으로 쓰지 않는다.
 
 ## idea_box 운영 규칙
 

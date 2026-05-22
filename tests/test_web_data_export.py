@@ -119,7 +119,8 @@ def test_export_web_data_check_detects_stale_generated_files(tmp_path):
 
 def test_export_web_data_cli_write_and_check_roundtrip(tmp_path):
     out_dir = tmp_path / "generated"
-    bundle_path = tmp_path / "content.bundle.json"
+    rust_bundle_path = tmp_path / "rust" / "content.bundle.json"
+    web_bundle_path = tmp_path / "web" / "content.bundle.json"
 
     write_result = subprocess.run(
         [
@@ -130,7 +131,9 @@ def test_export_web_data_cli_write_and_check_roundtrip(tmp_path):
             "--out-dir",
             str(out_dir),
             "--bundle",
-            str(bundle_path),
+            str(rust_bundle_path),
+            "--bundle",
+            str(web_bundle_path),
             "--write",
         ],
         check=False,
@@ -139,7 +142,11 @@ def test_export_web_data_cli_write_and_check_roundtrip(tmp_path):
     )
     assert write_result.returncode == 0, write_result.stderr
     assert "wrote 7 web data files" in write_result.stdout
-    assert f"wrote content bundle to {bundle_path}" in write_result.stdout
+    assert f"wrote content bundle to {rust_bundle_path}" in write_result.stdout
+    assert f"wrote content bundle to {web_bundle_path}" in write_result.stdout
+    assert json.loads(rust_bundle_path.read_text(encoding="utf-8")) == json.loads(
+        web_bundle_path.read_text(encoding="utf-8")
+    )
 
     check_result = subprocess.run(
         [
@@ -150,7 +157,9 @@ def test_export_web_data_cli_write_and_check_roundtrip(tmp_path):
             "--out-dir",
             str(out_dir),
             "--bundle",
-            str(bundle_path),
+            str(rust_bundle_path),
+            "--bundle",
+            str(web_bundle_path),
             "--check",
         ],
         check=False,
@@ -159,7 +168,7 @@ def test_export_web_data_cli_write_and_check_roundtrip(tmp_path):
     )
     assert check_result.returncode == 0, check_result.stdout + check_result.stderr
     assert "web data is up to date" in check_result.stdout
-    assert "content bundle is up to date" in check_result.stdout
+    assert check_result.stdout.count("content bundle is up to date") == 2
 
 
 def test_export_web_data_refuses_public_secret_final_hint(tmp_path):

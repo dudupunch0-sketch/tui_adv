@@ -11,7 +11,7 @@ TUI 기반 랜덤 인카운터 선택지 생존 게임.
 중요한 기준:
 
 - Web Storybook + GlyphFX가 플레이어용 메인 UX 후보다. 이미지/장면 컷, 대화 내역, 읽기 중심 선택지, Canvas/GlyphFX는 이 경로에서 먼저 구현한다.
-- Rust terminal 경로는 버리지 않는다. 다만 현재 `escape-terminal`의 plain content-runner 화면은 최종 UX가 아니며, 목표는 **SuperLightTUI 기반 terminal-native renderer**다. terminal은 fallback이지만 debug dump가 아니라 별도 terminal horror edition이어야 한다.
+- Rust terminal 경로는 버리지 않는다. `escape-terminal`의 content 경로는 SuperLightTUI snapshot/play renderer로 전환되었고, 다음 목표는 visual card/GlyphFX/input polish를 키워 **terminal-native horror edition**으로 만드는 것이다. terminal은 fallback이지만 debug dump가 아니다.
 - Python/Textual과 기존 Web fake-TUI dashboard는 당분간 legacy/parity oracle로 유지하되, 새 시각/상호작용 투자는 `docs/dev/Rust_Core_Dual_Renderer_Architecture.md`의 방향을 따른다.
 
 게임 구조와 안전한 현실 연결 원칙을 문서화했고, 순수 게임 상태 모델, 자원 임계치/실패 판정, 1차 사무실 위치 모델, 인접 위치 이동과 위험도 누적, 인카운터/선택지 조건·비용·결과 적용, 선택 불가 선택지의 이유 표시, 능력치 기반 선택지, 2d6 성공/실패 분기, 현재 상태 기반 인카운터 선택, 공간 왜곡 탈출/실패 엔딩 판정, YAML 공개 콘텐츠 로더/검증, YAML 기반 런타임 기본 위치/인카운터/엔딩, 로컬 비공개 현실 힌트 로더, 복합기/커피머신/화이트보드 더미 숫자 합계 퍼즐, 현실 연결 히든 엔딩 보상 출력, CLI 한 턴 실행, CLI 다중 턴 스크립트 실행, Textual 레이아웃 smoke, Textual 저장/불러오기 연결, TUI 저장/종료 단축키, TUI 저장 파일 목록·시작 슬롯 선택·삭제 패널, 도움말/이동 단축키/상세 도움말·인벤토리·로그 패널, 압박 경고 패널, Textual 그리드 패널과 터미널 테마 CSS, 소모품 아이템 사용, 물품창고 보급품, 엘리베이터/옥상 경로, 옥상 외부 신호 탈출 엔딩, 저정신력 선택지 왜곡, 고갈증 정수기 환각, 엘리베이터-보안실 우회 분기, 임계 자원 1회성 경고 로그, 보안실-서버실 격리 권한 정복 루트, 지하주차장 키태그/차단기 탈출 루트, 로비 방문증/회전문 탈출 루트, 대표실 결재 콘솔 정복 루트, 진실 루트의 재난 원인 문서, 생존자 설득/시스템 제압 설계, 세 번째 현실 연결 힌트 체인, 로컬 secret 템플릿과 현실 연결 안전 점검 문서, YAML→브라우저 JSON export, Vite 기반 fake-TUI 브라우저 셸, localStorage 저장, 복합기 현실 연결 pretext/Canvas 장면, 전 루트 웹 parity 테스트, 브라우저 아이템 사용·업적·능력치 판정·압박 UI, 인벤토리·업적·컨트롤·압박 패널, Rust content runner의 잠긴 선택지/위험도 parity까지 추가했다.
@@ -32,7 +32,7 @@ Rust content-backed 직접 플레이:
 cargo run -p escape-terminal -- --scene content --content-bundle crates/escape-core/fixtures/content/content.bundle.json --seed 123 --play
 ```
 
-주의: 현재 Rust 직접 플레이는 content runner에 가깝고, 목표 terminal UX는 아직 구현 전인 SuperLightTUI renderer다. 개인 서버/WSL에서 `cargo`가 없다면 일반적으로 `rustup`으로 설치한다.
+주의: 현재 Rust 직접 플레이는 SuperLightTUI snapshot 기반의 content renderer를 사용한다. 아직 전체 화면 app loop와 terminal-native GlyphFX polish는 확장 전이다. 개인 서버/WSL에서 `cargo`가 없다면 일반적으로 `rustup`으로 설치한다.
 
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal
@@ -90,8 +90,8 @@ PYTHONPATH=src python scripts/textual_qa_smoke.py  # Textual 설치 환경에서
 브라우저 legacy fake-TUI / 향후 Web Storybook 및 renderer-neutral content bundle:
 
 ```bash
-python scripts/export_web_data.py --write --bundle crates/escape-core/fixtures/content/content.bundle.json
-python scripts/export_web_data.py --check --bundle crates/escape-core/fixtures/content/content.bundle.json
+python scripts/export_web_data.py --write --bundle crates/escape-core/fixtures/content/content.bundle.json --bundle web/src/data/generated/content.bundle.json
+python scripts/export_web_data.py --check --bundle crates/escape-core/fixtures/content/content.bundle.json --bundle web/src/data/generated/content.bundle.json
 cd web
 npm install
 npm test
@@ -99,7 +99,7 @@ npm run build
 npm run dev -- --host 127.0.0.1 --port 8765
 ```
 
-현재 브라우저 앱은 `src/tui_adv/data/*.yaml`을 `web/src/data/generated/*.json`으로 export해서 사용하는 legacy fake-TUI 구현이다. 다음 방향은 Web Storybook + GlyphFX를 primary UX로 만들고, Rust/Web 공통 runtime 전환용 bundle(`crates/escape-core/fixtures/content/content.bundle.json`)과 future `escape-wasm` 경계를 통해 Rust GameCore를 호출하는 것이다. TypeScript mirror core는 당분간 대표 탈출/정복/진실/히든 루트, 소모품, 업적, 능력치 판정, 압박 상태를 검증하는 parity oracle로 유지하되 새 게임 규칙을 늘리는 곳이 아니다. 공개 secret JSON과 content bundle에는 실제 사무실 최종 위치나 `final_hint`를 넣지 않는다.
+현재 브라우저 앱은 `src/tui_adv/data/*.yaml`을 `web/src/data/generated/*.json`으로 export해서 사용하는 legacy fake-TUI 구현이다. Web Storybook + GlyphFX renderer skeleton과 Rust/Web 공통 runtime 전환용 bundle(`crates/escape-core/fixtures/content/content.bundle.json`, `web/src/data/generated/content.bundle.json`), `escape-wasm` JSON-string boundary는 준비되어 있다. 다음 방향은 Web Storybook을 그 wasm boundary에 실제로 연결하는 것이다. TypeScript mirror core는 당분간 대표 탈출/정복/진실/히든 루트, 소모품, 업적, 능력치 판정, 압박 상태를 검증하는 parity oracle로 유지하되 새 게임 규칙을 늘리는 곳이 아니다. 공개 secret JSON과 content bundle에는 실제 사무실 최종 위치나 `final_hint`를 넣지 않는다.
 
 패키지 설치 후에는 `tui-adv` console script를 사용할 수 있다.
 
@@ -175,12 +175,13 @@ npm run dev -- --host 127.0.0.1 --port 8765
 
 ## 다음 작업 후보
 
-현재 활성 계획 기준 남은 구현 순서는 다음이다.
+현재 활성 계획 기준 완료된 기반 작업은 다음이다.
 
-1. `escape-wasm` JSON-string boundary를 추가해 Web Storybook이 Rust GameCore를 호출하게 한다.
-2. `escape-terminal`을 SuperLightTUI 기반 terminal renderer/fallback으로 전환한다.
-3. Web/terminal 모두 같은 Rust core action id를 표시하는 parity smoke를 추가한다.
+1. renderer-neutral `ScenePage` contract, YAML `presentation`/`EffectCue` metadata, Web Storybook renderer skeleton.
+2. `escape-wasm` JSON-string boundary와 Web/Rust content bundle export.
+3. `escape-terminal` SuperLightTUI snapshot/play renderer.
+4. Web/terminal action id parity smoke.
 
-완료된 기반 작업: renderer-neutral `ScenePage` contract, YAML `presentation`/`EffectCue` metadata, Web Storybook renderer skeleton.
+다음 구현 순서는 route parity를 Rust GameCore 기준으로 확장하고 Web Storybook을 `escape-wasm` boundary에 실제로 연결하는 것이다.
 
 `idea_box`의 storypack 후보와 legacy Textual UX 조정은 활성 renderer/core 계획이 끝났거나 명시적으로 요청받았을 때 검토한다.

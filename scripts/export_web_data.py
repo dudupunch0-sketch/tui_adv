@@ -138,6 +138,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--bundle",
         type=Path,
+        action="append",
+        default=[],
         help="optional renderer-neutral content.bundle.json path for Rust/web runtime loading",
     )
     mode = parser.add_mutually_exclusive_group(required=True)
@@ -148,13 +150,17 @@ def main(argv: list[str] | None = None) -> int:
     if args.write:
         written = write_web_data(args.root, args.out_dir)
         print(f"wrote {len(written)} web data files to {args.out_dir}")
-        if args.bundle:
-            bundle_path = write_content_bundle(args.root, args.bundle)
+        for bundle in args.bundle:
+            bundle_path = write_content_bundle(args.root, bundle)
             print(f"wrote content bundle to {bundle_path}")
         return 0
 
     errors = check_web_data(args.root, args.out_dir)
-    bundle_errors = check_content_bundle(args.root, args.bundle) if args.bundle else []
+    bundle_errors = [
+        error
+        for bundle in args.bundle
+        for error in check_content_bundle(args.root, bundle)
+    ]
     if errors:
         print("web data is stale:")
         for error in errors:
@@ -166,7 +172,7 @@ def main(argv: list[str] | None = None) -> int:
     if errors or bundle_errors:
         return 1
     print("web data is up to date")
-    if args.bundle:
+    for _bundle in args.bundle:
         print("content bundle is up to date")
     return 0
 

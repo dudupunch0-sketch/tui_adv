@@ -67,6 +67,16 @@ fn printer_choice_returns_action_result_and_save_roundtrip() {
         .iter()
         .any(|line| line.contains("비상계단") && line.contains("토너")));
 
+    let value = serde_json::to_value(&result).expect("ActionResult should serialize");
+    assert_eq!(value["effect_cues"][0]["kind"], json!("glyph_anomaly"));
+    assert_eq!(value["effect_cues"][0]["source"], json!("copier_output"));
+    assert_eq!(value["effect_cues"][0]["intensity"], json!(0.72));
+    assert_eq!(
+        value["effect_cues"][0]["stable_terms"][0],
+        json!("비상계단")
+    );
+    assert!(value["effect_cues"][0].get("GlyphAnomaly").is_none());
+
     let envelope = save_state(&result.state);
     assert_eq!(envelope.schema_version, 1);
     assert_eq!(

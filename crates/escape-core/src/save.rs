@@ -1,8 +1,9 @@
 use crate::state::GameState;
+use serde::{Deserialize, Serialize};
 
 pub const SAVE_SCHEMA_VERSION: u32 = 1;
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct SaveEnvelope {
     pub schema_version: u32,
     pub state: GameState,

@@ -1,3 +1,5 @@
+use escape_wasm::{apply_action_json, new_game_json, scene_page_json};
+use serde_json::Value;
 use std::io::Write;
 use std::path::PathBuf;
 use std::process::{Command, Output, Stdio};
@@ -145,8 +147,11 @@ fn content_tui_smoke_renders_start_encounter_panel() {
     );
 
     let stdout = String::from_utf8_lossy(&output.stdout);
-    assert!(stdout.contains("[TUI Snapshot]"));
+    assert!(stdout.contains("[SuperLightTUI Snapshot]"));
+    assert!(stdout.contains("ESCAPE OFFICE // SuperLightTUI HORROR EDITION"));
     assert!(stdout.contains("[상태]"));
+    assert!(stdout.contains("[비주얼]"));
+    assert!(stdout.contains("GlyphFX:"));
     assert!(stdout.contains("위치: 내 자리 (dev_desk)"));
     assert!(stdout.contains("[현재 인카운터]"));
     assert!(stdout.contains("퇴사자의 메신저"));
@@ -183,7 +188,8 @@ fn content_tui_smoke_renders_final_movement_panel_after_scripted_actions() {
     );
 
     let stdout = String::from_utf8_lossy(&output.stdout);
-    assert!(stdout.contains("[TUI Snapshot]"));
+    assert!(stdout.contains("[SuperLightTUI Snapshot]"));
+    assert!(stdout.contains("ESCAPE OFFICE // SuperLightTUI HORROR EDITION"));
     assert!(stdout.contains("턴: 1"));
     assert!(stdout.contains("위치: 내 자리 (dev_desk)"));
     assert!(stdout.contains("체력: 100  정신력: 98  배터리: 97"));
@@ -193,6 +199,58 @@ fn content_tui_smoke_renders_final_movement_panel_after_scripted_actions() {
     assert!(stdout.contains("- 퇴사자의 메시지를 확인했다."));
     assert!(!stdout.contains("[현재 인카운터]"));
     assert!(!stdout.contains("== Turn 1 =="));
+}
+
+#[test]
+fn content_tui_smoke_action_ids_match_wasm_scene_page_after_scripted_action() {
+    let bundle_path = content_bundle_path();
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--content-bundle",
+            bundle_path.to_str().expect("bundle path should be UTF-8"),
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:check_message",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let terminal_action_ids =
+        action_ids_from_terminal_snapshot(&String::from_utf8_lossy(&output.stdout));
+
+    let bundle_json = std::fs::read_to_string(&bundle_path).expect("bundle should be readable");
+    let state_json = new_game_json(123, &bundle_json).expect("wasm new_game should serialize");
+    let result_json = apply_action_json(&state_json, &bundle_json, "choice:check_message")
+        .expect("wasm action result should serialize");
+    let result: Value = serde_json::from_str(&result_json).expect("action result should parse");
+    let next_state_json = serde_json::to_string(&result["state"]).expect("state should serialize");
+    let scene_json =
+        scene_page_json(&next_state_json, &bundle_json).expect("wasm scene page should serialize");
+    let scene: Value = serde_json::from_str(&scene_json).expect("scene page should parse");
+    let wasm_action_ids: Vec<String> = scene["actions"]
+        .as_array()
+        .expect("actions should be an array")
+        .iter()
+        .map(|action| {
+            action["id"]
+                .as_str()
+                .expect("id should be a string")
+                .to_string()
+        })
+        .collect();
+
+    assert_eq!(terminal_action_ids, wasm_action_ids);
+    assert_eq!(terminal_action_ids, vec!["move:dev_office".to_string()]);
 }
 
 #[test]
@@ -286,6 +344,22 @@ fn content_play_mode_rejects_invalid_input_without_exiting() {
 fn content_bundle_path() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("../escape-core/fixtures/content/content.bundle.json")
+}
+
+fn action_ids_from_terminal_snapshot(stdout: &str) -> Vec<String> {
+    stdout
+        .lines()
+        .filter_map(|line| {
+            let trimmed = line.trim_start();
+            let (_, rest) = trimmed.split_once(". ")?;
+            let (action_id, _) = rest.split_once(" / ")?;
+            if action_id.starts_with("choice:") || action_id.starts_with("move:") {
+                Some(action_id.to_string())
+            } else {
+                None
+            }
+        })
+        .collect()
 }
 
 fn run_escape_terminal_with_input(args: &[&str], input: &str) -> Output {

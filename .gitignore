@@ -48,3 +48,6 @@ target/
 .DS_Store
 .vscode/
 .idea/
+
+# Cloud-server local Rust convenience symlink
+/escape-terminal

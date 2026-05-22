@@ -5,8 +5,101 @@
 TUI는 플레이어가 현재 상황, 자원 압박, 선택지를 한눈에 읽고 빠르게 판단하게 해야 한다.
 동시에 `escape from the office`의 화면은 일반 게임 HUD가 아니라 이상한 사내 격리 대응 유틸리티처럼 보여야 한다.
 
-따라서 화면은 명확한 패널과 로그 중심으로 설계하되, 상태/선택지/알림은 사내 시스템, 진단 로그, 내부망 메시지처럼 표현한다.
-구체적인 글리치, 선택지 오염, 입력 왜곡 규칙은 `docs/design/UI_Rules.md`를 따른다.
+## 현재 위치
+
+이 문서는 기존 Python/Textual 및 legacy 패널형 TUI의 레이아웃 기록이다. 앞으로 terminal renderer 작업은 이 패널 구성을 그대로 늘리는 것이 아니라 `docs/dev/Rust_Core_Dual_Renderer_Architecture.md`의 **SuperLightTUI terminal renderer** 방향을 따른다. 즉, terminal은 fallback이지만 단순 debug dump가 아니라 `ScenePage`를 SuperLightTUI layout, ASCII/Unicode visual card, terminal-native GlyphFX로 표시하는 별도 renderer다.
+
+따라서 화면은 명확한 패널과 로그 중심의 장점을 유지하되, 새 terminal 구현은 Web Storybook과 같은 semantic page contract를 공유해야 한다. 상태/선택지/알림은 사내 시스템, 진단 로그, 내부망 메시지처럼 표현한다.
+구체적인 글리치, 선택지 오염, 입력 왜곡 규칙은 `docs/design/UI_Rules.md`와 `docs/design/TUI_Storybook_GlyphFX_Concept.md`를 따른다.
+
+## SuperLightTUI terminal renderer target
+
+새 terminal renderer는 이 문서 아래쪽의 legacy Textual 3-column layout을 그대로 복제하지 않는다. 목표는 `ScenePage`를 SuperLightTUI cell UI로 번역하는 것이다.
+
+```text
+ScenePage
+  -> SuperLightTUI app loop
+  -> status/location/chapter line
+  -> ASCII/Unicode visual card
+  -> body/dialogue page
+  -> choices and blocked reasons
+  -> recent history / inventory / achievement summary
+  -> terminal-native GlyphFX when EffectCue exists
+```
+
+### ScenePage region mapping
+
+| `ScenePage` field | Terminal region | 표시 원칙 |
+|---|---|---|
+| `mode` | title/status line | encounter/movement/ending을 명확히 구분 |
+| `location` | top line or location chip | 현재 위치와 위험도는 짧게 |
+| `chapter_label` | top line | 턴/격리 단계 label |
+| `status_summary` | compact status strip | 숫자보다 진단형 band 우선 |
+| `visual` | visual card | `visual.id` -> ASCII/Unicode/ANSI card |
+| `body_blocks` | main story panel | 가장 넓은 영역, 가독성 우선 |
+| `dialogue_entries` | speaker/body lines | speaker prefix는 짧게 |
+| `actions` | choices panel | 번호는 고정, id는 내부적으로 보존 |
+| `blocked_actions` | disabled choices or footnote | 이유를 짧게 표시 |
+| `history_entries` | recent history panel | 최근 3-5개, 상세는 후속 |
+| `pressure_cues` | warning strip | 저정신력/고갈증/저전원 cue |
+| `effect_cues` | GlyphFX layer | stable terms를 절대 잃지 않음 |
+
+### Target page skeleton
+
+```text
+┌ escape from the office ─ 격리 3턴 ─ 복합기 구역 ─ 집중도: 불안정 ┐
+│ ╭──────── visual: printer_anomaly ────────╮                    │
+│ │        ________                           │                    │
+│ │  ____ / PRINT /__                         │                    │
+│ │ |복합기|  ▒▒▒  |   비상계단               │                    │
+│ ╰──────────────────────────────────────────╯                    │
+│ 시스템 복합기: 아직 하지 않은 선택이 출력되고 있습니다.          │
+│ 종이는 따뜻하다. 일부 글자는 흔들리지만 세 단어만 남는다.        │
+│                                                                  │
+│ 1. 출력물을 챙긴다                       choice:take_printout    │
+│ 2. 토너 덮개를 연다                     choice:open_toner       │
+│ 3. 아무것도 하지 않고 물러난다           move:hallway            │
+├ 최근 기록 ───────────────────────────────────────────────────────┤
+│ [warning] 출력 큐가 현재 시각보다 3분 늦게 도착했습니다.         │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+### SuperLightTUI primitive usage
+
+Implementation slice에서 확인할 사용 지점:
+
+- `slt::run_with(...)` 또는 현재 equivalent app loop.
+- `RunConfig::tick_rate(...)` / `max_fps(60)` 또는 equivalent frame control.
+- flexbox-style layout으로 page region 배치.
+- normal widget tree로 부족한 visual/GlyphFX는 raw draw / cell-grid access 사용.
+- `ui.tick()` 또는 equivalent animation tick signal.
+- 가능하면 headless/test backend로 snapshot smoke 작성.
+
+### Visual card catalog baseline
+
+| `visual.id` | Terminal card |
+|---|---|
+| `opening_messenger` | 메신저 창/말풍선형 text card |
+| `printer_anomaly` | ASCII 복합기 + 흔들리는 출력지 + stable terms |
+| `office_corridor_static` | 복도/비상등/문 표식 Unicode card |
+| unknown | title/alt text만 있는 safe placeholder card |
+
+Inline image protocol은 baseline이 아니다. Kitty/Sixel/iTerm2 이미지는 나중에 capability detection 후 optional로만 검토한다.
+
+### Terminal GlyphFX rules
+
+- `EffectCue::GlyphAnomaly`는 terminal cell에서만 표현한다. Core에는 SuperLightTUI나 ANSI style object를 넣지 않는다.
+- `stable_terms`는 animation 중에도 사라지지 않거나, animation 후 반드시 같은 위치/명도에서 복구된다.
+- CJK width를 고려해 한글 단어를 cell 단위로 찢는 효과는 제한한다.
+- reduced-motion 또는 dumb terminal fallback에서는 `fallback_text`와 stable terms를 정적 텍스트로 보여준다.
+- Animation tick은 입력 처리를 막지 않는다. 선택 번호, `?`, `s`, `q`는 항상 읽힌다.
+
+### Action parity
+
+- Terminal 번호키는 현재 `ScenePage.actions` 배열의 순서에만 매핑한다.
+- 이동 단축키가 추가되어도 내부 실행은 `move:<location_id>` action id여야 한다.
+- Terminal-only shortcut은 save/help/quit 같은 renderer control에만 허용한다.
+- Web과 terminal smoke는 같은 seed/content/action sequence에서 같은 action id 목록을 보여야 한다.
 
 ## 기본 화면 구성
 

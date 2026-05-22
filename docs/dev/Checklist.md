@@ -39,6 +39,19 @@
 - [x] 현실 연결 안전 원칙 문서화
 - [x] 실제 위치 정보 비공개 관리 방식 확정: 공개 문서에는 중간 힌트까지만, 최종 위치는 private/local
 
+### 0.2b 2026-05-22 렌더러/런타임 방향 갱신
+
+- [x] 활성 방향 확정: Rust GameCore 공통 + Web Storybook/GlyphFX primary UX + SuperLightTUI terminal renderer/fallback
+- [x] `docs/dev/Rust_Core_Dual_Renderer_Architecture.md` 생성
+- [x] 최신 계획 문서에 SuperLightTUI terminal renderer가 fallback/debug dump와 다르다는 기준 반영
+- [x] `docs/dev/Data_Schema.md`에 renderer-neutral bundle, `ScenePage`, action id, `EffectCue`, WASM JSON boundary 설계 기록
+- [x] `docs/design/UI_Rules.md`와 `docs/dev/TUI_Layout.md`에 Web Storybook/SuperLightTUI renderer UX contract 기록
+- [x] `escape-core`에 renderer-safe `ScenePage` contract 추가
+- [x] Web Storybook renderer skeleton 추가
+- [ ] `escape-wasm` JSON-string boundary 추가
+- [ ] `escape-terminal`을 SuperLightTUI renderer로 전환
+- [ ] Web/terminal 모두 같은 Rust core action id를 표시하는 parity smoke 추가
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

@@ -1,12 +1,13 @@
-import './styles/fake-tui.css';
+import './styles/storybook.css';
 
 import { buildTurn, executeAction } from './game/actions';
 import { loadSavedState, saveState } from './game/save';
 import { newGame } from './game/state';
 import type { GameState, GameTurn } from './game/types';
+import { scenePageFromLegacyTurn } from './core/scenePageFromTurn';
 import { startPrinterFlowEffect } from './effects/printerFlow';
 import { actionIdForKey, NEW_GAME_ACTION_ID } from './ui/keyboard';
-import { renderGameShell } from './ui/render';
+import { renderStorybookPage } from './ui/storybook/render';
 
 const rootElement = document.querySelector<HTMLDivElement>('#app');
 if (!rootElement) throw new Error('missing #app root');
@@ -17,7 +18,7 @@ let turn: GameTurn = buildTurn(state);
 
 function render(): void {
   turn = buildTurn(state);
-  appRoot.innerHTML = renderGameShell(turn);
+  appRoot.innerHTML = renderStorybookPage(scenePageFromLegacyTurn(turn));
   appRoot.querySelectorAll<HTMLButtonElement>('[data-action-id]').forEach((button) => {
     button.addEventListener('click', () => runAction(button.dataset.actionId ?? ''));
   });

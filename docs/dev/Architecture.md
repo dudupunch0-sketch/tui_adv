@@ -2,31 +2,52 @@
 
 ## 목적
 
-`escape from the office`의 코드는 게임 규칙, 콘텐츠 데이터, TUI 표현을 분리한다.
-핵심 원칙은 “엔진은 순수 로직, TUI는 표시와 입력, 콘텐츠는 데이터”다.
+`escape from the office`의 코드는 게임 규칙, 콘텐츠 데이터, 표현 계층을 분리한다.
+현재 활성 원칙은 “Core owns truth. Renderer owns mood.”다.
 
-## 선택한 접근
+## 현재 활성 방향 (2026-05-22)
 
-- 언어: Python 3.x + TypeScript
-- 엔진: 표준 라이브러리 중심의 순수 Python 모듈, 브라우저 수직 슬라이스는 TypeScript mirror core
-- TUI: Textual 기반 앱을 기본 목표로 한다.
-- 브라우저: Vite 기반 fake-TUI shell, TypeScript mirror core, 특수 장면은 Canvas + `@chenglou/pretext`
-- 콘텐츠 데이터: YAML 파일, 브라우저 앱은 생성 JSON 사용
-- 저장 데이터: Python은 JSON 파일, 브라우저는 localStorage
-- 테스트: pytest + Vitest
+이 문서의 과거 Python/Textual, TypeScript mirror core 설명은 현재 구현 이력과 전환기 scaffold를 이해하기 위한 것이다. 앞으로 새 시각/상호작용 작업은 다음 구조를 따른다.
 
-Textual을 선택하는 이유:
+```text
+Rust GameCore
+  ├─ Web Storybook + GlyphFX renderer
+  │   └─ primary player UX
+  └─ SuperLightTUI terminal renderer
+      └─ terminal-native fallback / horror edition
+```
 
-- 상태 패널, 로그 패널, 선택지 패널 같은 고정 레이아웃에 적합하다.
-- 키 입력과 화면 갱신을 명확하게 분리할 수 있다.
-- 나중에 미니맵, 로그 스크롤, 도움말 모달을 추가하기 쉽다.
+확정 기준:
+
+- `crates/escape-core`가 상태, 콘텐츠, 선택 가능 action, 결과, 엔딩, 업적, save schema, `EffectCue`/`ScenePage`의 truth를 소유한다.
+- Web Storybook + GlyphFX가 플레이어용 primary UX 후보다. 이미지/장면 컷, 대화 내역, 읽기 중심 선택지, Canvas/GlyphFX는 이 경로에서 먼저 구현한다.
+- Rust terminal 경로는 SuperLightTUI 기반 renderer로 유지한다. terminal은 fallback이지만 단순 `println!` debug dump가 아니라 terminal-native horror edition이어야 한다.
+- 기존 Python/Textual과 TypeScript mirror core는 당분간 legacy/parity oracle로 유지한다. 새 게임 규칙은 TypeScript나 renderer에서 늘리지 않는다.
+- 세부 기준은 `docs/dev/Rust_Core_Dual_Renderer_Architecture.md`를 따른다.
+
+## 현재 구현/레거시 접근
+
+- 언어: Python 3.x + TypeScript + Rust workspace 전환기
+- 현재 Python 엔진: 표준 라이브러리 중심의 순수 Python 모듈
+- 현재 브라우저: Vite 기반 fake-TUI shell, TypeScript mirror core, 특수 장면은 Canvas/pretext 계열 실험
+- 현재 Rust: `escape-core`와 `escape-terminal` content runner 일부 parity
+- 목표 TUI: `escape-terminal`의 SuperLightTUI renderer
+- 콘텐츠 데이터: YAML 파일, browser/Rust는 생성 JSON/content bundle 사용
+- 저장 데이터: Python은 JSON 파일, 브라우저는 localStorage, Rust core는 save schema를 수렴 목표로 둔다.
+- 테스트: pytest + Vitest + Cargo tests
+
+Textual을 유지하는 이유(legacy/parity):
+
+- 이미 저장/시작 화면/도움말/인벤토리/로그 패널 smoke coverage가 있다.
+- Rust/Web 전환 중 대표 route와 save/load 동작을 비교하는 oracle로 쓸 수 있다.
+- 단, Textual을 장기 primary UX로 더 키우지 않는다.
 
 주의:
 
-- 게임 엔진은 Textual을 import하지 않는다.
-- TUI 없이도 테스트와 headless 실행이 가능해야 한다.
+- `escape-core`는 SuperLightTUI, Textual, DOM, Canvas, CSS를 import하지 않는다.
+- renderer 없이도 테스트와 headless 실행이 가능해야 한다.
 - YAML 로더와 데이터 검증은 앱 시작 전에 독립적으로 실행 가능해야 한다.
-- 브라우저 앱은 공개 YAML을 직접 수정하지 않고 `scripts/export_web_data.py`로 생성한 JSON만 읽는다.
+- 브라우저/러스트 앱은 공개 YAML을 직접 수정하지 않고 `scripts/export_web_data.py`로 생성한 JSON/bundle을 읽는다.
 - 브라우저 번들에는 실제 사무실 최종 위치나 local secret이 들어가지 않는다.
 
 ## 상위 구조
@@ -103,26 +124,31 @@ web/
 YAML content files
         |
         v
- data.loader + data.validate
+scripts/export_web_data.py
         |
-        +----> scripts/export_web_data.py ---> web/src/data/generated/*.json ---> Vite fake-TUI
-        |
-        v
- pure game models + engine  <---- tests call this directly
+        +--> web/src/data/generated/*.json              # legacy TS mirror/parity
+        +--> crates/escape-core/fixtures/content/*.json # Rust content bundle
         |
         v
- Textual TUI adapter
+crates/escape-core
         |
-        v
- terminal display/input
+        +--> ScenePage / TurnView / ActionResult / EffectCue
+        |
+        +--> web Storybook renderer via future escape-wasm
+        |
+        +--> escape-terminal SuperLightTUI renderer
+
+legacy Python/Textual + TypeScript mirror remain temporary parity/oracle surfaces.
 ```
 
 금지 방향:
 
+- `escape-core`가 SuperLightTUI/crossterm, wasm-bindgen/web-sys, DOM/Canvas/CSS를 import하지 않는다.
+- renderer가 action eligibility, outcome, ending, achievement를 재계산하지 않는다.
 - `game/`이 `tui/`를 import하지 않는다.
 - `game/`이 Textual/Rich 스타일 객체를 만들지 않는다.
-- 데이터 파일이 Python 코드를 실행하지 않는다.
-- 현실 최종 위치가 공개 데이터 파일에 들어가지 않는다.
+- 데이터 파일이 Python/Rust/TypeScript 코드를 실행하지 않는다.
+- 현실 최종 위치가 공개 데이터 파일이나 Web asset에 들어가지 않는다.
 
 ## 핵심 모델
 
@@ -220,13 +246,15 @@ check_endings(state, content) -> EndingResult | None
 6. 공개 데이터와 private 데이터의 충돌 검사
 7. 새 게임 생성
 
-브라우저 앱은 앱 시작 전에 다음 흐름을 사용한다.
+브라우저/Rust 앱은 앱 시작 전 또는 CI에서 다음 흐름을 사용한다.
 
-1. `python scripts/export_web_data.py --write`
-2. `web/src/data/generated/*.json` 갱신
-3. `python scripts/export_web_data.py --check`로 stale 여부와 public secret private-only 필드 누출 확인
-4. Vite 앱이 생성 JSON을 import해 TypeScript mirror core에서 사용
-5. `cd web && npm test`가 대표 terminal 루트 parity, 소모품, 업적, 능력치 판정, 압박 UI, secret guard를 검증
+1. `python scripts/export_web_data.py --write --bundle crates/escape-core/fixtures/content/content.bundle.json`
+2. `web/src/data/generated/*.json`와 Rust content bundle 갱신
+3. `python scripts/export_web_data.py --check --bundle crates/escape-core/fixtures/content/content.bundle.json`로 stale 여부와 public secret private-only 필드 누출 확인
+4. Legacy Vite fake-TUI는 생성 JSON을 import해 TypeScript mirror core에서 사용한다.
+5. Future Web Storybook은 generated content bundle + `escape-wasm`을 통해 Rust GameCore를 호출한다.
+6. `cd web && npm test`가 현재 TypeScript parity, 소모품, 업적, 능력치 판정, 압박 UI, secret guard를 검증한다.
+7. `cargo test --workspace`가 Rust content/core/terminal contract를 검증한다.
 
 private/local secret 파일이 없어도 게임은 실행되어야 한다.
 그 경우 현실 연결 루트는 중간 힌트까지만 표시한다.
@@ -264,7 +292,7 @@ private/local secret 파일이 없어도 게임은 실행되어야 한다.
 7. 데이터 로더와 참조 무결성
 8. 저장/불러오기 동일성
 
-브라우저 쪽 Vitest는 `web/src/game/parity.test.ts`에서 대표 terminal 루트(탈출·정복·진실·히든), 소모품 사용, 업적 해금, 고갈증/저정신력 압박, 능력치 판정 분기를 mirror core로 검증하고, `web/src/ui/render.test.ts`에서 인벤토리·업적·컨트롤·압박 fake-TUI 패널을 검증한다.
+브라우저 쪽 Vitest는 현재 `web/src/game/parity.test.ts`에서 대표 terminal 루트(탈출·정복·진실·히든), 소모품 사용, 업적 해금, 고갈증/저정신력 압박, 능력치 판정 분기를 mirror core로 검증하고, `web/src/ui/render.test.ts`에서 legacy fake-TUI 패널을 검증한다. 새 Web Storybook 작업은 `web/src/ui/storybook/*` 테스트로 분리하고, 새 게임 규칙은 TypeScript mirror가 아니라 Rust GameCore/WASM contract에서 검증한다.
 
 ## 1차 구현 비범위
 
@@ -277,15 +305,19 @@ private/local secret 파일이 없어도 게임은 실행되어야 한다.
 - 실제 인터넷 접속 기능
 - 공개 데이터에 실제 현실 위치 포함
 
-## 구현 순서
+## 현재 이후 구현 순서
 
-1. `pyproject.toml`과 패키지 구조 생성
-2. `PlayerState`/`GameState` 구현
-3. 자원 변화와 턴 경과 테스트
-4. 위치 모델과 이동 구현
-5. 인카운터/선택지/효과 모델 구현
-6. YAML 데이터 로더와 검증 구현
-7. 최소 Textual TUI 연결
-8. 1차 콘텐츠 데이터 작성
-9. 엔딩/히든 힌트 연결
-10. 저장/불러오기와 시드 재현성 추가
+완료된 기반 작업:
+
+1. `docs/dev/Rust_Core_Dual_Renderer_Architecture.md`와 README/계획 문서가 Web primary + SuperLightTUI terminal 방향을 명확히 고정했다.
+2. `escape-core`에 renderer-safe `ScenePage` contract를 추가했다.
+3. YAML/content bundle에 optional presentation metadata(`visual_id`, speaker/effect hints)를 추가했다.
+4. Web Storybook renderer skeleton과 visual/history/choice region을 추가했다.
+
+남은 구현 순서:
+
+1. `escape-wasm` JSON-string boundary를 추가해 Web Storybook이 Rust GameCore contract를 직접 소비하게 한다.
+2. `escape-terminal`을 SuperLightTUI 기반 renderer로 전환한다.
+3. terminal renderer는 `ScenePage`를 받아 ASCII/Unicode visual card와 terminal-native GlyphFX를 표시한다.
+4. Web/terminal action id parity smoke를 추가한다.
+5. route parity를 Rust core 기준으로 확장하고, legacy Python/Textual/TS mirror는 검증 oracle로 점진 축소한다.

@@ -1,6 +1,24 @@
 # escape from the office 전체 개발 계획
 
-> 현재 문서는 구현 전 기준점이다. 실제 코드 작성 전, 기획/설계/콘텐츠/개발 작업을 분리해서 진행하기 위한 상위 계획이다.
+> 이 문서는 처음 작성된 구현 전 기준점을 포함한다. 현재 활성 렌더러/런타임 방향은 아래 “2026-05-22 방향 갱신”을 우선한다.
+
+## 0. 2026-05-22 방향 갱신
+
+현재 개발 방향은 다음과 같이 고정한다.
+
+```text
+Rust GameCore
+  ├─ Web Storybook + GlyphFX renderer
+  │   └─ primary player UX
+  └─ SuperLightTUI terminal renderer
+      └─ terminal-native fallback / horror edition
+```
+
+- Web Storybook + GlyphFX가 플레이어용 메인 UX 후보다. 이미지/장면 컷, 대화 내역, 읽기 중심 선택지, Canvas/GlyphFX는 이 경로에서 먼저 구현한다.
+- Rust terminal 경로는 SuperLightTUI 기반 renderer로 유지한다. fallback은 우선순위/환경 호환성의 의미이며, 단순 debug dump를 뜻하지 않는다.
+- Python/Textual과 TypeScript mirror core는 전환기 legacy/parity oracle이다. 새 게임 규칙을 그쪽에 계속 복제하지 않는다.
+- 세부 아키텍처는 `docs/dev/Rust_Core_Dual_Renderer_Architecture.md`를 따른다.
+- wire schema와 구현 계약은 `docs/dev/Data_Schema.md`의 renderer-neutral content bundle, `ScenePage`, action id, `EffectCue`, WASM JSON boundary 설계를 따른다.
 
 ## 1. 목표
 
@@ -37,16 +55,17 @@
 
 ## 3. 기본 가정
 
-현재 문서 기준 기술 스택은 다음과 같이 확정한다.
+현재 활성 기술 방향은 다음과 같다.
 
-- 언어: Python 3.x
-- TUI: Textual 기반 인터페이스
-- 데이터 파일: YAML
-- 테스트: pytest
-- 저장 데이터: JSON
-- 콘텐츠는 가능한 코드에 박지 않고 데이터 파일로 분리한다.
+- 원본 콘텐츠: YAML
+- 공통 런타임: Rust GameCore(`escape-core`) + renderer-neutral content bundle
+- Primary UX: Web Storybook + GlyphFX
+- Terminal UX: SuperLightTUI 기반 terminal renderer/fallback
+- Legacy/parity: Python/Textual, TypeScript mirror core, 기존 fake-TUI browser shell
+- 테스트: pytest + Vitest + Cargo tests
+- 저장 데이터: JSON/schema-versioned envelope로 수렴
 
-게임 엔진은 Textual에 의존하지 않는 순수 Python 로직으로 유지하고, TUI는 엔진을 호출하는 어댑터로 둔다.
+게임 규칙은 renderer에 의존하지 않는 Rust core로 수렴한다. Web과 terminal은 core가 제공한 `ScenePage`/`TurnView`/`ActionResult`/`EffectCue`를 표시하고 입력을 전달하는 어댑터로 둔다.
 
 ## 4. 주요 시스템
 
@@ -514,28 +533,31 @@ src/tui_adv/data/secrets.example.yaml
 
 ## 8. 우선순위
 
-최우선:
+현재 완료된 기반:
 
-1. 문서 계층 정리
-2. 상태 시스템
-3. 게임 루프
-4. 인카운터/선택지 엔진
-5. 최소 TUI
+1. 문서와 계획에 Web Storybook primary + SuperLightTUI terminal renderer 방향을 명확히 고정했다.
+2. `escape-core`에 renderer-safe `ScenePage` contract를 추가했다.
+3. Web Storybook renderer skeleton을 세워 visual/body/history/choice/status region과 GlyphFX reduced-motion fallback을 검증했다.
 
-그 다음:
+현재 최우선 남은 작업:
 
-1. 데이터 파일 분리
-2. 콘텐츠 15개
-3. 탈출 엔딩
-4. 첫 번째 현실 힌트 루트
-5. 저장/불러오기
+1. `escape-wasm` JSON-string boundary를 추가해 Web Storybook이 Rust GameCore를 직접 호출하게 한다.
+2. `escape-terminal`을 SuperLightTUI renderer로 전환해 terminal-native fallback/horror edition을 만든다.
+3. Web/terminal action id parity smoke를 추가한다.
+4. route parity를 Rust GameCore 기준으로 확장한다.
+
+전환 중 유지:
+
+1. Python/Textual 직접 플레이와 smoke는 legacy/parity oracle로 유지한다.
+2. TypeScript mirror core와 fake-TUI browser shell은 Web Storybook/WASM 전환 전까지 비교 대상으로 유지한다.
+3. 새 게임 규칙은 renderer가 아니라 Rust core에 추가한다.
 
 나중:
 
-1. 정복 루트
-2. 진실 루트
-3. 재난 타입별 변형
-4. 복잡한 맵 변형
+1. Python/Textual과 TypeScript mirror의 freeze/retire 여부 결정
+2. 정복/진실/재난 타입별 변형의 Rust core parity 확대
+3. Web/Tauri/Electron 패키징 검토
+4. terminal inline image optional 지원 검토
 5. 여러 히든 현실 보물
 
 ## 9. 주요 리스크
@@ -569,20 +591,19 @@ src/tui_adv/data/secrets.example.yaml
 - 공개 예시는 `secrets.example.yaml`로 따로 둔다.
 - 릴리즈 체크리스트에 비밀 정보 검사 항목을 넣는다.
 
-### TUI와 엔진 결합
+### Renderer와 core 결합
 
-TUI 테스트가 어려워질 수 있다.
+Web 또는 terminal renderer가 게임 규칙을 다시 구현하면 Rust GameCore 공통화가 깨진다.
 
 대응:
 
-- 엔진은 순수 Python 로직으로 유지한다.
-- TUI는 상태 표시와 입력 전달만 맡는다.
+- `escape-core`가 action eligibility, outcome, ending, achievement의 truth를 소유한다.
+- Web Storybook과 SuperLightTUI terminal은 `ScenePage`/`ActionResult`를 표시하고 action id만 전달한다.
+- SuperLightTUI는 `escape-terminal`에만 추가하고 `escape-core`에는 절대 넣지 않는다.
 
 ## 10. 다음 액션
 
-1. `docs/01_Game_Overview.md` 작성
-2. `docs/design/Player_State.md` 작성
-3. `docs/design/Game_Loop.md` 작성
-4. `docs/design/Map.md` 작성
-5. `docs/story/Story.md` 작성
-6. 기술 스택 확정 후 Phase 1 시작
+1. `docs/dev/Checklist.md`의 0.2b 렌더러/런타임 체크리스트를 기준으로 남은 구현 slice를 나눈다.
+2. 다음 구현 항목은 `escape-wasm` JSON-string boundary다.
+3. 그 다음 `escape-terminal`을 SuperLightTUI renderer로 전환한다.
+4. Web/terminal 모두 같은 Rust core action id를 표시하는 parity smoke를 추가한다.

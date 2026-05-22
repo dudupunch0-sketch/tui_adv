@@ -27,6 +27,13 @@ pub struct PlayerState {
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
+pub struct GameHistoryEntry {
+    pub kind: String,
+    pub text: String,
+    pub source_id: Option<String>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct GameState {
     pub seed: u64,
     pub turn: u32,
@@ -36,6 +43,7 @@ pub struct GameState {
     pub flags: Vec<String>,
     pub clues: Vec<String>,
     pub seen_encounters: Vec<String>,
+    pub history: Vec<GameHistoryEntry>,
 }
 
 impl GameState {
@@ -53,6 +61,7 @@ impl GameState {
             flags: Vec::new(),
             clues: Vec::new(),
             seen_encounters: Vec::new(),
+            history: Vec::new(),
         }
     }
 
@@ -84,6 +93,7 @@ impl GameState {
             flags: Vec::new(),
             clues: Vec::new(),
             seen_encounters: Vec::new(),
+            history: Vec::new(),
         })
     }
 
@@ -107,5 +117,13 @@ impl GameState {
         {
             self.seen_encounters.push(encounter_id.to_string());
         }
+    }
+
+    pub(crate) fn add_history_entry(&mut self, kind: &str, text: &str, source_id: Option<&str>) {
+        self.history.push(GameHistoryEntry {
+            kind: kind.to_string(),
+            text: text.to_string(),
+            source_id: source_id.map(str::to_string),
+        });
     }
 }

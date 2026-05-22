@@ -70,7 +70,7 @@ pub enum ContentIndexError {
     },
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct ContentIndex {
     locations: BTreeMap<String, LocationDef>,
     encounters: BTreeMap<String, EncounterDef>,
@@ -106,14 +106,43 @@ pub struct ContentConditions {
     pub min_abilities: ResourceMap,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct EncounterDef {
     pub id: String,
     pub title: String,
     pub body: String,
+    pub presentation: Option<PresentationDef>,
     pub conditions: ContentConditions,
     pub choices: Vec<ChoiceDef>,
     pub weight: u32,
+}
+
+#[derive(Clone, Debug, Deserialize, Default, PartialEq)]
+pub struct PresentationDef {
+    #[serde(default)]
+    pub visual_id: Option<String>,
+    #[serde(default)]
+    pub speaker: Option<String>,
+    #[serde(default)]
+    pub layout: Option<String>,
+    #[serde(default)]
+    pub effect_cues: Vec<PresentationEffectCue>,
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq)]
+pub struct PresentationEffectCue {
+    pub kind: String,
+    pub source: String,
+    #[serde(default)]
+    pub intensity: f32,
+    #[serde(default)]
+    pub stable_terms: Vec<String>,
+    #[serde(default)]
+    pub distortion: String,
+    #[serde(default)]
+    pub duration_hint_ms: Option<u32>,
+    #[serde(default)]
+    pub fallback_text: Option<String>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -149,6 +178,8 @@ struct RawEncounterDef {
     title: String,
     #[serde(default)]
     body: String,
+    #[serde(default)]
+    presentation: Option<PresentationDef>,
     #[serde(default)]
     conditions: ContentConditions,
     #[serde(default)]
@@ -344,6 +375,7 @@ fn parse_encounter(value: &Value) -> Result<EncounterDef, ContentIndexError> {
         id: raw.id,
         title: raw.title,
         body: raw.body,
+        presentation: raw.presentation,
         conditions: raw.conditions,
         choices,
         weight: raw.weight,

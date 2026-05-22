@@ -3,7 +3,7 @@
 ## 목적
 
 `escape from the office`의 공개 런타임 콘텐츠는 `src/tui_adv/data/*.yaml`에서 관리한다.
-이 문서는 현재 코드(`src/tui_adv/game/content.py`, `encounters.py`, `items.py`, `endings.py`, `secrets.py`)가 실제로 읽는 스키마만 기록한다.
+이 문서는 현재 Python/Textual·legacy TypeScript mirror가 읽는 YAML schema와, 전환 목표인 Rust GameCore/Web Storybook/SuperLightTUI가 공유할 renderer-neutral wire contract를 함께 기록한다.
 
 현재 공개 데이터 수:
 
@@ -27,6 +27,407 @@
 - 위치 연결, 인카운터/엔딩 조건의 위치·아이템 참조, 인카운터 결과의 이동 목적지·아이템 참조, public secret의 `final_hint` 누락 정책을 검사한다.
 - 자원 이름은 `health`, `sanity`, `battery`, `hunger`, `thirst`만 사용한다.
 - `health`, `sanity`, `battery`는 높을수록 좋고, `hunger`, `thirst`는 낮을수록 좋다.
+
+## 2026-05-22 Rust renderer-neutral schema direction
+
+이 문서는 이제 두 층을 함께 기록한다.
+
+1. 현재 Python/Textual 및 legacy TypeScript mirror가 실제로 읽는 YAML authoring schema.
+2. 새 목표 구조인 Rust GameCore + Web Storybook + SuperLightTUI terminal renderer가 공유할 renderer-neutral wire contract.
+
+책임 분리는 다음 문서를 따른다.
+
+- `docs/dev/Rust_Core_Dual_Renderer_Architecture.md`: crate/renderer 책임과 migration 흐름.
+- 이 문서: YAML, generated bundle, `ScenePage`, `ActionResult`, `EffectCue`, WASM JSON boundary의 data shape.
+
+핵심 원칙:
+
+```text
+YAML authoring data
+  -> renderer-neutral content.bundle.json
+  -> Rust GameCore state/action/result
+  -> ScenePage semantic page
+  -> Web Storybook or SuperLightTUI terminal rendering
+```
+
+Renderer는 action eligibility, outcome, ending, achievement를 다시 계산하지 않는다. Renderer는 core가 제공한 action id와 semantic cue만 표시하고, 선택된 action id를 다시 core에 전달한다.
+
+## Authoring schema vs runtime contract
+
+| 층 | 소유 | 용도 | renderer-specific 데이터 허용 |
+|---|---|---|---|
+| `src/tui_adv/data/*.yaml` | human-authored content | 원본 공개 콘텐츠 | no |
+| `content.bundle.json` | exporter output | Rust/Web 공통 runtime input | no |
+| `TurnView` | `escape-core` | low-level runner/debug compatibility | no |
+| `ScenePage` | `escape-core` | renderer-ready semantic page | no |
+| Web visual catalog | `web/src/ui/storybook/*` | `visual_id` -> DOM/CSS/SVG/Canvas/image | yes |
+| Terminal visual catalog | `crates/escape-terminal/*` | `visual_id` -> ASCII/Unicode/ANSI/SuperLightTUI cells | yes |
+
+`ScenePage`와 `content.bundle.json`에는 CSS class, pixel coordinate, Canvas command, terminal color object, SuperLightTUI type, DOM selector, image file path를 넣지 않는다.
+
+## Presentation metadata
+
+중요한 장면은 YAML에 optional `presentation` metadata를 가질 수 있다. 이 metadata는 renderer별 구현 세부가 아니라 semantic hint다.
+
+Encounter 예:
+
+```yaml
+encounters:
+  - id: printer_prints_alone
+    title: 복합기가 혼자 출력한다
+    body: 꺼져 있던 복합기가 아직 하지 않은 선택을 출력한다.
+    presentation:
+      visual_id: printer_anomaly
+      speaker: 시스템 복합기
+      layout: anomaly_object
+      effect_cues:
+        - kind: glyph_anomaly
+          source: copier_output
+          intensity: 0.72
+          stable_terms: [비상계단, 토너, 접힌 방향]
+          distortion: reflow_then_stabilize
+    conditions:
+      locations: [printer_area]
+```
+
+Location 예:
+
+```yaml
+locations:
+  - id: hallway
+    name: 복도
+    description: 비상등만 남은 복도.
+    presentation:
+      visual_id: office_corridor_static
+      layout: location_page
+```
+
+규칙:
+
+- `presentation`은 optional이다.
+- `presentation.visual_id`가 없으면 core는 deterministic fallback id를 만든다.
+  - encounter page: `encounter:<encounter_id>`
+  - movement/location page: `location:<location_id>`
+  - ending page: `ending:<ending_id>`
+- `visual_id`는 semantic id다. `web/assets/printer.webp` 같은 path를 넣지 않는다.
+- `speaker`는 dialogue/body hint다. Renderer는 이를 말풍선, speaker label, terminal prefix 등으로 해석할 수 있다.
+- `layout`은 semantic layout kind다. CSS class나 SuperLightTUI widget name이 아니다.
+- `effect_cues[].stable_terms`는 Web/terminal/reduced-motion 모두에서 읽을 수 있어야 한다.
+- 공개 YAML에는 실제 회사 위치, 실제 내부망 주소, 실제 사람 이름, 실제 최종 보물 위치, `final_hint`를 넣지 않는다.
+
+초기 visual id 후보:
+
+| id | 의미 | Web 해석 | Terminal 해석 |
+|---|---|---|---|
+| `opening_messenger` | 퇴사자 메신저/오프닝 text-first scene | 문서/메신저형 card | text-first page + small message frame |
+| `printer_anomaly` | 복합기 출력/현실 연결 단서 | Canvas/GlyphFX + visual card | ASCII 복합기 card + cell GlyphFX |
+| `office_corridor_static` | 이동/fallback location page | 정적인 복도 visual card | Unicode corridor card |
+
+Unknown visual id는 빈 화면이 아니라 safe placeholder를 표시한다. Placeholder는 `visual.alt` 또는 title을 보여주고, action 선택은 계속 가능해야 한다.
+
+## Renderer-neutral `content.bundle.json`
+
+Rust fixture와 Web runtime은 같은 bundle schema를 사용한다.
+
+권장 artifact paths:
+
+```text
+crates/escape-core/fixtures/content/content.bundle.json
+web/src/data/generated/content.bundle.json
+```
+
+초안 shape:
+
+```json
+{
+  "schema_version": 1,
+  "kind": "tui_adv.content_bundle",
+  "source": "src/tui_adv/data/*.yaml",
+  "manifest": {
+    "schema_version": 1,
+    "source": "src/tui_adv/data/*.yaml",
+    "counts": {
+      "locations": 16,
+      "items": 13,
+      "encounters": 20,
+      "endings": 13,
+      "achievements": 11,
+      "secrets": 3
+    }
+  },
+  "content": {
+    "locations": [],
+    "items": [],
+    "encounters": [],
+    "endings": [],
+    "achievements": [],
+    "secrets": []
+  }
+}
+```
+
+Bundle 규칙:
+
+- Bundle은 public-safe 데이터만 포함한다.
+- `presentation` metadata는 semantic field만 보존한다.
+- `final_hint`, `actual_ip_address`, `office_location`, `treasure_location` 같은 private-only field는 bundle, WASM fixture, Web generated data에 들어가면 안 된다.
+- Exporter check는 Rust fixture bundle과 Web runtime bundle이 둘 다 최신인지 확인해야 한다.
+
+## Action ID contract
+
+Core가 renderer에 제공하는 action id는 그대로 `apply_action_from_content` 또는 WASM `apply_action_json`에 전달 가능한 값이어야 한다.
+
+| prefix | 예 | 의미 |
+|---|---|---|
+| `choice:` | `choice:check_message` | 현재 encounter choice 실행 |
+| `move:` | `move:dev_office` | 현재 위치에서 인접 위치로 이동 |
+| `use:` | `use:bottled_water` | 사용 가능한 inventory item 소비 |
+
+Renderer 규칙:
+
+- 표시 번호(`1`, `2`, `3`)는 renderer-local이다.
+- 실제 실행은 항상 `SceneAction.id`로 한다.
+- Web button, number key, terminal number key, 이동 단축키는 모두 같은 core action id로 수렴한다.
+- Renderer는 조건을 재계산하지 않는다. 비활성 행동은 `blocked_actions`의 reason을 표시한다.
+- 알 수 없는 action id나 현재 turn에 없는 stale action id는 사용자-facing error로 처리하고 state를 변경하지 않는다.
+
+## Low-level core contracts
+
+`TurnView`는 현재 runner/debug compatibility용 low-level view다. 새 renderer는 가능하면 `ScenePage`를 사용하지만, migration 중 `TurnView`는 유지할 수 있다.
+
+```json
+{
+  "location_id": "dev_desk",
+  "encounter_id": "ex_employee_messenger",
+  "title": "퇴사자의 메신저",
+  "body": "꺼진 사내 메신저가 다시 켜졌다.",
+  "actions": [
+    { "id": "choice:check_message", "label": "메시지를 확인한다" }
+  ],
+  "blocked_actions": [
+    { "id": "choice:trace_network", "label": "라우팅을 추적한다", "reasons": ["필요: 단말기 전원 충분"] }
+  ],
+  "effect_cues": []
+}
+```
+
+`ActionResult` 초안:
+
+```json
+{
+  "action_id": "choice:check_message",
+  "source_id": "ex_employee_messenger",
+  "state": { "...": "GameState" },
+  "logs": ["메시지 마지막 줄만 도착했다."],
+  "newly_unlocked_achievements": [],
+  "effect_cues": []
+}
+```
+
+`SaveEnvelope` 초안:
+
+```json
+{
+  "schema_version": 1,
+  "state": {
+    "seed": 123,
+    "turn": 1,
+    "location_id": "dev_desk",
+    "danger": 0,
+    "player": {
+      "health": 100,
+      "sanity": 100,
+      "battery": 100,
+      "hunger": 0,
+      "thirst": 0
+    },
+    "inventory": [],
+    "clues": [],
+    "flags": [],
+    "seen_encounters": [],
+    "unlocked_achievements": [],
+    "log": []
+  }
+}
+```
+
+Save/load 규칙:
+
+- JSON envelope만 사용하고 pickle/runtime object를 저장하지 않는다.
+- unsupported `schema_version`은 traceback이 아니라 사용자-facing error다.
+- Web localStorage는 core save JSON을 감싸는 저장 표면이다. Web-only rule state를 추가하지 않는다.
+
+## `ScenePage` JSON contract
+
+`ScenePage`는 Web Storybook과 SuperLightTUI terminal이 공유하는 renderer-ready semantic page다.
+
+```json
+{
+  "mode": "encounter",
+  "title": "퇴사자의 메신저",
+  "location": {
+    "id": "dev_desk",
+    "name": "내 자리",
+    "description": "당신의 모니터는 아직 켜져 있다."
+  },
+  "chapter_label": "격리 1턴",
+  "status_summary": {
+    "turn": 1,
+    "danger": 0,
+    "resources": [
+      { "id": "health", "label": "신체 반응", "band": "normal", "text": "정상 범위", "value": 100 },
+      { "id": "sanity", "label": "집중도", "band": "normal", "text": "안정", "value": 100 },
+      { "id": "battery", "label": "단말기 전원", "band": "normal", "text": "100%", "value": 100 }
+    ],
+    "warnings": []
+  },
+  "body_blocks": [
+    { "kind": "narration", "text": "꺼진 사내 메신저가 다시 켜졌다.", "source_id": "ex_employee_messenger" }
+  ],
+  "dialogue_entries": [
+    { "speaker": "퇴사자", "text": "아직 네가 하지 않은 선택이 있어.", "source_id": "ex_employee_messenger" }
+  ],
+  "visual": {
+    "id": "opening_messenger",
+    "kind": "message_panel",
+    "alt": "꺼진 사내 메신저 창에 마지막 문장이 떠 있다.",
+    "source_id": "ex_employee_messenger"
+  },
+  "actions": [
+    { "id": "choice:check_message", "label": "메시지를 확인한다", "kind": "choice", "cost_text": "단말기 전원 소모" }
+  ],
+  "blocked_actions": [],
+  "history_entries": [],
+  "inventory_summary": { "items": [], "overflow_count": 0 },
+  "achievement_summary": { "unlocked": [], "newly_unlocked": [] },
+  "pressure_cues": [],
+  "effect_cues": []
+}
+```
+
+필드 규칙:
+
+| 필드 | 설명 |
+|---|---|
+| `mode` | `encounter`, `movement`, `ending` 중 하나 |
+| `title` | 현재 page title. Renderer title bar/body title로 사용 |
+| `location` | 현재 위치 요약. location page가 아니어도 항상 가능하면 제공 |
+| `chapter_label` | 턴/챕터/격리 단계 같은 짧은 label |
+| `status_summary` | core가 계산한 resource/status band와 warning |
+| `body_blocks` | narrative/document/system text block |
+| `dialogue_entries` | speaker가 있는 대화/메신저/시스템 발화 |
+| `visual` | semantic visual id와 alt text |
+| `actions` | 현재 실행 가능한 action list |
+| `blocked_actions` | 보여줄 가치가 있는 비활성 action과 reason |
+| `history_entries` | GameState log/action result에서 파생한 최근 기록 |
+| `inventory_summary` | renderer가 짧게 표시할 inventory 요약 |
+| `achievement_summary` | 기존/신규 업적 요약 |
+| `pressure_cues` | 저정신력, 고갈증, 저전원 등 pressure presentation cue |
+| `effect_cues` | GlyphFX/anomaly 등 장면 효과 cue |
+
+`body_blocks[].kind` 후보:
+
+- `narration`
+- `dialogue`
+- `document`
+- `system`
+- `warning`
+- `clue`
+
+`history_entries[].kind` 후보:
+
+- `system`
+- `dialogue`
+- `action`
+- `clue`
+- `warning`
+- `achievement`
+
+History 규칙:
+
+- `ActionResult.logs`는 다음 page의 `history_entries`에 ordered append된다.
+- Opening message는 status/debug text가 아니라 story body 또는 dialogue entry로 표시한다.
+- Web drawer와 terminal recent history는 같은 `history_entries`를 사용한다.
+- 신규 업적은 `achievement_summary.newly_unlocked`와 history entry 양쪽에 표시할 수 있다.
+
+## `EffectCue` and `PressureCue` contract
+
+`EffectCue`는 core가 발행하는 semantic presentation cue다. Renderer가 encounter title/body를 보고 효과를 추측하지 않는다.
+
+```json
+{
+  "kind": "glyph_anomaly",
+  "source": "copier_output",
+  "intensity": 0.72,
+  "stable_terms": ["비상계단", "토너", "접힌 방향"],
+  "distortion": "reflow_then_stabilize",
+  "duration_hint_ms": 1800,
+  "fallback_text": "출력물의 깨진 글자 사이로 '비상계단'이 선명하게 남는다."
+}
+```
+
+규칙:
+
+- `intensity`는 `0.0`부터 `1.0`까지의 float로 시작한다.
+- `stable_terms`는 public-safe clue terms만 담는다.
+- Web은 Canvas/GlyphFX로 해석할 수 있다.
+- Terminal은 SuperLightTUI cell/ASCII/ANSI effect로 해석할 수 있다.
+- Reduced-motion, no-canvas, plain SSH/WSL fallback에서도 `fallback_text`나 final stable terms를 읽을 수 있어야 한다.
+
+`PressureCue` 초안:
+
+```json
+{
+  "kind": "low_sanity",
+  "severity": "warning",
+  "message": "집중도가 흔들리고 있습니다. 일부 기록이 다르게 보일 수 있습니다.",
+  "resource_id": "sanity"
+}
+```
+
+Pressure threshold 판단은 core가 한다. Renderer는 cue의 severity/message를 presentation에 맞게 표시한다.
+
+## WASM JSON boundary contract
+
+`escape-wasm`은 초기에는 typed binding보다 JSON string boundary를 사용한다.
+
+```text
+new_game_json(seed: u64, content_bundle_json: &str) -> Result<String, Error>
+scene_page_json(state_json: &str, content_bundle_json: &str) -> Result<String, Error>
+apply_action_json(state_json: &str, content_bundle_json: &str, action_id: &str) -> Result<String, Error>
+save_state_json(state_json: &str) -> Result<String, Error>
+load_state_json(save_json: &str) -> Result<String, Error>
+```
+
+반환 규칙:
+
+- success는 JSON string이다.
+  - `new_game_json`: `GameState`
+  - `scene_page_json`: `ScenePage`
+  - `apply_action_json`: `ActionResult` 또는 갱신된 `GameState` + result metadata
+  - `save_state_json`: `SaveEnvelope`
+  - `load_state_json`: `GameState`
+- failure는 Web이 error panel에 표시할 수 있는 사용자-facing message를 포함해야 한다.
+- schema version mismatch, invalid bundle, unknown action, stale action, malformed save는 panic/traceback이 아니라 정상 error path다.
+
+## Cross-renderer semantic parity
+
+Web과 terminal parity는 rendered string이 아니라 semantic data로 비교한다.
+
+비교 대상:
+
+- final `GameState`
+- available `ScenePage.actions[*].id`
+- `blocked_actions` reason의 존재 여부
+- resource deltas
+- flags/clues/items
+- ending id/kind
+- unlocked achievements
+- public reward metadata
+- emitted `EffectCue` / `PressureCue`
+- `ScenePage.mode`, `title`, `visual.id`, `body_blocks`, `history_entries`
+
+Web/terminal의 색, 줄바꿈, Canvas frame, ASCII art 모양은 같을 필요가 없다. 단, 같은 action id를 실행했을 때 core 결과와 stable clue terms는 같아야 한다.
 
 ## Conditions
 

@@ -16,6 +16,42 @@
 4. 실제 회사 데이터를 읽는 느낌은 줄 수 있지만, 실제 민감정보를 읽거나 노출하지 않는다.
 5. 모든 왜곡 연출은 테스트와 재현을 위해 시드 또는 명시적 상태에 의해 제어되어야 한다.
 
+## 활성 renderer UX contract
+
+2026-05-22 이후 새 UI 작업은 다음 renderer 분담을 따른다.
+
+```text
+Rust GameCore: state/action/result/effect cue의 truth
+Web Storybook + GlyphFX: primary player UX
+SuperLightTUI terminal renderer: terminal-native fallback / horror edition
+```
+
+공통 규칙:
+
+- Web과 terminal은 `ScenePage` 또는 같은 semantic view를 소비한다.
+- Renderer는 action eligibility, outcome, ending, achievement를 재계산하지 않는다.
+- 선택지는 shell command가 아니라 `SceneAction.id`에 매핑된 서술형 행동이다.
+- 표시 번호나 단축키는 renderer-local이며, 실제 실행은 `choice:*`, `move:*`, `use:*` action id로 한다.
+- `visual_id`는 semantic id다. Web은 CSS/SVG/Canvas/image card로, terminal은 ASCII/Unicode/ANSI/SuperLightTUI cell card로 매핑한다.
+- Unknown visual id는 빈 화면이 아니라 alt/title 기반 placeholder를 표시한다.
+- `EffectCue`는 core가 발행한다. Renderer가 encounter 제목이나 문자열을 보고 효과를 추측하지 않는다.
+- `stable_terms`와 핵심 단서는 Web animation, terminal GlyphFX, reduced-motion, no-canvas fallback 모두에서 읽을 수 있어야 한다.
+
+Web Storybook primary UX:
+
+- 모바일 세로형/narrow browser를 1차 기준으로 한다.
+- 화면 region은 최소 `status/location`, `visual`, `body/dialogue`, `choices`, `history/drawer`를 가진다.
+- 선택지는 버튼과 숫자키로 실행한다. `cd`, `ls`, `grep` 같은 shell command 입력을 요구하지 않는다.
+- WASM/bundle 오류는 사용자-facing error panel로 보여준다.
+
+SuperLightTUI terminal renderer:
+
+- Terminal은 fallback이지만 debug dump가 아니다.
+- baseline은 SuperLightTUI layout + ASCII/Unicode visual card + terminal-native GlyphFX다.
+- Kitty/Sixel/iTerm2 inline image는 optional later이며, plain WSL/SSH terminal이 baseline이다.
+- terminal animation이 있어도 숫자 선택, 도움말, 저장, 종료 입력은 안정적으로 유지한다.
+- terminal horror edition은 Web보다 시각적으로 작을 수 있지만, scene page region과 stable clue readability를 보존해야 한다.
+
 ## 일반 게임 UI 회피
 
 피해야 할 표현:

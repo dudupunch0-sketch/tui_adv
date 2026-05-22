@@ -49,5 +49,6 @@ target/
 .vscode/
 .idea/
 
-# Cloud-server local Rust convenience symlink
+# Cloud-server local Rust convenience symlinks
 /escape-terminal
+/escape-terminal-cloud-server-only

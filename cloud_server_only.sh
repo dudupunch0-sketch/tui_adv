@@ -6,9 +6,9 @@
 # partition is not filled by rustup, cargo cache, or target/.
 #
 # Usage from project root:
-#   ./cloud_server_only.sh install   # install missing Rust toolchain, build release binary, refresh ./escape-terminal symlink
-#   ./cloud_server_only.sh test      # run fmt/test/clippy/build/smoke
-#   ./cloud_server_only.sh run       # run ./escape-terminal smoke, installing/building first if needed
+#   ./cloud_server_only.sh install   # install missing Rust toolchain, build release binary, refresh ./escape-terminal-cloud-server-only symlink
+#   ./cloud_server_only.sh test      # run fmt/test/clippy/build/smoke through the cloud-only symlink
+#   ./cloud_server_only.sh run       # run ./escape-terminal-cloud-server-only smoke, installing/building first if needed
 #   ./cloud_server_only.sh env       # print the env exports for manual shell use
 #
 # Manual equivalent:
@@ -18,7 +18,7 @@
 #   export PATH="$CARGO_HOME/bin:$PATH"
 #   rustup toolchain install stable --profile minimal --component rustfmt --component clippy
 #   cargo build -p escape-terminal --release
-#   ln -sfn "$CARGO_TARGET_DIR/release/escape-terminal" ./escape-terminal
+#   ln -sfn "$CARGO_TARGET_DIR/release/escape-terminal" ./escape-terminal-cloud-server-only
 
 set -euo pipefail
 
@@ -32,7 +32,7 @@ export PATH="$CARGO_HOME/bin:$PATH"
 
 TOOLCHAIN="${RUST_TOOLCHAIN:-stable}"
 BIN_PATH="$CARGO_TARGET_DIR/release/escape-terminal"
-LINK_PATH="$REPO_ROOT/escape-terminal"
+LINK_PATH="$REPO_ROOT/escape-terminal-cloud-server-only"
 
 usage() {
   sed -n '1,28p' "$0" | sed 's/^# \{0,1\}//'

@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import argparse
+import sys
 from dataclasses import replace
 from pathlib import Path
+from typing import TextIO
 
 from tui_adv import __version__
 from tui_adv.game.achievements import (
@@ -69,6 +71,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--save", help="write the final smoke game state to a JSON file")
     parser.add_argument("--load", help="load a JSON smoke game state instead of starting new")
+    parser.add_argument(
+        "--play",
+        action="store_true",
+        help="launch the dependency-free interactive terminal game",
+    )
     parser.add_argument("--tui", action="store_true", help="launch the interactive Textual TUI")
     parser.add_argument(
         "--tui-smoke",
@@ -156,6 +163,72 @@ def render_loaded_game_smoke(state: GameState, action_arguments: list[str]) -> t
         return render_scripted_game_smoke_result(state, action_arguments)
     turn = build_game_turn(state)
     return "\n".join(["escape from the office", "", _format_game_turn(turn)]), turn.state
+
+
+def run_cli_play(
+    state: GameState,
+    *,
+    input_stream: TextIO = sys.stdin,
+    output_stream: TextIO = sys.stdout,
+) -> GameState:
+    """Run a dependency-free interactive terminal loop."""
+
+    print("escape from the office - 직접 플레이", file=output_stream)
+    print("q: 종료, h: 도움말", file=output_stream)
+    turn = build_game_turn(state)
+
+    while True:
+        print("", file=output_stream)
+        print(_format_game_turn(turn), file=output_stream)
+        if turn.ending is not None:
+            print("", file=output_stream)
+            print("게임이 끝났다.", file=output_stream)
+            return turn.state
+
+        _print_play_action_menu(turn, output_stream)
+        output_stream.write("\n입력: 번호 또는 action id (q 종료) > ")
+        output_stream.flush()
+        raw_input = input_stream.readline()
+        if raw_input == "":
+            print("\n입력이 끝났다. 게임을 종료한다.", file=output_stream)
+            return turn.state
+
+        command = raw_input.strip()
+        if not command:
+            continue
+        if command.lower() in {"q", "quit", "exit"}:
+            print("게임을 종료한다.", file=output_stream)
+            return turn.state
+        if command.lower() in {"h", "help", "?"}:
+            print("번호를 입력하면 해당 행동을 실행한다. action id도 직접 입력할 수 있다.", file=output_stream)
+            continue
+
+        try:
+            action_id = _play_action_id_from_input(turn, command)
+            result = resolve_turn_action_result(turn, action_id)
+        except ValueError as exc:
+            print(f"잘못된 선택: {exc}", file=output_stream)
+            continue
+
+        print("", file=output_stream)
+        print(_format_turn_action_result(result), file=output_stream)
+        turn = result.turn
+
+
+def _print_play_action_menu(turn: GameTurn, output_stream: TextIO) -> None:
+    print("", file=output_stream)
+    print("가능한 행동:", file=output_stream)
+    for index, action in enumerate(turn.available_actions, start=1):
+        print(f"{index}. {action.label} ({action.id})", file=output_stream)
+
+
+def _play_action_id_from_input(turn: GameTurn, command: str) -> str:
+    if command.isdecimal():
+        index = int(command) - 1
+        if 0 <= index < len(turn.available_actions):
+            return turn.available_actions[index].id
+        raise ValueError(f"선택 번호가 범위를 벗어났다: {command}")
+    return command
 
 
 def _format_game_turn(turn: GameTurn) -> str:
@@ -301,12 +374,35 @@ def main(argv: list[str] | None = None) -> int:
         parser.error(f"알 수 없는 위치: {args.location}")
     if args.new and args.load:
         parser.error("--new와 --load은 함께 사용할 수 없다")
+    if args.play and args.tui:
+        parser.error("--play와 --tui는 함께 사용할 수 없다")
     if args.resource and args.load:
         parser.error("--resource는 --load와 함께 사용할 수 없다")
-    if args.resource and not (args.new or args.tui_smoke):
-        parser.error("--resource requires --new or --tui-smoke")
+    if args.resource and not (args.new or args.tui_smoke or args.play):
+        parser.error("--resource requires --new, --tui-smoke, or --play")
     if args.delete_save_slot is not None and not args.tui_smoke:
         parser.error("--delete-save-slot requires --tui-smoke")
+
+    if args.play:
+        if args.choice:
+            parser.error("--choice requires --new")
+        if args.action:
+            parser.error("--action requires --new, --load, or --tui-smoke")
+        if args.load:
+            try:
+                state = load_game_state(args.load)
+            except ValueError as exc:
+                parser.error(str(exc))
+        else:
+            try:
+                state = _new_state_from_args(args)
+            except ValueError as exc:
+                parser.error(str(exc))
+        final_state = run_cli_play(state)
+        if args.save:
+            save_game_state(final_state, args.save)
+            print(f"저장: {args.save}")
+        return 0
 
     if args.tui_smoke:
         if args.load:

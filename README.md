@@ -13,6 +13,21 @@ TUI 기반 랜덤 인카운터 선택지 생존 게임.
 
 개발 중에는 설치 없이 다음처럼 실행할 수 있다.
 
+직접 플레이:
+
+```bash
+PYTHONPATH=src python -m tui_adv --play --seed 123
+```
+
+클라우드 서버에서는 helper 설치 후 바로 실행할 수 있다.
+
+```bash
+./cloud_server_only.sh install
+./escape-terminal-cloud-server-only --seed 123
+```
+
+스크립트/스모크 실행:
+
 ```bash
 PYTHONPATH=src python -m tui_adv --new --seed 123
 PYTHONPATH=src python -m tui_adv --new --seed 123 --choice 1

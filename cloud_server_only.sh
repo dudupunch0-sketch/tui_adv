@@ -6,9 +6,10 @@
 # partition is not filled by rustup, cargo cache, or target/.
 #
 # Usage from project root:
-#   ./cloud_server_only.sh install   # install missing Rust toolchain, build release binary, refresh ./escape-terminal-cloud-server-only symlink
-#   ./cloud_server_only.sh test      # run fmt/test/clippy/build/smoke through the cloud-only symlink
-#   ./cloud_server_only.sh run       # run ./escape-terminal-cloud-server-only smoke, installing/building first if needed
+#   ./cloud_server_only.sh install   # install missing Rust toolchain, build release smoke binary, refresh ./escape-terminal-cloud-server-only play launcher
+#   ./cloud_server_only.sh run       # launch ./escape-terminal-cloud-server-only for direct interactive play
+#   ./cloud_server_only.sh smoke     # run the Rust printer renderer smoke snapshot
+#   ./cloud_server_only.sh test      # run Rust checks plus a Python direct-play smoke
 #   ./cloud_server_only.sh env       # print the env exports for manual shell use
 #
 # Manual equivalent:
@@ -18,7 +19,7 @@
 #   export PATH="$CARGO_HOME/bin:$PATH"
 #   rustup toolchain install stable --profile minimal --component rustfmt --component clippy
 #   cargo build -p escape-terminal --release
-#   ln -sfn "$CARGO_TARGET_DIR/release/escape-terminal" ./escape-terminal-cloud-server-only
+#   ./cloud_server_only.sh install
 
 set -euo pipefail
 
@@ -33,9 +34,10 @@ export PATH="$CARGO_HOME/bin:$PATH"
 TOOLCHAIN="${RUST_TOOLCHAIN:-stable}"
 BIN_PATH="$CARGO_TARGET_DIR/release/escape-terminal"
 LINK_PATH="$REPO_ROOT/escape-terminal-cloud-server-only"
+PYTHON_BIN="${PYTHON_BIN:-python3}"
 
 usage() {
-  sed -n '1,28p' "$0" | sed 's/^# \{0,1\}//'
+  sed -n '1,32p' "$0" | sed 's/^# \{0,1\}//'
 }
 
 print_env() {
@@ -83,11 +85,31 @@ ensure_toolchain() {
   rustup toolchain install "$TOOLCHAIN" --profile minimal --component rustfmt --component clippy
 }
 
-build_release() {
+write_play_launcher() {
+  rm -f "$LINK_PATH"
+  cat >"$LINK_PATH" <<'EOF_LAUNCHER'
+#!/usr/bin/env bash
+set -euo pipefail
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PYTHON_BIN="${PYTHON_BIN:-python3}"
+cd "$REPO_ROOT"
+export PYTHONPATH="$REPO_ROOT/src${PYTHONPATH:+:$PYTHONPATH}"
+exec "$PYTHON_BIN" -m tui_adv --play "$@"
+EOF_LAUNCHER
+  chmod +x "$LINK_PATH"
+  echo "Wrote direct-play launcher: $LINK_PATH"
+}
+
+build_rust_binary() {
   ensure_toolchain
+  cargo clean --release -p escape-terminal >/dev/null
   cargo build -p escape-terminal --release
-  ln -sfn "$BIN_PATH" "$LINK_PATH"
-  echo "Linked $LINK_PATH -> $BIN_PATH"
+}
+
+build_release() {
+  build_rust_binary
+  write_play_launcher
+  echo "Rust smoke binary: $BIN_PATH"
 }
 
 run_smoke() {
@@ -96,8 +118,16 @@ run_smoke() {
     build_release
   fi
 
-  ln -sfn "$BIN_PATH" "$LINK_PATH"
-  "$LINK_PATH" --scene printer --seed 123 --smoke
+  "$BIN_PATH" --scene printer --seed 123 --smoke
+}
+
+run_game() {
+  if [[ ! -x "$LINK_PATH" ]]; then
+    echo "Direct-play launcher is missing; creating it first."
+    build_release
+  fi
+
+  exec "$LINK_PATH" "$@"
 }
 
 run_tests() {
@@ -105,12 +135,19 @@ run_tests() {
   cargo fmt --check
   cargo test --workspace
   cargo clippy --workspace --all-targets -- -D warnings
-  cargo build -p escape-terminal --release
-  ln -sfn "$BIN_PATH" "$LINK_PATH"
-  "$LINK_PATH" --scene printer --seed 123 --smoke
+  build_rust_binary
+  "$BIN_PATH" --scene printer --seed 123 --smoke
+  write_play_launcher
+  "$PYTHON_BIN" -m pytest tests/test_cli.py::test_cli_play_mode_accepts_numbered_input_and_quit -q
+  play_output="$(printf 'q\n' | "$LINK_PATH" --seed 123)"
+  printf '%s\n' "$play_output" | grep -q "escape from the office - 직접 플레이"
 }
 
 command="${1:-install}"
+if [[ $# -gt 0 ]]; then
+  shift
+fi
+
 case "$command" in
   install)
     build_release
@@ -118,7 +155,10 @@ case "$command" in
   test)
     run_tests
     ;;
-  run|smoke)
+  run)
+    run_game "$@"
+    ;;
+  smoke)
     run_smoke
     ;;
   env)

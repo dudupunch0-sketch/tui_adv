@@ -51,4 +51,4 @@ Rust GameCore
 - OS-level 알림, 창 모드, 전체화면 kiosk, 자동 업데이트가 핵심 UX가 된다.
 - Web 배포에서 브라우저 보안 정책 때문에 Web Storybook/GlyphFX primary UX가 막힌다.
 
-그 전까지는 Web-only가 결정된 배포 표면이고, 다음 구현 slice는 `escape-terminal`의 terminal full-screen app loop와 tick/raw-draw GlyphFX 쪽이다.
+그 전까지는 Web-only가 결정된 배포 표면이다. `escape-terminal`의 terminal full-screen app loop와 tick/raw-draw GlyphFX baseline도 완료되었으므로, 현재 active main plan 기준 즉시 진행할 구현 작업은 없다.

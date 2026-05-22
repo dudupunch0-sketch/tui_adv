@@ -68,12 +68,12 @@ ScenePage
 
 Implementation slice에서 확인할 사용 지점:
 
-- `slt::run_with(...)` 또는 현재 equivalent app loop.
-- `RunConfig::tick_rate(...)` / `max_fps(60)` 또는 equivalent frame control.
-- flexbox-style layout으로 page region 배치.
-- normal widget tree로 부족한 visual/GlyphFX는 raw draw / cell-grid access 사용.
-- `ui.tick()` 또는 equivalent animation tick signal.
-- 가능하면 headless/test backend로 snapshot smoke 작성.
+- 완료: `escape-terminal --app`(`--app`)이 `slt::run_with(...)` 기반 full-screen app loop를 연다.
+- 완료: `RunConfig::tick_rate(...)` / `max_fps(60)`로 frame control을 설정한다.
+- 완료: flexbox-style layout으로 page region을 배치한다.
+- 완료: normal widget tree로 부족한 GlyphFX는 raw draw / cell-grid access 사용으로 보완한다.
+- 완료: `ui.tick()` 또는 `--app-smoke --tick`의 tick 값을 animation signal로 사용한다.
+- 완료: `--app-smoke --tick` headless/test backend로 app-frame snapshot smoke를 작성했다.
 
 ### Visual card catalog baseline
 

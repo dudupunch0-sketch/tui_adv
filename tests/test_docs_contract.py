@@ -20,13 +20,31 @@ def test_superlighttui_terminal_polish_is_checklisted_and_documented():
     assert "- [x] GlyphFX fallback이 intensity meter, stable terms, fallback text를 보존" in checklist
     assert "- [x] 직접 플레이 입력 안내가 현재 턴 번호 범위와 action id 사용법을 표시" in checklist
     assert "SuperLightTUI terminal visual card/GlyphFX/input polish 완료" in plan
-    next_slice = plan.split("현재 최우선 남은 작업:", 1)[1]
     assert "Web/Tauri/Electron 패키징 결정 완료" in plan
-    assert "terminal full-screen app loop" in next_slice
-    assert "tick/raw-draw GlyphFX" in next_slice
+    assert "terminal full-screen app loop/tick/raw-draw GlyphFX 완료" in plan
+    next_slice = plan.split("현재 최우선 남은 작업:", 1)[1]
+    assert "active main plan 기준 구현 남은 작업 없음" in next_slice
+    assert "terminal full-screen app loop와 tick/raw-draw GlyphFX slice를 진행한다" not in next_slice
     assert "Web/Tauri/Electron 패키징 검토" not in next_slice
     assert "visual card/GlyphFX/input 안내 polish" in readme
+    assert "--app-smoke --tick" in readme
+    assert "full-screen SuperLightTUI app loop" in readme
     assert "printer_anomaly stable terms를 terminal visual card 안에 보존" in architecture
+    assert "tick/raw-draw capability를 쓰는 app smoke와 full-screen loop" in architecture
+
+
+def test_terminal_app_loop_slice_is_checklisted_and_documented():
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    layout_doc = Path("docs/dev/TUI_Layout.md").read_text(encoding="utf-8")
+
+    assert "- [x] `escape-terminal --app` full-screen SuperLightTUI app loop 추가" in checklist
+    assert "- [x] `--app-smoke --tick` headless app-frame smoke 추가" in checklist
+    assert "- [x] raw-draw GlyphFX layer가 tick 변화와 stable terms/fallback text를 함께 검증" in checklist
+    assert "- [x] inline image는 baseline 밖 optional future로 deferred 결정" in checklist
+    assert "optional inline image는 terminal cell/GlyphFX baseline 밖 future backlog" in plan
+    assert "`--app`" in layout_doc
+    assert "`--app-smoke --tick`" in layout_doc
 
 
 def test_readme_next_work_points_to_canonical_main_plan_instead_of_completed_slice_list():

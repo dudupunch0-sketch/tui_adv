@@ -11,7 +11,7 @@ TUI 기반 랜덤 인카운터 선택지 생존 게임.
 중요한 기준:
 
 - Web Storybook + GlyphFX가 플레이어용 메인 UX 후보다. 이미지/장면 컷, 대화 내역, 읽기 중심 선택지, Canvas/GlyphFX는 이 경로에서 먼저 구현한다.
-- Rust terminal 경로는 버리지 않는다. `escape-terminal`의 content 경로는 SuperLightTUI snapshot/play renderer로 전환되었고, visual card/GlyphFX/input 안내 polish가 추가되어 **terminal-native horror edition** 기준을 강화했다. terminal은 fallback이지만 debug dump가 아니다.
+- Rust terminal 경로는 버리지 않는다. `escape-terminal`의 content 경로는 SuperLightTUI snapshot/play renderer와 `--app` full-screen SuperLightTUI app loop를 제공하며, visual card/GlyphFX/input 안내 polish와 tick/raw-draw GlyphFX baseline이 추가되어 **terminal-native horror edition** 기준을 강화했다. terminal은 fallback이지만 debug dump가 아니다.
 - Python/Textual과 기존 Web fake-TUI dashboard는 당분간 legacy/parity oracle로 유지하되, 새 시각/상호작용 투자는 `docs/dev/Rust_Core_Dual_Renderer_Architecture.md`의 방향을 따른다.
 
 게임 구조와 안전한 현실 연결 원칙을 문서화했고, 순수 게임 상태 모델, 자원 임계치/실패 판정, 1차 사무실 위치 모델, 인접 위치 이동과 위험도 누적, 인카운터/선택지 조건·비용·결과 적용, 선택 불가 선택지의 이유 표시, 능력치 기반 선택지, 2d6 성공/실패 분기, 현재 상태 기반 인카운터 선택, 공간 왜곡 탈출/실패 엔딩 판정, YAML 공개 콘텐츠 로더/검증, YAML 기반 런타임 기본 위치/인카운터/엔딩, 로컬 비공개 현실 힌트 로더, 복합기/커피머신/화이트보드 더미 숫자 합계 퍼즐, 현실 연결 히든 엔딩 보상 출력, CLI 한 턴 실행, CLI 다중 턴 스크립트 실행, Textual 레이아웃 smoke, Textual 저장/불러오기 연결, TUI 저장/종료 단축키, TUI 저장 파일 목록·시작 슬롯 선택·삭제 패널, 도움말/이동 단축키/상세 도움말·인벤토리·로그 패널, 압박 경고 패널, Textual 그리드 패널과 터미널 테마 CSS, 소모품 아이템 사용, 물품창고 보급품, 엘리베이터/옥상 경로, 옥상 외부 신호 탈출 엔딩, 저정신력 선택지 왜곡, 고갈증 정수기 환각, 엘리베이터-보안실 우회 분기, 임계 자원 1회성 경고 로그, 보안실-서버실 격리 권한 정복 루트, 지하주차장 키태그/차단기 탈출 루트, 로비 방문증/회전문 탈출 루트, 대표실 결재 콘솔 정복 루트, 진실 루트의 재난 원인 문서, 생존자 설득/시스템 제압 설계, 세 번째 현실 연결 힌트 체인, 로컬 secret 템플릿과 현실 연결 안전 점검 문서, YAML→브라우저 JSON export, Vite 기반 fake-TUI 브라우저 셸, localStorage 저장, 복합기 현실 연결 pretext/Canvas 장면, 전 루트 웹 parity 테스트, 브라우저 아이템 사용·업적·능력치 판정·압박 UI, 인벤토리·업적·컨트롤·압박 패널, Rust content runner의 잠긴 선택지/위험도 parity까지 추가했다.
@@ -30,9 +30,10 @@ Rust content-backed 직접 플레이:
 
 ```bash
 cargo run -p escape-terminal -- --scene content --content-bundle crates/escape-core/fixtures/content/content.bundle.json --seed 123 --play
+cargo run -p escape-terminal -- --scene content --content-bundle crates/escape-core/fixtures/content/content.bundle.json --seed 123 --app
 ```
 
-주의: 현재 Rust 직접 플레이는 SuperLightTUI snapshot 기반의 content renderer를 사용한다. visual card는 `ScenePage.visual`의 id/layout/alt를 terminal card로 표시하고, GlyphFX fallback은 intensity meter와 stable terms/fallback text를 보존한다. 전체 화면 app loop와 tick/raw-draw animation은 후속 확장 대상이다. 개인 서버/WSL에서 `cargo`가 없고 `/home` 용량이 부족하면 Rust/Cargo 경로를 `/tmp`로 돌려 구성한다.
+주의: `--play`는 scriptable/stdin-friendly 직접 플레이이고, `--app`은 full-screen SuperLightTUI app loop다. visual card는 `ScenePage.visual`의 id/layout/alt를 terminal card로 표시하고, GlyphFX fallback은 intensity meter와 stable terms/fallback text를 보존한다. `--app-smoke --tick`은 같은 app-frame renderer의 tick/raw-draw GlyphFX를 headless로 검증한다. 개인 서버/WSL에서 `cargo`가 없고 `/home` 용량이 부족하면 Rust/Cargo 경로를 `/tmp`로 돌려 구성한다.
 
 ```bash
 export RUSTUP_HOME="/tmp/$USER-rustup"
@@ -56,6 +57,7 @@ Rust headless smoke:
 cargo run -p escape-terminal -- --scene content --content-bundle crates/escape-core/fixtures/content/content.bundle.json --seed 123 --smoke --action choice:check_message --action move:dev_office
 cargo run -p escape-terminal -- --scene content --content-bundle crates/escape-core/fixtures/content/content.bundle.json --seed 123 --tui-smoke --action choice:check_message
 cargo run -p escape-terminal -- --scene content --content-bundle crates/escape-core/fixtures/content/content.bundle.json --seed 123 --tui-smoke --action choice:check_message --action move:dev_office --action move:printer_area
+cargo run -p escape-terminal -- --scene content --content-bundle crates/escape-core/fixtures/content/content.bundle.json --seed 123 --app-smoke --tick 7 --action choice:check_message --action move:dev_office --action move:printer_area
 ```
 
 스크립트/스모크 실행:

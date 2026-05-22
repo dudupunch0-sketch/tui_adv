@@ -84,6 +84,13 @@
 - [x] `web/package.json`에 `build:player` / `preview:player` alias 추가
 - [x] Tauri/Electron은 desktop wrapper 고유 가치가 생길 때까지 deferred로 문서화
 
+### 0.2g 2026-05-22 SuperLightTUI app loop / GlyphFX baseline
+
+- [x] `escape-terminal --app` full-screen SuperLightTUI app loop 추가
+- [x] `--app-smoke --tick` headless app-frame smoke 추가
+- [x] raw-draw GlyphFX layer가 tick 변화와 stable terms/fallback text를 함께 검증
+- [x] inline image는 baseline 밖 optional future로 deferred 결정
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

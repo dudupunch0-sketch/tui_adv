@@ -136,6 +136,8 @@ pub struct OutcomeDef {
     #[serde(default)]
     pub add_items: Vec<String>,
     #[serde(default)]
+    pub destination_id: Option<String>,
+    #[serde(default)]
     pub resources: ResourceMap,
 }
 

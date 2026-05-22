@@ -13,7 +13,9 @@ pub use content::{
 pub use effects::{printer_glyph_anomaly_cue, EffectCue, GlyphAnomalyCue};
 pub use save::{load_state, save_state, SaveEnvelope, SaveError, SAVE_SCHEMA_VERSION};
 pub use state::{GameState, NewGameError, PlayerState, DEFAULT_START_LOCATION_ID};
-pub use turn::{ActionError, ActionResult, ActionView, ContentTurnError, TurnView};
+pub use turn::{
+    ActionError, ActionResult, ActionView, ContentActionError, ContentTurnError, TurnView,
+};
 
 pub fn new_game(seed: u64) -> GameState {
     GameState::new_printer_scene(seed)
@@ -40,6 +42,14 @@ pub fn turn_view_from_content(
     content: &ContentIndex,
 ) -> Result<TurnView, ContentTurnError> {
     turn::content_turn_view(state, content)
+}
+
+pub fn apply_action_from_content(
+    state: &GameState,
+    content: &ContentIndex,
+    action_id: &str,
+) -> Result<ActionResult, ContentActionError> {
+    turn::apply_content_action(state, content, action_id)
 }
 
 pub fn apply_action(state: &GameState, action_id: &str) -> Result<ActionResult, ActionError> {

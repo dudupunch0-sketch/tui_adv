@@ -3,6 +3,8 @@
 이 문서는 전체 개발 진행 상황을 추적하기 위한 체크리스트다.
 체크박스는 실제 작업 완료 후 갱신한다.
 
+계획 문서 우선순위: 다음 작업 순서와 우선순위는 `docs/dev/Development_Plan.md`가 canonical main plan이다. 이 파일은 완료 여부 추적용이며, 독립적인 다음 계획을 두지 않는다.
+
 ## 상태 범례
 
 - `[ ]` 아직 시작하지 않음
@@ -62,6 +64,19 @@
 - [x] Low sanity/low battery/high hunger/high thirst pressure cues를 Rust `ScenePage` semantic cue로 노출
 - [x] Reality-link public reward metadata만 ending body block으로 노출하고 private-only fields 차단 유지
 - [x] Web Storybook runtime을 `escape-wasm` JSON boundary + generated content bundle에 연결하고 Rust state localStorage 저장 추가
+
+### 0.2d 2026-05-22 Web WASM build/preview 표준화
+
+- [x] Web WASM build/preview 절차 표준화
+- [x] `web/package.json`에 `wasm:build`, `build:wasm`, `dev:wasm`, `preview:wasm` script 추가
+- [x] `web/src/core/wasm-pkg/` generated package를 local-only artifact로 ignore
+- [x] legacy Python/Textual/TypeScript mirror freeze 범위 결정
+
+### 0.2e 2026-05-22 SuperLightTUI terminal polish
+
+- [x] terminal visual card가 visual_id/layout/alt를 ASCII/Unicode card로 표시
+- [x] GlyphFX fallback이 intensity meter, stable terms, fallback text를 보존
+- [x] 직접 플레이 입력 안내가 현재 턴 번호 범위와 action id 사용법을 표시
 
 ### 0.3 완료 기준
 

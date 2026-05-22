@@ -5,9 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
+    "dev:wasm": "npm run wasm:build && vite --host 127.0.0.1",
     "build": "tsc --noEmit && vite build",
+    "build:wasm": "npm run wasm:build && npm run build",
     "test": "vitest run",
-    "preview": "vite preview --host 127.0.0.1"
+    "preview": "vite preview --host 127.0.0.1",
+    "preview:wasm": "npm run build:wasm && vite preview --host 127.0.0.1",
+    "wasm:build": "wasm-pack build ../crates/escape-wasm --target web --out-dir ../../web/src/core/wasm-pkg"
   },
   "devDependencies": {
     "typescript": "latest",

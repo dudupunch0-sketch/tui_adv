@@ -151,7 +151,7 @@ fn content_tui_smoke_renders_start_encounter_panel() {
     assert!(stdout.contains("ESCAPE OFFICE // SuperLightTUI HORROR EDITION"));
     assert!(stdout.contains("[상태]"));
     assert!(stdout.contains("[비주얼]"));
-    assert!(stdout.contains("GlyphFX:"));
+    assert!(stdout.contains("glyphfx signal:"));
     assert!(stdout.contains("위치: 내 자리 (dev_desk)"));
     assert!(stdout.contains("[현재 인카운터]"));
     assert!(stdout.contains("퇴사자의 메신저"));
@@ -199,6 +199,71 @@ fn content_tui_smoke_renders_final_movement_panel_after_scripted_actions() {
     assert!(stdout.contains("- 퇴사자의 메시지를 확인했다."));
     assert!(!stdout.contains("[현재 인카운터]"));
     assert!(!stdout.contains("== Turn 1 =="));
+}
+
+#[test]
+fn content_tui_smoke_renders_printer_visual_card_with_stable_glyphfx_terms() {
+    let bundle_path = content_bundle_path();
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--content-bundle",
+            bundle_path.to_str().expect("bundle path should be UTF-8"),
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:check_message",
+            "--action",
+            "move:dev_office",
+            "--action",
+            "move:printer_area",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("╭─ VISUAL CARD ─"));
+    assert!(stdout.contains("visual id: printer_anomaly"));
+    assert!(stdout.contains("layout: anomaly_object"));
+    assert!(stdout.contains("alt: 복합기가 혼자 출력한다"));
+    assert!(stdout.contains("glyphfx signal: glyph_anomaly [#######---] 72% reflow_then_stabilize"));
+    assert!(stdout.contains("stable terms: 비상계단 / 토너 / 접힌 방향"));
+    assert!(stdout.contains("fallback: 출력물의 깨진 글자 사이로 '비상계단'이 선명하게 남는다."));
+}
+
+#[test]
+fn content_play_mode_prints_turn_input_hint_and_invalid_range() {
+    let bundle_path = content_bundle_path();
+    let output = run_escape_terminal_with_input(
+        &[
+            "--scene",
+            "content",
+            "--content-bundle",
+            bundle_path.to_str().expect("bundle path should be UTF-8"),
+            "--seed",
+            "123",
+            "--play",
+        ],
+        "99\nq\n",
+    );
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("입력 안내: 1-3 또는 action id, q/quit 종료"));
+    assert!(stdout.contains("잘못된 입력: 99 (사용 가능한 번호: 1-3 또는 action id)"));
 }
 
 #[test]

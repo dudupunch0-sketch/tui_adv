@@ -59,8 +59,8 @@ docs/
     encounter_db/                   # 런타임 승격 전 인카운터 상황 카드 DB
 
   dev/
-    Development_Plan.md             # 전체 개발 계획과 현황 메모
-    Checklist.md                    # 단계별 체크리스트
+    Development_Plan.md             # canonical main plan: 현재 방향, 다음 작업, 우선순위
+    Checklist.md                    # 완료 여부 추적용 체크리스트
     Architecture.md                 # 코드 구조와 모듈 경계
     Rust_Core_Dual_Renderer_Architecture.md # Rust GameCore + Web Storybook + SuperLightTUI terminal 활성 방향
     Data_Schema.md                  # YAML/JSON 데이터 스키마 + renderer-neutral ScenePage/WASM contract

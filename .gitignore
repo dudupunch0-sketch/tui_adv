@@ -27,6 +27,7 @@ env/
 node_modules/
 web/node_modules/
 web/dist/
+web/src/core/wasm-pkg/
 
 # Save games / generated local state
 saves/

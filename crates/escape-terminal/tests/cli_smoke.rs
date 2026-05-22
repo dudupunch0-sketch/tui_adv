@@ -121,6 +121,76 @@ fn content_script_rejects_action_that_is_not_available_in_current_turn() {
     assert!(stderr.contains("action 'move:dev_office' is not available in current turn"));
 }
 
+#[test]
+fn content_tui_smoke_renders_start_encounter_panel() {
+    let bundle_path = content_bundle_path();
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--content-bundle",
+            bundle_path.to_str().expect("bundle path should be UTF-8"),
+            "--seed",
+            "123",
+            "--tui-smoke",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("[TUI Snapshot]"));
+    assert!(stdout.contains("[상태]"));
+    assert!(stdout.contains("위치: 내 자리 (dev_desk)"));
+    assert!(stdout.contains("[현재 인카운터]"));
+    assert!(stdout.contains("퇴사자의 메신저"));
+    assert!(stdout.contains("1. choice:check_message / 메시지를 확인한다 / 배터리 -3, 정신력 -2"));
+    assert!(stdout.contains("[현재 행동]"));
+    assert!(!stdout.contains("== Turn 0 =="));
+}
+
+#[test]
+fn content_tui_smoke_renders_final_movement_panel_after_scripted_actions() {
+    let bundle_path = content_bundle_path();
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--content-bundle",
+            bundle_path.to_str().expect("bundle path should be UTF-8"),
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:check_message",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("[TUI Snapshot]"));
+    assert!(stdout.contains("턴: 1"));
+    assert!(stdout.contains("위치: 내 자리 (dev_desk)"));
+    assert!(stdout.contains("체력: 100  정신력: 98  배터리: 97"));
+    assert!(stdout.contains("[현재 행동]"));
+    assert!(stdout.contains("1. move:dev_office / 개발팀 사무실"));
+    assert!(stdout.contains("[최근 로그]"));
+    assert!(stdout.contains("- 퇴사자의 메시지를 확인했다."));
+    assert!(!stdout.contains("[현재 인카운터]"));
+    assert!(!stdout.contains("== Turn 1 =="));
+}
+
 fn content_bundle_path() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("../escape-core/fixtures/content/content.bundle.json")

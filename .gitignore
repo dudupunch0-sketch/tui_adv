@@ -41,7 +41,14 @@ private/
 *.local.json
 src/tui_adv/data/secrets.local.*
 
+# Rust build artifacts
+target/
+
 # Editor / OS
 .DS_Store
 .vscode/
 .idea/
+
+# Cloud-server local Rust convenience symlinks
+/escape-terminal
+/escape-terminal-cloud-server-only

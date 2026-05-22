@@ -9,6 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT_PATH = ROOT / "scripts" / "export_web_data.py"
+PRIVATE_SECRET_FIELDS = {"final_hint", "actual_ip_address", "office_location", "treasure_location"}
 
 
 def _load_export_module():
@@ -17,6 +18,16 @@ def _load_export_module():
     module = module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
+
+
+def _missing_private_secret_fields(payload: object) -> bool:
+    if isinstance(payload, dict):
+        if PRIVATE_SECRET_FIELDS.intersection(payload):
+            return False
+        return all(_missing_private_secret_fields(value) for value in payload.values())
+    if isinstance(payload, list):
+        return all(_missing_private_secret_fields(value) for value in payload)
+    return True
 
 
 def test_export_web_data_builds_public_manifest_with_expected_counts():
@@ -59,6 +70,43 @@ def test_export_web_data_writes_generated_json_files(tmp_path):
     assert secrets[0]["final_hint_policy"] == "private_only"
 
 
+def test_export_web_data_builds_renderer_neutral_content_bundle():
+    exporter = _load_export_module()
+
+    bundle = exporter.build_content_bundle(ROOT)
+
+    assert bundle["schema_version"] == 1
+    assert bundle["kind"] == "tui_adv.content_bundle"
+    assert bundle["manifest"]["counts"]["locations"] == 16
+    assert bundle["content"]["locations"][0]["id"] == "dev_desk"
+    assert bundle["content"]["encounters"][0]["id"] == "ex_employee_messenger"
+    assert _missing_private_secret_fields(bundle)
+
+
+def test_export_web_data_writes_and_checks_content_bundle(tmp_path):
+    exporter = _load_export_module()
+    bundle_path = tmp_path / "content.bundle.json"
+
+    written = exporter.write_content_bundle(ROOT, bundle_path)
+
+    assert written == bundle_path
+    bundle = json.loads(bundle_path.read_text(encoding="utf-8"))
+    assert bundle["kind"] == "tui_adv.content_bundle"
+    assert bundle["manifest"]["counts"]["secrets"] == 3
+    assert exporter.check_content_bundle(ROOT, bundle_path) == []
+    bundle_path.write_text("{}\n", encoding="utf-8")
+    assert exporter.check_content_bundle(ROOT, bundle_path) == [
+        f"stale generated file: {bundle_path}"
+    ]
+
+
+def test_checked_in_content_bundle_is_up_to_date():
+    exporter = _load_export_module()
+    bundle_path = ROOT / "crates" / "escape-core" / "fixtures" / "content" / "content.bundle.json"
+
+    assert exporter.check_content_bundle(ROOT, bundle_path) == []
+
+
 def test_export_web_data_check_detects_stale_generated_files(tmp_path):
     exporter = _load_export_module()
     out_dir = tmp_path / "generated"
@@ -71,6 +119,7 @@ def test_export_web_data_check_detects_stale_generated_files(tmp_path):
 
 def test_export_web_data_cli_write_and_check_roundtrip(tmp_path):
     out_dir = tmp_path / "generated"
+    bundle_path = tmp_path / "content.bundle.json"
 
     write_result = subprocess.run(
         [
@@ -80,6 +129,8 @@ def test_export_web_data_cli_write_and_check_roundtrip(tmp_path):
             str(ROOT),
             "--out-dir",
             str(out_dir),
+            "--bundle",
+            str(bundle_path),
             "--write",
         ],
         check=False,
@@ -88,6 +139,7 @@ def test_export_web_data_cli_write_and_check_roundtrip(tmp_path):
     )
     assert write_result.returncode == 0, write_result.stderr
     assert "wrote 7 web data files" in write_result.stdout
+    assert f"wrote content bundle to {bundle_path}" in write_result.stdout
 
     check_result = subprocess.run(
         [
@@ -97,6 +149,8 @@ def test_export_web_data_cli_write_and_check_roundtrip(tmp_path):
             str(ROOT),
             "--out-dir",
             str(out_dir),
+            "--bundle",
+            str(bundle_path),
             "--check",
         ],
         check=False,
@@ -105,6 +159,7 @@ def test_export_web_data_cli_write_and_check_roundtrip(tmp_path):
     )
     assert check_result.returncode == 0, check_result.stdout + check_result.stderr
     assert "web data is up to date" in check_result.stdout
+    assert "content bundle is up to date" in check_result.stdout
 
 
 def test_export_web_data_refuses_public_secret_final_hint(tmp_path):

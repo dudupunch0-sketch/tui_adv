@@ -1,0 +1,26 @@
+name: Rust
+
+on:
+  pull_request:
+    paths:
+      - "Cargo.toml"
+      - "crates/**"
+      - ".github/workflows/rust.yml"
+  push:
+    paths:
+      - "Cargo.toml"
+      - "crates/**"
+      - ".github/workflows/rust.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Test Rust workspace
+        run: cargo test --workspace
+      - name: Build executable
+        run: cargo build -p escape-terminal --release
+      - name: Smoke executable
+        run: ./target/release/escape-terminal --scene printer --seed 123 --smoke

@@ -1,0 +1,639 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Escape from the Office — dual renderer directions</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #050706;
+      --panel: rgba(8, 18, 12, 0.82);
+      --panel-strong: rgba(3, 10, 6, 0.94);
+      --ink: #e8f9eb;
+      --muted: #94a99b;
+      --green: #78ff9f;
+      --green-soft: rgba(120, 255, 159, 0.16);
+      --green-line: rgba(120, 255, 159, 0.34);
+      --amber: #ffd277;
+      --red: #ff6b7f;
+      --paper: #f3ead8;
+      --paper-ink: #20231f;
+      --paper-muted: #6f6657;
+      --paper-line: rgba(49, 45, 38, 0.18);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 18% 8%, rgba(120, 255, 159, 0.12), transparent 34rem),
+        radial-gradient(circle at 85% 14%, rgba(255, 210, 119, 0.12), transparent 32rem),
+        radial-gradient(circle at 50% 110%, rgba(132, 92, 255, 0.12), transparent 44rem),
+        linear-gradient(180deg, #0d120f 0%, #030403 100%);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body::before {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      content: "";
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.026) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.016) 1px, transparent 1px);
+      background-size: 100% 5px, 5px 100%;
+      mix-blend-mode: screen;
+      opacity: 0.42;
+    }
+
+    .page {
+      position: relative;
+      width: min(1440px, calc(100vw - 32px));
+      margin: 0 auto;
+      padding: 28px 0 44px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 24px;
+      align-items: end;
+      margin-bottom: 18px;
+      padding: 24px;
+      border: 1px solid var(--green-line);
+      background: linear-gradient(135deg, rgba(8, 20, 13, 0.86), rgba(8, 12, 10, 0.72));
+      box-shadow: 0 0 34px rgba(120, 255, 159, 0.08), inset 0 0 80px rgba(120, 255, 159, 0.035);
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--amber);
+      font: 700 12px/1.2 "IBM Plex Mono", "JetBrains Mono", ui-monospace, monospace;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(30px, 4vw, 56px);
+      line-height: 0.98;
+      letter-spacing: -0.06em;
+    }
+
+    .hero p {
+      margin: 12px 0 0;
+      color: #bfd3c4;
+      line-height: 1.72;
+      word-break: keep-all;
+    }
+
+    .decision-box {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      font: 13px/1.5 "IBM Plex Mono", "JetBrains Mono", ui-monospace, monospace;
+    }
+
+    .decision-box li {
+      display: grid;
+      grid-template-columns: 122px 1fr;
+      gap: 12px;
+      padding: 10px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.035);
+    }
+
+    .decision-box b { color: var(--green); }
+    .decision-box span { color: var(--muted); }
+
+    .core-strip {
+      margin-bottom: 18px;
+      padding: 15px 18px;
+      border: 1px solid rgba(255, 210, 119, 0.32);
+      background: rgba(255, 210, 119, 0.065);
+      font: 13px/1.55 "IBM Plex Mono", "JetBrains Mono", ui-monospace, monospace;
+      color: #eadfca;
+    }
+
+    .core-strip strong { color: var(--amber); }
+
+    .tabs {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      padding: 12px 0;
+      backdrop-filter: blur(16px);
+    }
+
+    .tab {
+      min-height: 58px;
+      border: 1px solid var(--green-line);
+      background: rgba(8, 20, 13, 0.78);
+      color: var(--muted);
+      cursor: pointer;
+      font: 700 13px/1.3 "IBM Plex Mono", "JetBrains Mono", ui-monospace, monospace;
+      letter-spacing: 0.04em;
+      text-align: left;
+      padding: 10px 14px;
+    }
+
+    .tab strong { display: block; color: var(--ink); font-size: 15px; }
+    .tab[aria-selected="true"] {
+      color: var(--ink);
+      border-color: var(--green);
+      background: linear-gradient(180deg, rgba(120, 255, 159, 0.14), rgba(8, 20, 13, 0.86));
+      box-shadow: 0 0 18px rgba(120, 255, 159, 0.14);
+    }
+
+    .stage {
+      display: none;
+      min-height: 720px;
+      border: 1px solid var(--green-line);
+      background: rgba(2, 6, 4, 0.74);
+      box-shadow: inset 0 0 80px rgba(120, 255, 159, 0.04);
+    }
+
+    .stage.active { display: block; }
+
+    .stage-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--green-line);
+      color: var(--muted);
+      font: 700 12px/1.2 "IBM Plex Mono", "JetBrains Mono", ui-monospace, monospace;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .stage-header em { color: var(--amber); font-style: normal; }
+
+    .terminal-wrap {
+      padding: 24px;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(120, 255, 159, 0.08), transparent 38rem),
+        #020503;
+    }
+
+    .terminal-window {
+      overflow: hidden;
+      max-width: 1180px;
+      min-height: 620px;
+      margin: 0 auto;
+      border: 1px solid rgba(120, 255, 159, 0.42);
+      border-radius: 12px;
+      background: rgba(0, 10, 5, 0.92);
+      box-shadow: 0 0 40px rgba(120, 255, 159, 0.13), inset 0 0 80px rgba(120, 255, 159, 0.055);
+    }
+
+    .terminal-chrome {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(120, 255, 159, 0.24);
+      background: rgba(120, 255, 159, 0.08);
+      color: var(--green);
+      font: 12px "IBM Plex Mono", "JetBrains Mono", ui-monospace, monospace;
+    }
+
+    .traffic { display: inline-flex; gap: 7px; }
+    .traffic i { width: 10px; height: 10px; border-radius: 50%; background: var(--green); opacity: 0.46; }
+    .traffic i:nth-child(2) { background: var(--amber); }
+    .traffic i:nth-child(3) { background: var(--red); }
+
+    .terminal-screen {
+      position: relative;
+      display: grid;
+      grid-template-columns: 310px 1fr;
+      gap: 16px;
+      min-height: 570px;
+      padding: 22px;
+      color: #caffd6;
+      text-shadow: 0 0 12px rgba(120, 255, 159, 0.35);
+      font: 15px/1.52 "IBM Plex Mono", "JetBrains Mono", "D2Coding", ui-monospace, monospace;
+    }
+
+    .terminal-screen::after {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      content: "";
+      background: linear-gradient(transparent 50%, rgba(255, 255, 255, 0.035) 50%);
+      background-size: 100% 4px;
+    }
+
+    .term-panel {
+      position: relative;
+      z-index: 1;
+      padding: 13px;
+      border: 1px solid rgba(120, 255, 159, 0.26);
+      background: rgba(1, 8, 4, 0.72);
+    }
+
+    .term-panel h2,
+    .term-panel h3 {
+      margin: 0 0 9px;
+      color: var(--green);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .term-panel h2 { font-size: 17px; }
+    .term-panel h3 { font-size: 12px; }
+    .term-panel p { margin: 7px 0; }
+    .term-side { display: grid; align-content: start; gap: 12px; }
+    .term-main { display: grid; grid-template-rows: auto 1fr auto; gap: 12px; }
+
+    .glyph-lab {
+      position: relative;
+      overflow: hidden;
+      min-height: 270px;
+      border: 1px solid rgba(255, 210, 119, 0.32);
+      background: rgba(255, 210, 119, 0.045);
+    }
+
+    .ascii-copier {
+      position: absolute;
+      left: 24px;
+      top: 42px;
+      color: var(--green);
+      white-space: pre;
+      font: 13px/1.05 "IBM Plex Mono", "JetBrains Mono", monospace;
+    }
+
+    .floating-glyph {
+      position: absolute;
+      left: calc(260px + var(--x));
+      top: calc(46px + var(--y));
+      color: var(--ink);
+      animation: jitter 2.8s infinite ease-in-out;
+      animation-delay: var(--delay);
+    }
+
+    .floating-glyph.stable {
+      color: var(--amber);
+      text-shadow: 0 0 14px rgba(255, 210, 119, 0.42);
+      animation-duration: 5.6s;
+    }
+
+    @keyframes jitter {
+      0%, 100% { transform: translate(0, 0); opacity: 0.74; }
+      35% { transform: translate(5px, -4px); opacity: 1; }
+      70% { transform: translate(-3px, 3px); opacity: 0.58; }
+    }
+
+    .choices { display: grid; gap: 9px; margin: 10px 0 0; padding: 0; list-style: none; }
+    .choices li { border: 1px solid rgba(120, 255, 159, 0.24); background: rgba(120, 255, 159, 0.07); padding: 10px; color: #ecfff0; }
+    .choices kbd { color: var(--amber); margin-right: 8px; }
+
+    .terminal-note {
+      max-width: 1180px;
+      margin: 14px auto 0;
+      color: var(--muted);
+      font: 13px/1.6 "IBM Plex Mono", "JetBrains Mono", ui-monospace, monospace;
+    }
+
+    .storybook-wrap {
+      min-height: 670px;
+      padding: 22px;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(circle at 70% 18%, rgba(132, 92, 255, 0.12), transparent 28rem),
+        radial-gradient(circle at 24% 100%, rgba(255, 210, 119, 0.14), transparent 30rem),
+        #11110e;
+    }
+
+    .phone {
+      position: relative;
+      width: min(430px, 100%);
+      min-height: 720px;
+      overflow: hidden;
+      border-radius: 34px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: linear-gradient(180deg, rgba(244, 234, 216, 0.96), rgba(232, 219, 195, 0.96)), var(--paper);
+      color: var(--paper-ink);
+      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.55), inset 0 0 0 10px rgba(20, 20, 17, 0.08);
+    }
+
+    .phone::before {
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      z-index: 3;
+      width: 110px;
+      height: 20px;
+      border-radius: 999px;
+      content: "";
+      transform: translateX(-50%);
+      background: rgba(20, 20, 18, 0.16);
+    }
+
+    .storybook {
+      position: relative;
+      z-index: 1;
+      padding: 46px 24px 24px;
+    }
+
+    .book-top {
+      display: grid;
+      grid-template-columns: 52px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--paper-line);
+    }
+
+    .portrait {
+      width: 52px;
+      height: 52px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(29, 33, 30, 0.22);
+      background: #ded2bc;
+      font: 700 22px "IBM Plex Mono", "JetBrains Mono", monospace;
+    }
+
+    .book-top small,
+    .book-meta { color: var(--paper-muted); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
+    .book-top h2 { margin: 2px 0 0; font-size: 17px; letter-spacing: -0.02em; }
+
+    .scene-card {
+      margin: 18px 0;
+      padding: 16px;
+      border: 1px solid rgba(29, 33, 30, 0.18);
+      background: rgba(255, 255, 255, 0.22);
+    }
+
+    .ascii-art {
+      margin: 0;
+      color: #263127;
+      font: 12px/1.05 "IBM Plex Mono", "JetBrains Mono", monospace;
+      white-space: pre;
+    }
+
+    .chapter {
+      margin: 14px 0 8px;
+      color: var(--paper-muted);
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .story-copy {
+      margin: 0;
+      color: #22241f;
+      font: 17px/1.86 Georgia, "Times New Roman", "Apple SD Gothic Neo", serif;
+      word-break: keep-all;
+    }
+
+    .story-copy .clue {
+      color: #0a5d2a;
+      font-weight: 800;
+      text-shadow: 0 0 8px rgba(10, 93, 42, 0.16);
+    }
+
+    .story-choices { display: grid; gap: 10px; margin-top: 18px; }
+    .story-choice {
+      padding: 12px 13px;
+      border: 1px solid rgba(29, 33, 30, 0.18);
+      background: rgba(255, 255, 255, 0.28);
+      color: #23261f;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+    .story-choice strong { color: #8b4f00; }
+
+    #glyphCanvas {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      mix-blend-mode: multiply;
+    }
+
+    .comparison {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .compare-card {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.04);
+      padding: 15px;
+    }
+    .compare-card h3 { margin: 0 0 8px; color: var(--green); font-size: 15px; }
+    .compare-card p { margin: 0; color: var(--muted); line-height: 1.65; font-size: 14px; }
+    .compare-card.core h3 { color: var(--amber); }
+
+    @media (max-width: 980px) {
+      .hero, .terminal-screen, .comparison, .tabs { grid-template-columns: 1fr; }
+      .tabs { position: static; }
+      .stage { min-height: auto; }
+      .terminal-screen { min-height: auto; }
+      .floating-glyph { left: calc(220px + var(--x)); }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">visual direction lab / Escape from the Office</p>
+        <h1>남아있는 두 방향 비교</h1>
+        <p>브라우저 fake-TUI dashboard 방향은 장기 제품 UI에서 제외했다. 이 데모는 살아남은 1번 terminal renderer와 3번 Web Storybook renderer만 보여준다. 둘 다 하나의 Rust GameCore를 공유하고, 각 renderer는 mood와 GlyphFX만 책임진다.</p>
+      </div>
+      <ul class="decision-box">
+        <li><b>Shared Core</b><span>Rust GameCore가 상태, 선택지, 엔딩, EffectCue의 진실을 소유한다.</span></li>
+        <li><b>1 Terminal</b><span>SuperLightTUI 기반 terminal-native horror edition.</span></li>
+        <li><b>3 Storybook</b><span>Web/mobile primary UX 후보. 읽는 경험 + 사건성 있는 GlyphFX.</span></li>
+      </ul>
+    </section>
+
+    <section class="core-strip">
+      <strong>Core owns truth. Renderer owns mood.</strong>
+      &nbsp; YAML authoring → generated content bundle → Rust GameCore → TurnView / ActionResult / EffectCue → terminal 또는 web renderer.
+    </section>
+
+    <nav class="tabs" aria-label="surviving renderer tabs">
+      <button class="tab" data-tab="terminal" aria-selected="true"><strong>01 Terminal Native</strong>SuperLightTUI + terminal GlyphFX</button>
+      <button class="tab" data-tab="storybook" aria-selected="false"><strong>03 Web Storybook</strong>mobile story page + GlyphFX</button>
+    </nav>
+
+    <section class="stage active" id="stage-terminal">
+      <div class="stage-header"><span>direction 01 / terminal renderer</span><em>SuperLightTUI target, not legacy dashboard</em></div>
+      <div class="terminal-wrap">
+        <div class="terminal-window">
+          <div class="terminal-chrome"><span class="traffic"><i></i><i></i><i></i></span><span>escape-terminal.local</span><span>seed=123 · tick=60fps</span></div>
+          <div class="terminal-screen">
+            <aside class="term-side">
+              <section class="term-panel"><h3>TURN VIEW</h3><p>위치: 복합기 구역</p><p>체력: 92</p><p>정신력: 67</p><p>배터리: 41%</p></section>
+              <section class="term-panel"><h3>CORE CONTRACT</h3><p>Renderer는 조건을 계산하지 않는다.</p><p>표시 가능한 행동은 Rust core의 TurnView에서만 온다.</p></section>
+              <section class="term-panel"><h3>INPUT</h3><p>1-9 선택 · 방향키 이동 · q 종료</p><p>snapshot smoke로 회귀 테스트</p></section>
+            </aside>
+            <main class="term-main">
+              <section class="term-panel">
+                <h2>복합기가 혼자 출력한다</h2>
+                <p>출력구 안쪽에서 아직 고르지 않은 선택지가 천천히 밀려 나온다. 단서는 흔들리지만, 몇몇 단어는 끝까지 안정적으로 남는다.</p>
+                <div class="glyph-lab" aria-label="terminal-native glyph anomaly mockup">
+<pre class="ascii-copier">┌──────────────────────┐
+│  FLOOR 3 / COPIER    │
+│  ┌──────────────┐    │
+│  │ TONER ERROR  │    │
+│  └──────┬───────┘    │
+│         ▼            │
+│      [OUTPUT]        │
+└──────────────────────┘</pre>
+                  <span class="floating-glyph" style="--x:0px; --y:0px; --delay:-0.1s">아</span>
+                  <span class="floating-glyph" style="--x:22px; --y:18px; --delay:-0.4s">직</span>
+                  <span class="floating-glyph stable" style="--x:55px; --y:46px; --delay:-0.2s">비</span>
+                  <span class="floating-glyph stable" style="--x:77px; --y:46px; --delay:-0.8s">상</span>
+                  <span class="floating-glyph stable" style="--x:99px; --y:46px; --delay:-1.1s">계</span>
+                  <span class="floating-glyph stable" style="--x:121px; --y:46px; --delay:-0.6s">단</span>
+                  <span class="floating-glyph" style="--x:18px; --y:90px; --delay:-1.2s">토</span>
+                  <span class="floating-glyph" style="--x:41px; --y:103px; --delay:-0.9s">너</span>
+                  <span class="floating-glyph" style="--x:82px; --y:124px; --delay:-1.5s">접</span>
+                  <span class="floating-glyph" style="--x:105px; --y:138px; --delay:-0.7s">힘</span>
+                  <span class="floating-glyph" style="--x:168px; --y:165px; --delay:-1.8s">▒</span>
+                  <span class="floating-glyph" style="--x:199px; --y:182px; --delay:-1.4s">░</span>
+                </div>
+                <ol class="choices">
+                  <li><kbd>1</kbd>출력물이 안정될 때까지 기다린다 <span style="color: var(--amber)">/ 정신력 -2</span></li>
+                  <li><kbd>2</kbd>토너 카트리지 안쪽 표식을 확인한다</li>
+                  <li><kbd>3</kbd>출력물의 안정 단어만 사원증 뒤에 적는다</li>
+                </ol>
+              </section>
+              <footer class="term-panel"><h3>LOG</h3><p>&gt; EffectCue::GlyphAnomaly received from Rust core.</p><p>&gt; stable_terms = [비상계단, 토너, 접힌 방향]</p></footer>
+            </main>
+          </div>
+        </div>
+        <p class="terminal-note">이 방향은 “패널형 웹 dashboard”가 아니라 실제 터미널에서 살아 움직이는 horror edition이다. 제품 전체의 primary가 되기보다, terminal-native 매력을 가진 별도 renderer로 검증한다.</p>
+      </div>
+    </section>
+
+    <section class="stage" id="stage-storybook">
+      <div class="stage-header"><span>direction 03 / web storybook renderer</span><em>primary UX candidate</em></div>
+      <div class="storybook-wrap">
+        <div class="phone">
+          <canvas id="glyphCanvas" aria-hidden="true"></canvas>
+          <article class="storybook">
+            <header class="book-top">
+              <div class="portrait">人</div>
+              <div><small>chapter 02</small><h2>기록보관팀 앞 복도</h2></div>
+              <div class="book-meta">배터리 41%</div>
+            </header>
+            <section class="scene-card" aria-label="storybook pixel scene">
+<pre class="ascii-art">┌──────────────────────────┐
+│      HR / ARCHIVE        │
+│   ┌──────┐      ▒▒▒▒     │
+│   │ CRT  │   [문서함]    │
+│   └─┬──┬─┘      ▒▒▒▒     │
+│     │  │    비상등: 점멸 │
+└─────┴──┴────────────────┘</pre>
+            </section>
+            <p class="chapter">text-first scene</p>
+            <p class="story-copy" id="storyText">복도 끝의 낡은 모니터가 켜진다. 화면에는 명령어가 없다. 대신 문장 하나가 천천히 떠오른다. “아직 고르지 않은 선택이 이미 출력되었습니다.” 잠시 뒤, 흔들리던 글자들이 제자리를 찾고 <span class="clue">비상계단</span>이라는 단어만 선명하게 남는다.</p>
+            <div class="story-choices">
+              <div class="story-choice"><strong>1.</strong> 모니터 아래의 황동판을 손가락으로 닦는다.</div>
+              <div class="story-choice"><strong>2.</strong> 비상계단이라는 단어를 사원증 뒤에 적는다.</div>
+              <div class="story-choice"><strong>3.</strong> 아직 움직이지 않는다. 문장이 다시 흐를 때까지 기다린다.</div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="comparison" aria-label="surviving direction summary">
+      <div class="compare-card core"><h3>Shared Rust GameCore</h3><p>상태, 선택 가능 action, 결과, 엔딩, 현실 연결 secret policy, EffectCue를 한 곳에서 계산한다. Renderer는 직접 규칙을 재구현하지 않는다.</p></div>
+      <div class="compare-card"><h3>01 Terminal Native</h3><p>SuperLightTUI 기반 terminal renderer. 셀 그리드, snapshot smoke, CJK width 검증, terminal-native GlyphFX가 핵심이다.</p></div>
+      <div class="compare-card"><h3>03 Web Storybook</h3><p>플레이어용 primary UX 후보. 모바일 세로 스토리북, 읽기 중심 선택, 중요한 순간만 글자/문장/단서가 살아 움직인다.</p></div>
+    </section>
+  </div>
+
+  <script>
+    const tabs = Array.from(document.querySelectorAll('.tab'));
+    const stages = {
+      terminal: document.getElementById('stage-terminal'),
+      storybook: document.getElementById('stage-storybook'),
+    };
+
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        const key = tab.dataset.tab;
+        tabs.forEach((candidate) => candidate.setAttribute('aria-selected', String(candidate === tab)));
+        Object.entries(stages).forEach(([name, stage]) => stage.classList.toggle('active', name === key));
+        if (key === 'storybook') setTimeout(drawGlyphScene, 30);
+      });
+    });
+
+    function fitCanvas(canvas) {
+      const rect = canvas.getBoundingClientRect();
+      const ratio = window.devicePixelRatio || 1;
+      const width = Math.max(320, Math.floor(rect.width || 430));
+      const height = Math.max(520, Math.floor(rect.height || 720));
+      canvas.width = width * ratio;
+      canvas.height = height * ratio;
+      const ctx = canvas.getContext('2d');
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      return { ctx, width, height };
+    }
+
+    function drawGlyphScene() {
+      const canvas = document.getElementById('glyphCanvas');
+      if (!canvas) return;
+      const { ctx, width } = fitCanvas(canvas);
+      const started = performance.now();
+      const glyphs = Array.from('문서가 아직 끝나지 않았다  비상계단  아직 고르지 않은 선택').map((char, i) => ({
+        char,
+        x: 72 + (i % 14) * 19,
+        y: 168 + Math.floor(i / 14) * 23,
+        seed: Math.sin(i * 17.13) * 999,
+      }));
+
+      function frame(now) {
+        const t = (now - started) / 1000;
+        ctx.clearRect(0, 0, width, 760);
+        ctx.font = '700 17px IBM Plex Mono, JetBrains Mono, monospace';
+        glyphs.forEach((g, i) => {
+          const wave = Math.sin(t * 2.4 + g.seed);
+          const burst = Math.max(0, Math.sin(t * 0.75 - i * 0.05));
+          const driftX = wave * 7 + burst * Math.cos(g.seed) * 38;
+          const driftY = Math.cos(t * 2.1 + g.seed) * 5 + burst * Math.sin(g.seed) * 28;
+          const important = '비상계단'.includes(g.char) && g.char.trim();
+          ctx.globalAlpha = important ? 0.76 : 0.28 + Math.abs(wave) * 0.22;
+          ctx.fillStyle = important ? '#0a5d2a' : '#52412d';
+          ctx.fillText(g.char, g.x + driftX, g.y + driftY);
+        });
+        ctx.globalAlpha = 1;
+        ctx.strokeStyle = 'rgba(10,93,42,0.14)';
+        ctx.beginPath();
+        ctx.moveTo(62 + Math.sin(t) * 6, 430);
+        ctx.bezierCurveTo(150, 390 + Math.sin(t * 1.4) * 18, 260, 500, 350, 462 + Math.cos(t) * 14);
+        ctx.stroke();
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    }
+
+    window.addEventListener('resize', () => {
+      if (stages.storybook.classList.contains('active')) drawGlyphScene();
+    });
+  </script>
+</body>
+</html>

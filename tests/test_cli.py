@@ -7,17 +7,29 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
-def run_module(*args: str) -> subprocess.CompletedProcess[str]:
+def run_module(*args: str, input_text: str | None = None) -> subprocess.CompletedProcess[str]:
     env = os.environ.copy()
     env["PYTHONPATH"] = str(REPO_ROOT / "src")
     return subprocess.run(
         [sys.executable, "-m", "tui_adv", *args],
         cwd=REPO_ROOT,
         env=env,
+        input=input_text,
         text=True,
         capture_output=True,
         check=False,
     )
+
+
+def test_cli_play_mode_accepts_numbered_input_and_quit():
+    result = run_module("--play", "--seed", "123", input_text="1\nq\n")
+
+    assert result.returncode == 0
+    assert "escape from the office - 직접 플레이" in result.stdout
+    assert "입력: 번호 또는 action id" in result.stdout
+    assert "선택 실행: 메시지를 확인한다" in result.stdout
+    assert "게임을 종료한다" in result.stdout
+    assert "Traceback" not in result.stderr
 
 
 def test_cli_new_game_smoke_prints_initial_status_and_seeded_encounter():

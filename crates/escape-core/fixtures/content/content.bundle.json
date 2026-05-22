@@ -1,0 +1,1979 @@
+{
+  "content": {
+    "achievements": [
+      {
+        "conditions": {
+          "required_clues": [
+            "ex_employee_contacted"
+          ]
+        },
+        "description": "퇴사자의 첫 메시지를 확인했다.",
+        "id": "first_signal_received",
+        "name": "첫 신호 확인"
+      },
+      {
+        "conditions": {
+          "required_flags": [
+            "pantry_hint_seen"
+          ]
+        },
+        "description": "게임 속 단서가 현실 사무실의 단서와 이어졌다.",
+        "hidden": true,
+        "id": "reality_link_discovered",
+        "name": "현실과 접속한 사람"
+      },
+      {
+        "conditions": {
+          "required_clues": [
+            "reality_link_hint_1",
+            "reality_link_hint_2"
+          ],
+          "required_flags": [
+            "reality_link_second_seen"
+          ]
+        },
+        "description": "토너 표식과 커피머신 점검 라벨을 이어 두 번째 현실 힌트를 열었다.",
+        "hidden": true,
+        "id": "reality_link_second_marker",
+        "name": "두 번째 현실 표식"
+      },
+      {
+        "conditions": {
+          "required_clues": [
+            "future_choice_printout",
+            "reality_link_hint_3"
+          ],
+          "required_flags": [
+            "reality_link_third_seen"
+          ]
+        },
+        "description": "출력물의 빈 선택지와 회의실 화이트보드 표식을 이어 세 번째 현실 힌트를 열었다.",
+        "hidden": true,
+        "id": "reality_link_third_marker",
+        "name": "세 번째 현실 표식"
+      },
+      {
+        "conditions": {
+          "required_flags": [
+            "server_room_broadcast_controlled"
+          ]
+        },
+        "description": "제한된 사내 방송 채널을 붙잡았다.",
+        "id": "broadcast_channel_captured",
+        "name": "사내 방송 장악자"
+      },
+      {
+        "conditions": {
+          "required_flags": [
+            "isolation_protocol_revealed"
+          ]
+        },
+        "description": "회의록과 CCTV 지연 프레임에서 격리 프로토콜의 실체를 읽었다.",
+        "hidden": true,
+        "id": "truth_protocol_understood",
+        "name": "격리 프로토콜 독해"
+      },
+      {
+        "conditions": {
+          "required_flags": [
+            "network_admin_claimed"
+          ]
+        },
+        "description": "서버실 내부 콘솔에서 격리 규칙을 덮어썼다.",
+        "id": "network_admin_claimed",
+        "name": "사내망 관리자"
+      },
+      {
+        "conditions": {
+          "required_flags": [
+            "rooftop_signal_sent"
+          ]
+        },
+        "description": "옥상에서 제한된 외부 인터넷 신호를 송신했다.",
+        "id": "rooftop_signal_sent",
+        "name": "외부 신호 송신"
+      },
+      {
+        "conditions": {
+          "required_flags": [
+            "parking_ramp_opened"
+          ]
+        },
+        "description": "지하주차장 차단기를 열고 회사 격리 경계 밖으로 빠져나갔다.",
+        "id": "parking_lot_escape_driver",
+        "name": "지하주차장 탈출자"
+      },
+      {
+        "conditions": {
+          "required_flags": [
+            "lobby_exit_opened"
+          ]
+        },
+        "description": "임시 방문증으로 로비 출구 게이트를 열고 퇴실 절차를 통과했다.",
+        "id": "lobby_exit_commuter",
+        "name": "로비 게이트 통과자"
+      },
+      {
+        "conditions": {
+          "required_flags": [
+            "executive_approval_claimed"
+          ]
+        },
+        "description": "대표실 결재 콘솔에서 회사 생존 규칙의 승인권을 장악했다.",
+        "id": "executive_approval_holder",
+        "name": "대표 승인권자"
+      }
+    ],
+    "encounters": [
+      {
+        "body": "퇴사한 전임자에게서 사내 메신저가 도착했다.",
+        "choices": [
+          {
+            "cost": {
+              "battery": 3,
+              "sanity": 2
+            },
+            "id": "check_message",
+            "label": "메시지를 확인한다",
+            "outcome": {
+              "add_clues": [
+                "ex_employee_contacted"
+              ],
+              "log": "퇴사자의 메시지를 확인했다."
+            }
+          },
+          {
+            "id": "ignore_phone",
+            "label": "무시하고 휴대폰을 엎어둔다",
+            "outcome": {
+              "log": "휴대폰을 엎어두자 알림음이 한 박자 늦게 멈췄다.",
+              "sanity": 2
+            }
+          },
+          {
+            "cost": {
+              "battery": 8
+            },
+            "id": "search_ex_employee",
+            "label": "전임자의 이름을 사내망에서 검색한다",
+            "outcome": {
+              "add_flags": [
+                "truth_route_started"
+              ],
+              "add_items": [
+                "ex_employee_memo"
+              ],
+              "log": "사내망 캐시에 남은 전임자의 흔적을 찾았다."
+            }
+          },
+          {
+            "check": {
+              "ability": "interface",
+              "difficulty": 10,
+              "failure": {
+                "danger": 1,
+                "log": "패킷이 역으로 당신의 단말을 훑고 지나갔다.",
+                "resources": {
+                  "sanity": -4
+                }
+              },
+              "success": {
+                "add_clues": [
+                  "delayed_packet_route"
+                ],
+                "add_flags": [
+                  "network_truth_hint"
+                ],
+                "log": "지연 시간 사이에서 숨은 라우팅을 찾았다."
+              }
+            },
+            "conditions": {
+              "min_abilities": {
+                "interface": 4
+              }
+            },
+            "cost": {
+              "battery": 2
+            },
+            "id": "trace_packet_delay",
+            "label": "[인터페이스] 알림 지연 시간을 역추적한다",
+            "outcome": {
+              "log": "알림 패킷을 조심스럽게 붙잡았다."
+            }
+          }
+        ],
+        "conditions": {
+          "locations": [
+            "dev_desk"
+          ]
+        },
+        "id": "ex_employee_messenger",
+        "title": "퇴사자의 메신저"
+      },
+      {
+        "body": "꺼져 있던 복합기가 아직 하지 않은 선택을 출력한다.",
+        "choices": [
+          {
+            "cost": {
+              "sanity": 3
+            },
+            "id": "read_printout",
+            "label": "출력물을 읽는다",
+            "outcome": {
+              "add_clues": [
+                "future_choice_printout"
+              ],
+              "log": "출력물에는 아직 고르지 않은 선택지가 적혀 있었다."
+            }
+          },
+          {
+            "id": "take_printout",
+            "label": "출력물을 챙긴다",
+            "outcome": {
+              "add_flags": [
+                "printer_secret_started"
+              ],
+              "add_items": [
+                "crumpled_printout"
+              ],
+              "log": "따뜻한 출력물을 접어 주머니에 넣었다."
+            }
+          },
+          {
+            "conditions": {
+              "min_resources": {
+                "sanity": 40
+              }
+            },
+            "id": "check_toner",
+            "label": "토너 카트리지를 확인한다",
+            "outcome": {
+              "add_clues": [
+                "reality_link_hint_1"
+              ],
+              "add_flags": [
+                "reality_link_started"
+              ],
+              "log": "토너 카트리지 안쪽에서 이상한 표식을 봤다."
+            }
+          }
+        ],
+        "conditions": {
+          "locations": [
+            "printer_area"
+          ]
+        },
+        "id": "printer_prints_alone",
+        "title": "복합기가 혼자 출력한다"
+      },
+      {
+        "body": "커피머신 화면에 '물을 보충하십시오'가 반복된다. 물통은 가득 차 있다.",
+        "choices": [
+          {
+            "id": "brew_coffee",
+            "label": "커피를 뽑는다",
+            "outcome": {
+              "log": "커피는 아직 따뜻했고, 컵 바닥에는 작은 검은 점이 남았다.",
+              "resources": {
+                "hunger": -3,
+                "sanity": 4,
+                "thirst": 5
+              }
+            }
+          },
+          {
+            "id": "inspect_water_tank",
+            "label": "물통을 확인한다",
+            "outcome": {
+              "add_clues": [
+                "full_water_tank_warning"
+              ],
+              "log": "물통은 가득 차 있는데 센서는 계속 빈 상태를 보고했다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "conditions": {
+              "required_flags": [
+                "reality_link_started"
+              ]
+            },
+            "id": "trace_toner_symbol",
+            "label": "점검 라벨의 표식을 토너 표식과 맞춰 본다",
+            "outcome": {
+              "add_clues": [
+                "reality_link_hint_2"
+              ],
+              "add_flags": [
+                "reality_link_second_seen",
+                "pantry_hint_seen"
+              ],
+              "log": "커피머신 점검 라벨의 작은 숫자들이 토너 안쪽 표식과 같은 방향으로 접혔다."
+            }
+          },
+          {
+            "conditions": {
+              "required_flags": [
+                "printer_secret_started"
+              ]
+            },
+            "id": "look_behind_machine",
+            "label": "커피머신 뒤를 본다",
+            "outcome": {
+              "add_clues": [
+                "reality_link_hint_2"
+              ],
+              "add_flags": [
+                "coffee_machine_back_panel",
+                "pantry_hint_seen"
+              ],
+              "log": "커피머신 뒤쪽 패널에 복합기 출력물과 같은 표식이 있었다."
+            }
+          },
+          {
+            "id": "take_bottled_water",
+            "label": "밀봉된 생수 한 병을 챙긴다",
+            "outcome": {
+              "add_items": [
+                "bottled_water"
+              ],
+              "log": "탕비실 냉장고 문 안쪽에서 밀봉된 생수 한 병을 꺼냈다."
+            }
+          }
+        ],
+        "conditions": {
+          "locations": [
+            "pantry"
+          ]
+        },
+        "id": "pantry_coffee_machine",
+        "title": "탕비실 커피머신"
+      },
+      {
+        "body": "정수기에서 물소리가 나지만 컵에는 물이 차지 않는다. 목이 마를수록 빈 컵 안쪽이 출렁이는 것처럼 보인다.",
+        "choices": [
+          {
+            "id": "drink_false_water",
+            "label": "물을 마신다",
+            "outcome": {
+              "add_flags": [
+                "thirst_hallucination_seen"
+              ],
+              "log": "빈 컵을 삼키자 목은 잠깐 식었지만 정수기 표시등이 당신의 이름을 깜빡였다.",
+              "resources": {
+                "sanity": -8,
+                "thirst": -25
+              }
+            }
+          },
+          {
+            "cost": {
+              "sanity": 2
+            },
+            "id": "search_for_bottled_water",
+            "label": "생수병을 찾는다",
+            "outcome": {
+              "add_flags": [
+                "thirst_hallucination_seen"
+              ],
+              "add_items": [
+                "bottled_water"
+              ],
+              "log": "정수기 아래 수납칸에서 실제로 밀봉된 생수 한 병을 찾았다."
+            }
+          },
+          {
+            "id": "unplug_dispenser",
+            "label": "정수기 전원을 뽑는다",
+            "outcome": {
+              "add_clues": [
+                "water_dispenser_false_sound"
+              ],
+              "add_flags": [
+                "thirst_hallucination_seen"
+              ],
+              "danger": -1,
+              "log": "플러그를 뽑자 물소리는 멈췄지만 컵 안쪽의 물결은 한 박자 늦게 사라졌다."
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "thirst_hallucination_seen"
+          ],
+          "locations": [
+            "pantry"
+          ],
+          "min_resources": {
+            "thirst": 60
+          }
+        },
+        "id": "strange_water_dispenser",
+        "title": "정수기의 이상한 물"
+      },
+      {
+        "body": "물품창고 안쪽 선반에 '재난 대응 키트'라고 적힌 박스가 열려 있다. 누군가 필요한 것만 가져가라는 듯 세 칸을 비워 두었다.",
+        "choices": [
+          {
+            "id": "take_first_aid_kit",
+            "label": "구급상자를 챙긴다",
+            "outcome": {
+              "add_items": [
+                "first_aid_kit"
+              ],
+              "log": "비상 보급함에서 구급상자를 꺼냈다."
+            }
+          },
+          {
+            "id": "take_power_bank",
+            "label": "보조배터리를 챙긴다",
+            "outcome": {
+              "add_items": [
+                "power_bank"
+              ],
+              "log": "비상 보급함 아래칸에서 충전 케이블이 묶인 보조배터리를 챙겼다."
+            }
+          },
+          {
+            "id": "take_emergency_snack",
+            "label": "비상 간식 봉지를 챙긴다",
+            "outcome": {
+              "add_items": [
+                "snack"
+              ],
+              "log": "유통기한이 오늘로 끝나는 과자 봉지를 챙겼다."
+            }
+          }
+        ],
+        "conditions": {
+          "locations": [
+            "supply_closet"
+          ]
+        },
+        "id": "supply_closet_cache",
+        "title": "물품창고 비상 보급함"
+      },
+      {
+        "body": "회의실 화이트보드 모서리에 지워지지 않는 작은 사각형이 남아 있다. 방금 본 출력물의 빈 선택지와 같은 모양이다.",
+        "choices": [
+          {
+            "cost": {
+              "sanity": 3
+            },
+            "id": "decode_whiteboard_marker",
+            "label": "출력물의 빈 선택지를 화이트보드 표식에 겹친다",
+            "outcome": {
+              "add_clues": [
+                "reality_link_hint_3"
+              ],
+              "add_flags": [
+                "reality_link_third_seen",
+                "meeting_marker_seen"
+              ],
+              "log": "화이트보드 모서리의 지워지지 않는 사각형이 출력물의 빈 선택지와 겹치며 세 번째 현실 표식이 되었다."
+            }
+          },
+          {
+            "id": "erase_marker_corner",
+            "label": "표식을 지우개로 문질러 본다",
+            "outcome": {
+              "add_flags": [
+                "meeting_marker_smudged"
+              ],
+              "log": "표식은 지워지지 않고 지우개 가루만 작은 화살표처럼 남겼다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "locations": [
+            "meeting_room"
+          ],
+          "required_clues": [
+            "future_choice_printout"
+          ]
+        },
+        "id": "meeting_room_whiteboard_marker",
+        "title": "회의실 화이트보드 모서리"
+      },
+      {
+        "body": "회의실 화면에는 방금 저장된 회의록이 떠 있다. 참석자는 전 직원, 발언자는 당신 하나다.",
+        "choices": [
+          {
+            "cost": {
+              "battery": 4,
+              "sanity": 5
+            },
+            "id": "save_impossible_minutes",
+            "label": "회의록을 저장하고 패턴을 표시한다",
+            "outcome": {
+              "add_clues": [
+                "meeting_pattern_noticed"
+              ],
+              "add_flags": [
+                "impossible_meeting_saved"
+              ],
+              "log": "회의록의 발언 시간이 모두 같은 초 단위로 반복된다는 것을 표시했다."
+            }
+          },
+          {
+            "id": "leave_without_saving",
+            "label": "저장하지 않고 회의실을 나간다",
+            "outcome": {
+              "log": "회의실 문이 닫히자 방금 전 회의 알림이 취소되었다.",
+              "resources": {
+                "sanity": 1
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "locations": [
+            "meeting_room"
+          ],
+          "required_flags": [
+            "truth_route_started"
+          ]
+        },
+        "id": "meeting_room_all_hands",
+        "title": "존재하지 않는 부서의 전체회의"
+      },
+      {
+        "body": "보안실 모니터들은 복도보다 한 박자 늦은 장면을 반복한다. 조금 전 당신이 한 선택도 녹화되어 있다.",
+        "choices": [
+          {
+            "cost": {
+              "battery": 6,
+              "sanity": 4
+            },
+            "id": "replay_delayed_cctv",
+            "label": "지연된 CCTV 화면을 되감는다",
+            "outcome": {
+              "add_clues": [
+                "server_log_fragment"
+              ],
+              "add_flags": [
+                "security_camera_mapped",
+                "isolation_protocol_revealed"
+              ],
+              "log": "CCTV 지연 프레임 사이에서 격리 프로토콜 로그 조각을 읽었다."
+            }
+          },
+          {
+            "id": "cover_cameras",
+            "label": "모니터를 덮고 보안실을 떠난다",
+            "outcome": {
+              "log": "꺼진 모니터들이 천천히 당신을 놓아주었다.",
+              "resources": {
+                "sanity": 2
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "locations": [
+            "security_room"
+          ],
+          "required_clues": [
+            "meeting_pattern_noticed"
+          ],
+          "required_flags": [
+            "impossible_meeting_saved"
+          ]
+        },
+        "id": "security_room_delayed_cctv",
+        "title": "지연된 CCTV 화면"
+      },
+      {
+        "body": "엘리베이터가 토해낸 보안실의 출입 기록은 현재 층을 서로 다른 세 숫자로 적고 있다. 틀린 층수 하나가 서버실 문과 같은 색으로 깜빡인다.",
+        "choices": [
+          {
+            "cost": {
+              "battery": 6,
+              "sanity": 3
+            },
+            "id": "extract_security_override",
+            "label": "보안실 층수 로그에서 서버실 우회권한을 뽑는다",
+            "outcome": {
+              "add_clues": [
+                "security_override_route"
+              ],
+              "add_flags": [
+                "security_override_unlocked"
+              ],
+              "add_items": [
+                "security_override_badge"
+              ],
+              "log": "어긋난 층수 로그를 하나로 접자 서버실 우회권한이 임시 배지처럼 발급되었다."
+            }
+          },
+          {
+            "cost": {
+              "battery": 3
+            },
+            "id": "loop_cctv_delay",
+            "label": "지연된 CCTV를 서버실 앞에 고정한다",
+            "outcome": {
+              "add_clues": [
+                "server_room_cctv_blindspot"
+              ],
+              "add_flags": [
+                "cctv_delay_looped"
+              ],
+              "log": "서버실 앞 CCTV가 당신보다 한 박자 늦게 감시하도록 루프를 걸었다."
+            }
+          },
+          {
+            "id": "leave_misaligned_room",
+            "label": "층수 기록을 닫고 보안실을 나간다",
+            "outcome": {
+              "log": "보안실 문패가 다시 현재 층을 모르는 척했다.",
+              "resources": {
+                "sanity": 1
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "locations": [
+            "security_room"
+          ],
+          "required_clues": [
+            "security_floor_misalignment"
+          ],
+          "required_flags": [
+            "elevator_returned_wrong_floor"
+          ]
+        },
+        "id": "security_room_floor_mismatch_console",
+        "title": "어긋난 층수의 보안 콘솔"
+      },
+      {
+        "body": "비상계단 문틈의 초록색 표식이 층수 표시와 같은 박자로 숨을 쉰다.",
+        "choices": [
+          {
+            "cost": {
+              "sanity": 3
+            },
+            "id": "align_breathing_floor",
+            "label": "계단문 틈의 숨소리와 층수 표시를 맞춘다",
+            "outcome": {
+              "add_flags": [
+                "escape_puzzle_ready"
+              ],
+              "log": "초록 표식이 한 번 꺼졌다 켜지자 반복되는 층수의 규칙이 드러났다."
+            }
+          },
+          {
+            "id": "ignore_exit_sign",
+            "label": "표식과 눈을 마주치지 않고 계단을 살핀다",
+            "outcome": {
+              "log": "표식은 시야 가장자리에 초록빛 잔상을 남겼지만 더는 따라오지 않았다.",
+              "sanity": 1
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "escape_puzzle_ready"
+          ],
+          "locations": [
+            "emergency_stairs"
+          ]
+        },
+        "id": "emergency_stairs_exit_sign",
+        "title": "비상계단 문틈 표식"
+      },
+      {
+        "body": "층수 표시는 4, 4, 4, 4를 반복한다. 한 칸만 진짜 계단처럼 숨을 쉰다.",
+        "choices": [
+          {
+            "id": "solve_distorted_floor",
+            "label": "반복되는 층수의 비밀을 풀고 문을 통과한다",
+            "outcome": {
+              "add_flags": [
+                "escape_route_completed"
+              ],
+              "log": "층수 표시가 한 번 거꾸로 흐른 뒤 비상문이 열렸다."
+            }
+          },
+          {
+            "id": "walk_down_wrong_stairs",
+            "label": "아래라고 믿고 계속 내려간다",
+            "outcome": {
+              "add_flags": [
+                "spatial_exit_failed"
+              ],
+              "log": "내려갈수록 계단은 회사 안쪽으로 더 깊게 접혔다.",
+              "resources": {
+                "sanity": -25
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "locations": [
+            "emergency_stairs"
+          ],
+          "required_flags": [
+            "escape_puzzle_ready"
+          ]
+        },
+        "id": "spatial_exit_puzzle",
+        "title": "비상계단 공간 왜곡"
+      },
+      {
+        "body": "닫힌 서버실 문틈에서 사내 방송이 거꾸로 새어 나온다.",
+        "choices": [
+          {
+            "cost": {
+              "battery": 5,
+              "sanity": 3
+            },
+            "id": "tune_internal_channel",
+            "label": "제한된 주파수를 맞춘다",
+            "outcome": {
+              "add_clues": [
+                "internal_channel_key"
+              ],
+              "add_flags": [
+                "server_room_broadcast_controlled"
+              ],
+              "log": "사내 방송의 잡음 뒤에서 통제 채널을 붙잡았다."
+            }
+          },
+          {
+            "id": "back_away_from_signal",
+            "label": "신호에서 물러난다",
+            "outcome": {
+              "log": "무전기 소리가 잠깐 당신의 목소리를 흉내 내다가 멈췄다.",
+              "sanity": 1
+            }
+          },
+          {
+            "cost": {
+              "sanity": 2
+            },
+            "id": "follow_cold_air",
+            "label": "문틈의 찬 공기를 따라 안쪽으로 들어간다",
+            "outcome": {
+              "add_flags": [
+                "server_room_entered"
+              ],
+              "destination_id": "server_room",
+              "log": "서버실 문은 열리지 않았지만, 당신은 이미 문 안쪽에 서 있었다."
+            }
+          },
+          {
+            "conditions": {
+              "required_flags": [
+                "security_override_unlocked"
+              ],
+              "required_items": [
+                "security_override_badge"
+              ]
+            },
+            "cost": {
+              "battery": 2
+            },
+            "id": "enter_with_security_override",
+            "label": "보안실 우회권한으로 서버실 문을 연다",
+            "outcome": {
+              "add_flags": [
+                "server_room_entered",
+                "security_override_used"
+              ],
+              "destination_id": "server_room",
+              "log": "우회권한을 대자 서버실 문은 잠금 해제가 아니라 예외 처리로 당신을 통과시켰다."
+            }
+          }
+        ],
+        "conditions": {
+          "locations": [
+            "server_room_front"
+          ]
+        },
+        "id": "server_room_radio",
+        "title": "서버실 문 앞 무전기"
+      },
+      {
+        "body": "랙 사이 KVM 콘솔에는 관리자 세션이 잠들지 않은 채 남아 있다.",
+        "choices": [
+          {
+            "cost": {
+              "battery": 10,
+              "sanity": 6
+            },
+            "id": "assume_admin_console",
+            "label": "관리자 콘솔에 격리 규칙을 덮어쓴다",
+            "outcome": {
+              "add_clues": [
+                "admin_console_signature"
+              ],
+              "add_flags": [
+                "network_admin_claimed",
+                "internal_network_access"
+              ],
+              "log": "관리자 콘솔의 격리 규칙을 당신의 퇴근 규칙으로 덮어썼다."
+            }
+          },
+          {
+            "id": "pull_network_cable",
+            "label": "가장 두꺼운 케이블을 뽑는다",
+            "outcome": {
+              "add_flags": [
+                "network_backlash"
+              ],
+              "log": "케이블을 뽑자 서버실 전체가 당신의 심장 박동으로 재부팅했다.",
+              "resources": {
+                "sanity": -8
+              }
+            }
+          },
+          {
+            "conditions": {
+              "required_flags": [
+                "security_override_used"
+              ],
+              "required_items": [
+                "security_override_badge"
+              ]
+            },
+            "cost": {
+              "battery": 8,
+              "sanity": 5
+            },
+            "id": "lock_isolation_with_security_override",
+            "label": "출입 로그와 격리 규칙을 함께 잠근다",
+            "outcome": {
+              "add_clues": [
+                "security_lockdown_signature"
+              ],
+              "add_flags": [
+                "network_admin_claimed",
+                "internal_network_access",
+                "security_lockdown_claimed"
+              ],
+              "log": "출입 로그와 격리 규칙이 같은 해시로 묶이자 보안실과 서버실이 당신을 예외 관리자라고 불렀다."
+            }
+          }
+        ],
+        "conditions": {
+          "locations": [
+            "server_room"
+          ]
+        },
+        "id": "server_room_console",
+        "title": "관리자 콘솔"
+      },
+      {
+        "body": "엘리베이터 버튼 패널에는 없던 R층이 켜져 있다. 외부 인터넷 아이콘은 한 칸만 떠 있지만, 층수 표시는 계속 옥상을 가리킨다.",
+        "choices": [
+          {
+            "cost": {
+              "battery": 4,
+              "sanity": 3
+            },
+            "id": "press_rooftop_button",
+            "label": "존재하지 않는 R층 버튼을 누른다",
+            "outcome": {
+              "add_clues": [
+                "nonexistent_rooftop_button"
+              ],
+              "add_flags": [
+                "rooftop_accessed"
+              ],
+              "destination_id": "rooftop",
+              "log": "버튼을 누르자 엘리베이터는 움직이지 않았지만 문 밖이 옥상으로 바뀌었다."
+            }
+          },
+          {
+            "id": "force_elevator_doors",
+            "label": "문틈을 벌려 현재 층으로 돌아온다",
+            "outcome": {
+              "add_clues": [
+                "security_floor_misalignment"
+              ],
+              "add_flags": [
+                "elevator_returned_wrong_floor"
+              ],
+              "destination_id": "security_room",
+              "log": "엘리베이터 문틈을 억지로 벌리자 보안실 모니터들이 방금 전의 현재 층을 되감아 보여 주었다.",
+              "resources": {
+                "health": -4
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "locations": [
+            "elevator_hall"
+          ]
+        },
+        "id": "elevator_nonexistent_floor",
+        "title": "존재하지 않는 층의 엘리베이터"
+      },
+      {
+        "body": "옥상 난간 너머로 도시의 불빛이 보인다. 휴대폰은 외부 인터넷을 한 번만 보낼 수 있을 만큼의 신호를 붙잡았다.",
+        "choices": [
+          {
+            "cost": {
+              "battery": 12,
+              "sanity": 5
+            },
+            "id": "send_limited_signal",
+            "label": "제한된 외부 신호를 짧게 송신한다",
+            "outcome": {
+              "add_clues": [
+                "outside_signal_ack"
+              ],
+              "add_flags": [
+                "rooftop_signal_sent"
+              ],
+              "log": "짧은 구조 신호가 전송되자 옥상 비상등이 실제 밤하늘과 같은 박자로 깜빡였다."
+            }
+          },
+          {
+            "cost": {
+              "battery": 5
+            },
+            "id": "record_wrong_skyline",
+            "label": "어긋난 도시 야경을 녹화한다",
+            "outcome": {
+              "add_clues": [
+                "wrong_skyline_recording"
+              ],
+              "log": "녹화된 야경에는 회사 건물이 바깥에서 보이지 않았다.",
+              "resources": {
+                "sanity": -4
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "locations": [
+            "rooftop"
+          ],
+          "required_flags": [
+            "rooftop_accessed"
+          ]
+        },
+        "id": "rooftop_signal",
+        "title": "옥상의 제한된 외부 신호"
+      },
+      {
+        "body": "지하주차장 어딘가에서 시동이 걸린 차가 낮게 떨고 있다. 운전석에는 아무도 없고, 대시보드에는 사내망 출입 안내가 떠 있다.",
+        "choices": [
+          {
+            "cost": {
+              "battery": 4,
+              "sanity": 3
+            },
+            "id": "follow_idling_engine",
+            "label": "켜져 있는 차의 키태그를 찾는다",
+            "outcome": {
+              "add_clues": [
+                "idling_engine_trace"
+              ],
+              "add_flags": [
+                "parking_key_found"
+              ],
+              "add_items": [
+                "parking_key_fob"
+              ],
+              "log": "시동음이 가장 크게 울리는 차의 컵홀더에서 작은 키태그를 찾았다."
+            }
+          },
+          {
+            "id": "silence_engine",
+            "label": "시동음을 무시하고 차 사이를 지나간다",
+            "outcome": {
+              "log": "시동음은 등 뒤에서 계속 따라왔지만, 잠깐은 모른 척할 수 있었다.",
+              "resources": {
+                "sanity": 1
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "locations": [
+            "parking_lot"
+          ]
+        },
+        "id": "parking_ignition",
+        "title": "지하주차장의 시동음"
+      },
+      {
+        "body": "출구 차단기는 올라가다 만 상태로 멈췄다. 키태그를 가까이 대자 외부 도로의 습기가 아주 얇게 흘러든다.",
+        "choices": [
+          {
+            "cost": {
+              "battery": 5,
+              "sanity": 4
+            },
+            "id": "open_exit_ramp",
+            "label": "주차장 차단기를 임시 개방한다",
+            "outcome": {
+              "add_clues": [
+                "parking_exit_route"
+              ],
+              "add_flags": [
+                "parking_ramp_opened"
+              ],
+              "log": "차단기가 정상 근무 종료 알림처럼 짧게 울리고, 지하주차장 출구가 실제 도로와 맞물렸다."
+            }
+          },
+          {
+            "id": "wedge_ramp_with_cart",
+            "label": "청소 카트로 차단기를 받쳐 둔다",
+            "outcome": {
+              "add_flags": [
+                "parking_ramp_jammed"
+              ],
+              "log": "카트는 차단기를 붙잡았지만, 출구 밖 풍경은 아직 한 프레임씩 밀려 있다.",
+              "resources": {
+                "health": -3
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "locations": [
+            "parking_lot"
+          ],
+          "required_flags": [
+            "parking_key_found"
+          ],
+          "required_items": [
+            "parking_key_fob"
+          ]
+        },
+        "id": "parking_exit_ramp",
+        "title": "지하주차장 차단기"
+      },
+      {
+        "body": "로비 안내 키오스크가 꺼진 화면으로 당신의 얼굴을 인식한다. 방문 목적 입력란에는 이미 '퇴근 승인'이 떠 있다.",
+        "choices": [
+          {
+            "cost": {
+              "battery": 3,
+              "sanity": 2
+            },
+            "id": "print_visitor_badge",
+            "label": "방문증 프린터를 깨운다",
+            "outcome": {
+              "add_clues": [
+                "lobby_reception_log"
+              ],
+              "add_flags": [
+                "visitor_badge_printed"
+              ],
+              "add_items": [
+                "visitor_badge"
+              ],
+              "log": "프린터가 열을 올리더니 당신을 방문객으로 분류한 임시 방문증을 뱉었다."
+            }
+          },
+          {
+            "cost": {
+              "battery": 5,
+              "sanity": 4
+            },
+            "id": "press_executive_call",
+            "label": "대표실 호출 버튼을 길게 누른다",
+            "outcome": {
+              "add_clues": [
+                "executive_call_route"
+              ],
+              "add_flags": [
+                "executive_route_started"
+              ],
+              "destination_id": "executive_office",
+              "log": "호출 버튼을 누르자 로비 천장의 스피커가 결재 대기음을 내고, 다음 문은 대표실로 바뀌었다."
+            }
+          },
+          {
+            "id": "wipe_guestbook",
+            "label": "방문자 명부에서 내 이름을 지운다",
+            "outcome": {
+              "add_flags": [
+                "lobby_guestbook_wiped"
+              ],
+              "log": "명부에서 이름을 지우자 회전문 유리에 비친 당신도 한 박자 늦게 사라졌다.",
+              "resources": {
+                "sanity": 1
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "locations": [
+            "lobby"
+          ]
+        },
+        "id": "lobby_reception_kiosk",
+        "title": "무인 로비 안내 키오스크"
+      },
+      {
+        "body": "로비 출구 게이트는 바깥 도로를 비추지만, 바코드 리더는 사내 방문증만 읽겠다는 듯 붉게 깜빡인다.",
+        "choices": [
+          {
+            "cost": {
+              "battery": 2,
+              "sanity": 3
+            },
+            "id": "scan_visitor_badge",
+            "label": "방문증 바코드를 출구 게이트에 읽힌다",
+            "outcome": {
+              "add_clues": [
+                "outside_lobby_reflection"
+              ],
+              "add_flags": [
+                "lobby_exit_opened"
+              ],
+              "log": "게이트가 방문객 퇴실 절차를 승인하자 로비 회전문 바깥의 도로가 더는 반복되지 않았다."
+            }
+          },
+          {
+            "id": "brace_revolving_door",
+            "label": "회전문을 몸으로 밀어 멈춘다",
+            "outcome": {
+              "add_flags": [
+                "lobby_door_jammed"
+              ],
+              "log": "회전문은 잠깐 멈췄지만 바깥 풍경은 여전히 같은 택시를 세 번씩 지나가게 했다.",
+              "resources": {
+                "health": -4
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "locations": [
+            "lobby"
+          ],
+          "required_flags": [
+            "visitor_badge_printed"
+          ],
+          "required_items": [
+            "visitor_badge"
+          ]
+        },
+        "id": "lobby_exit_gate",
+        "title": "로비 출구 게이트"
+      },
+      {
+        "body": "대표실 결재 콘솔은 회사의 생존 규칙을 문서번호 없이 열어 둔 채, 마지막 승인자 칸만 비워 두었다.",
+        "choices": [
+          {
+            "cost": {
+              "battery": 8,
+              "sanity": 6
+            },
+            "id": "claim_executive_approval",
+            "label": "대표 승인란에 내 이름을 입력한다",
+            "outcome": {
+              "add_clues": [
+                "executive_signature_loop"
+              ],
+              "add_flags": [
+                "executive_approval_claimed",
+                "company_policy_overwritten"
+              ],
+              "log": "결재 콘솔이 당신의 이름을 대표 승인권자로 복제하자 회사 규칙의 결재선이 거꾸로 접혔다."
+            }
+          },
+          {
+            "id": "reject_survival_policy",
+            "label": "생존 규칙 문서를 반려한다",
+            "outcome": {
+              "add_flags": [
+                "executive_policy_rejected"
+              ],
+              "log": "반려 버튼을 누르자 문서는 반려 사유에 당신의 다음 생각을 자동으로 적기 시작했다.",
+              "resources": {
+                "sanity": -5
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "locations": [
+            "executive_office"
+          ],
+          "required_flags": [
+            "executive_route_started"
+          ]
+        },
+        "id": "executive_approval_console",
+        "title": "대표실 결재 콘솔"
+      }
+    ],
+    "endings": [
+      {
+        "conditions": {
+          "required_flags": [
+            "spatial_exit_failed"
+          ]
+        },
+        "id": "game_over_spatial_collapse",
+        "kind": "failure",
+        "name": "게임오버: 계단이 접혔다",
+        "priority": 100,
+        "text": "공간 왜곡의 규칙을 틀렸다. 계단은 아래가 아니라 당신 안쪽으로 접혔다."
+      },
+      {
+        "conditions": {
+          "locations": [
+            "emergency_stairs"
+          ],
+          "min_resources": {
+            "health": 1,
+            "sanity": 1
+          },
+          "required_flags": [
+            "escape_route_completed"
+          ]
+        },
+        "id": "escape_commute",
+        "kind": "escape",
+        "name": "퇴근 성공",
+        "priority": 60,
+        "text": "공간 왜곡 속에서 반복되는 층수를 맞춰 풀었다. 비상문 너머의 평범한 밤공기가 당신을 퇴근시켰다.\n"
+      },
+      {
+        "conditions": {
+          "min_resources": {
+            "health": 1,
+            "sanity": 1
+          },
+          "required_flags": [
+            "printer_secret_started",
+            "pantry_hint_seen"
+          ],
+          "required_items": [
+            "crumpled_printout"
+          ]
+        },
+        "id": "hidden_reality_hint_001",
+        "kind": "hidden",
+        "local_hint_id": "real_note_001",
+        "name": "첫 번째 현실 연결 힌트",
+        "priority": 80,
+        "text": "출력물의 마지막 문장은 더 이상 게임 속 장소만을 말하지 않았다. 커피 냄새와 복합기 표식이 하나의 계산으로 이어졌다.\n"
+      },
+      {
+        "conditions": {
+          "min_resources": {
+            "health": 1,
+            "sanity": 1
+          },
+          "required_clues": [
+            "reality_link_hint_1",
+            "reality_link_hint_2"
+          ],
+          "required_flags": [
+            "reality_link_started",
+            "reality_link_second_seen",
+            "pantry_hint_seen"
+          ]
+        },
+        "id": "hidden_reality_hint_002",
+        "kind": "hidden",
+        "local_hint_id": "real_note_002",
+        "name": "두 번째 현실 연결 힌트",
+        "priority": 82,
+        "text": "토너 안쪽 표식과 커피머신 점검 라벨의 숫자가 같은 현실 좌표를 향했다. 이번 단서는 출력물 없이도 사무실 어딘가에 남은 두 번째 메모를 가리킨다.\n"
+      },
+      {
+        "conditions": {
+          "min_resources": {
+            "health": 1,
+            "sanity": 1
+          },
+          "required_clues": [
+            "future_choice_printout",
+            "reality_link_hint_3"
+          ],
+          "required_flags": [
+            "reality_link_third_seen",
+            "meeting_marker_seen"
+          ]
+        },
+        "id": "hidden_reality_hint_003",
+        "kind": "hidden",
+        "local_hint_id": "real_note_003",
+        "name": "세 번째 현실 연결 힌트",
+        "priority": 84,
+        "text": "출력물이 예고한 빈 선택지가 회의실 화이트보드 모서리와 정확히 겹쳤다. 세 번째 단서는 회의 기록이 아니라 현실 사무실에 남겨진 작은 표식을 향한다.\n"
+      },
+      {
+        "conditions": {
+          "min_resources": {
+            "health": 1,
+            "sanity": 1
+          },
+          "required_clues": [
+            "meeting_pattern_noticed",
+            "server_log_fragment"
+          ],
+          "required_flags": [
+            "impossible_meeting_saved",
+            "isolation_protocol_revealed"
+          ],
+          "required_items": [
+            "ex_employee_memo"
+          ]
+        },
+        "id": "truth_isolation_protocol",
+        "kind": "truth",
+        "name": "격리 프로토콜의 진실",
+        "priority": 70,
+        "text": "삭제된 출입 기록과 회의록은 같은 결론을 가리켰다. 사라진 것은 직원들이 아니라 당신이 접속한 업무공간이었다. 회사는 이 현상을 격리 프로토콜이라고 불렀다.\n"
+      },
+      {
+        "conditions": {
+          "locations": [
+            "server_room"
+          ],
+          "min_resources": {
+            "health": 1,
+            "sanity": 1
+          },
+          "required_flags": [
+            "network_admin_claimed"
+          ]
+        },
+        "id": "conquest_network_admin",
+        "kind": "conquest",
+        "name": "사내망 관리자 권한",
+        "priority": 70,
+        "text": "관리자 콘솔은 당신을 임시 예외가 아니라 규칙 작성자로 받아들였다. 이제 회사의 격리 공간은 당신의 퇴근 절차를 승인해야 한다.\n"
+      },
+      {
+        "conditions": {
+          "locations": [
+            "server_room"
+          ],
+          "min_resources": {
+            "health": 1,
+            "sanity": 1
+          },
+          "required_flags": [
+            "security_lockdown_claimed"
+          ]
+        },
+        "id": "conquest_security_lockdown",
+        "kind": "conquest",
+        "name": "보안 격리 권한 장악",
+        "priority": 75,
+        "text": "어긋난 층수의 보안 기록과 서버실 격리 규칙이 하나의 예외 권한으로 묶였다. 이제 회사는 당신을 감시 대상이 아니라 잠금 절차의 소유자로 취급한다.\n"
+      },
+      {
+        "conditions": {
+          "min_resources": {
+            "health": 1,
+            "sanity": 1
+          },
+          "required_flags": [
+            "server_room_broadcast_controlled"
+          ]
+        },
+        "id": "conquest_broadcast_channel",
+        "kind": "conquest",
+        "name": "사내 방송 장악",
+        "priority": 50,
+        "text": "당신은 제한된 사내 방송 채널을 붙잡았다. 이제 회사는 더 이상 알 수 없는 목소리만으로 명령하지 못한다.\n"
+      },
+      {
+        "conditions": {
+          "locations": [
+            "rooftop"
+          ],
+          "min_resources": {
+            "health": 1,
+            "sanity": 1
+          },
+          "required_clues": [
+            "outside_signal_ack"
+          ],
+          "required_flags": [
+            "rooftop_signal_sent"
+          ]
+        },
+        "id": "escape_rooftop_signal",
+        "kind": "escape",
+        "name": "옥상 외부 신호",
+        "priority": 65,
+        "text": "제한된 외부 신호가 옥상 비상등을 실제 밤하늘과 동기화했다. 누군가 회사 바깥에서 이 건물이 아직 있다는 사실을 확인했다.\n"
+      },
+      {
+        "conditions": {
+          "locations": [
+            "parking_lot"
+          ],
+          "min_resources": {
+            "health": 1,
+            "sanity": 1
+          },
+          "required_clues": [
+            "parking_exit_route"
+          ],
+          "required_flags": [
+            "parking_ramp_opened"
+          ],
+          "required_items": [
+            "parking_key_fob"
+          ]
+        },
+        "id": "escape_parking_lot",
+        "kind": "escape",
+        "name": "지하주차장 탈출",
+        "priority": 64,
+        "text": "지하주차장 차단기가 한 번 더 흔들리더니 회사의 격리 경계가 출구 램프를 놓쳤다. 헤드라이트가 켜진 빈 차들 사이로, 실제 도로의 습한 공기가 당신을 밀어냈다.\n"
+      },
+      {
+        "conditions": {
+          "locations": [
+            "lobby"
+          ],
+          "min_resources": {
+            "health": 1,
+            "sanity": 1
+          },
+          "required_clues": [
+            "outside_lobby_reflection"
+          ],
+          "required_flags": [
+            "lobby_exit_opened"
+          ],
+          "required_items": [
+            "visitor_badge"
+          ]
+        },
+        "id": "escape_lobby_revolving_door",
+        "kind": "escape",
+        "name": "로비 회전문 탈출",
+        "priority": 66,
+        "text": "방문객 퇴실 절차가 회사의 격리 규칙보다 먼저 처리되었다. 로비 회전문은 같은 풍경을 반복하는 일을 멈추고, 당신을 실제 도로 쪽으로 밀어냈다.\n"
+      },
+      {
+        "conditions": {
+          "locations": [
+            "executive_office"
+          ],
+          "min_resources": {
+            "health": 1,
+            "sanity": 1
+          },
+          "required_clues": [
+            "executive_signature_loop"
+          ],
+          "required_flags": [
+            "executive_approval_claimed",
+            "company_policy_overwritten"
+          ]
+        },
+        "id": "conquest_executive_approval",
+        "kind": "conquest",
+        "name": "대표 승인권 장악",
+        "priority": 76,
+        "text": "대표 승인란에 입력된 이름이 회사의 생존 규칙 위로 번졌다. 이제 모든 결재선은 당신의 퇴근 여부를 묻기 전에 먼저 당신에게 승인받아야 한다.\n"
+      }
+    ],
+    "items": [
+      {
+        "description": "아직 밀봉된 생수병. 지금은 복지보다 생존에 가깝다.",
+        "id": "bottled_water",
+        "name": "생수",
+        "tags": [
+          "survival",
+          "drink"
+        ],
+        "type": "consumable",
+        "usable": true,
+        "use_effects": {
+          "thirst": -35
+        },
+        "use_log": "생수를 마셨다. 목 안쪽에서 사무실 먼지 맛이 조금 사라졌다."
+      },
+      {
+        "description": "식어가는 커피. 회사에서 가장 흔한 각성제이자 가장 약한 위로.",
+        "id": "coffee",
+        "name": "커피",
+        "tags": [
+          "survival",
+          "office"
+        ],
+        "type": "consumable",
+        "usable": true,
+        "use_effects": {
+          "sanity": 5,
+          "thirst": 8
+        },
+        "use_log": "커피를 마셨다. 정신은 조금 돌아왔지만 입안은 더 말랐다."
+      },
+      {
+        "description": "누군가 비상용으로 숨겨둔 과자. 이제 정말 비상용이 되었다.",
+        "id": "snack",
+        "name": "과자",
+        "tags": [
+          "survival",
+          "food"
+        ],
+        "type": "consumable",
+        "usable": true,
+        "use_effects": {
+          "hunger": -25
+        },
+        "use_log": "과자를 먹었다. 부스러기가 키보드보다 바닥에 더 많이 떨어졌다."
+      },
+      {
+        "description": "야근의 오래된 동료. 물을 넣을 수 있다면 아직 희망이 있다.",
+        "id": "cup_noodle",
+        "name": "컵라면",
+        "tags": [
+          "survival",
+          "food"
+        ],
+        "type": "consumable",
+        "usable": true,
+        "use_effects": {
+          "hunger": -45,
+          "sanity": 3,
+          "thirst": 10
+        },
+        "use_log": "컵라면을 먹었다. 익숙한 야근 맛이 잠깐 현실감을 붙잡아 주었다."
+      },
+      {
+        "description": "비상용 구급상자. 누군가 한 번 열어본 흔적이 있다.",
+        "id": "first_aid_kit",
+        "name": "구급상자",
+        "tags": [
+          "survival",
+          "medical"
+        ],
+        "type": "consumable",
+        "usable": true,
+        "use_effects": {
+          "health": 30
+        },
+        "use_log": "구급상자를 사용했다. 플라스틱 붕대 냄새가 상처보다 먼저 덮였다."
+      },
+      {
+        "description": "충전량이 애매하게 남은 보조배터리. 그래도 어둠 속에서는 애매한 희망도 희망이다.",
+        "id": "power_bank",
+        "name": "보조배터리",
+        "tags": [
+          "battery",
+          "tool"
+        ],
+        "type": "tool",
+        "usable": true,
+        "use_effects": {
+          "battery": 35
+        },
+        "use_log": "보조배터리를 연결했다. 단말기가 짧게 진동하며 아직 살아 있음을 알렸다."
+      },
+      {
+        "description": "작은 손전등. 회사 지급품은 아니고 누군가의 개인 물건 같다.",
+        "id": "flashlight",
+        "name": "손전등",
+        "tags": [
+          "light"
+        ],
+        "type": "tool",
+        "usable": false
+      },
+      {
+        "description": "당신의 사원증. 사진 속 당신은 아직 이 상황을 모른다.",
+        "id": "employee_badge",
+        "name": "사원증",
+        "tags": [
+          "access"
+        ],
+        "type": "key",
+        "usable": false
+      },
+      {
+        "description": "보안실 콘솔에서 임시로 발급한 출입 권한. 층수 기록이 맞지 않는 문에만 통한다.",
+        "id": "security_override_badge",
+        "name": "보안실 우회권한",
+        "tags": [
+          "security",
+          "access",
+          "conquest"
+        ],
+        "type": "key",
+        "usable": false
+      },
+      {
+        "description": "복합기에서 나온 구겨진 출력물. 문서 양식은 사내 표준인데, 내용은 아직 일어나지 않은 일을 말한다.",
+        "id": "crumpled_printout",
+        "name": "구겨진 출력물",
+        "tags": [
+          "printer",
+          "reality_link"
+        ],
+        "type": "clue",
+        "usable": false
+      },
+      {
+        "description": "사내망 캐시에 남은 전임자의 메모. 문장은 회사 업무 양식처럼 차분하지만 내용은 격리 프로토콜을 가리킨다.",
+        "id": "ex_employee_memo",
+        "name": "퇴사자의 메모",
+        "tags": [
+          "truth",
+          "internal_network"
+        ],
+        "type": "clue",
+        "usable": false
+      },
+      {
+        "description": "시동이 켜진 차 안쪽에서 발견한 작은 키태그. 차종 로고 대신 사내 자산번호가 붙어 있다.",
+        "id": "parking_key_fob",
+        "name": "지하주차장 키태그",
+        "tags": [
+          "escape",
+          "parking",
+          "access"
+        ],
+        "type": "key",
+        "usable": false
+      },
+      {
+        "description": "무인 로비 키오스크가 방금 뱉어낸 방문증. 방문 목적은 '퇴근 승인 대기'로 인쇄되어 있다.",
+        "id": "visitor_badge",
+        "name": "임시 방문증",
+        "tags": [
+          "escape",
+          "lobby",
+          "access"
+        ],
+        "type": "key",
+        "usable": false
+      }
+    ],
+    "locations": [
+      {
+        "connections": [
+          "dev_office"
+        ],
+        "danger": 0,
+        "description": "당신의 모니터는 아직 켜져 있다.",
+        "id": "dev_desk",
+        "name": "내 자리",
+        "tags": [
+          "office",
+          "start",
+          "messenger",
+          "personal"
+        ]
+      },
+      {
+        "connections": [
+          "dev_desk",
+          "hallway",
+          "meeting_room",
+          "printer_area",
+          "supply_closet"
+        ],
+        "danger": 0,
+        "description": "개발팀 사무실은 정상적으로 켜져 있지만 사람만 없다.",
+        "id": "dev_office",
+        "name": "개발팀 사무실",
+        "tags": [
+          "office",
+          "hub",
+          "workstations"
+        ]
+      },
+      {
+        "connections": [
+          "dev_office",
+          "server_room_front",
+          "emergency_stairs",
+          "security_room",
+          "elevator_hall",
+          "parking_lot",
+          "lobby"
+        ],
+        "danger": 1,
+        "description": "복도 비상등이 일정하지 않은 간격으로 깜빡인다.",
+        "id": "hallway",
+        "name": "복도",
+        "tags": [
+          "transit",
+          "exposed",
+          "cctv"
+        ]
+      },
+      {
+        "connections": [
+          "dev_office"
+        ],
+        "danger": 1,
+        "description": "물품창고 선반에는 라벨이 붙은 비상 보급품 박스들이 남아 있다.",
+        "id": "supply_closet",
+        "name": "물품창고",
+        "tags": [
+          "survival",
+          "storage",
+          "supplies"
+        ]
+      },
+      {
+        "connections": [
+          "printer_area"
+        ],
+        "danger": 0,
+        "description": "탕비실에는 커피 냄새가 남아 있다.",
+        "id": "pantry",
+        "name": "탕비실",
+        "tags": [
+          "survival",
+          "food",
+          "drink",
+          "reality_link"
+        ]
+      },
+      {
+        "connections": [
+          "dev_office"
+        ],
+        "danger": 1,
+        "description": "회의실 예약 패널에는 방금 생성된 일정이 떠 있다.",
+        "id": "meeting_room",
+        "name": "회의실",
+        "tags": [
+          "meeting",
+          "sanity_risk",
+          "truth"
+        ]
+      },
+      {
+        "connections": [
+          "dev_office",
+          "pantry"
+        ],
+        "danger": 0,
+        "description": "복합기는 절전 모드지만 출력 트레이에는 따뜻한 종이가 있다.",
+        "id": "printer_area",
+        "name": "복합기 구역",
+        "tags": [
+          "printer",
+          "clue",
+          "reality_link"
+        ]
+      },
+      {
+        "connections": [
+          "hallway",
+          "server_room"
+        ],
+        "danger": 2,
+        "description": "닫힌 문틈에서 차가운 바람이 나온다.",
+        "id": "server_room_front",
+        "name": "서버실 앞",
+        "tags": [
+          "restricted",
+          "network",
+          "truth",
+          "conquest"
+        ]
+      },
+      {
+        "connections": [
+          "server_room_front"
+        ],
+        "danger": 3,
+        "description": "랙 LED가 별자리처럼 깜빡이고, 냉기는 일정한 박자로 숨을 쉰다.",
+        "id": "server_room",
+        "name": "서버실 내부",
+        "tags": [
+          "restricted",
+          "network",
+          "conquest",
+          "cold"
+        ]
+      },
+      {
+        "connections": [
+          "hallway"
+        ],
+        "danger": 2,
+        "description": "계단 아래에서는 위층에서 들려야 할 발소리가 올라온다.",
+        "id": "emergency_stairs",
+        "name": "비상계단",
+        "tags": [
+          "escape",
+          "dark",
+          "loop",
+          "danger"
+        ]
+      },
+      {
+        "connections": [
+          "hallway"
+        ],
+        "danger": 2,
+        "description": "꺼진 CCTV 모니터들이 복도보다 한 박자 늦은 장면을 보여준다.",
+        "id": "security_room",
+        "name": "보안실",
+        "tags": [
+          "security",
+          "surveillance",
+          "truth"
+        ]
+      },
+      {
+        "connections": [
+          "hallway",
+          "rooftop"
+        ],
+        "danger": 2,
+        "description": "엘리베이터 층수 표시가 존재하지 않는 R층과 4층 사이에서 떨린다.",
+        "id": "elevator_hall",
+        "name": "엘리베이터 홀",
+        "tags": [
+          "transit",
+          "elevator",
+          "anomaly"
+        ]
+      },
+      {
+        "connections": [
+          "elevator_hall"
+        ],
+        "danger": 3,
+        "description": "옥상 문 너머의 밤공기는 실제 바깥보다 한 프레임 늦게 움직인다.",
+        "id": "rooftop",
+        "name": "옥상",
+        "tags": [
+          "escape",
+          "signal",
+          "open_air"
+        ]
+      },
+      {
+        "connections": [
+          "hallway"
+        ],
+        "danger": 3,
+        "description": "지하주차장의 형광등은 시동음과 다른 박자로 깜빡인다.",
+        "id": "parking_lot",
+        "name": "지하주차장",
+        "tags": [
+          "escape",
+          "parking",
+          "dark"
+        ]
+      },
+      {
+        "connections": [
+          "hallway",
+          "executive_office"
+        ],
+        "danger": 2,
+        "description": "로비 회전문은 바깥을 보여주지만 같은 장면을 세 번씩 반복한다.",
+        "id": "lobby",
+        "name": "로비",
+        "tags": [
+          "escape",
+          "reception",
+          "public_border"
+        ]
+      },
+      {
+        "connections": [
+          "lobby"
+        ],
+        "danger": 3,
+        "description": "대표실 책상 위 결재판에는 아직 작성하지 않은 당신의 퇴근 승인서가 놓여 있다.",
+        "id": "executive_office",
+        "name": "대표실",
+        "tags": [
+          "conquest",
+          "approval",
+          "restricted"
+        ]
+      }
+    ],
+    "secrets": [
+      {
+        "final_hint_policy": "private_only",
+        "id": "real_note_001",
+        "placeholder_ip_address": "192.168.0.42",
+        "public_hint_steps": [
+          "커피 냄새가 남아 있는 방을 기억한다.",
+          "차가운 문과 종이 냄새 사이의 반복 표식을 찾는다.",
+          "복합기에 붙은 IP 주소 표의 숫자들을 모두 더한다.",
+          "마지막 문장은 로컬 비공개 파일이 있을 때만 완성된다."
+        ],
+        "puzzle_prompt": "복합기에 붙은 IP 주소 표의 숫자들을 모두 더한다.",
+        "reward_text": "이 힌트는 게임 안의 장소만을 말하는 것 같지 않다.",
+        "title": "첫 번째 현실 연결 힌트",
+        "unlock_flags": [
+          "printer_secret_started",
+          "pantry_hint_seen"
+        ]
+      },
+      {
+        "final_hint_policy": "private_only",
+        "id": "real_note_002",
+        "placeholder_ip_address": "10.30.0.45",
+        "public_hint_steps": [
+          "토너 카트리지 안쪽 표식과 커피머신 점검 라벨을 같은 방향으로 본다.",
+          "점검 라벨에 적힌 사내망 IP 주소의 숫자들을 모두 더한다.",
+          "첫 번째 힌트와 다른 숫자라면 두 번째 메모를 찾는 좌표가 된다.",
+          "마지막 문장은 로컬 비공개 파일이 있을 때만 완성된다."
+        ],
+        "puzzle_prompt": "커피머신 점검 라벨의 IP 주소 숫자들을 모두 더한다.",
+        "reward_text": "두 번째 힌트는 같은 사무실 안의 다른 현실 물체를 가리킨다.",
+        "title": "두 번째 현실 연결 힌트",
+        "unlock_flags": [
+          "reality_link_started",
+          "reality_link_second_seen",
+          "pantry_hint_seen"
+        ]
+      },
+      {
+        "final_hint_policy": "private_only",
+        "id": "real_note_003",
+        "placeholder_ip_address": "172.16.5.8",
+        "public_hint_steps": [
+          "혼자 출력된 종이의 빈 선택지를 회의실 화이트보드 모서리에 겹친다.",
+          "지워지지 않는 작은 사각형 주변의 더미 라벨 숫자들을 모두 더한다.",
+          "숫자가 맞으면 회의 기록이 아니라 현실 메모를 찾는 세 번째 좌표가 된다.",
+          "마지막 문장은 로컬 비공개 파일이 있을 때만 완성된다."
+        ],
+        "puzzle_prompt": "회의실 화이트보드 모서리의 더미 라벨 숫자들을 모두 더한다.",
+        "reward_text": "세 번째 힌트는 회의실 기록 밖에 남은 작은 현실 표식을 가리킨다.",
+        "title": "세 번째 현실 연결 힌트",
+        "unlock_flags": [
+          "reality_link_third_seen",
+          "meeting_marker_seen"
+        ]
+      }
+    ]
+  },
+  "kind": "tui_adv.content_bundle",
+  "manifest": {
+    "counts": {
+      "achievements": 11,
+      "encounters": 20,
+      "endings": 13,
+      "items": 13,
+      "locations": 16,
+      "secrets": 3
+    },
+    "schema_version": 1,
+    "source": "src/tui_adv/data/*.yaml"
+  },
+  "schema_version": 1,
+  "source": "src/tui_adv/data/*.yaml"
+}

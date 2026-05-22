@@ -1,5 +1,6 @@
+use crate::content::{ChoiceDef, ContentConditions, ContentIndex, EncounterDef, ResourceMap};
 use crate::effects::{printer_glyph_anomaly_cue, EffectCue};
-use crate::state::GameState;
+use crate::state::{GameState, PlayerState};
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ActionView {
@@ -32,6 +33,11 @@ pub enum ActionError {
     UnknownAction(String),
 }
 
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub enum ContentTurnError {
+    UnknownStateLocation(String),
+}
+
 impl std::fmt::Display for ActionError {
     fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
@@ -43,6 +49,55 @@ impl std::fmt::Display for ActionError {
 }
 
 impl std::error::Error for ActionError {}
+
+impl std::fmt::Display for ContentTurnError {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            ContentTurnError::UnknownStateLocation(location_id) => {
+                write!(formatter, "unknown state location: {location_id}")
+            }
+        }
+    }
+}
+
+impl std::error::Error for ContentTurnError {}
+
+pub fn content_turn_view(
+    state: &GameState,
+    content: &ContentIndex,
+) -> Result<TurnView, ContentTurnError> {
+    let location = content
+        .location(&state.location_id)
+        .ok_or_else(|| ContentTurnError::UnknownStateLocation(state.location_id.clone()))?;
+
+    let Some(encounter) = content
+        .encounters()
+        .find(|encounter| encounter_is_available(encounter, state))
+    else {
+        return Ok(TurnView {
+            location_id: state.location_id.clone(),
+            encounter_id: None,
+            title: location.name.clone(),
+            body: location.description.clone(),
+            actions: Vec::new(),
+            effect_cues: Vec::new(),
+        });
+    };
+
+    Ok(TurnView {
+        location_id: state.location_id.clone(),
+        encounter_id: Some(encounter.id.clone()),
+        title: encounter.title.clone(),
+        body: encounter.body.clone(),
+        actions: encounter
+            .choices
+            .iter()
+            .filter(|choice| choice_is_available(choice, state))
+            .map(choice_action_view)
+            .collect(),
+        effect_cues: Vec::new(),
+    })
+}
 
 pub fn printer_turn_view(state: &GameState) -> TurnView {
     TurnView {
@@ -108,5 +163,91 @@ pub fn apply_printer_action(
             })
         }
         other => Err(ActionError::UnknownAction(other.to_string())),
+    }
+}
+
+fn encounter_is_available(encounter: &EncounterDef, state: &GameState) -> bool {
+    conditions_match(&encounter.conditions, state)
+        && encounter
+            .choices
+            .iter()
+            .any(|choice| choice_is_available(choice, state))
+}
+
+fn choice_is_available(choice: &ChoiceDef, state: &GameState) -> bool {
+    conditions_match(&choice.conditions, state) && can_pay_cost(&choice.cost, &state.player)
+}
+
+fn conditions_match(conditions: &ContentConditions, state: &GameState) -> bool {
+    (conditions.locations.is_empty() || conditions.locations.contains(&state.location_id))
+        && conditions
+            .required_flags
+            .iter()
+            .all(|flag| state.flags.contains(flag))
+        && conditions
+            .forbidden_flags
+            .iter()
+            .all(|flag| !state.flags.contains(flag))
+        && conditions
+            .required_clues
+            .iter()
+            .all(|clue| state.clues.contains(clue))
+        && conditions
+            .min_resources
+            .iter()
+            .all(|(resource, minimum)| player_resource(&state.player, resource) >= *minimum)
+        && conditions
+            .min_abilities
+            .iter()
+            .all(|(_ability, minimum)| *minimum <= 0)
+}
+
+fn can_pay_cost(cost: &ResourceMap, player: &PlayerState) -> bool {
+    cost.iter()
+        .all(|(resource, amount)| *amount <= 0 || player_resource(player, resource) >= *amount)
+}
+
+fn choice_action_view(choice: &ChoiceDef) -> ActionView {
+    ActionView {
+        id: format!("choice:{}", choice.id),
+        label: choice.label.clone(),
+        cost_summary: format_cost_summary(&choice.cost),
+    }
+}
+
+fn format_cost_summary(cost: &ResourceMap) -> Option<String> {
+    let parts = cost
+        .iter()
+        .filter(|(_resource, amount)| **amount != 0)
+        .map(|(resource, amount)| {
+            let sign = if *amount > 0 { "-" } else { "+" };
+            format!("{} {}{}", resource_label(resource), sign, amount.abs())
+        })
+        .collect::<Vec<_>>();
+
+    if parts.is_empty() {
+        None
+    } else {
+        Some(parts.join(", "))
+    }
+}
+
+fn player_resource(player: &PlayerState, resource: &str) -> i32 {
+    match resource {
+        "health" => player.health,
+        "sanity" => player.sanity,
+        "battery" => player.battery,
+        _ => 0,
+    }
+}
+
+fn resource_label(resource: &str) -> &str {
+    match resource {
+        "health" => "체력",
+        "sanity" => "정신력",
+        "battery" => "배터리",
+        "hunger" => "허기",
+        "thirst" => "갈증",
+        other => other,
     }
 }

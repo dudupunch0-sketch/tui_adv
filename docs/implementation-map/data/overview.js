@@ -6,7 +6,7 @@ window.TUI_ADV_IMPLEMENTATION.overview = {
     { label: "위치", value: "16" },
     { label: "인카운터", value: "20" },
     { label: "엔딩", value: "13" },
-    { label: "Python 테스트", value: "149" },
+    { label: "Python 테스트", value: "176" },
     { label: "Web 테스트", value: "32" }
   ],
   highlights: [
@@ -19,10 +19,9 @@ window.TUI_ADV_IMPLEMENTATION.overview = {
     "탈출, 정복, 진실, 히든 현실 연결 루트 smoke 검증"
   ],
   nextWork: [
-    "실제 Textual 화면에서 저장 슬롯 UX 수동 QA",
-    "브라우저 fake-TUI에서 선택 불가 이유, 이동 단축키, 수동 플레이 감각 QA",
-    "재난 원인 문서와 생존자, 시스템 제압, 설득 루트 추가",
-    "선택 불가 선택지 이유 표시와 색상 테마 위젯 스타일 연결",
+    "idea_box의 storypack 후보를 검토해 public-safe 콘텐츠 확장 순서 정하기",
+    "실시간 UI/UX 점검에서 Textual 저장 슬롯, 시작 화면, 패널 폭, 입력 흐름 조정",
+    "저장 슬롯 이름 변경은 docs/dev/Save_Slot_UX.md 후보안을 보며 실제 화면에서 확정",
     "새 slice가 끝날 때 이 구현 지도 data 파일 갱신"
   ],
   maintenance: [

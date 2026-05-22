@@ -15,7 +15,7 @@ def test_readme_next_work_does_not_list_completed_unavailable_reason_slice():
     assert "선택 불가 선택지의 이유 표시" not in next_work
     assert "색상 테마" not in next_work
     assert "밸런싱" not in next_work
-    assert "재난 타입 확장" in next_work
+    assert "storypack" in next_work
 
 
 def test_phase6_textual_style_slice_is_checklisted_and_documented():
@@ -110,4 +110,40 @@ def test_readme_next_work_does_not_list_completed_final_qa_slices():
 
     assert "시작 화면 저장 슬롯 UX" not in next_work
     assert "밸런싱/QA/패키징" not in next_work
-    assert "재난 타입 확장" in next_work
+    assert "재난 타입 확장" not in next_work
+    assert "저장 슬롯 이름 변경" not in next_work
+    assert "storypack" in next_work
+
+
+def test_disaster_type_extension_doc_is_indexed_and_runtime_bound():
+    index = Path("docs/00_Index.md").read_text(encoding="utf-8")
+    readme = Path("README.md").read_text(encoding="utf-8")
+    doc_path = Path("docs/story/Disaster_Type_Extension.md")
+
+    assert doc_path.exists()
+    doc = doc_path.read_text(encoding="utf-8")
+    assert "docs/story/Disaster_Type_Extension.md" in index
+    assert "docs/story/Disaster_Type_Extension.md" in readme
+    assert "unknown_isolation" in doc
+    assert "conditions.disaster_types" in doc
+    assert "새 타입 후보 백로그" in doc
+    assert "시작 UI 타입 선택 | 아직 없음" in doc
+
+
+def test_save_slot_rename_ux_doc_is_indexed_and_linked_from_layout():
+    index = Path("docs/00_Index.md").read_text(encoding="utf-8")
+    readme = Path("README.md").read_text(encoding="utf-8")
+    layout_doc = Path("docs/dev/TUI_Layout.md").read_text(encoding="utf-8")
+    doc_path = Path("docs/dev/Save_Slot_UX.md")
+
+    assert doc_path.exists()
+    doc = doc_path.read_text(encoding="utf-8")
+    assert "docs/dev/Save_Slot_UX.md" in index
+    assert "docs/dev/Save_Slot_UX.md" in readme
+    assert "docs/dev/Save_Slot_UX.md" in layout_doc
+    assert "slot_name" in doc
+    assert "schema_version" in doc
+    assert '"state"' in doc
+    assert "`state` 바깥의 metadata" in doc
+    assert "r: 이름 변경 모드" in doc
+    assert "파일명 자체를 바꾸기보다" in doc

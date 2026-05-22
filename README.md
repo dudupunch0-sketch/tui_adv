@@ -108,6 +108,7 @@ npm run dev -- --port 8765
 - `docs/01_Game_Overview.md`: 게임 개요
 - `docs/story/Story.md`: 스토리와 오프닝
 - `docs/story/Disaster_Cause.md`: 재난 원인과 진실 루트 공개-safe 설계
+- `docs/story/Disaster_Type_Extension.md`: 재난 타입 확장 규칙과 후보 백로그
 - `docs/story/Reality_Link.md`: 현실 연결 원칙
 - `docs/design/Player_State.md`: 플레이어 상태 규칙
 - `docs/design/Character_Stats_and_Generator.md`: 6스탯 등장인물/LLM 생성기 설계 후보
@@ -127,6 +128,7 @@ npm run dev -- --port 8765
 - `docs/dev/Architecture.md`: 코드 구조와 모듈 경계
 - `docs/dev/Data_Schema.md`: YAML/JSON 데이터 스키마
 - `docs/dev/TUI_Layout.md`: TUI 화면 설계
+- `docs/dev/Save_Slot_UX.md`: 저장 슬롯 이름 변경 UX 후보
 - `docs/dev/Balance_QA_Packaging.md`: 밸런싱, QA smoke, 패키징/릴리즈 기준
 - `docs/dev/Final_QA_Log.md`: 실제 Textual/터미널 크기/10회 새 게임 QA 기록
 - `docs/implementation-map/index.html`: 현재 구현을 한 번에 보는 interactive HTML 구현 지도
@@ -158,6 +160,5 @@ npm run dev -- --port 8765
 
 ## 다음 작업 후보
 
-1. 재난 타입 확장 규칙을 별도 문서로 분리하고, 새 타입 후보를 콘텐츠 백로그로 정리한다.
-2. 저장 슬롯 이름 변경 같은 추가 관리 기능을 실제 Textual UX 후보로 설계한다.
-3. idea_box의 storypack 후보를 검토해 공개-safe 콘텐츠 확장 순서를 정한다.
+1. idea_box의 storypack 후보를 검토해 공개-safe 콘텐츠 확장 순서를 정한다.
+2. 실시간 UI/UX 점검에서 Textual 저장 슬롯, 시작 화면, 패널 폭, 입력 흐름을 직접 보며 조정한다.

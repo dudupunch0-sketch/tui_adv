@@ -32,6 +32,7 @@ docs/
   story/
     Story.md                        # 메인 서사와 시작 상황
     Disaster_Cause.md               # 재난 원인과 진실 루트 공개-safe 설계
+    Disaster_Type_Extension.md      # 재난 타입 확장 규칙과 후보 백로그
     Reality_Link.md                 # 현실세계 연결 원칙. 실제 위치는 넣지 않음
 
   design/
@@ -57,6 +58,7 @@ docs/
     Architecture.md                 # 코드 구조와 모듈 경계
     Data_Schema.md                  # YAML/JSON 데이터 스키마
     TUI_Layout.md                   # 화면 배치, 입력, 위젯 설계
+    Save_Slot_UX.md                 # 저장 슬롯 이름 변경 UX 후보
     Balance_QA_Packaging.md         # 밸런싱, QA smoke, 패키징/릴리즈 기준
     Final_QA_Log.md                 # 실제 Textual/터미널 크기/10회 새 게임 QA 기록
     Reality_Secret_Safety_Checklist.md # 로컬 현실 힌트 안전 점검
@@ -93,6 +95,7 @@ private/
 - `docs/01_Game_Overview.md`
 - `docs/story/Story.md`
 - `docs/story/Disaster_Cause.md`
+- `docs/story/Disaster_Type_Extension.md`
 - `docs/story/Reality_Link.md`
 - `docs/design/Player_State.md`
 - `docs/design/Character_Stats_and_Generator.md`
@@ -110,6 +113,7 @@ private/
 - `docs/dev/Architecture.md`
 - `docs/dev/Data_Schema.md`
 - `docs/dev/TUI_Layout.md`
+- `docs/dev/Save_Slot_UX.md`
 - `docs/dev/Balance_QA_Packaging.md`
 - `docs/dev/Final_QA_Log.md`
 - `docs/dev/Reality_Secret_Safety_Checklist.md`
@@ -125,6 +129,5 @@ private/
 현재 없는 문서명을 인덱스에 현재 문서처럼 나열하지 않는다.
 다음 주제가 커지면 별도 문서로 분리하고, 그때 이 인덱스와 implementation-map도 같이 갱신한다.
 
-1. 재난 타입 확장 규칙
-2. 선택 불가 이유 표시와 색상 테마 규칙
-3. storypack 후보별 public-safe 콘텐츠 확장 규칙
+1. storypack 후보별 public-safe 콘텐츠 확장 규칙
+2. 실시간 UI/UX 점검 후 확정된 화면/입력 변경 사항 기록

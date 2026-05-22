@@ -1,3 +1,24 @@
+use crate::content::ContentIndex;
+
+pub const DEFAULT_START_LOCATION_ID: &str = "dev_desk";
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub enum NewGameError {
+    UnknownStartLocation(String),
+}
+
+impl std::fmt::Display for NewGameError {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            NewGameError::UnknownStartLocation(location_id) => {
+                write!(formatter, "unknown start location: {location_id}")
+            }
+        }
+    }
+}
+
+impl std::error::Error for NewGameError {}
+
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct PlayerState {
     pub health: i32,
@@ -29,6 +50,35 @@ impl GameState {
             flags: Vec::new(),
             clues: Vec::new(),
         }
+    }
+
+    pub fn new_from_content(seed: u64, content: &ContentIndex) -> Result<Self, NewGameError> {
+        Self::new_from_content_at(seed, content, DEFAULT_START_LOCATION_ID)
+    }
+
+    pub fn new_from_content_at(
+        seed: u64,
+        content: &ContentIndex,
+        start_location_id: &str,
+    ) -> Result<Self, NewGameError> {
+        if content.location(start_location_id).is_none() {
+            return Err(NewGameError::UnknownStartLocation(
+                start_location_id.to_string(),
+            ));
+        }
+
+        Ok(Self {
+            seed,
+            turn: 0,
+            location_id: start_location_id.to_string(),
+            player: PlayerState {
+                health: 100,
+                sanity: 100,
+                battery: 100,
+            },
+            flags: Vec::new(),
+            clues: Vec::new(),
+        })
     }
 
     pub(crate) fn add_flag_once(&mut self, flag: &str) {

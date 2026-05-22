@@ -242,6 +242,10 @@ impl ContentIndex {
     pub fn encounter(&self, id: &str) -> Option<&EncounterDef> {
         self.encounters.get(id)
     }
+
+    pub fn encounters(&self) -> impl Iterator<Item = &EncounterDef> {
+        self.encounters.values()
+    }
 }
 
 pub fn load_content_bundle(json_text: &str) -> Result<ContentBundle, ContentBundleError> {

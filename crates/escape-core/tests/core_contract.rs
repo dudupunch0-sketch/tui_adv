@@ -1,4 +1,10 @@
-use escape_core::{apply_action, load_state, new_game, save_state, turn_view, EffectCue};
+use escape_core::{
+    apply_action, index_content_bundle, load_content_bundle, load_state, new_game,
+    new_game_from_content, new_game_from_content_at, save_state, turn_view, turn_view_from_content,
+    ContentTurnError, EffectCue, NewGameError,
+};
+
+const CONTENT_BUNDLE: &str = include_str!("../fixtures/content/content.bundle.json");
 
 #[test]
 fn printer_scene_turn_view_exposes_renderer_safe_actions_and_glyph_cue() {
@@ -64,5 +70,86 @@ fn printer_choice_returns_action_result_and_save_roundtrip() {
     assert_eq!(
         load_state(&envelope).expect("save envelope should restore"),
         result.state
+    );
+}
+
+#[test]
+fn content_backed_new_game_starts_at_indexed_default_location() {
+    let bundle = load_content_bundle(CONTENT_BUNDLE).expect("content bundle should load");
+    let index = index_content_bundle(&bundle).expect("content bundle should index");
+
+    let state = new_game_from_content(123, &index).expect("content-backed game should start");
+
+    assert_eq!(state.seed, 123);
+    assert_eq!(state.turn, 0);
+    assert_eq!(state.location_id, "dev_desk");
+    assert!(index.location(&state.location_id).is_some());
+    assert_eq!(state.player.health, 100);
+    assert_eq!(state.player.sanity, 100);
+    assert_eq!(state.player.battery, 100);
+    assert!(state.flags.is_empty());
+    assert!(state.clues.is_empty());
+}
+
+#[test]
+fn content_backed_new_game_rejects_unknown_custom_start_location() {
+    let bundle = load_content_bundle(CONTENT_BUNDLE).expect("content bundle should load");
+    let index = index_content_bundle(&bundle).expect("content bundle should index");
+
+    let error = new_game_from_content_at(123, &index, "missing_floor")
+        .expect_err("unknown start location should be rejected");
+
+    assert_eq!(
+        error,
+        NewGameError::UnknownStartLocation("missing_floor".to_string())
+    );
+}
+
+#[test]
+fn content_backed_turn_view_renders_start_encounter_choices() {
+    let bundle = load_content_bundle(CONTENT_BUNDLE).expect("content bundle should load");
+    let index = index_content_bundle(&bundle).expect("content bundle should index");
+    let state = new_game_from_content(123, &index).expect("content-backed game should start");
+
+    let view = turn_view_from_content(&state, &index).expect("content-backed turn should render");
+
+    assert_eq!(view.location_id, "dev_desk");
+    assert_eq!(view.encounter_id.as_deref(), Some("ex_employee_messenger"));
+    assert_eq!(view.title, "퇴사자의 메신저");
+    assert!(view.body.contains("사내 메신저"));
+    assert_eq!(
+        view.actions
+            .iter()
+            .map(|action| action.id.as_str())
+            .collect::<Vec<_>>(),
+        vec![
+            "choice:check_message",
+            "choice:ignore_phone",
+            "choice:search_ex_employee",
+        ]
+    );
+    assert_eq!(
+        view.actions[0].cost_summary.as_deref(),
+        Some("배터리 -3, 정신력 -2")
+    );
+    assert!(!view
+        .actions
+        .iter()
+        .any(|action| action.id == "choice:trace_packet_delay"));
+}
+
+#[test]
+fn content_backed_turn_view_rejects_unknown_state_location() {
+    let bundle = load_content_bundle(CONTENT_BUNDLE).expect("content bundle should load");
+    let index = index_content_bundle(&bundle).expect("content bundle should index");
+    let mut state = new_game_from_content(123, &index).expect("content-backed game should start");
+    state.location_id = "missing_floor".to_string();
+
+    let error = turn_view_from_content(&state, &index)
+        .expect_err("unknown state location should be rejected");
+
+    assert_eq!(
+        error,
+        ContentTurnError::UnknownStateLocation("missing_floor".to_string())
     );
 }

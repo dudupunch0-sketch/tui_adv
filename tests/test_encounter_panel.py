@@ -28,6 +28,31 @@ def test_format_encounter_turn_lists_available_choices_and_check_details():
     assert "판정: 2d6 + interface >= 10" in rendered
 
 
+def test_format_encounter_turn_lists_unavailable_choices_with_reasons():
+    state = GameState.new(seed=1)
+    encounter = DEFAULT_ENCOUNTERS["ex_employee_messenger"]
+
+    rendered = format_encounter_turn(encounter, state)
+
+    assert "잠긴 선택지:" in rendered
+    assert "- [잠김] [인터페이스] 알림 지연 시간을 역추적한다" in rendered
+    assert "이유: 능력 부족: interface 2/4" in rendered
+
+
+def test_format_encounter_turn_keeps_available_choice_numbers_compact_when_middle_choices_are_locked():
+    state = GameState.new(seed=1, location_id="pantry")
+    encounter = DEFAULT_ENCOUNTERS["pantry_coffee_machine"]
+
+    rendered = format_encounter_turn(encounter, state)
+
+    assert "1. 커피를 뽑는다" in rendered
+    assert "2. 물통을 확인한다" in rendered
+    assert "3. 밀봉된 생수 한 병을 챙긴다" in rendered
+    assert "5. 밀봉된 생수 한 병을 챙긴다" not in rendered
+    assert "- [잠김] 점검 라벨의 표식을 토너 표식과 맞춰 본다" in rendered
+    assert "- [잠김] 커피머신 뒤를 본다" in rendered
+
+
 def test_format_encounter_turn_distorts_choice_labels_when_sanity_is_low():
     state = GameState.new(seed=1).with_player(PlayerState(sanity=30))
     encounter = DEFAULT_ENCOUNTERS["ex_employee_messenger"]

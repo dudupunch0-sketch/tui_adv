@@ -151,6 +151,9 @@ fn content_tui_smoke_renders_start_encounter_panel() {
     assert!(stdout.contains("[현재 인카운터]"));
     assert!(stdout.contains("퇴사자의 메신저"));
     assert!(stdout.contains("1. choice:check_message / 메시지를 확인한다 / 배터리 -3, 정신력 -2"));
+    assert!(stdout.contains("[잠긴 선택지]"));
+    assert!(stdout.contains("choice:trace_packet_delay / [인터페이스] 알림 지연 시간을 역추적한다"));
+    assert!(stdout.contains("능력 조건 미충족: interface >= 4"));
     assert!(stdout.contains("[현재 행동]"));
     assert!(!stdout.contains("== Turn 0 =="));
 }

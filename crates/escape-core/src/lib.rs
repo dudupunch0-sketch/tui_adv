@@ -14,7 +14,8 @@ pub use effects::{printer_glyph_anomaly_cue, EffectCue, GlyphAnomalyCue};
 pub use save::{load_state, save_state, SaveEnvelope, SaveError, SAVE_SCHEMA_VERSION};
 pub use state::{GameState, NewGameError, PlayerState, DEFAULT_START_LOCATION_ID};
 pub use turn::{
-    ActionError, ActionResult, ActionView, ContentActionError, ContentTurnError, TurnView,
+    ActionError, ActionResult, ActionView, BlockedActionView, ContentActionError, ContentTurnError,
+    TurnView,
 };
 
 pub fn new_game(seed: u64) -> GameState {

@@ -31,6 +31,7 @@ pub struct GameState {
     pub seed: u64,
     pub turn: u32,
     pub location_id: String,
+    pub danger: i32,
     pub player: PlayerState,
     pub flags: Vec<String>,
     pub clues: Vec<String>,
@@ -43,6 +44,7 @@ impl GameState {
             seed,
             turn: 0,
             location_id: "printer_area".to_string(),
+            danger: 0,
             player: PlayerState {
                 health: 92,
                 sanity: 67,
@@ -73,6 +75,7 @@ impl GameState {
             seed,
             turn: 0,
             location_id: start_location_id.to_string(),
+            danger: 0,
             player: PlayerState {
                 health: 100,
                 sanity: 100,

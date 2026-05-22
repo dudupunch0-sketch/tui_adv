@@ -1,7 +1,7 @@
 use escape_core::{
     apply_action_from_content, index_content_bundle, load_content_bundle, new_game,
-    new_game_from_content, turn_view, turn_view_from_content, ActionView, ContentIndex, EffectCue,
-    GameState, TurnView,
+    new_game_from_content, turn_view, turn_view_from_content, ActionView, BlockedActionView,
+    ContentIndex, EffectCue, GameState, TurnView,
 };
 use std::io::{self, Write};
 use std::path::PathBuf;
@@ -292,8 +292,8 @@ fn print_turn(
     );
     println!("location: {}", view.location_id);
     println!(
-        "status: health={} sanity={} battery={}",
-        state.player.health, state.player.sanity, state.player.battery
+        "status: health={} sanity={} battery={} danger={}",
+        state.player.health, state.player.sanity, state.player.battery, state.danger
     );
     println!(
         "encounter: {}",
@@ -320,6 +320,7 @@ fn print_turn(
     for (index, action) in view.actions.iter().enumerate() {
         print_action(index + 1, action, include_action_ids);
     }
+    print_blocked_actions(&view.blocked_actions, include_action_ids);
 }
 
 fn print_action(index: usize, action: &ActionView, include_action_ids: bool) {
@@ -331,6 +332,27 @@ fn print_action(index: usize, action: &ActionView, include_action_ids: bool) {
     }
 }
 
+fn print_blocked_actions(blocked_actions: &[BlockedActionView], include_action_ids: bool) {
+    if blocked_actions.is_empty() {
+        return;
+    }
+    println!();
+    println!("[잠긴 선택지]");
+    for action in blocked_actions {
+        print_blocked_action(action, include_action_ids);
+    }
+}
+
+fn print_blocked_action(action: &BlockedActionView, include_action_ids: bool) {
+    match (&action.cost_summary, include_action_ids) {
+        (Some(cost), true) => println!("- [잠김] {} / {} / {cost}", action.id, action.label),
+        (None, true) => println!("- [잠김] {} / {}", action.id, action.label),
+        (Some(cost), false) => println!("- [잠김] {} / {cost}", action.label),
+        (None, false) => println!("- [잠김] {}", action.label),
+    }
+    println!("   이유: {}", action.reasons.join(", "));
+}
+
 fn print_tui_snapshot(view: &TurnView, state: &GameState, location_name: &str, logs: &[String]) {
     println!("[TUI Snapshot]");
     println!();
@@ -338,8 +360,8 @@ fn print_tui_snapshot(view: &TurnView, state: &GameState, location_name: &str, l
     println!("턴: {}", state.turn);
     println!("위치: {location_name} ({})", state.location_id);
     println!(
-        "체력: {}  정신력: {}  배터리: {}",
-        state.player.health, state.player.sanity, state.player.battery
+        "체력: {}  정신력: {}  배터리: {}  위험도: {}",
+        state.player.health, state.player.sanity, state.player.battery, state.danger
     );
     println!();
 
@@ -358,6 +380,7 @@ fn print_tui_snapshot(view: &TurnView, state: &GameState, location_name: &str, l
     for (index, action) in view.actions.iter().enumerate() {
         print_action(index + 1, action, true);
     }
+    print_blocked_actions(&view.blocked_actions, true);
     println!();
 
     println!("[최근 로그]");

@@ -1,10 +1,17 @@
 ---
-status: open
+status: done
 created: 2026-05-21
 source: user
-related_docs: docs/design/Character_Stats_and_Generator.md
+related_docs:
+  - docs/design/Character_Stats_and_Generator.md
+  - docs/design/Storypack_Encounter_DB.md
+  - docs/content/characters/README.md
+  - docs/content/characters/recurrent_npcs.md
 used_by:
-done_at:
+  - docs/design/Storypack_Encounter_DB.md
+  - docs/content/characters/README.md
+  - docs/content/characters/recurrent_npcs.md
+done_at: 2026-05-22
 ---
 
 # 6스탯 등장인물 생성기 시스템
@@ -99,3 +106,4 @@ done_at:
 ## 처리 기록
 
 - 2026-05-21: 사용자 아이디어를 `docs/design/Character_Stats_and_Generator.md`로 문서화하고, 이 파일에 idea_box 후보로 별도 저장했다. 아직 기존 시스템에 채택/통합되지 않았으므로 `open` 상태를 유지한다.
+- 2026-05-22: 6스탯 원칙을 `docs/design/Storypack_Encounter_DB.md`의 Character DB schema와 `docs/content/characters/recurrent_npcs.md`의 첫 반복 NPC 후보 3명에 반영했다. 런타임 플레이어 능력치와 즉시 통합하지 않고 NPC/인카운터 작성용 DB로 채택했으므로 `done` 처리한다.

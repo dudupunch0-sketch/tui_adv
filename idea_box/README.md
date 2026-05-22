@@ -14,10 +14,28 @@
 ```text
 idea_box/
   README.md
-  IDEA_INTAKE_GUIDE.md  # 별도 아이디어 수집 세션 운영 지침
-  inbox/                # 아직 사용하지 않은 아이디어
-  done/                 # 반영, 폐기, 병합 처리가 끝난 아이디어
+  IDEA_INTAKE_GUIDE.md      # 별도 아이디어 수집 세션 운영 지침
+  BACKLOG_ORDER.md          # status: done이 아닌 idea entry의 처리 순서
+  LLM_DESIGN_HANDOFF.md     # 다른 LLM/agent용 스토리팩/인카운터/6스탯 설계 표지 문서
+  inbox/                    # 아직 반영하지 않은/반영 대기 중인 구조화 아이디어
+  done/                     # 반영, 폐기, 병합 처리가 끝난 아이디어
 ```
+
+## backlog 처리 순서
+
+`idea_box`에서 `status: done`이 아닌 idea entry는 아직 반영되지 않은 backlog다. 처리 순서는 파일이 Git에 처음 추가된 commit 순서를 따른다. 원격 push 시각 자체는 일반 Git history만으로 안정적으로 복원할 수 없으므로, 이 repo에서는 “Git에 올라간 순서”를 “파일이 처음 추가된 commit 순서”로 정의한다.
+
+현재 순서는 `BACKLOG_ORDER.md`에 명시한다. 다음 개발/설계 후보를 찾는 agent는 임의로 흥미로운 항목을 고르지 말고, `BACKLOG_ORDER.md`에서 가장 낮은 order의 open 항목부터 처리한다.
+
+새 idea entry를 만들 때 같은 날짜 파일명이 여러 개라 순서가 애매하면 frontmatter에 `backlog_order`, `git_added_at`, `git_added_commit`을 추가한다. Git 최초 추가 시점을 알 수 없으면 처리 전에 파일명을 바꾸거나 order metadata를 추가해 순서를 명시한다.
+
+루트의 원문/가이드 문서는 source 또는 운영 문서일 수 있다. `source_ref`가 있는 `inbox` entry가 있으면 그 entry의 `status`와 order를 따른다.
+
+## 다른 LLM/agent 설계 핸드오프
+
+스토리팩, 인카운터 상황 DB, 6스탯 기반 등장인물 설계를 이어갈 LLM/agent는 `BACKLOG_ORDER.md`를 먼저 읽고 현재 처리 순서를 확인한 뒤, 해당 작업이 storypack/encounter 관련이면 `LLM_DESIGN_HANDOFF.md`를 읽는다.
+
+`LLM_DESIGN_HANDOFF.md`는 관련 설계 문서의 읽는 순서와 작업 단위를 안내하는 표지판이다. 즉시 구현 지시가 아니며, runtime YAML/Rust/Web 코드 변경은 사용자가 명시적으로 요청했을 때만 한다.
 
 ## 아이디어 수집 세션
 
@@ -47,6 +65,9 @@ idea_box/inbox/2026-05-21-fake-terminal-glitch.md
 status: open
 created: YYYY-MM-DD
 source: user
+backlog_order:
+git_added_at:
+git_added_commit:
 used_by:
 done_at:
 ---
@@ -71,7 +92,7 @@ done_at:
 
 ## 상태 규칙
 
-- `open`: 아직 사용하지 않은 후보 아이디어.
+- `open`: 아직 반영되지 않은 backlog idea entry. `BACKLOG_ORDER.md`의 Git 최초 반영 순서대로 처리한다.
 - `done`: 실제 설계/문서/구현에 반영했거나, 명시적으로 폐기/병합 처리한 아이디어.
 
 `done`은 단순히 읽었다는 뜻이 아니다. 처리 결과가 있어야 한다.
@@ -94,4 +115,4 @@ done_at: YYYY-MM-DD
 
 ## 중요한 운영 원칙
 
-아이디어는 요구사항이 아니라 후보 입력이다. 프로젝트의 현재 plan/todo, 톤, 우선순위, 구현 단계에 맞지 않으면 반영하지 않아도 된다. 다만 반영하지 않거나 나중으로 미룬 경우에는 가능하면 처리 기록에 간단히 이유를 남긴다.
+아이디어는 반영 대기 backlog 입력이다. 프로젝트의 현재 plan/todo가 있으면 그것을 먼저 끝내되, 이후에는 `BACKLOG_ORDER.md`의 오래된 open 항목부터 처리한다. 반영하지 않기로 결정한 경우에도 그냥 넘기지 말고 폐기/병합 이유를 처리 기록에 남기고 `done` 처리한다.

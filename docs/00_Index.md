@@ -39,6 +39,7 @@ docs/
     Game_Loop.md                    # 턴 진행, 인카운터, 선택지 처리 루프
     Player_State.md                 # 체력/정신력/배터리/허기/갈증 규칙
     Character_Stats_and_Generator.md # 6스탯 등장인물/LLM 생성기 설계 후보
+    Storypack_Encounter_DB.md       # 스토리팩/인카운터 상황 카드/NPC DB 설계
     Map.md                          # 사무실 위치, 연결, 구역별 역할
     UI_Rules.md                     # 사내 시스템형 TUI, 글리치, 선택지 오염 규칙
     TUI_Storybook_GlyphFX_Concept.md # TUI풍 스토리북 + GlyphFX 컨셉 후보
@@ -51,6 +52,9 @@ docs/
     Survivor_System_Routes.md       # 생존자 설득과 시스템 제압 루트 설계
     Secret_List.md                  # 게임 내 비밀 목록. 실제 현실 위치 제외
     Horror_Ideas.md                 # 호러 연출 아이디어 저장소
+    storypacks/                     # 스토리팩 후보 DB
+    characters/                     # 6스탯 반복 등장인물 후보 DB
+    encounter_db/                   # 런타임 승격 전 인카운터 상황 카드 DB
 
   dev/
     Development_Plan.md             # 전체 개발 계획과 현황 메모
@@ -99,6 +103,7 @@ private/
 - `docs/story/Reality_Link.md`
 - `docs/design/Player_State.md`
 - `docs/design/Character_Stats_and_Generator.md`
+- `docs/design/Storypack_Encounter_DB.md`
 - `docs/design/Game_Loop.md`
 - `docs/design/Map.md`
 - `docs/design/UI_Rules.md`
@@ -110,6 +115,12 @@ private/
 - `docs/content/Survivor_System_Routes.md`
 - `docs/content/Secret_List.md`
 - `docs/content/Horror_Ideas.md`
+- `docs/content/storypacks/README.md`
+- `docs/content/storypacks/isolation_pack.md`
+- `docs/content/characters/README.md`
+- `docs/content/characters/recurrent_npcs.md`
+- `docs/content/encounter_db/README.md`
+- `docs/content/encounter_db/isolation_pack.md`
 - `docs/dev/Architecture.md`
 - `docs/dev/Data_Schema.md`
 - `docs/dev/TUI_Layout.md`
@@ -129,5 +140,5 @@ private/
 현재 없는 문서명을 인덱스에 현재 문서처럼 나열하지 않는다.
 다음 주제가 커지면 별도 문서로 분리하고, 그때 이 인덱스와 implementation-map도 같이 갱신한다.
 
-1. storypack 후보별 public-safe 콘텐츠 확장 규칙
+1. `document_contamination_pack`, `meeting_reservation_pack`, `compensation_strike_pack`의 별도 후보 문서
 2. 실시간 UI/UX 점검 후 확정된 화면/입력 변경 사항 기록

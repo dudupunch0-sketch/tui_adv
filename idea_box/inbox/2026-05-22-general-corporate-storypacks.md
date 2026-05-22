@@ -1,12 +1,20 @@
 ---
-status: open
+status: done
 created: 2026-05-22
 source: user
 source_ref: origin/main:idea_box/general_corporate_storypacks.md
 related_docs:
   - idea_box/general_corporate_storypacks.md
+  - docs/design/Storypack_Encounter_DB.md
+  - docs/content/storypacks/isolation_pack.md
+  - docs/content/encounter_db/isolation_pack.md
+  - docs/content/characters/recurrent_npcs.md
 used_by:
-done_at:
+  - docs/design/Storypack_Encounter_DB.md
+  - docs/content/storypacks/isolation_pack.md
+  - docs/content/encounter_db/isolation_pack.md
+  - docs/content/characters/recurrent_npcs.md
+done_at: 2026-05-22
 ---
 
 # 일반 대기업 배경 스토리팩 후보
@@ -272,3 +280,4 @@ UI/EffectCue 후보:
 ## 처리 기록
 
 - 2026-05-22: 원격 `origin/main:idea_box/general_corporate_storypacks.md`에 추가된 원문을 확인하고, 다른 agent가 검토/설계/개발 후보로 사용할 수 있도록 이 구조화된 `idea_box/inbox` 아이디어 문서로 새로 정리했다. 아직 실제 설계 문서, 런타임 콘텐츠, 코드, 데이터에 반영된 것은 아니므로 `open` 상태를 유지한다.
+- 2026-05-22: 일반 대기업 배경의 스토리팩/반복 인물/회사식 시스템 표면을 `docs/design/Storypack_Encounter_DB.md`, `docs/content/storypacks/isolation_pack.md`, `docs/content/encounter_db/isolation_pack.md`, `docs/content/characters/recurrent_npcs.md`에 반영했다. 일반 대기업 버전을 상위 기준으로 삼고 차원격리팩을 첫 DB slice로 채택했으므로 `done` 처리한다.

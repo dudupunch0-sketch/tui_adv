@@ -3,6 +3,11 @@ status: open
 created: 2026-05-22
 source: user
 source_ref: origin/main:idea_box/real_escape_ending_branch_ideas.md
+backlog_order: 003
+git_added_at: 2026-05-22T04:55:10+00:00
+git_added_commit: 488110eb
+source_git_added_at: 2026-05-22T13:52:01+09:00
+source_git_added_commit: cf4e75d1
 related_docs:
   - idea_box/real_escape_ending_branch_ideas.md
   - idea_box/dream_ending_branch_ideas.md

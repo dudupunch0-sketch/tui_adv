@@ -2,6 +2,9 @@
 status: open
 created: 2026-05-21
 source: user
+backlog_order: 001
+git_added_at: 2026-05-21T14:50:28+00:00
+git_added_commit: 57a381bd
 related_docs: docs/design/TUI_Storybook_GlyphFX_Concept.md
 used_by:
 done_at:

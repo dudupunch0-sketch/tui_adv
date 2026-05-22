@@ -13,17 +13,30 @@ TUI 기반 랜덤 인카운터 선택지 생존 게임.
 
 개발 중에는 설치 없이 다음처럼 실행할 수 있다.
 
-직접 플레이:
+기존 Python/Textual 직접 플레이:
 
 ```bash
 PYTHONPATH=src python -m tui_adv --play --seed 123
 ```
 
-클라우드 서버에서는 helper 설치 후 바로 실행할 수 있다.
+Rust content-backed 직접 플레이:
+
+```bash
+cargo run -p escape-terminal -- --scene content --content-bundle crates/escape-core/fixtures/content/content.bundle.json --seed 123 --play
+```
+
+클라우드 서버에서는 helper 설치 후 Rust 직접 플레이 launcher를 바로 실행할 수 있다.
 
 ```bash
 ./cloud_server_only.sh install
 ./escape-terminal-cloud-server-only --seed 123
+```
+
+Rust headless smoke:
+
+```bash
+cargo run -p escape-terminal -- --scene content --content-bundle crates/escape-core/fixtures/content/content.bundle.json --seed 123 --smoke --action choice:check_message --action move:dev_office
+cargo run -p escape-terminal -- --scene content --content-bundle crates/escape-core/fixtures/content/content.bundle.json --seed 123 --tui-smoke --action choice:check_message
 ```
 
 스크립트/스모크 실행:

@@ -6,10 +6,10 @@
 # partition is not filled by rustup, cargo cache, or target/.
 #
 # Usage from project root:
-#   ./cloud_server_only.sh install   # install missing Rust toolchain, build release smoke binary, refresh ./escape-terminal-cloud-server-only play launcher
-#   ./cloud_server_only.sh run       # launch ./escape-terminal-cloud-server-only for direct interactive play
-#   ./cloud_server_only.sh smoke     # run the Rust printer renderer smoke snapshot
-#   ./cloud_server_only.sh test      # run Rust checks plus a Python direct-play smoke
+#   ./cloud_server_only.sh install   # install missing Rust toolchain, build release binary, refresh ./escape-terminal-cloud-server-only Rust play launcher
+#   ./cloud_server_only.sh run       # launch Rust content-backed direct interactive play
+#   ./cloud_server_only.sh smoke     # run Rust printer/content renderer smoke snapshots
+#   ./cloud_server_only.sh test      # run Rust checks plus Rust direct-play smoke
 #   ./cloud_server_only.sh env       # print the env exports for manual shell use
 #
 # Manual equivalent:
@@ -34,10 +34,23 @@ export PATH="$CARGO_HOME/bin:$PATH"
 TOOLCHAIN="${RUST_TOOLCHAIN:-stable}"
 BIN_PATH="$CARGO_TARGET_DIR/release/escape-terminal"
 LINK_PATH="$REPO_ROOT/escape-terminal-cloud-server-only"
-PYTHON_BIN="${PYTHON_BIN:-python3}"
+BUNDLE_PATH="$REPO_ROOT/crates/escape-core/fixtures/content/content.bundle.json"
 
 usage() {
-  sed -n '1,32p' "$0" | sed 's/^# \{0,1\}//'
+  cat <<'EOF'
+cloud_server_only
+
+Local-only helper for this cloud server (/home/dudupunch0/tui_adv).
+It keeps Rust toolchain/cache/build artifacts under /tmp so the small /home
+partition is not filled by rustup, cargo cache, or target/.
+
+Usage from project root:
+  ./cloud_server_only.sh install   # install missing Rust toolchain, build release binary, refresh ./escape-terminal-cloud-server-only Rust play launcher
+  ./cloud_server_only.sh run       # launch Rust content-backed direct interactive play
+  ./cloud_server_only.sh smoke     # run Rust printer/content renderer smoke snapshots
+  ./cloud_server_only.sh test      # run Rust checks plus Rust direct-play smoke
+  ./cloud_server_only.sh env       # print the env exports for manual shell use
+EOF
 }
 
 print_env() {
@@ -91,13 +104,17 @@ write_play_launcher() {
 #!/usr/bin/env bash
 set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PYTHON_BIN="${PYTHON_BIN:-python3}"
-cd "$REPO_ROOT"
-export PYTHONPATH="$REPO_ROOT/src${PYTHONPATH:+:$PYTHONPATH}"
-exec "$PYTHON_BIN" -m tui_adv --play "$@"
+export CARGO_TARGET_DIR="${CARGO_TARGET_DIR:-/tmp/dudupunch0-tui-adv-target}"
+BIN_PATH="$CARGO_TARGET_DIR/release/escape-terminal"
+BUNDLE_PATH="$REPO_ROOT/crates/escape-core/fixtures/content/content.bundle.json"
+if [[ ! -x "$BIN_PATH" ]]; then
+  echo "Rust play binary is missing; run ./cloud_server_only.sh install first." >&2
+  exit 2
+fi
+exec "$BIN_PATH" --scene content --content-bundle "$BUNDLE_PATH" --play "$@"
 EOF_LAUNCHER
   chmod +x "$LINK_PATH"
-  echo "Wrote direct-play launcher: $LINK_PATH"
+  echo "Wrote Rust direct-play launcher: $LINK_PATH"
 }
 
 build_rust_binary() {
@@ -119,6 +136,7 @@ run_smoke() {
   fi
 
   "$BIN_PATH" --scene printer --seed 123 --smoke
+  "$BIN_PATH" --scene content --content-bundle "$BUNDLE_PATH" --seed 123 --tui-smoke --action choice:check_message
 }
 
 run_game() {
@@ -137,10 +155,11 @@ run_tests() {
   cargo clippy --workspace --all-targets -- -D warnings
   build_rust_binary
   "$BIN_PATH" --scene printer --seed 123 --smoke
+  "$BIN_PATH" --scene content --content-bundle "$BUNDLE_PATH" --seed 123 --tui-smoke --action choice:check_message
   write_play_launcher
-  "$PYTHON_BIN" -m pytest tests/test_cli.py::test_cli_play_mode_accepts_numbered_input_and_quit -q
-  play_output="$(printf 'q\n' | "$LINK_PATH" --seed 123)"
-  printf '%s\n' "$play_output" | grep -q "escape from the office - 직접 플레이"
+  play_output="$(printf '1\nq\n' | "$LINK_PATH" --seed 123)"
+  printf '%s\n' "$play_output" | grep -q "escape-terminal / 직접 플레이"
+  printf '%s\n' "$play_output" | grep -q "선택 실행: 메시지를 확인한다"
 }
 
 command="${1:-install}"

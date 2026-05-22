@@ -20,7 +20,11 @@ def test_superlighttui_terminal_polish_is_checklisted_and_documented():
     assert "- [x] GlyphFX fallback이 intensity meter, stable terms, fallback text를 보존" in checklist
     assert "- [x] 직접 플레이 입력 안내가 현재 턴 번호 범위와 action id 사용법을 표시" in checklist
     assert "SuperLightTUI terminal visual card/GlyphFX/input polish 완료" in plan
-    assert "Web/Tauri/Electron 패키징 검토" in plan.split("현재 최우선 남은 작업:", 1)[1]
+    next_slice = plan.split("현재 최우선 남은 작업:", 1)[1]
+    assert "Web/Tauri/Electron 패키징 결정 완료" in plan
+    assert "terminal full-screen app loop" in next_slice
+    assert "tick/raw-draw GlyphFX" in next_slice
+    assert "Web/Tauri/Electron 패키징 검토" not in next_slice
     assert "visual card/GlyphFX/input 안내 polish" in readme
     assert "printer_anomaly stable terms를 terminal visual card 안에 보존" in architecture
 

@@ -67,6 +67,7 @@ docs/
     TUI_Layout.md                   # 화면 배치, 입력, 위젯 설계
     Save_Slot_UX.md                 # 저장 슬롯 이름 변경 UX 후보
     Balance_QA_Packaging.md         # 밸런싱, QA smoke, 패키징/릴리즈 기준
+    Web_Distribution_Decision.md    # Web-only 배포 표면과 Tauri/Electron defer 결정
     Final_QA_Log.md                 # 실제 Textual/터미널 크기/10회 새 게임 QA 기록
     Reality_Secret_Safety_Checklist.md # 로컬 현실 힌트 안전 점검
 
@@ -130,6 +131,7 @@ private/
 - `docs/dev/TUI_Layout.md`
 - `docs/dev/Save_Slot_UX.md`
 - `docs/dev/Balance_QA_Packaging.md`
+- `docs/dev/Web_Distribution_Decision.md`
 - `docs/dev/Final_QA_Log.md`
 - `docs/dev/Reality_Secret_Safety_Checklist.md`
 - `docs/dev/Development_Plan.md`

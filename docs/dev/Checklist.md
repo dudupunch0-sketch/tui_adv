@@ -78,6 +78,12 @@
 - [x] GlyphFX fallback이 intensity meter, stable terms, fallback text를 보존
 - [x] 직접 플레이 입력 안내가 현재 턴 번호 범위와 action id 사용법을 표시
 
+### 0.2f 2026-05-22 Web 배포 표면 결정
+
+- [x] Web/Tauri/Electron 패키징 검토와 Web-only 배포 표면 결정
+- [x] `web/package.json`에 `build:player` / `preview:player` alias 추가
+- [x] Tauri/Electron은 desktop wrapper 고유 가치가 생길 때까지 deferred로 문서화
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

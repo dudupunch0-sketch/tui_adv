@@ -45,6 +45,8 @@ Textual 설치 환경에서 실제 Textual widget tree를 확인하는 항목은
 
 ## 패키징/README 기준
 
+현재 플레이어 배포 표면은 Web-only다. Rust/WASM-primary Web build가 정적 산출물 `web/dist/`를 만들고, Tauri/Electron은 native wrapper의 고유 가치가 확인될 때까지 deferred로 둔다. 세부 결정은 `docs/dev/Web_Distribution_Decision.md`를 따른다.
+
 README는 다음을 즉시 제공해야 한다.
 
 - 게임 컨셉과 현재 구현 단계
@@ -54,6 +56,7 @@ README는 다음을 즉시 제공해야 한다.
 - 제한된 개발 서버용 `cloud_server_only.sh` helper는 일반 실행법이 아님을 명시
 - smoke/테스트 명령
 - Web legacy fake-TUI 및 향후 Storybook export/test/build 명령
+- Web-only player build/preview 명령: `npm run build:player`, `npm run preview:player`
 - SuperLightTUI terminal renderer 목표와 검증 기준
 - 조작법: 숫자, 이동 단축키, `?`, `i`, `l`, `s`, `q` 또는 renderer별 대응 키
 - 현실 연결 안전 원칙과 `private/`/local secret 경계

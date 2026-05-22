@@ -557,10 +557,11 @@ src/tui_adv/data/secrets.example.yaml
 9. Web WASM build/preview 표준화 완료: `web/package.json`의 `wasm:build`가 `wasm-pack build ../crates/escape-wasm --target web --out-dir ../../web/src/core/wasm-pkg`를 실행하고, `build:wasm` / `preview:wasm`이 Rust/WASM-primary Web 검증 경로를 제공한다.
 10. legacy TypeScript mirror는 fallback/parity oracle로 freeze했고, Python/Textual도 legacy smoke/parity oracle로만 유지한다.
 11. SuperLightTUI terminal visual card/GlyphFX/input polish 완료: `escape-terminal`은 `ScenePage.visual`을 ASCII/Unicode card로 표시하고, `glyph_anomaly`의 intensity meter/stable terms/fallback text와 현재 턴 입력 범위를 노출한다.
+12. Web/Tauri/Electron 패키징 결정 완료: 현재 플레이어 배포 표면은 Web-only이며, `web/package.json`의 `build:player` / `preview:player` alias가 Rust/WASM-primary Web artifact(`web/dist/`)를 기준으로 한다. Tauri/Electron은 desktop wrapper 고유 가치가 생길 때까지 deferred다.
 
 현재 최우선 남은 작업:
 
-1. Web/Tauri/Electron 패키징 검토: Rust/WASM-primary preview/build 기준이 안정된 뒤, 플레이어 배포 표면을 Web-only로 둘지 Tauri/Electron까지 열지 결정한다.
+1. terminal full-screen app loop와 tick/raw-draw GlyphFX slice: Web-only 배포 표면이 결정되었으므로, `escape-terminal`의 snapshot/play renderer를 다음 단계의 terminal-native horror edition loop로 확장할지 검토하고 구현한다.
 
 전환 중 유지:
 
@@ -572,7 +573,7 @@ src/tui_adv/data/secrets.example.yaml
 
 1. 대표 Web/Rust route smoke가 legacy coverage를 대체하면 Python/Textual과 TypeScript mirror retire 여부를 다시 결정한다.
 2. 정복/진실/재난 타입별 변형 콘텐츠 확대
-3. Web/Tauri/Electron 패키징 검토
+3. Tauri/Electron desktop wrapper 재검토: native file dialog, offline file import/export, OS-level 알림/업데이트 같은 Web-only 한계를 실제 요구로 확인한 뒤 별도 slice로 연다.
 4. terminal inline image optional 지원 검토
 5. 여러 히든 현실 보물
 
@@ -619,5 +620,5 @@ Web 또는 terminal renderer가 게임 규칙을 다시 구현하면 Rust GameCo
 
 ## 10. 다음 액션
 
-1. Web/Tauri/Electron 패키징 검토를 진행한다.
-2. terminal full-screen app loop, tick/raw-draw GlyphFX, optional inline image 지원은 Web/Tauri/Electron 배포 표면 결정 뒤 별도 slice로 검토한다.
+1. terminal full-screen app loop와 tick/raw-draw GlyphFX slice를 진행한다.
+2. optional inline image 지원은 terminal cell/GlyphFX baseline 이후 별도 slice로 검토한다.

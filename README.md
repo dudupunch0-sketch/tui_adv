@@ -111,11 +111,15 @@ cd web
 npm run wasm:build
 npm run build:wasm
 npm run preview:wasm
+npm run build:player
+npm run preview:player
 ```
 
 `npm run wasm:build`는 `wasm-pack build ../crates/escape-wasm --target web --out-dir ../../web/src/core/wasm-pkg`를 실행한다. 생성되는 `web/src/core/wasm-pkg/`는 로컬 build artifact라서 Git에 커밋하지 않는다.
 
 현재 브라우저 앱은 Web Storybook + GlyphFX renderer를 기본 화면으로 사용하며, `web/src/core/wasmRuntime.ts`가 generated content bundle(`web/src/data/generated/content.bundle.json`)을 `escape-wasm` JSON-string boundary에 전달해 Rust GameCore의 `ScenePage`/`ActionResult`를 소비한다. Rust/WASM-primary preview는 `npm run build:wasm` 또는 `npm run preview:wasm` 경로로 확인한다. generated wasm package가 없거나 `wasm-pack`/Rust toolchain이 없는 개발 환경에서는 legacy TypeScript mirror가 fallback/parity oracle로 동작한다. legacy TypeScript mirror와 Python/Textual은 freeze 상태이며, 새 게임 규칙은 Rust GameCore에만 추가한다. 공개 secret JSON과 content bundle에는 실제 사무실 최종 위치나 `final_hint`를 넣지 않는다.
+
+배포 표면은 현재 Web-only로 결정했다. `npm run build:player`는 Rust/WASM-primary Web 정적 산출물(`web/dist/`)을 만들고, `npm run preview:player`는 같은 경로를 로컬 preview한다. Tauri/Electron은 desktop wrapper의 고유 가치가 생길 때까지 deferred 상태이며, 결정 기록은 `docs/dev/Web_Distribution_Decision.md`에 둔다.
 
 패키지 설치 후에는 `tui-adv` console script를 사용할 수 있다.
 
@@ -161,6 +165,7 @@ npm run preview:wasm
 - `docs/dev/TUI_Layout.md`: TUI 화면 설계
 - `docs/dev/Save_Slot_UX.md`: 저장 슬롯 이름 변경 UX 후보
 - `docs/dev/Balance_QA_Packaging.md`: 밸런싱, QA smoke, 패키징/릴리즈 기준
+- `docs/dev/Web_Distribution_Decision.md`: Web-only 배포 표면과 Tauri/Electron defer 결정
 - `docs/dev/Final_QA_Log.md`: 실제 Textual/터미널 크기/10회 새 게임 QA 기록
 - `docs/implementation-map/index.html`: 현재 구현을 한 번에 보는 interactive HTML 구현 지도
 - `docs/implementation-map/README.md`: 구현 지도 업데이트 방법

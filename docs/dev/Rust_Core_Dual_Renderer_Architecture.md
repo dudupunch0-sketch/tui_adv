@@ -27,7 +27,7 @@ Wire schema의 canonical source는 `docs/dev/Data_Schema.md`다. 이 문서는 c
 - Web Storybook + GlyphFX를 플레이어가 실제로 보게 될 primary UX로 먼저 만든다.
 - Rust terminal 경로는 계속 유지하되, 반드시 SuperLightTUI 기반 renderer로 전환한다.
 - terminal renderer는 우선순위와 배포 표면에서는 fallback이지만 품질 면에서 fallback이 아니다. layout, input, snapshot, GlyphFX-style cell effects를 갖춘 terminal-native horror edition이어야 한다.
-- 현재 `cargo run -p escape-terminal -- ... --play` 출력은 SuperLightTUI snapshot 기반 content renderer다. visual card/GlyphFX fallback/input 안내 polish는 들어갔고, 전체 화면 app loop와 tick/raw-draw animation은 후속 확장 대상이다.
+- 현재 `cargo run -p escape-terminal -- ... --play` 출력은 SuperLightTUI snapshot 기반 content renderer이며, `--app`은 full-screen SuperLightTUI app loop를 연다. `--app-smoke --tick`은 tick/raw-draw capability를 쓰는 app smoke와 full-screen loop renderer를 headless로 검증한다.
 - 오래된 browser fake-TUI dashboard를 장기 제품 UI로 키우지 않는다. 거기서 얻은 Canvas/pretext 교훈은 Web Storybook/GlyphFX 안으로 흡수한다.
 - TypeScript 또는 terminal renderer code에 새 게임 규칙을 추가하지 않는다. 게임 규칙은 Rust core에 둔다.
 
@@ -68,14 +68,14 @@ Web renderer는 Rust/WASM에서 semantic state를 받고 mood를 렌더링한다
 
 ### `crates/escape-terminal`
 
-SuperLightTUI terminal renderer다. 현재 slice는 content `ScenePage`를 SuperLightTUI `TestBackend` snapshot으로 렌더링하고 play loop에서 사용한다.
+SuperLightTUI terminal renderer다. 현재 slice는 content `ScenePage`를 SuperLightTUI `TestBackend` snapshot으로 렌더링하고 play loop에서 사용하며, `--app` full-screen loop와 `--app-smoke --tick` app-frame smoke도 제공한다.
 
 - Web과 같은 `ScenePage`/semantic view를 소비한다.
 - SuperLightTUI layout primitive로 status, visual card, body/dialogue, choices, recent history를 배치한다.
 - `visual_id`를 ASCII/Unicode/ANSI visual card로 매핑한다.
 - `printer_anomaly stable terms를 terminal visual card 안에 보존`하고, GlyphFX fallback text를 읽을 수 있게 표시한다.
 - keyboard input과 headless/snapshot smoke test를 지원한다. 직접 플레이 prompt는 현재 턴의 사용 가능한 번호 범위와 stable action id 입력을 함께 안내한다.
-- 다음 확장에서 SuperLightTUI tick/raw-draw capability로 terminal-native GlyphFX animation을 구현한다.
+- SuperLightTUI `run_with` full-screen loop, `RunConfig::tick_rate(...)`/`max_fps(60)`, `ui.tick()`, raw-draw layer를 사용해 terminal-native GlyphFX baseline을 구현했다.
 - inline image 지원 없이도 plain WSL/SSH terminal에서 동작한다.
 
 Terminal image는 baseline이 아니다. Kitty/Sixel/iTerm2 inline image support는 나중에 optional로 검토할 수 있지만, 필수 fallback은 SuperLightTUI cell/ASCII/GlyphFX rendering이다.
@@ -205,11 +205,12 @@ terminal renderer는 SuperLightTUI를 사용한다. 현재 slice는 headless/sna
 
 첫 terminal polish slice 완료 기준:
 
-1. `printer_anomaly`의 `ScenePage` 하나를 렌더링한다.
-2. status, ASCII/Unicode visual card, dialogue/body, choices, recent history를 표시한다.
-3. `EffectCue::GlyphAnomaly`를 해석하되 stable terms와 fallback text를 보존한다.
-4. terminal page가 debug dump가 아님을 증명하는 headless snapshot test를 추가한다.
-5. 직접 플레이 입력 prompt가 현재 턴의 번호 범위와 stable action id 입력법을 보여준다.
+1. 완료: `printer_anomaly`의 `ScenePage` 하나를 렌더링한다.
+2. 완료: status, ASCII/Unicode visual card, dialogue/body, choices, recent history를 표시한다.
+3. 완료: `EffectCue::GlyphAnomaly`를 해석하되 stable terms와 fallback text를 보존한다.
+4. 완료: terminal page가 debug dump가 아님을 증명하는 headless snapshot test를 추가한다.
+5. 완료: 직접 플레이 입력 prompt가 현재 턴의 번호 범위와 stable action id 입력법을 보여준다.
+6. 완료: `--app` full-screen loop와 `--app-smoke --tick` raw-draw GlyphFX smoke를 추가한다.
 
 ## Web Storybook 구현 메모
 

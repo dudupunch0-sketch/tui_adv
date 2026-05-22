@@ -6,6 +6,7 @@ use escape_core::{
 };
 use std::io::{self, Write};
 use std::path::PathBuf;
+use std::time::Duration;
 
 #[derive(Debug, PartialEq, Eq)]
 struct CliOptions {
@@ -13,7 +14,10 @@ struct CliOptions {
     seed: u64,
     smoke: bool,
     tui_smoke: bool,
+    app_smoke: bool,
     play: bool,
+    app: bool,
+    tick: u64,
     content_bundle: Option<PathBuf>,
     actions: Vec<String>,
 }
@@ -33,11 +37,22 @@ where
     if options.smoke && options.tui_smoke {
         return Err("--smoke and --tui-smoke cannot be combined".to_string());
     }
-    if options.play && (options.smoke || options.tui_smoke) {
-        return Err("--play cannot be combined with --smoke or --tui-smoke".to_string());
+    if options.app_smoke && (options.smoke || options.tui_smoke) {
+        return Err("--app-smoke cannot be combined with --smoke or --tui-smoke".to_string());
     }
-    if options.play && !options.actions.is_empty() {
-        return Err("--play cannot be combined with scripted --action values".to_string());
+    if options.play && (options.smoke || options.tui_smoke || options.app_smoke) {
+        return Err("--play cannot be combined with smoke modes".to_string());
+    }
+    if options.app && (options.smoke || options.tui_smoke || options.app_smoke || options.play) {
+        return Err("--app cannot be combined with --play or smoke modes".to_string());
+    }
+    if (options.play || options.app) && !options.actions.is_empty() {
+        return Err(
+            "interactive modes cannot be combined with scripted --action values".to_string(),
+        );
+    }
+    if options.tick != 0 && !options.app_smoke {
+        return Err("--tick is only supported with --app-smoke".to_string());
     }
 
     match options.scene.as_str() {
@@ -64,6 +79,8 @@ fn run_printer_scene(options: &CliOptions) -> Result<(), String> {
     let view = turn_view(&state);
     if options.tui_smoke {
         print_tui_snapshot(&view, &state, &view.location_id, &[]);
+    } else if options.app_smoke || options.app {
+        return Err("--app and --app-smoke are only supported with --scene content".to_string());
     } else {
         print_turn(&view, &state, &options.scene, options.smoke, false);
     }
@@ -90,9 +107,12 @@ fn run_content_scene(options: &CliOptions) -> Result<(), String> {
     if options.play {
         return run_content_play_loop(&content, state, view);
     }
+    if options.app {
+        return run_content_app_loop(&content, state);
+    }
 
     let mut recent_logs = Vec::new();
-    if !options.tui_smoke {
+    if !options.tui_smoke && !options.app_smoke {
         print_turn(&view, &state, &options.scene, options.smoke, true);
     }
 
@@ -101,13 +121,13 @@ fn run_content_scene(options: &CliOptions) -> Result<(), String> {
             .ok_or_else(|| format!("action '{action_id}' is not available in current turn"))?;
         let result = apply_action_from_content(&state, &content, action_id)
             .map_err(|error| error.to_string())?;
-        if !options.tui_smoke {
+        if !options.tui_smoke && !options.app_smoke {
             print_execution(&result.action_id, &action.label, &result.logs);
         }
         recent_logs.extend(result.logs.iter().cloned());
         state = result.state;
         view = turn_view_from_content(&state, &content).map_err(|error| error.to_string())?;
-        if !options.tui_smoke {
+        if !options.tui_smoke && !options.app_smoke {
             print_turn(&view, &state, &options.scene, options.smoke, true);
         }
     }
@@ -115,6 +135,9 @@ fn run_content_scene(options: &CliOptions) -> Result<(), String> {
     if options.tui_smoke {
         let page = scene_page_from_content(&state, &content).map_err(|error| error.to_string())?;
         print_scene_page_snapshot(&page, &recent_logs);
+    } else if options.app_smoke {
+        let page = scene_page_from_content(&state, &content).map_err(|error| error.to_string())?;
+        print_scene_page_app_smoke(&page, &recent_logs, options.tick);
     }
 
     Ok(())
@@ -181,6 +204,65 @@ fn run_content_play_loop(
     Ok(())
 }
 
+fn run_content_app_loop(content: &ContentIndex, mut state: GameState) -> Result<(), String> {
+    let mut recent_logs = Vec::new();
+    let mut last_message: Option<String> = None;
+    let config = slt::RunConfig::default()
+        .tick_rate(Duration::from_millis(16))
+        .max_fps(60)
+        .title("escape-terminal".to_string());
+
+    slt::run_with(config, |ui| {
+        let page = match scene_page_from_content(&state, content) {
+            Ok(page) => page,
+            Err(error) => {
+                ui.text(format!("fatal renderer error: {error}"));
+                ui.quit();
+                return;
+            }
+        };
+
+        render_scene_page_app(ui, &page, &recent_logs, ui.tick());
+        if let Some(message) = &last_message {
+            ui.text(format!("! {message}"));
+        }
+
+        if ui.key('q') || ui.key('Q') {
+            ui.quit();
+            return;
+        }
+        if ui.key('?') {
+            last_message = Some(app_input_hint_for_scene_actions(&page.actions));
+            return;
+        }
+
+        for number in 1..=9 {
+            let key = char::from_digit(number, 10).expect("1..=9 should convert to char");
+            if ui.key(key) {
+                let Some(action) = page.actions.get(number as usize - 1) else {
+                    last_message = Some(format!(
+                        "사용 가능한 번호: {}",
+                        scene_action_number_range(&page.actions)
+                    ));
+                    return;
+                };
+                match apply_action_from_content(&state, content, &action.id) {
+                    Ok(result) => {
+                        recent_logs.extend(result.logs.iter().cloned());
+                        state = result.state;
+                        last_message = Some(format!("실행: {}", action.label));
+                    }
+                    Err(error) => {
+                        last_message = Some(error.to_string());
+                    }
+                }
+                return;
+            }
+        }
+    })
+    .map_err(|error| format!("failed to run SuperLightTUI app loop: {error}"))
+}
+
 fn resolve_play_action<'a>(view: &'a TurnView, input: &str) -> Option<&'a ActionView> {
     if let Ok(index) = input.parse::<usize>() {
         return index
@@ -198,7 +280,10 @@ where
     let mut seed = 123_u64;
     let mut smoke = false;
     let mut tui_smoke = false;
+    let mut app_smoke = false;
     let mut play = false;
+    let mut app = false;
+    let mut tick = 0_u64;
     let mut content_bundle = None;
     let mut actions = Vec::new();
     let mut iter = args.into_iter();
@@ -230,9 +315,19 @@ where
                     .ok_or_else(|| "--action requires a value".to_string())?;
                 actions.push(value);
             }
+            "--tick" => {
+                let value = iter
+                    .next()
+                    .ok_or_else(|| "--tick requires a value".to_string())?;
+                tick = value
+                    .parse::<u64>()
+                    .map_err(|_| format!("--tick must be an unsigned integer, got '{value}'"))?;
+            }
             "--smoke" => smoke = true,
             "--tui-smoke" => tui_smoke = true,
+            "--app-smoke" => app_smoke = true,
             "--play" => play = true,
+            "--app" => app = true,
             "--help" | "-h" => {
                 print_help();
                 std::process::exit(0);
@@ -246,7 +341,10 @@ where
         seed,
         smoke,
         tui_smoke,
+        app_smoke,
         play,
+        app,
+        tick,
         content_bundle,
         actions,
     })
@@ -255,8 +353,10 @@ where
 fn print_help() {
     println!("escape-terminal --scene printer --seed 123 --smoke");
     println!("escape-terminal --scene content --content-bundle <path> --seed 123 --play");
+    println!("escape-terminal --scene content --content-bundle <path> --seed 123 --app");
     println!("escape-terminal --scene content --content-bundle <path> --seed 123 --smoke --action choice:check_message");
     println!("escape-terminal --scene content --content-bundle <path> --seed 123 --tui-smoke --action choice:check_message");
+    println!("escape-terminal --scene content --content-bundle <path> --seed 123 --app-smoke --tick 7 --action choice:check_message");
     println!();
     println!("Options:");
     println!("  --scene <printer|content>  Run the printer scene or content-backed smoke/play");
@@ -266,10 +366,13 @@ fn print_help() {
     );
     println!("  --seed <n>                 Preserve deterministic seed in core state");
     println!("  --play                     Start an interactive content-backed terminal loop");
+    println!("  --app                      Start the full-screen SuperLightTUI app loop");
     println!("  --smoke                    Print a headless renderer smoke snapshot");
     println!(
         "  --tui-smoke                Print the final TUI-style snapshot after scripted actions"
     );
+    println!("  --app-smoke                Print one full-screen app frame with raw-draw GlyphFX");
+    println!("  --tick <n>                 Animation tick for --app-smoke raw-draw GlyphFX");
 }
 
 fn print_turn(
@@ -369,6 +472,153 @@ fn print_scene_page_snapshot(page: &ScenePage, logs: &[String]) {
     let snapshot = render_scene_page_snapshot(page, logs);
     if !snapshot.is_empty() {
         println!("{snapshot}");
+    }
+}
+
+fn print_scene_page_app_smoke(page: &ScenePage, logs: &[String], tick: u64) {
+    println!("[SuperLightTUI App Smoke]");
+    let snapshot = render_scene_page_app_frame(page, logs, tick);
+    if !snapshot.is_empty() {
+        println!("{snapshot}");
+    }
+}
+
+fn render_scene_page_app_frame(page: &ScenePage, logs: &[String], tick: u64) -> String {
+    let mut backend = slt::TestBackend::new(120, 40);
+    backend.render(|ui| render_scene_page_app(ui, page, logs, tick));
+    backend.to_string_trimmed()
+}
+
+#[derive(Clone)]
+struct RawGlyphFxFrame {
+    tick: u64,
+    effect_cues: Vec<SceneEffectCue>,
+}
+
+fn render_scene_page_app(ui: &mut slt::Context, page: &ScenePage, logs: &[String], tick: u64) {
+    let _ = ui.col(|ui| {
+        ui.text("ESCAPE OFFICE // SuperLightTUI HORROR EDITION");
+        ui.text("app loop: full-screen SuperLightTUI frame");
+        ui.text(format!("tick: {tick}"));
+        ui.text(format!(
+            "{} · {} · {} ({})",
+            page.chapter_label,
+            scene_mode_label(&page.mode),
+            page.location.name,
+            page.location.id
+        ));
+        ui.text(format!(
+            "진단: 체력 {} · 정신력 {} · 배터리 {} · 허기 {} · 갈증 {} · 위험도 {}",
+            resource_value(page, "health"),
+            resource_value(page, "sanity"),
+            resource_value(page, "battery"),
+            resource_value(page, "hunger"),
+            resource_value(page, "thirst"),
+            page.status_summary.danger
+        ));
+
+        ui.text("[STORY PAGE]");
+        ui.text(format!("visual: {} / {}", page.visual.id, page.visual.kind));
+        ui.text(format!("alt: {}", page.visual.alt));
+        ui.container().w(110).h(7).draw_with(
+            RawGlyphFxFrame {
+                tick,
+                effect_cues: page.effect_cues.clone(),
+            },
+            draw_raw_glyphfx,
+        );
+
+        if matches!(page.mode, SceneMode::Encounter) {
+            ui.text("[현재 인카운터]");
+        } else {
+            ui.text("[현재 행동]");
+        }
+        ui.text(page.title.as_str());
+        render_scene_body(ui, page);
+
+        ui.text("[선택지]");
+        for (index, action) in page.actions.iter().enumerate() {
+            ui.text(scene_action_line(index + 1, action));
+        }
+        if !page.blocked_actions.is_empty() {
+            ui.text("[잠긴 선택지]");
+            for action in &page.blocked_actions {
+                ui.text(scene_blocked_action_line(action));
+                ui.text(format!("   이유: {}", action.reasons.join(", ")));
+            }
+        }
+        ui.text(app_input_hint_for_scene_actions(&page.actions));
+
+        ui.text("[최근 로그]");
+        if logs.is_empty() {
+            ui.text("- 아직 기록된 로그가 없다.");
+        } else {
+            for log in logs.iter().rev().take(5).rev() {
+                ui.text(format!("- {log}"));
+            }
+        }
+    });
+}
+
+fn draw_raw_glyphfx(buf: &mut slt::Buffer, rect: slt::Rect, frame: &RawGlyphFxFrame) {
+    let lines = raw_glyphfx_lines(frame);
+    for (index, line) in lines.iter().enumerate() {
+        if index >= rect.height as usize {
+            break;
+        }
+        buf.set_string(rect.x, rect.y + index as u32, line, slt::Style::new());
+    }
+}
+
+fn raw_glyphfx_lines(frame: &RawGlyphFxFrame) -> Vec<String> {
+    let mut lines = vec![
+        "[RAW-DRAW GLYPHFX LAYER]".to_string(),
+        format!(
+            "raw-draw glyphfx tick={} {}",
+            frame.tick,
+            glyphfx_tick_wave(frame.tick)
+        ),
+    ];
+
+    if frame.effect_cues.is_empty() {
+        lines.push("raw-draw glyphfx idle · no EffectCue".to_string());
+        return lines;
+    }
+
+    for cue in &frame.effect_cues {
+        lines.push(format!(
+            "cue: {} source={} intensity={} distortion={}",
+            cue.kind, cue.source, cue.intensity, cue.distortion
+        ));
+        if !cue.stable_terms.is_empty() {
+            lines.push(format!("stable terms: {}", cue.stable_terms.join(" / ")));
+        }
+        if let Some(fallback) = &cue.fallback_text {
+            lines.push(format!("fallback: {fallback}"));
+        }
+    }
+    lines
+}
+
+fn glyphfx_tick_wave(tick: u64) -> String {
+    const CELLS: [char; 5] = ['·', '░', '▒', '▓', '▒'];
+    (0..24)
+        .map(|offset| CELLS[((tick as usize) + offset) % CELLS.len()])
+        .collect()
+}
+
+fn app_input_hint_for_scene_actions(actions: &[SceneAction]) -> String {
+    format!(
+        "입력: 번호 {} · q 종료 · ? 도움말",
+        scene_action_number_range(actions)
+    )
+}
+
+fn scene_action_number_range(actions: &[SceneAction]) -> String {
+    match actions.len() {
+        0 => "없음".to_string(),
+        1 => "1".to_string(),
+        count => format!("1-{count}"),
     }
 }
 

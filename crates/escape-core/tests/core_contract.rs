@@ -1,7 +1,7 @@
 use escape_core::{
-    apply_action, index_content_bundle, load_content_bundle, load_state, new_game,
-    new_game_from_content, new_game_from_content_at, save_state, turn_view, turn_view_from_content,
-    ContentTurnError, EffectCue, NewGameError,
+    apply_action, apply_action_from_content, index_content_bundle, load_content_bundle, load_state,
+    new_game, new_game_from_content, new_game_from_content_at, save_state, turn_view,
+    turn_view_from_content, ContentTurnError, EffectCue, NewGameError,
 };
 
 const CONTENT_BUNDLE: &str = include_str!("../fixtures/content/content.bundle.json");
@@ -151,5 +151,53 @@ fn content_backed_turn_view_rejects_unknown_state_location() {
     assert_eq!(
         error,
         ContentTurnError::UnknownStateLocation("missing_floor".to_string())
+    );
+}
+
+#[test]
+fn content_backed_action_applies_cost_outcome_and_logs() {
+    let bundle = load_content_bundle(CONTENT_BUNDLE).expect("content bundle should load");
+    let index = index_content_bundle(&bundle).expect("content bundle should index");
+    let state = new_game_from_content(123, &index).expect("content-backed game should start");
+
+    let result = apply_action_from_content(&state, &index, "choice:check_message")
+        .expect("content-backed action should resolve");
+
+    assert_eq!(result.encounter_id, "ex_employee_messenger");
+    assert_eq!(result.action_id, "choice:check_message");
+    assert_eq!(result.state.turn, 1);
+    assert_eq!(result.state.location_id, "dev_desk");
+    assert_eq!(result.state.player.health, 100);
+    assert_eq!(result.state.player.sanity, 98);
+    assert_eq!(result.state.player.battery, 97);
+    assert!(result
+        .state
+        .clues
+        .contains(&"ex_employee_contacted".to_string()));
+    assert_eq!(result.logs, vec!["퇴사자의 메시지를 확인했다.".to_string()]);
+    assert!(result.effect_cues.is_empty());
+}
+
+#[test]
+fn content_backed_action_applies_destination_and_flags() {
+    let bundle = load_content_bundle(CONTENT_BUNDLE).expect("content bundle should load");
+    let index = index_content_bundle(&bundle).expect("content bundle should index");
+    let state = new_game_from_content_at(123, &index, "server_room_front")
+        .expect("content-backed game should start at server door");
+
+    let result = apply_action_from_content(&state, &index, "choice:follow_cold_air")
+        .expect("content-backed destination action should resolve");
+
+    assert_eq!(result.encounter_id, "server_room_radio");
+    assert_eq!(result.state.turn, 1);
+    assert_eq!(result.state.location_id, "server_room");
+    assert_eq!(result.state.player.sanity, 98);
+    assert!(result
+        .state
+        .flags
+        .contains(&"server_room_entered".to_string()));
+    assert_eq!(
+        result.logs,
+        vec!["서버실 문은 열리지 않았지만, 당신은 이미 문 안쪽에 서 있었다.".to_string()]
     );
 }

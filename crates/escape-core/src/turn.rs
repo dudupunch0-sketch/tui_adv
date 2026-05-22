@@ -1,4 +1,6 @@
-use crate::content::{ChoiceDef, ContentConditions, ContentIndex, EncounterDef, ResourceMap};
+use crate::content::{
+    ChoiceDef, ContentConditions, ContentIndex, EncounterDef, OutcomeDef, ResourceMap,
+};
 use crate::effects::{printer_glyph_anomaly_cue, EffectCue};
 use crate::state::{GameState, PlayerState};
 
@@ -38,6 +40,12 @@ pub enum ContentTurnError {
     UnknownStateLocation(String),
 }
 
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub enum ContentActionError {
+    UnknownStateLocation(String),
+    UnknownAction(String),
+}
+
 impl std::fmt::Display for ActionError {
     fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
@@ -62,6 +70,21 @@ impl std::fmt::Display for ContentTurnError {
 
 impl std::error::Error for ContentTurnError {}
 
+impl std::fmt::Display for ContentActionError {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            ContentActionError::UnknownStateLocation(location_id) => {
+                write!(formatter, "unknown state location: {location_id}")
+            }
+            ContentActionError::UnknownAction(action_id) => {
+                write!(formatter, "unknown action id: {action_id}")
+            }
+        }
+    }
+}
+
+impl std::error::Error for ContentActionError {}
+
 pub fn content_turn_view(
     state: &GameState,
     content: &ContentIndex,
@@ -70,10 +93,7 @@ pub fn content_turn_view(
         .location(&state.location_id)
         .ok_or_else(|| ContentTurnError::UnknownStateLocation(state.location_id.clone()))?;
 
-    let Some(encounter) = content
-        .encounters()
-        .find(|encounter| encounter_is_available(encounter, state))
-    else {
+    let Some(encounter) = current_content_encounter(content, state) else {
         return Ok(TurnView {
             location_id: state.location_id.clone(),
             encounter_id: None,
@@ -95,6 +115,43 @@ pub fn content_turn_view(
             .filter(|choice| choice_is_available(choice, state))
             .map(choice_action_view)
             .collect(),
+        effect_cues: Vec::new(),
+    })
+}
+
+pub fn apply_content_action(
+    state: &GameState,
+    content: &ContentIndex,
+    action_id: &str,
+) -> Result<ActionResult, ContentActionError> {
+    content
+        .location(&state.location_id)
+        .ok_or_else(|| ContentActionError::UnknownStateLocation(state.location_id.clone()))?;
+
+    let Some(encounter) = current_content_encounter(content, state) else {
+        return Err(ContentActionError::UnknownAction(action_id.to_string()));
+    };
+    let Some(choice_id) = action_id.strip_prefix("choice:") else {
+        return Err(ContentActionError::UnknownAction(action_id.to_string()));
+    };
+    let Some(choice) = encounter
+        .choices
+        .iter()
+        .find(|choice| choice.id == choice_id && choice_is_available(choice, state))
+    else {
+        return Err(ContentActionError::UnknownAction(action_id.to_string()));
+    };
+
+    let mut next_state = state.clone();
+    next_state.turn += 1;
+    apply_cost(&mut next_state.player, &choice.cost);
+    apply_outcome(&mut next_state, &choice.outcome);
+
+    Ok(ActionResult {
+        encounter_id: encounter.id.clone(),
+        action_id: action_id.to_string(),
+        state: next_state,
+        logs: choice.outcome.log.iter().cloned().collect(),
         effect_cues: Vec::new(),
     })
 }
@@ -164,6 +221,49 @@ pub fn apply_printer_action(
         }
         other => Err(ActionError::UnknownAction(other.to_string())),
     }
+}
+
+fn current_content_encounter<'a>(
+    content: &'a ContentIndex,
+    state: &GameState,
+) -> Option<&'a EncounterDef> {
+    content
+        .encounters()
+        .find(|encounter| encounter_is_available(encounter, state))
+}
+
+fn apply_cost(player: &mut PlayerState, cost: &ResourceMap) {
+    for (resource, amount) in cost {
+        apply_player_resource_delta(player, resource, -*amount);
+    }
+}
+
+fn apply_outcome(state: &mut GameState, outcome: &OutcomeDef) {
+    for (resource, amount) in &outcome.resources {
+        apply_player_resource_delta(&mut state.player, resource, *amount);
+    }
+    for flag in &outcome.add_flags {
+        state.add_flag_once(flag);
+    }
+    for clue in &outcome.add_clues {
+        state.add_clue_once(clue);
+    }
+    if let Some(destination_id) = &outcome.destination_id {
+        state.location_id = destination_id.clone();
+    }
+}
+
+fn apply_player_resource_delta(player: &mut PlayerState, resource: &str, amount: i32) {
+    match resource {
+        "health" => player.health = clamp_resource(player.health + amount),
+        "sanity" => player.sanity = clamp_resource(player.sanity + amount),
+        "battery" => player.battery = clamp_resource(player.battery + amount),
+        _ => {}
+    }
+}
+
+fn clamp_resource(value: i32) -> i32 {
+    value.clamp(0, 100)
 }
 
 fn encounter_is_available(encounter: &EncounterDef, state: &GameState) -> bool {

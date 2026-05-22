@@ -89,6 +89,7 @@ fn content_backed_new_game_starts_at_indexed_default_location() {
     assert_eq!(state.player.battery, 100);
     assert!(state.flags.is_empty());
     assert!(state.clues.is_empty());
+    assert!(state.seen_encounters.is_empty());
 }
 
 #[test]
@@ -174,7 +175,54 @@ fn content_backed_action_applies_cost_outcome_and_logs() {
         .state
         .clues
         .contains(&"ex_employee_contacted".to_string()));
+    assert!(result
+        .state
+        .seen_encounters
+        .contains(&"ex_employee_messenger".to_string()));
     assert_eq!(result.logs, vec!["퇴사자의 메시지를 확인했다.".to_string()]);
+    assert!(result.effect_cues.is_empty());
+}
+
+#[test]
+fn content_backed_turn_loop_exposes_movement_after_seen_encounter() {
+    let bundle = load_content_bundle(CONTENT_BUNDLE).expect("content bundle should load");
+    let index = index_content_bundle(&bundle).expect("content bundle should index");
+    let state = new_game_from_content(123, &index).expect("content-backed game should start");
+    let result = apply_action_from_content(&state, &index, "choice:check_message")
+        .expect("content-backed action should resolve");
+
+    let next_view =
+        turn_view_from_content(&result.state, &index).expect("next content turn should render");
+
+    assert_eq!(next_view.location_id, "dev_desk");
+    assert_eq!(next_view.encounter_id, None);
+    assert_eq!(next_view.title, "내 자리");
+    assert_eq!(
+        next_view
+            .actions
+            .iter()
+            .map(|action| (action.id.as_str(), action.label.as_str()))
+            .collect::<Vec<_>>(),
+        vec![("move:dev_office", "개발팀 사무실")]
+    );
+}
+
+#[test]
+fn content_backed_movement_action_changes_location_and_logs() {
+    let bundle = load_content_bundle(CONTENT_BUNDLE).expect("content bundle should load");
+    let index = index_content_bundle(&bundle).expect("content bundle should index");
+    let state = new_game_from_content(123, &index).expect("content-backed game should start");
+    let after_choice = apply_action_from_content(&state, &index, "choice:check_message")
+        .expect("content-backed action should resolve");
+
+    let result = apply_action_from_content(&after_choice.state, &index, "move:dev_office")
+        .expect("content-backed movement should resolve");
+
+    assert_eq!(result.encounter_id, "movement");
+    assert_eq!(result.action_id, "move:dev_office");
+    assert_eq!(result.state.turn, 2);
+    assert_eq!(result.state.location_id, "dev_office");
+    assert_eq!(result.logs, vec!["개발팀 사무실로 이동했다.".to_string()]);
     assert!(result.effect_cues.is_empty());
 }
 

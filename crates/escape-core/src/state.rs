@@ -34,6 +34,7 @@ pub struct GameState {
     pub player: PlayerState,
     pub flags: Vec<String>,
     pub clues: Vec<String>,
+    pub seen_encounters: Vec<String>,
 }
 
 impl GameState {
@@ -49,6 +50,7 @@ impl GameState {
             },
             flags: Vec::new(),
             clues: Vec::new(),
+            seen_encounters: Vec::new(),
         }
     }
 
@@ -78,6 +80,7 @@ impl GameState {
             },
             flags: Vec::new(),
             clues: Vec::new(),
+            seen_encounters: Vec::new(),
         })
     }
 
@@ -90,6 +93,16 @@ impl GameState {
     pub(crate) fn add_clue_once(&mut self, clue: &str) {
         if !self.clues.iter().any(|existing| existing == clue) {
             self.clues.push(clue.to_string());
+        }
+    }
+
+    pub(crate) fn add_seen_encounter_once(&mut self, encounter_id: &str) {
+        if !self
+            .seen_encounters
+            .iter()
+            .any(|existing| existing == encounter_id)
+        {
+            self.seen_encounters.push(encounter_id.to_string());
         }
     }
 }

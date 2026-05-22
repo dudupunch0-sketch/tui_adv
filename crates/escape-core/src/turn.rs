@@ -1,5 +1,5 @@
 use crate::content::{
-    ChoiceDef, ContentConditions, ContentIndex, EncounterDef, OutcomeDef, ResourceMap,
+    ChoiceDef, ContentConditions, ContentIndex, EncounterDef, LocationDef, OutcomeDef, ResourceMap,
 };
 use crate::effects::{printer_glyph_anomaly_cue, EffectCue};
 use crate::state::{GameState, PlayerState};
@@ -99,7 +99,7 @@ pub fn content_turn_view(
             encounter_id: None,
             title: location.name.clone(),
             body: location.description.clone(),
-            actions: Vec::new(),
+            actions: movement_action_views(location, content),
             effect_cues: Vec::new(),
         });
     };
@@ -124,12 +124,12 @@ pub fn apply_content_action(
     content: &ContentIndex,
     action_id: &str,
 ) -> Result<ActionResult, ContentActionError> {
-    content
+    let location = content
         .location(&state.location_id)
         .ok_or_else(|| ContentActionError::UnknownStateLocation(state.location_id.clone()))?;
 
     let Some(encounter) = current_content_encounter(content, state) else {
-        return Err(ContentActionError::UnknownAction(action_id.to_string()));
+        return apply_movement_action(state, content, location, action_id);
     };
     let Some(choice_id) = action_id.strip_prefix("choice:") else {
         return Err(ContentActionError::UnknownAction(action_id.to_string()));
@@ -146,6 +146,7 @@ pub fn apply_content_action(
     next_state.turn += 1;
     apply_cost(&mut next_state.player, &choice.cost);
     apply_outcome(&mut next_state, &choice.outcome);
+    next_state.add_seen_encounter_once(&encounter.id);
 
     Ok(ActionResult {
         encounter_id: encounter.id.clone(),
@@ -223,6 +224,54 @@ pub fn apply_printer_action(
     }
 }
 
+fn movement_action_views(location: &LocationDef, content: &ContentIndex) -> Vec<ActionView> {
+    location
+        .connections
+        .iter()
+        .map(|destination_id| ActionView {
+            id: format!("move:{destination_id}"),
+            label: content
+                .location(destination_id)
+                .map(|destination| destination.name.clone())
+                .unwrap_or_else(|| destination_id.clone()),
+            cost_summary: None,
+        })
+        .collect()
+}
+
+fn apply_movement_action(
+    state: &GameState,
+    content: &ContentIndex,
+    location: &LocationDef,
+    action_id: &str,
+) -> Result<ActionResult, ContentActionError> {
+    let Some(destination_id) = action_id.strip_prefix("move:") else {
+        return Err(ContentActionError::UnknownAction(action_id.to_string()));
+    };
+    if !location
+        .connections
+        .iter()
+        .any(|candidate| candidate == destination_id)
+    {
+        return Err(ContentActionError::UnknownAction(action_id.to_string()));
+    }
+    let Some(destination) = content.location(destination_id) else {
+        return Err(ContentActionError::UnknownAction(action_id.to_string()));
+    };
+
+    let mut next_state = state.clone();
+    next_state.turn += 1;
+    next_state.location_id = destination_id.to_string();
+
+    Ok(ActionResult {
+        encounter_id: "movement".to_string(),
+        action_id: action_id.to_string(),
+        state: next_state,
+        logs: vec![format!("{}로 이동했다.", destination.name)],
+        effect_cues: Vec::new(),
+    })
+}
+
 fn current_content_encounter<'a>(
     content: &'a ContentIndex,
     state: &GameState,
@@ -267,7 +316,11 @@ fn clamp_resource(value: i32) -> i32 {
 }
 
 fn encounter_is_available(encounter: &EncounterDef, state: &GameState) -> bool {
-    conditions_match(&encounter.conditions, state)
+    !state
+        .seen_encounters
+        .iter()
+        .any(|seen_encounter| seen_encounter == &encounter.id)
+        && conditions_match(&encounter.conditions, state)
         && encounter
             .choices
             .iter()

@@ -188,6 +188,8 @@ fn content_backed_scene_page_renders_renderer_safe_encounter_contract() {
             ("health", "신체 반응", "normal", "정상 범위", 100),
             ("sanity", "집중도", "normal", "안정", 100),
             ("battery", "단말기 전원", "normal", "100%", 100),
+            ("hunger", "허기", "normal", "버틸 만함", 0),
+            ("thirst", "갈증", "normal", "버틸 만함", 0),
         ]
     );
     assert!(page.status_summary.warnings.is_empty());
@@ -278,7 +280,13 @@ fn content_backed_scene_page_renders_renderer_safe_movement_contract() {
             .iter()
             .map(|resource| (resource.id.as_str(), resource.value))
             .collect::<Vec<_>>(),
-        vec![("health", 100), ("sanity", 98), ("battery", 97)]
+        vec![
+            ("health", 100),
+            ("sanity", 98),
+            ("battery", 97),
+            ("hunger", 1),
+            ("thirst", 2),
+        ]
     );
     assert_eq!(page.actions.len(), 1);
     assert_eq!(page.actions[0].id, "move:dev_office");

@@ -1,4 +1,6 @@
-use crate::content::{ContentIndex, EncounterDef, LocationDef, PresentationEffectCue};
+use crate::content::{
+    ContentIndex, EncounterDef, EndingDef, LocationDef, PresentationEffectCue, PublicSecretDef,
+};
 use crate::effects::EffectCue;
 use crate::state::{GameHistoryEntry, GameState, PlayerState};
 use crate::turn::{content_turn_view, ActionView, BlockedActionView, ContentTurnError, TurnView};
@@ -145,30 +147,41 @@ pub fn scene_page_from_content(
         .encounter_id
         .as_deref()
         .and_then(|encounter_id| content.encounter(encounter_id));
+    let ending = view
+        .ending_id
+        .as_deref()
+        .and_then(|ending_id| content.ending(ending_id));
 
-    Ok(scene_page_from_turn_view(state, location, encounter, &view))
+    Ok(scene_page_from_turn_view(
+        state, content, location, encounter, ending, &view,
+    ))
 }
 
 fn scene_page_from_turn_view(
     state: &GameState,
+    content: &ContentIndex,
     location: &LocationDef,
     encounter: Option<&EncounterDef>,
+    ending: Option<&EndingDef>,
     view: &TurnView,
 ) -> ScenePage {
     let source_id = view
-        .encounter_id
+        .ending_id
         .as_ref()
+        .or(view.encounter_id.as_ref())
         .cloned()
         .unwrap_or_else(|| location.id.clone());
-    let mode = if view.encounter_id.is_some() {
+    let mode = if view.ending_id.is_some() {
+        SceneMode::Ending
+    } else if view.encounter_id.is_some() {
         SceneMode::Encounter
     } else {
         SceneMode::Movement
     };
-    let default_visual_kind = if view.encounter_id.is_some() {
-        "encounter"
-    } else {
-        "location"
+    let default_visual_kind = match mode {
+        SceneMode::Ending => "ending",
+        SceneMode::Encounter => "encounter",
+        SceneMode::Movement => "location",
     };
     let presentation = encounter.and_then(|encounter| encounter.presentation.as_ref());
     let visual_id = presentation
@@ -191,7 +204,7 @@ fn scene_page_from_turn_view(
         .unwrap_or_default();
 
     ScenePage {
-        mode,
+        mode: mode.clone(),
         title: view.title.clone(),
         location: SceneLocation {
             id: location.id.clone(),
@@ -200,11 +213,7 @@ fn scene_page_from_turn_view(
         },
         chapter_label: format!("격리 {}턴", state.turn),
         status_summary: status_summary(state),
-        body_blocks: vec![BodyBlock {
-            kind: "narration".to_string(),
-            text: view.body.clone(),
-            source_id: Some(source_id.clone()),
-        }],
+        body_blocks: body_blocks(content, ending, &mode, &view.body, &source_id),
         dialogue_entries,
         visual: SceneVisual {
             id: visual_id,
@@ -220,11 +229,11 @@ fn scene_page_from_turn_view(
             .collect(),
         history_entries: state.history.iter().map(history_entry).collect(),
         inventory_summary: InventorySummary {
-            items: Vec::new(),
+            items: state.inventory.clone(),
             overflow_count: 0,
         },
         achievement_summary: AchievementSummary {
-            unlocked: Vec::new(),
+            unlocked: state.unlocked_achievements.clone(),
             newly_unlocked: Vec::new(),
         },
         pressure_cues: pressure_cues(&state.player),
@@ -232,11 +241,65 @@ fn scene_page_from_turn_view(
     }
 }
 
+fn body_blocks(
+    content: &ContentIndex,
+    ending: Option<&EndingDef>,
+    mode: &SceneMode,
+    body: &str,
+    source_id: &str,
+) -> Vec<BodyBlock> {
+    let mut blocks = vec![BodyBlock {
+        kind: if matches!(mode, SceneMode::Ending) {
+            "system".to_string()
+        } else {
+            "narration".to_string()
+        },
+        text: body.to_string(),
+        source_id: Some(source_id.to_string()),
+    }];
+
+    if let Some(secret) = ending
+        .and_then(|ending| ending.local_hint_id.as_deref())
+        .and_then(|secret_id| content.secret(secret_id))
+    {
+        blocks.push(BodyBlock {
+            kind: "clue".to_string(),
+            text: public_secret_summary(secret),
+            source_id: Some(secret.id.clone()),
+        });
+    }
+
+    blocks
+}
+
+fn public_secret_summary(secret: &PublicSecretDef) -> String {
+    let mut lines = vec![format!("현실 연결 힌트: {}", secret.title)];
+    lines.extend(
+        secret
+            .public_hint_steps
+            .iter()
+            .enumerate()
+            .map(|(index, step)| format!("{}. {step}", index + 1)),
+    );
+    if let Some(prompt) = &secret.puzzle_prompt {
+        lines.push(format!("퍼즐: {prompt}"));
+    }
+    if let Some(policy) = &secret.final_hint_policy {
+        lines.push(format!("공개 정책: {policy}"));
+    }
+    if let Some(reward) = &secret.reward_text {
+        lines.push(reward.clone());
+    }
+    lines.join("\n")
+}
+
 fn status_summary(state: &GameState) -> StatusSummary {
     let resources = vec![
         health_status(state.player.health),
         sanity_status(state.player.sanity),
         battery_status(state.player.battery),
+        hunger_status(state.player.hunger),
+        thirst_status(state.player.thirst),
     ];
     let warnings = pressure_cues(&state.player)
         .iter()
@@ -284,6 +347,28 @@ fn battery_status(value: i32) -> ResourceStatus {
     resource_status("battery", "단말기 전원", band, &format!("{value}%"), value)
 }
 
+fn hunger_status(value: i32) -> ResourceStatus {
+    let (band, text) = if value >= 100 {
+        ("critical", "고갈")
+    } else if value >= 80 {
+        ("warning", "허기짐")
+    } else {
+        ("normal", "버틸 만함")
+    };
+    resource_status("hunger", "허기", band, text, value)
+}
+
+fn thirst_status(value: i32) -> ResourceStatus {
+    let (band, text) = if value >= 90 {
+        ("critical", "고갈")
+    } else if value >= 60 {
+        ("warning", "갈증")
+    } else {
+        ("normal", "버틸 만함")
+    };
+    resource_status("thirst", "갈증", band, text, value)
+}
+
 fn resource_status(id: &str, label: &str, band: &str, text: &str, value: i32) -> ResourceStatus {
     ResourceStatus {
         id: id.to_string(),
@@ -312,11 +397,36 @@ fn pressure_cues(player: &PlayerState) -> Vec<PressureCue> {
             resource_id: "battery".to_string(),
         });
     }
+    if player.hunger >= 80 {
+        cues.push(PressureCue {
+            kind: "high_hunger".to_string(),
+            severity: severity_for_high_pressure(player.hunger, 100),
+            message: "허기가 한계에 가깝습니다. 몸이 먼저 비용을 청구할 수 있습니다.".to_string(),
+            resource_id: "hunger".to_string(),
+        });
+    }
+    if player.thirst >= 60 {
+        cues.push(PressureCue {
+            kind: "high_thirst".to_string(),
+            severity: severity_for_high_pressure(player.thirst, 90),
+            message: "갈증이 심해져 물소리와 선택지가 흔들리기 시작합니다.".to_string(),
+            resource_id: "thirst".to_string(),
+        });
+    }
     cues
 }
 
 fn severity_for_low_resource(value: i32, critical_at: i32) -> String {
     if value <= critical_at {
+        "critical"
+    } else {
+        "warning"
+    }
+    .to_string()
+}
+
+fn severity_for_high_pressure(value: i32, critical_at: i32) -> String {
+    if value >= critical_at {
         "critical"
     } else {
         "warning"

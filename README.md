@@ -99,7 +99,7 @@ npm run build
 npm run dev -- --host 127.0.0.1 --port 8765
 ```
 
-현재 브라우저 앱은 `src/tui_adv/data/*.yaml`을 `web/src/data/generated/*.json`으로 export해서 사용하는 legacy fake-TUI 구현이다. Web Storybook + GlyphFX renderer skeleton과 Rust/Web 공통 runtime 전환용 bundle(`crates/escape-core/fixtures/content/content.bundle.json`, `web/src/data/generated/content.bundle.json`), `escape-wasm` JSON-string boundary는 준비되어 있다. 다음 방향은 Web Storybook을 그 wasm boundary에 실제로 연결하는 것이다. TypeScript mirror core는 당분간 대표 탈출/정복/진실/히든 루트, 소모품, 업적, 능력치 판정, 압박 상태를 검증하는 parity oracle로 유지하되 새 게임 규칙을 늘리는 곳이 아니다. 공개 secret JSON과 content bundle에는 실제 사무실 최종 위치나 `final_hint`를 넣지 않는다.
+현재 브라우저 앱은 Web Storybook + GlyphFX renderer를 기본 화면으로 사용하며, `web/src/core/wasmRuntime.ts`가 generated content bundle(`web/src/data/generated/content.bundle.json`)을 `escape-wasm` JSON-string boundary에 전달해 Rust GameCore의 `ScenePage`/`ActionResult`를 소비한다. generated wasm package가 없는 개발 환경에서는 legacy TypeScript mirror가 임시 fallback/parity oracle로 동작하지만, 새 게임 규칙은 Rust GameCore에만 추가한다. 공개 secret JSON과 content bundle에는 실제 사무실 최종 위치나 `final_hint`를 넣지 않는다.
 
 패키지 설치 후에는 `tui-adv` console script를 사용할 수 있다.
 
@@ -181,7 +181,9 @@ npm run dev -- --host 127.0.0.1 --port 8765
 2. `escape-wasm` JSON-string boundary와 Web/Rust content bundle export.
 3. `escape-terminal` SuperLightTUI snapshot/play renderer.
 4. Web/terminal action id parity smoke.
+5. Rust GameCore 기준 route parity 확장: movement pages, item use, ability checks, 주요 endings, achievements, pressure cues, public reality-link reward metadata.
+6. Web Storybook runtime의 `escape-wasm` boundary 연결과 Rust state localStorage 저장.
 
-다음 구현 순서는 route parity를 Rust GameCore 기준으로 확장하고 Web Storybook을 `escape-wasm` boundary에 실제로 연결하는 것이다.
+다음 구현 순서는 Python/Textual과 TypeScript mirror를 legacy/parity oracle로 더 축소하고, Web 배포 환경에서 `wasm-pack build crates/escape-wasm --target web --out-dir ../../web/src/core/wasm-pkg`를 표준 build step으로 고정하는 것이다.
 
 `idea_box`의 storypack 후보와 legacy Textual UX 조정은 활성 renderer/core 계획이 끝났거나 명시적으로 요청받았을 때 검토한다.

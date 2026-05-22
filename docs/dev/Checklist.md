@@ -52,6 +52,17 @@
 - [x] `escape-terminal`을 SuperLightTUI renderer로 전환
 - [x] Web/terminal 모두 같은 Rust core action id를 표시하는 parity smoke 추가
 
+### 0.2c 2026-05-22 Rust GameCore route parity 확장
+
+- [x] Movement pages를 Rust core + `ScenePage` 기준으로 확장하고 terminal/Web action id contract 유지
+- [x] Item use를 Rust core truth로 이전: usable inventory action, resource effect, consume, turn advance
+- [x] Ability checks를 Rust core에서 seeded 2d6 + ability로 처리하고 success/failure outcome 적용
+- [x] Escape/failure/truth/conquest/hidden reality-link ending `ScenePage` smoke 추가
+- [x] Achievement unlock과 `newly_unlocked_achievements`/`achievement_summary` JSON contract 추가
+- [x] Low sanity/low battery/high hunger/high thirst pressure cues를 Rust `ScenePage` semantic cue로 노출
+- [x] Reality-link public reward metadata만 ending body block으로 노출하고 private-only fields 차단 유지
+- [x] Web Storybook runtime을 `escape-wasm` JSON boundary + generated content bundle에 연결하고 Rust state localStorage 저장 추가
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

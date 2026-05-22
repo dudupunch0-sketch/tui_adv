@@ -1,8 +1,9 @@
 use escape_core::{
     apply_action_from_content, index_content_bundle, load_content_bundle, new_game,
-    new_game_from_content, turn_view, turn_view_from_content, ActionView, EffectCue, GameState,
-    TurnView,
+    new_game_from_content, turn_view, turn_view_from_content, ActionView, ContentIndex, EffectCue,
+    GameState, TurnView,
 };
+use std::io::{self, Write};
 use std::path::PathBuf;
 
 #[derive(Debug, PartialEq, Eq)]
@@ -11,6 +12,7 @@ struct CliOptions {
     seed: u64,
     smoke: bool,
     tui_smoke: bool,
+    play: bool,
     content_bundle: Option<PathBuf>,
     actions: Vec<String>,
 }
@@ -30,6 +32,12 @@ where
     if options.smoke && options.tui_smoke {
         return Err("--smoke and --tui-smoke cannot be combined".to_string());
     }
+    if options.play && (options.smoke || options.tui_smoke) {
+        return Err("--play cannot be combined with --smoke or --tui-smoke".to_string());
+    }
+    if options.play && !options.actions.is_empty() {
+        return Err("--play cannot be combined with scripted --action values".to_string());
+    }
 
     match options.scene.as_str() {
         "printer" => run_printer_scene(&options),
@@ -46,6 +54,9 @@ fn run_printer_scene(options: &CliOptions) -> Result<(), String> {
     }
     if !options.actions.is_empty() {
         return Err("--action is only supported with --scene content".to_string());
+    }
+    if options.play {
+        return Err("--play is only supported with --scene content".to_string());
     }
 
     let state = new_game(options.seed);
@@ -75,6 +86,10 @@ fn run_content_scene(options: &CliOptions) -> Result<(), String> {
     let mut state =
         new_game_from_content(options.seed, &content).map_err(|error| error.to_string())?;
     let mut view = turn_view_from_content(&state, &content).map_err(|error| error.to_string())?;
+    if options.play {
+        return run_content_play_loop(&content, state, view);
+    }
+
     let mut recent_logs = Vec::new();
     if !options.tui_smoke {
         print_turn(&view, &state, &options.scene, options.smoke, true);
@@ -97,11 +112,8 @@ fn run_content_scene(options: &CliOptions) -> Result<(), String> {
     }
 
     if options.tui_smoke {
-        let location_name = content
-            .location(&state.location_id)
-            .map(|location| location.name.as_str())
-            .unwrap_or(&state.location_id);
-        print_tui_snapshot(&view, &state, location_name, &recent_logs);
+        let location_name = display_location_name(&content, &state);
+        print_tui_snapshot(&view, &state, &location_name, &recent_logs);
     }
 
     Ok(())
@@ -109,6 +121,75 @@ fn run_content_scene(options: &CliOptions) -> Result<(), String> {
 
 fn find_available_action<'a>(view: &'a TurnView, action_id: &str) -> Option<&'a ActionView> {
     view.actions.iter().find(|action| action.id == action_id)
+}
+
+fn run_content_play_loop(
+    content: &ContentIndex,
+    mut state: GameState,
+    mut view: TurnView,
+) -> Result<(), String> {
+    let mut recent_logs = Vec::new();
+
+    println!("escape-terminal / 직접 플레이");
+    println!("입력: 번호 또는 action id, q 종료");
+
+    loop {
+        let location_name = display_location_name(content, &state);
+        print_tui_snapshot(&view, &state, &location_name, &recent_logs);
+        print!("입력> ");
+        io::stdout()
+            .flush()
+            .map_err(|error| format!("failed to flush prompt: {error}"))?;
+
+        let mut input = String::new();
+        let bytes_read = io::stdin()
+            .read_line(&mut input)
+            .map_err(|error| format!("failed to read input: {error}"))?;
+        if bytes_read == 0 {
+            println!("입력이 끝나 게임을 종료한다.");
+            break;
+        }
+
+        let input = input.trim();
+        if input.eq_ignore_ascii_case("q") || input.eq_ignore_ascii_case("quit") {
+            println!("게임을 종료한다.");
+            break;
+        }
+        if input.is_empty() {
+            continue;
+        }
+
+        let Some(action) = resolve_play_action(&view, input) else {
+            println!("잘못된 입력: {input}");
+            continue;
+        };
+        let action_id = action.id.clone();
+        let action_label = action.label.clone();
+        let result = apply_action_from_content(&state, content, &action_id)
+            .map_err(|error| error.to_string())?;
+        print_play_execution(&action_id, &action_label, &result.logs);
+        recent_logs.extend(result.logs.iter().cloned());
+        state = result.state;
+        view = turn_view_from_content(&state, content).map_err(|error| error.to_string())?;
+    }
+
+    Ok(())
+}
+
+fn resolve_play_action<'a>(view: &'a TurnView, input: &str) -> Option<&'a ActionView> {
+    if let Ok(index) = input.parse::<usize>() {
+        return index
+            .checked_sub(1)
+            .and_then(|offset| view.actions.get(offset));
+    }
+    find_available_action(view, input)
+}
+
+fn display_location_name(content: &ContentIndex, state: &GameState) -> String {
+    content
+        .location(&state.location_id)
+        .map(|location| location.name.clone())
+        .unwrap_or_else(|| state.location_id.clone())
 }
 
 fn parse_args<I>(args: I) -> Result<CliOptions, String>
@@ -119,6 +200,7 @@ where
     let mut seed = 123_u64;
     let mut smoke = false;
     let mut tui_smoke = false;
+    let mut play = false;
     let mut content_bundle = None;
     let mut actions = Vec::new();
     let mut iter = args.into_iter();
@@ -152,6 +234,7 @@ where
             }
             "--smoke" => smoke = true,
             "--tui-smoke" => tui_smoke = true,
+            "--play" => play = true,
             "--help" | "-h" => {
                 print_help();
                 std::process::exit(0);
@@ -165,6 +248,7 @@ where
         seed,
         smoke,
         tui_smoke,
+        play,
         content_bundle,
         actions,
     })
@@ -172,16 +256,18 @@ where
 
 fn print_help() {
     println!("escape-terminal --scene printer --seed 123 --smoke");
+    println!("escape-terminal --scene content --content-bundle <path> --seed 123 --play");
     println!("escape-terminal --scene content --content-bundle <path> --seed 123 --smoke --action choice:check_message");
     println!("escape-terminal --scene content --content-bundle <path> --seed 123 --tui-smoke --action choice:check_message");
     println!();
     println!("Options:");
-    println!("  --scene <printer|content>  Run the printer scene or content-backed smoke");
+    println!("  --scene <printer|content>  Run the printer scene or content-backed smoke/play");
     println!("  --content-bundle <path>    JSON content bundle for --scene content");
     println!(
         "  --action <id>              Script one content action; repeat for multi-turn smokes"
     );
     println!("  --seed <n>                 Preserve deterministic seed in core state");
+    println!("  --play                     Start an interactive content-backed terminal loop");
     println!("  --smoke                    Print a headless renderer smoke snapshot");
     println!(
         "  --tui-smoke                Print the final TUI-style snapshot after scripted actions"
@@ -281,6 +367,18 @@ fn print_tui_snapshot(view: &TurnView, state: &GameState, location_name: &str, l
         for log in logs {
             println!("- {log}");
         }
+    }
+}
+
+fn print_play_execution(action_id: &str, label: &str, logs: &[String]) {
+    if action_id.starts_with("move:") {
+        println!("이동 실행: {label}");
+    } else {
+        println!("선택 실행: {label}");
+    }
+    println!("결과:");
+    for log in logs {
+        println!("- {log}");
     }
 }
 

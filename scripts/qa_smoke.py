@@ -8,12 +8,16 @@ import os
 import subprocess
 import sys
 import tempfile
+import unicodedata
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+SRC_ROOT = REPO_ROOT / "src"
 PYTHON = sys.executable
+if str(SRC_ROOT) not in sys.path:
+    sys.path.insert(0, str(SRC_ROOT))
 
 
 @dataclass(frozen=True, slots=True)
@@ -99,7 +103,12 @@ COMMAND_CASES: tuple[CommandCase, ...] = (
 )
 
 SPECIAL_CASES: dict[str, Callable[[], None]] = {}
-CASE_ORDER = tuple(case.name for case in COMMAND_CASES) + ("save-load", "secret-scan")
+CASE_ORDER = tuple(case.name for case in COMMAND_CASES) + (
+    "save-load",
+    "secret-scan",
+    "new-game-10",
+    "terminal-size",
+)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -141,6 +150,12 @@ def run_case(case_name: str) -> None:
         return
     if case_name == "secret-scan":
         _run_secret_scan_case()
+        return
+    if case_name == "new-game-10":
+        _run_new_game_batch_case()
+        return
+    if case_name == "terminal-size":
+        _run_terminal_size_case()
         return
     raise AssertionError(f"unknown case: {case_name}")
 
@@ -220,6 +235,40 @@ def _run_secret_scan_case() -> None:
     _assert_success(bundle_check, "public export/bundle check")
 
 
+def _run_new_game_batch_case() -> None:
+    for seed in range(100, 110):
+        result = _run(_module_args("--new", "--seed", str(seed)))
+        _assert_success(result, f"new game seed {seed}")
+        for expected in ("escape from the office", "[LOCAL STATUS]", "인카운터:"):
+            if expected not in result.stdout:
+                raise AssertionError(f"seed {seed} missing {expected!r}")
+
+
+def _run_terminal_size_case() -> None:
+    from tui_adv.tui.app import build_tui_turn, render_tui_layout_snapshot, resolve_tui_action
+
+    base_turn = build_tui_turn(seed=123)
+    movement_turn = resolve_tui_action(base_turn, 1).turn
+    snapshots = {
+        "start-encounter": render_tui_layout_snapshot(base_turn),
+        "movement": render_tui_layout_snapshot(movement_turn),
+    }
+    profiles = ((80, 24), (100, 32), (120, 40))
+    for columns, rows in profiles:
+        for name, snapshot in snapshots.items():
+            lines = snapshot.splitlines()
+            if len(lines) < 10:
+                raise AssertionError(f"{name} snapshot too short for {columns}x{rows}")
+            for expected in ("[위치]", "[컨트롤]", "[최근 로그]"):
+                if expected not in snapshot:
+                    raise AssertionError(f"{name} {columns}x{rows} missing {expected!r}")
+            long_lines = [line for line in lines if _display_width(line) > columns + 20]
+            if long_lines:
+                raise AssertionError(
+                    f"{name} {columns} columns has oversized line: {long_lines[0]!r}"
+                )
+
+
 def _assert_success(result: subprocess.CompletedProcess[str], label: str) -> None:
     if result.returncode != 0:
         raise AssertionError(
@@ -232,7 +281,7 @@ def _assert_success(result: subprocess.CompletedProcess[str], label: str) -> Non
 
 def _run(args: tuple[str, ...]) -> subprocess.CompletedProcess[str]:
     env = os.environ.copy()
-    env["PYTHONPATH"] = str(REPO_ROOT / "src")
+    env["PYTHONPATH"] = str(SRC_ROOT)
     return subprocess.run(
         args,
         cwd=REPO_ROOT,
@@ -240,7 +289,17 @@ def _run(args: tuple[str, ...]) -> subprocess.CompletedProcess[str]:
         text=True,
         capture_output=True,
         check=False,
+        timeout=30,
     )
+
+
+def _display_width(text: str) -> int:
+    width = 0
+    for char in text:
+        if unicodedata.combining(char):
+            continue
+        width += 2 if unicodedata.east_asian_width(char) in {"F", "W"} else 1
+    return width
 
 
 def _tail(text: str, *, line_count: int = 20) -> str:

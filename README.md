@@ -70,6 +70,7 @@ PYTHONPATH=src python -m tui_adv --version
 ```bash
 python -m pytest tests -q
 PYTHONPATH=src python scripts/qa_smoke.py
+PYTHONPATH=src python scripts/textual_qa_smoke.py  # Textual 설치 환경에서 실행
 ```
 
 브라우저 fake-TUI 수직 슬라이스 및 renderer-neutral content bundle:
@@ -127,6 +128,7 @@ npm run dev -- --port 8765
 - `docs/dev/Data_Schema.md`: YAML/JSON 데이터 스키마
 - `docs/dev/TUI_Layout.md`: TUI 화면 설계
 - `docs/dev/Balance_QA_Packaging.md`: 밸런싱, QA smoke, 패키징/릴리즈 기준
+- `docs/dev/Final_QA_Log.md`: 실제 Textual/터미널 크기/10회 새 게임 QA 기록
 - `docs/implementation-map/index.html`: 현재 구현을 한 번에 보는 interactive HTML 구현 지도
 - `docs/implementation-map/README.md`: 구현 지도 업데이트 방법
 - `web/`: Vite 기반 브라우저 fake-TUI 수직 슬라이스
@@ -156,6 +158,6 @@ npm run dev -- --port 8765
 
 ## 다음 작업 후보
 
-1. 시작 화면 저장 슬롯 UX를 실제 Textual 환경에서 수동 QA하고, 슬롯 이름 변경 같은 관리 기능을 검토한다.
-2. 밸런싱/QA/패키징 체크리스트를 자동 스모크와 릴리즈 전 검증 문서로 묶는다.
-3. 재난 타입 확장 규칙을 별도 문서로 분리하고, 새 타입 후보를 콘텐츠 백로그로 정리한다.
+1. 재난 타입 확장 규칙을 별도 문서로 분리하고, 새 타입 후보를 콘텐츠 백로그로 정리한다.
+2. 저장 슬롯 이름 변경 같은 추가 관리 기능을 실제 Textual UX 후보로 설계한다.
+3. idea_box의 storypack 후보를 검토해 공개-safe 콘텐츠 확장 순서를 정한다.

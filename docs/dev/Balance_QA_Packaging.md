@@ -38,6 +38,10 @@ PYTHONPATH=src python scripts/qa_smoke.py --case escape-ending
 | `invalid-input` | 잘못된 선택지 입력이 traceback 없이 오류 처리됨 |
 | `save-load` | 저장 후 로드해서 다음 행동을 이어감 |
 | `secret-scan` | `private/`/`.local.*` 추적 금지와 공개 JSON/bundle 최신성 확인 |
+| `new-game-10` | seed 100~109 새 게임 10회 시작 smoke |
+| `terminal-size` | 80x24, 100x32, 120x40 TUI snapshot 표시 smoke |
+
+Textual 설치 환경에서 실제 Textual widget tree를 확인하는 항목은 `scripts/textual_qa_smoke.py`와 `docs/dev/Final_QA_Log.md`에 둔다.
 
 ## 패키징/README 기준
 
@@ -65,12 +69,12 @@ README는 다음을 즉시 제공해야 한다.
 
 `secret-scan`은 tracked path와 public export/bundle freshness를 검사한다. 사람이 읽어야 하는 서사 문서의 민감 정보 검토는 PR 리뷰에서 한 번 더 확인한다.
 
-## 남은 수동 QA 경계
+## 수동/환경 QA 경계
 
-자동 smoke로 대체하지 않는 항목은 남긴다.
+GUI/터미널 환경 차이는 자동 snapshot만으로 충분하지 않으므로 별도 기록으로 관리한다.
 
-- 실제 Textual 화면을 사람 눈으로 확인하는 수동 QA
-- 실제 터미널 크기별 표시 확인
-- 새 게임 10회 수동 플레이 기록
+- 실제 Textual widget tree QA: `PYTHONPATH=src python scripts/textual_qa_smoke.py`
+- 터미널 크기별 표시 확인: `PYTHONPATH=src python scripts/qa_smoke.py --case terminal-size`
+- 새 게임 10회 기록: `PYTHONPATH=src python scripts/qa_smoke.py --case new-game-10`
 
-이 항목들은 GUI/터미널 환경 차이를 보므로 자동 스냅샷 통과만으로 완료 처리하지 않는다.
+최종 결과와 확인 기준은 `docs/dev/Final_QA_Log.md`에 기록한다.

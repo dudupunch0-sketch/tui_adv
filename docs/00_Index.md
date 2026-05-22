@@ -36,6 +36,7 @@ docs/
   design/
     Game_Loop.md                    # 턴 진행, 인카운터, 선택지 처리 루프
     Player_State.md                 # 체력/정신력/배터리/허기/갈증 규칙
+    Character_Stats_and_Generator.md # 6스탯 등장인물/LLM 생성기 설계 후보
     Map.md                          # 사무실 위치, 연결, 구역별 역할
     UI_Rules.md                     # 사내 시스템형 TUI, 글리치, 선택지 오염 규칙
     TUI_Storybook_GlyphFX_Concept.md # TUI풍 스토리북 + GlyphFX 컨셉 후보
@@ -89,6 +90,7 @@ private/
 - `docs/story/Story.md`
 - `docs/story/Reality_Link.md`
 - `docs/design/Player_State.md`
+- `docs/design/Character_Stats_and_Generator.md`
 - `docs/design/Game_Loop.md`
 - `docs/design/Map.md`
 - `docs/design/UI_Rules.md`

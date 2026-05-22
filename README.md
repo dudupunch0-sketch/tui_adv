@@ -78,6 +78,7 @@ npm run dev -- --port 8765
 - `docs/story/Story.md`: 스토리와 오프닝
 - `docs/story/Reality_Link.md`: 현실 연결 원칙
 - `docs/design/Player_State.md`: 플레이어 상태 규칙
+- `docs/design/Character_Stats_and_Generator.md`: 6스탯 등장인물/LLM 생성기 설계 후보
 - `docs/design/Game_Loop.md`: 턴/선택/인카운터 루프
 - `docs/design/Map.md`: 1차 맵 설계
 - `docs/design/UI_Rules.md`: 사내 시스템형 TUI, 글리치, 선택지 오염 규칙

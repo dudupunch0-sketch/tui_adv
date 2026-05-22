@@ -80,6 +80,23 @@ export interface ChoiceData {
   check?: AbilityCheckData;
 }
 
+export interface EncounterPresentationEffectCue {
+  kind: string;
+  source: string;
+  intensity: number;
+  stable_terms: string[];
+  distortion: string;
+  duration_hint_ms?: number;
+  fallback_text?: string;
+}
+
+export interface EncounterPresentation {
+  visual_id?: string;
+  speaker?: string;
+  layout?: string;
+  effect_cues?: EncounterPresentationEffectCue[];
+}
+
 export interface EncounterData {
   id: string;
   title: string;
@@ -88,6 +105,7 @@ export interface EncounterData {
   choices: ChoiceData[];
   repeatable?: boolean;
   weight?: number;
+  presentation?: EncounterPresentation;
 }
 
 export interface EndingData {

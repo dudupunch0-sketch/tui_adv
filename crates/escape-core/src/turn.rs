@@ -163,12 +163,16 @@ pub fn apply_content_action(
     apply_cost(&mut next_state.player, &choice.cost);
     apply_outcome(&mut next_state, &choice.outcome);
     next_state.add_seen_encounter_once(&encounter.id);
+    let logs: Vec<String> = choice.outcome.log.iter().cloned().collect();
+    for log in &logs {
+        next_state.add_history_entry("action", log, Some(&encounter.id));
+    }
 
     Ok(ActionResult {
         encounter_id: encounter.id.clone(),
         action_id: action_id.to_string(),
         state: next_state,
-        logs: choice.outcome.log.iter().cloned().collect(),
+        logs,
         effect_cues: Vec::new(),
     })
 }
@@ -280,12 +284,16 @@ fn apply_movement_action(
     next_state.turn += 1;
     next_state.location_id = destination_id.to_string();
     next_state.danger = (next_state.danger + destination.danger).max(0);
+    let logs = vec![format!("{}로 이동했다.", destination.name)];
+    for log in &logs {
+        next_state.add_history_entry("action", log, Some("movement"));
+    }
 
     Ok(ActionResult {
         encounter_id: "movement".to_string(),
         action_id: action_id.to_string(),
         state: next_state,
-        logs: vec![format!("{}로 이동했다.", destination.name)],
+        logs,
         effect_cues: Vec::new(),
     })
 }

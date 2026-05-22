@@ -4,6 +4,8 @@ Project working title: **Escape from the Office**
 
 Concept version: **v2 — text-first illustrated TUI adventure**
 
+Status: **adopted as the Web Storybook/GlyphFX primary UX direction**. The Rust terminal counterpart is **SuperLightTUI-based terminal-native renderer/fallback**, not a plain debug terminal.
+
 ## 1. 한 줄 정의
 
 겉으로는 정적인 텍스트 어드벤처/스토리북 UI처럼 보이지만, 특정 사건이 발생하면 글자, 문단, 선택지, 그림 일부가 살아 움직이는 TUI풍 인터랙티브 게임이다.
@@ -20,6 +22,16 @@ Concept version: **v2 — text-first illustrated TUI adventure**
 ```
 
 짧게 말하면, 이 게임은 터미널을 사용하는 게임이 아니라 **텍스트로 이루어진 세계가 때때로 살아 움직이는 게임**이다.
+
+렌더러 분담은 다음을 따른다.
+
+```text
+Rust GameCore: 상태/선택지/결과/엔딩/EffectCue의 truth
+Web Storybook + GlyphFX: primary player UX, 이미지/장면 컷/대화 내역/Canvas 효과
+SuperLightTUI terminal renderer: terminal-native fallback, ASCII/Unicode visual card와 cell-based GlyphFX
+```
+
+따라서 이 문서의 “터미널 게임이 아니다”는 말은 terminal renderer를 버린다는 뜻이 아니다. terminal은 SuperLightTUI로 별도 renderer를 만들되, 실제 shell command 조작이나 debug dump가 아니라 같은 Storybook 원칙을 terminal cell grid에 번역한다.
 
 ## 2. 방향 수정: 터미널 게임이 아니라 TUI풍 스토리 화면
 
@@ -552,55 +564,70 @@ Renderer:
 
 Pretext는 게임 그 자체가 아니라 텍스트를 연출 가능한 상태로 만드는 기술적 기반이다.
 
-## 13. MVP 제안
+## 13. First vertical slice
 
-처음부터 많은 메뉴와 스탯을 만들 필요는 없다. MVP는 세 화면이면 충분하다.
+처음부터 많은 메뉴와 스탯을 만들 필요는 없다. 현재 구현 계획의 first slice는 실제 콘텐츠와 연결된 세 화면으로 고정한다.
 
-### 화면 1: 텍스트 중심 장면
+### 화면 1: Opening / ex-employee messenger
 
 ```text
+ScenePage.visual.id:
+  opening_messenger
+
 장소:
-  야근 중인 사무실
+  내 자리 / 개발팀 사무실
 
 내용:
-  플레이어가 낡은 사원증을 발견한다.
+  꺼진 사내 메신저가 퇴사자의 이름으로 다시 켜진다.
+  플레이어는 첫 선택을 통해 로그/단서/history 흐름을 이해한다.
 
 필요 요소:
-  상단 이름/챕터
-  본문 텍스트
-  3개 선택지
-  하단 기록/소지품 정도의 간단 메뉴
+  status/location/chapter line
+  본문 또는 dialogue entry
+  2-3개 서술형 선택지
+  history drawer/panel은 비어 있거나 첫 시스템 기록만 표시
 ```
 
-### 화면 2: 그림이 있는 상황 장면
+### 화면 2: Printer anomaly
 
 ```text
+ScenePage.visual.id:
+  printer_anomaly
+
 장소:
-  기록보관팀 앞 복도
+  복합기 구역
 
 내용:
-  문 앞 황동판과 초록빛 모니터를 발견한다.
+  꺼져 있던 복합기가 아직 하지 않은 선택을 출력한다.
+  출력물의 글자가 흔들리지만 stable clue terms가 남는다.
 
 필요 요소:
-  픽셀/TUI풍 장면 그림
-  상황 설명
-  2개 선택지
+  image-like visual card
+  Canvas/GlyphFX 또는 reduced-motion fallback
+  EffectCue::GlyphAnomaly 해석
+  stable_terms 보존
+  선택 후 history entry에 결과 표시
 ```
 
-### 화면 3: GlyphFX가 발생하는 장면
+### 화면 3: Movement / fallback location page
 
 ```text
+ScenePage.visual.id:
+  office_corridor_static 또는 location:<location_id>
+
 장소:
-  기록보관팀 내부
+  복도 또는 개발팀 사무실과 연결된 이동 page
 
 내용:
-  모니터의 문장이 본문으로 흘러나와 선택지를 방해한다.
+  encounter가 없을 때도 Storybook layout이 깨지지 않고 이동 선택지를 보여준다.
+  terminal fallback은 같은 page를 ASCII/Unicode visual card로 표시한다.
 
-필요 효과:
-  글자 깜빡임
-  단어 치환
-  보이지 않는 물체가 문단을 밀어내는 효과
-  효과 후 단서 단어만 안정적으로 남음
+필요 요소:
+  mode: movement
+  이동 action id: move:<location_id>
+  visual placeholder 또는 corridor card
+  최근 기록/history 표시
+  Web과 terminal의 action id parity 확인
 ```
 
 MVP에서 만들지 않아도 되는 것:
@@ -613,7 +640,9 @@ MVP에서 만들지 않아도 되는 것:
 - 완전한 인벤토리 시스템
 - 모든 화면에서 발생하는 화려한 애니메이션
 
-## 14. 샘플 장면 문안
+## 14. 샘플 장면 문안 / tone bank
+
+아래 문안은 분위기와 GlyphFX tone bank다. First vertical slice의 실제 구현 대상은 위의 `opening_messenger`, `printer_anomaly`, `office_corridor_static` 세 장면이다. 기록보관팀/사원증 예시는 후속 콘텐츠나 visual style reference로만 사용한다.
 
 ### 14.1 텍스트 중심 장면
 
@@ -766,10 +795,11 @@ MVP에서 만들지 않아도 되는 것:
   실제 shell command는 사용하지 않음
 
 기술:
-  Web first
-  HTML/CSS static story UI
-  Canvas GlyphFX overlay
-  Pretext-like text prepare/layout/cache
+  Rust GameCore가 state/action/result/EffectCue truth를 소유
+  Web Storybook이 primary renderer
+  HTML/CSS static story UI + Canvas GlyphFX overlay
+  ScenePage / visual_id / WASM JSON boundary로 core와 연결
+  SuperLightTUI terminal renderer는 terminal-native fallback/horror edition
 
 정체성:
   정적인 문서/업무 페이지가 특정 순간 살아 움직이는 게임
@@ -777,16 +807,18 @@ MVP에서 만들지 않아도 되는 것:
 
 ## 17. 다음 작업 제안
 
-다음 단계에서는 한 화면짜리 플레이어블 프로토타입을 만든다.
+현재 완료된 기반:
 
 ```text
-Prototype target:
-  1. 텍스트 중심 장면 1개
-  2. 그림 삽입 장면 1개
-  3. 선택지 2~3개
-  4. GlyphFX 이벤트 1개
-  5. 효과 후 단서 단어 1개가 남는 구조
+Implemented foundation:
+  1. Rust GameCore ScenePage contract
+  2. printer_anomaly presentation/effect metadata
+  3. Web Storybook skeleton with visual/body/choices/history/status regions
+  4. ScenePage.actions 기반 선택지 렌더링
+  5. EffectCue stable_terms를 Web/reduced-motion fallback에서 읽을 수 있게 보존
 ```
+
+다음 단계에서는 이 Storybook skeleton을 TypeScript mirror adapter가 아니라 `escape-wasm` JSON-string boundary에 연결한다. 그 뒤 terminal은 같은 `ScenePage`를 SuperLightTUI로 해석한다.
 
 프로토타입 검증 질문:
 

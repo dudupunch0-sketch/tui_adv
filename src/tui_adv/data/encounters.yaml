@@ -51,6 +51,18 @@ encounters:
   - id: printer_prints_alone
     title: 복합기가 혼자 출력한다
     body: 꺼져 있던 복합기가 아직 하지 않은 선택을 출력한다.
+    presentation:
+      visual_id: printer_anomaly
+      speaker: 시스템 복합기
+      layout: anomaly_object
+      effect_cues:
+        - kind: glyph_anomaly
+          source: copier_output
+          intensity: 0.72
+          stable_terms: [비상계단, 토너, 접힌 방향]
+          distortion: reflow_then_stabilize
+          duration_hint_ms: 1800
+          fallback_text: 출력물의 깨진 글자 사이로 '비상계단'이 선명하게 남는다.
     conditions:
       locations: [printer_area]
     choices:

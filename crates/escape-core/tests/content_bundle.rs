@@ -101,6 +101,26 @@ fn fixture_content_bundle_indexes_locations_and_encounters() {
         read_printout.outcome.add_clues,
         vec!["future_choice_printout"]
     );
+
+    let presentation = printer
+        .presentation
+        .as_ref()
+        .expect("printer encounter should carry presentation metadata");
+    assert_eq!(presentation.visual_id.as_deref(), Some("printer_anomaly"));
+    assert_eq!(presentation.layout.as_deref(), Some("anomaly_object"));
+    assert_eq!(presentation.speaker.as_deref(), Some("시스템 복합기"));
+    assert_eq!(presentation.effect_cues.len(), 1);
+    assert_eq!(presentation.effect_cues[0].kind, "glyph_anomaly");
+    assert_eq!(presentation.effect_cues[0].source, "copier_output");
+    assert!((presentation.effect_cues[0].intensity - 0.72).abs() < f32::EPSILON);
+    assert_eq!(
+        presentation.effect_cues[0].stable_terms,
+        vec!["비상계단", "토너", "접힌 방향"]
+    );
+    assert_eq!(
+        presentation.effect_cues[0].distortion,
+        "reflow_then_stabilize"
+    );
 }
 
 #[test]

@@ -10,6 +10,8 @@
 - 핵심 자원: 체력, 정신력, 배터리, 허기, 갈증
 - 주요 목표: 탈출, 정복, 진실 발견, 히든 현실 연결 루트
 - 특별 요소: 게임 속 단서를 통해 실제 사무실에 숨겨진 메모/보물 위치를 자연스럽게 안내하는 ARG식 현실 연결
+- 활성 렌더러 방향: Rust GameCore 공통 + Web Storybook/GlyphFX primary UX + SuperLightTUI terminal renderer/fallback
+- 주의: 기존 Python/Textual, TypeScript mirror core, browser fake-TUI는 전환기 legacy/parity surface이며 새 게임 규칙의 장기 소유자는 아니다.
 
 ## 현재 구현 지표
 
@@ -42,7 +44,7 @@ docs/
     Storypack_Encounter_DB.md       # 스토리팩/인카운터 상황 카드/NPC DB 설계
     Map.md                          # 사무실 위치, 연결, 구역별 역할
     UI_Rules.md                     # 사내 시스템형 TUI, 글리치, 선택지 오염 규칙
-    TUI_Storybook_GlyphFX_Concept.md # TUI풍 스토리북 + GlyphFX 컨셉 후보
+    TUI_Storybook_GlyphFX_Concept.md # Web primary UX로 채택한 TUI풍 스토리북 + GlyphFX 방향
 
   content/
     Location_List.md                # 런타임 위치 목록
@@ -60,7 +62,8 @@ docs/
     Development_Plan.md             # 전체 개발 계획과 현황 메모
     Checklist.md                    # 단계별 체크리스트
     Architecture.md                 # 코드 구조와 모듈 경계
-    Data_Schema.md                  # YAML/JSON 데이터 스키마
+    Rust_Core_Dual_Renderer_Architecture.md # Rust GameCore + Web Storybook + SuperLightTUI terminal 활성 방향
+    Data_Schema.md                  # YAML/JSON 데이터 스키마 + renderer-neutral ScenePage/WASM contract
     TUI_Layout.md                   # 화면 배치, 입력, 위젯 설계
     Save_Slot_UX.md                 # 저장 슬롯 이름 변경 UX 후보
     Balance_QA_Packaging.md         # 밸런싱, QA smoke, 패키징/릴리즈 기준
@@ -122,6 +125,7 @@ private/
 - `docs/content/encounter_db/README.md`
 - `docs/content/encounter_db/isolation_pack.md`
 - `docs/dev/Architecture.md`
+- `docs/dev/Rust_Core_Dual_Renderer_Architecture.md`
 - `docs/dev/Data_Schema.md`
 - `docs/dev/TUI_Layout.md`
 - `docs/dev/Save_Slot_UX.md`

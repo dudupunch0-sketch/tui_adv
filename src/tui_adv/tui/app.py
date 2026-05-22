@@ -540,15 +540,15 @@ def _save_slots_for_path(save_path: str | Path | None) -> tuple[SaveSlot, ...] |
     return discover_save_slots(Path(save_path).parent)
 
 
-def run_textual_tui(
+def build_office_escape_app(
     *,
     seed: int,
     location_id: str = "dev_desk",
     flags: tuple[str, ...] = (),
     initial_state: GameState | None = None,
     save_path: str | Path | None = None,
-) -> None:
-    """Launch the interactive Textual shell when the optional dependency exists."""
+):
+    """Build the Textual app instance so QA can exercise the real widget tree."""
 
     try:
         from textual.app import App, ComposeResult  # type: ignore[import-not-found]
@@ -679,7 +679,26 @@ def run_textual_tui(
                 delete_slot_mode=self.deleting_save_slot,
             )
 
-    OfficeEscapeApp().run()
+    return OfficeEscapeApp()
+
+
+def run_textual_tui(
+    *,
+    seed: int,
+    location_id: str = "dev_desk",
+    flags: tuple[str, ...] = (),
+    initial_state: GameState | None = None,
+    save_path: str | Path | None = None,
+) -> None:
+    """Launch the interactive Textual shell when the optional dependency exists."""
+
+    build_office_escape_app(
+        seed=seed,
+        location_id=location_id,
+        flags=flags,
+        initial_state=initial_state,
+        save_path=save_path,
+    ).run()
 
 
 def _format_tui_action_result(result: TurnActionResult) -> str:

@@ -1,11 +1,15 @@
 import os
+import importlib.util
 from dataclasses import replace
+
+import pytest
 
 from tui_adv.game.loop import GameTurn, TurnAction, build_game_turn
 from tui_adv.game.save import load_game_state, save_game_state
 from tui_adv.game.state import GameState
 from tui_adv.tui.app import (
     TEXTUAL_APP_CSS,
+    build_office_escape_app,
     build_tui_panel_snapshots,
     build_tui_turn,
     delete_tui_save_slot,
@@ -64,6 +68,17 @@ def test_textual_css_defines_terminal_theme_grid_and_panel_classes():
 
 def test_textual_css_uses_textual_supported_static_subset():
     assert "@media" not in TEXTUAL_APP_CSS
+
+
+def test_textual_app_factory_is_dependency_gated():
+    if importlib.util.find_spec("textual") is None:
+        with pytest.raises(RuntimeError, match="Textual"):
+            build_office_escape_app(seed=123)
+        return
+
+    app = build_office_escape_app(seed=123)
+
+    assert app.CSS == TEXTUAL_APP_CSS
 
 
 def test_tui_choice_input_resolves_current_choice_and_ending():

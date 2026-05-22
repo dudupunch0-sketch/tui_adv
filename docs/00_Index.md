@@ -58,6 +58,7 @@ docs/
     Data_Schema.md                  # YAML/JSON 데이터 스키마
     TUI_Layout.md                   # 화면 배치, 입력, 위젯 설계
     Balance_QA_Packaging.md         # 밸런싱, QA smoke, 패키징/릴리즈 기준
+    Final_QA_Log.md                 # 실제 Textual/터미널 크기/10회 새 게임 QA 기록
     Reality_Secret_Safety_Checklist.md # 로컬 현실 힌트 안전 점검
 
   templates/
@@ -110,6 +111,7 @@ private/
 - `docs/dev/Data_Schema.md`
 - `docs/dev/TUI_Layout.md`
 - `docs/dev/Balance_QA_Packaging.md`
+- `docs/dev/Final_QA_Log.md`
 - `docs/dev/Reality_Secret_Safety_Checklist.md`
 - `docs/dev/Development_Plan.md`
 - `docs/dev/Checklist.md`
@@ -125,4 +127,4 @@ private/
 
 1. 재난 타입 확장 규칙
 2. 선택 불가 이유 표시와 색상 테마 규칙
-3. Textual 실제 화면 수동 QA 기록
+3. storypack 후보별 public-safe 콘텐츠 확장 규칙

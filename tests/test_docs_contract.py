@@ -14,7 +14,8 @@ def test_readme_next_work_does_not_list_completed_unavailable_reason_slice():
 
     assert "선택 불가 선택지의 이유 표시" not in next_work
     assert "색상 테마" not in next_work
-    assert "밸런싱" in next_work
+    assert "밸런싱" not in next_work
+    assert "재난 타입 확장" in next_work
 
 
 def test_phase6_textual_style_slice_is_checklisted_and_documented():
@@ -83,3 +84,30 @@ def test_phase10_balance_qa_packaging_doc_script_and_checklist_are_synced():
     assert "- [x] 저장/로드 반복 테스트" in checklist
     assert "- [x] 키 입력 오류 처리 확인" in checklist
     assert "- [x] 릴리즈 전 비밀 정보 검사" in checklist
+
+
+def test_final_qa_leftover_checks_are_documented_and_completed():
+    index = Path("docs/00_Index.md").read_text(encoding="utf-8")
+    readme = Path("README.md").read_text(encoding="utf-8")
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    qa_doc = Path("docs/dev/Final_QA_Log.md")
+    textual_script = Path("scripts/textual_qa_smoke.py")
+
+    assert qa_doc.exists()
+    assert textual_script.exists()
+    assert "docs/dev/Final_QA_Log.md" in index
+    assert "docs/dev/Final_QA_Log.md" in readme
+    assert "PYTHONPATH=src python scripts/textual_qa_smoke.py" in qa_doc.read_text(encoding="utf-8")
+    assert "- [x] 실제 Textual 화면 수동 QA" in checklist
+    assert "- [x] 새 게임 10회 수동 플레이 기록" in checklist
+    assert "- [x] 터미널 크기별 화면 확인" in checklist
+    assert "- [ ]" not in checklist
+
+
+def test_readme_next_work_does_not_list_completed_final_qa_slices():
+    readme = Path("README.md").read_text(encoding="utf-8")
+    next_work = readme.split("## 다음 작업 후보", 1)[1]
+
+    assert "시작 화면 저장 슬롯 UX" not in next_work
+    assert "밸런싱/QA/패키징" not in next_work
+    assert "재난 타입 확장" in next_work

@@ -12,6 +12,8 @@ fn json_boundary_creates_scene_page_applies_action_and_roundtrips_save() {
     assert_eq!(state["seed"], 123);
     assert_eq!(state["location_id"], "dev_desk");
     assert_eq!(state["turn"], 0);
+    assert_eq!(state["player"]["hunger"], 0);
+    assert_eq!(state["player"]["thirst"], 0);
 
     let page_json =
         scene_page_json(&state_json, CONTENT_BUNDLE).expect("scene page should serialize");
@@ -19,6 +21,8 @@ fn json_boundary_creates_scene_page_applies_action_and_roundtrips_save() {
     assert_eq!(page["mode"], "encounter");
     assert_eq!(page["title"], "퇴사자의 메신저");
     assert_eq!(page["actions"][0]["id"], "choice:check_message");
+    assert_eq!(page["status_summary"]["resources"][3]["id"], "hunger");
+    assert_eq!(page["status_summary"]["resources"][4]["id"], "thirst");
 
     let result_json = apply_action_json(&state_json, CONTENT_BUNDLE, "choice:check_message")
         .expect("action result should serialize");
@@ -28,7 +32,13 @@ fn json_boundary_creates_scene_page_applies_action_and_roundtrips_save() {
     assert_eq!(result["action_id"], "choice:check_message");
     assert_eq!(result["state"]["turn"], 1);
     assert_eq!(result["state"]["player"]["battery"], 97);
+    assert_eq!(result["state"]["player"]["hunger"], 1);
+    assert_eq!(result["state"]["player"]["thirst"], 2);
     assert_eq!(result["logs"][0], "퇴사자의 메시지를 확인했다.");
+    assert_eq!(
+        result["newly_unlocked_achievements"][0],
+        "first_signal_received"
+    );
 
     let next_state_json = serde_json::to_string(&result["state"]).expect("state should stringify");
     let next_page_json = scene_page_json(&next_state_json, CONTENT_BUNDLE)
@@ -39,6 +49,10 @@ fn json_boundary_creates_scene_page_applies_action_and_roundtrips_save() {
     assert_eq!(
         next_page["history_entries"][0]["text"],
         "퇴사자의 메시지를 확인했다."
+    );
+    assert_eq!(
+        next_page["achievement_summary"]["unlocked"][0],
+        "first_signal_received"
     );
 
     let save_json = save_state_json(&next_state_json).expect("save envelope should serialize");

@@ -68,12 +68,20 @@ pub enum ContentIndexError {
         encounter_id: String,
         location_id: String,
     },
+    UnknownEndingLocation {
+        ending_id: String,
+        location_id: String,
+    },
 }
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct ContentIndex {
     locations: BTreeMap<String, LocationDef>,
+    items: BTreeMap<String, ItemDef>,
     encounters: BTreeMap<String, EncounterDef>,
+    endings: BTreeMap<String, EndingDef>,
+    achievements: BTreeMap<String, AchievementDef>,
+    secrets: BTreeMap<String, PublicSecretDef>,
 }
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
@@ -95,6 +103,10 @@ pub struct ContentConditions {
     #[serde(default)]
     pub locations: Vec<String>,
     #[serde(default)]
+    pub disaster_types: Vec<String>,
+    #[serde(default)]
+    pub required_items: Vec<String>,
+    #[serde(default)]
     pub required_flags: Vec<String>,
     #[serde(default)]
     pub forbidden_flags: Vec<String>,
@@ -103,7 +115,27 @@ pub struct ContentConditions {
     #[serde(default)]
     pub min_resources: ResourceMap,
     #[serde(default)]
+    pub max_resources: ResourceMap,
+    #[serde(default)]
     pub min_abilities: ResourceMap,
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
+pub struct ItemDef {
+    pub id: String,
+    pub name: String,
+    #[serde(default)]
+    pub description: String,
+    #[serde(default, rename = "type")]
+    pub item_type: String,
+    #[serde(default)]
+    pub tags: Vec<String>,
+    #[serde(default)]
+    pub usable: bool,
+    #[serde(default)]
+    pub use_effects: ResourceMap,
+    #[serde(default)]
+    pub use_log: Option<String>,
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -114,6 +146,7 @@ pub struct EncounterDef {
     pub presentation: Option<PresentationDef>,
     pub conditions: ContentConditions,
     pub choices: Vec<ChoiceDef>,
+    pub repeatable: bool,
     pub weight: u32,
 }
 
@@ -152,6 +185,17 @@ pub struct ChoiceDef {
     pub conditions: ContentConditions,
     pub cost: ResourceMap,
     pub outcome: OutcomeDef,
+    pub check: Option<AbilityCheckDef>,
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
+pub struct AbilityCheckDef {
+    pub ability: String,
+    pub difficulty: i32,
+    #[serde(default)]
+    pub success: OutcomeDef,
+    #[serde(default)]
+    pub failure: OutcomeDef,
 }
 
 #[derive(Clone, Debug, Deserialize, Default, PartialEq, Eq)]
@@ -161,15 +205,64 @@ pub struct OutcomeDef {
     #[serde(default)]
     pub add_flags: Vec<String>,
     #[serde(default)]
+    pub remove_flags: Vec<String>,
+    #[serde(default)]
     pub add_clues: Vec<String>,
     #[serde(default)]
     pub add_items: Vec<String>,
+    #[serde(default)]
+    pub remove_items: Vec<String>,
     #[serde(default)]
     pub destination_id: Option<String>,
     #[serde(default)]
     pub danger: i32,
     #[serde(default)]
     pub resources: ResourceMap,
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
+pub struct EndingDef {
+    pub id: String,
+    pub name: String,
+    pub kind: String,
+    #[serde(default)]
+    pub priority: i32,
+    #[serde(default)]
+    pub conditions: ContentConditions,
+    #[serde(default)]
+    pub local_hint_id: Option<String>,
+    #[serde(default)]
+    pub text: String,
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
+pub struct AchievementDef {
+    pub id: String,
+    pub name: String,
+    #[serde(default)]
+    pub description: String,
+    #[serde(default)]
+    pub conditions: ContentConditions,
+    #[serde(default)]
+    pub hidden: bool,
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
+pub struct PublicSecretDef {
+    pub id: String,
+    pub title: String,
+    #[serde(default)]
+    pub unlock_flags: Vec<String>,
+    #[serde(default)]
+    pub public_hint_steps: Vec<String>,
+    #[serde(default)]
+    pub puzzle_prompt: Option<String>,
+    #[serde(default)]
+    pub placeholder_ip_address: Option<String>,
+    #[serde(default)]
+    pub final_hint_policy: Option<String>,
+    #[serde(default)]
+    pub reward_text: Option<String>,
 }
 
 #[derive(Clone, Debug, Deserialize)]
@@ -184,6 +277,8 @@ struct RawEncounterDef {
     conditions: ContentConditions,
     #[serde(default)]
     choices: Vec<RawChoiceDef>,
+    #[serde(default)]
+    repeatable: bool,
     #[serde(default = "default_encounter_weight")]
     weight: u32,
 }
@@ -198,6 +293,18 @@ struct RawChoiceDef {
     cost: ResourceMap,
     #[serde(default)]
     outcome: Value,
+    #[serde(default)]
+    check: Option<RawAbilityCheckDef>,
+}
+
+#[derive(Clone, Debug, Deserialize)]
+struct RawAbilityCheckDef {
+    ability: String,
+    difficulty: i32,
+    #[serde(default)]
+    success: Value,
+    #[serde(default)]
+    failure: Value,
 }
 
 impl std::fmt::Display for ContentBundleError {
@@ -255,6 +362,13 @@ impl std::fmt::Display for ContentIndexError {
                 formatter,
                 "encounter {encounter_id} references unknown location: {location_id}"
             ),
+            ContentIndexError::UnknownEndingLocation {
+                ending_id,
+                location_id,
+            } => write!(
+                formatter,
+                "ending {ending_id} references unknown location: {location_id}"
+            ),
         }
     }
 }
@@ -266,20 +380,56 @@ impl ContentIndex {
         self.locations.len()
     }
 
+    pub fn items_len(&self) -> usize {
+        self.items.len()
+    }
+
     pub fn encounters_len(&self) -> usize {
         self.encounters.len()
+    }
+
+    pub fn endings_len(&self) -> usize {
+        self.endings.len()
+    }
+
+    pub fn achievements_len(&self) -> usize {
+        self.achievements.len()
     }
 
     pub fn location(&self, id: &str) -> Option<&LocationDef> {
         self.locations.get(id)
     }
 
+    pub fn item(&self, id: &str) -> Option<&ItemDef> {
+        self.items.get(id)
+    }
+
     pub fn encounter(&self, id: &str) -> Option<&EncounterDef> {
         self.encounters.get(id)
     }
 
+    pub fn ending(&self, id: &str) -> Option<&EndingDef> {
+        self.endings.get(id)
+    }
+
+    pub fn secret(&self, id: &str) -> Option<&PublicSecretDef> {
+        self.secrets.get(id)
+    }
+
     pub fn encounters(&self) -> impl Iterator<Item = &EncounterDef> {
         self.encounters.values()
+    }
+
+    pub fn items(&self) -> impl Iterator<Item = &ItemDef> {
+        self.items.values()
+    }
+
+    pub fn endings(&self) -> impl Iterator<Item = &EndingDef> {
+        self.endings.values()
+    }
+
+    pub fn achievements(&self) -> impl Iterator<Item = &AchievementDef> {
+        self.achievements.values()
     }
 }
 
@@ -310,8 +460,14 @@ pub fn index_content_bundle(bundle: &ContentBundle) -> Result<ContentIndex, Cont
     }
 
     validate_location_connections(&locations)?;
-
     let location_ids: BTreeSet<&str> = locations.keys().map(String::as_str).collect();
+
+    let mut items = BTreeMap::new();
+    for item_value in &bundle.content.items {
+        let item: ItemDef = parse_section_value("items", item_value)?;
+        insert_unique("items", &mut items, item.id.clone(), item)?;
+    }
+
     let mut encounters = BTreeMap::new();
     for encounter_value in &bundle.content.encounters {
         let encounter = parse_encounter(encounter_value)?;
@@ -324,9 +480,37 @@ pub fn index_content_bundle(bundle: &ContentBundle) -> Result<ContentIndex, Cont
         )?;
     }
 
+    let mut endings = BTreeMap::new();
+    for ending_value in &bundle.content.endings {
+        let ending: EndingDef = parse_section_value("endings", ending_value)?;
+        validate_ending_locations(&ending, &location_ids)?;
+        insert_unique("endings", &mut endings, ending.id.clone(), ending)?;
+    }
+
+    let mut achievements = BTreeMap::new();
+    for achievement_value in &bundle.content.achievements {
+        let achievement: AchievementDef = parse_section_value("achievements", achievement_value)?;
+        insert_unique(
+            "achievements",
+            &mut achievements,
+            achievement.id.clone(),
+            achievement,
+        )?;
+    }
+
+    let mut secrets = BTreeMap::new();
+    for secret_value in &bundle.content.secrets {
+        let secret: PublicSecretDef = parse_section_value("secrets", secret_value)?;
+        insert_unique("secrets", &mut secrets, secret.id.clone(), secret)?;
+    }
+
     Ok(ContentIndex {
         locations,
+        items,
         encounters,
+        endings,
+        achievements,
+        secrets,
     })
 }
 
@@ -378,6 +562,7 @@ fn parse_encounter(value: &Value) -> Result<EncounterDef, ContentIndexError> {
         presentation: raw.presentation,
         conditions: raw.conditions,
         choices,
+        repeatable: raw.repeatable,
         weight: raw.weight,
     })
 }
@@ -389,6 +574,16 @@ fn parse_choice(raw: RawChoiceDef) -> Result<ChoiceDef, ContentIndexError> {
         conditions: raw.conditions,
         cost: raw.cost,
         outcome: parse_outcome(&raw.outcome)?,
+        check: raw.check.map(parse_check).transpose()?,
+    })
+}
+
+fn parse_check(raw: RawAbilityCheckDef) -> Result<AbilityCheckDef, ContentIndexError> {
+    Ok(AbilityCheckDef {
+        ability: raw.ability,
+        difficulty: raw.difficulty,
+        success: parse_outcome(&raw.success)?,
+        failure: parse_outcome(&raw.failure)?,
     })
 }
 
@@ -458,6 +653,21 @@ fn validate_encounter_locations(
         if !location_ids.contains(location_id.as_str()) {
             return Err(ContentIndexError::UnknownEncounterLocation {
                 encounter_id: encounter.id.clone(),
+                location_id: location_id.clone(),
+            });
+        }
+    }
+    Ok(())
+}
+
+fn validate_ending_locations(
+    ending: &EndingDef,
+    location_ids: &BTreeSet<&str>,
+) -> Result<(), ContentIndexError> {
+    for location_id in &ending.conditions.locations {
+        if !location_ids.contains(location_id.as_str()) {
+            return Err(ContentIndexError::UnknownEndingLocation {
+                ending_id: ending.id.clone(),
                 location_id: location_id.clone(),
             });
         }

@@ -251,9 +251,9 @@ check_endings(state, content) -> EndingResult | None
 1. `python scripts/export_web_data.py --write --bundle crates/escape-core/fixtures/content/content.bundle.json --bundle web/src/data/generated/content.bundle.json`
 2. `web/src/data/generated/*.json`, Web content bundle, Rust content bundle 갱신
 3. `python scripts/export_web_data.py --check --bundle crates/escape-core/fixtures/content/content.bundle.json --bundle web/src/data/generated/content.bundle.json`로 stale 여부와 public secret private-only 필드 누출 확인
-4. Legacy Vite fake-TUI는 생성 JSON을 import해 TypeScript mirror core에서 사용한다.
-5. Web Storybook은 현재 generated content bundle과 `escape-wasm` boundary를 연결할 준비 상태이며, 실제 wasm 호출 연결은 다음 slice다.
-6. `cd web && npm test`가 현재 TypeScript parity, 소모품, 업적, 능력치 판정, 압박 UI, secret guard를 검증한다.
+4. Web Storybook runtime은 `web/src/core/wasmRuntime.ts`에서 generated content bundle을 `escape-wasm` JSON boundary로 넘겨 Rust `ScenePage`/`ActionResult`를 소비한다.
+5. Generated wasm package가 없는 개발 환경에서는 legacy Vite fake-TUI/TypeScript mirror가 fallback/parity oracle로 동작한다.
+6. `cd web && npm test`가 현재 TypeScript parity, wasm runtime wrapper, 소모품, 업적, 능력치 판정, 압박 UI, secret guard를 검증한다.
 7. `cargo test --workspace`가 Rust content/core/terminal contract를 검증한다.
 
 private/local secret 파일이 없어도 게임은 실행되어야 한다.
@@ -292,7 +292,7 @@ private/local secret 파일이 없어도 게임은 실행되어야 한다.
 7. 데이터 로더와 참조 무결성
 8. 저장/불러오기 동일성
 
-브라우저 쪽 Vitest는 현재 `web/src/game/parity.test.ts`에서 대표 terminal 루트(탈출·정복·진실·히든), 소모품 사용, 업적 해금, 고갈증/저정신력 압박, 능력치 판정 분기를 mirror core로 검증하고, `web/src/ui/render.test.ts`에서 legacy fake-TUI 패널을 검증한다. 새 Web Storybook 작업은 `web/src/ui/storybook/*` 테스트로 분리하고, 새 게임 규칙은 TypeScript mirror가 아니라 Rust GameCore/WASM contract에서 검증한다.
+브라우저 쪽 Vitest는 현재 `web/src/game/parity.test.ts`에서 legacy mirror parity oracle을 유지하고, `web/src/core/wasmRuntime.test.ts`에서 Web Storybook이 `escape-wasm` JSON boundary를 호출하는 runtime wrapper를 검증한다. 새 Web Storybook 작업은 `web/src/ui/storybook/*` 테스트로 분리하고, 새 게임 규칙은 TypeScript mirror가 아니라 Rust GameCore/WASM contract에서 검증한다.
 
 ## 1차 구현 비범위
 
@@ -316,7 +316,8 @@ private/local secret 파일이 없어도 게임은 실행되어야 한다.
 5. `escape-wasm` JSON-string boundary와 Web용 generated content bundle을 추가했다.
 6. `escape-terminal`의 content TUI snapshot/play loop를 SuperLightTUI renderer로 전환했다.
 7. Web/terminal action id parity smoke를 추가했다.
+8. Rust GameCore route parity를 movement/item/ability/ending/achievement/pressure/reality-link reward metadata까지 확장하고 Web Storybook runtime을 `escape-wasm` boundary에 연결했다.
 
 남은 구현 순서:
 
-1. route parity를 Rust core 기준으로 확장하고, legacy Python/Textual/TS mirror는 검증 oracle로 점진 축소한다.
+1. Web 배포용 wasm-pack build/preview 절차를 표준화하고, legacy Python/Textual/TS mirror는 검증 oracle로 점진 축소한다.

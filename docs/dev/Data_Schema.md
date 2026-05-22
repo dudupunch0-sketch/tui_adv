@@ -219,6 +219,7 @@ Renderer 규칙:
   "action_id": "choice:check_message",
   "state": { "...": "GameState" },
   "logs": ["메시지 마지막 줄만 도착했다."],
+  "newly_unlocked_achievements": ["first_signal_received"],
   "effect_cues": [
     {
       "kind": "glyph_anomaly",
@@ -286,7 +287,9 @@ Save/load 규칙:
     "resources": [
       { "id": "health", "label": "신체 반응", "band": "normal", "text": "정상 범위", "value": 100 },
       { "id": "sanity", "label": "집중도", "band": "normal", "text": "안정", "value": 100 },
-      { "id": "battery", "label": "단말기 전원", "band": "normal", "text": "100%", "value": 100 }
+      { "id": "battery", "label": "단말기 전원", "band": "normal", "text": "100%", "value": 100 },
+      { "id": "hunger", "label": "허기", "band": "normal", "text": "버틸 만함", "value": 0 },
+      { "id": "thirst", "label": "갈증", "band": "normal", "text": "버틸 만함", "value": 0 }
     ],
     "warnings": []
   },

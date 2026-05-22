@@ -4,7 +4,7 @@
 
 이 문서는 2026-05-22 기준 활성 렌더러 방향을 고정한다.
 
-현재 체크인된 코드는 Python/Textual, TypeScript mirror core, Rust `escape-core`, Web Storybook skeleton, `escape-wasm` JSON boundary, SuperLightTUI 기반 `escape-terminal` snapshot/play renderer를 함께 포함한다. Python/Textual과 TypeScript mirror는 구현 이력과 전환기 parity scaffold다. 목표 아키텍처는 다음이다.
+현재 체크인된 코드는 Python/Textual, TypeScript mirror core, Rust `escape-core`, Web Storybook renderer, `escape-wasm` JSON boundary, SuperLightTUI 기반 `escape-terminal` snapshot/play renderer를 함께 포함한다. Python/Textual과 TypeScript mirror는 구현 이력과 전환기 parity/fallback scaffold다. 목표 아키텍처는 다음이다.
 
 ```text
 Rust GameCore
@@ -211,15 +211,15 @@ terminal renderer는 SuperLightTUI를 사용한다. 현재 slice는 headless/sna
 
 ## Web Storybook 구현 메모
 
-Web은 primary UX지만 반드시 core output을 소비해야 한다. 현재 `escape-wasm` JSON-string function과 Web용 generated content bundle은 준비되어 있고, Web Storybook의 실제 wasm 호출 연결은 다음 slice다.
+Web은 primary UX지만 반드시 core output을 소비해야 한다. 현재 `web/src/core/wasmRuntime.ts`가 Web용 generated content bundle을 `escape-wasm` JSON-string function에 전달하고, 반환된 Rust `ScenePage`를 Web Storybook renderer에 넘긴다. generated wasm package가 없는 개발 환경에서는 legacy TypeScript mirror fallback을 사용한다.
 
 1. 완료: `escape-wasm` JSON-string function을 추가한다.
 2. 완료: Web/Rust 양쪽 generated content bundle을 export/check한다.
-3. 다음: Web에서 generated content bundle을 로드하고 wasm boundary를 호출한다.
+3. 완료: Web에서 generated content bundle을 로드하고 wasm boundary를 호출하는 runtime wrapper를 추가한다.
 4. 현재: `web/src/ui/storybook/render.ts`가 `ScenePage` shape을 렌더링한다.
 5. 현재: `visualCatalog.ts`가 `visual.id`를 매핑한다.
 6. 현재: `web/src/effects/glyphfx.ts`가 effect cue를 해석한다.
-7. 기존 fake-TUI code는 Storybook이 동등한 smoke path를 덮을 때까지 legacy/parity reference로만 유지한다.
+7. 기존 fake-TUI/TypeScript mirror code는 generated wasm package가 없는 환경의 fallback과 legacy/parity reference로만 유지한다.
 
 ## Design gate before code slices
 

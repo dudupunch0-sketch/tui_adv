@@ -286,8 +286,13 @@ fn print_turn(
     );
     println!("location: {}", view.location_id);
     println!(
-        "status: health={} sanity={} battery={} danger={}",
-        state.player.health, state.player.sanity, state.player.battery, state.danger
+        "status: health={} sanity={} battery={} hunger={} thirst={} danger={}",
+        state.player.health,
+        state.player.sanity,
+        state.player.battery,
+        state.player.hunger,
+        state.player.thirst,
+        state.danger
     );
     println!(
         "encounter: {}",
@@ -384,10 +389,12 @@ fn render_scene_page(ui: &mut slt::Context, page: &ScenePage, logs: &[String]) {
             page.location.name, page.location.id
         ));
         ui.text(format!(
-            "체력: {}  정신력: {}  배터리: {}  위험도: {}",
+            "체력: {}  정신력: {}  배터리: {}  허기: {}  갈증: {}  위험도: {}",
             resource_value(page, "health"),
             resource_value(page, "sanity"),
             resource_value(page, "battery"),
+            resource_value(page, "hunger"),
+            resource_value(page, "thirst"),
             page.status_summary.danger
         ));
         for warning in &page.status_summary.warnings {

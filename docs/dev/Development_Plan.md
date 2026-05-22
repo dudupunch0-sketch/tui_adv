@@ -541,21 +541,23 @@ src/tui_adv/data/secrets.example.yaml
 4. `escape-wasm` JSON-string boundary를 추가해 Rust GameCore의 `GameState`, `ScenePage`, `ActionResult`, save envelope를 JSON으로 노출했다.
 5. `escape-terminal` content TUI snapshot/play loop를 SuperLightTUI renderer로 전환했다.
 6. Web/terminal action id parity smoke를 추가했다.
+7. Rust GameCore가 movement pages, usable items, ability checks, major endings, achievement unlock metadata, hunger/thirst pressure cues, public-safe reality-link reward metadata를 처리한다.
+8. Web Storybook runtime이 `escape-wasm` JSON boundary와 generated content bundle을 통해 Rust `ScenePage`를 소비한다. generated wasm package가 없는 개발 환경에서는 legacy TS mirror fallback만 사용한다.
 
 현재 최우선 남은 작업:
 
-1. route parity를 Rust GameCore 기준으로 확장한다.
+1. Web 배포/preview 환경의 wasm-pack build step을 표준화하고, legacy Python/Textual/TS mirror 축소 범위를 결정한다.
 
 전환 중 유지:
 
 1. Python/Textual 직접 플레이와 smoke는 legacy/parity oracle로 유지한다.
-2. TypeScript mirror core와 fake-TUI browser shell은 Web Storybook/WASM 전환 전까지 비교 대상으로 유지한다.
+2. TypeScript mirror core와 fake-TUI browser shell은 generated wasm package가 없는 개발 환경의 fallback/parity oracle로 유지한다.
 3. 새 게임 규칙은 renderer가 아니라 Rust core에 추가한다.
 
 나중:
 
 1. Python/Textual과 TypeScript mirror의 freeze/retire 여부 결정
-2. 정복/진실/재난 타입별 변형의 Rust core parity 확대
+2. 정복/진실/재난 타입별 변형 콘텐츠 확대
 3. Web/Tauri/Electron 패키징 검토
 4. terminal inline image optional 지원 검토
 5. 여러 히든 현실 보물
@@ -603,5 +605,5 @@ Web 또는 terminal renderer가 게임 규칙을 다시 구현하면 Rust GameCo
 
 ## 10. 다음 액션
 
-1. `docs/dev/Checklist.md`의 0.2b 렌더러/런타임 체크리스트를 기준으로 남은 구현 slice를 나눈다.
-2. 다음 구현 항목은 route parity를 Rust GameCore 기준으로 확장하는 것이다.
+1. Web 배포용 wasm-pack build/preview 절차를 문서화하고 CI 또는 release smoke에 연결한다.
+2. legacy mirror retire/freeze 범위를 정한다.

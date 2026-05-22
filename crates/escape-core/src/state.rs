@@ -1,7 +1,9 @@
 use crate::content::ContentIndex;
 use serde::{Deserialize, Serialize};
+use std::collections::BTreeMap;
 
 pub const DEFAULT_START_LOCATION_ID: &str = "dev_desk";
+pub const DEFAULT_DISASTER_TYPE: &str = "unknown_isolation";
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum NewGameError {
@@ -25,6 +27,12 @@ pub struct PlayerState {
     pub health: i32,
     pub sanity: i32,
     pub battery: i32,
+    #[serde(default)]
+    pub hunger: i32,
+    #[serde(default)]
+    pub thirst: i32,
+    #[serde(default = "default_abilities")]
+    pub abilities: BTreeMap<String, i32>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -39,11 +47,17 @@ pub struct GameState {
     pub seed: u64,
     pub turn: u32,
     pub location_id: String,
+    #[serde(default = "default_disaster_type")]
+    pub disaster_type: String,
     pub danger: i32,
     pub player: PlayerState,
+    #[serde(default)]
+    pub inventory: Vec<String>,
     pub flags: Vec<String>,
     pub clues: Vec<String>,
     pub seen_encounters: Vec<String>,
+    #[serde(default)]
+    pub unlocked_achievements: Vec<String>,
     pub history: Vec<GameHistoryEntry>,
 }
 
@@ -53,15 +67,21 @@ impl GameState {
             seed,
             turn: 0,
             location_id: "printer_area".to_string(),
+            disaster_type: DEFAULT_DISASTER_TYPE.to_string(),
             danger: 0,
             player: PlayerState {
                 health: 92,
                 sanity: 67,
                 battery: 41,
+                hunger: 0,
+                thirst: 0,
+                abilities: default_abilities(),
             },
+            inventory: Vec::new(),
             flags: Vec::new(),
             clues: Vec::new(),
             seen_encounters: Vec::new(),
+            unlocked_achievements: Vec::new(),
             history: Vec::new(),
         }
     }
@@ -85,15 +105,21 @@ impl GameState {
             seed,
             turn: 0,
             location_id: start_location_id.to_string(),
+            disaster_type: DEFAULT_DISASTER_TYPE.to_string(),
             danger: 0,
             player: PlayerState {
                 health: 100,
                 sanity: 100,
                 battery: 100,
+                hunger: 0,
+                thirst: 0,
+                abilities: default_abilities(),
             },
+            inventory: Vec::new(),
             flags: Vec::new(),
             clues: Vec::new(),
             seen_encounters: Vec::new(),
+            unlocked_achievements: Vec::new(),
             history: Vec::new(),
         })
     }
@@ -104,9 +130,25 @@ impl GameState {
         }
     }
 
+    pub(crate) fn remove_flag(&mut self, flag: &str) {
+        self.flags.retain(|existing| existing != flag);
+    }
+
     pub(crate) fn add_clue_once(&mut self, clue: &str) {
         if !self.clues.iter().any(|existing| existing == clue) {
             self.clues.push(clue.to_string());
+        }
+    }
+
+    pub(crate) fn add_inventory_once(&mut self, item: &str) {
+        if !self.inventory.iter().any(|existing| existing == item) {
+            self.inventory.push(item.to_string());
+        }
+    }
+
+    pub(crate) fn remove_inventory_item(&mut self, item: &str) {
+        if let Some(index) = self.inventory.iter().position(|existing| existing == item) {
+            self.inventory.remove(index);
         }
     }
 
@@ -120,6 +162,19 @@ impl GameState {
         }
     }
 
+    pub(crate) fn add_unlocked_achievement_once(&mut self, achievement_id: &str) -> bool {
+        if self
+            .unlocked_achievements
+            .iter()
+            .any(|existing| existing == achievement_id)
+        {
+            false
+        } else {
+            self.unlocked_achievements.push(achievement_id.to_string());
+            true
+        }
+    }
+
     pub(crate) fn add_history_entry(&mut self, kind: &str, text: &str, source_id: Option<&str>) {
         self.history.push(GameHistoryEntry {
             kind: kind.to_string(),
@@ -127,4 +182,22 @@ impl GameState {
             source_id: source_id.map(str::to_string),
         });
     }
+}
+
+pub fn default_abilities() -> BTreeMap<String, i32> {
+    [
+        ("logic", 2),
+        ("empathy", 2),
+        ("volition", 2),
+        ("composure", 2),
+        ("interface", 2),
+        ("physical", 2),
+    ]
+    .into_iter()
+    .map(|(ability, value)| (ability.to_string(), value))
+    .collect()
+}
+
+fn default_disaster_type() -> String {
+    DEFAULT_DISASTER_TYPE.to_string()
 }

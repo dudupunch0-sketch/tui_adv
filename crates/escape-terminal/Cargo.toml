@@ -1,0 +1,12 @@
+[package]
+name = "escape-terminal"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+
+[[bin]]
+name = "escape-terminal"
+path = "src/main.rs"
+
+[dependencies]
+escape-core = { path = "../escape-core" }

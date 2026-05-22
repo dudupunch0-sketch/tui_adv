@@ -41,6 +41,9 @@ private/
 *.local.json
 src/tui_adv/data/secrets.local.*
 
+# Rust build artifacts
+target/
+
 # Editor / OS
 .DS_Store
 .vscode/

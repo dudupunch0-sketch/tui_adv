@@ -10,6 +10,7 @@ struct CliOptions {
     scene: String,
     seed: u64,
     smoke: bool,
+    tui_smoke: bool,
     content_bundle: Option<PathBuf>,
     actions: Vec<String>,
 }
@@ -26,6 +27,9 @@ where
     I: IntoIterator<Item = String>,
 {
     let options = parse_args(args)?;
+    if options.smoke && options.tui_smoke {
+        return Err("--smoke and --tui-smoke cannot be combined".to_string());
+    }
 
     match options.scene.as_str() {
         "printer" => run_printer_scene(&options),
@@ -46,7 +50,11 @@ fn run_printer_scene(options: &CliOptions) -> Result<(), String> {
 
     let state = new_game(options.seed);
     let view = turn_view(&state);
-    print_turn(&view, &state, &options.scene, options.smoke, false);
+    if options.tui_smoke {
+        print_tui_snapshot(&view, &state, &view.location_id, &[]);
+    } else {
+        print_turn(&view, &state, &options.scene, options.smoke, false);
+    }
     Ok(())
 }
 
@@ -67,17 +75,33 @@ fn run_content_scene(options: &CliOptions) -> Result<(), String> {
     let mut state =
         new_game_from_content(options.seed, &content).map_err(|error| error.to_string())?;
     let mut view = turn_view_from_content(&state, &content).map_err(|error| error.to_string())?;
-    print_turn(&view, &state, &options.scene, options.smoke, true);
+    let mut recent_logs = Vec::new();
+    if !options.tui_smoke {
+        print_turn(&view, &state, &options.scene, options.smoke, true);
+    }
 
     for action_id in &options.actions {
         let action = find_available_action(&view, action_id)
             .ok_or_else(|| format!("action '{action_id}' is not available in current turn"))?;
         let result = apply_action_from_content(&state, &content, action_id)
             .map_err(|error| error.to_string())?;
-        print_execution(&result.action_id, &action.label, &result.logs);
+        if !options.tui_smoke {
+            print_execution(&result.action_id, &action.label, &result.logs);
+        }
+        recent_logs.extend(result.logs.iter().cloned());
         state = result.state;
         view = turn_view_from_content(&state, &content).map_err(|error| error.to_string())?;
-        print_turn(&view, &state, &options.scene, options.smoke, true);
+        if !options.tui_smoke {
+            print_turn(&view, &state, &options.scene, options.smoke, true);
+        }
+    }
+
+    if options.tui_smoke {
+        let location_name = content
+            .location(&state.location_id)
+            .map(|location| location.name.as_str())
+            .unwrap_or(&state.location_id);
+        print_tui_snapshot(&view, &state, location_name, &recent_logs);
     }
 
     Ok(())
@@ -94,6 +118,7 @@ where
     let mut scene = "printer".to_string();
     let mut seed = 123_u64;
     let mut smoke = false;
+    let mut tui_smoke = false;
     let mut content_bundle = None;
     let mut actions = Vec::new();
     let mut iter = args.into_iter();
@@ -126,6 +151,7 @@ where
                 actions.push(value);
             }
             "--smoke" => smoke = true,
+            "--tui-smoke" => tui_smoke = true,
             "--help" | "-h" => {
                 print_help();
                 std::process::exit(0);
@@ -138,6 +164,7 @@ where
         scene,
         seed,
         smoke,
+        tui_smoke,
         content_bundle,
         actions,
     })
@@ -146,6 +173,7 @@ where
 fn print_help() {
     println!("escape-terminal --scene printer --seed 123 --smoke");
     println!("escape-terminal --scene content --content-bundle <path> --seed 123 --smoke --action choice:check_message");
+    println!("escape-terminal --scene content --content-bundle <path> --seed 123 --tui-smoke --action choice:check_message");
     println!();
     println!("Options:");
     println!("  --scene <printer|content>  Run the printer scene or content-backed smoke");
@@ -155,6 +183,9 @@ fn print_help() {
     );
     println!("  --seed <n>                 Preserve deterministic seed in core state");
     println!("  --smoke                    Print a headless renderer smoke snapshot");
+    println!(
+        "  --tui-smoke                Print the final TUI-style snapshot after scripted actions"
+    );
 }
 
 fn print_turn(
@@ -211,6 +242,45 @@ fn print_action(index: usize, action: &ActionView, include_action_ids: bool) {
         (None, true) => println!("{index}. {} / {}", action.id, action.label),
         (Some(cost), false) => println!("{index}. {} / {cost}", action.label),
         (None, false) => println!("{index}. {}", action.label),
+    }
+}
+
+fn print_tui_snapshot(view: &TurnView, state: &GameState, location_name: &str, logs: &[String]) {
+    println!("[TUI Snapshot]");
+    println!();
+    println!("[상태]");
+    println!("턴: {}", state.turn);
+    println!("위치: {location_name} ({})", state.location_id);
+    println!(
+        "체력: {}  정신력: {}  배터리: {}",
+        state.player.health, state.player.sanity, state.player.battery
+    );
+    println!();
+
+    if view.encounter_id.is_some() {
+        println!("[현재 인카운터]");
+        println!("{}", view.title);
+        println!("{}", view.body);
+        println!();
+    }
+
+    println!("[현재 행동]");
+    if view.encounter_id.is_none() {
+        println!("{}", view.title);
+        println!("{}", view.body);
+    }
+    for (index, action) in view.actions.iter().enumerate() {
+        print_action(index + 1, action, true);
+    }
+    println!();
+
+    println!("[최근 로그]");
+    if logs.is_empty() {
+        println!("- 아직 기록된 로그가 없다.");
+    } else {
+        for log in logs {
+            println!("- {log}");
+        }
     }
 }
 

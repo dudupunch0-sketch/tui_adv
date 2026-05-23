@@ -100,6 +100,15 @@
 - [x] HUD/rail/dock/sentence-choice renderer contract 구현
 - [x] reference-size browser visual QA
 
+### 0.2i 2026-05-23 Web Storybook visual regression 자동화
+
+- [ ] `web/scripts/storybook-reference-qa.mjs` Playwright viewport runner 추가
+- [ ] package script로 visual QA command 노출
+- [ ] reference viewport DOM/layout/interaction contract 자동 검증
+- [ ] optional `--require-wasm` Rust/WASM-primary resource load smoke 추가
+- [ ] screenshots/JSON report를 scratch output에만 남기도록 문서화
+- [ ] visual QA contract/docs tests 추가
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

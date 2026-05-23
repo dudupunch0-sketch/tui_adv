@@ -50,5 +50,5 @@ Status: 후보 콘텐츠 DB
 - `docs/design/Storypack_Encounter_DB.md`
 - `docs/content/encounter_db/README.md`
 - `docs/content/characters/README.md`
-- `idea_box/inbox/2026-05-22-general-corporate-storypacks.md`
-- `idea_box/inbox/2026-05-22-semiconductor-sw-storypacks.md`
+- `idea_box/done/2026-05-22-general-corporate-storypacks.md`
+- `idea_box/done/2026-05-22-semiconductor-sw-storypacks.md`

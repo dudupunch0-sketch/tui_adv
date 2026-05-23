@@ -2,7 +2,7 @@
 
 ## 상태
 
-이 문서는 `idea_box/inbox/2026-05-22-dream-ending-branching.md`를 story/design 후보로 승격한 문서다.
+이 문서는 `idea_box/done/2026-05-22-dream-ending-branching.md`를 story/design 후보로 승격한 문서다.
 현재 런타임 엔딩 YAML이나 Rust/Python 엔딩 판정에 `dream`/`epilogue` 타입을 추가했다는 뜻은 아니다.
 
 현재 판정:

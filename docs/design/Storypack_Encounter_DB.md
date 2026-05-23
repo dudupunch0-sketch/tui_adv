@@ -136,8 +136,8 @@ TUI/fake-terminal에서 사건이 드러나는 표면이다.
 id: isolation_pack
 status: candidate
 source_refs:
-  - idea_box/inbox/2026-05-22-general-corporate-storypacks.md
-  - idea_box/inbox/2026-05-22-semiconductor-sw-storypacks.md
+  - idea_box/done/2026-05-22-general-corporate-storypacks.md
+  - idea_box/done/2026-05-22-semiconductor-sw-storypacks.md
 name: 차원격리팩
 one_line: 퇴근 직전 회사 일부 공간이 격리되고, 사내 시스템으로 다른 격리자들과 연결된다.
 main_surfaces: [messenger, intranet, cctv, meeting_minutes, organization_chart]

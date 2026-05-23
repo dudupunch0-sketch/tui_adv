@@ -18,9 +18,7 @@ Git 최초 추가 순서 기준이다. 아래 순서대로 처리한다.
 
 | order | idea entry | git first added | commit | 상태 | 다음 처리 |
 |---|---|---|---|---|---|
-| 001 | `idea_box/inbox/2026-05-21-tui-storybook-glyphfx-concept-v2.md` | 2026-05-21T14:50:28+00:00 | `57a381bd` | open | 먼저 반영 |
-| 002 | `idea_box/inbox/2026-05-22-dream-ending-branching.md` | 2026-05-22T03:01:30+00:00 | `f6fc8173` | open | 001 완료 후 반영 |
-| 003 | `idea_box/inbox/2026-05-22-real-escape-ending-branching.md` | 2026-05-22T04:55:10+00:00 | `488110eb` | open | 002 완료 후 반영 |
+| - | - | - | - | 없음 | 현재 open entry 없음 |
 
 ## 이미 done인 구조화 entry
 
@@ -28,9 +26,12 @@ Git 최초 추가 순서 기준이다. 아래 순서대로 처리한다.
 
 | idea entry | git first added | commit | status |
 |---|---|---|---|
+| `idea_box/inbox/2026-05-21-tui-storybook-glyphfx-concept-v2.md` | 2026-05-21T14:50:28+00:00 | `57a381bd` | done |
 | `idea_box/inbox/2026-05-21-character-stats-and-generator.md` | 2026-05-22T01:48:39+00:00 | `d32fc359` | done |
+| `idea_box/inbox/2026-05-22-dream-ending-branching.md` | 2026-05-22T03:01:30+00:00 | `f6fc8173` | done |
 | `idea_box/inbox/2026-05-22-semiconductor-sw-storypacks.md` | 2026-05-22T03:25:19+00:00 | `2eb5fb91` | done |
 | `idea_box/inbox/2026-05-22-general-corporate-storypacks.md` | 2026-05-22T04:21:39+00:00 | `2de58ef6` | done |
+| `idea_box/inbox/2026-05-22-real-escape-ending-branching.md` | 2026-05-22T04:55:10+00:00 | `488110eb` | done |
 
 ## 순서 재계산 방법
 

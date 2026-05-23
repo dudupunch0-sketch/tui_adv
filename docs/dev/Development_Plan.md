@@ -31,6 +31,16 @@ Rust GameCore
 - 세부 아키텍처는 `docs/dev/Rust_Core_Dual_Renderer_Architecture.md`를 따른다.
 - wire schema와 구현 계약은 `docs/dev/Data_Schema.md`의 renderer-neutral content bundle, `ScenePage`, action id, `EffectCue`, WASM JSON boundary 설계를 따른다.
 
+## 0.1 2026-05-23 idea_box backlog 반영
+
+`idea_box/BACKLOG_ORDER.md` 기준 open backlog 3개를 처리했다.
+
+1. `TUI Storybook + GlyphFX Concept v2`는 이미 Web Storybook/GlyphFX primary UX와 SuperLightTUI terminal-native horror/fallback edition으로 채택/구현 방향에 반영되어 있어 adopted/merged로 닫았다.
+2. 꿈 엔딩 분기 아이디어는 `docs/story/Dream_Ending_Branching.md`로 승격했다. 이는 후속 엔딩/스토리팩 작성용 설계 후보이며, 현재 런타임 YAML/schema/code에 `dream` 또는 `epilogue` 타입을 추가했다는 뜻은 아니다.
+3. 현실 탈출 엔딩 분기 아이디어는 `docs/story/Real_Escape_Ending_Branching.md`로 승격했다. 이는 탈출 후 증거/동료/회사 반응을 정산하는 후일담 설계 후보이며, 현재 런타임 YAML/schema/code에 `real_escape`, `post_escape`, `aftermath` 타입을 추가했다는 뜻은 아니다.
+
+후속 구현을 열 경우 새 게임 규칙과 엔딩 판정은 Rust GameCore/content YAML 쪽에서 별도 slice로 진행하고, Web Storybook과 SuperLightTUI는 `ScenePage`/`ActionResult`를 표시하는 renderer로 유지한다.
+
 ## 1. 목표
 
 국내 최고 대기업 IT/반도체 회사의 연구개발동 같은 사무실을 배경으로 한 TUI 기반 랜덤 인카운터 선택지 생존 게임을 만든다.
@@ -559,6 +569,7 @@ src/tui_adv/data/secrets.example.yaml
 11. SuperLightTUI terminal visual card/GlyphFX/input polish 완료: `escape-terminal`은 `ScenePage.visual`을 ASCII/Unicode card로 표시하고, `glyph_anomaly`의 intensity meter/stable terms/fallback text와 현재 턴 입력 범위를 노출한다.
 12. Web/Tauri/Electron 패키징 결정 완료: 현재 플레이어 배포 표면은 Web-only이며, `web/package.json`의 `build:player` / `preview:player` alias가 Rust/WASM-primary Web artifact(`web/dist/`)를 기준으로 한다. Tauri/Electron은 desktop wrapper 고유 가치가 생길 때까지 deferred다.
 13. terminal full-screen app loop/tick/raw-draw GlyphFX 완료: `escape-terminal --app`은 SuperLightTUI `run_with` full-screen loop를 사용하고, `--app-smoke --tick`은 같은 app-frame renderer를 headless로 검증한다. `glyph_anomaly`는 raw-draw layer에서 tick마다 cell wave를 바꾸되 stable terms/fallback text를 유지한다.
+14. idea_box 엔딩 분기 backlog 승격 완료: 꿈 엔딩과 현실 탈출 후일담은 각각 `docs/story/Dream_Ending_Branching.md`, `docs/story/Real_Escape_Ending_Branching.md`에 story/design 후보로 정리했고, 아직 런타임 엔딩 타입/schema/code 변경은 열지 않았다.
 
 현재 최우선 남은 작업:
 
@@ -574,9 +585,10 @@ src/tui_adv/data/secrets.example.yaml
 
 1. 대표 Web/Rust route smoke가 legacy coverage를 대체하면 Python/Textual과 TypeScript mirror retire 여부를 다시 결정한다.
 2. 정복/진실/재난 타입별 변형 콘텐츠 확대
-3. Tauri/Electron desktop wrapper 재검토: native file dialog, offline file import/export, OS-level 알림/업데이트 같은 Web-only 한계를 실제 요구로 확인한 뒤 별도 slice로 연다.
-4. optional inline image는 terminal cell/GlyphFX baseline 밖 future backlog로 둔다. Kitty/Sixel/iTerm2 capability 요구가 실제로 생길 때 별도 slice로 연다.
-5. 여러 히든 현실 보물
+3. 꿈 엔딩/현실 탈출 후일담을 실제 콘텐츠로 구현할지 결정하고, 구현 시 Rust GameCore/content YAML slice로 승격
+4. Tauri/Electron desktop wrapper 재검토: native file dialog, offline file import/export, OS-level 알림/업데이트 같은 Web-only 한계를 실제 요구로 확인한 뒤 별도 slice로 연다.
+5. optional inline image는 terminal cell/GlyphFX baseline 밖 future backlog로 둔다. Kitty/Sixel/iTerm2 capability 요구가 실제로 생길 때 별도 slice로 연다.
+6. 여러 히든 현실 보물
 
 ## 9. 주요 리스크
 

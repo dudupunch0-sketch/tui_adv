@@ -145,6 +145,8 @@ npm run preview:player
 - `docs/story/Story.md`: 스토리와 오프닝
 - `docs/story/Disaster_Cause.md`: 재난 원인과 진실 루트 공개-safe 설계
 - `docs/story/Disaster_Type_Extension.md`: 재난 타입 확장 규칙과 후보 백로그
+- `docs/story/Dream_Ending_Branching.md`: 꿈 엔딩/깨어난 뒤 재시험 문법 설계 후보
+- `docs/story/Real_Escape_Ending_Branching.md`: 현실 탈출 후 결과 정산/후일담 설계 후보
 - `docs/story/Reality_Link.md`: 현실 연결 원칙
 - `docs/design/Player_State.md`: 플레이어 상태 규칙
 - `docs/design/Character_Stats_and_Generator.md`: 6스탯 등장인물/LLM 생성기 설계 후보

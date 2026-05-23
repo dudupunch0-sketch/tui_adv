@@ -20,8 +20,8 @@ Status: candidate
 id: park_doyoon
 status: candidate
 source_refs:
-  - idea_box/inbox/2026-05-22-general-corporate-storypacks.md
-  - idea_box/inbox/2026-05-22-semiconductor-sw-storypacks.md
+  - idea_box/done/2026-05-22-general-corporate-storypacks.md
+  - idea_box/done/2026-05-22-semiconductor-sw-storypacks.md
 name: 박도윤
 department: IT 인프라팀
 story_function:
@@ -76,8 +76,8 @@ first_appearance_candidate: 사내 메신저에서 가장 먼저 로그 파일�
 id: yoon_seoyeon
 status: candidate
 source_refs:
-  - idea_box/inbox/2026-05-22-general-corporate-storypacks.md
-  - idea_box/inbox/2026-05-22-semiconductor-sw-storypacks.md
+  - idea_box/done/2026-05-22-general-corporate-storypacks.md
+  - idea_box/done/2026-05-22-semiconductor-sw-storypacks.md
 name: 윤서연
 department: 인사팀
 story_function:
@@ -132,8 +132,8 @@ first_appearance_candidate: 조직도 조회 화면을 공유하며 “이 사�
 id: choi_minjae
 status: candidate
 source_refs:
-  - idea_box/inbox/2026-05-22-general-corporate-storypacks.md
-  - idea_box/inbox/2026-05-22-semiconductor-sw-storypacks.md
+  - idea_box/done/2026-05-22-general-corporate-storypacks.md
+  - idea_box/done/2026-05-22-semiconductor-sw-storypacks.md
 name: 최민재
 department: 보안팀 / 방재실
 story_function:

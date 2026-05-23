@@ -1,5 +1,5 @@
 ---
-status: open
+status: done
 created: 2026-05-22
 source: user
 source_ref: origin/main:idea_box/dream_ending_branch_ideas.md
@@ -12,7 +12,9 @@ related_docs:
   - idea_box/dream_ending_branch_ideas.md
   - docs/content/Ending_List.md
 used_by:
-done_at:
+  - docs/story/Dream_Ending_Branching.md
+  - docs/dev/Development_Plan.md
+done_at: 2026-05-23
 ---
 
 # 꿈 엔딩 기반 엔딩 분기 후보
@@ -252,3 +254,4 @@ SYSTEM: 무엇을 두고 나가시겠습니까?
 ## 처리 기록
 
 - 2026-05-22: 원격 `origin/main:idea_box/dream_ending_branch_ideas.md`에 있는 원문을 확인하고, 다른 agent가 검토/설계/개발 후보로 사용할 수 있도록 이 구조화된 `idea_box/inbox` 아이디어 문서로 새로 정리했다. 아직 실제 설계 문서, 런타임 엔딩 데이터, 코드에 반영된 것은 아니므로 `open` 상태를 유지한다.
+- 2026-05-23: 감사 결과, 런타임 엔딩이나 canonical story docs에는 아직 반영되지 않은 것으로 확인했다. 바로 YAML/schema/code를 바꾸지 않고 `docs/story/Dream_Ending_Branching.md`로 승격해 꿈 엔딩 문법, 기존 엔딩과의 관계, 상태/상징 축, 구현 전 경계와 품질 기준을 정리했다. `docs/dev/Development_Plan.md`에도 story design backlog 승격 사실을 기록했으므로 `done` 처리한다.

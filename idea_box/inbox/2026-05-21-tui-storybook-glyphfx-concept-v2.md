@@ -1,5 +1,5 @@
 ---
-status: open
+status: done
 created: 2026-05-21
 source: user
 backlog_order: 001
@@ -7,7 +7,13 @@ git_added_at: 2026-05-21T14:50:28+00:00
 git_added_commit: 57a381bd
 related_docs: docs/design/TUI_Storybook_GlyphFX_Concept.md
 used_by:
-done_at:
+  - docs/design/TUI_Storybook_GlyphFX_Concept.md
+  - docs/dev/Development_Plan.md
+  - docs/dev/Rust_Core_Dual_Renderer_Architecture.md
+  - docs/dev/Data_Schema.md
+  - web/src/ui/storybook/render.ts
+  - crates/escape-terminal/src/main.rs
+done_at: 2026-05-23
 ---
 
 # TUI Storybook + GlyphFX Concept v2
@@ -109,3 +115,4 @@ GlyphFX: animation/effect system
 ## 처리 기록
 
 - 2026-05-21: 사용자 아이디어를 `docs/design/TUI_Storybook_GlyphFX_Concept.md`로 문서화하고, 이 파일에 idea_box 후보로 별도 저장했다. 아직 채택/구현 여부는 미정이므로 `open` 상태를 유지한다.
+- 2026-05-23: 감사 결과, 핵심 방향은 이미 `docs/design/TUI_Storybook_GlyphFX_Concept.md`, `docs/dev/Development_Plan.md`, `docs/dev/Rust_Core_Dual_Renderer_Architecture.md`, `docs/dev/Data_Schema.md`와 Web Storybook/SuperLightTUI 구현에 반영되어 있었다. 원 MVP 장면 자체는 메신저/복합기/복도 slice로 대체 흡수되었고, 새 구현 없이 adopted/merged로 `done` 처리한다.

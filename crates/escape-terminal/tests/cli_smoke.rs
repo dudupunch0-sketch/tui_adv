@@ -202,6 +202,56 @@ fn content_tui_smoke_renders_final_movement_panel_after_scripted_actions() {
 }
 
 #[test]
+fn content_tui_smoke_renders_escape_aftermath_ending_panel() {
+    let bundle_path = content_bundle_path();
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--content-bundle",
+            bundle_path.to_str().expect("bundle path should be UTF-8"),
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:check_message",
+            "--action",
+            "move:dev_office",
+            "--action",
+            "move:hallway",
+            "--action",
+            "move:emergency_stairs",
+            "--action",
+            "choice:align_breathing_floor",
+            "--action",
+            "choice:solve_distorted_floor",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("[SuperLightTUI Snapshot]"));
+    assert!(stdout.contains("격리 6턴 · 엔딩"));
+    assert!(stdout.contains("퇴근 성공"));
+    assert!(stdout.contains("[POST-ESCAPE REPORT]"));
+    assert!(stdout.contains("survivor_count: 1"));
+    assert!(stdout.contains("evidence_level: 0"));
+    assert!(stdout.contains("company_response: denial"));
+    assert!(stdout.contains("employee_status: access_revoked"));
+    assert!(stdout.contains("risk_level: ongoing"));
+    assert!(stdout.contains("ENDING: 정문 밖"));
+    assert!(action_ids_from_terminal_snapshot(&stdout).is_empty());
+    assert!(!stdout.contains("final_hint"));
+    assert!(!stdout.contains("treasure_location"));
+}
+
+#[test]
 fn content_tui_smoke_renders_printer_visual_card_with_stable_glyphfx_terms() {
     let bundle_path = content_bundle_path();
     let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))

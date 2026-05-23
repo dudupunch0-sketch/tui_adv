@@ -2,15 +2,20 @@
 
 ## 상태
 
-이 문서는 `idea_box/inbox/2026-05-22-real-escape-ending-branching.md`를 story/design 후보로 승격한 문서다.
+이 문서는 `idea_box/inbox/2026-05-22-real-escape-ending-branching.md`를 story/design 후보로 승격한 문서이며, `docs/dev/Development_Plan.md`의 `0.2 active main plan`이 첫 런타임 slice의 source of truth다.
 현재 런타임 엔딩 YAML이나 Rust/Python 엔딩 판정에 `real_escape`/`post_escape`/`aftermath` 타입을 추가했다는 뜻은 아니다.
 
-현재 판정:
+현재 구현 판정:
 
-- 채택 범위: 후속 엔딩 확장용 설계 계약 후보
-- 런타임 변경: 없음
-- 구현 전제: 구현한다면 Rust GameCore와 공개 YAML/content bundle을 source of truth로 둔다
+- 채택 범위: 현실 탈출 후 결과 정산/후일담 설계 계약
+- 구현된 slice: `escape_commute` 단일 엔딩에 text-backed `[POST-ESCAPE REPORT]` 블록을 추가했다
+- schema 판정: 새 `kind`, 새 `EndingDef` field, 새 runtime state는 만들지 않는다
+- 구현 전제: Rust GameCore와 공개 YAML/content bundle을 source of truth로 둔다
+- renderer contract: Web Storybook과 SuperLightTUI는 core `ScenePage.body_blocks`를 표시하고 후일담을 재판정하지 않는다
 - 공개 안전: 실제 회사, 실제 직원, 실제 위치, 실제 내부 시스템, private 현실 단서는 넣지 않는다
+
+현재 구현된 것은 “첫 text-backed slice”다.
+다중 후일담 변형이나 구조화된 `aftermath` schema는 아직 열지 않았다.
 
 ## 한 줄 정의
 
@@ -48,17 +53,25 @@
 ## 현재 엔딩 시스템과의 관계
 
 현재 공개 런타임 엔딩은 `docs/content/Ending_List.md` 기준으로 `failure`, `escape`, `hidden`, `truth`, `conquest` 계열이다.
-현실 탈출 엔딩 분기는 이 목록을 즉시 대체하지 않는다.
+현실 탈출 후일담은 이 목록을 즉시 대체하지 않는다.
 
-후속 구현 후보:
+구현된 첫 runtime slice:
 
-1. 기존 `escape` 엔딩에 후일담 결과 정산을 붙인다.
+1. 대상은 기존 `escape` 엔딩 중 `escape_commute` 하나로 제한한다.
+2. 기존 엔딩 판정, `kind`, priority, trigger condition은 바꾸지 않는다.
+3. 기존 `text` 뒤에 공개-safe `[POST-ESCAPE REPORT]` 블록을 붙였다.
+4. Rust GameCore가 ending `ScenePage.mode: ending`과 `body_blocks`로 후일담을 전달한다.
+5. Web Storybook과 SuperLightTUI는 같은 `body_blocks`를 표시한다.
+
+후속 후보:
+
+1. `escape_rooftop_signal`, `escape_parking_lot`, `escape_lobby_revolving_door` 같은 다른 escape 엔딩으로 후일담을 확장한다.
 2. 기존 `truth` 엔딩과 결합해 증거/공개/감사 개시 분기를 만든다.
 3. `hidden` 현실 연결 엔딩과 결합하되 private-only 단서는 공개 데이터로 내보내지 않는다.
 4. 탈출 직전 마지막 선택과 탈출 후 후일담을 분리한 2단 구조를 둔다.
 5. 필요할 때만 `real_escape`, `post_escape`, `aftermath` 같은 새 타입을 별도 schema/code slice로 검토한다.
 
-현재 문서 승격 단계에서는 “후일담 결과 정산 설계”까지만 확정한다.
+현재 구현 단계에서는 “text-backed 첫 후일담 slice”까지만 확정했다.
 새 엔딩 타입과 새 런타임 필드는 아직 확정하지 않는다.
 
 ## 작성용 판단 축
@@ -168,16 +181,29 @@ ENDING: 감사 개시
 | 마지막 퇴근자 | 혼자 살아남은 죄책감 | 동료 포기 대가 후보. |
 | 문밖으로 가져간 것 | 끝나지 않았지만 빈손은 아님 | 대표 노멀/굿엔딩 후보. |
 
-## 구현 후보 slice
+## 구현된 첫 runtime slice
 
 현실 탈출 엔딩을 실제 구현으로 승격할 때는 한 번에 전체 후보를 넣지 않는다.
-권장 첫 slice:
+첫 slice는 `escape_commute`만 대상으로 한다.
 
-1. 현재 `escape_commute`, `escape_rooftop_signal`, `escape_parking_lot`, `escape_lobby_revolving_door` 중 하나만 고른다.
-2. 그 엔딩의 후일담 후보를 공개-safe 텍스트로 작성한다.
-3. 새 상태 필드를 만들기 전에 기존 flags/items/clues로 충분히 표현 가능한지 확인한다.
-4. Rust GameCore의 기존 `ScenePage.mode: ending`으로 표시 가능한지 먼저 검증한다.
-5. 새 `kind` 또는 `aftermath` field가 꼭 필요하면 `docs/dev/Data_Schema.md`, YAML, Rust loader, Web/terminal rendering을 별도 slice로 갱신한다.
+1. `escape_commute.text`에 아래 공개-safe 후일담 블록을 붙였다.
+2. 새 상태 필드 없이 고정 텍스트 후일담으로 시작했다.
+3. Rust GameCore의 기존 `ScenePage.mode: ending`과 `body_blocks` 표시를 테스트로 검증했다.
+4. Web Storybook과 SuperLightTUI는 같은 core output을 표시한다.
+5. 새 `kind` 또는 `aftermath` field가 꼭 필요해지면 `docs/dev/Data_Schema.md`, YAML, Rust loader, Web/terminal rendering을 별도 slice로 갱신한다.
+
+첫 slice report block:
+
+```text
+[POST-ESCAPE REPORT]
+survivor_count: 1
+evidence_level: 0
+company_response: denial
+employee_status: access_revoked
+risk_level: ongoing
+
+ENDING: 정문 밖
+```
 
 ## 품질 기준
 

@@ -698,7 +698,9 @@ fn render_scene_body(ui: &mut slt::Context, page: &ScenePage) {
         ui.text(format!("{}: {}", entry.speaker, entry.text));
     }
     for block in &page.body_blocks {
-        ui.text(block.text.as_str());
+        for line in block.text.lines() {
+            ui.text(line);
+        }
     }
 }
 

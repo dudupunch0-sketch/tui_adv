@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { buildTurn, executeAction } from './actions';
+import { endings } from './content';
 import { evaluateEnding } from './endings';
 import { newGame } from './state';
 import type { GameState, PlayerState } from './types';
@@ -189,6 +190,22 @@ describe('browser terminal parity routes', () => {
 
     expect(ending?.id).toBe(endingId);
     expect(ending?.kind).toBe(kind);
+  });
+
+  it('exposes public-safe post-escape aftermath text from generated ending data', () => {
+    const ending = endings.find((candidate) => candidate.id === 'escape_commute');
+
+    expect(ending?.text).toContain('[POST-ESCAPE REPORT]');
+    expect(ending?.text).toContain('survivor_count: 1');
+    expect(ending?.text).toContain('evidence_level: 0');
+    expect(ending?.text).toContain('company_response: denial');
+    expect(ending?.text).toContain('employee_status: access_revoked');
+    expect(ending?.text).toContain('risk_level: ongoing');
+    expect(ending?.text).toContain('ENDING: 정문 밖');
+    expect(ending?.text).not.toContain('final_hint');
+    expect(ending?.text).not.toContain('actual_ip_address');
+    expect(ending?.text).not.toContain('office_location');
+    expect(ending?.text).not.toContain('treasure_location');
   });
 });
 

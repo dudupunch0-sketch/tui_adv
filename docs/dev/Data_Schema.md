@@ -630,6 +630,37 @@ endings:
 
 체력 0과 정신력 0 실패 엔딩은 YAML이 아니라 `src/tui_adv/game/endings.py`의 `_FAILURE_ENDINGS`에서 즉시 판정한다.
 
+### Text-backed ending aftermath contract
+
+첫 현실 탈출 후일담 slice는 새 schema를 만들지 않는다.
+`escape_commute`의 기존 `text` 필드 뒤에 공개-safe report block을 붙이고, exporter와 Rust GameCore가 이 본문을 그대로 `ScenePage.body_blocks`로 전달하는 계약이다.
+
+```yaml
+endings:
+  - id: escape_commute
+    kind: escape
+    text: |
+      공간 왜곡 속에서 반복되는 층수를 맞춰 풀었다. 비상문 너머의 평범한 밤공기가 당신을 퇴근시켰다.
+
+      [POST-ESCAPE REPORT]
+      survivor_count: 1
+      evidence_level: 0
+      company_response: denial
+      employee_status: access_revoked
+      risk_level: ongoing
+
+      ENDING: 정문 밖
+```
+
+계약:
+
+- `kind`는 계속 `escape`다. `real_escape`, `post_escape`, `aftermath` 같은 새 enum 값을 추가하지 않는다.
+- `EndingDef`에는 `aftermath`, `post_escape_report`, `report_blocks` 같은 새 필드를 추가하지 않는다.
+- `survivor_count`, `evidence_level`, `company_response`, `employee_status`, `risk_level`은 이번 slice에서 runtime state가 아니라 public-safe 텍스트 값이다.
+- Renderer는 report 값을 재계산하거나 파싱하지 않는다. Web Storybook과 SuperLightTUI는 core `ScenePage.body_blocks`를 표시한다.
+- 공개 YAML, content bundle, Web generated JSON, Rust fixture bundle에는 `final_hint`, `actual_ip_address`, `office_location`, `treasure_location` 같은 private-only field가 들어가면 안 된다.
+- 후일담 변형이 2개 이상이 되고 renderer가 행/필드 단위 styling을 요구할 때만 별도 schema/code slice를 검토한다.
+
 ## achievements.yaml
 
 ```yaml

@@ -232,6 +232,36 @@ fn ending_scene_pages_cover_escape_failure_truth_conquest_and_public_reality_rew
 }
 
 #[test]
+fn escape_commute_scene_page_includes_post_escape_aftermath_report() {
+    let content = content();
+    let mut escape = new_game_from_content_at(123, &content, "emergency_stairs")
+        .expect("content-backed game should start at stairs");
+    escape.flags.push("escape_route_completed".to_string());
+
+    let page = scene_page_from_content(&escape, &content).expect("escape ending should render");
+    let body = page
+        .body_blocks
+        .iter()
+        .map(|block| block.text.as_str())
+        .collect::<Vec<_>>()
+        .join("\n");
+
+    assert_eq!(page.mode, SceneMode::Ending);
+    assert_eq!(page.title, "퇴근 성공");
+    assert!(body.contains("[POST-ESCAPE REPORT]"));
+    assert!(body.contains("survivor_count: 1"));
+    assert!(body.contains("evidence_level: 0"));
+    assert!(body.contains("company_response: denial"));
+    assert!(body.contains("employee_status: access_revoked"));
+    assert!(body.contains("risk_level: ongoing"));
+    assert!(body.contains("ENDING: 정문 밖"));
+    assert!(!body.contains("final_hint"));
+    assert!(!body.contains("actual_ip_address"));
+    assert!(!body.contains("office_location"));
+    assert!(!body.contains("treasure_location"));
+}
+
+#[test]
 fn scripted_major_route_smokes_reach_expected_endings_through_current_actions() {
     let content = content();
 

@@ -2,7 +2,7 @@
 
 ## 상태
 
-이 문서는 `idea_box/inbox/2026-05-22-real-escape-ending-branching.md`를 story/design 후보로 승격한 문서이며, `docs/dev/Development_Plan.md`의 `0.2 active main plan`이 첫 런타임 slice의 source of truth다.
+이 문서는 `idea_box/done/2026-05-22-real-escape-ending-branching.md`를 story/design 후보로 승격한 문서이며, `docs/dev/Development_Plan.md`의 `0.2 active main plan`이 첫 런타임 slice의 source of truth다.
 현재 런타임 엔딩 YAML이나 Rust/Python 엔딩 판정에 `real_escape`/`post_escape`/`aftermath` 타입을 추가했다는 뜻은 아니다.
 
 현재 구현 판정:

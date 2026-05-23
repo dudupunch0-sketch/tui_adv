@@ -113,6 +113,187 @@ source /home/dudupunch0/.config/tui_adv/tmp-installs.sh
 npm test
 ```
 
+## 0.3 2026-05-23 active main plan: 모바일 픽셀 스토리북 UI redesign
+
+이 섹션은 `.hermes/plans/2026-05-23_102222-mobile-pixel-storybook-redesign-plan.md`와 `.hermes/plans/2026-05-23_102222-mobile-pixel-storybook-reference-analysis.md`를 canonical main plan으로 승격해 흡수한 UI slice 기록이다.
+`.hermes/plans/` 파일은 세션 artifact이며, 실제 작업 순서와 우선순위는 이 섹션과 아래 “현재 최우선 남은 작업” / “다음 액션”을 기준으로 판단한다.
+현재 상태: 모바일 픽셀 스토리북 UI redesign 완료.
+
+목표:
+
+- 현재 Web Storybook 화면을 “웹 대시보드/카드 페이지” 느낌에서 벗어나, `idea_box/플레이화면*.bmp` 레퍼런스의 모바일 세로형 픽셀 RPG/게임북 화면 문법을 반영한 `escape from the office` 전용 Web Storybook primary UX로 재설계한다.
+- Web에서 돌아가더라도 웹사이트처럼 보이지 않고, 고정 HUD, 진행 rail, 양피지/결재서류형 본문, 중앙 픽셀 일러스트, 문장형 선택지, 하단 아이콘 dock이 있는 모바일 게임북 화면으로 보이게 한다.
+
+레퍼런스 확인 결과:
+
+- `origin/main`의 `idea_box/`에는 다음 파일이 있다.
+  - `idea_box/플레이화면0.bmp`: 실제 포맷 PNG, 810 x 1440.
+  - `idea_box/플레이화면1.bmp`: 실제 포맷 PNG, 810 x 1644.
+  - `idea_box/플레이화면2.bmp`: 실제 포맷 PNG, 800 x 1644.
+- 파일 확장자는 `.bmp`지만 magic number 기준 실제 포맷은 PNG다.
+- 이 이미지들은 production asset이 아니라 UI grammar reference다. 그대로 asset으로 쓰기 전에는 출처/라이선스/저작권을 확인해야 한다.
+
+레퍼런스에서 추출한 화면 문법:
+
+```text
+[고정 상단 HUD]
+  캐릭터/격리자 초상, 이름표, health/sanity slot, 우측 2x3 상태칸, 문서/설정 ornament
+
+[상단 진행도/위험도 rail]
+  단순 divider가 아니라 turn/danger/route 압박을 암시하는 장식 bar
+
+[본문 스토리 영역]
+  웹 card가 아니라 종이 위에 직접 흐르는 서사 텍스트
+  중앙 픽셀 일러스트 또는 사건 visual
+  결과/보상/단서 로그는 modal이 아니라 본문 흐름 안의 강조 문장
+
+[선택지]
+  사각 웹 버튼이 아니라 ✥ bullet이 붙은 큰 문장형 선택지
+
+[하단 dock]
+  균등분할 web tab bar가 아니라 기록/단서/업적/행동/가방 pixel object dock
+```
+
+`escape from the office`식 변환 규칙:
+
+| 레퍼런스 요소 | 우리 게임 적용 |
+|---|---|
+| 캐릭터 초상 | 사원증 사진, CCTV 얼굴, 격리 대상 avatar |
+| 하트 row | `health` / 신체 반응 slot |
+| 보석 row | `sanity` / 집중도 slot |
+| 우측 2x3 스탯 | `health`, `sanity`, `battery`, `hunger`, `thirst`, `danger` 또는 core가 제공한 resource summary |
+| 두루마리 | 결재 문서, 사내 공지, 격리 티켓, `page.chapter_label` |
+| 보물상자 | 단서함, 분실물함, 사내 보관함 |
+| 트로피 | 업적, 엔딩 기록, 감사패/도장 |
+| 숲/유적 | 복도, 복합기, 회의실, 서버실, 비상계단, 사내망/문서 장면 |
+
+아키텍처 경계:
+
+- Rust GameCore / `ScenePage` / WASM JSON boundary는 game truth와 semantic contract로 유지한다.
+- 변경은 Web renderer layer에 집중한다.
+- Renderer는 action eligibility, outcome, ending, achievement를 재계산하지 않는다.
+- `ScenePage`에는 CSS class, pixel coordinate, DOM selector, Canvas command, terminal color object, image file path 같은 renderer-specific data를 넣지 않는다.
+- 새 gameplay rule은 Web UI 때문에 Python/Textual이나 legacy TypeScript mirror에 복제하지 않는다.
+
+주요 비목표:
+
+- Rust GameCore gameplay rule 변경.
+- 새 ending/action/resource 판정 추가.
+- reference image를 production asset으로 직접 사용.
+- SuperLightTUI terminal renderer redesign. 단, Web 기준과 semantic parity 주의점은 문서에 남길 수 있다.
+- Tauri/Electron/desktop wrapper 추가.
+- 대규모 asset pipeline 추가.
+- legacy fake-TUI shell 삭제.
+
+주요 수정 대상:
+
+- `web/src/ui/storybook/render.ts`
+  - `renderStorybookPage()`를 portrait board 구조로 재편한다.
+  - `renderHud()`, `renderProgressRail()`, `renderStoryFlow()`, `renderBottomDock()`을 추가한다.
+  - 기존 status aside card를 HUD로 올린다.
+  - choices는 접근 가능한 `<button>`을 유지하되 문장형 row로 바꾼다.
+- `web/src/styles/storybook.css`
+  - dark card dashboard / 2-column grid를 제거하고 parchment portrait board CSS로 대체한다.
+  - desktop에서도 centered portrait board를 유지한다.
+  - HUD, rail, story body, illustration, sentence choices, bottom dock 스타일을 추가한다.
+- `web/src/ui/storybook/visualCatalog.ts`
+  - visible figcaption/card chrome을 줄이고 중앙 픽셀 삽화 역할로 조정한다.
+  - printer/messenger/corridor placeholder를 office-pixel vignette 방향으로 조정한다.
+  - GlyphFX stable terms/fallback text는 유지한다.
+- `web/src/ui/storybook/history.ts`
+  - history를 독립 dashboard card가 아니라 drawer/result-log/dock-compatible secondary area로 낮춘다.
+  - `data-region="history"`는 유지한다.
+- `web/src/ui/storybook/render.test.ts`
+  - HUD/rail/dock/sentence-choice contract test를 먼저 추가한다.
+  - 기존 `data-renderer`, `data-region`, `data-action-id`, GlyphFX fallback 보존 test를 유지한다.
+- 선택 사항: `web/src/core/scenePageFromTurn.ts`
+  - legacy fallback path에서 이미 존재하는 `PlayerState.hunger`/`thirst`를 `status_summary.resources`에 display-only로 포함할 수 있다.
+  - 이는 gameplay rule 변경이 아니어야 하며, WASM/Rust `ScenePage`가 이미 충분한 resource summary를 제공하면 생략한다.
+
+구현 순서:
+
+1. 최신 `origin/main`에서 `feature/mobile-pixel-storybook-ui` 브랜치를 만든다.
+2. `web/src/ui/storybook/render.test.ts`에 RED contract test를 추가한다.
+   - `storybook-hud`, `story-progress-rail`, `storybook-dock`, `choice-row`, `choice-bullet` 존재.
+   - `data-renderer="web-storybook"`, `data-region="status|visual|body|choices|history"`, `data-action-id`, `data-action-kind` 보존.
+   - legacy fake-TUI/dashboard 용어와 `class="fake-tui"`가 없는지 확인.
+   - GlyphFX stable terms와 fallback text가 계속 읽히는지 확인.
+3. `web/src/ui/storybook/render.ts`의 top-level DOM skeleton을 portrait board 구조로 변경한다.
+   - `renderHud(page)`
+   - `renderProgressRail(page)`
+   - `renderStoryFlow(page)`
+   - `renderChoices(actions, blockedActions, turn)`
+   - `renderBottomDock(page)`
+4. status 표시를 HUD로 변환한다.
+   - nameplate는 기본적으로 `page.location.name`을 사용한다.
+   - document ornament는 `page.chapter_label`을 사용한다.
+   - `health`/`sanity`는 slot row로 표시한다.
+   - resource stat grid는 core가 제공한 `status_summary.resources`와 `danger`만 사용한다.
+5. progress/danger rail을 추가한다.
+   - `turn`과 `danger`를 aria label에 포함한다.
+   - danger band는 display-only CSS attribute로 둔다.
+   - rail progress는 실제 엔딩 진행도가 아니라 시각적 압박 marker다.
+6. story flow를 재배치한다.
+   - `movement`/location 성격은 visual-first.
+   - `encounter`는 text-first.
+   - `ending`은 visual/body 중심.
+   - schema 변경 없이 renderer-local layout policy만 사용한다.
+7. choices를 문장형 row로 바꾼다.
+   - 버튼 semantics, click, number-key action id 매핑은 유지한다.
+   - 시각적으로는 card button이 아니라 `✥` bullet + 큰 문장 + optional cost/reason으로 보이게 한다.
+   - blocked action reason은 계속 보여준다.
+8. bottom dock과 history drawer를 추가한다.
+   - 기록/단서/업적/현재 목표/소지품을 pixel object dock으로 배치한다.
+   - first slice에서는 history만 실제 `<details>` drawer로 연결해도 된다.
+   - 아직 구현되지 않은 dock 기능을 과장하지 않는다.
+9. `web/src/styles/storybook.css`를 parchment portrait board 기준으로 재작성한다.
+   - 800~810px reference width를 기준으로 center board를 만든다.
+   - desktop 2-column dashboard media query를 제거하거나 portrait-preserving 방식으로 바꾼다.
+   - Korean text readability, focus-visible, reduced-motion을 확인한다.
+10. 필요 시 `visualCatalog.ts`와 `history.ts`를 새 구조에 맞춘다.
+11. 구현 후 docs를 동기화한다.
+   - 필요하면 `docs/design/Mobile_Pixel_Storybook_UI.md`를 새 canonical design doc으로 만들고 reference analysis를 흡수한다.
+   - `docs/design/TUI_Storybook_GlyphFX_Concept.md`, `docs/design/UI_Rules.md`, `docs/00_Index.md`, `README.md`는 중복 없이 링크/요약만 갱신한다.
+   - 이 `docs/dev/Development_Plan.md`의 상태를 구현 진행/완료에 맞게 갱신한다.
+
+핵심 검증 명령:
+
+```bash
+source ~/.config/tui_adv/tmp-installs.sh
+cd web
+npm test -- --run web/src/ui/storybook/render.test.ts
+npm test
+npm run build
+
+cd ..
+python3 scripts/export_web_data.py \
+  --bundle crates/escape-core/fixtures/content/content.bundle.json \
+  --bundle web/src/data/generated/content.bundle.json \
+  --check
+python3 -m pytest tests/test_docs_contract.py tests/test_web_packaging_decision.py -q
+git diff --check
+```
+
+수동 visual QA:
+
+- 브라우저 preview를 390x844, 414x896, 800x1440, 810x1644, wide desktop에서 확인한다.
+- desktop에서도 2-column dashboard가 아니라 centered portrait board인지 확인한다.
+- HUD/rail/story text/central visual/sentence choices/bottom dock이 reference grammar와 맞는지 확인한다.
+- choices click과 number-key action이 유지되는지 확인한다.
+- printer anomaly GlyphFX canvas 또는 fallback text가 계속 보이는지 확인한다.
+- unknown visual id placeholder가 action을 drop하지 않는지 확인한다.
+
+완료 기준:
+
+- `web/src/ui/storybook/render.test.ts` 통과.
+- `cd web && npm test` 통과.
+- `cd web && npm run build` 통과.
+- 문서 변경 시 docs contract/export checks 통과.
+- `git diff --check` 통과.
+- manual browser QA에서 “인터넷 페이지”가 아니라 “모바일 픽셀 게임북 board”로 보임.
+- office-horror 정체성이 fantasy RPG asset 복붙처럼 보이지 않음.
+- Renderer contract boundary가 유지됨.
+
 ## 1. 목표
 
 국내 최고 대기업 IT/반도체 회사의 연구개발동 같은 사무실을 배경으로 한 TUI 기반 랜덤 인카운터 선택지 생존 게임을 만든다.
@@ -636,20 +817,22 @@ src/tui_adv/data/secrets.example.yaml
 6. Web/terminal action id parity smoke를 추가했다.
 7. Rust GameCore가 movement pages, usable items, ability checks, major endings, achievement unlock metadata, hunger/thirst pressure cues, public-safe reality-link reward metadata를 처리한다.
 8. Web Storybook runtime이 `escape-wasm` JSON boundary와 generated content bundle을 통해 Rust `ScenePage`를 소비한다. generated wasm package가 없는 개발 환경에서는 legacy TS mirror fallback만 사용한다.
-9. Web WASM build/preview 표준화 완료: `web/package.json`의 `wasm:build`가 `wasm-pack build ../crates/escape-wasm --target web --out-dir ../../web/src/core/wasm-pkg`를 실행하고, `build:wasm` / `preview:wasm`이 Rust/WASM-primary Web 검증 경로를 제공한다.
+9. Web WASM build/preview 표준화 완료: `web/package.json`의 `wasm:build`가 `wasm-pack build ../crates/escape-wasm --target web --out-dir ../../web/src/core/wasm-pkg`를 실행하고, `build:wasm` / `preview:wasm`이 Rust/WASM-primary Web 검증 경로를 제공한다. `build:wasm`은 `wasm:copy`로 generated package를 `web/dist/assets/wasm-pkg/`에 복사해 production dynamic import 경로를 맞춘다.
 10. legacy TypeScript mirror는 fallback/parity oracle로 freeze했고, Python/Textual도 legacy smoke/parity oracle로만 유지한다.
 11. SuperLightTUI terminal visual card/GlyphFX/input polish 완료: `escape-terminal`은 `ScenePage.visual`을 ASCII/Unicode card로 표시하고, `glyph_anomaly`의 intensity meter/stable terms/fallback text와 현재 턴 입력 범위를 노출한다.
 12. Web/Tauri/Electron 패키징 결정 완료: 현재 플레이어 배포 표면은 Web-only이며, `web/package.json`의 `build:player` / `preview:player` alias가 Rust/WASM-primary Web artifact(`web/dist/`)를 기준으로 한다. Tauri/Electron은 desktop wrapper 고유 가치가 생길 때까지 deferred다.
 13. terminal full-screen app loop/tick/raw-draw GlyphFX 완료: `escape-terminal --app`은 SuperLightTUI `run_with` full-screen loop를 사용하고, `--app-smoke --tick`은 같은 app-frame renderer를 headless로 검증한다. `glyph_anomaly`는 raw-draw layer에서 tick마다 cell wave를 바꾸되 stable terms/fallback text를 유지한다.
 14. idea_box 엔딩 분기 backlog 승격 완료: 꿈 엔딩은 `docs/story/Dream_Ending_Branching.md`에 story/design 후보로 정리했고, 현실 탈출 후일담은 `escape_commute` text-backed runtime slice로 승격했다. 새 런타임 엔딩 타입/schema는 열지 않았다.
 15. 현실 탈출 후일담 첫 runtime slice 완료: `escape_commute.text`에 public-safe `[POST-ESCAPE REPORT]`를 추가했고 Python content, Rust `ScenePage`, SuperLightTUI snapshot, Web generated parity 테스트로 같은 후일담 노출을 검증했다.
+16. 모바일 픽셀 스토리북 UI redesign 완료: Web Storybook을 centered portrait board, HUD, progress rail, paper story flow, 문장형 선택지, bottom dock 구조로 재설계했고 `docs/design/Mobile_Pixel_Storybook_UI.md`에 canonical visual contract를 남겼다.
 
 현재 최우선 남은 작업:
 
-1. active main plan 기준 구현 남은 작업 없음. 현실 탈출 후일담 첫 runtime slice는 완료했다.
-   - 완료 범위: `escape_commute` 단일 엔딩에 public-safe `[POST-ESCAPE REPORT]` 추가.
-   - 유지 범위: 새 `kind`, 새 schema field, 새 runtime state 없음.
-   - 검증 범위: Python YAML loader, Rust `ScenePage`, SuperLightTUI snapshot, Web generated parity.
+1. active main plan 기준 구현 남은 작업 없음. 모바일 픽셀 스토리북 UI redesign 완료.
+   - 완료 범위: `web/src/ui/storybook/render.ts`, `web/src/styles/storybook.css`, `web/src/ui/storybook/visualCatalog.ts`, `web/src/ui/storybook/history.ts`, `web/src/ui/storybook/render.test.ts`.
+   - 문서화 범위: `docs/design/Mobile_Pixel_Storybook_UI.md`, README, `docs/00_Index.md`, 이 문서, `docs/dev/Checklist.md`.
+   - 유지 범위: Rust GameCore / `ScenePage` / WASM JSON boundary는 truth로 유지하고, renderer는 action id와 semantic field를 표시만 한다.
+   - 금지 범위 유지: reference image production asset 직접 사용, 새 gameplay rule/schema/state 추가, renderer의 outcome/ending 재계산.
 
 전환 중 유지:
 
@@ -657,6 +840,7 @@ src/tui_adv/data/secrets.example.yaml
 2. TypeScript mirror core와 fake-TUI browser shell은 generated wasm package가 없는 개발 환경의 fallback/parity oracle로 유지한다.
 3. 새 게임 규칙, route truth, eligibility, outcome, ending, achievement는 renderer가 아니라 Rust core에 추가한다.
 4. 현실 탈출 후일담 slice에서도 renderer가 후일담을 재판정하지 않는다. Web Storybook과 SuperLightTUI는 core `ScenePage.body_blocks`를 표시한다.
+5. 모바일 픽셀 스토리북 UI redesign에서도 Web renderer는 `ScenePage` semantic field와 action id를 표시/전달만 하며, gameplay truth와 renderer-neutral schema를 변경하지 않는다.
 
 나중:
 
@@ -714,4 +898,4 @@ Web 또는 terminal renderer가 게임 규칙을 다시 구현하면 Rust GameCo
 
 1. active main plan 기준 즉시 진행할 구현 작업 없음.
 2. 다음 큰 작업을 열 때는 `idea_box/` 또는 위 future backlog 중 하나를 명시적으로 promote한 뒤 이 문서 상단 우선순위를 갱신한다.
-3. 현실 탈출 후일담을 이어서 확장할 경우에는 `escape_rooftop_signal`, `escape_parking_lot`, `escape_lobby_revolving_door` 중 하나를 새 TDD slice로 열고, 2개 이상 변형이 필요한 시점에만 별도 `aftermath` schema/field를 검토한다.
+3. Web Storybook visual을 더 밀 경우에는 `docs/design/Mobile_Pixel_Storybook_UI.md`의 contract를 기준으로 실제 asset pipeline, scene composition schema, 또는 browser visual regression 중 하나만 별도 slice로 연다.

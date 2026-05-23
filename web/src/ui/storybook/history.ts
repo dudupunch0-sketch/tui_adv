@@ -12,5 +12,8 @@ export function renderStoryHistory(entries: HistoryEntry[]): string {
         .join('')
     : '<li data-history-kind="empty"><span>system</span>아직 기록 없음</li>';
 
-  return `<aside class="storybook-history" data-region="history"><h2>최근 기록</h2><ol>${rows}</ol></aside>`;
+  return `<details class="storybook-history" data-region="history" id="story-history">
+    <summary>최근 기록</summary>
+    <ol>${rows}</ol>
+  </details>`;
 }

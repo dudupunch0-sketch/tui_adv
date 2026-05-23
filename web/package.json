@@ -7,17 +7,21 @@
     "dev": "vite --host 127.0.0.1",
     "dev:wasm": "npm run wasm:build && vite --host 127.0.0.1",
     "build": "tsc --noEmit && vite build",
-    "build:wasm": "npm run wasm:build && npm run build",
+    "build:wasm": "npm run wasm:build && npm run build && npm run wasm:copy",
     "build:player": "npm run build:wasm",
     "test": "vitest run",
     "preview": "vite preview --host 127.0.0.1",
     "preview:wasm": "npm run build:wasm && vite preview --host 127.0.0.1",
     "preview:player": "npm run preview:wasm",
-    "wasm:build": "wasm-pack build ../crates/escape-wasm --target web --out-dir ../../web/src/core/wasm-pkg"
+    "wasm:build": "wasm-pack build ../crates/escape-wasm --target web --out-dir ../../web/src/core/wasm-pkg",
+    "wasm:copy": "node scripts/copy-wasm-pkg.mjs"
   },
   "devDependencies": {
     "typescript": "latest",
     "vite": "latest",
     "vitest": "latest"
+  },
+  "dependencies": {
+    "@fontsource/noto-serif-kr": "^5.2.9"
   }
 }

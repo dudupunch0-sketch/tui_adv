@@ -23,7 +23,7 @@ def test_superlighttui_terminal_polish_is_checklisted_and_documented():
     assert "Web/Tauri/Electron 패키징 결정 완료" in plan
     assert "terminal full-screen app loop/tick/raw-draw GlyphFX 완료" in plan
     next_slice = plan.split("현재 최우선 남은 작업:", 1)[1]
-    assert "active main plan 기준 구현 남은 작업 없음" in next_slice
+    assert "모바일 픽셀 스토리북 UI redesign 완료" in plan
     assert "terminal full-screen app loop와 tick/raw-draw GlyphFX slice를 진행한다" not in next_slice
     assert "Web/Tauri/Electron 패키징 검토" not in next_slice
     assert "visual card/GlyphFX/input 안내 polish" in readme
@@ -68,6 +68,35 @@ def test_phase6_textual_style_slice_is_checklisted_and_documented():
     assert "- [x] Textual CSS 색상 테마 위젯 연결" in checklist
     assert "#game-grid" in layout_doc
     assert "office-panel--wide" in layout_doc
+
+
+def test_mobile_pixel_storybook_ui_doc_is_indexed_checklisted_and_current_plan():
+    index = Path("docs/00_Index.md").read_text(encoding="utf-8")
+    readme = Path("README.md").read_text(encoding="utf-8")
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    doc_path = Path("docs/design/Mobile_Pixel_Storybook_UI.md")
+
+    assert doc_path.exists()
+    doc = doc_path.read_text(encoding="utf-8")
+    main_ts = Path("web/src/main.ts").read_text(encoding="utf-8")
+    package_json = Path("web/package.json").read_text(encoding="utf-8")
+    assert "docs/design/Mobile_Pixel_Storybook_UI.md" in index
+    assert "docs/design/Mobile_Pixel_Storybook_UI.md" in readme
+    assert "모바일 세로형 픽셀 게임북 board" in doc
+    assert "idea_box/플레이화면0.bmp" in doc
+    assert "story-progress-rail" in doc
+    assert "choice-row" in doc
+    assert "@fontsource/noto-serif-kr" in doc
+    assert "@fontsource/noto-serif-kr" in main_ts
+    assert "@fontsource/noto-serif-kr" in package_json
+    assert "Renderer는 status를 계산하지 않는다" in doc
+    assert "- [x] Web Storybook 모바일 픽셀 board contract 문서화" in checklist
+    assert "- [x] HUD/rail/dock/sentence-choice renderer contract 구현" in checklist
+    assert "- [x] reference-size browser visual QA" in checklist
+    assert "모바일 픽셀 스토리북 UI redesign 완료" in plan
+    next_slice = plan.split("현재 최우선 남은 작업:", 1)[1]
+    assert "active main plan 기준 구현 남은 작업 없음" in next_slice
 
 
 def test_phase9_story_route_design_docs_are_indexed_and_checklisted():

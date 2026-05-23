@@ -47,6 +47,7 @@ docs/
     Map.md                          # 사무실 위치, 연결, 구역별 역할
     UI_Rules.md                     # 사내 시스템형 TUI, 글리치, 선택지 오염 규칙
     TUI_Storybook_GlyphFX_Concept.md # Web primary UX로 채택한 TUI풍 스토리북 + GlyphFX 방향
+    Mobile_Pixel_Storybook_UI.md     # 모바일 세로형 픽셀 게임북 board UI contract
 
   content/
     Location_List.md                # 런타임 위치 목록
@@ -116,6 +117,7 @@ private/
 - `docs/design/Map.md`
 - `docs/design/UI_Rules.md`
 - `docs/design/TUI_Storybook_GlyphFX_Concept.md`
+- `docs/design/Mobile_Pixel_Storybook_UI.md`
 - `docs/content/Location_List.md`
 - `docs/content/Item_List.md`
 - `docs/content/Encounter_List.md`

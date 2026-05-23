@@ -31,7 +31,7 @@ function renderVisualBody(visualKind: VisualKind, visual: SceneVisual, effectCue
 function renderPrinterVisual(visual: SceneVisual, effectCues: SceneEffectCue[]): string {
   return `
     <figcaption>visual: ${escapeHtml(visual.id)}</figcaption>
-    <div class="printer-card" aria-label="${escapeHtml(visual.alt)}">
+    <div class="pixel-illustration printer-card" aria-label="${escapeHtml(visual.alt)}">
       <canvas data-anomaly-canvas="printer-flow" aria-label="복합기 GlyphFX 장면"></canvas>
       <pre aria-hidden="true">      ________
  ____/ PRINT /__
@@ -45,7 +45,7 @@ function renderPrinterVisual(visual: SceneVisual, effectCues: SceneEffectCue[]):
 function renderMessengerVisual(visual: SceneVisual): string {
   return `
     <figcaption>visual: ${escapeHtml(visual.id)}</figcaption>
-    <div class="message-card" aria-label="${escapeHtml(visual.alt)}">
+    <div class="pixel-illustration message-card" aria-label="${escapeHtml(visual.alt)}">
       <p>사내 메신저</p>
       <blockquote>아직 하지 않은 선택이 있습니다.</blockquote>
     </div>
@@ -55,7 +55,7 @@ function renderMessengerVisual(visual: SceneVisual): string {
 function renderCorridorVisual(visual: SceneVisual): string {
   return `
     <figcaption>visual: ${escapeHtml(visual.id)}</figcaption>
-    <div class="corridor-card" aria-label="${escapeHtml(visual.alt)}">
+    <div class="pixel-illustration corridor-card" aria-label="${escapeHtml(visual.alt)}">
       <span>비상등</span><span>╱╲╱╲╱╲</span><span>EXIT?</span>
     </div>
   `;
@@ -64,7 +64,7 @@ function renderCorridorVisual(visual: SceneVisual): string {
 function renderPlaceholderVisual(visual: SceneVisual): string {
   return `
     <figcaption>visual: ${escapeHtml(visual.id)}</figcaption>
-    <div class="placeholder-card">
+    <div class="pixel-illustration placeholder-card" aria-label="${escapeHtml(visual.alt || '아직 카탈로그에 없는 장면이다.')}">
       <p>${escapeHtml(visual.alt || '아직 카탈로그에 없는 장면이다.')}</p>
     </div>
   `;

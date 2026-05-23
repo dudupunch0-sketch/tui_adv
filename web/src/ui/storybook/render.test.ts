@@ -89,6 +89,13 @@ describe('Web Storybook renderer', () => {
     const html = renderStorybookPage(samplePrinterPage());
 
     expect(html).toContain('data-renderer="web-storybook"');
+    expect(html).toContain('class="storybook-hud"');
+    expect(html).toContain('class="hud-nameplate"');
+    expect(html).toContain('class="hud-stat-grid"');
+    expect(html).toContain('class="story-progress-rail"');
+    expect(html).toContain('class="storybook-dock"');
+    expect(html).toContain('class="choice-row"');
+    expect(html).toContain('class="choice-bullet"');
     expect(html).toContain('data-region="visual"');
     expect(html).toContain('data-region="body"');
     expect(html).toContain('data-region="choices"');
@@ -100,9 +107,13 @@ describe('Web Storybook renderer', () => {
     expect(html).toContain('시스템 복합기');
     expect(html).toContain('복합기가 아직 고르지 않은 선택지를 출력한다.');
     expect(html).toContain('data-action-id="choice:take_printout"');
+    expect(html).toContain('data-action-kind="choice"');
     expect(html).toContain('data-action-id="move:hallway"');
     expect(html).toContain('필요: 집중도 40 이상');
     expect(html).toContain('따뜻한 출력물을 접어 주머니에 넣었다.');
+    expect(html).toContain('aria-label="기록"');
+    expect(html).toContain('aria-label="소지품"');
+    expect(html).not.toContain('storybook-topline');
     expect(html).not.toContain('CURRENT ENCOUNTER');
     expect(html).not.toContain('LOCAL STATUS');
     expect(html).not.toContain('class="fake-tui"');

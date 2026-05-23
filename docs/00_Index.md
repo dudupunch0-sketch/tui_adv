@@ -36,7 +36,7 @@ docs/
     Disaster_Cause.md               # 재난 원인과 진실 루트 공개-safe 설계
     Disaster_Type_Extension.md      # 재난 타입 확장 규칙과 후보 백로그
     Dream_Ending_Branching.md       # 꿈 엔딩/깨어난 뒤 재시험 문법 설계 후보
-    Real_Escape_Ending_Branching.md # 현실 탈출 후 결과 정산/후일담 설계 후보
+    Real_Escape_Ending_Branching.md # 현실 탈출 후 결과 정산/후일담 설계 + active first slice contract
     Reality_Link.md                 # 현실세계 연결 원칙. 실제 위치는 넣지 않음
 
   design/

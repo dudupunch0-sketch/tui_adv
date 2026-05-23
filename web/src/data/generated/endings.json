@@ -28,7 +28,7 @@
     "kind": "escape",
     "name": "퇴근 성공",
     "priority": 60,
-    "text": "공간 왜곡 속에서 반복되는 층수를 맞춰 풀었다. 비상문 너머의 평범한 밤공기가 당신을 퇴근시켰다.\n"
+    "text": "공간 왜곡 속에서 반복되는 층수를 맞춰 풀었다.\n비상문 너머의 평범한 밤공기가 당신을 퇴근시켰다.\n\n[POST-ESCAPE REPORT]\nsurvivor_count: 1\nevidence_level: 0\ncompany_response: denial\nemployee_status: access_revoked\nrisk_level: ongoing\n\nENDING: 정문 밖\n"
   },
   {
     "conditions": {

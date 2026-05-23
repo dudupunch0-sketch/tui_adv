@@ -37,9 +37,81 @@ Rust GameCore
 
 1. `TUI Storybook + GlyphFX Concept v2`는 이미 Web Storybook/GlyphFX primary UX와 SuperLightTUI terminal-native horror/fallback edition으로 채택/구현 방향에 반영되어 있어 adopted/merged로 닫았다.
 2. 꿈 엔딩 분기 아이디어는 `docs/story/Dream_Ending_Branching.md`로 승격했다. 이는 후속 엔딩/스토리팩 작성용 설계 후보이며, 현재 런타임 YAML/schema/code에 `dream` 또는 `epilogue` 타입을 추가했다는 뜻은 아니다.
-3. 현실 탈출 엔딩 분기 아이디어는 `docs/story/Real_Escape_Ending_Branching.md`로 승격했다. 이는 탈출 후 증거/동료/회사 반응을 정산하는 후일담 설계 후보이며, 현재 런타임 YAML/schema/code에 `real_escape`, `post_escape`, `aftermath` 타입을 추가했다는 뜻은 아니다.
+3. 현실 탈출 엔딩 분기 아이디어는 `docs/story/Real_Escape_Ending_Branching.md`로 승격했고, 아래 `0.2 active main plan`에서 `escape_commute` text-backed 후일담 첫 runtime slice로 promote했다. 이는 `real_escape`, `post_escape`, `aftermath` 같은 새 타입을 추가한다는 뜻은 아니다.
 
-후속 구현을 열 경우 새 게임 규칙과 엔딩 판정은 Rust GameCore/content YAML 쪽에서 별도 slice로 진행하고, Web Storybook과 SuperLightTUI는 `ScenePage`/`ActionResult`를 표시하는 renderer로 유지한다.
+active/후속 구현에서 새 게임 규칙과 엔딩 판정은 Rust GameCore/content YAML 쪽에서 별도 slice로 진행하고, Web Storybook과 SuperLightTUI는 `ScenePage`/`ActionResult`를 표시하는 renderer로 유지한다.
+
+## 0.2 2026-05-23 active main plan: 현실 탈출 후일담 첫 런타임 slice
+
+이 섹션은 `.hermes/plans/2026-05-23_021437-real-escape-aftermath-implementation.md`의 내용을 canonical main plan으로 흡수한 runtime slice 기록이다.
+`.hermes/plans/` 파일은 세션 artifact이며, 이 섹션과 아래 “현재 최우선 남은 작업” / “다음 액션”이 작업 순서의 기준이다.
+현재 상태: 구현 완료.
+
+목표:
+
+- `escape_commute` 현실 탈출 엔딩에 공개-safe 후일담 정산을 실제 런타임 콘텐츠로 노출한다.
+
+아키텍처:
+
+- 첫 slice는 새 `kind`, 새 schema field, renderer별 분기를 만들지 않는다.
+- 기존 공개 YAML `src/tui_adv/data/endings.yaml`의 `escape_commute.text`에 구조화된 `[POST-ESCAPE REPORT]` 후일담 블록을 붙인다.
+- Rust GameCore의 기존 `ScenePage.mode: ending` 경로가 Web Storybook/WASM과 SuperLightTUI terminal까지 그대로 전달하는지 테스트로 증명한다.
+- Web Storybook과 SuperLightTUI는 후일담을 재판정하지 않고 core가 제공한 `ScenePage.body_blocks`를 표시한다.
+
+첫 후일담 톤:
+
+```text
+[POST-ESCAPE REPORT]
+survivor_count: 1
+evidence_level: 0
+company_response: denial
+employee_status: access_revoked
+risk_level: ongoing
+
+ENDING: 정문 밖
+```
+
+명시적 비목표:
+
+- `real_escape`, `post_escape`, `aftermath` 같은 새 엔딩 종류 추가.
+- `EndingDef`에 `aftermath`, `post_escape_report`, `report_blocks` 같은 새 필드 추가.
+- rescued NPC, evidence level, witness count 같은 새 runtime state 추가.
+- Python/Textual 또는 legacy TypeScript mirror에 새 gameplay rule 복제.
+- private 현실 단서, 실제 회사명, 실제 위치, 실제 직원/조직/내부망 정보 추가.
+
+구현 순서:
+
+1. 최신 `origin/main`에서 `feature/real-escape-aftermath` 브랜치를 만든다.
+2. RED 테스트를 먼저 추가한다.
+   - `tests/test_content_data.py`: `escape_commute`에 `[POST-ESCAPE REPORT]`, `survivor_count: 1`, `evidence_level: 0`, `company_response: denial`, `risk_level: ongoing`, `ENDING: 정문 밖`이 있고 private-only field 이름이 없음을 검증한다.
+   - `crates/escape-core/tests/route_parity.rs`: `scene_page_from_content()`의 ending page `body_blocks`에 후일담이 들어오는지 검증한다.
+   - `crates/escape-terminal/tests/cli_smoke.rs`: scripted action으로 `escape_commute`에 도달한 SuperLightTUI snapshot이 후일담을 표시하는지 검증한다.
+   - `web/src/game/parity.test.ts`: generated ending data에서 Web parity route가 후일담 텍스트를 볼 수 있는지 검증한다.
+3. `src/tui_adv/data/endings.yaml`의 `escape_commute.text`만 최소 수정한다.
+4. `scripts/export_web_data.py --write`로 Rust/Web content bundle과 Web generated JSON을 갱신한다.
+5. targeted GREEN 테스트를 실행한다.
+6. `docs/story/Real_Escape_Ending_Branching.md`, `docs/content/Ending_List.md`, 이 문서를 현재 구현 상태에 맞게 동기화한다.
+7. 전체 검증 matrix를 실행한 뒤 focused PR로 올린다.
+
+핵심 검증 명령:
+
+```bash
+source /home/dudupunch0/.config/tui_adv/tmp-installs.sh
+python3 scripts/export_web_data.py \
+  --bundle crates/escape-core/fixtures/content/content.bundle.json \
+  --bundle web/src/data/generated/content.bundle.json \
+  --check
+python3 -m pytest tests -q
+python3 -m compileall -q src tests scripts
+cargo fmt --check
+cargo test --workspace
+cargo clippy --workspace --all-targets -- -D warnings
+git diff --check
+
+cd web
+source /home/dudupunch0/.config/tui_adv/tmp-installs.sh
+npm test
+```
 
 ## 1. 목표
 
@@ -569,26 +641,33 @@ src/tui_adv/data/secrets.example.yaml
 11. SuperLightTUI terminal visual card/GlyphFX/input polish 완료: `escape-terminal`은 `ScenePage.visual`을 ASCII/Unicode card로 표시하고, `glyph_anomaly`의 intensity meter/stable terms/fallback text와 현재 턴 입력 범위를 노출한다.
 12. Web/Tauri/Electron 패키징 결정 완료: 현재 플레이어 배포 표면은 Web-only이며, `web/package.json`의 `build:player` / `preview:player` alias가 Rust/WASM-primary Web artifact(`web/dist/`)를 기준으로 한다. Tauri/Electron은 desktop wrapper 고유 가치가 생길 때까지 deferred다.
 13. terminal full-screen app loop/tick/raw-draw GlyphFX 완료: `escape-terminal --app`은 SuperLightTUI `run_with` full-screen loop를 사용하고, `--app-smoke --tick`은 같은 app-frame renderer를 headless로 검증한다. `glyph_anomaly`는 raw-draw layer에서 tick마다 cell wave를 바꾸되 stable terms/fallback text를 유지한다.
-14. idea_box 엔딩 분기 backlog 승격 완료: 꿈 엔딩과 현실 탈출 후일담은 각각 `docs/story/Dream_Ending_Branching.md`, `docs/story/Real_Escape_Ending_Branching.md`에 story/design 후보로 정리했고, 아직 런타임 엔딩 타입/schema/code 변경은 열지 않았다.
+14. idea_box 엔딩 분기 backlog 승격 완료: 꿈 엔딩은 `docs/story/Dream_Ending_Branching.md`에 story/design 후보로 정리했고, 현실 탈출 후일담은 `escape_commute` text-backed runtime slice로 승격했다. 새 런타임 엔딩 타입/schema는 열지 않았다.
+15. 현실 탈출 후일담 첫 runtime slice 완료: `escape_commute.text`에 public-safe `[POST-ESCAPE REPORT]`를 추가했고 Python content, Rust `ScenePage`, SuperLightTUI snapshot, Web generated parity 테스트로 같은 후일담 노출을 검증했다.
 
 현재 최우선 남은 작업:
 
-1. active main plan 기준 구현 남은 작업 없음. Web Storybook/GlyphFX primary, Web-only 배포 표면, SuperLightTUI terminal visual card/input polish, terminal full-screen app loop/tick/raw-draw GlyphFX baseline까지 완료했다.
+1. active main plan 기준 구현 남은 작업 없음. 현실 탈출 후일담 첫 runtime slice는 완료했다.
+   - 완료 범위: `escape_commute` 단일 엔딩에 public-safe `[POST-ESCAPE REPORT]` 추가.
+   - 유지 범위: 새 `kind`, 새 schema field, 새 runtime state 없음.
+   - 검증 범위: Python YAML loader, Rust `ScenePage`, SuperLightTUI snapshot, Web generated parity.
 
 전환 중 유지:
 
 1. Python/Textual 직접 플레이와 smoke는 legacy/parity oracle로 유지하되 새 gameplay rule을 추가하지 않는다.
 2. TypeScript mirror core와 fake-TUI browser shell은 generated wasm package가 없는 개발 환경의 fallback/parity oracle로 유지한다.
 3. 새 게임 규칙, route truth, eligibility, outcome, ending, achievement는 renderer가 아니라 Rust core에 추가한다.
+4. 현실 탈출 후일담 slice에서도 renderer가 후일담을 재판정하지 않는다. Web Storybook과 SuperLightTUI는 core `ScenePage.body_blocks`를 표시한다.
 
 나중:
 
 1. 대표 Web/Rust route smoke가 legacy coverage를 대체하면 Python/Textual과 TypeScript mirror retire 여부를 다시 결정한다.
 2. 정복/진실/재난 타입별 변형 콘텐츠 확대
-3. 꿈 엔딩/현실 탈출 후일담을 실제 콘텐츠로 구현할지 결정하고, 구현 시 Rust GameCore/content YAML slice로 승격
-4. Tauri/Electron desktop wrapper 재검토: native file dialog, offline file import/export, OS-level 알림/업데이트 같은 Web-only 한계를 실제 요구로 확인한 뒤 별도 slice로 연다.
-5. optional inline image는 terminal cell/GlyphFX baseline 밖 future backlog로 둔다. Kitty/Sixel/iTerm2 capability 요구가 실제로 생길 때 별도 slice로 연다.
-6. 여러 히든 현실 보물
+3. 현실 탈출 후일담 다중 변형: `escape_rooftop_signal`, `escape_parking_lot`, `escape_lobby_revolving_door` 같은 다른 escape 엔딩으로 확장할지 결정한다.
+4. 후일담 변형이 2개 이상이 되고 단순 text blob이 부족해지면 별도 `aftermath` schema/field slice를 검토한다.
+5. 꿈 엔딩을 실제 콘텐츠로 구현할지 결정한다.
+6. Tauri/Electron desktop wrapper 재검토: native file dialog, offline file import/export, OS-level 알림/업데이트 같은 Web-only 한계를 실제 요구로 확인한 뒤 별도 slice로 연다.
+7. optional inline image는 terminal cell/GlyphFX baseline 밖 future backlog로 둔다. Kitty/Sixel/iTerm2 capability 요구가 실제로 생길 때 별도 slice로 연다.
+8. 여러 히든 현실 보물
 
 ## 9. 주요 리스크
 
@@ -634,4 +713,5 @@ Web 또는 terminal renderer가 게임 규칙을 다시 구현하면 Rust GameCo
 ## 10. 다음 액션
 
 1. active main plan 기준 즉시 진행할 구현 작업 없음.
-2. 다음 큰 작업을 열 때는 `idea_box/` 또는 위 future backlog 중 하나를 명시적으로 promote한 뒤 `docs/dev/Development_Plan.md` 상단 우선순위를 갱신한다.
+2. 다음 큰 작업을 열 때는 `idea_box/` 또는 위 future backlog 중 하나를 명시적으로 promote한 뒤 이 문서 상단 우선순위를 갱신한다.
+3. 현실 탈출 후일담을 이어서 확장할 경우에는 `escape_rooftop_signal`, `escape_parking_lot`, `escape_lobby_revolving_door` 중 하나를 새 TDD slice로 열고, 2개 이상 변형이 필요한 시점에만 별도 `aftermath` schema/field를 검토한다.

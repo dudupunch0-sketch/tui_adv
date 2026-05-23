@@ -93,6 +93,26 @@ def test_default_endings_yaml_loads_escape_route_conditions():
     )
 
 
+def test_escape_commute_has_public_safe_post_escape_aftermath():
+    escape = load_default_endings()["escape_commute"]
+
+    assert "[POST-ESCAPE REPORT]" in escape.text
+    assert "survivor_count: 1" in escape.text
+    assert "evidence_level: 0" in escape.text
+    assert "company_response: denial" in escape.text
+    assert "employee_status: access_revoked" in escape.text
+    assert "risk_level: ongoing" in escape.text
+    assert "ENDING: 정문 밖" in escape.text
+
+    private_terms = (
+        "final_hint",
+        "actual_ip_address",
+        "office_location",
+        "treasure_location",
+    )
+    assert not any(term in escape.text for term in private_terms)
+
+
 def test_default_achievements_yaml_loads_truth_route_reward():
     achievements = load_default_achievements()
     truth = achievements["truth_protocol_understood"]

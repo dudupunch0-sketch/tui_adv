@@ -46,6 +46,19 @@
 
 공간 왜곡 속에서 반복되는 층수를 맞춰 풀었다. 비상문 너머의 평범한 밤공기가 당신을 퇴근시켰다.
 
+```text
+[POST-ESCAPE REPORT]
+survivor_count: 1
+evidence_level: 0
+company_response: denial
+employee_status: access_revoked
+risk_level: ongoing
+
+ENDING: 정문 밖
+```
+
+구현 메모: 이 후일담은 기존 `text`에 포함된 public-safe block이다. 새 `kind`나 새 `EndingDef` field는 없고, Web Storybook/SuperLightTUI는 Rust core `ScenePage.body_blocks`를 표시한다.
+
 ### hidden_reality_hint_001: 첫 번째 현실 연결 힌트
 
 - 유형: `hidden`

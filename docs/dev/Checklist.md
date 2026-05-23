@@ -503,6 +503,15 @@
 - [x] 비밀 정보 릴리즈 검사 추가
 - [x] 로컬 비공개 secret 템플릿과 안전 점검 문서 추가
 
+### 9.5 현실 탈출 후일담
+
+- [x] 첫 runtime slice 범위 확정: `escape_commute` 단일 엔딩, text-backed `[POST-ESCAPE REPORT]`, 새 schema/kind 없음
+- [x] 설계 계약 문서화: `Development_Plan.md`, `Real_Escape_Ending_Branching.md`, `Data_Schema.md`, `Ending_List.md`
+- [x] RED 테스트 추가: Python content, Rust `ScenePage`, SuperLightTUI snapshot, Web generated parity
+- [x] `escape_commute.text`에 공개-safe 후일담 블록 추가
+- [x] Rust/Web generated content bundle 갱신
+- [x] targeted GREEN 및 전체 validation matrix 통과
+
 ## Phase 10: 밸런싱, QA, 패키징
 
 ### 10.1 밸런싱

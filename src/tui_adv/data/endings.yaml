@@ -17,9 +17,18 @@ endings:
       min_resources:
         health: 1
         sanity: 1
-    text: >
+    text: |
       공간 왜곡 속에서 반복되는 층수를 맞춰 풀었다.
       비상문 너머의 평범한 밤공기가 당신을 퇴근시켰다.
+
+      [POST-ESCAPE REPORT]
+      survivor_count: 1
+      evidence_level: 0
+      company_response: denial
+      employee_status: access_revoked
+      risk_level: ongoing
+
+      ENDING: 정문 밖
 
   - id: hidden_reality_hint_001
     name: 첫 번째 현실 연결 힌트

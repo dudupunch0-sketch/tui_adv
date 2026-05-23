@@ -11,6 +11,7 @@ TUI 기반 랜덤 인카운터 선택지 생존 게임.
 중요한 기준:
 
 - Web Storybook + GlyphFX가 플레이어용 메인 UX 후보다. 이미지/장면 컷, 대화 내역, 읽기 중심 선택지, Canvas/GlyphFX는 이 경로에서 먼저 구현한다.
+- Web Storybook의 현재 시각 기준은 `docs/design/Mobile_Pixel_Storybook_UI.md`다. 웹에서 실행되더라도 generic web dashboard가 아니라 모바일 세로형 픽셀 게임북 board로 보이게 한다.
 - Rust terminal 경로는 버리지 않는다. `escape-terminal`의 content 경로는 SuperLightTUI snapshot/play renderer와 `--app` full-screen SuperLightTUI app loop를 제공하며, visual card/GlyphFX/input 안내 polish와 tick/raw-draw GlyphFX baseline이 추가되어 **terminal-native horror edition** 기준을 강화했다. terminal은 fallback이지만 debug dump가 아니다.
 - Python/Textual과 기존 Web fake-TUI dashboard는 당분간 legacy/parity oracle로 유지하되, 새 시각/상호작용 투자는 `docs/dev/Rust_Core_Dual_Renderer_Architecture.md`의 방향을 따른다.
 
@@ -117,7 +118,7 @@ npm run build:player
 npm run preview:player
 ```
 
-`npm run wasm:build`는 `wasm-pack build ../crates/escape-wasm --target web --out-dir ../../web/src/core/wasm-pkg`를 실행한다. 생성되는 `web/src/core/wasm-pkg/`는 로컬 build artifact라서 Git에 커밋하지 않는다.
+`npm run wasm:build`는 `wasm-pack build ../crates/escape-wasm --target web --out-dir ../../web/src/core/wasm-pkg`를 실행한다. 생성되는 `web/src/core/wasm-pkg/`는 로컬 build artifact라서 Git에 커밋하지 않는다. `npm run build:wasm`은 Vite build 뒤 `npm run wasm:copy`를 실행해 이 generated package를 `web/dist/assets/wasm-pkg/`로 복사하므로 player artifact의 dynamic WASM import 경로가 함께 배포된다.
 
 현재 브라우저 앱은 Web Storybook + GlyphFX renderer를 기본 화면으로 사용하며, `web/src/core/wasmRuntime.ts`가 generated content bundle(`web/src/data/generated/content.bundle.json`)을 `escape-wasm` JSON-string boundary에 전달해 Rust GameCore의 `ScenePage`/`ActionResult`를 소비한다. Rust/WASM-primary preview는 `npm run build:wasm` 또는 `npm run preview:wasm` 경로로 확인한다. generated wasm package가 없거나 `wasm-pack`/Rust toolchain이 없는 개발 환경에서는 legacy TypeScript mirror가 fallback/parity oracle로 동작한다. legacy TypeScript mirror와 Python/Textual은 freeze 상태이며, 새 게임 규칙은 Rust GameCore에만 추가한다. 공개 secret JSON과 content bundle에는 실제 사무실 최종 위치나 `final_hint`를 넣지 않는다.
 
@@ -154,6 +155,7 @@ npm run preview:player
 - `docs/design/Map.md`: 1차 맵 설계
 - `docs/design/UI_Rules.md`: 사내 시스템형 TUI, 글리치, 선택지 오염 규칙
 - `docs/design/TUI_Storybook_GlyphFX_Concept.md`: Web primary UX로 채택한 TUI풍 스토리북 + GlyphFX 방향
+- `docs/design/Mobile_Pixel_Storybook_UI.md`: Web Storybook의 모바일 세로형 픽셀 게임북 board 시각 contract
 - `docs/dev/Development_Plan.md`: canonical main plan. 현재 방향, 다음 작업, 우선순위의 source of truth
 - `docs/dev/Checklist.md`: 단계별 완료 여부 추적용 체크리스트
 - `docs/content/Location_List.md`: 1차 위치 목록

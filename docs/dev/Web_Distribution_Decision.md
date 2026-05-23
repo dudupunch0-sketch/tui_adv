@@ -38,7 +38,7 @@ Rust GameCore
 - Web player build alias: `npm run build:player`
 - Web player preview alias: `npm run preview:player`
 - Rust/WASM primary build path는 계속 `npm run build:wasm`이다.
-- 생성물 `web/src/core/wasm-pkg/`는 로컬 artifact이며 커밋하지 않는다.
+- 생성물 `web/src/core/wasm-pkg/`는 로컬 artifact이며 커밋하지 않는다. `npm run build:wasm`은 이 package를 정적 배포물의 `web/dist/assets/wasm-pkg/`로 복사한다.
 - 배포 대상 정적 산출물은 `web/dist/`다.
 - package manifest에 Tauri/Electron dependency나 script를 추가하지 않는다.
 

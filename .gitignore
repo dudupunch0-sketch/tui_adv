@@ -53,3 +53,4 @@ target/
 # Cloud-server local Rust convenience symlinks
 /escape-terminal
 /escape-terminal-cloud-server-only
+.worktrees/

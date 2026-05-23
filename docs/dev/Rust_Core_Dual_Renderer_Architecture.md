@@ -272,7 +272,7 @@ npm run build:wasm
 npm run preview:wasm
 ```
 
-`npm run build` / `npm run dev`는 generated wasm package가 없으면 legacy fallback을 통해 동작할 수 있다. Rust/WASM-primary 검증은 `npm run wasm:build` 후 `npm run build:wasm` 또는 `npm run preview:wasm`로 수행한다.
+`npm run build` / `npm run dev`는 generated wasm package가 없으면 legacy fallback을 통해 동작할 수 있다. Rust/WASM-primary 검증은 `npm run wasm:build` 후 `npm run build:wasm` 또는 `npm run preview:wasm`로 수행한다. `build:wasm`은 Vite build 뒤 `npm run wasm:copy`를 실행해 `web/src/core/wasm-pkg/`를 `web/dist/assets/wasm-pkg/`로 복사한다. 이는 `wasmRuntime.ts`의 dynamic import가 production asset URL에서도 `escape_wasm.js`와 `escape_wasm_bg.wasm`을 찾게 하기 위한 배포 단계다.
 
 Web acceptance:
 

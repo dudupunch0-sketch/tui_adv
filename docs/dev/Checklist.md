@@ -71,6 +71,7 @@
 
 - [x] Web WASM build/preview 절차 표준화
 - [x] `web/package.json`에 `wasm:build`, `build:wasm`, `dev:wasm`, `preview:wasm` script 추가
+- [x] `build:wasm`이 generated wasm package를 `web/dist/assets/wasm-pkg/`로 복사
 - [x] `web/src/core/wasm-pkg/` generated package를 local-only artifact로 ignore
 - [x] legacy Python/Textual/TypeScript mirror freeze 범위 결정
 
@@ -92,6 +93,12 @@
 - [x] `--app-smoke --tick` headless app-frame smoke 추가
 - [x] raw-draw GlyphFX layer가 tick 변화와 stable terms/fallback text를 함께 검증
 - [x] inline image는 baseline 밖 optional future로 deferred 결정
+
+### 0.2h 2026-05-23 Web Storybook 모바일 픽셀 board redesign
+
+- [x] Web Storybook 모바일 픽셀 board contract 문서화
+- [x] HUD/rail/dock/sentence-choice renderer contract 구현
+- [x] reference-size browser visual QA
 
 ### 0.3 완료 기준
 

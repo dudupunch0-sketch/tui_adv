@@ -10,6 +10,7 @@
     "build:wasm": "npm run wasm:build && npm run build && npm run wasm:copy",
     "build:player": "npm run build:wasm",
     "test": "vitest run",
+    "qa:storybook:visual": "node scripts/storybook-reference-qa.mjs",
     "preview": "vite preview --host 127.0.0.1",
     "preview:wasm": "npm run build:wasm && vite preview --host 127.0.0.1",
     "preview:player": "npm run preview:wasm",
@@ -17,6 +18,7 @@
     "wasm:copy": "node scripts/copy-wasm-pkg.mjs"
   },
   "devDependencies": {
+    "playwright-chromium": "^1.60.0",
     "typescript": "latest",
     "vite": "latest",
     "vitest": "latest"

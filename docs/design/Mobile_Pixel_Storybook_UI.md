@@ -138,6 +138,30 @@ First slice에서는 history만 실제 drawer로 연결해도 된다. 나머지 
 - [ ] unknown visual id는 safe placeholder를 보여주며 action을 drop하지 않는다.
 - [ ] renderer가 gameplay truth를 재계산하지 않는다.
 
+## Automated visual QA
+
+Web Storybook visual regression first slice는 pixel-perfect golden baseline이 아니라 structural/layout visual QA다. `web/scripts/storybook-reference-qa.mjs`가 이미 실행 중인 preview URL을 Playwright Chromium으로 열고, reference viewport마다 DOM contract, centered portrait board layout, horizontal overflow, click/number-key interaction을 확인한다.
+
+기본 실행 형태:
+
+```bash
+source /home/dudupunch0/.config/tui_adv/tmp-installs.sh
+export PLAYWRIGHT_BROWSERS_PATH=/tmp/dudupunch0-tui-adv/ms-playwright
+cd web
+npm run qa:storybook:visual -- \
+  --base-url http://127.0.0.1:4173/ \
+  --out-dir /tmp/dudupunch0-tui-adv/storybook-visual-qa
+```
+
+Rust/WASM-primary preview를 검증할 때는 같은 command에 `--require-wasm`을 추가한다. 이 mode는 `assets/wasm-pkg/escape_wasm.js`, `escape_wasm_bg.wasm` resource load와 `.storybook-runtime-warning` 부재를 확인한다.
+
+Output policy:
+
+- screenshots와 `visual-qa-report.json`은 `--out-dir` 아래 scratch artifact로만 남긴다.
+- 기본 문서 예시는 `/tmp/dudupunch0-tui-adv/storybook-visual-qa`를 사용한다.
+- Playwright browser cache도 `PLAYWRIGHT_BROWSERS_PATH`로 `/tmp`에 둔다.
+- golden screenshot/image baseline은 아직 Git에 커밋하지 않는다.
+
 ## Validation commands
 
 ```bash

@@ -294,6 +294,150 @@ git diff --check
 - office-horror 정체성이 fantasy RPG asset 복붙처럼 보이지 않음.
 - Renderer contract boundary가 유지됨.
 
+## 0.4 2026-05-23 active main plan: Web Storybook visual regression 자동화
+
+이 섹션은 `.hermes/plans/2026-05-23_150444-web-storybook-visual-regression-qa-plan.md`의 내용을 canonical main plan으로 승격해 흡수한 QA automation slice 기록이다.
+`.hermes/plans/` 파일은 세션 artifact이며, 실제 작업 순서와 우선순위는 이 섹션과 아래 “현재 최우선 남은 작업” / “다음 액션”을 기준으로 판단한다.
+현재 상태: 설계 승격 완료, 구현 대기.
+
+목표:
+
+- PR #71에서 완성한 Web Storybook 모바일 픽셀 board가 회귀하지 않도록 reference-size visual QA를 반복 가능한 자동화 경로로 만든다.
+- 기존 수동/일회성 Playwright 확인을 repo-local QA script와 문서화된 command로 고정한다.
+- Web Storybook primary UX가 desktop에서 2-column dashboard로 돌아가거나 legacy fake-TUI marker를 노출하는 regressions를 빠르게 잡는다.
+
+아키텍처:
+
+- Rust GameCore, `ScenePage`, WASM JSON boundary는 변경하지 않는다.
+- QA harness는 Web-only 검증 계층이다. build/serve된 Web Storybook artifact를 Playwright로 열고 DOM/layout/interaction contract를 확인한다.
+- 첫 slice는 구조적 visual regression이다. screenshot JSON/report를 scratch output에 남기되, golden pixel baseline은 아직 repo에 커밋하지 않는다.
+- screenshots, Playwright browser cache, generated wasm package, `node_modules`는 모두 local/scratch artifact로 유지한다.
+
+주요 비목표:
+
+- gameplay rule, route, ending, eligibility, resource 계산 변경.
+- `ScenePage` schema 또는 renderer-neutral content bundle 변경.
+- production asset pipeline 추가.
+- scene composition schema 추가.
+- screenshot/golden image를 Git에 커밋.
+- Python/Textual 또는 legacy TypeScript mirror에 새 Web QA logic 복제.
+
+구현 대상:
+
+- `web/scripts/storybook-reference-qa.mjs`
+  - Playwright Chromium viewport runner.
+  - `--base-url`, `--out-dir`, optional `--require-wasm`를 받는다.
+  - URL serving은 담당하지 않는다. QA 대상 server는 기존 `vite preview`, `preview:player`, `preview:wasm`, 또는 검증된 static server가 맡는다.
+  - 각 viewport는 fresh browser context에서 실행하고 localStorage를 clear한다.
+  - `reducedMotion: "reduce"`, `deviceScaleFactor: 1`, `document.fonts.ready` 대기를 사용해 screenshot/layout 흔들림을 줄인다.
+  - JSON report와 screenshots를 `--out-dir` 아래에 저장한다.
+- `web/package.json`
+  - `qa:storybook:visual` 또는 비슷한 discoverable script를 추가한다.
+  - first implementation은 reproducibility를 위해 `playwright-chromium` devDependency 추가를 우선 검토한다.
+  - Playwright 설치/브라우저 cache가 `/home`을 채우지 않도록 `PLAYWRIGHT_BROWSERS_PATH` tmp policy를 문서화한다.
+- `tests/test_web_visual_qa_contract.py` 또는 기존 Web packaging test 확장
+  - QA script 존재, viewport set, scratch output policy, hardcoded local path 금지, script option, report schema를 검증한다.
+- `docs/design/Mobile_Pixel_Storybook_UI.md`
+  - automated visual QA section을 추가한다.
+- `docs/dev/Checklist.md`
+  - 진행 추적 checkbox를 추가한다.
+
+구현 전 고정 결정:
+
+1. Dependency: script는 Chromium만 필요로 하며, 구현 PR에서 `playwright-chromium` devDependency 추가를 우선한다. 브라우저 binary/cache는 `PLAYWRIGHT_BROWSERS_PATH=/tmp/...`로 돌리는 명령을 docs에 남긴다.
+2. Serving: first slice의 QA script는 server를 띄우지 않고 `--base-url`만 검사한다. custom Node static server는 이번 slice에서 만들지 않는다. MIME/path traversal 리스크를 피하기 위해 기존 Vite preview 또는 검증된 static server를 사용한다.
+3. Layout thresholds:
+   - 모든 viewport에서 `documentElement.scrollWidth <= viewportWidth`와 `body.scrollWidth <= viewportWidth`.
+   - mobile/reference viewport에서 shell width는 viewport width를 넘지 않는다.
+   - wide desktop에서 shell width는 760~850px 범위이고 좌우 margin 차이는 4px 이하.
+4. Interaction 판정: fresh context에서 first enabled choice click 전후의 shell text/hash 또는 turn/title/body hash가 바뀌어야 한다. number key `1`도 별도 fresh context에서 같은 기준으로 검증한다.
+5. WASM mode: `--require-wasm`는 `assets/wasm-pkg/escape_wasm.js`, `escape_wasm_bg.wasm` resource load, `.storybook-runtime-warning` 부재, WASM bootstrap 완료 대기를 확인한다.
+6. Report schema: `visual-qa-report.json`은 `baseUrl`, `requireWasm`, `viewports[]`를 포함하고, 각 viewport entry에는 `name`, `width`, `height`, `passed`, `checks[]`, `screenshot`, `shellRect`, `scrollWidth`를 기록한다.
+
+Viewport set:
+
+```text
+390x844
+414x896
+800x1440
+810x1644
+1440x1000  # wide desktop에서도 centered portrait board 유지
+```
+
+필수 검증 contract:
+
+- `[data-renderer="web-storybook"]` 존재.
+- `.storybook-shell`이 viewport 폭을 넘지 않고 wide desktop에서 약 810px centered board로 유지.
+- `.storybook-hud[data-region="status"]`, `.story-progress-rail`, `[data-region="visual"]`, `[data-region="body"]`, `[data-region="choices"]`, `[data-region="history"]`, `.storybook-dock` 존재.
+- `button.choice-row[data-action-id]`가 1개 이상 존재하고 `.choice-bullet`이 보존됨.
+- `.fake-tui`, `.storybook-topline`, legacy `CURRENT ENCOUNTER` / `LOCAL STATUS` 같은 dashboard marker가 user-visible하지 않음.
+- `documentElement.scrollWidth`와 `body.scrollWidth`가 viewport width를 넘지 않음.
+- 첫 choice click이 rendered page를 바꿈.
+- fresh page에서 number key `1`이 rendered page를 바꿈.
+- browser title에 legacy `fake TUI` wording이 없음.
+- `--require-wasm` mode에서는 `assets/wasm-pkg/escape_wasm.js`, `escape_wasm_bg.wasm` resource load와 `.storybook-runtime-warning` 부재를 확인한다.
+
+구현 순서:
+
+1. 최신 `origin/main`에서 `feature/web-storybook-visual-regression-qa` 브랜치를 만든다.
+2. RED 테스트를 먼저 추가한다.
+   - QA script/package script 존재.
+   - viewport set이 script에 포함됨.
+   - script가 scratch `--out-dir`를 요구하거나 지원함.
+   - hardcoded `/home/...` output path가 없음.
+   - static server를 추가한다면 `.js`와 `.wasm` MIME handling을 테스트한다.
+3. `web/scripts/storybook-reference-qa.mjs`를 최소 구현한다.
+   - script는 URL을 직접 serve하지 않고 `--base-url` 대상으로 QA만 수행한다.
+   - build/serve orchestration은 기존 Vite preview/player preview 또는 별도 runner가 담당한다.
+   - fresh context, localStorage clear, reduced motion, deviceScaleFactor 1, `document.fonts.ready` 대기를 기본값으로 둔다.
+4. safe serving path를 결정한다.
+   - first slice에서는 custom Node static server를 만들지 않는다.
+   - 우선 후보: `vite preview`, `preview:player`, `preview:wasm`, 또는 `python3 -m http.server`로 `web/dist`를 serve.
+   - 나중에 custom Node server를 만들 필요가 생기면 별도 PR에서 path traversal 방지와 explicit MIME map을 테스트한다.
+5. package scripts를 추가한다.
+   - first implementation은 `playwright-chromium` devDependency 추가를 우선하고, `PLAYWRIGHT_BROWSERS_PATH=/tmp/...` 문서화를 함께 넣는다.
+   - browser install/cache가 repo 또는 `/home`에 남지 않도록 docs와 test wording을 맞춘다.
+6. `--require-wasm` smoke를 추가한다.
+   - Rust/WASM-primary artifact가 runtime warning 없이 load되는지 확인한다.
+   - hardened `copy-wasm-pkg.mjs`가 absolute output을 거부하므로 scratch `/tmp` preview copy에는 해당 helper를 억지로 쓰지 않는다. 필요 시 controlled one-off copy를 QA command 안에서 사용한다.
+7. `docs/design/Mobile_Pixel_Storybook_UI.md`, `docs/dev/Checklist.md`, 이 문서를 구현 상태에 맞게 동기화한다.
+8. 전체 검증 matrix를 실행한 뒤 focused PR로 올린다.
+
+핵심 검증 명령:
+
+```bash
+source ~/.config/tui_adv/tmp-installs.sh
+cd web
+npm test
+npm run build
+node scripts/storybook-reference-qa.mjs \
+  --base-url <verified-local-preview-url> \
+  --out-dir /tmp/dudupunch0-tui-adv/storybook-visual-qa
+
+cd ..
+python3 -m pytest \
+  tests/test_docs_contract.py \
+  tests/test_web_packaging_decision.py \
+  tests/test_web_wasm_build_standardization.py \
+  tests/test_web_visual_qa_contract.py \
+  -q
+python3 scripts/export_web_data.py \
+  --bundle crates/escape-core/fixtures/content/content.bundle.json \
+  --bundle web/src/data/generated/content.bundle.json \
+  --check
+git diff --check
+```
+
+완료 기준:
+
+- reference viewport QA command가 repo에서 discoverable하다.
+- viewport 390x844, 414x896, 800x1440, 810x1644, wide desktop가 통과한다.
+- click과 number-key interaction contract가 통과한다.
+- `--require-wasm` mode에서 Rust/WASM-primary artifact가 runtime warning 없이 load된다.
+- screenshots와 JSON report는 scratch output에만 생성되고 Git에 커밋되지 않는다.
+- docs/checklist/main plan이 구현 상태와 일치한다.
+- Renderer contract boundary가 유지된다.
+
 ## 1. 목표
 
 국내 최고 대기업 IT/반도체 회사의 연구개발동 같은 사무실을 배경으로 한 TUI 기반 랜덤 인카운터 선택지 생존 게임을 만든다.
@@ -828,11 +972,12 @@ src/tui_adv/data/secrets.example.yaml
 
 현재 최우선 남은 작업:
 
-1. active main plan 기준 구현 남은 작업 없음. 모바일 픽셀 스토리북 UI redesign 완료.
-   - 완료 범위: `web/src/ui/storybook/render.ts`, `web/src/styles/storybook.css`, `web/src/ui/storybook/visualCatalog.ts`, `web/src/ui/storybook/history.ts`, `web/src/ui/storybook/render.test.ts`.
-   - 문서화 범위: `docs/design/Mobile_Pixel_Storybook_UI.md`, README, `docs/00_Index.md`, 이 문서, `docs/dev/Checklist.md`.
-   - 유지 범위: Rust GameCore / `ScenePage` / WASM JSON boundary는 truth로 유지하고, renderer는 action id와 semantic field를 표시만 한다.
-   - 금지 범위 유지: reference image production asset 직접 사용, 새 gameplay rule/schema/state 추가, renderer의 outcome/ending 재계산.
+1. Web Storybook visual regression 자동화 first slice를 구현한다.
+   - 목표: PR #71의 모바일 픽셀 board visual contract를 반복 가능한 Playwright QA로 고정한다.
+   - 우선 범위: `web/scripts/storybook-reference-qa.mjs`, package script, static contract test, docs/checklist update.
+   - 검증 범위: reference viewport DOM/layout/interaction checks, optional `--require-wasm` resource load check, scratch screenshot/report output.
+   - 유지 범위: Rust GameCore / `ScenePage` / WASM JSON boundary는 변경하지 않는다.
+   - 금지 범위: golden screenshot baseline commit, production asset pipeline, scene composition schema, gameplay rule 변경.
 
 전환 중 유지:
 
@@ -896,6 +1041,7 @@ Web 또는 terminal renderer가 게임 규칙을 다시 구현하면 Rust GameCo
 
 ## 10. 다음 액션
 
-1. active main plan 기준 즉시 진행할 구현 작업 없음.
-2. 다음 큰 작업을 열 때는 `idea_box/` 또는 위 future backlog 중 하나를 명시적으로 promote한 뒤 이 문서 상단 우선순위를 갱신한다.
-3. Web Storybook visual을 더 밀 경우에는 `docs/design/Mobile_Pixel_Storybook_UI.md`의 contract를 기준으로 실제 asset pipeline, scene composition schema, 또는 browser visual regression 중 하나만 별도 slice로 연다.
+1. `feature/web-storybook-visual-regression-qa` 또는 동등한 fresh branch를 최신 `origin/main`에서 만든다.
+2. RED 테스트로 `web/scripts/storybook-reference-qa.mjs` / package script / viewport set / scratch output policy를 먼저 고정한다.
+3. `docs/dev/Development_Plan.md`의 `0.4 active main plan`을 기준으로 QA harness를 설계·구현한다.
+4. 이 작업이 끝나기 전에는 asset pipeline, scene composition schema, 또는 새 콘텐츠 확장을 열지 않는다.

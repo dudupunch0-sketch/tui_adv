@@ -96,7 +96,9 @@ def test_mobile_pixel_storybook_ui_doc_is_indexed_checklisted_and_current_plan()
     assert "- [x] reference-size browser visual QA" in checklist
     assert "모바일 픽셀 스토리북 UI redesign 완료" in plan
     next_slice = plan.split("현재 최우선 남은 작업:", 1)[1]
-    assert "active main plan 기준 구현 남은 작업 없음" in next_slice
+    assert "Web Storybook visual regression 자동화 first slice" in next_slice
+    assert "web/scripts/storybook-reference-qa.mjs" in next_slice
+    assert "Rust GameCore / `ScenePage` / WASM JSON boundary는 변경하지 않는다" in next_slice
 
 
 def test_phase9_story_route_design_docs_are_indexed_and_checklisted():
@@ -172,7 +174,9 @@ def test_final_qa_leftover_checks_are_documented_and_completed():
     assert "- [x] 실제 Textual 화면 수동 QA" in checklist
     assert "- [x] 새 게임 10회 수동 플레이 기록" in checklist
     assert "- [x] 터미널 크기별 화면 확인" in checklist
-    assert "- [ ]" not in checklist
+    legacy_final_qa_section = checklist.split("### 0.2h 2026-05-23 Web Storybook 모바일 픽셀 board redesign", 1)[0]
+    assert "- [ ]" not in legacy_final_qa_section
+    assert "- [ ] `web/scripts/storybook-reference-qa.mjs` Playwright viewport runner 추가" in checklist
 
 
 def test_readme_next_work_keeps_role_split_instead_of_final_qa_queue():

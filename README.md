@@ -172,6 +172,7 @@ npm run preview:player
 - `docs/dev/Save_Slot_UX.md`: 저장 슬롯 이름 변경 UX 후보
 - `docs/dev/Balance_QA_Packaging.md`: 밸런싱, QA smoke, 패키징/릴리즈 기준
 - `docs/dev/Web_Distribution_Decision.md`: Web-only 배포 표면과 Tauri/Electron defer 결정
+- `docs/dev/Web_Player_PokeRogue_Style_Plan.md`: 포켓로그식 URL 즉시 플레이 Web player 배포/UX 구현 계획
 - `docs/dev/Final_QA_Log.md`: 실제 Textual/터미널 크기/10회 새 게임 QA 기록
 - `docs/implementation-map/index.html`: 현재 구현을 한 번에 보는 interactive HTML 구현 지도
 - `docs/implementation-map/README.md`: 구현 지도 업데이트 방법

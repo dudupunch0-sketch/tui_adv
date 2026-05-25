@@ -109,6 +109,11 @@
 - [x] screenshots/JSON report를 scratch output에만 남기도록 문서화
 - [x] visual QA contract/docs tests 추가
 
+### 0.2j 2026-05-24 Web player 공개 배포 계획 문서화
+
+- [x] `idea_box/web_play_like_pokerogue.md`를 읽고 `docs/dev/Web_Player_PokeRogue_Style_Plan.md`로 승격
+- [x] Web player URL 즉시 플레이, WASM-required production policy, static deploy QA, start/save UX PR 순서를 문서화
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

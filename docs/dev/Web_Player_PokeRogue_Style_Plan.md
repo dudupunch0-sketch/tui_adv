@@ -1,9 +1,8 @@
 # `tui_adv` Web Player 개발 문서
 
-> 처리 기록: 2026-05-24 `docs/dev/Web_Player_PokeRogue_Style_Plan.md`로 승격했다. 이 원문은 idea source로 보존한다.
-
-> 제안 저장소 경로: `docs/dev/Web_Player_PokeRogue_Style_Plan.md`  
-> 작성 기준: 2026-05-24, `main` 최신 확인 기준: `1d78067 feat(web): automate storybook visual QA (#73)`  
+> 저장소 경로: `docs/dev/Web_Player_PokeRogue_Style_Plan.md`
+> 원본 아이디어: `idea_box/web_play_like_pokerogue.md`
+> 작성 기준: 2026-05-24, `main` 최신 확인 기준: `7c38217 web_play_like_pokerogue.md 만들기`
 > 목적: `escape from the office`를 포켓로그처럼 “주소만 열면 바로 플레이되는 웹 게임”으로 완성·배포하기 위한 개발자용 구현 문서
 
 ---
@@ -1028,7 +1027,7 @@ VITE_BUILD_SHA=$(git rev-parse --short HEAD) npm run build:player
 ## 17. 참고 링크
 
 - GitHub repository: `https://github.com/dudupunch0-sketch/tui_adv`
-- Latest checked commit: `https://github.com/dudupunch0-sketch/tui_adv/commit/1d780678aa5a399d9b9f4e5a14102b4798430cad`
+- Latest checked commit: `https://github.com/dudupunch0-sketch/tui_adv/commit/7c38217c15cd12dedbc5b6b6c5c4a8555ce882a7`
 - GitHub Pages docs: `https://docs.github.com/en/pages`
 - Vite static deployment docs: `https://vite.dev/guide/static-deploy.html`
 - wasm-pack build docs: `https://rustwasm.github.io/docs/wasm-pack/commands/build.html`

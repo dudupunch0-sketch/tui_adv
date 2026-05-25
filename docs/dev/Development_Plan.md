@@ -1005,7 +1005,8 @@ src/tui_adv/data/secrets.example.yaml
 5. 꿈 엔딩을 실제 콘텐츠로 구현할지 결정한다.
 6. Tauri/Electron desktop wrapper 재검토: native file dialog, offline file import/export, OS-level 알림/업데이트 같은 Web-only 한계를 실제 요구로 확인한 뒤 별도 slice로 연다.
 7. optional inline image는 terminal cell/GlyphFX baseline 밖 future backlog로 둔다. Kitty/Sixel/iTerm2 capability 요구가 실제로 생길 때 별도 slice로 연다.
-8. 여러 히든 현실 보물
+8. 포켓로그식 URL 즉시 플레이 Web player 공개 배포 계획: `docs/dev/Web_Player_PokeRogue_Style_Plan.md`를 기준으로 GitHub Pages/WASM-required/static deploy slice를 검토한다.
+9. 여러 히든 현실 보물
 
 ## 9. 주요 리스크
 

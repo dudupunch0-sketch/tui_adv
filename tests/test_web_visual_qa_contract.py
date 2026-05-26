@@ -43,6 +43,8 @@ def test_storybook_visual_qa_script_names_required_dom_and_interaction_contracts
     script = Path("web/scripts/storybook-reference-qa.mjs").read_text(encoding="utf-8")
 
     required_fragments = [
+        '[data-player-screen="start"]',
+        'data-player-action="new-game"',
         '[data-renderer="web-storybook"]',
         '.storybook-shell',
         '.storybook-hud[data-region="status"]',

@@ -99,6 +99,10 @@ def test_docs_and_checklist_track_web_player_deployment_readiness_slice():
     assert "- [x] `VITE_REQUIRE_WASM=true` production fatal policy 추가" in checklist
     assert "- [x] GitHub Pages deploy workflow 추가" in checklist
     assert "- [x] Web player deployment contract/docs tests 추가" in checklist
+    assert "- [x] Web player start screen 추가" in checklist
+    assert "- [x] 이어하기/새 게임/seed 표시/save timestamp UX 추가" in checklist
+    assert "- [x] 새 게임 전 저장 reset confirmation 추가" in checklist
+    assert "- [x] start/save UX contract tests 추가" in checklist
 
     assert "PR 1 — Web player deployment readiness" in web_plan
     assert "Status: implemented" in web_plan

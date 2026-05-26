@@ -11,36 +11,49 @@ import { loadSavedState, saveState } from './game/save';
 import { newGame } from './game/state';
 import type { GameState, GameTurn } from './game/types';
 import { actionIdForKey, NEW_GAME_ACTION_ID, type ActionListSource } from './ui/keyboard';
+import {
+  RUST_SAVE_KEY,
+  clearPlayerSaves,
+  readPlayerSaveSummary,
+  renderStartScreen,
+  writeRunSummary,
+} from './ui/startScreen';
 import { renderStorybookPage } from './ui/storybook/render';
 
-const LEGACY_SAVE_KEY = 'escape-office.save.v1';
-const RUST_SAVE_KEY = 'escape-office.rust.save.v1';
+const DEFAULT_SEED = 123;
 const REQUIRE_WASM = import.meta.env.VITE_REQUIRE_WASM === 'true';
+
+type PlayerScreen = 'start' | 'game';
 
 const rootElement = document.querySelector<HTMLDivElement>('#app');
 if (!rootElement) throw new Error('missing #app root');
 const appRoot: HTMLDivElement = rootElement;
 
+let playerScreen: PlayerScreen = 'start';
 let wasmRuntime: EscapeWasmRuntime | null = null;
-let state: GameState = loadSavedState(window.localStorage) ?? newGame({ seed: 123 });
+let state: GameState = newGame({ seed: DEFAULT_SEED });
 let turn: GameTurn = buildTurn(state);
-let actionSource: ActionListSource = turn;
+let actionSource: ActionListSource = { actions: [] };
 let lastError: string | null = null;
 let fatalPlayerError = false;
+let activeSeed = DEFAULT_SEED;
+let confirmReset = false;
 
-void bootstrapWasmRuntime();
 render();
 
-async function bootstrapWasmRuntime(): Promise<void> {
+async function bootstrapWasmRuntime(initialStateJson?: string): Promise<void> {
   try {
     wasmRuntime = await createEscapeWasmRuntime({
-      initialStateJson: window.localStorage.getItem(RUST_SAVE_KEY) ?? undefined,
-      seed: 123,
+      initialStateJson,
+      seed: activeSeed,
     });
+    if (playerScreen !== 'game') return;
     fatalPlayerError = false;
     lastError = null;
+    saveWasmState();
     render();
   } catch (error) {
+    if (playerScreen !== 'game') return;
     if (REQUIRE_WASM) {
       lastError = `게임 코어를 불러오지 못했습니다. 새로고침 후에도 계속되면 배포된 WASM 파일 경로를 확인해주세요: ${errorMessage(error)}`;
       renderFatalPlayerError(lastError, error);
@@ -52,6 +65,10 @@ async function bootstrapWasmRuntime(): Promise<void> {
 }
 
 function render(): void {
+  if (playerScreen === 'start') {
+    renderStart();
+    return;
+  }
   if (fatalPlayerError) return;
   const page = currentScenePage();
   actionSource = page;
@@ -69,6 +86,105 @@ function render(): void {
   if (canvas) {
     void startPrinterFlowEffect(canvas);
   }
+}
+
+function renderStart(): void {
+  actionSource = { actions: [] };
+  const saveSummary = readPlayerSaveSummary(window.localStorage);
+  const defaultSeed = saveSummary.summary?.seed ?? activeSeed;
+  appRoot.innerHTML = renderStartScreen({
+    defaultSeed,
+    summary: saveSummary.summary,
+    warning: saveSummary.warning,
+    confirmReset,
+  });
+  appRoot.querySelectorAll<HTMLButtonElement>('[data-player-action]').forEach((button) => {
+    button.addEventListener('click', () => runPlayerAction(button.dataset.playerAction ?? ''));
+  });
+}
+
+function runPlayerAction(action: string): void {
+  if (action === 'continue') {
+    startGameFromSave();
+    return;
+  }
+  if (action === 'new-game') {
+    requestNewGame();
+    return;
+  }
+  if (action === 'confirm-new-game') {
+    startNewGame({ clearExistingSave: true });
+    return;
+  }
+  if (action === 'cancel-new-game') {
+    confirmReset = false;
+    render();
+    return;
+  }
+  if (action === 'reset-save') {
+    clearPlayerSaves(window.localStorage);
+    confirmReset = false;
+    render();
+  }
+}
+
+function startGameFromSave(): void {
+  const saveSummary = readPlayerSaveSummary(window.localStorage);
+  const initialStateJson = window.localStorage.getItem(RUST_SAVE_KEY) ?? undefined;
+  activeSeed = saveSummary.summary?.seed ?? seedFromStartInput();
+  startGame({ seed: activeSeed, initialStateJson, clearExistingSave: false, continueExistingSave: true });
+}
+
+function requestNewGame(): void {
+  if (readPlayerSaveSummary(window.localStorage).summary) {
+    confirmReset = true;
+    render();
+    return;
+  }
+  startNewGame({ clearExistingSave: false });
+}
+
+function startNewGame(options: { clearExistingSave: boolean }): void {
+  const seed = seedFromStartInput();
+  startGame({ seed, initialStateJson: undefined, clearExistingSave: options.clearExistingSave, continueExistingSave: false });
+}
+
+function startGame(options: {
+  seed: number;
+  initialStateJson?: string;
+  clearExistingSave: boolean;
+  continueExistingSave: boolean;
+}): void {
+  if (options.clearExistingSave) clearPlayerSaves(window.localStorage);
+  playerScreen = 'game';
+  confirmReset = false;
+  fatalPlayerError = false;
+  wasmRuntime = null;
+  activeSeed = options.seed;
+  state = legacyInitialState(options.seed, options.continueExistingSave);
+  turn = buildTurn(state);
+  if (!options.continueExistingSave || options.initialStateJson === undefined) {
+    saveLegacyState();
+  }
+  void bootstrapWasmRuntime(options.initialStateJson);
+  render();
+}
+
+function legacyInitialState(seed: number, shouldContinue: boolean): GameState {
+  if (!shouldContinue) return newGame({ seed });
+  try {
+    return loadSavedState(window.localStorage) ?? newGame({ seed });
+  } catch (error) {
+    lastError = `저장 데이터를 읽을 수 없어 새 run으로 복구했습니다: ${errorMessage(error)}`;
+    return newGame({ seed });
+  }
+}
+
+function seedFromStartInput(): number {
+  const input = appRoot.querySelector<HTMLInputElement>('input[name="seed"]');
+  const parsed = Number(input?.value ?? DEFAULT_SEED);
+  if (!Number.isFinite(parsed) || parsed < 0) return DEFAULT_SEED;
+  return Math.trunc(parsed);
 }
 
 function renderFatalPlayerError(message: string, error: unknown): void {
@@ -108,13 +224,8 @@ function runAction(actionId: string): void {
   if (fatalPlayerError) return;
   if (!actionId) return;
   if (actionId === NEW_GAME_ACTION_ID) {
-    window.localStorage.removeItem(LEGACY_SAVE_KEY);
-    window.localStorage.removeItem(RUST_SAVE_KEY);
-    state = newGame({ seed: 123 });
-    if (wasmRuntime) {
-      wasmRuntime.newGame(123);
-      saveWasmState();
-    }
+    playerScreen = 'start';
+    confirmReset = readPlayerSaveSummary(window.localStorage).summary !== null;
     lastError = null;
     render();
     return;
@@ -126,7 +237,7 @@ function runAction(actionId: string): void {
     } else {
       const result = executeAction(state, actionId);
       state = result.state;
-      saveState(window.localStorage, state);
+      saveLegacyState();
     }
     lastError = null;
     render();
@@ -142,6 +253,15 @@ function runAction(actionId: string): void {
 function saveWasmState(): void {
   if (!wasmRuntime) return;
   window.localStorage.setItem(RUST_SAVE_KEY, wasmRuntime.stateJson);
+  writeRunSummary(window.localStorage, wasmRuntime.stateJson);
+}
+
+function saveLegacyState(): void {
+  saveState(window.localStorage, state);
+  writeRunSummary(
+    window.localStorage,
+    JSON.stringify({ seed: state.seed, turn: state.turn, locationId: state.locationId }),
+  );
 }
 
 function errorMessage(error: unknown): string {
@@ -149,6 +269,7 @@ function errorMessage(error: unknown): string {
 }
 
 document.addEventListener('keydown', (event) => {
+  if (playerScreen === 'start') return;
   const actionId = actionIdForKey(actionSource, event.key);
   if (!actionId) return;
   event.preventDefault();

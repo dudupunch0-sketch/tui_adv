@@ -839,16 +839,24 @@ npm run qa:storybook:visual -- --base-url http://127.0.0.1:4173/ --out-dir /tmp/
 
 ### PR 2 — Player start/save UX
 
+Status: first slice implemented. Export/import/settings follow-up remains deferred.
+
 목표: 공개 플레이어로서 최소한의 시작/이어하기 UX를 제공한다.
 
-변경 후보:
+구현 완료:
 
 - start screen 추가
-- continue/new game/seed input
-- save timestamp
+- continue/new game/seed 표시
+- save timestamp summary
 - save reset confirmation
-- save import/export JSON
 - localStorage schema version message
+- visual QA start-screen 통과 후 Storybook DOM/interaction 검증
+
+후속 후보:
+
+- seed input 고도화
+- save import/export JSON
+- settings/reduce-motion UI
 
 비목표:
 

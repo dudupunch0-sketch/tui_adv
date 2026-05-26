@@ -181,6 +181,7 @@ async function newFreshContext(browserInstance, viewport) {
 async function loadStorybookPage(page, wasmResourcePromises, checks, { recordWasmChecks = true } = {}) {
   await page.goto(options.baseUrl, { waitUntil: 'domcontentloaded' });
   await page.waitForSelector('[data-renderer="web-storybook"]', { timeout: 10_000 });
+  await maybeStartPlayer(page);
   await page.evaluate(() => (document.fonts?.ready ? document.fonts.ready.then(() => true) : true));
   await page.waitForLoadState('networkidle', { timeout: 10_000 }).catch(() => undefined);
 
@@ -200,6 +201,13 @@ async function loadStorybookPage(page, wasmResourcePromises, checks, { recordWas
       record(checks, 'WASM runtime warning is absent', warningCount === 0);
     }
   }
+}
+
+async function maybeStartPlayer(page) {
+  const startScreen = page.locator('[data-player-screen="start"]');
+  if ((await startScreen.count()) === 0) return;
+  await page.locator('[data-player-action="new-game"]').click();
+  await page.waitForSelector('button.choice-row[data-action-id]', { timeout: 10_000 });
 }
 
 function waitForWasmResources(page) {

@@ -131,6 +131,15 @@
 - [x] visual QA가 start screen을 통과해 Storybook page를 검증하도록 갱신
 - [x] start/save UX contract tests 추가
 
+### 0.2m 2026-05-26 Web Storybook transition/audio readiness
+
+- [x] transition/audio readiness active main plan 승격
+- [x] player settings localStorage contract 구현
+- [x] start screen audio/motion toggle 연결
+- [x] transition plan type과 reduced-motion no-op 구조 추가
+- [x] audio muted default policy와 opt-in skeleton 추가
+- [ ] visual QA motion/audio 안정화 확인
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

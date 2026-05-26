@@ -92,7 +92,8 @@ def test_docs_and_checklist_track_web_player_deployment_readiness_slice():
     assert "VITE_BASE_PATH" in plan
     assert "VITE_REQUIRE_WASM" in plan
     assert "GitHub Pages" in plan
-    assert "현재 active main plan 기준 즉시 진행할 구현 작업은 없다" in plan
+    assert "Web Storybook transition/audio readiness" in plan
+    assert "PR A — settings + motion foundation" in plan
 
     assert "- [x] `VITE_BASE_PATH` 기반 Vite base path 설정" in checklist
     assert "- [x] WASM module path를 `import.meta.url` 기준으로 하드닝" in checklist

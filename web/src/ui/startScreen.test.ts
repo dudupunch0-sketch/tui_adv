@@ -10,6 +10,7 @@ import {
   writeRunSummary,
   type PlayerRunSummary,
 } from './startScreen';
+import { DEFAULT_PLAYER_SETTINGS } from './settings/playerSettings';
 
 class MemoryStorage {
   private readonly data = new Map<string, string>();
@@ -46,6 +47,24 @@ describe('player start/save UX', () => {
     expect(html).toContain('name="seed"');
     expect(html).toContain('value="123"');
     expect(html).toContain('저장된 run 없음');
+  });
+
+  it('renders renderer-local audio and motion controls without enabling autoplay', () => {
+    const html = renderStartScreen({
+      defaultSeed: 123,
+      summary: null,
+      warning: null,
+      confirmReset: false,
+      settings: DEFAULT_PLAYER_SETTINGS,
+    });
+
+    expect(html).toContain('data-settings-key="escape-office.player-settings.v1"');
+    expect(html).toContain('data-player-action="toggle-audio"');
+    expect(html).toContain('data-player-action="cycle-motion"');
+    expect(html).toContain('aria-pressed="false"');
+    expect(html).toContain('Audio muted');
+    expect(html).toContain('Motion auto');
+    expect(html).not.toContain('autoplay');
   });
 
   it('renders continue metadata and reset confirmation for an existing save', () => {

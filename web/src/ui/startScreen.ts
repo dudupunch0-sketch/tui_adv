@@ -1,4 +1,5 @@
 import { escapeHtml } from './storybook/html';
+import { DEFAULT_PLAYER_SETTINGS, PLAYER_SETTINGS_KEY, type PlayerSettings } from './settings/playerSettings';
 
 export const LEGACY_SAVE_KEY = 'escape-office.save.v1';
 export const RUST_SAVE_KEY = 'escape-office.rust.save.v1';
@@ -29,6 +30,7 @@ export interface PlayerSaveSummaryResult {
 export interface StartScreenModel extends PlayerSaveSummaryResult {
   defaultSeed: number;
   confirmReset: boolean;
+  settings?: PlayerSettings;
 }
 
 interface RawStatePreview {
@@ -39,6 +41,7 @@ interface RawStatePreview {
 }
 
 export function renderStartScreen(model: StartScreenModel): string {
+  const settings = model.settings ?? DEFAULT_PLAYER_SETTINGS;
   const continueDisabled = model.summary ? '' : ' disabled';
   const saveText = model.summary ? renderSummary(model.summary) : '<p class="start-save-empty">저장된 run 없음</p>';
   const warning = model.warning
@@ -57,6 +60,7 @@ export function renderStartScreen(model: StartScreenModel): string {
       <h2>격리 run</h2>
       ${saveText}
     </div>
+    ${renderSettingsPanel(settings)}
     <label class="start-seed-label">
       <span>Seed</span>
       <input name="seed" type="number" inputmode="numeric" value="${escapeHtml(String(model.defaultSeed))}" />
@@ -69,6 +73,22 @@ export function renderStartScreen(model: StartScreenModel): string {
     ${confirmation}
   </section>
 </main>`.trim();
+}
+
+function renderSettingsPanel(settings: PlayerSettings): string {
+  const audioPressed = settings.audio === 'on' ? 'true' : 'false';
+  const audioLabel = settings.audio === 'on' ? 'Audio on' : 'Audio muted';
+  const motionPressed = settings.motion === 'auto' ? 'false' : 'true';
+  const motionLabel = `Motion ${settings.motion}`;
+
+  return `<section class="start-settings-panel" aria-label="플레이어 설정" data-settings-key="${PLAYER_SETTINGS_KEY}">
+      <h2>연출 설정</h2>
+      <p class="start-settings-copy">소리와 움직임은 이 브라우저에만 저장됩니다. Audio는 사용자가 켠 뒤에만 시작합니다.</p>
+      <div class="start-settings-actions">
+        <button type="button" data-player-action="toggle-audio" aria-pressed="${audioPressed}">${audioLabel}</button>
+        <button type="button" data-player-action="cycle-motion" aria-pressed="${motionPressed}">${motionLabel}</button>
+      </div>
+    </section>`;
 }
 
 export function readPlayerSaveSummary(storage: StorageLike): PlayerSaveSummaryResult {

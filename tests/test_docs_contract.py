@@ -104,8 +104,42 @@ def test_mobile_pixel_storybook_ui_doc_is_indexed_checklisted_and_current_plan()
     assert "VITE_BASE_PATH" in completed_foundation
     assert "VITE_REQUIRE_WASM" in completed_foundation
     next_slice = plan.split("현재 최우선 남은 작업:", 1)[1]
-    assert "현재 active main plan 기준 즉시 진행할 구현 작업은 없다" in next_slice
-    assert "Rust GameCore / `ScenePage` / WASM JSON boundary는 start/save UX 때문에 변경하지 않는다" in next_slice
+    assert "Web Storybook transition/audio readiness" in next_slice
+    assert "transition controller" in next_slice
+    assert "Rust GameCore / `ScenePage` / WASM JSON boundary는 변경하지 않는다" in next_slice
+
+
+def test_transition_audio_readiness_is_current_active_plan():
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    web_plan = Path("docs/dev/Web_Player_PokeRogue_Style_Plan.md").read_text(encoding="utf-8")
+
+    assert "Web Storybook transition/audio readiness" in plan
+    assert "escape-office.player-settings.v1" in plan
+    assert "motion/audio preference" in plan
+    assert "transition plan type" in plan
+    assert "audio default는 muted/off" in plan
+
+    next_slice = plan.split("현재 최우선 남은 작업:", 1)[1].split("전환 중 유지:", 1)[0]
+    assert "현재 active main plan 기준 즉시 진행할 구현 작업은 없다" not in next_slice
+    assert "PR B — transition controller" in next_slice
+    assert "renderer-local" in next_slice
+    assert "save JSON export/import" in next_slice
+
+    next_actions = plan.split("## 10. 다음 액션", 1)[1]
+    assert "transition controller" in next_actions
+    assert "current page/action context" in next_actions
+    assert "timeout fallback" in next_actions
+
+    assert "### 0.2m 2026-05-26 Web Storybook transition/audio readiness" in checklist
+    assert "- [x] transition/audio readiness active main plan 승격" in checklist
+    assert "- [x] player settings localStorage contract 구현" in checklist
+    assert "- [x] transition plan type과 reduced-motion no-op 구조 추가" in checklist
+    assert "- [x] audio muted default policy와 opt-in skeleton 추가" in checklist
+    assert "- [ ] visual QA motion/audio 안정화 확인" in checklist
+
+    assert "Transition/audio readiness first slice" in web_plan
+    assert "PR A settings/motion foundation implemented" in web_plan
 
 
 def test_phase9_story_route_design_docs_are_indexed_and_checklisted():

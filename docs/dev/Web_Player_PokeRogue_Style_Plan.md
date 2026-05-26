@@ -477,9 +477,9 @@ jobs:
       - name: Preview player for visual QA
         working-directory: web
         run: |
-          npx vite preview --host 127.0.0.1 --port 4173 > /tmp/tui-adv-vite-preview.log 2>&1 &
+          npx vite preview --host 127.0.0.1 --port 4173 --base /tui_adv/ > /tmp/tui-adv-vite-preview.log 2>&1 &
           for i in $(seq 1 30); do
-            if curl -fsS http://127.0.0.1:4173/ >/dev/null; then
+            if curl -fsS http://127.0.0.1:4173/tui_adv/ >/dev/null; then
               exit 0
             fi
             sleep 1
@@ -493,7 +493,7 @@ jobs:
           PLAYWRIGHT_BROWSERS_PATH: /tmp/tui-adv/ms-playwright
         run: |
           npm run qa:storybook:visual -- \
-            --base-url http://127.0.0.1:4173/ \
+            --base-url http://127.0.0.1:4173/tui_adv/ \
             --out-dir /tmp/tui-adv/storybook-visual-qa \
             --require-wasm
 
@@ -767,7 +767,7 @@ npm run build:player
 ```bash
 cd web
 npm run build:player
-npx vite preview --host 127.0.0.1 --port 4173
+npx vite preview --host 127.0.0.1 --port 4173 --base /tui_adv/
 ```
 
 터미널 B:
@@ -776,7 +776,7 @@ npx vite preview --host 127.0.0.1 --port 4173
 cd web
 export PLAYWRIGHT_BROWSERS_PATH=/tmp/tui-adv/ms-playwright
 npm run qa:storybook:visual -- \
-  --base-url http://127.0.0.1:4173/ \
+  --base-url http://127.0.0.1:4173/tui_adv/ \
   --out-dir /tmp/tui-adv/storybook-visual-qa \
   --require-wasm
 ```
@@ -805,6 +805,8 @@ npm run qa:storybook:visual -- \
 ## 12. 추천 PR 단위
 
 ### PR 1 — Web player deployment readiness
+
+Status: implemented.
 
 목표: GitHub Pages에 올릴 수 있는 production player build를 고정한다.
 

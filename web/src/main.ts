@@ -15,6 +15,7 @@ import { renderStorybookPage } from './ui/storybook/render';
 
 const LEGACY_SAVE_KEY = 'escape-office.save.v1';
 const RUST_SAVE_KEY = 'escape-office.rust.save.v1';
+const REQUIRE_WASM = import.meta.env.VITE_REQUIRE_WASM === 'true';
 
 const rootElement = document.querySelector<HTMLDivElement>('#app');
 if (!rootElement) throw new Error('missing #app root');
@@ -25,6 +26,7 @@ let state: GameState = loadSavedState(window.localStorage) ?? newGame({ seed: 12
 let turn: GameTurn = buildTurn(state);
 let actionSource: ActionListSource = turn;
 let lastError: string | null = null;
+let fatalPlayerError = false;
 
 void bootstrapWasmRuntime();
 render();
@@ -35,15 +37,22 @@ async function bootstrapWasmRuntime(): Promise<void> {
       initialStateJson: window.localStorage.getItem(RUST_SAVE_KEY) ?? undefined,
       seed: 123,
     });
+    fatalPlayerError = false;
     lastError = null;
     render();
   } catch (error) {
+    if (REQUIRE_WASM) {
+      lastError = `게임 코어를 불러오지 못했습니다. 새로고침 후에도 계속되면 배포된 WASM 파일 경로를 확인해주세요: ${errorMessage(error)}`;
+      renderFatalPlayerError(lastError, error);
+      return;
+    }
     lastError = `Rust GameCore WASM을 불러오지 못해 legacy mirror로 임시 실행 중입니다: ${errorMessage(error)}`;
     render();
   }
 }
 
 function render(): void {
+  if (fatalPlayerError) return;
   const page = currentScenePage();
   actionSource = page;
   appRoot.innerHTML = renderStorybookPage(page);
@@ -62,6 +71,31 @@ function render(): void {
   }
 }
 
+function renderFatalPlayerError(message: string, error: unknown): void {
+  fatalPlayerError = true;
+  actionSource = { actions: [] };
+  console.error('Failed to bootstrap required Rust GameCore WASM runtime', error);
+
+  appRoot.innerHTML = '';
+  const shell = document.createElement('main');
+  shell.className = 'storybook-shell storybook-fatal';
+  shell.dataset.app = 'escape-office';
+  shell.dataset.renderer = 'web-storybook';
+  shell.dataset.mode = 'fatal-error';
+
+  const title = document.createElement('h1');
+  title.textContent = 'ESCAPE FROM THE OFFICE';
+  const summary = document.createElement('p');
+  summary.className = 'storybook-runtime-error';
+  summary.textContent = message;
+  const detail = document.createElement('p');
+  detail.className = 'storybook-runtime-error-detail';
+  detail.textContent = '이 player build는 Rust/WASM GameCore를 필수로 요구합니다.';
+
+  shell.append(title, summary, detail);
+  appRoot.append(shell);
+}
+
 function currentScenePage(): ScenePage {
   if (wasmRuntime) {
     return wasmRuntime.scenePage();
@@ -71,6 +105,7 @@ function currentScenePage(): ScenePage {
 }
 
 function runAction(actionId: string): void {
+  if (fatalPlayerError) return;
   if (!actionId) return;
   if (actionId === NEW_GAME_ACTION_ID) {
     window.localStorage.removeItem(LEGACY_SAVE_KEY);

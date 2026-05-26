@@ -122,6 +122,15 @@
 - [x] GitHub Pages deploy workflow 추가
 - [x] Web player deployment contract/docs tests 추가
 
+### 0.2l 2026-05-26 Web player start/save UX first slice
+
+- [x] Web player start screen 추가
+- [x] 이어하기/새 게임/seed 표시/save timestamp UX 추가
+- [x] 새 게임 전 저장 reset confirmation 추가
+- [x] 저장 summary schema mismatch warning 추가
+- [x] visual QA가 start screen을 통과해 Storybook page를 검증하도록 갱신
+- [x] start/save UX contract tests 추가
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

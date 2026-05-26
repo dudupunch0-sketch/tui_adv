@@ -87,6 +87,150 @@ button {
   mix-blend-mode: multiply;
 }
 
+.storybook-start {
+  display: grid;
+  place-items: center;
+}
+
+.start-card {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: min(100%, 560px);
+  gap: 16px;
+  padding: clamp(22px, 6vw, 42px);
+  border: 2px solid rgba(70, 58, 43, 0.48);
+  background:
+    linear-gradient(180deg, rgba(222, 214, 194, 0.9), rgba(191, 181, 157, 0.9)),
+    repeating-linear-gradient(135deg, rgba(46, 42, 35, 0.035) 0 8px, transparent 8px 16px);
+  box-shadow: 0 14px 0 rgba(62, 50, 38, 0.16), inset 0 0 0 1px rgba(255, 247, 205, 0.28);
+}
+
+.start-kicker,
+.start-copy,
+.start-save-empty,
+.start-save-warning,
+.start-save-summary,
+.start-seed-label {
+  margin: 0;
+}
+
+.start-kicker {
+  color: var(--terminal-green);
+  font-family: "IBM Plex Mono", "JetBrains Mono", "D2Coding", monospace;
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+}
+
+.start-card h1,
+.start-card h2 {
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.start-card h1 {
+  font-size: clamp(2rem, 10vw, 4.2rem);
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.start-copy,
+.start-save-empty,
+.start-save-warning {
+  color: var(--muted-ink);
+  line-height: 1.6;
+}
+
+.start-save-warning {
+  padding: 8px 10px;
+  border: 1px solid rgba(158, 60, 63, 0.42);
+  background: rgba(158, 60, 63, 0.08);
+  color: var(--stamp-red);
+}
+
+.start-save-panel {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px dashed rgba(63, 52, 35, 0.35);
+  background: rgba(255, 247, 205, 0.16);
+}
+
+.start-save-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.start-save-summary div {
+  min-width: 0;
+}
+
+.start-save-summary dt {
+  color: var(--faint-ink);
+  font-family: "IBM Plex Mono", "JetBrains Mono", "D2Coding", monospace;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.start-save-summary dd {
+  margin: 2px 0 0;
+  overflow-wrap: anywhere;
+}
+
+.start-seed-label {
+  display: grid;
+  gap: 6px;
+  font-family: "IBM Plex Mono", "JetBrains Mono", "D2Coding", monospace;
+}
+
+.start-seed-label input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid rgba(63, 52, 35, 0.38);
+  background: rgba(46, 42, 35, 0.08);
+  color: var(--ink);
+  font: inherit;
+}
+
+.start-actions,
+.start-reset-confirmation div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.start-actions button,
+.start-reset-confirmation button {
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid rgba(63, 52, 35, 0.42);
+  background: rgba(46, 42, 35, 0.1);
+  cursor: pointer;
+}
+
+.start-actions button:hover,
+.start-reset-confirmation button:hover {
+  background: rgba(46, 42, 35, 0.18);
+}
+
+.start-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.start-actions .start-primary {
+  background: rgba(47, 125, 63, 0.16);
+}
+
+.start-reset-confirmation {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid rgba(158, 60, 63, 0.48);
+  background: rgba(158, 60, 63, 0.09);
+}
+
 .storybook-hud,
 .story-progress-rail,
 .storybook-page,

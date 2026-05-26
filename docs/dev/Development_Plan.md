@@ -506,6 +506,61 @@ git diff --check
 - WASM-required Storybook visual QA가 통과한다.
 - docs/checklist/main plan이 구현 상태와 일치한다.
 
+## 0.6 2026-05-26 active main plan: Web player start/save UX first slice
+
+이 섹션은 `docs/dev/Web_Player_PokeRogue_Style_Plan.md`의 “PR 2 — Player start/save UX” 중 MVP 우선순위(first slice)를 canonical main plan으로 승격해 구현한 기록이다.
+현재 상태: 구현 완료.
+
+목표:
+
+- URL로 들어온 플레이어가 바로 story page로 떨어지기 전에 공개 player 시작 화면을 본다.
+- localStorage 기반 저장을 “있음/없음, seed, turn, location, 저장 시각”으로 사용자에게 보여준다.
+- 이어하기, 새 게임, 저장 초기화, 새 게임 전 reset confirmation을 제공한다.
+- Web renderer는 여전히 `ScenePage`/action id 표시와 storage shell만 담당하고, Rust GameCore / `ScenePage` / WASM JSON boundary는 변경하지 않는다.
+
+구현 결과:
+
+- `web/src/ui/startScreen.ts`를 추가해 start screen HTML, `escape-office.rust.save.v1`, `escape-office.last-run-summary.v1`, legacy save cleanup, save summary read/write를 분리했다.
+- `web/src/main.ts`는 첫 로드에서 `data-player-screen="start"` 화면을 렌더링하고, `이어하기`/`새 게임`/`저장 초기화`/`confirm-new-game` 액션 뒤에만 game screen을 시작한다.
+- WASM save는 기존 Rust state JSON을 그대로 `escape-office.rust.save.v1`에 저장하고, 공개-safe summary metadata만 `escape-office.last-run-summary.v1`에 따로 저장한다.
+- schema mismatch 또는 손상된 summary는 traceback 대신 start screen warning으로 표시하고, 가능한 경우 Rust save JSON에서 seed/turn/location을 복구한다.
+- `web/scripts/storybook-reference-qa.mjs`는 start screen이 있으면 `data-player-action="new-game"`을 눌러 실제 Storybook page로 들어간 뒤 기존 DOM/layout/interaction/WASM QA를 수행한다.
+- `web/src/styles/storybook.css`에 모바일 portrait board 톤을 유지하는 start card/save panel/confirmation styling을 추가했다.
+- `web/src/ui/startScreen.test.ts`가 start screen, continue disabled/enabled, save timestamp, reset confirmation, summary metadata, schema mismatch warning, save cleanup contract를 검증한다.
+
+비목표:
+
+- save JSON export/import.
+- 오늘의 seed, 난이도 preset, settings/reduce-motion UI.
+- PWA/service worker/backend/account/leaderboard.
+- gameplay rule, route truth, eligibility, outcome, ending, achievement, `ScenePage` schema 변경.
+
+핵심 검증 명령:
+
+```bash
+source ~/.config/tui_adv/tmp-installs.sh
+cd web
+npm test
+npm run build
+# WASM package가 있는 검증 환경에서는:
+npm run qa:storybook:visual -- \
+  --base-url <verified-local-preview-url> \
+  --out-dir /tmp/dudupunch0-tui-adv/storybook-visual-qa-start-save \
+  --require-wasm
+cd ..
+python3 -m pytest tests/test_docs_contract.py tests/test_web_player_deployment_contract.py tests/test_web_visual_qa_contract.py -q
+git diff --check
+```
+
+완료 기준:
+
+- 첫 화면에 start screen이 표시된다.
+- 저장이 없으면 이어하기가 disabled이고 seed 기본값으로 새 게임을 시작할 수 있다.
+- 저장이 있으면 이어하기가 enabled이고 seed/turn/location/saved timestamp가 표시된다.
+- 기존 저장이 있을 때 새 게임은 confirmation을 거친다.
+- 저장 summary schema mismatch는 사용자-facing warning으로 표시된다.
+- visual QA는 start screen을 통과해 기존 Storybook DOM/interaction contract를 계속 검증한다.
+
 ## 1. 목표
 
 국내 최고 대기업 IT/반도체 회사의 연구개발동 같은 사무실을 배경으로 한 TUI 기반 랜덤 인카운터 선택지 생존 게임을 만든다.
@@ -1039,13 +1094,14 @@ src/tui_adv/data/secrets.example.yaml
 16. 모바일 픽셀 스토리북 UI redesign 완료: Web Storybook을 centered portrait board, HUD, progress rail, paper story flow, 문장형 선택지, bottom dock 구조로 재설계했고 `docs/design/Mobile_Pixel_Storybook_UI.md`에 canonical visual contract를 남겼다.
 17. Web Storybook visual regression 자동화 완료: `web/scripts/storybook-reference-qa.mjs`와 `qa:storybook:visual` script로 reference viewport DOM/layout/interaction QA, optional `--require-wasm` smoke, scratch screenshot/`visual-qa-report.json` output을 고정했다.
 18. Web player deployment readiness 완료: `VITE_BASE_PATH`, module-relative WASM import path, `VITE_REQUIRE_WASM` fatal policy, GitHub Pages workflow, deployment contract test로 URL 즉시 플레이용 static deploy 기반을 고정했다.
+19. Web player start/save UX first slice 완료: start screen, 이어하기/새 게임, seed 표시, save timestamp summary, 저장 초기화, reset confirmation, schema mismatch warning, visual QA start-screen 통과를 구현했다.
 
 현재 최우선 남은 작업:
 
 1. 현재 active main plan 기준 즉시 진행할 구현 작업은 없다.
-   - 방금 완료한 최우선 slice: Web player deployment readiness.
-   - 유지 범위: Rust GameCore / `ScenePage` / WASM JSON boundary는 deployment 하드닝 때문에 변경하지 않는다.
-   - 금지 범위: gameplay rule 변경, ScenePage schema 변경, start/save UX 확장, PWA/service worker/backend 추가, golden screenshot baseline commit.
+   - 방금 완료한 최우선 slice: Web player start/save UX first slice.
+   - 유지 범위: Rust GameCore / `ScenePage` / WASM JSON boundary는 start/save UX 때문에 변경하지 않는다.
+   - 금지 범위: gameplay rule 변경, ScenePage schema 변경, save JSON export/import, settings/reduce-motion UI, PWA/service worker/backend 추가, golden screenshot baseline commit.
    - 다음 구현 slice는 아래 “나중” backlog나 `idea_box`를 별도 검토해 새 active plan으로 승격한 뒤 시작한다.
 
 전환 중 유지:
@@ -1065,7 +1121,7 @@ src/tui_adv/data/secrets.example.yaml
 5. 꿈 엔딩을 실제 콘텐츠로 구현할지 결정한다.
 6. Tauri/Electron desktop wrapper 재검토: native file dialog, offline file import/export, OS-level 알림/업데이트 같은 Web-only 한계를 실제 요구로 확인한 뒤 별도 slice로 연다.
 7. optional inline image는 terminal cell/GlyphFX baseline 밖 future backlog로 둔다. Kitty/Sixel/iTerm2 capability 요구가 실제로 생길 때 별도 slice로 연다.
-8. Web player start/save UX: `docs/dev/Web_Player_PokeRogue_Style_Plan.md`의 PR 2를 기준으로 이어하기/새 게임/seed/save timestamp/reset confirmation을 검토한다.
+8. Web player start/save UX first slice 후속: save JSON export/import, settings/reduce-motion UI, 오늘의 seed는 별도 승격 전까지 열지 않는다.
 9. 여러 히든 현실 보물
 
 ## 9. 주요 리스크

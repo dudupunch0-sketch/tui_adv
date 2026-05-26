@@ -34,6 +34,17 @@ def test_web_main_has_require_wasm_fatal_player_policy_without_legacy_fallback()
     assert "legacy mirror로 임시 실행 중" in catch_block
 
 
+def test_github_pages_workflow_installs_python_project_dependencies_before_export_check():
+    workflow_path = Path(".github/workflows/pages.yml")
+    assert workflow_path.exists()
+    workflow = workflow_path.read_text(encoding="utf-8")
+
+    install_step_index = workflow.index("python -m pip install -e .")
+    export_check_index = workflow.index("name: Check generated public content bundle")
+
+    assert install_step_index < export_check_index
+
+
 def test_github_pages_workflow_builds_wasm_required_player_and_runs_visual_qa():
     workflow_path = Path(".github/workflows/pages.yml")
     assert workflow_path.exists()

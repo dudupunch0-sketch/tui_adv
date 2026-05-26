@@ -96,12 +96,15 @@ def test_mobile_pixel_storybook_ui_doc_is_indexed_checklisted_and_current_plan()
     assert "- [x] reference-size browser visual QA" in checklist
     assert "모바일 픽셀 스토리북 UI redesign 완료" in plan
     assert "Web Storybook visual regression 자동화 완료" in plan
+    assert "Web player deployment readiness 완료" in plan
     completed_foundation = plan.split("현재 완료된 기반:", 1)[1].split("현재 최우선 남은 작업:", 1)[0]
     assert "web/scripts/storybook-reference-qa.mjs" in completed_foundation
     assert "qa:storybook:visual" in completed_foundation
+    assert "VITE_BASE_PATH" in completed_foundation
+    assert "VITE_REQUIRE_WASM" in completed_foundation
     next_slice = plan.split("현재 최우선 남은 작업:", 1)[1]
     assert "현재 active main plan 기준 즉시 진행할 구현 작업은 없다" in next_slice
-    assert "Rust GameCore / `ScenePage` / WASM JSON boundary는 renderer QA 때문에 변경하지 않는다" in next_slice
+    assert "Rust GameCore / `ScenePage` / WASM JSON boundary는 deployment 하드닝 때문에 변경하지 않는다" in next_slice
 
 
 def test_phase9_story_route_design_docs_are_indexed_and_checklisted():

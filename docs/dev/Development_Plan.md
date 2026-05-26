@@ -447,6 +447,65 @@ git diff --check
 - docs/checklist/main plan이 구현 상태와 일치한다.
 - Renderer contract boundary가 유지된다.
 
+## 0.5 2026-05-24 active main plan: Web player deployment readiness
+
+이 섹션은 `docs/dev/Web_Player_PokeRogue_Style_Plan.md`의 “PR 1 — Web player deployment readiness”를 canonical main plan으로 승격해 구현한 static deploy slice 기록이다.
+현재 상태: 구현 완료.
+
+목표:
+
+- 포켓로그처럼 URL만 열면 바로 플레이할 수 있는 Web player 배포 기반을 고정한다.
+- GitHub Pages project site(`/tui_adv/`)에서 JS/CSS/WASM asset path가 깨지지 않도록 Vite base path와 WASM import path를 하드닝한다.
+- production player에서는 Rust/WASM GameCore 로드 실패를 legacy fallback으로 숨기지 않고 fatal player error로 표시한다.
+- GitHub Pages workflow에서 build/test/WASM-required visual QA/deploy artifact upload를 수행한다.
+
+구현 결과:
+
+- `web/vite.config.ts`에 `base: process.env.VITE_BASE_PATH ?? '/'`를 추가했다.
+- `web/src/core/wasmRuntime.ts`의 default WASM module path를 `new URL('./wasm-pkg/escape_wasm.js', import.meta.url).toString()`으로 바꿨다.
+- `web/src/main.ts`에 `VITE_REQUIRE_WASM=true` fatal policy를 추가했다. 이 mode에서는 WASM bootstrap 실패 시 `storybook-runtime-error` 화면을 표시하고 legacy mirror fallback을 실행하지 않는다.
+- `.github/workflows/pages.yml`을 추가해 main push/manual dispatch에서 content export check, Rust workspace test, web test, `VITE_BASE_PATH=/tui_adv/ VITE_REQUIRE_WASM=true npm run build:player`, `qa:storybook:visual --require-wasm`, Pages artifact upload/deploy를 수행한다.
+- `tests/test_web_player_deployment_contract.py`가 deploy readiness contract를 고정한다.
+- `docs/dev/Web_Player_PokeRogue_Style_Plan.md`와 `docs/dev/Checklist.md`를 구현 상태에 맞게 동기화했다.
+
+비목표:
+
+- gameplay rule, route truth, eligibility, outcome, ending, achievement 변경.
+- `ScenePage` schema 또는 renderer-neutral content bundle 변경.
+- start/save UX 화면 추가. 이는 `Web_Player_PokeRogue_Style_Plan.md`의 PR 2 후보로 남긴다.
+- PWA/service worker/backend/계정/랭킹 추가.
+- golden screenshot baseline commit.
+
+핵심 검증 명령:
+
+```bash
+source ~/.config/tui_adv/tmp-installs.sh
+python3 scripts/export_web_data.py \
+  --bundle crates/escape-core/fixtures/content/content.bundle.json \
+  --bundle web/src/data/generated/content.bundle.json \
+  --check
+python3 -m pytest tests/test_web_player_deployment_contract.py tests/test_web_visual_qa_contract.py tests/test_docs_contract.py -q
+
+cd web
+npm test
+VITE_BASE_PATH=/tui_adv/ npm run build
+VITE_BASE_PATH=/tui_adv/ VITE_REQUIRE_WASM=true npm run build:player
+npm run qa:storybook:visual -- \
+  --base-url <verified-local-preview-url> \
+  --out-dir /tmp/dudupunch0-tui-adv/storybook-visual-qa-pages \
+  --require-wasm
+git diff --check
+```
+
+완료 기준:
+
+- GitHub Pages workflow가 repo에 존재하고 `web/dist`를 Pages artifact로 업로드한다.
+- project site base path(`/tui_adv/`) build에서 asset URL이 base path를 따른다.
+- built JS가 `assets/wasm-pkg/escape_wasm.js`를 module-relative path로 찾는다.
+- `VITE_REQUIRE_WASM=true` build에서 WASM load 실패가 legacy fallback으로 숨지 않는다.
+- WASM-required Storybook visual QA가 통과한다.
+- docs/checklist/main plan이 구현 상태와 일치한다.
+
 ## 1. 목표
 
 국내 최고 대기업 IT/반도체 회사의 연구개발동 같은 사무실을 배경으로 한 TUI 기반 랜덤 인카운터 선택지 생존 게임을 만든다.
@@ -979,13 +1038,14 @@ src/tui_adv/data/secrets.example.yaml
 15. 현실 탈출 후일담 첫 runtime slice 완료: `escape_commute.text`에 public-safe `[POST-ESCAPE REPORT]`를 추가했고 Python content, Rust `ScenePage`, SuperLightTUI snapshot, Web generated parity 테스트로 같은 후일담 노출을 검증했다.
 16. 모바일 픽셀 스토리북 UI redesign 완료: Web Storybook을 centered portrait board, HUD, progress rail, paper story flow, 문장형 선택지, bottom dock 구조로 재설계했고 `docs/design/Mobile_Pixel_Storybook_UI.md`에 canonical visual contract를 남겼다.
 17. Web Storybook visual regression 자동화 완료: `web/scripts/storybook-reference-qa.mjs`와 `qa:storybook:visual` script로 reference viewport DOM/layout/interaction QA, optional `--require-wasm` smoke, scratch screenshot/`visual-qa-report.json` output을 고정했다.
+18. Web player deployment readiness 완료: `VITE_BASE_PATH`, module-relative WASM import path, `VITE_REQUIRE_WASM` fatal policy, GitHub Pages workflow, deployment contract test로 URL 즉시 플레이용 static deploy 기반을 고정했다.
 
 현재 최우선 남은 작업:
 
 1. 현재 active main plan 기준 즉시 진행할 구현 작업은 없다.
-   - 방금 완료한 최우선 slice: Web Storybook visual regression 자동화 first slice.
-   - 유지 범위: Rust GameCore / `ScenePage` / WASM JSON boundary는 renderer QA 때문에 변경하지 않는다.
-   - 금지 범위: golden screenshot baseline commit, production asset pipeline, scene composition schema, gameplay rule 변경.
+   - 방금 완료한 최우선 slice: Web player deployment readiness.
+   - 유지 범위: Rust GameCore / `ScenePage` / WASM JSON boundary는 deployment 하드닝 때문에 변경하지 않는다.
+   - 금지 범위: gameplay rule 변경, ScenePage schema 변경, start/save UX 확장, PWA/service worker/backend 추가, golden screenshot baseline commit.
    - 다음 구현 slice는 아래 “나중” backlog나 `idea_box`를 별도 검토해 새 active plan으로 승격한 뒤 시작한다.
 
 전환 중 유지:
@@ -1005,7 +1065,7 @@ src/tui_adv/data/secrets.example.yaml
 5. 꿈 엔딩을 실제 콘텐츠로 구현할지 결정한다.
 6. Tauri/Electron desktop wrapper 재검토: native file dialog, offline file import/export, OS-level 알림/업데이트 같은 Web-only 한계를 실제 요구로 확인한 뒤 별도 slice로 연다.
 7. optional inline image는 terminal cell/GlyphFX baseline 밖 future backlog로 둔다. Kitty/Sixel/iTerm2 capability 요구가 실제로 생길 때 별도 slice로 연다.
-8. 포켓로그식 URL 즉시 플레이 Web player 공개 배포 계획: `docs/dev/Web_Player_PokeRogue_Style_Plan.md`를 기준으로 GitHub Pages/WASM-required/static deploy slice를 검토한다.
+8. Web player start/save UX: `docs/dev/Web_Player_PokeRogue_Style_Plan.md`의 PR 2를 기준으로 이어하기/새 게임/seed/save timestamp/reset confirmation을 검토한다.
 9. 여러 히든 현실 보물
 
 ## 9. 주요 리스크
@@ -1051,7 +1111,7 @@ Web 또는 terminal renderer가 게임 규칙을 다시 구현하면 Rust GameCo
 
 ## 10. 다음 액션
 
-1. 이 slice의 PR에서는 `web/scripts/storybook-reference-qa.mjs`, `qa:storybook:visual`, docs/checklist/main plan 동기화, 검증 결과만 포함한다.
+1. 이 slice의 PR에서는 `VITE_BASE_PATH`, module-relative WASM import path, `VITE_REQUIRE_WASM` fatal policy, GitHub Pages workflow, docs/checklist/main plan 동기화, 검증 결과만 포함한다.
 2. 새 active implementation slice는 아직 열지 않는다.
 3. 다음 작업을 시작할 때는 이 파일의 “나중” backlog와 `idea_box`를 별도 검토해 새 active main plan으로 승격한다.
-4. 그 전에는 asset pipeline, scene composition schema, 또는 새 콘텐츠 확장을 열지 않는다.
+4. 그 전에는 gameplay rule 변경, ScenePage schema 변경, start/save UX 확장, PWA/service worker/backend 추가를 열지 않는다.

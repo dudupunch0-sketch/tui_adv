@@ -1,0 +1,121 @@
+name: Deploy Web Player
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "web/**"
+      - "crates/**"
+      - "src/tui_adv/data/**"
+      - "scripts/export_web_data.py"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Install wasm-pack
+        run: cargo install wasm-pack --locked
+
+      - name: Check generated public content bundle
+        run: |
+          python scripts/export_web_data.py \
+            --check \
+            --bundle crates/escape-core/fixtures/content/content.bundle.json \
+            --bundle web/src/data/generated/content.bundle.json
+
+      - name: Test Rust workspace
+        run: cargo test --workspace
+
+      - name: Install web dependencies
+        working-directory: web
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: /tmp/tui-adv/ms-playwright
+        run: npm ci
+
+      - name: Run web tests
+        working-directory: web
+        run: npm test
+
+      - name: Build web player
+        working-directory: web
+        env:
+          VITE_BASE_PATH: /tui_adv/
+          VITE_REQUIRE_WASM: "true"
+        run: npm run build:player
+
+      - name: Preview player for visual QA
+        working-directory: web
+        run: |
+          npx vite preview --host 127.0.0.1 --port 4173 --base /tui_adv/ > /tmp/tui-adv-vite-preview.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:4173/tui_adv/ >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/tui-adv-vite-preview.log
+          exit 1
+
+      - name: Run Storybook visual QA
+        working-directory: web
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: /tmp/tui-adv/ms-playwright
+        run: |
+          npm run qa:storybook:visual -- \
+            --base-url http://127.0.0.1:4173/tui_adv/ \
+            --out-dir /tmp/tui-adv/storybook-visual-qa \
+            --require-wasm
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

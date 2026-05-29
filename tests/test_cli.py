@@ -297,6 +297,31 @@ def test_cli_supply_closet_cache_can_collect_and_use_power_bank():
     assert "배터리: 97 -> 100" in result.stdout
 
 
+def test_cli_schema_less_combat_prototype_runs_through_existing_choice_actions():
+    result = run_module(
+        "--new",
+        "--seed",
+        "123",
+        "--action",
+        "choice:1",
+        "--action",
+        "move:dev_office",
+        "--action",
+        "move:supply_closet",
+        "--action",
+        "choice:4",
+        "--action",
+        "choice:2",
+    )
+
+    assert result.returncode == 0
+    assert "인카운터: 물품창고 비상 보급함" in result.stdout
+    assert "선택 실행: 잠긴 물품 카트를 끌어 복도 쪽으로 세운다" in result.stdout
+    assert "인카운터: 물품창고 자동 난투" in result.stdout
+    assert "선택 실행: 캐비닛 손잡이에 카트를 걸어 거리를 만든다" in result.stdout
+    assert "상대의 균형이 선반 쪽으로 밀렸다" in result.stdout
+
+
 def test_cli_rooftop_signal_route_prints_escape_ending_and_achievement():
     result = run_module(
         "--new",

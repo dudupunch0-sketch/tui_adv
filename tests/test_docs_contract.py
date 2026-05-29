@@ -105,9 +105,11 @@ def test_mobile_pixel_storybook_ui_doc_is_indexed_checklisted_and_current_plan()
     assert "VITE_REQUIRE_WASM" in completed_foundation
     assert "PR C audio engine skeleton 완료" in completed_foundation
     assert "lazy Web Audio generated oscillator backend" in completed_foundation
+    assert "schema-less combat encounter prototype 완료" in completed_foundation
     next_slice = plan.split("현재 최우선 남은 작업:", 1)[1]
-    assert "PR C audio engine skeleton을 리뷰/머지" in next_slice
-    assert "generated-only cue registry" in next_slice
+    assert "schema-less combat encounter prototype을 리뷰/머지" in next_slice
+    assert "isolation_pack" in next_slice
+    assert "Web Storybook production visual polish" in next_slice
     assert "Rust GameCore / `ScenePage` / WASM JSON boundary" in next_slice
 
 
@@ -127,15 +129,14 @@ def test_transition_audio_readiness_is_current_active_plan():
 
     next_slice = plan.split("현재 최우선 남은 작업:", 1)[1].split("전환 중 유지:", 1)[0]
     assert "현재 active main plan 기준 즉시 진행할 구현 작업은 없다" not in next_slice
-    assert "PR C audio engine skeleton을 리뷰/머지" in next_slice
-    assert "generated-only cue registry" in next_slice
     assert "schema-less combat encounter prototype" in next_slice
-    assert "binary asset" in next_slice
+    assert "isolation_pack" in next_slice
+    assert "Web Storybook production visual polish" in next_slice
 
     next_actions = plan.split("## 10. 다음 액션", 1)[1]
-    assert "PR C audio engine skeleton 변경을 검증하고 PR로 리뷰/머지" in next_actions
-    assert "generated-only cue registry expansion" in next_actions
-    assert "binary asset" in next_actions
+    assert "schema-less combat encounter prototype 변경을 검증하고 PR로 리뷰/머지" in next_actions
+    assert "isolation_pack" in next_actions
+    assert "Web Storybook production visual polish" in next_actions
 
     assert "### 0.2m 2026-05-26 Web Storybook transition/audio readiness" in checklist
     assert "- [x] transition/audio readiness active main plan 승격" in checklist
@@ -147,6 +148,9 @@ def test_transition_audio_readiness_is_current_active_plan():
     assert "- [x] muted no schedule + user-gesture opt-in one-shot cue API 구현" in checklist
     assert "- [x] looping ambience API와 binary asset 없는 generated oscillator backend 구현" in checklist
     assert "- [x] visual QA motion/audio 안정화 확인" in checklist
+    assert "### 0.2o 2026-05-29 schema-less combat encounter prototype runtime" in checklist
+    assert "- [x] 기존 encounter/choice/outcome schema만 사용한 물품창고 자동 난투 구현" in checklist
+    assert "- [x] Rust `ScenePage` / SuperLightTUI / Web generated data parity 검증 추가" in checklist
 
     assert "Transition/audio readiness first slice" in web_plan
     assert "PR A settings/motion foundation implemented" in web_plan
@@ -292,12 +296,16 @@ def test_combat_system_auto_brawl_doc_is_indexed_and_backlog_done():
     assert "docs/design/Combat_System_Auto_Brawl.md" in index
     assert "docs/design/Combat_System_Auto_Brawl.md" in readme
     assert "전투 시스템 아이디어 문서화" in checklist
+    assert "schema-less combat encounter prototype runtime" in checklist
     assert "docs/design/Combat_System_Auto_Brawl.md" in plan
+    assert "`supply_closet_auto_brawl`" in plan
     assert "자동 난투 + 상황 개입" in doc
     assert "Rust GameCore" in doc
     assert "ScenePage" in doc
     assert "전투당 개입 요구는 0~3회" in doc
     assert "schema-less combat encounter prototype" in doc
+    assert "`supply_closet_auto_brawl`" in doc
     assert "status: done" in idea
     assert "used_by: docs/design/Combat_System_Auto_Brawl.md" in idea
-    assert "이번 처리에서는 런타임 YAML/Rust/Web 코드는 변경하지 않았다" in idea
+    assert "후속 런타임 slice" in idea
+    assert "`supply_closet_auto_brawl`" in idea

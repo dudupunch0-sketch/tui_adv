@@ -339,6 +339,16 @@
           ],
           "log": "유통기한이 오늘로 끝나는 과자 봉지를 챙겼다."
         }
+      },
+      {
+        "id": "brace_for_supply_scuffle",
+        "label": "잠긴 물품 카트를 끌어 복도 쪽으로 세운다",
+        "outcome": {
+          "add_flags": [
+            "supply_scuffle_started"
+          ],
+          "log": "잠긴 바퀴가 바닥을 긁는 동안, 선반 뒤의 무언가가 움직임을 멈췄다."
+        }
       }
     ],
     "conditions": {
@@ -348,6 +358,93 @@
     },
     "id": "supply_closet_cache",
     "title": "물품창고 비상 보급함"
+  },
+  {
+    "body": "물품창고의 좁은 통로에서 뒤틀린 야간 당직자가 선반을 붙잡고 돌진한다. 당신이 모든 타격을 직접 조작할 시간은 없다. 몸싸움은 이미 시작됐고, 지금 바꿀 수 있는 것은 거리와 균형뿐이다.",
+    "choices": [
+      {
+        "id": "keep_distance_between_shelves",
+        "label": "선반 사이 거리를 벌려 숨을 고른다",
+        "outcome": {
+          "add_flags": [
+            "supply_scuffle_resolved"
+          ],
+          "log": "당신은 선반 끝을 따라 물러섰고, 싸움은 더 커지기 전에 통로 반대편으로 흘러갔다.",
+          "resources": {
+            "sanity": 2
+          }
+        }
+      },
+      {
+        "cost": {
+          "health": 4
+        },
+        "id": "hook_cart_to_cabinet",
+        "label": "캐비닛 손잡이에 카트를 걸어 거리를 만든다",
+        "outcome": {
+          "add_clues": [
+            "improvised_distance_control"
+          ],
+          "add_flags": [
+            "supply_scuffle_resolved",
+            "combat_intervention_success"
+          ],
+          "danger": -1,
+          "log": "상대의 균형이 선반 쪽으로 밀렸다. 공격이 아니라 거리 조절이 난투의 흐름을 바꿨다."
+        }
+      },
+      {
+        "cost": {
+          "sanity": 4
+        },
+        "id": "pull_extinguisher_pin",
+        "label": "소화기 핀을 뽑아 시야를 끊는다",
+        "outcome": {
+          "add_clues": [
+            "improvised_visibility_break"
+          ],
+          "add_flags": [
+            "supply_scuffle_resolved",
+            "combat_intervention_success"
+          ],
+          "danger": -1,
+          "log": "분말이 통로를 덮자 손과 그림자만 남았다. 당신은 보이는 공격 대신 보이지 않는 틈으로 빠져나왔다."
+        }
+      }
+    ],
+    "conditions": {
+      "forbidden_flags": [
+        "supply_scuffle_resolved"
+      ],
+      "locations": [
+        "supply_closet"
+      ],
+      "required_flags": [
+        "supply_scuffle_started"
+      ]
+    },
+    "id": "supply_closet_auto_brawl",
+    "presentation": {
+      "effect_cues": [
+        {
+          "distortion": "impact_then_stabilize",
+          "duration_hint_ms": 1200,
+          "fallback_text": "선반이 흔들리는 소리 사이로 '거리', '균형', '소화기 핀'만 또렷하게 남는다.",
+          "intensity": 0.64,
+          "kind": "glyph_anomaly",
+          "source": "shelf_impact",
+          "stable_terms": [
+            "거리",
+            "균형",
+            "소화기 핀"
+          ]
+        }
+      ],
+      "layout": "combat_intervention",
+      "speaker": "물품창고",
+      "visual_id": "supply_closet_scuffle"
+    },
+    "title": "물품창고 자동 난투"
   },
   {
     "body": "회의실 화이트보드 모서리에 지워지지 않는 작은 사각형이 남아 있다. 방금 본 출력물의 빈 선택지와 같은 모양이다.",

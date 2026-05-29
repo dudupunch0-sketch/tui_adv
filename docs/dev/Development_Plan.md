@@ -648,7 +648,7 @@ node --check scripts/storybook-reference-qa.mjs
 ## 0.8 2026-05-29 idea_box 전투 시스템 설계 문서화
 
 이 섹션은 `idea_box/combat_system.md`를 프로젝트 문서로 승격한 기록이다.
-현재 상태: 설계 문서화 완료, 런타임 구현 미착수.
+현재 상태: 설계 문서화 완료. 첫 runtime slice는 아래 0.9 섹션에서 `supply_closet_auto_brawl`로 구현했다.
 
 목표:
 
@@ -664,9 +664,56 @@ node --check scripts/storybook-reference-qa.mjs
 
 후속 구현 후보:
 
-1. 기존 `encounters.yaml` schema만 사용한 schema-less combat encounter prototype.
+1. 완료: 기존 `encounters.yaml` schema만 사용한 schema-less combat encounter prototype (`supply_closet_auto_brawl`).
 2. 반복 가치가 확인되면 `presentation.layout: combat_exchange` 같은 semantic metadata.
 3. 여러 전투가 쌓인 뒤에만 Rust core 전용 combat resolver 검토.
+
+## 0.9 2026-05-29 active main plan: schema-less combat encounter prototype runtime
+
+이 섹션은 `docs/design/Combat_System_Auto_Brawl.md`의 PR 1 후보를 첫 runtime slice로 승격한 기록이다.
+현재 상태: 구현 완료, PR 리뷰/머지 대기.
+
+목표:
+
+- 기존 encounter/choice/outcome schema만 사용해 “자동 난투 + 1회 상황 개입” 장면을 실제 런타임 콘텐츠로 노출한다.
+- Rust GameCore가 action truth를 소유하고, Web Storybook과 SuperLightTUI는 `ScenePage`/action id를 표시하는 renderer로 유지한다.
+- 전투 선택지는 공격 버튼이 아니라 거리, 균형, 시야, 환경 활용을 판단하는 문장형 개입으로 둔다.
+
+아키텍처 경계:
+
+- 새 `CombatState`, 새 combat schema, HP 숫자전, 스킬/쿨타임, 전투 전용 renderer UI를 만들지 않는다.
+- 기존 `conditions`, `choices`, `outcome`, resource delta, flag, clue, log, optional `presentation` metadata만 사용한다.
+- Web generated data와 Rust content bundle은 같은 renderer-neutral content bundle에서 생성한다.
+- Renderer는 combat 여부를 재판정하지 않고 Rust GameCore가 제공한 `ScenePage.visual`, `effect_cues`, `actions`를 표시한다.
+
+반영 결과:
+
+- `src/tui_adv/data/encounters.yaml`의 `supply_closet_cache`에 `brace_for_supply_scuffle` 선택지를 추가했다.
+- 새 encounter `supply_closet_auto_brawl`을 추가했다.
+  - 위치: `supply_closet`
+  - 필수 플래그: `supply_scuffle_started`
+  - 금지 플래그: `supply_scuffle_resolved`
+  - presentation: `visual_id: supply_closet_scuffle`, `layout: combat_intervention`, stable terms `거리 / 균형 / 소화기 핀`
+- 선택지는 3개로 제한했다.
+  - `keep_distance_between_shelves`: 관찰/거리 벌리기
+  - `hook_cart_to_cabinet`: 카트와 캐비닛으로 균형을 무너뜨리는 개입
+  - `pull_extinguisher_pin`: 소화기 분말로 시야를 끊는 위험한 개입
+- `crates/escape-core/fixtures/content/content.bundle.json`, `web/src/data/generated/content.bundle.json`, `web/src/data/generated/encounters.json`, `web/src/data/generated/manifest.json`을 재생성했다.
+
+검증 범위:
+
+- Python content loader/CLI smoke가 기존 encounter schema로 전투형 encounter를 통과하는지 확인한다.
+- Rust `escape-core` tests가 `ScenePage`와 action id로 전투형 encounter를 표시/해결하는지 확인한다.
+- SuperLightTUI smoke가 같은 `visual_id`, `layout`, stable terms, action id를 표시하는지 확인한다.
+- Web generated data manifest/count와 content bundle freshness를 확인한다.
+
+후속 후보:
+
+1. 이 PR을 리뷰/머지한 뒤 `origin/main`을 동기화한다.
+2. 다음 main plan 후보는 이전 추천 순서를 유지한다.
+   - 2순위: `isolation_pack` 첫 runtime encounter 승격.
+   - 3순위: Web Storybook production visual polish.
+3. 전투 후속은 여러 runtime encounter에서 반복 가치가 확인될 때만 presentation metadata 정리 또는 Rust combat resolver로 승격한다.
 
 ## 1. 목표
 
@@ -1206,13 +1253,14 @@ src/tui_adv/data/secrets.example.yaml
 21. 전투 시스템 아이디어 문서화 완료: `idea_box/combat_system.md`를 `docs/design/Combat_System_Auto_Brawl.md`로 승격했고, 자동 난투 + 상황 개입을 Rust GameCore/`ScenePage` 호환 future backlog로 정리했다.
 22. PR B transition controller 완료: action 실행 전 current page/action context를 캡처하고, action 후 `transitionPlan(previousPage, nextPage, action)`으로 `.storybook-shell` enter/exit class/attribute transition을 적용한다. reduced/off motion은 즉시 render하고, `transitionend` 미발생 시 timeout fallback으로 게임이 멈추지 않게 했다.
 23. PR C audio engine skeleton 완료: `web/src/ui/audio/audioEngine.ts`가 lazy Web Audio generated oscillator backend와 no-op fallback을 제공하고, muted 상태 no schedule, user-gesture opt-in unlock, one-shot cue, looping ambience API를 renderer-local로 고정했다. Rust GameCore / `ScenePage` / WASM JSON boundary와 binary audio asset은 변경하지 않았다.
+24. schema-less combat encounter prototype 완료: `supply_closet_cache`에서 `supply_closet_auto_brawl`로 이어지는 물품창고 자동 난투를 기존 encounter/choice/outcome schema만으로 구현했고, Rust `ScenePage`, SuperLightTUI, Web generated data에서 같은 action id와 presentation hint를 검증한다.
 
 현재 최우선 남은 작업:
 
-1. PR C audio engine skeleton을 리뷰/머지하고 `origin/main` 동기화 후 다음 slice를 별도로 승격한다.
-   - PR C 이후 실제 음악/SFX asset 또는 soundtrack 제작은 바로 열지 않는다. 저작권/라이선스가 확인된 asset 정책 또는 generated-only cue registry 계획이 먼저 필요하다.
-   - 후보 A: Web Storybook audio cue mapping을 generated-only registry로 조금 확장하되 binary asset은 계속 금지한다.
-   - 후보 B: `docs/design/Combat_System_Auto_Brawl.md` 기준으로 기존 encounter schema만 쓰는 schema-less combat encounter prototype을 검토한다.
+1. schema-less combat encounter prototype을 리뷰/머지하고 `origin/main` 동기화 후 다음 추천 순서 slice를 별도로 승격한다.
+   - 이 PR은 새 `CombatState`, 새 combat schema, HP 숫자전, 전투 전용 renderer UI 없이 기존 content/action path로만 전투형 장면을 증명한다.
+   - 2순위 후보: `isolation_pack` 첫 runtime encounter 승격.
+   - 3순위 후보: Web Storybook production visual polish.
    - 어느 후보를 택하든 Rust GameCore / `ScenePage` / WASM JSON boundary 책임 분리와 공개-safe 원칙을 유지한다.
 
 전환 중 유지:
@@ -1234,7 +1282,7 @@ src/tui_adv/data/secrets.example.yaml
 7. optional inline image는 terminal cell/GlyphFX baseline 밖 future backlog로 둔다. Kitty/Sixel/iTerm2 capability 요구가 실제로 생길 때 별도 slice로 연다.
 8. Web player start/save UX first slice 후속: save JSON export/import, settings/reduce-motion UI, 오늘의 seed는 별도 승격 전까지 열지 않는다.
 9. 여러 히든 현실 보물
-10. 전투 시스템 first runtime slice: `docs/design/Combat_System_Auto_Brawl.md` 기준으로 기존 encounter schema만 사용한 schema-less combat encounter prototype을 검토한다.
+10. 전투 시스템 후속 slice는 `supply_closet_auto_brawl` 이후 반복 가치가 확인될 때만 presentation metadata 정리 또는 Rust combat resolver로 승격한다.
 
 ## 9. 주요 리스크
 
@@ -1279,9 +1327,9 @@ Web 또는 terminal renderer가 게임 규칙을 다시 구현하면 Rust GameCo
 
 ## 10. 다음 액션
 
-1. PR C audio engine skeleton 변경을 검증하고 PR로 리뷰/머지한다.
-   - targeted Vitest/pytest, 전체 `npm test`, `npm run build`, `node --check`, Python docs/contract tests, `git diff --check`를 통과시킨다.
-2. PR C 머지 후 다음 구현 slice를 별도로 결정한다.
+1. schema-less combat encounter prototype 변경을 검증하고 PR로 리뷰/머지한다.
+   - Python content/CLI tests, Rust `escape-core`/`escape-terminal` targeted tests, Web generated data freshness check, `cargo fmt --check`, `cargo test --workspace`, `git diff --check`를 통과시킨다.
+2. PR 머지 후 다음 추천 순서 slice를 별도로 승격한다.
+   - 2순위 gameplay 후보는 `isolation_pack` 첫 runtime encounter 승격이다.
+   - 3순위 presentation 후보는 Web Storybook production visual polish다.
    - 실제 음악/SFX asset과 soundtrack은 저작권/라이선스 정책이 정리되기 전까지 열지 않는다.
-   - audio 후속을 택하면 generated-only cue registry expansion으로 시작하고 binary asset은 계속 금지한다.
-   - gameplay 후속을 택하면 `docs/design/Combat_System_Auto_Brawl.md` 기준 schema-less combat encounter prototype부터 검토한다.

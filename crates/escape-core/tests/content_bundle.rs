@@ -12,9 +12,9 @@ fn fixture_content_bundle_loads_counts_and_public_sections() {
     assert_eq!(bundle.schema_version, 1);
     assert_eq!(bundle.kind, "tui_adv.content_bundle");
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&16));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&20));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&21));
     assert_eq!(bundle.content.locations.len(), 16);
-    assert_eq!(bundle.content.encounters.len(), 20);
+    assert_eq!(bundle.content.encounters.len(), 21);
     assert_eq!(bundle.content.secrets.len(), 3);
 }
 
@@ -77,7 +77,7 @@ fn fixture_content_bundle_indexes_locations_and_encounters() {
     let index = index_content_bundle(&bundle).expect("content bundle should index");
 
     assert_eq!(index.locations_len(), 16);
-    assert_eq!(index.encounters_len(), 20);
+    assert_eq!(index.encounters_len(), 21);
 
     let dev_desk = index.location("dev_desk").expect("dev_desk location");
     assert_eq!(dev_desk.name, "내 자리");
@@ -121,6 +121,30 @@ fn fixture_content_bundle_indexes_locations_and_encounters() {
         presentation.effect_cues[0].distortion,
         "reflow_then_stabilize"
     );
+
+    let combat = index
+        .encounter("supply_closet_auto_brawl")
+        .expect("schema-less combat prototype encounter");
+    assert_eq!(combat.title, "물품창고 자동 난투");
+    assert_eq!(combat.conditions.locations, vec!["supply_closet"]);
+    assert_eq!(
+        combat.conditions.required_flags,
+        vec!["supply_scuffle_started"]
+    );
+    assert_eq!(
+        combat.conditions.forbidden_flags,
+        vec!["supply_scuffle_resolved"]
+    );
+    assert_eq!(
+        combat
+            .presentation
+            .as_ref()
+            .expect("combat encounter should carry presentation")
+            .layout
+            .as_deref(),
+        Some("combat_intervention")
+    );
+    assert_eq!(combat.choices.len(), 3);
 }
 
 #[test]

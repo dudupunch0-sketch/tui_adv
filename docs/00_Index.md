@@ -6,7 +6,8 @@
 ## 현재 핵심 컨셉
 
 - 장르: TUI 기반 랜덤 인카운터 선택지 생존 게임
-- 배경: 회사 사무실 아포칼립스
+- 기본 배경: 회사 사무실 아포칼립스(`office_apocalypse`)
+- 개발 방향: storypack/world 기반 선택지 생존 엔진. 첫 비-office 기준팩은 회사 직장인이 무협 세계로 차원이동하는 무협 강호(`wuxia_jianghu`)
 - 핵심 자원: 체력, 정신력, 배터리, 허기, 갈증
 - 주요 목표: 탈출, 정복, 진실 발견, 히든 현실 연결 루트
 - 특별 요소: 게임 속 단서를 통해 실제 사무실에 숨겨진 메모/보물 위치를 자연스럽게 안내하는 ARG식 현실 연결
@@ -44,6 +45,7 @@ docs/
     Combat_System_Auto_Brawl.md     # 자동 난투 + 상황 개입 전투 설계 후보
     Player_State.md                 # 체력/정신력/배터리/허기/갈증 규칙
     Character_Stats_and_Generator.md # 6스탯 등장인물/LLM 생성기 설계 후보
+    Storypack_World_Model.md        # office-only 편향을 줄이는 world/storypack 일반화 기준
     Storypack_Encounter_DB.md       # 스토리팩/인카운터 상황 카드/NPC DB 설계
     Map.md                          # 사무실 위치, 연결, 구역별 역할
     UI_Rules.md                     # 사내 시스템형 TUI, 글리치, 선택지 오염 규칙
@@ -114,6 +116,7 @@ private/
 - `docs/story/Reality_Link.md`
 - `docs/design/Player_State.md`
 - `docs/design/Character_Stats_and_Generator.md`
+- `docs/design/Storypack_World_Model.md`
 - `docs/design/Storypack_Encounter_DB.md`
 - `docs/design/Game_Loop.md`
 - `docs/design/Combat_System_Auto_Brawl.md`
@@ -130,10 +133,12 @@ private/
 - `docs/content/Horror_Ideas.md`
 - `docs/content/storypacks/README.md`
 - `docs/content/storypacks/isolation_pack.md`
+- `docs/content/storypacks/wuxia_jianghu_pack.md`
 - `docs/content/characters/README.md`
 - `docs/content/characters/recurrent_npcs.md`
 - `docs/content/encounter_db/README.md`
 - `docs/content/encounter_db/isolation_pack.md`
+- `docs/content/encounter_db/wuxia_jianghu_pack.md`
 - `docs/dev/Architecture.md`
 - `docs/dev/Rust_Core_Dual_Renderer_Architecture.md`
 - `docs/dev/Data_Schema.md`
@@ -157,4 +162,5 @@ private/
 다음 주제가 커지면 별도 문서로 분리하고, 그때 이 인덱스와 implementation-map도 같이 갱신한다.
 
 1. `document_contamination_pack`, `meeting_reservation_pack`, `compensation_strike_pack`의 별도 후보 문서
-2. 실시간 UI/UX 점검 후 확정된 화면/입력 변경 사항 기록
+2. `wuxia_jianghu_pack`의 첫 runtime prototype 여부 결정
+3. 실시간 UI/UX 점검 후 확정된 화면/입력 변경 사항 기록

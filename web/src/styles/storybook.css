@@ -111,6 +111,7 @@ button {
 .start-save-empty,
 .start-save-warning,
 .start-save-summary,
+.start-settings-copy,
 .start-seed-label {
   margin: 0;
 }
@@ -154,6 +155,26 @@ button {
   padding: 14px;
   border: 1px dashed rgba(63, 52, 35, 0.35);
   background: rgba(255, 247, 205, 0.16);
+}
+
+.start-settings-panel {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid rgba(59, 127, 140, 0.34);
+  background: rgba(59, 127, 140, 0.08);
+}
+
+.start-settings-copy {
+  color: var(--muted-ink);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.start-settings-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .start-save-summary {
@@ -201,6 +222,7 @@ button {
 }
 
 .start-actions button,
+.start-settings-actions button,
 .start-reset-confirmation button {
   min-height: 44px;
   padding: 10px 14px;
@@ -210,8 +232,13 @@ button {
 }
 
 .start-actions button:hover,
+.start-settings-actions button:hover,
 .start-reset-confirmation button:hover {
   background: rgba(46, 42, 35, 0.18);
+}
+
+.start-settings-actions button[aria-pressed="true"] {
+  background: rgba(59, 127, 140, 0.18);
 }
 
 .start-actions button:disabled {

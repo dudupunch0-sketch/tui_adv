@@ -96,7 +96,7 @@ ENDING: 정문 밖
 핵심 검증 명령:
 
 ```bash
-source /home/dudupunch0/.config/tui_adv/tmp-installs.sh
+source ~/.config/tui_adv/tmp-installs.sh
 python3 scripts/export_web_data.py \
   --bundle crates/escape-core/fixtures/content/content.bundle.json \
   --bundle web/src/data/generated/content.bundle.json \
@@ -109,7 +109,7 @@ cargo clippy --workspace --all-targets -- -D warnings
 git diff --check
 
 cd web
-source /home/dudupunch0/.config/tui_adv/tmp-installs.sh
+source ~/.config/tui_adv/tmp-installs.sh
 npm test
 ```
 
@@ -560,6 +560,86 @@ git diff --check
 - 기존 저장이 있을 때 새 게임은 confirmation을 거친다.
 - 저장 summary schema mismatch는 사용자-facing warning으로 표시된다.
 - visual QA는 start screen을 통과해 기존 Storybook DOM/interaction contract를 계속 검증한다.
+
+## 0.7 2026-05-26 active main plan: Web Storybook transition/audio readiness
+
+이 섹션은 `.hermes/plans/2026-05-26_063723-web-storybook-transition-audio-structure-plan.md`의 내용을 canonical main plan으로 승격해 흡수한 Production visual polish slice다.
+`.hermes/plans/` 파일은 세션 artifact이며, 실제 작업 순서와 우선순위는 이 섹션과 아래 “현재 최우선 남은 작업” / “다음 액션”을 기준으로 판단한다.
+현재 상태: PR A — settings + motion foundation 구현 완료. 다음은 PR B — transition controller다.
+
+목표:
+
+- Web Storybook 화면 전환과 향후 음악/SFX를 renderer-local presentation layer로 붙일 수 있는 구조를 만든다.
+- 첫 slice는 “완성된 사운드트랙”이나 큰 애니메이션이 아니라 motion/audio preference, reduced-motion 정책, transition plan type, muted/opt-in audio policy를 고정한다.
+- Rust GameCore / `ScenePage` / WASM JSON boundary는 변경하지 않는다. Web renderer는 core truth를 재판정하지 않고 `ScenePage`/`ActionResult`를 표시하고 action id만 전달한다.
+
+아키텍처 경계:
+
+- transition/audio는 `ScenePage` schema가 아니라 Web renderer의 progressive enhancement다.
+- renderer가 읽을 수 있는 입력은 `page.mode`, `page.location`, `page.visual`, `page.effect_cues`, `page.status_summary`, 실행한 action id/kind 정도로 제한한다.
+- settings는 game save와 분리된 localStorage key `escape-office.player-settings.v1`에 저장한다.
+- motion/audio preference는 사용자 설정을 우선하고, 기본 motion은 `prefers-reduced-motion`을 반영한다.
+- audio default는 muted/off다. `AudioContext.resume()`은 start screen 또는 settings UI의 사용자 gesture 이후에만 호출한다.
+- visual QA에서는 motion off/reduced, audio muted 상태를 강제해 screenshot/layout flake를 만들지 않는다.
+
+명시적 비목표:
+
+- gameplay rule, route truth, eligibility, outcome, ending, achievement 변경.
+- `ScenePage` schema 또는 renderer-neutral content bundle 변경.
+- save JSON export/import.
+- PWA/service worker/backend/account/leaderboard.
+- golden screenshot baseline commit.
+- 저작권이 불명확한 음악/효과음 asset commit 또는 완성된 사운드트랙 제작.
+- SuperLightTUI 오디오/애니메이션 parity 구현.
+
+PR A — settings + motion foundation (완료):
+
+1. `tests/test_docs_contract.py` 등 docs contract를 새 active plan에 맞게 갱신한다.
+2. `web/src/ui/settings/playerSettings.ts` 또는 동등한 모듈에 player settings localStorage contract를 추가한다.
+   - schema version과 기본값.
+   - corrupt settings fallback.
+   - reduced-motion preference merge.
+   - audio muted/off default.
+3. start screen에 audio/motion 상태와 toggle을 연결하되, gameplay action id와 충돌하지 않는 renderer-local action으로 둔다.
+4. transition plan type과 reduced-motion no-op 구조를 추가한다.
+   - full transition controller는 PR B로 미룰 수 있다.
+   - PR A에서는 `start-fade`, `paper-slide`, `ink-pulse`, `danger-glitch`, safe default 같은 mapping과 duration 0 policy를 테스트로 고정한다.
+5. 기존 visual QA가 start screen을 통과한 뒤 stable Storybook page를 검사하는 계약을 유지한다.
+
+PR B — transition controller:
+
+- action 실행 전 current page/action context를 캡처하고, action 후 next page와 `transitionPlan(previousPage, nextPage, action)`으로 transition kind를 결정한다.
+- reduced/off이면 즉시 render하고, normal이면 shell class/attribute 기반 enter/exit transition을 적용한다.
+- `transitionend` 미발생 시 timeout fallback으로 게임이 멈추지 않게 한다.
+
+PR C — audio engine skeleton:
+
+- Web Audio API lazy/no-op engine을 만든다.
+- muted 상태에서는 cue를 schedule하지 않는다.
+- opt-in 후 one-shot cue와 looping ambience API를 제공한다.
+- 첫 slice에서는 generated oscillator/noise 또는 no-op registry만 사용하고 binary asset은 넣지 않는다.
+
+핵심 검증 명령:
+
+```bash
+source ~/.config/tui_adv/tmp-installs.sh
+python3 -m pytest tests/test_docs_contract.py tests/test_web_visual_qa_contract.py tests/test_web_player_deployment_contract.py tests/test_web_packaging_decision.py -q
+git diff --check
+
+cd web
+npm test -- --run web/src/ui/startScreen.test.ts web/src/ui/storybook/render.test.ts
+npm test
+node --check scripts/storybook-reference-qa.mjs
+```
+
+완료 기준:
+
+- canonical main plan, checklist, Web player plan이 새 active slice를 가리킨다.
+- player settings는 game save와 분리되어 저장/복구되고 손상 시 기본값으로 fallback한다.
+- start screen에서 audio/motion preference를 볼 수 있고 toggle 후 localStorage에 반영된다.
+- transition plan type은 action/page/danger/reduced-motion 기준으로 deterministic하게 결정된다.
+- audio는 기본 muted/off이고 사용자의 명시 gesture 없이 자동 재생을 시도하지 않는다.
+- Renderer contract boundary가 유지된다.
 
 ## 1. 목표
 
@@ -1095,14 +1175,16 @@ src/tui_adv/data/secrets.example.yaml
 17. Web Storybook visual regression 자동화 완료: `web/scripts/storybook-reference-qa.mjs`와 `qa:storybook:visual` script로 reference viewport DOM/layout/interaction QA, optional `--require-wasm` smoke, scratch screenshot/`visual-qa-report.json` output을 고정했다.
 18. Web player deployment readiness 완료: `VITE_BASE_PATH`, module-relative WASM import path, `VITE_REQUIRE_WASM` fatal policy, GitHub Pages workflow, deployment contract test로 URL 즉시 플레이용 static deploy 기반을 고정했다.
 19. Web player start/save UX first slice 완료: start screen, 이어하기/새 게임, seed 표시, save timestamp summary, 저장 초기화, reset confirmation, schema mismatch warning, visual QA start-screen 통과를 구현했다.
+20. Web Storybook transition/audio readiness PR A 완료: `escape-office.player-settings.v1` localStorage settings, start screen audio/motion toggles, transition plan type, reduced-motion duration 0 policy, audio muted/off opt-in default를 구현했다.
 
 현재 최우선 남은 작업:
 
-1. 현재 active main plan 기준 즉시 진행할 구현 작업은 없다.
-   - 방금 완료한 최우선 slice: Web player start/save UX first slice.
-   - 유지 범위: Rust GameCore / `ScenePage` / WASM JSON boundary는 start/save UX 때문에 변경하지 않는다.
-   - 금지 범위: gameplay rule 변경, ScenePage schema 변경, save JSON export/import, settings/reduce-motion UI, PWA/service worker/backend 추가, golden screenshot baseline commit.
-   - 다음 구현 slice는 아래 “나중” backlog나 `idea_box`를 별도 검토해 새 active plan으로 승격한 뒤 시작한다.
+1. Web Storybook transition/audio readiness — PR B — transition controller를 진행한다.
+   - 이번 slice의 목표는 action 실행 전 current page/action context를 캡처하고 action 후 next page와 `transitionPlan(previousPage, nextPage, action)`으로 renderer-local transition을 적용하는 것이다.
+   - 유지 범위: Rust GameCore / `ScenePage` / WASM JSON boundary는 변경하지 않는다.
+   - 구현 범위: reduced/off 즉시 render, normal shell class/attribute 기반 enter/exit transition, `transitionend` 미발생 시 timeout fallback.
+   - 금지 범위: gameplay rule 변경, ScenePage schema 변경, save JSON export/import, PWA/service worker/backend 추가, golden screenshot baseline commit, 저작권 불명 audio asset commit.
+   - PR C audio engine skeleton은 PR B transition controller contract가 녹색이 된 뒤 이어간다.
 
 전환 중 유지:
 
@@ -1167,7 +1249,13 @@ Web 또는 terminal renderer가 게임 규칙을 다시 구현하면 Rust GameCo
 
 ## 10. 다음 액션
 
-1. 이 slice의 PR에서는 `VITE_BASE_PATH`, module-relative WASM import path, `VITE_REQUIRE_WASM` fatal policy, GitHub Pages workflow, docs/checklist/main plan 동기화, 검증 결과만 포함한다.
-2. 새 active implementation slice는 아직 열지 않는다.
-3. 다음 작업을 시작할 때는 이 파일의 “나중” backlog와 `idea_box`를 별도 검토해 새 active main plan으로 승격한다.
-4. 그 전에는 gameplay rule 변경, ScenePage schema 변경, start/save UX 확장, PWA/service worker/backend 추가를 열지 않는다.
+1. PR B의 RED 테스트를 먼저 추가한다.
+   - transition controller: current page/action context capture, reduced/off immediate render, normal shell enter/exit attributes, timeout fallback.
+   - start screen/settings와 gameplay action id가 충돌하지 않는지 기존 tests를 유지한다.
+2. GREEN 구현은 Web renderer-local 파일만 건드린다.
+   - `web/src/ui/motion/transitionController.ts`
+   - `web/src/ui/motion/transitionPlan.ts`
+   - `web/src/main.ts`
+   - `web/src/styles/storybook.css`
+3. PR B에서는 Web Audio engine과 binary asset을 열지 않는다.
+4. 검증은 `source ~/.config/tui_adv/tmp-installs.sh` 후 targeted Vitest/pytest, `node --check`, `git diff --check` 순서로 진행한다.

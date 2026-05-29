@@ -22,8 +22,8 @@ def test_player_distribution_surface_is_web_only_and_documented():
     assert "docs/dev/Web_Distribution_Decision.md" in readme
     assert "Web/Tauri/Electron 패키징 결정 완료" in plan
     assert "terminal full-screen app loop/tick/raw-draw GlyphFX 완료" in plan
-    assert "현재 active main plan 기준 즉시 진행할 구현 작업은 없다" in decision
-    assert "다음 구현 slice" not in decision
+    assert "현재 구현 우선순위는 `docs/dev/Development_Plan.md`를 따른다" in decision
+    assert "Web Storybook transition/audio readiness" not in decision
     assert "- [x] Web/Tauri/Electron 패키징 검토와 Web-only 배포 표면 결정" in checklist
 
 

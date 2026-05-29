@@ -12,6 +12,13 @@ import { newGame } from './game/state';
 import type { GameState, GameTurn } from './game/types';
 import { actionIdForKey, NEW_GAME_ACTION_ID, type ActionListSource } from './ui/keyboard';
 import {
+  loadPlayerSettings,
+  nextMotionPreference,
+  toggleAudioPreference,
+  updatePlayerSettings,
+  type PlayerSettings,
+} from './ui/settings/playerSettings';
+import {
   RUST_SAVE_KEY,
   clearPlayerSaves,
   readPlayerSaveSummary,
@@ -38,6 +45,7 @@ let lastError: string | null = null;
 let fatalPlayerError = false;
 let activeSeed = DEFAULT_SEED;
 let confirmReset = false;
+let playerSettings: PlayerSettings = loadPlayerSettings(window.localStorage);
 
 render();
 
@@ -97,6 +105,7 @@ function renderStart(): void {
     summary: saveSummary.summary,
     warning: saveSummary.warning,
     confirmReset,
+    settings: playerSettings,
   });
   appRoot.querySelectorAll<HTMLButtonElement>('[data-player-action]').forEach((button) => {
     button.addEventListener('click', () => runPlayerAction(button.dataset.playerAction ?? ''));
@@ -124,6 +133,16 @@ function runPlayerAction(action: string): void {
   if (action === 'reset-save') {
     clearPlayerSaves(window.localStorage);
     confirmReset = false;
+    render();
+    return;
+  }
+  if (action === 'toggle-audio') {
+    playerSettings = updatePlayerSettings(window.localStorage, { audio: toggleAudioPreference(playerSettings) });
+    render();
+    return;
+  }
+  if (action === 'cycle-motion') {
+    playerSettings = updatePlayerSettings(window.localStorage, { motion: nextMotionPreference(playerSettings) });
     render();
   }
 }

@@ -140,6 +140,11 @@
 - [x] audio muted default policy와 opt-in skeleton 추가
 - [ ] visual QA motion/audio 안정화 확인
 
+### 0.2n 2026-05-29 전투 시스템 아이디어 문서화
+
+- [x] `idea_box/combat_system.md`를 `docs/design/Combat_System_Auto_Brawl.md`로 승격
+- [x] 자동 난투 + 상황 개입을 Rust GameCore/`ScenePage` 호환 설계 후보로 정리
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

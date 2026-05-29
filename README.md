@@ -152,6 +152,7 @@ npm run preview:player
 - `docs/design/Player_State.md`: 플레이어 상태 규칙
 - `docs/design/Character_Stats_and_Generator.md`: 6스탯 등장인물/LLM 생성기 설계 후보
 - `docs/design/Game_Loop.md`: 턴/선택/인카운터 루프
+- `docs/design/Combat_System_Auto_Brawl.md`: 자동 난투 + 상황 개입 전투 설계 후보
 - `docs/design/Map.md`: 1차 맵 설계
 - `docs/design/UI_Rules.md`: 사내 시스템형 TUI, 글리치, 선택지 오염 규칙
 - `docs/design/TUI_Storybook_GlyphFX_Concept.md`: Web primary UX로 채택한 TUI풍 스토리북 + GlyphFX 방향

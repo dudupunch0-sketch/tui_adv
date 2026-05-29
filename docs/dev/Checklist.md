@@ -139,6 +139,9 @@
 - [x] transition plan type과 reduced-motion no-op 구조 추가
 - [x] audio muted default policy와 opt-in skeleton 추가
 - [x] transition controller 적용
+- [x] Web Audio API lazy/no-op engine 추가
+- [x] muted no schedule + user-gesture opt-in one-shot cue API 구현
+- [x] looping ambience API와 binary asset 없는 generated oscillator backend 구현
 - [x] visual QA motion/audio 안정화 확인
 
 ### 0.2n 2026-05-29 전투 시스템 아이디어 문서화

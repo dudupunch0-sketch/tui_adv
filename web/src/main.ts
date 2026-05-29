@@ -7,6 +7,7 @@ import type { ScenePage } from './core/types';
 import { createEscapeWasmRuntime, type EscapeWasmRuntime } from './core/wasmRuntime';
 import { startPrinterFlowEffect } from './effects/printerFlow';
 import { buildTurn, executeAction } from './game/actions';
+import { audioCueForSceneTransition, createStorybookAudioEngine } from './ui/audio/audioEngine';
 import { loadSavedState, saveState } from './game/save';
 import { newGame } from './game/state';
 import type { GameState, GameTurn } from './game/types';
@@ -50,6 +51,7 @@ let activeSeed = DEFAULT_SEED;
 let confirmReset = false;
 let playerSettings: PlayerSettings = loadPlayerSettings(window.localStorage);
 const transitionController = createStorybookTransitionController(appRoot);
+const audioEngine = createStorybookAudioEngine({ preference: playerSettings.audio });
 
 render();
 
@@ -102,10 +104,12 @@ function renderGamePage(page: ScenePage): void {
   if (canvas) {
     void startPrinterFlowEffect(canvas);
   }
+  audioEngine.syncAmbience(page);
 }
 
 function renderStart(): void {
   transitionController.cancel();
+  audioEngine.stopAmbience();
   actionSource = { actions: [] };
   const saveSummary = readPlayerSaveSummary(window.localStorage);
   const defaultSeed = saveSummary.summary?.seed ?? activeSeed;
@@ -117,20 +121,25 @@ function renderStart(): void {
     settings: playerSettings,
   });
   appRoot.querySelectorAll<HTMLButtonElement>('[data-player-action]').forEach((button) => {
-    button.addEventListener('click', () => runPlayerAction(button.dataset.playerAction ?? ''));
+    button.addEventListener('click', () => {
+      void runPlayerAction(button.dataset.playerAction ?? '');
+    });
   });
 }
 
-function runPlayerAction(action: string): void {
+async function runPlayerAction(action: string): Promise<void> {
   if (action === 'continue') {
+    await unlockAudioFromGesture();
     startGameFromSave();
     return;
   }
   if (action === 'new-game') {
+    await unlockAudioFromGesture();
     requestNewGame();
     return;
   }
   if (action === 'confirm-new-game') {
+    await unlockAudioFromGesture();
     startNewGame({ clearExistingSave: true });
     return;
   }
@@ -147,12 +156,23 @@ function runPlayerAction(action: string): void {
   }
   if (action === 'toggle-audio') {
     playerSettings = updatePlayerSettings(window.localStorage, { audio: toggleAudioPreference(playerSettings) });
+    await unlockAudioFromGesture();
     render();
     return;
   }
   if (action === 'cycle-motion') {
     playerSettings = updatePlayerSettings(window.localStorage, { motion: nextMotionPreference(playerSettings) });
     render();
+  }
+}
+
+async function unlockAudioFromGesture(): Promise<void> {
+  audioEngine.setPreference(playerSettings.audio);
+  if (playerSettings.audio !== 'on') return;
+  try {
+    await audioEngine.unlockFromUserGesture();
+  } catch (error) {
+    console.warn('Unable to unlock generated Web Audio cues', error);
   }
 }
 
@@ -195,7 +215,10 @@ function startGame(options: {
     saveLegacyState();
   }
   void bootstrapWasmRuntime(options.initialStateJson);
-  renderGameTransition(null, currentScenePage(), { id: 'player:start', kind: 'start' });
+  const initialPage = currentScenePage();
+  const startAction = { id: 'player:start', kind: 'start' };
+  audioEngine.playOneShot(audioCueForSceneTransition(null, initialPage, startAction));
+  renderGameTransition(null, initialPage, startAction);
 }
 
 function legacyInitialState(seed: number, shouldContinue: boolean): GameState {
@@ -218,6 +241,7 @@ function seedFromStartInput(): number {
 function renderFatalPlayerError(message: string, error: unknown): void {
   fatalPlayerError = true;
   transitionController.cancel();
+  audioEngine.stopAmbience();
   actionSource = { actions: [] };
   console.error('Failed to bootstrap required Rust GameCore WASM runtime', error);
 
@@ -271,7 +295,9 @@ function runAction(actionId: string): void {
       saveLegacyState();
     }
     lastError = null;
-    renderGameTransition(previousPage, currentScenePage(), action);
+    const nextPage = currentScenePage();
+    audioEngine.playOneShot(audioCueForSceneTransition(previousPage, nextPage, action));
+    renderGameTransition(previousPage, nextPage, action);
   } catch (error) {
     lastError = `입력 오류: ${errorMessage(error)}`;
     if (!wasmRuntime) {

@@ -866,7 +866,7 @@ Status: first slice implemented. Export/import/settings follow-up remains deferr
 
 ### PR 3 — Production visual polish
 
-Status: Transition/audio readiness first slice promoted as the active main plan. PR A settings/motion foundation implemented: settings/reduce-motion UI, renderer-local transition planning, and muted/opt-in audio policy are in place before larger visual/audio polish. Next implementation slice is PR B transition controller.
+Status: Transition/audio readiness first slice promoted as the active main plan. PR A settings/motion foundation implemented: settings/reduce-motion UI, renderer-local transition planning, and muted/opt-in audio policy are in place before larger visual/audio polish. PR B transition controller implemented: action page context capture, shell enter/exit class/attribute transitions, reduced/off immediate render, and timeout fallback are in place. Next implementation slice is PR C audio engine skeleton.
 
 목표: Web Storybook을 “대시보드”가 아니라 “게임 화면”으로 더 고정한다.
 
@@ -882,6 +882,7 @@ Status: Transition/audio readiness first slice promoted as the active main plan.
   - `escape-office.player-settings.v1` settings storage
   - start screen audio/motion toggle
   - transition plan type + reduced-motion no-op policy
+  - transition controller shell enter/exit attributes + timeout fallback
   - audio muted/off default와 opt-in skeleton
 
 비목표:

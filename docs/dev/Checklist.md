@@ -138,7 +138,8 @@
 - [x] start screen audio/motion toggle 연결
 - [x] transition plan type과 reduced-motion no-op 구조 추가
 - [x] audio muted default policy와 opt-in skeleton 추가
-- [ ] visual QA motion/audio 안정화 확인
+- [x] transition controller 적용
+- [x] visual QA motion/audio 안정화 확인
 
 ### 0.2n 2026-05-29 전투 시스템 아이디어 문서화
 

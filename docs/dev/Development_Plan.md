@@ -641,6 +641,29 @@ node --check scripts/storybook-reference-qa.mjs
 - audio는 기본 muted/off이고 사용자의 명시 gesture 없이 자동 재생을 시도하지 않는다.
 - Renderer contract boundary가 유지된다.
 
+## 0.8 2026-05-29 idea_box 전투 시스템 설계 문서화
+
+이 섹션은 `idea_box/combat_system.md`를 프로젝트 문서로 승격한 기록이다.
+현재 상태: 설계 문서화 완료, 런타임 구현 미착수.
+
+목표:
+
+- 원본의 “실시간 자동 난투 + 상황 개입” 아이디어를 현재 `escape from the office` 구조에 맞게 정리한다.
+- 전투를 Web/terminal renderer-local 실시간 액션으로 만들지 않고, Rust GameCore가 제공하는 `ScenePage`/`ActionResult`/`SceneAction.id` 기반의 짧은 전투 드라마 후보로 제한한다.
+- 전투당 개입 요구는 0~3회로 제한하고, 약한 충돌은 자동 처리하며, 정예/보스 장면에서만 결정적 상황 선택지를 제공한다.
+
+반영 결과:
+
+- `docs/design/Combat_System_Auto_Brawl.md`를 추가했다.
+- `idea_box/combat_system.md`에 `status: done`, `used_by`, `done_at`, 처리 기록을 남겼다.
+- 이번 문서화는 future backlog 정리이며, 현재 active 구현 우선순위인 Web Storybook transition controller를 대체하지 않는다.
+
+후속 구현 후보:
+
+1. 기존 `encounters.yaml` schema만 사용한 schema-less combat encounter prototype.
+2. 반복 가치가 확인되면 `presentation.layout: combat_exchange` 같은 semantic metadata.
+3. 여러 전투가 쌓인 뒤에만 Rust core 전용 combat resolver 검토.
+
 ## 1. 목표
 
 국내 최고 대기업 IT/반도체 회사의 연구개발동 같은 사무실을 배경으로 한 TUI 기반 랜덤 인카운터 선택지 생존 게임을 만든다.
@@ -1176,6 +1199,7 @@ src/tui_adv/data/secrets.example.yaml
 18. Web player deployment readiness 완료: `VITE_BASE_PATH`, module-relative WASM import path, `VITE_REQUIRE_WASM` fatal policy, GitHub Pages workflow, deployment contract test로 URL 즉시 플레이용 static deploy 기반을 고정했다.
 19. Web player start/save UX first slice 완료: start screen, 이어하기/새 게임, seed 표시, save timestamp summary, 저장 초기화, reset confirmation, schema mismatch warning, visual QA start-screen 통과를 구현했다.
 20. Web Storybook transition/audio readiness PR A 완료: `escape-office.player-settings.v1` localStorage settings, start screen audio/motion toggles, transition plan type, reduced-motion duration 0 policy, audio muted/off opt-in default를 구현했다.
+21. 전투 시스템 아이디어 문서화 완료: `idea_box/combat_system.md`를 `docs/design/Combat_System_Auto_Brawl.md`로 승격했고, 자동 난투 + 상황 개입을 Rust GameCore/`ScenePage` 호환 future backlog로 정리했다.
 
 현재 최우선 남은 작업:
 
@@ -1205,6 +1229,7 @@ src/tui_adv/data/secrets.example.yaml
 7. optional inline image는 terminal cell/GlyphFX baseline 밖 future backlog로 둔다. Kitty/Sixel/iTerm2 capability 요구가 실제로 생길 때 별도 slice로 연다.
 8. Web player start/save UX first slice 후속: save JSON export/import, settings/reduce-motion UI, 오늘의 seed는 별도 승격 전까지 열지 않는다.
 9. 여러 히든 현실 보물
+10. 전투 시스템 first runtime slice: `docs/design/Combat_System_Auto_Brawl.md` 기준으로 기존 encounter schema만 사용한 schema-less combat encounter prototype을 검토한다.
 
 ## 9. 주요 리스크
 

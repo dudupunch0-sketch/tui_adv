@@ -1,3 +1,10 @@
+---
+status: done
+source: user
+used_by: docs/design/Combat_System_Auto_Brawl.md
+done_at: 2026-05-29
+---
+
 # 전투 시스템
 
 ## 문서 목적
@@ -968,3 +975,8 @@ HP 숫자보다 상태바와 문장 중심이 어울린다.
 최종적으로 이 전투의 고유한 맛은 다음 문장으로 요약된다.
 
 > 검을 든 기사도, 마법사도, 회사원도, 괴물도 결국 가까이 붙으면 밀치고, 붙잡고, 넘어지고, 숨차고, 당황한다.
+---
+
+## 처리 기록
+
+- 2026-05-29: `docs/design/Combat_System_Auto_Brawl.md`로 승격했다. 원본의 “실시간 자동 난투 + 상황 개입” 방향은 유지하되, 현재 프로젝트의 Rust GameCore/`ScenePage`/Web Storybook/SuperLightTUI 구조에 맞춰 “짧은 자동 난투 장면 + 전투당 0~3회 core-provided 상황 선택지” 설계 후보로 정리했다. 이번 처리에서는 런타임 YAML/Rust/Web 코드는 변경하지 않았다.

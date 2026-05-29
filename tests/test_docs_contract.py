@@ -265,3 +265,26 @@ def test_save_slot_rename_ux_doc_is_indexed_and_linked_from_layout():
     assert "`state` 바깥의 metadata" in doc
     assert "r: 이름 변경 모드" in doc
     assert "파일명 자체를 바꾸기보다" in doc
+
+def test_combat_system_auto_brawl_doc_is_indexed_and_backlog_done():
+    index = Path("docs/00_Index.md").read_text(encoding="utf-8")
+    readme = Path("README.md").read_text(encoding="utf-8")
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    idea = Path("idea_box/combat_system.md").read_text(encoding="utf-8")
+    doc_path = Path("docs/design/Combat_System_Auto_Brawl.md")
+
+    assert doc_path.exists()
+    doc = doc_path.read_text(encoding="utf-8")
+    assert "docs/design/Combat_System_Auto_Brawl.md" in index
+    assert "docs/design/Combat_System_Auto_Brawl.md" in readme
+    assert "전투 시스템 아이디어 문서화" in checklist
+    assert "docs/design/Combat_System_Auto_Brawl.md" in plan
+    assert "자동 난투 + 상황 개입" in doc
+    assert "Rust GameCore" in doc
+    assert "ScenePage" in doc
+    assert "전투당 개입 요구는 0~3회" in doc
+    assert "schema-less combat encounter prototype" in doc
+    assert "status: done" in idea
+    assert "used_by: docs/design/Combat_System_Auto_Brawl.md" in idea
+    assert "이번 처리에서는 런타임 YAML/Rust/Web 코드는 변경하지 않았다" in idea

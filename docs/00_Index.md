@@ -41,6 +41,7 @@ docs/
 
   design/
     Game_Loop.md                    # 턴 진행, 인카운터, 선택지 처리 루프
+    Combat_System_Auto_Brawl.md     # 자동 난투 + 상황 개입 전투 설계 후보
     Player_State.md                 # 체력/정신력/배터리/허기/갈증 규칙
     Character_Stats_and_Generator.md # 6스탯 등장인물/LLM 생성기 설계 후보
     Storypack_Encounter_DB.md       # 스토리팩/인카운터 상황 카드/NPC DB 설계
@@ -115,6 +116,7 @@ private/
 - `docs/design/Character_Stats_and_Generator.md`
 - `docs/design/Storypack_Encounter_DB.md`
 - `docs/design/Game_Loop.md`
+- `docs/design/Combat_System_Auto_Brawl.md`
 - `docs/design/Map.md`
 - `docs/design/UI_Rules.md`
 - `docs/design/TUI_Storybook_GlyphFX_Concept.md`

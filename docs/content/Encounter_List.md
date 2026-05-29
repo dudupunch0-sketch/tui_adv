@@ -1,7 +1,7 @@
 # 인카운터 목록
 
 이 문서는 런타임 기본 인카운터 데이터 `src/tui_adv/data/encounters.yaml`의 공개 문서판이다.
-실제 구현 기준 현재 인카운터 수는 20개다.
+실제 구현 기준 현재 인카운터 수는 21개다.
 
 ## 목록 요약
 
@@ -11,7 +11,8 @@
 | `printer_prints_alone` | 복합기가 혼자 출력한다 | 위치: `printer_area` | 3 |
 | `pantry_coffee_machine` | 탕비실 커피머신 | 위치: `pantry` | 5 |
 | `strange_water_dispenser` | 정수기의 이상한 물 | 위치: `pantry`; 금지 플래그: `thirst_hallucination_seen`; 최소 자원: `thirst>=60` | 3 |
-| `supply_closet_cache` | 물품창고 비상 보급함 | 위치: `supply_closet` | 3 |
+| `supply_closet_cache` | 물품창고 비상 보급함 | 위치: `supply_closet` | 4 |
+| `supply_closet_auto_brawl` | 물품창고 자동 난투 | 위치: `supply_closet`; 필수 플래그: `supply_scuffle_started`; 금지 플래그: `supply_scuffle_resolved` | 3 |
 | `meeting_room_whiteboard_marker` | 회의실 화이트보드 모서리 | 위치: `meeting_room`; 필수 단서: `future_choice_printout` | 2 |
 | `meeting_room_all_hands` | 존재하지 않는 부서의 전체회의 | 위치: `meeting_room`; 필수 플래그: `truth_route_started` | 2 |
 | `security_room_delayed_cctv` | 지연된 CCTV 화면 | 위치: `security_room`; 필수 단서: `meeting_pattern_noticed`; 필수 플래그: `impossible_meeting_saved` | 2 |
@@ -117,6 +118,25 @@
    - 결과: 아이템+ `power_bank`; 로그: 비상 보급함 아래칸에서 충전 케이블이 묶인 보조배터리를 챙겼다.
 3. `take_emergency_snack` — 비상 간식 봉지를 챙긴다
    - 결과: 아이템+ `snack`; 로그: 유통기한이 오늘로 끝나는 과자 봉지를 챙겼다.
+4. `brace_for_supply_scuffle` — 잠긴 물품 카트를 끌어 복도 쪽으로 세운다
+   - 결과: 플래그+ `supply_scuffle_started`; 로그: 잠긴 바퀴가 바닥을 긁는 동안, 선반 뒤의 무언가가 움직임을 멈췄다.
+
+### supply_closet_auto_brawl: 물품창고 자동 난투
+
+물품창고의 좁은 통로에서 뒤틀린 야간 당직자가 선반을 붙잡고 돌진한다. 당신이 모든 타격을 직접 조작할 시간은 없다. 몸싸움은 이미 시작됐고, 지금 바꿀 수 있는 것은 거리와 균형뿐이다.
+
+- 조건: 위치: `supply_closet`; 필수 플래그: `supply_scuffle_started`; 금지 플래그: `supply_scuffle_resolved`
+- presentation: `visual_id=supply_closet_scuffle`, `layout=combat_intervention`, stable terms `거리 / 균형 / 소화기 핀`
+
+선택지:
+1. `keep_distance_between_shelves` — 선반 사이 거리를 벌려 숨을 고른다
+   - 결과: 자원 `sanity: +2`; 플래그+ `supply_scuffle_resolved`; 로그: 당신은 선반 끝을 따라 물러섰고, 싸움은 더 커지기 전에 통로 반대편으로 흘러갔다.
+2. `hook_cart_to_cabinet` — 캐비닛 손잡이에 카트를 걸어 거리를 만든다
+   - 비용: `health: -4`
+   - 결과: 단서+ `improvised_distance_control`; 플래그+ `supply_scuffle_resolved`, `combat_intervention_success`; 위험도 `-1`; 로그: 상대의 균형이 선반 쪽으로 밀렸다. 공격이 아니라 거리 조절이 난투의 흐름을 바꿨다.
+3. `pull_extinguisher_pin` — 소화기 핀을 뽑아 시야를 끊는다
+   - 비용: `sanity: -4`
+   - 결과: 단서+ `improvised_visibility_break`; 플래그+ `supply_scuffle_resolved`, `combat_intervention_success`; 위험도 `-1`; 로그: 분말이 통로를 덮자 손과 그림자만 남았다. 당신은 보이는 공격 대신 보이지 않는 틈으로 빠져나왔다.
 
 ### meeting_room_whiteboard_marker: 회의실 화이트보드 모서리
 

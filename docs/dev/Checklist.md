@@ -149,6 +149,13 @@
 - [x] `idea_box/combat_system.md`를 `docs/design/Combat_System_Auto_Brawl.md`로 승격
 - [x] 자동 난투 + 상황 개입을 Rust GameCore/`ScenePage` 호환 설계 후보로 정리
 
+### 0.2o 2026-05-29 schema-less combat encounter prototype runtime
+
+- [x] 기존 encounter/choice/outcome schema만 사용한 물품창고 자동 난투 구현
+- [x] `supply_closet_cache`에서 `supply_closet_auto_brawl`로 이어지는 1회 상황 개입 경로 추가
+- [x] Rust `ScenePage` / SuperLightTUI / Web generated data parity 검증 추가
+- [x] 새 `CombatState`, combat schema, HP 숫자전, renderer gameplay 판정 없이 완료
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.
@@ -441,13 +448,14 @@
 - [x] 지하주차장 키태그
 - [x] 임시 방문증
 
-### 7.3 인카운터 20개
+### 7.3 인카운터 21개
 
 - [x] 퇴사자의 메신저
 - [x] 복합기가 혼자 출력한다
 - [x] 탕비실 커피머신
 - [x] 정수기의 이상한 물
 - [x] 물품창고 비상 보급함
+- [x] 물품창고 자동 난투
 - [x] 회의실 화이트보드 모서리
 - [x] 존재하지 않는 부서의 전체회의
 - [x] 지연된 CCTV 화면

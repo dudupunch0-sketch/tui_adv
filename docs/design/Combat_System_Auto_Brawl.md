@@ -299,6 +299,13 @@ SuperLightTUI:
 - 예: 회의실 또는 복합기 구역에서 `distorted_manager_brawl` encounter.
 - Rust core, Web Storybook, SuperLightTUI 모두 기존 action id/display 경로로 표시되는지 검증한다.
 
+구현 기록:
+
+- 2026-05-29 첫 runtime slice로 `supply_closet_auto_brawl`을 추가했다.
+- `supply_closet_cache`의 `brace_for_supply_scuffle` 선택이 기존 flag outcome만으로 전투형 인카운터를 연다.
+- 전투 해결도 기존 choice/outcome의 resource, flag, clue, log만 사용한다.
+- Web Storybook과 SuperLightTUI는 Rust GameCore가 제공한 `ScenePage`/action id를 표시하며 renderer 쪽 gameplay 판정은 추가하지 않았다.
+
 비목표:
 
 - 새 전투 schema.
@@ -403,5 +410,7 @@ SuperLightTUI:
 
 - 원본 source: `idea_box/combat_system.md`
 - 승격 문서: `docs/design/Combat_System_Auto_Brawl.md`
-- 상태: 설계 문서화 완료, 런타임 구현 미착수
-- 다음 후보: schema-less combat encounter prototype을 별도 PR로 검토
+- 상태: 설계 문서화 완료, PR 1 schema-less runtime prototype 구현 완료
+- 첫 runtime slice: `supply_closet_auto_brawl`
+- 유지한 금지선: 새 `CombatState`, 새 combat schema, HP 숫자전, 스킬/쿨타임, renderer gameplay 판정 없음
+- 다음 후보: 반복 가치가 확인되면 `presentation` metadata 정리 또는 `isolation_pack` runtime encounter 승격을 별도 PR로 검토

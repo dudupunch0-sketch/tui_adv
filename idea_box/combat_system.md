@@ -980,3 +980,4 @@ HP 숫자보다 상태바와 문장 중심이 어울린다.
 ## 처리 기록
 
 - 2026-05-29: `docs/design/Combat_System_Auto_Brawl.md`로 승격했다. 원본의 “실시간 자동 난투 + 상황 개입” 방향은 유지하되, 현재 프로젝트의 Rust GameCore/`ScenePage`/Web Storybook/SuperLightTUI 구조에 맞춰 “짧은 자동 난투 장면 + 전투당 0~3회 core-provided 상황 선택지” 설계 후보로 정리했다. 이번 처리에서는 런타임 YAML/Rust/Web 코드는 변경하지 않았다.
+- 2026-05-29 후속 런타임 slice: 기존 encounter/choice/outcome schema만 사용해 `supply_closet_cache`에서 `supply_closet_auto_brawl`로 이어지는 물품창고 자동 난투 prototype을 구현했다. 새 `CombatState`, 새 combat schema, HP 숫자전, renderer gameplay 판정은 추가하지 않았다.

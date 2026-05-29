@@ -11,7 +11,7 @@
 |---|---|---:|
 | `src/tui_adv/data/locations.yaml` | `locations` | 16 |
 | `src/tui_adv/data/items.yaml` | `items` | 13 |
-| `src/tui_adv/data/encounters.yaml` | `encounters` | 20 |
+| `src/tui_adv/data/encounters.yaml` | `encounters` | 21 |
 | `src/tui_adv/data/endings.yaml` | `endings` | 13 |
 | `src/tui_adv/data/achievements.yaml` | `achievements` | 11 |
 | `src/tui_adv/data/secrets.example.yaml` | `secrets` | 3 |
@@ -149,7 +149,7 @@ web/src/data/generated/content.bundle.json
     "counts": {
       "locations": 16,
       "items": 13,
-      "encounters": 20,
+      "encounters": 21,
       "endings": 13,
       "achievements": 11,
       "secrets": 3

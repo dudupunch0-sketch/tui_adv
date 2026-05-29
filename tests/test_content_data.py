@@ -63,6 +63,30 @@ def test_default_encounter_yaml_loads_choice_conditions_and_checks():
     assert water.choices[0].outcome.add_flags == ("thirst_hallucination_seen",)
 
 
+def test_schema_less_combat_prototype_is_wired_through_existing_encounter_schema():
+    encounters = load_default_encounters()
+    supply_cache = encounters["supply_closet_cache"]
+    start_choice = next(
+        choice for choice in supply_cache.choices if choice.id == "brace_for_supply_scuffle"
+    )
+    combat = encounters["supply_closet_auto_brawl"]
+
+    assert start_choice.outcome.add_flags == ("supply_scuffle_started",)
+    assert combat.conditions.locations == ("supply_closet",)
+    assert combat.conditions.required_flags == ("supply_scuffle_started",)
+    assert combat.conditions.forbidden_flags == ("supply_scuffle_resolved",)
+    assert [choice.id for choice in combat.choices] == [
+        "keep_distance_between_shelves",
+        "hook_cart_to_cabinet",
+        "pull_extinguisher_pin",
+    ]
+    assert combat.choices[1].outcome.add_flags == (
+        "supply_scuffle_resolved",
+        "combat_intervention_success",
+    )
+    assert combat.choices[1].outcome.add_clues == ("improvised_distance_control",)
+
+
 def test_default_endings_yaml_loads_escape_route_conditions():
     endings = load_default_endings()
     escape = endings["escape_commute"]

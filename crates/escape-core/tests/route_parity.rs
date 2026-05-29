@@ -262,6 +262,57 @@ fn escape_commute_scene_page_includes_post_escape_aftermath_report() {
 }
 
 #[test]
+fn schema_less_combat_prototype_renders_via_scene_page_and_resolves_with_existing_actions() {
+    let content = content();
+    let mut combat_prompt = apply_sequence(
+        new_game_from_content(123, &content).expect("content-backed game should start"),
+        &content,
+        &[
+            "choice:check_message",
+            "move:dev_office",
+            "move:supply_closet",
+            "choice:brace_for_supply_scuffle",
+        ],
+    );
+
+    let page = scene_page_from_content(&combat_prompt, &content)
+        .expect("combat prototype scene page should render");
+    assert_eq!(page.mode, SceneMode::Encounter);
+    assert_eq!(page.title, "물품창고 자동 난투");
+    assert_eq!(page.visual.id, "supply_closet_scuffle");
+    assert_eq!(page.visual.kind, "combat_intervention");
+    assert_eq!(
+        page.actions
+            .iter()
+            .map(|action| action.id.as_str())
+            .collect::<Vec<_>>(),
+        vec![
+            "choice:keep_distance_between_shelves",
+            "choice:hook_cart_to_cabinet",
+            "choice:pull_extinguisher_pin",
+        ]
+    );
+    assert!(page
+        .effect_cues
+        .iter()
+        .any(|cue| cue.kind == "glyph_anomaly" && cue.source == "shelf_impact"));
+
+    combat_prompt =
+        apply_action_from_content(&combat_prompt, &content, "choice:hook_cart_to_cabinet")
+            .expect("combat intervention should resolve")
+            .state;
+    assert!(combat_prompt
+        .flags
+        .contains(&"combat_intervention_success".to_string()));
+    assert!(combat_prompt
+        .clues
+        .contains(&"improvised_distance_control".to_string()));
+    assert!(
+        !action_ids(&combat_prompt, &content).contains(&"choice:hook_cart_to_cabinet".to_string())
+    );
+}
+
+#[test]
 fn scripted_major_route_smokes_reach_expected_endings_through_current_actions() {
     let content = content();
 

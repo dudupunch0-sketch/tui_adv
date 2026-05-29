@@ -39,7 +39,7 @@ def test_export_web_data_builds_public_manifest_with_expected_counts():
     assert bundle["manifest"]["counts"] == {
         "locations": 16,
         "items": 13,
-        "encounters": 20,
+        "encounters": 21,
         "endings": 13,
         "achievements": 11,
         "secrets": 3,
@@ -65,7 +65,7 @@ def test_export_web_data_writes_generated_json_files(tmp_path):
         "secrets.example.json",
     ]
     manifest = json.loads((out_dir / "manifest.json").read_text(encoding="utf-8"))
-    assert manifest["counts"]["encounters"] == 20
+    assert manifest["counts"]["encounters"] == 21
     secrets = json.loads((out_dir / "secrets.example.json").read_text(encoding="utf-8"))
     assert secrets[0]["final_hint_policy"] == "private_only"
 

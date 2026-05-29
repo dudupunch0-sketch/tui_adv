@@ -156,6 +156,13 @@
 - [x] Rust `ScenePage` / SuperLightTUI / Web generated data parity 검증 추가
 - [x] 새 `CombatState`, combat schema, HP 숫자전, renderer gameplay 판정 없이 완료
 
+### 0.2p 2026-05-29 storypack/world 일반화와 무협 기준팩
+
+- [x] office-only 편향을 줄이는 `docs/design/Storypack_World_Model.md` 추가
+- [x] 회사 직장인 차원이동형 첫 비-office 기준팩 `docs/content/storypacks/wuxia_jianghu_pack.md` 추가
+- [x] 무협 강호팩 encounter situation cards 추가
+- [x] AGENTS/README/Index/Development_Plan을 storypack 기반 방향으로 동기화
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

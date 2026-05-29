@@ -18,7 +18,9 @@ Git 최초 추가 순서 기준이다. 아래 순서대로 처리한다.
 
 | order | idea entry | git first added | commit | 상태 | 다음 처리 |
 |---|---|---|---|---|---|
-| - | - | - | - | 없음 | 현재 open entry 없음 |
+| 2026-05-29-01 | `idea_box/inbox/2026-05-29-notion-storypack-system.md` | UNTRACKED | - | open | Notion storypack 공용 시스템 아이디어 검토 |
+| 2026-05-29-02 | `idea_box/inbox/2026-05-29-notion-wuxia-igu-hakji-cheonggi-record.md` | UNTRACKED | - | open | 무협 storypack 대체안 검토 |
+| 2026-05-29-03 | `idea_box/inbox/2026-05-29-notion-office-yageunmong.md` | UNTRACKED | - | open | 회사 storypack 추가안 검토 |
 
 ## 이미 done인 구조화 entry
 

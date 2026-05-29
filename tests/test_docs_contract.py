@@ -107,9 +107,8 @@ def test_mobile_pixel_storybook_ui_doc_is_indexed_checklisted_and_current_plan()
     assert "lazy Web Audio generated oscillator backend" in completed_foundation
     assert "schema-less combat encounter prototype 완료" in completed_foundation
     next_slice = plan.split("현재 최우선 남은 작업:", 1)[1]
-    assert "schema-less combat encounter prototype을 리뷰/머지" in next_slice
-    assert "isolation_pack" in next_slice
-    assert "Web Storybook production visual polish" in next_slice
+    assert "storypack/world 일반화" in next_slice
+    assert "wuxia_jianghu_pack" in next_slice
     assert "Rust GameCore / `ScenePage` / WASM JSON boundary" in next_slice
 
 
@@ -129,14 +128,16 @@ def test_transition_audio_readiness_is_current_active_plan():
 
     next_slice = plan.split("현재 최우선 남은 작업:", 1)[1].split("전환 중 유지:", 1)[0]
     assert "현재 active main plan 기준 즉시 진행할 구현 작업은 없다" not in next_slice
-    assert "schema-less combat encounter prototype" in next_slice
-    assert "isolation_pack" in next_slice
-    assert "Web Storybook production visual polish" in next_slice
+    assert "storypack/world 일반화" in next_slice
+    assert "wuxia_jianghu_pack" in next_slice
+    assert "machine-readable storypack DB" in next_slice
+    assert "schema-less wuxia runtime prototype" in next_slice
+    assert "renderer-neutral" in next_slice
 
     next_actions = plan.split("## 10. 다음 액션", 1)[1]
-    assert "schema-less combat encounter prototype 변경을 검증하고 PR로 리뷰/머지" in next_actions
-    assert "isolation_pack" in next_actions
-    assert "Web Storybook production visual polish" in next_actions
+    assert "Storypack_World_Model.md" in next_actions
+    assert "wuxia_office_worker_arrival" in next_actions
+    assert "world_id" in next_actions
 
     assert "### 0.2m 2026-05-26 Web Storybook transition/audio readiness" in checklist
     assert "- [x] transition/audio readiness active main plan 승격" in checklist
@@ -307,5 +308,55 @@ def test_combat_system_auto_brawl_doc_is_indexed_and_backlog_done():
     assert "`supply_closet_auto_brawl`" in doc
     assert "status: done" in idea
     assert "used_by: docs/design/Combat_System_Auto_Brawl.md" in idea
+    assert "이번 처리에서는 런타임 YAML/Rust/Web 코드는 변경하지 않았다" in idea
     assert "후속 런타임 slice" in idea
     assert "`supply_closet_auto_brawl`" in idea
+
+
+def test_storypack_world_model_and_wuxia_pack_are_indexed_and_current():
+    index = Path("docs/00_Index.md").read_text(encoding="utf-8")
+    readme = Path("README.md").read_text(encoding="utf-8")
+    agents = Path("AGENTS.md").read_text(encoding="utf-8")
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    storypack_readme = Path("docs/content/storypacks/README.md").read_text(encoding="utf-8")
+    storypack_design = Path("docs/design/Storypack_Encounter_DB.md").read_text(encoding="utf-8")
+    world_doc_path = Path("docs/design/Storypack_World_Model.md")
+    wuxia_pack_path = Path("docs/content/storypacks/wuxia_jianghu_pack.md")
+    wuxia_cards_path = Path("docs/content/encounter_db/wuxia_jianghu_pack.md")
+
+    assert world_doc_path.exists()
+    assert wuxia_pack_path.exists()
+    assert wuxia_cards_path.exists()
+
+    world_doc = world_doc_path.read_text(encoding="utf-8")
+    wuxia_pack = wuxia_pack_path.read_text(encoding="utf-8")
+    wuxia_cards = wuxia_cards_path.read_text(encoding="utf-8")
+
+    assert "docs/design/Storypack_World_Model.md" in index
+    assert "docs/content/storypacks/wuxia_jianghu_pack.md" in index
+    assert "docs/content/encounter_db/wuxia_jianghu_pack.md" in index
+    assert "docs/design/Storypack_World_Model.md" in readme
+    assert "docs/content/storypacks/wuxia_jianghu_pack.md" in readme
+
+    assert "storypack/world 기반" in agents
+    assert "wuxia_jianghu_pack" in agents
+    assert "wuxia_jianghu_pack" in storypack_readme
+    assert "wuxia_jianghu" in storypack_design
+
+    assert "회사”는 엔진의 정체성이 아니라 첫 번째 기본 storypack" in world_doc
+    assert "world_id" in world_doc
+    assert "무협 강호팩" in wuxia_pack
+    assert "회사에 다니던 직장인" in wuxia_pack
+    assert "Shaolin_Kung_Fu" in wuxia_pack
+    assert "whc.unesco.org/en/list/705" in wuxia_pack
+    assert "jianghu_notice_board" in wuxia_pack
+    assert "wuxia_office_worker_arrival" in wuxia_cards
+    assert "wuxia_duel_bridge_intervention" in wuxia_cards
+
+    assert "storypack/world 일반화와 무협 기준팩" in checklist
+    assert "storypack/world 일반화" in plan
+    assert "첫 비-office 기준팩은 회사 직장인이 무협 세계로 차원이동하는 `wuxia_jianghu_pack`" in plan
+    next_slice = plan.split("현재 최우선 남은 작업:", 1)[1].split("전환 중 유지:", 1)[0]
+    assert "wuxia_jianghu_pack" in next_slice
+    assert "PR C audio engine skeleton을 리뷰/머지" not in next_slice

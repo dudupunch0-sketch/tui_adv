@@ -668,10 +668,10 @@ node --check scripts/storybook-reference-qa.mjs
 2. 반복 가치가 확인되면 `presentation.layout: combat_exchange` 같은 semantic metadata.
 3. 여러 전투가 쌓인 뒤에만 Rust core 전용 combat resolver 검토.
 
-## 0.9 2026-05-29 active main plan: schema-less combat encounter prototype runtime
+## 0.9 2026-05-29 completed slice: schema-less combat encounter prototype runtime
 
 이 섹션은 `docs/design/Combat_System_Auto_Brawl.md`의 PR 1 후보를 첫 runtime slice로 승격한 기록이다.
-현재 상태: 구현 완료, PR 리뷰/머지 대기.
+현재 상태: 구현 완료, `origin/main` 기반 반영됨.
 
 목표:
 
@@ -709,11 +709,40 @@ node --check scripts/storybook-reference-qa.mjs
 
 후속 후보:
 
-1. 이 PR을 리뷰/머지한 뒤 `origin/main`을 동기화한다.
-2. 다음 main plan 후보는 이전 추천 순서를 유지한다.
-   - 2순위: `isolation_pack` 첫 runtime encounter 승격.
-   - 3순위: Web Storybook production visual polish.
-3. 전투 후속은 여러 runtime encounter에서 반복 가치가 확인될 때만 presentation metadata 정리 또는 Rust combat resolver로 승격한다.
+1. 이 slice는 `origin/main` 기반 완료 상태로 유지한다.
+2. 전투 후속은 여러 runtime encounter에서 반복 가치가 확인될 때만 presentation metadata 정리 또는 Rust combat resolver로 승격한다.
+3. 다음 active 방향은 아래 0.10 storypack/world 일반화다.
+
+## 0.10 2026-05-29 active direction: storypack/world 일반화와 무협 기준팩
+
+사용자 결정에 따라 프로젝트 방향을 “회사 아포칼립스 전용 게임”에서 “storypack/world 기반 선택지 생존 엔진 + 기본 office storypack”으로 재정렬한다. 첫 비-office 기준팩은 순수 무림 낭인물이 아니라, 회사에 다니던 직장인이 눈떠보니 무협 세계로 이동한 이세계 차원이동 컨셉이다.
+현재 상태: 설계 문서화 완료, 런타임 구현 미착수.
+
+문제 인식:
+
+- 기존 문서와 런타임 콘텐츠는 `escape from the office`에 강하게 묶여 있다.
+- storypack 형태로 확장하려면 office가 아닌 세계관에서도 성립하는 시스템 기준이 필요하다.
+- 첫 비-office 기준팩은 회사원 차원이동형 무협 세계관으로 정한다.
+
+반영 결과:
+
+- `docs/design/Storypack_World_Model.md`를 추가해 `world_id`, `storypack_id`, surface, resource display alias, route hook을 정리했다.
+- `docs/content/storypacks/wuxia_jianghu_pack.md`를 회사원 차원이동형 무협 기준팩으로 추가했다.
+- `docs/content/encounter_db/wuxia_jianghu_pack.md`에 `wuxia_office_worker_arrival`을 포함한 6개 후보 situation card를 추가했다.
+- `AGENTS.md`, `README.md`, `docs/00_Index.md`, `docs/design/Storypack_Encounter_DB.md`, `docs/dev/Checklist.md`를 office-only 표현에서 storypack-capable 표현으로 조정했다.
+
+유지 범위:
+
+- 기존 office runtime 콘텐츠는 삭제하지 않는다.
+- `escape from the office`는 현재 기본 storypack으로 유지한다.
+- Rust GameCore / `ScenePage` / WASM JSON boundary는 계속 renderer-neutral truth를 소유한다.
+- 이번 slice에서는 런타임 YAML/Rust/Web 구현과 save/localStorage key migration을 열지 않는다.
+
+후속 후보:
+
+1. machine-readable storypack DB: docs-only `world_id`/`storypack_id`/surface/card 구조를 YAML 또는 JSON 후보 DB로 검증한다.
+2. schema-less wuxia runtime prototype: 기존 encounter schema만 사용해 `wuxia_office_worker_arrival` 또는 `wuxia_duel_bridge_intervention` 1개를 runtime에 넣고 office가 아닌 world도 표시되는지 검증한다.
+3. display alias pass: `health/sanity/battery/hunger/thirst/danger` 내부 field는 유지하되 world별 표시 이름을 분리할지 검토한다.
 
 ## 1. 목표
 
@@ -1254,14 +1283,15 @@ src/tui_adv/data/secrets.example.yaml
 22. PR B transition controller 완료: action 실행 전 current page/action context를 캡처하고, action 후 `transitionPlan(previousPage, nextPage, action)`으로 `.storybook-shell` enter/exit class/attribute transition을 적용한다. reduced/off motion은 즉시 render하고, `transitionend` 미발생 시 timeout fallback으로 게임이 멈추지 않게 했다.
 23. PR C audio engine skeleton 완료: `web/src/ui/audio/audioEngine.ts`가 lazy Web Audio generated oscillator backend와 no-op fallback을 제공하고, muted 상태 no schedule, user-gesture opt-in unlock, one-shot cue, looping ambience API를 renderer-local로 고정했다. Rust GameCore / `ScenePage` / WASM JSON boundary와 binary audio asset은 변경하지 않았다.
 24. schema-less combat encounter prototype 완료: `supply_closet_cache`에서 `supply_closet_auto_brawl`로 이어지는 물품창고 자동 난투를 기존 encounter/choice/outcome schema만으로 구현했고, Rust `ScenePage`, SuperLightTUI, Web generated data에서 같은 action id와 presentation hint를 검증한다.
+25. storypack/world 일반화 첫 설계 완료: office는 기본 storypack으로 유지하되, `docs/design/Storypack_World_Model.md`와 회사원 차원이동형 `wuxia_jianghu_pack`을 추가해 무협 세계관을 첫 비-office 기준팩으로 세웠다.
 
 현재 최우선 남은 작업:
 
-1. schema-less combat encounter prototype을 리뷰/머지하고 `origin/main` 동기화 후 다음 추천 순서 slice를 별도로 승격한다.
-   - 이 PR은 새 `CombatState`, 새 combat schema, HP 숫자전, 전투 전용 renderer UI 없이 기존 content/action path로만 전투형 장면을 증명한다.
-   - 2순위 후보: `isolation_pack` 첫 runtime encounter 승격.
-   - 3순위 후보: Web Storybook production visual polish.
-   - 어느 후보를 택하든 Rust GameCore / `ScenePage` / WASM JSON boundary 책임 분리와 공개-safe 원칙을 유지한다.
+1. storypack/world 일반화 방향을 기준으로 첫 non-office runtime 준비 slice를 진행한다.
+   - 기본 storypack은 `escape from the office` / office isolation 계열로 유지한다.
+   - 첫 비-office 기준팩은 회사 직장인이 무협 세계로 차원이동하는 `wuxia_jianghu_pack`이다.
+   - 다음 구현 후보는 둘 중 하나다: machine-readable storypack DB 검증, 또는 기존 encounter schema만 쓰는 schema-less wuxia runtime prototype.
+   - 어느 후보를 택하든 Rust GameCore / `ScenePage` / WASM JSON boundary 책임 분리와 renderer-neutral 원칙을 유지한다.
 
 전환 중 유지:
 
@@ -1283,6 +1313,7 @@ src/tui_adv/data/secrets.example.yaml
 8. Web player start/save UX first slice 후속: save JSON export/import, settings/reduce-motion UI, 오늘의 seed는 별도 승격 전까지 열지 않는다.
 9. 여러 히든 현실 보물
 10. 전투 시스템 후속 slice는 `supply_closet_auto_brawl` 이후 반복 가치가 확인될 때만 presentation metadata 정리 또는 Rust combat resolver로 승격한다.
+11. 무협 storypack first runtime slice: `wuxia_jianghu_pack`의 `wuxia_office_worker_arrival` 또는 `wuxia_duel_bridge_intervention`을 기존 encounter schema로 검증한다.
 
 ## 9. 주요 리스크
 
@@ -1327,9 +1358,8 @@ Web 또는 terminal renderer가 게임 규칙을 다시 구현하면 Rust GameCo
 
 ## 10. 다음 액션
 
-1. schema-less combat encounter prototype 변경을 검증하고 PR로 리뷰/머지한다.
-   - Python content/CLI tests, Rust `escape-core`/`escape-terminal` targeted tests, Web generated data freshness check, `cargo fmt --check`, `cargo test --workspace`, `git diff --check`를 통과시킨다.
-2. PR 머지 후 다음 추천 순서 slice를 별도로 승격한다.
-   - 2순위 gameplay 후보는 `isolation_pack` 첫 runtime encounter 승격이다.
-   - 3순위 presentation 후보는 Web Storybook production visual polish다.
-   - 실제 음악/SFX asset과 soundtrack은 저작권/라이선스 정책이 정리되기 전까지 열지 않는다.
+1. `docs/design/Storypack_World_Model.md`와 `wuxia_jianghu_pack` 기준으로 다음 runtime 준비 slice를 선택한다.
+   - 안전한 기본값: machine-readable storypack DB 검증을 먼저 열고, office/wuxia 후보 카드의 참조 무결성을 테스트한다.
+   - 빠른 플레이 검증을 택하면 기존 encounter schema만 사용해 `wuxia_office_worker_arrival` 1개를 runtime prototype으로 넣는다.
+2. runtime에 무협 콘텐츠를 넣기 전, office 콘텐츠와 섞이지 않도록 `world_id`/`storypack_id` gating 또는 별도 preview mode를 결정한다.
+3. 실제 음악/SFX asset과 soundtrack은 저작권/라이선스 정책이 정리되기 전까지 열지 않는다.

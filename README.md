@@ -1,8 +1,8 @@
 # escape from the office
 
-TUI 기반 랜덤 인카운터 선택지 생존 게임.
+TUI 기반 랜덤 인카운터 선택지 생존 게임 엔진/콘텐츠 프로젝트.
 
-플레이어는 갑자기 사람이 모두 사라지고 공간 또는 차원 단위로 격리된 대기업 연구개발동에서 시작한다. 외부 인터넷은 제한되고, 사내망과 회의실 예약 패널, 복합기, 사내 방송만 간헐적으로 작동한다. 체력, 정신력, 배터리, 허기, 갈증을 관리하며 탈출하거나, 회사를 장악하거나, 진실을 파헤치거나, 현실 사무실에 숨겨진 메모/보물로 이어지는 히든 루트를 발견하는 것이 목표다.
+현재 기본 storypack은 회사 사무실 아포칼립스인 `escape from the office`다. 플레이어는 갑자기 사람이 모두 사라지고 공간 또는 차원 단위로 격리된 대기업 연구개발동에서 시작한다. 다만 장기 개발 방향은 회사 전용 게임이 아니라, storypack/world를 바꿔 무협 같은 다른 세계관도 같은 Rust GameCore, Web Storybook, SuperLightTUI renderer 계약으로 플레이할 수 있는 구조다. 첫 비-office 기준팩은 회사에 다니던 직장인이 눈떠보니 무협 세계로 이동하는 `wuxia_jianghu_pack`이다.
 
 ## 현재 단계
 
@@ -128,9 +128,10 @@ npm run preview:player
 
 ## 핵심 설정
 
-- 제목: `escape from the office`
-- 장르: TUI 선택지 생존 게임 + Web Storybook/GlyphFX primary UX + SuperLightTUI terminal renderer
-- 톤: 블랙코미디 회사 괴담 + 코스믹 호러
+- 기본 storypack 제목: `escape from the office`
+- 프로젝트 방향: storypack/world 기반 TUI 선택지 생존 게임 + Web Storybook/GlyphFX primary UX + SuperLightTUI terminal renderer
+- 기본 톤: 블랙코미디 회사 괴담 + 코스믹 호러
+- 첫 비-office 기준팩: `wuxia_jianghu_pack` 무협 강호. 전제는 “회사 직장인 → 무협 세계 이세계 차원이동”
 - 1차 재난 타입: 불명 재난
 - 상황: 사람 실종, 연구개발동 규모의 공간/차원 격리, 제한된 외부 인터넷, 간헐적 사내망 연락
 - 핵심 자원: 체력, 정신력, 배터리, 허기, 갈증
@@ -151,6 +152,7 @@ npm run preview:player
 - `docs/story/Reality_Link.md`: 현실 연결 원칙
 - `docs/design/Player_State.md`: 플레이어 상태 규칙
 - `docs/design/Character_Stats_and_Generator.md`: 6스탯 등장인물/LLM 생성기 설계 후보
+- `docs/design/Storypack_World_Model.md`: storypack/world 기반 일반화 기준과 무협 기준팩 방향
 - `docs/design/Game_Loop.md`: 턴/선택/인카운터 루프
 - `docs/design/Combat_System_Auto_Brawl.md`: 자동 난투 + 상황 개입 전투 설계 후보
 - `docs/design/Map.md`: 1차 맵 설계
@@ -166,6 +168,8 @@ npm run preview:player
 - `docs/content/Survivor_System_Routes.md`: 생존자 설득과 시스템 제압 루트 설계
 - `docs/content/Secret_List.md`: 공개 가능한 히든 루트/비밀 목록
 - `docs/content/Horror_Ideas.md`: 호러 연출 아이디어 저장소
+- `docs/content/storypacks/wuxia_jianghu_pack.md`: 회사 직장인 차원이동형 첫 비-office 무협 강호 storypack 후보
+- `docs/content/encounter_db/wuxia_jianghu_pack.md`: 무협 강호팩 encounter situation cards
 - `docs/dev/Architecture.md`: 코드 구조와 모듈 경계
 - `docs/dev/Rust_Core_Dual_Renderer_Architecture.md`: Rust GameCore + Web Storybook + SuperLightTUI terminal 활성 방향
 - `docs/dev/Data_Schema.md`: YAML/JSON 데이터 스키마

@@ -184,7 +184,8 @@ describe('browser terminal parity routes', () => {
     },
   ];
 
-  it.each(routes)('reaches $name route ending', ({ initial, actions, endingId, kind }) => {
+  it.each(routes)('reaches $name route ending', (route: (typeof routes)[number]) => {
+    const { initial, actions, endingId, kind } = route;
     const finalState = play(initial, actions);
     const ending = evaluateEnding(finalState);
 

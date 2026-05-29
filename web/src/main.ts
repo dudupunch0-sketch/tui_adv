@@ -11,9 +11,12 @@ import { loadSavedState, saveState } from './game/save';
 import { newGame } from './game/state';
 import type { GameState, GameTurn } from './game/types';
 import { actionIdForKey, NEW_GAME_ACTION_ID, type ActionListSource } from './ui/keyboard';
+import { createStorybookTransitionController } from './ui/motion/transitionController';
+import type { TransitionActionContext } from './ui/motion/transitionPlan';
 import {
   loadPlayerSettings,
   nextMotionPreference,
+  resolveMotionMode,
   toggleAudioPreference,
   updatePlayerSettings,
   type PlayerSettings,
@@ -46,6 +49,7 @@ let fatalPlayerError = false;
 let activeSeed = DEFAULT_SEED;
 let confirmReset = false;
 let playerSettings: PlayerSettings = loadPlayerSettings(window.localStorage);
+const transitionController = createStorybookTransitionController(appRoot);
 
 render();
 
@@ -79,6 +83,10 @@ function render(): void {
   }
   if (fatalPlayerError) return;
   const page = currentScenePage();
+  renderGamePage(page);
+}
+
+function renderGamePage(page: ScenePage): void {
   actionSource = page;
   appRoot.innerHTML = renderStorybookPage(page);
   if (lastError) {
@@ -97,6 +105,7 @@ function render(): void {
 }
 
 function renderStart(): void {
+  transitionController.cancel();
   actionSource = { actions: [] };
   const saveSummary = readPlayerSaveSummary(window.localStorage);
   const defaultSeed = saveSummary.summary?.seed ?? activeSeed;
@@ -186,7 +195,7 @@ function startGame(options: {
     saveLegacyState();
   }
   void bootstrapWasmRuntime(options.initialStateJson);
-  render();
+  renderGameTransition(null, currentScenePage(), { id: 'player:start', kind: 'start' });
 }
 
 function legacyInitialState(seed: number, shouldContinue: boolean): GameState {
@@ -208,6 +217,7 @@ function seedFromStartInput(): number {
 
 function renderFatalPlayerError(message: string, error: unknown): void {
   fatalPlayerError = true;
+  transitionController.cancel();
   actionSource = { actions: [] };
   console.error('Failed to bootstrap required Rust GameCore WASM runtime', error);
 
@@ -249,6 +259,8 @@ function runAction(actionId: string): void {
     render();
     return;
   }
+  const previousPage = currentScenePage();
+  const action = transitionActionContext(previousPage, actionId);
   try {
     if (wasmRuntime) {
       wasmRuntime.applyAction(actionId);
@@ -259,7 +271,7 @@ function runAction(actionId: string): void {
       saveLegacyState();
     }
     lastError = null;
-    render();
+    renderGameTransition(previousPage, currentScenePage(), action);
   } catch (error) {
     lastError = `입력 오류: ${errorMessage(error)}`;
     if (!wasmRuntime) {
@@ -267,6 +279,32 @@ function runAction(actionId: string): void {
     }
     render();
   }
+}
+
+function renderGameTransition(
+  previousPage: ScenePage | null,
+  nextPage: ScenePage,
+  action: TransitionActionContext | null,
+): void {
+  transitionController.transitionTo({
+    previousPage,
+    nextPage,
+    action,
+    motionMode: currentMotionMode(),
+    renderNextPage: () => renderGamePage(nextPage),
+  });
+}
+
+function transitionActionContext(page: ScenePage, actionId: string): TransitionActionContext | null {
+  const action = page.actions.find((candidate) => candidate.id === actionId);
+  if (!action) return null;
+  return { id: action.id, kind: action.kind };
+}
+
+function currentMotionMode(): ReturnType<typeof resolveMotionMode> {
+  const prefersReducedMotion =
+    typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  return resolveMotionMode(playerSettings, { prefersReducedMotion });
 }
 
 function saveWasmState(): void {

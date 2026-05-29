@@ -565,7 +565,7 @@ git diff --check
 
 이 섹션은 `.hermes/plans/2026-05-26_063723-web-storybook-transition-audio-structure-plan.md`의 내용을 canonical main plan으로 승격해 흡수한 Production visual polish slice다.
 `.hermes/plans/` 파일은 세션 artifact이며, 실제 작업 순서와 우선순위는 이 섹션과 아래 “현재 최우선 남은 작업” / “다음 액션”을 기준으로 판단한다.
-현재 상태: PR A — settings + motion foundation과 PR B transition controller 완료. 다음은 PR C — audio engine skeleton이다.
+현재 상태: PR A — settings + motion foundation, PR B transition controller, PR C audio engine skeleton 완료. Transition/audio readiness first slice는 renderer-local presentation layer로 닫고, 실제 음악/SFX asset과 soundtrack은 별도 future slice로 분리한다.
 
 목표:
 
@@ -614,12 +614,13 @@ PR B — transition controller (완료):
 - `web/src/ui/motion/transitionController.ts`에 renderer-local controller를 추가했고, `web/src/main.ts`는 gameplay action 실행 전후 `ScenePage`를 전달한다.
 - CSS transition class/attribute는 `.storybook-shell`에만 붙으며, Rust GameCore / `ScenePage` / WASM JSON boundary는 변경하지 않았다.
 
-PR C — audio engine skeleton:
+PR C — audio engine skeleton (완료):
 
-- Web Audio API lazy/no-op engine을 만든다.
-- muted 상태에서는 cue를 schedule하지 않는다.
-- opt-in 후 one-shot cue와 looping ambience API를 제공한다.
-- 첫 slice에서는 generated oscillator/noise 또는 no-op registry만 사용하고 binary asset은 넣지 않는다.
+- `web/src/ui/audio/audioEngine.ts`에 Web Audio API lazy/no-op engine을 만들었다.
+- muted 상태에서는 cue를 schedule하지 않고 `AudioContext.resume()`도 호출하지 않는다.
+- start/settings UI의 명시 user gesture 이후에만 unlock하며, opt-in 후 one-shot cue와 looping ambience API를 제공한다.
+- 첫 slice에서는 generated oscillator backend와 no-op fallback만 사용하고 binary audio asset은 넣지 않았다.
+- `web/src/main.ts`는 renderer-local cue scheduling만 수행하며 Rust GameCore / `ScenePage` / WASM JSON boundary는 변경하지 않았다.
 
 핵심 검증 명령:
 
@@ -636,11 +637,12 @@ node --check scripts/storybook-reference-qa.mjs
 
 완료 기준:
 
-- canonical main plan, checklist, Web player plan이 새 active slice를 가리킨다.
+- canonical main plan, checklist, Web player plan이 PR C 완료 상태와 다음 분리 slice 방침을 가리킨다.
 - player settings는 game save와 분리되어 저장/복구되고 손상 시 기본값으로 fallback한다.
 - start screen에서 audio/motion preference를 볼 수 있고 toggle 후 localStorage에 반영된다.
 - transition plan type은 action/page/danger/reduced-motion 기준으로 deterministic하게 결정된다.
 - audio는 기본 muted/off이고 사용자의 명시 gesture 없이 자동 재생을 시도하지 않는다.
+- Web Audio skeleton은 binary asset 없이 generated oscillator/no-op backend만 사용하며 opt-in 후 one-shot cue와 looping ambience API를 제공한다.
 - Renderer contract boundary가 유지된다.
 
 ## 0.8 2026-05-29 idea_box 전투 시스템 설계 문서화
@@ -1203,15 +1205,15 @@ src/tui_adv/data/secrets.example.yaml
 20. Web Storybook transition/audio readiness PR A 완료: `escape-office.player-settings.v1` localStorage settings, start screen audio/motion toggles, transition plan type, reduced-motion duration 0 policy, audio muted/off opt-in default를 구현했다.
 21. 전투 시스템 아이디어 문서화 완료: `idea_box/combat_system.md`를 `docs/design/Combat_System_Auto_Brawl.md`로 승격했고, 자동 난투 + 상황 개입을 Rust GameCore/`ScenePage` 호환 future backlog로 정리했다.
 22. PR B transition controller 완료: action 실행 전 current page/action context를 캡처하고, action 후 `transitionPlan(previousPage, nextPage, action)`으로 `.storybook-shell` enter/exit class/attribute transition을 적용한다. reduced/off motion은 즉시 render하고, `transitionend` 미발생 시 timeout fallback으로 게임이 멈추지 않게 했다.
+23. PR C audio engine skeleton 완료: `web/src/ui/audio/audioEngine.ts`가 lazy Web Audio generated oscillator backend와 no-op fallback을 제공하고, muted 상태 no schedule, user-gesture opt-in unlock, one-shot cue, looping ambience API를 renderer-local로 고정했다. Rust GameCore / `ScenePage` / WASM JSON boundary와 binary audio asset은 변경하지 않았다.
 
 현재 최우선 남은 작업:
 
-1. Web Storybook transition/audio readiness — PR C — audio engine skeleton을 진행한다.
-   - 이번 slice의 목표는 Web Audio API lazy/no-op engine을 만들고, renderer-local cue scheduling boundary를 고정하는 것이다.
-   - 유지 범위: Rust GameCore / `ScenePage` / WASM JSON boundary는 변경하지 않는다.
-   - 구현 범위: muted 상태에서는 cue를 schedule하지 않는다. opt-in 후 one-shot cue와 looping ambience API를 제공한다. 첫 slice에서는 generated oscillator/noise 또는 no-op registry만 사용한다.
-   - 금지 범위: gameplay rule 변경, ScenePage schema 변경, save JSON export/import, PWA/service worker/backend 추가, golden screenshot baseline commit, 저작권 불명 binary asset commit.
-   - 실제 음악/SFX asset과 soundtrack 제작은 audio engine skeleton contract가 녹색이 된 뒤 별도 slice로 연다.
+1. PR C audio engine skeleton을 리뷰/머지하고 `origin/main` 동기화 후 다음 slice를 별도로 승격한다.
+   - PR C 이후 실제 음악/SFX asset 또는 soundtrack 제작은 바로 열지 않는다. 저작권/라이선스가 확인된 asset 정책 또는 generated-only cue registry 계획이 먼저 필요하다.
+   - 후보 A: Web Storybook audio cue mapping을 generated-only registry로 조금 확장하되 binary asset은 계속 금지한다.
+   - 후보 B: `docs/design/Combat_System_Auto_Brawl.md` 기준으로 기존 encounter schema만 쓰는 schema-less combat encounter prototype을 검토한다.
+   - 어느 후보를 택하든 Rust GameCore / `ScenePage` / WASM JSON boundary 책임 분리와 공개-safe 원칙을 유지한다.
 
 전환 중 유지:
 
@@ -1277,12 +1279,9 @@ Web 또는 terminal renderer가 게임 규칙을 다시 구현하면 Rust GameCo
 
 ## 10. 다음 액션
 
-1. PR C의 RED 테스트를 먼저 추가한다.
-   - audio engine skeleton: Web Audio API lazy/no-op engine, muted default no schedule, opt-in one-shot cue API, looping ambience API.
-   - start screen/settings와 gameplay action id가 충돌하지 않는지 기존 tests를 유지한다.
-2. GREEN 구현은 Web renderer-local 파일만 건드린다.
-   - `web/src/ui/audio/audioEngine.ts`
-   - `web/src/ui/settings/playerSettings.ts`
-   - `web/src/main.ts`
-3. PR C에서는 저작권 불명 binary asset과 완성된 soundtrack을 열지 않는다.
-4. 검증은 `source ~/.config/tui_adv/tmp-installs.sh` 후 targeted Vitest/pytest, `node --check`, `git diff --check` 순서로 진행한다.
+1. PR C audio engine skeleton 변경을 검증하고 PR로 리뷰/머지한다.
+   - targeted Vitest/pytest, 전체 `npm test`, `npm run build`, `node --check`, Python docs/contract tests, `git diff --check`를 통과시킨다.
+2. PR C 머지 후 다음 구현 slice를 별도로 결정한다.
+   - 실제 음악/SFX asset과 soundtrack은 저작권/라이선스 정책이 정리되기 전까지 열지 않는다.
+   - audio 후속을 택하면 generated-only cue registry expansion으로 시작하고 binary asset은 계속 금지한다.
+   - gameplay 후속을 택하면 `docs/design/Combat_System_Auto_Brawl.md` 기준 schema-less combat encounter prototype부터 검토한다.

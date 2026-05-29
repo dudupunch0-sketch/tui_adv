@@ -866,7 +866,7 @@ Status: first slice implemented. Export/import/settings follow-up remains deferr
 
 ### PR 3 — Production visual polish
 
-Status: Transition/audio readiness first slice promoted as the active main plan. PR A settings/motion foundation implemented: settings/reduce-motion UI, renderer-local transition planning, and muted/opt-in audio policy are in place before larger visual/audio polish. PR B transition controller implemented: action page context capture, shell enter/exit class/attribute transitions, reduced/off immediate render, and timeout fallback are in place. Next implementation slice is PR C audio engine skeleton.
+Status: Transition/audio readiness first slice promoted as the active main plan. PR A settings/motion foundation implemented: settings/reduce-motion UI, renderer-local transition planning, and muted/opt-in audio policy are in place before larger visual/audio polish. PR B transition controller implemented: action page context capture, shell enter/exit class/attribute transitions, reduced/off immediate render, and timeout fallback are in place. PR C audio engine skeleton implemented: lazy Web Audio generated oscillator backend, muted no-op scheduling, user-gesture opt-in unlock, one-shot cue API, looping ambience API, and binary-asset-free policy are in place. Actual music/SFX assets or soundtrack work remains a separate future slice.
 
 목표: Web Storybook을 “대시보드”가 아니라 “게임 화면”으로 더 고정한다.
 
@@ -884,6 +884,9 @@ Status: Transition/audio readiness first slice promoted as the active main plan.
   - transition plan type + reduced-motion no-op policy
   - transition controller shell enter/exit attributes + timeout fallback
   - audio muted/off default와 opt-in skeleton
+  - Web Audio lazy/no-op generated oscillator backend
+  - one-shot cue API + looping ambience API
+  - binary audio asset 없는 첫 slice policy
 
 비목표:
 

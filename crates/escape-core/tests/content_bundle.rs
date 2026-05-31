@@ -195,11 +195,13 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.storypack_id, "wuxia_jianghu_pack");
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&3));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&2));
+    assert_eq!(bundle.manifest.counts.get("items"), Some(&2));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&3));
+    assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 3);
-    assert_eq!(index.encounters_len(), 2);
+    assert_eq!(index.encounters_len(), 3);
 
     let market = index
         .location("jianghu_market_street")
@@ -238,6 +240,44 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(
         fallback.outcome.add_clues,
         vec!["violence_is_real", "open_street_escape_route"]
+    );
+
+    let fragment = index
+        .encounter("wuxia_cheonggi_record_first_fragment")
+        .expect("first cheonggi fragment encounter");
+    assert_eq!(fragment.title, "천기록 첫 편린");
+    assert_eq!(fragment.conditions.locations, vec!["jianghu_market_street"]);
+    assert_eq!(
+        fragment.conditions.required_flags,
+        vec!["heuksa_bang_first_fight_resolved"]
+    );
+    assert_eq!(
+        fragment.conditions.forbidden_flags,
+        vec!["cheonggi_record_first_fragment_resolved"]
+    );
+    assert_eq!(
+        fragment
+            .presentation
+            .as_ref()
+            .expect("first fragment presentation")
+            .layout
+            .as_deref(),
+        Some("cheonggi_record")
+    );
+    assert_eq!(fragment.choices.len(), 4);
+    let fallback_fragment = fragment
+        .choices
+        .iter()
+        .find(|choice| choice.id == "close_notebook_without_choice")
+        .expect("fallback notebook choice");
+    assert_eq!(
+        fallback_fragment.outcome.add_flags,
+        vec![
+            "cheonggi_record_awakened",
+            "first_fragment_seen",
+            "cheonggi_record_first_fragment_resolved",
+            "cheonggi_record_caution"
+        ]
     );
 }
 

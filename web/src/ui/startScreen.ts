@@ -27,10 +27,17 @@ export interface PlayerSaveSummaryResult {
   warning: string | null;
 }
 
+export interface StorypackPreviewStartOption {
+  id: string;
+  label: string;
+  description: string;
+}
+
 export interface StartScreenModel extends PlayerSaveSummaryResult {
   defaultSeed: number;
   confirmReset: boolean;
   settings?: PlayerSettings;
+  storypackPreviews?: StorypackPreviewStartOption[];
 }
 
 interface RawStatePreview {
@@ -48,6 +55,7 @@ export function renderStartScreen(model: StartScreenModel): string {
     ? `<p class="start-save-warning" role="status">${escapeHtml(model.warning)}</p>`
     : '';
   const confirmation = model.confirmReset ? renderResetConfirmation() : '';
+  const previewPanel = renderStorypackPreviewPanel(model.storypackPreviews ?? []);
 
   return `
 <main class="storybook-shell storybook-start" data-app="escape-office" data-renderer="web-storybook" data-player-screen="start">
@@ -70,9 +78,31 @@ export function renderStartScreen(model: StartScreenModel): string {
       <button type="button" data-player-action="new-game">새 게임</button>
       <button type="button" data-player-action="reset-save"${continueDisabled}>저장 초기화</button>
     </div>
+    ${previewPanel}
     ${confirmation}
   </section>
 </main>`.trim();
+}
+
+function renderStorypackPreviewPanel(options: StorypackPreviewStartOption[]): string {
+  if (!options.length) return '';
+  const rows = options
+    .map(
+      (option) => `<li>
+        <div>
+          <strong>${escapeHtml(option.label)}</strong>
+          <p>${escapeHtml(option.description)}</p>
+        </div>
+        <button type="button" data-player-action="start-storypack-preview:${escapeHtml(option.id)}">Preview 시작</button>
+      </li>`,
+    )
+    .join('');
+
+  return `<section class="start-preview-panel" data-storypack-preview-list="true" aria-label="Storypack preview">
+    <h2>Storypack preview</h2>
+    <p class="start-preview-copy">기본 office run과 저장 키를 바꾸지 않는 명시적 preview입니다.</p>
+    <ul>${rows}</ul>
+  </section>`;
 }
 
 function renderSettingsPanel(settings: PlayerSettings): string {

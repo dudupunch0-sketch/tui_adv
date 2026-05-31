@@ -93,3 +93,60 @@ encounters:
           add_flags: [first_brawl_started, heuksa_bang_first_fight_resolved, dirty_holdout_flag, heuksa_bang_attention]
           add_clues: [violence_is_real, crowd_now_watches_you]
           log: 잠깐 버티기는 했지만 무쌍은 아니었다. 손은 떨리고 셔츠는 찢어졌으며 더 큰 시선이 붙었다.
+
+  - id: wuxia_cheonggi_record_first_fragment
+    title: 천기록 첫 편린
+    body: 난투가 지나간 시장 담벼락 아래, 업무수첩의 빈 장이 저절로 펼쳐진다. 먹물 같은 선이 번지더니 세 문장만 남는다. ‘호신 자세의 기본’, ‘발을 멈추지 않는 법’, ‘실패 기록’. 검색창도 보상창도 아니다. 지금은 하나의 방향만 붙들 수 있고, 나머지는 흐려진다.
+    presentation:
+      visual_id: wuxia_cheonggi_record_first_fragment
+      speaker: 천기록
+      layout: cheonggi_record
+      effect_cues:
+        - kind: glyph_anomaly
+          source: notebook_oracle
+          intensity: 0.71
+          stable_terms: [업무수첩, 천기록, 실패 기록]
+          distortion: ink_threads_then_three_phrases
+          duration_hint_ms: 1500
+          fallback_text: 업무수첩의 빈 줄 위에 '업무수첩', '천기록', '실패 기록'만 먹물처럼 또렷하게 남는다.
+    conditions:
+      locations: [jianghu_market_street]
+      required_flags: [heuksa_bang_first_fight_resolved]
+      forbidden_flags: [cheonggi_record_first_fragment_resolved]
+    choices:
+      - id: choose_guard_basics
+        label: "'호신 자세의 기본' 문장을 붙든다"
+        outcome:
+          resources:
+            sanity: -2
+          add_items: [cheonggi_record_notebook]
+          add_flags: [cheonggi_record_awakened, first_fragment_seen, cheonggi_record_first_fragment_resolved, cheonggi_fragment_guard_basics_thread]
+          add_clues: [notebook_is_not_search, fragments_are_training_directions]
+          log: 천기록은 방패를 주지 않았다. 대신 맞기 전에 팔과 턱을 어디에 둬야 하는지 복기할 숙제를 남겼다.
+      - id: choose_keep_feet_moving
+        label: "'발을 멈추지 않는 법'을 남긴다"
+        outcome:
+          resources:
+            sanity: -2
+          add_items: [cheonggi_record_notebook]
+          add_flags: [cheonggi_record_awakened, first_fragment_seen, cheonggi_record_first_fragment_resolved, cheonggi_fragment_footwork_thread]
+          add_clues: [fragments_are_training_directions, motion_matters_more_than_pose]
+          log: 천기록은 무공 구결이 아니라 도망치며 넘어지지 않는 법을 남겼다. 자세보다 먼저 발이 멈추지 않아야 한다.
+      - id: choose_failure_log
+        label: "'실패 기록'을 받아들인다"
+        outcome:
+          resources:
+            sanity: -3
+          add_items: [cheonggi_record_notebook]
+          add_flags: [cheonggi_record_awakened, first_fragment_seen, cheonggi_record_first_fragment_resolved, cheonggi_fragment_failure_log_thread]
+          add_clues: [notebook_is_not_search, failures_can_be_training_material]
+          log: 수첩은 승리담을 요구하지 않았다. 어디서 맞았고 왜 늦었는지 적는 순간, 실패가 다음 수련의 첫 줄이 되었다.
+      - id: close_notebook_without_choice
+        label: 수첩을 덮고 호흡부터 고른다
+        outcome:
+          resources:
+            sanity: -1
+          add_items: [cheonggi_record_notebook]
+          add_flags: [cheonggi_record_awakened, first_fragment_seen, cheonggi_record_first_fragment_resolved, cheonggi_record_caution]
+          add_clues: [notebook_is_not_search]
+          log: 글자는 아직 사라지지 않았다. 답을 고르기 전에, 이것이 검색창도 즉시 성장도 아니라는 사실부터 받아들였다.

@@ -68,7 +68,7 @@ docs/
     storypack_db/                   # storypack/card 후보의 machine-readable JSON DB
 
   runtime preview sources/
-    src/tui_adv/storypack-previews/wuxia_jianghu_pack/ # wuxia_commute_rift_arrival preview source YAML
+    src/tui_adv/storypack-previews/wuxia_jianghu_pack/ # wuxia_commute_rift_arrival + wuxia_heuksa_bang_first_fight + wuxia_cheonggi_record_first_fragment preview source YAML
     crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json # Rust/GameCore preview fixture
     web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json # Web/WASM preview bundle
 
@@ -180,6 +180,6 @@ private/
 다음 주제가 커지면 별도 문서로 분리하고, 그때 이 인덱스와 implementation-map도 같이 갱신한다.
 
 1. `document_contamination_pack`, `meeting_reservation_pack`, `compensation_strike_pack`의 별도 후보 문서
-2. `wuxia_jianghu_pack` / 이구학지 — 천기록의 후속 preview slice: `wuxia_heuksa_bang_first_fight` 구현 완료 후 `preview launcher/UI wiring` opt-in UX 필요 여부 결정
+2. `wuxia_jianghu_pack` / 이구학지 — 천기록의 후속 preview slice: `wuxia_seo_harin_rescue` 또는 `wuxia_cheongryu_apprentice_entry` bridge 후보 결정
 3. `yageunmong_pack` / 야근몽의 첫 runtime preview 후보: `yageunmong_late_night_desk_awake` 또는 각성편린 3택 preview
 4. 실시간 UI/UX 점검 후 확정된 화면/입력 변경 사항 기록

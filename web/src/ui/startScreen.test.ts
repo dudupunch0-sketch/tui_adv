@@ -67,6 +67,29 @@ describe('player start/save UX', () => {
     expect(html).not.toContain('autoplay');
   });
 
+  it('renders explicit storypack preview launchers without changing office save keys', () => {
+    const html = renderStartScreen({
+      defaultSeed: 123,
+      summary: null,
+      warning: null,
+      confirmReset: false,
+      storypackPreviews: [
+        {
+          id: 'wuxia_jianghu_pack',
+          label: '이구학지 — 천기록',
+          description: '출근복 그대로 강호에 떨어지는 무협 storypack preview',
+        },
+      ],
+    });
+
+    expect(html).toContain('data-storypack-preview-list="true"');
+    expect(html).toContain('data-player-action="start-storypack-preview:wuxia_jianghu_pack"');
+    expect(html).toContain('이구학지 — 천기록');
+    expect(html).toContain('storypack preview');
+    expect(html).toContain('data-save-key="escape-office.rust.save.v1"');
+    expect(html).not.toContain('escape-office.storypack-preview');
+  });
+
   it('renders continue metadata and reset confirmation for an existing save', () => {
     const html = renderStartScreen({ defaultSeed: 123, summary, warning: null, confirmReset: true });
 

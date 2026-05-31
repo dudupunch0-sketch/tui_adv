@@ -118,17 +118,18 @@ python scripts/export_web_data.py \
 
 cargo run -p escape-terminal -- \
   --scene content \
-  --content-bundle crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json \
+  --storypack-preview wuxia_jianghu_pack \
   --seed 123 \
   --tui-smoke
 
 cargo run -p escape-terminal -- \
   --scene content \
-  --content-bundle crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json \
+  --storypack-preview wuxia_jianghu_pack \
   --seed 123 \
   --tui-smoke \
   --action choice:follow_roadside_dust \
-  --action move:jianghu_market_street
+  --action move:jianghu_market_street \
+  --action choice:run_toward_open_street
 ```
 
 Rust/WASM-primary Web preview/build는 generated wasm package를 먼저 만든다.
@@ -144,7 +145,7 @@ npm run preview:player
 
 `npm run wasm:build`는 `wasm-pack build ../crates/escape-wasm --target web --out-dir ../../web/src/core/wasm-pkg`를 실행한다. 생성되는 `web/src/core/wasm-pkg/`는 로컬 build artifact라서 Git에 커밋하지 않는다. `npm run build:wasm`은 Vite build 뒤 `npm run wasm:copy`를 실행해 이 generated package를 `web/dist/assets/wasm-pkg/`로 복사하므로 player artifact의 dynamic WASM import 경로가 함께 배포된다.
 
-현재 브라우저 앱은 Web player start screen을 먼저 표시한 뒤 Web Storybook + GlyphFX renderer를 기본 플레이 화면으로 사용한다. 시작 화면은 localStorage 기반 이어하기/새 게임/seed 표시/save timestamp/reset confirmation을 제공한다. `web/src/core/wasmRuntime.ts`가 generated content bundle(`web/src/data/generated/content.bundle.json`)을 `escape-wasm` JSON-string boundary에 전달해 Rust GameCore의 `ScenePage`/`ActionResult`를 소비한다. Rust/WASM-primary preview는 `npm run build:wasm` 또는 `npm run preview:wasm` 경로로 확인한다. generated wasm package가 없거나 `wasm-pack`/Rust toolchain이 없는 개발 환경에서는 legacy TypeScript mirror가 fallback/parity oracle로 동작한다. legacy TypeScript mirror와 Python/Textual은 freeze 상태이며, 새 게임 규칙은 Rust GameCore에만 추가한다. 공개 secret JSON과 content bundle에는 실제 사무실 최종 위치나 `final_hint`를 넣지 않는다.
+현재 브라우저 앱은 Web player start screen을 먼저 표시한 뒤 Web Storybook + GlyphFX renderer를 기본 플레이 화면으로 사용한다. 시작 화면은 localStorage 기반 이어하기/새 게임/seed 표시/save timestamp/reset confirmation과 별도 `wuxia_jianghu_pack` storypack preview launcher를 제공한다. 기본 office run은 `escape-office.rust.save.v1` 계열 key를 유지하고, storypack preview run은 그 key를 쓰지 않는다. `web/src/core/wasmRuntime.ts`가 generated content bundle(`web/src/data/generated/content.bundle.json`)을 `escape-wasm` JSON-string boundary에 전달해 Rust GameCore의 `ScenePage`/`ActionResult`를 소비한다. `web/src/core/contentBundles.ts`는 기본 office bundle과 Web generated storypack preview bundle을 분리한다. Rust/WASM-primary preview는 `npm run build:wasm` 또는 `npm run preview:wasm` 경로로 확인한다. generated wasm package가 없거나 `wasm-pack`/Rust toolchain이 없는 개발 환경에서는 legacy TypeScript mirror가 fallback/parity oracle로 동작한다. legacy TypeScript mirror와 Python/Textual은 freeze 상태이며, 새 게임 규칙은 Rust GameCore에만 추가한다. 공개 secret JSON과 content bundle에는 실제 사무실 최종 위치나 `final_hint`를 넣지 않는다.
 
 배포 표면은 현재 Web-only로 결정했다. `npm run build:player`는 Rust/WASM-primary Web 정적 산출물(`web/dist/`)을 만들고, `npm run preview:player`는 같은 경로를 로컬 preview한다. Tauri/Electron은 desktop wrapper의 고유 가치가 생길 때까지 deferred 상태이며, 결정 기록은 `docs/dev/Web_Distribution_Decision.md`에 둔다.
 
@@ -187,9 +188,10 @@ npm run preview:player
 - `docs/dev/Development_Plan.md`: canonical main plan. 현재 방향, 다음 작업, 우선순위의 source of truth
 - `docs/dev/Checklist.md`: 단계별 완료 여부 추적용 체크리스트
 - `docs/dev/Storypack_Runtime_Preview_Mode.md`: 무협 runtime prototype을 기본 office bundle과 섞지 않는 preview mode 결정
-- `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`: `wuxia_commute_rift_arrival`와 `wuxia_heuksa_bang_first_fight` preview source YAML
+- `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`: `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment` preview source YAML
 - `crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json`: Rust/GameCore용 무협 preview fixture bundle
 - `web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json`: Web/WASM용 무협 preview generated bundle
+- `web/src/core/contentBundles.ts`: Web default office bundle과 storypack preview bundle registry
 - `docs/content/Location_List.md`: 1차 위치 목록
 - `docs/content/Item_List.md`: 1차 아이템 목록
 - `docs/content/Encounter_List.md`: 1차 인카운터 목록

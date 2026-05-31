@@ -149,12 +149,42 @@ button {
   color: var(--stamp-red);
 }
 
-.start-save-panel {
+.start-save-panel,
+.start-preview-panel {
   display: grid;
   gap: 10px;
   padding: 14px;
   border: 1px dashed rgba(63, 52, 35, 0.35);
   background: rgba(255, 247, 205, 0.16);
+}
+
+.start-preview-panel {
+  border-style: solid;
+  border-color: rgba(85, 60, 132, 0.34);
+  background: rgba(85, 60, 132, 0.08);
+}
+
+.start-preview-panel ul {
+  display: grid;
+  gap: 10px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.start-preview-panel li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.start-preview-panel p,
+.start-preview-copy {
+  margin: 0;
+  color: var(--muted-ink);
+  font-size: 0.9rem;
+  line-height: 1.55;
 }
 
 .start-settings-panel {
@@ -223,6 +253,7 @@ button {
 
 .start-actions button,
 .start-settings-actions button,
+.start-preview-panel button,
 .start-reset-confirmation button {
   min-height: 44px;
   padding: 10px 14px;
@@ -233,6 +264,7 @@ button {
 
 .start-actions button:hover,
 .start-settings-actions button:hover,
+.start-preview-panel button:hover,
 .start-reset-confirmation button:hover {
   background: rgba(46, 42, 35, 0.18);
 }

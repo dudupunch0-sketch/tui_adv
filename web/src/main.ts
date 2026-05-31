@@ -2,6 +2,12 @@ import '@fontsource/noto-serif-kr/korean-400.css';
 import '@fontsource/noto-serif-kr/korean-700.css';
 import './styles/storybook.css';
 
+import {
+  STORYPACK_PREVIEW_OPTIONS,
+  storypackPreviewById,
+  storypackPreviewLoadingPage,
+  type StorypackPreviewOption,
+} from './core/contentBundles';
 import { scenePageFromLegacyTurn } from './core/scenePageFromTurn';
 import type { ScenePage } from './core/types';
 import { createEscapeWasmRuntime, type EscapeWasmRuntime } from './core/wasmRuntime';
@@ -33,6 +39,7 @@ import { renderStorybookPage } from './ui/storybook/render';
 
 const DEFAULT_SEED = 123;
 const REQUIRE_WASM = import.meta.env.VITE_REQUIRE_WASM === 'true';
+const STORYPACK_PREVIEW_ACTION_PREFIX = 'start-storypack-preview:';
 
 type PlayerScreen = 'start' | 'game';
 
@@ -48,6 +55,7 @@ let actionSource: ActionListSource = { actions: [] };
 let lastError: string | null = null;
 let fatalPlayerError = false;
 let activeSeed = DEFAULT_SEED;
+let activeStorypackPreview: StorypackPreviewOption | null = null;
 let confirmReset = false;
 let playerSettings: PlayerSettings = loadPlayerSettings(window.localStorage);
 const transitionController = createStorybookTransitionController(appRoot);
@@ -58,6 +66,7 @@ render();
 async function bootstrapWasmRuntime(initialStateJson?: string): Promise<void> {
   try {
     wasmRuntime = await createEscapeWasmRuntime({
+      contentBundleJson: activeStorypackPreview?.contentBundleJson,
       initialStateJson,
       seed: activeSeed,
     });
@@ -70,6 +79,11 @@ async function bootstrapWasmRuntime(initialStateJson?: string): Promise<void> {
     if (playerScreen !== 'game') return;
     if (REQUIRE_WASM) {
       lastError = `게임 코어를 불러오지 못했습니다. 새로고침 후에도 계속되면 배포된 WASM 파일 경로를 확인해주세요: ${errorMessage(error)}`;
+      renderFatalPlayerError(lastError, error);
+      return;
+    }
+    if (activeStorypackPreview) {
+      lastError = `게임 코어를 불러오지 못했습니다. storypack preview는 Rust/WASM GameCore를 필요로 합니다: ${errorMessage(error)}`;
       renderFatalPlayerError(lastError, error);
       return;
     }
@@ -119,6 +133,7 @@ function renderStart(): void {
     warning: saveSummary.warning,
     confirmReset,
     settings: playerSettings,
+    storypackPreviews: STORYPACK_PREVIEW_OPTIONS,
   });
   appRoot.querySelectorAll<HTMLButtonElement>('[data-player-action]').forEach((button) => {
     button.addEventListener('click', () => {
@@ -163,6 +178,11 @@ async function runPlayerAction(action: string): Promise<void> {
   if (action === 'cycle-motion') {
     playerSettings = updatePlayerSettings(window.localStorage, { motion: nextMotionPreference(playerSettings) });
     render();
+    return;
+  }
+  if (action.startsWith(STORYPACK_PREVIEW_ACTION_PREFIX)) {
+    await unlockAudioFromGesture();
+    startStorypackPreview(action.slice(STORYPACK_PREVIEW_ACTION_PREFIX.length));
   }
 }
 
@@ -180,7 +200,13 @@ function startGameFromSave(): void {
   const saveSummary = readPlayerSaveSummary(window.localStorage);
   const initialStateJson = window.localStorage.getItem(RUST_SAVE_KEY) ?? undefined;
   activeSeed = saveSummary.summary?.seed ?? seedFromStartInput();
-  startGame({ seed: activeSeed, initialStateJson, clearExistingSave: false, continueExistingSave: true });
+  startGame({
+    seed: activeSeed,
+    initialStateJson,
+    clearExistingSave: false,
+    continueExistingSave: true,
+    storypackPreview: null,
+  });
 }
 
 function requestNewGame(): void {
@@ -194,7 +220,29 @@ function requestNewGame(): void {
 
 function startNewGame(options: { clearExistingSave: boolean }): void {
   const seed = seedFromStartInput();
-  startGame({ seed, initialStateJson: undefined, clearExistingSave: options.clearExistingSave, continueExistingSave: false });
+  startGame({
+    seed,
+    initialStateJson: undefined,
+    clearExistingSave: options.clearExistingSave,
+    continueExistingSave: false,
+    storypackPreview: null,
+  });
+}
+
+function startStorypackPreview(previewId: string): void {
+  const preview = storypackPreviewById(previewId);
+  if (!preview) {
+    lastError = `알 수 없는 storypack preview입니다: ${previewId}`;
+    render();
+    return;
+  }
+  startGame({
+    seed: seedFromStartInput(),
+    initialStateJson: undefined,
+    clearExistingSave: false,
+    continueExistingSave: false,
+    storypackPreview: preview,
+  });
 }
 
 function startGame(options: {
@@ -202,6 +250,7 @@ function startGame(options: {
   initialStateJson?: string;
   clearExistingSave: boolean;
   continueExistingSave: boolean;
+  storypackPreview: StorypackPreviewOption | null;
 }): void {
   if (options.clearExistingSave) clearPlayerSaves(window.localStorage);
   playerScreen = 'game';
@@ -209,9 +258,10 @@ function startGame(options: {
   fatalPlayerError = false;
   wasmRuntime = null;
   activeSeed = options.seed;
+  activeStorypackPreview = options.storypackPreview;
   state = legacyInitialState(options.seed, options.continueExistingSave);
   turn = buildTurn(state);
-  if (!options.continueExistingSave || options.initialStateJson === undefined) {
+  if (!activeStorypackPreview && (!options.continueExistingSave || options.initialStateJson === undefined)) {
     saveLegacyState();
   }
   void bootstrapWasmRuntime(options.initialStateJson);
@@ -268,6 +318,9 @@ function renderFatalPlayerError(message: string, error: unknown): void {
 function currentScenePage(): ScenePage {
   if (wasmRuntime) {
     return wasmRuntime.scenePage();
+  }
+  if (activeStorypackPreview) {
+    return storypackPreviewLoadingPage(activeStorypackPreview);
   }
   turn = buildTurn(state);
   return scenePageFromLegacyTurn(turn);
@@ -335,11 +388,13 @@ function currentMotionMode(): ReturnType<typeof resolveMotionMode> {
 
 function saveWasmState(): void {
   if (!wasmRuntime) return;
+  if (activeStorypackPreview) return;
   window.localStorage.setItem(RUST_SAVE_KEY, wasmRuntime.stateJson);
   writeRunSummary(window.localStorage, wasmRuntime.stateJson);
 }
 
 function saveLegacyState(): void {
+  if (activeStorypackPreview) return;
   saveState(window.localStorage, state);
   writeRunSummary(
     window.localStorage,

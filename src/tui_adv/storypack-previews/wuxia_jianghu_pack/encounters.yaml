@@ -30,3 +30,66 @@ encounters:
           destination_id: jianghu_roadside
           add_flags: [wuxia_arrival_hidden]
           log: 출근복 자락을 여미고 흙먼지의 흐름을 따라 관도 가장자리로 물러섰다.
+
+  - id: wuxia_heuksa_bang_first_fight
+    title: 흑사방 첫 난투
+    body: 시장 입구에서 흑사방 말단들이 길을 막는다. “길을 막았으면 통행세를 내야지.” 목에 건 사원증을 값나가는 패처럼 바라보는 시선이 따라붙고, 몽둥이가 팔을 스치는 순간 이 세계의 폭력이 진짜라는 감각이 온몸에 박힌다.
+    presentation:
+      visual_id: wuxia_heuksa_bang_first_fight
+      speaker: 흑사방 말단
+      layout: combat_intervention
+      effect_cues:
+        - kind: glyph_anomaly
+          source: market_brawl
+          intensity: 0.66
+          stable_terms: [거리, 구두, 사원증]
+          distortion: dust_then_impact
+          duration_hint_ms: 1200
+          fallback_text: 흙먼지와 몽둥이 그림자 사이로 '거리', '구두', '사원증'만 또렷하게 남는다.
+    conditions:
+      locations: [jianghu_market_street]
+      required_flags: [wuxia_arrival_hidden]
+      forbidden_flags: [heuksa_bang_first_fight_resolved]
+    choices:
+      - id: run_toward_open_street
+        label: 큰길 쪽으로 비틀거리며 물러난다
+        outcome:
+          resources:
+            health: -3
+          add_flags: [first_brawl_started, heuksa_bang_first_fight_resolved, first_brawl_survived]
+          add_clues: [violence_is_real, open_street_escape_route]
+          log: 도망은 영웅적이지 않았지만 큰 부상을 피했다. 흑사방이 길목을 어떻게 막는지도 보였다.
+      - id: deescalate_with_words
+        label: 말로 시간을 벌며 사원증을 감춘다
+        outcome:
+          resources:
+            sanity: -2
+          danger: 1
+          add_flags: [first_brawl_started, heuksa_bang_first_fight_resolved, seo_harin_rescue_interest]
+          add_clues: [badge_misread_as_sect_token, heuksa_bang_uses_toll_excuse]
+          log: 말은 통했지만 세계관이 달랐다. 설득은 완전한 성공이 아니라 누군가 끼어들 시간을 버는 정도였다.
+      - id: swing_commute_bag
+        label: 출근 가방을 방패처럼 휘두른다
+        outcome:
+          resources:
+            health: -6
+          add_flags: [first_brawl_started, heuksa_bang_first_fight_resolved, commute_bag_damaged, brief_opening_created]
+          add_clues: [office_items_can_block_once]
+          log: 가방은 무기가 아니라 한 번의 완충재였다. 틈은 만들었지만 손잡이가 찢어지고 팔에는 통증이 남았다.
+      - id: loosen_tie_and_drop_shoes
+        label: 넥타이를 풀고 구두를 벗어 움직임을 회복한다
+        outcome:
+          resources:
+            sanity: -1
+          add_flags: [first_brawl_started, heuksa_bang_first_fight_resolved, mobility_recovered]
+          add_clues: [shoes_and_suit_are_liability]
+          log: 체면은 무너졌지만 발이 땅을 잡았다. 무공이 아니라 몸을 살리는 준비가 먼저였다.
+      - id: crash_in_with_body
+        label: 어깨로 들이받고 넘어지듯 버틴다
+        outcome:
+          resources:
+            health: -10
+          danger: 1
+          add_flags: [first_brawl_started, heuksa_bang_first_fight_resolved, dirty_holdout_flag, heuksa_bang_attention]
+          add_clues: [violence_is_real, crowd_now_watches_you]
+          log: 잠깐 버티기는 했지만 무쌍은 아니었다. 손은 떨리고 셔츠는 찢어졌으며 더 큰 시선이 붙었다.

@@ -54,6 +54,63 @@
     "runtime_promotion_notes": "runtime 승격 전 once-only/gating을 정하고 기존 office encounters와 hub 이동 충돌을 점검한다."
   },
   {
+    "id": "yageunmong_pack",
+    "world_id": "office_dream",
+    "status": "candidate",
+    "source_refs": [
+      "idea_box/done/2026-05-29-notion-office-yageunmong.md",
+      "idea_box/done/2026-05-29-notion-storypack-system.md",
+      "notion:36f37e69-695e-8113-9dd5-ddc56a633226"
+    ],
+    "name": "야근몽",
+    "one_line": "회사에서 잠깐 엎드려 잠든 주인공이 자각몽 상태의 회사 악몽에 갇히고, 업무 완료가 아니라 꿈에서 깨어나는 것을 목표로 한다.",
+    "main_surfaces": [
+      "messenger",
+      "approval_system",
+      "meeting_minutes",
+      "reservation_panel",
+      "organization_chart",
+      "document_viewer",
+      "office_object",
+      "security_gate"
+    ],
+    "anomaly_types": [
+      "space_loop",
+      "delayed_time",
+      "future_record",
+      "document_contamination",
+      "permission_denied_as_existence",
+      "identity_erasure"
+    ],
+    "main_phases": [
+      "late_night_sleep",
+      "lucid_dream_awareness",
+      "nightmare_office_loop",
+      "reality_anchor_collection",
+      "clockout_gate_refusal",
+      "wake_resolution"
+    ],
+    "sensitive_topics": [
+      "workplace_burnout",
+      "real_company_similarity",
+      "mental_health_recovery"
+    ],
+    "reusable_npc_slots": [
+      "pm_worldline_mediator",
+      "hr_identity_keeper",
+      "facility_pathfinder",
+      "newcomer_mirror"
+    ],
+    "ending_candidates": [
+      "wake_up",
+      "endless_overtime_loop",
+      "rescue_coworkers",
+      "clockout_declaration"
+    ],
+    "main_spine_support": "같은 office surface를 사용하되 목표를 업무 처리에서 자각몽 탈출로 바꾸어, 공용 시스템의 소속/권한/관계/성장/엔딩 축이 회사 악몽 storypack에서도 성립하는지 검증한다.",
+    "runtime_promotion_notes": "기본 office isolation runtime을 대체하지 않는다. 첫 구현은 별도 storypack preview 또는 명시적 flag 경로에서 기존 encounter schema만 쓰는 docs-first 후보로 둔다."
+  },
+  {
     "id": "wuxia_jianghu_pack",
     "world_id": "wuxia_jianghu",
     "status": "candidate",
@@ -118,6 +175,6 @@
       "murim_outsider"
     ],
     "main_spine_support": "office에서 출발한 현대인이 완전히 다른 world에 떨어져도 소속, 평판, 관계, 성장, 전투, 자원, 선택, 엔딩을 같은 engine loop로 설명할 수 있는지 검증한다.",
-    "runtime_promotion_notes": "첫 구현은 기존 encounter schema만 사용한 schema-less wuxia prototype으로 시작하되, runtime에 넣기 전에는 office content와 섞이지 않도록 world/storypack gating 또는 별도 preview mode를 결정한다."
+    "runtime_promotion_notes": "`wuxia_commute_rift_arrival` 첫 preview는 완료했다. 다음 구현 slice는 같은 `storypack_preview` mode에서 기존 encounter schema만 쓰는 `wuxia_heuksa_bang_first_fight`를 추가한다. 기본 office bundle과 `escape-office` save/localStorage key는 변경하지 않고, 천외편린 3택 성장 schema는 future work로 둔다."
   }
 ]

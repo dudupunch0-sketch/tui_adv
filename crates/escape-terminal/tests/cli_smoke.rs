@@ -198,6 +198,49 @@ fn content_tui_smoke_renders_wuxia_storypack_preview_arrival() {
 }
 
 #[test]
+fn content_tui_smoke_renders_wuxia_storypack_preview_first_fight() {
+    let bundle_path = wuxia_preview_bundle_path();
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--content-bundle",
+            bundle_path.to_str().expect("bundle path should be UTF-8"),
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:follow_roadside_dust",
+            "--action",
+            "move:jianghu_market_street",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("위치: 강호 시장 거리 (jianghu_market_street)"));
+    assert!(stdout.contains("[현재 인카운터]"));
+    assert!(stdout.contains("흑사방 첫 난투"));
+    assert!(stdout.contains("visual id: wuxia_heuksa_bang_first_fight"));
+    assert!(stdout.contains("layout: combat_intervention"));
+    assert!(stdout.contains("stable terms: 거리 / 구두 / 사원증"));
+    assert!(stdout.contains("choice:run_toward_open_street / 큰길 쪽으로 비틀거리며 물러난다"));
+    assert!(stdout.contains("choice:deescalate_with_words / 말로 시간을 벌며 사원증을 감춘다"));
+    assert!(stdout.contains("choice:swing_commute_bag / 출근 가방을 방패처럼 휘두른다"));
+    assert!(stdout.contains(
+        "choice:loosen_tie_and_drop_shoes / 넥타이를 풀고 구두를 벗어 움직임을 회복한다"
+    ));
+    assert!(stdout.contains("choice:crash_in_with_body / 어깨로 들이받고 넘어지듯 버틴다"));
+    assert!(!stdout.contains("dev_desk"));
+}
+
+#[test]
 fn content_tui_smoke_renders_final_movement_panel_after_scripted_actions() {
     let bundle_path = content_bundle_path();
     let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))

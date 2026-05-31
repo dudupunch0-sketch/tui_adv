@@ -39,6 +39,7 @@ PYTHONPATH=src python -m pytest tests/test_storypack_db.py -q
 ## 현재 범위
 
 - `isolation_pack`: office apocalypse 후보 카드 6개.
+- `yageunmong_pack`: 야근몽 office-dream 후보 카드 6개.
 - `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 6개.
 
-다음 runtime slice에서 무협 콘텐츠를 실제 플레이 가능하게 넣기 전, 이 DB를 기준으로 world/storypack gating 또는 별도 preview mode를 결정한다.
+다음 runtime slice는 이미 결정된 `storypack_preview` mode에서 `wuxia_heuksa_bang_first_fight`를 추가하는 것이다. 기본 office bundle에 후보 storypack을 자동으로 섞지 않으며, `yageunmong_pack`은 별도 preview 후보로만 유지한다.

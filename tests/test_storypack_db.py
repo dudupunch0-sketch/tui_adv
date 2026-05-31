@@ -8,11 +8,14 @@ from tui_adv.game.storypack_db import load_storypack_db, validate_storypack_db
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_storypack_db_loads_office_and_wuxia_candidate_records():
+def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
     db = load_storypack_db(ROOT)
 
-    assert sorted(db.storypacks) == ["isolation_pack", "wuxia_jianghu_pack"]
+    assert sorted(db.storypacks) == ["isolation_pack", "wuxia_jianghu_pack", "yageunmong_pack"]
     assert db.storypacks["isolation_pack"].world_id == "office_apocalypse"
+    assert db.storypacks["yageunmong_pack"].world_id == "office_dream"
+    assert db.storypacks["yageunmong_pack"].name == "야근몽"
+    assert "approval_system" in db.storypacks["yageunmong_pack"].main_surfaces
     assert db.storypacks["wuxia_jianghu_pack"].world_id == "wuxia_jianghu"
     assert db.storypacks["wuxia_jianghu_pack"].name == "이구학지 — 천기록"
     assert "cheonggi_record" in db.storypacks["wuxia_jianghu_pack"].main_surfaces
@@ -25,6 +28,14 @@ def test_storypack_db_loads_office_and_wuxia_candidate_records():
         "pantry_survivor_trace",
         "server_log_other_branch",
     ]
+    assert sorted(db.cards_by_storypack("yageunmong_pack")) == [
+        "yageunmong_awakening_fragment_choice",
+        "yageunmong_clockout_gate_self",
+        "yageunmong_late_night_desk_awake",
+        "yageunmong_manager_approval_trap",
+        "yageunmong_reality_anchor_pantry",
+        "yageunmong_unapproved_meeting_room_loop",
+    ]
     assert sorted(db.cards_by_storypack("wuxia_jianghu_pack")) == [
         "wuxia_cheonggi_record_first_fragment",
         "wuxia_cheongryu_apprentice_entry",
@@ -33,6 +44,13 @@ def test_storypack_db_loads_office_and_wuxia_candidate_records():
         "wuxia_heuksa_bang_first_fight",
         "wuxia_seo_harin_rescue",
     ]
+
+    yageun_opening = db.encounter_cards["yageunmong_late_night_desk_awake"]
+    assert yageun_opening.world_id == "office_dream"
+    assert yageun_opening.storypack_id == "yageunmong_pack"
+    assert "lucid_dream_awareness" in yageun_opening.phases
+    assert "safe_observe" in [choice["role"] for choice in yageun_opening.choice_shapes]
+    assert "yageunmong_started" in yageun_opening.outcome_hooks["possible_flags"]
 
     arrival = db.encounter_cards["wuxia_commute_rift_arrival"]
     assert arrival.world_id == "wuxia_jianghu"

@@ -2,17 +2,17 @@
 
 Status: candidate
 
-이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전 상황 카드로 정리한다.
+이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전 상황 카드로 정리한다. `wuxia_commute_rift_arrival`와 `wuxia_heuksa_bang_first_fight`는 이 카드에서 separate storypack preview runtime으로 승격된 첫 두 slice이며, 나머지 카드는 아직 후보 상태다.
 
 공통 원칙:
 
 - 모든 카드는 `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`에 속한다.
-- 현재 단계에서는 runtime encounter가 아니다.
+- 현재 단계에서는 대부분 runtime encounter가 아니다. 단, `wuxia_commute_rift_arrival`와 `wuxia_heuksa_bang_first_fight`는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다.
 - 최신 canonical 무협 설정은 **이구학지 — 천기록**이다. 이전의 generic 객잔/소림/무당/아미 placeholder는 superseded로 본다.
 - 플레이어 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계의 시장 한복판에 전이됐다”이다.
 - 선택지는 세부 수치보다 역할과 결과 hook을 먼저 정의한다.
 - 최소 하나의 안전한 관찰/후퇴/fallback 선택지를 둔다.
-- 첫 runtime 승격 전에는 office storypack과 섞이지 않도록 gating 전략 또는 별도 preview mode를 결정한다.
+- preview runtime 승격은 office storypack과 섞이지 않도록 separate preview mode를 유지한다.
 - 실제 회사명, 실제 통근 경로, 실제 사원증 정보, 현실 종교/정치/민족 소재처럼 보이는 세부사항은 쓰지 않는다.
 
 ## 1. `wuxia_commute_rift_arrival`
@@ -70,36 +70,82 @@ pressure_type: [health, danger, relation]
 npc_slots: [early_rescuer]
 candidate_characters: [seo_harin]
 summary: 흑사방 말단 불량배에게 시비가 걸리고, 대부분 패배하는 튜토리얼성 첫 전투를 겪는다.
+purpose: 이 세계의 폭력이 실제이며, 현대 회사원의 출근복/구두/가방/사원증이 전투에서 장점이 아니라 변수와 약점으로 작동한다는 사실을 보여준다. 승리 판정보다 부상, 평판, 도주로, 서하린 구조 hook을 남기는 것이 핵심이다.
+start_conditions:
+  runtime_mode: storypack_preview
+  after_encounter: wuxia_commute_rift_arrival
+  phase: first_brawl
+  recommended_location: jianghu_market_street
+  fallback_location_if_minimal_preview: jianghu_roadside
+  required_flags: [wuxia_arrival_hidden]
+  forbidden_flags: [heuksa_bang_first_fight_resolved]
+  routing_note: 현재 preview arrival는 `wuxia_arrival_hidden`과 `wuxia_arrival_grounded`로 갈라진다. 첫 slice를 숨기 route smoke로 제한하면 `wuxia_arrival_hidden`만 써도 되고, 두 선택지를 모두 first fight로 잇는다면 새 any-of schema 대신 두 outcome에 공통 `wuxia_arrival_resolved` flag를 추가한다.
 setup_text: 흑사방 말단들이 길을 막는다. “길을 막았으면 통행세를 내야지.” “그 목에 건 패, 꽤 값나 보이는군.” 주인공은 이 상황을 촬영장 장난처럼 넘기려 하지만, 몽둥이가 팔을 스치는 순간 이 세계의 폭력이 진짜임을 깨닫는다. 구두는 미끄럽고 정장은 움직임을 막으며, 주변 사람들은 쉽게 끼어들지 않는다.
 choice_shapes:
-  - id: deescalate_with_words
-    role: social_probe
-    expected_costs: [relation_risk]
-    expected_gains: [rescue_delay_or_suspicion_shift]
   - id: run_toward_open_street
     role: safe_retreat_attempt
+    fallback_choice: true
+    label_direction: 큰길 쪽으로 비틀거리며 물러난다
     expected_costs: [health_small_or_danger_small]
-    expected_gains: [reduced_injury_or_escape_route_clue]
+    outcome_hook:
+      resources: {health: -3}
+      add_flags: [first_brawl_started, heuksa_bang_first_fight_resolved, first_brawl_survived]
+      add_clues: [violence_is_real, open_street_escape_route]
+      log_direction: 도망은 영웅적이지 않지만 큰 부상을 줄이고, 흑사방이 길목을 어떻게 막는지 본다.
+  - id: deescalate_with_words
+    role: social_probe
+    label_direction: 말로 시간을 벌며 사원증을 감춘다
+    expected_costs: [relation_risk, suspicion_small]
+    outcome_hook:
+      resources: {sanity: -2}
+      danger: 1
+      add_flags: [first_brawl_started, heuksa_bang_first_fight_resolved, seo_harin_rescue_interest]
+      add_clues: [badge_misread_as_sect_token, heuksa_bang_uses_toll_excuse]
+      log_direction: 말은 통하지만 세계관이 다르다. 설득은 완전 성공이 아니라 구조자가 끼어들 시간을 번다.
   - id: swing_commute_bag
     role: improvised_item_use
+    label_direction: 출근 가방을 방패처럼 휘두른다
     expected_costs: [health_risk, item_damage]
-    expected_gains: [brief_opening]
+    outcome_hook:
+      resources: {health: -6}
+      add_flags: [first_brawl_started, heuksa_bang_first_fight_resolved, commute_bag_damaged, brief_opening_created]
+      add_clues: [office_items_can_block_once]
+      log_direction: 가방은 무기가 아니라 한 번의 완충재다. 틈은 만들지만 물건은 망가지고 주인공은 다친다.
   - id: loosen_tie_and_drop_shoes
     role: combat_reposition
+    label_direction: 넥타이를 풀고 구두를 벗어 움직임을 회복한다
     expected_costs: [dignity_loss_or_suspicion]
-    expected_gains: [mobility_recovered]
+    outcome_hook:
+      resources: {sanity: -1}
+      add_flags: [first_brawl_started, heuksa_bang_first_fight_resolved, mobility_recovered]
+      add_clues: [shoes_and_suit_are_liability]
+      log_direction: 체면은 무너졌지만 발이 땅을 잡는다. 무공이 아니라 몸을 살리는 준비가 먼저다.
   - id: crash_in_with_body
     role: high_risk_body_check
+    label_direction: 어깨로 들이받고 넘어지듯 버틴다
     expected_costs: [health_medium]
-    expected_gains: [holdout_or_dirty_win_flag]
+    outcome_hook:
+      resources: {health: -10}
+      danger: 1
+      add_flags: [first_brawl_started, heuksa_bang_first_fight_resolved, dirty_holdout_flag, heuksa_bang_attention]
+      add_clues: [violence_is_real, crowd_now_watches_you]
+      log_direction: 잠깐 버티거나 더럽게 이길 수 있지만 무쌍은 아니다. 손은 떨리고 셔츠는 찢어지며 더 큰 시선이 붙는다.
 outcome_hooks:
-  possible_flags: [first_brawl_started, first_real_injury, heuksa_bang_attention]
-  possible_clues: [violence_is_real, shoes_and_suit_are_liability]
+  possible_flags: [first_brawl_started, heuksa_bang_first_fight_resolved, first_real_injury, heuksa_bang_attention, seo_harin_rescue_interest]
+  possible_clues: [violence_is_real, shoes_and_suit_are_liability, badge_misread_as_sect_token, open_street_escape_route]
   possible_items: [torn_shirt, damaged_bag]
   possible_relations: [seo_harin_rescue_interest]
-main_spine_link: 이 세계가 위험하며 현대 회사원의 기본 습관이 그대로 통하지 않는다는 점을 전투/도주/설득/소지품 사용으로 보여준다.
-randomization_notes: opening 직후 1회성. 승패보다 부상, 평판, 구조 hook이 핵심이다.
-promotion_notes: 기존 schema-less auto-brawl 경험을 활용할 수 있지만 숫자 HP 전투나 무쌍으로 확장하지 않는다. 대부분 패배/버팀/간신히 승리 정도의 outcome text가 적절하다.
+  possible_log_tone:
+    - 맞으면 진짜 아프고, 리셋되지 않는다는 감각
+    - 출근복과 구두가 기동성을 방해한다는 감각
+    - 사원증이 문파패/신물처럼 오해받는 감각
+    - 서하린 구조/조사 장면으로 이어지는 hook
+schema_boundary:
+  allowed_existing_schema: [conditions.locations, required_flags, forbidden_flags, choices.cost, outcome.resources, outcome.danger, outcome.add_flags, outcome.add_clues, outcome.add_items, outcome.remove_items, outcome.destination_id, outcome.log, presentation]
+  forbidden_new_schema: [CombatState, combat_hp_track, combat_resolver, skill_cooldown, reward_schema, ability_schema, fragment_choice_reward]
+main_spine_link: 이 세계가 위험하며 현대 회사원의 기본 습관이 그대로 통하지 않는다는 점을 전투/도주/설득/소지품 사용으로 보여준다. 이후 `wuxia_seo_harin_rescue`와 청류문 수습생 편입으로 이어진다.
+randomization_notes: opening 직후 1회성. 승패보다 부상, 평판, 구조 hook이 핵심이다. hub에 항상 eligible하게 두지 말고 arrival-resolved flag와 resolved forbidden flag로 반복을 막는다.
+promotion_notes: 다음 runtime slice로 확정한다. 같은 storypack preview bundle에만 추가하고, 기본 office bundle/`escape-office` save key/천외편린 3택 성장 schema를 건드리지 않는다. preview launcher/UI wiring은 follow-up 후보일 뿐 선행 조건은 아니다.
 ```
 
 ## 3. `wuxia_seo_harin_rescue`

@@ -482,6 +482,510 @@
     "promotion_notes": "낮은 우선순위. 생존 압박과 분위기 보강용으로 적합하다."
   },
   {
+    "id": "yageunmong_late_night_desk_awake",
+    "world_id": "office_dream",
+    "storypack_id": "yageunmong_pack",
+    "status": "candidate",
+    "phase": [
+      "late_night_sleep",
+      "lucid_dream_awareness"
+    ],
+    "priority_class": "main_forced",
+    "location_tags": [
+      "desk",
+      "late_night",
+      "dream_entry"
+    ],
+    "surface": [
+      "office_object",
+      "messenger"
+    ],
+    "anomaly_type": [
+      "delayed_time",
+      "space_loop"
+    ],
+    "pressure_type": [
+      "sanity",
+      "battery"
+    ],
+    "npc_slots": [],
+    "candidate_characters": [],
+    "summary": "야근 중 책상에 엎드린 뒤, 멈춘 시간과 퇴근 미승인 알림으로 회사 악몽에 들어왔음을 보여준다.",
+    "setup_text": "잠깐 눈을 붙였을 뿐인데 시계는 같은 분을 반복하고, 메신저에는 아직 퇴근 승인되지 않았다는 시스템 알림이 떠 있다.",
+    "choice_shapes": [
+      {
+        "id": "check_clock_and_body",
+        "role": "safe_observe",
+        "expected_costs": [],
+        "expected_gains": [
+          "lucid_dream_hint"
+        ]
+      },
+      {
+        "id": "answer_manager_message",
+        "role": "social_probe",
+        "expected_costs": [
+          "sanity_small"
+        ],
+        "expected_gains": [
+          "nightmare_office_rule_hint"
+        ]
+      },
+      {
+        "id": "stand_up_from_desk",
+        "role": "safe_reposition",
+        "expected_costs": [
+          "danger_small"
+        ],
+        "expected_gains": [
+          "office_loop_started"
+        ]
+      }
+    ],
+    "outcome_hooks": {
+      "possible_flags": [
+        "yageunmong_started",
+        "lucid_dream_hint_seen",
+        "office_loop_started"
+      ],
+      "possible_clues": [
+        "clock_repeats_same_minute",
+        "clockout_not_approved_message"
+      ],
+      "possible_items": [
+        "cold_coffee_cup"
+      ]
+    },
+    "main_spine_link": "야근몽의 출발점과 목표가 업무 완료가 아니라 꿈에서 깨어나기임을 세운다.",
+    "randomization_notes": "main_forced opening beat. 반복 등장 금지.",
+    "promotion_notes": "첫 preview 후보. 기존 encounter schema로 title/body/choices/outcome만 사용해 구현 가능하다."
+  },
+  {
+    "id": "yageunmong_unapproved_meeting_room_loop",
+    "world_id": "office_dream",
+    "storypack_id": "yageunmong_pack",
+    "status": "candidate",
+    "phase": [
+      "nightmare_office_loop"
+    ],
+    "priority_class": "random_pack",
+    "location_tags": [
+      "meeting_room",
+      "loop",
+      "review"
+    ],
+    "surface": [
+      "reservation_panel",
+      "meeting_minutes"
+    ],
+    "anomaly_type": [
+      "space_loop",
+      "future_record"
+    ],
+    "pressure_type": [
+      "sanity",
+      "relation"
+    ],
+    "npc_slots": [
+      "pm_worldline_mediator"
+    ],
+    "candidate_characters": [],
+    "summary": "불이 꺼지지 않는 회의실과 자동 회의록이 같은 검토 루프를 반복한다.",
+    "setup_text": "회의실 문을 닫고 나왔는데 다시 같은 회의실 앞이고, 회의록의 결론은 늘 처음부터 다시 검토다.",
+    "choice_shapes": [
+      {
+        "id": "leave_room_without_answering",
+        "role": "safe_leave",
+        "expected_costs": [],
+        "expected_gains": [
+          "loop_distance_small"
+        ]
+      },
+      {
+        "id": "read_repeated_action_items",
+        "role": "information_probe",
+        "expected_costs": [
+          "sanity_small"
+        ],
+        "expected_gains": [
+          "meeting_loop_clue"
+        ]
+      },
+      {
+        "id": "add_note_that_meeting_is_dream",
+        "role": "high_risk_route_test",
+        "expected_costs": [
+          "relation_risk"
+        ],
+        "expected_gains": [
+          "lucidity_flag"
+        ]
+      }
+    ],
+    "outcome_hooks": {
+      "possible_flags": [
+        "meeting_loop_seen",
+        "lucid_note_added"
+      ],
+      "possible_clues": [
+        "repeated_action_items",
+        "future_minutes_line"
+      ],
+      "possible_items": [
+        "minutes_fragment"
+      ]
+    },
+    "main_spine_link": "업무를 끝내려 할수록 꿈의 루프가 강화된다는 규칙을 보여준다.",
+    "randomization_notes": "opening 이후 1회성 또는 low weight. 기존 meeting_room route와 충돌하지 않게 flag gating 필요.",
+    "promotion_notes": "회의실 runtime encounter와 겹치지 않도록 자각몽/loop clue 중심으로 차별화한다."
+  },
+  {
+    "id": "yageunmong_manager_approval_trap",
+    "world_id": "office_dream",
+    "storypack_id": "yageunmong_pack",
+    "status": "candidate",
+    "phase": [
+      "nightmare_office_loop",
+      "clockout_gate_refusal"
+    ],
+    "priority_class": "route_key",
+    "location_tags": [
+      "approval",
+      "manager_desk",
+      "authority"
+    ],
+    "surface": [
+      "approval_system",
+      "organization_chart"
+    ],
+    "anomaly_type": [
+      "permission_denied_as_existence",
+      "identity_erasure"
+    ],
+    "pressure_type": [
+      "sanity",
+      "relation",
+      "danger"
+    ],
+    "npc_slots": [
+      "hr_identity_keeper"
+    ],
+    "candidate_characters": [],
+    "summary": "승인하지 않는 팀장이 퇴근과 존재 판정을 결재/권한 잠금으로 만든다.",
+    "setup_text": "결재 화면은 퇴근 요청 반려를 반복하고, 조직도에서 주인공의 이름은 담당자 칸에 계속 복제된다.",
+    "choice_shapes": [
+      {
+        "id": "define_scope_of_responsibility",
+        "role": "safe_boundary",
+        "expected_costs": [],
+        "expected_gains": [
+          "responsibility_boundary_clue"
+        ]
+      },
+      {
+        "id": "request_approval_again",
+        "role": "dark_bargain",
+        "expected_costs": [
+          "sanity_medium"
+        ],
+        "expected_gains": [
+          "approval_trap_confirmed"
+        ]
+      },
+      {
+        "id": "close_approval_window",
+        "role": "safe_leave",
+        "expected_costs": [
+          "relation_risk"
+        ],
+        "expected_gains": [
+          "permission_rule_resisted"
+        ]
+      }
+    ],
+    "outcome_hooks": {
+      "possible_flags": [
+        "approval_trap_seen",
+        "permission_rule_resisted"
+      ],
+      "possible_clues": [
+        "clockout_is_not_approved_by_manager",
+        "responsibility_scope_boundary"
+      ],
+      "possible_items": [
+        "rejected_clockout_request"
+      ]
+    },
+    "main_spine_link": "퇴근은 승인받는 것이 아니라 꿈의 권한 규칙을 거부해야 열린다는 핵심을 세운다.",
+    "randomization_notes": "route_key. 너무 초반에 나오면 결론이 빨라지므로 lucid clue 이후 권장.",
+    "promotion_notes": "새 approval UI를 만들지 않고 서술형 encounter로 먼저 구현 가능하다."
+  },
+  {
+    "id": "yageunmong_reality_anchor_pantry",
+    "world_id": "office_dream",
+    "storypack_id": "yageunmong_pack",
+    "status": "candidate",
+    "phase": [
+      "reality_anchor_collection"
+    ],
+    "priority_class": "npc_relation",
+    "location_tags": [
+      "pantry",
+      "anchor",
+      "sensory"
+    ],
+    "surface": [
+      "office_object",
+      "document_viewer"
+    ],
+    "anomaly_type": [
+      "document_contamination",
+      "delayed_time"
+    ],
+    "pressure_type": [
+      "sanity",
+      "thirst"
+    ],
+    "npc_slots": [
+      "facility_pathfinder"
+    ],
+    "candidate_characters": [],
+    "summary": "식은 커피 냄새와 현실 알람음 같은 public-safe 현실 앵커를 발견한다.",
+    "setup_text": "탕비실의 커피 향과 프린터 위 문장, 멀리서 들리는 알람음이 현실로 돌아가야 한다는 감각을 남긴다.",
+    "choice_shapes": [
+      {
+        "id": "breathe_and_name_the_anchor",
+        "role": "safe_observe",
+        "expected_costs": [],
+        "expected_gains": [
+          "reality_anchor_clue"
+        ]
+      },
+      {
+        "id": "pocket_printed_sentence",
+        "role": "information_probe",
+        "expected_costs": [
+          "sanity_small"
+        ],
+        "expected_gains": [
+          "anchor_fragment_item"
+        ]
+      },
+      {
+        "id": "follow_alarm_sound",
+        "role": "high_risk_route_test",
+        "expected_costs": [
+          "danger_small"
+        ],
+        "expected_gains": [
+          "clockout_gate_hint"
+        ]
+      }
+    ],
+    "outcome_hooks": {
+      "possible_flags": [
+        "reality_anchor_found",
+        "alarm_sound_heard"
+      ],
+      "possible_clues": [
+        "cold_coffee_anchor",
+        "homeward_intent_line"
+      ],
+      "possible_items": [
+        "anchor_fragment"
+      ]
+    },
+    "main_spine_link": "깨어나는 route가 업무 완료가 아니라 현실 앵커 회복과 연결됨을 보여준다.",
+    "randomization_notes": "reality_anchor_collection phase에서 1회성. public-safe 감각 단서만 사용한다.",
+    "promotion_notes": "기존 pantry resource event와 충돌하지 않도록 dream preview 전용으로 둔다."
+  },
+  {
+    "id": "yageunmong_awakening_fragment_choice",
+    "world_id": "office_dream",
+    "storypack_id": "yageunmong_pack",
+    "status": "candidate",
+    "phase": [
+      "reality_anchor_collection"
+    ],
+    "priority_class": "route_key",
+    "location_tags": [
+      "notebook",
+      "growth",
+      "lucid_choice"
+    ],
+    "surface": [
+      "document_viewer",
+      "approval_system"
+    ],
+    "anomaly_type": [
+      "document_contamination",
+      "future_record"
+    ],
+    "pressure_type": [
+      "sanity",
+      "relation"
+    ],
+    "npc_slots": [
+      "newcomer_mirror"
+    ],
+    "candidate_characters": [],
+    "summary": "각성편린 3택 후보가 나타나고, 하나의 현실 감각만 붙잡을 수 있다.",
+    "setup_text": "문서 편집창의 빈 줄에 이건 꿈이다, 이 일은 내 일이 아니다, 문을 닫고 나간다라는 세 문장이 떠오른다.",
+    "choice_shapes": [
+      {
+        "id": "delay_fragment_choice",
+        "role": "safe_delay",
+        "expected_costs": [
+          "opportunity_may_fade"
+        ],
+        "expected_gains": [
+          "fragment_caution"
+        ]
+      },
+      {
+        "id": "choose_this_is_a_dream",
+        "role": "lucidity_growth_choice",
+        "expected_costs": [
+          "fragment_lockout_two_options"
+        ],
+        "expected_gains": [
+          "lucidity_thread"
+        ]
+      },
+      {
+        "id": "choose_not_my_work",
+        "role": "boundary_growth_choice",
+        "expected_costs": [
+          "fragment_lockout_two_options"
+        ],
+        "expected_gains": [
+          "responsibility_boundary_thread"
+        ]
+      },
+      {
+        "id": "choose_close_the_door",
+        "role": "escape_growth_choice",
+        "expected_costs": [
+          "fragment_lockout_two_options"
+        ],
+        "expected_gains": [
+          "clockout_gate_thread"
+        ]
+      }
+    ],
+    "outcome_hooks": {
+      "possible_flags": [
+        "awakening_fragment_seen",
+        "first_awakened_fragment_chosen"
+      ],
+      "possible_clues": [
+        "fragment_is_growth_direction",
+        "not_all_work_can_be_done"
+      ],
+      "possible_growth_threads": [
+        "lucidity_thread",
+        "responsibility_boundary_thread",
+        "clockout_gate_thread"
+      ]
+    },
+    "main_spine_link": "회사팩의 각성편린이 무협팩의 천외편린과 같은 3택 성장 문법을 공유함을 보여준다.",
+    "randomization_notes": "너무 자주 뜨면 안 된다. 현실 앵커 획득 후나 큰 모순 발견 후에만 사용한다.",
+    "promotion_notes": "첫 구현에서는 새 reward/ability schema를 열지 말고 flag/clue/log/presentation text로만 처리한다."
+  },
+  {
+    "id": "yageunmong_clockout_gate_self",
+    "world_id": "office_dream",
+    "storypack_id": "yageunmong_pack",
+    "status": "candidate",
+    "phase": [
+      "clockout_gate_refusal",
+      "wake_resolution"
+    ],
+    "priority_class": "route_key",
+    "location_tags": [
+      "exit_gate",
+      "self_confrontation",
+      "ending"
+    ],
+    "surface": [
+      "security_gate",
+      "approval_system"
+    ],
+    "anomaly_type": [
+      "permission_denied_as_existence",
+      "identity_erasure"
+    ],
+    "pressure_type": [
+      "sanity",
+      "danger",
+      "relation"
+    ],
+    "npc_slots": [
+      "newcomer_mirror"
+    ],
+    "candidate_characters": [],
+    "summary": "최종 적인 퇴근을 잊은 나 자신과 마주하고, 승인을 기다리지 않는 퇴근 선언으로 깨어난다.",
+    "setup_text": "출입 게이트 앞에는 주인공과 같은 얼굴을 한 사람이 서 있고, 화면에는 퇴근 승인 대기가 깜빡인다.",
+    "choice_shapes": [
+      {
+        "id": "breathe_before_answering_self",
+        "role": "safe_observe",
+        "expected_costs": [],
+        "expected_gains": [
+          "final_self_recognition"
+        ]
+      },
+      {
+        "id": "promise_to_finish_one_more_task",
+        "role": "dark_bargain",
+        "expected_costs": [
+          "endless_overtime_risk"
+        ],
+        "expected_gains": [
+          "loop_failure_hint"
+        ]
+      },
+      {
+        "id": "declare_clockout_without_approval",
+        "role": "route_commit_escape",
+        "expected_costs": [
+          "relation_or_guilt_cost"
+        ],
+        "expected_gains": [
+          "wake_route_flag"
+        ]
+      },
+      {
+        "id": "call_coworker_to_gate",
+        "role": "npc_relation",
+        "expected_costs": [
+          "route_delay"
+        ],
+        "expected_gains": [
+          "coworker_rescue_thread"
+        ]
+      }
+    ],
+    "outcome_hooks": {
+      "possible_flags": [
+        "clockout_gate_seen",
+        "wake_route_flag",
+        "self_confronted"
+      ],
+      "possible_route_flags": [
+        "wake_up_route_started",
+        "coworker_rescue_route_started"
+      ],
+      "possible_clues": [
+        "permission_is_the_trap",
+        "work_never_completes"
+      ]
+    },
+    "main_spine_link": "야근몽의 결말 목표가 업무 완료가 아니라 꿈의 핵심 규칙을 거부하는 것임을 닫는다.",
+    "randomization_notes": "final route card. 충분한 앵커/각성편린 후에만 사용한다.",
+    "promotion_notes": "첫 runtime prototype 후보는 아니다. route/ending preview가 생긴 뒤 검토한다."
+  },
+  {
     "id": "wuxia_commute_rift_arrival",
     "world_id": "wuxia_jianghu",
     "storypack_id": "wuxia_jianghu_pack",
@@ -595,8 +1099,8 @@
     "candidate_characters": [
       "seo_harin"
     ],
-    "summary": "흑사방 말단 불량배에게 시비가 걸리고, 대부분 패배하는 튜토리얼성 첫 전투를 겪는다.",
-    "setup_text": "흑사방 말단들이 길을 막고 사원증을 값나가는 패로 오해한다. 몽둥이가 팔을 스치는 순간 폭력이 진짜임을 깨닫는다.",
+    "summary": "흑사방 말단 불량배에게 시비가 걸리고, 대부분 패배/버팀/도주로 끝나는 튜토리얼성 첫 전투를 겪는다.",
+    "setup_text": "흑사방 말단들이 길을 막고 사원증을 값나가는 패로 오해한다. 몽둥이가 팔을 스치는 순간 폭력이 진짜임을 깨닫고, 출근복과 구두가 전투 변수로 드러난다.",
     "choice_shapes": [
       {
         "id": "run_toward_open_street",
@@ -605,17 +1109,20 @@
           "health_small_or_danger_small"
         ],
         "expected_gains": [
-          "reduced_injury_or_escape_route_clue"
+          "first_brawl_survived",
+          "open_street_escape_route"
         ]
       },
       {
         "id": "deescalate_with_words",
         "role": "social_probe",
         "expected_costs": [
-          "relation_risk"
+          "relation_risk",
+          "suspicion_small"
         ],
         "expected_gains": [
-          "rescue_delay_or_suspicion_shift"
+          "seo_harin_rescue_interest",
+          "badge_misread_as_sect_token"
         ]
       },
       {
@@ -626,19 +1133,46 @@
           "item_damage"
         ],
         "expected_gains": [
-          "brief_opening"
+          "brief_opening_created",
+          "office_items_can_block_once"
+        ]
+      },
+      {
+        "id": "loosen_tie_and_drop_shoes",
+        "role": "combat_reposition",
+        "expected_costs": [
+          "dignity_loss_or_suspicion"
+        ],
+        "expected_gains": [
+          "mobility_recovered",
+          "shoes_and_suit_are_liability"
+        ]
+      },
+      {
+        "id": "crash_in_with_body",
+        "role": "high_risk_body_check",
+        "expected_costs": [
+          "health_medium"
+        ],
+        "expected_gains": [
+          "dirty_holdout_flag",
+          "heuksa_bang_attention"
         ]
       }
     ],
     "outcome_hooks": {
       "possible_flags": [
         "first_brawl_started",
+        "heuksa_bang_first_fight_resolved",
         "first_real_injury",
-        "heuksa_bang_attention"
+        "heuksa_bang_attention",
+        "seo_harin_rescue_interest"
       ],
       "possible_clues": [
         "violence_is_real",
-        "shoes_and_suit_are_liability"
+        "shoes_and_suit_are_liability",
+        "badge_misread_as_sect_token",
+        "open_street_escape_route"
       ],
       "possible_items": [
         "torn_shirt",
@@ -649,8 +1183,8 @@
       ]
     },
     "main_spine_link": "이 세계가 위험하며 현대 회사원의 기본 습관이 그대로 통하지 않는다는 점을 전투/도주/설득/소지품 사용으로 보여준다.",
-    "randomization_notes": "opening 직후 1회성. 승패보다 부상, 평판, 구조 hook이 핵심이다.",
-    "promotion_notes": "기존 schema-less auto-brawl 경험을 활용할 수 있지만 숫자 HP 전투나 무쌍으로 확장하지 않는다."
+    "randomization_notes": "opening 직후 1회성. arrival-resolved flag와 resolved forbidden flag로 반복을 막고, hub에 항상 eligible하게 두지 않는다.",
+    "promotion_notes": "다음 runtime slice로 확정한다. 같은 storypack preview bundle에만 추가하고 기본 office bundle, escape-office save key, 천외편린 3택 성장 schema를 건드리지 않는다."
   },
   {
     "id": "wuxia_seo_harin_rescue",

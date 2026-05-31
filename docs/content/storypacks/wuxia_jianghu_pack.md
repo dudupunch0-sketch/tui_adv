@@ -63,7 +63,7 @@ ending_candidates:
   - returnee
   - murim_outsider
 main_spine_support: office에서 출발한 현대인이 완전히 다른 world에 떨어져도 소속, 평판, 관계, 성장, 전투, 자원, 선택, 엔딩을 같은 engine loop로 설명할 수 있는지 검증한다.
-runtime_promotion_notes: 첫 구현은 기존 encounter schema만 사용한 schema-less wuxia prototype으로 시작한다. 첫 후보는 `wuxia_commute_rift_arrival` 또는 `wuxia_heuksa_bang_first_fight`이며, runtime에 넣기 전에는 office content와 섞이지 않도록 world/storypack gating 또는 별도 preview mode를 결정한다.
+runtime_promotion_notes: `wuxia_commute_rift_arrival`와 `wuxia_heuksa_bang_first_fight` preview는 separate storypack preview mode에서 완료했다. office content와 섞이지 않는 별도 preview bundle을 유지하며, 다음 후속은 preview launcher/UI wiring 필요 여부 또는 다음 encounter 후보 결정이다. 천외편린 3택 성장 schema는 future work로 둔다.
 ```
 
 ## 최신화 기준
@@ -271,21 +271,25 @@ runtime_promotion_notes: 첫 구현은 기존 encounter schema만 사용한 sche
 
 첫 runtime 승격은 storypack 선택 UI나 새 성장 schema를 바로 열지 않는다.
 
-권장 순서:
+현재 상태와 권장 순서:
 
-1. `wuxia_commute_rift_arrival`
+1. `wuxia_commute_rift_arrival` — preview 구현 완료
    - updated story의 전제를 가장 직접적으로 고정한다.
-   - 기존 encounter schema의 title/body/choices/outcome만으로 구현할 수 있다.
-2. `wuxia_heuksa_bang_first_fight`
+   - 기존 encounter schema의 title/body/choices/outcome만으로 구현했다.
+   - separate preview bundle metadata와 `default_location: wuxia_commute_rift` 경계를 검증했다.
+2. `wuxia_heuksa_bang_first_fight` — 다음 구현 slice로 확정
    - 기존 schema-less auto-brawl prototype과 연결하기 좋다.
-   - 다만 첫 전투는 “대부분 패배/버팀/간신히 승리” 튜토리얼이므로 숫자 HP 전투가 아니라 결과 hook 중심으로 둔다.
-3. `wuxia_cheonggi_record_first_fragment`
+   - 숫자 HP 전투가 아니라 결과 hook 중심의 튜토리얼성 첫 전투로 둔다.
+   - stable choice id 후보는 `run_toward_open_street`(fallback), `deescalate_with_words`, `swing_commute_bag`, `loosen_tie_and_drop_shoes`, `crash_in_with_body`다.
+   - outcome은 `resources`, `danger`, `add_flags`, `add_clues`, `add_items`/`remove_items`, `destination_id`, `log`, optional `presentation`만 사용한다.
+   - preview launcher/UI wiring은 follow-up 후보지만 이 slice의 선행 조건은 아니다.
+3. `wuxia_cheonggi_record_first_fragment` — future work
    - 천외편린 3택 UI/보상 구조는 매력적이지만 새 reward/ability schema로 과확장하기 쉽다.
-   - 첫 slice에서는 선택 결과를 flag/clue/log/presentation text로만 표현하고, 실제 성장 시스템은 별도 검증 뒤 연다.
+   - 첫 전투 slice에서는 선택 결과를 flag/clue/log/presentation text로만 표현하고, 실제 성장 시스템은 별도 검증 뒤 연다.
 
 주의:
 
-- runtime에 무협 콘텐츠를 넣기 전 office 콘텐츠와 섞이지 않도록 `world_id`/`storypack_id` gating 또는 별도 preview mode를 결정한다.
+- 무협 콘텐츠는 기본 office content와 섞지 않고 `storypack_preview` bundle/flag 경로로만 연다.
 - save/localStorage key의 `escape-office` 명칭은 compatibility 이슈로 남겨 두고, 이름 변경은 별도 migration으로 다룬다.
 - 실제 회사명, 실제 통근 경로, 실제 역/건물/사원증 정보는 쓰지 않는다.
 - 혈월교/흑천련/백도맹/청류문은 fiction 세력이다. 현실 종교·민족·정치 소재처럼 보이는 세부 묘사는 피한다.

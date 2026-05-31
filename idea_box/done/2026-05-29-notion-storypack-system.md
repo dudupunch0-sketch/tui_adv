@@ -1,5 +1,5 @@
 ---
-status: open
+status: done
 created: 2026-05-29
 source: notion
 backlog_order: 2026-05-29-01
@@ -7,8 +7,11 @@ git_added_at:
 git_added_commit:
 notion_page_id: 36f37e69-695e-81d8-917e-d14db55200c6
 notion_title: 스토리 시스템
-used_by:
-done_at:
+related_docs: docs/design/Storypack_World_Model.md; docs/design/Storypack_Encounter_DB.md; docs/content/storypacks/yageunmong_pack.md; docs/content/encounter_db/yageunmong_pack.md; docs/content/storypack_db/storypacks.json; docs/content/storypack_db/encounter_situations.json; docs/dev/Development_Plan.md
+main_plan_ref: docs/dev/Development_Plan.md#011-2026-05-31-idea_box-batch-storypack-system--야근몽-후보-문서화
+reference_check: live Notion Markdown fetched 2026-05-31; local snapshot whitespace-normalized exact match; shared storypack systems plus 야근몽 candidate reflected in docs/data
+used_by: docs/design/Storypack_World_Model.md; docs/design/Storypack_Encounter_DB.md; docs/content/storypacks/yageunmong_pack.md; docs/content/encounter_db/yageunmong_pack.md; docs/content/storypack_db/storypacks.json; docs/content/storypack_db/encounter_situations.json; docs/dev/Development_Plan.md
+done_at: 2026-05-31
 ---
 
 # Notion 스토리 시스템: storypack 기반 RPG 구조
@@ -31,9 +34,9 @@ Notion에 정리된 상위 스토리 시스템 아이디어. `escape from the of
 
 ## 구현 후보
 
-- 우선은 `status: open` idea 문서로 보관한다.
-- 현재 runtime YAML/Rust/Web 코드는 이 문서 생성만으로 변경하지 않는다.
-- 나중에 처리할 때는 `docs/dev/Development_Plan.md`와 storypack/world 일반화 방향을 기준으로, plan 승격/설계 문서 반영/runtime prototype 중 하나를 선택한다.
+- 초기 수집 시에는 `status: open` idea 문서로 보관했다.
+- 2026-05-31 처리에서 canonical docs/data/main plan에 승격하고 Notion reference 대조까지 완료해 `status: done`으로 갱신했다.
+- runtime YAML/Rust/Web 구현은 아직 하지 않았고, 후속 preview slice로 분리한다.
 
 ## 주의점
 
@@ -210,4 +213,4 @@ escape from the office
 
 ## 처리 기록
 
-- 아직 미사용. Notion에서 가져온 storypack 아이디어를 `idea_box/inbox/`에 구조화했다.
+- 2026-05-31: backlog audit 결과, 공용 storypack 시스템 축은 이미 `docs/design/Storypack_World_Model.md`, `docs/design/Storypack_Encounter_DB.md`, `docs/content/storypack_db/*.json`, `docs/dev/Storypack_Runtime_Preview_Mode.md`, `docs/dev/Development_Plan.md`에 부분 반영되어 있음을 확인했다. 빠져 있던 회사팩 `야근몽` 축은 `docs/content/storypacks/yageunmong_pack.md`, `docs/content/encounter_db/yageunmong_pack.md`, storypack DB JSON 후보 record/cards로 승격했다. Notion API로 원본 Markdown을 다시 가져와 local snapshot과 공백 정규화 기준 일치를 확인했고, 공용 시스템/회사팩/무협팩 매핑 obligation이 추적 가능한 docs/data/main plan에 반영되어 `done` 처리했다. runtime 구현은 future preview work다.

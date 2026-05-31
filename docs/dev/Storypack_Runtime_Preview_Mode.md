@@ -1,6 +1,6 @@
 # Storypack runtime preview mode
 
-Status: 결정 문서 + 첫 runtime preview 구현 완료
+Status: 결정 문서 + 첫 runtime preview 구현 완료 + 다음 preview slice 설계 확정
 
 ## Decision: separate preview mode first
 
@@ -78,7 +78,9 @@ python scripts/export_web_data.py \
   --check
 
 cargo test -p escape-wasm json_boundary_uses_storypack_preview_default_location
+cargo test -p escape-wasm json_boundary_reaches_wuxia_first_fight_through_preview_bundle
 cargo test -p escape-terminal content_tui_smoke_renders_wuxia_storypack_preview_arrival
+cargo test -p escape-terminal content_tui_smoke_renders_wuxia_storypack_preview_first_fight
 ```
 
 ## 첫 prototype 후보
@@ -87,37 +89,75 @@ cargo test -p escape-terminal content_tui_smoke_renders_wuxia_storypack_preview_
    - preview mode smoke에 가장 안전하다.
    - opening scene 자체가 office 기본 시작점과 분리되어야 한다는 contract를 잘 드러낸다.
    - 새 성장 schema 없이 flags/clues/items/logs로 표현 가능하다.
-2. `wuxia_heuksa_bang_first_fight`
-   - 기존 schema-less combat prototype 경험을 재사용할 수 있다.
-   - 다만 전투/부상/구조 hook이 많아서 첫 preview fixture로는 arrival보다 약간 크다.
+2. `wuxia_heuksa_bang_first_fight` — 구현 완료
+   - 기존 schema-less combat prototype 경험을 재사용했다.
+   - arrival가 이미 preview default-location/runtime metadata를 검증했으므로, 두 번째 slice는 같은 preview bundle 안에서 encounter 확장을 검증했다.
+   - 목표는 승리/패배 숫자 전투가 아니라 “이 세계의 폭력이 실제다”, “출근복/구두/가방/사원증이 전투 변수다”, “서하린 구조 hook이 열린다”를 flags/clues/logs로 고정하는 것이다.
 
-## 다음 구현 slice 기준
+## 후속 slice 기준
 
-다음 slice는 같은 preview mode에서 `wuxia_heuksa_bang_first_fight`를 추가할지, 또는 preview launcher/UI wiring을 열지 결정하는 것이다. 둘 중 어느 쪽이든 다음을 금지한다.
+`wuxia_heuksa_bang_first_fight`는 같은 preview mode에 추가되었다. `preview launcher/UI wiring`은 명시적 opt-in UX를 위한 follow-up 후보로 유지한다. 이미 preview export/check command와 Rust/Web preview bundle artifact가 있으므로, 후속 launcher는 content truth가 아니라 사용자가 preview bundle을 선택/실행하는 entrypoint 문제다.
+
+금지선:
 
 - 기본 office bundle에 무협 encounter를 직접 추가하지 않는다.
 - `ScenePage`에 world별 renderer field를 추가하지 않는다.
 - `escape-office` save/localStorage key를 rename하지 않는다.
 - 천기록/천외편린 3택 성장 schema를 열지 않는다.
 - 실제 회사/통근 경로/사원증 정보 또는 private-only reality hint를 넣지 않는다.
+- 새 `CombatState`, combat resolver, HP 숫자전, 스킬/쿨타임, reward/ability schema를 추가하지 않는다.
+
+구현된 runtime design:
+
+```yaml
+id: wuxia_heuksa_bang_first_fight
+conditions:
+  locations: [jianghu_market_street]
+  required_flags: [wuxia_arrival_hidden]  # or shared wuxia_arrival_resolved if both arrival choices should route here
+  forbidden_flags: [heuksa_bang_first_fight_resolved]
+presentation:
+  visual_id: wuxia_heuksa_bang_first_fight
+  speaker: 흑사방 말단
+  layout: combat_intervention
+  effect_cues:
+    - kind: glyph_anomaly
+      source: market_brawl
+      stable_terms: [거리, 구두, 사원증]
+choices:
+  - id: run_toward_open_street        # fallback / safe retreat
+  - id: deescalate_with_words         # social probe
+  - id: swing_commute_bag             # improvised item use
+  - id: loosen_tie_and_drop_shoes     # combat reposition
+  - id: crash_in_with_body            # high risk body check
+```
+
+기존 schema만 사용한다.
+
+- `conditions.locations`, `required_flags`, `forbidden_flags`
+- `choices[].cost`, `choices[].outcome.resources`, `danger`, `add_flags`, `add_clues`, `add_items`/`remove_items`, `destination_id`, `log`
+- optional `presentation.visual_id`, `speaker`, `layout`, `effect_cues`
 
 검증은 최소 다음을 포함한다.
 
 ```bash
-PYTHONPATH=src python -m pytest \
+source /home/dudupunch0/.config/tui_adv/tmp-installs.sh
+PYTHONPATH=src python3 -m pytest \
   tests/test_web_data_export.py \
   tests/test_docs_contract.py \
   tests/test_storypack_db.py \
   -q
-python scripts/export_web_data.py \
+python3 scripts/export_web_data.py \
   --storypack-preview wuxia_jianghu_pack \
   --preview-bundle crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json \
   --preview-bundle web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json \
   --check
 cargo test -p escape-core --test content_bundle content_bundle_loads_optional_storypack_preview_runtime_metadata
+cargo test -p escape-core --test content_bundle preview_fixture_indexes_wuxia_first_fight
 cargo test -p escape-wasm json_boundary_uses_storypack_preview_default_location
+cargo test -p escape-wasm json_boundary_reaches_wuxia_first_fight_through_preview_bundle
 cargo test -p escape-terminal content_tui_smoke_renders_wuxia_storypack_preview_arrival
-python -m compileall -q src tests
+cargo test -p escape-terminal content_tui_smoke_renders_wuxia_storypack_preview_first_fight
+python3 -m compileall -q src tests
 cargo fmt --check
 git diff --check
 ```

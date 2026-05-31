@@ -13,12 +13,13 @@ Status: 설계 문서
   + public-safe 검토와 승격 규칙
 ```
 
-2026-05-29 갱신:
+2026-05-29 / 2026-05-31 갱신:
 
 - Storypack은 이제 office 내부 변주만이 아니라 `world_id`를 가진 세계관 단위 후보를 포함한다.
 - 기본 world/storypack은 `office_apocalypse` / `isolation_pack` 계열이다.
+- 추가 office-family 후보는 `office_dream` / `yageunmong_pack`이다. 이 후보는 회사 자각몽/악몽/각성편린/퇴근 게이트 premise를 보존하되, 기본 office runtime을 대체하지 않는다.
 - 첫 비-office 기준팩은 `wuxia_jianghu` / `wuxia_jianghu_pack`이며, 최신 canonical story는 **이구학지 — 천기록**이다. 이전 generic 무협 placeholder는 superseded로 본다.
-- 새 기능은 가능하면 office surface와 wuxia surface 양쪽에서 설명 가능한 engine-neutral 형태로 설계한다. 자세한 기준은 `docs/design/Storypack_World_Model.md`를 따른다.
+- 새 기능은 가능하면 office isolation, office dream, wuxia surface에서 설명 가능한 engine-neutral 형태로 설계한다. 자세한 기준은 `docs/design/Storypack_World_Model.md`를 따른다.
 
 이 문서는 게임 엔진 구현 계획이 아니다. `src/tui_adv/data/encounters.yaml`이나 Rust GameCore에 바로 새 규칙을 추가하기 전에, 어떤 스토리팩/상황/NPC를 만들고 어떻게 검토할지 정하는 콘텐츠 설계 문서다.
 
@@ -59,7 +60,7 @@ Status: 설계 문서
 | `resolution_pressure` | 결말 직전 압박 | 선택의 대가, NPC 운명, 엔딩 조건 |
 
 모든 storypack record와 encounter situation card는 최소 하나의 phase에 연결되어야 한다.
-단, phase 이름은 world-specific 확장을 허용한다. 기본 office storypack은 `opening_absence` 같은 기존 phase를 쓰고, 이구학지 무협팩은 `commute_rift`, `market_arrival`, `first_brawl`, `cheongryu_apprenticeship`, `cheonggi_record_awakening`처럼 storypack-specific phase를 쓸 수 있다.
+단, phase 이름은 world-specific 확장을 허용한다. 기본 office storypack은 `opening_absence` 같은 기존 phase를 쓰고, 야근몽은 `late_night_sleep`, `lucid_dream_awareness`, `reality_anchor_collection`, `clockout_gate_refusal` 같은 office-dream phase를 쓸 수 있다. 이구학지 무협팩은 `commute_rift`, `market_arrival`, `first_brawl`, `cheongryu_apprenticeship`, `cheonggi_record_awakening`처럼 storypack-specific phase를 쓸 수 있다.
 
 ### 3.2 Deck 계층
 
@@ -251,12 +252,19 @@ promotion_notes: runtime 승격 시 messenger UI presentation metadata를 붙인
 
 사람용 후보 문서는 설명/톤/해설을 보존하고, 참조 무결성 검사는 별도 JSON mirror에서 수행한다.
 
-- `docs/content/storypack_db/storypacks.json`: `StorypackRecord` 후보 목록.
-- `docs/content/storypack_db/encounter_situations.json`: `EncounterSituationCard` 후보 목록.
+- `docs/content/storypack_db/storypacks.json`: `StorypackRecord` 후보 목록. 현재 `isolation_pack`, `yageunmong_pack`, `wuxia_jianghu_pack`를 포함한다.
+- `docs/content/storypack_db/encounter_situations.json`: `EncounterSituationCard` 후보 목록. 현재 storypack당 6개씩 총 18개 후보 카드를 포함한다.
 - `src/tui_adv/game/storypack_db.py`: `load_storypack_db(root)`와 `validate_storypack_db(root)`를 제공한다.
-- `tests/test_storypack_db.py`: office/wuxia 후보 카드가 같은 DB에서 로드되고, `storypack_id`/`world_id`/taxonomy/fallback/outcome hook 계약을 검증한다.
+- `tests/test_storypack_db.py`: office isolation / office dream / wuxia 후보 카드가 같은 DB에서 로드되고, `storypack_id`/`world_id`/taxonomy/fallback/outcome hook 계약을 검증한다.
 
-현재 JSON DB는 런타임 콘텐츠가 아니다. `src/tui_adv/data/encounters.yaml`, Rust content bundle, Web generated data에 자동으로 섞지 않는다. 목적은 다음 runtime slice 전에 office/wuxia 후보 카드가 최소한의 구조 계약을 만족하는지 확인하는 것이다.
+현재 JSON DB는 런타임 콘텐츠가 아니다. `src/tui_adv/data/encounters.yaml`, Rust content bundle, Web generated data에 자동으로 섞지 않는다. 목적은 다음 runtime slice 전에 office isolation / office dream / wuxia 후보 카드가 최소한의 구조 계약을 만족하는지 확인하는 것이다.
+
+2026-05-31 후속 결정:
+
+- `wuxia_commute_rift_arrival` preview는 완료했고, 다음 승격 후보는 `wuxia_heuksa_bang_first_fight`로 확정한다.
+- 이 카드는 `storypack_preview` bundle에만 들어가야 하며, 기본 office runtime과 `src/tui_adv/data/*.yaml`에는 직접 섞지 않는다.
+- 필요한 신규 설계는 encounter/choice/outcome 수준으로 제한한다. 새 combat/reward/ability schema, 천외편린 3택 reward schema, storypack 선택 UI는 열지 않는다.
+- `preview launcher/UI wiring`은 명시적 opt-in UX follow-up 후보지만, first fight content/parity 검증의 선행 조건은 아니다.
 
 `validate_storypack_db()`가 검사하는 기준:
 
@@ -387,6 +395,11 @@ raw idea
 - `docs/content/storypacks/isolation_pack.md`
 - `docs/content/characters/recurrent_npcs.md`
 - `docs/content/encounter_db/isolation_pack.md`
+
+추가 office-dream 후보 산출물:
+
+- `docs/content/storypacks/yageunmong_pack.md`
+- `docs/content/encounter_db/yageunmong_pack.md`
 
 첫 비-office slice 산출물:
 

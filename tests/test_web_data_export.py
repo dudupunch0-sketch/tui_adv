@@ -82,7 +82,7 @@ def test_export_web_data_builds_renderer_neutral_content_bundle():
     assert bundle["content"]["locations"][0]["id"] == "dev_desk"
     assert bundle["content"]["encounters"][0]["id"] == "ex_employee_messenger"
     assert not any(
-        encounter["id"] == "wuxia_commute_rift_arrival"
+        encounter["id"] in {"wuxia_commute_rift_arrival", "wuxia_heuksa_bang_first_fight"}
         for encounter in bundle["content"]["encounters"]
     )
     assert _missing_private_secret_fields(bundle)
@@ -103,9 +103,9 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     }
     assert "storypack-previews/wuxia_jianghu_pack" in bundle["source"]
     assert bundle["manifest"]["counts"] == {
-        "locations": 2,
+        "locations": 3,
         "items": 1,
-        "encounters": 1,
+        "encounters": 2,
         "endings": 1,
         "achievements": 1,
         "secrets": 0,
@@ -113,8 +113,42 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     assert [location["id"] for location in bundle["content"]["locations"]] == [
         "wuxia_commute_rift",
         "jianghu_roadside",
+        "jianghu_market_street",
     ]
-    assert bundle["content"]["encounters"][0]["id"] == "wuxia_commute_rift_arrival"
+    encounter_ids = [encounter["id"] for encounter in bundle["content"]["encounters"]]
+    assert encounter_ids == [
+        "wuxia_commute_rift_arrival",
+        "wuxia_heuksa_bang_first_fight",
+    ]
+    first_fight = bundle["content"]["encounters"][1]
+    assert first_fight["conditions"] == {
+        "locations": ["jianghu_market_street"],
+        "required_flags": ["wuxia_arrival_hidden"],
+        "forbidden_flags": ["heuksa_bang_first_fight_resolved"],
+    }
+    assert first_fight["presentation"]["layout"] == "combat_intervention"
+    assert first_fight["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "거리",
+        "구두",
+        "사원증",
+    ]
+    assert [choice["id"] for choice in first_fight["choices"]] == [
+        "run_toward_open_street",
+        "deescalate_with_words",
+        "swing_commute_bag",
+        "loosen_tie_and_drop_shoes",
+        "crash_in_with_body",
+    ]
+    fallback = first_fight["choices"][0]
+    assert fallback["outcome"]["add_flags"] == [
+        "first_brawl_started",
+        "heuksa_bang_first_fight_resolved",
+        "first_brawl_survived",
+    ]
+    assert fallback["outcome"]["add_clues"] == [
+        "violence_is_real",
+        "open_street_escape_route",
+    ]
     assert "dev_desk" not in json.dumps(bundle, ensure_ascii=False)
     assert _missing_private_secret_fields(bundle)
 

@@ -198,6 +198,29 @@
 - [x] `escape-terminal`과 `escape-wasm::new_game_json()`이 preview `runtime.default_location`에서 시작하도록 연결
 - [x] Python exporter, Rust content metadata, WASM JSON boundary, SuperLightTUI smoke 테스트 추가
 
+### 0.2v 2026-05-31 야근몽 storypack 후보 문서화
+
+- [x] `docs/content/storypacks/yageunmong_pack.md`에 야근몽 office-dream candidate record 추가
+- [x] `docs/content/encounter_db/yageunmong_pack.md`에 runtime 승격 전 상황 카드 6개 추가
+- [x] `docs/content/storypack_db/storypacks.json`와 `encounter_situations.json`에 야근몽 후보 record/card mirror 추가
+- [x] `docs/design/Storypack_World_Model.md`, `docs/design/Storypack_Encounter_DB.md`, README/Index/Development_Plan 동기화
+- [x] live Notion Markdown 대조 후 관련 idea_box entry 2개 done 처리
+
+### 0.2w 2026-05-31 무협 후속 preview slice 설계 확정
+
+- [x] `wuxia_heuksa_bang_first_fight`를 다음 무협 storypack preview 구현 slice로 확정
+- [x] stable choice id, fallback choice, outcome hook, flags/clues/log 방향 문서화
+- [x] 기본 office bundle, `escape-office` save/localStorage key, 천외편린/각성편린 reward schema non-goal 재확인
+- [x] 다음 구현 세션의 예상 수정 파일, 테스트, 검증 명령, preview artifact 위치 handoff 작성
+
+### 0.2x 2026-05-31 무협 `wuxia_heuksa_bang_first_fight` preview runtime slice
+
+- [x] `jianghu_market_street` preview location과 `wuxia_arrival_hidden` route 연결 추가
+- [x] 기존 encounter/choice/outcome schema만 사용한 흑사방 첫 난투 구현
+- [x] Rust fixture와 Web generated preview bundle 재생성
+- [x] Python exporter, Rust content fixture, WASM JSON boundary, SuperLightTUI first-fight parity 테스트 추가
+- [x] 기본 office bundle, Web 기본 generated bundle, `src/tui_adv/data/*.yaml`, `escape-office` save/localStorage key 미변경 확인
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

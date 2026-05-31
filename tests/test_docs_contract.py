@@ -153,15 +153,16 @@ def test_transition_audio_readiness_is_current_active_plan():
     assert "현재 active main plan 기준 즉시 진행할 구현 작업은 없다" not in next_slice
     assert "무협 storypack preview mode" in next_slice
     assert "wuxia_jianghu_pack" in next_slice
-    assert "machine-readable storypack DB" in next_slice
-    assert "wuxia_commute_rift_arrival" in next_slice
     assert "wuxia_heuksa_bang_first_fight" in next_slice
+    assert "preview launcher/UI wiring" in next_slice
     assert "renderer-neutral" in next_slice
+    assert "`wuxia_heuksa_bang_first_fight`를 구현한다" not in next_slice
 
     next_actions = plan.split("## 10. 다음 액션", 1)[1]
     assert "Storypack_Runtime_Preview_Mode.md" in plan
-    assert "wuxia_heuksa_bang_first_fight" in next_actions
+    assert "preview launcher/UI wiring" in next_actions
     assert "preview mode" in next_actions
+    assert "`wuxia_heuksa_bang_first_fight`를 같은 `wuxia_jianghu_pack` storypack preview mode에 추가한다" not in next_actions
 
     assert "### 0.2m 2026-05-26 Web Storybook transition/audio readiness" in checklist
     assert "- [x] transition/audio readiness active main plan 승격" in checklist
@@ -410,12 +411,13 @@ def test_storypack_world_model_and_wuxia_pack_are_indexed_and_current():
     assert "storypack/world 일반화" in plan
     assert "machine-readable storypack DB 검증 완료" in plan
     assert "무협 storypack preview runtime prototype 완료" in plan
+    assert "무협 `wuxia_heuksa_bang_first_fight` preview runtime slice 완료" in plan
     assert "첫 비-office 기준팩은 `wuxia_jianghu_pack` / **이구학지 — 천기록**" in plan
     next_slice = plan.split("현재 최우선 남은 작업:", 1)[1].split("전환 중 유지:", 1)[0]
     assert "wuxia_jianghu_pack" in next_slice
-    assert "wuxia_commute_rift_arrival" in next_slice
     assert "wuxia_heuksa_bang_first_fight" in next_slice
     assert "preview launcher/UI wiring" in next_slice
+    assert "`wuxia_heuksa_bang_first_fight`를 구현한다" not in next_slice
     assert "PR C audio engine skeleton을 리뷰/머지" not in next_slice
 
     assert "status: done" in wuxia_idea
@@ -450,11 +452,13 @@ def test_wuxia_runtime_preview_mode_decision_is_documented_before_runtime_conten
     assert "separate preview mode first" in world_doc
     assert "storypack runtime preview mode 결정" in checklist
     assert "preview mode 결정 완료" in plan
+    assert "무협 `wuxia_heuksa_bang_first_fight` preview runtime slice 완료" in plan
 
     next_actions = plan.split("## 10. 다음 액션", 1)[1]
     assert "gating 또는 별도 preview mode를 결정" not in next_actions
-    assert "wuxia_heuksa_bang_first_fight" in next_actions
+    assert "preview launcher/UI wiring" in next_actions
     assert "preview mode" in next_actions
+    assert "`wuxia_heuksa_bang_first_fight`를 같은 `wuxia_jianghu_pack` storypack preview mode에 추가한다" not in next_actions
 
 
 def test_wuxia_commute_rift_arrival_preview_runtime_is_documented_and_indexed():
@@ -490,5 +494,9 @@ def test_wuxia_commute_rift_arrival_preview_runtime_is_documented_and_indexed():
 
     assert "무협 storypack preview runtime prototype" in checklist
     assert "Python exporter, Rust content metadata, WASM JSON boundary, SuperLightTUI smoke 테스트 추가" in checklist
+    assert "무협 `wuxia_heuksa_bang_first_fight` preview runtime slice" in checklist
     assert "무협 storypack preview runtime prototype 완료" in plan
+    assert "무협 `wuxia_heuksa_bang_first_fight` preview runtime slice 완료" in plan
     assert "기본 office bundle은 계속 `dev_desk`에서 시작" in plan
+    assert "jianghu_market_street" in decision
+    assert "content_tui_smoke_renders_wuxia_storypack_preview_first_fight" in decision

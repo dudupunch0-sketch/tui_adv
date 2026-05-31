@@ -2,7 +2,7 @@
 
 TUI 기반 랜덤 인카운터 선택지 생존 게임 엔진/콘텐츠 프로젝트.
 
-현재 기본 storypack은 회사 사무실 아포칼립스인 `escape from the office`다. 플레이어는 갑자기 사람이 모두 사라지고 공간 또는 차원 단위로 격리된 대기업 연구개발동에서 시작한다. 다만 장기 개발 방향은 회사 전용 게임이 아니라, storypack/world를 바꿔 무협 같은 다른 세계관도 같은 Rust GameCore, Web Storybook, SuperLightTUI renderer 계약으로 플레이할 수 있는 구조다. 첫 비-office 기준팩은 `wuxia_jianghu_pack`이며, 최신 canonical story는 현대 회사원이 본인 몸과 출근복장 그대로 무협 세계에 전이되는 **이구학지 — 천기록**이다.
+현재 기본 storypack은 회사 사무실 아포칼립스인 `escape from the office`다. 플레이어는 갑자기 사람이 모두 사라지고 공간 또는 차원 단위로 격리된 대기업 연구개발동에서 시작한다. 다만 장기 개발 방향은 회사 전용 게임이 아니라, storypack/world를 바꿔 회사 자각몽 `yageunmong_pack`이나 무협 `wuxia_jianghu_pack` 같은 다른 세계관/전제를 같은 Rust GameCore, Web Storybook, SuperLightTUI renderer 계약으로 플레이할 수 있는 구조다. `yageunmong_pack`은 기본 office runtime을 대체하지 않는 office-family 후보이고, 첫 비-office 기준팩은 현대 회사원이 본인 몸과 출근복장 그대로 무협 세계에 전이되는 **이구학지 — 천기록**이다.
 
 ## 현재 단계
 
@@ -121,6 +121,14 @@ cargo run -p escape-terminal -- \
   --content-bundle crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json \
   --seed 123 \
   --tui-smoke
+
+cargo run -p escape-terminal -- \
+  --scene content \
+  --content-bundle crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json \
+  --seed 123 \
+  --tui-smoke \
+  --action choice:follow_roadside_dust \
+  --action move:jianghu_market_street
 ```
 
 Rust/WASM-primary Web preview/build는 generated wasm package를 먼저 만든다.
@@ -147,6 +155,7 @@ npm run preview:player
 - 기본 storypack 제목: `escape from the office`
 - 프로젝트 방향: storypack/world 기반 TUI 선택지 생존 게임 + Web Storybook/GlyphFX primary UX + SuperLightTUI terminal renderer
 - 기본 톤: 블랙코미디 회사 괴담 + 코스믹 호러
+- office-family 후보팩: `yageunmong_pack` / **야근몽**. 전제는 “회사에서 잠깐 잠든 주인공이 자각몽 상태의 회사 악몽에서 업무 완료가 아니라 깨어나기를 목표로 한다”이며, 기본 office runtime을 대체하지 않는다.
 - 첫 비-office 기준팩: `wuxia_jianghu_pack` / **이구학지 — 천기록**. 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계 시장에 전이되고, 천기록/천외편린 성장 구조를 경험한다”
 - 1차 재난 타입: 불명 재난
 - 상황: 사람 실종, 연구개발동 규모의 공간/차원 격리, 제한된 외부 인터넷, 간헐적 사내망 연락
@@ -168,7 +177,7 @@ npm run preview:player
 - `docs/story/Reality_Link.md`: 현실 연결 원칙
 - `docs/design/Player_State.md`: 플레이어 상태 규칙
 - `docs/design/Character_Stats_and_Generator.md`: 6스탯 등장인물/LLM 생성기 설계 후보
-- `docs/design/Storypack_World_Model.md`: storypack/world 기반 일반화 기준과 무협 기준팩 방향
+- `docs/design/Storypack_World_Model.md`: storypack/world 기반 일반화 기준, 야근몽 office-family 후보, 무협 기준팩 방향
 - `docs/design/Game_Loop.md`: 턴/선택/인카운터 루프
 - `docs/design/Combat_System_Auto_Brawl.md`: 자동 난투 + 상황 개입 전투 설계 후보
 - `docs/design/Map.md`: 1차 맵 설계
@@ -178,7 +187,7 @@ npm run preview:player
 - `docs/dev/Development_Plan.md`: canonical main plan. 현재 방향, 다음 작업, 우선순위의 source of truth
 - `docs/dev/Checklist.md`: 단계별 완료 여부 추적용 체크리스트
 - `docs/dev/Storypack_Runtime_Preview_Mode.md`: 무협 runtime prototype을 기본 office bundle과 섞지 않는 preview mode 결정
-- `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`: `wuxia_commute_rift_arrival` preview source YAML
+- `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`: `wuxia_commute_rift_arrival`와 `wuxia_heuksa_bang_first_fight` preview source YAML
 - `crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json`: Rust/GameCore용 무협 preview fixture bundle
 - `web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json`: Web/WASM용 무협 preview generated bundle
 - `docs/content/Location_List.md`: 1차 위치 목록
@@ -188,7 +197,9 @@ npm run preview:player
 - `docs/content/Survivor_System_Routes.md`: 생존자 설득과 시스템 제압 루트 설계
 - `docs/content/Secret_List.md`: 공개 가능한 히든 루트/비밀 목록
 - `docs/content/Horror_Ideas.md`: 호러 연출 아이디어 저장소
+- `docs/content/storypacks/yageunmong_pack.md`: 야근몽 office-dream storypack 후보
 - `docs/content/storypacks/wuxia_jianghu_pack.md`: 이구학지 — 천기록 첫 비-office 무협 storypack 후보
+- `docs/content/encounter_db/yageunmong_pack.md`: 야근몽 encounter situation cards
 - `docs/content/encounter_db/wuxia_jianghu_pack.md`: 이구학지 — 천기록 encounter situation cards
 - `docs/content/storypack_db/README.md`: machine-readable storypack/card 후보 DB와 검증 범위
 - `docs/content/storypack_db/storypacks.json`: machine-readable storypack 후보 record DB

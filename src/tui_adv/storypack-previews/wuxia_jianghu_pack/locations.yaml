@@ -9,6 +9,13 @@ locations:
   - id: jianghu_roadside
     name: 강호 초입
     description: 낯선 흙길과 대나무 숲 사이로 청류문 표식이 희미하게 보인다.
-    connections: [wuxia_commute_rift]
+    connections: [wuxia_commute_rift, jianghu_market_street]
     tags: [wuxia, transit]
     danger: 1
+
+  - id: jianghu_market_street
+    name: 강호 시장 거리
+    description: 시장 입구의 먼지와 호객 소리 사이로 흑사방 말단들이 길목을 막고 서 있다.
+    connections: [jianghu_roadside]
+    tags: [wuxia, market, alley, brawl]
+    danger: 2

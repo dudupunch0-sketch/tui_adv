@@ -7,7 +7,7 @@
 
 - 장르: TUI 기반 랜덤 인카운터 선택지 생존 게임
 - 기본 배경: 회사 사무실 아포칼립스(`office_apocalypse`)
-- 개발 방향: storypack/world 기반 선택지 생존 엔진. 첫 비-office 기준팩은 **이구학지 — 천기록** 무협 강호(`wuxia_jianghu`)
+- 개발 방향: storypack/world 기반 선택지 생존 엔진. 기본 office isolation 계열을 유지하되, office-family 후보 `야근몽`(`office_dream`)과 첫 비-office 기준팩 **이구학지 — 천기록**(`wuxia_jianghu`)을 후보 DB로 관리한다.
 - 핵심 자원: 체력, 정신력, 배터리, 허기, 갈증
 - 주요 목표: 탈출, 정복, 진실 발견, 히든 현실 연결 루트
 - 특별 요소: 게임 속 단서를 통해 실제 사무실에 숨겨진 메모/보물 위치를 자연스럽게 안내하는 ARG식 현실 연결
@@ -61,8 +61,10 @@ docs/
     Secret_List.md                  # 게임 내 비밀 목록. 실제 현실 위치 제외
     Horror_Ideas.md                 # 호러 연출 아이디어 저장소
     storypacks/                     # 스토리팩 후보 문서 DB
+      yageunmong_pack.md            # 야근몽 office-dream 후보 storypack
     characters/                     # 6스탯 반복 등장인물 후보 DB
     encounter_db/                   # 런타임 승격 전 인카운터 상황 카드 문서 DB
+      yageunmong_pack.md            # 야근몽 후보 상황 카드
     storypack_db/                   # storypack/card 후보의 machine-readable JSON DB
 
   runtime preview sources/
@@ -140,11 +142,13 @@ private/
 - `docs/content/Horror_Ideas.md`
 - `docs/content/storypacks/README.md`
 - `docs/content/storypacks/isolation_pack.md`
+- `docs/content/storypacks/yageunmong_pack.md`
 - `docs/content/storypacks/wuxia_jianghu_pack.md`
 - `docs/content/characters/README.md`
 - `docs/content/characters/recurrent_npcs.md`
 - `docs/content/encounter_db/README.md`
 - `docs/content/encounter_db/isolation_pack.md`
+- `docs/content/encounter_db/yageunmong_pack.md`
 - `docs/content/encounter_db/wuxia_jianghu_pack.md`
 - `docs/content/storypack_db/README.md`
 - `docs/content/storypack_db/storypacks.json`
@@ -176,5 +180,6 @@ private/
 다음 주제가 커지면 별도 문서로 분리하고, 그때 이 인덱스와 implementation-map도 같이 갱신한다.
 
 1. `document_contamination_pack`, `meeting_reservation_pack`, `compensation_strike_pack`의 별도 후보 문서
-2. `wuxia_jianghu_pack` / 이구학지 — 천기록의 후속 preview slice: `wuxia_heuksa_bang_first_fight` 또는 preview launcher/UI wiring
-3. 실시간 UI/UX 점검 후 확정된 화면/입력 변경 사항 기록
+2. `wuxia_jianghu_pack` / 이구학지 — 천기록의 후속 preview slice: `wuxia_heuksa_bang_first_fight` 구현 완료 후 `preview launcher/UI wiring` opt-in UX 필요 여부 결정
+3. `yageunmong_pack` / 야근몽의 첫 runtime preview 후보: `yageunmong_late_night_desk_awake` 또는 각성편린 3택 preview
+4. 실시간 UI/UX 점검 후 확정된 화면/입력 변경 사항 기록

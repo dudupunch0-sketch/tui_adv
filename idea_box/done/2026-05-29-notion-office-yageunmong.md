@@ -1,5 +1,5 @@
 ---
-status: open
+status: done
 created: 2026-05-29
 source: notion
 backlog_order: 2026-05-29-03
@@ -7,8 +7,11 @@ git_added_at:
 git_added_commit:
 notion_page_id: 36f37e69-695e-8113-9dd5-ddc56a633226
 notion_title: 회사 스토리팩: 야근몽
-used_by:
-done_at:
+related_docs: docs/design/Storypack_World_Model.md; docs/design/Storypack_Encounter_DB.md; docs/content/storypacks/yageunmong_pack.md; docs/content/encounter_db/yageunmong_pack.md; docs/content/storypack_db/storypacks.json; docs/content/storypack_db/encounter_situations.json; docs/dev/Development_Plan.md
+main_plan_ref: docs/dev/Development_Plan.md#011-2026-05-31-idea_box-batch-storypack-system--야근몽-후보-문서화
+reference_check: live Notion Markdown fetched 2026-05-31; local snapshot whitespace-normalized exact match; 자각몽/현실 앵커/각성편린/퇴근 게이트/퇴근을 잊은 나 자신 reflected in docs/data
+used_by: docs/design/Storypack_World_Model.md; docs/design/Storypack_Encounter_DB.md; docs/content/storypacks/yageunmong_pack.md; docs/content/encounter_db/yageunmong_pack.md; docs/content/storypack_db/storypacks.json; docs/content/storypack_db/encounter_situations.json; docs/dev/Development_Plan.md
+done_at: 2026-05-31
 ---
 
 # 회사 스토리팩 아이디어: 야근몽
@@ -31,9 +34,9 @@ done_at:
 
 ## 구현 후보
 
-- 우선은 `status: open` idea 문서로 보관한다.
-- 현재 runtime YAML/Rust/Web 코드는 이 문서 생성만으로 변경하지 않는다.
-- 나중에 처리할 때는 `docs/dev/Development_Plan.md`와 storypack/world 일반화 방향을 기준으로, plan 승격/설계 문서 반영/runtime prototype 중 하나를 선택한다.
+- 초기 수집 시에는 `status: open` idea 문서로 보관했다.
+- 2026-05-31 처리에서 canonical docs/data/main plan에 승격하고 Notion reference 대조까지 완료해 `status: done`으로 갱신했다.
+- runtime YAML/Rust/Web 구현은 아직 하지 않았고, 후속 preview slice로 분리한다.
 
 ## 주의점
 
@@ -498,4 +501,4 @@ B1, 13F, 0F, 미승인층, 퇴근층 같은 이상한 층이 뜬다.
 
 ## 처리 기록
 
-- 아직 미사용. Notion에서 가져온 storypack 아이디어를 `idea_box/inbox/`에 구조화했다.
+- 2026-05-31: live Notion Markdown과 local snapshot을 대조해 공백 정규화 기준 일치를 확인했다. 야근몽을 별도 office-family storypack 후보로 승격해 `docs/content/storypacks/yageunmong_pack.md`에 자각몽/현실 앵커/각성편린/퇴근 게이트/퇴근을 잊은 나 자신을 정리했고, `docs/content/encounter_db/yageunmong_pack.md` 및 `docs/content/storypack_db/*.json`에 runtime 승격 전 후보 카드 6개를 추가했다. 기본 `isolation_pack` office runtime을 대체하지 않고, 야근몽 runtime은 future preview로 분리한다는 경계를 `docs/dev/Development_Plan.md`와 설계 문서에 남겼으므로 `done` 처리했다.

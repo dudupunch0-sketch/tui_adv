@@ -4,6 +4,8 @@ use escape_core::{
 use serde_json::json;
 
 const CONTENT_BUNDLE: &str = include_str!("../fixtures/content/content.bundle.json");
+const WUXIA_PREVIEW_BUNDLE: &str =
+    include_str!("../fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json");
 
 #[test]
 fn fixture_content_bundle_loads_counts_and_public_sections() {
@@ -181,6 +183,62 @@ fn fixture_content_bundle_indexes_locations_and_encounters() {
         Some("combat_intervention")
     );
     assert_eq!(combat.choices.len(), 3);
+}
+
+#[test]
+fn preview_fixture_indexes_wuxia_first_fight() {
+    let bundle =
+        load_content_bundle(WUXIA_PREVIEW_BUNDLE).expect("wuxia preview bundle should load");
+    let runtime = bundle.runtime.as_ref().expect("preview runtime metadata");
+    assert_eq!(runtime.runtime_mode, "storypack_preview");
+    assert_eq!(runtime.world_id, "wuxia_jianghu");
+    assert_eq!(runtime.storypack_id, "wuxia_jianghu_pack");
+    assert_eq!(runtime.default_location, "wuxia_commute_rift");
+    assert_eq!(bundle.manifest.counts.get("locations"), Some(&3));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&2));
+
+    let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
+    assert_eq!(index.locations_len(), 3);
+    assert_eq!(index.encounters_len(), 2);
+
+    let market = index
+        .location("jianghu_market_street")
+        .expect("market street location");
+    assert_eq!(market.connections, vec!["jianghu_roadside"]);
+
+    let fight = index
+        .encounter("wuxia_heuksa_bang_first_fight")
+        .expect("first fight encounter");
+    assert_eq!(fight.title, "흑사방 첫 난투");
+    assert_eq!(fight.conditions.locations, vec!["jianghu_market_street"]);
+    assert_eq!(
+        fight.conditions.required_flags,
+        vec!["wuxia_arrival_hidden"]
+    );
+    assert_eq!(
+        fight.conditions.forbidden_flags,
+        vec!["heuksa_bang_first_fight_resolved"]
+    );
+    assert_eq!(
+        fight
+            .presentation
+            .as_ref()
+            .expect("first fight presentation")
+            .layout
+            .as_deref(),
+        Some("combat_intervention")
+    );
+    assert_eq!(fight.choices.len(), 5);
+    let fallback = fight
+        .choices
+        .iter()
+        .find(|choice| choice.id == "run_toward_open_street")
+        .expect("fallback retreat choice");
+    assert_eq!(fallback.outcome.resources.get("health"), Some(&-3));
+    assert_eq!(
+        fallback.outcome.add_clues,
+        vec!["violence_is_real", "open_street_escape_route"]
+    );
 }
 
 #[test]

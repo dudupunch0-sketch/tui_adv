@@ -1,4 +1,4 @@
-# 무협 강호팩
+# 이구학지 — 천기록
 
 Status: candidate
 
@@ -9,209 +9,283 @@ id: wuxia_jianghu_pack
 world_id: wuxia_jianghu
 status: candidate
 source_refs:
-  - user_request:2026-05-29-office-worker-wuxia-isekai
-  - https://en.wikipedia.org/api/rest_v1/page/summary/Wuxia
-  - https://en.wikipedia.org/api/rest_v1/page/summary/Shaolin_Kung_Fu
-  - https://whc.unesco.org/en/list/1305/
-  - https://whc.unesco.org/en/list/705/
-  - https://whc.unesco.org/en/list/779/
-name: 무협 강호팩
-one_line: 회사에 다니던 직장인이 퇴근 직전의 기억을 마지막으로, 눈떠보니 객잔과 문파와 강호 규칙이 있는 무협 세계에 떨어진다.
+  - idea_box/done/2026-05-29-notion-wuxia-igu-hakji-cheonggi-record.md
+  - notion:36f37e69-695e-8198-86c2-d35c00609441
+name: 이구학지 — 천기록
+previous_placeholder_status: superseded
+one_line: 현대 회사원이 본인 몸과 출근복장 그대로 무협 세계의 시장 한복판에 떨어지고, 흑사방 첫 전투와 청류문 수습생 구간을 거쳐 천기록/천외편린 기반의 랜덤 현대지식 성장 구조를 경험한다.
 main_surfaces:
-  - inn_room
-  - jianghu_notice_board
-  - courier_letter
-  - martial_manual
-  - tavern_rumor
-  - sect_token
-  - duel_record
+  - commute_rift
+  - market_street
+  - office_items
+  - sect_courtyard
+  - training_chore
+  - cheonggi_record
+  - fragment_choice
+  - sect_raid
+  - faction_negotiation
 anomaly_types:
   - world_displacement
   - workplace_memory_mismatch
-  - foreigner_without_sect
-  - manual_as_onboarding
-  - qi_deviation
-  - oath_binding
+  - outsider_without_sect
+  - first_brawl_defeat
+  - notebook_oracle
+  - fragment_choice
+  - sect_debt
+  - faction_pressure
 main_phases:
-  - office_departure
-  - wuxia_arrival
-  - jianghu_orientation
-  - sect_contact
+  - commute_rift
+  - market_arrival
+  - first_brawl
+  - rescue_and_investigation
+  - cheongryu_apprenticeship
+  - cheonggi_record_awakening
+  - cheongryu_raid
   - route_commitment
   - resolution_pressure
 sensitive_topics:
-  - real_history_similarity
   - martial_violence
-  - religious_site_reference
+  - fictional_sect_politics
+  - return_to_modern_life
 reusable_npc_slots:
-  - innkeeper_guide
-  - shaolin_anchor_monk
-  - wudang_anchor_taoist
-  - emei_anchor_swordswoman
-  - courier_broker
+  - early_rescuer
+  - sect_master_guardian
+  - archive_keeper
+  - righteous_ally
+  - sapa_ally
+  - cheonggi_record_keeper
+  - blood_moon_antagonist
 ending_candidates:
-  - return_to_office
-  - leave_jianghu
-  - join_orthodox_sect
-  - reveal_displacement_truth
-  - break_oath_curse
-main_spine_support: office에서 출발한 현대 직장인이 전혀 다른 world로 이동해도 선택지, 자원 압박, NPC 관계, 전투 개입, 기록 surface, 귀환/정착/진실 루트가 성립하는지 검증한다.
-runtime_promotion_notes: 첫 구현은 기존 encounter schema만 사용한 schema-less wuxia prototype으로 시작한다. 첫 runtime 후보는 `wuxia_office_worker_arrival`이며, world_id/storypack_id schema는 반복 필요가 확인된 뒤 연다.
+  - cheongryu_divine_sword
+  - white_path_prison
+  - black_night_gentleman
+  - debtor_of_all_under_heaven
+  - returnee
+  - murim_outsider
+main_spine_support: office에서 출발한 현대인이 완전히 다른 world에 떨어져도 소속, 평판, 관계, 성장, 전투, 자원, 선택, 엔딩을 같은 engine loop로 설명할 수 있는지 검증한다.
+runtime_promotion_notes: 첫 구현은 기존 encounter schema만 사용한 schema-less wuxia prototype으로 시작한다. 첫 후보는 `wuxia_commute_rift_arrival` 또는 `wuxia_heuksa_bang_first_fight`이며, runtime에 넣기 전에는 office content와 섞이지 않도록 world/storypack gating 또는 별도 preview mode를 결정한다.
 ```
+
+## 최신화 기준
+
+이 문서가 현재 canonical 무협 storypack이다.
+
+이전의 짧은 “회사원 객잔 도착 + 소림/무당/아미 저해상도 앵커” 무협 placeholder는 폐기/대체한다. 앞으로 무협팩을 언급할 때는 Notion에서 갱신된 **이구학지 — 천기록** 설정을 기준으로 한다.
+
+중요한 차이:
+
+- 시작 위치는 객잔 방이 아니라 **출근길 균열 이후 시장 한복판**이다.
+- 주인공은 빙의자가 아니라 **본인 몸, 출근복장, 사원증, 지갑 일부, 볼펜, 업무수첩**을 가진 이방인이다.
+- 스마트폰은 전이 직후 사라진다.
+- 초반 핵심 사건은 흑사방 불량배와의 첫 전투, 서하린의 구조, 청류문 수습생 편입이다.
+- 성장 축은 검색 가능한 스마트폰이 아니라 업무수첩과 연결된 **천기록**, 그리고 랜덤 현대지식 보상인 **천외편린**이다.
+- 실제 소림/무당/아미 같은 현실 단체·장소는 현 단계의 active setting이 아니다. 필요하면 장르 참고 자료로만 낮은 해상도에서 다룬다.
 
 ## 핵심 컨셉
 
-플레이어는 회사에 다니던 평범한 직장인이다. 퇴근 직전 엘리베이터를 탔거나, 야근 중 잠깐 눈을 감았거나, 사내 시스템의 이상한 알림을 눌렀다.
+주인공은 현대의 평범한 회사원이다. 평소처럼 출근하던 중 엘리베이터 문, 지하철 문, 횡단보도 신호 같은 일상적 경계에서 하얀 균열에 휘말린다.
 
-다음 순간 플레이어는 어느 객잔의 이층 방에서 깨어난다. 품속에는 사원증 대신 낯선 나무 패가 있고, 휴대폰은 켜지지 않으며, 객잔 아래층에서는 “소림”, “무당”, “아미산 쪽 검수”, “표국” 같은 말을 당연하게 주고받는다.
+다시 눈을 뜨면 형광등 대신 종이등, 아스팔트 대신 흙길, 자동차 소리 대신 말발굽 소리가 있다. 사람들은 한복과 무복을 입고 있고, 주인공은 정장 차림 그대로 시장 한복판에 서 있다.
 
-이 팩의 핵심은 정통 무협 지식을 많이 요구하는 것이 아니라, 현대 회사원의 사고방식이 강호의 규칙과 부딪히는 데 있다.
+남은 것은 다음뿐이다.
 
-## 배경 길이 기준
+- 정장과 구두
+- 목에 건 사원증
+- 지갑 일부
+- 볼펜
+- 업무수첩
+- 커피 또는 가방 같은 출근길 소지품
 
-이 팩은 아직 무협 지식이 많지 않은 상태에서 쓰는 첫 기준팩이므로 배경을 짧게 유지한다.
+스마트폰은 없다. 이 부재가 중요하다. 이 storypack은 “현대 지식을 검색해서 해결하는 무협”이 아니라, 현대인의 관찰력, 기록 습관, 효율화 사고, 실패 복기 능력이 무협 수련과 충돌하고 융합되는 이야기다.
 
-- 첫 문장 목표: “회사원이 눈떠보니 무협 세계 객잔이다.”
-- 깊은 사문 계보, 장대한 왕조사, 복잡한 무공 단계는 당장 만들지 않는다.
-- 소림/무당/아미산 같은 이름은 분위기와 방향을 잡는 자료 기반 앵커로만 쓴다.
-- 게임 내 고유 문파와 세부 인물은 나중에 충분히 조사한 뒤 별도 storypack/card에서 확장한다.
+## 제목 의미
 
-## 자료 기반 문파/강호 앵커
+**이구학지**는 다른 시대와 다른 세계의 지식으로, 낯선 세계의 법칙을 다시 배운다는 의미다.
 
-사용자가 요청한 “공신력 있는 자료 기반” 원칙에 따라, 첫 slice에서는 아래처럼 확인 가능한 공개 자료를 앵커로 둔다. 다만 게임은 역사/종교/무술 재현물이 아니라 fiction storypack이므로, 실제 단체·장소를 세부 설정으로 단정하지 않는다.
+주인공은 무협 세계의 천재가 아니다. 하지만 현대인의 관찰력과 기록 습관, 반복 훈련에 대한 감각, 현대식 사고의 파편을 바탕으로 무림의 수련법을 다르게 해석한다.
 
-| 앵커 | 자료에서 확인한 용도 | 게임 내 사용 원칙 |
-|---|---|---|
-| 무협 / wuxia | 중국 무술가의 모험을 다루는 중국식 fiction/low fantasy 장르로 요약된다. | 장르 문법 참고. 현대 직장인 시점으로 쉽게 풀어 쓴다. |
-| 소림 / Shaolin | Shaolin kung fu는 소림사와 연결된 유명한 중국 무술 전통으로 소개된다. Dengfeng의 역사 기념물은 UNESCO World Heritage 자료가 있다. | “소림 계열 승려/무승” 정도의 낮은 해상도 앵커로 사용한다. |
-| 무당산 / Wudang | Wudang Mountains는 도교 사원/수도원 복합체로 알려져 있고 UNESCO World Heritage 등재 자료가 있다. | “무당 계열 도사/검법” 분위기 앵커로 사용한다. |
-| 아미산 / Mount Emei | Mount Emei Scenic Area는 UNESCO World Heritage 자료가 있고 중국 불교 성산으로 널리 알려져 있다. | “아미산 쪽 검수/여행자” 같은 지리·분위기 앵커로만 사용한다. |
+```text
+기연은 우연히 온다.
+선택은 플레이어의 몫이다.
+숙련은 몸에 새겨야 한다.
+```
 
-참조 URL:
+## 메인 story spine
 
-- https://en.wikipedia.org/api/rest_v1/page/summary/Wuxia
-- https://en.wikipedia.org/api/rest_v1/page/summary/Shaolin_Kung_Fu
-- https://whc.unesco.org/en/list/1305/
-- https://whc.unesco.org/en/list/705/
-- https://whc.unesco.org/en/list/779/
-
-## 톤
-
-초반은 이세계 적응 블랙코미디다.
-
-- 플레이어는 강호 게시판을 사내 공지처럼 읽으려 한다.
-- 객잔 숙박비를 법인카드/교통카드/사원증으로 해결하려고 한다.
-- “문파가 어디냐”는 질문을 “소속 부서가 어디냐”로 오해한다.
-- 비급은 온보딩 문서처럼 보이지만, 읽으면 몸이 먼저 반응한다.
-
-중후반은 강호 규칙과 정체성 압박이다.
-
-- 사원증은 더 이상 통하지 않지만, 낯선 문파 패가 문을 연다.
-- 소문과 공고가 플레이어의 신분을 먼저 정의한다.
-- 소림/무당/아미산 계열 인물은 귀환, 정착, 맹세, 전투 개입의 서로 다른 해석을 제공한다.
-- 최종 선택은 회사로 돌아가는 것, 강호를 떠나는 것, 문파에 들어가는 것, 차원이동의 진실을 밝히는 것 사이에서 갈린다.
-
-## 메인 story spine 연결
-
-| phase | 이 팩에서의 역할 |
+| phase | 역할 |
 |---|---|
-| `office_departure` | 마지막 office 기억을 짧게 제시한다. 야근, 엘리베이터, 사내 알림 등. |
-| `wuxia_arrival` | 객잔에서 깨어나고, 사원증/휴대폰/회사 언어가 통하지 않음을 확인한다. |
-| `jianghu_orientation` | 객잔, 게시판, 표국, 소문을 통해 강호 기본 규칙을 배운다. |
-| `sect_contact` | 소림/무당/아미산 계열 인물이나 문파 패를 통해 소속/맹세/수련 압박을 받는다. |
-| `route_commitment` | 귀환, 강호 정착, 문파 가입, 차원이동 진실 추적 중 방향이 생긴다. |
-| `resolution_pressure` | 현대인의 정체성과 강호에서 얻은 이름 중 무엇을 남길지 선택한다. |
+| `commute_rift` | 출근 중 일상적 경계에서 균열이 열리고, 플레이어가 본인 몸 그대로 전이된다. |
+| `market_arrival` | 시장 한복판에서 이질감, 스마트폰 부재, 사원증 오해, 현대 물건의 한계를 확인한다. |
+| `first_brawl` | 흑사방 말단 불량배와의 튜토리얼성 전투로 이 세계의 위험과 부상 현실감을 보여준다. |
+| `rescue_and_investigation` | 서하린이 개입하고, 주인공은 정체불명의 외지인으로 조사받는다. |
+| `cheongryu_apprenticeship` | 청류문 수습생/객식/잡역/임시 보호 대상이 되어 빚과 잡일, 기초 수련을 시작한다. |
+| `cheonggi_record_awakening` | 업무수첩이 천기록과 연결되고, 천외편린 3택 성장 구조가 열린다. |
+| `cheongryu_raid` | 청류문 습격 사건으로 정파/사파/천기·귀환 루트의 중반 분기점이 열린다. |
+| `route_commitment` | 백도맹, 흑천련, 천기각 중 어느 축과 손잡을지 선택한다. |
+| `resolution_pressure` | 무공은 누구의 것인지, 귀환할지 정착할지, 천기록을 어떻게 다룰지 결말 압박을 만든다. |
+
+## 공용 시스템 대응
+
+| 공용 시스템 | 회사팩 표현 | 이구학지 표현 |
+|---|---|---|
+| 소속 | 부서, 팀, 임시 대응방 | 청류문 수습생, 문파, 백도맹/흑천련/천기각 |
+| 평판 | 사내 평판, 권한 로그 | 무림 명성, 외지인 의심, 흑사방의 표적 |
+| 권한 | 결재, 승인, 사원증 | 장문 허가, 문파 보호, 통행/참가 자격 |
+| 과업 | 업무, 프로젝트, 장애 대응 | 잡일, 수련, 의뢰, 호송, 문파 재건 |
+| 스트레스 | 번아웃, 공포, 현실감 상실 | 심마, 이방인 정체성 압박, 수련 한계 |
+| 체력/부상 | 피로, 컨디션 저하 | 기혈, 내상, 외상, 구두/정장으로 인한 불리함 |
+| 동료 | 팀원, 사수, 격리자 | 서하린, 사형제, 낭인, 기록관 |
+| 성장 | 스킬 습득, 업무 숙련 | 무공 숙련, 천외편린, 복기수련법 |
+| 정보 | 문서, 메신저, 서버 로그 | 비급, 소문, 천기록, 천기각 기록 |
+| 장비 | 사무도구, 단말기 | 병장기, 약재, 업무수첩, 볼펜, 출근 가방 |
+| 거점 | 사무실, 회의실, 서버실 | 청류문, 시장, 객잔, 산문, 천기각 |
 
 ## 주요 surface
 
-### inn_room
+### commute_rift
 
-- 첫 장면의 안전지대다.
-- 회사원의 물건이 무협 세계의 물건으로 바뀌어 있는지 확인한다.
-- 휴대폰, 사원증, 가방, 지갑 같은 현대 물건의 실패를 보여준다.
+출근길의 일상적 경계가 world transition surface가 된다. 엘리베이터, 지하철, 횡단보도 같은 장면을 짧게 쓰되 실제 회사/역/주소는 넣지 않는다.
 
-### jianghu_notice_board
+### market_street
 
-- 객잔 벽의 강호 게시판.
-- 현상금, 문파 소식, 표국 의뢰, 비무 일정이 붙는다.
-- 플레이어는 이를 사내 공지/이슈 보드처럼 해석하려 한다.
+첫 도착 지점이다. 이질감, 군중의 시선, 흑사방 시비, 현대 물건의 무력함을 동시에 보여준다.
 
-### courier_letter
+### office_items
 
-- 전서구, 표국, 심부름꾼이 전달하는 편지.
-- 날짜와 발신자가 어긋나며 귀환/정착 루트 단서를 준다.
+정장, 구두, 사원증, 지갑, 볼펜, 업무수첩, 커피/가방이 초반 선택지를 만든다. 이 물건들은 무림을 지배하는 치트가 아니라 임시 변수와 오해의 원천이다.
 
-### martial_manual
+### sect_courtyard
 
-- 비급, 검보, 권법 주석.
-- 플레이어에게는 온보딩 문서나 운영 매뉴얼처럼 보인다.
-- 너무 오래 읽으면 심마/기혈 역류 압박이 생긴다.
+청류문 수습생 구간의 거점이다. 보호, 빚, 잡일, 수련 허가, 문파 소속을 다룬다.
 
-### tavern_rumor
+### training_chore
 
-- 객잔 소문, 술자리 증언, 점소이의 관찰.
-- 강호 평판과 NPC 관계를 움직인다.
-- 플레이어는 이를 회사 슬랙/메신저 rumor처럼 읽으려 한다.
+장작 패기, 물 긷기, 연무장 청소, 약초 말리기, 서고 정리 같은 잡일이 수련과 성장의 반복 루프가 된다.
 
-### sect_token
+### cheonggi_record
 
-- 문파 패, 통행 영패, 추천서.
-- office pack의 사원증/보안권한 surface에 대응한다.
-- “소속”과 “통과 권한”을 동시에 다룬다.
+업무수첩이 천기록과 연결된 surface다. 검색창이 아니며, 원하는 질문에 답하지 않는다. 특정 순간에 현대 지식의 조각이 떠오른다.
 
-## 반복 NPC slot
+### fragment_choice
 
-| slot | 후보 인물 | 자료 앵커 | 기능 |
-|---|---|---|---|
-| `innkeeper_guide` | 노객주 | 객잔/강호 소문 trope | 현대 직장인의 오해를 받아 주는 첫 안내자. |
-| `shaolin_anchor_monk` | 행각승 | Shaolin / Dengfeng anchor | 폭력보다 절제와 귀환 가능성을 묻는 인물. |
-| `wudang_anchor_taoist` | 떠돌이 도사 | Wudang / Taoist mountain anchor | 기이한 차원이동을 도가적 언어로 해석한다. |
-| `emei_anchor_swordswoman` | 아미산 쪽 검수 | Mount Emei anchor | 문파 규칙, 명예, 여성 검수 trope를 낮은 해상도로 제공한다. |
-| `courier_broker` | 표국 중개인 | 표국/전서 surface | 편지, 이동, 비용, 귀환 단서를 연결한다. |
+천외편린 3택 보상 화면이다. 세 후보 중 하나만 고를 수 있고, 나머지 두 개는 사라진다. 즉시 강해지는 보상이 아니라 수련 방향/과제/해석이 열린다.
+
+### sect_raid
+
+청류문 습격 사건처럼 route commitment를 강제하는 큰 사건 surface다. 백도맹, 흑천련, 천기각이 서로 다른 명분과 대가를 제시한다.
+
+## 천기록 / 천외편린 규칙
+
+천기록은 업무수첩과 연결된 기연이다. 스마트폰 검색이나 만능 지식창이 아니다.
+
+```text
+천기록 발현
+↓
+현대 지식 후보 세 개 출현
+↓
+그중 하나만 선택
+↓
+나머지 두 개는 사라짐
+↓
+선택한 지식이 수련 과제나 능력 방향으로 전환됨
+```
+
+천외편린 후보 계열:
+
+| 계열 | 역할 |
+|---|---|
+| 현대 무술 | 복싱, 레슬링, 거리 조절, 방어 자세 같은 현대 격투 감각을 무공의 빈틈 해석에 사용한다. |
+| 훈련법 | 반복 훈련, 휴식, 회복, 교정, 과훈련 방지 등 장기 성장 효율을 다룬다. |
+| 응급 처치 | 출혈, 염좌, 탈수, 부상 악화를 줄이는 생존 지식이다. |
+| 생존 전술 | 도주, 은신, 지형 활용, 다수전 회피, 무기 든 상대 대응을 다룬다. |
+| 사고법 | 기록, 복기, 원인 분석, 협상, 심리전, 위험관리처럼 회사원 출신 색깔을 살린다. |
+| 귀환 단서 | 원래 세계, 전이 원인, 천기록의 정체에 대한 희귀 조각이다. |
+
+천외편린은 큰 전투 후, 심각한 패배 후, 수련 한계에 부딪힌 밤, 중요한 선택 직전, 동료와의 유대가 깊어진 뒤, 천기각 유물 근처, 귀환 단서를 발견한 순간에 발현하기 좋다.
+
+## 주요 세력
+
+| 세력 | 역할 | 주의점 |
+|---|---|---|
+| 청류문 | 주인공이 처음 보호받고 수습생으로 시작하는 몰락한 문파 | 약하지만 따뜻한 출발 거점. 공짜 보호가 아니라 빚과 의무가 있다. |
+| 백도맹 | 정파 연합 | 의와 협을 내세우지만 명문 중심 서열과 정치가 있다. |
+| 흑천련 | 사파 연합 | 위험하고 실리적이지만 밑바닥을 보호하는 인물도 있다. |
+| 천기각 | 무림 기록을 관리하는 중립 세력 | 천기록의 비밀, 이전 이방인 기록, 귀환 루트와 연결된다. |
+| 혈월교 | 메인 적대 세력 | “무공은 모두에게 열려야 한다”는 급진 명분을 가졌지만 방식이 극단적이다. |
+
+## 주요 등장인물 slot
+
+| slot | 후보 인물 | 기능 |
+|---|---|---|
+| `early_rescuer` | 서하린 | 흑사방 첫 전투 후 개입하는 청류문 외문 제자. 초반 구조자이자 수습생 구간 멘토. |
+| `sect_master_guardian` | 청류문 장문인 | 보호와 채무, 잡일/수련 허가 조건을 제시한다. |
+| `archive_keeper` | 막노인 | 청류문 폐서고와 몰락의 진실, 선택의 대가를 암시한다. |
+| `righteous_ally` | 남궁서윤 | 백도맹/정파 루트의 원칙적 동료. |
+| `sapa_ally` | 도월 | 흑천련/사파 루트의 거래와 생존 감각을 제공하는 낭인. |
+| `cheonggi_record_keeper` | 연소하 | 천기각 기록관. 천기록의 정체와 귀환 루트 단서를 쥔다. |
+| `blood_moon_antagonist` | 유하린 | 혈월교주. 무공 독점에 대한 급진적 반론과 메인 갈등을 만든다. |
 
 ## 후보 인카운터 카드
 
 | id | phase | surface | 핵심 상황 | 승격 우선순위 |
 |---|---|---|---|---|
-| `wuxia_office_worker_arrival` | `wuxia_arrival` | `inn_room` | 회사원이 객잔에서 깨어나고 현대 물건이 통하지 않는다. | 높음 |
-| `wuxia_notice_foreigner_without_sect` | `jianghu_orientation` | `jianghu_notice_board` | 강호 게시판에 “출신불명 외지인” 경고가 붙어 있다. | 높음 |
-| `wuxia_manual_as_onboarding` | `jianghu_orientation` | `martial_manual` | 비급을 회사 온보딩 문서처럼 읽다가 몸이 먼저 반응한다. | 높음 |
-| `wuxia_shaolin_wudang_emei_rumor` | `sect_contact` | `tavern_rumor` | 객잔 소문으로 소림/무당/아미산 계열 선택지의 성격을 짧게 배운다. | 중간 |
-| `wuxia_badge_mistaken_for_token` | `sect_contact` | `sect_token` | 사원증이 문파 패로 오해받아 통과 권한과 의심을 동시에 만든다. | 중간 |
-| `wuxia_duel_bridge_intervention` | `route_commitment` | `duel_record` | 다리 위 결투에서 자동 난투가 벌어지고 1회 개입 기회가 생긴다. | 중간 |
+| `wuxia_commute_rift_arrival` | `commute_rift` / `market_arrival` | `commute_rift`, `market_street` | 출근 중 균열에 휘말려 시장 한복판에 본인 몸 그대로 떨어진다. | 높음 |
+| `wuxia_heuksa_bang_first_fight` | `first_brawl` | `market_street`, `office_items` | 흑사방 말단에게 시비가 걸리고, 대부분 패배하는 튜토리얼성 첫 전투를 겪는다. | 높음 |
+| `wuxia_seo_harin_rescue` | `rescue_and_investigation` | `market_street` | 서하린이 개입해 주인공을 구조하지만, 정체불명의 외지인으로 의심한다. | 높음 |
+| `wuxia_cheongryu_apprentice_entry` | `cheongryu_apprenticeship` | `sect_courtyard`, `training_chore` | 청류문 수습생/객식/잡역으로 편입되고 보호의 대가를 갚기 시작한다. | 높음 |
+| `wuxia_cheonggi_record_first_fragment` | `cheonggi_record_awakening` | `cheonggi_record`, `fragment_choice` | 업무수첩이 천기록과 연결되고 첫 천외편린 3택이 열린다. | 높음 |
+| `wuxia_cheongryu_raid_route_split` | `cheongryu_raid` / `route_commitment` | `sect_raid`, `faction_negotiation` | 청류문 습격 후 백도맹/흑천련/천기각 루트 선택 압박이 생긴다. | 중간 |
 
 상세 카드는 `docs/content/encounter_db/wuxia_jianghu_pack.md`에 둔다.
 
-## 기존 시스템과의 대응
+## 루트와 결말 후보
 
-| 기존 office 축 | 무협팩 대응 |
-|---|---|
-| 사내 메신저/공지 | 강호 게시판, 객잔 소문, 전서구 편지 |
-| 사원증/보안권한 | 문파 패, 통행 영패, 추천서 |
-| 조직도/근태 | 문파 소속, 사제 관계, 표국 장부 |
-| CCTV/출입기록 | 객잔 목격담, 표국 이동 기록, 결투 증언 |
-| 서버 로그/build log | 비급 주석, 진법 기록, 사부의 편지 |
-| 정신력 왜곡 | 심마, 낯선 세계 적응 실패, 기억 불일치 |
-| 배터리/정보 비용 | 휴대폰 고갈, 전서 비용, 내공/기혈 소모 |
-| 자동 난투 + 개입 | 결투/협공/다리 위 몸싸움의 결정적 순간 선택 |
+### 정파 루트
+
+주제는 “질서 안에서 개혁할 것인가”다. 주인공은 백도맹과 손잡고 청류문을 재건한다. 하지만 정파는 깨끗하기만 한 질서가 아니며, 명문 문파들은 천기록을 견제하거나 빼앗으려 한다.
+
+결말 후보:
+
+- `cheongryu_divine_sword`: 청류문을 신흥 명문으로 재건하고 천기록을 제한적으로 공개한다.
+- `white_path_prison`: 질서를 지키는 데 성공하지만 천기록을 상층부에 빼앗기고, 질서가 항상 정의는 아님을 깨닫는다.
+
+### 사파 루트
+
+주제는 “살아남기 위해 어디까지 내려갈 것인가”다. 청류문이 무너진 뒤 흑천련과 거래하고, 생존/거래/암투/잠입 중심으로 진행한다.
+
+결말 후보:
+
+- `black_night_gentleman`: 잔혹한 세력을 제거하고 밑바닥 사람들을 보호하는 새 사파 질서를 만든다.
+- `debtor_of_all_under_heaven`: 살아남기 위해 너무 많은 거래를 하여 적은 줄었지만 빚과 대가가 늘어난다.
+
+### 천기/귀환 루트
+
+주제는 “이 세계는 정말 현실인가”다. 천기각과 함께 천기록의 비밀, 이전 이방인 기록, 세계 균열, 귀환 가능성을 조사한다.
+
+결말 후보:
+
+- `returnee`: 원래 세계 사무실 책상 앞에서 깨어나지만 손의 굳은살과 서랍 속 천기록이 남아 있다.
+- `murim_outsider`: 돌아갈 방법을 찾지만 남기로 선택하고, 자신이 이 세계의 새로운 기록자가 된다.
 
 ## Runtime promotion notes
 
-첫 runtime 승격 후보는 다음 3개가 적합하다.
+첫 runtime 승격은 storypack 선택 UI나 새 성장 schema를 바로 열지 않는다.
 
-1. `wuxia_office_worker_arrival`
-   - 사용자가 정한 “회사 직장인 → 무협 세계 차원이동” 전제를 가장 직접적으로 보여준다.
-   - 기존 encounter schema의 title/body/choices만으로 구현 가능하다.
-2. `wuxia_notice_foreigner_without_sect`
-   - 강호 세계의 소속/평판/문파 질문을 짧게 소개한다.
-   - Web Storybook의 story flow와 잘 맞다.
-3. `wuxia_duel_bridge_intervention`
-   - 최근 전투 시스템 설계의 첫 비-office 검증 후보가 된다.
-   - 새 combat schema 없이 “자동 난투 body + 1회 choice”로 시작할 수 있다.
+권장 순서:
+
+1. `wuxia_commute_rift_arrival`
+   - updated story의 전제를 가장 직접적으로 고정한다.
+   - 기존 encounter schema의 title/body/choices/outcome만으로 구현할 수 있다.
+2. `wuxia_heuksa_bang_first_fight`
+   - 기존 schema-less auto-brawl prototype과 연결하기 좋다.
+   - 다만 첫 전투는 “대부분 패배/버팀/간신히 승리” 튜토리얼이므로 숫자 HP 전투가 아니라 결과 hook 중심으로 둔다.
+3. `wuxia_cheonggi_record_first_fragment`
+   - 천외편린 3택 UI/보상 구조는 매력적이지만 새 reward/ability schema로 과확장하기 쉽다.
+   - 첫 slice에서는 선택 결과를 flag/clue/log/presentation text로만 표현하고, 실제 성장 시스템은 별도 검증 뒤 연다.
 
 주의:
 
-- 첫 구현에서는 기존 office route와 같은 runtime bundle에 섞기 전에 `world_id`/`storypack_id` gating 전략을 정해야 한다.
-- 현재 save/localStorage key의 `escape-office` 명칭은 compatibility 이슈로 남겨 두고, 이름 변경은 별도 migration으로 다룬다.
-- 무협팩에는 현실 사무실 final hint를 연결하지 않는다. 현실 연결이 필요하면 world별 local-only layer를 따로 설계한다.
-- 실제 소림/무당/아미산 단체나 종교·문화재 설명을 게임 설정처럼 단정하지 않는다. 첫 slice는 낮은 해상도의 장르 앵커만 사용한다.
+- runtime에 무협 콘텐츠를 넣기 전 office 콘텐츠와 섞이지 않도록 `world_id`/`storypack_id` gating 또는 별도 preview mode를 결정한다.
+- save/localStorage key의 `escape-office` 명칭은 compatibility 이슈로 남겨 두고, 이름 변경은 별도 migration으로 다룬다.
+- 실제 회사명, 실제 통근 경로, 실제 역/건물/사원증 정보는 쓰지 않는다.
+- 혈월교/흑천련/백도맹/청류문은 fiction 세력이다. 현실 종교·민족·정치 소재처럼 보이는 세부 묘사는 피한다.

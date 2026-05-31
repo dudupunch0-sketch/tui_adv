@@ -11,6 +11,7 @@ fn fixture_content_bundle_loads_counts_and_public_sections() {
 
     assert_eq!(bundle.schema_version, 1);
     assert_eq!(bundle.kind, "tui_adv.content_bundle");
+    assert_eq!(bundle.runtime, None);
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&16));
     assert_eq!(bundle.manifest.counts.get("encounters"), Some(&21));
     assert_eq!(bundle.content.locations.len(), 16);
@@ -69,6 +70,41 @@ fn content_bundle_rejects_wrong_kind() {
         error,
         ContentBundleError::UnsupportedKind("other.bundle".to_string())
     );
+}
+
+#[test]
+fn content_bundle_loads_optional_storypack_preview_runtime_metadata() {
+    let preview_bundle = r#"
+{
+  "schema_version": 1,
+  "kind": "tui_adv.content_bundle",
+  "source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/*.yaml",
+  "runtime": {
+    "runtime_mode": "storypack_preview",
+    "world_id": "wuxia_jianghu",
+    "storypack_id": "wuxia_jianghu_pack",
+    "default_location": "wuxia_commute_rift"
+  },
+  "manifest": {"schema_version": 1, "source": "preview", "counts": {}},
+  "content": {
+    "locations": [],
+    "items": [],
+    "encounters": [],
+    "endings": [],
+    "achievements": [],
+    "secrets": []
+  }
+}
+"#;
+
+    let bundle = load_content_bundle(preview_bundle).expect("preview bundle should load");
+    let runtime = bundle
+        .runtime
+        .expect("preview runtime metadata should load");
+    assert_eq!(runtime.runtime_mode, "storypack_preview");
+    assert_eq!(runtime.world_id, "wuxia_jianghu");
+    assert_eq!(runtime.storypack_id, "wuxia_jianghu_pack");
+    assert_eq!(runtime.default_location, "wuxia_commute_rift");
 }
 
 #[test]

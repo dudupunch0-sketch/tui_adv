@@ -77,10 +77,71 @@ def test_export_web_data_builds_renderer_neutral_content_bundle():
 
     assert bundle["schema_version"] == 1
     assert bundle["kind"] == "tui_adv.content_bundle"
+    assert "runtime" not in bundle
     assert bundle["manifest"]["counts"]["locations"] == 16
     assert bundle["content"]["locations"][0]["id"] == "dev_desk"
     assert bundle["content"]["encounters"][0]["id"] == "ex_employee_messenger"
+    assert not any(
+        encounter["id"] == "wuxia_commute_rift_arrival"
+        for encounter in bundle["content"]["encounters"]
+    )
     assert _missing_private_secret_fields(bundle)
+
+
+def test_export_web_data_builds_wuxia_storypack_preview_bundle():
+    exporter = _load_export_module()
+
+    bundle = exporter.build_storypack_preview_bundle(ROOT, "wuxia_jianghu_pack")
+
+    assert bundle["schema_version"] == 1
+    assert bundle["kind"] == "tui_adv.content_bundle"
+    assert bundle["runtime"] == {
+        "runtime_mode": "storypack_preview",
+        "world_id": "wuxia_jianghu",
+        "storypack_id": "wuxia_jianghu_pack",
+        "default_location": "wuxia_commute_rift",
+    }
+    assert "storypack-previews/wuxia_jianghu_pack" in bundle["source"]
+    assert bundle["manifest"]["counts"] == {
+        "locations": 2,
+        "items": 1,
+        "encounters": 1,
+        "endings": 1,
+        "achievements": 1,
+        "secrets": 0,
+    }
+    assert [location["id"] for location in bundle["content"]["locations"]] == [
+        "wuxia_commute_rift",
+        "jianghu_roadside",
+    ]
+    assert bundle["content"]["encounters"][0]["id"] == "wuxia_commute_rift_arrival"
+    assert "dev_desk" not in json.dumps(bundle, ensure_ascii=False)
+    assert _missing_private_secret_fields(bundle)
+
+
+def test_checked_in_wuxia_storypack_preview_bundle_is_up_to_date():
+    exporter = _load_export_module()
+    bundle_path = (
+        ROOT
+        / "crates"
+        / "escape-core"
+        / "fixtures"
+        / "content"
+        / "storypack-preview"
+        / "wuxia_jianghu_pack.content.bundle.json"
+    )
+    web_bundle_path = (
+        ROOT
+        / "web"
+        / "src"
+        / "data"
+        / "generated"
+        / "storypack-preview"
+        / "wuxia_jianghu_pack.content.bundle.json"
+    )
+
+    assert exporter.check_storypack_preview_bundle(ROOT, "wuxia_jianghu_pack", bundle_path) == []
+    assert exporter.check_storypack_preview_bundle(ROOT, "wuxia_jianghu_pack", web_bundle_path) == []
 
 
 def test_export_web_data_writes_and_checks_content_bundle(tmp_path):
@@ -169,6 +230,57 @@ def test_export_web_data_cli_write_and_check_roundtrip(tmp_path):
     assert check_result.returncode == 0, check_result.stdout + check_result.stderr
     assert "web data is up to date" in check_result.stdout
     assert check_result.stdout.count("content bundle is up to date") == 2
+
+
+def test_export_web_data_cli_writes_and_checks_storypack_preview_bundles(tmp_path):
+    rust_preview_bundle = tmp_path / "rust" / "storypack-preview" / "wuxia.bundle.json"
+    web_preview_bundle = tmp_path / "web" / "storypack-preview" / "wuxia.bundle.json"
+
+    write_result = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT_PATH),
+            "--root",
+            str(ROOT),
+            "--storypack-preview",
+            "wuxia_jianghu_pack",
+            "--preview-bundle",
+            str(rust_preview_bundle),
+            "--preview-bundle",
+            str(web_preview_bundle),
+            "--write",
+        ],
+        check=False,
+        text=True,
+        capture_output=True,
+    )
+    assert write_result.returncode == 0, write_result.stdout + write_result.stderr
+    assert f"wrote storypack preview bundle to {rust_preview_bundle}" in write_result.stdout
+    assert f"wrote storypack preview bundle to {web_preview_bundle}" in write_result.stdout
+    assert json.loads(rust_preview_bundle.read_text(encoding="utf-8")) == json.loads(
+        web_preview_bundle.read_text(encoding="utf-8")
+    )
+
+    check_result = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT_PATH),
+            "--root",
+            str(ROOT),
+            "--storypack-preview",
+            "wuxia_jianghu_pack",
+            "--preview-bundle",
+            str(rust_preview_bundle),
+            "--preview-bundle",
+            str(web_preview_bundle),
+            "--check",
+        ],
+        check=False,
+        text=True,
+        capture_output=True,
+    )
+    assert check_result.returncode == 0, check_result.stdout + check_result.stderr
+    assert check_result.stdout.count("storypack preview bundle is up to date") == 2
 
 
 def test_export_web_data_refuses_public_secret_final_hint(tmp_path):

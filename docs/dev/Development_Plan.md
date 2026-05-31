@@ -727,33 +727,38 @@ node --check scripts/storybook-reference-qa.mjs
 
 ## 0.10 2026-05-29 active direction: storypack/world 일반화와 무협 기준팩
 
-사용자 결정에 따라 프로젝트 방향을 “회사 아포칼립스 전용 게임”에서 “storypack/world 기반 선택지 생존 엔진 + 기본 office storypack”으로 재정렬한다. 첫 비-office 기준팩은 순수 무림 낭인물이 아니라, 회사에 다니던 직장인이 눈떠보니 무협 세계로 이동한 이세계 차원이동 컨셉이다.
-현재 상태: 설계 문서화 완료, 런타임 구현 미착수.
+사용자 결정에 따라 프로젝트 방향을 “회사 아포칼립스 전용 게임”에서 “storypack/world 기반 선택지 생존 엔진 + 기본 office storypack”으로 재정렬한다. 첫 비-office 기준팩은 `wuxia_jianghu_pack`이며, 최신 canonical story는 Notion에서 갱신된 **이구학지 — 천기록**이다.
+현재 상태: 설계 문서화 완료, 최신 무협 story 반영 완료, machine-readable storypack DB/preview mode 결정 완료, 첫 runtime preview(`wuxia_commute_rift_arrival`) 구현 완료.
 
 문제 인식:
 
 - 기존 문서와 런타임 콘텐츠는 `escape from the office`에 강하게 묶여 있다.
 - storypack 형태로 확장하려면 office가 아닌 세계관에서도 성립하는 시스템 기준이 필요하다.
-- 첫 비-office 기준팩은 회사원 차원이동형 무협 세계관으로 정한다.
+- 첫 비-office 기준팩은 현대 회사원이 본인 몸과 출근복장 그대로 무협 세계에 전이되는 이구학지 무협 세계관으로 정한다.
 
 반영 결과:
 
 - `docs/design/Storypack_World_Model.md`를 추가해 `world_id`, `storypack_id`, surface, resource display alias, route hook을 정리했다.
-- `docs/content/storypacks/wuxia_jianghu_pack.md`를 회사원 차원이동형 무협 기준팩으로 추가했다.
-- `docs/content/encounter_db/wuxia_jianghu_pack.md`에 `wuxia_office_worker_arrival`을 포함한 6개 후보 situation card를 추가했다.
+- `docs/content/storypacks/wuxia_jianghu_pack.md`를 이구학지 — 천기록 무협 기준팩으로 갱신했다.
+- `docs/content/encounter_db/wuxia_jianghu_pack.md`에 `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`를 포함한 6개 후보 situation card를 정리했다.
+- `docs/content/storypack_db/storypacks.json`와 `docs/content/storypack_db/encounter_situations.json`를 추가해 design-time storypack DB 참조 무결성을 검증한다.
+- `docs/dev/Storypack_Runtime_Preview_Mode.md`를 추가해 첫 non-office runtime prototype은 separate preview mode first로 진행하고, 기본 office bundle과 무협 preview bundle을 섞지 않는다고 결정했다.
+- `wuxia_commute_rift_arrival`을 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/*.yaml` source와 별도 generated preview bundle로 구현했다. Rust fixture와 Web generated preview artifact는 기본 `content.bundle.json`와 분리된다.
 - `AGENTS.md`, `README.md`, `docs/00_Index.md`, `docs/design/Storypack_Encounter_DB.md`, `docs/dev/Checklist.md`를 office-only 표현에서 storypack-capable 표현으로 조정했다.
 
 유지 범위:
 
 - 기존 office runtime 콘텐츠는 삭제하지 않는다.
 - `escape from the office`는 현재 기본 storypack으로 유지한다.
+- 기본 `src/tui_adv/data/*.yaml`, 기본 `content.bundle.json`, Web 기본 generated bundle, `escape-office` save/localStorage key는 그대로 유지한다.
 - Rust GameCore / `ScenePage` / WASM JSON boundary는 계속 renderer-neutral truth를 소유한다.
-- 이번 slice에서는 런타임 YAML/Rust/Web 구현과 save/localStorage key migration을 열지 않는다.
+- non-office runtime content는 명시적인 storypack preview bundle/flag 경로에서만 투입한다.
+- save/localStorage key migration과 천외편린 3택 성장 schema는 아직 열지 않는다.
 
 후속 후보:
 
-1. machine-readable storypack DB: docs-only `world_id`/`storypack_id`/surface/card 구조를 YAML 또는 JSON 후보 DB로 검증한다.
-2. schema-less wuxia runtime prototype: 기존 encounter schema만 사용해 `wuxia_office_worker_arrival` 또는 `wuxia_duel_bridge_intervention` 1개를 runtime에 넣고 office가 아닌 world도 표시되는지 검증한다.
+1. `wuxia_heuksa_bang_first_fight`: arrival preview 검증 후 같은 preview mode에서 두 번째 무협 encounter를 여는 후보.
+2. preview launcher/UI wiring: Web 또는 terminal에서 preview bundle을 선택하는 명시적 opt-in entrypoint를 추가할지 검토한다.
 3. display alias pass: `health/sanity/battery/hunger/thirst/danger` 내부 field는 유지하되 world별 표시 이름을 분리할지 검토한다.
 
 ## 1. 목표
@@ -1243,6 +1248,7 @@ src/tui_adv/data/secrets.example.yaml
 - 선택지 결과 필드
 - 엔딩 조건 필드
 - 히든 루트 플래그 체인
+- storypack/card 후보 DB의 `world_id`/`storypack_id`/taxonomy/fallback/outcome hook 참조 무결성
 
 ### 6.3 TUI 스모크 테스트
 
@@ -1295,14 +1301,21 @@ src/tui_adv/data/secrets.example.yaml
 22. PR B transition controller 완료: action 실행 전 current page/action context를 캡처하고, action 후 `transitionPlan(previousPage, nextPage, action)`으로 `.storybook-shell` enter/exit class/attribute transition을 적용한다. reduced/off motion은 즉시 render하고, `transitionend` 미발생 시 timeout fallback으로 게임이 멈추지 않게 했다.
 23. PR C audio engine skeleton 완료: `web/src/ui/audio/audioEngine.ts`가 lazy Web Audio generated oscillator backend와 no-op fallback을 제공하고, muted 상태 no schedule, user-gesture opt-in unlock, one-shot cue, looping ambience API를 renderer-local로 고정했다. Rust GameCore / `ScenePage` / WASM JSON boundary와 binary audio asset은 변경하지 않았다.
 24. schema-less combat encounter prototype 완료: `supply_closet_cache`에서 `supply_closet_auto_brawl`로 이어지는 물품창고 자동 난투를 기존 encounter/choice/outcome schema만으로 구현했고, Rust `ScenePage`, SuperLightTUI, Web generated data에서 같은 action id와 presentation hint를 검증한다.
-25. storypack/world 일반화 첫 설계 완료: office는 기본 storypack으로 유지하되, `docs/design/Storypack_World_Model.md`와 회사원 차원이동형 `wuxia_jianghu_pack`을 추가해 무협 세계관을 첫 비-office 기준팩으로 세웠다.
+25. storypack/world 일반화 첫 설계 완료: office는 기본 storypack으로 유지하되, `docs/design/Storypack_World_Model.md`와 `wuxia_jianghu_pack`을 추가해 무협 세계관을 첫 비-office 기준팩으로 세웠다.
+26. 무협 기준팩 최신화 완료: `wuxia_jianghu_pack`의 canonical story를 Notion 최신안 **이구학지 — 천기록**으로 교체했고, 이전 generic 무협 placeholder는 superseded로 정리했다. 후보 카드도 `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment` 중심으로 갱신했다.
+27. machine-readable storypack DB 검증 완료: `docs/content/storypack_db/storypacks.json`와 `docs/content/storypack_db/encounter_situations.json`에 office/wuxia 후보 DB를 추가했고, `validate_storypack_db()`로 storypack/world/taxonomy/fallback/outcome hook 참조 무결성을 테스트한다.
+28. storypack runtime preview mode 결정 완료: `docs/dev/Storypack_Runtime_Preview_Mode.md`에서 첫 non-office runtime prototype은 **separate preview mode first**로 진행하기로 결정했다. 기본 office bundle과 `src/tui_adv/data/*.yaml`은 그대로 두고, `wuxia_jianghu_pack`은 explicit preview bundle 또는 preview flag로만 runtime에 들어간다.
+29. 무협 storypack preview runtime prototype 완료: `wuxia_commute_rift_arrival`을 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/*.yaml` source와 별도 Rust/Web generated preview bundle로 구현했다. Generated artifacts는 `crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json`와 `web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json`다. `escape-wasm::new_game_json()`과 `escape-terminal --scene content`는 preview `runtime.default_location`을 사용해 `wuxia_commute_rift`에서 시작하며, 기본 office bundle은 계속 `dev_desk`에서 시작한다.
 
 현재 최우선 남은 작업:
 
-1. storypack/world 일반화 방향을 기준으로 첫 non-office runtime 준비 slice를 진행한다.
+1. 무협 storypack preview mode 후속 slice를 선택한다.
    - 기본 storypack은 `escape from the office` / office isolation 계열로 유지한다.
-   - 첫 비-office 기준팩은 회사 직장인이 무협 세계로 차원이동하는 `wuxia_jianghu_pack`이다.
-   - 다음 구현 후보는 둘 중 하나다: machine-readable storypack DB 검증, 또는 기존 encounter schema만 쓰는 schema-less wuxia runtime prototype.
+   - 첫 비-office 기준팩은 `wuxia_jianghu_pack` / **이구학지 — 천기록**이다.
+   - machine-readable storypack DB, preview mode 결정, `wuxia_commute_rift_arrival` 첫 runtime preview는 완료했다.
+   - 다음 후보는 같은 preview mode에서 기존 encounter schema만 쓰는 `wuxia_heuksa_bang_first_fight`를 추가하거나, Web/terminal preview launcher/UI wiring으로 명시적 opt-in entrypoint를 여는 것이다.
+   - 기본 `content.bundle.json`, Web 기본 generated bundle, `src/tui_adv/data/*.yaml`, `escape-office` save/localStorage key는 계속 바꾸지 않는다.
+   - 천외편린 3택 성장 schema는 별도 검증 전까지 열지 않는다.
    - 어느 후보를 택하든 Rust GameCore / `ScenePage` / WASM JSON boundary 책임 분리와 renderer-neutral 원칙을 유지한다.
 
 전환 중 유지:
@@ -1325,7 +1338,7 @@ src/tui_adv/data/secrets.example.yaml
 8. Web player start/save UX first slice 후속: save JSON export/import, settings/reduce-motion UI, 오늘의 seed는 별도 승격 전까지 열지 않는다.
 9. 여러 히든 현실 보물
 10. 전투 시스템 후속 slice는 `supply_closet_auto_brawl` 이후 반복 가치가 확인될 때만 presentation metadata 정리 또는 Rust combat resolver로 승격한다.
-11. 무협 storypack first runtime slice: `wuxia_jianghu_pack`의 `wuxia_office_worker_arrival` 또는 `wuxia_duel_bridge_intervention`을 기존 encounter schema로 검증한다.
+11. 무협 storypack preview 후속: `wuxia_heuksa_bang_first_fight`를 같은 preview mode에서 추가할지, 또는 Web/terminal preview launcher/UI wiring을 먼저 열지 결정한다.
 
 ## 9. 주요 리스크
 
@@ -1370,8 +1383,9 @@ Web 또는 terminal renderer가 게임 규칙을 다시 구현하면 Rust GameCo
 
 ## 10. 다음 액션
 
-1. `docs/design/Storypack_World_Model.md`와 `wuxia_jianghu_pack` 기준으로 다음 runtime 준비 slice를 선택한다.
-   - 안전한 기본값: machine-readable storypack DB 검증을 먼저 열고, office/wuxia 후보 카드의 참조 무결성을 테스트한다.
-   - 빠른 플레이 검증을 택하면 기존 encounter schema만 사용해 `wuxia_office_worker_arrival` 1개를 runtime prototype으로 넣는다.
-2. runtime에 무협 콘텐츠를 넣기 전, office 콘텐츠와 섞이지 않도록 `world_id`/`storypack_id` gating 또는 별도 preview mode를 결정한다.
+1. `wuxia_commute_rift_arrival` arrival preview 검증은 완료했다. 다음 runtime/content 후보는 `wuxia_heuksa_bang_first_fight`를 같은 preview mode에 추가하는 것이다.
+   - 기존 encounter schema만 사용하고, 천외편린 3택 성장 schema는 열지 않는다.
+   - preview bundle metadata에는 계속 `runtime_mode: storypack_preview`, `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`, `default_location: wuxia_commute_rift`를 명시한다.
+   - 기본 `content.bundle.json`, Web 기본 generated bundle, `src/tui_adv/data/*.yaml`, `escape-office` save/localStorage key는 바꾸지 않는다.
+2. runtime content 확장보다 entrypoint가 먼저 필요해지면 Web/terminal preview launcher/UI wiring을 별도 slice로 열고, default office runtime에는 영향을 주지 않는 명시적 opt-in 경로만 허용한다.
 3. 실제 음악/SFX asset과 soundtrack은 저작권/라이선스 정책이 정리되기 전까지 열지 않는다.

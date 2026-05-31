@@ -1,0 +1,8 @@
+endings:
+  - id: wuxia_preview_grounded
+    name: 강호의 사원증
+    kind: preview
+    priority: 10
+    conditions:
+      required_flags: [wuxia_arrival_grounded]
+    text: 사원증은 부적처럼 남았다. 아직 돌아갈 길은 없지만, 천기록은 당신을 이방인으로 기억하기 시작한다.

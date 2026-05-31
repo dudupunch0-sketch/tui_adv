@@ -1,14 +1,15 @@
 use escape_core::{
     apply_action_from_content, index_content_bundle, load_content_bundle, load_state,
-    new_game_from_content, save_state, scene_page_from_content, ContentIndex, GameState,
-    SaveEnvelope,
+    new_game_from_content_at, save_state, scene_page_from_content, ContentBundle, ContentIndex,
+    GameState, SaveEnvelope, DEFAULT_START_LOCATION_ID,
 };
 use serde::Serialize;
 
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen::prelude::wasm_bindgen)]
 pub fn new_game_json(seed: u64, content_bundle_json: &str) -> Result<String, String> {
-    let content = content_index_from_json(content_bundle_json)?;
-    let state = new_game_from_content(seed, &content).map_err(|error| error.to_string())?;
+    let (bundle, content) = content_bundle_and_index_from_json(content_bundle_json)?;
+    let state = new_game_from_content_at(seed, &content, content_bundle_start_location(&bundle))
+        .map_err(|error| error.to_string())?;
     to_json(&state, "state")
 }
 
@@ -51,6 +52,23 @@ pub fn load_state_json(save_json: &str) -> Result<String, String> {
 fn content_index_from_json(content_bundle_json: &str) -> Result<ContentIndex, String> {
     let bundle = load_content_bundle(content_bundle_json).map_err(|error| error.to_string())?;
     index_content_bundle(&bundle).map_err(|error| error.to_string())
+}
+
+fn content_bundle_and_index_from_json(
+    content_bundle_json: &str,
+) -> Result<(ContentBundle, ContentIndex), String> {
+    let bundle = load_content_bundle(content_bundle_json).map_err(|error| error.to_string())?;
+    let content = index_content_bundle(&bundle).map_err(|error| error.to_string())?;
+    Ok((bundle, content))
+}
+
+fn content_bundle_start_location(bundle: &ContentBundle) -> &str {
+    bundle
+        .runtime
+        .as_ref()
+        .map(|runtime| runtime.default_location.as_str())
+        .filter(|location_id| !location_id.is_empty())
+        .unwrap_or(DEFAULT_START_LOCATION_ID)
 }
 
 fn state_from_json(state_json: &str) -> Result<GameState, String> {

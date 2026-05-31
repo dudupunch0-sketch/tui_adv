@@ -1,0 +1,6 @@
+items:
+  - id: commuter_badge
+    name: 사원증
+    description: 현대 회사원의 이름과 사진이 남은 얇은 플라스틱 카드.
+    type: clue
+    tags: [identity, wuxia_preview]

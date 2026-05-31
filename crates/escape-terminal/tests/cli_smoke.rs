@@ -164,6 +164,40 @@ fn content_tui_smoke_renders_start_encounter_panel() {
 }
 
 #[test]
+fn content_tui_smoke_renders_wuxia_storypack_preview_arrival() {
+    let bundle_path = wuxia_preview_bundle_path();
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--content-bundle",
+            bundle_path.to_str().expect("bundle path should be UTF-8"),
+            "--seed",
+            "123",
+            "--tui-smoke",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("위치: 출근길 균열 (wuxia_commute_rift)"));
+    assert!(stdout.contains("[현재 인카운터]"));
+    assert!(stdout.contains("출근길 균열"));
+    assert!(stdout.contains("visual id: wuxia_commute_rift"));
+    assert!(stdout.contains("layout: storypack_preview"));
+    assert!(stdout.contains("stable terms: 사원증 / 출근복 / 천기록"));
+    assert!(stdout.contains("choice:grip_employee_badge / 사원증을 쥐고 현재의 나를 붙든다"));
+    assert!(stdout.contains("choice:follow_roadside_dust / 흙먼지가 흐르는 쪽으로 몸을 숨긴다"));
+    assert!(!stdout.contains("dev_desk"));
+}
+
+#[test]
 fn content_tui_smoke_renders_final_movement_panel_after_scripted_actions() {
     let bundle_path = content_bundle_path();
     let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
@@ -588,6 +622,12 @@ fn content_play_mode_rejects_invalid_input_without_exiting() {
 fn content_bundle_path() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("../escape-core/fixtures/content/content.bundle.json")
+}
+
+fn wuxia_preview_bundle_path() -> PathBuf {
+    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(
+        "../escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json",
+    )
 }
 
 fn action_ids_from_terminal_snapshot(stdout: &str) -> Vec<String> {

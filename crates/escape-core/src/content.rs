@@ -20,8 +20,18 @@ pub struct ContentBundle {
     pub schema_version: u32,
     pub kind: String,
     pub source: String,
+    #[serde(default)]
+    pub runtime: Option<RuntimeMetadata>,
     pub manifest: ContentManifest,
     pub content: ContentSections,
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
+pub struct RuntimeMetadata {
+    pub runtime_mode: String,
+    pub world_id: String,
+    pub storypack_id: String,
+    pub default_location: String,
 }
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Eq)]

@@ -1,0 +1,6 @@
+achievements:
+  - id: wuxia_first_arrival
+    name: 강호 출근
+    description: 출근복 그대로 강호에 떨어진 첫 순간을 붙든다.
+    conditions:
+      required_flags: [wuxia_arrival_grounded]

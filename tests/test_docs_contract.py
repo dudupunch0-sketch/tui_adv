@@ -130,7 +130,7 @@ def test_mobile_pixel_storybook_ui_doc_is_indexed_checklisted_and_current_plan()
     assert "lazy Web Audio generated oscillator backend" in completed_foundation
     assert "schema-less combat encounter prototype 완료" in completed_foundation
     next_slice = plan.split("현재 최우선 남은 작업:", 1)[1]
-    assert "storypack/world 일반화" in next_slice
+    assert "무협 storypack preview mode" in next_slice
     assert "wuxia_jianghu_pack" in next_slice
     assert "Rust GameCore / `ScenePage` / WASM JSON boundary" in next_slice
 
@@ -151,16 +151,17 @@ def test_transition_audio_readiness_is_current_active_plan():
 
     next_slice = plan.split("현재 최우선 남은 작업:", 1)[1].split("전환 중 유지:", 1)[0]
     assert "현재 active main plan 기준 즉시 진행할 구현 작업은 없다" not in next_slice
-    assert "storypack/world 일반화" in next_slice
+    assert "무협 storypack preview mode" in next_slice
     assert "wuxia_jianghu_pack" in next_slice
     assert "machine-readable storypack DB" in next_slice
-    assert "schema-less wuxia runtime prototype" in next_slice
+    assert "wuxia_commute_rift_arrival" in next_slice
+    assert "wuxia_heuksa_bang_first_fight" in next_slice
     assert "renderer-neutral" in next_slice
 
     next_actions = plan.split("## 10. 다음 액션", 1)[1]
-    assert "Storypack_World_Model.md" in next_actions
-    assert "wuxia_office_worker_arrival" in next_actions
-    assert "world_id" in next_actions
+    assert "Storypack_Runtime_Preview_Mode.md" in plan
+    assert "wuxia_heuksa_bang_first_fight" in next_actions
+    assert "preview mode" in next_actions
 
     assert "### 0.2m 2026-05-26 Web Storybook transition/audio readiness" in checklist
     assert "- [x] transition/audio readiness active main plan 승격" in checklist
@@ -344,42 +345,150 @@ def test_storypack_world_model_and_wuxia_pack_are_indexed_and_current():
     plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
     storypack_readme = Path("docs/content/storypacks/README.md").read_text(encoding="utf-8")
     storypack_design = Path("docs/design/Storypack_Encounter_DB.md").read_text(encoding="utf-8")
+    backlog_order = Path("idea_box/BACKLOG_ORDER.md").read_text(encoding="utf-8")
+    wuxia_idea_path = Path("idea_box/done/2026-05-29-notion-wuxia-igu-hakji-cheonggi-record.md")
     world_doc_path = Path("docs/design/Storypack_World_Model.md")
     wuxia_pack_path = Path("docs/content/storypacks/wuxia_jianghu_pack.md")
     wuxia_cards_path = Path("docs/content/encounter_db/wuxia_jianghu_pack.md")
+    storypacks_json_path = Path("docs/content/storypack_db/storypacks.json")
+    cards_json_path = Path("docs/content/storypack_db/encounter_situations.json")
 
     assert world_doc_path.exists()
     assert wuxia_pack_path.exists()
     assert wuxia_cards_path.exists()
+    assert storypacks_json_path.exists()
+    assert cards_json_path.exists()
+    assert wuxia_idea_path.exists()
 
     world_doc = world_doc_path.read_text(encoding="utf-8")
     wuxia_pack = wuxia_pack_path.read_text(encoding="utf-8")
     wuxia_cards = wuxia_cards_path.read_text(encoding="utf-8")
+    wuxia_idea = wuxia_idea_path.read_text(encoding="utf-8")
 
     assert "docs/design/Storypack_World_Model.md" in index
     assert "docs/content/storypacks/wuxia_jianghu_pack.md" in index
     assert "docs/content/encounter_db/wuxia_jianghu_pack.md" in index
+    assert "docs/content/storypack_db/storypacks.json" in index
+    assert "docs/content/storypack_db/encounter_situations.json" in index
     assert "docs/design/Storypack_World_Model.md" in readme
     assert "docs/content/storypacks/wuxia_jianghu_pack.md" in readme
+    assert "docs/content/storypack_db/storypacks.json" in readme
 
     assert "storypack/world 기반" in agents
-    assert "wuxia_jianghu_pack" in agents
+    assert "이구학지 — 천기록" in agents
     assert "wuxia_jianghu_pack" in storypack_readme
+    assert "이구학지 — 천기록" in storypack_readme
     assert "wuxia_jianghu" in storypack_design
+    assert "commute_rift" in storypack_design
+    assert "cheonggi_record" in storypack_design
+    assert "docs/content/storypack_db/storypacks.json" in storypack_design
+    assert "validate_storypack_db" in storypack_design
 
     assert "회사”는 엔진의 정체성이 아니라 첫 번째 기본 storypack" in world_doc
     assert "world_id" in world_doc
-    assert "무협 강호팩" in wuxia_pack
-    assert "회사에 다니던 직장인" in wuxia_pack
-    assert "Shaolin_Kung_Fu" in wuxia_pack
-    assert "whc.unesco.org/en/list/705" in wuxia_pack
-    assert "jianghu_notice_board" in wuxia_pack
-    assert "wuxia_office_worker_arrival" in wuxia_cards
-    assert "wuxia_duel_bridge_intervention" in wuxia_cards
+    assert "이구학지 — 천기록" in world_doc
+    assert "wuxia_commute_rift_arrival" in world_doc
+    assert "wuxia_heuksa_bang_first_fight" in world_doc
+
+    assert "이구학지 — 천기록" in wuxia_pack
+    assert "previous_placeholder_status: superseded" in wuxia_pack
+    assert "흑사방" in wuxia_pack
+    assert "청류문" in wuxia_pack
+    assert "천기록" in wuxia_pack
+    assert "천외편린" in wuxia_pack
+    assert "commute_rift" in wuxia_pack
+    assert "fragment_choice" in wuxia_pack
+    assert "wuxia_commute_rift_arrival" in wuxia_cards
+    assert "wuxia_heuksa_bang_first_fight" in wuxia_cards
+    assert "wuxia_cheonggi_record_first_fragment" in wuxia_cards
+    assert "wuxia_office_worker_arrival" not in wuxia_cards
+    assert "wuxia_duel_bridge_intervention" not in wuxia_cards
 
     assert "storypack/world 일반화와 무협 기준팩" in checklist
+    assert "이구학지 — 천기록 최신화" in checklist
+    assert "machine-readable storypack DB 검증" in checklist
     assert "storypack/world 일반화" in plan
-    assert "첫 비-office 기준팩은 회사 직장인이 무협 세계로 차원이동하는 `wuxia_jianghu_pack`" in plan
+    assert "machine-readable storypack DB 검증 완료" in plan
+    assert "무협 storypack preview runtime prototype 완료" in plan
+    assert "첫 비-office 기준팩은 `wuxia_jianghu_pack` / **이구학지 — 천기록**" in plan
     next_slice = plan.split("현재 최우선 남은 작업:", 1)[1].split("전환 중 유지:", 1)[0]
     assert "wuxia_jianghu_pack" in next_slice
+    assert "wuxia_commute_rift_arrival" in next_slice
+    assert "wuxia_heuksa_bang_first_fight" in next_slice
+    assert "preview launcher/UI wiring" in next_slice
     assert "PR C audio engine skeleton을 리뷰/머지" not in next_slice
+
+    assert "status: done" in wuxia_idea
+    assert "docs/content/storypacks/wuxia_jianghu_pack.md" in wuxia_idea
+    assert "docs/content/encounter_db/wuxia_jianghu_pack.md" in wuxia_idea
+    assert "idea_box/done/2026-05-29-notion-wuxia-igu-hakji-cheonggi-record.md" in backlog_order
+    assert "2026-05-29-02 | `idea_box/inbox/2026-05-29-notion-wuxia" not in backlog_order
+
+
+def test_wuxia_runtime_preview_mode_decision_is_documented_before_runtime_content():
+    index = Path("docs/00_Index.md").read_text(encoding="utf-8")
+    readme = Path("README.md").read_text(encoding="utf-8")
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    schema = Path("docs/dev/Data_Schema.md").read_text(encoding="utf-8")
+    world_doc = Path("docs/design/Storypack_World_Model.md").read_text(encoding="utf-8")
+    decision_path = Path("docs/dev/Storypack_Runtime_Preview_Mode.md")
+
+    assert decision_path.exists()
+    decision = decision_path.read_text(encoding="utf-8")
+
+    assert "Decision: separate preview mode first" in decision
+    assert "`src/tui_adv/data/*.yaml` remains default office runtime content" in decision
+    assert "`wuxia_jianghu_pack` enters runtime only through explicit preview bundle or preview flag" in decision
+    assert "`escape-office` save/localStorage keys remain unchanged" in decision
+    assert "renderer는 `ScenePage`만 표시" in decision
+    assert "no default bundle mixing" in decision
+
+    assert "docs/dev/Storypack_Runtime_Preview_Mode.md" in index
+    assert "docs/dev/Storypack_Runtime_Preview_Mode.md" in readme
+    assert "Storypack runtime preview mode" in schema
+    assert "separate preview mode first" in world_doc
+    assert "storypack runtime preview mode 결정" in checklist
+    assert "preview mode 결정 완료" in plan
+
+    next_actions = plan.split("## 10. 다음 액션", 1)[1]
+    assert "gating 또는 별도 preview mode를 결정" not in next_actions
+    assert "wuxia_heuksa_bang_first_fight" in next_actions
+    assert "preview mode" in next_actions
+
+
+def test_wuxia_commute_rift_arrival_preview_runtime_is_documented_and_indexed():
+    index = Path("docs/00_Index.md").read_text(encoding="utf-8")
+    readme = Path("README.md").read_text(encoding="utf-8")
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    schema = Path("docs/dev/Data_Schema.md").read_text(encoding="utf-8")
+    decision = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(encoding="utf-8")
+
+    source_dir = Path("src/tui_adv/storypack-previews/wuxia_jianghu_pack")
+    rust_preview_bundle = Path(
+        "crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json"
+    )
+    web_preview_bundle = Path(
+        "web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json"
+    )
+
+    assert source_dir.exists()
+    assert (source_dir / "encounters.yaml").exists()
+    assert rust_preview_bundle.exists()
+    assert web_preview_bundle.exists()
+
+    for text in (index, readme, schema, decision, plan):
+        assert "src/tui_adv/storypack-previews/wuxia_jianghu_pack" in text
+        assert "wuxia_jianghu_pack.content.bundle.json" in text
+
+    for text in (decision, plan):
+        assert "wuxia_commute_rift_arrival" in text
+
+    for text in (schema, decision, plan):
+        assert "default_location: wuxia_commute_rift" in text
+
+    assert "무협 storypack preview runtime prototype" in checklist
+    assert "Python exporter, Rust content metadata, WASM JSON boundary, SuperLightTUI smoke 테스트 추가" in checklist
+    assert "무협 storypack preview runtime prototype 완료" in plan
+    assert "기본 office bundle은 계속 `dev_desk`에서 시작" in plan

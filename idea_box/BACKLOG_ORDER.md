@@ -21,7 +21,6 @@ Git 최초 추가 순서 기준이다. 아래 순서대로 처리한다.
 | order | idea entry | git first added | commit | 상태 | 다음 처리 |
 |---|---|---|---|---|---|
 | 2026-05-29-01 | `idea_box/inbox/2026-05-29-notion-storypack-system.md` | UNTRACKED | - | open | Notion storypack 공용 시스템 아이디어 검토 |
-| 2026-05-29-02 | `idea_box/inbox/2026-05-29-notion-wuxia-igu-hakji-cheonggi-record.md` | UNTRACKED | - | open | 무협 storypack 대체안 검토 |
 | 2026-05-29-03 | `idea_box/inbox/2026-05-29-notion-office-yageunmong.md` | UNTRACKED | - | open | 회사 storypack 추가안 검토 |
 
 ## 이미 done인 구조화 entry
@@ -36,6 +35,7 @@ Git 최초 추가 순서 기준이다. 아래 순서대로 처리한다.
 | `idea_box/done/2026-05-22-semiconductor-sw-storypacks.md` | 2026-05-22T03:25:19+00:00 | `2eb5fb91` | done |
 | `idea_box/done/2026-05-22-general-corporate-storypacks.md` | 2026-05-22T04:21:39+00:00 | `2de58ef6` | done |
 | `idea_box/done/2026-05-22-real-escape-ending-branching.md` | 2026-05-22T04:55:10+00:00 | `488110eb` | done |
+| `idea_box/done/2026-05-29-notion-wuxia-igu-hakji-cheonggi-record.md` | UNTRACKED | - | done |
 
 ## 순서 재계산 방법
 

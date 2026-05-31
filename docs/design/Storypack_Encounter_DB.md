@@ -17,7 +17,7 @@ Status: 설계 문서
 
 - Storypack은 이제 office 내부 변주만이 아니라 `world_id`를 가진 세계관 단위 후보를 포함한다.
 - 기본 world/storypack은 `office_apocalypse` / `isolation_pack` 계열이다.
-- 첫 비-office 기준팩은 `wuxia_jianghu` / `wuxia_jianghu_pack`이며, 전제는 “회사에 다니던 직장인이 눈떠보니 무협 세계로 이동했다”이다.
+- 첫 비-office 기준팩은 `wuxia_jianghu` / `wuxia_jianghu_pack`이며, 최신 canonical story는 **이구학지 — 천기록**이다. 이전 generic 무협 placeholder는 superseded로 본다.
 - 새 기능은 가능하면 office surface와 wuxia surface 양쪽에서 설명 가능한 engine-neutral 형태로 설계한다. 자세한 기준은 `docs/design/Storypack_World_Model.md`를 따른다.
 
 이 문서는 게임 엔진 구현 계획이 아니다. `src/tui_adv/data/encounters.yaml`이나 Rust GameCore에 바로 새 규칙을 추가하기 전에, 어떤 스토리팩/상황/NPC를 만들고 어떻게 검토할지 정하는 콘텐츠 설계 문서다.
@@ -59,7 +59,7 @@ Status: 설계 문서
 | `resolution_pressure` | 결말 직전 압박 | 선택의 대가, NPC 운명, 엔딩 조건 |
 
 모든 storypack record와 encounter situation card는 최소 하나의 phase에 연결되어야 한다.
-단, phase 이름은 world-specific 확장을 허용한다. 기본 office storypack은 `opening_absence` 같은 기존 phase를 쓰고, 무협 차원이동팩은 `office_departure`, `wuxia_arrival`, `jianghu_orientation`, `sect_contact`처럼 짧은 적응 phase를 쓸 수 있다.
+단, phase 이름은 world-specific 확장을 허용한다. 기본 office storypack은 `opening_absence` 같은 기존 phase를 쓰고, 이구학지 무협팩은 `commute_rift`, `market_arrival`, `first_brawl`, `cheongryu_apprenticeship`, `cheonggi_record_awakening`처럼 storypack-specific phase를 쓸 수 있다.
 
 ### 3.2 Deck 계층
 
@@ -96,13 +96,15 @@ TUI/fake-terminal에서 사건이 드러나는 표면이다.
 | `payroll_sheet` | 급여명세서, 연봉 테이블, 보상 모델 |
 | `security_gate` | 출입 게이트, 사원증, 방문증 |
 | `office_object` | 복합기, 정수기, 커피머신, 화이트보드 등 사물 |
-| `inn_room` | 차원이동 직후 깨어나는 객잔 방, 현대 물건 확인 |
-| `jianghu_notice_board` | 객잔/강호 게시판, 수배문, 비무 일정 |
-| `courier_letter` | 전서구, 표국, 심부름꾼이 전달하는 편지 |
-| `martial_manual` | 비급, 검보, 권법 주석, 장문인 비망록 |
-| `tavern_rumor` | 객잔 소문, 술자리 증언, 점소이의 관찰 |
-| `sect_token` | 문파 패, 통행 영패, 추천서 |
-| `formation_diagram` | 진법도, 산길 지도, 비무대/다리 배치 |
+| `commute_rift` | 출근길의 엘리베이터/지하철/횡단보도 같은 경계에서 발생하는 world transition |
+| `market_street` | 무협 세계 첫 도착 시장, 군중 시선, 흑사방 시비, 거리 난투 |
+| `office_items` | 정장, 구두, 사원증, 지갑, 볼펜, 업무수첩 같은 현대 소지품 |
+| `sect_courtyard` | 청류문 수습생 구간의 거점, 보호/채무/수련 허가 surface |
+| `training_chore` | 장작 패기, 물 긷기, 연무장 청소, 서고 정리 같은 잡일-수련 surface |
+| `cheonggi_record` | 업무수첩과 연결된 천기록, 검색창이 아닌 기록/기연 surface |
+| `fragment_choice` | 천외편린 3택 보상/수련 방향 선택 surface |
+| `sect_raid` | 청류문 습격 같은 route commitment 대형 사건 surface |
+| `faction_negotiation` | 백도맹/흑천련/천기각의 명분과 대가가 충돌하는 협상 surface |
 
 ### 4.2 `anomaly_type`
 
@@ -119,8 +121,12 @@ TUI/fake-terminal에서 사건이 드러나는 표면이다.
 | `worldline_branch` | 같은 사건의 다른 결과/브랜치가 동시에 존재함 |
 | `world_displacement` | 기존 세계에서 다른 세계관으로 이동함 |
 | `workplace_memory_mismatch` | 회사원 기억과 새 세계의 규칙이 충돌함 |
-| `foreigner_without_sect` | 소속 문파가 없는 외지인으로 판정됨 |
-| `manual_as_onboarding` | 비급/규칙서를 회사 온보딩 문서처럼 해석함 |
+| `outsider_without_sect` | 소속 문파가 없는 외지인으로 판정됨 |
+| `first_brawl_defeat` | 첫 무림 난투가 대부분 패배/부상/구조 hook으로 귀결됨 |
+| `notebook_oracle` | 업무수첩이 천기록과 연결되어 임의의 현대지식 조각을 보여줌 |
+| `fragment_choice` | 세 후보 중 하나만 남기는 천외편린 선택 압박 |
+| `sect_debt` | 보호, 치료비, 숙식비, 수련 허가가 채무/의무로 묶임 |
+| `faction_pressure` | 정파/사파/기록 세력의 명분과 대가가 route commitment를 압박함 |
 | `qi_deviation` | 내공/기혈/심마 압박이 상태 이상으로 드러남 |
 | `oath_binding` | 맹세, 문파 규칙, 결투 약속이 강제력처럼 작동함 |
 
@@ -148,11 +154,13 @@ TUI/fake-terminal에서 사건이 드러나는 표면이다.
 | `pm_worldline_mediator` | 실패한 프로젝트, 일정, 의사결정 세계선을 연결함 |
 | `cleaning_unofficial_witness` | 야간 사무실, 뒷문, 직원들이 모르는 공간을 봄 |
 | `newcomer_mirror` | 플레이어의 혼란을 반사하고 기본 설명을 유도함 |
-| `innkeeper_guide` | 객잔과 강호 기본 규칙을 짧게 안내함 |
-| `shaolin_anchor_monk` | 소림 계열 앵커를 낮은 해상도로 제공하되 절제/귀환 질문을 던짐 |
-| `wudang_anchor_taoist` | 무당산/도가 계열 앵커로 차원이동을 해석함 |
-| `emei_anchor_swordswoman` | 아미산 계열 검수 앵커로 문파 규칙과 명예 압박을 제공함 |
-| `courier_broker` | 표국/전서/이동 비용과 귀환 단서를 연결함 |
+| `early_rescuer` | 흑사방 첫 전투 후 개입하는 구조자/멘토 후보 |
+| `sect_master_guardian` | 보호, 채무, 수습생 조건, 수련 허가를 관리함 |
+| `archive_keeper` | 폐서고, 몰락한 문파의 기록, 선택의 대가를 암시함 |
+| `righteous_ally` | 백도맹/정파 루트의 명분과 정치 압박을 제공함 |
+| `sapa_ally` | 흑천련/사파 루트의 생존, 거래, 암투 감각을 제공함 |
+| `cheonggi_record_keeper` | 천기각/천기록/귀환 단서를 해석함 |
+| `blood_moon_antagonist` | 혈월교의 급진 명분과 메인 갈등을 대표함 |
 
 ## 5. Storypack DB schema
 
@@ -238,6 +246,27 @@ promotion_notes: runtime 승격 시 messenger UI presentation metadata를 붙인
 - 최소 하나의 game-state hook이 있어야 한다: flag, clue, item, relation, resource, route hint 중 하나.
 - `main_spine_link`가 비어 있으면 랜덤 잡음으로 간주하고 승격하지 않는다.
 - hub 위치에서 항상 eligible하게 만들 가능성이 있으면 `randomization_notes`에 차단 위험을 적는다.
+
+### 6.1 Machine-readable 검증 DB
+
+사람용 후보 문서는 설명/톤/해설을 보존하고, 참조 무결성 검사는 별도 JSON mirror에서 수행한다.
+
+- `docs/content/storypack_db/storypacks.json`: `StorypackRecord` 후보 목록.
+- `docs/content/storypack_db/encounter_situations.json`: `EncounterSituationCard` 후보 목록.
+- `src/tui_adv/game/storypack_db.py`: `load_storypack_db(root)`와 `validate_storypack_db(root)`를 제공한다.
+- `tests/test_storypack_db.py`: office/wuxia 후보 카드가 같은 DB에서 로드되고, `storypack_id`/`world_id`/taxonomy/fallback/outcome hook 계약을 검증한다.
+
+현재 JSON DB는 런타임 콘텐츠가 아니다. `src/tui_adv/data/encounters.yaml`, Rust content bundle, Web generated data에 자동으로 섞지 않는다. 목적은 다음 runtime slice 전에 office/wuxia 후보 카드가 최소한의 구조 계약을 만족하는지 확인하는 것이다.
+
+`validate_storypack_db()`가 검사하는 기준:
+
+1. card의 `storypack_id`가 존재한다.
+2. card의 `world_id`가 storypack record의 `world_id`와 일치한다.
+3. `status`, `priority_class`, `surface`, `anomaly_type`, `pressure_type`, `npc_slots`가 canonical taxonomy 안에 있다.
+4. 카드마다 최소 하나의 `safe_*` 또는 fallback 선택지가 있다.
+5. 카드마다 최소 하나의 outcome hook이 있다.
+6. `main_spine_link`가 비어 있지 않다.
+7. 공개 DB에 `final_hint`, `actual_ip_address`, `office_location`, `treasure_location` 같은 private-only field를 넣지 않는다.
 
 ## 7. Character DB / 6스탯 schema
 
@@ -344,7 +373,7 @@ raw idea
 
 ## 10. 첫 vertical slice: 차원격리팩
 
-첫 DB slice는 `isolation_pack`으로 시작했다. 첫 비-office 검증 slice는 회사원 차원이동형 `wuxia_jianghu_pack`으로 한다.
+첫 DB slice는 `isolation_pack`으로 시작했다. 첫 비-office 검증 slice는 **이구학지 — 천기록** 설정의 `wuxia_jianghu_pack`으로 한다.
 
 이유:
 

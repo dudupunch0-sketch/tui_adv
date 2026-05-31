@@ -11,7 +11,7 @@ Status: 후보 콘텐츠 DB
 - 6개 core stat만 직접 수치화한다.
 - 관계값은 stat이 아니라 별도 상태로 둔다.
 - stat은 성격 장식이 아니라 인카운터 기능과 연결한다.
-- 캐릭터는 회사 안에서 실제로 있을 법해야 한다.
+- 캐릭터는 해당 storypack 안에서 실제로 있을 법해야 한다. office 기본팩은 회사 인물, 무협팩은 fictional 문파/강호 인물 기준을 따른다.
 - 비밀은 공개-safe 수준으로 요약한다.
 - 실제 회사/인물/내부 정보처럼 보이는 세부사항을 넣지 않는다.
 
@@ -48,6 +48,7 @@ Status: 후보 콘텐츠 DB
 ## 현재 문서
 
 - `recurrent_npcs.md`: 차원격리팩 첫 slice용 반복 NPC 후보 3명.
+- 이구학지 — 천기록의 named NPC는 현재 별도 character sheet로 분리하지 않고 `docs/content/storypacks/wuxia_jianghu_pack.md`와 `docs/content/encounter_db/wuxia_jianghu_pack.md`의 slot/candidate로만 관리한다.
 
 ## 관련 문서
 
@@ -55,3 +56,5 @@ Status: 후보 콘텐츠 DB
 - `docs/design/Storypack_Encounter_DB.md`
 - `docs/content/storypacks/isolation_pack.md`
 - `docs/content/encounter_db/isolation_pack.md`
+- `docs/content/storypacks/wuxia_jianghu_pack.md`
+- `docs/content/encounter_db/wuxia_jianghu_pack.md`

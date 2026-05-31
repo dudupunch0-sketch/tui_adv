@@ -159,8 +159,8 @@
 ### 0.2p 2026-05-29 storypack/world 일반화와 무협 기준팩
 
 - [x] office-only 편향을 줄이는 `docs/design/Storypack_World_Model.md` 추가
-- [x] 회사 직장인 차원이동형 첫 비-office 기준팩 `docs/content/storypacks/wuxia_jianghu_pack.md` 추가
-- [x] 무협 강호팩 encounter situation cards 추가
+- [x] 첫 비-office 기준팩 `docs/content/storypacks/wuxia_jianghu_pack.md` 추가
+- [x] 무협 기준팩 encounter situation cards 추가
 - [x] AGENTS/README/Index/Development_Plan을 storypack 기반 방향으로 동기화
 
 ### 0.2q 2026-05-31 Notion-first 아이디어-설계 운영 규칙
@@ -168,6 +168,35 @@
 - [x] Notion을 원본 reference로 두는 아이디어-설계 파이프라인 문서화
 - [x] 설계 아이디어 문서 변환 → main plan 격상 → 설계 후 Notion reference 대조 → done 처리 규칙 추가
 - [x] `idea_box` 운영 문서와 LLM 설계 핸드오프에 Notion-origin entry 처리 기준 반영
+
+### 0.2r 2026-05-29 이구학지 — 천기록 최신화
+
+- [x] Notion 최신 무협안 `이구학지 — 천기록`을 `wuxia_jianghu_pack` canonical story로 반영
+- [x] 이전 generic 무협 placeholder를 superseded로 명시
+- [x] 흑사방 첫 전투, 청류문 수습생, 천기록/천외편린 encounter situation cards 갱신
+- [x] README/AGENTS/Index/Development_Plan과 idea_box backlog 상태 동기화
+
+### 0.2s 2026-05-29 machine-readable storypack DB 검증
+
+- [x] `docs/content/storypack_db/storypacks.json`에 office/wuxia storypack record 추가
+- [x] `docs/content/storypack_db/encounter_situations.json`에 후보 카드 12개 추가
+- [x] `src/tui_adv/game/storypack_db.py`에 `load_storypack_db()` / `validate_storypack_db()` 추가
+- [x] storypack/world/taxonomy/fallback/outcome hook 참조 무결성 테스트 추가
+
+### 0.2t 2026-05-29 storypack runtime preview mode 결정
+
+- [x] `docs/dev/Storypack_Runtime_Preview_Mode.md`에 separate preview mode first 결정 문서화
+- [x] 기본 office bundle과 무협 preview bundle을 섞지 않는 no default bundle mixing 경계 확정
+- [x] `escape-office` save/localStorage key 유지와 renderer-neutral `ScenePage` 표시 경계 확정
+- [x] Data_Schema/World_Model/README/Index/docs contract 동기화
+
+### 0.2u 2026-05-31 무협 storypack preview runtime prototype
+
+- [x] `src/tui_adv/storypack-previews/wuxia_jianghu_pack/*.yaml`에 `wuxia_commute_rift_arrival` preview source 추가
+- [x] `scripts/export_web_data.py --storypack-preview wuxia_jianghu_pack` preview bundle write/check 경로 추가
+- [x] Rust fixture와 Web generated preview bundle을 기본 office bundle과 분리해 생성
+- [x] `escape-terminal`과 `escape-wasm::new_game_json()`이 preview `runtime.default_location`에서 시작하도록 연결
+- [x] Python exporter, Rust content metadata, WASM JSON boundary, SuperLightTUI smoke 테스트 추가
 
 ### 0.3 완료 기준
 

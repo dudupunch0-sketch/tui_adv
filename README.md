@@ -2,7 +2,7 @@
 
 TUI 기반 랜덤 인카운터 선택지 생존 게임 엔진/콘텐츠 프로젝트.
 
-현재 기본 storypack은 회사 사무실 아포칼립스인 `escape from the office`다. 플레이어는 갑자기 사람이 모두 사라지고 공간 또는 차원 단위로 격리된 대기업 연구개발동에서 시작한다. 다만 장기 개발 방향은 회사 전용 게임이 아니라, storypack/world를 바꿔 무협 같은 다른 세계관도 같은 Rust GameCore, Web Storybook, SuperLightTUI renderer 계약으로 플레이할 수 있는 구조다. 첫 비-office 기준팩은 회사에 다니던 직장인이 눈떠보니 무협 세계로 이동하는 `wuxia_jianghu_pack`이다.
+현재 기본 storypack은 회사 사무실 아포칼립스인 `escape from the office`다. 플레이어는 갑자기 사람이 모두 사라지고 공간 또는 차원 단위로 격리된 대기업 연구개발동에서 시작한다. 다만 장기 개발 방향은 회사 전용 게임이 아니라, storypack/world를 바꿔 무협 같은 다른 세계관도 같은 Rust GameCore, Web Storybook, SuperLightTUI renderer 계약으로 플레이할 수 있는 구조다. 첫 비-office 기준팩은 `wuxia_jianghu_pack`이며, 최신 canonical story는 현대 회사원이 본인 몸과 출근복장 그대로 무협 세계에 전이되는 **이구학지 — 천기록**이다.
 
 ## 현재 단계
 
@@ -107,6 +107,22 @@ npm run build
 npm run dev -- --host 127.0.0.1 --port 8765
 ```
 
+무협 storypack preview bundle은 기본 office bundle과 분리된 별도 artifact다.
+
+```bash
+python scripts/export_web_data.py \
+  --storypack-preview wuxia_jianghu_pack \
+  --preview-bundle crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json \
+  --preview-bundle web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json \
+  --check
+
+cargo run -p escape-terminal -- \
+  --scene content \
+  --content-bundle crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json \
+  --seed 123 \
+  --tui-smoke
+```
+
 Rust/WASM-primary Web preview/build는 generated wasm package를 먼저 만든다.
 
 ```bash
@@ -131,7 +147,7 @@ npm run preview:player
 - 기본 storypack 제목: `escape from the office`
 - 프로젝트 방향: storypack/world 기반 TUI 선택지 생존 게임 + Web Storybook/GlyphFX primary UX + SuperLightTUI terminal renderer
 - 기본 톤: 블랙코미디 회사 괴담 + 코스믹 호러
-- 첫 비-office 기준팩: `wuxia_jianghu_pack` 무협 강호. 전제는 “회사 직장인 → 무협 세계 이세계 차원이동”
+- 첫 비-office 기준팩: `wuxia_jianghu_pack` / **이구학지 — 천기록**. 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계 시장에 전이되고, 천기록/천외편린 성장 구조를 경험한다”
 - 1차 재난 타입: 불명 재난
 - 상황: 사람 실종, 연구개발동 규모의 공간/차원 격리, 제한된 외부 인터넷, 간헐적 사내망 연락
 - 핵심 자원: 체력, 정신력, 배터리, 허기, 갈증
@@ -161,6 +177,10 @@ npm run preview:player
 - `docs/design/Mobile_Pixel_Storybook_UI.md`: Web Storybook의 모바일 세로형 픽셀 게임북 board 시각 contract
 - `docs/dev/Development_Plan.md`: canonical main plan. 현재 방향, 다음 작업, 우선순위의 source of truth
 - `docs/dev/Checklist.md`: 단계별 완료 여부 추적용 체크리스트
+- `docs/dev/Storypack_Runtime_Preview_Mode.md`: 무협 runtime prototype을 기본 office bundle과 섞지 않는 preview mode 결정
+- `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`: `wuxia_commute_rift_arrival` preview source YAML
+- `crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json`: Rust/GameCore용 무협 preview fixture bundle
+- `web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json`: Web/WASM용 무협 preview generated bundle
 - `docs/content/Location_List.md`: 1차 위치 목록
 - `docs/content/Item_List.md`: 1차 아이템 목록
 - `docs/content/Encounter_List.md`: 1차 인카운터 목록
@@ -168,8 +188,11 @@ npm run preview:player
 - `docs/content/Survivor_System_Routes.md`: 생존자 설득과 시스템 제압 루트 설계
 - `docs/content/Secret_List.md`: 공개 가능한 히든 루트/비밀 목록
 - `docs/content/Horror_Ideas.md`: 호러 연출 아이디어 저장소
-- `docs/content/storypacks/wuxia_jianghu_pack.md`: 회사 직장인 차원이동형 첫 비-office 무협 강호 storypack 후보
-- `docs/content/encounter_db/wuxia_jianghu_pack.md`: 무협 강호팩 encounter situation cards
+- `docs/content/storypacks/wuxia_jianghu_pack.md`: 이구학지 — 천기록 첫 비-office 무협 storypack 후보
+- `docs/content/encounter_db/wuxia_jianghu_pack.md`: 이구학지 — 천기록 encounter situation cards
+- `docs/content/storypack_db/README.md`: machine-readable storypack/card 후보 DB와 검증 범위
+- `docs/content/storypack_db/storypacks.json`: machine-readable storypack 후보 record DB
+- `docs/content/storypack_db/encounter_situations.json`: machine-readable encounter situation card DB
 - `docs/dev/Architecture.md`: 코드 구조와 모듈 경계
 - `docs/dev/Rust_Core_Dual_Renderer_Architecture.md`: Rust GameCore + Web Storybook + SuperLightTUI terminal 활성 방향
 - `docs/dev/Data_Schema.md`: YAML/JSON 데이터 스키마

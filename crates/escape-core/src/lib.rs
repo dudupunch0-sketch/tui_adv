@@ -10,7 +10,7 @@ pub use content::{
     AchievementDef, ChoiceDef, ContentBundle, ContentBundleError, ContentConditions, ContentIndex,
     ContentIndexError, ContentManifest, ContentSections, EncounterDef, EndingDef, ItemDef,
     LocationDef, OutcomeDef, PresentationDef, PresentationEffectCue, PublicSecretDef, ResourceMap,
-    CONTENT_BUNDLE_KIND, CONTENT_BUNDLE_SCHEMA_VERSION,
+    RuntimeMetadata, CONTENT_BUNDLE_KIND, CONTENT_BUNDLE_SCHEMA_VERSION,
 };
 pub use effects::{printer_glyph_anomaly_cue, EffectCue, GlyphAnomalyCue};
 pub use save::{load_state, save_state, SaveEnvelope, SaveError, SAVE_SCHEMA_VERSION};

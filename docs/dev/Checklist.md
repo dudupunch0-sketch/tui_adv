@@ -163,6 +163,12 @@
 - [x] 무협 강호팩 encounter situation cards 추가
 - [x] AGENTS/README/Index/Development_Plan을 storypack 기반 방향으로 동기화
 
+### 0.2q 2026-05-31 Notion-first 아이디어-설계 운영 규칙
+
+- [x] Notion을 원본 reference로 두는 아이디어-설계 파이프라인 문서화
+- [x] 설계 아이디어 문서 변환 → main plan 격상 → 설계 후 Notion reference 대조 → done 처리 규칙 추가
+- [x] `idea_box` 운영 문서와 LLM 설계 핸드오프에 Notion-origin entry 처리 기준 반영
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

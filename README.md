@@ -194,6 +194,8 @@ npm run preview:player
 
 중요한 원칙: 모든 작업 시작 전에 `idea_box`를 확인하지 않는다. 남아 있는 plan, todo list, 또는 명시된 사용자 지시가 있으면 그것을 먼저 처리한다. 현재 세션에서 더 이상 진행할 plan/todo가 없을 때만 `idea_box`를 확인해 다음 설계/개발 후보를 찾는다.
 
+아이디어-설계 흐름은 Notion-first다. 원본 reference는 Notion 문서이며, repo-local `idea_box/inbox/*.md`는 Notion page id/title/url과 처리 순서, 관련 설계 문서 포인터를 담는다. 표준 흐름은 Notion 정리 → repo 설계 아이디어 문서 변환 → `docs/dev/Development_Plan.md` main plan 격상 → 설계 진행 → Notion reference 대조 → `done` 처리다.
+
 자세한 운영 규칙은 `idea_box/README.md`와 `AGENTS.md`를 따른다.
 
 ## 현실 연결 안전 원칙

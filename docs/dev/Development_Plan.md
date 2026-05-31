@@ -3,6 +3,8 @@
 > **Canonical main plan:** 이 repo의 현재 개발 우선순위, 다음 작업 순서, active direction은 이 파일이 기준이다. 다른 LLM/agent에게 작업을 맡길 때는 “`docs/dev/Development_Plan.md`를 메인 플랜으로 보고 다음 작업을 진행해”라고 지시한다.
 >
 > 이 문서는 처음 작성된 구현 전 기준점도 포함하므로, 충돌이 있으면 상단의 최신 방향/다음 액션을 우선한다. `README.md`는 요약/실행법, `docs/dev/Checklist.md`는 완료 여부 추적, 아키텍처/스키마 문서는 계약 참조, `idea_box/`는 active plan이 없을 때 보는 backlog다. `.hermes/plans/`는 세션용 작업 계획이며 canonical source가 아니다.
+>
+> 아이디어-설계 흐름은 Notion-first다. 원본 reference는 Notion이고, repo 문서는 Notion reference를 설계 후보로 변환하고 main plan으로 격상한 뒤 설계 결과를 다시 Notion과 대조하는 방식으로 운영한다.
 
 ## 0.0 계획 문서 우선순위
 
@@ -10,8 +12,18 @@
 2. `docs/dev/Checklist.md`: 완료 여부 추적용 체크리스트. 독립적인 다음 계획을 두지 않는다.
 3. `docs/dev/Rust_Core_Dual_Renderer_Architecture.md`, `docs/dev/Data_Schema.md`, `docs/design/UI_Rules.md`, `docs/dev/TUI_Layout.md`: 설계 계약/참조 문서. 작업 순서의 source of truth가 아니다.
 4. `README.md`: 사람용 빠른 안내와 실행법. 긴 다음 작업 목록은 이 파일로 복제하지 않는다.
-5. `idea_box/`: active plan/todo가 없거나 사용자가 명시적으로 요청했을 때 처리하는 backlog.
+5. `idea_box/`: active plan/todo가 없거나 사용자가 명시적으로 요청했을 때 처리하는 backlog. Notion-origin entry는 Notion reference를 원본으로 삼는다.
 6. `.hermes/plans/`: 일회성 세션 artifact. 완료되었거나 이 파일에 흡수된 계획은 정리한다.
+
+## 0.0a 2026-05-31 Notion-first 아이디어-설계 운영 규칙
+
+앞으로 새 설계 아이디어는 다음 흐름으로 처리한다.
+
+1. 사용자가 Notion에 아이디어를 정리한다. 이 Notion 문서가 원본 reference다.
+2. agent는 Notion reference를 읽고 repo 안의 설계 아이디어 문서로 변환한다. 보통 `docs/design/`, `docs/content/`, `docs/story/` 아래에 candidate 문서를 만들고, `idea_box/inbox/*.md`에는 Notion page id/title/url, `related_docs`, 처리 순서를 남긴다.
+3. 다음에 실제 설계할 항목은 설계 아이디어 문서 중 하나를 이 파일의 active main plan / “현재 최우선 남은 작업”으로 격상시킨 뒤 진행한다.
+4. 설계가 끝나면 Notion reference와 결과 설계 문서를 비교해 방향, 톤, 핵심 제약, non-goals가 일치하는지 확인한다.
+5. Notion reference 대조까지 완료했거나 명시적으로 폐기/병합한 경우에만 해당 idea entry를 `done` 처리한다. 단순 import나 설계 아이디어 문서 작성만으로는 `done` 처리하지 않는다.
 
 ## 0. 2026-05-22 방향 갱신
 

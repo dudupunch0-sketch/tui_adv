@@ -60,6 +60,29 @@ def test_readme_next_work_points_to_canonical_main_plan_instead_of_completed_sli
     assert "## 다음 작업 후보" not in readme
 
 
+def test_notion_first_idea_design_workflow_is_documented():
+    agents = Path("AGENTS.md").read_text(encoding="utf-8")
+    readme = Path("README.md").read_text(encoding="utf-8")
+    idea_readme = Path("idea_box/README.md").read_text(encoding="utf-8")
+    backlog_order = Path("idea_box/BACKLOG_ORDER.md").read_text(encoding="utf-8")
+    intake = Path("idea_box/IDEA_INTAKE_GUIDE.md").read_text(encoding="utf-8")
+    handoff = Path("idea_box/LLM_DESIGN_HANDOFF.md").read_text(encoding="utf-8")
+    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+
+    for doc in (agents, readme, idea_readme, backlog_order, intake, handoff, plan):
+        assert "Notion" in doc
+        assert "원본 reference" in doc
+
+    assert "Notion 정리 → repo 설계 아이디어 문서 변환" in readme
+    assert "설계 아이디어 문서 변환 → main plan 격상 → 설계 후 Notion reference 대조" in checklist
+    assert "main plan" in idea_readme
+    assert "reference_check" in idea_readme
+    assert "notion_page_id" in intake
+    assert "Notion reference 대조" in handoff
+    assert "단순 import나 설계 아이디어 문서 작성만으로는 `done`" in plan
+
+
 def test_phase6_textual_style_slice_is_checklisted_and_documented():
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     layout_doc = Path("docs/dev/TUI_Layout.md").read_text(encoding="utf-8")

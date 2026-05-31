@@ -29,13 +29,26 @@
 - 현재 세션에서 처리할 남은 plan/todo가 없을 때만 `idea_box/README.md`, `idea_box/BACKLOG_ORDER.md`, `idea_box/inbox/`의 열린 아이디어를 확인해 다음 설계/개발 항목을 찾는다.
 - 사용자가 직접 `idea_box` 확인을 요청한 경우에는 즉시 확인한다.
 
+### Notion-first 아이디어-설계 파이프라인
+
+앞으로 설계 아이디어의 원본 reference는 Notion이다. `idea_box/inbox/*.md`는 Notion 원문을 대신하는 최종 source of truth가 아니라, Notion reference를 추적하고 repo 안에서 설계 후보를 처리하기 위한 구조화 entry다.
+
+표준 흐름은 다음 순서다.
+
+1. 사용자가 Notion에 아이디어를 정리한다.
+2. agent는 Notion 문서를 읽고, repo 안의 설계 아이디어 문서로 변환한다. 보통 `docs/design/`, `docs/content/`, 또는 `docs/story/` 아래에 후보 문서를 만들고, `idea_box/inbox/*.md`에는 Notion page id/title/url과 `related_docs`를 기록한다.
+3. 다음에 실제로 설계할 항목은 설계 아이디어 문서 중 하나를 `docs/dev/Development_Plan.md`의 active main plan / “현재 최우선 남은 작업”으로 격상시킨 뒤 진행한다.
+4. 설계가 끝나면 원본 Notion reference와 결과 설계 문서를 다시 비교해 방향, 핵심 제약, non-goals가 어긋나지 않았는지 확인한다.
+5. 이 Notion reference 대조까지 끝난 뒤에만 해당 idea entry를 `done` 처리한다. 단순 import, 단순 요약, 또는 설계 아이디어 문서 작성만으로는 `done`이 아니다.
+
 ### 아이디어 처리
 
 - 아이디어는 즉시 현재 작업에 끼워 넣는 요구사항은 아니지만, `status: done`이 아닌 entry는 반영되지 않은 backlog다.
 - 남은 plan/todo가 없거나 사용자가 `idea_box` 처리를 요청하면 `idea_box/BACKLOG_ORDER.md`의 Git 최초 추가 순서대로 처리한다.
+- Notion-origin entry는 처리 전에 Notion 원본 reference를 다시 확인하고, 설계 완료 후에도 Notion reference 대조 결과를 처리 기록에 남긴다.
 - 프로젝트의 톤, 우선순위, 현재 구현 단계에 맞지 않으면 구현하지 않고 폐기/병합 판단을 할 수 있지만, 그 이유를 처리 기록에 남겨야 한다.
-- 아이디어를 실제 설계/문서/구현에 사용했거나 명시적으로 폐기/병합 처리했다면 `done` 처리한다.
-- `done`은 단순히 읽었다는 뜻이 아니다. 어디에 반영했는지, 또는 왜 폐기/병합했는지 기록한다.
+- 아이디어를 실제 설계/문서/구현에 사용했고 Notion reference 대조까지 마쳤거나, 명시적으로 폐기/병합 처리했다면 `done` 처리한다.
+- `done`은 단순히 읽었다는 뜻이 아니다. 어디에 반영했는지, 어떤 Notion reference와 대조했는지, 또는 왜 폐기/병합했는지 기록한다.
 - 아이디어 파일은 삭제하지 않는다.
 
 자세한 파일 형식과 처리 방식은 `idea_box/README.md`를 따른다.

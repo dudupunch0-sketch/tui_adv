@@ -2,6 +2,8 @@
 
 이 폴더는 사용자가 별도 세션에서 떠오르는 아이디어를 임시 저장하는 공간이다. 다른 agent는 이곳의 아이디어를 나중에 설계/문서/구현 후보로 사용할 수 있다.
 
+현재 표준은 Notion-first다. 원본 reference는 Notion 문서이고, 이 repo의 `idea_box/inbox/*.md`는 Notion reference를 추적하고 처리 순서를 관리하는 구조화 entry다.
+
 ## 확인 시점
 
 - 남아 있는 plan, todo list, 명시된 사용자 지시가 있으면 그것을 먼저 따른다.
@@ -20,6 +22,17 @@ idea_box/
   inbox/                    # 아직 반영하지 않은/반영 대기 중인 구조화 아이디어
   done/                     # 반영, 폐기, 병합 처리가 끝난 아이디어
 ```
+
+## Notion-first 설계 파이프라인
+
+설계 아이디어는 다음 단계로 처리한다.
+
+1. **Notion 정리**: 사용자가 Notion에 원본 아이디어를 적는다. 이 Notion 문서가 원본 reference다.
+2. **설계 아이디어 문서화**: agent는 Notion reference를 읽고 repo 안의 설계 아이디어 문서로 변환한다. 보통 `docs/design/`, `docs/content/`, `docs/story/` 중 적절한 위치에 candidate 문서를 만든다. `idea_box/inbox/*.md`에는 Notion page id/title/url, 간단 요약, `related_docs`를 남긴다.
+3. **main plan 격상**: 다음에 실제로 설계할 항목은 설계 아이디어 문서 중 하나를 `docs/dev/Development_Plan.md`의 active main plan / “현재 최우선 남은 작업”으로 격상시킨 뒤 진행한다.
+4. **설계 진행**: 격상된 main plan을 기준으로 설계 문서와 필요한 계약 문서를 작성한다. runtime YAML/Rust/Web 구현은 별도 요청이나 별도 runtime slice가 있을 때만 한다.
+5. **Notion reference 대조**: 설계 후 Notion 원본 reference와 실제 설계 결과를 비교해 핵심 방향, 톤, 제약, non-goals가 일치하는지 확인하고 처리 기록에 남긴다.
+6. **done 처리**: Notion 대조까지 끝났거나, 명시적으로 폐기/병합 판단을 기록했을 때만 `done` 처리한다. Notion import나 설계 아이디어 문서 작성만으로는 `done`이 아니다.
 
 ## backlog 처리 순서
 
@@ -64,10 +77,16 @@ idea_box/inbox/2026-05-21-fake-terminal-glitch.md
 ---
 status: open
 created: YYYY-MM-DD
-source: user
+source: notion
+notion_page_id:
+notion_title:
+notion_url:
 backlog_order:
 git_added_at:
 git_added_commit:
+related_docs:
+main_plan_ref:
+reference_check:
 used_by:
 done_at:
 ---
@@ -93,11 +112,13 @@ done_at:
 ## 상태 규칙
 
 - `open`: 아직 반영되지 않은 backlog idea entry. `BACKLOG_ORDER.md`의 Git 최초 반영 순서대로 처리한다.
-- `done`: 실제 설계/문서/구현에 반영했거나, 명시적으로 폐기/병합 처리한 아이디어.
+- `done`: 실제 설계/문서/구현에 반영했고 Notion reference 대조까지 마쳤거나, 명시적으로 폐기/병합 처리한 아이디어.
 
-`done`은 단순히 읽었다는 뜻이 아니다. 처리 결과가 있어야 한다.
+`done`은 단순히 읽었다는 뜻이 아니다. Notion import, 설계 아이디어 문서 작성, 또는 main plan 격상만으로는 부족하다. 최종 설계가 원본 Notion reference와 같은 방향인지 확인한 기록이 있거나, 폐기/병합 이유가 있어야 한다.
 
 ## 처리 방법
+
+Notion-origin 아이디어를 사용할 때는 먼저 Notion reference를 다시 읽고, `related_docs`의 설계 아이디어 문서와 `docs/dev/Development_Plan.md`의 격상 상태를 확인한다.
 
 아이디어를 사용했으면 다음 중 하나를 수행한다.
 
@@ -105,6 +126,7 @@ done_at:
 
 ```md
 status: done
+reference_check: Notion reference 대조 완료, YYYY-MM-DD
 used_by: docs/some-file.md 또는 src/some-file.ts
 done_at: YYYY-MM-DD
 ```

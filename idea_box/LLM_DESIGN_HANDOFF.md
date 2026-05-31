@@ -19,7 +19,7 @@ related_docs:
 
 중요: 이 문서는 새 구현 요구사항이 아니다. 후보 아이디어와 설계 문서의 내비게이션이며, 런타임 코드나 YAML 승격은 사용자가 명시적으로 요청했을 때만 한다.
 
-또한 `idea_box`의 open 항목은 임의 선택 후보가 아니라 backlog다. 처리 순서는 `idea_box/BACKLOG_ORDER.md`에 적힌 Git 최초 반영 순서를 따른다.
+또한 `idea_box`의 open 항목은 임의 선택 후보가 아니라 backlog다. 처리 순서는 `idea_box/BACKLOG_ORDER.md`에 적힌 Git 최초 반영 순서를 따른다. Notion-origin 항목의 원본 reference는 Notion이며, repo-local entry와 설계 문서는 그 reference를 추적하고 변환한 결과물이다.
 
 ## 먼저 읽을 순서
 
@@ -27,33 +27,37 @@ related_docs:
    - 현재 open backlog의 처리 순서.
    - 같은 날짜 파일명이 여러 개일 때도 Git 최초 반영 순서로 정렬한다.
    - 가장 낮은 order의 open 항목부터 처리한다.
+   - Notion-origin entry라면 Notion page id/title/url을 확인하고 원본 reference를 다시 읽는다.
 
-2. `docs/design/Storypack_Encounter_DB.md`
+2. `idea_box/README.md`
+   - Notion 정리 → 설계 아이디어 문서 변환 → main plan 격상 → 설계 → Notion reference 대조 → done 처리 흐름을 확인한다.
+
+3. `docs/design/Storypack_Encounter_DB.md`
    - storypack, encounter situation card, 6스탯 NPC DB의 상위 설계.
    - phase, surface, anomaly_type, pressure_type, npc_slot taxonomy.
    - 후보 콘텐츠를 runtime content로 승격하기 전 검토 기준.
 
-3. `docs/content/storypacks/README.md`
+4. `docs/content/storypacks/README.md`
    - storypack 후보 목록과 status 규칙.
    - 현재 full record는 `isolation_pack` 하나이며, 나머지는 raw 후보다.
 
-4. `docs/content/storypacks/isolation_pack.md`
+5. `docs/content/storypacks/isolation_pack.md`
    - 첫 full storypack record.
    - 차원격리팩의 핵심 컨셉, surfaces, route hooks, NPC slots, 결말 후보.
 
-5. `docs/content/encounter_db/README.md`
+6. `docs/content/encounter_db/README.md`
    - encounter situation card DB 운영 규칙.
    - runtime encounter가 아니라 후보 상황 카드라는 경계.
 
-6. `docs/content/encounter_db/isolation_pack.md`
+7. `docs/content/encounter_db/isolation_pack.md`
    - 차원격리팩용 후보 encounter situation card 6개.
    - 다른 pack을 설계할 때 복제할 수 있는 카드 밀도와 형식 예시.
 
-7. `docs/content/characters/README.md`
+8. `docs/content/characters/README.md`
    - 6 core stats의 의미와 수치 규칙.
    - 관계 상태를 stat과 분리하는 원칙.
 
-8. `docs/content/characters/recurrent_npcs.md`
+9. `docs/content/characters/recurrent_npcs.md`
    - 차원격리팩 첫 slice용 반복 NPC 후보 3명.
    - stat_total 60, encounter_uses, complicates, public-safe secret 작성 예시.
 
@@ -141,12 +145,15 @@ NPC 작성 규칙:
 
 ```text
 이 repo의 idea_box/BACKLOG_ORDER.md를 먼저 읽고, 가장 낮은 order의 open 항목부터 처리해라.
+Notion-origin entry의 원본 reference는 Notion이다. idea entry의 notion_page_id/title/url을 확인하고 원본 Notion 문서를 다시 읽어라.
 idea_box/LLM_DESIGN_HANDOFF.md는 storypack/encounter DB/6스탯 NPC 관련 항목을 처리할 때 참고하는 설계 표지 문서다.
 이번 작업이 storypack/encounter 관련이라면 관련 docs/design 및 docs/content 문서를 순서대로 확인해라.
-작업은 먼저 후보 설계 문서 작성으로 시작하고, runtime 구현은 사용자가 명시적으로 요청했을 때만 한다.
+작업은 먼저 Notion reference를 repo 설계 아이디어 문서로 변환하는 것에서 시작하고, runtime 구현은 사용자가 명시적으로 요청했을 때만 한다.
+실제로 다음 설계로 진행할 항목은 docs/dev/Development_Plan.md의 active main plan으로 격상한 뒤 설계해라.
+설계가 끝나면 Notion reference와 결과 설계 문서를 대조해 방향/톤/제약/non-goals가 일치하는지 처리 기록에 남겨라.
 실제 회사/인물/내부자료처럼 보이는 정보는 쓰지 말고, public-safe fictional corporate apocalypse 톤을 유지하라.
 작업 후 관련 README와 docs/00_Index.md만 필요한 만큼 갱신하고, 요청 없이는 runtime YAML/Rust/Web 코드를 건드리지 마라.
-작업한 idea entry는 실제 반영/폐기/병합 처리 결과를 기록한 뒤에만 status: done으로 바꿔라.
+작업한 idea entry는 Notion reference 대조 또는 명시적 폐기/병합까지 끝난 뒤에만 status: done으로 바꿔라.
 ```
 
 ## 하지 말 것

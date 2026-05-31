@@ -175,6 +175,61 @@ fn json_boundary_reaches_wuxia_first_fight_through_preview_bundle() {
         .expect("flags should be an array")
         .iter()
         .any(|flag| flag == "heuksa_bang_first_fight_resolved"));
+
+    let post_fight_state_json =
+        serde_json::to_string(&fight_result["state"]).expect("state should stringify");
+    let fragment_page_json = scene_page_json(&post_fight_state_json, WUXIA_PREVIEW_BUNDLE)
+        .expect("first fragment scene page should serialize");
+    let fragment_page: Value =
+        serde_json::from_str(&fragment_page_json).expect("fragment page JSON should parse");
+    assert_eq!(fragment_page["mode"], "encounter");
+    assert_eq!(fragment_page["title"], "천기록 첫 편린");
+    assert_eq!(
+        fragment_page["visual"]["id"],
+        "wuxia_cheonggi_record_first_fragment"
+    );
+    assert_eq!(fragment_page["visual"]["kind"], "cheonggi_record");
+    let fragment_action_ids: Vec<&str> = fragment_page["actions"]
+        .as_array()
+        .expect("actions should be an array")
+        .iter()
+        .map(|action| action["id"].as_str().expect("action id should be a string"))
+        .collect();
+    assert_eq!(
+        fragment_action_ids,
+        vec![
+            "choice:choose_guard_basics",
+            "choice:choose_keep_feet_moving",
+            "choice:choose_failure_log",
+            "choice:close_notebook_without_choice",
+        ]
+    );
+
+    let fragment_result_json = apply_action_json(
+        &post_fight_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:choose_failure_log",
+    )
+    .expect("first fragment action should serialize");
+    let fragment_result: Value = serde_json::from_str(&fragment_result_json)
+        .expect("fragment action result JSON should parse");
+    assert_eq!(
+        fragment_result["encounter_id"],
+        "wuxia_cheonggi_record_first_fragment"
+    );
+    assert_eq!(
+        fragment_result["state"]["inventory"][0],
+        "cheonggi_record_notebook"
+    );
+    assert!(fragment_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array")
+        .iter()
+        .any(|flag| flag == "cheonggi_fragment_failure_log_thread"));
+    assert_eq!(
+        fragment_result["newly_unlocked_achievements"][0],
+        "wuxia_first_fragment_seen"
+    );
 }
 
 #[test]

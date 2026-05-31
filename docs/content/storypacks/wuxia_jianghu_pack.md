@@ -63,7 +63,7 @@ ending_candidates:
   - returnee
   - murim_outsider
 main_spine_support: office에서 출발한 현대인이 완전히 다른 world에 떨어져도 소속, 평판, 관계, 성장, 전투, 자원, 선택, 엔딩을 같은 engine loop로 설명할 수 있는지 검증한다.
-runtime_promotion_notes: `wuxia_commute_rift_arrival`와 `wuxia_heuksa_bang_first_fight` preview는 separate storypack preview mode에서 완료했다. office content와 섞이지 않는 별도 preview bundle을 유지하며, 다음 후속은 preview launcher/UI wiring 필요 여부 또는 다음 encounter 후보 결정이다. 천외편린 3택 성장 schema는 future work로 둔다.
+runtime_promotion_notes: `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment` preview는 separate storypack preview mode에서 완료했다. office content와 섞이지 않는 별도 preview bundle을 유지하며, 다음 후속은 서하린 구조/청류문 수습생 bridge 후보 결정이다. 천외편린 3택 성장 schema는 future work로 둔다.
 ```
 
 ## 최신화 기준

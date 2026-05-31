@@ -1,4 +1,4 @@
-import contentBundle from '../data/generated/content.bundle.json';
+import { DEFAULT_CONTENT_BUNDLE_JSON } from './contentBundles';
 import type { ScenePage } from './types';
 
 export interface EscapeWasmBindings {
@@ -22,7 +22,6 @@ interface EscapeWasmModule extends Partial<EscapeWasmBindings> {
 
 const DEFAULT_SEED = 123;
 const DEFAULT_WASM_MODULE_PATH = new URL(/* @vite-ignore */ './wasm-pkg/escape_wasm.js', import.meta.url).toString();
-const DEFAULT_CONTENT_BUNDLE_JSON = JSON.stringify(contentBundle);
 
 export class EscapeWasmRuntime {
   private currentStateJson: string;

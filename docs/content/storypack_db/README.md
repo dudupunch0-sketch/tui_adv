@@ -42,4 +42,4 @@ PYTHONPATH=src python -m pytest tests/test_storypack_db.py -q
 - `yageunmong_pack`: 야근몽 office-dream 후보 카드 6개.
 - `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 6개.
 
-다음 runtime slice는 이미 결정된 `storypack_preview` mode에서 `wuxia_heuksa_bang_first_fight`를 추가하는 것이다. 기본 office bundle에 후보 storypack을 자동으로 섞지 않으며, `yageunmong_pack`은 별도 preview 후보로만 유지한다.
+다음 runtime slice는 이미 결정된 `storypack_preview` mode에서 `wuxia_seo_harin_rescue` 또는 `wuxia_cheongryu_apprentice_entry` bridge를 추가할지 결정하는 것이다. 기본 office bundle에 후보 storypack을 자동으로 섞지 않으며, `yageunmong_pack`은 별도 preview 후보로만 유지한다.

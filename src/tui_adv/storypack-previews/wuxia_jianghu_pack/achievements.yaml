@@ -4,3 +4,9 @@ achievements:
     description: 출근복 그대로 강호에 떨어진 첫 순간을 붙든다.
     conditions:
       required_flags: [wuxia_arrival_grounded]
+
+  - id: wuxia_first_fragment_seen
+    name: 천기록 첫 편린
+    description: 첫 난투의 실패를 천기록의 수련 방향으로 기록한다.
+    conditions:
+      required_flags: [first_fragment_seen]

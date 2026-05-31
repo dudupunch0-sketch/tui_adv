@@ -8,6 +8,10 @@ use std::io::{self, Write};
 use std::path::PathBuf;
 use std::time::Duration;
 
+const WUXIA_STORYPACK_PREVIEW_ID: &str = "wuxia_jianghu_pack";
+const WUXIA_STORYPACK_PREVIEW_BUNDLE_REL: &str =
+    "../escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json";
+
 #[derive(Debug, PartialEq, Eq)]
 struct CliOptions {
     scene: String,
@@ -19,6 +23,7 @@ struct CliOptions {
     app: bool,
     tick: u64,
     content_bundle: Option<PathBuf>,
+    storypack_preview: Option<String>,
     actions: Vec<String>,
 }
 
@@ -54,6 +59,9 @@ where
     if options.tick != 0 && !options.app_smoke {
         return Err("--tick is only supported with --app-smoke".to_string());
     }
+    if options.content_bundle.is_some() && options.storypack_preview.is_some() {
+        return Err("--content-bundle and --storypack-preview cannot be combined".to_string());
+    }
 
     match options.scene.as_str() {
         "printer" => run_printer_scene(&options),
@@ -67,6 +75,9 @@ where
 fn run_printer_scene(options: &CliOptions) -> Result<(), String> {
     if options.content_bundle.is_some() {
         return Err("--content-bundle is only supported with --scene content".to_string());
+    }
+    if options.storypack_preview.is_some() {
+        return Err("--storypack-preview is only supported with --scene content".to_string());
     }
     if !options.actions.is_empty() {
         return Err("--action is only supported with --scene content".to_string());
@@ -88,11 +99,8 @@ fn run_printer_scene(options: &CliOptions) -> Result<(), String> {
 }
 
 fn run_content_scene(options: &CliOptions) -> Result<(), String> {
-    let bundle_path = options
-        .content_bundle
-        .as_ref()
-        .ok_or_else(|| "--content-bundle is required with --scene content".to_string())?;
-    let json_text = std::fs::read_to_string(bundle_path).map_err(|error| {
+    let bundle_path = selected_content_bundle_path(options)?;
+    let json_text = std::fs::read_to_string(&bundle_path).map_err(|error| {
         format!(
             "failed to read content bundle '{}': {error}",
             bundle_path.display()
@@ -145,6 +153,25 @@ fn run_content_scene(options: &CliOptions) -> Result<(), String> {
     }
 
     Ok(())
+}
+
+fn selected_content_bundle_path(options: &CliOptions) -> Result<PathBuf, String> {
+    if let Some(bundle_path) = &options.content_bundle {
+        return Ok(bundle_path.clone());
+    }
+    if let Some(storypack_id) = &options.storypack_preview {
+        return storypack_preview_bundle_path(storypack_id);
+    }
+    Err("--content-bundle or --storypack-preview is required with --scene content".to_string())
+}
+
+fn storypack_preview_bundle_path(storypack_id: &str) -> Result<PathBuf, String> {
+    if storypack_id != WUXIA_STORYPACK_PREVIEW_ID {
+        return Err(format!(
+            "unsupported --storypack-preview '{storypack_id}'; available: {WUXIA_STORYPACK_PREVIEW_ID}"
+        ));
+    }
+    Ok(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(WUXIA_STORYPACK_PREVIEW_BUNDLE_REL))
 }
 
 fn content_bundle_start_location(bundle: &ContentBundle) -> &str {
@@ -298,6 +325,7 @@ where
     let mut app = false;
     let mut tick = 0_u64;
     let mut content_bundle = None;
+    let mut storypack_preview = None;
     let mut actions = Vec::new();
     let mut iter = args.into_iter();
 
@@ -321,6 +349,12 @@ where
                     .next()
                     .ok_or_else(|| "--content-bundle requires a value".to_string())?;
                 content_bundle = Some(PathBuf::from(value));
+            }
+            "--storypack-preview" => {
+                let value = iter
+                    .next()
+                    .ok_or_else(|| "--storypack-preview requires a value".to_string())?;
+                storypack_preview = Some(value);
             }
             "--action" => {
                 let value = iter
@@ -359,6 +393,7 @@ where
         app,
         tick,
         content_bundle,
+        storypack_preview,
         actions,
     })
 }
@@ -366,6 +401,9 @@ where
 fn print_help() {
     println!("escape-terminal --scene printer --seed 123 --smoke");
     println!("escape-terminal --scene content --content-bundle <path> --seed 123 --play");
+    println!(
+        "escape-terminal --scene content --storypack-preview wuxia_jianghu_pack --seed 123 --play"
+    );
     println!("escape-terminal --scene content --content-bundle <path> --seed 123 --app");
     println!("escape-terminal --scene content --content-bundle <path> --seed 123 --smoke --action choice:check_message");
     println!("escape-terminal --scene content --content-bundle <path> --seed 123 --tui-smoke --action choice:check_message");
@@ -374,6 +412,9 @@ fn print_help() {
     println!("Options:");
     println!("  --scene <printer|content>  Run the printer scene or content-backed smoke/play");
     println!("  --content-bundle <path>    JSON content bundle for --scene content");
+    println!(
+        "  --storypack-preview <id>  Use a built-in explicit preview bundle (wuxia_jianghu_pack)"
+    );
     println!(
         "  --action <id>              Script one content action; repeat for multi-turn smokes"
     );

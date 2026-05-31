@@ -728,7 +728,7 @@ node --check scripts/storybook-reference-qa.mjs
 ## 0.10 2026-05-29 active direction: storypack/world 일반화와 무협 기준팩
 
 사용자 결정에 따라 프로젝트 방향을 “회사 아포칼립스 전용 게임”에서 “storypack/world 기반 선택지 생존 엔진 + 기본 office storypack”으로 재정렬한다. 첫 비-office 기준팩은 `wuxia_jianghu_pack`이며, 최신 canonical story는 Notion에서 갱신된 **이구학지 — 천기록**이다. 2026-05-31에는 Notion-origin `야근몽`을 기본 office runtime을 대체하지 않는 별도 office-family 후보 `yageunmong_pack`으로 승격했다.
-현재 상태: 설계 문서화 완료, 최신 무협 story 반영 완료, 야근몽 candidate docs/DB 반영 완료, machine-readable storypack DB/preview mode 결정 완료, 첫 runtime preview(`wuxia_commute_rift_arrival`) 구현 완료.
+현재 상태: 설계 문서화 완료, 최신 무협 story 반영 완료, 야근몽 candidate docs/DB 반영 완료, machine-readable storypack DB/preview mode 결정 완료, 무협 runtime preview(`wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`)와 Web/terminal preview launcher/UI wiring 완료.
 
 문제 인식:
 
@@ -745,6 +745,8 @@ node --check scripts/storybook-reference-qa.mjs
 - `docs/content/storypack_db/storypacks.json`와 `docs/content/storypack_db/encounter_situations.json`를 추가해 design-time storypack DB 참조 무결성을 검증한다.
 - `docs/dev/Storypack_Runtime_Preview_Mode.md`를 추가해 첫 non-office runtime prototype은 separate preview mode first로 진행하고, 기본 office bundle과 무협 preview bundle을 섞지 않는다고 결정했다.
 - `wuxia_commute_rift_arrival`을 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/*.yaml` source와 별도 generated preview bundle로 구현했다. Rust fixture와 Web generated preview artifact는 기본 `content.bundle.json`와 분리된다.
+- `wuxia_heuksa_bang_first_fight`를 같은 preview source/bundle에 추가했고, `escape-terminal --storypack-preview wuxia_jianghu_pack`와 Web start screen preview launcher로 기본 office runtime을 건드리지 않는 opt-in entrypoint를 구현했다.
+- `wuxia_cheonggi_record_first_fragment`를 첫 난투 후 천기록 future hook preview로 추가했다. `cheonggi_record_notebook` item과 `wuxia_first_fragment_seen` achievement도 preview bundle에만 들어간다.
 - `AGENTS.md`, `README.md`, `docs/00_Index.md`, `docs/design/Storypack_Encounter_DB.md`, `docs/dev/Checklist.md`를 office-only 표현에서 storypack-capable 표현으로 조정했다.
 
 유지 범위:
@@ -758,8 +760,8 @@ node --check scripts/storybook-reference-qa.mjs
 
 후속 후보:
 
-1. `wuxia_heuksa_bang_first_fight`: arrival preview 검증 후 같은 preview mode에서 두 번째 무협 encounter를 여는 후보.
-2. preview launcher/UI wiring: Web 또는 terminal에서 preview bundle을 선택하는 명시적 opt-in entrypoint를 추가할지 검토한다.
+1. 서하린 구조 hook: first fight/cheonggi fragment outcome을 이어받아 청류문/서하린과 연결되는 구조 이벤트를 열 후보.
+2. `wuxia_cheongryu_apprentice_entry`: 청류문 수습생/잡역/서고 정리 bridge를 열어 천기록 발현의 정식 위치를 회수하는 후보.
 3. `yageunmong_late_night_desk_awake`: 야근몽을 열 경우 기본 office bundle을 대체하지 않는 별도 storypack preview 첫 후보.
 4. display alias pass: `health/sanity/battery/hunger/thirst/danger` 내부 field는 유지하되 world별 표시 이름을 분리할지 검토한다.
 
@@ -839,6 +841,54 @@ node --check scripts/storybook-reference-qa.mjs
 - 생성 artifact 위치: preview source는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`, generated preview bundle은 `crates/escape-core/fixtures/content/storypack-preview/`와 `web/src/data/generated/storypack-preview/`에만 둔다.
 - Web/Rust/terminal parity 확인 항목: runtime metadata 유지, default location 유지, arrival와 first fight encounter id/action id 일치, preview bundle에만 무협 콘텐츠 존재, default office bundle에 무협 id 부재, `ScenePage`/action id renderer-neutral 표시 유지.
 - 구현하지 말아야 할 것: preview launcher/UI wiring, storypack 선택 UI, 기본 office bundle 변경, `escape-office` key rename, 천외편린/각성편린 3택 reward schema, yageunmong runtime, 전체 전투 시스템 재설계.
+
+## 0.13 2026-05-31 runtime slice: 무협 preview launcher/UI wiring
+
+현재 상태: 구현 완료.
+
+결정:
+
+- `preview launcher/UI wiring`은 필요하다고 판단했다. 이유는 `wuxia_commute_rift_arrival`와 `wuxia_heuksa_bang_first_fight`가 이미 separate preview bundle에 들어갔지만, 사용자가 Web/terminal에서 기본 office runtime을 건드리지 않고 그 bundle을 선택하는 명시적 entrypoint가 없으면 preview가 개발자용 bundle path 지식에만 묶이기 때문이다.
+- 이 slice는 storypack selection/save migration이 아니라 opt-in preview launcher다. 기본 `escape-office` save/localStorage key와 기본 office bundle은 유지한다.
+
+구현 결과:
+
+- Terminal: `escape-terminal --scene content --storypack-preview wuxia_jianghu_pack ...`가 built-in preview fixture를 선택한다. 기존 `--content-bundle <path>` 경로도 유지하고, 두 옵션은 동시에 사용할 수 없다.
+- Web: start screen에 `wuxia_jianghu_pack` preview launcher를 노출하고, `web/src/core/contentBundles.ts`에서 기본 office bundle과 Web generated storypack preview bundle을 별도 registry로 관리한다.
+- Save boundary: Web storypack preview run은 `escape-office.rust.save.v1` / `escape-office.last-run-summary.v1`를 쓰지 않는다. 기본 office continue/new-game UX는 기존 save key를 그대로 사용한다.
+- Default office boundary: `src/tui_adv/data/*.yaml`, `crates/escape-core/fixtures/content/content.bundle.json`, `web/src/data/generated/content.bundle.json`는 변경하지 않는다.
+
+검증 포인트:
+
+- Terminal smoke는 `--storypack-preview wuxia_jianghu_pack`로 first fight까지 scripted route를 실행하고 `dev_desk`가 나타나지 않음을 확인한다.
+- Web unit tests는 start screen preview launcher, default office bundle과 storypack preview bundle 분리, `wuxia_heuksa_bang_first_fight` 포함 여부를 검증한다.
+- Web build/Vitest는 `/tmp` scratch copy에서 실행한다. repo 내부 `web/node_modules`는 만들지 않는다.
+
+## 0.14 2026-05-31 runtime slice: 무협 `wuxia_cheonggi_record_first_fragment`
+
+현재 상태: 구현 완료.
+
+결정:
+
+- 같은 `wuxia_jianghu_pack` `storypack_preview` bundle에 `wuxia_cheonggi_record_first_fragment`를 세 번째 encounter로 추가했다.
+- 이 slice의 역할은 첫 난투 직후 천기록/천외편린 future hook을 보여주는 schema-less preview다. 정식 청류문 수습생/서고 구간과 완전한 천외편린 3택 성장/reward는 아직 열지 않는다.
+- 접근 조건은 `conditions.locations: [jianghu_market_street]`, `required_flags: [heuksa_bang_first_fight_resolved]`, `forbidden_flags: [cheonggi_record_first_fragment_resolved]`다. first fight의 어떤 선택지를 골라도 공통 resolved flag로 이어진다.
+- stable choice ids는 `choose_guard_basics`, `choose_keep_feet_moving`, `choose_failure_log`, fallback `close_notebook_without_choice`다.
+- outcome hook은 기존 schema의 `resources.sanity`, `add_items`, `add_flags`, `add_clues`, `log`, optional `presentation/effect_cues`만 사용한다.
+- 새 reward/ability/combat schema, 실제 천외편린 3택 lock-in 시스템, full fragment choice UI, 기본 office bundle 변경, `escape-office` save/localStorage key 변경은 하지 않았다.
+
+구현 결과:
+
+- Source: `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`에 `wuxia_cheonggi_record_first_fragment`를 추가했고, `items.yaml`에 `cheonggi_record_notebook`, `achievements.yaml`에 `wuxia_first_fragment_seen`을 추가했다.
+- Generated preview artifacts: `crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json`와 `web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json`만 재생성했다.
+- Runtime parity: Python exporter는 preview counts/items/encounter ids를 검증하고, Rust content fixture는 조건/choice/presentation을 인덱싱하며, WASM JSON boundary와 SuperLightTUI smoke는 arrival → market → first fight → first fragment 경로를 검증한다.
+- Web boundary: `web/src/core/contentBundles.test.ts`는 default office bundle에 무협 IDs가 없고 preview registry에 세 encounter가 들어 있음을 검증한다.
+
+다음 후보:
+
+1. `wuxia_seo_harin_rescue`: first fight/fragment 이후 서하린 개입, 외지인 조사, 청류문 보호/의심 hook을 schema-less encounter로 연결한다.
+2. `wuxia_cheongryu_apprentice_entry`: 수습생/잡역/서고 정리 bridge를 열어 천기록 발현의 정식 위치를 회수한다.
+3. 천외편린 3택 reward/ability schema는 위 bridge가 충분히 검증된 뒤 별도 design/runtime slice로 연다.
 
 ## 1. 목표
 
@@ -1387,15 +1437,17 @@ src/tui_adv/data/secrets.example.yaml
 29. 무협 storypack preview runtime prototype 완료: `wuxia_commute_rift_arrival`을 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/*.yaml` source와 별도 Rust/Web generated preview bundle로 구현했다. Generated artifacts는 `crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json`와 `web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json`다. `escape-wasm::new_game_json()`과 `escape-terminal --scene content`는 preview `runtime.default_location`을 사용해 `wuxia_commute_rift`에서 시작하며, 기본 office bundle은 계속 `dev_desk`에서 시작한다.
 30. 야근몽 office-dream storypack 후보 문서화 완료: live Notion Markdown을 대조한 뒤 `docs/content/storypacks/yageunmong_pack.md`, `docs/content/encounter_db/yageunmong_pack.md`, storypack DB JSON 후보 record/cards를 추가했고, 관련 idea_box entry 2개를 done 처리했다. runtime 구현은 미착수다.
 31. 무협 `wuxia_heuksa_bang_first_fight` preview runtime slice 완료: `jianghu_market_street` 위치와 `wuxia_arrival_hidden` branch에서 이어지는 흑사방 첫 난투를 같은 `wuxia_jianghu_pack` storypack preview source에 추가했다. 구현은 기존 `conditions`, `choices`, `outcome.resources`, `danger`, `add_flags`, `add_clues`, `log`, optional `presentation/effect_cues`만 사용하며 새 combat/reward/ability schema를 열지 않았다. Rust fixture/Web generated preview bundle을 갱신했고, Python exporter, Rust content fixture, WASM JSON boundary action flow, SuperLightTUI smoke가 first fight의 action id/presentation/effect cue parity를 검증한다. 기본 office bundle, Web 기본 generated bundle, `src/tui_adv/data/*.yaml`, `escape-office` save/localStorage key는 변경하지 않았다.
+32. 무협 preview launcher/UI wiring 완료: terminal은 `escape-terminal --scene content --storypack-preview wuxia_jianghu_pack` opt-in flag로 built-in preview fixture를 선택한다. Web은 start screen preview launcher와 `web/src/core/contentBundles.ts` registry로 기본 office bundle과 `wuxia_jianghu_pack` generated preview bundle을 분리한다. Web storypack preview run은 기본 office save/localStorage key를 쓰지 않고, default office continue/new-game UX는 기존 key를 유지한다.
+33. 무협 `wuxia_cheonggi_record_first_fragment` preview runtime slice 완료: 첫 난투 뒤 같은 `jianghu_market_street`에서 `heuksa_bang_first_fight_resolved`를 요구하는 천기록 첫 편린 encounter를 추가했다. `cheonggi_record_notebook` item과 `wuxia_first_fragment_seen` achievement를 preview bundle에만 추가하고, 선택지는 `choose_guard_basics`, `choose_keep_feet_moving`, `choose_failure_log`, fallback `close_notebook_without_choice`로 고정했다. 새 reward/ability/combat schema나 천외편린 3택 성장 UI는 열지 않고 flags/clues/log/presentation hook만 사용했다.
 
 현재 최우선 남은 작업:
 
-1. 무협 storypack preview mode 후속은 `preview launcher/UI wiring` 필요 여부를 결정하고, 필요하면 명시적 opt-in entrypoint를 추가하는 slice다.
+1. 무협 storypack preview의 다음 연결 slice는 `wuxia_seo_harin_rescue`를 1순위로 검토한다. 2순위는 `wuxia_cheongryu_apprentice_entry` bridge다.
    - 기본 storypack은 `escape from the office` / office isolation 계열로 유지한다.
    - 첫 비-office 기준팩은 `wuxia_jianghu_pack` / **이구학지 — 천기록**이다.
-   - machine-readable storypack DB, separate preview mode 결정, `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight` runtime preview는 완료했다.
-   - 다음 작업은 Web/terminal 사용자가 기본 office runtime을 건드리지 않고 preview bundle을 선택/실행할 수 있는 최소 UX가 필요한지 판단하는 것이다. 필요하면 Web/terminal preview launcher/UI wiring을 별도 opt-in 경로로 구현한다.
-   - `wuxia_heuksa_bang_first_fight`는 이미 preview bundle에 들어갔으므로, 후속 slice에서 다시 구현하지 않는다. 후속은 entrypoint/launcher 또는 다음 encounter 후보 결정에 한정한다.
+   - machine-readable storypack DB, separate preview mode 결정, `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, Web/terminal preview launcher/UI wiring은 완료했다.
+   - 다음 작업은 first fight/fragment에서 열린 flags/clues를 서하린 구조, 청류문 보호/의심, 수습생/서고 bridge로 연결하는 schema-less content slice다.
+   - `preview launcher/UI wiring`은 이미 opt-in entrypoint로 구현했으므로 후속 slice에서 다시 구현하지 않는다.
    - `yageunmong_pack`은 docs/data 후보로 반영됐지만 기본 office runtime을 대체하지 않는다. 야근몽 runtime은 별도 preview 후보로만 연다.
    - 기본 `content.bundle.json`, Web 기본 generated bundle, `src/tui_adv/data/*.yaml`, `escape-office` save/localStorage key는 계속 바꾸지 않는다.
    - 천외편린/각성편린 3택 성장 schema는 별도 검증 전까지 열지 않는다.
@@ -1421,8 +1473,9 @@ src/tui_adv/data/secrets.example.yaml
 8. Web player start/save UX first slice 후속: save JSON export/import, settings/reduce-motion UI, 오늘의 seed는 별도 승격 전까지 열지 않는다.
 9. 여러 히든 현실 보물
 10. 전투 시스템 후속 slice는 `supply_closet_auto_brawl` 이후 반복 가치가 확인될 때만 presentation metadata 정리 또는 Rust combat resolver로 승격한다.
-11. 무협 storypack preview 후속: `wuxia_heuksa_bang_first_fight` 구현 후 Web/terminal preview launcher/UI wiring이 필요한지 결정한다.
-12. 야근몽 storypack preview 후속: `yageunmong_late_night_desk_awake` 또는 각성편린 3택 preview를 별도 storypack preview로 열지 결정한다.
+11. 무협 storypack preview 후속: `wuxia_seo_harin_rescue` 또는 `wuxia_cheongryu_apprentice_entry` bridge를 다음 content slice로 열지 결정한다.
+12. 천외편린/각성편린 3택 reward/ability schema는 schema-less bridge가 충분히 검증된 뒤 별도 slice로 검토한다.
+13. 야근몽 storypack preview 후속: `yageunmong_late_night_desk_awake` 또는 각성편린 3택 preview를 별도 storypack preview로 열지 결정한다.
 
 ## 9. 주요 리스크
 
@@ -1467,13 +1520,12 @@ Web 또는 terminal renderer가 게임 규칙을 다시 구현하면 Rust GameCo
 
 ## 10. 다음 액션
 
-1. Web/terminal `preview launcher/UI wiring` 필요 여부를 결정하고, 필요하면 `wuxia_jianghu_pack` preview bundle을 명시적으로 선택/실행하는 opt-in entrypoint를 추가한다.
-   - `wuxia_commute_rift_arrival`와 `wuxia_heuksa_bang_first_fight`는 이미 separate `storypack_preview` bundle에 구현되어 있다.
-   - preview bundle metadata에는 계속 `runtime_mode: storypack_preview`, `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`, `default_location: wuxia_commute_rift`를 명시한다.
-   - launcher/UI wiring은 default office runtime을 바꾸지 않고, preview mode bundle path 또는 preview flag를 명시한 경우에만 작동해야 한다.
+1. 다음 무협 storypack preview content slice는 `wuxia_seo_harin_rescue`를 1순위로 검토한다. 대안/후속 후보는 `wuxia_cheongryu_apprentice_entry` bridge다.
+   - `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`는 이미 separate `storypack_preview` bundle에 구현되어 있다.
+   - Web/terminal `preview launcher/UI wiring`도 완료되어 `wuxia_jianghu_pack` preview bundle을 명시적으로 선택/실행할 수 있다.
+   - 다음 content slice도 preview bundle metadata `runtime_mode: storypack_preview`, `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`, `default_location: wuxia_commute_rift`를 유지한다.
    - 기본 `content.bundle.json`, Web 기본 generated bundle, `src/tui_adv/data/*.yaml`, `escape-office` save/localStorage key는 바꾸지 않는다.
    - Rust GameCore / `ScenePage` / WASM JSON boundary가 가진 gameplay truth를 renderer가 재계산하지 않는다.
-   - 구현한다면 테스트는 preview bundle 선택 경로가 `wuxia_commute_rift`에서 시작하고, scripted route로 `jianghu_market_street`의 `wuxia_heuksa_bang_first_fight` action ids를 확인하는 데 집중한다.
-2. launcher가 당장 필요 없다고 판단되면 다음 무협 content slice 후보를 별도 문서/계획으로 고른다. 후보는 `wuxia_cheonggi_record_first_fragment` 또는 서하린 구조 hook이며, 천외편린 3택 growth schema는 아직 열지 않는다.
-3. 야근몽 runtime 후보는 `yageunmong_late_night_desk_awake` 또는 각성편린 3택 preview로만 열고, 기본 office bundle을 자동 rewrite하지 않는다.
-4. 실제 음악/SFX asset과 soundtrack은 저작권/라이선스 정책이 정리되기 전까지 열지 않는다.
+   - 천외편린 3택 성장/reward/ability schema는 아직 열지 않고, 필요한 경우 `flags`/`clues`/`log`/`presentation` hook으로만 future work를 남긴다.
+2. 야근몽 runtime 후보는 `yageunmong_late_night_desk_awake` 또는 각성편린 3택 preview로만 열고, 기본 office bundle을 자동 rewrite하지 않는다.
+3. 실제 음악/SFX asset과 soundtrack은 저작권/라이선스 정책이 정리되기 전까지 열지 않는다.

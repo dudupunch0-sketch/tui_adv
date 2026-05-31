@@ -2,12 +2,12 @@
 
 Status: candidate
 
-이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전 상황 카드로 정리한다. `wuxia_commute_rift_arrival`와 `wuxia_heuksa_bang_first_fight`는 이 카드에서 separate storypack preview runtime으로 승격된 첫 두 slice이며, 나머지 카드는 아직 후보 상태다.
+이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전 상황 카드로 정리한다. `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`는 이 카드에서 separate storypack preview runtime으로 승격된 첫 세 slice이며, 나머지 카드는 아직 후보 상태다.
 
 공통 원칙:
 
 - 모든 카드는 `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`에 속한다.
-- 현재 단계에서는 대부분 runtime encounter가 아니다. 단, `wuxia_commute_rift_arrival`와 `wuxia_heuksa_bang_first_fight`는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다.
+- 현재 단계에서는 대부분 runtime encounter가 아니다. 단, `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다.
 - 최신 canonical 무협 설정은 **이구학지 — 천기록**이다. 이전의 generic 객잔/소림/무당/아미 placeholder는 superseded로 본다.
 - 플레이어 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계의 시장 한복판에 전이됐다”이다.
 - 선택지는 세부 수치보다 역할과 결과 hook을 먼저 정의한다.
@@ -252,32 +252,60 @@ pressure_type: [sanity, relation]
 npc_slots: [archive_keeper, cheonggi_record_keeper]
 candidate_characters: [old_archive_keeper, yeon_soha]
 summary: 업무수첩이 천기록과 연결되고, 현대 지식 후보 세 개 중 하나만 남기는 첫 천외편린 발현이 일어난다.
+purpose: 첫 난투의 실패를 천기록/천외편린 future hook으로 연결한다. runtime preview에서는 완전한 reward/ability 성장 UI가 아니라 thread flag, clue, log, presentation만 남긴다.
 setup_text: 수련과 잡일에 지쳐 쓰러질 듯한 밤, 업무수첩의 빈 장에 먹물이 번지듯 글자가 떠오른다. 검색창도 질문란도 아니다. 세 개의 문장이 차례로 선명해진다. ‘호신 자세의 기본’, ‘발을 멈추지 않는 법’, ‘실패 기록’. 하나의 편린만 기록할 수 있고, 나머지는 흐려진다.
+runtime_preview_start_conditions:
+  runtime_mode: storypack_preview
+  implemented_entrypoint: 첫 난투 직후 foreshadow version
+  location: jianghu_market_street
+  required_flags: [heuksa_bang_first_fight_resolved]
+  forbidden_flags: [cheonggi_record_first_fragment_resolved]
+  note: full story상 정식 발현은 청류문 수습생/서고 구간에서 회수한다. 현재 preview는 bridge 전 foreshadow slice다.
 choice_shapes:
   - id: choose_guard_basics
     role: defensive_growth_choice
-    expected_costs: [fragment_lockout_two_options]
-    expected_gains: [defense_training_thread]
+    label_direction: "'호신 자세의 기본' 문장을 붙든다"
+    expected_costs: [sanity_small, fragment_lockout_two_options]
+    outcome_hook:
+      add_items: [cheonggi_record_notebook]
+      add_flags: [cheonggi_record_awakened, first_fragment_seen, cheonggi_record_first_fragment_resolved, cheonggi_fragment_guard_basics_thread]
+      add_clues: [notebook_is_not_search, fragments_are_training_directions]
   - id: choose_keep_feet_moving
     role: mobility_growth_choice
-    expected_costs: [fragment_lockout_two_options]
-    expected_gains: [evasion_training_thread]
+    label_direction: "'발을 멈추지 않는 법'을 남긴다"
+    expected_costs: [sanity_small, fragment_lockout_two_options]
+    outcome_hook:
+      add_items: [cheonggi_record_notebook]
+      add_flags: [cheonggi_record_awakened, first_fragment_seen, cheonggi_record_first_fragment_resolved, cheonggi_fragment_footwork_thread]
+      add_clues: [fragments_are_training_directions, motion_matters_more_than_pose]
   - id: choose_failure_log
     role: reflection_growth_choice
-    expected_costs: [fragment_lockout_two_options]
-    expected_gains: [defeat_review_thread]
+    label_direction: "'실패 기록'을 받아들인다"
+    expected_costs: [sanity_medium, fragment_lockout_two_options]
+    outcome_hook:
+      add_items: [cheonggi_record_notebook]
+      add_flags: [cheonggi_record_awakened, first_fragment_seen, cheonggi_record_first_fragment_resolved, cheonggi_fragment_failure_log_thread]
+      add_clues: [notebook_is_not_search, failures_can_be_training_material]
   - id: close_notebook_without_choice
     role: safe_delay
-    expected_costs: [opportunity_may_fade]
-    expected_gains: [cheonggi_record_caution]
+    fallback_choice: true
+    label_direction: 수첩을 덮고 호흡부터 고른다
+    expected_costs: [sanity_small]
+    outcome_hook:
+      add_items: [cheonggi_record_notebook]
+      add_flags: [cheonggi_record_awakened, first_fragment_seen, cheonggi_record_first_fragment_resolved, cheonggi_record_caution]
+      add_clues: [notebook_is_not_search]
 outcome_hooks:
-  possible_flags: [cheonggi_record_awakened, first_fragment_seen]
-  possible_clues: [notebook_is_not_search, fragments_are_training_directions]
+  possible_flags: [cheonggi_record_awakened, first_fragment_seen, cheonggi_record_first_fragment_resolved, cheonggi_fragment_guard_basics_thread, cheonggi_fragment_footwork_thread, cheonggi_fragment_failure_log_thread, cheonggi_record_caution]
+  possible_clues: [notebook_is_not_search, fragments_are_training_directions, motion_matters_more_than_pose, failures_can_be_training_material]
   possible_items: [cheonggi_record_notebook]
   possible_growth_threads: [defense_training_thread, evasion_training_thread, defeat_review_thread]
+schema_boundary:
+  allowed_existing_schema: [conditions.locations, required_flags, forbidden_flags, choices.cost, outcome.resources, outcome.add_items, outcome.add_flags, outcome.add_clues, outcome.log, presentation]
+  forbidden_new_schema: [reward_schema, ability_schema, fragment_choice_reward, fragment_lockout_state, full_fragment_choice_ui, CombatState]
 main_spine_link: updated wuxia story의 핵심 성장 구조인 천기록/천외편린을 연다.
 randomization_notes: 너무 자주 뜨면 안 된다. 큰 전투 후, 심각한 패배 후, 수련 한계, 중요한 선택 직전 같은 특별한 순간에만 사용한다.
-promotion_notes: 첫 구현에서는 새 ability/reward schema를 열지 말고 flag/clue/log/presentation text로만 처리한다. 3택 보상 시스템은 별도 설계 후 승격한다.
+promotion_notes: preview runtime으로 구현했다. 첫 구현은 새 ability/reward schema를 열지 않고 flag/clue/log/presentation text로만 처리한다. 3택 보상 시스템은 별도 설계 후 승격한다.
 ```
 
 ## 6. `wuxia_cheongryu_raid_route_split`

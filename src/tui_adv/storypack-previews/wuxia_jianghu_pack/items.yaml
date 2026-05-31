@@ -4,3 +4,9 @@ items:
     description: 현대 회사원의 이름과 사진이 남은 얇은 플라스틱 카드.
     type: clue
     tags: [identity, wuxia_preview]
+
+  - id: cheonggi_record_notebook
+    name: 천기록이 깃든 업무수첩
+    description: 빈 장에 현대 지식의 편린이 먹물처럼 떠오르는 업무수첩. 검색창도 즉시 보상도 아니다.
+    type: clue
+    tags: [notebook, cheonggi_record, wuxia_preview]

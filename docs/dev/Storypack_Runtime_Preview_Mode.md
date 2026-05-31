@@ -13,6 +13,7 @@ Status: 결정 문서 + 첫 runtime preview 구현 완료 + 다음 preview slice
 - `escape-office` save/localStorage keys remain unchanged.
 - no default bundle mixing: 기본 `content.bundle.json`과 Web generated bundle은 office 기본 콘텐츠를 유지한다.
 - renderer는 `ScenePage`만 표시하고, world별 gameplay truth를 Web/SuperLightTUI renderer에서 재계산하지 않는다.
+- implemented opt-in launcher: terminal은 `--storypack-preview wuxia_jianghu_pack`, Web은 start screen preview launcher를 사용한다.
 
 ## 왜 gating이 아니라 preview mode인가
 
@@ -81,6 +82,8 @@ cargo test -p escape-wasm json_boundary_uses_storypack_preview_default_location
 cargo test -p escape-wasm json_boundary_reaches_wuxia_first_fight_through_preview_bundle
 cargo test -p escape-terminal content_tui_smoke_renders_wuxia_storypack_preview_arrival
 cargo test -p escape-terminal content_tui_smoke_renders_wuxia_storypack_preview_first_fight
+cargo test -p escape-terminal content_tui_smoke_launches_wuxia_storypack_preview_by_opt_in_flag
+cargo test -p escape-terminal content_tui_smoke_reaches_wuxia_cheonggi_record_first_fragment
 ```
 
 ## 첫 prototype 후보
@@ -93,10 +96,21 @@ cargo test -p escape-terminal content_tui_smoke_renders_wuxia_storypack_preview_
    - 기존 schema-less combat prototype 경험을 재사용했다.
    - arrival가 이미 preview default-location/runtime metadata를 검증했으므로, 두 번째 slice는 같은 preview bundle 안에서 encounter 확장을 검증했다.
    - 목표는 승리/패배 숫자 전투가 아니라 “이 세계의 폭력이 실제다”, “출근복/구두/가방/사원증이 전투 변수다”, “서하린 구조 hook이 열린다”를 flags/clues/logs로 고정하는 것이다.
+3. `wuxia_cheonggi_record_first_fragment` — 구현 완료
+   - 첫 난투 뒤 천기록/천외편린 future hook을 여는 schema-less preview다.
+   - 실제 천외편린 3택 reward/ability schema나 fragment choice UI는 열지 않고, choice별 thread flag/clue/log만 남긴다.
+   - 정식 청류문 수습생/서고 구간은 아직 구현하지 않았으므로 다음 bridge slice에서 회수한다.
 
 ## 후속 slice 기준
 
-`wuxia_heuksa_bang_first_fight`는 같은 preview mode에 추가되었다. `preview launcher/UI wiring`은 명시적 opt-in UX를 위한 follow-up 후보로 유지한다. 이미 preview export/check command와 Rust/Web preview bundle artifact가 있으므로, 후속 launcher는 content truth가 아니라 사용자가 preview bundle을 선택/실행하는 entrypoint 문제다.
+`wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`는 같은 preview mode에 추가되었고, `preview launcher/UI wiring`도 opt-in entrypoint로 구현되었다. 이미 preview export/check command, Rust/Web preview bundle artifact, terminal `--storypack-preview wuxia_jianghu_pack`, Web start screen preview launcher가 있으므로, 다음 후속은 launcher나 천외편린 reward schema가 아니라 `wuxia_seo_harin_rescue` 또는 `wuxia_cheongryu_apprentice_entry` 같은 bridge content slice다.
+
+Launcher/entrypoint contract:
+
+- Terminal: `escape-terminal --scene content --storypack-preview wuxia_jianghu_pack --seed 123 --tui-smoke`는 built-in preview fixture를 사용한다. `--content-bundle <path>`는 그대로 유지하지만 `--storypack-preview`와 함께 사용할 수 없다.
+- Web: start screen은 기본 office continue/new-game UX와 별도로 `wuxia_jianghu_pack` preview 시작 버튼을 노출한다. Preview run은 기본 office save/localStorage key를 쓰지 않는다.
+- Web bundle registry: `web/src/core/contentBundles.ts`는 default office bundle JSON과 `wuxia_jianghu_pack` generated preview bundle JSON을 분리해 제공한다.
+- 기본 office artifact(`src/tui_adv/data/*.yaml`, 기본 Rust/Web `content.bundle.json`)는 launcher slice에서도 변경하지 않는다.
 
 금지선:
 
@@ -131,6 +145,27 @@ choices:
   - id: crash_in_with_body            # high risk body check
 ```
 
+```yaml
+id: wuxia_cheonggi_record_first_fragment
+conditions:
+  locations: [jianghu_market_street]
+  required_flags: [heuksa_bang_first_fight_resolved]
+  forbidden_flags: [cheonggi_record_first_fragment_resolved]
+presentation:
+  visual_id: wuxia_cheonggi_record_first_fragment
+  speaker: 천기록
+  layout: cheonggi_record
+  effect_cues:
+    - kind: glyph_anomaly
+      source: notebook_oracle
+      stable_terms: [업무수첩, 천기록, 실패 기록]
+choices:
+  - id: choose_guard_basics           # defensive training thread flag
+  - id: choose_keep_feet_moving       # mobility training thread flag
+  - id: choose_failure_log            # reflection/failure-log thread flag
+  - id: close_notebook_without_choice # fallback / safe delay
+```
+
 기존 schema만 사용한다.
 
 - `conditions.locations`, `required_flags`, `forbidden_flags`
@@ -157,6 +192,8 @@ cargo test -p escape-wasm json_boundary_uses_storypack_preview_default_location
 cargo test -p escape-wasm json_boundary_reaches_wuxia_first_fight_through_preview_bundle
 cargo test -p escape-terminal content_tui_smoke_renders_wuxia_storypack_preview_arrival
 cargo test -p escape-terminal content_tui_smoke_renders_wuxia_storypack_preview_first_fight
+cargo test -p escape-terminal content_tui_smoke_launches_wuxia_storypack_preview_by_opt_in_flag
+cargo test -p escape-terminal content_tui_smoke_reaches_wuxia_cheonggi_record_first_fragment
 python3 -m compileall -q src tests
 cargo fmt --check
 git diff --check

@@ -261,10 +261,11 @@ promotion_notes: runtime 승격 시 messenger UI presentation metadata를 붙인
 
 2026-05-31 후속 결정:
 
-- `wuxia_commute_rift_arrival` preview는 완료했고, 다음 승격 후보는 `wuxia_heuksa_bang_first_fight`로 확정한다.
-- 이 카드는 `storypack_preview` bundle에만 들어가야 하며, 기본 office runtime과 `src/tui_adv/data/*.yaml`에는 직접 섞지 않는다.
-- 필요한 신규 설계는 encounter/choice/outcome 수준으로 제한한다. 새 combat/reward/ability schema, 천외편린 3택 reward schema, storypack 선택 UI는 열지 않는다.
-- `preview launcher/UI wiring`은 명시적 opt-in UX follow-up 후보지만, first fight content/parity 검증의 선행 조건은 아니다.
+- `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment` preview는 완료했다.
+- 이 preview runtime content는 `storypack_preview` bundle에만 들어가며, 기본 office runtime과 `src/tui_adv/data/*.yaml`에는 직접 섞지 않는다.
+- `preview launcher/UI wiring`은 explicit opt-in entrypoint로 구현했다. 후속 content slice에서 다시 열지 않는다.
+- 다음 승격 후보는 `wuxia_seo_harin_rescue` 또는 `wuxia_cheongryu_apprentice_entry` bridge다.
+- 필요한 신규 설계는 encounter/choice/outcome 수준으로 제한한다. 새 combat/reward/ability schema, 천외편린 3택 reward schema는 별도 slice 전까지 열지 않는다.
 
 `validate_storypack_db()`가 검사하는 기준:
 

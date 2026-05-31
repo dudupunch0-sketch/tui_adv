@@ -221,6 +221,23 @@
 - [x] Python exporter, Rust content fixture, WASM JSON boundary, SuperLightTUI first-fight parity 테스트 추가
 - [x] 기본 office bundle, Web 기본 generated bundle, `src/tui_adv/data/*.yaml`, `escape-office` save/localStorage key 미변경 확인
 
+### 0.2y 2026-05-31 무협 preview launcher/UI wiring
+
+- [x] `escape-terminal --storypack-preview wuxia_jianghu_pack` opt-in flag 추가
+- [x] Web start screen에 `wuxia_jianghu_pack` storypack preview launcher 추가
+- [x] Web `contentBundles` registry로 default office bundle과 generated storypack preview bundle 분리
+- [x] preview launcher가 기본 office save/localStorage key를 변경하지 않는 boundary 테스트 추가
+- [x] default office bundle, Web 기본 generated bundle, `src/tui_adv/data/*.yaml` 미변경 유지
+
+### 0.2z 2026-05-31 무협 `wuxia_cheonggi_record_first_fragment` preview runtime slice
+
+- [x] 첫 난투 뒤 `heuksa_bang_first_fight_resolved`로 이어지는 천기록 첫 편린 encounter 추가
+- [x] `cheonggi_record_notebook` item과 `wuxia_first_fragment_seen` achievement를 preview bundle에만 추가
+- [x] `choose_guard_basics`, `choose_keep_feet_moving`, `choose_failure_log`, fallback `close_notebook_without_choice` stable choice id 고정
+- [x] Rust fixture와 Web generated preview bundle 재생성
+- [x] Python exporter, Rust content fixture, WASM JSON boundary, SuperLightTUI first-fragment parity 테스트 추가
+- [x] 천외편린 3택 reward/ability schema, 기본 office bundle, `escape-office` save/localStorage key 미변경 유지
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

@@ -82,7 +82,12 @@ def test_export_web_data_builds_renderer_neutral_content_bundle():
     assert bundle["content"]["locations"][0]["id"] == "dev_desk"
     assert bundle["content"]["encounters"][0]["id"] == "ex_employee_messenger"
     assert not any(
-        encounter["id"] in {"wuxia_commute_rift_arrival", "wuxia_heuksa_bang_first_fight"}
+        encounter["id"]
+        in {
+            "wuxia_commute_rift_arrival",
+            "wuxia_heuksa_bang_first_fight",
+            "wuxia_cheonggi_record_first_fragment",
+        }
         for encounter in bundle["content"]["encounters"]
     )
     assert _missing_private_secret_fields(bundle)
@@ -104,10 +109,10 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     assert "storypack-previews/wuxia_jianghu_pack" in bundle["source"]
     assert bundle["manifest"]["counts"] == {
         "locations": 3,
-        "items": 1,
-        "encounters": 2,
+        "items": 2,
+        "encounters": 3,
         "endings": 1,
-        "achievements": 1,
+        "achievements": 2,
         "secrets": 0,
     }
     assert [location["id"] for location in bundle["content"]["locations"]] == [
@@ -119,6 +124,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     assert encounter_ids == [
         "wuxia_commute_rift_arrival",
         "wuxia_heuksa_bang_first_fight",
+        "wuxia_cheonggi_record_first_fragment",
     ]
     first_fight = bundle["content"]["encounters"][1]
     assert first_fight["conditions"] == {
@@ -148,6 +154,37 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     assert fallback["outcome"]["add_clues"] == [
         "violence_is_real",
         "open_street_escape_route",
+    ]
+    first_fragment = bundle["content"]["encounters"][2]
+    assert first_fragment["conditions"] == {
+        "locations": ["jianghu_market_street"],
+        "required_flags": ["heuksa_bang_first_fight_resolved"],
+        "forbidden_flags": ["cheonggi_record_first_fragment_resolved"],
+    }
+    assert first_fragment["presentation"]["layout"] == "cheonggi_record"
+    assert first_fragment["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "업무수첩",
+        "천기록",
+        "실패 기록",
+    ]
+    assert [choice["id"] for choice in first_fragment["choices"]] == [
+        "choose_guard_basics",
+        "choose_keep_feet_moving",
+        "choose_failure_log",
+        "close_notebook_without_choice",
+    ]
+    fallback_fragment = first_fragment["choices"][-1]
+    assert fallback_fragment["outcome"]["add_flags"] == [
+        "cheonggi_record_awakened",
+        "first_fragment_seen",
+        "cheonggi_record_first_fragment_resolved",
+        "cheonggi_record_caution",
+    ]
+    guard_choice = first_fragment["choices"][0]
+    assert guard_choice["outcome"]["add_items"] == ["cheonggi_record_notebook"]
+    assert guard_choice["outcome"]["add_clues"] == [
+        "notebook_is_not_search",
+        "fragments_are_training_directions",
     ]
     assert "dev_desk" not in json.dumps(bundle, ensure_ascii=False)
     assert _missing_private_secret_fields(bundle)

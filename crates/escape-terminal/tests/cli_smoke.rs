@@ -241,6 +241,78 @@ fn content_tui_smoke_renders_wuxia_storypack_preview_first_fight() {
 }
 
 #[test]
+fn content_tui_smoke_launches_wuxia_storypack_preview_by_opt_in_flag() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--storypack-preview",
+            "wuxia_jianghu_pack",
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:follow_roadside_dust",
+            "--action",
+            "move:jianghu_market_street",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("위치: 강호 시장 거리 (jianghu_market_street)"));
+    assert!(stdout.contains("흑사방 첫 난투"));
+    assert!(stdout.contains("choice:run_toward_open_street / 큰길 쪽으로 비틀거리며 물러난다"));
+    assert!(!stdout.contains("dev_desk"));
+}
+
+#[test]
+fn content_tui_smoke_reaches_wuxia_cheonggi_record_first_fragment() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--storypack-preview",
+            "wuxia_jianghu_pack",
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:follow_roadside_dust",
+            "--action",
+            "move:jianghu_market_street",
+            "--action",
+            "choice:run_toward_open_street",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("위치: 강호 시장 거리 (jianghu_market_street)"));
+    assert!(stdout.contains("천기록 첫 편린"));
+    assert!(stdout.contains("visual id: wuxia_cheonggi_record_first_fragment"));
+    assert!(stdout.contains("layout: cheonggi_record"));
+    assert!(stdout.contains("stable terms: 업무수첩 / 천기록 / 실패 기록"));
+    assert!(stdout.contains("choice:choose_guard_basics / '호신 자세의 기본' 문장을 붙든다"));
+    assert!(stdout.contains("choice:choose_keep_feet_moving / '발을 멈추지 않는 법'을 남긴다"));
+    assert!(stdout.contains("choice:choose_failure_log / '실패 기록'을 받아들인다"));
+    assert!(stdout.contains("choice:close_notebook_without_choice / 수첩을 덮고 호흡부터 고른다"));
+    assert!(!stdout.contains("dev_desk"));
+}
+
+#[test]
 fn content_tui_smoke_renders_final_movement_panel_after_scripted_actions() {
     let bundle_path = content_bundle_path();
     let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))

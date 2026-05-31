@@ -7,7 +7,7 @@
 
 - 장르: TUI 기반 랜덤 인카운터 선택지 생존 게임
 - 기본 배경: 회사 사무실 아포칼립스(`office_apocalypse`)
-- 개발 방향: storypack/world 기반 선택지 생존 엔진. 첫 비-office 기준팩은 회사 직장인이 무협 세계로 차원이동하는 무협 강호(`wuxia_jianghu`)
+- 개발 방향: storypack/world 기반 선택지 생존 엔진. 첫 비-office 기준팩은 **이구학지 — 천기록** 무협 강호(`wuxia_jianghu`)
 - 핵심 자원: 체력, 정신력, 배터리, 허기, 갈증
 - 주요 목표: 탈출, 정복, 진실 발견, 히든 현실 연결 루트
 - 특별 요소: 게임 속 단서를 통해 실제 사무실에 숨겨진 메모/보물 위치를 자연스럽게 안내하는 ARG식 현실 연결
@@ -60,13 +60,20 @@ docs/
     Survivor_System_Routes.md       # 생존자 설득과 시스템 제압 루트 설계
     Secret_List.md                  # 게임 내 비밀 목록. 실제 현실 위치 제외
     Horror_Ideas.md                 # 호러 연출 아이디어 저장소
-    storypacks/                     # 스토리팩 후보 DB
+    storypacks/                     # 스토리팩 후보 문서 DB
     characters/                     # 6스탯 반복 등장인물 후보 DB
-    encounter_db/                   # 런타임 승격 전 인카운터 상황 카드 DB
+    encounter_db/                   # 런타임 승격 전 인카운터 상황 카드 문서 DB
+    storypack_db/                   # storypack/card 후보의 machine-readable JSON DB
+
+  runtime preview sources/
+    src/tui_adv/storypack-previews/wuxia_jianghu_pack/ # wuxia_commute_rift_arrival preview source YAML
+    crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json # Rust/GameCore preview fixture
+    web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json # Web/WASM preview bundle
 
   dev/
     Development_Plan.md             # canonical main plan: 현재 방향, 다음 작업, 우선순위
     Checklist.md                    # 완료 여부 추적용 체크리스트
+    Storypack_Runtime_Preview_Mode.md # non-office runtime prototype preview mode 결정
     Architecture.md                 # 코드 구조와 모듈 경계
     Rust_Core_Dual_Renderer_Architecture.md # Rust GameCore + Web Storybook + SuperLightTUI terminal 활성 방향
     Data_Schema.md                  # YAML/JSON 데이터 스키마 + renderer-neutral ScenePage/WASM contract
@@ -139,6 +146,12 @@ private/
 - `docs/content/encounter_db/README.md`
 - `docs/content/encounter_db/isolation_pack.md`
 - `docs/content/encounter_db/wuxia_jianghu_pack.md`
+- `docs/content/storypack_db/README.md`
+- `docs/content/storypack_db/storypacks.json`
+- `docs/content/storypack_db/encounter_situations.json`
+- `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`
+- `crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json`
+- `web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json`
 - `docs/dev/Architecture.md`
 - `docs/dev/Rust_Core_Dual_Renderer_Architecture.md`
 - `docs/dev/Data_Schema.md`
@@ -151,6 +164,7 @@ private/
 - `docs/dev/Reality_Secret_Safety_Checklist.md`
 - `docs/dev/Development_Plan.md`
 - `docs/dev/Checklist.md`
+- `docs/dev/Storypack_Runtime_Preview_Mode.md`
 - `docs/templates/local-secrets.template.yaml`
 - `docs/implementation-map/index.html`
 - `docs/implementation-map/README.md`
@@ -162,5 +176,5 @@ private/
 다음 주제가 커지면 별도 문서로 분리하고, 그때 이 인덱스와 implementation-map도 같이 갱신한다.
 
 1. `document_contamination_pack`, `meeting_reservation_pack`, `compensation_strike_pack`의 별도 후보 문서
-2. `wuxia_jianghu_pack`의 첫 runtime prototype 여부 결정
+2. `wuxia_jianghu_pack` / 이구학지 — 천기록의 후속 preview slice: `wuxia_heuksa_bang_first_fight` 또는 preview launcher/UI wiring
 3. 실시간 UI/UX 점검 후 확정된 화면/입력 변경 사항 기록

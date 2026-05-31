@@ -1,8 +1,8 @@
 use escape_core::{
     apply_action_from_content, index_content_bundle, load_content_bundle, new_game,
-    new_game_from_content, scene_page_from_content, turn_view, turn_view_from_content, ActionView,
-    BlockedActionView, ContentIndex, EffectCue, GameState, SceneAction, SceneBlockedAction,
-    SceneEffectCue, SceneMode, ScenePage, TurnView,
+    new_game_from_content_at, scene_page_from_content, turn_view, turn_view_from_content,
+    ActionView, BlockedActionView, ContentBundle, ContentIndex, EffectCue, GameState, SceneAction,
+    SceneBlockedAction, SceneEffectCue, SceneMode, ScenePage, TurnView, DEFAULT_START_LOCATION_ID,
 };
 use std::io::{self, Write};
 use std::path::PathBuf;
@@ -101,8 +101,12 @@ fn run_content_scene(options: &CliOptions) -> Result<(), String> {
     let bundle = load_content_bundle(&json_text).map_err(|error| error.to_string())?;
     let content = index_content_bundle(&bundle).map_err(|error| error.to_string())?;
 
-    let mut state =
-        new_game_from_content(options.seed, &content).map_err(|error| error.to_string())?;
+    let mut state = new_game_from_content_at(
+        options.seed,
+        &content,
+        content_bundle_start_location(&bundle),
+    )
+    .map_err(|error| error.to_string())?;
     let mut view = turn_view_from_content(&state, &content).map_err(|error| error.to_string())?;
     if options.play {
         return run_content_play_loop(&content, state, view);
@@ -141,6 +145,15 @@ fn run_content_scene(options: &CliOptions) -> Result<(), String> {
     }
 
     Ok(())
+}
+
+fn content_bundle_start_location(bundle: &ContentBundle) -> &str {
+    bundle
+        .runtime
+        .as_ref()
+        .map(|runtime| runtime.default_location.as_str())
+        .filter(|location_id| !location_id.is_empty())
+        .unwrap_or(DEFAULT_START_LOCATION_ID)
 }
 
 fn find_available_action<'a>(view: &'a TurnView, action_id: &str) -> Option<&'a ActionView> {

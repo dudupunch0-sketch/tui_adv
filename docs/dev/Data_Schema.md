@@ -173,6 +173,19 @@ Bundle 규칙:
 - `final_hint`, `actual_ip_address`, `office_location`, `treasure_location` 같은 private-only field는 bundle, WASM fixture, Web generated data에 들어가면 안 된다.
 - Exporter check는 Rust fixture bundle과 Web runtime bundle이 둘 다 최신인지 확인해야 한다.
 
+### Storypack runtime preview mode
+
+첫 비-office runtime prototype은 `docs/dev/Storypack_Runtime_Preview_Mode.md`의 **Decision: separate preview mode first**를 따른다.
+
+- 기본 `content.bundle.json`은 office 기본 runtime artifact다.
+- `src/tui_adv/data/*.yaml` remains default office runtime content.
+- `wuxia_jianghu_pack` enters runtime only through explicit preview bundle or preview flag.
+- 첫 preview source는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/*.yaml`이며, generated artifacts는 `crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json`와 `web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json`다.
+- Preview bundle은 optional top-level `runtime` metadata를 가진다: `runtime_mode: storypack_preview`, `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`, `default_location: wuxia_commute_rift`.
+- `escape-terminal --scene content`와 `escape-wasm::new_game_json()`은 preview bundle의 `runtime.default_location`을 새 게임 시작 위치로 사용한다. `runtime`이 없으면 기존 office 기본 시작점 `dev_desk`를 유지한다.
+- 기본 `escape-office` save/localStorage key는 preview slice에서 rename하지 않는다.
+- Renderer는 preview 여부를 표시할 수 있지만 gameplay truth를 재계산하지 않는다. Web Storybook과 SuperLightTUI는 계속 `ScenePage`와 action id만 표시/전달한다.
+
 ## Action ID contract
 
 Core가 renderer에 제공하는 action id는 그대로 `apply_action_from_content` 또는 WASM `apply_action_json`에 전달 가능한 값이어야 한다.

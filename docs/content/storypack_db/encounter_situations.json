@@ -1,0 +1,1023 @@
+[
+  {
+    "id": "isolation_channel_mismatched_floor",
+    "world_id": "office_apocalypse",
+    "storypack_id": "isolation_pack",
+    "status": "candidate",
+    "phase": [
+      "opening_absence"
+    ],
+    "priority_class": "random_pack",
+    "location_tags": [
+      "office",
+      "messenger",
+      "intranet"
+    ],
+    "surface": [
+      "messenger"
+    ],
+    "anomaly_type": [
+      "mismatched_floor"
+    ],
+    "pressure_type": [
+      "sanity",
+      "battery"
+    ],
+    "npc_slots": [
+      "infra_interpreter"
+    ],
+    "candidate_characters": [
+      "park_doyoon"
+    ],
+    "summary": "격리자 임시대응방에서 같은 회사에 있다는 사람들이 서로 다른 층수와 날씨를 보고한다.",
+    "setup_text": "사내 메신저에 격리자 임시대응방 초대가 뜬다. 참가자들은 같은 시간에 접속했지만 서로 다른 층수와 날씨를 보고한다.",
+    "choice_shapes": [
+      {
+        "id": "read_silently",
+        "role": "safe_observe",
+        "expected_costs": [],
+        "expected_gains": [
+          "minor_clue"
+        ]
+      },
+      {
+        "id": "ask_floor_number",
+        "role": "social_probe",
+        "expected_costs": [
+          "sanity_small"
+        ],
+        "expected_gains": [
+          "isolation_rule_hint"
+        ]
+      },
+      {
+        "id": "trace_channel_route",
+        "role": "system_probe",
+        "required_player_ability_hint": "interface",
+        "expected_costs": [
+          "battery_medium"
+        ],
+        "expected_gains": [
+          "route_flag",
+          "technical_clue"
+        ]
+      }
+    ],
+    "outcome_hooks": {
+      "possible_flags": [
+        "isolation_channel_joined",
+        "mismatched_floor_reported",
+        "channel_route_traced"
+      ],
+      "possible_clues": [
+        "channel_floor_mismatch",
+        "delayed_channel_route"
+      ],
+      "possible_items": []
+    },
+    "main_spine_link": "플레이어가 완전히 혼자가 아니라는 사실과, 같은 회사가 여러 격리 층으로 갈라졌다는 첫 단서를 준다.",
+    "randomization_notes": "opening_absence 이후 1회성. isolation_channel_joined 이후 반복 금지.",
+    "promotion_notes": "초반 메신저 hook으로 적합하다. 기존 ex_employee_messenger와 충돌하지 않도록 flag gating 필요."
+  },
+  {
+    "id": "org_chart_missing_employee",
+    "world_id": "office_apocalypse",
+    "storypack_id": "isolation_pack",
+    "status": "candidate",
+    "phase": [
+      "normal_operations"
+    ],
+    "priority_class": "npc_relation",
+    "location_tags": [
+      "office",
+      "intranet",
+      "hr"
+    ],
+    "surface": [
+      "organization_chart"
+    ],
+    "anomaly_type": [
+      "identity_erasure"
+    ],
+    "pressure_type": [
+      "sanity",
+      "relation"
+    ],
+    "npc_slots": [
+      "hr_identity_keeper"
+    ],
+    "candidate_characters": [
+      "yoon_seoyeon"
+    ],
+    "summary": "윤서연이 분명히 기억하는 직원이 조직도와 사원 조회 시스템에서는 존재하지 않는다.",
+    "setup_text": "조직도 검색창은 해당 직원이 조회되지 않는다는 안내만 반복하고, 윤서연은 그 사람이 방금 전까지 대응방에 있었다고 말한다.",
+    "choice_shapes": [
+      {
+        "id": "close_org_chart",
+        "role": "safe_leave",
+        "expected_costs": [],
+        "expected_gains": [
+          "sanity_relief"
+        ]
+      },
+      {
+        "id": "ask_yoon_memory",
+        "role": "social_probe",
+        "expected_costs": [
+          "sanity_small"
+        ],
+        "expected_gains": [
+          "missing_person_clue",
+          "relation_trust"
+        ]
+      },
+      {
+        "id": "export_hr_record",
+        "role": "document_probe",
+        "required_player_ability_hint": "logic",
+        "expected_costs": [
+          "battery_medium"
+        ],
+        "expected_gains": [
+          "identity_erasure_flag"
+        ]
+      }
+    ],
+    "outcome_hooks": {
+      "possible_flags": [
+        "missing_employee_reported",
+        "hr_record_exported"
+      ],
+      "possible_clues": [
+        "missing_employee_name_hash",
+        "organization_chart_erasure"
+      ],
+      "possible_items": [
+        "hr_record_fragment"
+      ],
+      "possible_relations": [
+        "yoon_seoyeon_trust"
+      ]
+    },
+    "main_spine_link": "회사 시스템이 사람의 존재를 기록으로 판정한다는 핵심 공포를 보여준다.",
+    "randomization_notes": "isolation_channel_joined 이후 등장하면 의미가 강하다. missing_employee_reported 이후 반복 금지.",
+    "promotion_notes": "HR/identity route hook. organization_chart UI가 없으면 서술형 encounter로 먼저 구현 가능."
+  },
+  {
+    "id": "delayed_cctv_next_action",
+    "world_id": "office_apocalypse",
+    "storypack_id": "isolation_pack",
+    "status": "candidate",
+    "phase": [
+      "isolation_rules"
+    ],
+    "priority_class": "npc_relation",
+    "location_tags": [
+      "security",
+      "surveillance"
+    ],
+    "surface": [
+      "cctv"
+    ],
+    "anomaly_type": [
+      "delayed_time",
+      "future_record"
+    ],
+    "pressure_type": [
+      "sanity",
+      "danger",
+      "relation"
+    ],
+    "npc_slots": [
+      "security_witness"
+    ],
+    "candidate_characters": [
+      "choi_minjae"
+    ],
+    "summary": "최민재가 CCTV에서 플레이어가 아직 하지 않은 행동을 이미 봤다고 말한다.",
+    "setup_text": "보안실 모니터에는 플레이어가 아직 가지 않은 복도 모퉁이를 도는 장면이 보인다.",
+    "choice_shapes": [
+      {
+        "id": "trust_security_warning",
+        "role": "safe_observe",
+        "expected_costs": [],
+        "expected_gains": [
+          "danger_avoidance",
+          "relation_trust"
+        ]
+      },
+      {
+        "id": "replay_cctv_frame",
+        "role": "information_probe",
+        "expected_costs": [
+          "battery_small",
+          "sanity_small"
+        ],
+        "expected_gains": [
+          "future_record_clue"
+        ]
+      },
+      {
+        "id": "force_same_route",
+        "role": "high_risk_route_test",
+        "expected_costs": [
+          "health_or_sanity_medium"
+        ],
+        "expected_gains": [
+          "space_rule_flag"
+        ]
+      }
+    ],
+    "outcome_hooks": {
+      "possible_flags": [
+        "future_cctv_seen",
+        "cctv_warning_trusted",
+        "repeated_route_tested"
+      ],
+      "possible_clues": [
+        "cctv_next_action_frame",
+        "unsafe_corridor_pattern"
+      ],
+      "possible_items": []
+    },
+    "main_spine_link": "격리 공간의 시간이 선형이 아니며, 사내 시스템이 미래 행동을 기록할 수 있다는 규칙을 드러낸다.",
+    "randomization_notes": "security_room 계열에서 1회성. 기존 security_room_delayed_cctv와 중복되지 않게 required clue/flag로 구분한다.",
+    "promotion_notes": "기존 보안실/CCTV route와 연결하기 좋지만 NPC 관계 중심으로 차별화한다."
+  },
+  {
+    "id": "server_log_other_branch",
+    "world_id": "office_apocalypse",
+    "storypack_id": "isolation_pack",
+    "status": "candidate",
+    "phase": [
+      "isolation_rules"
+    ],
+    "priority_class": "route_key",
+    "location_tags": [
+      "server",
+      "intranet",
+      "build_log"
+    ],
+    "surface": [
+      "build_log"
+    ],
+    "anomaly_type": [
+      "worldline_branch"
+    ],
+    "pressure_type": [
+      "battery",
+      "sanity"
+    ],
+    "npc_slots": [
+      "infra_interpreter"
+    ],
+    "candidate_characters": [
+      "park_doyoon"
+    ],
+    "summary": "박도윤이 같은 사건의 성공/실패 로그가 서로 다른 브랜치에 남아 있는 것을 발견한다.",
+    "setup_text": "서버 로그에는 같은 시각, 같은 작업, 같은 사용자가 남긴 성공/실패 기록이 두 줄로 남아 있다.",
+    "choice_shapes": [
+      {
+        "id": "copy_log_names_only",
+        "role": "safe_observe",
+        "expected_costs": [
+          "battery_small"
+        ],
+        "expected_gains": [
+          "minor_clue"
+        ]
+      },
+      {
+        "id": "compare_branch_diff",
+        "role": "system_probe",
+        "required_player_ability_hint": "interface",
+        "expected_costs": [
+          "battery_medium",
+          "sanity_small"
+        ],
+        "expected_gains": [
+          "worldline_branch_clue"
+        ]
+      },
+      {
+        "id": "mark_current_branch",
+        "role": "route_commit_current",
+        "expected_costs": [
+          "sanity_medium"
+        ],
+        "expected_gains": [
+          "current_branch_flag"
+        ]
+      }
+    ],
+    "outcome_hooks": {
+      "possible_flags": [
+        "worldline_branch_seen",
+        "current_branch_marked",
+        "success_branch_marked"
+      ],
+      "possible_clues": [
+        "branch_diff_log",
+        "merge_conflict_timestamp"
+      ],
+      "possible_items": [
+        "log_export_fragment"
+      ]
+    },
+    "main_spine_link": "격리 사건을 개발/업무 시스템의 branch 은유로 이해하게 하며, 후반 결말 후보와 연결된다.",
+    "randomization_notes": "server/intranet route에 묶는다. 초반 랜덤으로 나오면 설명 과부하가 크므로 isolation_rules 이후 권장.",
+    "promotion_notes": "SW 특화 소재이므로 윤리적 선택이 핵심이어야 한다."
+  },
+  {
+    "id": "automatic_minutes_no_attendees",
+    "world_id": "office_apocalypse",
+    "storypack_id": "isolation_pack",
+    "status": "candidate",
+    "phase": [
+      "normal_operations"
+    ],
+    "priority_class": "random_pack",
+    "location_tags": [
+      "meeting_room",
+      "intranet"
+    ],
+    "surface": [
+      "meeting_minutes"
+    ],
+    "anomaly_type": [
+      "absent_people",
+      "future_record"
+    ],
+    "pressure_type": [
+      "sanity",
+      "battery"
+    ],
+    "npc_slots": [
+      "hr_identity_keeper"
+    ],
+    "candidate_characters": [
+      "yoon_seoyeon"
+    ],
+    "summary": "참석자가 아무도 없는 회의의 자동 회의록이 이미 결론을 작성했다.",
+    "setup_text": "회의실 예약 패널에는 방금 종료된 회의록이 공유되어 있고 참석자는 0명인데 결론은 전원 현 위치 유지다.",
+    "choice_shapes": [
+      {
+        "id": "leave_minutes_closed",
+        "role": "safe_leave",
+        "expected_costs": [],
+        "expected_gains": [
+          "sanity_relief"
+        ]
+      },
+      {
+        "id": "read_decision_line",
+        "role": "information_probe",
+        "expected_costs": [
+          "sanity_small"
+        ],
+        "expected_gains": [
+          "future_record_clue"
+        ]
+      },
+      {
+        "id": "forward_minutes_to_channel",
+        "role": "social_probe",
+        "expected_costs": [
+          "battery_small"
+        ],
+        "expected_gains": [
+          "shared_rule_hint"
+        ]
+      }
+    ],
+    "outcome_hooks": {
+      "possible_flags": [
+        "empty_minutes_seen",
+        "decision_line_read"
+      ],
+      "possible_clues": [
+        "no_attendee_decision",
+        "stay_in_place_order"
+      ],
+      "possible_items": []
+    },
+    "main_spine_link": "비정상 상황을 정상 업무 기록으로 처리하는 블랙코미디와 공포를 강화한다.",
+    "randomization_notes": "기존 회의실 truth route와 중복될 수 있으므로 low weight 또는 phase gating 필요.",
+    "promotion_notes": "회의록 surface가 이미 강한 route에 보조 카드로 붙는다."
+  },
+  {
+    "id": "pantry_survivor_trace",
+    "world_id": "office_apocalypse",
+    "storypack_id": "isolation_pack",
+    "status": "candidate",
+    "phase": [
+      "opening_absence"
+    ],
+    "priority_class": "generic_pressure",
+    "location_tags": [
+      "pantry",
+      "office_object",
+      "survival"
+    ],
+    "surface": [
+      "office_object"
+    ],
+    "anomaly_type": [
+      "absent_people"
+    ],
+    "pressure_type": [
+      "thirst",
+      "sanity"
+    ],
+    "npc_slots": [],
+    "candidate_characters": [],
+    "summary": "탕비실에는 방금 누군가 물을 마신 흔적이 있지만, 컵과 생수 수량이 맞지 않는다.",
+    "setup_text": "탕비실 테이블 위에는 아직 물방울이 마르지 않은 종이컵이 있고, 재고표와 냉장고 생수 수량이 서로 맞지 않는다.",
+    "choice_shapes": [
+      {
+        "id": "ignore_wet_cup",
+        "role": "safe_leave",
+        "expected_costs": [],
+        "expected_gains": [
+          "sanity_relief"
+        ]
+      },
+      {
+        "id": "inspect_cup_lip",
+        "role": "sensory_probe",
+        "required_player_ability_hint": "empathy_or_logic",
+        "expected_costs": [
+          "sanity_small"
+        ],
+        "expected_gains": [
+          "survivor_trace_clue"
+        ]
+      },
+      {
+        "id": "take_bottled_water_anyway",
+        "role": "resource_gain",
+        "expected_costs": [
+          "minor_risk"
+        ],
+        "expected_gains": [
+          "water_item"
+        ]
+      }
+    ],
+    "outcome_hooks": {
+      "possible_flags": [
+        "pantry_survivor_trace_seen",
+        "false_inventory_count_seen"
+      ],
+      "possible_clues": [
+        "wet_cup_recent_presence",
+        "water_sound_direction"
+      ],
+      "possible_items": [
+        "bottled_water"
+      ]
+    },
+    "main_spine_link": "사람들이 완전히 사라진 것이 아니라 방금 전까지 있었거나 다른 격리 구역에서 흔적만 넘어온다는 감각을 만든다.",
+    "randomization_notes": "pantry의 기존 물/커피/갈증 이벤트와 충돌 가능. resource pressure deck로 두고 반복 금지.",
+    "promotion_notes": "낮은 우선순위. 생존 압박과 분위기 보강용으로 적합하다."
+  },
+  {
+    "id": "wuxia_commute_rift_arrival",
+    "world_id": "wuxia_jianghu",
+    "storypack_id": "wuxia_jianghu_pack",
+    "status": "candidate",
+    "phase": [
+      "commute_rift",
+      "market_arrival"
+    ],
+    "priority_class": "main_forced",
+    "location_tags": [
+      "commute_boundary",
+      "market",
+      "starting_scene"
+    ],
+    "surface": [
+      "commute_rift",
+      "market_street",
+      "office_items"
+    ],
+    "anomaly_type": [
+      "world_displacement"
+    ],
+    "pressure_type": [
+      "sanity",
+      "danger"
+    ],
+    "npc_slots": [],
+    "candidate_characters": [],
+    "summary": "출근 중 균열에 휘말려 본인 몸과 출근복장 그대로 무협 세계 시장 한복판에 떨어진다.",
+    "setup_text": "엘리베이터 문이 열리거나 지하철 문이 닫히는 순간 눈앞이 하얗게 번지고, 다시 눈을 뜨자 종이등과 흙길, 말발굽 소리가 있는 시장 한복판이다.",
+    "choice_shapes": [
+      {
+        "id": "inventory_office_items",
+        "role": "safe_observe",
+        "expected_costs": [],
+        "expected_gains": [
+          "modern_items_confirmed",
+          "smartphone_missing_clue"
+        ]
+      },
+      {
+        "id": "ask_if_this_is_a_set",
+        "role": "social_probe",
+        "expected_costs": [
+          "embarrassment_or_suspicion"
+        ],
+        "expected_gains": [
+          "world_displacement_confirmed"
+        ]
+      },
+      {
+        "id": "move_out_of_crowd",
+        "role": "safe_reposition",
+        "expected_costs": [
+          "danger_small"
+        ],
+        "expected_gains": [
+          "market_exit_or_brawl_hook"
+        ]
+      }
+    ],
+    "outcome_hooks": {
+      "possible_flags": [
+        "wuxia_arrival_confirmed",
+        "smartphone_missing",
+        "office_items_remain"
+      ],
+      "possible_clues": [
+        "commute_rift_memory",
+        "market_is_not_film_set"
+      ],
+      "possible_items": [
+        "employee_badge",
+        "work_notebook",
+        "ballpoint_pen"
+      ]
+    },
+    "main_spine_link": "updated wuxia story의 출발점을 고정하고, office 출신 플레이어가 office surface 없이도 같은 survival loop에 들어갈 수 있음을 보여준다.",
+    "randomization_notes": "main_forced opening beat. 반복 등장 금지.",
+    "promotion_notes": "첫 schema-less wuxia runtime prototype의 최우선 후보. 새 world schema 없이 title/body/choices/outcome으로 구현 가능하다."
+  },
+  {
+    "id": "wuxia_heuksa_bang_first_fight",
+    "world_id": "wuxia_jianghu",
+    "storypack_id": "wuxia_jianghu_pack",
+    "status": "candidate",
+    "phase": [
+      "first_brawl"
+    ],
+    "priority_class": "main_forced",
+    "location_tags": [
+      "market",
+      "alley",
+      "brawl"
+    ],
+    "surface": [
+      "market_street",
+      "office_items"
+    ],
+    "anomaly_type": [
+      "first_brawl_defeat"
+    ],
+    "pressure_type": [
+      "health",
+      "danger",
+      "relation"
+    ],
+    "npc_slots": [
+      "early_rescuer"
+    ],
+    "candidate_characters": [
+      "seo_harin"
+    ],
+    "summary": "흑사방 말단 불량배에게 시비가 걸리고, 대부분 패배하는 튜토리얼성 첫 전투를 겪는다.",
+    "setup_text": "흑사방 말단들이 길을 막고 사원증을 값나가는 패로 오해한다. 몽둥이가 팔을 스치는 순간 폭력이 진짜임을 깨닫는다.",
+    "choice_shapes": [
+      {
+        "id": "run_toward_open_street",
+        "role": "safe_retreat_attempt",
+        "expected_costs": [
+          "health_small_or_danger_small"
+        ],
+        "expected_gains": [
+          "reduced_injury_or_escape_route_clue"
+        ]
+      },
+      {
+        "id": "deescalate_with_words",
+        "role": "social_probe",
+        "expected_costs": [
+          "relation_risk"
+        ],
+        "expected_gains": [
+          "rescue_delay_or_suspicion_shift"
+        ]
+      },
+      {
+        "id": "swing_commute_bag",
+        "role": "improvised_item_use",
+        "expected_costs": [
+          "health_risk",
+          "item_damage"
+        ],
+        "expected_gains": [
+          "brief_opening"
+        ]
+      }
+    ],
+    "outcome_hooks": {
+      "possible_flags": [
+        "first_brawl_started",
+        "first_real_injury",
+        "heuksa_bang_attention"
+      ],
+      "possible_clues": [
+        "violence_is_real",
+        "shoes_and_suit_are_liability"
+      ],
+      "possible_items": [
+        "torn_shirt",
+        "damaged_bag"
+      ],
+      "possible_relations": [
+        "seo_harin_rescue_interest"
+      ]
+    },
+    "main_spine_link": "이 세계가 위험하며 현대 회사원의 기본 습관이 그대로 통하지 않는다는 점을 전투/도주/설득/소지품 사용으로 보여준다.",
+    "randomization_notes": "opening 직후 1회성. 승패보다 부상, 평판, 구조 hook이 핵심이다.",
+    "promotion_notes": "기존 schema-less auto-brawl 경험을 활용할 수 있지만 숫자 HP 전투나 무쌍으로 확장하지 않는다."
+  },
+  {
+    "id": "wuxia_seo_harin_rescue",
+    "world_id": "wuxia_jianghu",
+    "storypack_id": "wuxia_jianghu_pack",
+    "status": "candidate",
+    "phase": [
+      "rescue_and_investigation"
+    ],
+    "priority_class": "main_forced",
+    "location_tags": [
+      "market",
+      "aftermath",
+      "rescue"
+    ],
+    "surface": [
+      "market_street",
+      "faction_negotiation"
+    ],
+    "anomaly_type": [
+      "outsider_without_sect"
+    ],
+    "pressure_type": [
+      "health",
+      "relation",
+      "sanity"
+    ],
+    "npc_slots": [
+      "early_rescuer"
+    ],
+    "candidate_characters": [
+      "seo_harin"
+    ],
+    "summary": "청류문 외문 제자 서하린이 개입해 주인공을 구조하지만, 그를 정체불명의 외지인으로 의심한다.",
+    "setup_text": "전투가 길어지거나 주인공이 쓰러질 즈음 서하린이 끼어든다. 그녀도 주인공의 옷차림과 목에 건 패를 믿지 못한다.",
+    "choice_shapes": [
+      {
+        "id": "tell_plain_truth",
+        "role": "safe_honesty",
+        "expected_costs": [
+          "suspicion_small"
+        ],
+        "expected_gains": [
+          "truthful_outsider_flag"
+        ]
+      },
+      {
+        "id": "ask_for_medical_help_first",
+        "role": "survival_priority",
+        "expected_costs": [
+          "debt_small"
+        ],
+        "expected_gains": [
+          "injury_stabilized"
+        ]
+      },
+      {
+        "id": "hide_employee_badge",
+        "role": "high_risk_concealment",
+        "expected_costs": [
+          "suspicion_medium"
+        ],
+        "expected_gains": [
+          "badge_secret_flag"
+        ]
+      }
+    ],
+    "outcome_hooks": {
+      "possible_flags": [
+        "seo_harin_intervened",
+        "taken_under_watch",
+        "outsider_claim_recorded"
+      ],
+      "possible_clues": [
+        "cheongryu_name_heard",
+        "sect_identity_matters"
+      ],
+      "possible_items": [],
+      "possible_relations": [
+        "seo_harin_suspicion",
+        "seo_harin_responsibility"
+      ]
+    },
+    "main_spine_link": "구조자/멘토 후보를 세우고, 주인공을 청류문 수습생 구간으로 이동시킨다.",
+    "randomization_notes": "first_brawl 이후 forced aftermath. 별도 hub random으로 반복하지 않는다.",
+    "promotion_notes": "healing/debt/relation은 새 schema 없이 log/flag/clue로만 표현한다."
+  },
+  {
+    "id": "wuxia_cheongryu_apprentice_entry",
+    "world_id": "wuxia_jianghu",
+    "storypack_id": "wuxia_jianghu_pack",
+    "status": "candidate",
+    "phase": [
+      "cheongryu_apprenticeship"
+    ],
+    "priority_class": "route_key",
+    "location_tags": [
+      "cheongryu_sect",
+      "courtyard",
+      "apprenticeship"
+    ],
+    "surface": [
+      "sect_courtyard",
+      "training_chore"
+    ],
+    "anomaly_type": [
+      "sect_debt"
+    ],
+    "pressure_type": [
+      "relation",
+      "hunger",
+      "health"
+    ],
+    "npc_slots": [
+      "sect_master_guardian",
+      "early_rescuer",
+      "archive_keeper"
+    ],
+    "candidate_characters": [
+      "seo_harin",
+      "cheongryu_sect_master",
+      "old_archive_keeper"
+    ],
+    "summary": "청류문이 주인공을 보호하지만, 신분은 정식 제자가 아니라 수습생/객식/잡역/임시 보호 대상이다.",
+    "setup_text": "청류문 장문인은 보호가 공짜가 아니라고 말한다. 목숨값, 치료비, 숙식비를 갚으며 장작 패기와 서고 정리부터 시작한다.",
+    "choice_shapes": [
+      {
+        "id": "accept_three_month_trial",
+        "role": "safe_acceptance",
+        "expected_costs": [
+          "debt_or_time"
+        ],
+        "expected_gains": [
+          "cheongryu_apprentice_status"
+        ]
+      },
+      {
+        "id": "request_martial_training_immediately",
+        "role": "impatience_probe",
+        "expected_costs": [
+          "relation_risk"
+        ],
+        "expected_gains": [
+          "training_rule_clue"
+        ]
+      },
+      {
+        "id": "organize_chores_like_workflow",
+        "role": "workplace_skill_translation",
+        "expected_costs": [
+          "sanity_small"
+        ],
+        "expected_gains": [
+          "efficiency_reputation_small"
+        ]
+      }
+    ],
+    "outcome_hooks": {
+      "possible_flags": [
+        "cheongryu_trial_started",
+        "sect_debt_accepted",
+        "chore_training_open"
+      ],
+      "possible_clues": [
+        "training_starts_with_labor",
+        "old_archive_locked"
+      ],
+      "possible_items": [
+        "work_chore_token"
+      ],
+      "possible_relations": [
+        "seo_harin_mentor_thread",
+        "sect_master_watch"
+      ]
+    },
+    "main_spine_link": "소속/채무/거점/훈련을 열어 공용 RPG 시스템이 office 밖에서도 성립하는지 검증한다.",
+    "randomization_notes": "route_key hub intro. 이후 반복 잡일 카드는 별도 deck으로 분리할 수 있다.",
+    "promotion_notes": "첫 runtime에서는 location/state schema를 넓히지 않고 narrative outcome과 flags로만 표현한다."
+  },
+  {
+    "id": "wuxia_cheonggi_record_first_fragment",
+    "world_id": "wuxia_jianghu",
+    "storypack_id": "wuxia_jianghu_pack",
+    "status": "candidate",
+    "phase": [
+      "cheonggi_record_awakening"
+    ],
+    "priority_class": "route_key",
+    "location_tags": [
+      "cheongryu_sect",
+      "archive",
+      "notebook",
+      "training"
+    ],
+    "surface": [
+      "cheonggi_record",
+      "fragment_choice"
+    ],
+    "anomaly_type": [
+      "notebook_oracle",
+      "fragment_choice"
+    ],
+    "pressure_type": [
+      "sanity",
+      "relation"
+    ],
+    "npc_slots": [
+      "archive_keeper",
+      "cheonggi_record_keeper"
+    ],
+    "candidate_characters": [
+      "old_archive_keeper",
+      "yeon_soha"
+    ],
+    "summary": "업무수첩이 천기록과 연결되고, 현대 지식 후보 세 개 중 하나만 남기는 첫 천외편린 발현이 일어난다.",
+    "setup_text": "업무수첩의 빈 장에 세 개의 문장이 떠오른다. 하나의 편린만 기록할 수 있고 나머지는 흐려진다.",
+    "choice_shapes": [
+      {
+        "id": "close_notebook_without_choice",
+        "role": "safe_delay",
+        "expected_costs": [
+          "opportunity_may_fade"
+        ],
+        "expected_gains": [
+          "cheonggi_record_caution"
+        ]
+      },
+      {
+        "id": "choose_guard_basics",
+        "role": "defensive_growth_choice",
+        "expected_costs": [
+          "fragment_lockout_two_options"
+        ],
+        "expected_gains": [
+          "defense_training_thread"
+        ]
+      },
+      {
+        "id": "choose_failure_log",
+        "role": "reflection_growth_choice",
+        "expected_costs": [
+          "fragment_lockout_two_options"
+        ],
+        "expected_gains": [
+          "defeat_review_thread"
+        ]
+      }
+    ],
+    "outcome_hooks": {
+      "possible_flags": [
+        "cheonggi_record_awakened",
+        "first_fragment_seen"
+      ],
+      "possible_clues": [
+        "notebook_is_not_search",
+        "fragments_are_training_directions"
+      ],
+      "possible_items": [
+        "cheonggi_record_notebook"
+      ],
+      "possible_growth_threads": [
+        "defense_training_thread",
+        "evasion_training_thread",
+        "defeat_review_thread"
+      ]
+    },
+    "main_spine_link": "updated wuxia story의 핵심 성장 구조인 천기록/천외편린을 연다.",
+    "randomization_notes": "큰 전투 후, 심각한 패배 후, 수련 한계, 중요한 선택 직전 같은 특별한 순간에만 사용한다.",
+    "promotion_notes": "첫 구현에서는 새 ability/reward schema를 열지 말고 flag/clue/log/presentation text로만 처리한다."
+  },
+  {
+    "id": "wuxia_cheongryu_raid_route_split",
+    "world_id": "wuxia_jianghu",
+    "storypack_id": "wuxia_jianghu_pack",
+    "status": "candidate",
+    "phase": [
+      "cheongryu_raid",
+      "route_commitment"
+    ],
+    "priority_class": "route_key",
+    "location_tags": [
+      "cheongryu_sect",
+      "raid",
+      "faction_choice"
+    ],
+    "surface": [
+      "sect_raid",
+      "faction_negotiation"
+    ],
+    "anomaly_type": [
+      "faction_pressure"
+    ],
+    "pressure_type": [
+      "danger",
+      "relation",
+      "sanity"
+    ],
+    "npc_slots": [
+      "righteous_ally",
+      "sapa_ally",
+      "cheonggi_record_keeper",
+      "blood_moon_antagonist"
+    ],
+    "candidate_characters": [
+      "namgung_seoyun",
+      "dowol",
+      "yeon_soha",
+      "yu_harin"
+    ],
+    "summary": "청류문 습격 사건 후 백도맹, 흑천련, 천기각이 서로 다른 명분과 대가를 제시하며 route commitment를 압박한다.",
+    "setup_text": "혈월교의 습격으로 청류문이 무너지고, 백도맹과 흑천련과 천기각이 각기 다른 조건을 제시한다.",
+    "choice_shapes": [
+      {
+        "id": "evacuate_the_wounded_first",
+        "role": "safe_human_priority",
+        "expected_costs": [
+          "route_delay"
+        ],
+        "expected_gains": [
+          "relation_gain",
+          "wounded_saved_flag"
+        ]
+      },
+      {
+        "id": "defend_cheongryu_with_white_path",
+        "role": "righteous_route_commitment",
+        "expected_costs": [
+          "political_debt",
+          "danger_medium"
+        ],
+        "expected_gains": [
+          "righteous_route_flag"
+        ]
+      },
+      {
+        "id": "trade_with_black_heaven",
+        "role": "sapa_route_commitment",
+        "expected_costs": [
+          "trust_loss",
+          "debt_medium"
+        ],
+        "expected_gains": [
+          "sapa_route_flag"
+        ]
+      }
+    ],
+    "outcome_hooks": {
+      "possible_flags": [
+        "cheongryu_raid_survived",
+        "route_commitment_pressure"
+      ],
+      "possible_route_flags": [
+        "righteous_route_started",
+        "sapa_route_started",
+        "cheonggi_return_route_started"
+      ],
+      "possible_clues": [
+        "martial_knowledge_conflict",
+        "cheonggi_record_targeted"
+      ],
+      "possible_relations": [
+        "seo_harin_loyalty_test",
+        "faction_debt"
+      ]
+    },
+    "main_spine_link": "중반의 큰 분기점으로 정파/사파/천기·귀환 루트를 연다.",
+    "randomization_notes": "보스/대형 사건급 route_key. 충분한 공통 루트와 천기록 각성 후에만 사용한다.",
+    "promotion_notes": "첫 runtime prototype 후보는 아니다. route system과 storypack gating이 생긴 뒤 중반 slice로 검토한다."
+  }
+]

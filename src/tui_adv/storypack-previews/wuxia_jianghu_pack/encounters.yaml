@@ -1,0 +1,32 @@
+encounters:
+  - id: wuxia_commute_rift_arrival
+    title: 출근길 균열
+    body: 눈을 뜨자 출근복 차림 그대로 낯선 관도 한복판에 서 있다. 손에는 아직 사원증이 걸려 있고, 멀리서 청류문 수련생들의 발소리가 다가온다.
+    presentation:
+      visual_id: wuxia_commute_rift
+      speaker: 천기록
+      layout: storypack_preview
+      effect_cues:
+        - kind: glyph_anomaly
+          source: commute_rift
+          intensity: 0.58
+          stable_terms: [사원증, 출근복, 천기록]
+          distortion: hanja_then_badge_scan
+          duration_hint_ms: 1400
+          fallback_text: 한자 획 사이로 '사원증', '출근복', '천기록'만 현대식 글꼴처럼 남는다.
+    conditions:
+      locations: [wuxia_commute_rift]
+    choices:
+      - id: grip_employee_badge
+        label: 사원증을 쥐고 현재의 나를 붙든다
+        outcome:
+          add_items: [commuter_badge]
+          add_clues: [employee_badge_in_jianghu]
+          add_flags: [wuxia_arrival_grounded]
+          log: 사원증의 플라스틱 모서리가 손바닥에 남아, 이 몸이 아직 현대의 나임을 붙든다.
+      - id: follow_roadside_dust
+        label: 흙먼지가 흐르는 쪽으로 몸을 숨긴다
+        outcome:
+          destination_id: jianghu_roadside
+          add_flags: [wuxia_arrival_hidden]
+          log: 출근복 자락을 여미고 흙먼지의 흐름을 따라 관도 가장자리로 물러섰다.

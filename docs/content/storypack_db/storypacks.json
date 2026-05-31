@@ -1,0 +1,123 @@
+[
+  {
+    "id": "isolation_pack",
+    "world_id": "office_apocalypse",
+    "status": "candidate",
+    "source_refs": [
+      "idea_box/done/2026-05-22-general-corporate-storypacks.md",
+      "idea_box/done/2026-05-22-semiconductor-sw-storypacks.md"
+    ],
+    "name": "차원격리팩",
+    "one_line": "퇴근 직전 회사 일부 공간이 격리되고, 플레이어는 사내 시스템으로 다른 격리자들과 연결된다.",
+    "main_surfaces": [
+      "messenger",
+      "intranet",
+      "cctv",
+      "meeting_minutes",
+      "organization_chart",
+      "build_log",
+      "office_object"
+    ],
+    "anomaly_types": [
+      "mismatched_floor",
+      "delayed_time",
+      "future_record",
+      "absent_people",
+      "identity_erasure",
+      "worldline_branch"
+    ],
+    "main_phases": [
+      "opening_absence",
+      "normal_operations",
+      "isolation_rules",
+      "route_commitment",
+      "resolution_pressure"
+    ],
+    "sensitive_topics": [
+      "real_company_similarity",
+      "workplace_disaster"
+    ],
+    "reusable_npc_slots": [
+      "infra_interpreter",
+      "hr_identity_keeper",
+      "security_witness",
+      "facility_pathfinder"
+    ],
+    "ending_candidates": [
+      "escape_alone",
+      "rescue_channel_members",
+      "close_failed_worldlines",
+      "accept_success_worldline",
+      "merge_isolation_zones"
+    ],
+    "main_spine_support": "사라진 사람과 정상 작동하는 회사 시스템이라는 핵심 미스터리를 여러 격리 구역의 증언으로 확장한다.",
+    "runtime_promotion_notes": "runtime 승격 전 once-only/gating을 정하고 기존 office encounters와 hub 이동 충돌을 점검한다."
+  },
+  {
+    "id": "wuxia_jianghu_pack",
+    "world_id": "wuxia_jianghu",
+    "status": "candidate",
+    "source_refs": [
+      "idea_box/done/2026-05-29-notion-wuxia-igu-hakji-cheonggi-record.md",
+      "notion:36f37e69-695e-8198-86c2-d35c00609441"
+    ],
+    "name": "이구학지 — 천기록",
+    "one_line": "현대 회사원이 본인 몸과 출근복장 그대로 무협 세계의 시장 한복판에 떨어지고, 흑사방 첫 전투와 청류문 수습생 구간을 거쳐 천기록/천외편린 기반의 랜덤 현대지식 성장 구조를 경험한다.",
+    "main_surfaces": [
+      "commute_rift",
+      "market_street",
+      "office_items",
+      "sect_courtyard",
+      "training_chore",
+      "cheonggi_record",
+      "fragment_choice",
+      "sect_raid",
+      "faction_negotiation"
+    ],
+    "anomaly_types": [
+      "world_displacement",
+      "workplace_memory_mismatch",
+      "outsider_without_sect",
+      "first_brawl_defeat",
+      "notebook_oracle",
+      "fragment_choice",
+      "sect_debt",
+      "faction_pressure"
+    ],
+    "main_phases": [
+      "commute_rift",
+      "market_arrival",
+      "first_brawl",
+      "rescue_and_investigation",
+      "cheongryu_apprenticeship",
+      "cheonggi_record_awakening",
+      "cheongryu_raid",
+      "route_commitment",
+      "resolution_pressure"
+    ],
+    "sensitive_topics": [
+      "martial_violence",
+      "fictional_sect_politics",
+      "return_to_modern_life"
+    ],
+    "reusable_npc_slots": [
+      "early_rescuer",
+      "sect_master_guardian",
+      "archive_keeper",
+      "righteous_ally",
+      "sapa_ally",
+      "cheonggi_record_keeper",
+      "blood_moon_antagonist"
+    ],
+    "ending_candidates": [
+      "cheongryu_divine_sword",
+      "white_path_prison",
+      "black_night_gentleman",
+      "debtor_of_all_under_heaven",
+      "returnee",
+      "murim_outsider"
+    ],
+    "main_spine_support": "office에서 출발한 현대인이 완전히 다른 world에 떨어져도 소속, 평판, 관계, 성장, 전투, 자원, 선택, 엔딩을 같은 engine loop로 설명할 수 있는지 검증한다.",
+    "runtime_promotion_notes": "첫 구현은 기존 encounter schema만 사용한 schema-less wuxia prototype으로 시작하되, runtime에 넣기 전에는 office content와 섞이지 않도록 world/storypack gating 또는 별도 preview mode를 결정한다."
+  }
+]

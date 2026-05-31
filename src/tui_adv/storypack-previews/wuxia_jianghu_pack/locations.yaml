@@ -1,0 +1,14 @@
+locations:
+  - id: wuxia_commute_rift
+    name: 출근길 균열
+    description: 출근길 손잡이가 종소리처럼 흔들리며 강호의 흙먼지로 이어진다.
+    connections: [jianghu_roadside]
+    tags: [wuxia, start, rift]
+    danger: 0
+
+  - id: jianghu_roadside
+    name: 강호 초입
+    description: 낯선 흙길과 대나무 숲 사이로 청류문 표식이 희미하게 보인다.
+    connections: [wuxia_commute_rift]
+    tags: [wuxia, transit]
+    danger: 1

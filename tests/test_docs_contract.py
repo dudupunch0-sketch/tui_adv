@@ -407,7 +407,7 @@ def test_storypack_world_model_and_wuxia_pack_are_indexed_and_current():
     assert "docs/content/storypack_db/storypacks.json" in storypack_design
     assert "validate_storypack_db" in storypack_design
 
-    assert "회사”는 엔진의 정체성이 아니라 첫 번째 기본 storypack" in world_doc
+    assert "회사”는 엔진의 정체성이 아니라 첫 번째 legacy storypack" in world_doc
     assert "world_id" in world_doc
     assert "이구학지 — 천기록" in world_doc
     assert "wuxia_commute_rift_arrival" in world_doc
@@ -569,8 +569,8 @@ def test_wuxia_cheongryu_raid_wounded_fallback_runtime_slice_is_docs_synced():
     assert "`wuxia_cheongryu_raid_wounded_fallback` — preview runtime 구현 완료" in wuxia_pack
     assert "route opener docs-only handoff" in plan
     assert "wuxia_baekdo_medicine_debt" in plan
-    assert "route_opener_followup_after_heavenly_archive" in next_goal
-    assert "current_goal: route_opener_followup_after_heavenly_archive" in next_goal
+    assert "wuxia_wounded_shelter_dawn_offers" in next_goal
+    assert "current_goal: implement_wuxia_wounded_shelter_dawn_offers" in next_goal
     assert "Route opener implementation" in coverage
     next_slice = plan.split("현재 최우선 남은 작업:", 1)[1].split("전환 중 유지:", 1)[0]
     assert "wuxia_baekdo_medicine_debt" in next_slice
@@ -598,10 +598,10 @@ def test_wuxia_baekdo_medicine_debt_runtime_slice_is_docs_synced():
     assert "`wuxia_baekdo_medicine_debt` — preview runtime 구현 완료" in wuxia_pack
     assert "## 9. `wuxia_baekdo_medicine_debt`" in wuxia_cards
     assert "runtime_preview_design_status: implemented" in wuxia_cards
-    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 11개." in storypack_db_readme
+    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 12개." in storypack_db_readme
     assert "wuxia_black_heaven_escape_price" in storypack_db_readme
-    assert "current_goal: route_opener_followup_after_heavenly_archive" in next_goal
-    assert "docs-only-handoff" in next_goal
+    assert "current_goal: implement_wuxia_wounded_shelter_dawn_offers" in next_goal
+    assert "runtime-preview-implementation" in next_goal
     assert "deferred-offer card" in next_goal
 
 
@@ -631,10 +631,10 @@ def test_wuxia_black_heaven_escape_price_runtime_slice_is_docs_synced():
     assert "ask_who_collects_the_price" in wuxia_cards
     assert "keep_cheongryu_names_off_ledger" in wuxia_cards
     assert "map_exit_before_following_dowol" in wuxia_cards
-    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 11개." in storypack_db_readme
+    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 12개." in storypack_db_readme
     assert "wuxia_heavenly_archive_previous_outsiders" in storypack_db_readme
-    assert "current_goal: route_opener_followup_after_heavenly_archive" in next_goal
-    assert "docs-only-handoff" in next_goal
+    assert "current_goal: implement_wuxia_wounded_shelter_dawn_offers" in next_goal
+    assert "runtime-preview-implementation" in next_goal
     assert "deferred-offer card" in next_goal
 
 
@@ -665,7 +665,40 @@ def test_wuxia_heavenly_archive_previous_outsiders_runtime_slice_is_docs_synced(
     assert "ask_yeon_soha_what_not_to_read" in wuxia_cards
     assert "mark_current_worldline_without_answer" in wuxia_cards
     assert "compare_rift_terms_to_commute_memory" in wuxia_cards
-    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 11개." in storypack_db_readme
-    assert "current_goal: route_opener_followup_after_heavenly_archive" in next_goal
-    assert "docs-only-handoff" in next_goal
+    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 12개." in storypack_db_readme
+    assert "current_goal: implement_wuxia_wounded_shelter_dawn_offers" in next_goal
+    assert "runtime-preview-implementation" in next_goal
     assert "deferred-offer card" in next_goal
+
+
+def test_wuxia_wounded_shelter_dawn_offers_handoff_is_docs_synced():
+    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    decision = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(encoding="utf-8")
+    coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
+    next_goal = Path("idea_box/next_goal/README.md").read_text(encoding="utf-8")
+    storypack_db_readme = Path("docs/content/storypack_db/README.md").read_text(encoding="utf-8")
+    wuxia_pack = Path("docs/content/storypacks/wuxia_jianghu_pack.md").read_text(encoding="utf-8")
+    wuxia_cards = Path("docs/content/encounter_db/wuxia_jianghu_pack.md").read_text(encoding="utf-8")
+    world_model = Path("docs/design/Storypack_World_Model.md").read_text(encoding="utf-8")
+    encounter_model = Path("docs/design/Storypack_Encounter_DB.md").read_text(encoding="utf-8")
+
+    assert "## 0.26 2026-06-02 docs-only route opener follow-up handoff: `wuxia_wounded_shelter_dawn_offers`" in plan
+    assert "### 0.2ao 2026-06-02 무협 route opener follow-up after heavenly archive docs-only handoff" in checklist
+    assert "`wuxia_wounded_shelter_dawn_offers` — 다음 runtime handoff 완료" in decision
+    assert "Route opener follow-up after heavenly archive" in coverage
+    assert "wuxia_wounded_shelter_dawn_offers" in coverage
+    assert "| `wuxia_wounded_shelter_dawn_offers` | `route_commitment`" in wuxia_pack
+    assert "## 12. `wuxia_wounded_shelter_dawn_offers`" in wuxia_cards
+    assert "runtime_preview_design_status: handoff_ready" in wuxia_cards
+    assert "required_flags: [cheongryu_raid_wounded_fallback_resolved, route_commitment_deferred, deferred_route_reopened, wounded_shelter_stabilized]" in wuxia_cards
+    assert "flavor_flags_only: [survivor_roll_call_complete, route_delay_cost_recorded]" in wuxia_cards
+    assert "keep_wounded_shelter_until_noon" in wuxia_cards
+    assert "accept_baekdo_medicine_after_roll_call" in wuxia_cards
+    assert "send_word_to_dowol_for_quiet_exit" in wuxia_cards
+    assert "show_archive_map_to_yeon_soha" in wuxia_cards
+    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 12개." in storypack_db_readme
+    assert "current_goal: implement_wuxia_wounded_shelter_dawn_offers" in next_goal
+    assert "runtime-preview-implementation" in next_goal
+    assert "wuxia_wounded_shelter_dawn_offers" in world_model
+    assert "wuxia_wounded_shelter_dawn_offers" in encounter_model

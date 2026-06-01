@@ -393,6 +393,17 @@
 - [x] 천기록 정체 reveal, return system, route graph/faction reputation/debt ledger/relation/reward/ability/epilogue schema, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
 - [x] 다음 작업을 `route_opener_followup_after_heavenly_archive` docs-only handoff로 갱신
 
+### 0.2ao 2026-06-02 무협 route opener follow-up after heavenly archive docs-only handoff
+
+- [x] `stabilize_wounded_until_dawn` deferred-offer card와 세 route opener 이후 midgame continuity card를 Notion reference와 repo hooks 기준으로 비교
+- [x] 다음 runtime 후보를 부상자 피난처 새벽 제안 `wuxia_wounded_shelter_dawn_offers`로 결정
+- [x] start conditions를 `conditions.locations: [cheongryu_outer_courtyard]`, `required_flags: [cheongryu_raid_wounded_fallback_resolved, route_commitment_deferred, deferred_route_reopened, wounded_shelter_stabilized]`, `forbidden_flags: [wounded_shelter_dawn_offers_resolved]`로 문서화
+- [x] `survivor_roll_call_complete`와 `route_delay_cost_recorded`는 eligibility가 아니라 branch flavor hook으로만 사용한다고 명시
+- [x] stable choice id 후보 `keep_wounded_shelter_until_noon`, `accept_baekdo_medicine_after_roll_call`, `send_word_to_dowol_for_quiet_exit`, `show_archive_map_to_yeon_soha` 고정
+- [x] triage/companion death/mass combat/route graph/faction reputation/debt ledger/relation/reward/ability/epilogue schema, return system, 천기록 정체 reveal은 열지 않는다고 명시
+- [x] storypack DB JSON mirror와 docs contract를 다음 runtime handoff 기준으로 갱신
+- [x] runtime YAML/Rust/Web/generated bundle, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

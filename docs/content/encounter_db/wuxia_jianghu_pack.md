@@ -2,12 +2,12 @@
 
 Status: candidate
 
-이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_heavenly_archive_previous_outsiders`까지는 separate storypack preview runtime으로 승격되었다.
+이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_heavenly_archive_previous_outsiders`까지는 separate storypack preview runtime으로 승격되었고, 다음 handoff는 `wuxia_wounded_shelter_dawn_offers`다.
 
 공통 원칙:
 
 - 모든 카드는 `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`에 속한다.
-- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_heavenly_archive_previous_outsiders`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다.
+- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_heavenly_archive_previous_outsiders`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. `wuxia_wounded_shelter_dawn_offers`는 다음 runtime 구현 후보로만 문서화되어 있다.
 - 최신 canonical 무협 설정은 **이구학지 — 천기록**이다. 이전의 generic 객잔/소림/무당/아미 placeholder는 superseded로 본다.
 - 플레이어 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계의 시장 한복판에 전이됐다”이다.
 - 선택지는 세부 수치보다 역할과 결과 hook을 먼저 정의한다.
@@ -919,5 +919,94 @@ schema_boundary:
   forbidden_new_schema: [RouteGraph, FactionStanding, DebtLedger, RelationScore, BranchLock, return_system, reward_schema, ability_schema, fragment_choice_reward, epilogue_schema, multi_ending_implementation]
 main_spine_link: route commitment의 첫 천기·귀환 opener. direct raid branch와 deferred wounded branch를 같은 `cheonggi_return_route_started`/`cheonggi_record_targeted` 조건으로 받아 any-of schema 없이 천기·귀환 루트를 연다.
 randomization_notes: 1회성 route opener. hub random deck으로 반복하지 않는다. `heavenly_archive_contact`와 `heavenly_archive_triage_map_seen`는 direct/deferred flavor만 바꾸고 eligibility를 가르지 않는다.
-promotion_notes: preview runtime으로 구현 완료. `cheongryu_outer_courtyard`에서 `cheonggi_return_route_started` + `cheonggi_record_targeted`를 받아 열리며, 천기각 이전 이방인 기록/균열 단서를 flags/clues/log/presentation으로만 남긴다. 기본 office bundle, legacy `escape-office` key, 천기록 정체 reveal, return system, reward/ability schema는 열지 않았다. 다음 handoff는 `route_opener_followup_after_heavenly_archive`다.
+promotion_notes: preview runtime으로 구현 완료. `cheongryu_outer_courtyard`에서 `cheonggi_return_route_started` + `cheonggi_record_targeted`를 받아 열리며, 천기각 이전 이방인 기록/균열 단서를 flags/clues/log/presentation으로만 남긴다. 기본 office bundle, legacy `escape-office` key, 천기록 정체 reveal, return system, reward/ability schema는 열지 않았다. 다음 handoff에서 deferred-offer card `wuxia_wounded_shelter_dawn_offers`가 선택됐다.
+```
+
+## 12. `wuxia_wounded_shelter_dawn_offers`
+
+```yaml
+id: wuxia_wounded_shelter_dawn_offers
+storypack_id: wuxia_jianghu_pack
+world_id: wuxia_jianghu
+status: candidate
+runtime_preview_design_status: handoff_ready
+phase: [route_commitment]
+priority_class: route_key
+location_tags: [cheongryu_sect, wounded_shelter, deferred_route]
+surface: [sect_courtyard, faction_negotiation, cheonggi_record]
+anomaly_type: [sect_debt, faction_pressure, worldline_branch]
+pressure_type: [health, danger, relation]
+npc_slots: [early_rescuer, righteous_ally, sapa_ally, cheonggi_record_keeper]
+candidate_characters: [seo_harin, namgung_seoyun, dowol, yeon_soha]
+summary: `stabilize_wounded_until_dawn` branch가 남긴 deferred route state를 받아, 부상자 피난처의 새벽 제안으로 route pressure를 다시 연다.
+purpose: 사람을 살리느라 루트 결정을 미룬 선택을 실패나 막다른 길로 처리하지 않는다. 살아남은 사람들의 명단, 약상자, 탈출로, 천기각 지도 조각이 같은 마당에 모이며, 플레이어는 다시 정파/사파/천기 또는 한 번 더 돌봄을 고른다.
+setup_text: 새벽이 오자 임시 피난처의 숨소리가 하나씩 안정된다. 서하린은 젖은 천을 갈아 묶으며 부상자 명단을 접는다. 문밖에는 남궁서윤의 약상자, 도월이 남긴 짧은 전서, 연소하의 접힌 지도 조각이 서로 다른 그림자처럼 도착해 있다.
+runtime_preview_start_conditions:
+  runtime_mode: storypack_preview
+  prereq: `wuxia_cheongryu_raid_wounded_fallback`에서 `stabilize_wounded_until_dawn` branch가 landed
+  location: cheongryu_outer_courtyard
+  required_flags: [cheongryu_raid_wounded_fallback_resolved, route_commitment_deferred, deferred_route_reopened, wounded_shelter_stabilized]
+  forbidden_flags: [wounded_shelter_dawn_offers_resolved]
+  flavor_flags_only: [survivor_roll_call_complete, route_delay_cost_recorded]
+  note: direct route opener의 opened flags를 any-of로 묶지 않는다. deferred branch가 이미 가진 flags만 eligibility로 쓴다.
+presentation:
+  visual_id: wuxia_wounded_shelter_dawn_offers
+  speaker: 서하린
+  layout: deferred_route_offer
+  effect_cues:
+    - stable_terms: [새벽, 부상자, 제안]
+choice_shapes:
+  - id: keep_wounded_shelter_until_noon
+    role: safe_care
+    fallback_choice: true
+    label_direction: 정오까지 피난처를 더 지킨다
+    expected_costs: [time_pressure, danger_small]
+    expected_gains: [wounded_shelter_stability, survivor_names]
+    outcome_hook:
+      add_flags: [wounded_shelter_dawn_offers_resolved, route_commitment_reopened, wounded_shelter_until_noon, deferred_offer_debt_recorded]
+      add_clues: [saving_people_changed_witnesses, care_is_not_route_escape, dawn_shelter_keeps_names]
+      log_direction: route를 고르지 않는 대신 살아남은 이름들이 더 또렷해진다.
+  - id: accept_baekdo_medicine_after_roll_call
+    role: delayed_righteous_offer
+    label_direction: 생존자 점호 뒤 백도맹 약상자를 받는다
+    expected_costs: [debt_mark, reputation_risk]
+    expected_gains: [medicine_supply, righteous_route_reentry]
+    outcome_hook:
+      add_flags: [wounded_shelter_dawn_offers_resolved, route_commitment_reopened, righteous_route_started, cheongryu_rebuild_thread, baekdo_medicine_debt]
+      add_clues: [offers_arrive_because_people_lived, delayed_choice_has_callers]
+      log_direction: 약상자는 명령서가 아니라 명단 위에 놓인다. 빚은 생겼지만 문은 다시 열린다.
+  - id: send_word_to_dowol_for_quiet_exit
+    role: delayed_sapa_offer
+    label_direction: 도월에게 조용한 퇴로를 부탁한다
+    expected_costs: [debt_mark, suspicion_small]
+    expected_gains: [safehouse_thread, exit_route]
+    outcome_hook:
+      add_flags: [wounded_shelter_dawn_offers_resolved, route_commitment_reopened, sapa_route_started, dowol_debt, black_heaven_escape_marker]
+      add_clues: [delayed_choice_has_callers, care_is_not_route_escape]
+      log_direction: 도월의 답장은 짧다. 사람을 살린 일에도 값은 붙지만, 값이 붙는다고 모두 거래가 되는 것은 아니다.
+  - id: show_archive_map_to_yeon_soha
+    role: delayed_cheonggi_offer
+    label_direction: 연소하에게 피난처 지도의 접힌 부분을 보인다
+    expected_costs: [sanity_small, time_pressure]
+    expected_gains: [archive_route_reentry, worldline_clue]
+    outcome_hook:
+      add_flags: [wounded_shelter_dawn_offers_resolved, route_commitment_reopened, cheonggi_return_route_started, cheonggi_record_targeted, heavenly_archive_triage_map_seen]
+      add_clues: [dawn_shelter_keeps_names, delayed_choice_has_callers, offers_arrive_because_people_lived]
+      log_direction: 지도는 길보다 먼저 이름을 기억한다. 연소하는 그 순서가 중요하다고 말한다.
+outcome_hooks:
+  possible_flags: [wounded_shelter_dawn_offers_resolved, route_commitment_reopened, wounded_shelter_until_noon, deferred_offer_debt_recorded, righteous_route_started, cheongryu_rebuild_thread, baekdo_medicine_debt, sapa_route_started, dowol_debt, black_heaven_escape_marker, cheonggi_return_route_started, cheonggi_record_targeted, heavenly_archive_triage_map_seen]
+  possible_route_flags: [route_commitment_reopened, righteous_route_started, sapa_route_started, cheonggi_return_route_started]
+  possible_clues: [saving_people_changed_witnesses, delayed_choice_has_callers, care_is_not_route_escape, offers_arrive_because_people_lived, dawn_shelter_keeps_names]
+  possible_relations: [seo_harin_trust, namgung_seoyun_attention, dowol_interest, yeon_soha_attention]
+  possible_destinations: [cheongryu_outer_courtyard]
+  possible_log_tone:
+    - 사람을 살린 결과로 제안이 도착하는 감각
+    - route 선택을 미룬 대가가 있지만 메인은 막히지 않는 감각
+    - 정파/사파/천기 제안이 같은 마당에 놓인 긴장감
+schema_boundary:
+  allowed_existing_schema: [conditions.locations, required_flags, forbidden_flags, choices.cost, outcome.resources, outcome.danger, outcome.add_flags, outcome.add_clues, outcome.add_items, outcome.remove_items, outcome.destination_id, outcome.log, presentation]
+  forbidden_new_schema: [TriageSystem, CompanionDeath, MassCombat, RouteGraph, FactionStanding, DebtLedger, RelationScore, BranchLock, return_system, reward_schema, ability_schema, fragment_choice_reward, epilogue_schema, multi_ending_implementation]
+main_spine_link: route commitment을 미룬 wounded fallback branch를 다시 메인 route pressure에 붙인다. post-opener any-of condition이나 route graph 없이 기존 deferred flags만 사용한다.
+randomization_notes: 1회성 deferred-offer card. hub random deck으로 반복하지 않는다. `survivor_roll_call_complete`와 `route_delay_cost_recorded`는 flavor만 바꾸고 eligibility를 가르지 않는다.
+promotion_notes: docs-only handoff 완료. 다음 runtime slice에서 `wuxia_heavenly_archive_previous_outsiders` 뒤에 추가한다. 기본 office bundle, legacy `escape-office` key, triage/companion death/mass combat, route graph/faction reputation/debt/relation schema, reward/ability/epilogue schema, return system, 천기록 정체 reveal은 열지 않는다.
 ```

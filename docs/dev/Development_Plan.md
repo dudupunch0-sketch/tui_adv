@@ -741,7 +741,7 @@ node --check scripts/storybook-reference-qa.mjs
 
 ## 0.10 2026-05-29 active direction: storypack/world 일반화와 무협 기준팩
 
-사용자 결정에 따라 프로젝트 방향을 “회사 아포칼립스 전용 게임”에서 “storypack/world 기반 선택지 생존 엔진 + 기본 office storypack”으로 재정렬한다. 첫 비-office 기준팩은 `wuxia_jianghu_pack`이며, 최신 canonical story는 Notion에서 갱신된 **이구학지 — 천기록**이다. 2026-05-31에는 Notion-origin `야근몽`을 기본 office runtime을 대체하지 않는 별도 office-family 후보 `yageunmong_pack`으로 승격했다.
+사용자 결정에 따라 프로젝트 방향을 “회사 아포칼립스 전용 게임”에서 “storypack/world 기반 선택지 생존 엔진 + Web/default 이구학지 storypack”으로 재정렬한다. 첫 비-office 기준팩은 `wuxia_jianghu_pack`이며, 최신 canonical story는 Notion에서 갱신된 **이구학지 — 천기록**이다. 2026-05-31에는 Notion-origin `야근몽`을 legacy office runtime을 대체하지 않는 별도 office-family 후보 `yageunmong_pack`으로 승격했다.
 현재 상태: 설계 문서화 완료, 최신 무협 story 반영 완료, 야근몽 candidate docs/DB 반영 완료, machine-readable storypack DB/preview mode 결정 완료, 무협 runtime preview(`wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`)와 Web/terminal wiring 완료. 2026-06-01 `0.0b` 이후 Web/default storypack은 이구학지이며, office content는 legacy/parity 기준팩으로 남긴다.
 
 문제 인식:
@@ -769,6 +769,7 @@ node --check scripts/storybook-reference-qa.mjs
 - `wuxia_black_heaven_escape_price`를 첫 사파 route opener runtime slice로 추가했다. direct/deferred 사파 branch가 공유하는 `sapa_route_started` + `dowol_debt`만 eligibility로 쓰고, `black_heaven_deal_marked`/`black_heaven_escape_marker`는 flavor hook으로 남긴다.
 - `route_opener_followup_after_black_heaven` docs-only handoff 결과, 다음 runtime 후보를 천기·귀환 opener `wuxia_heavenly_archive_previous_outsiders`로 결정했다. direct/deferred 천기 branch가 공유하는 `cheonggi_return_route_started` + `cheonggi_record_targeted`만 eligibility로 쓰고, `heavenly_archive_contact`/`heavenly_archive_triage_map_seen`는 flavor hook으로 남긴다.
 - `wuxia_heavenly_archive_previous_outsiders`를 첫 천기·귀환 route opener runtime slice로 추가했다. direct/deferred 천기 branch가 공유하는 `cheonggi_return_route_started` + `cheonggi_record_targeted`만 eligibility로 쓰고, `heavenly_archive_contact`/`heavenly_archive_triage_map_seen`는 flavor hook으로 남긴다.
+- `route_opener_followup_after_heavenly_archive` docs-only handoff 결과, 다음 runtime 후보를 deferred-offer card `wuxia_wounded_shelter_dawn_offers`로 결정했다. `stabilize_wounded_until_dawn` branch가 남긴 `route_commitment_deferred` + `deferred_route_reopened` + `wounded_shelter_stabilized`를 받아, route graph나 any-of schema 없이 피난처 새벽 제안으로 메인 흐름을 다시 연다.
 - `AGENTS.md`, `README.md`, `docs/00_Index.md`, `docs/design/Storypack_Encounter_DB.md`, `docs/dev/Checklist.md`를 office-only 표현에서 storypack-capable 표현으로 조정했다.
 
 유지 범위:
@@ -782,7 +783,7 @@ node --check scripts/storybook-reference-qa.mjs
 
 후속 후보:
 
-1. `route_opener_followup_after_heavenly_archive`: 다음 docs-only handoff. 정파/사파/천기·귀환 opener 이후 `stabilize_wounded_until_dawn` branch를 받는 deferred-offer card 또는 다음 midgame route continuity 중 어떤 축을 먼저 runtime으로 승격할지 결정한다.
+1. `wuxia_wounded_shelter_dawn_offers`: 다음 runtime slice. `stabilize_wounded_until_dawn` branch를 받는 deferred-offer card를 preview runtime으로 승격한다. 세 route opener 이후 midgame continuity는 이 card가 구현된 뒤 별도 handoff에서 다시 판단한다.
 2. `yageunmong_late_night_desk_awake`: 야근몽을 열 경우 기본 office bundle을 대체하지 않는 별도 storypack preview 첫 후보.
 3. display alias pass: `health/sanity/battery/hunger/thirst/danger` 내부 field는 유지하되 world별 표시 이름을 분리할지 검토한다.
 
@@ -803,8 +804,8 @@ node --check scripts/storybook-reference-qa.mjs
 
 중요 경계:
 
-- `yageunmong_pack`은 기본 office runtime을 대체하지 않는다.
-- 현재 기본 runtime content는 계속 `isolation_pack`에 가까운 `src/tui_adv/data/*.yaml` / 기본 office bundle이다.
+- `yageunmong_pack`은 legacy office runtime을 대체하지 않는다.
+- Web/default storypack은 `wuxia_jianghu_pack` / **이구학지 — 천기록**이다. 기존 `src/tui_adv/data/*.yaml` / 기본 office bundle은 legacy/parity artifact로 유지한다.
 - 야근몽 runtime은 별도 storypack preview 또는 명시적 flag 경로가 필요하다.
 - 각성편린 3택은 천외편린과 같은 성장 문법을 공유할 수 있지만, 첫 runtime slice에서는 새 reward/ability schema를 열지 않는다.
 
@@ -1480,6 +1481,54 @@ Read-only inventory:
 - 후보는 `stabilize_wounded_until_dawn` branch를 받는 deferred-offer card 또는 세 route opener 이후의 첫 midgame continuity card다.
 - 다음 slice도 Notion reference와 repo storypack/encounter DB를 대조한 뒤 하나만 runtime으로 승격한다.
 
+## 0.26 2026-06-02 docs-only route opener follow-up handoff: `wuxia_wounded_shelter_dawn_offers`
+
+현재 상태: docs-only route opener follow-up 선택/설계 sync 완료, runtime YAML/Rust/Web/generated artifact 미수정. 정파/사파/천기·귀환 opener가 모두 구현됐으므로, 남은 route-pressure gap은 `stabilize_wounded_until_dawn` branch가 직접 opener를 타지 않고 `route_commitment_deferred` 상태로 남는 경우다.
+
+대조 결과:
+
+| 영역 | 관련 파일 | 현재 canonical 상태 | follow-up gap | `wuxia_wounded_shelter_dawn_offers` 관련성 | 이번 세션 수정 여부 | 수정한다면 예상 변경 파일 |
+|---|---|---|---|---|---|---|
+| Notion reference | Notion parent, `04`, `05`, `06`, `07`, `99`, 사건 카드 DB `wuxia_qingliu_attack_after_war` | 루트는 최종 선택 하나로 갑자기 정해지지 않고, 사건 카드 단위로 점차 좁혀진다. 중요한 선택을 미뤄도 메인 엔딩을 막지 않고 미해결 부채/후속 카드로 남긴다. 천기록 정체와 귀환법은 밝히지 않는다. | deferred branch가 안전 선택으로 끝나면 route pressure가 끊긴다. | 부상자를 살린 결과로 제안이 찾아오는 카드이므로 플레이어 비난 없이 미룬 선택을 다시 연다. | 대조 기록 반영 | `docs/dev/Notion_Design_Coverage.md` |
+| preview runtime hooks | `wuxia_cheongryu_raid_wounded_fallback` outcome | `stabilize_wounded_until_dawn`은 `cheongryu_raid_wounded_fallback_resolved`, `route_commitment_deferred`, `deferred_route_reopened`, `wounded_shelter_stabilized`, `survivor_roll_call_complete`, `route_delay_cost_recorded`를 남긴다. | 정파/사파/천기 starter flags가 없어 기존 route opener 세 개가 바로 열리지 않는다. | 기존 flags만으로 후속 eligibility를 만들 수 있다. | 문서화만 | 다음 구현 session에서 preview YAML/fixtures/tests |
+| encounter situation cards/DB | `docs/content/encounter_db/wuxia_jianghu_pack.md`, `docs/content/storypack_db/*` | 후보 card는 `wuxia_heavenly_archive_previous_outsiders`까지 11개였다. | deferred-offer 후보 card를 design-time DB에 추가해야 한다. | 12번째 후보 card로 추가한다. | 수정 | encounter DB markdown, storypack DB JSON/README |
+| runtime artifacts | `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`, Rust/Web preview bundle | `wuxia_heavenly_archive_previous_outsiders`까지 구현 완료. | 이번 goal은 handoff이므로 runtime source/artifact를 건드리지 않는다. | 다음 구현 세션의 대상이다. | 수정 안 함 | 없음 |
+
+결정:
+
+- 다음 runtime 후보는 `wuxia_wounded_shelter_dawn_offers`로 정한다.
+- post-opener midgame continuity는 세 route opener의 opened flags(`righteous_route_opened`, `sapa_route_opened`, `cheonggi_return_route_opened`)를 any-of로 묶거나 route graph/faction reputation/ending schema를 일찍 요구할 가능성이 높다. 반면 deferred-offer card는 기존 single-branch flags만으로 열린다.
+- Notion `04. 메인 루트 구조`의 “플레이 중 선택으로 최종 후보가 좁혀진다”는 원칙과 `06. 사이드 퀘스트와 미해결 부채`의 “방치/미룸은 메인을 막지 않고 풍문·부재·세계 변화·잔상으로 남긴다”는 원칙을 동시에 만족한다.
+- 이 카드는 부상자를 돌본 결과로 서하린/남궁서윤/도월/연소하 쪽 제안이 도착하는 장면이다. “네가 늦어서 문제가 생겼다”가 아니라 “사람을 살려 두었기 때문에 다시 선택지가 찾아왔다”로 표현한다.
+
+`wuxia_wounded_shelter_dawn_offers` 설계 경계:
+
+- purpose: `stabilize_wounded_until_dawn` fallback branch를 route opener 전 공통 제안 카드로 회수한다.
+- start conditions: `conditions.locations: [cheongryu_outer_courtyard]`, `required_flags: [cheongryu_raid_wounded_fallback_resolved, route_commitment_deferred, deferred_route_reopened, wounded_shelter_stabilized]`, `forbidden_flags: [wounded_shelter_dawn_offers_resolved]`
+- flavor-only flags: `survivor_roll_call_complete`, `route_delay_cost_recorded`
+- presentation 권장: `visual_id: wuxia_wounded_shelter_dawn_offers`, `speaker: 서하린`, `layout: deferred_route_offer`, effect cue stable terms `[새벽, 부상자, 제안]`.
+- stable choice ids:
+  - `keep_wounded_shelter_until_noon` — safe/fallback care. `wounded_shelter_until_noon`, `deferred_offer_debt_recorded`를 남긴다.
+  - `accept_baekdo_medicine_after_roll_call` — delayed righteous route. `righteous_route_started`, `cheongryu_rebuild_thread`, `baekdo_medicine_debt`를 남겨 다음 턴에 `wuxia_baekdo_medicine_debt`가 열릴 수 있게 한다.
+  - `send_word_to_dowol_for_quiet_exit` — delayed sapa route. `sapa_route_started`, `dowol_debt`, `black_heaven_escape_marker`를 남겨 다음 턴에 `wuxia_black_heaven_escape_price`가 열릴 수 있게 한다.
+  - `show_archive_map_to_yeon_soha` — delayed cheonggi/return route. `cheonggi_return_route_started`, `cheonggi_record_targeted`, `heavenly_archive_triage_map_seen`를 남겨 다음 턴에 `wuxia_heavenly_archive_previous_outsiders`가 열릴 수 있게 한다.
+- common outcome hook: 모든 선택지는 `wounded_shelter_dawn_offers_resolved`, `route_commitment_reopened`, `destination_id: cheongryu_outer_courtyard` bridge를 남긴다.
+- clue hooks: `saving_people_changed_witnesses`, `delayed_choice_has_callers`, `care_is_not_route_escape`, `offers_arrive_because_people_lived`, `dawn_shelter_keeps_names`
+- non-goals: triage system, companion death, mass combat, route graph, faction reputation, relation score, debt ledger, reward/ability schema, epilogue schema, return system, 천기록 identity reveal, 기본 office bundle 변경.
+
+다음 구현 세션 handoff:
+
+- `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`: `wuxia_heavenly_archive_previous_outsiders` 뒤에 `wuxia_wounded_shelter_dawn_offers`를 추가한다.
+- generated preview artifacts: `crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json`, `web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json`만 재생성한다.
+- tests: `tests/test_web_data_export.py` encounter order/conditions/presentation/choice ids/outcome hooks, `crates/escape-core/tests/content_bundle.rs`, `crates/escape-wasm/tests/json_contract.rs`, `crates/escape-terminal/tests/cli_smoke.rs`, `web/src/core/contentBundles.test.ts`를 추가/갱신한다.
+- smoke/check:
+  - `PYTHONPATH=src python3 -m pytest tests/test_web_data_export.py tests/test_docs_contract.py tests/test_storypack_db.py -q`
+  - `python3 scripts/export_web_data.py --storypack-preview wuxia_jianghu_pack --preview-bundle crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json --preview-bundle web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json --check`
+  - `cargo test -p escape-core --test content_bundle`
+  - `cargo test -p escape-wasm --test json_contract json_boundary_reaches_wuxia_wounded_shelter_dawn_offers_through_preview_bundle`
+  - `cargo test -p escape-terminal --test cli_smoke content_tui_smoke_reaches_wuxia_wounded_shelter_dawn_offers`
+  - `git diff --exit-code -- src/tui_adv/data crates/escape-core/fixtures/content/content.bundle.json web/src/data/generated/content.bundle.json`
+
 ## 1. 목표
 
 국내 최고 대기업 IT/반도체 회사의 연구개발동 같은 사무실을 배경으로 한 TUI 기반 랜덤 인카운터 선택지 생존 게임을 만든다.
@@ -2020,7 +2069,7 @@ src/tui_adv/data/secrets.example.yaml
 22. PR B transition controller 완료: action 실행 전 current page/action context를 캡처하고, action 후 `transitionPlan(previousPage, nextPage, action)`으로 `.storybook-shell` enter/exit class/attribute transition을 적용한다. reduced/off motion은 즉시 render하고, `transitionend` 미발생 시 timeout fallback으로 게임이 멈추지 않게 했다.
 23. PR C audio engine skeleton 완료: `web/src/ui/audio/audioEngine.ts`가 lazy Web Audio generated oscillator backend와 no-op fallback을 제공하고, muted 상태 no schedule, user-gesture opt-in unlock, one-shot cue, looping ambience API를 renderer-local로 고정했다. Rust GameCore / `ScenePage` / WASM JSON boundary와 binary audio asset은 변경하지 않았다.
 24. schema-less combat encounter prototype 완료: `supply_closet_cache`에서 `supply_closet_auto_brawl`로 이어지는 물품창고 자동 난투를 기존 encounter/choice/outcome schema만으로 구현했고, Rust `ScenePage`, SuperLightTUI, Web generated data에서 같은 action id와 presentation hint를 검증한다.
-25. storypack/world 일반화 첫 설계 완료: office는 기본 storypack으로 유지하되, `docs/design/Storypack_World_Model.md`와 `wuxia_jianghu_pack`을 추가해 무협 세계관을 첫 비-office 기준팩으로 세웠다.
+25. storypack/world 일반화 첫 설계 완료: 초기에는 office를 기본 storypack으로 유지하면서 `docs/design/Storypack_World_Model.md`와 `wuxia_jianghu_pack`을 추가해 무협 세계관을 첫 비-office 기준팩으로 세웠고, 이후 Web/default storypack은 이구학지로 전환했다.
 26. 무협 기준팩 최신화 완료: `wuxia_jianghu_pack`의 canonical story를 Notion 최신안 **이구학지 — 천기록**으로 교체했고, 이전 generic 무협 placeholder는 superseded로 정리했다. 후보 카드도 `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment` 중심으로 갱신했다.
 27. machine-readable storypack DB 검증 완료: `docs/content/storypack_db/storypacks.json`와 `docs/content/storypack_db/encounter_situations.json`에 office/wuxia 후보 DB를 추가했고, `validate_storypack_db()`로 storypack/world/taxonomy/fallback/outcome hook 참조 무결성을 테스트한다.
 28. storypack runtime preview mode 결정 완료: `docs/dev/Storypack_Runtime_Preview_Mode.md`에서 첫 non-office runtime prototype은 **separate preview mode first**로 진행하기로 결정했다. 기본 office bundle과 `src/tui_adv/data/*.yaml`은 그대로 두고, `wuxia_jianghu_pack`은 explicit preview bundle 또는 preview flag로만 runtime에 들어간다.
@@ -2041,14 +2090,15 @@ src/tui_adv/data/secrets.example.yaml
 43. 무협 `wuxia_black_heaven_escape_price` preview runtime slice 완료: 첫 사파 route opener를 같은 storypack preview source에 추가했다. stable choice id 4개, `black_heaven_escape_price_resolved`/`sapa_route_opened` common hook, 흑천련 탈출로/도월 표식/시장 장부 clues/log/presentation hook, Rust/Web generated preview artifact, Python/Rust/WASM/terminal/Web parity tests를 갱신했다. 기본 office bundle과 legacy `escape-office` save/localStorage key는 변경하지 않았다.
 44. 무협 route opener follow-up after black heaven docs-only handoff 완료: 다음 runtime 후보를 천기·귀환 opener `wuxia_heavenly_archive_previous_outsiders`로 결정했다. start conditions는 `cheonggi_return_route_started` + `cheonggi_record_targeted`이며, direct `heavenly_archive_contact`와 deferred `heavenly_archive_triage_map_seen`는 flavor hook으로만 둔다. runtime YAML/Rust/Web/generated artifact는 아직 변경하지 않았다.
 45. 무협 `wuxia_heavenly_archive_previous_outsiders` preview runtime slice 완료: 첫 천기·귀환 route opener를 같은 storypack preview source에 추가했다. stable choice id 4개, `heavenly_archive_previous_outsiders_resolved`/`cheonggi_return_route_opened` common hook, 천기각 이전 이방인 기록/균열 clues/log/presentation hook, Rust/Web generated preview artifact, Python/Rust/WASM/terminal/Web parity tests를 갱신했다. 기본 office bundle과 legacy `escape-office` save/localStorage key는 변경하지 않았다.
+46. 무협 route opener follow-up after heavenly archive docs-only handoff 완료: 다음 runtime 후보를 deferred-offer card `wuxia_wounded_shelter_dawn_offers`로 결정했다. start conditions는 `cheongryu_raid_wounded_fallback_resolved` + `route_commitment_deferred` + `deferred_route_reopened` + `wounded_shelter_stabilized`이며, `survivor_roll_call_complete`와 `route_delay_cost_recorded`는 flavor hook으로만 둔다. runtime YAML/Rust/Web/generated artifact는 아직 변경하지 않았다.
 
 현재 최우선 남은 작업:
 
-1. 무협 storypack preview/main의 다음 작업은 `route_opener_followup_after_heavenly_archive` docs-only handoff다. 정파/사파/천기·귀환 opener가 모두 구현됐으므로, 다음에는 deferred-offer card 또는 세 route opener 이후 midgame continuity 중 하나를 Notion/reference 대조 후 고른다.
+1. 무협 storypack preview/main의 다음 작업은 `wuxia_wounded_shelter_dawn_offers` preview runtime slice다. 정파/사파/천기·귀환 opener가 모두 구현됐고, docs-only handoff에서 deferred-offer card를 다음 후보로 정했다.
    - 현재 Web/default storypack은 `wuxia_jianghu_pack` / **이구학지 — 천기록**이다.
    - `escape from the office` / office isolation 계열은 legacy/parity content로 유지한다.
    - machine-readable storypack DB, preview mode 결정, `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`, Web/default 이구학지 start/save wiring은 완료했다.
-   - 다음 runtime 후보는 docs-only handoff에서 하나만 정한다. deferred-offer card와 midgame continuity card를 같은 slice에 같이 구현하지 않는다.
+   - 다음 runtime 후보는 `wuxia_wounded_shelter_dawn_offers` 하나다. midgame continuity card를 같은 slice에 같이 구현하지 않는다.
    - `preview launcher/UI wiring`은 이미 구현했으므로 후속 slice에서 다시 구현하지 않는다.
    - route opener 후속도 faction/route graph schema를 열지 않고 flags/clues/log/presentation으로만 남긴다.
    - `yageunmong_pack`은 docs/data 후보로 반영됐지만 기본 office runtime을 대체하지 않는다. 야근몽 runtime은 별도 preview 후보로만 연다.
@@ -2076,7 +2126,7 @@ src/tui_adv/data/secrets.example.yaml
 8. Web player start/save UX first slice 후속: save JSON export/import, settings/reduce-motion UI, 오늘의 seed는 별도 승격 전까지 열지 않는다.
 9. 여러 히든 현실 보물
 10. 전투 시스템 후속 slice는 `docs/design/Basic_Combat_Action_Model.md`의 action taxonomy를 기준으로 `supply_closet_auto_brawl`와 `wuxia_cheongryu_chore_sparring` 이후에도 반복 가치가 확인될 때만 presentation metadata 정리 또는 Rust combat resolver로 승격한다.
-11. 무협 storypack 후속: 정파/사파/천기·귀환 opener(`wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`)까지 구현 완료했다. 다음은 deferred-offer card 또는 세 route opener 이후 midgame continuity 중 하나를 docs-only로 고르는 `route_opener_followup_after_heavenly_archive`다.
+11. 무협 storypack 후속: 정파/사파/천기·귀환 opener(`wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`)까지 구현 완료했고, 후속 handoff에서 deferred-offer card `wuxia_wounded_shelter_dawn_offers`를 다음 runtime 후보로 골랐다.
 12. 천외편린/각성편린 3택 reward/ability schema는 schema-less bridge가 충분히 검증된 뒤 별도 slice로 검토한다.
 13. 야근몽 storypack preview 후속: `yageunmong_late_night_desk_awake` 또는 각성편린 3택 preview를 별도 storypack preview로 열지 결정한다.
 
@@ -2123,10 +2173,10 @@ Web 또는 terminal renderer가 게임 규칙을 다시 구현하면 Rust GameCo
 
 ## 10. 다음 액션
 
-1. 다음 무협 storypack preview/main 작업은 `route_opener_followup_after_heavenly_archive` docs-only handoff다.
+1. 다음 무협 storypack preview/main 작업은 `wuxia_wounded_shelter_dawn_offers` preview runtime slice다.
    - `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`는 이미 이구학지 runtime bundle에 구현되어 있다.
    - Web/default storypack은 이구학지이며, terminal은 `--storypack-preview wuxia_jianghu_pack`로 같은 bundle을 명시 실행할 수 있다. Web/terminal `preview launcher/UI wiring`도 완료됐다.
-   - 다음 docs-only handoff는 `stabilize_wounded_until_dawn` branch를 받는 deferred-offer card 또는 세 route opener 이후 midgame continuity 중 하나를 고르고 start conditions/stable choice ids/schema non-goals를 확정한다.
+   - docs-only handoff에서 `stabilize_wounded_until_dawn` branch를 받는 deferred-offer card를 골랐다. 구현은 `cheongryu_raid_wounded_fallback_resolved`, `route_commitment_deferred`, `deferred_route_reopened`, `wounded_shelter_stabilized` required flags와 stable choice ids `keep_wounded_shelter_until_noon`, `accept_baekdo_medicine_after_roll_call`, `send_word_to_dowol_for_quiet_exit`, `show_archive_map_to_yeon_soha`를 따른다.
    - 다음 runtime slice도 preview bundle metadata `runtime_mode: storypack_preview`, `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`, `default_location: wuxia_commute_rift`를 유지해야 한다.
    - 기본 `content.bundle.json`, Web 기본 generated bundle, `src/tui_adv/data/*.yaml`, `escape-office` save/localStorage key는 바꾸지 않는다.
    - Rust GameCore / `ScenePage` / WASM JSON boundary가 가진 gameplay truth를 renderer가 재계산하지 않는다.

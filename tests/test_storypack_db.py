@@ -48,6 +48,7 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         "wuxia_heavenly_archive_previous_outsiders",
         "wuxia_heuksa_bang_first_fight",
         "wuxia_seo_harin_rescue",
+        "wuxia_wounded_shelter_dawn_offers",
     ]
 
     yageun_opening = db.encounter_cards["yageunmong_late_night_desk_awake"]
@@ -83,6 +84,16 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
     assert "safe_reading" in [choice["role"] for choice in heavenly_archive.choice_shapes]
     assert "cheonggi_return_route_opened" in heavenly_archive.outcome_hooks["possible_flags"]
     assert "return_clue_is_not_return_method" in heavenly_archive.outcome_hooks["possible_clues"]
+
+    wounded_shelter = db.encounter_cards["wuxia_wounded_shelter_dawn_offers"]
+    assert wounded_shelter.world_id == "wuxia_jianghu"
+    assert wounded_shelter.storypack_id == "wuxia_jianghu_pack"
+    assert wounded_shelter.priority_class == "route_key"
+    assert "route_commitment" in wounded_shelter.phases
+    assert "sect_courtyard" in wounded_shelter.surfaces
+    assert "safe_care" in [choice["role"] for choice in wounded_shelter.choice_shapes]
+    assert "route_commitment_reopened" in wounded_shelter.outcome_hooks["possible_flags"]
+    assert "offers_arrive_because_people_lived" in wounded_shelter.outcome_hooks["possible_clues"]
 
 
 def test_storypack_db_public_files_validate_cleanly():

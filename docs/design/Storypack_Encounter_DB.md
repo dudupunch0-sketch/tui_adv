@@ -2,7 +2,7 @@
 
 Status: 설계 문서
 
-이 문서는 `tui_adv`의 스토리팩 후보와 랜덤 인카운터 상황을 DB처럼 축적하고, 나중에 검증된 일부만 런타임 콘텐츠로 승격하기 위한 설계 기준이다. `escape from the office`는 현재 기본 storypack이지만, 이 DB는 office가 아닌 세계관도 같은 엔진 계약으로 다루기 위해 확장한다.
+이 문서는 `tui_adv`의 스토리팩 후보와 랜덤 인카운터 상황을 DB처럼 축적하고, 나중에 검증된 일부만 런타임 콘텐츠로 승격하기 위한 설계 기준이다. 현재 Web/default storypack은 `wuxia_jianghu_pack` / **이구학지 — 천기록**이며, `escape from the office` office isolation content는 legacy/parity storypack으로 유지한다. 이 DB는 office가 아닌 세계관도 같은 엔진 계약으로 다루기 위해 확장한다.
 
 핵심 방향은 다음이다.
 
@@ -16,7 +16,7 @@ Status: 설계 문서
 2026-05-29 / 2026-05-31 갱신:
 
 - Storypack은 이제 office 내부 변주만이 아니라 `world_id`를 가진 세계관 단위 후보를 포함한다.
-- 기본 world/storypack은 `office_apocalypse` / `isolation_pack` 계열이다.
+- 기본 world/storypack은 `wuxia_jianghu` / `wuxia_jianghu_pack`이다. `office_apocalypse` / `isolation_pack` 계열은 legacy/parity runtime 후보로 유지한다.
 - 추가 office-family 후보는 `office_dream` / `yageunmong_pack`이다. 이 후보는 회사 자각몽/악몽/각성편린/퇴근 게이트 premise를 보존하되, 기본 office runtime을 대체하지 않는다.
 - 첫 비-office 기준팩은 `wuxia_jianghu` / `wuxia_jianghu_pack`이며, 최신 canonical story는 **이구학지 — 천기록**이다. 이전 generic 무협 placeholder는 superseded로 본다.
 - 2026-06-01 Notion live check 이후 `이구학지` parent page는 synopsis/초기 기획이고, 하위 관리 문서와 `09. 이구학지 사건 카드 DB` / `10. 이구학지 후일담 카드 DB`가 최신 세부 운영 기준이다. Repo DB와 runtime 승격은 Notion DB row를 직접 가져오지 않고, `docs/dev/Notion_Design_Coverage.md`의 mapping과 canonical content docs를 먼저 통과한다.
@@ -61,7 +61,7 @@ Status: 설계 문서
 | `resolution_pressure` | 결말 직전 압박 | 선택의 대가, NPC 운명, 엔딩 조건 |
 
 모든 storypack record와 encounter situation card는 최소 하나의 phase에 연결되어야 한다.
-단, phase 이름은 world-specific 확장을 허용한다. 기본 office storypack은 `opening_absence` 같은 기존 phase를 쓰고, 야근몽은 `late_night_sleep`, `lucid_dream_awareness`, `reality_anchor_collection`, `clockout_gate_refusal` 같은 office-dream phase를 쓸 수 있다. 이구학지 무협팩은 `commute_rift`, `market_arrival`, `first_brawl`, `cheongryu_apprenticeship`, `cheonggi_record_awakening`처럼 storypack-specific phase를 쓸 수 있다.
+단, phase 이름은 world-specific 확장을 허용한다. legacy office storypack은 `opening_absence` 같은 기존 phase를 쓰고, 야근몽은 `late_night_sleep`, `lucid_dream_awareness`, `reality_anchor_collection`, `clockout_gate_refusal` 같은 office-dream phase를 쓸 수 있다. 이구학지 무협팩은 `commute_rift`, `market_arrival`, `first_brawl`, `cheongryu_apprenticeship`, `cheonggi_record_awakening`처럼 storypack-specific phase를 쓸 수 있다.
 
 ### 3.2 Deck 계층
 
@@ -266,7 +266,8 @@ promotion_notes: runtime 승격 시 messenger UI presentation metadata를 붙인
 - `wuxia_heavenly_archive_previous_outsiders` preview도 완료했다.
 - 이 preview runtime content는 `storypack_preview` bundle에만 들어가며, 기본 office runtime과 `src/tui_adv/data/*.yaml`에는 직접 섞지 않는다.
 - `preview launcher/UI wiring`은 explicit opt-in entrypoint로 구현했다. 후속 content slice에서 다시 열지 않는다.
-- 첫 정파 route opener `wuxia_baekdo_medicine_debt`는 `righteous_route_started` + `cheongryu_rebuild_thread`만 eligibility로 요구하고, direct `baekdo_alliance_debt`와 deferred `baekdo_medicine_debt`는 flavor hook으로만 사용해 구현 완료했다. 첫 사파 route opener `wuxia_black_heaven_escape_price`도 `sapa_route_started` + `dowol_debt`만 eligibility로 요구하고, direct `black_heaven_deal_marked`와 deferred `black_heaven_escape_marker`는 flavor hook으로만 사용해 구현 완료했다. 첫 천기·귀환 route opener `wuxia_heavenly_archive_previous_outsiders`도 `cheonggi_return_route_started` + `cheonggi_record_targeted`만 eligibility로 요구하고, direct `heavenly_archive_contact`와 deferred `heavenly_archive_triage_map_seen`는 flavor hook으로만 사용해 구현 완료했다. 다음 handoff는 `route_opener_followup_after_heavenly_archive`다.
+- 첫 정파 route opener `wuxia_baekdo_medicine_debt`는 `righteous_route_started` + `cheongryu_rebuild_thread`만 eligibility로 요구하고, direct `baekdo_alliance_debt`와 deferred `baekdo_medicine_debt`는 flavor hook으로만 사용해 구현 완료했다. 첫 사파 route opener `wuxia_black_heaven_escape_price`도 `sapa_route_started` + `dowol_debt`만 eligibility로 요구하고, direct `black_heaven_deal_marked`와 deferred `black_heaven_escape_marker`는 flavor hook으로만 사용해 구현 완료했다. 첫 천기·귀환 route opener `wuxia_heavenly_archive_previous_outsiders`도 `cheonggi_return_route_started` + `cheonggi_record_targeted`만 eligibility로 요구하고, direct `heavenly_archive_contact`와 deferred `heavenly_archive_triage_map_seen`는 flavor hook으로만 사용해 구현 완료했다. 다음 handoff는 `wuxia_wounded_shelter_dawn_offers`다.
+- `wuxia_wounded_shelter_dawn_offers`는 `stabilize_wounded_until_dawn` branch가 남긴 `cheongryu_raid_wounded_fallback_resolved` + `route_commitment_deferred` + `deferred_route_reopened` + `wounded_shelter_stabilized`만 eligibility로 요구하고, `survivor_roll_call_complete`와 `route_delay_cost_recorded`는 flavor hook으로만 사용한다. post-opener any-of condition, route graph, faction reputation, debt/relation schema는 열지 않는다.
 - 필요한 신규 설계는 encounter/choice/outcome 수준으로 제한한다. 새 combat/reward/ability schema, 천외편린 3택 reward schema, faction route graph schema는 별도 slice 전까지 열지 않는다.
 
 2026-06-01 Notion sync 결정:

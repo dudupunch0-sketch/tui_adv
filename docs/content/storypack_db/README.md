@@ -40,6 +40,6 @@ PYTHONPATH=src python -m pytest tests/test_storypack_db.py -q
 
 - `isolation_pack`: office apocalypse 후보 카드 6개.
 - `yageunmong_pack`: 야근몽 office-dream 후보 카드 6개.
-- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 11개.
+- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 12개.
 
-`wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`는 preview runtime에 구현되어 서하린 구조/감시/채무, 청류문 수습생/잡역 hook, 장작 마당 첫 겨루기 training hook, route-pressure hook, deferred wounded fallback hook, 정파/백도맹 약상자 채무 opener, 사파/흑천련 탈출로 값 opener, 천기각 이전 이방인 기록/균열 단서와 `cheongryu_outer_courtyard`를 남긴다. 다음 handoff는 `route_opener_followup_after_heavenly_archive`이며, 기본 office bundle과 legacy `escape-office` save/localStorage key는 유지한다.
+`wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`는 preview runtime에 구현되어 서하린 구조/감시/채무, 청류문 수습생/잡역 hook, 장작 마당 첫 겨루기 training hook, route-pressure hook, deferred wounded fallback hook, 정파/백도맹 약상자 채무 opener, 사파/흑천련 탈출로 값 opener, 천기각 이전 이방인 기록/균열 단서와 `cheongryu_outer_courtyard`를 남긴다. `wuxia_wounded_shelter_dawn_offers`는 `stabilize_wounded_until_dawn` branch를 받는 다음 runtime handoff이며, 기본 office bundle과 legacy `escape-office` save/localStorage key는 유지한다.

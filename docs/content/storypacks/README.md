@@ -2,7 +2,7 @@
 
 Status: 후보 콘텐츠 DB
 
-이 폴더는 `tui_adv`의 storypack 후보를 정리한다. `escape from the office`는 현재 기본 storypack이지만, 폴더의 장기 목적은 office가 아닌 세계관까지 같은 엔진/renderer 계약으로 다루는 것이다.
+이 폴더는 `tui_adv`의 storypack 후보를 정리한다. 현재 Web/default storypack은 `wuxia_jianghu_pack` / **이구학지 — 천기록**이고, `escape from the office`는 legacy/parity storypack으로 유지한다. 폴더의 장기 목적은 office가 아닌 세계관까지 같은 엔진/renderer 계약으로 다루는 것이다.
 
 스토리팩은 런타임에 바로 들어가는 확정 데이터가 아니라, 여러 인카운터 상황 카드와 NPC 후보를 묶는 콘텐츠 설계 단위다. 확정된 일부만 나중에 `src/tui_adv/data/*.yaml` 또는 Rust content bundle로 승격한다.
 
@@ -40,7 +40,7 @@ Machine-readable mirror는 `docs/content/storypack_db/storypacks.json`에 둔다
 
 ## 우선순위
 
-첫 설계 slice는 `isolation_pack`으로 시작했다. 2026-05-29부터는 office-only 편향을 줄이기 위해 `wuxia_jianghu_pack`을 첫 비-office 기준 storypack으로 함께 관리한다. 현재 무협팩의 canonical story는 Notion에서 갱신된 **이구학지 — 천기록**이며, 이전의 generic 무협 placeholder는 superseded다. 2026-05-31에는 Notion-origin `야근몽`을 별도 office-family 후보인 `yageunmong_pack`으로 문서화하고, live Notion Markdown 대조 후 관련 idea entry를 done 처리했다. 이는 기본 office runtime을 대체한다는 뜻이 아니다.
+첫 설계 slice는 `isolation_pack`으로 시작했다. 2026-05-29부터는 office-only 편향을 줄이기 위해 `wuxia_jianghu_pack`을 첫 비-office 기준 storypack으로 함께 관리했고, 2026-06-01 이후 Web/default storypack은 **이구학지 — 천기록**이다. 현재 무협팩의 canonical story는 Notion에서 갱신된 이구학지이며, 이전의 generic 무협 placeholder는 superseded다. 2026-05-31에는 Notion-origin `야근몽`을 별도 office-family 후보인 `yageunmong_pack`으로 문서화하고, live Notion Markdown 대조 후 관련 idea entry를 done 처리했다. 이는 legacy office bundle을 삭제한다는 뜻이 아니다.
 
 나머지 팩은 다음 조건을 만족할 때 별도 문서로 승격한다.
 

@@ -86,16 +86,16 @@ describe('player start/save UX', () => {
       confirmReset: false,
       storypackPreviews: [
         {
-          id: 'wuxia_jianghu_pack',
-          label: '이구학지 — 천기록',
-          description: '출근복 그대로 강호에 떨어지는 무협 storypack preview',
+          id: 'yageunmong_pack',
+          label: '야근몽',
+          description: '회사 악몽을 별도 storypack preview로 시험합니다',
         },
       ],
     });
 
     expect(html).toContain('data-storypack-preview-list="true"');
-    expect(html).toContain('data-player-action="start-storypack-preview:wuxia_jianghu_pack"');
-    expect(html).toContain('이구학지 — 천기록');
+    expect(html).toContain('data-player-action="start-storypack-preview:yageunmong_pack"');
+    expect(html).toContain('야근몽');
     expect(html).toContain('storypack preview');
     expect(html).toContain('data-save-key="igu-hakji.rust.save.v1"');
     expect(html).not.toContain('escape-office.storypack-preview');

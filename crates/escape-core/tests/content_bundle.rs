@@ -1,5 +1,6 @@
 use escape_core::{
-    index_content_bundle, load_content_bundle, ContentBundleError, ContentIndexError,
+    index_content_bundle, load_content_bundle, new_game_from_content_at, scene_page_from_content,
+    ContentBundleError, ContentIndexError,
 };
 use serde_json::json;
 
@@ -107,6 +108,20 @@ fn content_bundle_loads_optional_storypack_preview_runtime_metadata() {
     assert_eq!(runtime.world_id, "wuxia_jianghu");
     assert_eq!(runtime.storypack_id, "wuxia_jianghu_pack");
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
+}
+
+#[test]
+fn wuxia_scene_page_uses_storybook_chapter_label() {
+    let bundle =
+        load_content_bundle(WUXIA_PREVIEW_BUNDLE).expect("wuxia preview bundle should load");
+    let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
+    let state = new_game_from_content_at(123, &index, "wuxia_commute_rift")
+        .expect("wuxia content-backed game should start");
+
+    let page = scene_page_from_content(&state, &index).expect("scene page should render");
+
+    assert_eq!(page.location.id, "wuxia_commute_rift");
+    assert_eq!(page.chapter_label, "천기록 1쪽");
 }
 
 #[test]

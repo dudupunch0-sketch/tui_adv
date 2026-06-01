@@ -211,7 +211,7 @@ fn scene_page_from_turn_view(
             name: location.name.clone(),
             description: location.description.clone(),
         },
-        chapter_label: format!("격리 {}턴", state.turn),
+        chapter_label: chapter_label_for_scene(state, location, &source_id),
         status_summary: status_summary(state),
         body_blocks: body_blocks(content, ending, &mode, &view.body, &source_id),
         dialogue_entries,
@@ -311,6 +311,14 @@ fn status_summary(state: &GameState) -> StatusSummary {
         danger: state.danger,
         resources,
         warnings,
+    }
+}
+
+fn chapter_label_for_scene(state: &GameState, location: &LocationDef, source_id: &str) -> String {
+    if location.tags.iter().any(|tag| tag == "wuxia") || source_id.starts_with("wuxia_") {
+        format!("천기록 {}쪽", state.turn + 1)
+    } else {
+        format!("격리 {}턴", state.turn)
     }
 }
 

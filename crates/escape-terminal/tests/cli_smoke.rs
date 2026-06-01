@@ -207,6 +207,7 @@ fn content_tui_smoke_renders_wuxia_storypack_preview_arrival() {
     );
 
     let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("이구학지 - 천기록 // SuperLightTUI STORYBOOK"));
     assert!(stdout.contains("위치: 출근길 균열 (wuxia_commute_rift)"));
     assert!(stdout.contains("[현재 인카운터]"));
     assert!(stdout.contains("출근길 균열"));

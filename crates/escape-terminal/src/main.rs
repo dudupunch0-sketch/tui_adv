@@ -558,7 +558,7 @@ struct RawGlyphFxFrame {
 
 fn render_scene_page_app(ui: &mut slt::Context, page: &ScenePage, logs: &[String], tick: u64) {
     let _ = ui.col(|ui| {
-        ui.text("ESCAPE OFFICE // SuperLightTUI HORROR EDITION");
+        ui.text(scene_page_terminal_title(page));
         ui.text("app loop: full-screen SuperLightTUI frame");
         ui.text(format!("tick: {tick}"));
         ui.text(format!(
@@ -691,7 +691,7 @@ fn render_scene_page_snapshot(page: &ScenePage, logs: &[String]) -> String {
 
 fn render_scene_page(ui: &mut slt::Context, page: &ScenePage, logs: &[String]) {
     let _ = ui.col(|ui| {
-        ui.text("ESCAPE OFFICE // SuperLightTUI HORROR EDITION");
+        ui.text(scene_page_terminal_title(page));
         ui.text(format!(
             "{} · {}",
             page.chapter_label,
@@ -800,6 +800,24 @@ fn glyphfx_card_lines(effect_cues: &[SceneEffectCue]) -> Vec<String> {
         }
     }
     lines
+}
+
+fn scene_page_terminal_title(page: &ScenePage) -> &'static str {
+    if is_wuxia_scene_page(page) {
+        "이구학지 - 천기록 // SuperLightTUI STORYBOOK"
+    } else {
+        "ESCAPE OFFICE // SuperLightTUI HORROR EDITION"
+    }
+}
+
+fn is_wuxia_scene_page(page: &ScenePage) -> bool {
+    page.location.id.starts_with("wuxia_")
+        || page.visual.id.contains("wuxia")
+        || page
+            .visual
+            .source_id
+            .as_deref()
+            .is_some_and(|source_id| source_id.contains("wuxia"))
 }
 
 fn glyphfx_intensity_percent(intensity: f32) -> u32 {

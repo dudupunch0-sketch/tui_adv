@@ -1,7 +1,7 @@
 # Notion source ledger for tui_adv design sync.
 # Raw Notion snapshots are not committed; the 2026-06-01 audit used /tmp/tui_adv_notion_wuxia_sync.
 
-last_checked_at: "2026-06-02T03:43:33+09:00"
+last_checked_at: "2026-06-02T06:02:38+09:00"
 source_policy:
   repo_canonical_docs_gate_implementation: true
   raw_notion_to_runtime_allowed: false
@@ -166,6 +166,10 @@ sources:
       - notion_event_id: "wuxia_mumyeong_request_for_aid"
         notion_event_name: "무명의 도움 요청"
         repo_encounter_id: "wuxia_mumyeong_request_for_aid"
+        runtime_status: "implemented_in_storypack_preview"
+      - notion_event_id: "wuxia_mumyeong_awakening"
+        notion_event_name: "무명의 각성"
+        repo_encounter_id: "wuxia_mumyeong_awakening"
         runtime_status: "implemented_in_storypack_preview"
     status: "live_checked_docs_synced"
 

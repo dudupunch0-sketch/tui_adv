@@ -1712,6 +1712,87 @@ fn json_boundary_reaches_wuxia_mumyeong_request_for_aid_through_preview_bundle()
 }
 
 #[test]
+fn json_boundary_reaches_wuxia_mumyeong_awakening_through_preview_bundle() {
+    let post_request_state_json = wuxia_state_after_actions(&[
+        "choice:follow_roadside_dust",
+        "move:jianghu_market_street",
+        "choice:run_toward_open_street",
+        "choice:choose_failure_log",
+        "choice:tell_plain_truth",
+        "choice:accept_three_month_trial",
+        "choice:step_back_with_firewood",
+        "choice:defend_cheongryu_with_white_path",
+        "choice:accept_medicine_with_written_debt",
+        "choice:watch_the_stolen_qingliu_flow",
+        "choice:endure_until_copy_flow_breaks",
+        "choice:listen_for_breath_mismatch",
+        "choice:reconstruct_mumyeongs_sightline",
+        "choice:show_the_hyeonakmun_trace_without_accusing",
+        "choice:watch_mumyeong_answer_the_boss",
+        "choice:search_the_rejected_aid_letters",
+    ]);
+
+    let awakening_page_json = scene_page_json(&post_request_state_json, WUXIA_PREVIEW_BUNDLE)
+        .expect("Mumyeong awakening scene page should serialize");
+    let awakening_page: Value =
+        serde_json::from_str(&awakening_page_json).expect("awakening page JSON should parse");
+    assert_eq!(awakening_page["mode"], "encounter");
+    assert_eq!(awakening_page["title"], "무명의 각성");
+    assert_eq!(
+        awakening_page["location"]["id"],
+        "cheongryu_outer_courtyard"
+    );
+    assert_eq!(awakening_page["visual"]["id"], "wuxia_mumyeong_awakening");
+    assert_eq!(awakening_page["visual"]["kind"], "anger_copy_bloom");
+    assert_eq!(awakening_page["effect_cues"][0]["stable_terms"][2], "분노");
+    let awakening_action_ids: Vec<&str> = awakening_page["actions"]
+        .as_array()
+        .expect("actions should be an array")
+        .iter()
+        .map(|action| action["id"].as_str().expect("action id should be a string"))
+        .collect();
+    assert_eq!(
+        awakening_action_ids,
+        vec![
+            "choice:compare_anger_to_copied_flow",
+            "choice:trace_awakening_from_failed_aid",
+            "choice:ask_what_the_copy_cost_him",
+            "choice:stop_before_calling_it_salvation",
+        ]
+    );
+
+    let awakening_result_json = apply_action_json(
+        &post_request_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:compare_anger_to_copied_flow",
+    )
+    .expect("compare anger to copied flow action should serialize");
+    let awakening_result: Value =
+        serde_json::from_str(&awakening_result_json).expect("awakening action should parse");
+    assert_eq!(awakening_result["encounter_id"], "wuxia_mumyeong_awakening");
+    assert!(awakening_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array")
+        .iter()
+        .any(|flag| flag == "mumyeong_awakening_resolved"));
+    assert!(awakening_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array")
+        .iter()
+        .any(|flag| flag == "copy_corruption_thread_opened"));
+    assert!(awakening_result["state"]["clues"]
+        .as_array()
+        .expect("clues should be an array")
+        .iter()
+        .any(|clue| clue == "mumyeong_copy_bloomed_from_anger"));
+    assert!(awakening_result["state"]["clues"]
+        .as_array()
+        .expect("clues should be an array")
+        .iter()
+        .any(|clue| clue == "copy_is_wound_not_growth"));
+}
+
+#[test]
 fn json_boundary_reaches_wuxia_black_heaven_escape_price_through_preview_bundle() {
     let state_json =
         new_game_json(123, WUXIA_PREVIEW_BUNDLE).expect("preview new game should serialize");

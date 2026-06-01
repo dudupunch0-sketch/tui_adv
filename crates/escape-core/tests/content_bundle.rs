@@ -211,12 +211,12 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&4));
     assert_eq!(bundle.manifest.counts.get("items"), Some(&4));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&19));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&20));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 4);
-    assert_eq!(index.encounters_len(), 19);
+    assert_eq!(index.encounters_len(), 20);
 
     let market = index
         .location("jianghu_market_street")
@@ -1136,6 +1136,70 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     );
     assert_eq!(
         rejected_letters.outcome.destination_id.as_deref(),
+        Some("cheongryu_outer_courtyard")
+    );
+
+    let awakening = index
+        .encounter("wuxia_mumyeong_awakening")
+        .expect("Mumyeong awakening encounter");
+    assert_eq!(awakening.title, "무명의 각성");
+    assert_eq!(
+        awakening.conditions.locations,
+        vec!["cheongryu_outer_courtyard"]
+    );
+    assert_eq!(
+        awakening.conditions.required_flags,
+        vec![
+            "mumyeong_request_for_aid_resolved",
+            "mumyeong_failed_aid_thread_opened",
+            "orthodox_hypocrisy_thread_opened",
+            "mumyeong_reads_orthodox_style_resolved",
+            "orthodox_style_trace_recorded",
+            "mumyeong_copy_style_reveal_resolved",
+            "copy_style_hint_recorded",
+            "midgame_continuity_started"
+        ]
+    );
+    assert_eq!(
+        awakening.conditions.forbidden_flags,
+        vec!["mumyeong_awakening_resolved"]
+    );
+    let awakening_presentation = awakening
+        .presentation
+        .as_ref()
+        .expect("Mumyeong awakening presentation");
+    assert_eq!(
+        awakening_presentation.layout.as_deref(),
+        Some("anger_copy_bloom")
+    );
+    assert_eq!(awakening_presentation.speaker.as_deref(), Some("천기록"));
+    assert_eq!(
+        awakening_presentation.effect_cues[0].stable_terms,
+        vec!["무명", "카피", "분노"]
+    );
+    assert_eq!(awakening.choices.len(), 4);
+    let compare = awakening
+        .choices
+        .iter()
+        .find(|choice| choice.id == "compare_anger_to_copied_flow")
+        .expect("compare anger to copied flow choice");
+    assert_eq!(
+        compare.outcome.add_flags,
+        vec![
+            "mumyeong_awakening_resolved",
+            "mumyeong_awakening_thread_opened",
+            "copy_corruption_thread_opened"
+        ]
+    );
+    assert_eq!(
+        compare.outcome.add_clues,
+        vec![
+            "mumyeong_copy_bloomed_from_anger",
+            "copy_is_wound_not_growth"
+        ]
+    );
+    assert_eq!(
+        compare.outcome.destination_id.as_deref(),
         Some("cheongryu_outer_courtyard")
     );
 }

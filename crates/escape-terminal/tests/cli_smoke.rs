@@ -805,6 +805,64 @@ fn content_tui_smoke_reaches_wuxia_wounded_shelter_dawn_offers() {
 }
 
 #[test]
+fn content_tui_smoke_reaches_wuxia_mumyeong_first_sighting() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--storypack-preview",
+            "wuxia_jianghu_pack",
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:follow_roadside_dust",
+            "--action",
+            "move:jianghu_market_street",
+            "--action",
+            "choice:run_toward_open_street",
+            "--action",
+            "choice:choose_failure_log",
+            "--action",
+            "choice:tell_plain_truth",
+            "--action",
+            "choice:accept_three_month_trial",
+            "--action",
+            "choice:step_back_with_firewood",
+            "--action",
+            "choice:defend_cheongryu_with_white_path",
+            "--action",
+            "choice:accept_medicine_with_written_debt",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("위치: 청류문 외곽 마당 (cheongryu_outer_courtyard)"));
+    assert!(stdout.contains("무명 첫 목격"));
+    assert!(stdout.contains("visual id: wuxia_mumyeong_first_sighting"));
+    assert!(stdout.contains("layout: midgame_rival_sighting"));
+    assert!(stdout.contains("stable terms: 무명 / 청류문 / 흑사방"));
+    assert!(stdout.contains(
+        "choice:watch_the_stolen_qingliu_flow / 훔쳐 쓴 청류문식 흐름을 끝까지 관찰한다"
+    ));
+    assert!(stdout.contains("choice:check_seo_harin_silence / 서하린이 이름을 삼키는 순간을 본다"));
+    assert!(
+        stdout.contains("choice:follow_black_serpent_runner / 흑사방 심부름꾼의 뒤를 짧게 쫓는다")
+    );
+    assert!(
+        stdout.contains("choice:pretend_not_to_see_the_form / 못 본 척하고 외원 순찰을 계속한다")
+    );
+    assert!(!stdout.contains("dev_desk"));
+}
+
+#[test]
 fn content_tui_smoke_renders_final_movement_panel_after_scripted_actions() {
     let bundle_path = content_bundle_path();
     let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))

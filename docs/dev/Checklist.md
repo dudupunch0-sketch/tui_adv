@@ -430,6 +430,19 @@
 - [x] storypack DB JSON mirror와 docs contract를 다음 runtime handoff 기준으로 갱신
 - [x] runtime YAML/Rust/Web/generated bundle, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
 
+### 0.2ar 2026-06-02 무협 `wuxia_mumyeong_first_sighting` preview runtime slice
+
+- [x] 세 route opener `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`의 모든 choice outcome에 공통 `route_opener_resolved` flag 추가
+- [x] `wuxia_mumyeong_first_sighting` encounter를 storypack preview source에 추가
+- [x] start conditions를 `conditions.locations: [cheongryu_outer_courtyard]`, `required_flags: [route_opener_resolved, cheongryu_raid_survived, cheongryu_trial_started, first_fragment_seen]`, `forbidden_flags: [mumyeong_first_sighting_resolved]`로 구현
+- [x] stable choice id `watch_the_stolen_qingliu_flow`, `check_seo_harin_silence`, `follow_black_serpent_runner`, `pretend_not_to_see_the_form` 구현
+- [x] common hook `mumyeong_first_sighting_resolved`, `midgame_continuity_started`, `destination_id: cheongryu_outer_courtyard` 구현
+- [x] 무명 존재/카피 무공/서하린 침묵 clue와 `midgame_rival_sighting` presentation hook 구현
+- [x] Rust/Web storypack preview bundle만 재생성하고 기본 office bundle/generated content는 미변경 유지
+- [x] Python exporter/docs/storypack DB, Rust content bundle, WASM JSON boundary, terminal smoke, Web content bundle registry 테스트 갱신
+- [x] any-of condition, route graph/faction reputation/debt/relation/combat/reward/ability/epilogue/return schema, boss first appearance, 무명 첫 대치, 천기록 정체 reveal 미변경 유지
+- [x] 다음 작업을 `wuxia_mumyeong_first_confrontation_after_sighting` docs-only handoff로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

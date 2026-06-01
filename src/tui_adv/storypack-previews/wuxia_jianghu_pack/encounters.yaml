@@ -491,7 +491,7 @@ encounters:
           resources:
             health: 5
             sanity: -2
-          add_flags: [baekdo_medicine_debt_resolved, righteous_route_opened, white_path_debt_recorded, cheongryu_rebuild_supplies_secured, namgung_seoyun_notice]
+          add_flags: [baekdo_medicine_debt_resolved, righteous_route_opened, route_opener_resolved, white_path_debt_recorded, cheongryu_rebuild_supplies_secured, namgung_seoyun_notice]
           add_clues: [medicine_has_banner, white_path_help_has_price, qingliu_survival_needs_outside_help]
           destination_id: cheongryu_outer_courtyard
           log: 약상자는 사람을 살리고, 문서는 청류문의 이름 옆에 백도맹의 채무를 남긴다. 도움은 따뜻하지만 기록은 차갑다.
@@ -501,7 +501,7 @@ encounters:
           resources:
             sanity: -2
           danger: 1
-          add_flags: [baekdo_medicine_debt_resolved, righteous_route_opened, baekdo_terms_questioned, white_path_debt_recorded, namgung_seoyun_notice]
+          add_flags: [baekdo_medicine_debt_resolved, righteous_route_opened, route_opener_resolved, baekdo_terms_questioned, white_path_debt_recorded, namgung_seoyun_notice]
           add_clues: [white_path_help_has_price, order_can_save_and_bind]
           destination_id: cheongryu_outer_courtyard
           log: 조건을 묻자 남궁서윤의 눈빛이 잠깐 굳는다. 정의는 사람을 살릴 수 있지만, 질서는 누가 누구에게 빚졌는지도 함께 적는다.
@@ -512,7 +512,7 @@ encounters:
             health: 4
             hunger: -1
             sanity: -1
-          add_flags: [baekdo_medicine_debt_resolved, righteous_route_opened, cheongryu_people_first, seo_harin_respect_thread, cheongryu_rebuild_supplies_secured]
+          add_flags: [baekdo_medicine_debt_resolved, righteous_route_opened, route_opener_resolved, cheongryu_people_first, seo_harin_respect_thread, cheongryu_rebuild_supplies_secured]
           add_clues: [qingliu_survival_needs_outside_help, order_can_save_and_bind]
           destination_id: cheongryu_outer_courtyard
           log: 명부보다 먼저 부상자의 손에 약이 닿는다. 서하린은 아무 말 없이 고개를 끄덕이고, 백도맹 사자는 그 순서를 오래 바라본다.
@@ -522,7 +522,7 @@ encounters:
           resources:
             sanity: -3
           danger: 1
-          add_flags: [baekdo_medicine_debt_resolved, righteous_route_opened, cheonggi_record_notes_baekdo_debt, white_path_debt_recorded]
+          add_flags: [baekdo_medicine_debt_resolved, righteous_route_opened, route_opener_resolved, cheonggi_record_notes_baekdo_debt, white_path_debt_recorded]
           add_clues: [record_counts_debt_not_justice, white_path_help_has_price]
           destination_id: cheongryu_outer_courtyard
           log: 천기록의 여백은 답하지 않는다. 다만 깃발의 의와 문서의 채무가 같은 먹으로 기록될 수 있다는 사실만 남긴다.
@@ -554,7 +554,7 @@ encounters:
             sanity: -2
             hunger: -1
           danger: 1
-          add_flags: [black_heaven_escape_price_resolved, sapa_route_opened, black_heaven_safehouse_marked, market_route_debt_recorded]
+          add_flags: [black_heaven_escape_price_resolved, sapa_route_opened, route_opener_resolved, black_heaven_safehouse_marked, market_route_debt_recorded]
           add_clues: [black_heaven_help_marks_debt, survival_bargain_is_not_loyalty]
           destination_id: cheongryu_outer_courtyard
           log: 흑천련의 길은 빠르고 실제적이다. 표식 하나가 임시 은신처를 열지만, 그 표식은 나중에 값을 받을 증거로도 남는다.
@@ -564,7 +564,7 @@ encounters:
           resources:
             sanity: -2
           danger: 1
-          add_flags: [black_heaven_escape_price_resolved, sapa_route_opened, dowol_terms_questioned]
+          add_flags: [black_heaven_escape_price_resolved, sapa_route_opened, route_opener_resolved, dowol_terms_questioned]
           add_clues: [black_heaven_bargain_has_teeth, survival_bargain_is_not_loyalty]
           destination_id: cheongryu_outer_courtyard
           log: 조건을 묻자 도월은 웃는다. 사파의 도움은 자비가 아니라 거래이고, 거래는 늘 받아 갈 손을 함께 데려온다.
@@ -574,7 +574,7 @@ encounters:
           resources:
             sanity: -2
           danger: 2
-          add_flags: [black_heaven_escape_price_resolved, sapa_route_opened, cheongryu_names_kept_off_ledger, market_route_debt_recorded]
+          add_flags: [black_heaven_escape_price_resolved, sapa_route_opened, route_opener_resolved, cheongryu_names_kept_off_ledger, market_route_debt_recorded]
           add_clues: [ledger_can_be_bent_not_broken, sapa_can_save_without_mercy]
           destination_id: cheongryu_outer_courtyard
           log: 청류문의 이름을 지우는 대신, 당신의 이름이 더 굵은 획으로 남는다. 도월은 그 고집을 어리석음이 아니라 쓸 만한 값으로 본다.
@@ -584,7 +584,7 @@ encounters:
           resources:
             health: -1
             sanity: -1
-          add_flags: [black_heaven_escape_price_resolved, sapa_route_opened, sapa_survival_principle_seen]
+          add_flags: [black_heaven_escape_price_resolved, sapa_route_opened, route_opener_resolved, sapa_survival_principle_seen]
           add_clues: [sapa_can_save_without_mercy, black_heaven_bargain_has_teeth]
           destination_id: cheongryu_outer_courtyard
           log: 흑천련의 길은 사람을 살릴 수 있다. 다만 살아남은 사람이 어디로 빚을 갚으러 갈지도 함께 보여준다.
@@ -614,7 +614,7 @@ encounters:
         outcome:
           resources:
             sanity: -2
-          add_flags: [heavenly_archive_previous_outsiders_resolved, cheonggi_return_route_opened, previous_outsiders_record_seen]
+          add_flags: [heavenly_archive_previous_outsiders_resolved, cheonggi_return_route_opened, route_opener_resolved, previous_outsiders_record_seen]
           add_clues: [archive_has_other_outsiders, return_clue_is_not_return_method]
           destination_id: cheongryu_outer_courtyard
           log: 서고의 여백에는 돌아간 사람보다 사라진 길을 붙잡은 사람의 흔적이 더 많다. 천기각은 방법이 아니라 흔적부터 보여준다.
@@ -624,7 +624,7 @@ encounters:
           resources:
             sanity: -2
           danger: 1
-          add_flags: [heavenly_archive_previous_outsiders_resolved, cheonggi_return_route_opened, yeon_soha_warning_heard]
+          add_flags: [heavenly_archive_previous_outsiders_resolved, cheonggi_return_route_opened, route_opener_resolved, yeon_soha_warning_heard]
           add_clues: [cheonggi_record_refuses_identity_answer, record_gaze_without_name]
           destination_id: cheongryu_outer_courtyard
           log: 연소하는 답을 숨기지 않는다. 다만 답으로 변하는 질문을 먼저 막는다. 기록자는 이름 대신 시선만 남긴다.
@@ -633,7 +633,7 @@ encounters:
         outcome:
           resources:
             sanity: -1
-          add_flags: [heavenly_archive_previous_outsiders_resolved, cheonggi_return_route_opened, worldline_margin_marked]
+          add_flags: [heavenly_archive_previous_outsiders_resolved, cheonggi_return_route_opened, route_opener_resolved, worldline_margin_marked]
           add_clues: [worldline_gaps_have_patterns, cheonggi_record_refuses_identity_answer]
           destination_id: cheongryu_outer_courtyard
           log: 천기록은 세계의 이름을 쓰지 않는다. 대신 이 세계선의 접힌 자국 하나를 여백에 남긴다.
@@ -643,7 +643,7 @@ encounters:
           resources:
             sanity: -3
             health: -1
-          add_flags: [heavenly_archive_previous_outsiders_resolved, cheonggi_return_route_opened, commute_rift_terms_compared]
+          add_flags: [heavenly_archive_previous_outsiders_resolved, cheonggi_return_route_opened, route_opener_resolved, commute_rift_terms_compared]
           add_clues: [worldline_gaps_have_patterns, return_clue_is_not_return_method, record_gaze_without_name]
           destination_id: cheongryu_outer_courtyard
           log: 출근길의 문틈과 서고의 균열이라는 말이 같은 모양으로 접힌다. 하지만 접힌 모양은 문이 아니다.
@@ -710,3 +710,63 @@ encounters:
           add_clues: [dawn_shelter_keeps_names, delayed_choice_has_callers, offers_arrive_because_people_lived]
           destination_id: cheongryu_outer_courtyard
           log: 지도는 길보다 먼저 이름을 기억한다. 연소하는 그 순서가 중요하다고 말하고, 천기록은 여전히 정답 대신 접힌 선만 남긴다.
+
+  - id: wuxia_mumyeong_first_sighting
+    title: 무명 첫 목격
+    body: 청류문 외원 담장 너머로 흑사방 심부름꾼 하나가 지나간다. 걸음은 거칠지만 팔꿈치가 꺾이는 순간, 장작 마당에서 배운 청류문식 흐름과 너무 닮은 선이 스친다. 그러나 그 흐름은 맑지 않고, 다른 문파의 초식이 덧씌워진 듯 비어 있다. 서하린은 이름을 부르려다 멈추고, 그자는 뒤돌아보지 않은 채 어둠 속으로 사라진다.
+    presentation:
+      visual_id: wuxia_mumyeong_first_sighting
+      speaker: 서하린
+      layout: midgame_rival_sighting
+      effect_cues:
+        - kind: glyph_anomaly
+          source: mumyeong_first_sighting
+          intensity: 0.73
+          stable_terms: [무명, 청류문, 흑사방]
+          distortion: borrowed_form_then_missing_center
+          duration_hint_ms: 1450
+          fallback_text: 담장 그림자와 낯익은 보법 사이로 '무명', '청류문', '흑사방'만 흔들리지 않고 남는다.
+    conditions:
+      locations: [cheongryu_outer_courtyard]
+      required_flags: [route_opener_resolved, cheongryu_raid_survived, cheongryu_trial_started, first_fragment_seen]
+      forbidden_flags: [mumyeong_first_sighting_resolved]
+    choices:
+      - id: watch_the_stolen_qingliu_flow
+        label: 훔쳐 쓴 청류문식 흐름을 끝까지 관찰한다
+        outcome:
+          resources:
+            sanity: -2
+          add_flags: [mumyeong_first_sighting_resolved, midgame_continuity_started, mumyeong_shadow_seen, copied_qingliu_flow_noted]
+          add_clues: [mumyeong_exists, copied_flow_is_not_qingliu]
+          destination_id: cheongryu_outer_courtyard
+          log: 닮았지만 중심이 다르다. 청류문식의 모양은 있으나 흐름을 이해한 흔적은 없고, 훔친 초식이 몸 위에 덧칠처럼 남아 있다.
+      - id: check_seo_harin_silence
+        label: 서하린이 이름을 삼키는 순간을 본다
+        outcome:
+          resources:
+            sanity: -2
+          danger: 1
+          add_flags: [mumyeong_first_sighting_resolved, midgame_continuity_started, seo_harin_recognized_mumyeong, mumyeong_wound_thread_opened]
+          add_clues: [seo_harin_does_not_call_him_traitor, mumyeong_exists]
+          destination_id: cheongryu_outer_courtyard
+          log: 서하린은 배신자라는 말을 쓰지 않는다. 그 침묵이 이름보다 먼저 상처를 드러내고, 아직 묻지 못한 과거를 남긴다.
+      - id: follow_black_serpent_runner
+        label: 흑사방 심부름꾼의 뒤를 짧게 쫓는다
+        outcome:
+          resources:
+            health: -1
+            sanity: -2
+          danger: 2
+          add_flags: [mumyeong_first_sighting_resolved, midgame_continuity_started, black_serpent_trail_marked, mumyeong_pursuit_risk]
+          add_clues: [black_serpent_uses_borrowed_flows, copied_flow_is_not_qingliu]
+          destination_id: cheongryu_outer_courtyard
+          log: 뒤를 밟는 데는 성공하지만, 흑사방은 일부러 발자국을 남기는 법도 안다. 쫓는 순간부터 이쪽도 관찰당한다.
+      - id: pretend_not_to_see_the_form
+        label: 못 본 척하고 외원 순찰을 계속한다
+        outcome:
+          resources:
+            sanity: -1
+          add_flags: [mumyeong_first_sighting_resolved, midgame_continuity_started, mumyeong_clue_deferred, unresolved_rival_debt]
+          add_clues: [not_seeing_is_also_a_choice, black_serpent_uses_borrowed_flows]
+          destination_id: cheongryu_outer_courtyard
+          log: 모른 척한 일도 사라지지 않는다. 다음에 같은 흐름을 보면 더 늦게 알아볼 뿐이고, 늦게 알아본 대가는 언젠가 돌아온다.

@@ -2,8 +2,8 @@
 type: next_goal_prompt
 created: 2026-06-01
 updated: 2026-06-02
-current_goal: implement_wuxia_mumyeong_first_sighting
-mode: runtime-preview-implementation
+current_goal: wuxia_mumyeong_first_confrontation_after_sighting
+mode: docs-only-handoff
 ---
 
 # next_goal
@@ -24,15 +24,15 @@ mode: runtime-preview-implementation
 
 ## 현재 목표
 
-`wuxia_wounded_shelter_dawn_offers` runtime implementation과 `route_midgame_continuity_after_wounded_shelter` docs-only handoff는 완료됐다. `wuxia_jianghu_pack` / **이구학지 — 천기록**은 Web/default storypack이자 메인 개발 기준이며, office content는 legacy/parity fixture로 유지한다.
+`wuxia_mumyeong_first_sighting` runtime implementation까지 완료됐다. `wuxia_jianghu_pack` / **이구학지 — 천기록**은 Web/default storypack이자 메인 개발 기준이며, office content는 legacy/parity fixture로 유지한다.
 
-이번 세션의 목표는 **runtime preview implementation**이다.
+이번 세션의 목표는 **docs-only handoff**다.
 
-- `wuxia_mumyeong_first_sighting`를 preview runtime에 구현한다.
-- 세 route opener(`wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`)의 모든 choice outcome에 공통 `route_opener_resolved` flag를 추가한다.
-- `wuxia_wounded_shelter_dawn_offers` 뒤에 `wuxia_mumyeong_first_sighting` encounter를 추가하고, required flags는 `route_opener_resolved`, `cheongryu_raid_survived`, `cheongryu_trial_started`, `first_fragment_seen`로 둔다.
-- Rust/Web storypack preview bundle만 재생성한다. 기본 office bundle, legacy `escape-office` save/localStorage key, 기본 generated content는 수정하지 않는다.
-- 새 any-of condition, route graph, faction reputation/debt ledger/relation/reward/ability/epilogue schema, combat schema, boss first appearance, `wuxia_mumyeong_first_confrontation`, return system, 천기록 정체 reveal은 열지 않는다.
+- `wuxia_mumyeong_first_confrontation_after_sighting`를 설계한다.
+- `wuxia_mumyeong_first_sighting` 이후 첫 rival confrontation을 바로 runtime으로 구현할지, 아니면 추가 clue/route flavor bridge를 먼저 둘지 결정한다.
+- Notion 사건 카드 DB `wuxia_mumyeong_first_confrontation`, `wuxia_mumyeong_midgame_reunion`, `wuxia_boss_first_appearance`를 비교하고 다음 runtime 후보 하나만 고른다.
+- 이번 goal에서는 runtime YAML, Rust/Web generated preview bundle, 기본 office bundle을 수정하지 않는다.
+- 기본 office bundle, legacy `escape-office` save/localStorage key, route graph/faction reputation/debt ledger/relation/reward/ability/epilogue schema, return system, combat resolver/schema, boss combat, 천기록 정체 reveal은 열지 않는다.
 
 ## 반드시 읽을 문서
 
@@ -47,6 +47,7 @@ mode: runtime-preview-implementation
   - `## 0.26 2026-06-02 docs-only route opener follow-up handoff: wuxia_wounded_shelter_dawn_offers`
   - `## 0.27 2026-06-02 무협 wuxia_wounded_shelter_dawn_offers preview runtime slice`
   - `## 0.28 2026-06-02 docs-only midgame continuity handoff: wuxia_mumyeong_first_sighting`
+  - `## 0.29 2026-06-02 무협 wuxia_mumyeong_first_sighting preview runtime slice`
   - 현재 최우선 남은 작업
   - `## 10. 다음 액션`
 - `docs/dev/Storypack_Runtime_Preview_Mode.md`
@@ -58,21 +59,25 @@ mode: runtime-preview-implementation
 - `docs/content/storypack_db/README.md`
 - `docs/content/storypack_db/encounter_situations.json`
 
-## 구현 방향
+## 설계 방향
 
-`route_midgame_continuity_after_wounded_shelter` handoff의 결정:
+이미 완료된 기반:
 
-- route별 midgame card 3개는 route tone이 선명하지만, fan-out과 route graph/faction reputation 유혹이 커서 보류했다.
-- deferred-offer 후속 bridge는 direct opener branch를 제외하므로 보류했다.
-- `wuxia_mumyeong_first_confrontation`, `wuxia_mumyeong_midgame_reunion`, boss first appearance는 Notion 선행 조건상 후속이다.
-- common midgame bridge `wuxia_mumyeong_first_sighting`를 다음 runtime 후보로 골랐다.
+- `wuxia_mumyeong_first_sighting`가 preview runtime에 구현되어 `mumyeong_first_sighting_resolved`, `midgame_continuity_started`, `mumyeong_exists`, `copied_flow_is_not_qingliu` hook을 남긴다.
+- 세 route opener는 `route_opener_resolved`로 fan-in된다.
 
-구현 계약:
+비교할 후보:
 
-- route opener 세 card의 모든 outcome에 `route_opener_resolved`를 추가한다.
-- `wuxia_mumyeong_first_sighting` start condition은 `conditions.locations: [cheongryu_outer_courtyard]`, `required_flags: [route_opener_resolved, cheongryu_raid_survived, cheongryu_trial_started, first_fragment_seen]`, `forbidden_flags: [mumyeong_first_sighting_resolved]`다.
-- route-specific opened flags(`righteous_route_opened`, `sapa_route_opened`, `cheonggi_return_route_opened`)는 eligibility가 아니라 flavor hook으로만 둔다.
-- stable choice id는 `watch_the_stolen_qingliu_flow`, `check_seo_harin_silence`, `follow_black_serpent_runner`, `pretend_not_to_see_the_form`다.
+- `wuxia_mumyeong_first_confrontation`: Notion 선행 조건이 첫 목격 이후이므로 직접 후보가 됐다. 단, combat resolver/schema를 열지 않고 기존 encounter schema로 대치/상처/후퇴/관찰을 표현할 수 있는지 먼저 정해야 한다.
+- `wuxia_mumyeong_midgame_reunion`: Notion 선행 조건이 첫 대치와 과거 단서 일부이므로 아직 이르다.
+- `wuxia_boss_first_appearance`: boss-wall logic을 열 수 있지만 boss combat/final-route pressure가 커져 현 slice에는 클 수 있다.
+- route-specific clue bridge: `righteous_route_opened`, `sapa_route_opened`, `cheonggi_return_route_opened` flavor에 따라 무명 대치 전 단서를 하나 더 둘지 비교한다.
+
+결정 기준:
+
+- Notion `04. 메인 루트 구조`, `05. 사건 카드 운영 규칙`, `06. 사이드 퀘스트와 미해결 부채`, `07. 천기록 / 천외편린 보상`, `99. 통합 체크포인트`와 사건 카드 DB row를 대조한다.
+- 새 combat resolver/schema, RouteGraph, FactionStanding, DebtLedger, RelationScore, reward/ability/epilogue/return schema를 열지 않고 가능한 후보를 우선한다.
+- 다음 runtime 후보는 하나만 고르고, 구현은 다음 세션으로 넘긴다.
 
 ## 예상 수정 파일
 
@@ -87,14 +92,6 @@ mode: runtime-preview-implementation
 - `docs/content/storypack_db/encounter_situations.json`
 - `docs/design/Storypack_World_Model.md`
 - `docs/design/Storypack_Encounter_DB.md`
-- `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`
-- `crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json`
-- `web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json`
-- `crates/escape-core/tests/content_bundle.rs`
-- `crates/escape-wasm/tests/json_contract.rs`
-- `crates/escape-terminal/tests/cli_smoke.rs`
-- `web/src/core/contentBundles.test.ts`
-- `tests/test_web_data_export.py`
 - `tests/test_docs_contract.py`
 - `tests/test_storypack_db.py`
 - 이 README
@@ -102,12 +99,8 @@ mode: runtime-preview-implementation
 ## 검증 명령
 
 ```bash
-PYTHONPATH=src python3 -m pytest tests/test_web_data_export.py tests/test_docs_contract.py tests/test_storypack_db.py -q
+PYTHONPATH=src python3 -m pytest tests/test_docs_contract.py tests/test_storypack_db.py -q
 python3 scripts/export_web_data.py --storypack-preview wuxia_jianghu_pack --preview-bundle crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json --preview-bundle web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json --check
-cargo test -p escape-core --test content_bundle
-cargo test -p escape-wasm --test json_contract json_boundary_reaches_wuxia_mumyeong_first_sighting_through_preview_bundle
-cargo test -p escape-terminal --test cli_smoke content_tui_smoke_reaches_wuxia_mumyeong_first_sighting
-cd web && npm test -- contentBundles.test.ts
 git diff --exit-code -- src/tui_adv/storypack-previews/wuxia_jianghu_pack crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
 git diff --exit-code -- src/tui_adv/data crates/escape-core/fixtures/content/content.bundle.json web/src/data/generated/content.bundle.json
 git diff --check

@@ -2,7 +2,7 @@
 
 Status: candidate
 
-이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_wounded_shelter_dawn_offers`까지는 separate storypack preview runtime으로 승격되었고, 다음 runtime handoff는 `wuxia_mumyeong_first_sighting`다.
+이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_first_sighting`까지는 separate storypack preview runtime으로 승격되었고, 다음 handoff는 `wuxia_mumyeong_first_confrontation_after_sighting` docs-only 작업이다.
 
 공통 원칙:
 
@@ -37,7 +37,7 @@ Status: candidate
 | `wuxia_mumyeong_resolution` | 무명 결산 | none yet | future final route event |
 | `wuxia_mumyeong_midgame_reunion` | 무명 중반 재회 | none yet | future rival event |
 | `wuxia_boss_resolution` | 보스 결산 | none yet | future boss result event |
-| `wuxia_mumyeong_first_sighting` | 무명 첫 목격 | `wuxia_mumyeong_first_sighting` | next runtime handoff |
+| `wuxia_mumyeong_first_sighting` | 무명 첫 목격 | `wuxia_mumyeong_first_sighting` | preview runtime implemented |
 | `wuxia_mumyeong_first_confrontation` | 무명 첫 대치 | none yet | future rival confrontation |
 | `wuxia_boss_first_appearance` | 보스 첫 등장 | none yet | future boss-wall event |
 | `wuxia_mumyeong_destroys_orthodox_sect` | 정파 문파 멸문 | none yet | future consequence/backstory event |
@@ -1008,7 +1008,7 @@ schema_boundary:
   forbidden_new_schema: [TriageSystem, CompanionDeath, MassCombat, RouteGraph, FactionStanding, DebtLedger, RelationScore, BranchLock, return_system, reward_schema, ability_schema, fragment_choice_reward, epilogue_schema, multi_ending_implementation]
 main_spine_link: route commitment을 미룬 wounded fallback branch를 다시 메인 route pressure에 붙인다. post-opener any-of condition이나 route graph 없이 기존 deferred flags만 사용한다.
 randomization_notes: 1회성 deferred-offer card. hub random deck으로 반복하지 않는다. `survivor_roll_call_complete`와 `route_delay_cost_recorded`는 flavor만 바꾸고 eligibility를 가르지 않는다.
-promotion_notes: preview runtime으로 구현 완료. `cheongryu_outer_courtyard`에서 `cheongryu_raid_wounded_fallback_resolved` + `route_commitment_deferred` + `deferred_route_reopened` + `wounded_shelter_stabilized`를 받아 열리며, 부상자 피난처 새벽 제안을 flags/clues/log/presentation으로만 남긴다. 기본 office bundle, legacy `escape-office` key, triage/companion death/mass combat, route graph/faction reputation/debt/relation schema, reward/ability/epilogue schema, return system, 천기록 정체 reveal은 열지 않았다. 다음 runtime handoff는 `wuxia_mumyeong_first_sighting`다.
+promotion_notes: preview runtime으로 구현 완료. `cheongryu_outer_courtyard`에서 `cheongryu_raid_wounded_fallback_resolved` + `route_commitment_deferred` + `deferred_route_reopened` + `wounded_shelter_stabilized`를 받아 열리며, 부상자 피난처 새벽 제안을 flags/clues/log/presentation으로만 남긴다. 기본 office bundle, legacy `escape-office` key, triage/companion death/mass combat, route graph/faction reputation/debt/relation schema, reward/ability/epilogue schema, return system, 천기록 정체 reveal은 열지 않았다. 다음 bridge `wuxia_mumyeong_first_sighting`도 preview runtime으로 구현됐다.
 runtime_preview_implementation_notes:
   implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
   generated_artifacts:
@@ -1026,11 +1026,11 @@ id: wuxia_mumyeong_first_sighting
 notion_event_mapping:
   notion_event_id: wuxia_mumyeong_first_sighting
   notion_event_name: 무명 첫 목격
-  mapping_status: next_runtime_handoff
+  mapping_status: preview_runtime_implemented
 storypack_id: wuxia_jianghu_pack
 world_id: wuxia_jianghu
 status: candidate
-runtime_preview_design_status: handoff_ready
+runtime_preview_design_status: implemented
 phase: [midgame_rival]
 priority_class: route_key
 location_tags: [cheongryu_sect, black_serpent_pressure, rival_shadow]
@@ -1113,12 +1113,16 @@ schema_boundary:
   forbidden_new_schema: [AnyOfCondition, RouteGraph, FactionStanding, DebtLedger, RelationScore, CompanionSystem, CombatState, boss_combat_resolver, reward_schema, ability_schema, fragment_choice_reward, epilogue_schema, return_system, multi_ending_implementation]
 main_spine_link: 세 route opener가 모두 지나간 뒤 route fan-out을 더 벌리지 않고, 무명/흑사방/서하린 상처를 첫 midgame continuity로 묶는다.
 randomization_notes: 1회성 midgame bridge. `route_opener_resolved`를 통해 세 direct opener를 fan-in하고, deferred wounded shelter만 탄 branch는 route opener 전까지 바로 eligible하지 않는다.
-promotion_notes: 다음 runtime handoff로 확정. `route_midgame_continuity_after_wounded_shelter` docs-only 선택에서 route별 3개 card, deferred-offer 후속 bridge, 첫 대치, boss first appearance보다 작고 안전한 common midgame bridge로 선택했다. 구현 시 기본 office bundle, legacy `escape-office` key, any-of condition schema, route graph/faction reputation/debt/relation schema, combat schema, reward/ability/epilogue/return system, 천기록 정체 reveal은 열지 않는다.
-runtime_preview_design_notes:
-  next_runtime_slice: wuxia_mumyeong_first_sighting
+promotion_notes: preview runtime으로 구현 완료. `route_midgame_continuity_after_wounded_shelter` docs-only 선택에서 route별 3개 card, deferred-offer 후속 bridge, 첫 대치, boss first appearance보다 작고 안전한 common midgame bridge로 선택했고, 세 route opener outcome에 `route_opener_resolved`를 추가해 fan-in했다. 기본 office bundle, legacy `escape-office` key, any-of condition schema, route graph/faction reputation/debt/relation schema, combat schema, reward/ability/epilogue/return system, 천기록 정체 reveal은 열지 않았다. 다음 handoff는 `wuxia_mumyeong_first_confrontation_after_sighting`다.
+runtime_preview_implementation_notes:
+  implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
+  generated_artifacts:
+    - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+    - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
   common_flag_to_add: route_opener_resolved
   route_openers_to_patch: [wuxia_baekdo_medicine_debt, wuxia_black_heaven_escape_price, wuxia_heavenly_archive_previous_outsiders]
   selected_over: [route_specific_midgame_fanout, deferred_offer_only_bridge, wuxia_mumyeong_first_confrontation, boss_first_appearance]
   default_bundle_changed: false
   new_schema_opened: false
+  next_handoff: wuxia_mumyeong_first_confrontation_after_sighting
 ```

@@ -196,12 +196,12 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&4));
     assert_eq!(bundle.manifest.counts.get("items"), Some(&3));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&12));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&13));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 4);
-    assert_eq!(index.encounters_len(), 12);
+    assert_eq!(index.encounters_len(), 13);
 
     let market = index
         .location("jianghu_market_street")
@@ -598,6 +598,7 @@ fn preview_fixture_indexes_wuxia_first_fight() {
         vec![
             "baekdo_medicine_debt_resolved",
             "righteous_route_opened",
+            "route_opener_resolved",
             "white_path_debt_recorded",
             "cheongryu_rebuild_supplies_secured",
             "namgung_seoyun_notice"
@@ -656,6 +657,7 @@ fn preview_fixture_indexes_wuxia_first_fight() {
         vec![
             "black_heaven_escape_price_resolved",
             "sapa_route_opened",
+            "route_opener_resolved",
             "black_heaven_safehouse_marked",
             "market_route_debt_recorded"
         ]
@@ -715,6 +717,7 @@ fn preview_fixture_indexes_wuxia_first_fight() {
         vec![
             "heavenly_archive_previous_outsiders_resolved",
             "cheonggi_return_route_opened",
+            "route_opener_resolved",
             "previous_outsiders_record_seen"
         ]
     );
@@ -792,6 +795,64 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     );
     assert_eq!(
         keep_shelter.outcome.destination_id.as_deref(),
+        Some("cheongryu_outer_courtyard")
+    );
+
+    let mumyeong = index
+        .encounter("wuxia_mumyeong_first_sighting")
+        .expect("mumyeong first sighting encounter");
+    assert_eq!(mumyeong.title, "무명 첫 목격");
+    assert_eq!(
+        mumyeong.conditions.locations,
+        vec!["cheongryu_outer_courtyard"]
+    );
+    assert_eq!(
+        mumyeong.conditions.required_flags,
+        vec![
+            "route_opener_resolved",
+            "cheongryu_raid_survived",
+            "cheongryu_trial_started",
+            "first_fragment_seen"
+        ]
+    );
+    assert_eq!(
+        mumyeong.conditions.forbidden_flags,
+        vec!["mumyeong_first_sighting_resolved"]
+    );
+    let mumyeong_presentation = mumyeong
+        .presentation
+        .as_ref()
+        .expect("mumyeong first sighting presentation");
+    assert_eq!(
+        mumyeong_presentation.layout.as_deref(),
+        Some("midgame_rival_sighting")
+    );
+    assert_eq!(mumyeong_presentation.speaker.as_deref(), Some("서하린"));
+    assert_eq!(
+        mumyeong_presentation.effect_cues[0].stable_terms,
+        vec!["무명", "청류문", "흑사방"]
+    );
+    assert_eq!(mumyeong.choices.len(), 4);
+    let observe = mumyeong
+        .choices
+        .iter()
+        .find(|choice| choice.id == "watch_the_stolen_qingliu_flow")
+        .expect("fallback stolen qingliu flow choice");
+    assert_eq!(
+        observe.outcome.add_flags,
+        vec![
+            "mumyeong_first_sighting_resolved",
+            "midgame_continuity_started",
+            "mumyeong_shadow_seen",
+            "copied_qingliu_flow_noted"
+        ]
+    );
+    assert_eq!(
+        observe.outcome.add_clues,
+        vec!["mumyeong_exists", "copied_flow_is_not_qingliu"]
+    );
+    assert_eq!(
+        observe.outcome.destination_id.as_deref(),
         Some("cheongryu_outer_courtyard")
     );
 }

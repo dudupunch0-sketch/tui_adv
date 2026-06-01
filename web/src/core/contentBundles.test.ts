@@ -37,6 +37,7 @@ describe('runtime content bundle registry', () => {
       'wuxia_black_heaven_escape_price',
       'wuxia_heavenly_archive_previous_outsiders',
       'wuxia_wounded_shelter_dawn_offers',
+      'wuxia_mumyeong_first_sighting',
     ]);
     expect(encounterIds).not.toContain('ex_employee_messenger');
   });

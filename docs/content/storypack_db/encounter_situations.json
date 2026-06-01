@@ -3368,7 +3368,7 @@
     },
     "main_spine_link": "route commitment을 미룬 wounded fallback branch를 다시 메인 route pressure에 붙인다. post-opener any-of condition이나 route graph 없이 기존 deferred flags만 사용한다.",
     "randomization_notes": "1회성 deferred-offer card. hub random deck으로 반복하지 않는다. `survivor_roll_call_complete`와 `route_delay_cost_recorded`는 flavor만 바꾸고 eligibility를 가르지 않는다.",
-    "promotion_notes": "preview runtime으로 구현 완료. `cheongryu_outer_courtyard`에서 `cheongryu_raid_wounded_fallback_resolved` + `route_commitment_deferred` + `deferred_route_reopened` + `wounded_shelter_stabilized`를 받아 열리며, 부상자 피난처 새벽 제안을 flags/clues/log/presentation으로만 남긴다. 기본 office bundle, legacy `escape-office` key, triage/companion death/mass combat, route graph/faction reputation/debt/relation schema, reward/ability/epilogue schema, return system, 천기록 정체 reveal은 열지 않았다. 다음 runtime handoff는 `wuxia_mumyeong_first_sighting`다.",
+    "promotion_notes": "preview runtime으로 구현 완료. `cheongryu_outer_courtyard`에서 `cheongryu_raid_wounded_fallback_resolved` + `route_commitment_deferred` + `deferred_route_reopened` + `wounded_shelter_stabilized`를 받아 열리며, 부상자 피난처 새벽 제안을 flags/clues/log/presentation으로만 남긴다. 기본 office bundle, legacy `escape-office` key, triage/companion death/mass combat, route graph/faction reputation/debt/relation schema, reward/ability/epilogue schema, return system, 천기록 정체 reveal은 열지 않았다. 다음 bridge `wuxia_mumyeong_first_sighting`도 preview runtime으로 구현됐다.",
     "runtime_preview_implementation_notes": {
       "implemented_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml",
       "generated_artifacts": [
@@ -3377,7 +3377,7 @@
       ],
       "default_bundle_changed": false,
       "new_schema_opened": false,
-      "next_handoff": "wuxia_mumyeong_first_sighting"
+      "next_handoff": "wuxia_mumyeong_first_confrontation_after_sighting"
     }
   },
   {
@@ -3419,7 +3419,7 @@
     ],
     "summary": "route opener 이후 흑사방 쪽에서 청류문식 흐름을 훔쳐 쓰는 그림자를 처음 목격하고, 무명/서하린/카피 무공 thread를 연다.",
     "setup_text": "청류문 외원 담장 너머로 흑사방 심부름꾼 하나가 지나간다. 걸음은 거칠지만 팔꿈치가 꺾이는 순간, 장작 마당에서 배운 청류문식 흐름과 너무 닮은 선이 스친다. 서하린은 이름을 부르려다 멈추고, 그자는 뒤돌아보지 않은 채 어둠 속으로 사라진다.",
-    "runtime_preview_design_status": "handoff_ready",
+    "runtime_preview_design_status": "implemented",
     "runtime_preview_start_conditions": {
       "runtime_mode": "storypack_preview",
       "location": "cheongryu_outer_courtyard",
@@ -3596,9 +3596,13 @@
     },
     "main_spine_link": "세 route opener가 모두 지나간 뒤 route fan-out을 더 벌리지 않고, 무명/흑사방/서하린 상처를 첫 midgame continuity로 묶는다.",
     "randomization_notes": "1회성 midgame bridge. `route_opener_resolved`를 통해 세 direct opener를 fan-in하고, deferred wounded shelter만 탄 branch는 route opener 전까지 바로 eligible하지 않는다.",
-    "promotion_notes": "다음 runtime handoff로 확정. `route_midgame_continuity_after_wounded_shelter` docs-only 선택에서 route별 3개 card, deferred-offer 후속 bridge, 첫 대치, boss first appearance보다 작고 안전한 common midgame bridge로 선택했다. 구현 시 기본 office bundle, legacy `escape-office` key, any-of condition schema, route graph/faction reputation/debt/relation schema, combat schema, reward/ability/epilogue/return system, 천기록 정체 reveal은 열지 않는다.",
-    "runtime_preview_design_notes": {
-      "next_runtime_slice": "wuxia_mumyeong_first_sighting",
+    "promotion_notes": "preview runtime으로 구현 완료. `route_midgame_continuity_after_wounded_shelter` docs-only 선택에서 route별 3개 card, deferred-offer 후속 bridge, 첫 대치, boss first appearance보다 작고 안전한 common midgame bridge로 선택했고, 세 route opener outcome에 `route_opener_resolved`를 추가해 fan-in했다. 구현 시 기본 office bundle, legacy `escape-office` key, any-of condition schema, route graph/faction reputation/debt/relation schema, combat schema, reward/ability/epilogue/return system, 천기록 정체 reveal은 열지 않았다.",
+    "runtime_preview_implementation_notes": {
+      "implemented_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml",
+      "generated_artifacts": [
+        "crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json",
+        "web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json"
+      ],
       "common_flag_to_add": "route_opener_resolved",
       "route_openers_to_patch": [
         "wuxia_baekdo_medicine_debt",
@@ -3612,7 +3616,8 @@
         "boss_first_appearance"
       ],
       "default_bundle_changed": false,
-      "new_schema_opened": false
+      "new_schema_opened": false,
+      "next_handoff": "wuxia_mumyeong_first_confrontation_after_sighting"
     }
   }
 ]

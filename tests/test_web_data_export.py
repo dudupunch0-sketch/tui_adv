@@ -96,6 +96,7 @@ def test_export_web_data_builds_renderer_neutral_content_bundle():
             "wuxia_black_heaven_escape_price",
             "wuxia_heavenly_archive_previous_outsiders",
             "wuxia_wounded_shelter_dawn_offers",
+            "wuxia_mumyeong_first_sighting",
         }
         for encounter in bundle["content"]["encounters"]
     )
@@ -119,7 +120,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     assert bundle["manifest"]["counts"] == {
         "locations": 4,
         "items": 3,
-        "encounters": 12,
+        "encounters": 13,
         "endings": 1,
         "achievements": 2,
         "secrets": 0,
@@ -144,6 +145,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "wuxia_black_heaven_escape_price",
         "wuxia_heavenly_archive_previous_outsiders",
         "wuxia_wounded_shelter_dawn_offers",
+        "wuxia_mumyeong_first_sighting",
     ]
     first_fight = bundle["content"]["encounters"][1]
     assert first_fight["conditions"] == {
@@ -400,6 +402,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     assert accept_debt["outcome"]["add_flags"] == [
         "baekdo_medicine_debt_resolved",
         "righteous_route_opened",
+        "route_opener_resolved",
         "white_path_debt_recorded",
         "cheongryu_rebuild_supplies_secured",
         "namgung_seoyun_notice",
@@ -436,6 +439,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     assert accept_marker["outcome"]["add_flags"] == [
         "black_heaven_escape_price_resolved",
         "sapa_route_opened",
+        "route_opener_resolved",
         "black_heaven_safehouse_marked",
         "market_route_debt_recorded",
     ]
@@ -470,6 +474,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     assert read_margins["outcome"]["add_flags"] == [
         "heavenly_archive_previous_outsiders_resolved",
         "cheonggi_return_route_opened",
+        "route_opener_resolved",
         "previous_outsiders_record_seen",
     ]
     assert read_margins["outcome"]["add_clues"] == [
@@ -538,6 +543,42 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "cheonggi_record_targeted",
         "heavenly_archive_triage_map_seen",
     ]
+    mumyeong = bundle["content"]["encounters"][12]
+    assert mumyeong["conditions"] == {
+        "locations": ["cheongryu_outer_courtyard"],
+        "required_flags": [
+            "route_opener_resolved",
+            "cheongryu_raid_survived",
+            "cheongryu_trial_started",
+            "first_fragment_seen",
+        ],
+        "forbidden_flags": ["mumyeong_first_sighting_resolved"],
+    }
+    assert mumyeong["presentation"]["layout"] == "midgame_rival_sighting"
+    assert mumyeong["presentation"]["speaker"] == "서하린"
+    assert mumyeong["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "무명",
+        "청류문",
+        "흑사방",
+    ]
+    assert [choice["id"] for choice in mumyeong["choices"]] == [
+        "watch_the_stolen_qingliu_flow",
+        "check_seo_harin_silence",
+        "follow_black_serpent_runner",
+        "pretend_not_to_see_the_form",
+    ]
+    observe = mumyeong["choices"][0]
+    assert observe["outcome"]["add_flags"] == [
+        "mumyeong_first_sighting_resolved",
+        "midgame_continuity_started",
+        "mumyeong_shadow_seen",
+        "copied_qingliu_flow_noted",
+    ]
+    assert observe["outcome"]["add_clues"] == [
+        "mumyeong_exists",
+        "copied_flow_is_not_qingliu",
+    ]
+    assert observe["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
     assert "dev_desk" not in json.dumps(bundle, ensure_ascii=False)
     assert _missing_private_secret_fields(bundle)
 

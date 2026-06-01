@@ -19,6 +19,7 @@ idea_box/
   IDEA_INTAKE_GUIDE.md      # 별도 아이디어 수집 세션 운영 지침
   BACKLOG_ORDER.md          # status: done이 아닌 idea entry의 처리 순서
   LLM_DESIGN_HANDOFF.md     # 다른 LLM/agent용 스토리팩/인카운터/6스탯 설계 표지 문서
+  agent_prompts/            # 긴 agent handoff prompt를 Git-tracked 파일로 보관
   inbox/                    # 아직 반영하지 않은/반영 대기 중인 구조화 아이디어
   done/                     # 반영, 폐기, 병합 처리가 끝난 아이디어
 ```
@@ -49,6 +50,12 @@ idea_box/
 스토리팩, 인카운터 상황 DB, 6스탯 기반 등장인물 설계를 이어갈 LLM/agent는 `BACKLOG_ORDER.md`를 먼저 읽고 현재 처리 순서를 확인한 뒤, 해당 작업이 storypack/encounter 관련이면 `LLM_DESIGN_HANDOFF.md`를 읽는다.
 
 `LLM_DESIGN_HANDOFF.md`는 관련 설계 문서의 읽는 순서와 작업 단위를 안내하는 표지판이다. 즉시 구현 지시가 아니며, runtime YAML/Rust/Web 코드 변경은 사용자가 명시적으로 요청했을 때만 한다.
+
+긴 copy-paste prompt를 다른 세션에 넘겨야 할 때는 `idea_box/agent_prompts/`를 사용한다. 새 세션에는 아래처럼 짧게 지시하면 된다.
+
+```text
+이 repo의 idea_box/agent_prompts/<prompt-file>.md를 읽고 그대로 수행해. repo canonical docs와 prompt가 충돌하면 canonical docs를 우선해.
+```
 
 ## 아이디어 수집 세션
 

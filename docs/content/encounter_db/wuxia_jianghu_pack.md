@@ -15,6 +15,46 @@ Status: candidate
 - preview runtime 승격은 office storypack과 섞이지 않도록 separate preview mode를 유지한다.
 - 실제 회사명, 실제 통근 경로, 실제 사원증 정보, 현실 종교/정치/민족 소재처럼 보이는 세부사항은 쓰지 않는다.
 
+2026-06-01 Notion source precedence:
+
+- `무협 스토리팩: 이구학지 — 천기록` 상위 문서는 synopsis/초기 기획으로 보고, 최신 사건 운영 기준은 하위 문서와 `09. 이구학지 사건 카드 DB`를 우선한다.
+- Notion 사건 카드 DB는 26개 row를 가진 authoritative design source지만, repo runtime이나 machine-readable mirror가 곧바로 26개 구현 완료라는 뜻은 아니다.
+- Repo의 현재 구현/후보 체계는 이 문서와 `docs/dev/Notion_Design_Coverage.md`에 매핑한 뒤 별도 runtime slice에서만 승격한다.
+- 후일담 카드 DB 17개는 future design source이며, 이 문서에서는 runtime encounter 구현 범위로 다루지 않는다.
+
+## Notion 사건 카드 DB mapping
+
+2026-06-01 live check 기준. `repo mapping`이 `none yet`인 row는 아직 repo encounter 후보로 구체화하지 않은 future design source다.
+
+| Notion event id | Notion name | repo mapping | status |
+|---|---|---|---|
+| `wuxia_seoharin_unsaid_stay` | 가지 말라는 말 | none yet | future 서하린 late/return event |
+| `wuxia_seoharin_left_meal` | 남겨둔 밥 | none yet | future 서하린 companion event |
+| `wuxia_seoharin_empty_place` | 비워둔 자리 | none yet | future 서하린/무명 clue event |
+| `wuxia_mumyeong_departure_truth_summary` | 무명 이탈의 진실 정리 | none yet | future 무명 truth event |
+| `wuxia_black_serpent_pressures_qingliu` | 흑사방의 청류문 압박 | partial: `wuxia_cheongryu_raid_route_split` background | future pressure/side event |
+| `wuxia_mumyeong_copy_style_reveal` | 무명의 카피 무공 공개 | none yet | future rival/growth event |
+| `wuxia_mumyeong_resolution` | 무명 결산 | none yet | future final route event |
+| `wuxia_mumyeong_midgame_reunion` | 무명 중반 재회 | none yet | future rival event |
+| `wuxia_boss_resolution` | 보스 결산 | none yet | future boss result event |
+| `wuxia_mumyeong_first_sighting` | 무명 첫 목격 | none yet | future reveal event |
+| `wuxia_mumyeong_first_confrontation` | 무명 첫 대치 | none yet | future rival confrontation |
+| `wuxia_boss_first_appearance` | 보스 첫 등장 | none yet | future boss-wall event |
+| `wuxia_mumyeong_destroys_orthodox_sect` | 정파 문파 멸문 | none yet | future consequence/backstory event |
+| `wuxia_mumyeong_awakening` | 무명의 각성 | none yet | future rival corruption/growth event |
+| `wuxia_boss_recruits_mumyeong` | 흑사방 보스의 스카웃 | none yet | future backstory event |
+| `wuxia_mumyeong_reads_orthodox_style` | 무명의 정파 무공 간파 | none yet | future 청류안 contrast event |
+| `wuxia_qingliu_attack_after_war` | 무너져가는 청류문 습격 | none yet | future backstory/pressure event |
+| `wuxia_mumyeong_request_for_aid` | 무명의 도움 요청 | none yet | future backstory event |
+| `wuxia_tianjilu_first_fragment` | 천기록 첫 천외편린 | `wuxia_cheonggi_record_first_fragment` | preview implemented as schema-less foreshadow; full reward schema future |
+| `wuxia_seoharin_intervention` | 서하린의 개입 | `wuxia_seo_harin_rescue` | next runtime slice; docs/handoff ready, not implemented |
+| `wuxia_prologue_commute_rift` | 출근길의 균열 | `wuxia_commute_rift_arrival` | preview implemented |
+| `wuxia_qingliu_apprentice_entry` | 청류문 임시 수습생 등록 | `wuxia_cheongryu_apprentice_entry` | follow-up docs/handoff ready, not implemented |
+| `wuxia_qingliu_first_arrival` | 청류문 첫 도착 | partial: `wuxia_cheongryu_apprentice_entry` / `cheongryu_outer_courtyard` | future arrival/location beat folded into apprentice handoff for now |
+| `wuxia_black_serpent_first_trouble` | 흑사방 첫 시비 | `wuxia_heuksa_bang_first_fight` | preview implemented |
+| `wuxia_arrival_market_confusion` | 낯선 장터에 떨어지다 | `wuxia_commute_rift_arrival` | preview implemented |
+| `wuxia_main_qingliu_eye_001` | 청류안 첫 발현 | none yet | future 청류안/천외편린 growth event |
+
 ## 1. `wuxia_commute_rift_arrival`
 
 ```yaml
@@ -152,6 +192,10 @@ promotion_notes: 다음 runtime slice로 확정한다. 같은 storypack preview 
 
 ```yaml
 id: wuxia_seo_harin_rescue
+notion_event_mapping:
+  notion_event_id: wuxia_seoharin_intervention
+  notion_event_name: 서하린의 개입
+  mapping_status: direct_next_runtime_slice
 world_id: wuxia_jianghu
 storypack_id: wuxia_jianghu_pack
 status: candidate

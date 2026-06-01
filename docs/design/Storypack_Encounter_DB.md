@@ -19,6 +19,7 @@ Status: 설계 문서
 - 기본 world/storypack은 `office_apocalypse` / `isolation_pack` 계열이다.
 - 추가 office-family 후보는 `office_dream` / `yageunmong_pack`이다. 이 후보는 회사 자각몽/악몽/각성편린/퇴근 게이트 premise를 보존하되, 기본 office runtime을 대체하지 않는다.
 - 첫 비-office 기준팩은 `wuxia_jianghu` / `wuxia_jianghu_pack`이며, 최신 canonical story는 **이구학지 — 천기록**이다. 이전 generic 무협 placeholder는 superseded로 본다.
+- 2026-06-01 Notion live check 이후 `이구학지` parent page는 synopsis/초기 기획이고, 하위 관리 문서와 `09. 이구학지 사건 카드 DB` / `10. 이구학지 후일담 카드 DB`가 최신 세부 운영 기준이다. Repo DB와 runtime 승격은 Notion DB row를 직접 가져오지 않고, `docs/dev/Notion_Design_Coverage.md`의 mapping과 canonical content docs를 먼저 통과한다.
 - 새 기능은 가능하면 office isolation, office dream, wuxia surface에서 설명 가능한 engine-neutral 형태로 설계한다. 자세한 기준은 `docs/design/Storypack_World_Model.md`를 따른다.
 
 이 문서는 게임 엔진 구현 계획이 아니다. `src/tui_adv/data/encounters.yaml`이나 Rust GameCore에 바로 새 규칙을 추가하기 전에, 어떤 스토리팩/상황/NPC를 만들고 어떻게 검토할지 정하는 콘텐츠 설계 문서다.
@@ -253,7 +254,7 @@ promotion_notes: runtime 승격 시 messenger UI presentation metadata를 붙인
 사람용 후보 문서는 설명/톤/해설을 보존하고, 참조 무결성 검사는 별도 JSON mirror에서 수행한다.
 
 - `docs/content/storypack_db/storypacks.json`: `StorypackRecord` 후보 목록. 현재 `isolation_pack`, `yageunmong_pack`, `wuxia_jianghu_pack`를 포함한다.
-- `docs/content/storypack_db/encounter_situations.json`: `EncounterSituationCard` 후보 목록. 현재 storypack당 6개씩 총 18개 후보 카드를 포함한다.
+- `docs/content/storypack_db/encounter_situations.json`: `EncounterSituationCard` 후보 목록. 현재 `isolation_pack` 6개, `yageunmong_pack` 6개, `wuxia_jianghu_pack` 7개, 총 19개 repo 후보 카드를 포함한다. Notion 사건 카드 DB 26개 row는 upstream design source이며, 이 mirror에 자동으로 전부 추가하지 않는다.
 - `src/tui_adv/game/storypack_db.py`: `load_storypack_db(root)`와 `validate_storypack_db(root)`를 제공한다.
 - `tests/test_storypack_db.py`: office isolation / office dream / wuxia 후보 카드가 같은 DB에서 로드되고, `storypack_id`/`world_id`/taxonomy/fallback/outcome hook 계약을 검증한다.
 
@@ -266,6 +267,13 @@ promotion_notes: runtime 승격 시 messenger UI presentation metadata를 붙인
 - `preview launcher/UI wiring`은 explicit opt-in entrypoint로 구현했다. 후속 content slice에서 다시 열지 않는다.
 - 다음 승격 후보는 여전히 `wuxia_seo_harin_rescue`다. `wuxia_cheongryu_apprentice_entry`는 설계/handoff 완료된 후속 bridge지만, 서하린 구조/감시/채무 hook과 `cheongryu_outer_courtyard`가 preview source에 생긴 뒤 여는 순서를 지킨다. `wuxia_cheongryu_raid_route_split`도 later 후보로 설계했지만, rescue/apprentice와 first-fragment 공통 hook이 안정화된 뒤 route-pressure slice로만 연다. `wuxia_cheongryu_raid_wounded_fallback`은 raid split fallback branch 이후 route opener 전 재합류 후보로만 연다.
 - 필요한 신규 설계는 encounter/choice/outcome 수준으로 제한한다. 새 combat/reward/ability schema, 천외편린 3택 reward schema, faction route graph schema는 별도 slice 전까지 열지 않는다.
+
+2026-06-01 Notion sync 결정:
+
+- Notion 사건 카드 DB 26개는 `docs/dev/Notion_Design_Coverage.md`와 `docs/content/encounter_db/wuxia_jianghu_pack.md`에서 repo 후보와 future source로 매핑한다.
+- Notion 후일담 카드 DB 17개는 future design source다. 아직 runtime epilogue schema/renderer나 machine-readable encounter mirror에 넣지 않는다.
+- Notion `wuxia_seoharin_intervention` / `서하린의 개입`은 repo `wuxia_seo_harin_rescue`에 직접 대응하며 다음 구현 slice로 유지한다.
+- Notion `wuxia_tianjilu_first_fragment`, `wuxia_black_serpent_first_trouble`, `wuxia_prologue_commute_rift`, `wuxia_arrival_market_confusion`은 이미 구현된 preview 초기 beat와 매핑된다. 이 매핑은 runtime completeness 범위를 세 preview encounter로만 제한한다.
 
 `validate_storypack_db()`가 검사하는 기준:
 

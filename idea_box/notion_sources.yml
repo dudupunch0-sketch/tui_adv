@@ -151,6 +151,10 @@ sources:
         notion_event_name: "무명의 카피 무공 공개"
         repo_encounter_id: "wuxia_mumyeong_copy_style_reveal"
         runtime_status: "implemented_in_storypack_preview"
+      - notion_event_id: "wuxia_mumyeong_reads_orthodox_style"
+        notion_event_name: "무명의 정파 무공 간파"
+        repo_encounter_id: "wuxia_mumyeong_reads_orthodox_style"
+        runtime_status: "next_runtime_selected"
     status: "live_checked_docs_synced"
 
   - key: wuxia_10_epilogue_card_db

@@ -50,6 +50,7 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         "wuxia_mumyeong_copy_style_reveal",
         "wuxia_mumyeong_first_confrontation",
         "wuxia_mumyeong_first_sighting",
+        "wuxia_mumyeong_reads_orthodox_style",
         "wuxia_seo_harin_rescue",
         "wuxia_wounded_shelter_dawn_offers",
     ]
@@ -133,6 +134,19 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         in copy_style_reveal.outcome_hooks["possible_flags"]
     )
     assert "copy_is_surface_not_root" in copy_style_reveal.outcome_hooks["possible_clues"]
+
+    orthodox_style = db.encounter_cards["wuxia_mumyeong_reads_orthodox_style"]
+    assert orthodox_style.world_id == "wuxia_jianghu"
+    assert orthodox_style.storypack_id == "wuxia_jianghu_pack"
+    assert orthodox_style.priority_class == "route_key"
+    assert "orthodox_style_trace" in orthodox_style.phases
+    assert "cheonggi_record" in orthodox_style.surfaces
+    assert "safe_observe" in [choice["role"] for choice in orthodox_style.choice_shapes]
+    assert (
+        "mumyeong_reads_orthodox_style_resolved"
+        in orthodox_style.outcome_hooks["possible_flags"]
+    )
+    assert "bokho_geumsaesu_name_recorded" in orthodox_style.outcome_hooks["possible_clues"]
 
 
 def test_storypack_db_public_files_validate_cleanly():

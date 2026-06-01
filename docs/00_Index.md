@@ -69,7 +69,7 @@ docs/
     storypack_db/                   # storypack/card 후보의 machine-readable JSON DB
 
   runtime preview sources/
-    src/tui_adv/storypack-previews/wuxia_jianghu_pack/ # wuxia_commute_rift_arrival부터 wuxia_mumyeong_copy_style_reveal까지 preview source YAML
+    src/tui_adv/storypack-previews/wuxia_jianghu_pack/ # wuxia_commute_rift_arrival부터 wuxia_mumyeong_copy_style_reveal까지 preview source YAML; next runtime 후보는 wuxia_mumyeong_reads_orthodox_style
     crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json # Rust/GameCore preview fixture
     web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json # Web/WASM preview bundle
 

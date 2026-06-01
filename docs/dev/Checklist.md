@@ -497,6 +497,22 @@
 - [x] seed 기반 random copy-style system/table, combat resolver/schema, HP 숫자전, boss first appearance, 무명 중반 재회, 무명 과거 진실 reveal, route graph/faction reputation/debt/relation/reward/ability/epilogue/return schema, 천기록 정체 reveal 미변경 유지
 - [x] 다음 작업을 `wuxia_mumyeong_followup_after_copy_style_reveal` docs-only handoff로 갱신
 
+### 0.2aw 2026-06-02 무협 post-copy-style follow-up docs-only handoff
+
+- [x] Notion 사건 카드 DB `wuxia_mumyeong_midgame_reunion`, `wuxia_boss_first_appearance`, `wuxia_mumyeong_departure_truth_summary`, `wuxia_mumyeong_reads_orthodox_style` 재확인
+- [x] `04. 메인 루트 구조`, `05. 사건 카드 운영 규칙`, `07. 천기록 / 천외편린 보상`, `99. 통합 체크포인트`와 비교
+- [x] 다음 runtime 후보를 `wuxia_mumyeong_reads_orthodox_style`로 결정
+- [x] `wuxia_mumyeong_midgame_reunion`은 무명 과거 단서 일부가 아직 부족해 보류
+- [x] `wuxia_boss_first_appearance`는 boss-wall/final logic 압박이 커서 보류
+- [x] `wuxia_mumyeong_departure_truth_summary`는 후반 truth reveal/구원 조건 확정 범위가 커서 보류
+- [x] start conditions를 `conditions.locations: [cheongryu_outer_courtyard]`, `required_flags: [mumyeong_copy_style_reveal_resolved, copy_style_hint_recorded, midgame_continuity_started, first_fragment_seen]`, `forbidden_flags: [mumyeong_reads_orthodox_style_resolved]`로 문서화
+- [x] stable choice id 후보 `compare_copied_form_to_old_wound`, `trace_qingliu_eye_variation`, `reconstruct_mumyeongs_sightline`, `stop_before_truth_becomes_accusation` 고정
+- [x] 현악문/복호금쇄수는 최신 확정명으로 사용하되 무명 이탈 진실 전체 reveal은 열지 않는다고 명시
+- [x] 천외편린 3택 reward/ability schema, combat resolver/schema, boss first appearance, 무명 중반 재회, route graph/faction reputation/debt/relation/epilogue/return schema, 천기록 정체 reveal은 열지 않는다고 명시
+- [x] storypack DB JSON mirror와 docs contract를 다음 runtime handoff 기준으로 갱신
+- [x] runtime YAML/Rust/Web/generated bundle, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 작업을 `wuxia_mumyeong_reads_orthodox_style` runtime implementation으로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

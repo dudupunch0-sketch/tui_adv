@@ -1809,6 +1809,58 @@ Notion live 대조:
 - 이제 `wuxia_mumyeong_midgame_reunion`의 선행 조건 중 “첫 대치 이후”와 카피 무공/결함 단서는 충족됐지만, “무명 과거 단서 일부”가 충분한지는 다시 Notion과 repo hooks를 대조해야 한다.
 - 같은 handoff에서 `wuxia_boss_first_appearance`, `wuxia_mumyeong_departure_truth_summary`, `wuxia_mumyeong_reads_orthodox_style` 같은 후속 후보도 비교하되, boss combat/final-wall pressure, 무명 과거 진실 reveal, random copy-style table, reward/ability/epilogue/return schema를 바로 열지 말지 먼저 문서에서 결정한다.
 
+## 0.34 2026-06-02 docs-only post-copy-style handoff: `wuxia_mumyeong_reads_orthodox_style`
+
+현재 상태: docs-only handoff 완료. `wuxia_mumyeong_followup_after_copy_style_reveal`에서 Notion 사건 카드 DB와 repo runtime hook을 대조해 다음 runtime 후보를 `wuxia_mumyeong_reads_orthodox_style`로 결정했다. 이번 slice에서는 runtime YAML, Rust/Web generated preview bundle, 기본 office bundle을 수정하지 않았다.
+
+대조한 Notion source:
+
+- 사건 카드 DB `wuxia_mumyeong_midgame_reunion` / `무명 중반 재회`: 선행 조건이 첫 대치 이후와 무명 과거 단서 일부다. 카피 무공 공개로 카피 결함 단서는 생겼지만, 무명이 왜 정파식 제압술과 단절했는지에 대한 과거 단서가 아직 얇다.
+- 사건 카드 DB `wuxia_boss_first_appearance` / `보스 첫 등장`: 첫 대치 이후 또는 흑사방 압박 일정 수준이면 열 수 있지만, 보스는 최종 논리 결산을 담당한다. 지금 열면 boss-wall/final logic pressure와 boss combat 기대가 너무 빨리 커진다.
+- 사건 카드 DB `wuxia_mumyeong_departure_truth_summary` / `무명 이탈의 진실 정리`: 현악문, 복호금쇄수, 서하린에게 진실 전달, 무명 구원 조건을 한 번에 정리하는 후반/후일담 트리거 카드다. 지금 열면 무명 과거 진실 reveal과 구원 루트를 너무 직접적으로 확정한다.
+- 사건 카드 DB `wuxia_mumyeong_reads_orthodox_style` / `무명의 정파 무공 간파`: 무명이 특별한 눈으로 청류문 습격자의 정파 계열 흔적, 특히 현악문과 복호금쇄수를 읽어낸다는 중반 단서 카드다. 카피 무공 공개가 남긴 `copy_style_hint_recorded`, `copied_form_family_seen`, `breath_mismatch_marks_copy`, `understanding_is_not_copying`을 과거 단서로 연결하기 좋다.
+- `04. 메인 루트 구조`: 무명은 라이벌 결산을 담당하고, 보스는 최종 논리 결산을 담당한다. 따라서 보스는 아직 보류하고 무명 과거 단서를 먼저 보강한다.
+- `05. 사건 카드 운영 규칙`: 사건 ID/선행 조건/선택지/결과/보상/후일담 연결을 카드 단위로 관리한다.
+- `07. 천기록 / 천외편린 보상`: 주인공의 이해/재구성은 무명의 카피와 대비된다. 단, 천기록은 검색창이 아니고 3택 reward schema는 아직 별도 slice다.
+- `99. 통합 체크포인트`: 현악문, 복호금쇄수, 무명은 서하린의 사제, 천기록 기록자 정체 미공개가 최신 확정 기준이다.
+
+후보 비교:
+
+| 후보 | 장점 | 위험 | 결정 |
+|---|---|---|---|
+| `wuxia_mumyeong_reads_orthodox_style` | copy-style reveal이 남긴 카피 결함/호흡 불일치 clue를 무명의 과거 시야와 현악문/복호금쇄수 단서로 이어 준다. 기존 flags/clues/log/presentation만으로 표현 가능하다. | `wuxia_qingliu_attack_after_war` 전체 backstory나 무명 이탈 진실을 한 번에 열면 scope가 커진다. | 다음 runtime 후보 |
+| `wuxia_mumyeong_midgame_reunion` | 라이벌/거울 관계를 깊게 만든다. | 아직 무명 과거 단서 일부가 부족하다. 먼저 정파 무공 간파 단서가 필요하다. | 보류 |
+| `wuxia_boss_first_appearance` | 흑사방 보스의 최종 벽을 각인한다. | boss-wall/final logic pressure, boss combat, 조직력/약점 읽기 schema가 커진다. | 보류 |
+| `wuxia_mumyeong_departure_truth_summary` | 무명 구원 루트 핵심 진실을 정리한다. | 후반/후일담 트리거 성격이 강하고, 서하린에게 진실 전달과 구원 조건을 너무 빨리 확정한다. | 보류 |
+
+결정:
+
+- 다음 runtime 후보는 `wuxia_mumyeong_reads_orthodox_style`로 정한다.
+- 이 구현은 `wuxia_qingliu_attack_after_war` 전체 과거 회상이나 `wuxia_mumyeong_departure_truth_summary`의 진실 reveal을 열지 않는다.
+- 현악문/복호금쇄수는 최신 확정명으로 사용하되, “무명이 청류문을 떠난 진실 전체”가 아니라 “무명이 읽어낸 정파식 통제 무공의 흔적”으로 제한한다.
+- 천기록/청류안은 카피와 대비되는 관찰/재구성 clue만 남기고, 3택 reward/ability schema는 열지 않는다.
+
+`wuxia_mumyeong_reads_orthodox_style` 설계 경계:
+
+- start conditions: `runtime_mode: storypack_preview`, `conditions.locations: [cheongryu_outer_courtyard]`, `required_flags: [mumyeong_copy_style_reveal_resolved, copy_style_hint_recorded, midgame_continuity_started, first_fragment_seen]`, `forbidden_flags: [mumyeong_reads_orthodox_style_resolved]`
+- flavor-only flags: `copied_form_family_seen`, `copy_is_surface_not_root`, `breath_mismatch_marks_copy`, `understanding_is_not_copying`, `fragment_candidate_variation_foreshadowed`, `righteous_route_opened`, `sapa_route_opened`, `cheonggi_return_route_opened`
+- stable choice ids:
+  - `compare_copied_form_to_old_wound`
+  - `trace_qingliu_eye_variation`
+  - `reconstruct_mumyeongs_sightline`
+  - `stop_before_truth_becomes_accusation`
+- common outcome hook: 모든 선택지는 `mumyeong_reads_orthodox_style_resolved`, `orthodox_style_trace_recorded`, `destination_id: cheongryu_outer_courtyard` bridge를 남긴다.
+- primary flags/clues: `hyeonakmun_trace_suspected`, `bokho_geumsaesu_name_recorded`, `mumyeong_eye_variation_noted`, `orthodox_control_is_violence`, `departure_truth_still_incomplete`.
+- presentation 권장: `visual_id: wuxia_mumyeong_reads_orthodox_style`, `speaker: 천기록`, `layout: orthodox_style_trace`, effect cue stable terms `[현악문, 복호금쇄수, 무명]`.
+- non-goals: `wuxia_mumyeong_midgame_reunion`, `wuxia_boss_first_appearance`, `wuxia_mumyeong_departure_truth_summary`, `wuxia_qingliu_attack_after_war` full flashback, boss combat, 무명 구원 확정, 서하린에게 진실 전달, seed 기반 random copy-style system/table, combat resolver/schema, HP 숫자전, route graph, faction reputation, relation/debt ledger, reward/ability schema, 천외편린 3택 성장, epilogue/return system, 천기록 identity reveal, 기본 office bundle 변경.
+
+다음 runtime 구현 handoff:
+
+- `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`: `wuxia_mumyeong_copy_style_reveal` 뒤에 `wuxia_mumyeong_reads_orthodox_style`를 추가한다.
+- Rust/Web generated storypack preview bundle만 재생성한다.
+- Python exporter/docs/storypack DB, Rust content bundle, WASM JSON boundary, terminal smoke, Web content bundle registry 테스트를 갱신한다.
+- 기본 `src/tui_adv/data/*.yaml`, 기본 `content.bundle.json`, Web 기본 generated bundle, legacy `escape-office` save/localStorage key는 변경하지 않는다.
+
 ## 1. 목표
 
 국내 최고 대기업 IT/반도체 회사의 연구개발동 같은 사무실을 배경으로 한 TUI 기반 랜덤 인카운터 선택지 생존 게임을 만든다.
@@ -2377,20 +2429,22 @@ src/tui_adv/data/secrets.example.yaml
 50. 무협 rival confrontation docs-only handoff 완료: Notion 사건 카드 DB `wuxia_mumyeong_first_confrontation`, `wuxia_mumyeong_midgame_reunion`, `wuxia_boss_first_appearance`와 운영 문서 `04`/`05`/`06`/`07`/`99`를 대조해 다음 runtime 후보를 `wuxia_mumyeong_first_confrontation`로 결정했다. 첫 대치는 승리 판정이 아니라 버티기/관찰/분석 encounter로 구현하며, combat schema/route graph/faction reputation/debt/relation/reward/ability/epilogue/return schema는 열지 않는다. runtime YAML/Rust/Web/generated artifact는 아직 변경하지 않았다.
 51. 무협 `wuxia_mumyeong_first_confrontation` preview runtime slice 완료: 무명 첫 대치를 같은 storypack preview source에 추가했다. stable choice id 5개, `mumyeong_first_confrontation_resolved`/`mumyeong_rival_thread_opened` common hook, 카피 무공 결함/승리 불필요/서하린 침묵/청류안 대비 clues, Rust/Web generated preview artifact, Python/Rust/WASM/terminal/Web parity tests를 갱신했다. 기본 office bundle과 legacy `escape-office` save/localStorage key는 변경하지 않았다.
 52. 무협 `wuxia_mumyeong_copy_style_reveal` preview runtime slice 완료: 무명의 카피 무공 공개를 같은 storypack preview source에 추가했다. stable choice id 4개, `mumyeong_copy_style_reveal_resolved`/`copy_style_hint_recorded` common hook, 카피 계열/호흡 불일치/겉흐름 복사/천외편린 후보 변형 clues, Rust/Web generated preview artifact, Python/Rust/WASM/terminal/Web parity tests를 갱신했다. Web/default storypack은 이구학지이며, legacy office bundle과 `escape-office` save/localStorage key는 변경하지 않았다.
+53. 무협 post-copy-style docs-only handoff 완료: Notion 사건 카드 DB `wuxia_mumyeong_midgame_reunion`, `wuxia_boss_first_appearance`, `wuxia_mumyeong_departure_truth_summary`, `wuxia_mumyeong_reads_orthodox_style`와 운영 문서 `04`/`05`/`07`/`99`를 대조해 다음 runtime 후보를 `wuxia_mumyeong_reads_orthodox_style`로 결정했다. 현악문/복호금쇄수 단서를 flags/clues/log/presentation으로 먼저 열고, 무명 중반 재회, 보스 첫 등장, 무명 이탈 진실 정리, random copy-style/reward/combat/route graph schema는 아직 열지 않는다.
 
 현재 최우선 남은 작업:
 
-1. 무협 storypack preview/main의 다음 작업은 `wuxia_mumyeong_followup_after_copy_style_reveal` docs-only handoff다. `wuxia_mumyeong_copy_style_reveal` runtime implementation은 완료됐으므로, 다음 세션은 Notion 사건 카드 DB와 repo hooks를 다시 대조해 copy-style reveal 이후의 한 후보만 다음 runtime 대상으로 고른다.
+1. 무협 storypack preview/main의 다음 작업은 `wuxia_mumyeong_reads_orthodox_style` runtime implementation이다. `wuxia_mumyeong_followup_after_copy_style_reveal` docs-only handoff는 완료됐고, 다음 runtime 후보는 무명의 정파 무공 간파로 결정했다.
    - 현재 Web/default storypack은 `wuxia_jianghu_pack` / **이구학지 — 천기록**이다.
    - `escape from the office` / office isolation 계열은 legacy/parity content로 유지한다.
    - machine-readable storypack DB, preview mode 결정, `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`, `wuxia_wounded_shelter_dawn_offers`, `wuxia_mumyeong_first_sighting`, `wuxia_mumyeong_first_confrontation`, `wuxia_mumyeong_copy_style_reveal`, Web/default 이구학지 start/save wiring은 완료했다.
-   - 다음 handoff에서는 `wuxia_mumyeong_midgame_reunion`, `wuxia_boss_first_appearance`, `wuxia_mumyeong_departure_truth_summary`, `wuxia_mumyeong_reads_orthodox_style`를 비교한다.
+   - 다음 implementation은 `mumyeong_copy_style_reveal_resolved`, `copy_style_hint_recorded`, `midgame_continuity_started`, `first_fragment_seen`를 요구하고, `wuxia_mumyeong_copy_style_reveal` 뒤에 `wuxia_mumyeong_reads_orthodox_style`를 추가한다.
    - copy-style reveal은 `copy_style_hint_recorded`, `copied_form_family_seen`, `copy_is_surface_not_root`, `breath_mismatch_marks_copy`, `understanding_is_not_copying`, `fragment_candidate_variation_foreshadowed` hook을 남겼다.
    - `preview launcher/UI wiring`은 이미 구현했으므로 후속 slice에서 다시 구현하지 않는다.
    - route opener 후속도 faction/route graph schema를 열지 않고 flags/clues/log/presentation으로만 남긴다.
    - `yageunmong_pack`은 docs/data 후보로 반영됐지만 기본 office runtime을 대체하지 않는다. 야근몽 runtime은 별도 preview 후보로만 연다.
    - legacy office `content.bundle.json`, `src/tui_adv/data/*.yaml`, `escape-office` save/localStorage key는 계속 바꾸지 않는다.
    - 천외편린/각성편린 3택 성장 schema, relation/debt/faction/companion schema는 별도 검증 전까지 열지 않는다.
+   - 무명 중반 재회, 보스 첫 등장, 무명 이탈 진실 정리, 청류문 습격 전체 과거 회상은 아직 열지 않고, 현악문/복호금쇄수 단서만 먼저 기록한다.
    - Rust GameCore / `ScenePage` / WASM JSON boundary 책임 분리와 renderer-neutral 원칙을 유지한다.
 
 전환 중 유지:
@@ -2413,7 +2467,7 @@ src/tui_adv/data/secrets.example.yaml
 8. Web player start/save UX first slice 후속: save JSON export/import, settings/reduce-motion UI, 오늘의 seed는 별도 승격 전까지 열지 않는다.
 9. 여러 히든 현실 보물
 10. 전투 시스템 후속 slice는 `docs/design/Basic_Combat_Action_Model.md`의 action taxonomy를 기준으로 `supply_closet_auto_brawl`와 `wuxia_cheongryu_chore_sparring` 이후에도 반복 가치가 확인될 때만 presentation metadata 정리 또는 Rust combat resolver로 승격한다.
-11. 무협 storypack 후속: 정파/사파/천기·귀환 opener(`wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`), deferred-offer card `wuxia_wounded_shelter_dawn_offers`, common midgame bridge `wuxia_mumyeong_first_sighting`, rival first confrontation `wuxia_mumyeong_first_confrontation`, copy-style reveal `wuxia_mumyeong_copy_style_reveal`까지 구현 완료했다. 다음은 `wuxia_mumyeong_followup_after_copy_style_reveal` docs-only handoff다.
+11. 무협 storypack 후속: 정파/사파/천기·귀환 opener(`wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`), deferred-offer card `wuxia_wounded_shelter_dawn_offers`, common midgame bridge `wuxia_mumyeong_first_sighting`, rival first confrontation `wuxia_mumyeong_first_confrontation`, copy-style reveal `wuxia_mumyeong_copy_style_reveal`까지 구현 완료했다. 다음은 `wuxia_mumyeong_reads_orthodox_style` runtime implementation이다.
 12. 천외편린/각성편린 3택 reward/ability schema는 schema-less bridge가 충분히 검증된 뒤 별도 slice로 검토한다.
 13. 야근몽 storypack preview 후속: `yageunmong_late_night_desk_awake` 또는 각성편린 3택 preview를 별도 storypack preview로 열지 결정한다.
 
@@ -2460,13 +2514,13 @@ Web 또는 terminal renderer가 게임 규칙을 다시 구현하면 Rust GameCo
 
 ## 10. 다음 액션
 
-1. 다음 무협 storypack preview/main 작업은 `wuxia_mumyeong_followup_after_copy_style_reveal` docs-only handoff다.
+1. 다음 무협 storypack preview/main 작업은 `wuxia_mumyeong_reads_orthodox_style` runtime implementation이다.
    - `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`, `wuxia_wounded_shelter_dawn_offers`, `wuxia_mumyeong_first_sighting`, `wuxia_mumyeong_first_confrontation`, `wuxia_mumyeong_copy_style_reveal`는 이미 이구학지 runtime bundle에 구현되어 있다.
    - Web/default storypack은 이구학지이며, terminal은 `--storypack-preview wuxia_jianghu_pack`로 같은 bundle을 명시 실행할 수 있다. Web의 별도 preview launcher는 이구학지가 기본이 되면서 목록에서 비워 두었다.
    - 이구학지 runtime은 계속 `storypack_preview` 계열 bundle metadata와 `default_location: wuxia_commute_rift` 시작점을 유지하되, Web player에서는 이를 `storypack_main`으로 감싼 default bundle JSON으로 사용한다.
    - `wuxia_mumyeong_copy_style_reveal` 구현으로 `mumyeong_copy_style_reveal_resolved`, `copy_style_hint_recorded`, `copied_form_family_seen`, `copy_is_surface_not_root`, `breath_mismatch_marks_copy`, `understanding_is_not_copying`, `fragment_candidate_variation_foreshadowed` hook이 생겼다.
-   - 다음 handoff는 Notion 사건 카드 DB `wuxia_mumyeong_midgame_reunion`, `wuxia_boss_first_appearance`, `wuxia_mumyeong_departure_truth_summary`, `wuxia_mumyeong_reads_orthodox_style`를 비교하고, 한 후보만 다음 runtime 대상으로 결정한다.
-   - 이번 handoff에서는 runtime YAML/Rust/Web generated preview bundle을 수정하지 않는다.
+   - `wuxia_mumyeong_followup_after_copy_style_reveal` docs-only handoff에서 다음 runtime 후보를 `wuxia_mumyeong_reads_orthodox_style`로 결정했다.
+   - 이번 implementation에서는 runtime YAML과 Rust/Web generated storypack preview bundle만 수정한다.
    - seed 기반 random copy-style system/table, 천외편린 3택 reward/ability schema, boss combat/final-wall pressure, 무명 과거 진실 reveal은 바로 열지 않는다.
    - legacy office `content.bundle.json`, `src/tui_adv/data/*.yaml`, `escape-office` save/localStorage key는 바꾸지 않는다.
    - Rust GameCore / `ScenePage` / WASM JSON boundary가 가진 gameplay truth를 renderer가 재계산하지 않는다.

@@ -2,42 +2,29 @@ import { describe, expect, it } from 'vitest';
 
 import {
   DEFAULT_CONTENT_BUNDLE_JSON,
+  DEFAULT_STORYPACK_ID,
+  DEFAULT_STORYPACK_LABEL,
   STORYPACK_PREVIEW_OPTIONS,
   storypackPreviewById,
 } from './contentBundles';
 
 describe('runtime content bundle registry', () => {
-  it('keeps the default office bundle separate from storypack previews', () => {
-    const office = JSON.parse(DEFAULT_CONTENT_BUNDLE_JSON) as { content: { encounters: Array<{ id: string }> } };
-    const officeEncounterIds = office.content.encounters.map((encounter) => encounter.id);
-
-    expect(officeEncounterIds).toContain('ex_employee_messenger');
-    expect(officeEncounterIds).not.toContain('wuxia_commute_rift_arrival');
-    expect(officeEncounterIds).not.toContain('wuxia_heuksa_bang_first_fight');
-    expect(officeEncounterIds).not.toContain('wuxia_cheonggi_record_first_fragment');
-    expect(officeEncounterIds).not.toContain('wuxia_seo_harin_rescue');
-    expect(officeEncounterIds).not.toContain('wuxia_cheongryu_apprentice_entry');
-    expect(officeEncounterIds).not.toContain('wuxia_cheongryu_chore_sparring');
-    expect(officeEncounterIds).not.toContain('wuxia_cheongryu_raid_route_split');
-    expect(officeEncounterIds).not.toContain('wuxia_cheongryu_raid_wounded_fallback');
-  });
-
-  it('registers wuxia_jianghu_pack as an explicit Web storypack preview option', () => {
-    const option = storypackPreviewById('wuxia_jianghu_pack');
-    const bundle = JSON.parse(option?.contentBundleJson ?? '{}') as {
+  it('uses 이구학지 as the default Web runtime storypack', () => {
+    const bundle = JSON.parse(DEFAULT_CONTENT_BUNDLE_JSON) as {
       runtime?: { runtime_mode?: string; storypack_id?: string; default_location?: string };
-      content?: { encounters?: Array<{ id: string }> };
+      content: { encounters: Array<{ id: string }> };
     };
+    const encounterIds = bundle.content.encounters.map((encounter) => encounter.id);
 
-    expect(STORYPACK_PREVIEW_OPTIONS).toHaveLength(1);
-    expect(option?.label).toContain('이구학지');
+    expect(DEFAULT_STORYPACK_ID).toBe('wuxia_jianghu_pack');
+    expect(DEFAULT_STORYPACK_LABEL).toBe('이구학지 — 천기록');
     expect(bundle.runtime).toEqual({
-      runtime_mode: 'storypack_preview',
+      runtime_mode: 'storypack_main',
       world_id: 'wuxia_jianghu',
       storypack_id: 'wuxia_jianghu_pack',
       default_location: 'wuxia_commute_rift',
     });
-    expect(bundle.content?.encounters?.map((encounter) => encounter.id)).toEqual([
+    expect(encounterIds).toEqual([
       'wuxia_commute_rift_arrival',
       'wuxia_heuksa_bang_first_fight',
       'wuxia_cheonggi_record_first_fragment',
@@ -47,5 +34,11 @@ describe('runtime content bundle registry', () => {
       'wuxia_cheongryu_raid_route_split',
       'wuxia_cheongryu_raid_wounded_fallback',
     ]);
+    expect(encounterIds).not.toContain('ex_employee_messenger');
+  });
+
+  it('does not expose 이구학지 as an opt-in preview now that it is the default', () => {
+    expect(STORYPACK_PREVIEW_OPTIONS).toHaveLength(0);
+    expect(storypackPreviewById('wuxia_jianghu_pack')).toBeUndefined();
   });
 });

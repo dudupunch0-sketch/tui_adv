@@ -1,4 +1,4 @@
-export const PLAYER_SETTINGS_KEY = 'escape-office.player-settings.v1';
+export const PLAYER_SETTINGS_KEY = 'tui-adv.player-settings.v1';
 
 const SETTINGS_SCHEMA_VERSION = 1;
 

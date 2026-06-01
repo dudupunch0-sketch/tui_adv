@@ -3,7 +3,9 @@ import '@fontsource/noto-serif-kr/korean-700.css';
 import './styles/storybook.css';
 
 import {
+  DEFAULT_STORYPACK_LABEL,
   STORYPACK_PREVIEW_OPTIONS,
+  defaultStorypackLoadingPage,
   storypackPreviewById,
   storypackPreviewLoadingPage,
   type StorypackPreviewOption,
@@ -38,7 +40,7 @@ import {
 import { renderStorybookPage } from './ui/storybook/render';
 
 const DEFAULT_SEED = 123;
-const REQUIRE_WASM = import.meta.env.VITE_REQUIRE_WASM === 'true';
+const REQUIRE_WASM = import.meta.env.VITE_REQUIRE_WASM !== 'false';
 const STORYPACK_PREVIEW_ACTION_PREFIX = 'start-storypack-preview:';
 
 type PlayerScreen = 'start' | 'game';
@@ -74,6 +76,7 @@ async function bootstrapWasmRuntime(initialStateJson?: string): Promise<void> {
     fatalPlayerError = false;
     lastError = null;
     saveWasmState();
+    transitionController.cancel();
     render();
   } catch (error) {
     if (playerScreen !== 'game') return;
@@ -88,6 +91,7 @@ async function bootstrapWasmRuntime(initialStateJson?: string): Promise<void> {
       return;
     }
     lastError = `Rust GameCore WASM을 불러오지 못해 legacy mirror로 임시 실행 중입니다: ${errorMessage(error)}`;
+    transitionController.cancel();
     render();
   }
 }
@@ -104,7 +108,10 @@ function render(): void {
 
 function renderGamePage(page: ScenePage): void {
   actionSource = page;
-  appRoot.innerHTML = renderStorybookPage(page);
+  appRoot.innerHTML = renderStorybookPage(page, {
+    audioLabel: playerSettings.audio === 'on' ? '소리 켜짐' : '소리 꺼짐',
+    motionLabel: `연출 ${playerSettings.motion}`,
+  });
   if (lastError) {
     const errorElement = document.createElement('p');
     errorElement.className = 'storybook-runtime-warning';
@@ -113,6 +120,11 @@ function renderGamePage(page: ScenePage): void {
   }
   appRoot.querySelectorAll<HTMLButtonElement>('[data-action-id]').forEach((button) => {
     button.addEventListener('click', () => runAction(button.dataset.actionId ?? ''));
+  });
+  appRoot.querySelectorAll<HTMLButtonElement>('[data-player-action]').forEach((button) => {
+    button.addEventListener('click', () => {
+      void runPlayerAction(button.dataset.playerAction ?? '');
+    });
   });
   const canvas = appRoot.querySelector<HTMLCanvasElement>('[data-anomaly-canvas="printer-flow"]');
   if (canvas) {
@@ -143,6 +155,11 @@ function renderStart(): void {
 }
 
 async function runPlayerAction(action: string): Promise<void> {
+  if (action === 'open-start-menu') {
+    const startDrawer = appRoot.querySelector<HTMLElement>('.start-menu-drawer');
+    startDrawer?.setAttribute('data-start-menu-open', 'true');
+    return;
+  }
   if (action === 'continue') {
     await unlockAudioFromGesture();
     startGameFromSave();
@@ -166,6 +183,26 @@ async function runPlayerAction(action: string): Promise<void> {
   if (action === 'reset-save') {
     clearPlayerSaves(window.localStorage);
     confirmReset = false;
+    render();
+    return;
+  }
+  if (action === 'show-start') {
+    playerScreen = 'start';
+    confirmReset = false;
+    lastError = null;
+    render();
+    return;
+  }
+  if (action === 'abandon-run') {
+    if (!activeStorypackPreview) clearPlayerSaves(window.localStorage);
+    playerScreen = 'start';
+    confirmReset = false;
+    fatalPlayerError = false;
+    lastError = null;
+    wasmRuntime = null;
+    activeStorypackPreview = null;
+    state = newGame({ seed: activeSeed });
+    turn = buildTurn(state);
     render();
     return;
   }
@@ -298,12 +335,12 @@ function renderFatalPlayerError(message: string, error: unknown): void {
   appRoot.innerHTML = '';
   const shell = document.createElement('main');
   shell.className = 'storybook-shell storybook-fatal';
-  shell.dataset.app = 'escape-office';
+  shell.dataset.app = 'tui-adv';
   shell.dataset.renderer = 'web-storybook';
   shell.dataset.mode = 'fatal-error';
 
   const title = document.createElement('h1');
-  title.textContent = 'ESCAPE FROM THE OFFICE';
+  title.textContent = DEFAULT_STORYPACK_LABEL;
   const summary = document.createElement('p');
   summary.className = 'storybook-runtime-error';
   summary.textContent = message;
@@ -321,6 +358,9 @@ function currentScenePage(): ScenePage {
   }
   if (activeStorypackPreview) {
     return storypackPreviewLoadingPage(activeStorypackPreview);
+  }
+  if (REQUIRE_WASM) {
+    return defaultStorypackLoadingPage();
   }
   turn = buildTurn(state);
   return scenePageFromLegacyTurn(turn);

@@ -1,8 +1,8 @@
-# escape from the office
+# tui_adv
 
 TUI 기반 랜덤 인카운터 선택지 생존 게임 엔진/콘텐츠 프로젝트.
 
-현재 기본 storypack은 회사 사무실 아포칼립스인 `escape from the office`다. 플레이어는 갑자기 사람이 모두 사라지고 공간 또는 차원 단위로 격리된 대기업 연구개발동에서 시작한다. 다만 장기 개발 방향은 회사 전용 게임이 아니라, storypack/world를 바꿔 회사 자각몽 `yageunmong_pack`이나 무협 `wuxia_jianghu_pack` 같은 다른 세계관/전제를 같은 Rust GameCore, Web Storybook, SuperLightTUI renderer 계약으로 플레이할 수 있는 구조다. `yageunmong_pack`은 기본 office runtime을 대체하지 않는 office-family 후보이고, 첫 비-office 기준팩은 현대 회사원이 본인 몸과 출근복장 그대로 무협 세계에 전이되는 **이구학지 — 천기록**이다.
+현재 메인/default storypack은 `wuxia_jianghu_pack` / **이구학지 — 천기록**이다. 플레이어는 현대 회사원인 본인 몸과 출근복장 그대로 무협 세계에 전이되어, 강호 생존과 천기록/천외편린 성장 구조를 경험한다. 회사 사무실 아포칼립스 `escape from the office`는 기존 기준팩/legacy content로 남기되, 새 Web player 기본 경로와 UI/UX 검증은 이구학지를 우선한다. 장기 개발 방향은 storypack/world를 바꿔 회사 자각몽 `yageunmong_pack` 같은 다른 세계관도 같은 Rust GameCore, Web Storybook, SuperLightTUI renderer 계약으로 플레이할 수 있는 구조다.
 
 ## 현재 단계
 
@@ -145,7 +145,7 @@ npm run preview:player
 
 `npm run wasm:build`는 `wasm-pack build ../crates/escape-wasm --target web --out-dir ../../web/src/core/wasm-pkg`를 실행한다. 생성되는 `web/src/core/wasm-pkg/`는 로컬 build artifact라서 Git에 커밋하지 않는다. `npm run build:wasm`은 Vite build 뒤 `npm run wasm:copy`를 실행해 이 generated package를 `web/dist/assets/wasm-pkg/`로 복사하므로 player artifact의 dynamic WASM import 경로가 함께 배포된다.
 
-현재 브라우저 앱은 Web player start screen을 먼저 표시한 뒤 Web Storybook + GlyphFX renderer를 기본 플레이 화면으로 사용한다. 시작 화면은 localStorage 기반 이어하기/새 게임/seed 표시/save timestamp/reset confirmation과 별도 `wuxia_jianghu_pack` storypack preview launcher를 제공한다. 기본 office run은 `escape-office.rust.save.v1` 계열 key를 유지하고, storypack preview run은 그 key를 쓰지 않는다. `web/src/core/wasmRuntime.ts`가 generated content bundle(`web/src/data/generated/content.bundle.json`)을 `escape-wasm` JSON-string boundary에 전달해 Rust GameCore의 `ScenePage`/`ActionResult`를 소비한다. `web/src/core/contentBundles.ts`는 기본 office bundle과 Web generated storypack preview bundle을 분리한다. Rust/WASM-primary preview는 `npm run build:wasm` 또는 `npm run preview:wasm` 경로로 확인한다. generated wasm package가 없거나 `wasm-pack`/Rust toolchain이 없는 개발 환경에서는 legacy TypeScript mirror가 fallback/parity oracle로 동작한다. legacy TypeScript mirror와 Python/Textual은 freeze 상태이며, 새 게임 규칙은 Rust GameCore에만 추가한다. 공개 secret JSON과 content bundle에는 실제 사무실 최종 위치나 `final_hint`를 넣지 않는다.
+현재 브라우저 앱은 Web player start screen을 먼저 표시한 뒤 Web Storybook + GlyphFX renderer를 기본 플레이 화면으로 사용한다. 시작 화면은 localStorage 기반 이어하기/새 게임/seed 표시/save timestamp/reset confirmation을 제공하며, 기본 Web runtime은 `wuxia_jianghu_pack` / **이구학지 — 천기록** bundle을 사용한다. 이구학지 기본 run은 `igu-hakji.rust.save.v1` 계열 key를 사용해 기존 office save와 섞이지 않는다. `web/src/core/wasmRuntime.ts`가 default storypack bundle을 `escape-wasm` JSON-string boundary에 전달해 Rust GameCore의 `ScenePage`/`ActionResult`를 소비한다. Rust/WASM이 없으면 이구학지 기본 player를 시작할 수 없으므로 `npm run build:wasm` 또는 `npm run preview:wasm` 경로로 확인한다. legacy TypeScript mirror와 Python/Textual은 freeze 상태이며, 새 게임 규칙은 Rust GameCore에만 추가한다. 공개 secret JSON과 content bundle에는 실제 사무실 최종 위치나 `final_hint`를 넣지 않는다.
 
 배포 표면은 현재 Web-only로 결정했다. `npm run build:player`는 Rust/WASM-primary Web 정적 산출물(`web/dist/`)을 만들고, `npm run preview:player`는 같은 경로를 로컬 preview한다. Tauri/Electron은 desktop wrapper의 고유 가치가 생길 때까지 deferred 상태이며, 결정 기록은 `docs/dev/Web_Distribution_Decision.md`에 둔다.
 

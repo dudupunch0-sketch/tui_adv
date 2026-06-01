@@ -1,4 +1,4 @@
-# escape from the office 전체 개발 계획
+# tui_adv 전체 개발 계획
 
 > **Canonical main plan:** 이 repo의 현재 개발 우선순위, 다음 작업 순서, active direction은 이 파일이 기준이다. 다른 LLM/agent에게 작업을 맡길 때는 “`docs/dev/Development_Plan.md`를 메인 플랜으로 보고 다음 작업을 진행해”라고 지시한다.
 >
@@ -26,6 +26,16 @@
 5. Notion reference 대조까지 완료했거나 명시적으로 폐기/병합한 경우에만 해당 idea entry를 `done` 처리한다. 단순 import나 설계 아이디어 문서 작성만으로는 `done` 처리하지 않는다.
 
 2026-06-01 추가 규칙: `이구학지 — 천기록` Notion source는 상위 문서가 초기 기획/시놉시스 역할을 하고, 최신 세부 운영 기준은 `00`~`08` 하위 관리 문서와 `09. 이구학지 사건 카드 DB` / `10. 이구학지 후일담 카드 DB`가 우선한다. repo 구현은 여전히 이 파일과 `docs/content/*`, `docs/design/*` canonical docs를 통과해야 하며, Notion DB row를 읽었다는 이유만으로 runtime 구현 완료나 기본 bundle 반영으로 표시하지 않는다. 최신 source ledger와 coverage는 `docs/dev/Notion_Design_Coverage.md` 및 `idea_box/notion_sources.yml`를 본다.
+
+## 0.0b 2026-06-01 default storypack 전환
+
+현재 메인/default storypack은 `wuxia_jianghu_pack` / **이구학지 — 천기록**으로 전환한다. 새 Web player 기본 UX, UI/UX QA, 이후 runtime slice는 이구학지를 우선한다.
+
+- Web player의 새 게임은 이구학지 bundle을 기본으로 로드한다.
+- 이구학지 기본 run은 `igu-hakji.rust.save.v1` / `igu-hakji.last-run-summary.v1` 계열 localStorage key를 사용해 기존 office save와 섞이지 않게 한다.
+- 기존 `escape from the office` content와 `escape-office.*` save key는 legacy/parity/cleanup 대상으로 남긴다.
+- Rust/WASM GameCore가 이구학지 Web player의 필수 경로다. generated wasm package가 없을 때 office TypeScript mirror로 조용히 fallback하지 않는다.
+- 아래 과거 섹션의 “기본 office bundle 유지”, “preview only” 문구는 당시 slice 기록이다. 최신 작업 판단은 이 섹션과 상단 우선순위를 우선한다.
 
 ## 0. 2026-05-22 방향 갱신
 

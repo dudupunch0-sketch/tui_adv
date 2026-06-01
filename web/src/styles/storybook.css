@@ -3,9 +3,9 @@
   font-family: "Noto Serif KR", "Noto Sans KR", "Noto Sans CJK KR", "Apple SD Gothic Neo", "Malgun Gothic", serif;
   background: #1d1b20;
   color: #2e2a23;
-  --paper: #c8c0ad;
-  --paper-light: #ded6c2;
-  --paper-shadow: #9c927f;
+  --paper: #c9bea4;
+  --paper-light: #e5dcc4;
+  --paper-shadow: #96886d;
   --ink: #2e2a23;
   --muted-ink: #756e61;
   --faint-ink: rgba(46, 42, 35, 0.46);
@@ -31,8 +31,8 @@ body {
   min-height: 100vh;
   margin: 0;
   background:
-    radial-gradient(circle at 50% -8%, rgba(221, 210, 170, 0.22), transparent 28rem),
-    linear-gradient(180deg, #161319 0%, #27232a 100%);
+    radial-gradient(circle at 50% -8%, rgba(221, 210, 170, 0.18), transparent 28rem),
+    linear-gradient(180deg, #161319 0%, #211f22 100%);
 }
 
 button,
@@ -70,8 +70,10 @@ button {
   padding: clamp(10px, 2vw, 16px) clamp(12px, 2.5vw, 18px) 18px;
   overflow: hidden;
   background:
-    radial-gradient(circle at 52% 4%, var(--paper-glow), transparent 18rem),
-    linear-gradient(180deg, var(--paper-light) 0%, var(--paper) 52%, #bdb39f 100%);
+    radial-gradient(circle at 50% 5%, rgba(255, 248, 221, 0.42), transparent 18rem),
+    radial-gradient(circle at 18% 34%, rgba(110, 83, 45, 0.06), transparent 18rem),
+    radial-gradient(circle at 76% 74%, rgba(85, 59, 28, 0.08), transparent 20rem),
+    linear-gradient(180deg, var(--paper-light) 0%, var(--paper) 48%, #bbae91 100%);
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 24px 80px rgba(0, 0, 0, 0.45);
 }
 
@@ -81,10 +83,23 @@ button {
   pointer-events: none;
   content: "";
   background-image:
-    linear-gradient(rgba(46, 42, 35, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(46, 42, 35, 0.025) 1px, transparent 1px);
-  background-size: 24px 24px, 24px 24px;
+    repeating-linear-gradient(0deg, rgba(46, 42, 35, 0.035) 0 1px, transparent 1px 7px),
+    repeating-linear-gradient(90deg, rgba(46, 42, 35, 0.025) 0 1px, transparent 1px 11px),
+    radial-gradient(circle at 18% 24%, rgba(72, 55, 28, 0.1), transparent 1.8px),
+    radial-gradient(circle at 72% 42%, rgba(72, 55, 28, 0.08), transparent 1.6px);
+  background-size: auto, auto, 48px 48px, 61px 61px;
   mix-blend-mode: multiply;
+}
+
+.storybook-shell::after {
+  position: absolute;
+  inset: 9px;
+  pointer-events: none;
+  content: "";
+  border: 1px solid rgba(83, 70, 50, 0.18);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 247, 205, 0.26),
+    inset 0 0 42px rgba(82, 61, 36, 0.12);
 }
 
 .storybook-start {
@@ -120,13 +135,13 @@ button {
   color: var(--terminal-green);
   font-family: "IBM Plex Mono", "JetBrains Mono", "D2Coding", monospace;
   font-size: 0.74rem;
-  letter-spacing: 0.08em;
+  letter-spacing: 0;
 }
 
 .start-card h1,
 .start-card h2 {
   margin: 0;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
 }
 
 .start-card h1 {
@@ -380,7 +395,7 @@ button {
   color: var(--muted-ink);
   font-family: "IBM Plex Mono", "JetBrains Mono", "D2Coding", "Noto Serif KR", monospace;
   font-size: clamp(0.72rem, 2.1vw, 0.9rem);
-  letter-spacing: 0.04em;
+  letter-spacing: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -440,6 +455,69 @@ button {
   font-family: "IBM Plex Mono", "JetBrains Mono", "D2Coding", "Noto Serif KR", monospace;
   font-size: clamp(0.72rem, 2vw, 0.86rem);
   box-shadow: inset 0 -2px 0 rgba(93, 71, 44, 0.22);
+}
+
+.hud-menu {
+  position: relative;
+  justify-self: end;
+  z-index: 4;
+}
+
+.hud-menu summary {
+  display: grid;
+  place-items: center;
+  width: clamp(38px, 7vw, 54px);
+  aspect-ratio: 1;
+  color: rgba(255, 255, 255, 0.94);
+  cursor: pointer;
+  list-style: none;
+  text-shadow: 2px 2px 0 rgba(80, 68, 50, 0.4);
+}
+
+.hud-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.hud-menu summary span {
+  font-size: clamp(1.5rem, 5vw, 2.4rem);
+  line-height: 1;
+}
+
+.hud-menu-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  display: grid;
+  min-width: 166px;
+  gap: 6px;
+  padding: 9px;
+  border: 1px solid rgba(80, 63, 39, 0.45);
+  background:
+    linear-gradient(180deg, rgba(232, 220, 189, 0.98), rgba(195, 179, 141, 0.98)),
+    repeating-linear-gradient(135deg, rgba(46, 42, 35, 0.04) 0 7px, transparent 7px 14px);
+  box-shadow: 0 14px 26px rgba(55, 43, 25, 0.28), inset 0 0 0 1px rgba(255, 247, 205, 0.32);
+}
+
+.hud-menu-panel button {
+  min-height: 34px;
+  padding: 6px 10px;
+  border: 0;
+  background: rgba(83, 70, 50, 0.1);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+}
+
+.hud-menu-panel button:hover,
+.hud-menu-panel button:focus-visible {
+  outline: 1px solid rgba(107, 81, 50, 0.45);
+  background: rgba(83, 70, 50, 0.18);
+}
+
+.hud-menu-rule {
+  height: 1px;
+  margin: 2px 0;
+  background: linear-gradient(90deg, transparent, rgba(83, 70, 50, 0.36), transparent);
 }
 
 .hud-settings {
@@ -574,6 +652,12 @@ button {
 .storybook-page {
   display: grid;
   gap: clamp(12px, 3vw, 22px);
+  padding: clamp(18px, 4vw, 30px) 0 clamp(12px, 3vw, 20px);
+  background:
+    linear-gradient(90deg, transparent 0, rgba(255, 247, 205, 0.16) 4%, rgba(255, 247, 205, 0.1) 96%, transparent 100%),
+    linear-gradient(180deg, rgba(120, 92, 52, 0.08), transparent 18%, transparent 82%, rgba(120, 92, 52, 0.08));
+  border-top: 1px solid rgba(88, 71, 48, 0.2);
+  border-bottom: 1px solid rgba(88, 71, 48, 0.18);
 }
 
 .story-flow {
@@ -586,11 +670,12 @@ button {
 }
 
 .eyebrow {
+  display: none;
   margin: 0 0 8px;
   color: var(--clue-cyan);
   font-family: "IBM Plex Mono", "JetBrains Mono", "D2Coding", "Noto Serif KR", monospace;
   font-size: 0.78rem;
-  letter-spacing: 0.08em;
+  letter-spacing: 0;
   text-transform: uppercase;
 }
 
@@ -599,7 +684,7 @@ button {
   color: var(--ink);
   font-size: clamp(1.55rem, 5.2vw, 2.7rem);
   line-height: 1.14;
-  letter-spacing: -0.04em;
+  letter-spacing: 0;
 }
 
 .storybook-body p {
@@ -811,6 +896,13 @@ button {
 .choice-separator span {
   height: 2px;
   background: linear-gradient(90deg, transparent, rgba(94, 80, 58, 0.52), transparent);
+}
+
+.choice-separator i {
+  color: rgba(107, 81, 50, 0.78);
+  font-style: normal;
+  font-size: clamp(1.05rem, 3vw, 1.5rem);
+  line-height: 1;
 }
 
 .choice-row {
@@ -1134,6 +1226,7 @@ button {
   }
 
   .hud-document,
+  .hud-menu,
   .hud-settings,
   .hud-stat-grid {
     grid-column: 2;
@@ -1146,12 +1239,22 @@ button {
     font-size: 0.68rem;
   }
 
+  .hud-menu,
   .hud-settings {
     position: absolute;
     top: 0;
     right: 0;
     width: 34px;
+  }
+
+  .hud-menu summary,
+  .hud-settings {
+    width: 34px;
     font-size: 1.45rem;
+  }
+
+  .hud-menu-panel {
+    min-width: 148px;
   }
 
   .hud-stat-grid {
@@ -1277,6 +1380,404 @@ button {
   .storybook-history {
     margin: 8px 18px 0;
     font-size: 0.72rem;
+  }
+}
+
+/* Reference-image pass: title screen, encounter pages, and combat panels. */
+.storybook-start {
+  display: block;
+  width: min(480px, 100vw);
+  min-height: 100dvh;
+  padding: 0;
+  background: #000;
+}
+
+.storybook-start::before,
+.storybook-start::after {
+  display: none;
+}
+
+.start-hero {
+  position: relative;
+  width: 100%;
+  min-height: 100dvh;
+  overflow: hidden;
+  background: #000;
+}
+
+.start-hero-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: pixelated;
+}
+
+.start-logo-lockup {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.start-menu-drawer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+.start-tap-button {
+  position: absolute;
+  left: 50%;
+  bottom: 7.5%;
+  width: min(72vw, 22rem);
+  min-height: 76px;
+  display: grid;
+  place-items: center;
+  transform: translateX(-50%);
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  color: rgba(238, 238, 226, 0.7);
+  font-family: "IBM Plex Mono", "JetBrains Mono", "D2Coding", monospace;
+  font-size: clamp(1rem, 5vw, 1.7rem);
+  letter-spacing: 0;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85);
+}
+
+.start-menu-drawer[data-start-menu-open="true"] .start-tap-button {
+  display: none;
+}
+
+.start-menu-drawer[data-start-menu-open="false"] .start-menu-panel {
+  display: none;
+}
+
+.start-menu-panel {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 18px;
+  z-index: 3;
+  display: grid;
+  max-height: min(72dvh, 700px);
+  gap: 12px;
+  padding: 16px;
+  overflow: auto;
+  border: 3px solid rgba(95, 82, 58, 0.55);
+  background:
+    linear-gradient(180deg, rgba(231, 223, 199, 0.96), rgba(197, 186, 158, 0.96)),
+    repeating-linear-gradient(0deg, rgba(55, 48, 38, 0.035) 0 2px, transparent 2px 9px);
+  box-shadow:
+    0 18px 44px rgba(0, 0, 0, 0.48),
+    inset 0 0 0 2px rgba(255, 249, 221, 0.36);
+}
+
+.start-card h1,
+.start-card h2,
+.storybook-body h1 {
+  letter-spacing: 0;
+}
+
+.start-save-panel,
+.start-preview-panel,
+.start-settings-panel {
+  border-color: rgba(92, 78, 55, 0.36);
+  background: rgba(247, 241, 219, 0.34);
+}
+
+.start-preview-panel li {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.start-actions button,
+.start-settings-actions button,
+.start-preview-panel button,
+.start-reset-confirmation button {
+  border-color: rgba(90, 74, 50, 0.48);
+  background: rgba(253, 248, 226, 0.42);
+  box-shadow: inset 0 -3px 0 rgba(95, 77, 52, 0.12);
+}
+
+.start-actions .start-primary {
+  background: rgba(70, 139, 85, 0.24);
+}
+
+.storybook-page[data-story-phase="combat"] {
+  background:
+    linear-gradient(180deg, rgba(67, 61, 51, 0.08), rgba(255, 247, 205, 0.08) 20%, rgba(67, 61, 51, 0.08)),
+    linear-gradient(90deg, transparent 0, rgba(255, 247, 205, 0.16) 5%, rgba(255, 247, 205, 0.1) 95%, transparent 100%);
+}
+
+.story-result-log {
+  margin: 1.4rem 0 0;
+}
+
+.story-result-log::before {
+  display: block;
+  margin-bottom: 0.3rem;
+  color: var(--terminal-green);
+  font-family: "IBM Plex Mono", "JetBrains Mono", "D2Coding", "Noto Serif KR", monospace;
+  font-size: clamp(1rem, 2.8vw, 1.3rem);
+  font-weight: 700;
+  content: "<결과>";
+}
+
+.storybook-visual--wuxia,
+.storybook-visual--combat {
+  width: min(680px, 86%);
+}
+
+.wuxia-card {
+  min-height: clamp(230px, 47vw, 410px);
+  background:
+    linear-gradient(180deg, #9eb3ad 0 34%, #b7c5b5 35% 53%, #556b55 54% 100%);
+}
+
+.wuxia-sky,
+.wuxia-cliff,
+.wuxia-gate,
+.wuxia-traveler,
+.combat-hero,
+.combat-enemy,
+.combat-impact {
+  position: absolute;
+  display: block;
+}
+
+.wuxia-sky {
+  inset: 0;
+  background:
+    radial-gradient(circle at 58% 28%, rgba(235, 235, 207, 0.48), transparent 9rem),
+    linear-gradient(135deg, rgba(70, 91, 98, 0.34) 0 26%, transparent 27%),
+    linear-gradient(48deg, transparent 0 60%, rgba(65, 89, 82, 0.38) 61% 100%);
+}
+
+.wuxia-cliff {
+  right: 8%;
+  bottom: 0;
+  width: 58%;
+  height: 56%;
+  background:
+    linear-gradient(160deg, transparent 0 24%, #7ca369 25% 42%, #415d47 43% 100%),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.1) 0 4px, transparent 4px 12px);
+  clip-path: polygon(18% 12%, 88% 0, 100% 100%, 0 100%);
+}
+
+.wuxia-gate {
+  right: 28%;
+  bottom: 45%;
+  width: 22%;
+  height: 26%;
+  border: 12px solid #6f765d;
+  border-bottom: 0;
+  border-radius: 50% 50% 0 0;
+  box-shadow: inset 0 0 0 6px rgba(36, 42, 34, 0.38);
+}
+
+.wuxia-traveler {
+  left: 18%;
+  bottom: 12%;
+  width: 8%;
+  height: 32%;
+  background:
+    linear-gradient(90deg, transparent 0 38%, #1d2019 39% 63%, transparent 64%),
+    linear-gradient(180deg, #263726 0 26%, #526954 27% 72%, #2e221c 73% 100%);
+  clip-path: polygon(42% 0, 58% 0, 72% 18%, 74% 68%, 60% 100%, 40% 100%, 26% 68%, 28% 18%);
+}
+
+.combat-card {
+  display: grid;
+  gap: 10px;
+  min-height: clamp(340px, 66vw, 560px);
+  padding: 12px;
+  overflow: hidden;
+  border: 4px solid rgba(88, 75, 54, 0.55);
+  background:
+    linear-gradient(180deg, rgba(235, 229, 205, 0.96), rgba(207, 196, 166, 0.96)),
+    repeating-linear-gradient(90deg, rgba(68, 58, 43, 0.04) 0 4px, transparent 4px 12px);
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 249, 224, 0.44),
+    0 8px 0 rgba(78, 64, 44, 0.2);
+}
+
+.combat-versus {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 8px;
+  align-items: end;
+}
+
+.combat-versus p,
+.combat-side {
+  margin: 0;
+  color: var(--ink);
+}
+
+.combat-versus p {
+  min-width: 120px;
+  text-align: center;
+}
+
+.combat-versus p span,
+.combat-versus p b {
+  display: block;
+}
+
+.combat-versus p span {
+  color: var(--muted-ink);
+  font-size: 0.76rem;
+}
+
+.combat-versus p b {
+  color: #16882e;
+  font-size: clamp(1.2rem, 3.8vw, 1.8rem);
+  line-height: 1.1;
+}
+
+.combat-side {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.combat-side strong {
+  overflow: hidden;
+  font-size: clamp(0.95rem, 2.8vw, 1.25rem);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.combat-side span {
+  color: var(--muted-ink);
+  font-family: "IBM Plex Mono", "JetBrains Mono", "D2Coding", monospace;
+  font-size: 0.72rem;
+}
+
+.combat-side i {
+  height: 18px;
+  border: 2px solid rgba(92, 78, 55, 0.42);
+  background: linear-gradient(90deg, #3f9c75 0 76%, rgba(87, 78, 62, 0.52) 77% 100%);
+}
+
+.combat-side--enemy {
+  text-align: right;
+}
+
+.combat-side--enemy i {
+  background: linear-gradient(90deg, #b83f49 0 62%, rgba(87, 78, 62, 0.52) 63% 100%);
+}
+
+.combat-arena {
+  position: relative;
+  min-height: clamp(210px, 43vw, 360px);
+  overflow: hidden;
+  border: 4px solid rgba(119, 100, 71, 0.45);
+  background:
+    radial-gradient(circle at 54% 30%, rgba(255, 255, 236, 0.66), transparent 9rem),
+    linear-gradient(180deg, #a9c5d4 0 42%, #51a4aa 43% 52%, #b9ad7d 53% 100%);
+}
+
+.combat-arena::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background:
+    radial-gradient(circle at 24% 46%, #4f725d 0 11%, transparent 12%),
+    radial-gradient(circle at 36% 42%, #425f55 0 15%, transparent 16%),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.08) 0 2px, transparent 2px 8px);
+}
+
+.combat-hero {
+  left: 23%;
+  bottom: 16%;
+  width: 13%;
+  height: 34%;
+  background:
+    linear-gradient(90deg, transparent 0 32%, #2c3128 33% 66%, transparent 67%),
+    linear-gradient(180deg, #9cbf87 0 26%, #5b7957 27% 74%, #553323 75% 100%);
+  clip-path: polygon(50% 0, 72% 20%, 72% 72%, 58% 100%, 42% 100%, 28% 72%, 28% 20%);
+}
+
+.combat-hero::after {
+  position: absolute;
+  right: -28%;
+  top: 28%;
+  width: 58%;
+  height: 7px;
+  content: "";
+  background: #3d3328;
+  transform: rotate(-18deg);
+}
+
+.combat-enemy {
+  right: 16%;
+  bottom: 13%;
+  width: 24%;
+  height: 42%;
+  background:
+    radial-gradient(circle at 60% 16%, #dcd2b7 0 12%, transparent 13%),
+    linear-gradient(135deg, #78997f 0 34%, #30473c 35% 100%);
+  clip-path: polygon(34% 0, 72% 8%, 100% 44%, 82% 100%, 20% 100%, 0 50%);
+}
+
+.combat-enemy::before {
+  position: absolute;
+  left: 56%;
+  top: 16%;
+  width: 36%;
+  height: 20%;
+  content: "";
+  background: #2a2620;
+  clip-path: polygon(0 0, 100% 48%, 0 100%);
+}
+
+.combat-impact {
+  left: 39%;
+  bottom: 39%;
+  width: 18%;
+  height: 10%;
+  border-top: 5px solid rgba(255, 255, 255, 0.8);
+  border-bottom: 3px solid rgba(255, 255, 255, 0.7);
+  transform: skewX(-24deg);
+}
+
+.combat-hint {
+  margin: 0;
+  color: var(--muted-ink);
+  font-size: clamp(0.9rem, 2.6vw, 1.08rem);
+  line-height: 1.35;
+  text-align: center;
+}
+
+@media (max-width: 560px) {
+  .storybook-start {
+    width: 100vw;
+    padding: 0;
+  }
+
+  .start-menu-panel {
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    max-height: 72dvh;
+    padding: 12px;
+  }
+
+  .combat-versus {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
+  }
+
+  .combat-versus p {
+    order: -1;
+  }
+
+  .combat-side--enemy {
+    text-align: left;
   }
 }
 

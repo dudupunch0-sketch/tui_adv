@@ -76,6 +76,7 @@ docs/
     Development_Plan.md             # canonical main plan: 현재 방향, 다음 작업, 우선순위
     Checklist.md                    # 완료 여부 추적용 체크리스트
     Storypack_Runtime_Preview_Mode.md # non-office runtime prototype preview mode 결정
+    Storypack_Preview_UX_QA.md      # storypack preview UX QA handoff와 다음 구현 전 수정 필요 항목
     Architecture.md                 # 코드 구조와 모듈 경계
     Rust_Core_Dual_Renderer_Architecture.md # Rust GameCore + Web Storybook + SuperLightTUI terminal 활성 방향
     Data_Schema.md                  # YAML/JSON 데이터 스키마 + renderer-neutral ScenePage/WASM contract
@@ -169,6 +170,7 @@ private/
 - `docs/dev/Development_Plan.md`
 - `docs/dev/Checklist.md`
 - `docs/dev/Storypack_Runtime_Preview_Mode.md`
+- `docs/dev/Storypack_Preview_UX_QA.md`
 - `docs/templates/local-secrets.template.yaml`
 - `docs/implementation-map/index.html`
 - `docs/implementation-map/README.md`

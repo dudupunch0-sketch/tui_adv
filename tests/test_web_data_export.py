@@ -102,6 +102,7 @@ def test_export_web_data_builds_renderer_neutral_content_bundle():
             "wuxia_mumyeong_reads_orthodox_style",
             "wuxia_mumyeong_midgame_reunion",
             "wuxia_boss_first_appearance",
+            "wuxia_mumyeong_request_for_aid",
         }
         for encounter in bundle["content"]["encounters"]
     )
@@ -124,8 +125,8 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     assert "storypack-previews/wuxia_jianghu_pack" in bundle["source"]
     assert bundle["manifest"]["counts"] == {
         "locations": 4,
-        "items": 3,
-        "encounters": 18,
+        "items": 4,
+        "encounters": 19,
         "endings": 1,
         "achievements": 2,
         "secrets": 0,
@@ -156,6 +157,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "wuxia_mumyeong_reads_orthodox_style",
         "wuxia_mumyeong_midgame_reunion",
         "wuxia_boss_first_appearance",
+        "wuxia_mumyeong_request_for_aid",
     ]
     first_fight = bundle["content"]["encounters"][1]
     assert first_fight["conditions"] == {
@@ -765,6 +767,45 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "boss_reads_people_not_forms",
     ]
     assert watch_mumyeong["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
+    request_for_aid = bundle["content"]["encounters"][18]
+    assert request_for_aid["conditions"] == {
+        "locations": ["cheongryu_outer_courtyard"],
+        "required_flags": [
+            "boss_first_appearance_resolved",
+            "boss_wall_thread_opened",
+            "black_serpent_core_pressure_opened",
+            "mumyeong_mirror_thread_deepened",
+            "orthodox_style_trace_recorded",
+            "midgame_continuity_started",
+        ],
+        "forbidden_flags": ["mumyeong_request_for_aid_resolved"],
+    }
+    assert request_for_aid["presentation"]["layout"] == "failed_aid_records"
+    assert request_for_aid["presentation"]["speaker"] == "천기록"
+    assert request_for_aid["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "무명",
+        "청류문",
+        "정파",
+    ]
+    assert [choice["id"] for choice in request_for_aid["choices"]] == [
+        "search_the_rejected_aid_letters",
+        "follow_old_inn_rumors_about_mumyeong",
+        "ask_seo_harin_what_help_never_came",
+        "keep_the_failed_aid_record_unshown",
+    ]
+    rejected_letters = request_for_aid["choices"][0]
+    assert rejected_letters["outcome"]["add_items"] == ["rejected_aid_letter_fragment"]
+    assert rejected_letters["outcome"]["add_flags"] == [
+        "mumyeong_request_for_aid_resolved",
+        "mumyeong_failed_aid_thread_opened",
+        "orthodox_hypocrisy_thread_opened",
+        "rejected_aid_letters_read",
+    ]
+    assert rejected_letters["outcome"]["add_clues"] == [
+        "mumyeong_tried_to_save_qingliu",
+        "orthodox_refusal_broke_mumyeong",
+    ]
+    assert rejected_letters["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
     assert "dev_desk" not in json.dumps(bundle, ensure_ascii=False)
     assert _missing_private_secret_fields(bundle)
 

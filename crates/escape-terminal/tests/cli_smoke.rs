@@ -1207,6 +1207,77 @@ fn content_tui_smoke_reaches_wuxia_boss_first_appearance() {
 }
 
 #[test]
+fn content_tui_smoke_reaches_wuxia_mumyeong_request_for_aid() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--storypack-preview",
+            "wuxia_jianghu_pack",
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:follow_roadside_dust",
+            "--action",
+            "move:jianghu_market_street",
+            "--action",
+            "choice:run_toward_open_street",
+            "--action",
+            "choice:choose_failure_log",
+            "--action",
+            "choice:tell_plain_truth",
+            "--action",
+            "choice:accept_three_month_trial",
+            "--action",
+            "choice:step_back_with_firewood",
+            "--action",
+            "choice:defend_cheongryu_with_white_path",
+            "--action",
+            "choice:accept_medicine_with_written_debt",
+            "--action",
+            "choice:watch_the_stolen_qingliu_flow",
+            "--action",
+            "choice:endure_until_copy_flow_breaks",
+            "--action",
+            "choice:listen_for_breath_mismatch",
+            "--action",
+            "choice:reconstruct_mumyeongs_sightline",
+            "--action",
+            "choice:show_the_hyeonakmun_trace_without_accusing",
+            "--action",
+            "choice:watch_mumyeong_answer_the_boss",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("위치: 청류문 외곽 마당 (cheongryu_outer_courtyard)"));
+    assert!(stdout.contains("무명의 도움 요청"));
+    assert!(stdout.contains("visual id: wuxia_mumyeong_request_for_aid"));
+    assert!(stdout.contains("layout: failed_aid_records"));
+    assert!(stdout.contains("stable terms: 무명 / 청류문 / 정파"));
+    assert!(stdout.contains(
+        "choice:search_the_rejected_aid_letters / 거절당한 도움 요청 서찰을 찾아 읽는다"
+    ));
+    assert!(stdout
+        .contains("choice:follow_old_inn_rumors_about_mumyeong / 객잔에 남은 무명 소문을 좇는다"));
+    assert!(stdout.contains(
+        "choice:ask_seo_harin_what_help_never_came / 서하린에게 오지 않았던 도움을 묻는다"
+    ));
+    assert!(stdout.contains(
+        "choice:keep_the_failed_aid_record_unshown / 실패한 도움 요청 기록을 아직 보여주지 않는다"
+    ));
+    assert!(!stdout.contains("dev_desk"));
+}
+
+#[test]
 fn content_tui_smoke_renders_final_movement_panel_after_scripted_actions() {
     let bundle_path = content_bundle_path();
     let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))

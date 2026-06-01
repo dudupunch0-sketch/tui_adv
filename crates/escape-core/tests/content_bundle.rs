@@ -195,13 +195,13 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.storypack_id, "wuxia_jianghu_pack");
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&4));
-    assert_eq!(bundle.manifest.counts.get("items"), Some(&3));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&16));
+    assert_eq!(bundle.manifest.counts.get("items"), Some(&4));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&19));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 4);
-    assert_eq!(index.encounters_len(), 16);
+    assert_eq!(index.encounters_len(), 19);
 
     let market = index
         .location("jianghu_market_street")
@@ -1026,6 +1026,101 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     );
     assert_eq!(
         reconstruct.outcome.destination_id.as_deref(),
+        Some("cheongryu_outer_courtyard")
+    );
+
+    let midgame_reunion = index
+        .encounter("wuxia_mumyeong_midgame_reunion")
+        .expect("mumyeong midgame reunion encounter");
+    assert_eq!(midgame_reunion.title, "무명 중반 재회");
+    assert_eq!(
+        midgame_reunion.conditions.required_flags,
+        vec![
+            "mumyeong_reads_orthodox_style_resolved",
+            "orthodox_style_trace_recorded",
+            "mumyeong_first_confrontation_resolved",
+            "mumyeong_rival_thread_opened"
+        ]
+    );
+
+    let boss = index
+        .encounter("wuxia_boss_first_appearance")
+        .expect("boss first appearance encounter");
+    assert_eq!(boss.title, "보스 첫 등장");
+    assert_eq!(
+        boss.conditions.required_flags,
+        vec![
+            "mumyeong_midgame_reunion_resolved",
+            "mumyeong_mirror_thread_deepened",
+            "cheongryu_raid_survived",
+            "midgame_continuity_started"
+        ]
+    );
+
+    let request_for_aid = index
+        .encounter("wuxia_mumyeong_request_for_aid")
+        .expect("Mumyeong aid request encounter");
+    assert_eq!(request_for_aid.title, "무명의 도움 요청");
+    assert_eq!(
+        request_for_aid.conditions.locations,
+        vec!["cheongryu_outer_courtyard"]
+    );
+    assert_eq!(
+        request_for_aid.conditions.required_flags,
+        vec![
+            "boss_first_appearance_resolved",
+            "boss_wall_thread_opened",
+            "black_serpent_core_pressure_opened",
+            "mumyeong_mirror_thread_deepened",
+            "orthodox_style_trace_recorded",
+            "midgame_continuity_started"
+        ]
+    );
+    assert_eq!(
+        request_for_aid.conditions.forbidden_flags,
+        vec!["mumyeong_request_for_aid_resolved"]
+    );
+    let request_presentation = request_for_aid
+        .presentation
+        .as_ref()
+        .expect("Mumyeong aid request presentation");
+    assert_eq!(
+        request_presentation.layout.as_deref(),
+        Some("failed_aid_records")
+    );
+    assert_eq!(request_presentation.speaker.as_deref(), Some("천기록"));
+    assert_eq!(
+        request_presentation.effect_cues[0].stable_terms,
+        vec!["무명", "청류문", "정파"]
+    );
+    assert_eq!(request_for_aid.choices.len(), 4);
+    let rejected_letters = request_for_aid
+        .choices
+        .iter()
+        .find(|choice| choice.id == "search_the_rejected_aid_letters")
+        .expect("rejected aid letters choice");
+    assert_eq!(
+        rejected_letters.outcome.add_flags,
+        vec![
+            "mumyeong_request_for_aid_resolved",
+            "mumyeong_failed_aid_thread_opened",
+            "orthodox_hypocrisy_thread_opened",
+            "rejected_aid_letters_read"
+        ]
+    );
+    assert_eq!(
+        rejected_letters.outcome.add_clues,
+        vec![
+            "mumyeong_tried_to_save_qingliu",
+            "orthodox_refusal_broke_mumyeong"
+        ]
+    );
+    assert_eq!(
+        rejected_letters.outcome.add_items,
+        vec!["rejected_aid_letter_fragment"]
+    );
+    assert_eq!(
+        rejected_letters.outcome.destination_id.as_deref(),
         Some("cheongryu_outer_courtyard")
     );
 }

@@ -16,3 +16,9 @@ items:
     description: 석 달 수습 기간 동안 물 긷기, 장작 패기, 연무장 청소를 맡았다는 작은 나무패.
     type: quest
     tags: [cheongryu_sect, apprenticeship, chore, wuxia_preview]
+
+  - id: rejected_aid_letter_fragment
+    name: 거절당한 도움 요청 서찰 조각
+    description: 무명이 청류문을 살리려 정파 문파에 보냈으나 돌아온 도움 요청 서찰의 찢긴 조각.
+    type: clue
+    tags: [mumyeong, orthodox_refusal, failed_aid, wuxia_preview]

@@ -1624,6 +1624,94 @@ fn json_boundary_reaches_wuxia_boss_first_appearance_through_preview_bundle() {
 }
 
 #[test]
+fn json_boundary_reaches_wuxia_mumyeong_request_for_aid_through_preview_bundle() {
+    let post_boss_state_json = wuxia_state_after_actions(&[
+        "choice:follow_roadside_dust",
+        "move:jianghu_market_street",
+        "choice:run_toward_open_street",
+        "choice:choose_failure_log",
+        "choice:tell_plain_truth",
+        "choice:accept_three_month_trial",
+        "choice:step_back_with_firewood",
+        "choice:defend_cheongryu_with_white_path",
+        "choice:accept_medicine_with_written_debt",
+        "choice:watch_the_stolen_qingliu_flow",
+        "choice:endure_until_copy_flow_breaks",
+        "choice:listen_for_breath_mismatch",
+        "choice:reconstruct_mumyeongs_sightline",
+        "choice:show_the_hyeonakmun_trace_without_accusing",
+        "choice:watch_mumyeong_answer_the_boss",
+    ]);
+
+    let request_page_json = scene_page_json(&post_boss_state_json, WUXIA_PREVIEW_BUNDLE)
+        .expect("Mumyeong aid request scene page should serialize");
+    let request_page: Value =
+        serde_json::from_str(&request_page_json).expect("request page JSON should parse");
+    assert_eq!(request_page["mode"], "encounter");
+    assert_eq!(request_page["title"], "무명의 도움 요청");
+    assert_eq!(request_page["location"]["id"], "cheongryu_outer_courtyard");
+    assert_eq!(
+        request_page["visual"]["id"],
+        "wuxia_mumyeong_request_for_aid"
+    );
+    assert_eq!(request_page["visual"]["kind"], "failed_aid_records");
+    assert_eq!(request_page["effect_cues"][0]["stable_terms"][2], "정파");
+    let request_action_ids: Vec<&str> = request_page["actions"]
+        .as_array()
+        .expect("actions should be an array")
+        .iter()
+        .map(|action| action["id"].as_str().expect("action id should be a string"))
+        .collect();
+    assert_eq!(
+        request_action_ids,
+        vec![
+            "choice:search_the_rejected_aid_letters",
+            "choice:follow_old_inn_rumors_about_mumyeong",
+            "choice:ask_seo_harin_what_help_never_came",
+            "choice:keep_the_failed_aid_record_unshown",
+        ]
+    );
+
+    let request_result_json = apply_action_json(
+        &post_boss_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:search_the_rejected_aid_letters",
+    )
+    .expect("search rejected aid letters action should serialize");
+    let request_result: Value =
+        serde_json::from_str(&request_result_json).expect("request action should parse");
+    assert_eq!(
+        request_result["encounter_id"],
+        "wuxia_mumyeong_request_for_aid"
+    );
+    assert!(request_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array")
+        .iter()
+        .any(|flag| flag == "mumyeong_request_for_aid_resolved"));
+    assert!(request_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array")
+        .iter()
+        .any(|flag| flag == "orthodox_hypocrisy_thread_opened"));
+    assert!(request_result["state"]["clues"]
+        .as_array()
+        .expect("clues should be an array")
+        .iter()
+        .any(|clue| clue == "mumyeong_tried_to_save_qingliu"));
+    assert!(request_result["state"]["clues"]
+        .as_array()
+        .expect("clues should be an array")
+        .iter()
+        .any(|clue| clue == "orthodox_refusal_broke_mumyeong"));
+    assert!(request_result["state"]["inventory"]
+        .as_array()
+        .expect("inventory should be an array")
+        .iter()
+        .any(|item| item == "rejected_aid_letter_fragment"));
+}
+
+#[test]
 fn json_boundary_reaches_wuxia_black_heaven_escape_price_through_preview_bundle() {
     let state_json =
         new_game_json(123, WUXIA_PREVIEW_BUNDLE).expect("preview new game should serialize");

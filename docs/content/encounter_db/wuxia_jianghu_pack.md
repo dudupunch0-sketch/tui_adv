@@ -1,13 +1,13 @@
 # 이구학지 — 천기록 encounter situation cards
 
-Status: candidate + `wuxia_boss_first_appearance` preview runtime implemented + `wuxia_mumyeong_request_for_aid` next runtime selected
+Status: candidate + `wuxia_mumyeong_request_for_aid` preview runtime implemented + `wuxia_mumyeong_followup_after_failed_aid` next handoff selected
 
-이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_boss_first_appearance`까지는 separate storypack preview runtime으로 승격되었고, 다음 runtime 후보는 `wuxia_mumyeong_request_for_aid`다.
+이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_request_for_aid`까지는 separate storypack preview runtime으로 승격되었고, 다음은 `wuxia_mumyeong_followup_after_failed_aid` docs-only handoff다.
 
 공통 원칙:
 
 - 모든 카드는 `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`에 속한다.
-- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_boss_first_appearance`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. `wuxia_mumyeong_request_for_aid`는 다음 runtime slice 후보로만 선택됐고 아직 runtime YAML/generated artifact에는 들어가지 않았다.
+- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_request_for_aid`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. 다음 runtime 후보는 `wuxia_mumyeong_followup_after_failed_aid` handoff에서 다시 고른다.
 - 최신 canonical 무협 설정은 **이구학지 — 천기록**이다. 이전의 generic 객잔/소림/무당/아미 placeholder는 superseded로 본다.
 - 플레이어 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계의 시장 한복판에 전이됐다”이다.
 - 선택지는 세부 수치보다 역할과 결과 hook을 먼저 정의한다.
@@ -45,7 +45,7 @@ Status: candidate + `wuxia_boss_first_appearance` preview runtime implemented + 
 | `wuxia_boss_recruits_mumyeong` | 흑사방 보스의 스카웃 | none yet | future backstory event |
 | `wuxia_mumyeong_reads_orthodox_style` | 무명의 정파 무공 간파 | `wuxia_mumyeong_reads_orthodox_style` | preview runtime implemented |
 | `wuxia_qingliu_attack_after_war` | 무너져가는 청류문 습격 | none yet | future backstory/pressure event |
-| `wuxia_mumyeong_request_for_aid` | 무명의 도움 요청 | `wuxia_mumyeong_request_for_aid` | next runtime selected |
+| `wuxia_mumyeong_request_for_aid` | 무명의 도움 요청 | `wuxia_mumyeong_request_for_aid` | preview runtime implemented |
 | `wuxia_tianjilu_first_fragment` | 천기록 첫 천외편린 | `wuxia_cheonggi_record_first_fragment` | preview implemented as schema-less foreshadow; full reward schema future |
 | `wuxia_seoharin_intervention` | 서하린의 개입 | `wuxia_seo_harin_rescue` | preview implemented as schema-less rescue/protection bridge |
 | `wuxia_prologue_commute_rift` | 출근길의 균열 | `wuxia_commute_rift_arrival` | preview implemented |
@@ -1676,9 +1676,9 @@ source_refs:
 notion_event_mapping:
   notion_event_id: wuxia_mumyeong_request_for_aid
   notion_event_name: 무명의 도움 요청
-  mapping_status: next_runtime_selected
-status: candidate
-mapping_status: next_runtime_selected
+  mapping_status: preview_runtime_implemented
+status: implemented_in_storypack_preview
+mapping_status: preview_runtime_implemented
 phase: [midgame_rival, failed_aid_records]
 priority_class: route_key
 location_tags: [cheongryu_outer_courtyard, orthodox_refusal, mumyeong_past]
@@ -1689,7 +1689,7 @@ npc_slots: [early_rescuer]
 candidate_characters: [mumyeong, seo_harin, black_serpent_boss]
 summary: 보스 첫 등장 뒤 무명이 청류문을 살리려 정파 문파들에 도움을 청했지만 거절당했다는 기록/소문을 추적한다.
 setup_text: 청류문 마당에 남은 검은 깃발의 먼지가 가라앉자, 천기록의 빈 줄 옆에 오래된 객잔 이름과 반쯤 찢긴 서찰 봉인이 겹쳐 보인다. 무명은 배신자가 되기 전에 살릴 방법을 찾았고, 정파의 문턱은 그를 여러 번 돌려보낸 듯하다.
-runtime_preview_design_status: next_runtime_selected
+runtime_preview_design_status: implemented
 runtime_preview_start_conditions:
   runtime_mode: storypack_preview
   conditions:
@@ -1752,13 +1752,15 @@ outcome_hooks:
   possible_destinations: [cheongryu_outer_courtyard]
 main_spine_link: 보스 첫 등장으로 열린 힘의 논리와 무명의 상처를, 정파가 청류문을 외면한 기록/소문으로 이어서 무명을 단순 배신자가 아닌 실패한 구조자 후보로 만든다.
 randomization_notes: 1회성 failed-aid records bridge. boss first appearance 뒤에만 열고 `mumyeong_request_for_aid_resolved`로 반복을 막는다. 서하린에게 진실을 전달하거나 무명 구원을 확정하지 않는다.
-promotion_notes: next runtime 후보. `wuxia_boss_followup_after_first_appearance` docs-only handoff에서 다음 runtime 후보로 선택했다. `wuxia_mumyeong_departure_truth_summary`는 후반 truth reveal/서하린 진실 전달/구원 조건 확정 때문에 보류했고, `wuxia_qingliu_attack_after_war`는 full flashback/backstory reveal 때문에 보류했으며, `wuxia_boss_resolution`은 final boss/faction/epilogue 결산 때문에 보류했다. legacy office bundle, legacy `escape-office` key, random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation schema, reward/ability/epilogue/return system, 천기록 정체 reveal은 열지 않는다.
+promotion_notes: preview runtime으로 구현 완료. `wuxia_boss_followup_after_first_appearance` docs-only handoff에서 다음 runtime 후보로 선택했고, 보스 첫 등장 뒤 무명의 도움 요청 실패 기록/소문을 기존 flags/clues/log/presentation hook으로 landing했다. `wuxia_mumyeong_departure_truth_summary`는 후반 truth reveal/서하린 진실 전달/구원 조건 확정 때문에 보류했고, `wuxia_qingliu_attack_after_war`는 full flashback/backstory reveal 때문에 보류했으며, `wuxia_boss_resolution`은 final boss/faction/epilogue 결산 때문에 보류했다. legacy office bundle, legacy `escape-office` key, random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation schema, reward/ability/epilogue/return system, 천기록 정체 reveal은 열지 않는다.
 runtime_preview_implementation_notes:
-  planned_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
+  implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
   insert_after: wuxia_boss_first_appearance
   selected_over: [wuxia_mumyeong_departure_truth_summary, wuxia_qingliu_attack_after_war, wuxia_boss_resolution]
-  generated_artifacts: []
+  generated_artifacts:
+    - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+    - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
   default_bundle_changed: false
   new_schema_opened: false
-  next_goal: wuxia_mumyeong_request_for_aid
+  next_handoff: wuxia_mumyeong_followup_after_failed_aid
 ```

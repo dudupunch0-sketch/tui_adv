@@ -2340,6 +2340,138 @@
           "visual_id": "wuxia_boss_first_appearance"
         },
         "title": "보스 첫 등장"
+      },
+      {
+        "body": "흑사방주의 그림자가 물러난 뒤에도 청류문 마당의 공기는 무겁다. 천기록의 빈 줄 옆에 오래된 객잔 이름과 반쯤 찢긴 서찰 봉인이 겹쳐 보인다. 무명은 배신자가 되기 전에 살릴 방법을 찾았고, 정파의 문턱은 그를 여러 번 돌려보낸 듯하다.",
+        "choices": [
+          {
+            "id": "search_the_rejected_aid_letters",
+            "label": "거절당한 도움 요청 서찰을 찾아 읽는다",
+            "outcome": {
+              "add_clues": [
+                "mumyeong_tried_to_save_qingliu",
+                "orthodox_refusal_broke_mumyeong"
+              ],
+              "add_flags": [
+                "mumyeong_request_for_aid_resolved",
+                "mumyeong_failed_aid_thread_opened",
+                "orthodox_hypocrisy_thread_opened",
+                "rejected_aid_letters_read"
+              ],
+              "add_items": [
+                "rejected_aid_letter_fragment"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "서찰에는 도움을 청한 말보다 거절의 예법이 더 길게 남아 있다. 무명은 청류문을 버리기 전에 먼저 붙잡으려 했다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "follow_old_inn_rumors_about_mumyeong",
+            "label": "객잔에 남은 무명 소문을 좇는다",
+            "outcome": {
+              "add_clues": [
+                "boss_logic_found_mumyeongs_wound",
+                "orthodox_refusal_broke_mumyeong"
+              ],
+              "add_flags": [
+                "mumyeong_request_for_aid_resolved",
+                "mumyeong_failed_aid_thread_opened",
+                "orthodox_hypocrisy_thread_opened",
+                "inn_rumor_thread_followed"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "사람들은 그가 떠난 날보다 문전박대당한 밤을 더 작게 말한다. 보스는 그 작게 말해진 상처를 먼저 알아본 쪽이었다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "ask_seo_harin_what_help_never_came",
+            "label": "서하린에게 오지 않았던 도움을 묻는다",
+            "outcome": {
+              "add_clues": [
+                "seoharin_does_not_know_failed_aid",
+                "aid_refusal_precedes_departure_truth"
+              ],
+              "add_flags": [
+                "mumyeong_request_for_aid_resolved",
+                "mumyeong_failed_aid_thread_opened",
+                "orthodox_hypocrisy_thread_opened",
+                "seoharin_failed_aid_question_asked"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "서하린은 그 서찰을 본 적이 없다고 말한다. 그 무지가 오히려 오래된 상처의 모양을 만든다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "keep_the_failed_aid_record_unshown",
+            "label": "실패한 도움 요청 기록을 아직 보여주지 않는다",
+            "outcome": {
+              "add_clues": [
+                "aid_refusal_precedes_departure_truth",
+                "mumyeong_tried_to_save_qingliu"
+              ],
+              "add_flags": [
+                "mumyeong_request_for_aid_resolved",
+                "mumyeong_failed_aid_thread_opened",
+                "orthodox_hypocrisy_thread_opened",
+                "failed_aid_record_kept_unshown"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "기록은 접어 둔다. 오늘 밝히지 않는 진실도, 언젠가 누군가를 살릴 수 있다.",
+              "resources": {
+                "sanity": -1
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "mumyeong_request_for_aid_resolved"
+          ],
+          "locations": [
+            "cheongryu_outer_courtyard"
+          ],
+          "required_flags": [
+            "boss_first_appearance_resolved",
+            "boss_wall_thread_opened",
+            "black_serpent_core_pressure_opened",
+            "mumyeong_mirror_thread_deepened",
+            "orthodox_style_trace_recorded",
+            "midgame_continuity_started"
+          ]
+        },
+        "id": "wuxia_mumyeong_request_for_aid",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "sealed_letters_then_closed_gates",
+              "duration_hint_ms": 1500,
+              "fallback_text": "접힌 서찰의 먹물 사이로 '무명', '청류문', '정파'만 문전박대의 도장처럼 남는다.",
+              "intensity": 0.76,
+              "kind": "glyph_anomaly",
+              "source": "mumyeong_rejected_aid",
+              "stable_terms": [
+                "무명",
+                "청류문",
+                "정파"
+              ]
+            }
+          ],
+          "layout": "failed_aid_records",
+          "speaker": "천기록",
+          "visual_id": "wuxia_mumyeong_request_for_aid"
+        },
+        "title": "무명의 도움 요청"
       }
     ],
     "endings": [
@@ -2389,6 +2521,18 @@
           "wuxia_preview"
         ],
         "type": "quest"
+      },
+      {
+        "description": "무명이 청류문을 살리려 정파 문파에 보냈으나 돌아온 도움 요청 서찰의 찢긴 조각.",
+        "id": "rejected_aid_letter_fragment",
+        "name": "거절당한 도움 요청 서찰 조각",
+        "tags": [
+          "mumyeong",
+          "orthodox_refusal",
+          "failed_aid",
+          "wuxia_preview"
+        ],
+        "type": "clue"
       }
     ],
     "locations": [
@@ -2457,9 +2601,9 @@
   "manifest": {
     "counts": {
       "achievements": 2,
-      "encounters": 18,
+      "encounters": 19,
       "endings": 1,
-      "items": 3,
+      "items": 4,
       "locations": 4,
       "secrets": 0
     },

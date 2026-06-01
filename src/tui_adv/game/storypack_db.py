@@ -15,7 +15,15 @@ DB_RELATIVE_DIR = Path("docs/content/storypack_db")
 STORYPACKS_FILE = "storypacks.json"
 ENCOUNTER_SITUATIONS_FILE = "encounter_situations.json"
 
-_ALLOWED_STATUSES = {"raw", "candidate", "curated", "promoted", "merged", "rejected"}
+_ALLOWED_STATUSES = {
+    "raw",
+    "candidate",
+    "curated",
+    "promoted",
+    "merged",
+    "rejected",
+    "implemented_in_storypack_preview",
+}
 _ALLOWED_PRIORITY_CLASSES = {
     "main_forced",
     "route_key",

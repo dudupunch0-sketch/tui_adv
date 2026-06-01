@@ -100,6 +100,7 @@ def test_export_web_data_builds_renderer_neutral_content_bundle():
             "wuxia_mumyeong_first_confrontation",
             "wuxia_mumyeong_copy_style_reveal",
             "wuxia_mumyeong_reads_orthodox_style",
+            "wuxia_mumyeong_midgame_reunion",
         }
         for encounter in bundle["content"]["encounters"]
     )
@@ -123,7 +124,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     assert bundle["manifest"]["counts"] == {
         "locations": 4,
         "items": 3,
-        "encounters": 16,
+        "encounters": 17,
         "endings": 1,
         "achievements": 2,
         "secrets": 0,
@@ -152,6 +153,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "wuxia_mumyeong_first_confrontation",
         "wuxia_mumyeong_copy_style_reveal",
         "wuxia_mumyeong_reads_orthodox_style",
+        "wuxia_mumyeong_midgame_reunion",
     ]
     first_fight = bundle["content"]["encounters"][1]
     assert first_fight["conditions"] == {
@@ -690,6 +692,41 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "departure_truth_still_incomplete",
     ]
     assert reconstruct["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
+    midgame_reunion = bundle["content"]["encounters"][16]
+    assert midgame_reunion["conditions"] == {
+        "locations": ["cheongryu_outer_courtyard"],
+        "required_flags": [
+            "mumyeong_reads_orthodox_style_resolved",
+            "orthodox_style_trace_recorded",
+            "mumyeong_first_confrontation_resolved",
+            "mumyeong_rival_thread_opened",
+        ],
+        "forbidden_flags": ["mumyeong_midgame_reunion_resolved"],
+    }
+    assert midgame_reunion["presentation"]["layout"] == "rival_reunion_trace"
+    assert midgame_reunion["presentation"]["speaker"] == "무명"
+    assert midgame_reunion["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "무명",
+        "서하린",
+        "현악문",
+    ]
+    assert [choice["id"] for choice in midgame_reunion["choices"]] == [
+        "ask_why_seoharin_never_called_him_traitor",
+        "show_the_hyeonakmun_trace_without_accusing",
+        "point_out_the_copied_form_gap",
+        "keep_blades_low_and_watch_his_answer",
+    ]
+    share_trace = midgame_reunion["choices"][1]
+    assert share_trace["outcome"]["add_flags"] == [
+        "mumyeong_midgame_reunion_resolved",
+        "mumyeong_mirror_thread_deepened",
+        "hyeonakmun_trace_shared_carefully",
+    ]
+    assert share_trace["outcome"]["add_clues"] == [
+        "hyeonakmun_trace_shared_without_accusation",
+        "boss_used_mumyeongs_wound",
+    ]
+    assert share_trace["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
     assert "dev_desk" not in json.dumps(bundle, ensure_ascii=False)
     assert _missing_private_secret_fields(bundle)
 

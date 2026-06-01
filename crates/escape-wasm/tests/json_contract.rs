@@ -1462,6 +1462,87 @@ fn json_boundary_reaches_wuxia_mumyeong_reads_orthodox_style_through_preview_bun
 }
 
 #[test]
+fn json_boundary_reaches_wuxia_mumyeong_midgame_reunion_through_preview_bundle() {
+    let post_orthodox_state_json = wuxia_state_after_actions(&[
+        "choice:follow_roadside_dust",
+        "move:jianghu_market_street",
+        "choice:run_toward_open_street",
+        "choice:choose_failure_log",
+        "choice:tell_plain_truth",
+        "choice:accept_three_month_trial",
+        "choice:step_back_with_firewood",
+        "choice:defend_cheongryu_with_white_path",
+        "choice:accept_medicine_with_written_debt",
+        "choice:watch_the_stolen_qingliu_flow",
+        "choice:endure_until_copy_flow_breaks",
+        "choice:listen_for_breath_mismatch",
+        "choice:reconstruct_mumyeongs_sightline",
+    ]);
+
+    let reunion_page_json = scene_page_json(&post_orthodox_state_json, WUXIA_PREVIEW_BUNDLE)
+        .expect("mumyeong midgame reunion scene page should serialize");
+    let reunion_page: Value =
+        serde_json::from_str(&reunion_page_json).expect("reunion page JSON should parse");
+    assert_eq!(reunion_page["mode"], "encounter");
+    assert_eq!(reunion_page["title"], "무명 중반 재회");
+    assert_eq!(reunion_page["location"]["id"], "cheongryu_outer_courtyard");
+    assert_eq!(
+        reunion_page["visual"]["id"],
+        "wuxia_mumyeong_midgame_reunion"
+    );
+    assert_eq!(reunion_page["visual"]["kind"], "rival_reunion_trace");
+    assert_eq!(reunion_page["effect_cues"][0]["stable_terms"][2], "현악문");
+    let reunion_action_ids: Vec<&str> = reunion_page["actions"]
+        .as_array()
+        .expect("actions should be an array")
+        .iter()
+        .map(|action| action["id"].as_str().expect("action id should be a string"))
+        .collect();
+    assert_eq!(
+        reunion_action_ids,
+        vec![
+            "choice:ask_why_seoharin_never_called_him_traitor",
+            "choice:show_the_hyeonakmun_trace_without_accusing",
+            "choice:point_out_the_copied_form_gap",
+            "choice:keep_blades_low_and_watch_his_answer",
+        ]
+    );
+
+    let reunion_result_json = apply_action_json(
+        &post_orthodox_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:show_the_hyeonakmun_trace_without_accusing",
+    )
+    .expect("show Hyeonakmun trace action should serialize");
+    let reunion_result: Value =
+        serde_json::from_str(&reunion_result_json).expect("reunion action should parse");
+    assert_eq!(
+        reunion_result["encounter_id"],
+        "wuxia_mumyeong_midgame_reunion"
+    );
+    assert!(reunion_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array")
+        .iter()
+        .any(|flag| flag == "mumyeong_midgame_reunion_resolved"));
+    assert!(reunion_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array")
+        .iter()
+        .any(|flag| flag == "mumyeong_mirror_thread_deepened"));
+    assert!(reunion_result["state"]["clues"]
+        .as_array()
+        .expect("clues should be an array")
+        .iter()
+        .any(|clue| clue == "hyeonakmun_trace_shared_without_accusation"));
+    assert!(reunion_result["state"]["clues"]
+        .as_array()
+        .expect("clues should be an array")
+        .iter()
+        .any(|clue| clue == "boss_used_mumyeongs_wound"));
+}
+
+#[test]
 fn json_boundary_reaches_wuxia_black_heaven_escape_price_through_preview_bundle() {
     let state_json =
         new_game_json(123, WUXIA_PREVIEW_BUNDLE).expect("preview new game should serialize");

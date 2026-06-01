@@ -2,12 +2,12 @@
 
 Status: candidate
 
-이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_reads_orthodox_style`까지는 separate storypack preview runtime으로 승격되었고, `wuxia_mumyeong_followup_after_orthodox_style_trace` docs-only handoff는 다음 runtime 후보를 `wuxia_mumyeong_midgame_reunion`으로 결정했다.
+이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_midgame_reunion`까지는 separate storypack preview runtime으로 승격되었고, 다음 handoff는 `wuxia_mumyeong_followup_after_midgame_reunion` docs-only 후보 비교다.
 
 공통 원칙:
 
 - 모든 카드는 `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`에 속한다.
-- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_reads_orthodox_style`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다.
+- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_midgame_reunion`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다.
 - 최신 canonical 무협 설정은 **이구학지 — 천기록**이다. 이전의 generic 객잔/소림/무당/아미 placeholder는 superseded로 본다.
 - 플레이어 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계의 시장 한복판에 전이됐다”이다.
 - 선택지는 세부 수치보다 역할과 결과 hook을 먼저 정의한다.
@@ -35,7 +35,7 @@ Status: candidate
 | `wuxia_black_serpent_pressures_qingliu` | 흑사방의 청류문 압박 | partial: `wuxia_cheongryu_raid_route_split` background | future pressure/side event |
 | `wuxia_mumyeong_copy_style_reveal` | 무명의 카피 무공 공개 | `wuxia_mumyeong_copy_style_reveal` | preview runtime implemented |
 | `wuxia_mumyeong_resolution` | 무명 결산 | none yet | future final route event |
-| `wuxia_mumyeong_midgame_reunion` | 무명 중반 재회 | `wuxia_mumyeong_midgame_reunion` | next runtime selected |
+| `wuxia_mumyeong_midgame_reunion` | 무명 중반 재회 | `wuxia_mumyeong_midgame_reunion` | preview runtime implemented |
 | `wuxia_boss_resolution` | 보스 결산 | none yet | future boss result event |
 | `wuxia_mumyeong_first_sighting` | 무명 첫 목격 | `wuxia_mumyeong_first_sighting` | preview runtime implemented |
 | `wuxia_mumyeong_first_confrontation` | 무명 첫 대치 | `wuxia_mumyeong_first_confrontation` | preview runtime implemented |
@@ -1465,7 +1465,7 @@ source_refs:
 notion_event_mapping:
   notion_event_id: wuxia_mumyeong_midgame_reunion
   notion_event_name: 무명 중반 재회
-  mapping_status: next_runtime_selected
+  mapping_status: preview_runtime_implemented
 notion_sources_checked:
   events:
     - wuxia_mumyeong_midgame_reunion
@@ -1477,7 +1477,7 @@ notion_sources_checked:
     - 05. 사건 카드 운영 규칙
     - 07. 천기록 / 천외편린 보상
     - 99. 통합 체크포인트
-mapping_status: next_runtime_selected
+mapping_status: preview_runtime_implemented
 status: candidate
 phase: [midgame_rival, rival_reunion]
 priority_class: route_key
@@ -1490,7 +1490,7 @@ candidate_characters: [mumyeong, seo_harin]
 summary: 첫 대치, 카피 무공 공개, 정파식 제압술 흔적 이후 무명과 다시 마주쳐 라이벌/거울 관계와 서하린의 침묵을 깊게 만든다.
 purpose: `wuxia_mumyeong_reads_orthodox_style`가 남긴 현악문/복호금쇄수/무명 시야 변주 단서를 무명의 개인 서사와 연결한다. 진실을 판결하거나 구원을 확정하지 않고, 무명과 주인공이 서로의 상처와 이해 방식을 비추는 중반 재회로 제한한다.
 setup_text: 청류문 마당의 해가 기울자 무명이 다시 나타난다. 그는 싸움을 걸 듯 서 있지만, 시선은 서하린이 서 있던 빈 자리와 천기록의 접힌 모서리를 번갈아 스친다. 현악문과 복호금쇄수라는 이름은 아직 답이 아니라, 서로 모른 척할 수 없게 만든 흠집처럼 남아 있다.
-runtime_preview_design_status: selected_for_next_runtime
+runtime_preview_design_status: implemented
 runtime_preview_start_conditions:
   runtime_mode: storypack_preview
   location: cheongryu_outer_courtyard
@@ -1551,15 +1551,15 @@ outcome_hooks:
   possible_destinations: [cheongryu_outer_courtyard]
 main_spine_link: 정파 무공 흔적을 무명/서하린 감정선과 라이벌 거울 관계로 연결해, 보스 첫 등장이나 무명 이탈 진실 정리 전에 중반 rival arc를 충분히 깊게 만든다.
 randomization_notes: 1회성 midgame reunion. orthodox style trace 이후에만 열린다. 현악문/복호금쇄수 단서는 flavor와 clue로 쓰지만 full flashback이나 진실 summary로 확장하지 않는다.
-promotion_notes: next runtime 후보로 선택했다. `wuxia_mumyeong_followup_after_orthodox_style_trace`에서 `wuxia_mumyeong_departure_truth_summary`, `wuxia_boss_first_appearance`, `wuxia_qingliu_attack_after_war`를 비교했고, 후반 truth reveal/boss wall/full flashback을 보류하기 위해 중반 재회를 먼저 고른다. legacy office bundle, legacy `escape-office` key, random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation schema, reward/ability/epilogue/return system, 천기록 정체 reveal은 열지 않는다.
-runtime_preview_handoff_notes:
-  next_runtime_candidate: wuxia_mumyeong_midgame_reunion
+promotion_notes: preview runtime으로 구현 완료. `wuxia_mumyeong_followup_after_orthodox_style_trace`에서 `wuxia_mumyeong_departure_truth_summary`, `wuxia_boss_first_appearance`, `wuxia_qingliu_attack_after_war`를 비교했고, 후반 truth reveal/boss wall/full flashback을 보류하기 위해 중반 재회를 먼저 골라 구현했다. legacy office bundle, legacy `escape-office` key, random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation schema, reward/ability/epilogue/return system, 천기록 정체 reveal은 열지 않는다.
+runtime_preview_implementation_notes:
+  implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
   insert_after: wuxia_mumyeong_reads_orthodox_style
   selected_over: [wuxia_mumyeong_departure_truth_summary, wuxia_boss_first_appearance, wuxia_qingliu_attack_after_war]
-  implementation_target: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
-  generated_artifacts_to_update:
+  generated_artifacts:
     - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
     - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
   default_bundle_changed: false
   new_schema_opened: false
+  next_handoff: wuxia_mumyeong_followup_after_midgame_reunion
 ```

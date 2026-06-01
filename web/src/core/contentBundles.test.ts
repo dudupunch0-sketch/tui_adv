@@ -41,6 +41,7 @@ describe('runtime content bundle registry', () => {
       'wuxia_mumyeong_first_confrontation',
       'wuxia_mumyeong_copy_style_reveal',
       'wuxia_mumyeong_reads_orthodox_style',
+      'wuxia_mumyeong_midgame_reunion',
     ]);
     expect(encounterIds).not.toContain('ex_employee_messenger');
   });

@@ -158,7 +158,7 @@ sources:
       - notion_event_id: "wuxia_mumyeong_midgame_reunion"
         notion_event_name: "무명 중반 재회"
         repo_encounter_id: "wuxia_mumyeong_midgame_reunion"
-        runtime_status: "next_runtime_selected"
+        runtime_status: "implemented_in_storypack_preview"
     status: "live_checked_docs_synced"
 
   - key: wuxia_10_epilogue_card_db

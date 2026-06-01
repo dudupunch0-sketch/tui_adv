@@ -2089,6 +2089,130 @@
           "visual_id": "wuxia_mumyeong_reads_orthodox_style"
         },
         "title": "무명의 정파 무공 간파"
+      },
+      {
+        "body": "청류문 마당의 해가 기울자 무명이 다시 나타난다. 그는 싸움을 걸 듯 서 있지만, 시선은 서하린이 서 있던 빈 자리와 천기록의 접힌 모서리를 번갈아 스친다. 현악문과 복호금쇄수라는 이름은 아직 답이 아니라, 서로 모른 척할 수 없게 만든 흠집처럼 남아 있다.",
+        "choices": [
+          {
+            "id": "ask_why_seoharin_never_called_him_traitor",
+            "label": "서하린이 왜 그를 배신자라 부르지 않았는지 묻는다",
+            "outcome": {
+              "add_clues": [
+                "seoharin_does_not_call_mumyeong_traitor",
+                "mumyeong_truth_still_incomplete"
+              ],
+              "add_flags": [
+                "mumyeong_midgame_reunion_resolved",
+                "mumyeong_mirror_thread_deepened",
+                "seoharin_traitor_question_asked"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "무명은 바로 대답하지 않는다. 다만 배신자라는 단어가 나오자 손끝이 먼저 굳고, 서하린이 그 말을 삼킨 이유가 아직 끝난 과거가 아님을 남긴다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "show_the_hyeonakmun_trace_without_accusing",
+            "label": "현악문 흔적을 추궁이 아니라 기록으로 보여 준다",
+            "outcome": {
+              "add_clues": [
+                "hyeonakmun_trace_shared_without_accusation",
+                "boss_used_mumyeongs_wound"
+              ],
+              "add_flags": [
+                "mumyeong_midgame_reunion_resolved",
+                "mumyeong_mirror_thread_deepened",
+                "hyeonakmun_trace_shared_carefully"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "천기록의 접힌 모서리에 현악문이라는 이름을 남기자 무명의 호흡이 한 번 끊긴다. 그는 부정하지 않지만, 그 이름을 누가 이용했는지는 아직 말하지 않는다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "point_out_the_copied_form_gap",
+            "label": "훔친 초식과 이해한 흐름이 갈라지는 틈을 짚는다",
+            "outcome": {
+              "add_clues": [
+                "rival_mirror_relationship_deepened",
+                "copy_is_surface_not_root"
+              ],
+              "add_flags": [
+                "mumyeong_midgame_reunion_resolved",
+                "mumyeong_mirror_thread_deepened",
+                "copied_form_gap_named"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "네가 틈을 짚는 순간 무명의 칼끝도 흔들린다. 서로 다른 방식으로 훔치고 배운 두 사람이 같은 빈틈을 보고 있다는 사실만 선명해진다.",
+              "resources": {
+                "health": -1,
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "keep_blades_low_and_watch_his_answer",
+            "label": "칼끝을 낮추고 대답 대신 반응을 본다",
+            "outcome": {
+              "add_clues": [
+                "mumyeong_truth_still_incomplete",
+                "rival_mirror_relationship_deepened"
+              ],
+              "add_flags": [
+                "mumyeong_midgame_reunion_resolved",
+                "mumyeong_mirror_thread_deepened",
+                "reunion_truth_deferred"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "물음은 미뤄졌지만 대치도 끝나지 않는다. 낮춘 칼끝 너머로 무명은 잠시 서하린이 있던 자리를 보고, 네가 그 시선을 보았다는 사실을 알아챈다.",
+              "resources": {
+                "sanity": -1
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "mumyeong_midgame_reunion_resolved"
+          ],
+          "locations": [
+            "cheongryu_outer_courtyard"
+          ],
+          "required_flags": [
+            "mumyeong_reads_orthodox_style_resolved",
+            "orthodox_style_trace_recorded",
+            "mumyeong_first_confrontation_resolved",
+            "mumyeong_rival_thread_opened"
+          ]
+        },
+        "id": "wuxia_mumyeong_midgame_reunion",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "rival_trace_then_old_wound",
+              "duration_hint_ms": 1500,
+              "fallback_text": "기울어진 마당빛과 접힌 기록 사이로 '무명', '서하린', '현악문'만 오래된 상처처럼 남는다.",
+              "intensity": 0.74,
+              "kind": "glyph_anomaly",
+              "source": "mumyeong_midgame_reunion",
+              "stable_terms": [
+                "무명",
+                "서하린",
+                "현악문"
+              ]
+            }
+          ],
+          "layout": "rival_reunion_trace",
+          "speaker": "무명",
+          "visual_id": "wuxia_mumyeong_midgame_reunion"
+        },
+        "title": "무명 중반 재회"
       }
     ],
     "endings": [
@@ -2206,7 +2330,7 @@
   "manifest": {
     "counts": {
       "achievements": 2,
-      "encounters": 16,
+      "encounters": 17,
       "endings": 1,
       "items": 3,
       "locations": 4,

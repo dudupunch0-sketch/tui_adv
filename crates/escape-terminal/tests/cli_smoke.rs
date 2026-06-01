@@ -1071,6 +1071,74 @@ fn content_tui_smoke_reaches_wuxia_mumyeong_reads_orthodox_style() {
 }
 
 #[test]
+fn content_tui_smoke_reaches_wuxia_mumyeong_midgame_reunion() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--storypack-preview",
+            "wuxia_jianghu_pack",
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:follow_roadside_dust",
+            "--action",
+            "move:jianghu_market_street",
+            "--action",
+            "choice:run_toward_open_street",
+            "--action",
+            "choice:choose_failure_log",
+            "--action",
+            "choice:tell_plain_truth",
+            "--action",
+            "choice:accept_three_month_trial",
+            "--action",
+            "choice:step_back_with_firewood",
+            "--action",
+            "choice:defend_cheongryu_with_white_path",
+            "--action",
+            "choice:accept_medicine_with_written_debt",
+            "--action",
+            "choice:watch_the_stolen_qingliu_flow",
+            "--action",
+            "choice:endure_until_copy_flow_breaks",
+            "--action",
+            "choice:listen_for_breath_mismatch",
+            "--action",
+            "choice:reconstruct_mumyeongs_sightline",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("위치: 청류문 외곽 마당 (cheongryu_outer_courtyard)"));
+    assert!(stdout.contains("무명 중반 재회"));
+    assert!(stdout.contains("visual id: wuxia_mumyeong_midgame_reunion"));
+    assert!(stdout.contains("layout: rival_reunion_trace"));
+    assert!(stdout.contains("stable terms: 무명 / 서하린 / 현악문"));
+    assert!(stdout.contains(
+        "choice:ask_why_seoharin_never_called_him_traitor / 서하린이 왜 그를 배신자라 부르지 않았는지 묻는다"
+    ));
+    assert!(stdout.contains(
+        "choice:show_the_hyeonakmun_trace_without_accusing / 현악문 흔적을 추궁이 아니라 기록으로 보여 준다"
+    ));
+    assert!(stdout.contains(
+        "choice:point_out_the_copied_form_gap / 훔친 초식과 이해한 흐름이 갈라지는 틈을 짚는다"
+    ));
+    assert!(stdout.contains(
+        "choice:keep_blades_low_and_watch_his_answer / 칼끝을 낮추고 대답 대신 반응을 본다"
+    ));
+    assert!(!stdout.contains("dev_desk"));
+}
+
+#[test]
 fn content_tui_smoke_renders_final_movement_panel_after_scripted_actions() {
     let bundle_path = content_bundle_path();
     let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))

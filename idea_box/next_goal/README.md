@@ -1,17 +1,39 @@
 ---
-type: agent_prompt
+type: next_goal_prompt
 created: 2026-06-01
-prompt_for: wuxia_seo_harin_rescue_implementation
+current_goal: wuxia_seo_harin_rescue
 mode: implementation
 ---
 
-# Prompt: `wuxia_seo_harin_rescue` preview runtime 구현
+# next_goal
 
-이 파일은 새 Hermes/agent 구현 세션에 그대로 읽혀 실행되도록 작성한 handoff prompt다.
+이 폴더는 다른 Hermes/agent 세션에 넘길 단일 prompt entry point다. 앞으로 새 세션에는 긴 프롬프트를 복사하지 말고 아래처럼 짧게 지시한다.
 
-## 역할
+```text
+이 repo의 idea_box/next_goal/ 폴더를 읽고 README의 현재 목표만 수행해. repo canonical docs와 충돌하면 canonical docs를 우선하고 충돌 사실을 보고해.
+```
 
-`wuxia_jianghu_pack` storypack preview에 네 번째 runtime encounter `wuxia_seo_harin_rescue`를 구현한다. 이 slice는 first fight / cheonggi fragment 이후 주인공을 서하린 구조, 청류문 보호/감시, 다음 수습생 bridge로 연결한다.
+운영 원칙:
+
+- 이 폴더에는 기본적으로 이 README 하나만 둔다.
+- 여러 prompt 파일이나 future-design 분기 prompt를 만들지 않는다.
+- 이 README는 “지금 다음으로 할 일” 하나만 가리킨다.
+- 목표가 바뀌면 새 파일을 추가하지 말고 이 README를 교체/갱신한다.
+- 최종 source of truth는 이 README가 아니라 repo canonical docs다.
+
+## 현재 목표
+
+`wuxia_jianghu_pack` storypack preview에 네 번째 runtime encounter `wuxia_seo_harin_rescue`를 구현한다.
+
+목적:
+
+- `wuxia_heuksa_bang_first_fight`와 `wuxia_cheonggi_record_first_fragment` 이후의 부상/오해/천기록 hook을 이어받는다.
+- 서하린 구조, 청류문 보호/감시, 다음 수습생 bridge로 연결한다.
+- 기본 office bundle을 건드리지 않고 storypack preview bundle에만 추가한다.
+
+이 목표를 별도 readiness 세션, future-design 세션, companion/후일담 세션으로 쪼개지 않는다. 구현 시작 전에 짧게 readiness를 확인하고, blocker가 없으면 그대로 구현한다.
+
+## 추천 skill / reasoning
 
 Hermes skill system을 사용할 수 있으면 먼저 다음 skill을 load한다.
 
@@ -20,9 +42,11 @@ Hermes skill system을 사용할 수 있으면 먼저 다음 skill을 load한다
 - `tmp-rust-cargo-toolchain`
 - `narrative-tui-game-development` 또는 story/content 관련 동등 workflow
 
+Planning/reasoning은 충분히 높게 잡되, 별도 설계 세션을 새로 만들지 않는다.
+
 ## Grounding
 
-먼저 fresh `origin/main` 기준인지 확인한다.
+먼저 repo 상태를 확인한다.
 
 ```bash
 cd /home/dudupunch0/tui_adv
@@ -33,8 +57,11 @@ git log --oneline -1 origin/main
 git diff --stat HEAD origin/main
 ```
 
+기준:
+
+- 가능하면 fresh `origin/main` 기반 branch/worktree에서 구현한다.
 - 현재 checkout이 squash-merged feature branch이거나 `origin/main`과 다르면, 구현은 fresh branch/worktree from `origin/main`에서 시작한다.
-- 이미 사용자가 구현 branch를 지정했다면 그 branch를 쓰되, 위 상태를 보고한다.
+- 이미 사용자가 구현 branch를 지정했다면 그 branch를 쓰되, 상태를 보고한다.
 - 이 host의 `/home`은 작다. build/test/install/run 명령 전에는 `/home/dudupunch0/.config/tui_adv/tmp-installs.sh`를 source하거나 동등한 tmp cache 설정을 사용한다.
 
 ## 반드시 읽을 문서
@@ -55,9 +82,18 @@ git diff --stat HEAD origin/main
   - `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`
   - `src/tui_adv/storypack-previews/wuxia_jianghu_pack/items.yaml`
 
-Repo canonical docs가 이 prompt와 충돌하면 repo docs를 우선하고, 충돌 사실을 보고한다. Notion 원문을 runtime spec으로 직접 쓰지 않는다.
+Repo canonical docs가 이 README와 충돌하면 repo docs를 우선하고, 충돌 사실을 보고한다. Notion 원문을 runtime spec으로 직접 쓰지 않는다.
 
-## 구현 목표
+## 짧은 readiness check
+
+구현 전에 다음만 확인한다. blocker가 없으면 별도 보고서만 쓰고 멈추지 말고 구현을 진행한다.
+
+1. 다음 구현 slice가 여전히 `wuxia_seo_harin_rescue`인지 확인한다.
+2. Notion DB row `wuxia_seoharin_intervention` / `서하린의 개입`과 repo `wuxia_seo_harin_rescue` 매핑이 canonical docs에 충분한지 확인한다.
+3. 구현 조건과 금지 범위가 canonical docs와 이 README에서 일치하는지 확인한다.
+4. blocker가 있으면 runtime 구현을 시작하지 말고, 필요한 최소 docs-only 보정 또는 blocker 보고를 먼저 한다.
+
+## 구현 범위
 
 Preview source와 generated preview artifacts에만 `wuxia_seo_harin_rescue`를 추가한다.
 
@@ -173,6 +209,8 @@ Tone: 구조는 구원이 아니라 보호와 감시의 시작이다.
 - combat/reward/ability schema
 - 천외편린 3택 lock-in UI
 - `wuxia_cheongryu_apprentice_entry` 구현
+- 서하린 companion/emotional-axis 사건 구현
+- 서하린 후일담 구현
 - yageunmong runtime
 - 기본 office bundle 변경
 - `escape-office` save/localStorage key 변경

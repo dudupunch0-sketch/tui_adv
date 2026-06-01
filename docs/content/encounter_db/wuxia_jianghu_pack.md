@@ -2,12 +2,12 @@
 
 Status: candidate
 
-이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_black_heaven_escape_price`까지는 separate storypack preview runtime으로 승격되었다.
+이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_black_heaven_escape_price`까지는 separate storypack preview runtime으로 승격되었고, `wuxia_heavenly_archive_previous_outsiders`는 다음 runtime handoff 후보로 설계되었다.
 
 공통 원칙:
 
 - 모든 카드는 `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`에 속한다.
-- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_black_heaven_escape_price`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다.
+- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_black_heaven_escape_price`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. `wuxia_heavenly_archive_previous_outsiders`는 아직 runtime source/artifact에 반영하지 않는다.
 - 최신 canonical 무협 설정은 **이구학지 — 천기록**이다. 이전의 generic 객잔/소림/무당/아미 placeholder는 superseded로 본다.
 - 플레이어 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계의 시장 한복판에 전이됐다”이다.
 - 선택지는 세부 수치보다 역할과 결과 hook을 먼저 정의한다.
@@ -836,5 +836,88 @@ schema_boundary:
   forbidden_new_schema: [RouteGraph, FactionStanding, DebtLedger, RelationScore, BranchLock, reward_schema, ability_schema, fragment_choice_reward, epilogue_schema, multi_ending_implementation]
 main_spine_link: route commitment의 첫 사파 opener. direct raid branch와 deferred wounded branch를 같은 `sapa_route_started`/`dowol_debt` 조건으로 받아 any-of schema 없이 사파 루트를 연다.
 randomization_notes: 1회성 route opener. hub random deck으로 반복하지 않는다. `black_heaven_deal_marked`와 `black_heaven_escape_marker`는 direct/deferred flavor만 바꾸고 eligibility를 가르지 않는다.
-promotion_notes: preview runtime으로 구현 완료. `cheongryu_outer_courtyard`에서 `sapa_route_started` + `dowol_debt`를 받아 열리며, 흑천련 탈출로/도월 표식/시장 장부의 값을 flags/clues/log/presentation으로만 남긴다. 기본 office bundle, legacy `escape-office` key, faction route graph/reputation, debt/relation schema는 열지 않았다. 다음 handoff는 `route_opener_followup_after_black_heaven`다.
+promotion_notes: preview runtime으로 구현 완료. `cheongryu_outer_courtyard`에서 `sapa_route_started` + `dowol_debt`를 받아 열리며, 흑천련 탈출로/도월 표식/시장 장부의 값을 flags/clues/log/presentation으로만 남긴다. 기본 office bundle, legacy `escape-office` key, faction route graph/reputation, debt/relation schema는 열지 않았다. 다음 handoff는 천기·귀환 opener `wuxia_heavenly_archive_previous_outsiders`로 결정됐다.
+```
+
+## 11. `wuxia_heavenly_archive_previous_outsiders`
+
+```yaml
+id: wuxia_heavenly_archive_previous_outsiders
+world_id: wuxia_jianghu
+storypack_id: wuxia_jianghu_pack
+status: candidate
+runtime_preview_design_status: designed_next_not_implemented
+phase: [route_commitment, cheonggi_return]
+priority_class: route_key
+location_tags: [cheongryu_sect, faction_choice, cheonggi_route]
+surface: [cheonggi_record, faction_negotiation, sect_courtyard]
+anomaly_type: [notebook_oracle, worldline_branch]
+pressure_type: [sanity, relation, danger]
+npc_slots: [cheonggi_record_keeper, archive_keeper]
+candidate_characters: [yeon_soha, old_archive_keeper]
+summary: direct raid branch와 deferred wounded fallback branch가 남긴 천기·귀환 route starter를 받아, 천기각 서고의 이전 이방인 기록과 세계 균열 흔적을 첫 천기 opener로 고정한다.
+purpose: 천기·귀환 루트를 정답 찾기가 아니라 기록, 여백, 균열 감각으로 시작한다. 귀환법을 주지 않고, 이전에도 본인 몸 그대로 흘러든 사람이 있었을 가능성과 기록자의 시선만 남긴다.
+setup_text: 청류문 마당의 먼지가 가라앉자 연소하가 낡은 서책 한 권을 펼친다. 표지에는 천기각의 인장이 있고, 여백에는 낯선 옷차림과 끊긴 길을 묘사한 문장이 남아 있다. 답은 없지만, 당신만 처음 온 사람은 아니라는 사실은 분명하다.
+runtime_preview_start_conditions:
+  runtime_mode: storypack_preview
+  prereq: raid split direct heavenly archive branch or wounded fallback delayed heavenly archive branch has landed
+  location: cheongryu_outer_courtyard
+  required_flags: [cheonggi_return_route_started, cheonggi_record_targeted]
+  forbidden_flags: [heavenly_archive_previous_outsiders_resolved]
+  flavor_flags_only: [heavenly_archive_contact, heavenly_archive_triage_map_seen]
+  note: direct/deferred branch 차이는 flavor hook으로만 읽는다. any-of condition schema를 열지 않는다.
+choice_shapes:
+  - id: read_previous_outsider_margins
+    role: safe_reading
+    fallback_choice: true
+    label_direction: 이전 이방인의 여백 기록을 조용히 읽는다
+    expected_costs: [sanity_small, time_pressure]
+    expected_gains: [previous_outsider_clue, archive_access]
+    outcome_hook:
+      add_flags: [heavenly_archive_previous_outsiders_resolved, cheonggi_return_route_opened, previous_outsiders_record_seen]
+      add_clues: [archive_has_other_outsiders, return_clue_is_not_return_method]
+      log_direction: 서고의 여백에는 돌아간 사람보다 사라진 길을 붙잡은 사람의 흔적이 더 많다.
+  - id: ask_yeon_soha_what_not_to_read
+    role: boundary_probe
+    label_direction: 연소하에게 무엇을 읽으면 안 되는지 먼저 묻는다
+    expected_costs: [relation_risk, suspicion_small]
+    expected_gains: [yeon_soha_boundary_clue, archive_warning]
+    outcome_hook:
+      add_flags: [heavenly_archive_previous_outsiders_resolved, cheonggi_return_route_opened, yeon_soha_warning_heard]
+      add_clues: [cheonggi_record_refuses_identity_answer, record_gaze_without_name]
+      log_direction: 연소하는 답을 숨기지 않는다. 다만 답으로 변하는 질문을 먼저 막는다.
+  - id: mark_current_worldline_without_answer
+    role: no_answer_acceptance
+    label_direction: 정답을 요구하지 않고 현재 세계선의 흔적만 표시한다
+    expected_costs: [sanity_small]
+    expected_gains: [worldline_anchor, record_respect]
+    outcome_hook:
+      add_flags: [heavenly_archive_previous_outsiders_resolved, cheonggi_return_route_opened, worldline_margin_marked]
+      add_clues: [worldline_gaps_have_patterns, cheonggi_record_refuses_identity_answer]
+      log_direction: 천기록은 세계의 이름을 쓰지 않는다. 대신 이 세계선의 접힌 자국 하나를 남긴다.
+  - id: compare_rift_terms_to_commute_memory
+    role: return_clue_comparison
+    label_direction: 서고의 균열 용어를 출근길 기억과 비교한다
+    expected_costs: [sanity_small, fatigue_small]
+    expected_gains: [commute_rift_pattern, return_thread]
+    outcome_hook:
+      add_flags: [heavenly_archive_previous_outsiders_resolved, cheonggi_return_route_opened, commute_rift_terms_compared]
+      add_clues: [worldline_gaps_have_patterns, return_clue_is_not_return_method, record_gaze_without_name]
+      log_direction: 출근길의 문틈과 서고의 균열이라는 말이 같은 모양으로 접힌다. 하지만 접힌 모양은 문이 아니다.
+outcome_hooks:
+  possible_flags: [heavenly_archive_previous_outsiders_resolved, cheonggi_return_route_opened, previous_outsiders_record_seen, yeon_soha_warning_heard, worldline_margin_marked, commute_rift_terms_compared]
+  possible_route_flags: [cheonggi_return_route_opened]
+  possible_clues: [archive_has_other_outsiders, cheonggi_record_refuses_identity_answer, return_clue_is_not_return_method, worldline_gaps_have_patterns, record_gaze_without_name]
+  possible_relations: [yeon_soha_attention, archive_keeper_notice]
+  possible_destinations: [cheongryu_outer_courtyard]
+  possible_log_tone:
+    - 이전 이방인이 있었다는 감각
+    - 귀환 단서와 귀환 방법은 다르다는 감각
+    - 천기록은 정체를 말하지 않고 여백과 시선만 남긴다는 감각
+schema_boundary:
+  allowed_existing_schema: [conditions.locations, required_flags, forbidden_flags, choices.cost, outcome.resources, outcome.danger, outcome.add_flags, outcome.add_clues, outcome.add_items, outcome.remove_items, outcome.destination_id, outcome.log, presentation]
+  forbidden_new_schema: [RouteGraph, FactionStanding, DebtLedger, RelationScore, BranchLock, return_system, reward_schema, ability_schema, fragment_choice_reward, epilogue_schema, multi_ending_implementation]
+main_spine_link: route commitment의 첫 천기·귀환 opener. direct raid branch와 deferred wounded branch를 같은 `cheonggi_return_route_started`/`cheonggi_record_targeted` 조건으로 받아 any-of schema 없이 천기·귀환 루트를 연다.
+randomization_notes: 1회성 route opener. hub random deck으로 반복하지 않는다. `heavenly_archive_contact`와 `heavenly_archive_triage_map_seen`는 direct/deferred flavor만 바꾸고 eligibility를 가르지 않는다.
+promotion_notes: docs-only handoff 완료, 다음 runtime 후보. `cheongryu_outer_courtyard`에서 `cheonggi_return_route_started` + `cheonggi_record_targeted`를 받아 열리며, 천기각 이전 이방인 기록/균열 단서를 flags/clues/log/presentation으로만 남긴다. 기본 office bundle, legacy `escape-office` key, 천기록 정체 reveal, return system, reward/ability schema는 열지 않는다.
 ```

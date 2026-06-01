@@ -569,13 +569,13 @@ def test_wuxia_cheongryu_raid_wounded_fallback_runtime_slice_is_docs_synced():
     assert "`wuxia_cheongryu_raid_wounded_fallback` — preview runtime 구현 완료" in wuxia_pack
     assert "route opener docs-only handoff" in plan
     assert "wuxia_baekdo_medicine_debt" in plan
-    assert "wuxia_baekdo_medicine_debt" in next_goal
-    assert "current_goal: route_opener_followup_after_black_heaven" in next_goal
+    assert "wuxia_heavenly_archive_previous_outsiders" in next_goal
+    assert "current_goal: implement_wuxia_heavenly_archive_previous_outsiders" in next_goal
     assert "Route opener implementation" in coverage
     next_slice = plan.split("현재 최우선 남은 작업:", 1)[1].split("전환 중 유지:", 1)[0]
     assert "wuxia_baekdo_medicine_debt" in next_slice
     assert "wuxia_black_heaven_escape_price" in next_slice
-    assert "route_opener_followup_after_black_heaven" in next_slice
+    assert "wuxia_heavenly_archive_previous_outsiders" in next_slice
     assert "천기·귀환 opener" in next_slice
     assert "기본 `content.bundle.json`, Web 기본 generated bundle, `src/tui_adv/data/*.yaml`, `escape-office` save/localStorage key는 계속 바꾸지 않는다" in next_slice
 
@@ -598,11 +598,11 @@ def test_wuxia_baekdo_medicine_debt_runtime_slice_is_docs_synced():
     assert "`wuxia_baekdo_medicine_debt` — preview runtime 구현 완료" in wuxia_pack
     assert "## 9. `wuxia_baekdo_medicine_debt`" in wuxia_cards
     assert "runtime_preview_design_status: implemented" in wuxia_cards
-    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 10개." in storypack_db_readme
+    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 11개." in storypack_db_readme
     assert "wuxia_black_heaven_escape_price" in storypack_db_readme
-    assert "current_goal: route_opener_followup_after_black_heaven" in next_goal
-    assert "docs-only-handoff" in next_goal
-    assert "천기·귀환 opener" in next_goal
+    assert "current_goal: implement_wuxia_heavenly_archive_previous_outsiders" in next_goal
+    assert "runtime-preview-implementation" in next_goal
+    assert "wuxia_heavenly_archive_previous_outsiders" in next_goal
 
 
 def test_wuxia_black_heaven_escape_price_runtime_slice_is_docs_synced():
@@ -631,8 +631,37 @@ def test_wuxia_black_heaven_escape_price_runtime_slice_is_docs_synced():
     assert "ask_who_collects_the_price" in wuxia_cards
     assert "keep_cheongryu_names_off_ledger" in wuxia_cards
     assert "map_exit_before_following_dowol" in wuxia_cards
-    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 10개." in storypack_db_readme
-    assert "current_goal: route_opener_followup_after_black_heaven" in next_goal
-    assert "docs-only-handoff" in next_goal
-    assert "천기·귀환 opener" in next_goal
-    assert "deferred-offer card" in next_goal
+    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 11개." in storypack_db_readme
+    assert "wuxia_heavenly_archive_previous_outsiders" in storypack_db_readme
+    assert "current_goal: implement_wuxia_heavenly_archive_previous_outsiders" in next_goal
+    assert "runtime-preview-implementation" in next_goal
+    assert "read_previous_outsider_margins" in next_goal
+
+
+def test_wuxia_heavenly_archive_previous_outsiders_handoff_is_docs_synced():
+    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    decision = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(encoding="utf-8")
+    coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
+    next_goal = Path("idea_box/next_goal/README.md").read_text(encoding="utf-8")
+    storypack_db_readme = Path("docs/content/storypack_db/README.md").read_text(encoding="utf-8")
+    wuxia_pack = Path("docs/content/storypacks/wuxia_jianghu_pack.md").read_text(encoding="utf-8")
+    wuxia_cards = Path("docs/content/encounter_db/wuxia_jianghu_pack.md").read_text(encoding="utf-8")
+
+    assert "## 0.24 2026-06-02 docs-only route opener follow-up handoff: `wuxia_heavenly_archive_previous_outsiders`" in plan
+    assert "### 0.2am 2026-06-02 무협 route opener follow-up after black heaven docs-only handoff" in checklist
+    assert "`wuxia_heavenly_archive_previous_outsiders` — docs-only handoff 완료, 다음 runtime 후보" in decision
+    assert "Route opener follow-up after black heaven" in coverage
+    assert "wuxia_heavenly_archive_previous_outsiders" in coverage
+    assert "| `wuxia_heavenly_archive_previous_outsiders` | `route_commitment` / `cheonggi_return`" in wuxia_pack
+    assert "## 11. `wuxia_heavenly_archive_previous_outsiders`" in wuxia_cards
+    assert "runtime_preview_design_status: designed_next_not_implemented" in wuxia_cards
+    assert "required_flags: [cheonggi_return_route_started, cheonggi_record_targeted]" in wuxia_cards
+    assert "flavor_flags_only: [heavenly_archive_contact, heavenly_archive_triage_map_seen]" in wuxia_cards
+    assert "read_previous_outsider_margins" in wuxia_cards
+    assert "ask_yeon_soha_what_not_to_read" in wuxia_cards
+    assert "mark_current_worldline_without_answer" in wuxia_cards
+    assert "compare_rift_terms_to_commute_memory" in wuxia_cards
+    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 11개." in storypack_db_readme
+    assert "current_goal: implement_wuxia_heavenly_archive_previous_outsiders" in next_goal
+    assert "runtime-preview-implementation" in next_goal

@@ -370,6 +370,17 @@
 - [x] route graph/faction reputation/debt ledger/relation/reward/ability/epilogue schema, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
 - [x] 다음 작업을 `route_opener_followup_after_black_heaven` docs-only handoff로 갱신
 
+### 0.2am 2026-06-02 무협 route opener follow-up after black heaven docs-only handoff
+
+- [x] 천기·귀환 opener와 `stabilize_wounded_until_dawn` deferred-offer card를 Notion reference와 repo hooks 기준으로 비교
+- [x] 다음 runtime 후보를 천기각 이전 이방인 기록 opener `wuxia_heavenly_archive_previous_outsiders`로 결정
+- [x] start conditions를 `conditions.locations: [cheongryu_outer_courtyard]`, `required_flags: [cheonggi_return_route_started, cheonggi_record_targeted]`, `forbidden_flags: [heavenly_archive_previous_outsiders_resolved]`로 문서화
+- [x] `heavenly_archive_contact`와 `heavenly_archive_triage_map_seen`는 any-of eligibility가 아니라 branch flavor hook으로만 사용한다고 명시
+- [x] stable choice id 후보 `read_previous_outsider_margins`, `ask_yeon_soha_what_not_to_read`, `mark_current_worldline_without_answer`, `compare_rift_terms_to_commute_memory` 고정
+- [x] 천기록 정체 reveal, return system, route graph/faction reputation/debt ledger/relation/reward/ability/epilogue schema는 열지 않는다고 명시
+- [x] storypack DB JSON mirror와 docs contract를 다음 runtime handoff 기준으로 갱신
+- [x] runtime YAML/Rust/Web/generated bundle, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

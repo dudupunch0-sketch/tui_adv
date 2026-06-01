@@ -45,6 +45,7 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         "wuxia_cheongryu_raid_route_split",
         "wuxia_cheongryu_raid_wounded_fallback",
         "wuxia_commute_rift_arrival",
+        "wuxia_heavenly_archive_previous_outsiders",
         "wuxia_heuksa_bang_first_fight",
         "wuxia_seo_harin_rescue",
     ]
@@ -72,6 +73,16 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
     assert "safe_acceptance" in [choice["role"] for choice in black_heaven.choice_shapes]
     assert "sapa_route_opened" in black_heaven.outcome_hooks["possible_flags"]
     assert "black_heaven_bargain_has_teeth" in black_heaven.outcome_hooks["possible_clues"]
+
+    heavenly_archive = db.encounter_cards["wuxia_heavenly_archive_previous_outsiders"]
+    assert heavenly_archive.world_id == "wuxia_jianghu"
+    assert heavenly_archive.storypack_id == "wuxia_jianghu_pack"
+    assert heavenly_archive.priority_class == "route_key"
+    assert "cheonggi_return" in heavenly_archive.phases
+    assert "cheonggi_record" in heavenly_archive.surfaces
+    assert "safe_reading" in [choice["role"] for choice in heavenly_archive.choice_shapes]
+    assert "cheonggi_return_route_opened" in heavenly_archive.outcome_hooks["possible_flags"]
+    assert "return_clue_is_not_return_method" in heavenly_archive.outcome_hooks["possible_clues"]
 
 
 def test_storypack_db_public_files_validate_cleanly():

@@ -1296,6 +1296,128 @@
           "visual_id": "wuxia_black_heaven_escape_price"
         },
         "title": "흑천련 탈출로의 값"
+      },
+      {
+        "body": "청류문 마당의 먼지가 가라앉자 연소하가 낡은 서책 한 권을 펼친다. 표지에는 천기각의 인장이 있고, 여백에는 낯선 옷차림과 끊긴 길을 묘사한 문장이 남아 있다. 답은 없지만, 당신만 처음 온 사람은 아니라는 사실은 분명하다.",
+        "choices": [
+          {
+            "id": "read_previous_outsider_margins",
+            "label": "이전 이방인의 여백 기록을 조용히 읽는다",
+            "outcome": {
+              "add_clues": [
+                "archive_has_other_outsiders",
+                "return_clue_is_not_return_method"
+              ],
+              "add_flags": [
+                "heavenly_archive_previous_outsiders_resolved",
+                "cheonggi_return_route_opened",
+                "previous_outsiders_record_seen"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "서고의 여백에는 돌아간 사람보다 사라진 길을 붙잡은 사람의 흔적이 더 많다. 천기각은 방법이 아니라 흔적부터 보여준다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "ask_yeon_soha_what_not_to_read",
+            "label": "연소하에게 무엇을 읽으면 안 되는지 먼저 묻는다",
+            "outcome": {
+              "add_clues": [
+                "cheonggi_record_refuses_identity_answer",
+                "record_gaze_without_name"
+              ],
+              "add_flags": [
+                "heavenly_archive_previous_outsiders_resolved",
+                "cheonggi_return_route_opened",
+                "yeon_soha_warning_heard"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "연소하는 답을 숨기지 않는다. 다만 답으로 변하는 질문을 먼저 막는다. 기록자는 이름 대신 시선만 남긴다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "mark_current_worldline_without_answer",
+            "label": "정답을 요구하지 않고 현재 세계선의 흔적만 표시한다",
+            "outcome": {
+              "add_clues": [
+                "worldline_gaps_have_patterns",
+                "cheonggi_record_refuses_identity_answer"
+              ],
+              "add_flags": [
+                "heavenly_archive_previous_outsiders_resolved",
+                "cheonggi_return_route_opened",
+                "worldline_margin_marked"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "천기록은 세계의 이름을 쓰지 않는다. 대신 이 세계선의 접힌 자국 하나를 여백에 남긴다.",
+              "resources": {
+                "sanity": -1
+              }
+            }
+          },
+          {
+            "id": "compare_rift_terms_to_commute_memory",
+            "label": "서고의 균열 용어를 출근길 기억과 비교한다",
+            "outcome": {
+              "add_clues": [
+                "worldline_gaps_have_patterns",
+                "return_clue_is_not_return_method",
+                "record_gaze_without_name"
+              ],
+              "add_flags": [
+                "heavenly_archive_previous_outsiders_resolved",
+                "cheonggi_return_route_opened",
+                "commute_rift_terms_compared"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "출근길의 문틈과 서고의 균열이라는 말이 같은 모양으로 접힌다. 하지만 접힌 모양은 문이 아니다.",
+              "resources": {
+                "health": -1,
+                "sanity": -3
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "heavenly_archive_previous_outsiders_resolved"
+          ],
+          "locations": [
+            "cheongryu_outer_courtyard"
+          ],
+          "required_flags": [
+            "cheonggi_return_route_started",
+            "cheonggi_record_targeted"
+          ]
+        },
+        "id": "wuxia_heavenly_archive_previous_outsiders",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "archive_margins_then_worldline_fold",
+              "duration_hint_ms": 1450,
+              "fallback_text": "낡은 서책의 여백과 접힌 먹선 사이로 '천기각', '이방인', '균열'만 선명하게 남는다.",
+              "intensity": 0.72,
+              "kind": "glyph_anomaly",
+              "source": "heavenly_archive_previous_outsiders",
+              "stable_terms": [
+                "천기각",
+                "이방인",
+                "균열"
+              ]
+            }
+          ],
+          "layout": "cheonggi_return_opener",
+          "speaker": "연소하",
+          "visual_id": "wuxia_heavenly_archive_previous_outsiders"
+        },
+        "title": "천기각 이전 이방인 기록"
       }
     ],
     "endings": [
@@ -1413,7 +1535,7 @@
   "manifest": {
     "counts": {
       "achievements": 2,
-      "encounters": 10,
+      "encounters": 11,
       "endings": 1,
       "items": 3,
       "locations": 4,

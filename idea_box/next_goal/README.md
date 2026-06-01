@@ -2,8 +2,8 @@
 type: next_goal_prompt
 created: 2026-06-01
 updated: 2026-06-02
-current_goal: implement_wuxia_heavenly_archive_previous_outsiders
-mode: runtime-preview-implementation
+current_goal: route_opener_followup_after_heavenly_archive
+mode: docs-only-handoff
 ---
 
 # next_goal
@@ -24,15 +24,15 @@ mode: runtime-preview-implementation
 
 ## 현재 목표
 
-`wuxia_black_heaven_escape_price` preview runtime 구현과 `route_opener_followup_after_black_heaven` docs-only handoff는 완료됐다. `wuxia_jianghu_pack` / **이구학지 — 천기록**은 Web/default storypack이며, office content는 legacy/parity fixture로 유지한다.
+`wuxia_heavenly_archive_previous_outsiders` preview runtime 구현은 완료됐다. `wuxia_jianghu_pack` / **이구학지 — 천기록**은 Web/default storypack이며, office content는 legacy/parity fixture로 유지한다.
 
-이번 세션의 목표는 **runtime preview implementation**이다.
+이번 세션의 목표는 **docs-only handoff**다.
 
-- `wuxia_heavenly_archive_previous_outsiders`를 storypack preview runtime으로 구현한다.
-- 천기·귀환 opener는 `cheonggi_return_route_started` + `cheonggi_record_targeted`를 required flags로 쓴다.
-- `heavenly_archive_contact`와 `heavenly_archive_triage_map_seen`는 direct/deferred branch flavor hook으로만 남긴다.
-- stable choice ids는 `read_previous_outsider_margins`, `ask_yeon_soha_what_not_to_read`, `mark_current_worldline_without_answer`, `compare_rift_terms_to_commute_memory`다.
-- 모든 outcome은 `heavenly_archive_previous_outsiders_resolved`, `cheonggi_return_route_opened`, `destination_id: cheongryu_outer_courtyard` bridge를 남긴다.
+- `route_opener_followup_after_heavenly_archive`를 설계한다.
+- 정파/사파/천기·귀환 opener 이후 다음 runtime 승격 후보 하나를 고른다.
+- 비교 후보는 `stabilize_wounded_until_dawn` branch를 받는 deferred-offer card와 세 route opener 이후의 첫 midgame continuity card다.
+- Notion reference와 repo storypack/encounter DB를 대조해 start conditions, stable choice ids, outcome hooks, schema non-goals를 문서화한다.
+- runtime YAML/Rust/Web/generated artifact는 수정하지 않는다.
 - 기본 office bundle, legacy `escape-office` save/localStorage key, route graph/faction reputation/debt ledger/relation/reward/ability/epilogue schema, return system, 천기록 정체 reveal은 열지 않는다.
 
 ## 반드시 읽을 문서
@@ -44,6 +44,7 @@ mode: runtime-preview-implementation
   - `## 0.22 2026-06-01 docs-only route opener follow-up handoff: wuxia_black_heaven_escape_price`
   - `## 0.23 2026-06-02 무협 wuxia_black_heaven_escape_price preview runtime slice`
   - `## 0.24 2026-06-02 docs-only route opener follow-up handoff: wuxia_heavenly_archive_previous_outsiders`
+  - `## 0.25 2026-06-02 무협 wuxia_heavenly_archive_previous_outsiders preview runtime slice`
   - 현재 최우선 남은 작업
   - `## 10. 다음 액션`
 - `docs/dev/Storypack_Runtime_Preview_Mode.md`
@@ -55,44 +56,25 @@ mode: runtime-preview-implementation
 - `docs/content/storypack_db/README.md`
 - `docs/content/storypack_db/encounter_situations.json`
 
-## 구현 방향
+## handoff 방향
 
-구현할 후보:
+비교할 후보:
 
-`wuxia_heavenly_archive_previous_outsiders`
+1. deferred-offer card
+   - route flags: `route_commitment_deferred`, `deferred_route_reopened`, `wounded_shelter_stabilized`
+   - purpose: `stabilize_wounded_until_dawn` fallback branch가 세 route opener를 직접 타지 않은 경우, 회복/제안/후속 압박으로 다시 메인 흐름에 붙인다.
+   - 위험: triage/companion death/mass combat/relation/debt 시스템으로 커지는 유혹
+2. post-opener midgame continuity card
+   - route flags: `righteous_route_opened`, `sapa_route_opened`, `cheonggi_return_route_opened`
+   - purpose: 세 route opener 이후 공통 midgame pressure를 연다.
+   - 위험: any-of route condition schema, route graph/faction reputation/ending schema를 너무 빨리 여는 유혹
 
-- purpose: 천기·귀환 route starter를 받아 천기각 서고의 이전 이방인 기록과 세계 균열 흔적을 첫 천기 opener로 연다.
-- conditions:
-  - `locations: [cheongryu_outer_courtyard]`
-  - `required_flags: [cheonggi_return_route_started, cheonggi_record_targeted]`
-  - `forbidden_flags: [heavenly_archive_previous_outsiders_resolved]`
-  - flavor only: `[heavenly_archive_contact, heavenly_archive_triage_map_seen]`
-- presentation:
-  - `visual_id: wuxia_heavenly_archive_previous_outsiders`
-  - `speaker: 연소하`
-  - `layout: cheonggi_return_opener`
-  - stable terms: `천기각 / 이방인 / 균열`
+선택 기준:
 
-선택지:
-
-- `read_previous_outsider_margins` — fallback / safe reading
-- `ask_yeon_soha_what_not_to_read` — boundary probe
-- `mark_current_worldline_without_answer` — no-answer acceptance
-- `compare_rift_terms_to_commute_memory` — return clue comparison
-
-outcome hooks:
-
-- common flags: `heavenly_archive_previous_outsiders_resolved`, `cheonggi_return_route_opened`
-- branch flags/clues/logs:
-  - `previous_outsiders_record_seen`
-  - `yeon_soha_warning_heard`
-  - `worldline_margin_marked`
-  - `commute_rift_terms_compared`
-  - `archive_has_other_outsiders`
-  - `cheonggi_record_refuses_identity_answer`
-  - `return_clue_is_not_return_method`
-  - `worldline_gaps_have_patterns`
-  - `record_gaze_without_name`
+- 기존 flags/clues/log/presentation만으로 구현 가능한가.
+- 세 route opener 이후 route pressure를 가장 선명하게 다음으로 밀어 주는가.
+- 청류문 내부 배신/고구마가 아니라 외부 압박과 결핍을 갈등 원천으로 유지하는가.
+- 천기록 정체 reveal, 천외편린 3택 reward/ability schema, return system, route graph/faction reputation/debt ledger를 열지 않아도 되는가.
 
 ## 예상 수정 파일
 
@@ -102,27 +84,18 @@ outcome hooks:
 - `docs/content/storypacks/wuxia_jianghu_pack.md`
 - `docs/content/encounter_db/wuxia_jianghu_pack.md`
 - `docs/content/storypack_db/README.md`
-- `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`
-- `crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json`
-- `web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json`
-- `tests/test_web_data_export.py`
-- `crates/escape-core/tests/content_bundle.rs`
-- `crates/escape-wasm/tests/json_contract.rs`
-- `crates/escape-terminal/tests/cli_smoke.rs`
-- `web/src/core/contentBundles.test.ts`
-- 필요 시 docs sync: `docs/dev/Development_Plan.md`, `docs/dev/Checklist.md`, `docs/dev/Storypack_Runtime_Preview_Mode.md`, `docs/content/encounter_db/wuxia_jianghu_pack.md`, 이 `idea_box/next_goal/README.md`
+- `docs/content/storypack_db/storypacks.json`
+- `docs/content/storypack_db/encounter_situations.json`
+- `docs/dev/Notion_Design_Coverage.md` if Notion comparison needs a ledger update
+- `tests/test_docs_contract.py`
+- `tests/test_storypack_db.py` only if machine-readable DB shape changes
 - 이 `idea_box/next_goal/README.md`
 
 ## 검증 명령
 
 ```bash
-PYTHONPATH=src python3 -m pytest tests/test_web_data_export.py tests/test_docs_contract.py tests/test_storypack_db.py -q
+PYTHONPATH=src python3 -m pytest tests/test_docs_contract.py tests/test_storypack_db.py -q
 python3 scripts/export_web_data.py --storypack-preview wuxia_jianghu_pack --preview-bundle crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json --preview-bundle web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json --check
-cargo fmt --check
-cargo test -p escape-core --test content_bundle
-cargo test -p escape-wasm --test json_contract json_boundary_reaches_wuxia_heavenly_archive_previous_outsiders_through_preview_bundle
-cargo test -p escape-terminal --test cli_smoke content_tui_smoke_reaches_wuxia_heavenly_archive_previous_outsiders
-cd web && npm test -- --run src/core/contentBundles.test.ts
 git diff --exit-code -- src/tui_adv/data crates/escape-core/fixtures/content/content.bundle.json web/src/data/generated/content.bundle.json
 git diff --check
 ```

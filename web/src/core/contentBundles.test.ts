@@ -35,6 +35,7 @@ describe('runtime content bundle registry', () => {
       'wuxia_cheongryu_raid_wounded_fallback',
       'wuxia_baekdo_medicine_debt',
       'wuxia_black_heaven_escape_price',
+      'wuxia_heavenly_archive_previous_outsiders',
     ]);
     expect(encounterIds).not.toContain('ex_employee_messenger');
   });

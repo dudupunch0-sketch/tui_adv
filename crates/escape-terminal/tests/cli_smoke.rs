@@ -690,6 +690,64 @@ fn content_tui_smoke_reaches_wuxia_black_heaven_escape_price() {
 }
 
 #[test]
+fn content_tui_smoke_reaches_wuxia_heavenly_archive_previous_outsiders() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--storypack-preview",
+            "wuxia_jianghu_pack",
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:follow_roadside_dust",
+            "--action",
+            "move:jianghu_market_street",
+            "--action",
+            "choice:run_toward_open_street",
+            "--action",
+            "choice:choose_failure_log",
+            "--action",
+            "choice:tell_plain_truth",
+            "--action",
+            "choice:accept_three_month_trial",
+            "--action",
+            "choice:step_back_with_firewood",
+            "--action",
+            "choice:follow_heavenly_archive",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("위치: 청류문 외곽 마당 (cheongryu_outer_courtyard)"));
+    assert!(stdout.contains("천기각 이전 이방인 기록"));
+    assert!(stdout.contains("visual id: wuxia_heavenly_archive_previous_outsiders"));
+    assert!(stdout.contains("layout: cheonggi_return_opener"));
+    assert!(stdout.contains("stable terms: 천기각 / 이방인 / 균열"));
+    assert!(stdout.contains(
+        "choice:read_previous_outsider_margins / 이전 이방인의 여백 기록을 조용히 읽는다"
+    ));
+    assert!(stdout.contains(
+        "choice:ask_yeon_soha_what_not_to_read / 연소하에게 무엇을 읽으면 안 되는지 먼저 묻는다"
+    ));
+    assert!(stdout.contains(
+        "choice:mark_current_worldline_without_answer / 정답을 요구하지 않고 현재 세계선의 흔적만 표시한다"
+    ));
+    assert!(stdout.contains(
+        "choice:compare_rift_terms_to_commute_memory / 서고의 균열 용어를 출근길 기억과 비교한다"
+    ));
+    assert!(!stdout.contains("dev_desk"));
+}
+
+#[test]
 fn content_tui_smoke_renders_final_movement_panel_after_scripted_actions() {
     let bundle_path = content_bundle_path();
     let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))

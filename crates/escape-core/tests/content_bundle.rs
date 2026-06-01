@@ -196,12 +196,12 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&4));
     assert_eq!(bundle.manifest.counts.get("items"), Some(&3));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&10));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&11));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 4);
-    assert_eq!(index.encounters_len(), 10);
+    assert_eq!(index.encounters_len(), 11);
 
     let market = index
         .location("jianghu_market_street")
@@ -669,6 +669,64 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     );
     assert_eq!(
         accept_marker.outcome.destination_id.as_deref(),
+        Some("cheongryu_outer_courtyard")
+    );
+
+    let heavenly_archive = index
+        .encounter("wuxia_heavenly_archive_previous_outsiders")
+        .expect("heavenly archive route opener encounter");
+    assert_eq!(heavenly_archive.title, "천기각 이전 이방인 기록");
+    assert_eq!(
+        heavenly_archive.conditions.locations,
+        vec!["cheongryu_outer_courtyard"]
+    );
+    assert_eq!(
+        heavenly_archive.conditions.required_flags,
+        vec!["cheonggi_return_route_started", "cheonggi_record_targeted"]
+    );
+    assert_eq!(
+        heavenly_archive.conditions.forbidden_flags,
+        vec!["heavenly_archive_previous_outsiders_resolved"]
+    );
+    let heavenly_archive_presentation = heavenly_archive
+        .presentation
+        .as_ref()
+        .expect("heavenly archive route opener presentation");
+    assert_eq!(
+        heavenly_archive_presentation.layout.as_deref(),
+        Some("cheonggi_return_opener")
+    );
+    assert_eq!(
+        heavenly_archive_presentation.speaker.as_deref(),
+        Some("연소하")
+    );
+    assert_eq!(
+        heavenly_archive_presentation.effect_cues[0].stable_terms,
+        vec!["천기각", "이방인", "균열"]
+    );
+    assert_eq!(heavenly_archive.choices.len(), 4);
+    let read_margins = heavenly_archive
+        .choices
+        .iter()
+        .find(|choice| choice.id == "read_previous_outsider_margins")
+        .expect("fallback previous outsider margins choice");
+    assert_eq!(
+        read_margins.outcome.add_flags,
+        vec![
+            "heavenly_archive_previous_outsiders_resolved",
+            "cheonggi_return_route_opened",
+            "previous_outsiders_record_seen"
+        ]
+    );
+    assert_eq!(
+        read_margins.outcome.add_clues,
+        vec![
+            "archive_has_other_outsiders",
+            "return_clue_is_not_return_method"
+        ]
+    );
+    assert_eq!(
+        read_margins.outcome.destination_id.as_deref(),
         Some("cheongryu_outer_courtyard")
     );
 }

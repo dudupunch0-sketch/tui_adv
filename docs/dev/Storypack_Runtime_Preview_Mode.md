@@ -1,6 +1,6 @@
 # Storypack runtime preview mode
 
-Status: 결정 문서 + `wuxia_black_heaven_escape_price` runtime 구현 완료 + `wuxia_heavenly_archive_previous_outsiders` docs-only handoff 완료
+Status: 결정 문서 + `wuxia_heavenly_archive_previous_outsiders` runtime 구현 완료 + 다음 route opener follow-up handoff 필요
 
 ## Decision: separate preview mode first
 
@@ -25,7 +25,7 @@ Status: 결정 문서 + `wuxia_black_heaven_escape_price` runtime 구현 완료 
 2. 첫 무협 prototype은 아직 gameplay schema 확장보다 “기존 encounter schema로 표현 가능한가”를 확인하는 단계다.
 3. 기본 번들의 `default_location`, route smoke, Web player start/save UX가 office 전제를 갖고 있으므로, 무협 콘텐츠를 같은 bundle에 넣으면 시작 위치와 encounter-first routing이 쉽게 충돌한다.
 
-따라서 첫 단계는 별도 preview mode다. 이 결정은 gating을 영구히 포기한다는 뜻이 아니다. preview mode로 `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`가 기존 schema에서 작동함을 확인했다. 다중 storypack 선택 UI/save migration이 필요해질 때 runtime-level gating을 별도로 연다.
+따라서 첫 단계는 별도 preview mode다. 이 결정은 gating을 영구히 포기한다는 뜻이 아니다. preview mode로 `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`가 기존 schema에서 작동함을 확인했다. 다중 storypack 선택 UI/save migration이 필요해질 때 runtime-level gating을 별도로 연다.
 
 ## Preview mode contract
 
@@ -125,14 +125,14 @@ cargo test -p escape-terminal content_tui_smoke_reaches_wuxia_cheongryu_raid_rou
 9. `wuxia_black_heaven_escape_price` — 구현 완료
    - 사파 route starter를 받아 흑천련 탈출로/도월 표식/시장 장부의 값 opener를 연다.
    - `sapa_route_started` + `dowol_debt`만 eligibility로 쓰고, `black_heaven_deal_marked`/`black_heaven_escape_marker`는 branch flavor hook으로만 남긴다.
-10. `wuxia_heavenly_archive_previous_outsiders` — 다음 runtime handoff
+10. `wuxia_heavenly_archive_previous_outsiders` — 구현 완료
    - 천기·귀환 route starter를 받아 천기각 이전 이방인 기록과 세계 균열 단서를 여는 opener다.
    - `cheonggi_return_route_started` + `cheonggi_record_targeted`만 eligibility로 쓰고, `heavenly_archive_contact`/`heavenly_archive_triage_map_seen`는 branch flavor hook으로만 남긴다.
    - 천기록 정체 reveal, return system, reward/ability schema는 열지 않는다.
 
 ## 후속 slice 기준
 
-`wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`는 같은 preview mode에 추가되었다. 이미 preview export/check command, Rust/Web preview bundle artifact, terminal `--storypack-preview wuxia_jianghu_pack`, Web default 이구학지 start/save wiring이 있으므로, 다음은 launcher나 천외편린 reward schema가 아니라 천기·귀환 opener `wuxia_heavenly_archive_previous_outsiders` runtime slice다.
+`wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`는 같은 preview mode에 추가되었다. 이미 preview export/check command, Rust/Web preview bundle artifact, terminal `--storypack-preview wuxia_jianghu_pack`, Web default 이구학지 start/save wiring이 있으므로, 다음은 launcher나 천외편린 reward schema가 아니라 `route_opener_followup_after_heavenly_archive` docs-only handoff다.
 
 구현된 rescue slice:
 
@@ -242,7 +242,7 @@ schema_boundary:
 
 `wuxia_black_heaven_escape_price` — preview runtime 구현 완료. 첫 사파 route opener는 `sapa_route_started` + `dowol_debt`를 required flags로 쓰고, `black_heaven_deal_marked`와 `black_heaven_escape_marker`는 direct/deferred branch flavor hook으로만 읽는다. 후속 `route_opener_followup_after_black_heaven` handoff에서 천기·귀환 opener를 다음 후보로 골랐다.
 
-`wuxia_heavenly_archive_previous_outsiders` — docs-only handoff 완료, 다음 runtime 후보. 천기·귀환 opener는 `cheonggi_return_route_started` + `cheonggi_record_targeted`를 required flags로 쓰고, `heavenly_archive_contact`와 `heavenly_archive_triage_map_seen`는 direct/deferred branch flavor hook으로만 읽는다. `read_previous_outsider_margins`, `ask_yeon_soha_what_not_to_read`, `mark_current_worldline_without_answer`, `compare_rift_terms_to_commute_memory` stable choice ids를 사용하고, 천기록 정체 reveal/return system/reward schema는 열지 않는다.
+`wuxia_heavenly_archive_previous_outsiders` — preview runtime 구현 완료. 첫 천기·귀환 route opener는 `cheonggi_return_route_started` + `cheonggi_record_targeted`를 required flags로 쓰고, `heavenly_archive_contact`와 `heavenly_archive_triage_map_seen`는 direct/deferred branch flavor hook으로만 읽는다. `read_previous_outsider_margins`, `ask_yeon_soha_what_not_to_read`, `mark_current_worldline_without_answer`, `compare_rift_terms_to_commute_memory` stable choice ids와 `cheonggi_return_route_opened` hook을 남기고, 천기록 정체 reveal/return system/reward schema는 열지 않는다. 다음은 `route_opener_followup_after_heavenly_archive` docs-only handoff다.
 
 Launcher/entrypoint contract:
 

@@ -2,7 +2,7 @@
 
 Status: docs-only sync + follow-up runtime status note
 Last checked: 2026-06-01T02:53:42+00:00
-Runtime status: `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, and `wuxia_black_heaven_escape_price` were implemented later as separate `storypack_preview` runtime slices; `wuxia_heavenly_archive_previous_outsiders` is the next docs-only handoff candidate. This document remains the Notion coverage ledger. 2026-06-01 default 전환 이후 Web player 기본 storypack은 이구학지다.
+Runtime status: `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, and `wuxia_heavenly_archive_previous_outsiders` were implemented later as separate `storypack_preview` runtime slices. This document remains the Notion coverage ledger. 2026-06-01 default 전환 이후 Web player 기본 storypack은 이구학지다.
 Raw snapshot policy: live Notion markdown/DB exports were used for audit in `/tmp/tui_adv_notion_wuxia_sync`; raw snapshots are not committed.
 
 ## Purpose
@@ -114,8 +114,7 @@ The epilogue DB is a future design source. None of these 17 rows is runtime impl
 
 Already reflected before this sync:
 
-- `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, and `wuxia_black_heaven_escape_price` exist as separate storypack preview runtime content.
-- `wuxia_heavenly_archive_previous_outsiders` is designed as the next 천기·귀환 opener handoff, not runtime content yet.
+- `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, and `wuxia_heavenly_archive_previous_outsiders` exist as separate storypack preview runtime content.
 - Later deferred-offer/epilogue candidates remain designed docs/handoff candidates, not runtime content.
 - Default office bundle separation and `escape-office` save/localStorage compatibility boundaries were already documented.
 
@@ -130,7 +129,7 @@ Synced by the 2026-06-01 docs-only pass:
 
 Still not runtime implemented:
 
-- The next 천기·귀환 opener `wuxia_heavenly_archive_previous_outsiders` and later repo 후보 cards.
+- The next follow-up after the three route openers and later repo 후보 cards.
 - Most Notion event DB rows beyond the currently previewed early/raid beats.
 - All Notion epilogue DB rows.
 - Full 천외편린 reward/ability schema, faction route graph, epilogue renderer/schema, companion/relation/debt ledgers, and route/multi-ending implementation.
@@ -144,3 +143,5 @@ Route opener implementation: the route-opener selection chose and implemented th
 Route opener follow-up implementation: `route_opener_followup_after_baekdo` rechecked the Notion parent, `03. 세력과 외부 압박`, `04. 메인 루트 구조`, `06. 사이드 퀘스트와 미해결 부채`, `07. 천기록 / 천외편린 보상`, and `99. 통합 체크포인트` on 2026-06-01. The selected candidate `wuxia_black_heaven_escape_price` is now implemented in the preview runtime. There is no exact Notion 사건 카드 DB row for this candidate; it is derived from the parent 사파 route synopsis, the external-pressure constraints in `03`, the route narrowing in `04`, the unresolved-debt reflection policy in `06`, and the 천기록 non-reveal policy in `07`/`99`. It accepts direct/deferred sapa branches through shared `sapa_route_started` + `dowol_debt` flags, while `black_heaven_deal_marked` and `black_heaven_escape_marker` remain flavor hooks. It still avoids legacy office bundle changes, `escape-office` key changes, 천기록 identity reveal, and new relation/debt/faction/reward/epilogue schemas.
 
 Route opener follow-up after black heaven: `route_opener_followup_after_black_heaven` rechecked the Notion parent, `04. 메인 루트 구조`, `05. 사건 카드 운영 규칙`, `06. 사이드 퀘스트와 미해결 부채`, `07. 천기록 / 천외편린 보상`, `99. 통합 체크포인트`, and the event-card DB row `wuxia_prologue_commute_rift` on 2026-06-02. The selected next candidate is `wuxia_heavenly_archive_previous_outsiders`. There is no exact Notion 사건 카드 DB row for this opener; it is derived from the parent Branch C 천기/귀환 synopsis, `04`'s route narrowing policy, `05`'s event-card field contract, `06`'s unresolved-debt/future-echo boundary, `07`/`99`'s no identity reveal policy, and `wuxia_prologue_commute_rift`'s later return-thread connection. It accepts direct/deferred 천기 branches through shared `cheonggi_return_route_started` + `cheonggi_record_targeted` flags, while `heavenly_archive_contact` and `heavenly_archive_triage_map_seen` remain flavor hooks. It must still avoid legacy office bundle changes, `escape-office` key changes, 천기록 identity reveal, return system, and new relation/debt/faction/reward/epilogue schemas.
+
+Route opener follow-up after black heaven implementation: `wuxia_heavenly_archive_previous_outsiders` is now implemented in the preview runtime. It preserved the Notion-derived boundaries above: no exact 사건 카드 DB row was claimed, no 천기록 identity reveal or return system was opened, and direct/deferred 천기 branches still share `cheonggi_return_route_started` + `cheonggi_record_targeted` while `heavenly_archive_contact` and `heavenly_archive_triage_map_seen` remain flavor hooks. The next Notion/docs pass is `route_opener_followup_after_heavenly_archive`, which should decide whether to promote a deferred-offer card or the first post-opener midgame continuity card.

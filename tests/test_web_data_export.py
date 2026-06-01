@@ -94,6 +94,7 @@ def test_export_web_data_builds_renderer_neutral_content_bundle():
             "wuxia_cheongryu_raid_wounded_fallback",
             "wuxia_baekdo_medicine_debt",
             "wuxia_black_heaven_escape_price",
+            "wuxia_heavenly_archive_previous_outsiders",
         }
         for encounter in bundle["content"]["encounters"]
     )
@@ -117,7 +118,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     assert bundle["manifest"]["counts"] == {
         "locations": 4,
         "items": 3,
-        "encounters": 10,
+        "encounters": 11,
         "endings": 1,
         "achievements": 2,
         "secrets": 0,
@@ -140,6 +141,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "wuxia_cheongryu_raid_wounded_fallback",
         "wuxia_baekdo_medicine_debt",
         "wuxia_black_heaven_escape_price",
+        "wuxia_heavenly_archive_previous_outsiders",
     ]
     first_fight = bundle["content"]["encounters"][1]
     assert first_fight["conditions"] == {
@@ -440,6 +442,39 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "survival_bargain_is_not_loyalty",
     ]
     assert accept_marker["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
+    heavenly_archive = bundle["content"]["encounters"][10]
+    assert heavenly_archive["conditions"] == {
+        "locations": ["cheongryu_outer_courtyard"],
+        "required_flags": [
+            "cheonggi_return_route_started",
+            "cheonggi_record_targeted",
+        ],
+        "forbidden_flags": ["heavenly_archive_previous_outsiders_resolved"],
+    }
+    assert heavenly_archive["presentation"]["layout"] == "cheonggi_return_opener"
+    assert heavenly_archive["presentation"]["speaker"] == "연소하"
+    assert heavenly_archive["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "천기각",
+        "이방인",
+        "균열",
+    ]
+    assert [choice["id"] for choice in heavenly_archive["choices"]] == [
+        "read_previous_outsider_margins",
+        "ask_yeon_soha_what_not_to_read",
+        "mark_current_worldline_without_answer",
+        "compare_rift_terms_to_commute_memory",
+    ]
+    read_margins = heavenly_archive["choices"][0]
+    assert read_margins["outcome"]["add_flags"] == [
+        "heavenly_archive_previous_outsiders_resolved",
+        "cheonggi_return_route_opened",
+        "previous_outsiders_record_seen",
+    ]
+    assert read_margins["outcome"]["add_clues"] == [
+        "archive_has_other_outsiders",
+        "return_clue_is_not_return_method",
+    ]
+    assert read_margins["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
     assert "dev_desk" not in json.dumps(bundle, ensure_ascii=False)
     assert _missing_private_secret_fields(bundle)
 

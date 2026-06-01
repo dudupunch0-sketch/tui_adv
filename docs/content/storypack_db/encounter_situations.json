@@ -2872,7 +2872,7 @@
     "world_id": "wuxia_jianghu",
     "storypack_id": "wuxia_jianghu_pack",
     "status": "candidate",
-    "runtime_preview_design_status": "designed_next_not_implemented",
+    "runtime_preview_design_status": "implemented",
     "phase": [
       "route_commitment",
       "cheonggi_return"
@@ -3087,6 +3087,16 @@
     },
     "main_spine_link": "route commitment의 첫 천기·귀환 opener. direct raid branch와 deferred wounded branch를 같은 `cheonggi_return_route_started`/`cheonggi_record_targeted` 조건으로 받아 any-of schema 없이 천기·귀환 루트를 연다.",
     "randomization_notes": "1회성 route opener. hub random deck으로 반복하지 않는다. `heavenly_archive_contact`와 `heavenly_archive_triage_map_seen`는 direct/deferred flavor만 바꾸고 eligibility를 가르지 않는다.",
-    "promotion_notes": "docs-only handoff 완료, 다음 runtime 후보. `cheongryu_outer_courtyard`에서 `cheonggi_return_route_started` + `cheonggi_record_targeted`를 받아 열리며, 천기각 이전 이방인 기록/균열 단서를 flags/clues/log/presentation으로만 남긴다. 기본 office bundle, legacy `escape-office` key, 천기록 정체 reveal, return system, reward/ability schema는 열지 않는다."
+    "promotion_notes": "preview runtime으로 구현 완료. `cheongryu_outer_courtyard`에서 `cheonggi_return_route_started` + `cheonggi_record_targeted`를 받아 열리며, 천기각 이전 이방인 기록/균열 단서를 flags/clues/log/presentation으로만 남긴다. 기본 office bundle, legacy `escape-office` key, 천기록 정체 reveal, return system, reward/ability schema는 열지 않았다. 다음 handoff는 `route_opener_followup_after_heavenly_archive`다.",
+    "runtime_preview_implementation_notes": {
+      "implemented_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml",
+      "generated_artifacts": [
+        "crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json",
+        "web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json"
+      ],
+      "default_bundle_changed": false,
+      "new_schema_opened": false,
+      "next_handoff": "route_opener_followup_after_heavenly_archive"
+    }
   }
 ]

@@ -48,6 +48,7 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         "wuxia_commute_rift_arrival",
         "wuxia_heavenly_archive_previous_outsiders",
         "wuxia_heuksa_bang_first_fight",
+        "wuxia_mumyeong_awakening",
         "wuxia_mumyeong_copy_style_reveal",
         "wuxia_mumyeong_first_confrontation",
         "wuxia_mumyeong_first_sighting",
@@ -191,6 +192,16 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
     assert "mumyeong_tried_to_save_qingliu" in request_for_aid.outcome_hooks[
         "possible_clues"
     ]
+
+    awakening = db.encounter_cards["wuxia_mumyeong_awakening"]
+    assert awakening.world_id == "wuxia_jianghu"
+    assert awakening.storypack_id == "wuxia_jianghu_pack"
+    assert awakening.priority_class == "route_key"
+    assert "anger_copy_bloom" in awakening.phases
+    assert "cheonggi_record" in awakening.surfaces
+    assert "safe_observe" in [choice["role"] for choice in awakening.choice_shapes]
+    assert "mumyeong_awakening_resolved" in awakening.outcome_hooks["possible_flags"]
+    assert "copy_is_wound_not_growth" in awakening.outcome_hooks["possible_clues"]
 
 
 def test_storypack_db_public_files_validate_cleanly():

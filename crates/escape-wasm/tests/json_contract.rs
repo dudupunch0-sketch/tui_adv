@@ -9,6 +9,19 @@ const WUXIA_PREVIEW_BUNDLE: &str = include_str!(
     "../../escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json"
 );
 
+fn wuxia_state_after_actions(actions: &[&str]) -> String {
+    let mut state_json =
+        new_game_json(123, WUXIA_PREVIEW_BUNDLE).expect("preview new game should serialize");
+    for action in actions {
+        let result_json = apply_action_json(&state_json, WUXIA_PREVIEW_BUNDLE, action)
+            .unwrap_or_else(|err| panic!("preview action {action} should serialize: {err}"));
+        let result: Value =
+            serde_json::from_str(&result_json).expect("preview action result should parse");
+        state_json = serde_json::to_string(&result["state"]).expect("state should stringify");
+    }
+    state_json
+}
+
 #[test]
 fn json_boundary_creates_scene_page_applies_action_and_roundtrips_save() {
     let state_json = new_game_json(123, CONTENT_BUNDLE).expect("new game should serialize");
@@ -1194,6 +1207,89 @@ fn json_boundary_reaches_wuxia_mumyeong_first_sighting_through_preview_bundle() 
         .expect("clues should be an array")
         .iter()
         .any(|clue| clue == "mumyeong_exists"));
+}
+
+#[test]
+fn json_boundary_reaches_wuxia_mumyeong_first_confrontation_through_preview_bundle() {
+    let post_sighting_state_json = wuxia_state_after_actions(&[
+        "choice:follow_roadside_dust",
+        "move:jianghu_market_street",
+        "choice:run_toward_open_street",
+        "choice:choose_failure_log",
+        "choice:tell_plain_truth",
+        "choice:accept_three_month_trial",
+        "choice:step_back_with_firewood",
+        "choice:defend_cheongryu_with_white_path",
+        "choice:accept_medicine_with_written_debt",
+        "choice:watch_the_stolen_qingliu_flow",
+    ]);
+
+    let confrontation_page_json = scene_page_json(&post_sighting_state_json, WUXIA_PREVIEW_BUNDLE)
+        .expect("mumyeong first confrontation scene page should serialize");
+    let confrontation_page: Value = serde_json::from_str(&confrontation_page_json)
+        .expect("confrontation page JSON should parse");
+    assert_eq!(confrontation_page["mode"], "encounter");
+    assert_eq!(confrontation_page["title"], "무명 첫 대치");
+    assert_eq!(
+        confrontation_page["location"]["id"],
+        "cheongryu_outer_courtyard"
+    );
+    assert_eq!(
+        confrontation_page["visual"]["id"],
+        "wuxia_mumyeong_first_confrontation"
+    );
+    assert_eq!(
+        confrontation_page["visual"]["kind"],
+        "rival_first_confrontation"
+    );
+    assert_eq!(
+        confrontation_page["effect_cues"][0]["stable_terms"][0],
+        "무명"
+    );
+    let confrontation_action_ids: Vec<&str> = confrontation_page["actions"]
+        .as_array()
+        .expect("actions should be an array")
+        .iter()
+        .map(|action| action["id"].as_str().expect("action id should be a string"))
+        .collect();
+    assert_eq!(
+        confrontation_action_ids,
+        vec![
+            "choice:meet_mumyeong_head_on",
+            "choice:endure_until_copy_flow_breaks",
+            "choice:watch_seo_harin_hold_back",
+            "choice:read_mumyeongs_copied_form",
+            "choice:do_not_provoke_mumyeong",
+        ]
+    );
+
+    let confrontation_result_json = apply_action_json(
+        &post_sighting_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:endure_until_copy_flow_breaks",
+    )
+    .expect("endure until copy flow breaks action should serialize");
+    let confrontation_result: Value = serde_json::from_str(&confrontation_result_json)
+        .expect("confrontation action result should parse");
+    assert_eq!(
+        confrontation_result["encounter_id"],
+        "wuxia_mumyeong_first_confrontation"
+    );
+    assert!(confrontation_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array")
+        .iter()
+        .any(|flag| flag == "mumyeong_first_confrontation_resolved"));
+    assert!(confrontation_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array")
+        .iter()
+        .any(|flag| flag == "mumyeong_rival_thread_opened"));
+    assert!(confrontation_result["state"]["clues"]
+        .as_array()
+        .expect("clues should be an array")
+        .iter()
+        .any(|clue| clue == "copy_style_has_gap"));
 }
 
 #[test]

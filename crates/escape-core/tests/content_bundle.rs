@@ -196,12 +196,12 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&4));
     assert_eq!(bundle.manifest.counts.get("items"), Some(&3));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&13));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&14));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 4);
-    assert_eq!(index.encounters_len(), 13);
+    assert_eq!(index.encounters_len(), 14);
 
     let market = index
         .location("jianghu_market_street")
@@ -853,6 +853,63 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     );
     assert_eq!(
         observe.outcome.destination_id.as_deref(),
+        Some("cheongryu_outer_courtyard")
+    );
+
+    let confrontation = index
+        .encounter("wuxia_mumyeong_first_confrontation")
+        .expect("mumyeong first confrontation encounter");
+    assert_eq!(confrontation.title, "무명 첫 대치");
+    assert_eq!(
+        confrontation.conditions.locations,
+        vec!["cheongryu_outer_courtyard"]
+    );
+    assert_eq!(
+        confrontation.conditions.required_flags,
+        vec![
+            "mumyeong_first_sighting_resolved",
+            "midgame_continuity_started",
+            "cheongryu_raid_survived",
+            "first_fragment_seen"
+        ]
+    );
+    assert_eq!(
+        confrontation.conditions.forbidden_flags,
+        vec!["mumyeong_first_confrontation_resolved"]
+    );
+    let confrontation_presentation = confrontation
+        .presentation
+        .as_ref()
+        .expect("mumyeong first confrontation presentation");
+    assert_eq!(
+        confrontation_presentation.layout.as_deref(),
+        Some("rival_first_confrontation")
+    );
+    assert_eq!(confrontation_presentation.speaker.as_deref(), Some("무명"));
+    assert_eq!(
+        confrontation_presentation.effect_cues[0].stable_terms,
+        vec!["무명", "서하린", "청류문"]
+    );
+    assert_eq!(confrontation.choices.len(), 5);
+    let endure = confrontation
+        .choices
+        .iter()
+        .find(|choice| choice.id == "endure_until_copy_flow_breaks")
+        .expect("endure until copy flow breaks choice");
+    assert_eq!(
+        endure.outcome.add_flags,
+        vec![
+            "mumyeong_first_confrontation_resolved",
+            "mumyeong_rival_thread_opened",
+            "copied_flow_weakness_noted"
+        ]
+    );
+    assert_eq!(
+        endure.outcome.add_clues,
+        vec!["copy_style_has_gap", "copied_flow_is_not_qingliu"]
+    );
+    assert_eq!(
+        endure.outcome.destination_id.as_deref(),
         Some("cheongryu_outer_courtyard")
     );
 }

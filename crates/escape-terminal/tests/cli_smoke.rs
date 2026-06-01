@@ -863,6 +863,66 @@ fn content_tui_smoke_reaches_wuxia_mumyeong_first_sighting() {
 }
 
 #[test]
+fn content_tui_smoke_reaches_wuxia_mumyeong_first_confrontation() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--storypack-preview",
+            "wuxia_jianghu_pack",
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:follow_roadside_dust",
+            "--action",
+            "move:jianghu_market_street",
+            "--action",
+            "choice:run_toward_open_street",
+            "--action",
+            "choice:choose_failure_log",
+            "--action",
+            "choice:tell_plain_truth",
+            "--action",
+            "choice:accept_three_month_trial",
+            "--action",
+            "choice:step_back_with_firewood",
+            "--action",
+            "choice:defend_cheongryu_with_white_path",
+            "--action",
+            "choice:accept_medicine_with_written_debt",
+            "--action",
+            "choice:watch_the_stolen_qingliu_flow",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("위치: 청류문 외곽 마당 (cheongryu_outer_courtyard)"));
+    assert!(stdout.contains("무명 첫 대치"));
+    assert!(stdout.contains("visual id: wuxia_mumyeong_first_confrontation"));
+    assert!(stdout.contains("layout: rival_first_confrontation"));
+    assert!(stdout.contains("stable terms: 무명 / 서하린 / 청류문"));
+    assert!(stdout.contains("choice:meet_mumyeong_head_on / 무명과 정면으로 맞선다"));
+    assert!(stdout.contains(
+        "choice:endure_until_copy_flow_breaks / 버티며 카피한 흐름이 끊기는 순간을 기다린다"
+    ));
+    assert!(
+        stdout.contains("choice:watch_seo_harin_hold_back / 서하린이 왜 끼어들지 않는지 살핀다")
+    );
+    assert!(stdout
+        .contains("choice:read_mumyeongs_copied_form / 무명의 초식이 어디서 어긋나는지 읽는다"));
+    assert!(stdout.contains("choice:do_not_provoke_mumyeong / 도발하지 않고 물러설 거리를 만든다"));
+    assert!(!stdout.contains("dev_desk"));
+}
+
+#[test]
 fn content_tui_smoke_renders_final_movement_panel_after_scripted_actions() {
     let bundle_path = content_bundle_path();
     let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))

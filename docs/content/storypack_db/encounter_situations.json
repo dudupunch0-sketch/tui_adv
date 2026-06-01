@@ -3660,7 +3660,7 @@
     ],
     "summary": "첫 목격 이후 무명을 라이벌로 확정하는 첫 대치. 이기는 전투가 아니라 버티기, 카피 무공 관찰, 서하린과 무명 사이의 침묵 확인이 핵심이다.",
     "setup_text": "외원 담장 밑에서 다시 그 흐름이 나타난다. 무명은 청류문이 또 외부자를 주워 왔느냐고 묻지만, 말끝에는 조롱보다 피로가 먼저 묻어난다. 서하린은 칼집에 손을 얹고도 이름을 부르지 않는다.",
-    "runtime_preview_design_status": "handoff_ready",
+    "runtime_preview_design_status": "implemented",
     "runtime_preview_start_conditions": {
       "runtime_mode": "storypack_preview",
       "location": "cheongryu_outer_courtyard",
@@ -3859,12 +3859,11 @@
     },
     "main_spine_link": "무명을 단순 적이 아니라 주인공보다 살짝 앞선 라이벌로 확정하고, 보스가 담당할 최종 벽과 무명의 라이벌 결산을 분리한다.",
     "randomization_notes": "1회성 midgame confrontation. 첫 목격이 남긴 common hook으로만 열린다. 첫 목격 branch flags와 route opener flags는 문장 flavor에만 사용한다.",
-    "promotion_notes": "docs-only handoff 완료. `wuxia_mumyeong_first_confrontation_after_sighting`에서 첫 대치, 중반 재회, boss first appearance를 비교했고, 첫 대치를 다음 runtime 후보로 골랐다. 전투 사건이지만 승리/패배 resolver가 아니라 버티기/분석 encounter로 구현한다. 기본 office bundle, legacy `escape-office` key, combat resolver/schema, HP 숫자전, route graph/faction reputation/debt/relation schema, reward/ability/epilogue/return system, boss first appearance, 천기록 정체 reveal은 열지 않는다.",
+    "promotion_notes": "preview runtime으로 구현 완료. `wuxia_mumyeong_first_confrontation_after_sighting`에서 첫 대치, 중반 재회, boss first appearance를 비교했고, 첫 대치를 다음 runtime 후보로 골랐다. 전투 사건이지만 승리/패배 resolver가 아니라 버티기/분석 encounter로 구현했다. 기본 office bundle, legacy `escape-office` key, combat resolver/schema, HP 숫자전, route graph/faction reputation/debt/relation schema, reward/ability/epilogue/return system, boss first appearance, 천기록 정체 reveal은 열지 않았다. 다음 handoff는 `wuxia_mumyeong_followup_after_first_confrontation`다.",
     "runtime_preview_implementation_notes": {
-      "next_runtime_candidate": true,
-      "source_to_add": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml",
+      "implemented_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml",
       "insert_after": "wuxia_mumyeong_first_sighting",
-      "generated_artifacts_to_update": [
+      "generated_artifacts": [
         "crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json",
         "web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json"
       ],
@@ -3875,7 +3874,7 @@
       ],
       "default_bundle_changed": false,
       "new_schema_opened": false,
-      "next_handoff": "wuxia_mumyeong_first_confrontation"
+      "next_handoff": "wuxia_mumyeong_followup_after_first_confrontation"
     }
   }
 ]

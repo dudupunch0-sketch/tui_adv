@@ -1,6 +1,6 @@
 # Storypack runtime preview mode
 
-Status: 결정 문서 + `wuxia_mumyeong_first_sighting` runtime 구현 완료 + `wuxia_mumyeong_first_confrontation` handoff ready
+Status: 결정 문서 + `wuxia_mumyeong_first_confrontation` runtime 구현 완료 + `wuxia_mumyeong_followup_after_first_confrontation` handoff 대기
 
 ## Decision: separate preview mode first
 
@@ -25,7 +25,7 @@ Status: 결정 문서 + `wuxia_mumyeong_first_sighting` runtime 구현 완료 + 
 2. 첫 무협 prototype은 아직 gameplay schema 확장보다 “기존 encounter schema로 표현 가능한가”를 확인하는 단계다.
 3. 기본 번들의 `default_location`, route smoke, Web player start/save UX가 office 전제를 갖고 있으므로, 무협 콘텐츠를 같은 bundle에 넣으면 시작 위치와 encounter-first routing이 쉽게 충돌한다.
 
-따라서 첫 단계는 별도 preview mode다. 이 결정은 gating을 영구히 포기한다는 뜻이 아니다. preview mode로 `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`, `wuxia_wounded_shelter_dawn_offers`, `wuxia_mumyeong_first_sighting`가 기존 schema에서 작동함을 확인했다. 다음 handoff-ready runtime 후보는 `wuxia_mumyeong_first_confrontation`다. 다중 storypack 선택 UI/save migration이 필요해질 때 runtime-level gating을 별도로 연다.
+따라서 첫 단계는 별도 preview mode다. 이 결정은 gating을 영구히 포기한다는 뜻이 아니다. preview mode로 `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`, `wuxia_wounded_shelter_dawn_offers`, `wuxia_mumyeong_first_sighting`, `wuxia_mumyeong_first_confrontation`가 기존 schema에서 작동함을 확인했다. 다음 handoff는 `wuxia_mumyeong_followup_after_first_confrontation` docs-only 작업이다. 다중 storypack 선택 UI/save migration이 필요해질 때 runtime-level gating을 별도로 연다.
 
 ## Preview mode contract
 
@@ -139,7 +139,7 @@ cargo test -p escape-terminal content_tui_smoke_reaches_wuxia_wounded_shelter_da
 
 ## 후속 slice 기준
 
-`wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`, `wuxia_wounded_shelter_dawn_offers`, `wuxia_mumyeong_first_sighting`는 같은 preview mode에 추가되었다. 이미 preview export/check command, Rust/Web preview bundle artifact, terminal `--storypack-preview wuxia_jianghu_pack`, Web default 이구학지 start/save wiring이 있으므로, 다음은 launcher나 천외편린 reward schema가 아니라 `wuxia_mumyeong_first_confrontation` runtime implementation이다.
+`wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`, `wuxia_wounded_shelter_dawn_offers`, `wuxia_mumyeong_first_sighting`, `wuxia_mumyeong_first_confrontation`는 같은 preview mode에 추가되었다. 이미 preview export/check command, Rust/Web preview bundle artifact, terminal `--storypack-preview wuxia_jianghu_pack`, Web default 이구학지 start/save wiring이 있으므로, 다음은 launcher나 천외편린 reward schema가 아니라 `wuxia_mumyeong_followup_after_first_confrontation` docs-only handoff다.
 
 구현된 rescue slice:
 
@@ -255,7 +255,7 @@ schema_boundary:
 
 `wuxia_mumyeong_first_sighting` — preview runtime 구현 완료. 세 route opener outcome에 공통 `route_opener_resolved` flag를 추가하고, 세 route opener 이후 첫 common midgame bridge로 Notion 사건 카드 DB `무명 첫 목격`을 구현했다. `route_opener_resolved` + `cheongryu_raid_survived` + `cheongryu_trial_started` + `first_fragment_seen`를 required flags로 사용하며, stable choice ids는 `watch_the_stolen_qingliu_flow`, `check_seo_harin_silence`, `follow_black_serpent_runner`, `pretend_not_to_see_the_form`다. 무명 존재/서하린 침묵/청류문식 카피 무공의 이질감을 flags/clues/log/presentation으로만 남기고, any-of condition schema, route graph, faction reputation, relation/debt ledger, combat schema, boss combat, reward/ability/epilogue/return system, 천기록 정체 reveal은 열지 않았다.
 
-`wuxia_mumyeong_first_confrontation` — docs-only handoff ready. Notion 사건 카드 DB `무명 첫 대치`는 첫 목격 이후가 선행 조건이고, 완승보다 버티기/분석/카피 무공 관찰이 핵심이다. 다음 runtime slice는 `mumyeong_first_sighting_resolved` + `midgame_continuity_started` + `cheongryu_raid_survived` + `first_fragment_seen`를 required flags로 쓰고, `meet_mumyeong_head_on`, `endure_until_copy_flow_breaks`, `watch_seo_harin_hold_back`, `read_mumyeongs_copied_form`, `do_not_provoke_mumyeong` stable choice ids를 사용한다. 이 대치는 전투 사건처럼 보이지만 combat resolver/schema, HP 숫자전, boss combat, route graph/faction reputation/debt/relation/reward/ability/epilogue/return schema, 천기록 정체 reveal을 열지 않고 기존 flags/clues/log/presentation만 사용한다.
+`wuxia_mumyeong_first_confrontation` — preview runtime 구현 완료. Notion 사건 카드 DB `무명 첫 대치`는 첫 목격 이후가 선행 조건이고, 완승보다 버티기/분석/카피 무공 관찰이 핵심이다. Runtime은 `mumyeong_first_sighting_resolved` + `midgame_continuity_started` + `cheongryu_raid_survived` + `first_fragment_seen`를 required flags로 쓰고, `meet_mumyeong_head_on`, `endure_until_copy_flow_breaks`, `watch_seo_harin_hold_back`, `read_mumyeongs_copied_form`, `do_not_provoke_mumyeong` stable choice ids를 사용한다. 모든 outcome은 `mumyeong_first_confrontation_resolved`, `mumyeong_rival_thread_opened`, `destination_id: cheongryu_outer_courtyard`를 남긴다. 이 대치는 전투 사건처럼 보이지만 combat resolver/schema, HP 숫자전, boss combat, route graph/faction reputation/debt/relation/reward/ability/epilogue/return schema, 천기록 정체 reveal을 열지 않고 기존 flags/clues/log/presentation만 사용한다.
 
 Launcher/entrypoint contract:
 

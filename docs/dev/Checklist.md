@@ -458,6 +458,18 @@
 - [x] runtime YAML/Rust/Web/generated bundle, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
 - [x] 다음 작업을 `wuxia_mumyeong_first_confrontation` runtime implementation으로 갱신
 
+### 0.2at 2026-06-02 무협 `wuxia_mumyeong_first_confrontation` preview runtime slice
+
+- [x] `wuxia_mumyeong_first_confrontation` encounter를 `wuxia_mumyeong_first_sighting` 뒤에 storypack preview source로 추가
+- [x] start conditions를 `conditions.locations: [cheongryu_outer_courtyard]`, `required_flags: [mumyeong_first_sighting_resolved, midgame_continuity_started, cheongryu_raid_survived, first_fragment_seen]`, `forbidden_flags: [mumyeong_first_confrontation_resolved]`로 구현
+- [x] stable choice id `meet_mumyeong_head_on`, `endure_until_copy_flow_breaks`, `watch_seo_harin_hold_back`, `read_mumyeongs_copied_form`, `do_not_provoke_mumyeong` 구현
+- [x] common hook `mumyeong_first_confrontation_resolved`, `mumyeong_rival_thread_opened`, `destination_id: cheongryu_outer_courtyard` 구현
+- [x] 카피 무공 결함/승리 불필요/서하린 침묵/청류안 대비 clue와 `rival_first_confrontation` presentation hook 구현
+- [x] Rust/Web storypack preview bundle만 재생성하고 기본 office bundle/generated content는 미변경 유지
+- [x] Python exporter/docs/storypack DB, Rust content bundle, WASM JSON boundary, terminal smoke, Web content bundle registry 테스트 갱신
+- [x] combat resolver/schema, HP 숫자전, boss first appearance, 무명 중반 재회, route graph/faction reputation/debt/relation/reward/ability/epilogue/return schema, 천기록 정체 reveal 미변경 유지
+- [x] 다음 작업을 `wuxia_mumyeong_followup_after_first_confrontation` docs-only handoff로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

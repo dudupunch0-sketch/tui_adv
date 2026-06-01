@@ -184,6 +184,6 @@ private/
 다음 주제가 커지면 별도 문서로 분리하고, 그때 이 인덱스와 implementation-map도 같이 갱신한다.
 
 1. `document_contamination_pack`, `meeting_reservation_pack`, `compensation_strike_pack`의 별도 후보 문서
-2. `wuxia_jianghu_pack` / 이구학지 — 천기록 preview는 `wuxia_mumyeong_first_sighting`까지 구현 완료. 다음 runtime 후보는 `wuxia_mumyeong_first_confrontation`
+2. `wuxia_jianghu_pack` / 이구학지 — 천기록 preview는 `wuxia_mumyeong_first_confrontation`까지 구현 완료. 다음 handoff는 `wuxia_mumyeong_followup_after_first_confrontation`
 3. `yageunmong_pack` / 야근몽의 첫 runtime preview 후보: `yageunmong_late_night_desk_awake` 또는 각성편린 3택 preview
 4. 실시간 UI/UX 점검 후 확정된 화면/입력 변경 사항 기록

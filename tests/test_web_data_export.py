@@ -97,6 +97,7 @@ def test_export_web_data_builds_renderer_neutral_content_bundle():
             "wuxia_heavenly_archive_previous_outsiders",
             "wuxia_wounded_shelter_dawn_offers",
             "wuxia_mumyeong_first_sighting",
+            "wuxia_mumyeong_first_confrontation",
         }
         for encounter in bundle["content"]["encounters"]
     )
@@ -120,7 +121,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     assert bundle["manifest"]["counts"] == {
         "locations": 4,
         "items": 3,
-        "encounters": 13,
+        "encounters": 14,
         "endings": 1,
         "achievements": 2,
         "secrets": 0,
@@ -146,6 +147,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "wuxia_heavenly_archive_previous_outsiders",
         "wuxia_wounded_shelter_dawn_offers",
         "wuxia_mumyeong_first_sighting",
+        "wuxia_mumyeong_first_confrontation",
     ]
     first_fight = bundle["content"]["encounters"][1]
     assert first_fight["conditions"] == {
@@ -579,6 +581,42 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "copied_flow_is_not_qingliu",
     ]
     assert observe["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
+    confrontation = bundle["content"]["encounters"][13]
+    assert confrontation["conditions"] == {
+        "locations": ["cheongryu_outer_courtyard"],
+        "required_flags": [
+            "mumyeong_first_sighting_resolved",
+            "midgame_continuity_started",
+            "cheongryu_raid_survived",
+            "first_fragment_seen",
+        ],
+        "forbidden_flags": ["mumyeong_first_confrontation_resolved"],
+    }
+    assert confrontation["presentation"]["layout"] == "rival_first_confrontation"
+    assert confrontation["presentation"]["speaker"] == "무명"
+    assert confrontation["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "무명",
+        "서하린",
+        "청류문",
+    ]
+    assert [choice["id"] for choice in confrontation["choices"]] == [
+        "meet_mumyeong_head_on",
+        "endure_until_copy_flow_breaks",
+        "watch_seo_harin_hold_back",
+        "read_mumyeongs_copied_form",
+        "do_not_provoke_mumyeong",
+    ]
+    endure = confrontation["choices"][1]
+    assert endure["outcome"]["add_flags"] == [
+        "mumyeong_first_confrontation_resolved",
+        "mumyeong_rival_thread_opened",
+        "copied_flow_weakness_noted",
+    ]
+    assert endure["outcome"]["add_clues"] == [
+        "copy_style_has_gap",
+        "copied_flow_is_not_qingliu",
+    ]
+    assert endure["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
     assert "dev_desk" not in json.dumps(bundle, ensure_ascii=False)
     assert _missing_private_secret_fields(bundle)
 

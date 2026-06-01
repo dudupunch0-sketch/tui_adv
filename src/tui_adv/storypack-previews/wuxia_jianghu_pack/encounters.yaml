@@ -770,3 +770,75 @@ encounters:
           add_clues: [not_seeing_is_also_a_choice, black_serpent_uses_borrowed_flows]
           destination_id: cheongryu_outer_courtyard
           log: 모른 척한 일도 사라지지 않는다. 다음에 같은 흐름을 보면 더 늦게 알아볼 뿐이고, 늦게 알아본 대가는 언젠가 돌아온다.
+
+  - id: wuxia_mumyeong_first_confrontation
+    title: 무명 첫 대치
+    body: 외원 담장 밑에서 다시 그 흐름이 나타난다. 무명은 청류문이 또 외부자를 주워 왔느냐고 묻지만, 말끝에는 조롱보다 피로가 먼저 묻어난다. 서하린은 칼집에 손을 얹고도 이름을 부르지 않는다. 무명의 발끝이 반 보 앞으로 밀려오고, 훔친 청류문식 초식이 비어 있는 중심 위에 번쩍인다.
+    presentation:
+      visual_id: wuxia_mumyeong_first_confrontation
+      speaker: 무명
+      layout: rival_first_confrontation
+      effect_cues:
+        - kind: glyph_anomaly
+          source: mumyeong_first_confrontation
+          intensity: 0.78
+          stable_terms: [무명, 서하린, 청류문]
+          distortion: copied_flow_breaks_under_pressure
+          duration_hint_ms: 1500
+          fallback_text: 부딪히는 보법 사이로 '무명', '서하린', '청류문'만 흔들리지 않고 남는다.
+    conditions:
+      locations: [cheongryu_outer_courtyard]
+      required_flags: [mumyeong_first_sighting_resolved, midgame_continuity_started, cheongryu_raid_survived, first_fragment_seen]
+      forbidden_flags: [mumyeong_first_confrontation_resolved]
+    choices:
+      - id: meet_mumyeong_head_on
+        label: 무명과 정면으로 맞선다
+        outcome:
+          resources:
+            health: -2
+            sanity: -2
+          danger: 2
+          add_flags: [mumyeong_first_confrontation_resolved, mumyeong_rival_thread_opened, rival_endured_not_defeated]
+          add_clues: [mumyeong_is_not_boss_wall, winning_is_not_required]
+          destination_id: cheongryu_outer_courtyard
+          log: 정면으로 부딪혔지만 이긴 것은 아니다. 다만 물러서지 않았다는 사실만은 남고, 무명은 그 사실을 기억한다.
+      - id: endure_until_copy_flow_breaks
+        label: 버티며 카피한 흐름이 끊기는 순간을 기다린다
+        outcome:
+          resources:
+            health: -1
+            sanity: -2
+          danger: 1
+          add_flags: [mumyeong_first_confrontation_resolved, mumyeong_rival_thread_opened, copied_flow_weakness_noted]
+          add_clues: [copy_style_has_gap, copied_flow_is_not_qingliu]
+          destination_id: cheongryu_outer_courtyard
+          log: 훔친 흐름은 빠르지만 오래 가지 않는다. 중심이 돌아오는 순간, 청류문식 모양 아래 비어 있던 틈이 드러난다.
+      - id: watch_seo_harin_hold_back
+        label: 서하린이 왜 끼어들지 않는지 살핀다
+        outcome:
+          resources:
+            sanity: -2
+          danger: 1
+          add_flags: [mumyeong_first_confrontation_resolved, mumyeong_rival_thread_opened, seo_harin_mumyeong_silence_confirmed]
+          add_clues: [seo_harin_does_not_call_him_traitor, mumyeong_was_not_only_enemy]
+          destination_id: cheongryu_outer_courtyard
+          log: 서하린은 끼어들 수 있는데도 한 박자 늦춘다. 그 침묵은 망설임이 아니라, 아직 끊어내지 못한 기억에 가깝다.
+      - id: read_mumyeongs_copied_form
+        label: 무명의 초식이 어디서 어긋나는지 읽는다
+        outcome:
+          resources:
+            sanity: -3
+          danger: 1
+          add_flags: [mumyeong_first_confrontation_resolved, mumyeong_rival_thread_opened, copied_flow_weakness_noted, cheonggi_copy_contrast_noted]
+          add_clues: [copy_style_has_gap, understanding_is_not_copying]
+          destination_id: cheongryu_outer_courtyard
+          log: 같은 선을 그어도 같은 뜻이 되지는 않는다. 훔친 초식과 이해한 흐름은 손끝에서 갈라지고, 천기록의 빈 줄은 그 차이를 조용히 적어 둔다.
+      - id: do_not_provoke_mumyeong
+        label: 도발하지 않고 물러설 거리를 만든다
+        outcome:
+          resources:
+            sanity: -1
+          add_flags: [mumyeong_first_confrontation_resolved, mumyeong_rival_thread_opened, rivalry_deferred_not_avoided]
+          add_clues: [winning_is_not_required, not_provoking_still_leaves_debt]
+          destination_id: cheongryu_outer_courtyard
+          log: 싸움을 키우지 않는다고 대치가 사라지지는 않는다. 오늘 피한 말은 다음에 더 날카롭게 돌아오고, 무명은 네가 물러선 거리를 기억한다.

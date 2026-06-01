@@ -1,13 +1,13 @@
 # 이구학지 — 천기록 encounter situation cards
 
-Status: candidate
+Status: candidate + `wuxia_mumyeong_request_for_aid` preview runtime implemented + `wuxia_mumyeong_followup_after_failed_aid` next handoff selected
 
-이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전 상황 카드로 정리한다. `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`는 이 카드에서 separate storypack preview runtime으로 승격된 첫 세 slice이며, 나머지 카드는 아직 후보 상태다.
+이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_request_for_aid`까지는 separate storypack preview runtime으로 승격되었고, 다음은 `wuxia_mumyeong_followup_after_failed_aid` docs-only handoff다.
 
 공통 원칙:
 
 - 모든 카드는 `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`에 속한다.
-- 현재 단계에서는 대부분 runtime encounter가 아니다. 단, `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다.
+- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_request_for_aid`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. 다음 runtime 후보는 `wuxia_mumyeong_followup_after_failed_aid` handoff에서 다시 고른다.
 - 최신 canonical 무협 설정은 **이구학지 — 천기록**이다. 이전의 generic 객잔/소림/무당/아미 placeholder는 superseded로 본다.
 - 플레이어 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계의 시장 한복판에 전이됐다”이다.
 - 선택지는 세부 수치보다 역할과 결과 hook을 먼저 정의한다.
@@ -33,19 +33,19 @@ Status: candidate
 | `wuxia_seoharin_empty_place` | 비워둔 자리 | none yet | future 서하린/무명 clue event |
 | `wuxia_mumyeong_departure_truth_summary` | 무명 이탈의 진실 정리 | none yet | future 무명 truth event |
 | `wuxia_black_serpent_pressures_qingliu` | 흑사방의 청류문 압박 | partial: `wuxia_cheongryu_raid_route_split` background | future pressure/side event |
-| `wuxia_mumyeong_copy_style_reveal` | 무명의 카피 무공 공개 | none yet | future rival/growth event |
+| `wuxia_mumyeong_copy_style_reveal` | 무명의 카피 무공 공개 | `wuxia_mumyeong_copy_style_reveal` | preview runtime implemented |
 | `wuxia_mumyeong_resolution` | 무명 결산 | none yet | future final route event |
-| `wuxia_mumyeong_midgame_reunion` | 무명 중반 재회 | none yet | future rival event |
+| `wuxia_mumyeong_midgame_reunion` | 무명 중반 재회 | `wuxia_mumyeong_midgame_reunion` | preview runtime implemented |
 | `wuxia_boss_resolution` | 보스 결산 | none yet | future boss result event |
-| `wuxia_mumyeong_first_sighting` | 무명 첫 목격 | none yet | future reveal event |
-| `wuxia_mumyeong_first_confrontation` | 무명 첫 대치 | none yet | future rival confrontation |
-| `wuxia_boss_first_appearance` | 보스 첫 등장 | none yet | future boss-wall event |
+| `wuxia_mumyeong_first_sighting` | 무명 첫 목격 | `wuxia_mumyeong_first_sighting` | preview runtime implemented |
+| `wuxia_mumyeong_first_confrontation` | 무명 첫 대치 | `wuxia_mumyeong_first_confrontation` | preview runtime implemented |
+| `wuxia_boss_first_appearance` | 보스 첫 등장 | `wuxia_boss_first_appearance` | preview runtime implemented |
 | `wuxia_mumyeong_destroys_orthodox_sect` | 정파 문파 멸문 | none yet | future consequence/backstory event |
 | `wuxia_mumyeong_awakening` | 무명의 각성 | none yet | future rival corruption/growth event |
 | `wuxia_boss_recruits_mumyeong` | 흑사방 보스의 스카웃 | none yet | future backstory event |
-| `wuxia_mumyeong_reads_orthodox_style` | 무명의 정파 무공 간파 | none yet | future 청류안 contrast event |
+| `wuxia_mumyeong_reads_orthodox_style` | 무명의 정파 무공 간파 | `wuxia_mumyeong_reads_orthodox_style` | preview runtime implemented |
 | `wuxia_qingliu_attack_after_war` | 무너져가는 청류문 습격 | none yet | future backstory/pressure event |
-| `wuxia_mumyeong_request_for_aid` | 무명의 도움 요청 | none yet | future backstory event |
+| `wuxia_mumyeong_request_for_aid` | 무명의 도움 요청 | `wuxia_mumyeong_request_for_aid` | preview runtime implemented |
 | `wuxia_tianjilu_first_fragment` | 천기록 첫 천외편린 | `wuxia_cheonggi_record_first_fragment` | preview implemented as schema-less foreshadow; full reward schema future |
 | `wuxia_seoharin_intervention` | 서하린의 개입 | `wuxia_seo_harin_rescue` | preview implemented as schema-less rescue/protection bridge |
 | `wuxia_prologue_commute_rift` | 출근길의 균열 | `wuxia_commute_rift_arrival` | preview implemented |
@@ -680,7 +680,7 @@ id: wuxia_baekdo_medicine_debt
 world_id: wuxia_jianghu
 storypack_id: wuxia_jianghu_pack
 status: candidate
-runtime_preview_design_status: designed_next_not_implemented
+runtime_preview_design_status: implemented
 phase: [route_commitment]
 priority_class: route_key
 location_tags: [cheongryu_sect, faction_choice, righteous_route]
@@ -704,12 +704,12 @@ choice_shapes:
   - id: accept_medicine_with_written_debt
     role: safe_acceptance
     fallback_choice: true
-    label_direction: 약상자를 받고 채무 문서에 청류문 이름을 적는다
+    label_direction: 채무 문서를 남기고 약상자와 호위를 받는다
     expected_costs: [political_debt, autonomy_risk]
     expected_gains: [medicine_support, cheongryu_rebuild_supplies]
     outcome_hook:
-      add_flags: [baekdo_medicine_debt_resolved, righteous_route_opened, white_path_debt_recorded, cheongryu_rebuild_supplies_secured]
-      add_clues: [medicine_has_banner, white_path_help_has_price]
+      add_flags: [baekdo_medicine_debt_resolved, righteous_route_opened, white_path_debt_recorded, cheongryu_rebuild_supplies_secured, namgung_seoyun_notice]
+      add_clues: [medicine_has_banner, white_path_help_has_price, qingliu_survival_needs_outside_help]
       log_direction: 정파의 도움은 사람을 살리지만, 문서에 남은 이름은 이후 선택의 대가가 된다.
   - id: ask_terms_before_opening_gate
     role: negotiation_probe
@@ -722,12 +722,12 @@ choice_shapes:
       log_direction: 조건을 묻는 순간, 도움과 종속의 경계가 얇아진다.
   - id: send_supplies_to_wounded_first
     role: homebase_alignment
-    label_direction: 장문 보고보다 부상자에게 약재를 먼저 보낸다
+    label_direction: 약과 식량을 장문 명부보다 부상자에게 먼저 돌린다
     expected_costs: [political_protocol_risk, fatigue_small]
     expected_gains: [trust_from_wounded, seo_harin_respect_thread]
     outcome_hook:
-      add_flags: [baekdo_medicine_debt_resolved, righteous_route_opened, cheongryu_people_first, seo_harin_respect_thread]
-      add_clues: [qingliu_survival_needs_outside_help, medicine_has_banner]
+      add_flags: [baekdo_medicine_debt_resolved, righteous_route_opened, cheongryu_people_first, seo_harin_respect_thread, cheongryu_rebuild_supplies_secured]
+      add_clues: [qingliu_survival_needs_outside_help, order_can_save_and_bind]
       log_direction: 청류문은 약하지만, 사람을 먼저 살리는 순서가 문파의 이름을 지킨다.
   - id: compare_banner_to_record_margin
     role: cheonggi_observation
@@ -753,5 +753,1014 @@ schema_boundary:
   forbidden_new_schema: [RouteGraph, FactionStanding, DebtLedger, RelationScore, BranchLock, reward_schema, ability_schema, fragment_choice_reward, multi_ending_implementation]
 main_spine_link: route commitment의 첫 정파 opener. direct raid branch와 deferred wounded branch를 같은 `righteous_route_started`/`cheongryu_rebuild_thread` 조건으로 받아 any-of schema 없이 정파 루트를 연다.
 randomization_notes: 1회성 route opener. hub random deck으로 반복하지 않는다. `stabilize_wounded_until_dawn`처럼 정파 flag가 없는 deferred branch는 별도 deferred-offer card 전까지 이 opener로 자동 진입하지 않는다.
-promotion_notes: docs-only handoff 완료. 다음 runtime slice 후보이며, preview source에는 아직 구현하지 않는다. 구현 시 기본 office bundle, `escape-office` key, faction route graph/reputation, debt/relation schema는 열지 않는다.
+promotion_notes: preview runtime으로 구현 완료. 첫 정파 route opener는 `cheongryu_outer_courtyard`에서 `righteous_route_started` + `cheongryu_rebuild_thread`를 받아 열리며, 백도맹 약상자/청류문 재건 채무를 flags/clues/log/presentation으로만 남긴다. 기본 office bundle, legacy `escape-office` key, faction route graph/reputation, debt/relation schema는 열지 않았다.
+```
+
+## 10. `wuxia_black_heaven_escape_price`
+
+```yaml
+id: wuxia_black_heaven_escape_price
+world_id: wuxia_jianghu
+storypack_id: wuxia_jianghu_pack
+status: implemented_in_storypack_preview
+runtime_preview_design_status: implemented
+phase: [route_commitment]
+priority_class: route_key
+location_tags: [cheongryu_sect, faction_choice, sapa_route]
+surface: [faction_negotiation, sect_courtyard, market_street]
+anomaly_type: [faction_pressure, sect_debt]
+pressure_type: [danger, sanity, relation]
+npc_slots: [sapa_ally, early_rescuer]
+candidate_characters: [dowol, seo_harin]
+summary: direct raid branch와 deferred wounded fallback branch가 남긴 사파 route starter를 받아, 흑천련의 빠른 탈출로와 도월의 표식이 이름과 값을 남기는 첫 사파 opener다.
+purpose: 사파 루트를 “악의 길”이 아니라 밑바닥의 생존 거래로 보여준다. 청류문 내부 갈등 없이 외부 압박, 시장 장부, 도월의 실리적 도움을 route pressure로 사용한다.
+setup_text: 청류문 바깥 담장 너머 시장 골목에서 도월이 낡은 표식을 굴린다. “흑천련 길은 빠르다. 공짜가 아닐 뿐이지.” 누가 값을 받을지, 누구의 이름이 장부에 남을지는 아직 정해지지 않았다.
+runtime_preview_start_conditions:
+  runtime_mode: storypack_preview
+  prereq: raid split direct sapa branch or wounded fallback delayed sapa branch has landed
+  location: cheongryu_outer_courtyard
+  required_flags: [sapa_route_started, dowol_debt]
+  forbidden_flags: [black_heaven_escape_price_resolved]
+  flavor_flags_only: [black_heaven_deal_marked, black_heaven_escape_marker]
+  note: direct/deferred branch 차이는 flavor hook으로만 읽는다. any-of condition schema를 열지 않는다.
+choice_shapes:
+  - id: accept_dowol_marker_for_safehouse
+    role: safe_acceptance
+    fallback_choice: true
+    label_direction: 도월의 표식을 받고 흑천련 임시 은신처와 탈출로를 얻는다
+    expected_costs: [market_debt, reputation_risk]
+    expected_gains: [safehouse_access, exit_route]
+    outcome_hook:
+      add_flags: [black_heaven_escape_price_resolved, sapa_route_opened, black_heaven_safehouse_marked, market_route_debt_recorded]
+      add_clues: [black_heaven_help_marks_debt, survival_bargain_is_not_loyalty]
+      log_direction: 흑천련의 길은 빠르지만, 표식 하나가 이후 받을 값의 증거가 된다.
+  - id: ask_who_collects_the_price
+    role: negotiation_probe
+    label_direction: 누가, 언제, 어떤 방식으로 값을 받는지 먼저 묻는다
+    expected_costs: [sanity_small, suspicion_small]
+    expected_gains: [terms_revealed, sapa_politics_clue]
+    outcome_hook:
+      add_flags: [black_heaven_escape_price_resolved, sapa_route_opened, dowol_terms_questioned]
+      add_clues: [black_heaven_bargain_has_teeth, survival_bargain_is_not_loyalty]
+      log_direction: 조건을 묻자 도월은 웃는다. 사파의 자비는 계약서보다 먼저 칼집을 보여준다.
+  - id: keep_cheongryu_names_off_ledger
+    role: homebase_alignment
+    label_direction: 청류문 사람들의 이름은 흑천련 장부에 남기지 않는다고 못박는다
+    expected_costs: [danger_small, negotiation_cost]
+    expected_gains: [cheongryu_names_protected, dowol_attention]
+    outcome_hook:
+      add_flags: [black_heaven_escape_price_resolved, sapa_route_opened, cheongryu_names_kept_off_ledger, market_route_debt_recorded]
+      add_clues: [ledger_can_be_bent_not_broken, sapa_can_save_without_mercy]
+      log_direction: 청류문의 이름을 지우는 대신, 당신의 이름이 더 굵은 획으로 남는다.
+  - id: map_exit_before_following_dowol
+    role: survival_observation
+    label_direction: 따라가기 전에 탈출로와 추적선을 먼저 기록한다
+    expected_costs: [time_pressure, fatigue_small]
+    expected_gains: [exit_route_clue, pursuit_pattern_seen]
+    outcome_hook:
+      add_flags: [black_heaven_escape_price_resolved, sapa_route_opened, sapa_survival_principle_seen]
+      add_clues: [sapa_can_save_without_mercy, black_heaven_bargain_has_teeth]
+      log_direction: 흑천련의 길은 사람을 살릴 수 있다. 다만 살아남은 사람이 어디로 빚을 갚으러 갈지도 함께 보여준다.
+outcome_hooks:
+  possible_flags: [black_heaven_escape_price_resolved, sapa_route_opened, black_heaven_safehouse_marked, dowol_terms_questioned, cheongryu_names_kept_off_ledger, market_route_debt_recorded, sapa_survival_principle_seen]
+  possible_route_flags: [sapa_route_opened]
+  possible_clues: [black_heaven_help_marks_debt, black_heaven_bargain_has_teeth, survival_bargain_is_not_loyalty, sapa_can_save_without_mercy, ledger_can_be_bent_not_broken]
+  possible_relations: [dowol_debt, dowol_attention, seo_harin_respect_thread]
+  possible_destinations: [cheongryu_outer_courtyard]
+  possible_log_tone:
+    - 사파의 도움은 빠르고 실제적이라는 감각
+    - 그 도움은 이름, 표식, 장부를 통해 대가를 남긴다는 감각
+    - 청류문 내부 악인이 아니라 외부 생존 거래가 갈등 원천이라는 감각
+schema_boundary:
+  allowed_existing_schema: [conditions.locations, required_flags, forbidden_flags, choices.cost, outcome.resources, outcome.danger, outcome.add_flags, outcome.add_clues, outcome.add_items, outcome.remove_items, outcome.destination_id, outcome.log, presentation]
+  forbidden_new_schema: [RouteGraph, FactionStanding, DebtLedger, RelationScore, BranchLock, reward_schema, ability_schema, fragment_choice_reward, epilogue_schema, multi_ending_implementation]
+main_spine_link: route commitment의 첫 사파 opener. direct raid branch와 deferred wounded branch를 같은 `sapa_route_started`/`dowol_debt` 조건으로 받아 any-of schema 없이 사파 루트를 연다.
+randomization_notes: 1회성 route opener. hub random deck으로 반복하지 않는다. `black_heaven_deal_marked`와 `black_heaven_escape_marker`는 direct/deferred flavor만 바꾸고 eligibility를 가르지 않는다.
+promotion_notes: preview runtime으로 구현 완료. `cheongryu_outer_courtyard`에서 `sapa_route_started` + `dowol_debt`를 받아 열리며, 흑천련 탈출로/도월 표식/시장 장부의 값을 flags/clues/log/presentation으로만 남긴다. 기본 office bundle, legacy `escape-office` key, faction route graph/reputation, debt/relation schema는 열지 않았다. 다음 handoff는 천기·귀환 opener `wuxia_heavenly_archive_previous_outsiders`로 결정됐다.
+```
+
+## 11. `wuxia_heavenly_archive_previous_outsiders`
+
+```yaml
+id: wuxia_heavenly_archive_previous_outsiders
+world_id: wuxia_jianghu
+storypack_id: wuxia_jianghu_pack
+status: implemented_in_storypack_preview
+runtime_preview_design_status: implemented
+phase: [route_commitment, cheonggi_return]
+priority_class: route_key
+location_tags: [cheongryu_sect, faction_choice, cheonggi_route]
+surface: [cheonggi_record, faction_negotiation, sect_courtyard]
+anomaly_type: [notebook_oracle, worldline_branch]
+pressure_type: [sanity, relation, danger]
+npc_slots: [cheonggi_record_keeper, archive_keeper]
+candidate_characters: [yeon_soha, old_archive_keeper]
+summary: direct raid branch와 deferred wounded fallback branch가 남긴 천기·귀환 route starter를 받아, 천기각 서고의 이전 이방인 기록과 세계 균열 흔적을 첫 천기 opener로 고정한다.
+purpose: 천기·귀환 루트를 정답 찾기가 아니라 기록, 여백, 균열 감각으로 시작한다. 귀환법을 주지 않고, 이전에도 본인 몸 그대로 흘러든 사람이 있었을 가능성과 기록자의 시선만 남긴다.
+setup_text: 청류문 마당의 먼지가 가라앉자 연소하가 낡은 서책 한 권을 펼친다. 표지에는 천기각의 인장이 있고, 여백에는 낯선 옷차림과 끊긴 길을 묘사한 문장이 남아 있다. 답은 없지만, 당신만 처음 온 사람은 아니라는 사실은 분명하다.
+runtime_preview_start_conditions:
+  runtime_mode: storypack_preview
+  prereq: raid split direct heavenly archive branch or wounded fallback delayed heavenly archive branch has landed
+  location: cheongryu_outer_courtyard
+  required_flags: [cheonggi_return_route_started, cheonggi_record_targeted]
+  forbidden_flags: [heavenly_archive_previous_outsiders_resolved]
+  flavor_flags_only: [heavenly_archive_contact, heavenly_archive_triage_map_seen]
+  note: direct/deferred branch 차이는 flavor hook으로만 읽는다. any-of condition schema를 열지 않는다.
+choice_shapes:
+  - id: read_previous_outsider_margins
+    role: safe_reading
+    fallback_choice: true
+    label_direction: 이전 이방인의 여백 기록을 조용히 읽는다
+    expected_costs: [sanity_small, time_pressure]
+    expected_gains: [previous_outsider_clue, archive_access]
+    outcome_hook:
+      add_flags: [heavenly_archive_previous_outsiders_resolved, cheonggi_return_route_opened, previous_outsiders_record_seen]
+      add_clues: [archive_has_other_outsiders, return_clue_is_not_return_method]
+      log_direction: 서고의 여백에는 돌아간 사람보다 사라진 길을 붙잡은 사람의 흔적이 더 많다.
+  - id: ask_yeon_soha_what_not_to_read
+    role: boundary_probe
+    label_direction: 연소하에게 무엇을 읽으면 안 되는지 먼저 묻는다
+    expected_costs: [relation_risk, suspicion_small]
+    expected_gains: [yeon_soha_boundary_clue, archive_warning]
+    outcome_hook:
+      add_flags: [heavenly_archive_previous_outsiders_resolved, cheonggi_return_route_opened, yeon_soha_warning_heard]
+      add_clues: [cheonggi_record_refuses_identity_answer, record_gaze_without_name]
+      log_direction: 연소하는 답을 숨기지 않는다. 다만 답으로 변하는 질문을 먼저 막는다.
+  - id: mark_current_worldline_without_answer
+    role: no_answer_acceptance
+    label_direction: 정답을 요구하지 않고 현재 세계선의 흔적만 표시한다
+    expected_costs: [sanity_small]
+    expected_gains: [worldline_anchor, record_respect]
+    outcome_hook:
+      add_flags: [heavenly_archive_previous_outsiders_resolved, cheonggi_return_route_opened, worldline_margin_marked]
+      add_clues: [worldline_gaps_have_patterns, cheonggi_record_refuses_identity_answer]
+      log_direction: 천기록은 세계의 이름을 쓰지 않는다. 대신 이 세계선의 접힌 자국 하나를 남긴다.
+  - id: compare_rift_terms_to_commute_memory
+    role: return_clue_comparison
+    label_direction: 서고의 균열 용어를 출근길 기억과 비교한다
+    expected_costs: [sanity_small, fatigue_small]
+    expected_gains: [commute_rift_pattern, return_thread]
+    outcome_hook:
+      add_flags: [heavenly_archive_previous_outsiders_resolved, cheonggi_return_route_opened, commute_rift_terms_compared]
+      add_clues: [worldline_gaps_have_patterns, return_clue_is_not_return_method, record_gaze_without_name]
+      log_direction: 출근길의 문틈과 서고의 균열이라는 말이 같은 모양으로 접힌다. 하지만 접힌 모양은 문이 아니다.
+outcome_hooks:
+  possible_flags: [heavenly_archive_previous_outsiders_resolved, cheonggi_return_route_opened, previous_outsiders_record_seen, yeon_soha_warning_heard, worldline_margin_marked, commute_rift_terms_compared]
+  possible_route_flags: [cheonggi_return_route_opened]
+  possible_clues: [archive_has_other_outsiders, cheonggi_record_refuses_identity_answer, return_clue_is_not_return_method, worldline_gaps_have_patterns, record_gaze_without_name]
+  possible_relations: [yeon_soha_attention, archive_keeper_notice]
+  possible_destinations: [cheongryu_outer_courtyard]
+  possible_log_tone:
+    - 이전 이방인이 있었다는 감각
+    - 귀환 단서와 귀환 방법은 다르다는 감각
+    - 천기록은 정체를 말하지 않고 여백과 시선만 남긴다는 감각
+schema_boundary:
+  allowed_existing_schema: [conditions.locations, required_flags, forbidden_flags, choices.cost, outcome.resources, outcome.danger, outcome.add_flags, outcome.add_clues, outcome.add_items, outcome.remove_items, outcome.destination_id, outcome.log, presentation]
+  forbidden_new_schema: [RouteGraph, FactionStanding, DebtLedger, RelationScore, BranchLock, return_system, reward_schema, ability_schema, fragment_choice_reward, epilogue_schema, multi_ending_implementation]
+main_spine_link: route commitment의 첫 천기·귀환 opener. direct raid branch와 deferred wounded branch를 같은 `cheonggi_return_route_started`/`cheonggi_record_targeted` 조건으로 받아 any-of schema 없이 천기·귀환 루트를 연다.
+randomization_notes: 1회성 route opener. hub random deck으로 반복하지 않는다. `heavenly_archive_contact`와 `heavenly_archive_triage_map_seen`는 direct/deferred flavor만 바꾸고 eligibility를 가르지 않는다.
+promotion_notes: preview runtime으로 구현 완료. `cheongryu_outer_courtyard`에서 `cheonggi_return_route_started` + `cheonggi_record_targeted`를 받아 열리며, 천기각 이전 이방인 기록/균열 단서를 flags/clues/log/presentation으로만 남긴다. 기본 office bundle, legacy `escape-office` key, 천기록 정체 reveal, return system, reward/ability schema는 열지 않았다. 다음 handoff에서 deferred-offer card `wuxia_wounded_shelter_dawn_offers`가 선택됐다.
+```
+
+## 12. `wuxia_wounded_shelter_dawn_offers`
+
+```yaml
+id: wuxia_wounded_shelter_dawn_offers
+storypack_id: wuxia_jianghu_pack
+world_id: wuxia_jianghu
+status: candidate
+runtime_preview_design_status: implemented
+phase: [route_commitment]
+priority_class: route_key
+location_tags: [cheongryu_sect, wounded_shelter, deferred_route]
+surface: [sect_courtyard, faction_negotiation, cheonggi_record]
+anomaly_type: [sect_debt, faction_pressure, worldline_branch]
+pressure_type: [health, danger, relation]
+npc_slots: [early_rescuer, righteous_ally, sapa_ally, cheonggi_record_keeper]
+candidate_characters: [seo_harin, namgung_seoyun, dowol, yeon_soha]
+summary: `stabilize_wounded_until_dawn` branch가 남긴 deferred route state를 받아, 부상자 피난처의 새벽 제안으로 route pressure를 다시 연다.
+purpose: 사람을 살리느라 루트 결정을 미룬 선택을 실패나 막다른 길로 처리하지 않는다. 살아남은 사람들의 명단, 약상자, 탈출로, 천기각 지도 조각이 같은 마당에 모이며, 플레이어는 다시 정파/사파/천기 또는 한 번 더 돌봄을 고른다.
+setup_text: 새벽이 오자 임시 피난처의 숨소리가 하나씩 안정된다. 서하린은 젖은 천을 갈아 묶으며 부상자 명단을 접는다. 문밖에는 남궁서윤의 약상자, 도월이 남긴 짧은 전서, 연소하의 접힌 지도 조각이 서로 다른 그림자처럼 도착해 있다.
+runtime_preview_start_conditions:
+  runtime_mode: storypack_preview
+  prereq: `wuxia_cheongryu_raid_wounded_fallback`에서 `stabilize_wounded_until_dawn` branch가 landed
+  location: cheongryu_outer_courtyard
+  required_flags: [cheongryu_raid_wounded_fallback_resolved, route_commitment_deferred, deferred_route_reopened, wounded_shelter_stabilized]
+  forbidden_flags: [wounded_shelter_dawn_offers_resolved]
+  flavor_flags_only: [survivor_roll_call_complete, route_delay_cost_recorded]
+  note: direct route opener의 opened flags를 any-of로 묶지 않는다. deferred branch가 이미 가진 flags만 eligibility로 쓴다.
+presentation:
+  visual_id: wuxia_wounded_shelter_dawn_offers
+  speaker: 서하린
+  layout: deferred_route_offer
+  effect_cues:
+    - stable_terms: [새벽, 부상자, 제안]
+choice_shapes:
+  - id: keep_wounded_shelter_until_noon
+    role: safe_care
+    fallback_choice: true
+    label_direction: 정오까지 피난처를 더 지킨다
+    expected_costs: [time_pressure, danger_small]
+    expected_gains: [wounded_shelter_stability, survivor_names]
+    outcome_hook:
+      add_flags: [wounded_shelter_dawn_offers_resolved, route_commitment_reopened, wounded_shelter_until_noon, deferred_offer_debt_recorded]
+      add_clues: [saving_people_changed_witnesses, care_is_not_route_escape, dawn_shelter_keeps_names]
+      log_direction: route를 고르지 않는 대신 살아남은 이름들이 더 또렷해진다.
+  - id: accept_baekdo_medicine_after_roll_call
+    role: delayed_righteous_offer
+    label_direction: 생존자 점호 뒤 백도맹 약상자를 받는다
+    expected_costs: [debt_mark, reputation_risk]
+    expected_gains: [medicine_supply, righteous_route_reentry]
+    outcome_hook:
+      add_flags: [wounded_shelter_dawn_offers_resolved, route_commitment_reopened, righteous_route_started, cheongryu_rebuild_thread, baekdo_medicine_debt]
+      add_clues: [offers_arrive_because_people_lived, delayed_choice_has_callers]
+      log_direction: 약상자는 명령서가 아니라 명단 위에 놓인다. 빚은 생겼지만 문은 다시 열린다.
+  - id: send_word_to_dowol_for_quiet_exit
+    role: delayed_sapa_offer
+    label_direction: 도월에게 조용한 퇴로를 부탁한다
+    expected_costs: [debt_mark, suspicion_small]
+    expected_gains: [safehouse_thread, exit_route]
+    outcome_hook:
+      add_flags: [wounded_shelter_dawn_offers_resolved, route_commitment_reopened, sapa_route_started, dowol_debt, black_heaven_escape_marker]
+      add_clues: [delayed_choice_has_callers, care_is_not_route_escape]
+      log_direction: 도월의 답장은 짧다. 사람을 살린 일에도 값은 붙지만, 값이 붙는다고 모두 거래가 되는 것은 아니다.
+  - id: show_archive_map_to_yeon_soha
+    role: delayed_cheonggi_offer
+    label_direction: 연소하에게 피난처 지도의 접힌 부분을 보인다
+    expected_costs: [sanity_small, time_pressure]
+    expected_gains: [archive_route_reentry, worldline_clue]
+    outcome_hook:
+      add_flags: [wounded_shelter_dawn_offers_resolved, route_commitment_reopened, cheonggi_return_route_started, cheonggi_record_targeted, heavenly_archive_triage_map_seen]
+      add_clues: [dawn_shelter_keeps_names, delayed_choice_has_callers, offers_arrive_because_people_lived]
+      log_direction: 지도는 길보다 먼저 이름을 기억한다. 연소하는 그 순서가 중요하다고 말한다.
+outcome_hooks:
+  possible_flags: [wounded_shelter_dawn_offers_resolved, route_commitment_reopened, wounded_shelter_until_noon, deferred_offer_debt_recorded, righteous_route_started, cheongryu_rebuild_thread, baekdo_medicine_debt, sapa_route_started, dowol_debt, black_heaven_escape_marker, cheonggi_return_route_started, cheonggi_record_targeted, heavenly_archive_triage_map_seen]
+  possible_route_flags: [route_commitment_reopened, righteous_route_started, sapa_route_started, cheonggi_return_route_started]
+  possible_clues: [saving_people_changed_witnesses, delayed_choice_has_callers, care_is_not_route_escape, offers_arrive_because_people_lived, dawn_shelter_keeps_names]
+  possible_relations: [seo_harin_trust, namgung_seoyun_attention, dowol_interest, yeon_soha_attention]
+  possible_destinations: [cheongryu_outer_courtyard]
+  possible_log_tone:
+    - 사람을 살린 결과로 제안이 도착하는 감각
+    - route 선택을 미룬 대가가 있지만 메인은 막히지 않는 감각
+    - 정파/사파/천기 제안이 같은 마당에 놓인 긴장감
+schema_boundary:
+  allowed_existing_schema: [conditions.locations, required_flags, forbidden_flags, choices.cost, outcome.resources, outcome.danger, outcome.add_flags, outcome.add_clues, outcome.add_items, outcome.remove_items, outcome.destination_id, outcome.log, presentation]
+  forbidden_new_schema: [TriageSystem, CompanionDeath, MassCombat, RouteGraph, FactionStanding, DebtLedger, RelationScore, BranchLock, return_system, reward_schema, ability_schema, fragment_choice_reward, epilogue_schema, multi_ending_implementation]
+main_spine_link: route commitment을 미룬 wounded fallback branch를 다시 메인 route pressure에 붙인다. post-opener any-of condition이나 route graph 없이 기존 deferred flags만 사용한다.
+randomization_notes: 1회성 deferred-offer card. hub random deck으로 반복하지 않는다. `survivor_roll_call_complete`와 `route_delay_cost_recorded`는 flavor만 바꾸고 eligibility를 가르지 않는다.
+promotion_notes: preview runtime으로 구현 완료. `cheongryu_outer_courtyard`에서 `cheongryu_raid_wounded_fallback_resolved` + `route_commitment_deferred` + `deferred_route_reopened` + `wounded_shelter_stabilized`를 받아 열리며, 부상자 피난처 새벽 제안을 flags/clues/log/presentation으로만 남긴다. 기본 office bundle, legacy `escape-office` key, triage/companion death/mass combat, route graph/faction reputation/debt/relation schema, reward/ability/epilogue schema, return system, 천기록 정체 reveal은 열지 않았다. 다음 bridge `wuxia_mumyeong_first_sighting`도 preview runtime으로 구현됐다.
+runtime_preview_implementation_notes:
+  implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
+  generated_artifacts:
+    - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+    - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+  default_bundle_changed: false
+  new_schema_opened: false
+  next_handoff: wuxia_mumyeong_first_sighting
+```
+
+## 13. `wuxia_mumyeong_first_sighting`
+
+```yaml
+id: wuxia_mumyeong_first_sighting
+notion_event_mapping:
+  notion_event_id: wuxia_mumyeong_first_sighting
+  notion_event_name: 무명 첫 목격
+  mapping_status: preview_runtime_implemented
+storypack_id: wuxia_jianghu_pack
+world_id: wuxia_jianghu
+status: candidate
+runtime_preview_design_status: implemented
+phase: [midgame_rival]
+priority_class: route_key
+location_tags: [cheongryu_sect, black_serpent_pressure, rival_shadow]
+surface: [sect_courtyard, market_street, training_chore]
+anomaly_type: [faction_pressure, worldline_branch, sect_debt]
+pressure_type: [sanity, danger, relation]
+npc_slots: [early_rescuer]
+candidate_characters: [seo_harin, mumyeong, black_serpent_runner]
+summary: route opener 이후 흑사방 쪽에서 청류문식 흐름을 훔쳐 쓰는 그림자를 처음 목격하고, 무명/서하린/카피 무공 thread를 연다.
+purpose: 첫 post-opener midgame continuity를 route graph 없이 연다. 무명은 아직 정식 대치하지 않고, 청류문식과 닮았지만 중심이 비어 있는 카피 무공, 서하린의 침묵, 흑사방의 외부 압박만 남긴다.
+setup_text: 청류문 외원 담장 너머로 흑사방 심부름꾼 하나가 지나간다. 걸음은 거칠지만 팔꿈치가 꺾이는 순간, 장작 마당에서 배운 청류문식 흐름과 너무 닮은 선이 스친다. 서하린은 이름을 부르려다 멈추고, 그자는 뒤돌아보지 않은 채 어둠 속으로 사라진다.
+runtime_preview_start_conditions:
+  runtime_mode: storypack_preview
+  location: cheongryu_outer_courtyard
+  required_flags: [route_opener_resolved, cheongryu_raid_survived, cheongryu_trial_started, first_fragment_seen]
+  forbidden_flags: [mumyeong_first_sighting_resolved]
+  implementation_prerequisite: 세 route opener `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`의 모든 choice outcome에 `route_opener_resolved`를 추가한다.
+  flavor_flags_only: [righteous_route_opened, sapa_route_opened, cheonggi_return_route_opened, white_path_debt_recorded, market_route_debt_recorded, previous_outsiders_record_seen]
+  note: route-specific opened flags는 eligibility가 아니라 branch flavor hook으로만 사용한다. 새 any-of condition schema를 열지 않는다.
+presentation:
+  visual_id: wuxia_mumyeong_first_sighting
+  speaker: 서하린
+  layout: midgame_rival_sighting
+  effect_cues:
+    - stable_terms: [무명, 청류문, 흑사방]
+choice_shapes:
+  - id: watch_the_stolen_qingliu_flow
+    role: safe_observe
+    fallback_choice: true
+    label_direction: 훔쳐 쓴 청류문식 흐름을 끝까지 관찰한다
+    expected_costs: [sanity_small]
+    expected_gains: [copied_flow_clue, rival_shadow]
+    outcome_hook:
+      add_flags: [mumyeong_first_sighting_resolved, midgame_continuity_started, mumyeong_shadow_seen, copied_qingliu_flow_noted]
+      add_clues: [mumyeong_exists, copied_flow_is_not_qingliu]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 닮았지만 중심이 다르다. 청류문식의 모양은 있으나 흐름을 이해한 흔적은 없다.
+  - id: check_seo_harin_silence
+    role: companion_observation
+    label_direction: 서하린이 이름을 삼키는 순간을 본다
+    expected_costs: [relation_risk, silence_weight]
+    expected_gains: [seo_harin_wound_thread, rival_name_pressure]
+    outcome_hook:
+      add_flags: [mumyeong_first_sighting_resolved, midgame_continuity_started, seo_harin_recognized_mumyeong, mumyeong_wound_thread_opened]
+      add_clues: [seo_harin_does_not_call_him_traitor, mumyeong_exists]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 서하린은 배신자라는 말을 쓰지 않는다. 그 침묵이 이름보다 먼저 상처를 드러낸다.
+  - id: follow_black_serpent_runner
+    role: risky_pursuit
+    label_direction: 흑사방 심부름꾼의 뒤를 짧게 쫓는다
+    expected_costs: [danger_small, health_risk]
+    expected_gains: [black_serpent_trail, pressure_map]
+    outcome_hook:
+      danger: 1
+      add_flags: [mumyeong_first_sighting_resolved, midgame_continuity_started, black_serpent_trail_marked, mumyeong_pursuit_risk]
+      add_clues: [black_serpent_uses_borrowed_flows, copied_flow_is_not_qingliu]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 뒤를 밟는 데는 성공하지만, 흑사방은 일부러 발자국을 남기는 법도 안다.
+  - id: pretend_not_to_see_the_form
+    role: escalation_delay
+    label_direction: 못 본 척하고 외원 순찰을 계속한다
+    expected_costs: [unresolved_debt, sanity_small]
+    expected_gains: [delay_pressure, survivor_focus]
+    outcome_hook:
+      add_flags: [mumyeong_first_sighting_resolved, midgame_continuity_started, mumyeong_clue_deferred, unresolved_rival_debt]
+      add_clues: [not_seeing_is_also_a_choice, black_serpent_uses_borrowed_flows]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 모른 척한 일도 사라지지 않는다. 다음에 같은 흐름을 보면 더 늦게 알아볼 뿐이다.
+outcome_hooks:
+  possible_flags: [mumyeong_first_sighting_resolved, midgame_continuity_started, mumyeong_shadow_seen, copied_qingliu_flow_noted, seo_harin_recognized_mumyeong, mumyeong_wound_thread_opened, black_serpent_trail_marked, mumyeong_pursuit_risk, mumyeong_clue_deferred, unresolved_rival_debt]
+  possible_clues: [mumyeong_exists, copied_flow_is_not_qingliu, seo_harin_does_not_call_him_traitor, black_serpent_uses_borrowed_flows, not_seeing_is_also_a_choice]
+  possible_relations: [seo_harin_trust_risk, black_serpent_attention]
+  possible_destinations: [cheongryu_outer_courtyard]
+  possible_log_tone:
+    - 무명 존재를 확정 대치 없이 감지하는 감각
+    - 청류문식과 카피 무공의 차이가 보이는 감각
+    - 서하린의 침묵이 관계 thread로 남는 감각
+schema_boundary:
+  allowed_existing_schema: [conditions.locations, required_flags, forbidden_flags, choices.cost, outcome.resources, outcome.danger, outcome.add_flags, outcome.add_clues, outcome.add_items, outcome.remove_items, outcome.destination_id, outcome.log, presentation]
+  forbidden_new_schema: [AnyOfCondition, RouteGraph, FactionStanding, DebtLedger, RelationScore, CompanionSystem, CombatState, boss_combat_resolver, reward_schema, ability_schema, fragment_choice_reward, epilogue_schema, return_system, multi_ending_implementation]
+main_spine_link: 세 route opener가 모두 지나간 뒤 route fan-out을 더 벌리지 않고, 무명/흑사방/서하린 상처를 첫 midgame continuity로 묶는다.
+randomization_notes: 1회성 midgame bridge. `route_opener_resolved`를 통해 세 direct opener를 fan-in하고, deferred wounded shelter만 탄 branch는 route opener 전까지 바로 eligible하지 않는다.
+promotion_notes: preview runtime으로 구현 완료. `route_midgame_continuity_after_wounded_shelter` docs-only 선택에서 route별 3개 card, deferred-offer 후속 bridge, 첫 대치, boss first appearance보다 작고 안전한 common midgame bridge로 선택했고, 세 route opener outcome에 `route_opener_resolved`를 추가해 fan-in했다. 기본 office bundle, legacy `escape-office` key, any-of condition schema, route graph/faction reputation/debt/relation schema, combat schema, reward/ability/epilogue/return system, 천기록 정체 reveal은 열지 않았다. 다음 handoff는 `wuxia_mumyeong_first_confrontation_after_sighting`다.
+runtime_preview_implementation_notes:
+  implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
+  generated_artifacts:
+    - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+    - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+  common_flag_to_add: route_opener_resolved
+  route_openers_to_patch: [wuxia_baekdo_medicine_debt, wuxia_black_heaven_escape_price, wuxia_heavenly_archive_previous_outsiders]
+  selected_over: [route_specific_midgame_fanout, deferred_offer_only_bridge, wuxia_mumyeong_first_confrontation, boss_first_appearance]
+  default_bundle_changed: false
+  new_schema_opened: false
+  next_handoff: wuxia_mumyeong_first_confrontation_after_sighting
+```
+
+## 14. `wuxia_mumyeong_first_confrontation`
+
+```yaml
+id: wuxia_mumyeong_first_confrontation
+world_id: wuxia_jianghu
+storypack_id: wuxia_jianghu_pack
+source_refs:
+  notion_event_id: wuxia_mumyeong_first_confrontation
+  notion_name: 무명 첫 대치
+  source_page: 09. 이구학지 사건 카드 DB
+  checked_against:
+    - 04. 메인 루트 구조
+    - 05. 사건 카드 운영 규칙
+    - 06. 사이드 퀘스트와 미해결 부채
+    - 07. 천기록 / 천외편린 보상
+    - 99. 통합 체크포인트
+mapping_status: preview_runtime_implemented
+status: candidate
+phase: [midgame_rival, rival_confrontation]
+priority_class: route_key
+location_tags: [cheongryu_outer_courtyard, training_yard, black_serpent_pressure]
+surface: [sect_courtyard, training_chore, faction_negotiation]
+anomaly_type: [faction_pressure, sect_debt, qi_deviation]
+pressure_type: [health, sanity, danger, relation]
+npc_slots: [early_rescuer]
+candidate_characters: [seo_harin, mumyeong]
+summary: 첫 목격 이후 무명을 라이벌로 확정하는 첫 대치. 이기는 전투가 아니라 버티기, 카피 무공 관찰, 서하린과 무명 사이의 침묵 확인이 핵심이다.
+setup_text: 외원 담장 밑에서 다시 그 흐름이 나타난다. 무명은 청류문이 또 외부자를 주워 왔느냐고 묻지만, 말끝에는 조롱보다 피로가 먼저 묻어난다. 서하린은 칼집에 손을 얹고도 이름을 부르지 않는다.
+runtime_preview_design_status: implemented
+runtime_preview_start_conditions:
+  runtime_mode: storypack_preview
+  location: cheongryu_outer_courtyard
+  required_flags: [mumyeong_first_sighting_resolved, midgame_continuity_started, cheongryu_raid_survived, first_fragment_seen]
+  forbidden_flags: [mumyeong_first_confrontation_resolved]
+  flavor_flags_only: [mumyeong_shadow_seen, copied_qingliu_flow_noted, seo_harin_recognized_mumyeong, mumyeong_wound_thread_opened, black_serpent_trail_marked, mumyeong_clue_deferred, righteous_route_opened, sapa_route_opened, cheonggi_return_route_opened]
+presentation:
+  visual_id: wuxia_mumyeong_first_confrontation
+  speaker: 무명
+  layout: rival_first_confrontation
+  effect_cues:
+    - stable_terms: [무명, 서하린, 청류문]
+choice_shapes:
+  - id: meet_mumyeong_head_on
+    role: high_risk_confront
+    label_direction: 무명과 정면으로 맞선다
+    expected_costs: [danger_medium, health_risk]
+    expected_gains: [rival_pressure, courage_thread]
+    outcome_hook:
+      add_flags: [mumyeong_first_confrontation_resolved, mumyeong_rival_thread_opened, rival_endured_not_defeated]
+      add_clues: [mumyeong_is_not_boss_wall, winning_is_not_required]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 정면으로 부딪혔지만 이긴 것은 아니다. 다만 물러서지 않았다는 사실만은 남는다.
+  - id: endure_until_copy_flow_breaks
+    role: safe_endure
+    fallback_choice: true
+    label_direction: 버티며 카피한 흐름이 끊기는 순간을 기다린다
+    expected_costs: [sanity_small, health_risk]
+    expected_gains: [copied_flow_weakness, rival_pattern]
+    outcome_hook:
+      add_flags: [mumyeong_first_confrontation_resolved, mumyeong_rival_thread_opened, copied_flow_weakness_noted]
+      add_clues: [copy_style_has_gap, copied_flow_is_not_qingliu]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 훔친 흐름은 빠르지만 오래 가지 않는다. 중심이 돌아오는 순간, 빈틈이 생긴다.
+  - id: watch_seo_harin_hold_back
+    role: companion_observation
+    label_direction: 서하린이 왜 끼어들지 않는지 살핀다
+    expected_costs: [relation_risk, silence_weight]
+    expected_gains: [seo_harin_wound_thread, mumyeong_relation_clue]
+    outcome_hook:
+      add_flags: [mumyeong_first_confrontation_resolved, mumyeong_rival_thread_opened, seo_harin_mumyeong_silence_confirmed]
+      add_clues: [seo_harin_does_not_call_him_traitor, mumyeong_was_not_only_enemy]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 서하린은 끼어들 수 있는데도 한 박자 늦춘다. 그 침묵은 망설임이 아니라 기억에 가깝다.
+  - id: read_mumyeongs_copied_form
+    role: information_probe
+    label_direction: 무명의 초식이 어디서 어긋나는지 읽는다
+    expected_costs: [sanity_medium, danger_small]
+    expected_gains: [copy_defect_clue, cheonggi_contrast]
+    outcome_hook:
+      add_flags: [mumyeong_first_confrontation_resolved, mumyeong_rival_thread_opened, copied_flow_weakness_noted, cheonggi_copy_contrast_noted]
+      add_clues: [copy_style_has_gap, understanding_is_not_copying]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 같은 선을 그어도 같은 뜻이 되지는 않는다. 훔친 초식과 이해한 흐름은 손끝에서 갈라진다.
+  - id: do_not_provoke_mumyeong
+    role: safe_deescalate
+    label_direction: 도발하지 않고 물러설 거리를 만든다
+    expected_costs: [unresolved_debt, sanity_small]
+    expected_gains: [survival_space, future_confrontation_thread]
+    outcome_hook:
+      add_flags: [mumyeong_first_confrontation_resolved, mumyeong_rival_thread_opened, rivalry_deferred_not_avoided]
+      add_clues: [winning_is_not_required, not_provoking_still_leaves_debt]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 싸움을 키우지 않는다고 대치가 사라지지는 않는다. 오늘 피한 말은 다음에 더 날카롭게 돌아온다.
+outcome_hooks:
+  possible_flags: [mumyeong_first_confrontation_resolved, mumyeong_rival_thread_opened, rival_endured_not_defeated, copied_flow_weakness_noted, seo_harin_mumyeong_silence_confirmed, cheonggi_copy_contrast_noted, rivalry_deferred_not_avoided]
+  possible_clues: [mumyeong_is_not_boss_wall, winning_is_not_required, copy_style_has_gap, copied_flow_is_not_qingliu, seo_harin_does_not_call_him_traitor, mumyeong_was_not_only_enemy, understanding_is_not_copying, not_provoking_still_leaves_debt]
+  possible_destinations: [cheongryu_outer_courtyard]
+main_spine_link: 무명을 단순 적이 아니라 주인공보다 살짝 앞선 라이벌로 확정하고, 보스가 담당할 최종 벽과 무명의 라이벌 결산을 분리한다.
+randomization_notes: 1회성 midgame confrontation. 첫 목격이 남긴 common hook으로만 열린다. 첫 목격 branch flags와 route opener flags는 문장 flavor에만 사용한다.
+promotion_notes: preview runtime으로 구현 완료. `wuxia_mumyeong_first_confrontation_after_sighting`에서 첫 대치, 중반 재회, boss first appearance를 비교했고, 첫 대치를 다음 runtime 후보로 골랐다. 전투 사건이지만 승리/패배 resolver가 아니라 버티기/분석 encounter로 구현했다. 기본 office bundle, legacy `escape-office` key, combat resolver/schema, HP 숫자전, route graph/faction reputation/debt/relation schema, reward/ability/epilogue/return system, boss first appearance, 천기록 정체 reveal은 열지 않았다. 다음 handoff는 `wuxia_mumyeong_followup_after_first_confrontation`다.
+runtime_preview_implementation_notes:
+  implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
+  insert_after: wuxia_mumyeong_first_sighting
+  generated_artifacts:
+    - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+    - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+  selected_over: [wuxia_mumyeong_midgame_reunion, wuxia_boss_first_appearance, route_specific_clue_bridge]
+  default_bundle_changed: false
+  new_schema_opened: false
+  next_handoff: wuxia_mumyeong_followup_after_first_confrontation
+```
+
+## 15. `wuxia_mumyeong_copy_style_reveal`
+
+```yaml
+id: wuxia_mumyeong_copy_style_reveal
+world_id: wuxia_jianghu
+storypack_id: wuxia_jianghu_pack
+source_refs:
+  notion_event_id: wuxia_mumyeong_copy_style_reveal
+  notion_name: 무명의 카피 무공 공개
+  source_page: 09. 이구학지 사건 카드 DB
+  checked_against:
+    - 04. 메인 루트 구조
+    - 05. 사건 카드 운영 규칙
+    - 06. 사이드 퀘스트와 미해결 부채
+    - 07. 천기록 / 천외편린 보상
+    - 99. 통합 체크포인트
+mapping_status: preview_runtime_implemented
+status: candidate
+phase: [midgame_rival, copy_style_analysis]
+priority_class: route_key
+location_tags: [cheongryu_outer_courtyard, training_yard, rival_shadow]
+surface: [sect_courtyard, cheonggi_record, training_chore]
+anomaly_type: [faction_pressure, qi_deviation, notebook_oracle]
+pressure_type: [sanity, danger, relation]
+npc_slots: [early_rescuer]
+candidate_characters: [seo_harin, mumyeong]
+summary: 첫 대치 이후 무명이 이번 회차에 덧씌운 카피 무공 계열의 윤곽과 결함을 드러낸다.
+purpose: 무명의 카피가 완전한 복사가 아니라 겉흐름만 빠르게 훔치는 방식임을 보여주고, 주인공의 청류안/천기록식 이해와 대비한다. 다음 구현은 seed 기반 random table 없이 기존 flags/clues/log/presentation만으로 copy-style hint를 남긴다.
+setup_text: 첫 대치가 끝난 뒤에도 무명의 움직임은 눈꺼풀 안쪽에 남아 있다. 같은 청류문식처럼 보였던 선은 어느 순간 검로처럼 꺾이고, 어느 순간 보법처럼 미끄러지며, 호흡이 어긋나는 짧은 틈마다 몸에 맞지 않는 초식의 반동을 드러낸다.
+runtime_preview_design_status: implemented
+runtime_preview_start_conditions:
+  runtime_mode: storypack_preview
+  location: cheongryu_outer_courtyard
+  required_flags: [mumyeong_first_confrontation_resolved, mumyeong_rival_thread_opened, midgame_continuity_started]
+  forbidden_flags: [mumyeong_copy_style_reveal_resolved]
+  flavor_flags_only: [copied_flow_weakness_noted, cheonggi_copy_contrast_noted, seo_harin_mumyeong_silence_confirmed, rival_endured_not_defeated, rivalry_deferred_not_avoided, righteous_route_opened, sapa_route_opened, cheonggi_return_route_opened]
+presentation:
+  visual_id: wuxia_mumyeong_copy_style_reveal
+  speaker: 서하린
+  layout: copy_style_analysis
+  effect_cues:
+    - stable_terms: [무명, 청류안, 천기록]
+choice_shapes:
+  - id: read_the_stolen_blade_path
+    role: information_probe
+    label_direction: 훔쳐 쓴 검로가 어디서 꺾이는지 읽는다
+    expected_costs: [sanity_small, danger_small]
+    expected_gains: [copy_family_hint, blade_path_clue]
+    outcome_hook:
+      add_flags: [mumyeong_copy_style_reveal_resolved, copy_style_hint_recorded, copied_blade_path_noted]
+      add_clues: [copied_form_family_seen, copy_is_surface_not_root]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 검로처럼 보이지만 칼끝의 뜻이 이어지지 않는다. 훔친 것은 선이지 중심이 아니다.
+  - id: watch_mumyeongs_footwork
+    role: movement_observation
+    label_direction: 무명의 보법이 땅을 밀어내는 방식을 본다
+    expected_costs: [sanity_small]
+    expected_gains: [footwork_copy_clue, route_pressure_hint]
+    outcome_hook:
+      add_flags: [mumyeong_copy_style_reveal_resolved, copy_style_hint_recorded, copied_footwork_noted]
+      add_clues: [copied_form_family_seen, footwork_without_root_wobbles]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 발은 빠르지만 땅을 믿지 않는다. 남의 보법을 얹은 몸은 한 박자 늦게 흔들린다.
+  - id: listen_for_breath_mismatch
+    role: safe_observe
+    fallback_choice: true
+    label_direction: 거리를 두고 호흡이 어긋나는 박자를 듣는다
+    expected_costs: [sanity_small]
+    expected_gains: [breath_mismatch_clue, safe_distance]
+    outcome_hook:
+      add_flags: [mumyeong_copy_style_reveal_resolved, copy_style_hint_recorded, copied_breath_mismatch_noted]
+      add_clues: [breath_mismatch_marks_copy, understanding_is_not_copying]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 초식은 따라왔지만 숨은 따라오지 못한다. 그 박자가 청류안에 먼저 걸린다.
+  - id: wait_for_body_to_shudder
+    role: risk_timed_observation
+    label_direction: 몸에 맞지 않는 초식이 반동을 내는 순간까지 기다린다
+    expected_costs: [danger_small, health_risk]
+    expected_gains: [copy_side_effect_clue, fragment_foreshadow]
+    outcome_hook:
+      add_flags: [mumyeong_copy_style_reveal_resolved, copy_style_hint_recorded, copy_side_effect_seen]
+      add_clues: [copy_is_surface_not_root, fragment_candidate_variation_foreshadowed]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 무명의 어깨가 아주 짧게 떨린다. 천기록의 빈 줄은 아직 보상을 주지 않지만, 다음 편린의 모양을 기억한다.
+outcome_hooks:
+  possible_flags: [mumyeong_copy_style_reveal_resolved, copy_style_hint_recorded, copied_blade_path_noted, copied_footwork_noted, copied_breath_mismatch_noted, copy_side_effect_seen]
+  possible_clues: [copied_form_family_seen, copy_is_surface_not_root, footwork_without_root_wobbles, breath_mismatch_marks_copy, understanding_is_not_copying, fragment_candidate_variation_foreshadowed]
+  possible_destinations: [cheongryu_outer_courtyard]
+main_spine_link: 무명의 카피 무공을 청류안/천기록의 이해와 대비시키고, 중반 재회와 무명 구원/비구원 변주로 가기 전 필요한 copy-style clue를 쌓는다.
+randomization_notes: Notion상 매 회차 seed 기반 랜덤 카피 무공 후보를 암시하지만, 이 handoff에서는 random copy-style table을 열지 않는다. 첫 implementation은 copy-style family hint를 flags/clues로만 기록한다.
+promotion_notes: preview runtime으로 구현 완료. `wuxia_mumyeong_followup_after_first_confrontation`에서 카피 무공 공개, 무명 중반 재회, boss first appearance를 비교했고, 카피 무공 공개를 runtime으로 landing했다. legacy office bundle, legacy `escape-office` key, seed 기반 random copy-style system/table, combat resolver/schema, HP 숫자전, route graph/faction reputation/debt/relation schema, reward/ability/epilogue/return system, boss first appearance, 무명 중반 재회, 천기록 정체 reveal은 열지 않는다.
+runtime_preview_implementation_notes:
+  implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
+  insert_after: wuxia_mumyeong_first_confrontation
+  generated_artifacts:
+    - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+    - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+  selected_over: [wuxia_mumyeong_midgame_reunion, wuxia_boss_first_appearance, route_specific_clue_bridge]
+  default_bundle_changed: false
+  new_schema_opened: false
+  next_handoff: wuxia_mumyeong_followup_after_copy_style_reveal
+```
+
+## 16. `wuxia_mumyeong_reads_orthodox_style`
+
+```yaml
+id: wuxia_mumyeong_reads_orthodox_style
+world_id: wuxia_jianghu
+storypack_id: wuxia_jianghu_pack
+source_refs:
+  - notion_event:wuxia_mumyeong_reads_orthodox_style
+  - docs/dev/Notion_Design_Coverage.md
+notion_event_mapping:
+  notion_event_id: wuxia_mumyeong_reads_orthodox_style
+  notion_event_name: 무명의 정파 무공 간파
+  mapping_status: preview_runtime_implemented
+notion_sources_checked:
+  events:
+    - wuxia_mumyeong_midgame_reunion
+    - wuxia_boss_first_appearance
+    - wuxia_mumyeong_departure_truth_summary
+    - wuxia_mumyeong_reads_orthodox_style
+  operating_docs:
+    - 04. 메인 루트 구조
+    - 05. 사건 카드 운영 규칙
+    - 07. 천기록 / 천외편린 보상
+    - 99. 통합 체크포인트
+mapping_status: preview_runtime_implemented
+status: candidate
+phase: [midgame_rival, orthodox_style_trace]
+priority_class: route_key
+location_tags: [cheongryu_outer_courtyard, training_yard, old_wound_trace]
+surface: [sect_courtyard, cheonggi_record, training_chore]
+anomaly_type: [faction_pressure, qi_deviation, notebook_oracle]
+pressure_type: [sanity, danger, relation]
+npc_slots: [early_rescuer]
+candidate_characters: [mumyeong, seo_harin]
+summary: 카피 무공 공개 뒤 무명이 과거에 읽어낸 정파식 제압술 흔적을 현악문/복호금쇄수 단서로 연결한다.
+purpose: 무명 중반 재회로 가기 전, 카피 결함 clue를 무명의 특별한 눈과 정파식 통제 무공의 흔적으로 바꿔 축적한다. 무명 이탈의 진실 전체와 보스 첫 등장은 아직 열지 않는다.
+setup_text: 무명의 카피는 완전한 복사가 아니었다. 겉흐름 사이로 손목을 잠그는 각도, 기혈을 누르는 순서, 물러나는 보폭이 삐져나온다. 천기록의 빈 줄은 그 흔적을 현악문과 복호금쇄수라는 이름 옆에 잠시 멈춰 세운다.
+runtime_preview_design_status: implemented
+runtime_preview_start_conditions:
+  runtime_mode: storypack_preview
+  location: cheongryu_outer_courtyard
+  required_flags: [mumyeong_copy_style_reveal_resolved, copy_style_hint_recorded, midgame_continuity_started, first_fragment_seen]
+  forbidden_flags: [mumyeong_reads_orthodox_style_resolved]
+  flavor_flags_only: [copied_form_family_seen, copy_is_surface_not_root, breath_mismatch_marks_copy, understanding_is_not_copying, fragment_candidate_variation_foreshadowed, righteous_route_opened, sapa_route_opened, cheonggi_return_route_opened]
+presentation:
+  visual_id: wuxia_mumyeong_reads_orthodox_style
+  speaker: 천기록
+  layout: orthodox_style_trace
+  effect_cues:
+    - stable_terms: [현악문, 복호금쇄수, 무명]
+choice_shapes:
+  - id: compare_copied_form_to_old_wound
+    role: information_probe
+    label_direction: 카피된 초식과 오래된 상처의 각도를 맞춰 본다
+    expected_costs: [sanity_small]
+    expected_gains: [orthodox_style_trace, past_mumyeong_clue]
+    outcome_hook:
+      add_flags: [mumyeong_reads_orthodox_style_resolved, orthodox_style_trace_recorded, old_wound_angle_compared]
+      add_clues: [hyeonakmun_trace_suspected, orthodox_control_is_violence]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 손목을 잠그는 각도는 살수의 버릇이 아니라 정파식 통제의 흔적에 가깝다.
+  - id: trace_qingliu_eye_variation
+    role: perception_trace
+    label_direction: 청류안 계열의 시선이 어디서 비틀렸는지 추적한다
+    expected_costs: [sanity_small]
+    expected_gains: [qingliu_eye_variation, copy_contrast_clue]
+    outcome_hook:
+      add_flags: [mumyeong_reads_orthodox_style_resolved, orthodox_style_trace_recorded, qingliu_eye_variation_traced]
+      add_clues: [mumyeong_eye_variation_noted, copy_is_surface_not_root]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 무명은 흐름을 본 뒤 훔쳤고, 너는 흐름을 본 뒤 맞춰 보려 한다. 같은 눈에서 다른 결론이 갈라진다.
+  - id: reconstruct_mumyeongs_sightline
+    role: risky_reconstruction
+    label_direction: 무명이 그날 보았을 시선을 따라 재구성한다
+    expected_costs: [sanity_small, danger_small]
+    expected_gains: [confirmed_name_hint, departure_truth_foreshadow]
+    outcome_hook:
+      add_flags: [mumyeong_reads_orthodox_style_resolved, orthodox_style_trace_recorded, mumyeong_sightline_reconstructed]
+      add_clues: [bokho_geumsaesu_name_recorded, departure_truth_still_incomplete]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 복호금쇄수라는 이름은 떠오르지만, 그 이름이 왜 무명을 청류문 밖으로 밀어냈는지는 아직 한 줄이 비어 있다.
+  - id: stop_before_truth_becomes_accusation
+    role: safe_observe
+    fallback_choice: true
+    label_direction: 진실이 추궁이 되기 전에 기록을 덮는다
+    expected_costs: [sanity_small]
+    expected_gains: [safe_distance, incomplete_truth_marker]
+    outcome_hook:
+      add_flags: [mumyeong_reads_orthodox_style_resolved, orthodox_style_trace_recorded, truth_accusation_avoided]
+      add_clues: [departure_truth_still_incomplete, understanding_is_not_copying]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 지금 필요한 것은 판결이 아니라 흔적이다. 천기록은 닫혔지만 이름 몇 개는 손끝에 남았다.
+outcome_hooks:
+  possible_flags: [mumyeong_reads_orthodox_style_resolved, orthodox_style_trace_recorded, old_wound_angle_compared, qingliu_eye_variation_traced, mumyeong_sightline_reconstructed, truth_accusation_avoided]
+  possible_clues: [hyeonakmun_trace_suspected, bokho_geumsaesu_name_recorded, mumyeong_eye_variation_noted, orthodox_control_is_violence, departure_truth_still_incomplete, copy_is_surface_not_root, understanding_is_not_copying]
+  possible_destinations: [cheongryu_outer_courtyard]
+main_spine_link: 무명의 카피와 주인공의 이해를 대비한 뒤, 중반 재회와 무명 이탈 진실 정리로 가기 전 필요한 정파 무공 흔적을 쌓는다.
+randomization_notes: 현악문/복호금쇄수는 최신 Notion 확정명으로 사용한다. 하지만 이 카드에서는 random copy-style table이나 full flashback을 열지 않고, 정파식 통제 무공 clue만 기록한다.
+promotion_notes: preview runtime으로 구현 완료. `wuxia_mumyeong_followup_after_copy_style_reveal` docs-only handoff에서 다음 runtime 후보로 선택했고, 현악문/복호금쇄수 단서를 기존 flags/clues/log/presentation으로 landing했다. `wuxia_mumyeong_midgame_reunion`은 과거 단서가 더 필요해 보류했고, `wuxia_boss_first_appearance`는 boss-wall pressure 때문에 보류했으며, `wuxia_mumyeong_departure_truth_summary`는 후반 truth reveal이라 보류했다. legacy office bundle, legacy `escape-office` key, random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation schema, reward/ability/epilogue/return system, 천기록 정체 reveal은 열지 않는다.
+runtime_preview_implementation_notes:
+  implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
+  insert_after: wuxia_mumyeong_copy_style_reveal
+  generated_artifacts:
+    - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+    - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+  selected_over: [wuxia_mumyeong_midgame_reunion, wuxia_boss_first_appearance, wuxia_mumyeong_departure_truth_summary]
+  default_bundle_changed: false
+  new_schema_opened: false
+  next_handoff: wuxia_mumyeong_followup_after_orthodox_style_trace
+```
+
+## 17. `wuxia_mumyeong_midgame_reunion`
+
+```yaml
+id: wuxia_mumyeong_midgame_reunion
+world_id: wuxia_jianghu
+storypack_id: wuxia_jianghu_pack
+source_refs:
+  - notion_event:wuxia_mumyeong_midgame_reunion
+  - docs/dev/Notion_Design_Coverage.md
+notion_event_mapping:
+  notion_event_id: wuxia_mumyeong_midgame_reunion
+  notion_event_name: 무명 중반 재회
+  mapping_status: preview_runtime_implemented
+notion_sources_checked:
+  events:
+    - wuxia_mumyeong_midgame_reunion
+    - wuxia_mumyeong_departure_truth_summary
+    - wuxia_boss_first_appearance
+    - wuxia_qingliu_attack_after_war
+  operating_docs:
+    - 04. 메인 루트 구조
+    - 05. 사건 카드 운영 규칙
+    - 07. 천기록 / 천외편린 보상
+    - 99. 통합 체크포인트
+mapping_status: preview_runtime_implemented
+status: candidate
+phase: [midgame_rival, rival_reunion]
+priority_class: route_key
+location_tags: [cheongryu_outer_courtyard, old_wound_trace, rival_duel]
+surface: [sect_courtyard, cheonggi_record, training_chore]
+anomaly_type: [faction_pressure, qi_deviation, notebook_oracle]
+pressure_type: [sanity, danger, relation]
+npc_slots: [early_rescuer]
+candidate_characters: [mumyeong, seo_harin]
+summary: 첫 대치, 카피 무공 공개, 정파식 제압술 흔적 이후 무명과 다시 마주쳐 라이벌/거울 관계와 서하린의 침묵을 깊게 만든다.
+purpose: `wuxia_mumyeong_reads_orthodox_style`가 남긴 현악문/복호금쇄수/무명 시야 변주 단서를 무명의 개인 서사와 연결한다. 진실을 판결하거나 구원을 확정하지 않고, 무명과 주인공이 서로의 상처와 이해 방식을 비추는 중반 재회로 제한한다.
+setup_text: 청류문 마당의 해가 기울자 무명이 다시 나타난다. 그는 싸움을 걸 듯 서 있지만, 시선은 서하린이 서 있던 빈 자리와 천기록의 접힌 모서리를 번갈아 스친다. 현악문과 복호금쇄수라는 이름은 아직 답이 아니라, 서로 모른 척할 수 없게 만든 흠집처럼 남아 있다.
+runtime_preview_design_status: implemented
+runtime_preview_start_conditions:
+  runtime_mode: storypack_preview
+  location: cheongryu_outer_courtyard
+  required_flags: [mumyeong_reads_orthodox_style_resolved, orthodox_style_trace_recorded, mumyeong_first_confrontation_resolved, mumyeong_rival_thread_opened]
+  forbidden_flags: [mumyeong_midgame_reunion_resolved]
+  flavor_flags_only: [hyeonakmun_trace_suspected, bokho_geumsaesu_name_recorded, departure_truth_still_incomplete, seo_harin_mumyeong_silence_confirmed, copied_flow_weakness_noted, copy_style_hint_recorded]
+presentation:
+  visual_id: wuxia_mumyeong_midgame_reunion
+  speaker: 무명
+  layout: rival_reunion_trace
+  effect_cues:
+    - stable_terms: [무명, 서하린, 현악문]
+choice_shapes:
+  - id: ask_why_seoharin_never_called_him_traitor
+    role: information_probe
+    label_direction: 서하린이 왜 그를 배신자라 부르지 않았는지 묻는다
+    expected_costs: [relation_risk, sanity_small]
+    expected_gains: [seoharin_mumyeong_relation_clue, rival_wound_hint]
+    outcome_hook:
+      add_flags: [mumyeong_midgame_reunion_resolved, mumyeong_mirror_thread_deepened, seoharin_traitor_question_asked]
+      add_clues: [seoharin_does_not_call_mumyeong_traitor, mumyeong_truth_still_incomplete]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 무명은 대답보다 먼저 침묵한다. 그 침묵은 서하린의 침묵과 같은 방향을 보고 있다.
+  - id: show_the_hyeonakmun_trace_without_accusing
+    role: orthodox_trace_probe
+    label_direction: 현악문 흔적을 추궁이 아니라 기록으로 보여 준다
+    expected_costs: [sanity_small, danger_small]
+    expected_gains: [orthodox_trace_response, boss_wound_clue]
+    outcome_hook:
+      add_flags: [mumyeong_midgame_reunion_resolved, mumyeong_mirror_thread_deepened, hyeonakmun_trace_shared_carefully]
+      add_clues: [hyeonakmun_trace_shared_without_accusation, boss_used_mumyeongs_wound]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 이름을 칼처럼 들이밀지 않자, 무명의 눈이 아주 짧게 흔들린다.
+  - id: point_out_the_copied_form_gap
+    role: rival_analysis
+    label_direction: 훔친 초식과 이해한 흐름이 갈라지는 틈을 짚는다
+    expected_costs: [danger_small, health_risk]
+    expected_gains: [rival_mirror_clue, copy_gap_confirmed]
+    outcome_hook:
+      add_flags: [mumyeong_midgame_reunion_resolved, mumyeong_mirror_thread_deepened, copied_form_gap_named]
+      add_clues: [rival_mirror_relationship_deepened, copy_is_surface_not_root]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 무명은 초식을 훔쳤고, 당신은 틈을 이해했다. 두 방식은 같은 상처 앞에서 서로를 비춘다.
+  - id: keep_blades_low_and_watch_his_answer
+    role: safe_observe
+    fallback_choice: true
+    label_direction: 칼끝을 낮추고 대답 대신 반응을 본다
+    expected_costs: [unresolved_debt, sanity_small]
+    expected_gains: [safe_distance, future_truth_marker]
+    outcome_hook:
+      add_flags: [mumyeong_midgame_reunion_resolved, mumyeong_mirror_thread_deepened, reunion_truth_deferred]
+      add_clues: [mumyeong_truth_still_incomplete, rival_mirror_relationship_deepened]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 오늘은 답을 뽑아내지 않는다. 하지만 무명도 당신도 서로를 모른 척할 수 없게 됐다.
+outcome_hooks:
+  possible_flags: [mumyeong_midgame_reunion_resolved, mumyeong_mirror_thread_deepened, seoharin_traitor_question_asked, hyeonakmun_trace_shared_carefully, copied_form_gap_named, reunion_truth_deferred]
+  possible_clues: [seoharin_does_not_call_mumyeong_traitor, boss_used_mumyeongs_wound, mumyeong_truth_still_incomplete, rival_mirror_relationship_deepened, hyeonakmun_trace_shared_without_accusation, copy_is_surface_not_root]
+  possible_destinations: [cheongryu_outer_courtyard]
+main_spine_link: 정파 무공 흔적을 무명/서하린 감정선과 라이벌 거울 관계로 연결해, 보스 첫 등장이나 무명 이탈 진실 정리 전에 중반 rival arc를 충분히 깊게 만든다.
+randomization_notes: 1회성 midgame reunion. orthodox style trace 이후에만 열린다. 현악문/복호금쇄수 단서는 flavor와 clue로 쓰지만 full flashback이나 진실 summary로 확장하지 않는다.
+promotion_notes: preview runtime으로 구현 완료. `wuxia_mumyeong_followup_after_orthodox_style_trace`에서 `wuxia_mumyeong_departure_truth_summary`, `wuxia_boss_first_appearance`, `wuxia_qingliu_attack_after_war`를 비교했고, 후반 truth reveal/boss wall/full flashback을 보류하기 위해 중반 재회를 먼저 골라 구현했다. legacy office bundle, legacy `escape-office` key, random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation schema, reward/ability/epilogue/return system, 천기록 정체 reveal은 열지 않는다.
+runtime_preview_implementation_notes:
+  implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
+  insert_after: wuxia_mumyeong_reads_orthodox_style
+  selected_over: [wuxia_mumyeong_departure_truth_summary, wuxia_boss_first_appearance, wuxia_qingliu_attack_after_war]
+  generated_artifacts:
+    - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+    - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+  default_bundle_changed: false
+  new_schema_opened: false
+  next_handoff: wuxia_mumyeong_followup_after_midgame_reunion
+```
+
+## 18. `wuxia_boss_first_appearance`
+
+```yaml
+id: wuxia_boss_first_appearance
+world_id: wuxia_jianghu
+storypack_id: wuxia_jianghu_pack
+source_refs:
+  - notion_event:wuxia_boss_first_appearance
+  - docs/dev/Notion_Design_Coverage.md
+notion_event_mapping:
+  notion_event_id: wuxia_boss_first_appearance
+  notion_event_name: 보스 첫 등장
+  mapping_status: preview_runtime_implemented
+status: implemented_in_storypack_preview
+mapping_status: preview_runtime_implemented
+phase: [midgame_boss, boss_wall_pressure]
+priority_class: route_key
+location_tags: [cheongryu_outer_courtyard, black_serpent_pressure, boss_wall]
+surface: [sect_courtyard, faction_negotiation, training_chore]
+anomaly_type: [faction_pressure, qi_deviation]
+pressure_type: [danger, sanity, relation]
+npc_slots: [early_rescuer]
+candidate_characters: [black_serpent_boss, mumyeong, seo_harin]
+summary: 무명 중반 재회 뒤 흑사방 보스가 처음 직접 압박으로 등장하고, 청류안으로 흐름을 읽어도 몸이 따라가지 못하는 벽을 각인한다.
+setup_text: 청류문 마당의 소란이 가라앉기도 전에 검은 깃발의 그림자가 문턱에 걸린다. 흑사방주가 한 걸음 들어서자, 천기록의 빈 줄은 이상하게도 아무 해법도 쓰지 않는다. 움직임은 보인다. 사람의 약점을 재는 순서도 보인다. 하지만 몸이 먼저 굳는다.
+runtime_preview_design_status: implemented
+runtime_preview_start_conditions:
+  runtime_mode: storypack_preview
+  location: cheongryu_outer_courtyard
+  required_flags: [mumyeong_midgame_reunion_resolved, mumyeong_mirror_thread_deepened, cheongryu_raid_survived, midgame_continuity_started]
+  forbidden_flags: [boss_first_appearance_resolved]
+  flavor_flags_only: [boss_used_mumyeongs_wound, hyeonakmun_trace_shared_without_accusation, seoharin_does_not_call_mumyeong_traitor, rival_mirror_relationship_deepened, reunion_truth_deferred]
+presentation:
+  visual_id: wuxia_boss_first_appearance
+  speaker: 흑사방주
+  layout: boss_wall_pressure
+  effect_cues:
+    - stable_terms: [흑사방주, 무명, 청류문]
+choice_shapes:
+  - id: read_the_boss_flow_and_fail_to_move
+    role: overwhelming_observe
+    label_direction: 보스의 흐름을 읽지만 몸이 늦는 것을 인정한다
+    expected_costs: [sanity_medium, danger_small]
+    expected_gains: [boss_wall_clue, body_limit_confirmed]
+    outcome_hook:
+      add_flags: [boss_first_appearance_resolved, boss_wall_thread_opened, black_serpent_core_pressure_opened, boss_flow_read_but_body_lagged]
+      add_clues: [boss_reads_people_not_forms, boss_is_final_logic_wall]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 흐름은 보인다. 하지만 흑사방주는 초식보다 먼저 사람의 멈칫함을 베어 낸다.
+  - id: pull_seo_harin_behind_broken_gate
+    role: protective_reposition
+    label_direction: 서하린을 부서진 산문 뒤로 물린다
+    expected_costs: [danger_small, relation_risk]
+    expected_gains: [seoharin_protected, qingliu_limit_clue]
+    outcome_hook:
+      add_flags: [boss_first_appearance_resolved, boss_wall_thread_opened, black_serpent_core_pressure_opened, seoharin_protected_from_boss_line]
+      add_clues: [qingliu_cannot_outmuscle_boss_yet, boss_reads_people_not_forms]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 서하린은 물러서지만 눈을 피하지 않는다. 보스는 그 작은 움직임까지 이미 계산한 듯 웃는다.
+  - id: watch_mumyeong_answer_the_boss
+    role: rival_relation_probe
+    label_direction: 무명이 보스의 말에 어떻게 반응하는지 본다
+    expected_costs: [sanity_small, unresolved_debt]
+    expected_gains: [mumyeong_boss_relation_clue, wound_exploitation_clue]
+    outcome_hook:
+      add_flags: [boss_first_appearance_resolved, boss_wall_thread_opened, black_serpent_core_pressure_opened, mumyeong_reacts_to_boss_voice]
+      add_clues: [mumyeong_follows_power_that_saw_his_wound, boss_reads_people_not_forms]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 무명은 명령보다 먼저 침묵한다. 그 침묵은 복종이면서, 아직 끊지 못한 상처처럼 보인다.
+  - id: retreat_before_the_second_step
+    role: safe_reposition
+    fallback_choice: true
+    label_direction: 두 번째 걸음 전에 물러나 살아남는다
+    expected_costs: [lost_momentum, sanity_small]
+    expected_gains: [safe_distance, future_boss_marker]
+    outcome_hook:
+      add_flags: [boss_first_appearance_resolved, boss_wall_thread_opened, black_serpent_core_pressure_opened, boss_retreat_survival_chosen]
+      add_clues: [boss_is_final_logic_wall, qingliu_cannot_outmuscle_boss_yet]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 오늘 넘을 벽이 아니라는 사실을 인정하는 것도 선택이다. 천기록은 그 후퇴를 비겁함이라 적지 않는다.
+outcome_hooks:
+  possible_flags: [boss_first_appearance_resolved, boss_wall_thread_opened, black_serpent_core_pressure_opened, boss_flow_read_but_body_lagged, seoharin_protected_from_boss_line, mumyeong_reacts_to_boss_voice, boss_retreat_survival_chosen]
+  possible_clues: [boss_reads_people_not_forms, boss_is_final_logic_wall, mumyeong_follows_power_that_saw_his_wound, qingliu_cannot_outmuscle_boss_yet]
+  possible_destinations: [cheongryu_outer_courtyard]
+main_spine_link: 무명 중반 재회에서 열린 보스가 무명의 상처를 이용했다는 단서를 흑사방 보스의 첫 직접 압박으로 연결하되, 전투 결산이 아니라 최종 논리 벽의 첫 인상으로 남긴다.
+randomization_notes: 1회성 boss-wall pressure. midgame reunion common hook 뒤에만 열고 `boss_first_appearance_resolved`로 반복을 막는다. `boss_used_mumyeongs_wound`는 flavor clue로만 사용해 특정 선택지에 갇히지 않게 한다.
+promotion_notes: preview runtime으로 구현 완료. `wuxia_mumyeong_followup_after_midgame_reunion` docs-only handoff에서 다음 runtime 후보로 선택했고, 압도감/조직력/약점 읽기/무명이 따르는 이유를 기존 flags/clues/log/presentation으로 landing했다. `wuxia_mumyeong_departure_truth_summary`는 후반 truth reveal/서하린 진실 전달/구원 조건 확정 때문에 보류했고, `wuxia_qingliu_attack_after_war`는 full flashback/backstory reveal 때문에 보류했다. `wuxia_mumyeong_request_for_aid`는 Notion search에서 확인했지만 repo 현 후보 밖 future bridge로 남긴다. boss combat/final boss resolution, legacy office bundle, legacy `escape-office` key, random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation schema, reward/ability/epilogue/return system, 천기록 정체 reveal은 열지 않는다.
+runtime_preview_implementation_notes:
+  implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
+  insert_after: wuxia_mumyeong_midgame_reunion
+  selected_over: [wuxia_mumyeong_departure_truth_summary, wuxia_qingliu_attack_after_war]
+  deferred_bridge_candidates: [wuxia_mumyeong_request_for_aid]
+  generated_artifacts:
+    - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+    - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+  default_bundle_changed: false
+  new_schema_opened: false
+  next_handoff: wuxia_boss_followup_after_first_appearance
+```
+
+## 19. `wuxia_mumyeong_request_for_aid`
+
+```yaml
+id: wuxia_mumyeong_request_for_aid
+world_id: wuxia_jianghu
+storypack_id: wuxia_jianghu_pack
+source_refs:
+  - notion_event:wuxia_mumyeong_request_for_aid
+  - docs/dev/Notion_Design_Coverage.md
+notion_event_mapping:
+  notion_event_id: wuxia_mumyeong_request_for_aid
+  notion_event_name: 무명의 도움 요청
+  mapping_status: preview_runtime_implemented
+status: implemented_in_storypack_preview
+mapping_status: preview_runtime_implemented
+phase: [midgame_rival, failed_aid_records]
+priority_class: route_key
+location_tags: [cheongryu_outer_courtyard, orthodox_refusal, mumyeong_past]
+surface: [sect_courtyard, faction_negotiation, cheonggi_record]
+anomaly_type: [faction_pressure]
+pressure_type: [sanity, relation, danger]
+npc_slots: [early_rescuer]
+candidate_characters: [mumyeong, seo_harin, black_serpent_boss]
+summary: 보스 첫 등장 뒤 무명이 청류문을 살리려 정파 문파들에 도움을 청했지만 거절당했다는 기록/소문을 추적한다.
+setup_text: 청류문 마당에 남은 검은 깃발의 먼지가 가라앉자, 천기록의 빈 줄 옆에 오래된 객잔 이름과 반쯤 찢긴 서찰 봉인이 겹쳐 보인다. 무명은 배신자가 되기 전에 살릴 방법을 찾았고, 정파의 문턱은 그를 여러 번 돌려보낸 듯하다.
+runtime_preview_design_status: implemented
+runtime_preview_start_conditions:
+  runtime_mode: storypack_preview
+  conditions:
+    locations: [cheongryu_outer_courtyard]
+  required_flags: [boss_first_appearance_resolved, boss_wall_thread_opened, black_serpent_core_pressure_opened, mumyeong_mirror_thread_deepened, orthodox_style_trace_recorded, midgame_continuity_started]
+  forbidden_flags: [mumyeong_request_for_aid_resolved]
+  flavor_flags_only: [boss_used_mumyeongs_wound, hyeonakmun_trace_shared_without_accusation, mumyeong_follows_power_that_saw_his_wound, boss_reads_people_not_forms, boss_is_final_logic_wall, qingliu_cannot_outmuscle_boss_yet, seoharin_does_not_call_mumyeong_traitor]
+presentation:
+  visual_id: wuxia_mumyeong_request_for_aid
+  speaker: 천기록
+  layout: failed_aid_records
+  effect_cues:
+    - stable_terms: [무명, 청류문, 정파]
+choice_shapes:
+  - id: search_the_rejected_aid_letters
+    role: safe_reading
+    label_direction: 거절당한 도움 요청 서찰을 찾아 읽는다
+    expected_costs: []
+    expected_gains: [failed_aid_record, orthodox_refusal_clue]
+    outcome_hook:
+      add_flags: [mumyeong_request_for_aid_resolved, mumyeong_failed_aid_thread_opened, orthodox_hypocrisy_thread_opened, rejected_aid_letters_read]
+      add_clues: [mumyeong_tried_to_save_qingliu, orthodox_refusal_broke_mumyeong]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 서찰에는 도움을 청한 말보다 거절의 예법이 더 길게 남아 있다.
+  - id: follow_old_inn_rumors_about_mumyeong
+    role: rumor_probe
+    label_direction: 객잔에 남은 무명 소문을 좇는다
+    expected_costs: [sanity_small, danger_small]
+    expected_gains: [rumor_thread, boss_logic_clue]
+    outcome_hook:
+      add_flags: [mumyeong_request_for_aid_resolved, mumyeong_failed_aid_thread_opened, orthodox_hypocrisy_thread_opened, inn_rumor_thread_followed]
+      add_clues: [boss_logic_found_mumyeongs_wound, orthodox_refusal_broke_mumyeong]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 사람들은 그가 떠난 날보다 문전박대당한 밤을 더 작게 말한다.
+  - id: ask_seo_harin_what_help_never_came
+    role: relation_probe
+    label_direction: 서하린에게 오지 않았던 도움을 묻는다
+    expected_costs: [relation_risk, sanity_small]
+    expected_gains: [seoharin_silence_context, failed_aid_context]
+    outcome_hook:
+      add_flags: [mumyeong_request_for_aid_resolved, mumyeong_failed_aid_thread_opened, orthodox_hypocrisy_thread_opened, seoharin_failed_aid_question_asked]
+      add_clues: [seoharin_does_not_know_failed_aid, aid_refusal_precedes_departure_truth]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 서하린은 그 서찰을 본 적이 없다고 말한다. 그 무지가 오히려 오래된 상처의 모양을 만든다.
+  - id: keep_the_failed_aid_record_unshown
+    role: safe_defer
+    fallback_choice: true
+    label_direction: 실패한 도움 요청 기록을 아직 보여주지 않는다
+    expected_costs: [unresolved_debt]
+    expected_gains: [safe_distance, future_truth_marker]
+    outcome_hook:
+      add_flags: [mumyeong_request_for_aid_resolved, mumyeong_failed_aid_thread_opened, orthodox_hypocrisy_thread_opened, failed_aid_record_kept_unshown]
+      add_clues: [aid_refusal_precedes_departure_truth, mumyeong_tried_to_save_qingliu]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 기록은 접어 둔다. 오늘 밝히지 않는 진실도, 언젠가 누군가를 살릴 수 있다.
+outcome_hooks:
+  possible_flags: [mumyeong_request_for_aid_resolved, mumyeong_failed_aid_thread_opened, orthodox_hypocrisy_thread_opened, rejected_aid_letters_read, inn_rumor_thread_followed, seoharin_failed_aid_question_asked, failed_aid_record_kept_unshown]
+  possible_clues: [mumyeong_tried_to_save_qingliu, orthodox_refusal_broke_mumyeong, boss_logic_found_mumyeongs_wound, aid_refusal_precedes_departure_truth, seoharin_does_not_know_failed_aid]
+  possible_items: [rejected_aid_letter_fragment]
+  possible_destinations: [cheongryu_outer_courtyard]
+main_spine_link: 보스 첫 등장으로 열린 힘의 논리와 무명의 상처를, 정파가 청류문을 외면한 기록/소문으로 이어서 무명을 단순 배신자가 아닌 실패한 구조자 후보로 만든다.
+randomization_notes: 1회성 failed-aid records bridge. boss first appearance 뒤에만 열고 `mumyeong_request_for_aid_resolved`로 반복을 막는다. 서하린에게 진실을 전달하거나 무명 구원을 확정하지 않는다.
+promotion_notes: preview runtime으로 구현 완료. `wuxia_boss_followup_after_first_appearance` docs-only handoff에서 다음 runtime 후보로 선택했고, 보스 첫 등장 뒤 무명의 도움 요청 실패 기록/소문을 기존 flags/clues/log/presentation hook으로 landing했다. `wuxia_mumyeong_departure_truth_summary`는 후반 truth reveal/서하린 진실 전달/구원 조건 확정 때문에 보류했고, `wuxia_qingliu_attack_after_war`는 full flashback/backstory reveal 때문에 보류했으며, `wuxia_boss_resolution`은 final boss/faction/epilogue 결산 때문에 보류했다. legacy office bundle, legacy `escape-office` key, random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation schema, reward/ability/epilogue/return system, 천기록 정체 reveal은 열지 않는다.
+runtime_preview_implementation_notes:
+  implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
+  insert_after: wuxia_boss_first_appearance
+  selected_over: [wuxia_mumyeong_departure_truth_summary, wuxia_qingliu_attack_after_war, wuxia_boss_resolution]
+  generated_artifacts:
+    - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+    - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+  default_bundle_changed: false
+  new_schema_opened: false
+  next_handoff: wuxia_mumyeong_followup_after_failed_aid
 ```

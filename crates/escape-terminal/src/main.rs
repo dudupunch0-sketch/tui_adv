@@ -8,8 +8,8 @@ use std::io::{self, Write};
 use std::path::PathBuf;
 use std::time::Duration;
 
-const WUXIA_STORYPACK_PREVIEW_ID: &str = "wuxia_jianghu_pack";
-const WUXIA_STORYPACK_PREVIEW_BUNDLE_REL: &str =
+const DEFAULT_STORYPACK_ID: &str = "wuxia_jianghu_pack";
+const DEFAULT_STORYPACK_BUNDLE_REL: &str =
     "../escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json";
 
 #[derive(Debug, PartialEq, Eq)]
@@ -162,16 +162,20 @@ fn selected_content_bundle_path(options: &CliOptions) -> Result<PathBuf, String>
     if let Some(storypack_id) = &options.storypack_preview {
         return storypack_preview_bundle_path(storypack_id);
     }
-    Err("--content-bundle or --storypack-preview is required with --scene content".to_string())
+    Ok(default_storypack_bundle_path())
 }
 
 fn storypack_preview_bundle_path(storypack_id: &str) -> Result<PathBuf, String> {
-    if storypack_id != WUXIA_STORYPACK_PREVIEW_ID {
+    if storypack_id != DEFAULT_STORYPACK_ID {
         return Err(format!(
-            "unsupported --storypack-preview '{storypack_id}'; available: {WUXIA_STORYPACK_PREVIEW_ID}"
+            "unsupported --storypack-preview '{storypack_id}'; available: {DEFAULT_STORYPACK_ID}"
         ));
     }
-    Ok(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(WUXIA_STORYPACK_PREVIEW_BUNDLE_REL))
+    Ok(default_storypack_bundle_path())
+}
+
+fn default_storypack_bundle_path() -> PathBuf {
+    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(DEFAULT_STORYPACK_BUNDLE_REL)
 }
 
 fn content_bundle_start_location(bundle: &ContentBundle) -> &str {
@@ -400,6 +404,7 @@ where
 
 fn print_help() {
     println!("escape-terminal --scene printer --seed 123 --smoke");
+    println!("escape-terminal --scene content --seed 123 --play");
     println!("escape-terminal --scene content --content-bundle <path> --seed 123 --play");
     println!(
         "escape-terminal --scene content --storypack-preview wuxia_jianghu_pack --seed 123 --play"
@@ -411,9 +416,11 @@ fn print_help() {
     println!();
     println!("Options:");
     println!("  --scene <printer|content>  Run the printer scene or content-backed smoke/play");
-    println!("  --content-bundle <path>    JSON content bundle for --scene content");
     println!(
-        "  --storypack-preview <id>  Use a built-in explicit preview bundle (wuxia_jianghu_pack)"
+        "  --content-bundle <path>    Override the default storypack with a JSON content bundle"
+    );
+    println!(
+        "  --storypack-preview <id>  Use a built-in storypack bundle explicitly (wuxia_jianghu_pack)"
     );
     println!(
         "  --action <id>              Script one content action; repeat for multi-turn smokes"
@@ -551,7 +558,7 @@ struct RawGlyphFxFrame {
 
 fn render_scene_page_app(ui: &mut slt::Context, page: &ScenePage, logs: &[String], tick: u64) {
     let _ = ui.col(|ui| {
-        ui.text("ESCAPE OFFICE // SuperLightTUI HORROR EDITION");
+        ui.text(scene_page_terminal_title(page));
         ui.text("app loop: full-screen SuperLightTUI frame");
         ui.text(format!("tick: {tick}"));
         ui.text(format!(
@@ -684,7 +691,7 @@ fn render_scene_page_snapshot(page: &ScenePage, logs: &[String]) -> String {
 
 fn render_scene_page(ui: &mut slt::Context, page: &ScenePage, logs: &[String]) {
     let _ = ui.col(|ui| {
-        ui.text("ESCAPE OFFICE // SuperLightTUI HORROR EDITION");
+        ui.text(scene_page_terminal_title(page));
         ui.text(format!(
             "{} · {}",
             page.chapter_label,
@@ -793,6 +800,24 @@ fn glyphfx_card_lines(effect_cues: &[SceneEffectCue]) -> Vec<String> {
         }
     }
     lines
+}
+
+fn scene_page_terminal_title(page: &ScenePage) -> &'static str {
+    if is_wuxia_scene_page(page) {
+        "이구학지 - 천기록 // SuperLightTUI STORYBOOK"
+    } else {
+        "ESCAPE OFFICE // SuperLightTUI HORROR EDITION"
+    }
+}
+
+fn is_wuxia_scene_page(page: &ScenePage) -> bool {
+    page.location.id.starts_with("wuxia_")
+        || page.visual.id.contains("wuxia")
+        || page
+            .visual
+            .source_id
+            .as_deref()
+            .is_some_and(|source_id| source_id.contains("wuxia"))
 }
 
 fn glyphfx_intensity_percent(intensity: f32) -> u32 {

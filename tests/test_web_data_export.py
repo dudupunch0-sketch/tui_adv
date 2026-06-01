@@ -92,6 +92,17 @@ def test_export_web_data_builds_renderer_neutral_content_bundle():
             "wuxia_cheongryu_chore_sparring",
             "wuxia_cheongryu_raid_route_split",
             "wuxia_cheongryu_raid_wounded_fallback",
+            "wuxia_baekdo_medicine_debt",
+            "wuxia_black_heaven_escape_price",
+            "wuxia_heavenly_archive_previous_outsiders",
+            "wuxia_wounded_shelter_dawn_offers",
+            "wuxia_mumyeong_first_sighting",
+            "wuxia_mumyeong_first_confrontation",
+            "wuxia_mumyeong_copy_style_reveal",
+            "wuxia_mumyeong_reads_orthodox_style",
+            "wuxia_mumyeong_midgame_reunion",
+            "wuxia_boss_first_appearance",
+            "wuxia_mumyeong_request_for_aid",
         }
         for encounter in bundle["content"]["encounters"]
     )
@@ -114,8 +125,8 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     assert "storypack-previews/wuxia_jianghu_pack" in bundle["source"]
     assert bundle["manifest"]["counts"] == {
         "locations": 4,
-        "items": 3,
-        "encounters": 8,
+        "items": 4,
+        "encounters": 19,
         "endings": 1,
         "achievements": 2,
         "secrets": 0,
@@ -136,6 +147,17 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "wuxia_cheongryu_chore_sparring",
         "wuxia_cheongryu_raid_route_split",
         "wuxia_cheongryu_raid_wounded_fallback",
+        "wuxia_baekdo_medicine_debt",
+        "wuxia_black_heaven_escape_price",
+        "wuxia_heavenly_archive_previous_outsiders",
+        "wuxia_wounded_shelter_dawn_offers",
+        "wuxia_mumyeong_first_sighting",
+        "wuxia_mumyeong_first_confrontation",
+        "wuxia_mumyeong_copy_style_reveal",
+        "wuxia_mumyeong_reads_orthodox_style",
+        "wuxia_mumyeong_midgame_reunion",
+        "wuxia_boss_first_appearance",
+        "wuxia_mumyeong_request_for_aid",
     ]
     first_fight = bundle["content"]["encounters"][1]
     assert first_fight["conditions"] == {
@@ -366,6 +388,424 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "deferred_choice_is_still_choice",
     ]
     assert stabilize["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
+    baekdo_debt = bundle["content"]["encounters"][8]
+    assert baekdo_debt["conditions"] == {
+        "locations": ["cheongryu_outer_courtyard"],
+        "required_flags": [
+            "righteous_route_started",
+            "cheongryu_rebuild_thread",
+        ],
+        "forbidden_flags": ["baekdo_medicine_debt_resolved"],
+    }
+    assert baekdo_debt["presentation"]["layout"] == "righteous_route_opener"
+    assert baekdo_debt["presentation"]["speaker"] == "남궁서윤"
+    assert baekdo_debt["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "약상자",
+        "백도맹",
+        "채무",
+    ]
+    assert [choice["id"] for choice in baekdo_debt["choices"]] == [
+        "accept_medicine_with_written_debt",
+        "ask_terms_before_opening_gate",
+        "send_supplies_to_wounded_first",
+        "compare_banner_to_record_margin",
+    ]
+    accept_debt = baekdo_debt["choices"][0]
+    assert accept_debt["outcome"]["add_flags"] == [
+        "baekdo_medicine_debt_resolved",
+        "righteous_route_opened",
+        "route_opener_resolved",
+        "white_path_debt_recorded",
+        "cheongryu_rebuild_supplies_secured",
+        "namgung_seoyun_notice",
+    ]
+    assert accept_debt["outcome"]["add_clues"] == [
+        "medicine_has_banner",
+        "white_path_help_has_price",
+        "qingliu_survival_needs_outside_help",
+    ]
+    assert accept_debt["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
+    black_heaven = bundle["content"]["encounters"][9]
+    assert black_heaven["conditions"] == {
+        "locations": ["cheongryu_outer_courtyard"],
+        "required_flags": [
+            "sapa_route_started",
+            "dowol_debt",
+        ],
+        "forbidden_flags": ["black_heaven_escape_price_resolved"],
+    }
+    assert black_heaven["presentation"]["layout"] == "sapa_route_opener"
+    assert black_heaven["presentation"]["speaker"] == "도월"
+    assert black_heaven["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "탈출로",
+        "흑천련",
+        "값",
+    ]
+    assert [choice["id"] for choice in black_heaven["choices"]] == [
+        "accept_dowol_marker_for_safehouse",
+        "ask_who_collects_the_price",
+        "keep_cheongryu_names_off_ledger",
+        "map_exit_before_following_dowol",
+    ]
+    accept_marker = black_heaven["choices"][0]
+    assert accept_marker["outcome"]["add_flags"] == [
+        "black_heaven_escape_price_resolved",
+        "sapa_route_opened",
+        "route_opener_resolved",
+        "black_heaven_safehouse_marked",
+        "market_route_debt_recorded",
+    ]
+    assert accept_marker["outcome"]["add_clues"] == [
+        "black_heaven_help_marks_debt",
+        "survival_bargain_is_not_loyalty",
+    ]
+    assert accept_marker["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
+    heavenly_archive = bundle["content"]["encounters"][10]
+    assert heavenly_archive["conditions"] == {
+        "locations": ["cheongryu_outer_courtyard"],
+        "required_flags": [
+            "cheonggi_return_route_started",
+            "cheonggi_record_targeted",
+        ],
+        "forbidden_flags": ["heavenly_archive_previous_outsiders_resolved"],
+    }
+    assert heavenly_archive["presentation"]["layout"] == "cheonggi_return_opener"
+    assert heavenly_archive["presentation"]["speaker"] == "연소하"
+    assert heavenly_archive["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "천기각",
+        "이방인",
+        "균열",
+    ]
+    assert [choice["id"] for choice in heavenly_archive["choices"]] == [
+        "read_previous_outsider_margins",
+        "ask_yeon_soha_what_not_to_read",
+        "mark_current_worldline_without_answer",
+        "compare_rift_terms_to_commute_memory",
+    ]
+    read_margins = heavenly_archive["choices"][0]
+    assert read_margins["outcome"]["add_flags"] == [
+        "heavenly_archive_previous_outsiders_resolved",
+        "cheonggi_return_route_opened",
+        "route_opener_resolved",
+        "previous_outsiders_record_seen",
+    ]
+    assert read_margins["outcome"]["add_clues"] == [
+        "archive_has_other_outsiders",
+        "return_clue_is_not_return_method",
+    ]
+    assert read_margins["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
+    wounded_shelter = bundle["content"]["encounters"][11]
+    assert wounded_shelter["conditions"] == {
+        "locations": ["cheongryu_outer_courtyard"],
+        "required_flags": [
+            "cheongryu_raid_wounded_fallback_resolved",
+            "route_commitment_deferred",
+            "deferred_route_reopened",
+            "wounded_shelter_stabilized",
+        ],
+        "forbidden_flags": ["wounded_shelter_dawn_offers_resolved"],
+    }
+    assert wounded_shelter["presentation"]["layout"] == "deferred_route_offer"
+    assert wounded_shelter["presentation"]["speaker"] == "서하린"
+    assert wounded_shelter["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "새벽",
+        "부상자",
+        "제안",
+    ]
+    assert [choice["id"] for choice in wounded_shelter["choices"]] == [
+        "keep_wounded_shelter_until_noon",
+        "accept_baekdo_medicine_after_roll_call",
+        "send_word_to_dowol_for_quiet_exit",
+        "show_archive_map_to_yeon_soha",
+    ]
+    keep_shelter = wounded_shelter["choices"][0]
+    assert keep_shelter["outcome"]["add_flags"] == [
+        "wounded_shelter_dawn_offers_resolved",
+        "route_commitment_reopened",
+        "wounded_shelter_until_noon",
+        "deferred_offer_debt_recorded",
+    ]
+    assert keep_shelter["outcome"]["add_clues"] == [
+        "saving_people_changed_witnesses",
+        "care_is_not_route_escape",
+        "dawn_shelter_keeps_names",
+    ]
+    assert keep_shelter["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
+    baekdo_reentry = wounded_shelter["choices"][1]
+    assert baekdo_reentry["outcome"]["add_flags"] == [
+        "wounded_shelter_dawn_offers_resolved",
+        "route_commitment_reopened",
+        "righteous_route_started",
+        "cheongryu_rebuild_thread",
+        "baekdo_medicine_debt",
+    ]
+    sapa_reentry = wounded_shelter["choices"][2]
+    assert sapa_reentry["outcome"]["add_flags"] == [
+        "wounded_shelter_dawn_offers_resolved",
+        "route_commitment_reopened",
+        "sapa_route_started",
+        "dowol_debt",
+        "black_heaven_escape_marker",
+    ]
+    cheonggi_reentry = wounded_shelter["choices"][3]
+    assert cheonggi_reentry["outcome"]["add_flags"] == [
+        "wounded_shelter_dawn_offers_resolved",
+        "route_commitment_reopened",
+        "cheonggi_return_route_started",
+        "cheonggi_record_targeted",
+        "heavenly_archive_triage_map_seen",
+    ]
+    mumyeong = bundle["content"]["encounters"][12]
+    assert mumyeong["conditions"] == {
+        "locations": ["cheongryu_outer_courtyard"],
+        "required_flags": [
+            "route_opener_resolved",
+            "cheongryu_raid_survived",
+            "cheongryu_trial_started",
+            "first_fragment_seen",
+        ],
+        "forbidden_flags": ["mumyeong_first_sighting_resolved"],
+    }
+    assert mumyeong["presentation"]["layout"] == "midgame_rival_sighting"
+    assert mumyeong["presentation"]["speaker"] == "서하린"
+    assert mumyeong["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "무명",
+        "청류문",
+        "흑사방",
+    ]
+    assert [choice["id"] for choice in mumyeong["choices"]] == [
+        "watch_the_stolen_qingliu_flow",
+        "check_seo_harin_silence",
+        "follow_black_serpent_runner",
+        "pretend_not_to_see_the_form",
+    ]
+    observe = mumyeong["choices"][0]
+    assert observe["outcome"]["add_flags"] == [
+        "mumyeong_first_sighting_resolved",
+        "midgame_continuity_started",
+        "mumyeong_shadow_seen",
+        "copied_qingliu_flow_noted",
+    ]
+    assert observe["outcome"]["add_clues"] == [
+        "mumyeong_exists",
+        "copied_flow_is_not_qingliu",
+    ]
+    assert observe["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
+    confrontation = bundle["content"]["encounters"][13]
+    assert confrontation["conditions"] == {
+        "locations": ["cheongryu_outer_courtyard"],
+        "required_flags": [
+            "mumyeong_first_sighting_resolved",
+            "midgame_continuity_started",
+            "cheongryu_raid_survived",
+            "first_fragment_seen",
+        ],
+        "forbidden_flags": ["mumyeong_first_confrontation_resolved"],
+    }
+    assert confrontation["presentation"]["layout"] == "rival_first_confrontation"
+    assert confrontation["presentation"]["speaker"] == "무명"
+    assert confrontation["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "무명",
+        "서하린",
+        "청류문",
+    ]
+    assert [choice["id"] for choice in confrontation["choices"]] == [
+        "meet_mumyeong_head_on",
+        "endure_until_copy_flow_breaks",
+        "watch_seo_harin_hold_back",
+        "read_mumyeongs_copied_form",
+        "do_not_provoke_mumyeong",
+    ]
+    endure = confrontation["choices"][1]
+    assert endure["outcome"]["add_flags"] == [
+        "mumyeong_first_confrontation_resolved",
+        "mumyeong_rival_thread_opened",
+        "copied_flow_weakness_noted",
+    ]
+    assert endure["outcome"]["add_clues"] == [
+        "copy_style_has_gap",
+        "copied_flow_is_not_qingliu",
+    ]
+    assert endure["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
+    copy_style = bundle["content"]["encounters"][14]
+    assert copy_style["conditions"] == {
+        "locations": ["cheongryu_outer_courtyard"],
+        "required_flags": [
+            "mumyeong_first_confrontation_resolved",
+            "mumyeong_rival_thread_opened",
+            "midgame_continuity_started",
+        ],
+        "forbidden_flags": ["mumyeong_copy_style_reveal_resolved"],
+    }
+    assert copy_style["presentation"]["layout"] == "copy_style_analysis"
+    assert copy_style["presentation"]["speaker"] == "서하린"
+    assert copy_style["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "무명",
+        "청류안",
+        "천기록",
+    ]
+    assert [choice["id"] for choice in copy_style["choices"]] == [
+        "read_the_stolen_blade_path",
+        "watch_mumyeongs_footwork",
+        "listen_for_breath_mismatch",
+        "wait_for_body_to_shudder",
+    ]
+    breath = copy_style["choices"][2]
+    assert breath["outcome"]["add_flags"] == [
+        "mumyeong_copy_style_reveal_resolved",
+        "copy_style_hint_recorded",
+        "copied_breath_mismatch_noted",
+    ]
+    assert breath["outcome"]["add_clues"] == [
+        "breath_mismatch_marks_copy",
+        "understanding_is_not_copying",
+    ]
+    assert breath["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
+    orthodox_style = bundle["content"]["encounters"][15]
+    assert orthodox_style["conditions"] == {
+        "locations": ["cheongryu_outer_courtyard"],
+        "required_flags": [
+            "mumyeong_copy_style_reveal_resolved",
+            "copy_style_hint_recorded",
+            "midgame_continuity_started",
+            "first_fragment_seen",
+        ],
+        "forbidden_flags": ["mumyeong_reads_orthodox_style_resolved"],
+    }
+    assert orthodox_style["presentation"]["layout"] == "orthodox_style_trace"
+    assert orthodox_style["presentation"]["speaker"] == "천기록"
+    assert orthodox_style["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "현악문",
+        "복호금쇄수",
+        "무명",
+    ]
+    assert [choice["id"] for choice in orthodox_style["choices"]] == [
+        "compare_copied_form_to_old_wound",
+        "trace_qingliu_eye_variation",
+        "reconstruct_mumyeongs_sightline",
+        "stop_before_truth_becomes_accusation",
+    ]
+    reconstruct = orthodox_style["choices"][2]
+    assert reconstruct["outcome"]["add_flags"] == [
+        "mumyeong_reads_orthodox_style_resolved",
+        "orthodox_style_trace_recorded",
+        "mumyeong_sightline_reconstructed",
+    ]
+    assert reconstruct["outcome"]["add_clues"] == [
+        "bokho_geumsaesu_name_recorded",
+        "departure_truth_still_incomplete",
+    ]
+    assert reconstruct["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
+    midgame_reunion = bundle["content"]["encounters"][16]
+    assert midgame_reunion["conditions"] == {
+        "locations": ["cheongryu_outer_courtyard"],
+        "required_flags": [
+            "mumyeong_reads_orthodox_style_resolved",
+            "orthodox_style_trace_recorded",
+            "mumyeong_first_confrontation_resolved",
+            "mumyeong_rival_thread_opened",
+        ],
+        "forbidden_flags": ["mumyeong_midgame_reunion_resolved"],
+    }
+    assert midgame_reunion["presentation"]["layout"] == "rival_reunion_trace"
+    assert midgame_reunion["presentation"]["speaker"] == "무명"
+    assert midgame_reunion["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "무명",
+        "서하린",
+        "현악문",
+    ]
+    assert [choice["id"] for choice in midgame_reunion["choices"]] == [
+        "ask_why_seoharin_never_called_him_traitor",
+        "show_the_hyeonakmun_trace_without_accusing",
+        "point_out_the_copied_form_gap",
+        "keep_blades_low_and_watch_his_answer",
+    ]
+    share_trace = midgame_reunion["choices"][1]
+    assert share_trace["outcome"]["add_flags"] == [
+        "mumyeong_midgame_reunion_resolved",
+        "mumyeong_mirror_thread_deepened",
+        "hyeonakmun_trace_shared_carefully",
+    ]
+    assert share_trace["outcome"]["add_clues"] == [
+        "hyeonakmun_trace_shared_without_accusation",
+        "boss_used_mumyeongs_wound",
+    ]
+    assert share_trace["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
+    boss = bundle["content"]["encounters"][17]
+    assert boss["conditions"] == {
+        "locations": ["cheongryu_outer_courtyard"],
+        "required_flags": [
+            "mumyeong_midgame_reunion_resolved",
+            "mumyeong_mirror_thread_deepened",
+            "cheongryu_raid_survived",
+            "midgame_continuity_started",
+        ],
+        "forbidden_flags": ["boss_first_appearance_resolved"],
+    }
+    assert boss["presentation"]["layout"] == "boss_wall_pressure"
+    assert boss["presentation"]["speaker"] == "흑사방주"
+    assert boss["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "흑사방주",
+        "무명",
+        "청류문",
+    ]
+    assert [choice["id"] for choice in boss["choices"]] == [
+        "read_the_boss_flow_and_fail_to_move",
+        "pull_seo_harin_behind_broken_gate",
+        "watch_mumyeong_answer_the_boss",
+        "retreat_before_the_second_step",
+    ]
+    watch_mumyeong = boss["choices"][2]
+    assert watch_mumyeong["outcome"]["add_flags"] == [
+        "boss_first_appearance_resolved",
+        "boss_wall_thread_opened",
+        "black_serpent_core_pressure_opened",
+        "mumyeong_reacts_to_boss_voice",
+    ]
+    assert watch_mumyeong["outcome"]["add_clues"] == [
+        "mumyeong_follows_power_that_saw_his_wound",
+        "boss_reads_people_not_forms",
+    ]
+    assert watch_mumyeong["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
+    request_for_aid = bundle["content"]["encounters"][18]
+    assert request_for_aid["conditions"] == {
+        "locations": ["cheongryu_outer_courtyard"],
+        "required_flags": [
+            "boss_first_appearance_resolved",
+            "boss_wall_thread_opened",
+            "black_serpent_core_pressure_opened",
+            "mumyeong_mirror_thread_deepened",
+            "orthodox_style_trace_recorded",
+            "midgame_continuity_started",
+        ],
+        "forbidden_flags": ["mumyeong_request_for_aid_resolved"],
+    }
+    assert request_for_aid["presentation"]["layout"] == "failed_aid_records"
+    assert request_for_aid["presentation"]["speaker"] == "천기록"
+    assert request_for_aid["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "무명",
+        "청류문",
+        "정파",
+    ]
+    assert [choice["id"] for choice in request_for_aid["choices"]] == [
+        "search_the_rejected_aid_letters",
+        "follow_old_inn_rumors_about_mumyeong",
+        "ask_seo_harin_what_help_never_came",
+        "keep_the_failed_aid_record_unshown",
+    ]
+    rejected_letters = request_for_aid["choices"][0]
+    assert rejected_letters["outcome"]["add_items"] == ["rejected_aid_letter_fragment"]
+    assert rejected_letters["outcome"]["add_flags"] == [
+        "mumyeong_request_for_aid_resolved",
+        "mumyeong_failed_aid_thread_opened",
+        "orthodox_hypocrisy_thread_opened",
+        "rejected_aid_letters_read",
+    ]
+    assert rejected_letters["outcome"]["add_clues"] == [
+        "mumyeong_tried_to_save_qingliu",
+        "orthodox_refusal_broke_mumyeong",
+    ]
+    assert rejected_letters["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
     assert "dev_desk" not in json.dumps(bundle, ensure_ascii=False)
     assert _missing_private_secret_fields(bundle)
 

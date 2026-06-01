@@ -6,8 +6,8 @@
 ## 현재 핵심 컨셉
 
 - 장르: TUI 기반 랜덤 인카운터 선택지 생존 게임
-- 기본 배경: 회사 사무실 아포칼립스(`office_apocalypse`)
-- 개발 방향: storypack/world 기반 선택지 생존 엔진. 기본 office isolation 계열을 유지하되, office-family 후보 `야근몽`(`office_dream`)과 첫 비-office 기준팩 **이구학지 — 천기록**(`wuxia_jianghu`)을 후보 DB로 관리한다.
+- 기본 배경: **이구학지 — 천기록**(`wuxia_jianghu_pack` / `wuxia_jianghu`)
+- 개발 방향: storypack/world 기반 선택지 생존 엔진. 기존 회사 사무실 아포칼립스(`office_apocalypse`)는 legacy/parity content로 유지하고, office-family 후보 `야근몽`(`office_dream`)과 첫 비-office 기준팩 **이구학지 — 천기록**을 같은 Rust GameCore/Web Storybook/SuperLightTUI 계약으로 관리한다.
 - 핵심 자원: 체력, 정신력, 배터리, 허기, 갈증
 - 주요 목표: 탈출, 정복, 진실 발견, 히든 현실 연결 루트
 - 특별 요소: 게임 속 단서를 통해 실제 사무실에 숨겨진 메모/보물 위치를 자연스럽게 안내하는 ARG식 현실 연결
@@ -69,7 +69,7 @@ docs/
     storypack_db/                   # storypack/card 후보의 machine-readable JSON DB
 
   runtime preview sources/
-    src/tui_adv/storypack-previews/wuxia_jianghu_pack/ # wuxia_commute_rift_arrival부터 wuxia_cheongryu_raid_wounded_fallback까지 preview source YAML
+    src/tui_adv/storypack-previews/wuxia_jianghu_pack/ # wuxia_commute_rift_arrival부터 wuxia_mumyeong_request_for_aid까지 preview source YAML; 다음은 wuxia_mumyeong_followup_after_failed_aid handoff
     crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json # Rust/GameCore preview fixture
     web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json # Web/WASM preview bundle
 
@@ -184,6 +184,6 @@ private/
 다음 주제가 커지면 별도 문서로 분리하고, 그때 이 인덱스와 implementation-map도 같이 갱신한다.
 
 1. `document_contamination_pack`, `meeting_reservation_pack`, `compensation_strike_pack`의 별도 후보 문서
-2. `wuxia_jianghu_pack` / 이구학지 — 천기록 preview는 `wuxia_cheongryu_raid_wounded_fallback`까지 구현 완료. 다음 runtime handoff는 정파 opener `wuxia_baekdo_medicine_debt` 구현
+2. `wuxia_jianghu_pack` / 이구학지 — 천기록 preview는 `wuxia_mumyeong_request_for_aid`까지 구현 완료. 다음은 `wuxia_mumyeong_followup_after_failed_aid` docs-only handoff
 3. `yageunmong_pack` / 야근몽의 첫 runtime preview 후보: `yageunmong_late_night_desk_awake` 또는 각성편린 3택 preview
 4. 실시간 UI/UX 점검 후 확정된 화면/입력 변경 사항 기록

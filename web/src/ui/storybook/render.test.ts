@@ -89,8 +89,10 @@ describe('Web Storybook renderer', () => {
     const html = renderStorybookPage(samplePrinterPage());
 
     expect(html).toContain('data-renderer="web-storybook"');
+    expect(html).toContain('data-story-phase="result"');
     expect(html).toContain('class="storybook-hud"');
     expect(html).toContain('class="hud-nameplate"');
+    expect(html).toContain('class="hud-menu"');
     expect(html).toContain('class="hud-stat-grid"');
     expect(html).toContain('class="story-progress-rail"');
     expect(html).toContain('class="storybook-dock"');
@@ -103,7 +105,6 @@ describe('Web Storybook renderer', () => {
     expect(html).toContain('data-region="status"');
     expect(html).toContain('복합기가 혼자 출력한다');
     expect(html).toContain('복합기 구역');
-    expect(html).toContain('격리 3턴');
     expect(html).toContain('시스템 복합기');
     expect(html).toContain('복합기가 아직 고르지 않은 선택지를 출력한다.');
     expect(html).toContain('data-action-id="choice:take_printout"');
@@ -113,10 +114,38 @@ describe('Web Storybook renderer', () => {
     expect(html).toContain('따뜻한 출력물을 접어 주머니에 넣었다.');
     expect(html).toContain('aria-label="기록"');
     expect(html).toContain('aria-label="소지품"');
+    expect(html).toContain('data-player-action="show-start"');
+    expect(html).toContain('data-player-action="abandon-run"');
+    expect(html).toContain('data-player-action="toggle-audio"');
+    expect(html).not.toContain('단말기 전원');
+    expect(html).not.toContain('encounter · printer_area');
+    expect(html).not.toContain('격리 3턴');
     expect(html).not.toContain('storybook-topline');
     expect(html).not.toContain('CURRENT ENCOUNTER');
     expect(html).not.toContain('LOCAL STATUS');
     expect(html).not.toContain('class="fake-tui"');
+  });
+
+  it('renders combat intervention pages with a battle-style visual panel', () => {
+    const html = renderStorybookPage(
+      samplePrinterPage({
+        title: '흑사방 첫 난투',
+        visual: {
+          id: 'wuxia_heuksa_bang_first_fight',
+          kind: 'combat_intervention',
+          alt: '흑사방 말단과 마주 선 첫 난투',
+          source_id: 'wuxia_heuksa_bang_first_fight',
+        },
+        effect_cues: [],
+      }),
+    );
+
+    expect(html).toContain('data-story-phase="combat"');
+    expect(html).toContain('data-visual-kind="combat"');
+    expect(html).toContain('combat-card');
+    expect(html).toContain('전투 발생');
+    expect(html).toContain('상황 개입');
+    expect(html).toContain('선택지로 거리, 균형, 도주로를 고른다');
   });
 
   it('keeps GlyphFX stable terms and fallback text readable for reduced-motion rendering', () => {

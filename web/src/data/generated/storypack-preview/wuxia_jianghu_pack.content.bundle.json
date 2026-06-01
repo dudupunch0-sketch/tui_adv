@@ -1038,6 +1038,1440 @@
           "visual_id": "wuxia_cheongryu_raid_wounded_fallback"
         },
         "title": "부상자 피난처와 미뤄진 선택"
+      },
+      {
+        "body": "새벽빛이 청류문 외곽 마당에 내려앉을 때, 백도맹 깃발을 단 약상자가 산문 앞에 놓인다. 남궁서윤은 사람을 살릴 수 있는 약과 호위를 내밀지만, 그 뒤에는 지원 명부와 채무 문서가 함께 접혀 있다. 도움은 분명 사람을 살린다. 다만 그 도움은 누구의 이름으로 기록되는지 묻는다.",
+        "choices": [
+          {
+            "id": "accept_medicine_with_written_debt",
+            "label": "채무 문서를 남기고 약상자와 호위를 받는다",
+            "outcome": {
+              "add_clues": [
+                "medicine_has_banner",
+                "white_path_help_has_price",
+                "qingliu_survival_needs_outside_help"
+              ],
+              "add_flags": [
+                "baekdo_medicine_debt_resolved",
+                "righteous_route_opened",
+                "route_opener_resolved",
+                "white_path_debt_recorded",
+                "cheongryu_rebuild_supplies_secured",
+                "namgung_seoyun_notice"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "약상자는 사람을 살리고, 문서는 청류문의 이름 옆에 백도맹의 채무를 남긴다. 도움은 따뜻하지만 기록은 차갑다.",
+              "resources": {
+                "health": 5,
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "ask_terms_before_opening_gate",
+            "label": "산문을 열기 전에 백도맹의 조건을 묻는다",
+            "outcome": {
+              "add_clues": [
+                "white_path_help_has_price",
+                "order_can_save_and_bind"
+              ],
+              "add_flags": [
+                "baekdo_medicine_debt_resolved",
+                "righteous_route_opened",
+                "route_opener_resolved",
+                "baekdo_terms_questioned",
+                "white_path_debt_recorded",
+                "namgung_seoyun_notice"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "조건을 묻자 남궁서윤의 눈빛이 잠깐 굳는다. 정의는 사람을 살릴 수 있지만, 질서는 누가 누구에게 빚졌는지도 함께 적는다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "send_supplies_to_wounded_first",
+            "label": "약과 식량을 장문 명부보다 부상자에게 먼저 돌린다",
+            "outcome": {
+              "add_clues": [
+                "qingliu_survival_needs_outside_help",
+                "order_can_save_and_bind"
+              ],
+              "add_flags": [
+                "baekdo_medicine_debt_resolved",
+                "righteous_route_opened",
+                "route_opener_resolved",
+                "cheongryu_people_first",
+                "seo_harin_respect_thread",
+                "cheongryu_rebuild_supplies_secured"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "명부보다 먼저 부상자의 손에 약이 닿는다. 서하린은 아무 말 없이 고개를 끄덕이고, 백도맹 사자는 그 순서를 오래 바라본다.",
+              "resources": {
+                "health": 4,
+                "hunger": -1,
+                "sanity": -1
+              }
+            }
+          },
+          {
+            "id": "compare_banner_to_record_margin",
+            "label": "백도맹 깃발과 천기록 여백의 문장을 비교한다",
+            "outcome": {
+              "add_clues": [
+                "record_counts_debt_not_justice",
+                "white_path_help_has_price"
+              ],
+              "add_flags": [
+                "baekdo_medicine_debt_resolved",
+                "righteous_route_opened",
+                "route_opener_resolved",
+                "cheonggi_record_notes_baekdo_debt",
+                "white_path_debt_recorded"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "천기록의 여백은 답하지 않는다. 다만 깃발의 의와 문서의 채무가 같은 먹으로 기록될 수 있다는 사실만 남긴다.",
+              "resources": {
+                "sanity": -3
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "baekdo_medicine_debt_resolved"
+          ],
+          "locations": [
+            "cheongryu_outer_courtyard"
+          ],
+          "required_flags": [
+            "righteous_route_started",
+            "cheongryu_rebuild_thread"
+          ]
+        },
+        "id": "wuxia_baekdo_medicine_debt",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "medicine_chest_then_written_debt",
+              "duration_hint_ms": 1400,
+              "fallback_text": "약 냄새와 깃발 그림자 사이로 '약상자', '백도맹', '채무'만 선명하게 남는다.",
+              "intensity": 0.69,
+              "kind": "glyph_anomaly",
+              "source": "baekdo_medicine_debt",
+              "stable_terms": [
+                "약상자",
+                "백도맹",
+                "채무"
+              ]
+            }
+          ],
+          "layout": "righteous_route_opener",
+          "speaker": "남궁서윤",
+          "visual_id": "wuxia_baekdo_medicine_debt"
+        },
+        "title": "백도맹 약상자와 청류문의 채무"
+      },
+      {
+        "body": "청류문 바깥 담장 너머 시장 골목에서 도월이 낡은 흑천련 표식을 굴린다. “흑천련 길은 빠르다. 공짜가 아닐 뿐이지.” 붕대와 탈출로는 사람을 살릴 수 있지만, 누가 값을 받을지와 누구의 이름이 장부에 남을지는 아직 정해지지 않았다.",
+        "choices": [
+          {
+            "id": "accept_dowol_marker_for_safehouse",
+            "label": "도월의 표식을 받고 임시 은신처와 탈출로를 얻는다",
+            "outcome": {
+              "add_clues": [
+                "black_heaven_help_marks_debt",
+                "survival_bargain_is_not_loyalty"
+              ],
+              "add_flags": [
+                "black_heaven_escape_price_resolved",
+                "sapa_route_opened",
+                "route_opener_resolved",
+                "black_heaven_safehouse_marked",
+                "market_route_debt_recorded"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "흑천련의 길은 빠르고 실제적이다. 표식 하나가 임시 은신처를 열지만, 그 표식은 나중에 값을 받을 증거로도 남는다.",
+              "resources": {
+                "hunger": -1,
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "ask_who_collects_the_price",
+            "label": "누가 언제 어떤 방식으로 값을 받는지 먼저 묻는다",
+            "outcome": {
+              "add_clues": [
+                "black_heaven_bargain_has_teeth",
+                "survival_bargain_is_not_loyalty"
+              ],
+              "add_flags": [
+                "black_heaven_escape_price_resolved",
+                "sapa_route_opened",
+                "route_opener_resolved",
+                "dowol_terms_questioned"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "조건을 묻자 도월은 웃는다. 사파의 도움은 자비가 아니라 거래이고, 거래는 늘 받아 갈 손을 함께 데려온다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "keep_cheongryu_names_off_ledger",
+            "label": "청류문 사람들의 이름은 흑천련 장부에 남기지 않는다",
+            "outcome": {
+              "add_clues": [
+                "ledger_can_be_bent_not_broken",
+                "sapa_can_save_without_mercy"
+              ],
+              "add_flags": [
+                "black_heaven_escape_price_resolved",
+                "sapa_route_opened",
+                "route_opener_resolved",
+                "cheongryu_names_kept_off_ledger",
+                "market_route_debt_recorded"
+              ],
+              "danger": 2,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "청류문의 이름을 지우는 대신, 당신의 이름이 더 굵은 획으로 남는다. 도월은 그 고집을 어리석음이 아니라 쓸 만한 값으로 본다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "map_exit_before_following_dowol",
+            "label": "따라가기 전에 탈출로와 추적선을 먼저 기록한다",
+            "outcome": {
+              "add_clues": [
+                "sapa_can_save_without_mercy",
+                "black_heaven_bargain_has_teeth"
+              ],
+              "add_flags": [
+                "black_heaven_escape_price_resolved",
+                "sapa_route_opened",
+                "route_opener_resolved",
+                "sapa_survival_principle_seen"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "흑천련의 길은 사람을 살릴 수 있다. 다만 살아남은 사람이 어디로 빚을 갚으러 갈지도 함께 보여준다.",
+              "resources": {
+                "health": -1,
+                "sanity": -1
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "black_heaven_escape_price_resolved"
+          ],
+          "locations": [
+            "cheongryu_outer_courtyard"
+          ],
+          "required_flags": [
+            "sapa_route_started",
+            "dowol_debt"
+          ]
+        },
+        "id": "wuxia_black_heaven_escape_price",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "alley_marker_then_ledger_lines",
+              "duration_hint_ms": 1400,
+              "fallback_text": "어두운 골목과 낡은 표식 사이로 '탈출로', '흑천련', '값'만 선명하게 남는다.",
+              "intensity": 0.7,
+              "kind": "glyph_anomaly",
+              "source": "black_heaven_escape_price",
+              "stable_terms": [
+                "탈출로",
+                "흑천련",
+                "값"
+              ]
+            }
+          ],
+          "layout": "sapa_route_opener",
+          "speaker": "도월",
+          "visual_id": "wuxia_black_heaven_escape_price"
+        },
+        "title": "흑천련 탈출로의 값"
+      },
+      {
+        "body": "청류문 마당의 먼지가 가라앉자 연소하가 낡은 서책 한 권을 펼친다. 표지에는 천기각의 인장이 있고, 여백에는 낯선 옷차림과 끊긴 길을 묘사한 문장이 남아 있다. 답은 없지만, 당신만 처음 온 사람은 아니라는 사실은 분명하다.",
+        "choices": [
+          {
+            "id": "read_previous_outsider_margins",
+            "label": "이전 이방인의 여백 기록을 조용히 읽는다",
+            "outcome": {
+              "add_clues": [
+                "archive_has_other_outsiders",
+                "return_clue_is_not_return_method"
+              ],
+              "add_flags": [
+                "heavenly_archive_previous_outsiders_resolved",
+                "cheonggi_return_route_opened",
+                "route_opener_resolved",
+                "previous_outsiders_record_seen"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "서고의 여백에는 돌아간 사람보다 사라진 길을 붙잡은 사람의 흔적이 더 많다. 천기각은 방법이 아니라 흔적부터 보여준다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "ask_yeon_soha_what_not_to_read",
+            "label": "연소하에게 무엇을 읽으면 안 되는지 먼저 묻는다",
+            "outcome": {
+              "add_clues": [
+                "cheonggi_record_refuses_identity_answer",
+                "record_gaze_without_name"
+              ],
+              "add_flags": [
+                "heavenly_archive_previous_outsiders_resolved",
+                "cheonggi_return_route_opened",
+                "route_opener_resolved",
+                "yeon_soha_warning_heard"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "연소하는 답을 숨기지 않는다. 다만 답으로 변하는 질문을 먼저 막는다. 기록자는 이름 대신 시선만 남긴다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "mark_current_worldline_without_answer",
+            "label": "정답을 요구하지 않고 현재 세계선의 흔적만 표시한다",
+            "outcome": {
+              "add_clues": [
+                "worldline_gaps_have_patterns",
+                "cheonggi_record_refuses_identity_answer"
+              ],
+              "add_flags": [
+                "heavenly_archive_previous_outsiders_resolved",
+                "cheonggi_return_route_opened",
+                "route_opener_resolved",
+                "worldline_margin_marked"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "천기록은 세계의 이름을 쓰지 않는다. 대신 이 세계선의 접힌 자국 하나를 여백에 남긴다.",
+              "resources": {
+                "sanity": -1
+              }
+            }
+          },
+          {
+            "id": "compare_rift_terms_to_commute_memory",
+            "label": "서고의 균열 용어를 출근길 기억과 비교한다",
+            "outcome": {
+              "add_clues": [
+                "worldline_gaps_have_patterns",
+                "return_clue_is_not_return_method",
+                "record_gaze_without_name"
+              ],
+              "add_flags": [
+                "heavenly_archive_previous_outsiders_resolved",
+                "cheonggi_return_route_opened",
+                "route_opener_resolved",
+                "commute_rift_terms_compared"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "출근길의 문틈과 서고의 균열이라는 말이 같은 모양으로 접힌다. 하지만 접힌 모양은 문이 아니다.",
+              "resources": {
+                "health": -1,
+                "sanity": -3
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "heavenly_archive_previous_outsiders_resolved"
+          ],
+          "locations": [
+            "cheongryu_outer_courtyard"
+          ],
+          "required_flags": [
+            "cheonggi_return_route_started",
+            "cheonggi_record_targeted"
+          ]
+        },
+        "id": "wuxia_heavenly_archive_previous_outsiders",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "archive_margins_then_worldline_fold",
+              "duration_hint_ms": 1450,
+              "fallback_text": "낡은 서책의 여백과 접힌 먹선 사이로 '천기각', '이방인', '균열'만 선명하게 남는다.",
+              "intensity": 0.72,
+              "kind": "glyph_anomaly",
+              "source": "heavenly_archive_previous_outsiders",
+              "stable_terms": [
+                "천기각",
+                "이방인",
+                "균열"
+              ]
+            }
+          ],
+          "layout": "cheonggi_return_opener",
+          "speaker": "연소하",
+          "visual_id": "wuxia_heavenly_archive_previous_outsiders"
+        },
+        "title": "천기각 이전 이방인 기록"
+      },
+      {
+        "body": "새벽이 오자 임시 피난처의 숨소리가 하나씩 안정된다. 서하린은 젖은 천을 갈아 묶으며 부상자 명단을 접는다. 문밖에는 남궁서윤의 약상자, 도월이 남긴 짧은 전서, 연소하의 접힌 지도 조각이 서로 다른 그림자처럼 도착해 있다. 사람을 살리느라 선택을 미뤘지만, 그 덕분에 다시 물을 수 있는 이름들이 남았다.",
+        "choices": [
+          {
+            "id": "keep_wounded_shelter_until_noon",
+            "label": "정오까지 피난처를 더 지킨다",
+            "outcome": {
+              "add_clues": [
+                "saving_people_changed_witnesses",
+                "care_is_not_route_escape",
+                "dawn_shelter_keeps_names"
+              ],
+              "add_flags": [
+                "wounded_shelter_dawn_offers_resolved",
+                "route_commitment_reopened",
+                "wounded_shelter_until_noon",
+                "deferred_offer_debt_recorded"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "route를 고르지 않는 대신 살아남은 이름들이 더 또렷해진다. 피난처는 도망이 아니지만, 사람을 살린 증거는 다음 선택의 무게가 된다.",
+              "resources": {
+                "health": -1,
+                "hunger": 1
+              }
+            }
+          },
+          {
+            "id": "accept_baekdo_medicine_after_roll_call",
+            "label": "생존자 점호 뒤 백도맹 약상자를 받는다",
+            "outcome": {
+              "add_clues": [
+                "offers_arrive_because_people_lived",
+                "delayed_choice_has_callers",
+                "medicine_has_banner"
+              ],
+              "add_flags": [
+                "wounded_shelter_dawn_offers_resolved",
+                "route_commitment_reopened",
+                "righteous_route_started",
+                "cheongryu_rebuild_thread",
+                "baekdo_medicine_debt"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "약상자는 명령서가 아니라 명단 위에 놓인다. 빚은 생겼지만 문은 다시 열리고, 정파의 제안은 살아남은 사람들의 숨 위에 놓인다.",
+              "resources": {
+                "health": 3,
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "send_word_to_dowol_for_quiet_exit",
+            "label": "도월에게 조용한 퇴로를 부탁한다",
+            "outcome": {
+              "add_clues": [
+                "delayed_choice_has_callers",
+                "care_is_not_route_escape",
+                "black_heaven_help_marks_debt"
+              ],
+              "add_flags": [
+                "wounded_shelter_dawn_offers_resolved",
+                "route_commitment_reopened",
+                "sapa_route_started",
+                "dowol_debt",
+                "black_heaven_escape_marker"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "도월의 답장은 짧다. 사람을 살린 일에도 값은 붙지만, 값이 붙는다고 모두 거래가 되는 것은 아니다.",
+              "resources": {
+                "hunger": -1,
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "show_archive_map_to_yeon_soha",
+            "label": "연소하에게 피난처 지도의 접힌 부분을 보인다",
+            "outcome": {
+              "add_clues": [
+                "dawn_shelter_keeps_names",
+                "delayed_choice_has_callers",
+                "offers_arrive_because_people_lived"
+              ],
+              "add_flags": [
+                "wounded_shelter_dawn_offers_resolved",
+                "route_commitment_reopened",
+                "cheonggi_return_route_started",
+                "cheonggi_record_targeted",
+                "heavenly_archive_triage_map_seen"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "지도는 길보다 먼저 이름을 기억한다. 연소하는 그 순서가 중요하다고 말하고, 천기록은 여전히 정답 대신 접힌 선만 남긴다.",
+              "resources": {
+                "sanity": -3
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "wounded_shelter_dawn_offers_resolved"
+          ],
+          "locations": [
+            "cheongryu_outer_courtyard"
+          ],
+          "required_flags": [
+            "cheongryu_raid_wounded_fallback_resolved",
+            "route_commitment_deferred",
+            "deferred_route_reopened",
+            "wounded_shelter_stabilized"
+          ]
+        },
+        "id": "wuxia_wounded_shelter_dawn_offers",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "roll_call_then_three_offers",
+              "duration_hint_ms": 1400,
+              "fallback_text": "부상자 명단과 접힌 전서 사이로 '새벽', '부상자', '제안'만 흔들리지 않고 남는다.",
+              "intensity": 0.67,
+              "kind": "glyph_anomaly",
+              "source": "wounded_shelter_dawn_offers",
+              "stable_terms": [
+                "새벽",
+                "부상자",
+                "제안"
+              ]
+            }
+          ],
+          "layout": "deferred_route_offer",
+          "speaker": "서하린",
+          "visual_id": "wuxia_wounded_shelter_dawn_offers"
+        },
+        "title": "부상자 피난처의 새벽 제안"
+      },
+      {
+        "body": "청류문 외원 담장 너머로 흑사방 심부름꾼 하나가 지나간다. 걸음은 거칠지만 팔꿈치가 꺾이는 순간, 장작 마당에서 배운 청류문식 흐름과 너무 닮은 선이 스친다. 그러나 그 흐름은 맑지 않고, 다른 문파의 초식이 덧씌워진 듯 비어 있다. 서하린은 이름을 부르려다 멈추고, 그자는 뒤돌아보지 않은 채 어둠 속으로 사라진다.",
+        "choices": [
+          {
+            "id": "watch_the_stolen_qingliu_flow",
+            "label": "훔쳐 쓴 청류문식 흐름을 끝까지 관찰한다",
+            "outcome": {
+              "add_clues": [
+                "mumyeong_exists",
+                "copied_flow_is_not_qingliu"
+              ],
+              "add_flags": [
+                "mumyeong_first_sighting_resolved",
+                "midgame_continuity_started",
+                "mumyeong_shadow_seen",
+                "copied_qingliu_flow_noted"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "닮았지만 중심이 다르다. 청류문식의 모양은 있으나 흐름을 이해한 흔적은 없고, 훔친 초식이 몸 위에 덧칠처럼 남아 있다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "check_seo_harin_silence",
+            "label": "서하린이 이름을 삼키는 순간을 본다",
+            "outcome": {
+              "add_clues": [
+                "seo_harin_does_not_call_him_traitor",
+                "mumyeong_exists"
+              ],
+              "add_flags": [
+                "mumyeong_first_sighting_resolved",
+                "midgame_continuity_started",
+                "seo_harin_recognized_mumyeong",
+                "mumyeong_wound_thread_opened"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "서하린은 배신자라는 말을 쓰지 않는다. 그 침묵이 이름보다 먼저 상처를 드러내고, 아직 묻지 못한 과거를 남긴다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "follow_black_serpent_runner",
+            "label": "흑사방 심부름꾼의 뒤를 짧게 쫓는다",
+            "outcome": {
+              "add_clues": [
+                "black_serpent_uses_borrowed_flows",
+                "copied_flow_is_not_qingliu"
+              ],
+              "add_flags": [
+                "mumyeong_first_sighting_resolved",
+                "midgame_continuity_started",
+                "black_serpent_trail_marked",
+                "mumyeong_pursuit_risk"
+              ],
+              "danger": 2,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "뒤를 밟는 데는 성공하지만, 흑사방은 일부러 발자국을 남기는 법도 안다. 쫓는 순간부터 이쪽도 관찰당한다.",
+              "resources": {
+                "health": -1,
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "pretend_not_to_see_the_form",
+            "label": "못 본 척하고 외원 순찰을 계속한다",
+            "outcome": {
+              "add_clues": [
+                "not_seeing_is_also_a_choice",
+                "black_serpent_uses_borrowed_flows"
+              ],
+              "add_flags": [
+                "mumyeong_first_sighting_resolved",
+                "midgame_continuity_started",
+                "mumyeong_clue_deferred",
+                "unresolved_rival_debt"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "모른 척한 일도 사라지지 않는다. 다음에 같은 흐름을 보면 더 늦게 알아볼 뿐이고, 늦게 알아본 대가는 언젠가 돌아온다.",
+              "resources": {
+                "sanity": -1
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "mumyeong_first_sighting_resolved"
+          ],
+          "locations": [
+            "cheongryu_outer_courtyard"
+          ],
+          "required_flags": [
+            "route_opener_resolved",
+            "cheongryu_raid_survived",
+            "cheongryu_trial_started",
+            "first_fragment_seen"
+          ]
+        },
+        "id": "wuxia_mumyeong_first_sighting",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "borrowed_form_then_missing_center",
+              "duration_hint_ms": 1450,
+              "fallback_text": "담장 그림자와 낯익은 보법 사이로 '무명', '청류문', '흑사방'만 흔들리지 않고 남는다.",
+              "intensity": 0.73,
+              "kind": "glyph_anomaly",
+              "source": "mumyeong_first_sighting",
+              "stable_terms": [
+                "무명",
+                "청류문",
+                "흑사방"
+              ]
+            }
+          ],
+          "layout": "midgame_rival_sighting",
+          "speaker": "서하린",
+          "visual_id": "wuxia_mumyeong_first_sighting"
+        },
+        "title": "무명 첫 목격"
+      },
+      {
+        "body": "외원 담장 밑에서 다시 그 흐름이 나타난다. 무명은 청류문이 또 외부자를 주워 왔느냐고 묻지만, 말끝에는 조롱보다 피로가 먼저 묻어난다. 서하린은 칼집에 손을 얹고도 이름을 부르지 않는다. 무명의 발끝이 반 보 앞으로 밀려오고, 훔친 청류문식 초식이 비어 있는 중심 위에 번쩍인다.",
+        "choices": [
+          {
+            "id": "meet_mumyeong_head_on",
+            "label": "무명과 정면으로 맞선다",
+            "outcome": {
+              "add_clues": [
+                "mumyeong_is_not_boss_wall",
+                "winning_is_not_required"
+              ],
+              "add_flags": [
+                "mumyeong_first_confrontation_resolved",
+                "mumyeong_rival_thread_opened",
+                "rival_endured_not_defeated"
+              ],
+              "danger": 2,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "정면으로 부딪혔지만 이긴 것은 아니다. 다만 물러서지 않았다는 사실만은 남고, 무명은 그 사실을 기억한다.",
+              "resources": {
+                "health": -2,
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "endure_until_copy_flow_breaks",
+            "label": "버티며 카피한 흐름이 끊기는 순간을 기다린다",
+            "outcome": {
+              "add_clues": [
+                "copy_style_has_gap",
+                "copied_flow_is_not_qingliu"
+              ],
+              "add_flags": [
+                "mumyeong_first_confrontation_resolved",
+                "mumyeong_rival_thread_opened",
+                "copied_flow_weakness_noted"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "훔친 흐름은 빠르지만 오래 가지 않는다. 중심이 돌아오는 순간, 청류문식 모양 아래 비어 있던 틈이 드러난다.",
+              "resources": {
+                "health": -1,
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "watch_seo_harin_hold_back",
+            "label": "서하린이 왜 끼어들지 않는지 살핀다",
+            "outcome": {
+              "add_clues": [
+                "seo_harin_does_not_call_him_traitor",
+                "mumyeong_was_not_only_enemy"
+              ],
+              "add_flags": [
+                "mumyeong_first_confrontation_resolved",
+                "mumyeong_rival_thread_opened",
+                "seo_harin_mumyeong_silence_confirmed"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "서하린은 끼어들 수 있는데도 한 박자 늦춘다. 그 침묵은 망설임이 아니라, 아직 끊어내지 못한 기억에 가깝다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "read_mumyeongs_copied_form",
+            "label": "무명의 초식이 어디서 어긋나는지 읽는다",
+            "outcome": {
+              "add_clues": [
+                "copy_style_has_gap",
+                "understanding_is_not_copying"
+              ],
+              "add_flags": [
+                "mumyeong_first_confrontation_resolved",
+                "mumyeong_rival_thread_opened",
+                "copied_flow_weakness_noted",
+                "cheonggi_copy_contrast_noted"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "같은 선을 그어도 같은 뜻이 되지는 않는다. 훔친 초식과 이해한 흐름은 손끝에서 갈라지고, 천기록의 빈 줄은 그 차이를 조용히 적어 둔다.",
+              "resources": {
+                "sanity": -3
+              }
+            }
+          },
+          {
+            "id": "do_not_provoke_mumyeong",
+            "label": "도발하지 않고 물러설 거리를 만든다",
+            "outcome": {
+              "add_clues": [
+                "winning_is_not_required",
+                "not_provoking_still_leaves_debt"
+              ],
+              "add_flags": [
+                "mumyeong_first_confrontation_resolved",
+                "mumyeong_rival_thread_opened",
+                "rivalry_deferred_not_avoided"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "싸움을 키우지 않는다고 대치가 사라지지는 않는다. 오늘 피한 말은 다음에 더 날카롭게 돌아오고, 무명은 네가 물러선 거리를 기억한다.",
+              "resources": {
+                "sanity": -1
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "mumyeong_first_confrontation_resolved"
+          ],
+          "locations": [
+            "cheongryu_outer_courtyard"
+          ],
+          "required_flags": [
+            "mumyeong_first_sighting_resolved",
+            "midgame_continuity_started",
+            "cheongryu_raid_survived",
+            "first_fragment_seen"
+          ]
+        },
+        "id": "wuxia_mumyeong_first_confrontation",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "copied_flow_breaks_under_pressure",
+              "duration_hint_ms": 1500,
+              "fallback_text": "부딪히는 보법 사이로 '무명', '서하린', '청류문'만 흔들리지 않고 남는다.",
+              "intensity": 0.78,
+              "kind": "glyph_anomaly",
+              "source": "mumyeong_first_confrontation",
+              "stable_terms": [
+                "무명",
+                "서하린",
+                "청류문"
+              ]
+            }
+          ],
+          "layout": "rival_first_confrontation",
+          "speaker": "무명",
+          "visual_id": "wuxia_mumyeong_first_confrontation"
+        },
+        "title": "무명 첫 대치"
+      },
+      {
+        "body": "첫 대치가 끝난 뒤에도 무명의 움직임은 눈꺼풀 안쪽에 남아 있다. 같은 청류문식처럼 보였던 선은 어느 순간 검로처럼 꺾이고, 어느 순간 보법처럼 미끄러지며, 호흡이 어긋나는 짧은 틈마다 몸에 맞지 않는 초식의 반동을 드러낸다.",
+        "choices": [
+          {
+            "id": "read_the_stolen_blade_path",
+            "label": "훔쳐 쓴 검로가 어디서 꺾이는지 읽는다",
+            "outcome": {
+              "add_clues": [
+                "copied_form_family_seen",
+                "copy_is_surface_not_root"
+              ],
+              "add_flags": [
+                "mumyeong_copy_style_reveal_resolved",
+                "copy_style_hint_recorded",
+                "copied_blade_path_noted"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "검로처럼 보이지만 칼끝의 뜻이 이어지지 않는다. 훔친 것은 선이지 중심이 아니며, 무명의 손목은 늦게 반동을 받는다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "watch_mumyeongs_footwork",
+            "label": "무명의 보법이 땅을 밀어내는 방식을 본다",
+            "outcome": {
+              "add_clues": [
+                "copied_form_family_seen",
+                "footwork_without_root_wobbles"
+              ],
+              "add_flags": [
+                "mumyeong_copy_style_reveal_resolved",
+                "copy_style_hint_recorded",
+                "copied_footwork_noted"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "발은 빠르지만 땅을 믿지 않는다. 남의 보법을 얹은 몸은 한 박자 늦게 흔들리고, 그 흔들림이 카피의 경계를 그린다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "listen_for_breath_mismatch",
+            "label": "거리를 두고 호흡이 어긋나는 박자를 듣는다",
+            "outcome": {
+              "add_clues": [
+                "breath_mismatch_marks_copy",
+                "understanding_is_not_copying"
+              ],
+              "add_flags": [
+                "mumyeong_copy_style_reveal_resolved",
+                "copy_style_hint_recorded",
+                "copied_breath_mismatch_noted"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "초식은 따라왔지만 숨은 따라오지 못한다. 그 박자가 청류안에 먼저 걸리고, 천기록은 이해와 복사가 다르다는 문장만 남긴다.",
+              "resources": {
+                "sanity": -1
+              }
+            }
+          },
+          {
+            "id": "wait_for_body_to_shudder",
+            "label": "몸에 맞지 않는 초식이 반동을 내는 순간까지 기다린다",
+            "outcome": {
+              "add_clues": [
+                "copy_is_surface_not_root",
+                "fragment_candidate_variation_foreshadowed"
+              ],
+              "add_flags": [
+                "mumyeong_copy_style_reveal_resolved",
+                "copy_style_hint_recorded",
+                "copy_side_effect_seen"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "무명의 어깨가 아주 짧게 떨린다. 천기록의 빈 줄은 아직 보상을 주지 않지만, 다음 편린의 모양을 기억한다.",
+              "resources": {
+                "health": -1,
+                "sanity": -2
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "mumyeong_copy_style_reveal_resolved"
+          ],
+          "locations": [
+            "cheongryu_outer_courtyard"
+          ],
+          "required_flags": [
+            "mumyeong_first_confrontation_resolved",
+            "mumyeong_rival_thread_opened",
+            "midgame_continuity_started"
+          ]
+        },
+        "id": "wuxia_mumyeong_copy_style_reveal",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "copied_style_then_breath_mismatch",
+              "duration_hint_ms": 1450,
+              "fallback_text": "흩어지는 검로와 어긋난 호흡 사이로 '무명', '청류안', '천기록'만 흔들리지 않고 남는다.",
+              "intensity": 0.76,
+              "kind": "glyph_anomaly",
+              "source": "mumyeong_copy_style_reveal",
+              "stable_terms": [
+                "무명",
+                "청류안",
+                "천기록"
+              ]
+            }
+          ],
+          "layout": "copy_style_analysis",
+          "speaker": "서하린",
+          "visual_id": "wuxia_mumyeong_copy_style_reveal"
+        },
+        "title": "무명의 카피 무공 공개"
+      },
+      {
+        "body": "무명의 카피는 완전한 복사가 아니었다. 겉흐름 사이로 손목을 잠그는 각도, 기혈을 누르는 순서, 물러나는 보폭이 삐져나온다. 천기록의 빈 줄은 그 흔적을 현악문과 복호금쇄수라는 이름 옆에 잠시 멈춰 세운다.",
+        "choices": [
+          {
+            "id": "compare_copied_form_to_old_wound",
+            "label": "카피된 초식과 오래된 상처의 각도를 맞춰 본다",
+            "outcome": {
+              "add_clues": [
+                "hyeonakmun_trace_suspected",
+                "orthodox_control_is_violence"
+              ],
+              "add_flags": [
+                "mumyeong_reads_orthodox_style_resolved",
+                "orthodox_style_trace_recorded",
+                "old_wound_angle_compared"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "손목을 잠그는 각도는 살수의 버릇이 아니라 정파식 통제의 흔적에 가깝다. 현악문이라는 이름이 천기록의 여백에 얇게 걸린다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "trace_qingliu_eye_variation",
+            "label": "청류안 계열의 시선이 어디서 비틀렸는지 추적한다",
+            "outcome": {
+              "add_clues": [
+                "mumyeong_eye_variation_noted",
+                "copy_is_surface_not_root"
+              ],
+              "add_flags": [
+                "mumyeong_reads_orthodox_style_resolved",
+                "orthodox_style_trace_recorded",
+                "qingliu_eye_variation_traced"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "무명은 흐름을 본 뒤 훔쳤고, 너는 흐름을 본 뒤 맞춰 보려 한다. 같은 눈에서 다른 결론이 갈라진다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "reconstruct_mumyeongs_sightline",
+            "label": "무명이 그날 보았을 시선을 따라 재구성한다",
+            "outcome": {
+              "add_clues": [
+                "bokho_geumsaesu_name_recorded",
+                "departure_truth_still_incomplete"
+              ],
+              "add_flags": [
+                "mumyeong_reads_orthodox_style_resolved",
+                "orthodox_style_trace_recorded",
+                "mumyeong_sightline_reconstructed"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "복호금쇄수라는 이름은 떠오르지만, 그 이름이 왜 무명을 청류문 밖으로 밀어냈는지는 아직 한 줄이 비어 있다.",
+              "resources": {
+                "sanity": -3
+              }
+            }
+          },
+          {
+            "id": "stop_before_truth_becomes_accusation",
+            "label": "진실이 추궁이 되기 전에 기록을 덮는다",
+            "outcome": {
+              "add_clues": [
+                "departure_truth_still_incomplete",
+                "understanding_is_not_copying"
+              ],
+              "add_flags": [
+                "mumyeong_reads_orthodox_style_resolved",
+                "orthodox_style_trace_recorded",
+                "truth_accusation_avoided"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "지금 필요한 것은 판결이 아니라 흔적이다. 천기록은 닫혔지만 이름 몇 개는 손끝에 남았다.",
+              "resources": {
+                "sanity": -1
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "mumyeong_reads_orthodox_style_resolved"
+          ],
+          "locations": [
+            "cheongryu_outer_courtyard"
+          ],
+          "required_flags": [
+            "mumyeong_copy_style_reveal_resolved",
+            "copy_style_hint_recorded",
+            "midgame_continuity_started",
+            "first_fragment_seen"
+          ]
+        },
+        "id": "wuxia_mumyeong_reads_orthodox_style",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "orthodox_trace_over_copied_form",
+              "duration_hint_ms": 1500,
+              "fallback_text": "낡은 초식의 선이 접히고, '현악문', '복호금쇄수', '무명'만 먹물처럼 또렷하게 남는다.",
+              "intensity": 0.73,
+              "kind": "glyph_anomaly",
+              "source": "mumyeong_reads_orthodox_style",
+              "stable_terms": [
+                "현악문",
+                "복호금쇄수",
+                "무명"
+              ]
+            }
+          ],
+          "layout": "orthodox_style_trace",
+          "speaker": "천기록",
+          "visual_id": "wuxia_mumyeong_reads_orthodox_style"
+        },
+        "title": "무명의 정파 무공 간파"
+      },
+      {
+        "body": "청류문 마당의 해가 기울자 무명이 다시 나타난다. 그는 싸움을 걸 듯 서 있지만, 시선은 서하린이 서 있던 빈 자리와 천기록의 접힌 모서리를 번갈아 스친다. 현악문과 복호금쇄수라는 이름은 아직 답이 아니라, 서로 모른 척할 수 없게 만든 흠집처럼 남아 있다.",
+        "choices": [
+          {
+            "id": "ask_why_seoharin_never_called_him_traitor",
+            "label": "서하린이 왜 그를 배신자라 부르지 않았는지 묻는다",
+            "outcome": {
+              "add_clues": [
+                "seoharin_does_not_call_mumyeong_traitor",
+                "mumyeong_truth_still_incomplete"
+              ],
+              "add_flags": [
+                "mumyeong_midgame_reunion_resolved",
+                "mumyeong_mirror_thread_deepened",
+                "seoharin_traitor_question_asked"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "무명은 바로 대답하지 않는다. 다만 배신자라는 단어가 나오자 손끝이 먼저 굳고, 서하린이 그 말을 삼킨 이유가 아직 끝난 과거가 아님을 남긴다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "show_the_hyeonakmun_trace_without_accusing",
+            "label": "현악문 흔적을 추궁이 아니라 기록으로 보여 준다",
+            "outcome": {
+              "add_clues": [
+                "hyeonakmun_trace_shared_without_accusation",
+                "boss_used_mumyeongs_wound"
+              ],
+              "add_flags": [
+                "mumyeong_midgame_reunion_resolved",
+                "mumyeong_mirror_thread_deepened",
+                "hyeonakmun_trace_shared_carefully"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "천기록의 접힌 모서리에 현악문이라는 이름을 남기자 무명의 호흡이 한 번 끊긴다. 그는 부정하지 않지만, 그 이름을 누가 이용했는지는 아직 말하지 않는다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "point_out_the_copied_form_gap",
+            "label": "훔친 초식과 이해한 흐름이 갈라지는 틈을 짚는다",
+            "outcome": {
+              "add_clues": [
+                "rival_mirror_relationship_deepened",
+                "copy_is_surface_not_root"
+              ],
+              "add_flags": [
+                "mumyeong_midgame_reunion_resolved",
+                "mumyeong_mirror_thread_deepened",
+                "copied_form_gap_named"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "네가 틈을 짚는 순간 무명의 칼끝도 흔들린다. 서로 다른 방식으로 훔치고 배운 두 사람이 같은 빈틈을 보고 있다는 사실만 선명해진다.",
+              "resources": {
+                "health": -1,
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "keep_blades_low_and_watch_his_answer",
+            "label": "칼끝을 낮추고 대답 대신 반응을 본다",
+            "outcome": {
+              "add_clues": [
+                "mumyeong_truth_still_incomplete",
+                "rival_mirror_relationship_deepened"
+              ],
+              "add_flags": [
+                "mumyeong_midgame_reunion_resolved",
+                "mumyeong_mirror_thread_deepened",
+                "reunion_truth_deferred"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "물음은 미뤄졌지만 대치도 끝나지 않는다. 낮춘 칼끝 너머로 무명은 잠시 서하린이 있던 자리를 보고, 네가 그 시선을 보았다는 사실을 알아챈다.",
+              "resources": {
+                "sanity": -1
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "mumyeong_midgame_reunion_resolved"
+          ],
+          "locations": [
+            "cheongryu_outer_courtyard"
+          ],
+          "required_flags": [
+            "mumyeong_reads_orthodox_style_resolved",
+            "orthodox_style_trace_recorded",
+            "mumyeong_first_confrontation_resolved",
+            "mumyeong_rival_thread_opened"
+          ]
+        },
+        "id": "wuxia_mumyeong_midgame_reunion",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "rival_trace_then_old_wound",
+              "duration_hint_ms": 1500,
+              "fallback_text": "기울어진 마당빛과 접힌 기록 사이로 '무명', '서하린', '현악문'만 오래된 상처처럼 남는다.",
+              "intensity": 0.74,
+              "kind": "glyph_anomaly",
+              "source": "mumyeong_midgame_reunion",
+              "stable_terms": [
+                "무명",
+                "서하린",
+                "현악문"
+              ]
+            }
+          ],
+          "layout": "rival_reunion_trace",
+          "speaker": "무명",
+          "visual_id": "wuxia_mumyeong_midgame_reunion"
+        },
+        "title": "무명 중반 재회"
+      },
+      {
+        "body": "청류문 마당의 소란이 가라앉기도 전에 검은 깃발의 그림자가 문턱에 걸린다. 흑사방주가 한 걸음 들어서자, 천기록의 빈 줄은 이상하게도 아무 해법도 쓰지 않는다. 움직임은 보인다. 사람의 약점을 재는 순서도 보인다. 하지만 몸이 먼저 굳는다.",
+        "choices": [
+          {
+            "id": "read_the_boss_flow_and_fail_to_move",
+            "label": "보스의 흐름을 읽지만 몸이 늦는 것을 인정한다",
+            "outcome": {
+              "add_clues": [
+                "boss_reads_people_not_forms",
+                "boss_is_final_logic_wall"
+              ],
+              "add_flags": [
+                "boss_first_appearance_resolved",
+                "boss_wall_thread_opened",
+                "black_serpent_core_pressure_opened",
+                "boss_flow_read_but_body_lagged"
+              ],
+              "danger": 2,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "흐름은 보인다. 하지만 흑사방주는 초식보다 먼저 사람의 멈칫함을 베어 낸다.",
+              "resources": {
+                "sanity": -3
+              }
+            }
+          },
+          {
+            "id": "pull_seo_harin_behind_broken_gate",
+            "label": "서하린을 부서진 산문 뒤로 물린다",
+            "outcome": {
+              "add_clues": [
+                "qingliu_cannot_outmuscle_boss_yet",
+                "boss_reads_people_not_forms"
+              ],
+              "add_flags": [
+                "boss_first_appearance_resolved",
+                "boss_wall_thread_opened",
+                "black_serpent_core_pressure_opened",
+                "seoharin_protected_from_boss_line"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "서하린은 물러서지만 눈을 피하지 않는다. 보스는 그 작은 움직임까지 이미 계산한 듯 웃는다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "watch_mumyeong_answer_the_boss",
+            "label": "무명이 보스의 말에 어떻게 반응하는지 본다",
+            "outcome": {
+              "add_clues": [
+                "mumyeong_follows_power_that_saw_his_wound",
+                "boss_reads_people_not_forms"
+              ],
+              "add_flags": [
+                "boss_first_appearance_resolved",
+                "boss_wall_thread_opened",
+                "black_serpent_core_pressure_opened",
+                "mumyeong_reacts_to_boss_voice"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "무명은 명령보다 먼저 침묵한다. 그 침묵은 복종이면서, 아직 끊지 못한 상처처럼 보인다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "retreat_before_the_second_step",
+            "label": "두 번째 걸음 전에 물러나 살아남는다",
+            "outcome": {
+              "add_clues": [
+                "boss_is_final_logic_wall",
+                "qingliu_cannot_outmuscle_boss_yet"
+              ],
+              "add_flags": [
+                "boss_first_appearance_resolved",
+                "boss_wall_thread_opened",
+                "black_serpent_core_pressure_opened",
+                "boss_retreat_survival_chosen"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "오늘 넘을 벽이 아니라는 사실을 인정하는 것도 선택이다. 천기록은 그 후퇴를 비겁함이라 적지 않는다.",
+              "resources": {
+                "sanity": -1
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "boss_first_appearance_resolved"
+          ],
+          "locations": [
+            "cheongryu_outer_courtyard"
+          ],
+          "required_flags": [
+            "mumyeong_midgame_reunion_resolved",
+            "mumyeong_mirror_thread_deepened",
+            "cheongryu_raid_survived",
+            "midgame_continuity_started"
+          ]
+        },
+        "id": "wuxia_boss_first_appearance",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "boss_pressure_reads_weakness",
+              "duration_hint_ms": 1600,
+              "fallback_text": "검은 깃발의 그림자 속에서도 '흑사방주', '무명', '청류문'만 칼끝처럼 또렷하게 남는다.",
+              "intensity": 0.82,
+              "kind": "glyph_anomaly",
+              "source": "boss_first_appearance",
+              "stable_terms": [
+                "흑사방주",
+                "무명",
+                "청류문"
+              ]
+            }
+          ],
+          "layout": "boss_wall_pressure",
+          "speaker": "흑사방주",
+          "visual_id": "wuxia_boss_first_appearance"
+        },
+        "title": "보스 첫 등장"
+      },
+      {
+        "body": "흑사방주의 그림자가 물러난 뒤에도 청류문 마당의 공기는 무겁다. 천기록의 빈 줄 옆에 오래된 객잔 이름과 반쯤 찢긴 서찰 봉인이 겹쳐 보인다. 무명은 배신자가 되기 전에 살릴 방법을 찾았고, 정파의 문턱은 그를 여러 번 돌려보낸 듯하다.",
+        "choices": [
+          {
+            "id": "search_the_rejected_aid_letters",
+            "label": "거절당한 도움 요청 서찰을 찾아 읽는다",
+            "outcome": {
+              "add_clues": [
+                "mumyeong_tried_to_save_qingliu",
+                "orthodox_refusal_broke_mumyeong"
+              ],
+              "add_flags": [
+                "mumyeong_request_for_aid_resolved",
+                "mumyeong_failed_aid_thread_opened",
+                "orthodox_hypocrisy_thread_opened",
+                "rejected_aid_letters_read"
+              ],
+              "add_items": [
+                "rejected_aid_letter_fragment"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "서찰에는 도움을 청한 말보다 거절의 예법이 더 길게 남아 있다. 무명은 청류문을 버리기 전에 먼저 붙잡으려 했다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "follow_old_inn_rumors_about_mumyeong",
+            "label": "객잔에 남은 무명 소문을 좇는다",
+            "outcome": {
+              "add_clues": [
+                "boss_logic_found_mumyeongs_wound",
+                "orthodox_refusal_broke_mumyeong"
+              ],
+              "add_flags": [
+                "mumyeong_request_for_aid_resolved",
+                "mumyeong_failed_aid_thread_opened",
+                "orthodox_hypocrisy_thread_opened",
+                "inn_rumor_thread_followed"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "사람들은 그가 떠난 날보다 문전박대당한 밤을 더 작게 말한다. 보스는 그 작게 말해진 상처를 먼저 알아본 쪽이었다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "ask_seo_harin_what_help_never_came",
+            "label": "서하린에게 오지 않았던 도움을 묻는다",
+            "outcome": {
+              "add_clues": [
+                "seoharin_does_not_know_failed_aid",
+                "aid_refusal_precedes_departure_truth"
+              ],
+              "add_flags": [
+                "mumyeong_request_for_aid_resolved",
+                "mumyeong_failed_aid_thread_opened",
+                "orthodox_hypocrisy_thread_opened",
+                "seoharin_failed_aid_question_asked"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "서하린은 그 서찰을 본 적이 없다고 말한다. 그 무지가 오히려 오래된 상처의 모양을 만든다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "keep_the_failed_aid_record_unshown",
+            "label": "실패한 도움 요청 기록을 아직 보여주지 않는다",
+            "outcome": {
+              "add_clues": [
+                "aid_refusal_precedes_departure_truth",
+                "mumyeong_tried_to_save_qingliu"
+              ],
+              "add_flags": [
+                "mumyeong_request_for_aid_resolved",
+                "mumyeong_failed_aid_thread_opened",
+                "orthodox_hypocrisy_thread_opened",
+                "failed_aid_record_kept_unshown"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "기록은 접어 둔다. 오늘 밝히지 않는 진실도, 언젠가 누군가를 살릴 수 있다.",
+              "resources": {
+                "sanity": -1
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "mumyeong_request_for_aid_resolved"
+          ],
+          "locations": [
+            "cheongryu_outer_courtyard"
+          ],
+          "required_flags": [
+            "boss_first_appearance_resolved",
+            "boss_wall_thread_opened",
+            "black_serpent_core_pressure_opened",
+            "mumyeong_mirror_thread_deepened",
+            "orthodox_style_trace_recorded",
+            "midgame_continuity_started"
+          ]
+        },
+        "id": "wuxia_mumyeong_request_for_aid",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "sealed_letters_then_closed_gates",
+              "duration_hint_ms": 1500,
+              "fallback_text": "접힌 서찰의 먹물 사이로 '무명', '청류문', '정파'만 문전박대의 도장처럼 남는다.",
+              "intensity": 0.76,
+              "kind": "glyph_anomaly",
+              "source": "mumyeong_rejected_aid",
+              "stable_terms": [
+                "무명",
+                "청류문",
+                "정파"
+              ]
+            }
+          ],
+          "layout": "failed_aid_records",
+          "speaker": "천기록",
+          "visual_id": "wuxia_mumyeong_request_for_aid"
+        },
+        "title": "무명의 도움 요청"
       }
     ],
     "endings": [
@@ -1087,6 +2521,18 @@
           "wuxia_preview"
         ],
         "type": "quest"
+      },
+      {
+        "description": "무명이 청류문을 살리려 정파 문파에 보냈으나 돌아온 도움 요청 서찰의 찢긴 조각.",
+        "id": "rejected_aid_letter_fragment",
+        "name": "거절당한 도움 요청 서찰 조각",
+        "tags": [
+          "mumyeong",
+          "orthodox_refusal",
+          "failed_aid",
+          "wuxia_preview"
+        ],
+        "type": "clue"
       }
     ],
     "locations": [
@@ -1155,9 +2601,9 @@
   "manifest": {
     "counts": {
       "achievements": 2,
-      "encounters": 8,
+      "encounters": 19,
       "endings": 1,
-      "items": 3,
+      "items": 4,
       "locations": 4,
       "secrets": 0
     },

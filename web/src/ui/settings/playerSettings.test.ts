@@ -49,7 +49,7 @@ describe('player settings persistence', () => {
     expect(loadPlayerSettings(storage)).toEqual(settings);
     expect(storage.getItem(PLAYER_SETTINGS_KEY)).toContain('"audio":"on"');
     expect(storage.getItem(PLAYER_SETTINGS_KEY)).toContain('"motion":"reduced"');
-    expect(storage.getItem('escape-office.rust.save.v1')).toBeNull();
+    expect(storage.getItem('igu-hakji.rust.save.v1')).toBeNull();
   });
 
   it('falls back to safe defaults for corrupt or unsupported settings', () => {

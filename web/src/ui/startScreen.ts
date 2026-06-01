@@ -2,9 +2,10 @@ import { escapeHtml } from './storybook/html';
 import { DEFAULT_PLAYER_SETTINGS, PLAYER_SETTINGS_KEY, type PlayerSettings } from './settings/playerSettings';
 
 export const LEGACY_SAVE_KEY = 'escape-office.save.v1';
-export const RUST_SAVE_KEY = 'escape-office.rust.save.v1';
-export const SETTINGS_KEY = 'escape-office.settings.v1';
-export const LAST_RUN_SUMMARY_KEY = 'escape-office.last-run-summary.v1';
+export const OFFICE_RUST_SAVE_KEY = 'escape-office.rust.save.v1';
+export const RUST_SAVE_KEY = 'igu-hakji.rust.save.v1';
+export const SETTINGS_KEY = 'igu-hakji.settings.v1';
+export const LAST_RUN_SUMMARY_KEY = 'igu-hakji.last-run-summary.v1';
 
 const SUMMARY_SCHEMA_VERSION = 1;
 
@@ -50,7 +51,7 @@ interface RawStatePreview {
 export function renderStartScreen(model: StartScreenModel): string {
   const settings = model.settings ?? DEFAULT_PLAYER_SETTINGS;
   const continueDisabled = model.summary ? '' : ' disabled';
-  const saveText = model.summary ? renderSummary(model.summary) : '<p class="start-save-empty">저장된 run 없음</p>';
+  const saveText = model.summary ? renderSummary(model.summary) : '<p class="start-save-empty">저장된 모험 없음</p>';
   const warning = model.warning
     ? `<p class="start-save-warning" role="status">${escapeHtml(model.warning)}</p>`
     : '';
@@ -58,28 +59,37 @@ export function renderStartScreen(model: StartScreenModel): string {
   const previewPanel = renderStorypackPreviewPanel(model.storypackPreviews ?? []);
 
   return `
-<main class="storybook-shell storybook-start" data-app="escape-office" data-renderer="web-storybook" data-player-screen="start">
-  <section class="start-card" aria-label="게임 시작">
-    <p class="start-kicker">WEB PLAYER · RUST/WASM GAMECORE</p>
-    <h1>ESCAPE FROM THE OFFICE</h1>
-    <p class="start-copy">주소만 열면 바로 시작되는 회사-아포칼립스 생존 기록입니다. 저장은 이 브라우저의 localStorage에만 남습니다.</p>
-    ${warning}
-    <div class="start-save-panel" data-save-key="${RUST_SAVE_KEY}" data-summary-key="${LAST_RUN_SUMMARY_KEY}">
-      <h2>격리 run</h2>
-      ${saveText}
+<main class="storybook-shell storybook-start" data-app="tui-adv" data-renderer="web-storybook" data-player-screen="start">
+  <section class="start-hero" aria-label="게임 시작">
+    <img class="start-hero-image" src="/assets/intro-main.png" alt="" aria-hidden="true" />
+    <div class="start-logo-lockup">
+      <h1>모험가 이야기</h1>
+      <p>LIFE IN ADVENTURE</p>
     </div>
-    ${renderSettingsPanel(settings)}
-    <label class="start-seed-label">
-      <span>Seed</span>
-      <input name="seed" type="number" inputmode="numeric" value="${escapeHtml(String(model.defaultSeed))}" />
-    </label>
-    <div class="start-actions">
-      <button type="button" class="start-primary" data-player-action="continue"${continueDisabled}>이어하기</button>
-      <button type="button" data-player-action="new-game">새 게임</button>
-      <button type="button" data-player-action="reset-save"${continueDisabled}>저장 초기화</button>
-    </div>
-    ${previewPanel}
-    ${confirmation}
+    <section class="start-menu-drawer" data-start-menu-open="false">
+      <button type="button" class="start-tap-button" data-player-action="open-start-menu">TAP TO START</button>
+      <div class="start-menu-panel">
+        <p class="start-kicker">WEB PLAYER · RUST/WASM GAMECORE</p>
+        <p class="start-copy">출근복 그대로 강호에 떨어지는 이구학지 본편입니다. 저장은 이 기기에만 남습니다.</p>
+        ${warning}
+        <div class="start-save-panel" data-save-key="${RUST_SAVE_KEY}" data-summary-key="${LAST_RUN_SUMMARY_KEY}">
+          <h2>모험 기록</h2>
+          ${saveText}
+        </div>
+        <label class="start-seed-label">
+          <span>Seed</span>
+          <input name="seed" type="number" inputmode="numeric" value="${escapeHtml(String(model.defaultSeed))}" />
+        </label>
+        <div class="start-actions">
+          <button type="button" class="start-primary" data-player-action="continue"${continueDisabled}>이어하기</button>
+          <button type="button" data-player-action="new-game">새 모험</button>
+          <button type="button" data-player-action="reset-save"${continueDisabled}>기록 삭제</button>
+        </div>
+        ${previewPanel}
+        ${renderSettingsPanel(settings)}
+        ${confirmation}
+      </div>
+    </section>
   </section>
 </main>`.trim();
 }
@@ -100,20 +110,20 @@ function renderStorypackPreviewPanel(options: StorypackPreviewStartOption[]): st
 
   return `<section class="start-preview-panel" data-storypack-preview-list="true" aria-label="Storypack preview">
     <h2>Storypack preview</h2>
-    <p class="start-preview-copy">기본 office run과 저장 키를 바꾸지 않는 명시적 preview입니다.</p>
+    <p class="start-preview-copy">현재 기본 storypack과 분리해 별도 세계관을 시험합니다.</p>
     <ul>${rows}</ul>
   </section>`;
 }
 
 function renderSettingsPanel(settings: PlayerSettings): string {
   const audioPressed = settings.audio === 'on' ? 'true' : 'false';
-  const audioLabel = settings.audio === 'on' ? 'Audio on' : 'Audio muted';
+  const audioLabel = settings.audio === 'on' ? '소리 켜짐' : '소리 꺼짐';
   const motionPressed = settings.motion === 'auto' ? 'false' : 'true';
-  const motionLabel = `Motion ${settings.motion}`;
+  const motionLabel = `연출 ${settings.motion}`;
 
   return `<section class="start-settings-panel" aria-label="플레이어 설정" data-settings-key="${PLAYER_SETTINGS_KEY}">
       <h2>연출 설정</h2>
-      <p class="start-settings-copy">소리와 움직임은 이 브라우저에만 저장됩니다. Audio는 사용자가 켠 뒤에만 시작합니다.</p>
+      <p class="start-settings-copy">소리와 움직임은 이 브라우저에만 저장됩니다.</p>
       <div class="start-settings-actions">
         <button type="button" data-player-action="toggle-audio" aria-pressed="${audioPressed}">${audioLabel}</button>
         <button type="button" data-player-action="cycle-motion" aria-pressed="${motionPressed}">${motionLabel}</button>
@@ -162,6 +172,7 @@ export function writeRunSummary(storage: StorageLike, stateJson: string, savedAt
 
 export function clearPlayerSaves(storage: StorageLike): void {
   storage.removeItem(RUST_SAVE_KEY);
+  storage.removeItem(OFFICE_RUST_SAVE_KEY);
   storage.removeItem(LEGACY_SAVE_KEY);
   storage.removeItem(LAST_RUN_SUMMARY_KEY);
 }

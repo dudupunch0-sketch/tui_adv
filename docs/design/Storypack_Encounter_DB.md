@@ -2,7 +2,7 @@
 
 Status: 설계 문서
 
-이 문서는 `tui_adv`의 스토리팩 후보와 랜덤 인카운터 상황을 DB처럼 축적하고, 나중에 검증된 일부만 런타임 콘텐츠로 승격하기 위한 설계 기준이다. `escape from the office`는 현재 기본 storypack이지만, 이 DB는 office가 아닌 세계관도 같은 엔진 계약으로 다루기 위해 확장한다.
+이 문서는 `tui_adv`의 스토리팩 후보와 랜덤 인카운터 상황을 DB처럼 축적하고, 나중에 검증된 일부만 런타임 콘텐츠로 승격하기 위한 설계 기준이다. 현재 Web/terminal default storypack은 `wuxia_jianghu_pack` / **이구학지 — 천기록**이며, `escape from the office` office isolation content는 legacy/parity storypack으로 유지한다. 이 DB는 office가 아닌 세계관도 같은 엔진 계약으로 다루기 위해 확장한다.
 
 핵심 방향은 다음이다.
 
@@ -16,7 +16,7 @@ Status: 설계 문서
 2026-05-29 / 2026-05-31 갱신:
 
 - Storypack은 이제 office 내부 변주만이 아니라 `world_id`를 가진 세계관 단위 후보를 포함한다.
-- 기본 world/storypack은 `office_apocalypse` / `isolation_pack` 계열이다.
+- 기본 world/storypack은 `wuxia_jianghu` / `wuxia_jianghu_pack`이다. `office_apocalypse` / `isolation_pack` 계열은 legacy/parity runtime 후보로 유지한다.
 - 추가 office-family 후보는 `office_dream` / `yageunmong_pack`이다. 이 후보는 회사 자각몽/악몽/각성편린/퇴근 게이트 premise를 보존하되, 기본 office runtime을 대체하지 않는다.
 - 첫 비-office 기준팩은 `wuxia_jianghu` / `wuxia_jianghu_pack`이며, 최신 canonical story는 **이구학지 — 천기록**이다. 이전 generic 무협 placeholder는 superseded로 본다.
 - 2026-06-01 Notion live check 이후 `이구학지` parent page는 synopsis/초기 기획이고, 하위 관리 문서와 `09. 이구학지 사건 카드 DB` / `10. 이구학지 후일담 카드 DB`가 최신 세부 운영 기준이다. Repo DB와 runtime 승격은 Notion DB row를 직접 가져오지 않고, `docs/dev/Notion_Design_Coverage.md`의 mapping과 canonical content docs를 먼저 통과한다.
@@ -61,7 +61,7 @@ Status: 설계 문서
 | `resolution_pressure` | 결말 직전 압박 | 선택의 대가, NPC 운명, 엔딩 조건 |
 
 모든 storypack record와 encounter situation card는 최소 하나의 phase에 연결되어야 한다.
-단, phase 이름은 world-specific 확장을 허용한다. 기본 office storypack은 `opening_absence` 같은 기존 phase를 쓰고, 야근몽은 `late_night_sleep`, `lucid_dream_awareness`, `reality_anchor_collection`, `clockout_gate_refusal` 같은 office-dream phase를 쓸 수 있다. 이구학지 무협팩은 `commute_rift`, `market_arrival`, `first_brawl`, `cheongryu_apprenticeship`, `cheonggi_record_awakening`처럼 storypack-specific phase를 쓸 수 있다.
+단, phase 이름은 world-specific 확장을 허용한다. legacy office storypack은 `opening_absence` 같은 기존 phase를 쓰고, 야근몽은 `late_night_sleep`, `lucid_dream_awareness`, `reality_anchor_collection`, `clockout_gate_refusal` 같은 office-dream phase를 쓸 수 있다. 이구학지 무협팩은 `commute_rift`, `market_arrival`, `first_brawl`, `cheongryu_apprenticeship`, `cheonggi_record_awakening`처럼 storypack-specific phase를 쓸 수 있다.
 
 ### 3.2 Deck 계층
 
@@ -254,7 +254,7 @@ promotion_notes: runtime 승격 시 messenger UI presentation metadata를 붙인
 사람용 후보 문서는 설명/톤/해설을 보존하고, 참조 무결성 검사는 별도 JSON mirror에서 수행한다.
 
 - `docs/content/storypack_db/storypacks.json`: `StorypackRecord` 후보 목록. 현재 `isolation_pack`, `yageunmong_pack`, `wuxia_jianghu_pack`를 포함한다.
-- `docs/content/storypack_db/encounter_situations.json`: `EncounterSituationCard` 후보 목록. 현재 `isolation_pack` 6개, `yageunmong_pack` 6개, `wuxia_jianghu_pack` 9개, 총 21개 repo 후보 카드를 포함한다. Notion 사건 카드 DB 26개 row는 upstream design source이며, 이 mirror에 자동으로 전부 추가하지 않는다.
+- `docs/content/storypack_db/encounter_situations.json`: `EncounterSituationCard` 후보 목록. 현재 `isolation_pack` 6개, `yageunmong_pack` 6개, `wuxia_jianghu_pack` 19개, 총 31개 repo 후보 카드를 포함한다. Notion 사건 카드 DB 26개 row는 upstream design source이며, 이 mirror에 자동으로 전부 추가하지 않는다.
 - `src/tui_adv/game/storypack_db.py`: `load_storypack_db(root)`와 `validate_storypack_db(root)`를 제공한다.
 - `tests/test_storypack_db.py`: office isolation / office dream / wuxia 후보 카드가 같은 DB에서 로드되고, `storypack_id`/`world_id`/taxonomy/fallback/outcome hook 계약을 검증한다.
 
@@ -262,10 +262,14 @@ promotion_notes: runtime 승격 시 messenger UI presentation metadata를 붙인
 
 2026-05-31 후속 결정:
 
-- `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback` preview는 완료했다.
+- `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price` preview는 완료했다.
+- `wuxia_heavenly_archive_previous_outsiders`, `wuxia_wounded_shelter_dawn_offers`, `wuxia_mumyeong_first_sighting`, `wuxia_mumyeong_first_confrontation`, `wuxia_mumyeong_copy_style_reveal`, `wuxia_mumyeong_reads_orthodox_style`, `wuxia_mumyeong_midgame_reunion`, `wuxia_boss_first_appearance` preview도 완료했다.
 - 이 preview runtime content는 `storypack_preview` bundle에만 들어가며, 기본 office runtime과 `src/tui_adv/data/*.yaml`에는 직접 섞지 않는다.
 - `preview launcher/UI wiring`은 explicit opt-in entrypoint로 구현했다. 후속 content slice에서 다시 열지 않는다.
-- route opener docs-only handoff에서 첫 승격 후보를 정파 opener `wuxia_baekdo_medicine_debt`로 결정했다. 이 후보는 `righteous_route_started` + `cheongryu_rebuild_thread`만 eligibility로 요구하고, direct `baekdo_alliance_debt`와 deferred `baekdo_medicine_debt`는 flavor hook으로만 사용한다.
+- 첫 정파 route opener `wuxia_baekdo_medicine_debt`는 `righteous_route_started` + `cheongryu_rebuild_thread`만 eligibility로 요구하고, direct `baekdo_alliance_debt`와 deferred `baekdo_medicine_debt`는 flavor hook으로만 사용해 구현 완료했다. 첫 사파 route opener `wuxia_black_heaven_escape_price`도 `sapa_route_started` + `dowol_debt`만 eligibility로 요구하고, direct `black_heaven_deal_marked`와 deferred `black_heaven_escape_marker`는 flavor hook으로만 사용해 구현 완료했다. 첫 천기·귀환 route opener `wuxia_heavenly_archive_previous_outsiders`도 `cheonggi_return_route_started` + `cheonggi_record_targeted`만 eligibility로 요구하고, direct `heavenly_archive_contact`와 deferred `heavenly_archive_triage_map_seen`는 flavor hook으로만 사용해 구현 완료했다. Deferred-offer card `wuxia_wounded_shelter_dawn_offers`도 `cheongryu_raid_wounded_fallback_resolved` + `route_commitment_deferred` + `deferred_route_reopened` + `wounded_shelter_stabilized`만 eligibility로 요구하고, `survivor_roll_call_complete`와 `route_delay_cost_recorded`는 flavor hook으로만 사용해 구현 완료했다. Common midgame bridge `wuxia_mumyeong_first_sighting`는 `route_midgame_continuity_after_wounded_shelter` handoff 결과로 세 route opener outcome의 `route_opener_resolved`를 fan-in flag로 사용해 구현 완료했다. Rival confrontation `wuxia_mumyeong_first_confrontation`는 `wuxia_mumyeong_first_confrontation_after_sighting` handoff 결과로 구현 완료했다.
+- `wuxia_mumyeong_followup_after_first_confrontation` handoff는 다음 runtime 후보를 `wuxia_mumyeong_copy_style_reveal`로 결정했고, 카피 무공 공개는 기존 encounter schema로 구현 완료했다.
+- `wuxia_mumyeong_followup_after_copy_style_reveal` handoff는 다음 runtime 후보를 `wuxia_mumyeong_reads_orthodox_style`로 결정했고, 현악문/복호금쇄수 clue는 기존 encounter schema로 구현 완료했다.
+- `wuxia_mumyeong_followup_after_orthodox_style_trace` handoff는 다음 runtime 후보를 `wuxia_mumyeong_midgame_reunion`으로 결정했고, 중반 재회는 기존 encounter schema로 구현 완료했다. `wuxia_mumyeong_followup_after_midgame_reunion` handoff는 다음 runtime 후보를 `wuxia_boss_first_appearance`로 결정했고, 보스 첫 등장은 기존 encounter schema로 구현 완료했다. `wuxia_boss_followup_after_first_appearance` handoff는 다음 runtime 후보를 `wuxia_mumyeong_request_for_aid`로 결정했고, 무명의 도움 요청 실패 기록도 기존 encounter schema로 구현 완료했다. 다음 `wuxia_mumyeong_followup_after_failed_aid` handoff에서도 boss combat/final boss resolution, 무명 이탈 진실 정리, 청류문 습격 full flashback, post-opener any-of condition, route graph, faction reputation, debt/relation/combat/random copy-style/reward schema는 바로 열지 않는다.
 - 필요한 신규 설계는 encounter/choice/outcome 수준으로 제한한다. 새 combat/reward/ability schema, 천외편린 3택 reward schema, faction route graph schema는 별도 slice 전까지 열지 않는다.
 
 2026-06-01 Notion sync 결정:

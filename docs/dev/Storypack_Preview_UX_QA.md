@@ -122,15 +122,16 @@ Do not treat that as a product failure by itself. It only means the QA session d
 
 ## Pass findings
 
-- Preview mode is explicit opt-in.
-  - Terminal `--scene content` requires either `--content-bundle` or `--storypack-preview`.
+- Historical preview mode was explicit opt-in; current main/default storypack is 이구학지.
+  - Terminal `--scene content` now defaults to the built-in `wuxia_jianghu_pack` fixture when no bundle is provided.
+  - `--content-bundle` remains the explicit override for legacy office fixtures.
   - Unsupported preview ids fail with an available-id message.
-  - Web start screen has a separate Storypack preview panel and `start-storypack-preview:wuxia_jianghu_pack` player action.
-- Default office play was not contaminated by wuxia preview.
+  - Web start screen no longer needs a separate 이구학지 preview launcher because 이구학지가 default storypack이다.
+- Legacy office play remains available by explicit bundle path and is not contaminated by wuxia default play.
   - Terminal office content starts at `dev_desk` with `퇴사자의 메신저`.
-  - Web default generated bundle direct smoke starts at `dev_desk` and works with generated `wasm-pkg`.
+  - Legacy office generated bundle direct smoke starts at `dev_desk` and works with generated `wasm-pkg`.
   - Source guard: `new-game` and `continue` pass `storypackPreview: null`; preview saves are not written to the office save key.
-- Terminal `wuxia_jianghu_pack` preview entrypoint works.
+- Terminal `wuxia_jianghu_pack` default/explicit entrypoint works.
   - Start location: `wuxia_commute_rift`
   - First title: `출근길 균열`
   - Stable terms: `사원증 / 출근복 / 천기록`
@@ -181,8 +182,8 @@ Do not treat that as a product failure by itself. It only means the QA session d
 
 ## UX constraints to preserve
 
-- Preview must remain explicit opt-in.
-- Default office new game, continue, save summary, and save key must not be changed by preview play.
+- 이구학지는 Web/terminal default storypack이다.
+- Legacy office play, continue, save summary, and save key must not be changed by 이구학지 play.
 - Preview play must not write office save state.
 - Stable action ids are a cross-surface contract for terminal, Web, tests, and future QA automation.
 - Cheonggi record is not a search box, chatbot, universal answer machine, or instant reward UI.

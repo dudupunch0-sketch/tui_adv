@@ -4,8 +4,8 @@
 
 ## 프로젝트 성격
 
-- 한국어 storypack/world 기반 선택지 생존 게임 프로젝트다. 현재 기본 storypack은 회사-아포칼립스(`escape from the office`)지만, 엔진/renderer/문서 설계는 office 전용으로 고정하지 않는다.
-- 첫 비-office 기준 storypack은 `wuxia_jianghu_pack`이며, 최신 canonical story는 현대 회사원이 본인 몸과 출근복장 그대로 무협 세계에 전이되는 **이구학지 — 천기록**이다. 이전 generic 무협 placeholder는 superseded로 보고, 새 시스템은 가능하면 office surface와 무협 surface 양쪽에서 설명 가능한 형태로 설계한다.
+- 한국어 storypack/world 기반 선택지 생존 게임 프로젝트다. 현재 메인/default storypack은 `wuxia_jianghu_pack` / **이구학지 — 천기록**이다. 전제는 현대 회사원이 본인 몸과 출근복장 그대로 무협 세계에 전이되는 것이다.
+- 회사-아포칼립스(`escape from the office`)는 기존 기준팩/legacy content로 남아 있지만, 새 UI/UX와 Web player 기본 경로는 이구학지를 우선한다. 엔진/renderer/문서 설계는 특정 세계관에 고정하지 않고, office surface와 무협 surface 양쪽에서 설명 가능한 형태를 유지한다.
 - 시각 정체성은 TUI/fake-terminal 분위기를 유지하되, 현재 활성 방향은 Web Storybook + GlyphFX primary UX와 SuperLightTUI terminal-native horror edition이다.
 - 특수 효과는 Web Storybook의 Canvas/GlyphFX와 SuperLightTUI terminal cell/GlyphFX 쪽으로 흡수한다. 기존 browser fake-TUI는 legacy/parity fallback으로만 취급한다.
 - 실제 사용자의 메모/사적 노트는 공개 산출물로 옮기지 않는다.

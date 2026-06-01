@@ -1,5 +1,6 @@
 use escape_core::{
-    index_content_bundle, load_content_bundle, ContentBundleError, ContentIndexError,
+    index_content_bundle, load_content_bundle, new_game_from_content_at, scene_page_from_content,
+    ContentBundleError, ContentIndexError,
 };
 use serde_json::json;
 
@@ -110,6 +111,20 @@ fn content_bundle_loads_optional_storypack_preview_runtime_metadata() {
 }
 
 #[test]
+fn wuxia_scene_page_uses_storybook_chapter_label() {
+    let bundle =
+        load_content_bundle(WUXIA_PREVIEW_BUNDLE).expect("wuxia preview bundle should load");
+    let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
+    let state = new_game_from_content_at(123, &index, "wuxia_commute_rift")
+        .expect("wuxia content-backed game should start");
+
+    let page = scene_page_from_content(&state, &index).expect("scene page should render");
+
+    assert_eq!(page.location.id, "wuxia_commute_rift");
+    assert_eq!(page.chapter_label, "천기록 1쪽");
+}
+
+#[test]
 fn fixture_content_bundle_indexes_locations_and_encounters() {
     let bundle = load_content_bundle(CONTENT_BUNDLE).expect("content bundle should load");
     let index = index_content_bundle(&bundle).expect("content bundle should index");
@@ -195,13 +210,13 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.storypack_id, "wuxia_jianghu_pack");
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&4));
-    assert_eq!(bundle.manifest.counts.get("items"), Some(&3));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&8));
+    assert_eq!(bundle.manifest.counts.get("items"), Some(&4));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&19));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 4);
-    assert_eq!(index.encounters_len(), 8);
+    assert_eq!(index.encounters_len(), 19);
 
     let market = index
         .location("jianghu_market_street")
@@ -555,6 +570,572 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     );
     assert_eq!(
         stabilize.outcome.destination_id.as_deref(),
+        Some("cheongryu_outer_courtyard")
+    );
+
+    let baekdo_debt = index
+        .encounter("wuxia_baekdo_medicine_debt")
+        .expect("baekdo medicine debt route opener encounter");
+    assert_eq!(baekdo_debt.title, "백도맹 약상자와 청류문의 채무");
+    assert_eq!(
+        baekdo_debt.conditions.locations,
+        vec!["cheongryu_outer_courtyard"]
+    );
+    assert_eq!(
+        baekdo_debt.conditions.required_flags,
+        vec!["righteous_route_started", "cheongryu_rebuild_thread"]
+    );
+    assert_eq!(
+        baekdo_debt.conditions.forbidden_flags,
+        vec!["baekdo_medicine_debt_resolved"]
+    );
+    let baekdo_presentation = baekdo_debt
+        .presentation
+        .as_ref()
+        .expect("baekdo route opener presentation");
+    assert_eq!(
+        baekdo_presentation.layout.as_deref(),
+        Some("righteous_route_opener")
+    );
+    assert_eq!(baekdo_presentation.speaker.as_deref(), Some("남궁서윤"));
+    assert_eq!(
+        baekdo_presentation.effect_cues[0].stable_terms,
+        vec!["약상자", "백도맹", "채무"]
+    );
+    assert_eq!(baekdo_debt.choices.len(), 4);
+    let accept_debt = baekdo_debt
+        .choices
+        .iter()
+        .find(|choice| choice.id == "accept_medicine_with_written_debt")
+        .expect("fallback written debt choice");
+    assert_eq!(
+        accept_debt.outcome.add_flags,
+        vec![
+            "baekdo_medicine_debt_resolved",
+            "righteous_route_opened",
+            "route_opener_resolved",
+            "white_path_debt_recorded",
+            "cheongryu_rebuild_supplies_secured",
+            "namgung_seoyun_notice"
+        ]
+    );
+    assert_eq!(
+        accept_debt.outcome.add_clues,
+        vec![
+            "medicine_has_banner",
+            "white_path_help_has_price",
+            "qingliu_survival_needs_outside_help"
+        ]
+    );
+    assert_eq!(
+        accept_debt.outcome.destination_id.as_deref(),
+        Some("cheongryu_outer_courtyard")
+    );
+
+    let black_heaven = index
+        .encounter("wuxia_black_heaven_escape_price")
+        .expect("black heaven route opener encounter");
+    assert_eq!(black_heaven.title, "흑천련 탈출로의 값");
+    assert_eq!(
+        black_heaven.conditions.locations,
+        vec!["cheongryu_outer_courtyard"]
+    );
+    assert_eq!(
+        black_heaven.conditions.required_flags,
+        vec!["sapa_route_started", "dowol_debt"]
+    );
+    assert_eq!(
+        black_heaven.conditions.forbidden_flags,
+        vec!["black_heaven_escape_price_resolved"]
+    );
+    let black_heaven_presentation = black_heaven
+        .presentation
+        .as_ref()
+        .expect("black heaven route opener presentation");
+    assert_eq!(
+        black_heaven_presentation.layout.as_deref(),
+        Some("sapa_route_opener")
+    );
+    assert_eq!(black_heaven_presentation.speaker.as_deref(), Some("도월"));
+    assert_eq!(
+        black_heaven_presentation.effect_cues[0].stable_terms,
+        vec!["탈출로", "흑천련", "값"]
+    );
+    assert_eq!(black_heaven.choices.len(), 4);
+    let accept_marker = black_heaven
+        .choices
+        .iter()
+        .find(|choice| choice.id == "accept_dowol_marker_for_safehouse")
+        .expect("fallback black heaven marker choice");
+    assert_eq!(
+        accept_marker.outcome.add_flags,
+        vec![
+            "black_heaven_escape_price_resolved",
+            "sapa_route_opened",
+            "route_opener_resolved",
+            "black_heaven_safehouse_marked",
+            "market_route_debt_recorded"
+        ]
+    );
+    assert_eq!(
+        accept_marker.outcome.add_clues,
+        vec![
+            "black_heaven_help_marks_debt",
+            "survival_bargain_is_not_loyalty"
+        ]
+    );
+    assert_eq!(
+        accept_marker.outcome.destination_id.as_deref(),
+        Some("cheongryu_outer_courtyard")
+    );
+
+    let heavenly_archive = index
+        .encounter("wuxia_heavenly_archive_previous_outsiders")
+        .expect("heavenly archive route opener encounter");
+    assert_eq!(heavenly_archive.title, "천기각 이전 이방인 기록");
+    assert_eq!(
+        heavenly_archive.conditions.locations,
+        vec!["cheongryu_outer_courtyard"]
+    );
+    assert_eq!(
+        heavenly_archive.conditions.required_flags,
+        vec!["cheonggi_return_route_started", "cheonggi_record_targeted"]
+    );
+    assert_eq!(
+        heavenly_archive.conditions.forbidden_flags,
+        vec!["heavenly_archive_previous_outsiders_resolved"]
+    );
+    let heavenly_archive_presentation = heavenly_archive
+        .presentation
+        .as_ref()
+        .expect("heavenly archive route opener presentation");
+    assert_eq!(
+        heavenly_archive_presentation.layout.as_deref(),
+        Some("cheonggi_return_opener")
+    );
+    assert_eq!(
+        heavenly_archive_presentation.speaker.as_deref(),
+        Some("연소하")
+    );
+    assert_eq!(
+        heavenly_archive_presentation.effect_cues[0].stable_terms,
+        vec!["천기각", "이방인", "균열"]
+    );
+    assert_eq!(heavenly_archive.choices.len(), 4);
+    let read_margins = heavenly_archive
+        .choices
+        .iter()
+        .find(|choice| choice.id == "read_previous_outsider_margins")
+        .expect("fallback previous outsider margins choice");
+    assert_eq!(
+        read_margins.outcome.add_flags,
+        vec![
+            "heavenly_archive_previous_outsiders_resolved",
+            "cheonggi_return_route_opened",
+            "route_opener_resolved",
+            "previous_outsiders_record_seen"
+        ]
+    );
+    assert_eq!(
+        read_margins.outcome.add_clues,
+        vec![
+            "archive_has_other_outsiders",
+            "return_clue_is_not_return_method"
+        ]
+    );
+    assert_eq!(
+        read_margins.outcome.destination_id.as_deref(),
+        Some("cheongryu_outer_courtyard")
+    );
+
+    let wounded_shelter = index
+        .encounter("wuxia_wounded_shelter_dawn_offers")
+        .expect("wounded shelter dawn offers encounter");
+    assert_eq!(wounded_shelter.title, "부상자 피난처의 새벽 제안");
+    assert_eq!(
+        wounded_shelter.conditions.locations,
+        vec!["cheongryu_outer_courtyard"]
+    );
+    assert_eq!(
+        wounded_shelter.conditions.required_flags,
+        vec![
+            "cheongryu_raid_wounded_fallback_resolved",
+            "route_commitment_deferred",
+            "deferred_route_reopened",
+            "wounded_shelter_stabilized"
+        ]
+    );
+    assert_eq!(
+        wounded_shelter.conditions.forbidden_flags,
+        vec!["wounded_shelter_dawn_offers_resolved"]
+    );
+    let wounded_shelter_presentation = wounded_shelter
+        .presentation
+        .as_ref()
+        .expect("wounded shelter dawn offers presentation");
+    assert_eq!(
+        wounded_shelter_presentation.layout.as_deref(),
+        Some("deferred_route_offer")
+    );
+    assert_eq!(
+        wounded_shelter_presentation.speaker.as_deref(),
+        Some("서하린")
+    );
+    assert_eq!(
+        wounded_shelter_presentation.effect_cues[0].stable_terms,
+        vec!["새벽", "부상자", "제안"]
+    );
+    assert_eq!(wounded_shelter.choices.len(), 4);
+    let keep_shelter = wounded_shelter
+        .choices
+        .iter()
+        .find(|choice| choice.id == "keep_wounded_shelter_until_noon")
+        .expect("fallback wounded shelter choice");
+    assert_eq!(
+        keep_shelter.outcome.add_flags,
+        vec![
+            "wounded_shelter_dawn_offers_resolved",
+            "route_commitment_reopened",
+            "wounded_shelter_until_noon",
+            "deferred_offer_debt_recorded"
+        ]
+    );
+    assert_eq!(
+        keep_shelter.outcome.add_clues,
+        vec![
+            "saving_people_changed_witnesses",
+            "care_is_not_route_escape",
+            "dawn_shelter_keeps_names"
+        ]
+    );
+    assert_eq!(
+        keep_shelter.outcome.destination_id.as_deref(),
+        Some("cheongryu_outer_courtyard")
+    );
+
+    let mumyeong = index
+        .encounter("wuxia_mumyeong_first_sighting")
+        .expect("mumyeong first sighting encounter");
+    assert_eq!(mumyeong.title, "무명 첫 목격");
+    assert_eq!(
+        mumyeong.conditions.locations,
+        vec!["cheongryu_outer_courtyard"]
+    );
+    assert_eq!(
+        mumyeong.conditions.required_flags,
+        vec![
+            "route_opener_resolved",
+            "cheongryu_raid_survived",
+            "cheongryu_trial_started",
+            "first_fragment_seen"
+        ]
+    );
+    assert_eq!(
+        mumyeong.conditions.forbidden_flags,
+        vec!["mumyeong_first_sighting_resolved"]
+    );
+    let mumyeong_presentation = mumyeong
+        .presentation
+        .as_ref()
+        .expect("mumyeong first sighting presentation");
+    assert_eq!(
+        mumyeong_presentation.layout.as_deref(),
+        Some("midgame_rival_sighting")
+    );
+    assert_eq!(mumyeong_presentation.speaker.as_deref(), Some("서하린"));
+    assert_eq!(
+        mumyeong_presentation.effect_cues[0].stable_terms,
+        vec!["무명", "청류문", "흑사방"]
+    );
+    assert_eq!(mumyeong.choices.len(), 4);
+    let observe = mumyeong
+        .choices
+        .iter()
+        .find(|choice| choice.id == "watch_the_stolen_qingliu_flow")
+        .expect("fallback stolen qingliu flow choice");
+    assert_eq!(
+        observe.outcome.add_flags,
+        vec![
+            "mumyeong_first_sighting_resolved",
+            "midgame_continuity_started",
+            "mumyeong_shadow_seen",
+            "copied_qingliu_flow_noted"
+        ]
+    );
+    assert_eq!(
+        observe.outcome.add_clues,
+        vec!["mumyeong_exists", "copied_flow_is_not_qingliu"]
+    );
+    assert_eq!(
+        observe.outcome.destination_id.as_deref(),
+        Some("cheongryu_outer_courtyard")
+    );
+
+    let confrontation = index
+        .encounter("wuxia_mumyeong_first_confrontation")
+        .expect("mumyeong first confrontation encounter");
+    assert_eq!(confrontation.title, "무명 첫 대치");
+    assert_eq!(
+        confrontation.conditions.locations,
+        vec!["cheongryu_outer_courtyard"]
+    );
+    assert_eq!(
+        confrontation.conditions.required_flags,
+        vec![
+            "mumyeong_first_sighting_resolved",
+            "midgame_continuity_started",
+            "cheongryu_raid_survived",
+            "first_fragment_seen"
+        ]
+    );
+    assert_eq!(
+        confrontation.conditions.forbidden_flags,
+        vec!["mumyeong_first_confrontation_resolved"]
+    );
+    let confrontation_presentation = confrontation
+        .presentation
+        .as_ref()
+        .expect("mumyeong first confrontation presentation");
+    assert_eq!(
+        confrontation_presentation.layout.as_deref(),
+        Some("rival_first_confrontation")
+    );
+    assert_eq!(confrontation_presentation.speaker.as_deref(), Some("무명"));
+    assert_eq!(
+        confrontation_presentation.effect_cues[0].stable_terms,
+        vec!["무명", "서하린", "청류문"]
+    );
+    assert_eq!(confrontation.choices.len(), 5);
+    let endure = confrontation
+        .choices
+        .iter()
+        .find(|choice| choice.id == "endure_until_copy_flow_breaks")
+        .expect("endure until copy flow breaks choice");
+    assert_eq!(
+        endure.outcome.add_flags,
+        vec![
+            "mumyeong_first_confrontation_resolved",
+            "mumyeong_rival_thread_opened",
+            "copied_flow_weakness_noted"
+        ]
+    );
+    assert_eq!(
+        endure.outcome.add_clues,
+        vec!["copy_style_has_gap", "copied_flow_is_not_qingliu"]
+    );
+    assert_eq!(
+        endure.outcome.destination_id.as_deref(),
+        Some("cheongryu_outer_courtyard")
+    );
+
+    let copy_style = index
+        .encounter("wuxia_mumyeong_copy_style_reveal")
+        .expect("mumyeong copy style reveal encounter");
+    assert_eq!(copy_style.title, "무명의 카피 무공 공개");
+    assert_eq!(
+        copy_style.conditions.locations,
+        vec!["cheongryu_outer_courtyard"]
+    );
+    assert_eq!(
+        copy_style.conditions.required_flags,
+        vec![
+            "mumyeong_first_confrontation_resolved",
+            "mumyeong_rival_thread_opened",
+            "midgame_continuity_started"
+        ]
+    );
+    assert_eq!(
+        copy_style.conditions.forbidden_flags,
+        vec!["mumyeong_copy_style_reveal_resolved"]
+    );
+    let copy_style_presentation = copy_style
+        .presentation
+        .as_ref()
+        .expect("mumyeong copy style presentation");
+    assert_eq!(
+        copy_style_presentation.layout.as_deref(),
+        Some("copy_style_analysis")
+    );
+    assert_eq!(copy_style_presentation.speaker.as_deref(), Some("서하린"));
+    assert_eq!(
+        copy_style_presentation.effect_cues[0].stable_terms,
+        vec!["무명", "청류안", "천기록"]
+    );
+    assert_eq!(copy_style.choices.len(), 4);
+    let breath = copy_style
+        .choices
+        .iter()
+        .find(|choice| choice.id == "listen_for_breath_mismatch")
+        .expect("listen for breath mismatch choice");
+    assert_eq!(
+        breath.outcome.add_flags,
+        vec![
+            "mumyeong_copy_style_reveal_resolved",
+            "copy_style_hint_recorded",
+            "copied_breath_mismatch_noted"
+        ]
+    );
+    assert_eq!(
+        breath.outcome.add_clues,
+        vec!["breath_mismatch_marks_copy", "understanding_is_not_copying"]
+    );
+    assert_eq!(
+        breath.outcome.destination_id.as_deref(),
+        Some("cheongryu_outer_courtyard")
+    );
+
+    let orthodox_style = index
+        .encounter("wuxia_mumyeong_reads_orthodox_style")
+        .expect("mumyeong orthodox style trace encounter");
+    assert_eq!(orthodox_style.title, "무명의 정파 무공 간파");
+    assert_eq!(
+        orthodox_style.conditions.locations,
+        vec!["cheongryu_outer_courtyard"]
+    );
+    assert_eq!(
+        orthodox_style.conditions.required_flags,
+        vec![
+            "mumyeong_copy_style_reveal_resolved",
+            "copy_style_hint_recorded",
+            "midgame_continuity_started",
+            "first_fragment_seen"
+        ]
+    );
+    assert_eq!(
+        orthodox_style.conditions.forbidden_flags,
+        vec!["mumyeong_reads_orthodox_style_resolved"]
+    );
+    let orthodox_presentation = orthodox_style
+        .presentation
+        .as_ref()
+        .expect("mumyeong orthodox style presentation");
+    assert_eq!(
+        orthodox_presentation.layout.as_deref(),
+        Some("orthodox_style_trace")
+    );
+    assert_eq!(orthodox_presentation.speaker.as_deref(), Some("천기록"));
+    assert_eq!(
+        orthodox_presentation.effect_cues[0].stable_terms,
+        vec!["현악문", "복호금쇄수", "무명"]
+    );
+    assert_eq!(orthodox_style.choices.len(), 4);
+    let reconstruct = orthodox_style
+        .choices
+        .iter()
+        .find(|choice| choice.id == "reconstruct_mumyeongs_sightline")
+        .expect("reconstruct mumyeong sightline choice");
+    assert_eq!(
+        reconstruct.outcome.add_flags,
+        vec![
+            "mumyeong_reads_orthodox_style_resolved",
+            "orthodox_style_trace_recorded",
+            "mumyeong_sightline_reconstructed"
+        ]
+    );
+    assert_eq!(
+        reconstruct.outcome.add_clues,
+        vec![
+            "bokho_geumsaesu_name_recorded",
+            "departure_truth_still_incomplete"
+        ]
+    );
+    assert_eq!(
+        reconstruct.outcome.destination_id.as_deref(),
+        Some("cheongryu_outer_courtyard")
+    );
+
+    let midgame_reunion = index
+        .encounter("wuxia_mumyeong_midgame_reunion")
+        .expect("mumyeong midgame reunion encounter");
+    assert_eq!(midgame_reunion.title, "무명 중반 재회");
+    assert_eq!(
+        midgame_reunion.conditions.required_flags,
+        vec![
+            "mumyeong_reads_orthodox_style_resolved",
+            "orthodox_style_trace_recorded",
+            "mumyeong_first_confrontation_resolved",
+            "mumyeong_rival_thread_opened"
+        ]
+    );
+
+    let boss = index
+        .encounter("wuxia_boss_first_appearance")
+        .expect("boss first appearance encounter");
+    assert_eq!(boss.title, "보스 첫 등장");
+    assert_eq!(
+        boss.conditions.required_flags,
+        vec![
+            "mumyeong_midgame_reunion_resolved",
+            "mumyeong_mirror_thread_deepened",
+            "cheongryu_raid_survived",
+            "midgame_continuity_started"
+        ]
+    );
+
+    let request_for_aid = index
+        .encounter("wuxia_mumyeong_request_for_aid")
+        .expect("Mumyeong aid request encounter");
+    assert_eq!(request_for_aid.title, "무명의 도움 요청");
+    assert_eq!(
+        request_for_aid.conditions.locations,
+        vec!["cheongryu_outer_courtyard"]
+    );
+    assert_eq!(
+        request_for_aid.conditions.required_flags,
+        vec![
+            "boss_first_appearance_resolved",
+            "boss_wall_thread_opened",
+            "black_serpent_core_pressure_opened",
+            "mumyeong_mirror_thread_deepened",
+            "orthodox_style_trace_recorded",
+            "midgame_continuity_started"
+        ]
+    );
+    assert_eq!(
+        request_for_aid.conditions.forbidden_flags,
+        vec!["mumyeong_request_for_aid_resolved"]
+    );
+    let request_presentation = request_for_aid
+        .presentation
+        .as_ref()
+        .expect("Mumyeong aid request presentation");
+    assert_eq!(
+        request_presentation.layout.as_deref(),
+        Some("failed_aid_records")
+    );
+    assert_eq!(request_presentation.speaker.as_deref(), Some("천기록"));
+    assert_eq!(
+        request_presentation.effect_cues[0].stable_terms,
+        vec!["무명", "청류문", "정파"]
+    );
+    assert_eq!(request_for_aid.choices.len(), 4);
+    let rejected_letters = request_for_aid
+        .choices
+        .iter()
+        .find(|choice| choice.id == "search_the_rejected_aid_letters")
+        .expect("rejected aid letters choice");
+    assert_eq!(
+        rejected_letters.outcome.add_flags,
+        vec![
+            "mumyeong_request_for_aid_resolved",
+            "mumyeong_failed_aid_thread_opened",
+            "orthodox_hypocrisy_thread_opened",
+            "rejected_aid_letters_read"
+        ]
+    );
+    assert_eq!(
+        rejected_letters.outcome.add_clues,
+        vec![
+            "mumyeong_tried_to_save_qingliu",
+            "orthodox_refusal_broke_mumyeong"
+        ]
+    );
+    assert_eq!(
+        rejected_letters.outcome.add_items,
+        vec!["rejected_aid_letter_fragment"]
+    );
+    assert_eq!(
+        rejected_letters.outcome.destination_id.as_deref(),
         Some("cheongryu_outer_courtyard")
     );
 }

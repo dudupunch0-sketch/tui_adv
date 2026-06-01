@@ -1,19 +1,21 @@
 # Storypack runtime preview mode
 
-Status: 결정 문서 + 일곱 번째 runtime preview 구현 완료 + 다음 route opener docs-only handoff 필요
+Status: 결정 문서 + `wuxia_mumyeong_request_for_aid` runtime 구현 완료 + `wuxia_mumyeong_followup_after_failed_aid` next handoff selected
 
 ## Decision: separate preview mode first
 
-첫 비-office runtime prototype은 기본 office runtime bundle에 바로 섞지 않고, **separate preview mode first**로 진행한다.
+첫 비-office runtime prototype은 legacy office runtime bundle에 바로 섞지 않고, **separate preview mode first**로 진행한다.
+
+2026-06-01 `docs/dev/Development_Plan.md` 0.0b 이후 Web/default storypack은 `wuxia_jianghu_pack` / **이구학지 — 천기록**으로 전환했다. 2026-06-02 이후 terminal content scene도 bundle 인자를 생략하면 이구학지 fixture를 기본으로 사용한다. 아래 preview-mode contract는 기존 office bundle과 Rust fixture를 섞지 않기 위한 경계로 유지하며, office content는 legacy/parity 경로로 남긴다.
 
 핵심 결정:
 
-- `src/tui_adv/data/*.yaml` remains default office runtime content.
-- `wuxia_jianghu_pack` enters runtime only through explicit preview bundle or preview flag.
-- `escape-office` save/localStorage keys remain unchanged.
-- no default bundle mixing: 기본 `content.bundle.json`과 Web generated bundle은 office 기본 콘텐츠를 유지한다.
+- `src/tui_adv/data/*.yaml` remains legacy office runtime content.
+- `wuxia_jianghu_pack` is the Web/default storypack through `web/src/core/contentBundles.ts`; terminal `--scene content` also defaults to the same built-in bundle when no explicit content bundle is provided.
+- legacy `escape-office` save/localStorage keys remain unchanged; Web 이구학지 runs use `igu-hakji.*` keys.
+- no legacy bundle mixing: 기본 Rust office `content.bundle.json` and legacy generated content remain office-only fixtures.
 - renderer는 `ScenePage`만 표시하고, world별 gameplay truth를 Web/SuperLightTUI renderer에서 재계산하지 않는다.
-- implemented opt-in launcher: terminal은 `--storypack-preview wuxia_jianghu_pack`, Web은 start screen preview launcher를 사용한다.
+- implemented launcher/default wiring: terminal은 기본 content scene과 명시적 `--storypack-preview wuxia_jianghu_pack` 모두 같은 이구학지 bundle을 사용하고, Web 새 게임도 이구학지 default bundle을 사용한다.
 
 ## 왜 gating이 아니라 preview mode인가
 
@@ -23,15 +25,15 @@ Status: 결정 문서 + 일곱 번째 runtime preview 구현 완료 + 다음 rou
 2. 첫 무협 prototype은 아직 gameplay schema 확장보다 “기존 encounter schema로 표현 가능한가”를 확인하는 단계다.
 3. 기본 번들의 `default_location`, route smoke, Web player start/save UX가 office 전제를 갖고 있으므로, 무협 콘텐츠를 같은 bundle에 넣으면 시작 위치와 encounter-first routing이 쉽게 충돌한다.
 
-따라서 첫 단계는 별도 preview mode다. 이 결정은 gating을 영구히 포기한다는 뜻이 아니다. preview mode로 `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`가 기존 schema에서 작동함을 확인했다. 다중 storypack 선택 UI/save migration이 필요해질 때 runtime-level gating을 별도로 연다.
+따라서 첫 단계는 별도 preview mode다. 이 결정은 gating을 영구히 포기한다는 뜻이 아니다. preview mode로 `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`, `wuxia_wounded_shelter_dawn_offers`, `wuxia_mumyeong_first_sighting`, `wuxia_mumyeong_first_confrontation`, `wuxia_mumyeong_copy_style_reveal`, `wuxia_mumyeong_reads_orthodox_style`, `wuxia_mumyeong_midgame_reunion`, `wuxia_boss_first_appearance`, `wuxia_mumyeong_request_for_aid`가 기존 schema에서 작동함을 확인했다. 다음은 `wuxia_mumyeong_followup_after_failed_aid` docs-only handoff다. 다중 storypack 선택 UI/save migration이 필요해질 때 runtime-level gating을 별도로 연다.
 
 ## Preview mode contract
 
 첫 runtime prototype은 다음 경계 안에서 구현한다.
 
-1. 기본 office runtime은 그대로 둔다.
-   - `src/tui_adv/data/*.yaml`은 계속 `escape from the office` 기본 콘텐츠다.
-   - `crates/escape-core/fixtures/content/content.bundle.json`와 `web/src/data/generated/content.bundle.json`는 기본 office player artifact다.
+1. legacy office runtime은 그대로 둔다.
+   - `src/tui_adv/data/*.yaml`은 계속 `escape from the office` legacy 콘텐츠다.
+   - `crates/escape-core/fixtures/content/content.bundle.json`와 `web/src/data/generated/content.bundle.json`는 legacy office artifact다.
 2. 무협 prototype은 명시적 preview 입력으로만 열린다.
    - 예: `docs/content/storypack_db/`에서 고른 카드 1개를 별도 preview YAML/JSON fixture로 만들거나, 명시적 preview flag가 있는 export 경로에서만 bundle을 만든다.
    - preview path 이름에는 `wuxia_jianghu_pack` 또는 `storypack-preview`가 들어가야 한다.
@@ -45,8 +47,8 @@ Status: 결정 문서 + 일곱 번째 runtime preview 구현 완료 + 다음 rou
    - Web Storybook과 SuperLightTUI는 `ScenePage`와 action id만 표시/전달한다.
    - renderer는 `world_id`를 보고 gameplay branch를 계산하지 않는다.
 5. save/key migration은 열지 않는다.
-   - `escape-office` save/localStorage keys remain unchanged.
-   - preview state가 필요하면 preview-only key 또는 disposable fixture로 제한하고, default player save와 자동 호환시키지 않는다.
+   - legacy `escape-office` save/localStorage keys remain unchanged.
+   - Web default 이구학지 run은 `igu-hakji.*` key를 쓰고, legacy office save와 자동 호환시키지 않는다.
 
 ## 구현된 첫 prototype
 
@@ -82,6 +84,8 @@ cargo test -p escape-wasm json_boundary_uses_storypack_preview_default_location
 cargo test -p escape-wasm json_boundary_reaches_wuxia_first_fight_through_preview_bundle
 cargo test -p escape-wasm json_boundary_reaches_wuxia_cheongryu_apprentice_entry_through_preview_bundle
 cargo test -p escape-wasm json_boundary_reaches_wuxia_cheongryu_raid_route_split_through_preview_bundle
+cargo test -p escape-wasm json_boundary_reaches_wuxia_wounded_shelter_dawn_offers_through_preview_bundle
+cargo test -p escape-wasm --test json_contract json_boundary_reaches_wuxia_mumyeong_copy_style_reveal_through_preview_bundle
 cargo test -p escape-terminal content_tui_smoke_renders_wuxia_storypack_preview_arrival
 cargo test -p escape-terminal content_tui_smoke_renders_wuxia_storypack_preview_first_fight
 cargo test -p escape-terminal content_tui_smoke_launches_wuxia_storypack_preview_by_opt_in_flag
@@ -89,6 +93,8 @@ cargo test -p escape-terminal content_tui_smoke_reaches_wuxia_cheonggi_record_fi
 cargo test -p escape-terminal content_tui_smoke_reaches_wuxia_seo_harin_rescue
 cargo test -p escape-terminal content_tui_smoke_reaches_wuxia_cheongryu_apprentice_entry
 cargo test -p escape-terminal content_tui_smoke_reaches_wuxia_cheongryu_raid_route_split
+cargo test -p escape-terminal content_tui_smoke_reaches_wuxia_wounded_shelter_dawn_offers
+cargo test -p escape-terminal --test cli_smoke content_tui_smoke_reaches_wuxia_mumyeong_copy_style_reveal
 ```
 
 ## 첫 prototype 후보
@@ -117,10 +123,49 @@ cargo test -p escape-terminal content_tui_smoke_reaches_wuxia_cheongryu_raid_rou
 7. `wuxia_cheongryu_raid_wounded_fallback` — 구현 완료
    - raid split의 `evacuate_the_wounded_first` 뒤 route 선택을 미룬 대가와 재합류 hook을 연다.
    - `cheongryu_raid_wounded_fallback_resolved`/`deferred_route_reopened`와 정파·사파·천기 route starter flags를 preview bundle에만 남긴다.
+8. `wuxia_baekdo_medicine_debt` — 구현 완료
+   - 정파 route starter를 받아 백도맹 약상자/청류문 재건 채무 opener를 연다.
+   - `righteous_route_started` + `cheongryu_rebuild_thread`만 eligibility로 쓰고, `baekdo_alliance_debt`/`baekdo_medicine_debt`는 branch flavor hook으로만 남긴다.
+9. `wuxia_black_heaven_escape_price` — 구현 완료
+   - 사파 route starter를 받아 흑천련 탈출로/도월 표식/시장 장부의 값 opener를 연다.
+   - `sapa_route_started` + `dowol_debt`만 eligibility로 쓰고, `black_heaven_deal_marked`/`black_heaven_escape_marker`는 branch flavor hook으로만 남긴다.
+10. `wuxia_heavenly_archive_previous_outsiders` — 구현 완료
+   - 천기·귀환 route starter를 받아 천기각 이전 이방인 기록과 세계 균열 단서를 여는 opener다.
+   - `cheonggi_return_route_started` + `cheonggi_record_targeted`만 eligibility로 쓰고, `heavenly_archive_contact`/`heavenly_archive_triage_map_seen`는 branch flavor hook으로만 남긴다.
+   - 천기록 정체 reveal, return system, reward/ability schema는 열지 않는다.
+11. `wuxia_wounded_shelter_dawn_offers` — 구현 완료
+   - `stabilize_wounded_until_dawn` branch를 받아 부상자 피난처의 새벽 제안으로 route pressure를 다시 연다.
+   - `cheongryu_raid_wounded_fallback_resolved` + `route_commitment_deferred` + `deferred_route_reopened` + `wounded_shelter_stabilized`만 eligibility로 쓰고, `survivor_roll_call_complete`/`route_delay_cost_recorded`는 branch flavor hook으로만 남긴다.
+   - `keep_wounded_shelter_until_noon`, `accept_baekdo_medicine_after_roll_call`, `send_word_to_dowol_for_quiet_exit`, `show_archive_map_to_yeon_soha` stable choice ids와 `route_commitment_reopened` hook을 남긴다.
+   - route graph/faction reputation/debt ledger/relation schema 없이 기존 route starter flags를 다음 opener에 넘긴다.
+12. `wuxia_mumyeong_copy_style_reveal` — 구현 완료
+   - 첫 대치 이후 무명이 덧씌운 카피 무공 계열의 윤곽과 결함을 청류안/천기록 대비로 드러낸다.
+   - `mumyeong_first_confrontation_resolved` + `mumyeong_rival_thread_opened` + `midgame_continuity_started`만 eligibility로 쓰고, 첫 대치 branch flags와 route opener flags는 flavor hook으로만 남긴다.
+   - `read_the_stolen_blade_path`, `watch_mumyeongs_footwork`, `listen_for_breath_mismatch`, `wait_for_body_to_shudder` stable choice ids와 `mumyeong_copy_style_reveal_resolved`/`copy_style_hint_recorded` hook을 남긴다.
+   - seed 기반 random copy-style table, 천외편린 reward/ability schema, boss combat, 무명 중반 재회, 무명 과거 진실 reveal은 열지 않는다.
+13. `wuxia_mumyeong_reads_orthodox_style` — 구현 완료
+   - copy-style reveal 뒤 무명의 특별한 눈이 읽어낸 정파식 제압술 흔적을 현악문/복호금쇄수 단서로 연결했다.
+   - `mumyeong_copy_style_reveal_resolved` + `copy_style_hint_recorded` + `midgame_continuity_started` + `first_fragment_seen`를 eligibility로 쓴다.
+   - 무명 이탈 진실 전체, 서하린에게 진실 전달, boss first appearance, 중반 재회, 3택 reward schema는 아직 열지 않는다.
+14. `wuxia_mumyeong_midgame_reunion` — 구현 완료
+   - orthodox-style trace 뒤 무명과 다시 마주치는 중반 rival reunion으로 구현했다.
+   - `mumyeong_reads_orthodox_style_resolved` + `orthodox_style_trace_recorded` + `mumyeong_first_confrontation_resolved` + `mumyeong_rival_thread_opened`를 eligibility로 쓴다.
+   - `ask_why_seoharin_never_called_him_traitor`, `show_the_hyeonakmun_trace_without_accusing`, `point_out_the_copied_form_gap`, `keep_blades_low_and_watch_his_answer` stable choice ids와 `mumyeong_midgame_reunion_resolved`/`mumyeong_mirror_thread_deepened` hook을 남긴다.
+   - 무명 이탈 진실 전체, 서하린에게 진실 전달, boss first appearance/combat, full flashback, 3택 reward schema는 아직 열지 않는다.
+15. `wuxia_boss_first_appearance` — 구현 완료
+   - `wuxia_mumyeong_followup_after_midgame_reunion` handoff에서 선택했고, preview runtime으로 구현했다.
+   - `mumyeong_midgame_reunion_resolved` + `mumyeong_mirror_thread_deepened` + `cheongryu_raid_survived` + `midgame_continuity_started`를 eligibility로 쓴다.
+   - `read_the_boss_flow_and_fail_to_move`, `pull_seo_harin_behind_broken_gate`, `watch_mumyeong_answer_the_boss`, `retreat_before_the_second_step` stable choice ids와 `boss_first_appearance_resolved`/`boss_wall_thread_opened`/`black_serpent_core_pressure_opened` hook을 남긴다.
+   - boss combat/final boss resolution, 무명 이탈 진실 전체, 서하린에게 진실 전달, full flashback, 3택 reward schema는 아직 열지 않는다.
+16. `wuxia_mumyeong_request_for_aid` — 구현 완료
+   - `wuxia_boss_followup_after_first_appearance` handoff에서 선택했고, preview runtime으로 구현했다.
+   - `boss_first_appearance_resolved` + `boss_wall_thread_opened` + `black_serpent_core_pressure_opened` + `mumyeong_mirror_thread_deepened` + `orthodox_style_trace_recorded` + `midgame_continuity_started`를 eligibility로 쓴다.
+   - `search_the_rejected_aid_letters`, `follow_old_inn_rumors_about_mumyeong`, `ask_seo_harin_what_help_never_came`, `keep_the_failed_aid_record_unshown` stable choice ids와 `mumyeong_request_for_aid_resolved`/`mumyeong_failed_aid_thread_opened`/`orthodox_hypocrisy_thread_opened` hook을 남긴다.
+   - 무명 이탈 진실 전체, 서하린에게 진실 전달, full flashback, boss combat/final boss resolution, 3택 reward schema는 아직 열지 않는다.
 
 ## 후속 slice 기준
 
-`wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`는 같은 preview mode에 추가되었고, `preview launcher/UI wiring`도 opt-in entrypoint로 구현되었다. 이미 preview export/check command, Rust/Web preview bundle artifact, terminal `--storypack-preview wuxia_jianghu_pack`, Web start screen preview launcher가 있으므로, 다음은 launcher나 천외편린 reward schema가 아니라 route opener 선택/설계 handoff다.
+`wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`, `wuxia_wounded_shelter_dawn_offers`, `wuxia_mumyeong_first_sighting`, `wuxia_mumyeong_first_confrontation`, `wuxia_mumyeong_copy_style_reveal`, `wuxia_mumyeong_reads_orthodox_style`, `wuxia_mumyeong_midgame_reunion`, `wuxia_boss_first_appearance`, `wuxia_mumyeong_request_for_aid`는 같은 preview mode에 추가되었다. 이미 preview export/check command, Rust/Web preview bundle artifact, terminal default/explicit `--storypack-preview wuxia_jianghu_pack`, Web default 이구학지 start/save wiring이 있으므로, 다음은 launcher나 천외편린 reward schema가 아니라 `wuxia_mumyeong_followup_after_failed_aid` docs-only handoff다.
 
 구현된 rescue slice:
 
@@ -226,13 +271,27 @@ schema_boundary:
   forbidden: [RouteGraph, FactionStanding, BranchLock, TriageSystem, CompanionDeath, MassCombat, boss_combat_resolver, CombatState, reward_schema, ability_schema, fragment_choice_reward, multi_ending_implementation]
 ```
 
-route opener docs-only handoff 결과: 첫 route opener는 정파/백도맹 약상자 채무 축인 `wuxia_baekdo_medicine_debt`로 결정했다. 다음 runtime slice는 `conditions.locations: [cheongryu_outer_courtyard]`, `required_flags: [righteous_route_started, cheongryu_rebuild_thread]`, `forbidden_flags: [baekdo_medicine_debt_resolved]`를 권장한다. direct branch의 `baekdo_alliance_debt`와 deferred branch의 `baekdo_medicine_debt`는 flavor hook이지 eligibility 필수가 아니다. route graph/faction reputation schema는 열지 않는다.
+`wuxia_baekdo_medicine_debt` — preview runtime 구현 완료. 첫 route opener는 정파/백도맹 약상자 채무 축으로 landing했다.
+
+`wuxia_black_heaven_escape_price` — preview runtime 구현 완료. 첫 사파 route opener는 `sapa_route_started` + `dowol_debt`를 required flags로 쓰고, `black_heaven_deal_marked`와 `black_heaven_escape_marker`는 direct/deferred branch flavor hook으로만 읽는다. 후속 `route_opener_followup_after_black_heaven` handoff에서 천기·귀환 opener를 다음 후보로 골랐다.
+
+`wuxia_heavenly_archive_previous_outsiders` — preview runtime 구현 완료. 첫 천기·귀환 route opener는 `cheonggi_return_route_started` + `cheonggi_record_targeted`를 required flags로 쓰고, `heavenly_archive_contact`와 `heavenly_archive_triage_map_seen`는 direct/deferred branch flavor hook으로만 읽는다. `read_previous_outsider_margins`, `ask_yeon_soha_what_not_to_read`, `mark_current_worldline_without_answer`, `compare_rift_terms_to_commute_memory` stable choice ids와 `cheonggi_return_route_opened` hook을 남기고, 천기록 정체 reveal/return system/reward schema는 열지 않는다.
+
+`wuxia_wounded_shelter_dawn_offers` — preview runtime 구현 완료. `stabilize_wounded_until_dawn` branch가 남긴 `cheongryu_raid_wounded_fallback_resolved` + `route_commitment_deferred` + `deferred_route_reopened` + `wounded_shelter_stabilized`를 required flags로 쓰고, `survivor_roll_call_complete`와 `route_delay_cost_recorded`는 flavor hook으로만 읽는다. `keep_wounded_shelter_until_noon`, `accept_baekdo_medicine_after_roll_call`, `send_word_to_dowol_for_quiet_exit`, `show_archive_map_to_yeon_soha` stable choice ids와 `route_commitment_reopened` hook을 남긴다. triage/companion death/mass combat/route graph/faction reputation/debt ledger/relation/reward/ability/epilogue schema, return system, 천기록 정체 reveal은 열지 않았다.
+
+`wuxia_mumyeong_first_sighting` — preview runtime 구현 완료. 세 route opener outcome에 공통 `route_opener_resolved` flag를 추가하고, 세 route opener 이후 첫 common midgame bridge로 Notion 사건 카드 DB `무명 첫 목격`을 구현했다. `route_opener_resolved` + `cheongryu_raid_survived` + `cheongryu_trial_started` + `first_fragment_seen`를 required flags로 사용하며, stable choice ids는 `watch_the_stolen_qingliu_flow`, `check_seo_harin_silence`, `follow_black_serpent_runner`, `pretend_not_to_see_the_form`다. 무명 존재/서하린 침묵/청류문식 카피 무공의 이질감을 flags/clues/log/presentation으로만 남기고, any-of condition schema, route graph, faction reputation, relation/debt ledger, combat schema, boss combat, reward/ability/epilogue/return system, 천기록 정체 reveal은 열지 않았다.
+
+`wuxia_mumyeong_first_confrontation` — preview runtime 구현 완료. Notion 사건 카드 DB `무명 첫 대치`는 첫 목격 이후가 선행 조건이고, 완승보다 버티기/분석/카피 무공 관찰이 핵심이다. Runtime은 `mumyeong_first_sighting_resolved` + `midgame_continuity_started` + `cheongryu_raid_survived` + `first_fragment_seen`를 required flags로 쓰고, `meet_mumyeong_head_on`, `endure_until_copy_flow_breaks`, `watch_seo_harin_hold_back`, `read_mumyeongs_copied_form`, `do_not_provoke_mumyeong` stable choice ids를 사용한다. 모든 outcome은 `mumyeong_first_confrontation_resolved`, `mumyeong_rival_thread_opened`, `destination_id: cheongryu_outer_courtyard`를 남긴다. 이 대치는 전투 사건처럼 보이지만 combat resolver/schema, HP 숫자전, boss combat, route graph/faction reputation/debt/relation/reward/ability/epilogue/return schema, 천기록 정체 reveal을 열지 않고 기존 flags/clues/log/presentation만 사용한다.
+
+`wuxia_mumyeong_copy_style_reveal` — preview runtime 구현 완료. Notion 사건 카드 DB `무명의 카피 무공 공개`는 첫 대치 이후가 선행 조건이고, 이번 회차 무명이 훔쳐 덧씌운 무공 계열과 결함을 드러낸다. Runtime은 `mumyeong_first_confrontation_resolved` + `mumyeong_rival_thread_opened` + `midgame_continuity_started`를 required flags로 쓰고, `read_the_stolen_blade_path`, `watch_mumyeongs_footwork`, `listen_for_breath_mismatch`, `wait_for_body_to_shudder` stable choice ids를 사용한다. 모든 outcome은 `mumyeong_copy_style_reveal_resolved`, `copy_style_hint_recorded`, `destination_id: cheongryu_outer_courtyard`를 남긴다. 이 사건은 random copy-style table이나 천외편린 reward schema가 아니라 copied-family/호흡 불일치/겉흐름 복사 clues만 남긴다.
+
+`wuxia_mumyeong_reads_orthodox_style` — preview runtime 구현 완료. Notion 사건 카드 DB `무명의 정파 무공 간파`은 copy-style reveal 뒤 무명의 과거 시야와 정파식 제압술 흔적을 연결한다. Runtime은 `mumyeong_copy_style_reveal_resolved` + `copy_style_hint_recorded` + `midgame_continuity_started` + `first_fragment_seen`를 required flags로 쓰고, `compare_copied_form_to_old_wound`, `trace_qingliu_eye_variation`, `reconstruct_mumyeongs_sightline`, `stop_before_truth_becomes_accusation` stable choice ids를 사용한다. 모든 outcome은 `mumyeong_reads_orthodox_style_resolved`, `orthodox_style_trace_recorded`, `destination_id: cheongryu_outer_courtyard`를 남긴다. 이 사건은 현악문/복호금쇄수 clue만 남기고, `wuxia_qingliu_attack_after_war` full flashback이나 `wuxia_mumyeong_departure_truth_summary` 진실 reveal은 열지 않는다.
 
 Launcher/entrypoint contract:
 
-- Terminal: `escape-terminal --scene content --storypack-preview wuxia_jianghu_pack --seed 123 --tui-smoke`는 built-in preview fixture를 사용한다. `--content-bundle <path>`는 그대로 유지하지만 `--storypack-preview`와 함께 사용할 수 없다.
-- Web: start screen은 기본 office continue/new-game UX와 별도로 `wuxia_jianghu_pack` preview 시작 버튼을 노출한다. Preview run은 기본 office save/localStorage key를 쓰지 않는다.
-- Web bundle registry: `web/src/core/contentBundles.ts`는 default office bundle JSON과 `wuxia_jianghu_pack` generated preview bundle JSON을 분리해 제공한다.
+- Terminal: `escape-terminal --scene content --seed 123 --tui-smoke`는 기본으로 built-in 이구학지 fixture를 사용한다. `--storypack-preview wuxia_jianghu_pack`는 명시적 동일 경로로 남기며, `--content-bundle <path>`는 legacy office fixture 등 override에 사용한다. `--content-bundle`과 `--storypack-preview`는 함께 사용할 수 없다.
+- Web: start screen의 새 게임 기본 경로는 `wuxia_jianghu_pack` / 이구학지다. 기존 Web start screen preview launcher는 이 default 전환 전 opt-in entrypoint였고, 이구학지 run은 `igu-hakji.*` localStorage key를 쓰며 legacy office save와 섞지 않는다.
+- Web bundle registry: `web/src/core/contentBundles.ts`는 이구학지 default bundle JSON과 legacy office/generated bundle 경계를 분리해 제공한다.
 - 기본 office artifact(`src/tui_adv/data/*.yaml`, 기본 Rust/Web `content.bundle.json`)는 launcher slice에서도 변경하지 않는다.
 
 금지선:

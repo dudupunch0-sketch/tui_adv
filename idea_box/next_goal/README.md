@@ -2,8 +2,8 @@
 type: next_goal_prompt
 created: 2026-06-01
 updated: 2026-06-02
-current_goal: implement_wuxia_wounded_shelter_dawn_offers
-mode: runtime-preview-implementation
+current_goal: route_midgame_continuity_after_wounded_shelter
+mode: docs-only-handoff
 ---
 
 # next_goal
@@ -24,15 +24,14 @@ mode: runtime-preview-implementation
 
 ## 현재 목표
 
-`route_opener_followup_after_heavenly_archive` docs-only handoff는 완료됐다. `wuxia_jianghu_pack` / **이구학지 — 천기록**은 Web/default storypack이며, office content는 legacy/parity fixture로 유지한다.
+`wuxia_wounded_shelter_dawn_offers` runtime implementation은 완료됐다. `wuxia_jianghu_pack` / **이구학지 — 천기록**은 Web/default storypack이며, office content는 legacy/parity fixture로 유지한다.
 
-이번 세션의 목표는 **runtime preview implementation**이다.
+이번 세션의 목표는 **docs-only handoff**다.
 
-- `wuxia_wounded_shelter_dawn_offers`를 구현한다.
-- 이 목표는 docs-only handoff에서 선택한 deferred-offer card를 실제 preview runtime으로 승격하는 작업이다.
-- 이 카드는 `stabilize_wounded_until_dawn` branch가 남긴 `route_commitment_deferred`, `deferred_route_reopened`, `wounded_shelter_stabilized`를 받아 새벽 피난처 제안으로 다시 메인 흐름에 붙인다.
-- docs-only handoff의 start conditions, stable choice ids, outcome hooks, schema non-goals를 따른다.
-- runtime source는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`만 수정하고, Rust/Web preview bundle artifact만 재생성한다.
+- `route_midgame_continuity_after_wounded_shelter`를 설계한다.
+- 세 route opener(`wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`)와 deferred-offer card(`wuxia_wounded_shelter_dawn_offers`)가 모두 구현된 뒤 첫 midgame continuity를 어떻게 열지 결정한다.
+- route별 3개 card, 공통 midgame card, 또는 opened flags 기반 schema-less bridge 중 하나를 비교하고 다음 runtime 후보 하나만 고른다.
+- 이번 goal에서는 runtime YAML, Rust/Web generated preview bundle, 기본 office bundle을 수정하지 않는다.
 - 기본 office bundle, legacy `escape-office` save/localStorage key, route graph/faction reputation/debt ledger/relation/reward/ability/epilogue schema, return system, 천기록 정체 reveal은 열지 않는다.
 
 ## 반드시 읽을 문서
@@ -46,6 +45,7 @@ mode: runtime-preview-implementation
   - `## 0.24 2026-06-02 docs-only route opener follow-up handoff: wuxia_heavenly_archive_previous_outsiders`
   - `## 0.25 2026-06-02 무협 wuxia_heavenly_archive_previous_outsiders preview runtime slice`
   - `## 0.26 2026-06-02 docs-only route opener follow-up handoff: wuxia_wounded_shelter_dawn_offers`
+  - `## 0.27 2026-06-02 무협 wuxia_wounded_shelter_dawn_offers preview runtime slice`
   - 현재 최우선 남은 작업
   - `## 10. 다음 액션`
 - `docs/dev/Storypack_Runtime_Preview_Mode.md`
@@ -57,40 +57,43 @@ mode: runtime-preview-implementation
 - `docs/content/storypack_db/README.md`
 - `docs/content/storypack_db/encounter_situations.json`
 
-## 구현 방향
+## 설계 방향
 
-선택된 후보:
+비교할 후보:
 
-- id: `wuxia_wounded_shelter_dawn_offers`
-- 목적: `stabilize_wounded_until_dawn` fallback branch가 세 route opener를 직접 타지 않은 경우, 부상자 피난처의 새벽 제안으로 route pressure를 다시 연다.
-- start conditions: `conditions.locations: [cheongryu_outer_courtyard]`, `required_flags: [cheongryu_raid_wounded_fallback_resolved, route_commitment_deferred, deferred_route_reopened, wounded_shelter_stabilized]`, `forbidden_flags: [wounded_shelter_dawn_offers_resolved]`
-- flavor flags: `survivor_roll_call_complete`, `route_delay_cost_recorded`
-- stable choice ids: `keep_wounded_shelter_until_noon`, `accept_baekdo_medicine_after_roll_call`, `send_word_to_dowol_for_quiet_exit`, `show_archive_map_to_yeon_soha`
-- common hook: 모든 선택지는 `wounded_shelter_dawn_offers_resolved`, `route_commitment_reopened`, `destination_id: cheongryu_outer_courtyard` bridge를 남긴다.
-- route choice hooks: 정파/사파/천기 선택지는 각각 기존 opener가 읽는 starter flags를 남겨 다음 턴에 `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`가 열릴 수 있게 한다.
-- fallback hook: `wounded_shelter_until_noon`, `deferred_offer_debt_recorded`를 남기되 같은 카드가 반복되지 않도록 resolved flag를 금지 조건으로 둔다.
-- 금지선: triage system, companion death, mass combat, route graph, faction reputation, relation score, debt ledger, reward/ability schema, epilogue schema, return system, 천기록 정체 reveal은 열지 않는다.
+- route별 midgame card 3개: `righteous_route_opened`, `sapa_route_opened`, `cheonggi_return_route_opened`를 각각 받는다. 장점은 route tone이 선명하지만, runtime 후보가 3개로 커지고 route graph 유혹이 생긴다.
+- 공통 midgame bridge 1개: route opened flags 중 하나를 받아 공통 압박으로 묶는다. 장점은 다음 slice가 작지만, 기존 schema에 any-of condition이 없으므로 start condition 표현을 신중히 해야 한다.
+- deferred-offer 후속 bridge: `route_commitment_reopened`와 route starter/opened flags의 조합을 살핀다. 장점은 방금 구현한 card와 자연스럽지만, 이미 opener를 탄 direct branch와의 균형을 확인해야 한다.
+
+결정 기준:
+
+- Notion `04. 메인 루트 구조`, `05. 사건 카드 운영 규칙`, `06. 사이드 퀘스트와 미해결 부채`, `07. 천기록 / 천외편린 보상`, `99. 통합 체크포인트`와 repo docs를 대조한다.
+- 새 any-of condition, RouteGraph, FactionStanding, DebtLedger, RelationScore, reward/ability/epilogue/return schema를 열지 않고도 가능한 후보를 우선한다.
+- 다음 runtime 후보는 하나만 고르고, 구현은 다음 세션으로 넘긴다.
 
 ## 예상 수정 파일
 
-- `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`
-- `crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json`
-- `web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json`
-- `tests/test_web_data_export.py`
-- `crates/escape-core/tests/content_bundle.rs`
-- `crates/escape-wasm/tests/json_contract.rs`
-- `crates/escape-terminal/tests/cli_smoke.rs`
-- `web/src/core/contentBundles.test.ts`
-- docs/checklist/next_goal status files after implementation
+- `docs/dev/Development_Plan.md`
+- `docs/dev/Checklist.md`
+- `docs/dev/Storypack_Runtime_Preview_Mode.md`
+- `docs/dev/Notion_Design_Coverage.md`
+- `docs/content/storypacks/wuxia_jianghu_pack.md`
+- `docs/content/encounter_db/wuxia_jianghu_pack.md`
+- `docs/content/storypack_db/README.md`
+- `docs/content/storypack_db/storypacks.json`
+- `docs/content/storypack_db/encounter_situations.json`
+- `docs/design/Storypack_World_Model.md`
+- `docs/design/Storypack_Encounter_DB.md`
+- `tests/test_docs_contract.py`
+- 필요 시 `tests/test_storypack_db.py`
+- 이 README
 
 ## 검증 명령
 
 ```bash
-PYTHONPATH=src python3 -m pytest tests/test_web_data_export.py tests/test_docs_contract.py tests/test_storypack_db.py -q
+PYTHONPATH=src python3 -m pytest tests/test_docs_contract.py tests/test_storypack_db.py -q
 python3 scripts/export_web_data.py --storypack-preview wuxia_jianghu_pack --preview-bundle crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json --preview-bundle web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json --check
-cargo test -p escape-core --test content_bundle
-cargo test -p escape-wasm --test json_contract json_boundary_reaches_wuxia_wounded_shelter_dawn_offers_through_preview_bundle
-cargo test -p escape-terminal --test cli_smoke content_tui_smoke_reaches_wuxia_wounded_shelter_dawn_offers
+git diff --exit-code -- src/tui_adv/storypack-previews/wuxia_jianghu_pack crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
 git diff --exit-code -- src/tui_adv/data crates/escape-core/fixtures/content/content.bundle.json web/src/data/generated/content.bundle.json
 git diff --check
 ```

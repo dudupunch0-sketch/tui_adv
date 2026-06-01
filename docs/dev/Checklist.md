@@ -404,6 +404,19 @@
 - [x] storypack DB JSON mirror와 docs contract를 다음 runtime handoff 기준으로 갱신
 - [x] runtime YAML/Rust/Web/generated bundle, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
 
+### 0.2ap 2026-06-02 무협 `wuxia_wounded_shelter_dawn_offers` preview runtime slice
+
+- [x] `wuxia_wounded_shelter_dawn_offers`를 `stabilize_wounded_until_dawn` deferred branch 뒤에 schema-less 제안 encounter로 추가
+- [x] start conditions를 `cheongryu_raid_wounded_fallback_resolved` + `route_commitment_deferred` + `deferred_route_reopened` + `wounded_shelter_stabilized`로 고정하고 `survivor_roll_call_complete`/`route_delay_cost_recorded`는 flavor hook으로만 유지
+- [x] stable choice id `keep_wounded_shelter_until_noon`, `accept_baekdo_medicine_after_roll_call`, `send_word_to_dowol_for_quiet_exit`, `show_archive_map_to_yeon_soha` 구현
+- [x] 모든 outcome이 `wounded_shelter_dawn_offers_resolved`, `route_commitment_reopened`, `destination_id: cheongryu_outer_courtyard` bridge를 남기도록 구현
+- [x] route 선택 outcome이 정파/사파/천기 opener가 읽는 starter flags를 남기도록 구현
+- [x] presentation을 `visual_id: wuxia_wounded_shelter_dawn_offers`, `speaker: 서하린`, `layout: deferred_route_offer`, stable terms `새벽 / 부상자 / 제안`으로 고정
+- [x] Rust fixture와 Web generated preview bundle 재생성
+- [x] Python exporter, Rust content fixture, WASM JSON boundary, SuperLightTUI deferred-offer parity, Web content bundle tests 추가
+- [x] triage/companion death/mass combat/route graph/faction reputation/debt ledger/relation/reward/ability/epilogue schema, return system, 천기록 정체 reveal, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 작업을 `route_midgame_continuity_after_wounded_shelter` docs-only handoff로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

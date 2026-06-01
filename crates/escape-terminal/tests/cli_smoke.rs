@@ -748,6 +748,63 @@ fn content_tui_smoke_reaches_wuxia_heavenly_archive_previous_outsiders() {
 }
 
 #[test]
+fn content_tui_smoke_reaches_wuxia_wounded_shelter_dawn_offers() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--storypack-preview",
+            "wuxia_jianghu_pack",
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:follow_roadside_dust",
+            "--action",
+            "move:jianghu_market_street",
+            "--action",
+            "choice:run_toward_open_street",
+            "--action",
+            "choice:choose_failure_log",
+            "--action",
+            "choice:tell_plain_truth",
+            "--action",
+            "choice:accept_three_month_trial",
+            "--action",
+            "choice:step_back_with_firewood",
+            "--action",
+            "choice:evacuate_the_wounded_first",
+            "--action",
+            "choice:stabilize_wounded_until_dawn",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("위치: 청류문 외곽 마당 (cheongryu_outer_courtyard)"));
+    assert!(stdout.contains("부상자 피난처의 새벽 제안"));
+    assert!(stdout.contains("visual id: wuxia_wounded_shelter_dawn_offers"));
+    assert!(stdout.contains("layout: deferred_route_offer"));
+    assert!(stdout.contains("stable terms: 새벽 / 부상자 / 제안"));
+    assert!(stdout.contains("choice:keep_wounded_shelter_until_noon / 정오까지 피난처를 더 지킨다"));
+    assert!(stdout.contains(
+        "choice:accept_baekdo_medicine_after_roll_call / 생존자 점호 뒤 백도맹 약상자를 받는다"
+    ));
+    assert!(stdout
+        .contains("choice:send_word_to_dowol_for_quiet_exit / 도월에게 조용한 퇴로를 부탁한다"));
+    assert!(stdout.contains(
+        "choice:show_archive_map_to_yeon_soha / 연소하에게 피난처 지도의 접힌 부분을 보인다"
+    ));
+    assert!(!stdout.contains("dev_desk"));
+}
+
+#[test]
 fn content_tui_smoke_renders_final_movement_panel_after_scripted_actions() {
     let bundle_path = content_bundle_path();
     let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))

@@ -196,12 +196,12 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&4));
     assert_eq!(bundle.manifest.counts.get("items"), Some(&3));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&11));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&12));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 4);
-    assert_eq!(index.encounters_len(), 11);
+    assert_eq!(index.encounters_len(), 12);
 
     let market = index
         .location("jianghu_market_street")
@@ -727,6 +727,71 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     );
     assert_eq!(
         read_margins.outcome.destination_id.as_deref(),
+        Some("cheongryu_outer_courtyard")
+    );
+
+    let wounded_shelter = index
+        .encounter("wuxia_wounded_shelter_dawn_offers")
+        .expect("wounded shelter dawn offers encounter");
+    assert_eq!(wounded_shelter.title, "부상자 피난처의 새벽 제안");
+    assert_eq!(
+        wounded_shelter.conditions.locations,
+        vec!["cheongryu_outer_courtyard"]
+    );
+    assert_eq!(
+        wounded_shelter.conditions.required_flags,
+        vec![
+            "cheongryu_raid_wounded_fallback_resolved",
+            "route_commitment_deferred",
+            "deferred_route_reopened",
+            "wounded_shelter_stabilized"
+        ]
+    );
+    assert_eq!(
+        wounded_shelter.conditions.forbidden_flags,
+        vec!["wounded_shelter_dawn_offers_resolved"]
+    );
+    let wounded_shelter_presentation = wounded_shelter
+        .presentation
+        .as_ref()
+        .expect("wounded shelter dawn offers presentation");
+    assert_eq!(
+        wounded_shelter_presentation.layout.as_deref(),
+        Some("deferred_route_offer")
+    );
+    assert_eq!(
+        wounded_shelter_presentation.speaker.as_deref(),
+        Some("서하린")
+    );
+    assert_eq!(
+        wounded_shelter_presentation.effect_cues[0].stable_terms,
+        vec!["새벽", "부상자", "제안"]
+    );
+    assert_eq!(wounded_shelter.choices.len(), 4);
+    let keep_shelter = wounded_shelter
+        .choices
+        .iter()
+        .find(|choice| choice.id == "keep_wounded_shelter_until_noon")
+        .expect("fallback wounded shelter choice");
+    assert_eq!(
+        keep_shelter.outcome.add_flags,
+        vec![
+            "wounded_shelter_dawn_offers_resolved",
+            "route_commitment_reopened",
+            "wounded_shelter_until_noon",
+            "deferred_offer_debt_recorded"
+        ]
+    );
+    assert_eq!(
+        keep_shelter.outcome.add_clues,
+        vec![
+            "saving_people_changed_witnesses",
+            "care_is_not_route_escape",
+            "dawn_shelter_keeps_names"
+        ]
+    );
+    assert_eq!(
+        keep_shelter.outcome.destination_id.as_deref(),
         Some("cheongryu_outer_courtyard")
     );
 }

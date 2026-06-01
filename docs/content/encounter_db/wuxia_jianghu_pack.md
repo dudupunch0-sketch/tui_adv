@@ -2,12 +2,12 @@
 
 Status: candidate
 
-이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_heavenly_archive_previous_outsiders`까지는 separate storypack preview runtime으로 승격되었고, 다음 handoff는 `wuxia_wounded_shelter_dawn_offers`다.
+이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_wounded_shelter_dawn_offers`까지는 separate storypack preview runtime으로 승격되었고, 다음 handoff는 `route_midgame_continuity_after_wounded_shelter`다.
 
 공통 원칙:
 
 - 모든 카드는 `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`에 속한다.
-- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_heavenly_archive_previous_outsiders`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. `wuxia_wounded_shelter_dawn_offers`는 다음 runtime 구현 후보로만 문서화되어 있다.
+- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_wounded_shelter_dawn_offers`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다.
 - 최신 canonical 무협 설정은 **이구학지 — 천기록**이다. 이전의 generic 객잔/소림/무당/아미 placeholder는 superseded로 본다.
 - 플레이어 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계의 시장 한복판에 전이됐다”이다.
 - 선택지는 세부 수치보다 역할과 결과 hook을 먼저 정의한다.
@@ -929,7 +929,7 @@ id: wuxia_wounded_shelter_dawn_offers
 storypack_id: wuxia_jianghu_pack
 world_id: wuxia_jianghu
 status: candidate
-runtime_preview_design_status: handoff_ready
+runtime_preview_design_status: implemented
 phase: [route_commitment]
 priority_class: route_key
 location_tags: [cheongryu_sect, wounded_shelter, deferred_route]
@@ -1008,5 +1008,13 @@ schema_boundary:
   forbidden_new_schema: [TriageSystem, CompanionDeath, MassCombat, RouteGraph, FactionStanding, DebtLedger, RelationScore, BranchLock, return_system, reward_schema, ability_schema, fragment_choice_reward, epilogue_schema, multi_ending_implementation]
 main_spine_link: route commitment을 미룬 wounded fallback branch를 다시 메인 route pressure에 붙인다. post-opener any-of condition이나 route graph 없이 기존 deferred flags만 사용한다.
 randomization_notes: 1회성 deferred-offer card. hub random deck으로 반복하지 않는다. `survivor_roll_call_complete`와 `route_delay_cost_recorded`는 flavor만 바꾸고 eligibility를 가르지 않는다.
-promotion_notes: docs-only handoff 완료. 다음 runtime slice에서 `wuxia_heavenly_archive_previous_outsiders` 뒤에 추가한다. 기본 office bundle, legacy `escape-office` key, triage/companion death/mass combat, route graph/faction reputation/debt/relation schema, reward/ability/epilogue schema, return system, 천기록 정체 reveal은 열지 않는다.
+promotion_notes: preview runtime으로 구현 완료. `cheongryu_outer_courtyard`에서 `cheongryu_raid_wounded_fallback_resolved` + `route_commitment_deferred` + `deferred_route_reopened` + `wounded_shelter_stabilized`를 받아 열리며, 부상자 피난처 새벽 제안을 flags/clues/log/presentation으로만 남긴다. 기본 office bundle, legacy `escape-office` key, triage/companion death/mass combat, route graph/faction reputation/debt/relation schema, reward/ability/epilogue schema, return system, 천기록 정체 reveal은 열지 않았다. 다음 handoff는 `route_midgame_continuity_after_wounded_shelter`다.
+runtime_preview_implementation_notes:
+  implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
+  generated_artifacts:
+    - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+    - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+  default_bundle_changed: false
+  new_schema_opened: false
+  next_handoff: route_midgame_continuity_after_wounded_shelter
 ```

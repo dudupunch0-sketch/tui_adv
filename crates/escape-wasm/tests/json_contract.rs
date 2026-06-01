@@ -726,6 +726,167 @@ fn json_boundary_reaches_wuxia_cheongryu_raid_wounded_fallback_through_preview_b
 }
 
 #[test]
+fn json_boundary_reaches_wuxia_wounded_shelter_dawn_offers_through_preview_bundle() {
+    let state_json =
+        new_game_json(123, WUXIA_PREVIEW_BUNDLE).expect("preview new game should serialize");
+    let arrival_result_json = apply_action_json(
+        &state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:follow_roadside_dust",
+    )
+    .expect("arrival route action should serialize");
+    let arrival_result: Value =
+        serde_json::from_str(&arrival_result_json).expect("arrival action result should parse");
+    let roadside_state_json =
+        serde_json::to_string(&arrival_result["state"]).expect("state should stringify");
+
+    let move_result_json = apply_action_json(
+        &roadside_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "move:jianghu_market_street",
+    )
+    .expect("market movement should serialize");
+    let move_result: Value =
+        serde_json::from_str(&move_result_json).expect("movement action result should parse");
+    let market_state_json =
+        serde_json::to_string(&move_result["state"]).expect("state should stringify");
+
+    let fight_result_json = apply_action_json(
+        &market_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:run_toward_open_street",
+    )
+    .expect("fallback fight action should serialize");
+    let fight_result: Value =
+        serde_json::from_str(&fight_result_json).expect("fight action result should parse");
+    let post_fight_state_json =
+        serde_json::to_string(&fight_result["state"]).expect("state should stringify");
+
+    let fragment_result_json = apply_action_json(
+        &post_fight_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:choose_failure_log",
+    )
+    .expect("first fragment action should serialize");
+    let fragment_result: Value = serde_json::from_str(&fragment_result_json)
+        .expect("fragment action result JSON should parse");
+    let post_fragment_state_json =
+        serde_json::to_string(&fragment_result["state"]).expect("state should stringify");
+
+    let rescue_result_json = apply_action_json(
+        &post_fragment_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:tell_plain_truth",
+    )
+    .expect("plain truth rescue action should serialize");
+    let rescue_result: Value =
+        serde_json::from_str(&rescue_result_json).expect("rescue action result should parse");
+    let post_rescue_state_json =
+        serde_json::to_string(&rescue_result["state"]).expect("state should stringify");
+
+    let apprentice_result_json = apply_action_json(
+        &post_rescue_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:accept_three_month_trial",
+    )
+    .expect("three month trial action should serialize");
+    let apprentice_result: Value = serde_json::from_str(&apprentice_result_json)
+        .expect("apprentice action result should parse");
+    let post_apprentice_state_json =
+        serde_json::to_string(&apprentice_result["state"]).expect("state should stringify");
+
+    let sparring_result_json = apply_action_json(
+        &post_apprentice_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:step_back_with_firewood",
+    )
+    .expect("step back sparring action should serialize");
+    let sparring_result: Value =
+        serde_json::from_str(&sparring_result_json).expect("sparring action result should parse");
+    let post_sparring_state_json =
+        serde_json::to_string(&sparring_result["state"]).expect("state should stringify");
+
+    let raid_result_json = apply_action_json(
+        &post_sparring_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:evacuate_the_wounded_first",
+    )
+    .expect("evacuate wounded raid action should serialize");
+    let raid_result: Value =
+        serde_json::from_str(&raid_result_json).expect("raid action result should parse");
+    let post_raid_state_json =
+        serde_json::to_string(&raid_result["state"]).expect("state should stringify");
+
+    let wounded_result_json = apply_action_json(
+        &post_raid_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:stabilize_wounded_until_dawn",
+    )
+    .expect("stabilize wounded fallback action should serialize");
+    let wounded_result: Value = serde_json::from_str(&wounded_result_json)
+        .expect("wounded fallback action result should parse");
+    let post_wounded_state_json =
+        serde_json::to_string(&wounded_result["state"]).expect("state should stringify");
+
+    let offers_page_json = scene_page_json(&post_wounded_state_json, WUXIA_PREVIEW_BUNDLE)
+        .expect("wounded shelter dawn offers scene page should serialize");
+    let offers_page: Value =
+        serde_json::from_str(&offers_page_json).expect("offers page JSON should parse");
+    assert_eq!(offers_page["mode"], "encounter");
+    assert_eq!(offers_page["title"], "부상자 피난처의 새벽 제안");
+    assert_eq!(offers_page["location"]["id"], "cheongryu_outer_courtyard");
+    assert_eq!(
+        offers_page["visual"]["id"],
+        "wuxia_wounded_shelter_dawn_offers"
+    );
+    assert_eq!(offers_page["visual"]["kind"], "deferred_route_offer");
+    assert_eq!(offers_page["effect_cues"][0]["stable_terms"][0], "새벽");
+    let offer_action_ids: Vec<&str> = offers_page["actions"]
+        .as_array()
+        .expect("actions should be an array")
+        .iter()
+        .map(|action| action["id"].as_str().expect("action id should be a string"))
+        .collect();
+    assert_eq!(
+        offer_action_ids,
+        vec![
+            "choice:keep_wounded_shelter_until_noon",
+            "choice:accept_baekdo_medicine_after_roll_call",
+            "choice:send_word_to_dowol_for_quiet_exit",
+            "choice:show_archive_map_to_yeon_soha",
+        ]
+    );
+
+    let offers_result_json = apply_action_json(
+        &post_wounded_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:accept_baekdo_medicine_after_roll_call",
+    )
+    .expect("accept baekdo medicine after roll call action should serialize");
+    let offers_result: Value =
+        serde_json::from_str(&offers_result_json).expect("offers action result should parse");
+    assert_eq!(
+        offers_result["encounter_id"],
+        "wuxia_wounded_shelter_dawn_offers"
+    );
+    assert!(offers_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array")
+        .iter()
+        .any(|flag| flag == "wounded_shelter_dawn_offers_resolved"));
+    assert!(offers_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array")
+        .iter()
+        .any(|flag| flag == "righteous_route_started"));
+    assert!(offers_result["state"]["clues"]
+        .as_array()
+        .expect("clues should be an array")
+        .iter()
+        .any(|clue| clue == "offers_arrive_because_people_lived"));
+}
+
+#[test]
 fn json_boundary_reaches_wuxia_baekdo_medicine_debt_through_preview_bundle() {
     let state_json =
         new_game_json(123, WUXIA_PREVIEW_BUNDLE).expect("preview new game should serialize");

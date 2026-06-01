@@ -1418,6 +1418,144 @@
           "visual_id": "wuxia_heavenly_archive_previous_outsiders"
         },
         "title": "천기각 이전 이방인 기록"
+      },
+      {
+        "body": "새벽이 오자 임시 피난처의 숨소리가 하나씩 안정된다. 서하린은 젖은 천을 갈아 묶으며 부상자 명단을 접는다. 문밖에는 남궁서윤의 약상자, 도월이 남긴 짧은 전서, 연소하의 접힌 지도 조각이 서로 다른 그림자처럼 도착해 있다. 사람을 살리느라 선택을 미뤘지만, 그 덕분에 다시 물을 수 있는 이름들이 남았다.",
+        "choices": [
+          {
+            "id": "keep_wounded_shelter_until_noon",
+            "label": "정오까지 피난처를 더 지킨다",
+            "outcome": {
+              "add_clues": [
+                "saving_people_changed_witnesses",
+                "care_is_not_route_escape",
+                "dawn_shelter_keeps_names"
+              ],
+              "add_flags": [
+                "wounded_shelter_dawn_offers_resolved",
+                "route_commitment_reopened",
+                "wounded_shelter_until_noon",
+                "deferred_offer_debt_recorded"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "route를 고르지 않는 대신 살아남은 이름들이 더 또렷해진다. 피난처는 도망이 아니지만, 사람을 살린 증거는 다음 선택의 무게가 된다.",
+              "resources": {
+                "health": -1,
+                "hunger": 1
+              }
+            }
+          },
+          {
+            "id": "accept_baekdo_medicine_after_roll_call",
+            "label": "생존자 점호 뒤 백도맹 약상자를 받는다",
+            "outcome": {
+              "add_clues": [
+                "offers_arrive_because_people_lived",
+                "delayed_choice_has_callers",
+                "medicine_has_banner"
+              ],
+              "add_flags": [
+                "wounded_shelter_dawn_offers_resolved",
+                "route_commitment_reopened",
+                "righteous_route_started",
+                "cheongryu_rebuild_thread",
+                "baekdo_medicine_debt"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "약상자는 명령서가 아니라 명단 위에 놓인다. 빚은 생겼지만 문은 다시 열리고, 정파의 제안은 살아남은 사람들의 숨 위에 놓인다.",
+              "resources": {
+                "health": 3,
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "send_word_to_dowol_for_quiet_exit",
+            "label": "도월에게 조용한 퇴로를 부탁한다",
+            "outcome": {
+              "add_clues": [
+                "delayed_choice_has_callers",
+                "care_is_not_route_escape",
+                "black_heaven_help_marks_debt"
+              ],
+              "add_flags": [
+                "wounded_shelter_dawn_offers_resolved",
+                "route_commitment_reopened",
+                "sapa_route_started",
+                "dowol_debt",
+                "black_heaven_escape_marker"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "도월의 답장은 짧다. 사람을 살린 일에도 값은 붙지만, 값이 붙는다고 모두 거래가 되는 것은 아니다.",
+              "resources": {
+                "hunger": -1,
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "show_archive_map_to_yeon_soha",
+            "label": "연소하에게 피난처 지도의 접힌 부분을 보인다",
+            "outcome": {
+              "add_clues": [
+                "dawn_shelter_keeps_names",
+                "delayed_choice_has_callers",
+                "offers_arrive_because_people_lived"
+              ],
+              "add_flags": [
+                "wounded_shelter_dawn_offers_resolved",
+                "route_commitment_reopened",
+                "cheonggi_return_route_started",
+                "cheonggi_record_targeted",
+                "heavenly_archive_triage_map_seen"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "지도는 길보다 먼저 이름을 기억한다. 연소하는 그 순서가 중요하다고 말하고, 천기록은 여전히 정답 대신 접힌 선만 남긴다.",
+              "resources": {
+                "sanity": -3
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "wounded_shelter_dawn_offers_resolved"
+          ],
+          "locations": [
+            "cheongryu_outer_courtyard"
+          ],
+          "required_flags": [
+            "cheongryu_raid_wounded_fallback_resolved",
+            "route_commitment_deferred",
+            "deferred_route_reopened",
+            "wounded_shelter_stabilized"
+          ]
+        },
+        "id": "wuxia_wounded_shelter_dawn_offers",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "roll_call_then_three_offers",
+              "duration_hint_ms": 1400,
+              "fallback_text": "부상자 명단과 접힌 전서 사이로 '새벽', '부상자', '제안'만 흔들리지 않고 남는다.",
+              "intensity": 0.67,
+              "kind": "glyph_anomaly",
+              "source": "wounded_shelter_dawn_offers",
+              "stable_terms": [
+                "새벽",
+                "부상자",
+                "제안"
+              ]
+            }
+          ],
+          "layout": "deferred_route_offer",
+          "speaker": "서하린",
+          "visual_id": "wuxia_wounded_shelter_dawn_offers"
+        },
+        "title": "부상자 피난처의 새벽 제안"
       }
     ],
     "endings": [
@@ -1535,7 +1673,7 @@
   "manifest": {
     "counts": {
       "achievements": 2,
-      "encounters": 11,
+      "encounters": 12,
       "endings": 1,
       "items": 3,
       "locations": 4,

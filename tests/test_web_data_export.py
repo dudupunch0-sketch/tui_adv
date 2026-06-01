@@ -95,6 +95,7 @@ def test_export_web_data_builds_renderer_neutral_content_bundle():
             "wuxia_baekdo_medicine_debt",
             "wuxia_black_heaven_escape_price",
             "wuxia_heavenly_archive_previous_outsiders",
+            "wuxia_wounded_shelter_dawn_offers",
         }
         for encounter in bundle["content"]["encounters"]
     )
@@ -118,7 +119,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     assert bundle["manifest"]["counts"] == {
         "locations": 4,
         "items": 3,
-        "encounters": 11,
+        "encounters": 12,
         "endings": 1,
         "achievements": 2,
         "secrets": 0,
@@ -142,6 +143,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "wuxia_baekdo_medicine_debt",
         "wuxia_black_heaven_escape_price",
         "wuxia_heavenly_archive_previous_outsiders",
+        "wuxia_wounded_shelter_dawn_offers",
     ]
     first_fight = bundle["content"]["encounters"][1]
     assert first_fight["conditions"] == {
@@ -475,6 +477,67 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "return_clue_is_not_return_method",
     ]
     assert read_margins["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
+    wounded_shelter = bundle["content"]["encounters"][11]
+    assert wounded_shelter["conditions"] == {
+        "locations": ["cheongryu_outer_courtyard"],
+        "required_flags": [
+            "cheongryu_raid_wounded_fallback_resolved",
+            "route_commitment_deferred",
+            "deferred_route_reopened",
+            "wounded_shelter_stabilized",
+        ],
+        "forbidden_flags": ["wounded_shelter_dawn_offers_resolved"],
+    }
+    assert wounded_shelter["presentation"]["layout"] == "deferred_route_offer"
+    assert wounded_shelter["presentation"]["speaker"] == "서하린"
+    assert wounded_shelter["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "새벽",
+        "부상자",
+        "제안",
+    ]
+    assert [choice["id"] for choice in wounded_shelter["choices"]] == [
+        "keep_wounded_shelter_until_noon",
+        "accept_baekdo_medicine_after_roll_call",
+        "send_word_to_dowol_for_quiet_exit",
+        "show_archive_map_to_yeon_soha",
+    ]
+    keep_shelter = wounded_shelter["choices"][0]
+    assert keep_shelter["outcome"]["add_flags"] == [
+        "wounded_shelter_dawn_offers_resolved",
+        "route_commitment_reopened",
+        "wounded_shelter_until_noon",
+        "deferred_offer_debt_recorded",
+    ]
+    assert keep_shelter["outcome"]["add_clues"] == [
+        "saving_people_changed_witnesses",
+        "care_is_not_route_escape",
+        "dawn_shelter_keeps_names",
+    ]
+    assert keep_shelter["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
+    baekdo_reentry = wounded_shelter["choices"][1]
+    assert baekdo_reentry["outcome"]["add_flags"] == [
+        "wounded_shelter_dawn_offers_resolved",
+        "route_commitment_reopened",
+        "righteous_route_started",
+        "cheongryu_rebuild_thread",
+        "baekdo_medicine_debt",
+    ]
+    sapa_reentry = wounded_shelter["choices"][2]
+    assert sapa_reentry["outcome"]["add_flags"] == [
+        "wounded_shelter_dawn_offers_resolved",
+        "route_commitment_reopened",
+        "sapa_route_started",
+        "dowol_debt",
+        "black_heaven_escape_marker",
+    ]
+    cheonggi_reentry = wounded_shelter["choices"][3]
+    assert cheonggi_reentry["outcome"]["add_flags"] == [
+        "wounded_shelter_dawn_offers_resolved",
+        "route_commitment_reopened",
+        "cheonggi_return_route_started",
+        "cheonggi_record_targeted",
+        "heavenly_archive_triage_map_seen",
+    ]
     assert "dev_desk" not in json.dumps(bundle, ensure_ascii=False)
     assert _missing_private_secret_fields(bundle)
 

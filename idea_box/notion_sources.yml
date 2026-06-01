@@ -137,7 +137,16 @@ sources:
       notion_event_id: "wuxia_seoharin_intervention"
       notion_event_name: "서하린의 개입"
       repo_encounter_id: "wuxia_seo_harin_rescue"
-      runtime_status: "next_slice_not_implemented"
+      runtime_status: "implemented_in_storypack_preview"
+    additional_runtime_mappings:
+      - notion_event_id: "wuxia_qingliu_apprentice_entry"
+        notion_event_name: "청류문 임시 수습생 등록"
+        repo_encounter_id: "wuxia_cheongryu_apprentice_entry"
+        runtime_status: "implemented_in_storypack_preview"
+      - notion_event_id: "wuxia_qingliu_raid_route_split"
+        notion_event_name: "청류문 습격 / 루트 압박"
+        repo_encounter_id: "wuxia_cheongryu_raid_route_split"
+        runtime_status: "designed_next_not_implemented"
     status: "live_checked_docs_synced"
 
   - key: wuxia_10_epilogue_card_db

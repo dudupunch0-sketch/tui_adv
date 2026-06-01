@@ -47,9 +47,9 @@ Status: candidate
 | `wuxia_qingliu_attack_after_war` | 무너져가는 청류문 습격 | none yet | future backstory/pressure event |
 | `wuxia_mumyeong_request_for_aid` | 무명의 도움 요청 | none yet | future backstory event |
 | `wuxia_tianjilu_first_fragment` | 천기록 첫 천외편린 | `wuxia_cheonggi_record_first_fragment` | preview implemented as schema-less foreshadow; full reward schema future |
-| `wuxia_seoharin_intervention` | 서하린의 개입 | `wuxia_seo_harin_rescue` | next runtime slice; docs/handoff ready, not implemented |
+| `wuxia_seoharin_intervention` | 서하린의 개입 | `wuxia_seo_harin_rescue` | preview implemented as schema-less rescue/protection bridge |
 | `wuxia_prologue_commute_rift` | 출근길의 균열 | `wuxia_commute_rift_arrival` | preview implemented |
-| `wuxia_qingliu_apprentice_entry` | 청류문 임시 수습생 등록 | `wuxia_cheongryu_apprentice_entry` | follow-up docs/handoff ready, not implemented |
+| `wuxia_qingliu_apprentice_entry` | 청류문 임시 수습생 등록 | `wuxia_cheongryu_apprentice_entry` | preview runtime implemented as apprentice/chore bridge |
 | `wuxia_qingliu_first_arrival` | 청류문 첫 도착 | partial: `wuxia_cheongryu_apprentice_entry` / `cheongryu_outer_courtyard` | future arrival/location beat folded into apprentice handoff for now |
 | `wuxia_black_serpent_first_trouble` | 흑사방 첫 시비 | `wuxia_heuksa_bang_first_fight` | preview implemented |
 | `wuxia_arrival_market_confusion` | 낯선 장터에 떨어지다 | `wuxia_commute_rift_arrival` | preview implemented |
@@ -195,7 +195,7 @@ id: wuxia_seo_harin_rescue
 notion_event_mapping:
   notion_event_id: wuxia_seoharin_intervention
   notion_event_name: 서하린의 개입
-  mapping_status: direct_next_runtime_slice
+  mapping_status: preview_runtime_implemented
 world_id: wuxia_jianghu
 storypack_id: wuxia_jianghu_pack
 status: candidate
@@ -289,7 +289,7 @@ schema_boundary:
   forbidden_new_schema: [RelationScore, DebtLedger, FactionStanding, healing_schema, companion_schema, reward_schema, ability_schema, CombatState, fragment_choice_reward]
 main_spine_link: 구조자/멘토 후보를 세우고, 주인공을 청류문 수습생 구간으로 이동시킨다. `wuxia_cheongryu_apprentice_entry`는 이 encounter의 `seo_harin_rescue_resolved`/`taken_under_watch`/`rescue_debt_recorded` 계열 hook을 받아 진행한다.
 randomization_notes: first_brawl/first_fragment 이후 1회성 forced aftermath. 별도 hub random으로 반복하지 않고, `seo_harin_rescue_resolved`로 차단한다.
-promotion_notes: 다음 runtime slice로 확정한다. healing/debt/relation은 새 schema 없이 health/sanity/danger, flags, clues, destination, log로만 표현하고, 기본 office bundle/`escape-office` save key/천외편린 3택 성장 schema는 건드리지 않는다.
+promotion_notes: preview runtime으로 구현 완료. healing/debt/relation은 새 schema 없이 health/sanity/danger, flags, clues, destination, log로만 표현했고, 기본 office bundle/`escape-office` save key/천외편린 3택 성장 schema는 건드리지 않았다. 다음 runtime slice는 구현 완료된 apprentice bridge 뒤의 `wuxia_cheongryu_raid_route_split`다.
 ```
 
 ## 4. `wuxia_cheongryu_apprentice_entry`
@@ -299,7 +299,7 @@ id: wuxia_cheongryu_apprentice_entry
 world_id: wuxia_jianghu
 storypack_id: wuxia_jianghu_pack
 status: candidate
-runtime_preview_design_status: designed_follow_up_not_implemented
+runtime_preview_design_status: implemented_in_storypack_preview
 phase: cheongryu_apprenticeship
 priority_class: route_key
 location_tags: [cheongryu_sect, courtyard, apprenticeship]
@@ -373,7 +373,7 @@ schema_boundary:
   forbidden_new_schema: [RelationScore, DebtLedger, FactionStanding, TrainingXP, ChoreScheduler, companion_schema, reward_schema, ability_schema, CombatState, fragment_choice_reward]
 main_spine_link: 소속/채무/거점/훈련을 열어 공용 RPG 시스템이 office 밖에서도 성립하는지 검증한다. 이 card는 `wuxia_seo_harin_rescue`가 남긴 `seo_harin_rescue_resolved`/`taken_under_watch` hook을 받은 뒤 진행한다.
 randomization_notes: route_key hub intro. rescue 직후 forced bridge로 1회만 사용하고, 이후 반복 잡일/서고 카드는 별도 deck으로 분리할 수 있다.
-promotion_notes: follow-up runtime candidate로 설계 완료. `wuxia_seo_harin_rescue` 구현 전에는 승격하지 않는다. 첫 runtime에서는 location/state schema를 넓히지 않고 narrative outcome과 flags/clues/log/presentation으로만 표현한다.
+promotion_notes: preview runtime으로 구현 완료. 첫 runtime은 location/state schema를 넓히지 않고 narrative outcome, `work_chore_token`, flags/clues/log/presentation으로만 표현했다. 다음 runtime slice는 `wuxia_cheongryu_raid_route_split`다.
 ```
 
 ## 5. `wuxia_cheonggi_record_first_fragment`
@@ -455,7 +455,7 @@ id: wuxia_cheongryu_raid_route_split
 world_id: wuxia_jianghu
 storypack_id: wuxia_jianghu_pack
 status: candidate
-runtime_preview_design_status: designed_later_not_implemented
+runtime_preview_design_status: designed_next_not_implemented
 phase: [cheongryu_raid, route_commitment]
 priority_class: route_key
 location_tags: [cheongryu_sect, raid, faction_choice]
@@ -528,7 +528,7 @@ schema_boundary:
   forbidden_new_schema: [FactionStanding, RouteGraph, BranchLock, CompanionDeath, MassCombat, boss_combat_resolver, reward_schema, ability_schema, fragment_choice_reward, multi_ending_implementation]
 main_spine_link: 중반의 큰 분기점으로 정파/사파/천기·귀환 루트 압박을 연다. 이 card는 rescue/apprentice와 first-fragment 공통 hook이 runtime에 들어간 뒤에만 사용한다.
 randomization_notes: 보스/대형 사건급 route_key. 충분한 공통 루트, 청류문 수습생 hook, 천기록 각성 hook 뒤에 1회성 forced route pressure로 사용한다.
-promotion_notes: later runtime candidate로 설계 완료. `wuxia_seo_harin_rescue`와 `wuxia_cheongryu_apprentice_entry` 구현 전에는 승격하지 않는다. 첫 raid runtime은 route flag/clue/log/presentation만 남기고 route graph, faction reputation, boss combat, ending implementation은 별도 slice로 둔다.
+promotion_notes: next runtime candidate로 설계 완료. `wuxia_seo_harin_rescue`와 `wuxia_cheongryu_apprentice_entry`가 preview runtime에 구현되었으므로 승격 가능하다. 첫 raid runtime은 route flag/clue/log/presentation만 남기고 route graph, faction reputation, boss combat, ending implementation은 별도 slice로 둔다.
 ```
 
 ## 7. `wuxia_cheongryu_raid_wounded_fallback`

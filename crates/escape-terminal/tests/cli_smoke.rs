@@ -313,6 +313,104 @@ fn content_tui_smoke_reaches_wuxia_cheonggi_record_first_fragment() {
 }
 
 #[test]
+fn content_tui_smoke_reaches_wuxia_seo_harin_rescue() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--storypack-preview",
+            "wuxia_jianghu_pack",
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:follow_roadside_dust",
+            "--action",
+            "move:jianghu_market_street",
+            "--action",
+            "choice:run_toward_open_street",
+            "--action",
+            "choice:choose_failure_log",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("위치: 강호 시장 거리 (jianghu_market_street)"));
+    assert!(stdout.contains("서하린의 개입"));
+    assert!(stdout.contains("visual id: wuxia_seo_harin_rescue"));
+    assert!(stdout.contains("layout: rescue_and_investigation"));
+    assert!(stdout.contains("stable terms: 서하린 / 청류문 / 감시"));
+    assert!(stdout.contains("choice:tell_plain_truth / 있는 그대로 길을 잃은 외지인이라고 말한다"));
+    assert!(stdout
+        .contains("choice:ask_for_medical_help_first / 설명보다 치료와 안전한 곳을 먼저 부탁한다"));
+    assert!(stdout.contains(
+        "choice:explain_company_and_commute / 회사와 출근길을 최대한 논리적으로 설명한다"
+    ));
+    assert!(stdout.contains(
+        "choice:show_cheonggi_record_page / 방금 떠오른 천기록의 글자를 조심스럽게 보여준다"
+    ));
+    assert!(stdout.contains("choice:hide_employee_badge / 사원증과 수첩을 품 안으로 숨긴다"));
+    assert!(!stdout.contains("dev_desk"));
+}
+
+#[test]
+fn content_tui_smoke_reaches_wuxia_cheongryu_apprentice_entry() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--storypack-preview",
+            "wuxia_jianghu_pack",
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:follow_roadside_dust",
+            "--action",
+            "move:jianghu_market_street",
+            "--action",
+            "choice:run_toward_open_street",
+            "--action",
+            "choice:choose_failure_log",
+            "--action",
+            "choice:tell_plain_truth",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("위치: 청류문 외곽 마당 (cheongryu_outer_courtyard)"));
+    assert!(stdout.contains("청류문 임시 수습생 등록"));
+    assert!(stdout.contains("visual id: wuxia_cheongryu_apprentice_entry"));
+    assert!(stdout.contains("layout: cheongryu_apprenticeship"));
+    assert!(stdout.contains("stable terms: 청류문 / 잡일 / 수습생"));
+    assert!(stdout
+        .contains("choice:accept_three_month_trial / 석 달 동안 잡일과 수습 조건을 받아들인다"));
+    assert!(stdout.contains(
+        "choice:request_martial_training_immediately / 지금 당장 무공을 가르쳐 달라고 요구한다"
+    ));
+    assert!(stdout.contains(
+        "choice:organize_chores_like_workflow / 회사식 업무 분해로 잡일 동선을 정리한다"
+    ));
+    assert!(stdout
+        .contains("choice:inspect_archive_during_chore / 서고 정리 중 잠긴 낡은 장부를 살핀다"));
+    assert!(!stdout.contains("dev_desk"));
+}
+
+#[test]
 fn content_tui_smoke_renders_final_movement_panel_after_scripted_actions() {
     let bundle_path = content_bundle_path();
     let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))

@@ -10,3 +10,9 @@ items:
     description: 빈 장에 현대 지식의 편린이 먹물처럼 떠오르는 업무수첩. 검색창도 즉시 보상도 아니다.
     type: clue
     tags: [notebook, cheonggi_record, wuxia_preview]
+
+  - id: work_chore_token
+    name: 청류문 잡일패
+    description: 석 달 수습 기간 동안 물 긷기, 장작 패기, 연무장 청소를 맡았다는 작은 나무패.
+    type: quest
+    tags: [cheongryu_sect, apprenticeship, chore, wuxia_preview]

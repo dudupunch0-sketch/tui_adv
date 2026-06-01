@@ -194,14 +194,14 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.world_id, "wuxia_jianghu");
     assert_eq!(runtime.storypack_id, "wuxia_jianghu_pack");
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
-    assert_eq!(bundle.manifest.counts.get("locations"), Some(&3));
-    assert_eq!(bundle.manifest.counts.get("items"), Some(&2));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&3));
+    assert_eq!(bundle.manifest.counts.get("locations"), Some(&4));
+    assert_eq!(bundle.manifest.counts.get("items"), Some(&3));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&5));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
-    assert_eq!(index.locations_len(), 3);
-    assert_eq!(index.encounters_len(), 3);
+    assert_eq!(index.locations_len(), 4);
+    assert_eq!(index.encounters_len(), 5);
 
     let market = index
         .location("jianghu_market_street")
@@ -278,6 +278,105 @@ fn preview_fixture_indexes_wuxia_first_fight() {
             "cheonggi_record_first_fragment_resolved",
             "cheonggi_record_caution"
         ]
+    );
+
+    let courtyard = index
+        .location("cheongryu_outer_courtyard")
+        .expect("cheongryu outer courtyard location");
+    assert_eq!(courtyard.name, "청류문 외곽 마당");
+    assert_eq!(courtyard.connections, vec!["jianghu_market_street"]);
+
+    let rescue = index
+        .encounter("wuxia_seo_harin_rescue")
+        .expect("seo harin rescue encounter");
+    assert_eq!(rescue.title, "서하린의 개입");
+    assert_eq!(rescue.conditions.locations, vec!["jianghu_market_street"]);
+    assert_eq!(
+        rescue.conditions.required_flags,
+        vec![
+            "heuksa_bang_first_fight_resolved",
+            "cheonggi_record_first_fragment_resolved"
+        ]
+    );
+    assert_eq!(
+        rescue.conditions.forbidden_flags,
+        vec!["seo_harin_rescue_resolved"]
+    );
+    assert_eq!(
+        rescue
+            .presentation
+            .as_ref()
+            .expect("rescue presentation")
+            .layout
+            .as_deref(),
+        Some("rescue_and_investigation")
+    );
+    assert_eq!(rescue.choices.len(), 5);
+    let plain_truth = rescue
+        .choices
+        .iter()
+        .find(|choice| choice.id == "tell_plain_truth")
+        .expect("plain truth fallback choice");
+    assert_eq!(
+        plain_truth.outcome.add_flags,
+        vec![
+            "seo_harin_rescue_resolved",
+            "seo_harin_intervened",
+            "taken_under_watch",
+            "outsider_claim_recorded",
+            "truthful_outsider_claim"
+        ]
+    );
+    assert_eq!(
+        plain_truth.outcome.destination_id.as_deref(),
+        Some("cheongryu_outer_courtyard")
+    );
+
+    let apprentice = index
+        .encounter("wuxia_cheongryu_apprentice_entry")
+        .expect("cheongryu apprentice entry encounter");
+    assert_eq!(apprentice.title, "청류문 임시 수습생 등록");
+    assert_eq!(
+        apprentice.conditions.locations,
+        vec!["cheongryu_outer_courtyard"]
+    );
+    assert_eq!(
+        apprentice.conditions.required_flags,
+        vec!["seo_harin_rescue_resolved", "taken_under_watch"]
+    );
+    assert_eq!(
+        apprentice.conditions.forbidden_flags,
+        vec!["cheongryu_apprentice_entry_resolved"]
+    );
+    assert_eq!(
+        apprentice
+            .presentation
+            .as_ref()
+            .expect("apprentice presentation")
+            .layout
+            .as_deref(),
+        Some("cheongryu_apprenticeship")
+    );
+    assert_eq!(apprentice.choices.len(), 4);
+    let trial = apprentice
+        .choices
+        .iter()
+        .find(|choice| choice.id == "accept_three_month_trial")
+        .expect("three month trial fallback choice");
+    assert_eq!(
+        trial.outcome.add_flags,
+        vec![
+            "cheongryu_apprentice_entry_resolved",
+            "cheongryu_trial_started",
+            "seo_harin_mentor_thread",
+            "sect_debt_accepted",
+            "chore_training_open"
+        ]
+    );
+    assert_eq!(trial.outcome.add_items, vec!["work_chore_token"]);
+    assert_eq!(
+        trial.outcome.destination_id.as_deref(),
+        Some("cheongryu_outer_courtyard")
     );
 }
 

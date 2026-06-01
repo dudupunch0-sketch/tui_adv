@@ -345,6 +345,297 @@
           "visual_id": "wuxia_cheonggi_record_first_fragment"
         },
         "title": "천기록 첫 편린"
+      },
+      {
+        "body": "시장 담벼락 아래에서 숨을 고르자 흑사방 말단들이 다시 다가온다. 그때 청류문 외문 제자 서하린이 군중을 가르며 끼어든다. 흑사방은 물러나지만 그녀도 주인공을 믿지는 않는다. “무공도 모르는 자가 흑사방을 건드렸다고? 그 옷차림과 수첩은 어느 세력의 표식이지?” 구조는 구원이 아니라 보호와 감시의 시작이다.",
+        "choices": [
+          {
+            "id": "tell_plain_truth",
+            "label": "있는 그대로 길을 잃은 외지인이라고 말한다",
+            "outcome": {
+              "add_clues": [
+                "cheongryu_name_heard",
+                "sect_identity_matters"
+              ],
+              "add_flags": [
+                "seo_harin_rescue_resolved",
+                "seo_harin_intervened",
+                "taken_under_watch",
+                "outsider_claim_recorded",
+                "truthful_outsider_claim"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "진실은 설득력이 낮지만 일관성은 있다. 서하린은 믿기보다 감시하기로 결정한다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "ask_for_medical_help_first",
+            "label": "설명보다 치료와 안전한 곳을 먼저 부탁한다",
+            "outcome": {
+              "add_clues": [
+                "cheongryu_medicine_smells_of_herbs",
+                "sect_protection_has_price"
+              ],
+              "add_flags": [
+                "seo_harin_rescue_resolved",
+                "seo_harin_intervened",
+                "taken_under_watch",
+                "outsider_claim_recorded",
+                "injury_stabilized",
+                "rescue_debt_recorded"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "상처는 임시로 묶이지만 목숨값과 치료비라는 단어가 따라붙는다.",
+              "resources": {
+                "health": 4,
+                "sanity": -1
+              }
+            }
+          },
+          {
+            "id": "explain_company_and_commute",
+            "label": "회사와 출근길을 최대한 논리적으로 설명한다",
+            "outcome": {
+              "add_clues": [
+                "company_words_fail_clue",
+                "commute_rift_story_sounds_like_madness"
+              ],
+              "add_flags": [
+                "seo_harin_rescue_resolved",
+                "seo_harin_intervened",
+                "taken_under_watch",
+                "outsider_claim_recorded",
+                "company_words_misunderstood"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "회사, 출근, 엘리베이터라는 말은 강호의 문법으로 번역되지 않는다. 기록할 말과 숨길 말이 갈라진다.",
+              "resources": {
+                "sanity": -3
+              }
+            }
+          },
+          {
+            "id": "show_cheonggi_record_page",
+            "label": "방금 떠오른 천기록의 글자를 조심스럽게 보여준다",
+            "outcome": {
+              "add_clues": [
+                "notebook_draws_sect_attention",
+                "cheonggi_record_must_be_hidden"
+              ],
+              "add_flags": [
+                "seo_harin_rescue_resolved",
+                "seo_harin_intervened",
+                "taken_under_watch",
+                "outsider_claim_recorded",
+                "seo_harin_noticed_cheonggi_record",
+                "cheonggi_record_must_be_hidden"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "수첩은 도움을 부를 수도 있지만, 이름 붙는 순간 표적이 될 수도 있다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "hide_employee_badge",
+            "label": "사원증과 수첩을 품 안으로 숨긴다",
+            "outcome": {
+              "add_clues": [
+                "badge_misread_as_sect_token",
+                "hiding_marks_you_as_suspicious"
+              ],
+              "add_flags": [
+                "seo_harin_rescue_resolved",
+                "seo_harin_intervened",
+                "taken_under_watch",
+                "outsider_claim_recorded",
+                "badge_secret_flag",
+                "seo_harin_suspicion_raised"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "숨긴 물건은 지켜지지만, 숨기는 동작 자체가 의심을 산다.",
+              "resources": {
+                "sanity": -1
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "seo_harin_rescue_resolved"
+          ],
+          "locations": [
+            "jianghu_market_street"
+          ],
+          "required_flags": [
+            "heuksa_bang_first_fight_resolved",
+            "cheonggi_record_first_fragment_resolved"
+          ]
+        },
+        "id": "wuxia_seo_harin_rescue",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "sect_token_then_watchful_gaze",
+              "duration_hint_ms": 1300,
+              "fallback_text": "군중의 소음이 가라앉자 '서하린', '청류문', '감시'라는 말만 또렷하게 남는다.",
+              "intensity": 0.63,
+              "kind": "glyph_anomaly",
+              "source": "seo_harin_intervention",
+              "stable_terms": [
+                "서하린",
+                "청류문",
+                "감시"
+              ]
+            }
+          ],
+          "layout": "rescue_and_investigation",
+          "speaker": "서하린",
+          "visual_id": "wuxia_seo_harin_rescue"
+        },
+        "title": "서하린의 개입"
+      },
+      {
+        "body": "청류문 외곽 마당은 낡았지만 적대적이지 않다. 빈 연무장, 금 간 약탕기, 반쯤 무너진 서고 문이 이 문파의 적은 배신자가 아니라 결핍임을 말한다. 장문인은 서하린의 보고를 듣고 말한다. “보호는 하겠다. 다만 보호는 공짜가 아니고, 제자도 공짜로 받지 않는다. 석 달은 잡일과 수습으로 갚아라.”",
+        "choices": [
+          {
+            "id": "accept_three_month_trial",
+            "label": "석 달 동안 잡일과 수습 조건을 받아들인다",
+            "outcome": {
+              "add_clues": [
+                "training_starts_with_labor",
+                "protection_is_not_membership",
+                "sect_rules_written_in_chores"
+              ],
+              "add_flags": [
+                "cheongryu_apprentice_entry_resolved",
+                "cheongryu_trial_started",
+                "seo_harin_mentor_thread",
+                "sect_debt_accepted",
+                "chore_training_open"
+              ],
+              "add_items": [
+                "work_chore_token"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "보호는 소속의 문을 열지만 공짜가 아니다. 잡일은 벌이 아니라 청류문의 흐름을 배우는 첫 수련이 된다.",
+              "resources": {
+                "hunger": 1,
+                "sanity": -1
+              }
+            }
+          },
+          {
+            "id": "request_martial_training_immediately",
+            "label": "지금 당장 무공을 가르쳐 달라고 요구한다",
+            "outcome": {
+              "add_clues": [
+                "training_requires_chore_credit",
+                "protection_is_not_membership"
+              ],
+              "add_flags": [
+                "cheongryu_apprentice_entry_resolved",
+                "cheongryu_trial_started",
+                "seo_harin_mentor_thread",
+                "training_request_denied",
+                "sect_rules_explained",
+                "sect_master_watch"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "청류심법은 동정으로 던져 주는 비급이 아니다. 장문인은 먼저 물 긷기와 호흡, 서 있는 법을 배우라고 못박는다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "organize_chores_like_workflow",
+            "label": "회사식 업무 분해로 잡일 동선을 정리한다",
+            "outcome": {
+              "add_clues": [
+                "workflow_thinking_translates_to_training",
+                "sect_rules_written_in_chores"
+              ],
+              "add_flags": [
+                "cheongryu_apprentice_entry_resolved",
+                "cheongryu_trial_started",
+                "seo_harin_mentor_thread",
+                "modern_workflow_noticed",
+                "chore_roster_rewritten"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "업무 분해와 동선 정리는 무공 치트가 아니다. 대신 청류문 사람들은 네가 흐름을 보는 방식에 처음으로 고개를 돌린다.",
+              "resources": {
+                "hunger": 1,
+                "sanity": -1
+              }
+            }
+          },
+          {
+            "id": "inspect_archive_during_chore",
+            "label": "서고 정리 중 잠긴 낡은 장부를 살핀다",
+            "outcome": {
+              "add_clues": [
+                "old_archive_locked",
+                "cheonggi_record_resonates_near_archive"
+              ],
+              "add_flags": [
+                "cheongryu_apprentice_entry_resolved",
+                "cheongryu_trial_started",
+                "seo_harin_mentor_thread",
+                "old_archive_locked_seen",
+                "archive_curiosity_marked"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "잠긴 장부 앞에서 업무수첩의 빈 장이 아주 잠깐 떨린다. 천기록은 답하지 않고, 누군가 지켜보는 듯한 시선만 남긴다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "cheongryu_apprentice_entry_resolved"
+          ],
+          "locations": [
+            "cheongryu_outer_courtyard"
+          ],
+          "required_flags": [
+            "seo_harin_rescue_resolved",
+            "taken_under_watch"
+          ]
+        },
+        "id": "wuxia_cheongryu_apprentice_entry",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "chore_roster_then_breath_flow",
+              "duration_hint_ms": 1250,
+              "fallback_text": "낡은 명부의 먹물 사이로 '청류문', '잡일', '수습생'만 천천히 떠오른다.",
+              "intensity": 0.57,
+              "kind": "glyph_anomaly",
+              "source": "cheongryu_trial_roster",
+              "stable_terms": [
+                "청류문",
+                "잡일",
+                "수습생"
+              ]
+            }
+          ],
+          "layout": "cheongryu_apprenticeship",
+          "speaker": "청류문 장문인",
+          "visual_id": "wuxia_cheongryu_apprentice_entry"
+        },
+        "title": "청류문 임시 수습생 등록"
       }
     ],
     "endings": [
@@ -382,6 +673,18 @@
           "wuxia_preview"
         ],
         "type": "clue"
+      },
+      {
+        "description": "석 달 수습 기간 동안 물 긷기, 장작 패기, 연무장 청소를 맡았다는 작은 나무패.",
+        "id": "work_chore_token",
+        "name": "청류문 잡일패",
+        "tags": [
+          "cheongryu_sect",
+          "apprenticeship",
+          "chore",
+          "wuxia_preview"
+        ],
+        "type": "quest"
       }
     ],
     "locations": [
@@ -427,6 +730,21 @@
           "alley",
           "brawl"
         ]
+      },
+      {
+        "connections": [
+          "jianghu_market_street"
+        ],
+        "danger": 1,
+        "description": "낡은 현판과 비어 있는 연무장 사이로 청류문의 온기와 결핍이 함께 남은 외곽 마당.",
+        "id": "cheongryu_outer_courtyard",
+        "name": "청류문 외곽 마당",
+        "tags": [
+          "wuxia",
+          "cheongryu_sect",
+          "courtyard",
+          "watch"
+        ]
       }
     ],
     "secrets": []
@@ -435,10 +753,10 @@
   "manifest": {
     "counts": {
       "achievements": 2,
-      "encounters": 3,
+      "encounters": 5,
       "endings": 1,
-      "items": 2,
-      "locations": 3,
+      "items": 3,
+      "locations": 4,
       "secrets": 0
     },
     "schema_version": 1,

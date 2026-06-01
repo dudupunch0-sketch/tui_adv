@@ -1318,7 +1318,7 @@
     },
     "main_spine_link": "구조자/멘토 후보를 세우고, 주인공을 청류문 수습생 구간으로 이동시킨다. `wuxia_cheongryu_apprentice_entry`는 이 encounter의 구조/감시/채무 hook을 받아 진행한다.",
     "randomization_notes": "first_brawl/first_fragment 이후 forced aftermath. `seo_harin_rescue_resolved`로 반복을 막고 별도 hub random으로 사용하지 않는다.",
-    "promotion_notes": "다음 runtime slice로 확정한다. healing/debt/relation은 새 schema 없이 resources, danger, flags, clues, destination, log로만 표현한다."
+    "promotion_notes": "preview runtime으로 구현 완료. healing/debt/relation은 새 schema 없이 resources, danger, flags, clues, destination, log로만 표현했다. 다음 runtime slice는 `wuxia_cheongryu_apprentice_entry`다."
   },
   {
     "id": "wuxia_cheongryu_apprentice_entry",
@@ -1507,8 +1507,8 @@
     },
     "main_spine_link": "소속/채무/거점/훈련을 열어 공용 RPG 시스템이 office 밖에서도 성립하는지 검증한다. 이 card는 `wuxia_seo_harin_rescue`가 남긴 `seo_harin_rescue_resolved`/`taken_under_watch` hook을 받은 뒤 진행한다.",
     "randomization_notes": "route_key hub intro. rescue 직후 forced bridge로 1회만 사용하고, 이후 반복 잡일/서고 카드는 별도 deck으로 분리할 수 있다.",
-    "promotion_notes": "follow-up runtime candidate로 설계 완료. `wuxia_seo_harin_rescue` 구현 전에는 승격하지 않는다. 첫 runtime에서는 location/state schema를 넓히지 않고 narrative outcome과 flags/clues/log/presentation으로만 표현한다.",
-    "runtime_preview_design_status": "designed_follow_up_not_implemented",
+    "promotion_notes": "preview runtime으로 구현 완료. 첫 runtime은 location/state schema를 넓히지 않고 narrative outcome, `work_chore_token`, flags/clues/log/presentation으로만 표현했다. 다음 runtime slice는 `wuxia_cheongryu_raid_route_split`다.",
+    "runtime_preview_design_status": "implemented_in_storypack_preview",
     "purpose": "서하린 구조 이후 주인공을 청류문 질서 안에 임시로 넣고, 보호의 대가·잡일·수련 허가·서고 curiosity hook을 연다. 관계/채무/훈련 XP schema가 아니라 기존 flags/clues/log만 사용한다.",
     "runtime_preview_start_conditions": {
       "runtime_mode": "storypack_preview",
@@ -1551,6 +1551,15 @@
         "CombatState",
         "fragment_choice_reward"
       ]
+    },
+    "runtime_preview_implementation_notes": {
+      "implemented_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml",
+      "generated_artifacts": [
+        "crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json",
+        "web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json"
+      ],
+      "default_bundle_changed": false,
+      "new_schema_opened": false
     }
   },
   {
@@ -1848,8 +1857,8 @@
     },
     "main_spine_link": "중반의 큰 분기점으로 정파/사파/천기·귀환 루트 압박을 연다. 이 card는 rescue/apprentice와 first-fragment 공통 hook이 runtime에 들어간 뒤에만 사용한다.",
     "randomization_notes": "보스/대형 사건급 route_key. 충분한 공통 루트, 청류문 수습생 hook, 천기록 각성 hook 뒤에 1회성 forced route pressure로 사용한다.",
-    "promotion_notes": "later runtime candidate로 설계 완료. `wuxia_seo_harin_rescue`와 `wuxia_cheongryu_apprentice_entry` 구현 전에는 승격하지 않는다. 첫 raid runtime은 route flag/clue/log/presentation만 남기고 route graph, faction reputation, boss combat, ending implementation은 별도 slice로 둔다.",
-    "runtime_preview_design_status": "designed_later_not_implemented",
+    "promotion_notes": "next runtime candidate로 설계 완료. `wuxia_seo_harin_rescue`와 `wuxia_cheongryu_apprentice_entry`가 preview runtime에 구현되었으므로 승격 가능하다. 첫 raid runtime은 route flag/clue/log/presentation만 남기고 route graph, faction reputation, boss combat, ending implementation은 별도 slice로 둔다.",
+    "runtime_preview_design_status": "designed_next_not_implemented",
     "purpose": "청류문 공통 루트가 충분히 쌓인 뒤 혈월교 습격을 통해 정파/사파/천기·귀환 축의 route pressure를 처음 노출한다. 완전한 faction reputation, route graph, ending system이 아니라 route flag/clue/log hook만 남긴다.",
     "runtime_preview_start_conditions": {
       "runtime_mode": "storypack_preview",

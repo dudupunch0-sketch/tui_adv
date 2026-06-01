@@ -730,7 +730,7 @@ node --check scripts/storybook-reference-qa.mjs
 ## 0.10 2026-05-29 active direction: storypack/world 일반화와 무협 기준팩
 
 사용자 결정에 따라 프로젝트 방향을 “회사 아포칼립스 전용 게임”에서 “storypack/world 기반 선택지 생존 엔진 + 기본 office storypack”으로 재정렬한다. 첫 비-office 기준팩은 `wuxia_jianghu_pack`이며, 최신 canonical story는 Notion에서 갱신된 **이구학지 — 천기록**이다. 2026-05-31에는 Notion-origin `야근몽`을 기본 office runtime을 대체하지 않는 별도 office-family 후보 `yageunmong_pack`으로 승격했다.
-현재 상태: 설계 문서화 완료, 최신 무협 story 반영 완료, 야근몽 candidate docs/DB 반영 완료, machine-readable storypack DB/preview mode 결정 완료, 무협 runtime preview(`wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`)와 Web/terminal preview launcher/UI wiring 완료.
+현재 상태: 설계 문서화 완료, 최신 무협 story 반영 완료, 야근몽 candidate docs/DB 반영 완료, machine-readable storypack DB/preview mode 결정 완료, 무협 runtime preview(`wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`)와 Web/terminal preview launcher/UI wiring 완료.
 
 문제 인식:
 
@@ -742,13 +742,14 @@ node --check scripts/storybook-reference-qa.mjs
 
 - `docs/design/Storypack_World_Model.md`를 추가해 `world_id`, `storypack_id`, surface, resource display alias, route hook을 정리했다.
 - `docs/content/storypacks/wuxia_jianghu_pack.md`를 이구학지 — 천기록 무협 기준팩으로 갱신했다.
-- `docs/content/encounter_db/wuxia_jianghu_pack.md`에 `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`를 포함한 6개 후보 situation card를 정리했다.
+- `docs/content/encounter_db/wuxia_jianghu_pack.md`에 `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`를 포함한 7개 후보 situation card를 정리했다.
 - `docs/content/storypacks/yageunmong_pack.md`와 `docs/content/encounter_db/yageunmong_pack.md`를 추가해 회사 자각몽/현실 앵커/각성편린/퇴근 게이트 후보를 별도 office-dream candidate로 정리했다.
 - `docs/content/storypack_db/storypacks.json`와 `docs/content/storypack_db/encounter_situations.json`를 추가해 design-time storypack DB 참조 무결성을 검증한다.
 - `docs/dev/Storypack_Runtime_Preview_Mode.md`를 추가해 첫 non-office runtime prototype은 separate preview mode first로 진행하고, 기본 office bundle과 무협 preview bundle을 섞지 않는다고 결정했다.
 - `wuxia_commute_rift_arrival`을 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/*.yaml` source와 별도 generated preview bundle로 구현했다. Rust fixture와 Web generated preview artifact는 기본 `content.bundle.json`와 분리된다.
 - `wuxia_heuksa_bang_first_fight`를 같은 preview source/bundle에 추가했고, `escape-terminal --storypack-preview wuxia_jianghu_pack`와 Web start screen preview launcher로 기본 office runtime을 건드리지 않는 opt-in entrypoint를 구현했다.
 - `wuxia_cheonggi_record_first_fragment`를 첫 난투 후 천기록 future hook preview로 추가했다. `cheonggi_record_notebook` item과 `wuxia_first_fragment_seen` achievement도 preview bundle에만 들어간다.
+- `wuxia_seo_harin_rescue`를 first fight/first fragment 뒤 서하린 구조, 외지인 조사, 청류문 보호/감시 bridge preview로 추가했다. `cheongryu_outer_courtyard` location과 `seo_harin_rescue_resolved`/`taken_under_watch`/`outsider_claim_recorded` hooks는 preview bundle에만 들어간다.
 - `AGENTS.md`, `README.md`, `docs/00_Index.md`, `docs/design/Storypack_Encounter_DB.md`, `docs/dev/Checklist.md`를 office-only 표현에서 storypack-capable 표현으로 조정했다.
 
 유지 범위:
@@ -762,8 +763,8 @@ node --check scripts/storybook-reference-qa.mjs
 
 후속 후보:
 
-1. `wuxia_seo_harin_rescue`: 다음 구현 slice로 설계 완료. first fight/cheonggi fragment outcome을 이어받아 청류문/서하린과 연결되는 구조/조사/호송 이벤트를 연다.
-2. `wuxia_cheongryu_apprentice_entry`: 서하린 구조 후 수습생/잡역/서고 정리 bridge를 열어 천기록 발현의 정식 위치를 회수하는 후속 후보.
+1. `wuxia_cheongryu_apprentice_entry`: preview runtime 구현 완료. 서하린 구조 후 수습생/잡역/서고 정리 bridge를 열어 천기록 발현의 정식 위치를 회수한다.
+2. `wuxia_cheongryu_raid_route_split`: 다음 구현 slice. apprentice 이후 충분한 청류문 공통 루트와 천기록 hook을 받아 여는 route-pressure 후보.
 3. `yageunmong_late_night_desk_awake`: 야근몽을 열 경우 기본 office bundle을 대체하지 않는 별도 storypack preview 첫 후보.
 4. display alias pass: `health/sanity/battery/hunger/thirst/danger` 내부 field는 유지하되 world별 표시 이름을 분리할지 검토한다.
 
@@ -840,7 +841,7 @@ node --check scripts/storybook-reference-qa.mjs
   - `source /home/dudupunch0/.config/tui_adv/tmp-installs.sh && python3 scripts/export_web_data.py --storypack-preview wuxia_jianghu_pack --preview-bundle crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json --preview-bundle web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json --check`
   - Rust tmp toolchain policy를 적용한 뒤 `cargo test -p escape-core --test content_bundle`, `cargo test -p escape-terminal content_tui_smoke_renders_wuxia_storypack_preview_first_fight`, 필요 시 `cargo test -p escape-wasm json_boundary_uses_storypack_preview_default_location`
   - `git diff --check`
-- 생성 artifact 위치: preview source는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`, generated preview bundle은 `crates/escape-core/fixtures/content/storypack-preview/`와 `web/src/data/generated/storypack-preview/`에만 둔다.
+- 구현 결과: preview source는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`, generated preview bundle은 `crates/escape-core/fixtures/content/storypack-preview/`와 `web/src/data/generated/storypack-preview/`에만 두었다.
 - Web/Rust/terminal parity 확인 항목: runtime metadata 유지, default location 유지, arrival와 first fight encounter id/action id 일치, preview bundle에만 무협 콘텐츠 존재, default office bundle에 무협 id 부재, `ScenePage`/action id renderer-neutral 표시 유지.
 - 구현하지 말아야 할 것: preview launcher/UI wiring, storypack 선택 UI, 기본 office bundle 변경, `escape-office` key rename, 천외편린/각성편린 3택 reward schema, yageunmong runtime, 전체 전투 시스템 재설계.
 
@@ -894,7 +895,7 @@ node --check scripts/storybook-reference-qa.mjs
 
 ## 0.15 2026-05-31 docs-only decision: 무협 `wuxia_seo_harin_rescue` 후속 slice
 
-현재 상태: 설계/handoff 완료, runtime YAML/Rust/Web 구현 미착수.
+현재 상태: 설계/handoff 완료, 2026-06-01 runtime YAML/Rust/Web preview 구현 완료.
 
 Read-only inventory:
 
@@ -910,7 +911,7 @@ Read-only inventory:
 
 결정:
 
-- 다음 구현 slice는 `wuxia_seo_harin_rescue`로 확정한다.
+- 다음 구현 slice는 `wuxia_seo_harin_rescue`로 확정했고, 2026-06-01 preview runtime에 구현했다.
 - 이유: 현재 preview route는 arrival → first fight → first fragment까지 완료되어 “폭력”, “천기록 future hook”은 보였지만, 주인공을 다음 거점과 관계망으로 옮기는 구조/조사 bridge가 없다. `wuxia_cheongryu_apprentice_entry`는 서하린의 보호/감시, 청류문 이름, 치료/채무 hook이 있어야 자연스럽게 시작된다.
 - `preview launcher/UI wiring`은 이미 완료되어 선행 조건이 아니다. 새 launcher나 storypack selection UI를 다시 열지 않는다.
 - `yageunmong_pack`은 이번 무협 후속의 주 대상이 아니며 별도 preview 후보로만 유지한다.
@@ -956,7 +957,7 @@ Read-only inventory:
 
 ## 0.16 2026-05-31 docs-only follow-up: 무협 `wuxia_cheongryu_apprentice_entry` 후보 설계
 
-현재 상태: 설계/handoff 완료, runtime YAML/Rust/Web 구현 미착수. `wuxia_seo_harin_rescue` runtime slice가 먼저 landed되어야 한다.
+현재 상태: 설계/handoff와 preview runtime 구현 완료. `wuxia_seo_harin_rescue` runtime slice가 남긴 hook을 받아 `wuxia_cheongryu_apprentice_entry`가 같은 preview bundle에 landing되었고, 다음 구현 slice는 `wuxia_cheongryu_raid_route_split`다.
 
 Read-only inventory:
 
@@ -966,14 +967,14 @@ Read-only inventory:
 | preview mode contract | `docs/dev/Storypack_Runtime_Preview_Mode.md` | `storypack_preview` metadata, terminal/Web preview launcher, no default bundle mixing은 완료. | rescue 다음 encounter도 같은 preview bundle에만 추가하고 launcher/UI를 다시 열지 않는다는 경계가 필요하다. | 새 preview mode가 아니라 existing opt-in preview의 후속 content다. | 수정 | `docs/dev/Storypack_Runtime_Preview_Mode.md` |
 | storypack canonical story | `docs/content/storypacks/wuxia_jianghu_pack.md`, `docs/design/Storypack_World_Model.md` | spine은 `rescue_and_investigation` 다음 `cheongryu_apprenticeship`을 요구한다. | 수습생 편입이 어떤 기능을 검증하는지, 천기록/천외편린과 무엇을 분리하는지 명확히 해야 한다. | 이 encounter는 소속/채무/잡일/훈련 허가를 처음 runtime-visible하게 만든다. | 수정 | `docs/content/storypacks/wuxia_jianghu_pack.md`, `docs/design/Storypack_World_Model.md` |
 | encounter situation cards/DB | `docs/content/encounter_db/wuxia_jianghu_pack.md`, `docs/content/storypack_db/*` | `wuxia_cheongryu_apprentice_entry` 카드가 후보로 존재하지만 choice/outcome/schema boundary가 얕다. | stable choice id, fallback, required flags, optional branch hook, allowed schema, forbidden schema를 구현 handoff 수준으로 구체화해야 한다. | 이번 설계의 중심 카드다. | 수정 | `docs/content/encounter_db/wuxia_jianghu_pack.md`, `docs/content/storypack_db/storypacks.json`, `docs/content/storypack_db/encounter_situations.json`, `docs/content/storypack_db/README.md` |
-| preview runtime source/artifacts | `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`, `crates/escape-core/fixtures/content/storypack-preview/`, `web/src/data/generated/storypack-preview/` | source와 generated preview bundle에는 `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment` 3개 encounter만 있다. | 구현 세션에서 먼저 rescue를 추가하고, 그 다음 같은 preview source에 apprenticeship encounter를 추가해야 한다. | source/artifact 대상이지만 이번 docs-only 세션에서는 read-only다. | 수정 안 함 | 후속 구현 세션에서 `encounters.yaml`, 필요 시 `locations.yaml`/`items.yaml`, generated preview bundle 2개 |
+| preview runtime source/artifacts | `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`, `crates/escape-core/fixtures/content/storypack-preview/`, `web/src/data/generated/storypack-preview/` | source와 generated preview bundle에는 `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry` 5개 encounter가 있다. | 다음 구현 세션에서 같은 preview source에 raid route split encounter를 추가해야 한다. | source/artifact 대상이며 구현 완료 상태를 docs에 반영했다. | 수정 | 후속 구현 세션에서 `encounters.yaml`, 필요 시 `locations.yaml`, generated preview bundle 2개 |
 | default office boundary | `src/tui_adv/data/*.yaml`, 기본 Rust/Web `content.bundle.json`, Web save/localStorage key | 기본 office bundle에는 무협 id가 없고 `escape-office` key가 유지된다. | apprenticeship slice도 이 경계를 깨지 않아야 한다. | 청류문 수습생 status를 기본 office runtime으로 섞지 않는다. | 수정 안 함 | 없음 |
-| tests/contracts | `tests/test_web_data_export.py`, `tests/test_docs_contract.py`, `tests/test_storypack_db.py`, Rust/Web tests | DB validator는 후보 카드 구조를 검증하고, runtime tests는 현재 3개 preview encounter와 launcher parity를 검증한다. | JSON DB 변경은 targeted docs/storypack pytest로 검증하고, 구현 세션에서는 rescue→apprentice route smoke를 추가해야 한다. | choice id/action id parity와 default office 미변경 검증 대상이다. | docs/data DB 변경으로 targeted pytest 실행 | 구현 세션에서 Python/Rust/WASM/terminal/Web test 파일 |
+| tests/contracts | `tests/test_web_data_export.py`, `tests/test_docs_contract.py`, `tests/test_storypack_db.py`, Rust/Web tests | DB validator는 후보 카드 구조를 검증하고, runtime tests는 현재 5개 preview encounter와 launcher parity를 검증한다. | 다음 구현 세션에서는 apprentice→raid route smoke를 추가해야 한다. | route choice id/action id parity와 default office 미변경 검증 대상이다. | docs/data DB 변경으로 targeted pytest 실행 | 구현 세션에서 Python/Rust/WASM/terminal/Web test 파일 |
 
 결정:
 
-- `wuxia_cheongryu_apprentice_entry`는 `wuxia_seo_harin_rescue` 이후의 다음 follow-up 후보로 설계 완료한다.
-- 즉시 구현 순서는 여전히 `wuxia_seo_harin_rescue`가 1순위다. `wuxia_cheongryu_apprentice_entry`는 `seo_harin_rescue_resolved`/`taken_under_watch`와 `cheongryu_outer_courtyard`가 runtime preview source에 생긴 뒤 구현한다.
+- `wuxia_cheongryu_apprentice_entry`는 `wuxia_seo_harin_rescue` 이후의 follow-up 후보로 설계했고, 2026-06-01 preview runtime에 구현 완료했다.
+- 즉시 구현 순서는 이제 `wuxia_cheongryu_raid_route_split`가 1순위다. `wuxia_cheongryu_apprentice_entry`가 `cheongryu_apprentice_entry_resolved`/`cheongryu_trial_started`와 `cheongryu_outer_courtyard`를 runtime preview source에 남겼기 때문이다.
 - `preview launcher/UI wiring`은 이미 완료되어 선행 조건이 아니다. 새 preview selector나 save-key migration을 다시 열지 않는다.
 - `yageunmong_pack`은 이번 무협 후속의 주 대상이 아니며 별도 preview 후보로만 유지한다.
 
@@ -993,16 +994,16 @@ Read-only inventory:
 - 새 `RelationScore`, `DebtLedger`, `FactionStanding`, `TrainingXP`, `ChoreScheduler`, companion schema, combat/reward/ability schema, 천외편린 3택 lock-in UI는 열지 않는다.
 - 기본 office bundle, Web 기본 generated bundle, `src/tui_adv/data/*.yaml`, `escape-office` save/localStorage key는 변경하지 않는다.
 
-구현 세션 handoff:
+구현 완료 기록:
 
-- 선행 조건: `wuxia_seo_harin_rescue` runtime slice가 같은 preview source에 구현되어 있고, 모든 rescue outcome이 최소 `seo_harin_rescue_resolved`와 `taken_under_watch`를 남기며 `cheongryu_outer_courtyard`로 이동할 수 있어야 한다. 이 조건이 없으면 apprenticeship을 먼저 구현하지 말고 rescue route를 보정한다.
+- 구현 상태: `wuxia_cheongryu_apprentice_entry` runtime slice는 같은 preview source에 구현되어 있고, 모든 apprentice outcome이 최소 `cheongryu_apprentice_entry_resolved`, `cheongryu_trial_started`, `seo_harin_mentor_thread`, `destination_id: cheongryu_outer_courtyard`를 남긴다. 이 구현이 다음 raid route split의 선행 조건이다.
 - 예상 수정 파일:
   - `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`: `wuxia_seo_harin_rescue` 뒤에 `wuxia_cheongryu_apprentice_entry`를 추가한다.
   - `src/tui_adv/storypack-previews/wuxia_jianghu_pack/locations.yaml`: `cheongryu_outer_courtyard`가 이미 rescue slice에서 추가되지 않았다면 추가한다. 새 location이 불필요하면 같은 courtyard 유지.
   - `src/tui_adv/storypack-previews/wuxia_jianghu_pack/items.yaml`: `work_chore_token` 같은 preview-only item을 실제로 outcome에 줄 때만 추가한다.
   - generated preview artifacts: `crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json`, `web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json`만 재생성한다.
   - 필요 시 docs sync: `docs/dev/Storypack_Runtime_Preview_Mode.md`, `docs/content/encounter_db/wuxia_jianghu_pack.md`, 이 파일, `docs/dev/Checklist.md`.
-- 작성할 테스트:
+- 구현 검증:
   - Python exporter/storypack preview test가 preview bundle에 `wuxia_seo_harin_rescue`와 `wuxia_cheongryu_apprentice_entry`를 포함하고 기본 office bundle에는 무협 id가 없음을 검증한다.
   - Rust `escape-core` content bundle fixture test가 apprenticeship conditions, fallback choice, choice ids, flags/clues/items/log/presentation hook을 읽는지 검증한다.
   - WASM JSON boundary test가 preview route에서 first fragment → rescue → apprentice scene/action ids까지 도달하는지 검증한다.
@@ -1019,24 +1020,24 @@ Read-only inventory:
 
 ## 0.17 2026-05-31 docs-only follow-up: 무협 `wuxia_cheongryu_raid_route_split` 후보 설계
 
-현재 상태: 설계/handoff 완료, runtime YAML/Rust/Web 구현 미착수. `wuxia_seo_harin_rescue`와 `wuxia_cheongryu_apprentice_entry` runtime slice가 먼저 landed되어야 하며, `wuxia_cheonggi_record_first_fragment`의 `cheonggi_record_awakened`/`first_fragment_seen` hook도 유지되어야 한다.
+현재 상태: 설계/handoff 완료, runtime YAML/Rust/Web 구현 미착수. `wuxia_seo_harin_rescue`와 `wuxia_cheongryu_apprentice_entry` runtime slice가 landed되었고, `wuxia_cheonggi_record_first_fragment`의 `cheonggi_record_awakened`/`first_fragment_seen` hook도 유지되어 있으므로 다음 구현 slice로 승격 가능하다.
 
 Read-only inventory:
 
 | 영역 | 관련 파일 | 현재 canonical 상태 | 무협 후속 개발에 필요한 gap | `wuxia_cheongryu_raid_route_split` 관련성 | 이번 세션 수정 여부 | 수정한다면 예상 변경 파일 |
 |---|---|---|---|---|---|---|
-| main plan/dev handoff | `docs/dev/Development_Plan.md`, `docs/dev/Checklist.md` | 즉시 구현 순서는 rescue → apprentice로 정리됐다. raid route split은 중반 후보로만 얕게 남아 있었다. | 후속 후보를 설계하되 rescue/apprentice보다 앞서지 않는 순서와 구현 금지선을 명시해야 한다. | 이 card는 청류문 공통 루트가 충분히 쌓인 뒤 정파/사파/천기·귀환 route pressure를 여는 later candidate다. | 수정 | `docs/dev/Development_Plan.md`, `docs/dev/Checklist.md` |
-| preview mode contract | `docs/dev/Storypack_Runtime_Preview_Mode.md` | preview mode/launcher/UI wiring은 완료. 현재 planned follow-up은 rescue와 apprentice다. | raid도 별도 mode가 아니라 같은 preview bundle에서만 실험하되, 즉시 구현 대상이 아님을 밝혀야 한다. | 중반 route split preview는 existing preview entrypoint만 사용한다. | 수정 | `docs/dev/Storypack_Runtime_Preview_Mode.md` |
+| main plan/dev handoff | `docs/dev/Development_Plan.md`, `docs/dev/Checklist.md` | 즉시 구현 순서는 rescue → apprentice → raid로 정리됐다. raid route split은 다음 구현 후보로 승격됐다. | 후속 구현에서 rescue/apprentice보다 앞서지 않는 순서와 구현 금지선을 유지해야 한다. | 이 card는 청류문 공통 루트가 충분히 쌓인 뒤 정파/사파/천기·귀환 route pressure를 여는 next candidate다. | 수정 | `docs/dev/Development_Plan.md`, `docs/dev/Checklist.md` |
+| preview mode contract | `docs/dev/Storypack_Runtime_Preview_Mode.md` | preview mode/launcher/UI wiring은 완료. 현재 planned follow-up은 raid route split이다. | raid도 별도 mode가 아니라 같은 preview bundle에서만 실험하되, default bundle과 save key를 건드리지 않아야 한다. | 중반 route split preview는 existing preview entrypoint만 사용한다. | 수정 | `docs/dev/Storypack_Runtime_Preview_Mode.md` |
 | storypack canonical story | `docs/content/storypacks/wuxia_jianghu_pack.md`, `docs/design/Storypack_World_Model.md` | spine은 `cheonggi_record_awakening` 이후 `cheongryu_raid`/`route_commitment`로 간다. | route commitment를 새 route/faction schema 없이 flags/clues/log로만 설계해야 한다. | 이 encounter는 첫 대형 분기 압박이지만, route system 자체 구현은 future work다. | 수정 | `docs/content/storypacks/wuxia_jianghu_pack.md`, `docs/design/Storypack_World_Model.md` |
 | encounter situation cards/DB | `docs/content/encounter_db/wuxia_jianghu_pack.md`, `docs/content/storypack_db/*` | `wuxia_cheongryu_raid_route_split` 카드가 후보로 있으나 fallback, start conditions, outcome hook, schema boundary가 얕다. | stable choice id 4개, fallback, route flag hook, prerequisites, non-goals를 구체화해야 한다. | 이번 설계의 중심 카드다. | 수정 | `docs/content/encounter_db/wuxia_jianghu_pack.md`, `docs/content/storypack_db/storypacks.json`, `docs/content/storypack_db/encounter_situations.json`, `docs/content/storypack_db/README.md` |
-| preview runtime source/artifacts | `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`, `crates/escape-core/fixtures/content/storypack-preview/`, `web/src/data/generated/storypack-preview/` | source/generated preview bundle에는 여전히 3개 encounter만 있다. rescue/apprentice도 아직 runtime source에는 없다. | raid 구현 세션은 rescue/apprentice가 먼저 preview source에 들어간 뒤에만 열어야 한다. | source/artifact 대상이지만 이번 docs-only 세션에서는 read-only다. | 수정 안 함 | later 구현 세션에서 `encounters.yaml`, 필요 시 `locations.yaml`/`achievements.yaml`, generated preview bundle 2개 |
+| preview runtime source/artifacts | `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`, `crates/escape-core/fixtures/content/storypack-preview/`, `web/src/data/generated/storypack-preview/` | source/generated preview bundle에는 `wuxia_cheongryu_apprentice_entry`까지 5개 encounter가 있다. | raid 구현 세션은 이 5개 preview route 뒤에 route split을 붙이면 된다. | source/artifact 대상이지만 이번 sync에서는 구현 완료 상태만 반영한다. | 수정 | 다음 구현 세션에서 `encounters.yaml`, 필요 시 `locations.yaml`/`achievements.yaml`, generated preview bundle 2개 |
 | default office boundary | `src/tui_adv/data/*.yaml`, 기본 Rust/Web `content.bundle.json`, Web save/localStorage key | 기본 office bundle에는 무협 id가 없고 `escape-office` key가 유지된다. | route split도 default office runtime으로 섞지 않아야 한다. | faction route flag는 preview storypack 안에서만 남긴다. | 수정 안 함 | 없음 |
-| tests/contracts | `tests/test_web_data_export.py`, `tests/test_docs_contract.py`, `tests/test_storypack_db.py`, Rust/Web tests | DB validator는 후보 카드 구조를 검증하고 runtime tests는 현재 3개 preview encounter를 검증한다. | JSON DB 변경은 targeted docs/storypack pytest로 검증하고, future runtime 구현 때 route-choice parity test를 추가해야 한다. | route flag/action id parity와 default office 미변경 검증 대상이다. | docs/data DB 변경으로 targeted pytest 실행 | later 구현 세션에서 Python/Rust/WASM/terminal/Web test 파일 |
+| tests/contracts | `tests/test_web_data_export.py`, `tests/test_docs_contract.py`, `tests/test_storypack_db.py`, Rust/Web tests | DB validator는 후보 카드 구조를 검증하고 runtime tests는 현재 5개 preview encounter를 검증한다. | 다음 runtime 구현 때 route-choice parity test를 추가해야 한다. | route flag/action id parity와 default office 미변경 검증 대상이다. | docs/data DB 변경으로 targeted pytest 실행 | 다음 구현 세션에서 Python/Rust/WASM/terminal/Web test 파일 |
 
 결정:
 
-- `wuxia_cheongryu_raid_route_split`는 기존 후보 목록에서 다음으로 구체화할 later candidate로 설계 완료한다.
-- 즉시 구현 순서는 바꾸지 않는다. `wuxia_seo_harin_rescue` → `wuxia_cheongryu_apprentice_entry`가 먼저고, raid split은 그 뒤 충분한 청류문 공통 루트와 천기록 hook이 있을 때만 연다.
+- `wuxia_cheongryu_raid_route_split`는 기존 후보 목록에서 다음으로 구체화한 candidate이며, 이제 다음 구현 slice다.
+- 즉시 구현 순서는 `wuxia_cheongryu_raid_route_split`로 갱신한다. `wuxia_seo_harin_rescue`와 `wuxia_cheongryu_apprentice_entry`는 구현 완료했고, raid split은 그 뒤 충분한 청류문 공통 루트와 천기록 hook을 받아 연다.
 - `wuxia_cheonggi_record_first_fragment`는 이미 preview runtime으로 구현된 foreshadow slice다. raid split은 이 구현의 `cheonggi_record_awakened`/`first_fragment_seen` hook을 재사용하되, 천외편린 3택 reward/ability schema를 확장하지 않는다.
 - `preview launcher/UI wiring`은 이미 완료되어 선행 조건이 아니다. 새 selector, save-key migration, default bundle 변경을 열지 않는다.
 
@@ -1092,15 +1093,15 @@ Read-only inventory:
 | preview mode contract | `docs/dev/Storypack_Runtime_Preview_Mode.md` | same `storypack_preview` mode와 launcher/UI wiring은 완료. 후속 content는 preview bundle 안에서만 추가한다. | wounded fallback도 별도 mode나 route graph가 아니라 existing preview bundle의 조건부 content임을 명시해야 한다. | 정파/사파/천기 route opener보다 먼저 설계하지만 구현은 raid split 이후다. | 수정 | `docs/dev/Storypack_Runtime_Preview_Mode.md` |
 | storypack canonical story | `docs/content/storypacks/wuxia_jianghu_pack.md`, `docs/design/Storypack_World_Model.md` | spine은 raid route commitment 이후 각 route opener로 갈 수 있다. | fallback branch가 “인간을 우선한 선택”으로 의미를 가지면서도 분기 선택을 다시 받을 bridge가 필요하다. | wounded fallback은 route 선택을 지연한 대가와 보상을 공통 flags/clues/log로 기록한다. | 수정 | `docs/content/storypacks/wuxia_jianghu_pack.md`, `docs/design/Storypack_World_Model.md` |
 | encounter situation cards/DB | `docs/content/encounter_db/wuxia_jianghu_pack.md`, `docs/content/storypack_db/*` | raid split 카드는 `evacuate_the_wounded_first` fallback을 설계했지만 그 이후 카드가 없었다. | fallback 후속 id, start conditions, stable choice id, outcome hook, schema boundary를 고정해야 한다. | 이번 설계의 중심 카드다. | 수정 | `docs/content/encounter_db/wuxia_jianghu_pack.md`, `docs/content/storypack_db/storypacks.json`, `docs/content/storypack_db/encounter_situations.json`, `docs/content/storypack_db/README.md` |
-| preview runtime source/artifacts | `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`, `crates/escape-core/fixtures/content/storypack-preview/`, `web/src/data/generated/storypack-preview/` | source/generated preview bundle에는 현재 3개 encounter만 있다. rescue/apprentice/raid도 아직 runtime source에는 없다. | wounded fallback 구현 세션은 rescue/apprentice/raid split이 먼저 preview source에 들어간 뒤에만 열어야 한다. | source/artifact 대상이지만 이번 docs-only 세션에서는 read-only다. | 수정 안 함 | later 구현 세션에서 `encounters.yaml`, 필요 시 `locations.yaml`, generated preview bundle 2개 |
+| preview runtime source/artifacts | `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`, `crates/escape-core/fixtures/content/storypack-preview/`, `web/src/data/generated/storypack-preview/` | source/generated preview bundle에는 `wuxia_cheongryu_apprentice_entry`까지 5개 encounter가 있다. raid는 아직 runtime source에 없다. | wounded fallback 구현 세션은 raid split이 먼저 preview source에 들어간 뒤에만 열어야 한다. | source/artifact 대상이지만 이번 docs-only sync에서는 read-only다. | 수정 | later 구현 세션에서 `encounters.yaml`, 필요 시 `locations.yaml`, generated preview bundle 2개 |
 | default office boundary | `src/tui_adv/data/*.yaml`, 기본 Rust/Web `content.bundle.json`, Web save/localStorage key | 기본 office bundle에는 무협 id가 없고 `escape-office` key가 유지된다. | deferred route follow-up도 default office runtime으로 섞지 않아야 한다. | fallback branch flags는 preview storypack 안에서만 남긴다. | 수정 안 함 | 없음 |
-| tests/contracts | `tests/test_storypack_db.py`, `tests/test_docs_contract.py`, Rust/Web tests | DB validator는 후보 카드 구조를 검증한다. runtime tests는 현재 3개 preview encounter를 검증한다. | 새 DB card id를 docs/data contract test에 반영하고, future runtime 구현 때 deferred branch route smoke를 추가해야 한다. | fallback choice/action id parity와 default office 미변경 검증 대상이다. | docs/data DB 변경으로 targeted pytest 실행 | 이번 세션에서 `tests/test_storypack_db.py` 기대 id만 갱신; later 구현 세션에서 Python/Rust/WASM/terminal/Web test 파일 |
+| tests/contracts | `tests/test_storypack_db.py`, `tests/test_docs_contract.py`, Rust/Web tests | DB validator는 후보 카드 구조를 검증한다. runtime tests는 현재 5개 preview encounter를 검증한다. | future runtime 구현 때 deferred branch route smoke를 추가해야 한다. | fallback choice/action id parity와 default office 미변경 검증 대상이다. | docs/data DB 변경으로 targeted pytest 실행 | later 구현 세션에서 Python/Rust/WASM/terminal/Web test 파일 |
 
 결정:
 
 - `wuxia_cheongryu_raid_wounded_fallback`를 `evacuate_the_wounded_first` 이후를 받는 deferred-route follow-up 후보로 설계 완료한다.
 - 이 후보는 정파/사파/천기 route opener보다 먼저 설계한다. 이유는 fallback branch가 사람을 구한 뒤 route 선택을 다시 받을 공통 재합류 지점이 없으면, 이후 route opener 설계가 direct branch만 기준으로 굳어질 수 있기 때문이다.
-- 구현 backlog 순서는 바꾸지 않는다. 즉시 구현은 여전히 `wuxia_seo_harin_rescue` → `wuxia_cheongryu_apprentice_entry` → `wuxia_cheongryu_raid_route_split`이며, wounded fallback은 raid split 구현 뒤 조건부 follow-up이다.
+- 구현 backlog 순서는 `wuxia_cheongryu_raid_route_split` → `wuxia_cheongryu_raid_wounded_fallback`이다. `wuxia_seo_harin_rescue`와 `wuxia_cheongryu_apprentice_entry`는 구현 완료했으며, wounded fallback은 raid split 구현 뒤 조건부 follow-up이다.
 - 새 preview launcher/UI wiring은 필요 없다. 기본 office bundle과 `escape-office` save/localStorage key는 변경하지 않는다.
 
 `wuxia_cheongryu_raid_wounded_fallback` 설계 경계:
@@ -1146,7 +1147,7 @@ Read-only inventory:
 
 ## 0.19 2026-06-01 docs-only sync: Notion 이구학지 운영 기준 반영
 
-현재 상태: docs-only sync 완료. runtime YAML/Rust/Web/generated bundle, 기본 office bundle, `escape-office` save/localStorage key는 수정하지 않았다.
+현재 상태: docs-only sync 완료. 이후 follow-up runtime slice에서 `wuxia_seo_harin_rescue`만 storypack preview bundle에 구현했다. 기본 office bundle과 `escape-office` save/localStorage key는 수정하지 않았다.
 
 Live-check한 Notion source:
 
@@ -1184,19 +1185,20 @@ Live-check한 Notion source:
 - `wuxia_commute_rift_arrival`
 - `wuxia_heuksa_bang_first_fight`
 - `wuxia_cheonggi_record_first_fragment`
+- `wuxia_seo_harin_rescue`
 
 아직 runtime 미구현인 것:
 
-- `wuxia_seo_harin_rescue`와 그 이후 모든 무협 후보 card.
-- Notion 사건 DB 26개 중 위 세 preview beat로 매핑되지 않은 나머지 rows.
+- `wuxia_cheongryu_raid_route_split`와 그 이후 모든 무협 후보 card.
+- Notion 사건 DB 26개 중 위 네 preview beat로 매핑되지 않은 나머지 rows.
 - Notion 후일담 카드 DB 17개 전체.
 - full 천외편린 reward/ability schema, faction route graph, epilogue renderer/schema, relation/debt/faction/companion ledgers.
 
 다음 구현 slice:
 
-- 다음 구현 slice는 그대로 `wuxia_seo_harin_rescue`다.
-- 최신 Notion 기준으로는 이 slice가 Notion 사건 DB `wuxia_seoharin_intervention` / `서하린의 개입`에 대응한다.
-- 추가 설계는 필수 blocker가 아니다. 단, 구현 scope를 서하린 companion/emotional-axis 사건이나 후일담까지 확장하려면 별도 docs-only slice가 먼저 필요하다.
+- 다음 구현 slice는 `wuxia_cheongryu_raid_route_split`다.
+- 최신 Notion 기준으로 `wuxia_seo_harin_rescue`는 Notion 사건 DB `wuxia_seoharin_intervention` / `서하린의 개입`에 대응하고, `wuxia_cheongryu_apprentice_entry`는 `wuxia_qingliu_apprentice_entry` / `청류문 임시 수습생 등록`에 대응하며, 둘 다 preview runtime 구현이 완료되었다.
+- 추가 설계는 필수 blocker가 아니다. 단, 구현 scope를 full faction reputation/route graph/companion death/후일담까지 확장하려면 별도 docs-only slice가 먼저 필요하다.
 
 ## 1. 목표
 
@@ -1747,22 +1749,21 @@ src/tui_adv/data/secrets.example.yaml
 31. 무협 `wuxia_heuksa_bang_first_fight` preview runtime slice 완료: `jianghu_market_street` 위치와 `wuxia_arrival_hidden` branch에서 이어지는 흑사방 첫 난투를 같은 `wuxia_jianghu_pack` storypack preview source에 추가했다. 구현은 기존 `conditions`, `choices`, `outcome.resources`, `danger`, `add_flags`, `add_clues`, `log`, optional `presentation/effect_cues`만 사용하며 새 combat/reward/ability schema를 열지 않았다. Rust fixture/Web generated preview bundle을 갱신했고, Python exporter, Rust content fixture, WASM JSON boundary action flow, SuperLightTUI smoke가 first fight의 action id/presentation/effect cue parity를 검증한다. 기본 office bundle, Web 기본 generated bundle, `src/tui_adv/data/*.yaml`, `escape-office` save/localStorage key는 변경하지 않았다.
 32. 무협 preview launcher/UI wiring 완료: terminal은 `escape-terminal --scene content --storypack-preview wuxia_jianghu_pack` opt-in flag로 built-in preview fixture를 선택한다. Web은 start screen preview launcher와 `web/src/core/contentBundles.ts` registry로 기본 office bundle과 `wuxia_jianghu_pack` generated preview bundle을 분리한다. Web storypack preview run은 기본 office save/localStorage key를 쓰지 않고, default office continue/new-game UX는 기존 key를 유지한다.
 33. 무협 `wuxia_cheonggi_record_first_fragment` preview runtime slice 완료: 첫 난투 뒤 같은 `jianghu_market_street`에서 `heuksa_bang_first_fight_resolved`를 요구하는 천기록 첫 편린 encounter를 추가했다. `cheonggi_record_notebook` item과 `wuxia_first_fragment_seen` achievement를 preview bundle에만 추가하고, 선택지는 `choose_guard_basics`, `choose_keep_feet_moving`, `choose_failure_log`, fallback `close_notebook_without_choice`로 고정했다. 새 reward/ability/combat schema나 천외편린 3택 성장 UI는 열지 않고 flags/clues/log/presentation hook만 사용했다.
-34. 무협 `wuxia_seo_harin_rescue` 후속 slice 설계 완료: next preview content slice를 서하린 구조/외지인 조사/청류문 보호·감시 bridge로 확정하고, 시작 조건, stable choice id, fallback, flags/clues/log/destination hook, schema non-goal, 구현 handoff를 문서화했다. runtime YAML/Rust/Web/generated artifact는 아직 변경하지 않았다.
-35. 무협 `wuxia_cheongryu_apprentice_entry` follow-up 후보 설계 완료: rescue 이후 청류문 수습생/잡역/채무/서고 bridge를 여는 2순위 후보의 시작 조건, stable choice id, fallback, outcome hook, schema non-goal, 구현 handoff를 문서화했다. runtime YAML/Rust/Web/generated artifact는 아직 변경하지 않았다.
-36. 무협 `wuxia_cheongryu_raid_route_split` later 후보 설계 완료: rescue/apprentice와 first-fragment 공통 hook 뒤에만 열 중반 route pressure 후보의 prerequisites, stable choice id, fallback, route flag hook, schema non-goal, 구현 handoff를 문서화했다. runtime YAML/Rust/Web/generated artifact는 아직 변경하지 않았다.
+34. 무협 `wuxia_seo_harin_rescue` preview runtime slice 완료: 서하린 구조/외지인 조사/청류문 보호·감시 bridge를 같은 storypack preview source에 추가했다. `cheongryu_outer_courtyard` location, stable choice id 5개, `seo_harin_rescue_resolved`/`taken_under_watch`/`outsider_claim_recorded` common hooks, Rust/Web generated preview artifact, Python/Rust/WASM/terminal/Web parity tests를 갱신했다. 기본 office bundle과 `escape-office` save/localStorage key는 변경하지 않았다.
+35. 무협 `wuxia_cheongryu_apprentice_entry` preview runtime slice 완료: rescue 이후 청류문 수습생/잡역/채무/서고 bridge를 같은 storypack preview source에 추가했다. `work_chore_token`, stable choice id 4개, `cheongryu_apprentice_entry_resolved`/`cheongryu_trial_started`/`seo_harin_mentor_thread` common hooks, Rust/Web generated preview artifact, Python/Rust/WASM/terminal/Web parity tests를 갱신했다. 기본 office bundle과 `escape-office` save/localStorage key는 변경하지 않았다.
+36. 무협 `wuxia_cheongryu_raid_route_split` next 후보 설계 완료: rescue/apprentice와 first-fragment 공통 hook 뒤에만 열 중반 route pressure 후보의 prerequisites, stable choice id, fallback, route flag hook, schema non-goal, 구현 handoff를 문서화했다. runtime YAML/Rust/Web/generated artifact는 아직 변경하지 않았다.
 37. 무협 `wuxia_cheongryu_raid_wounded_fallback` deferred-route 후보 설계 완료: raid split의 `evacuate_the_wounded_first` fallback 이후를 받아 route opener 전 공통 재합류를 만드는 prerequisites, stable choice id, fallback, route starter hook, schema non-goal, 구현 handoff를 문서화했다. runtime YAML/Rust/Web/generated artifact는 아직 변경하지 않았다.
 
 현재 최우선 남은 작업:
 
-1. 무협 storypack preview의 다음 구현 slice는 여전히 `wuxia_seo_harin_rescue`다. `wuxia_cheongryu_apprentice_entry`는 설계 완료된 2순위 follow-up이며 rescue runtime이 먼저 landing되어야 한다.
+1. 무협 storypack preview의 다음 구현 slice는 `wuxia_cheongryu_raid_route_split`다. `wuxia_seo_harin_rescue`와 `wuxia_cheongryu_apprentice_entry`는 preview runtime에 landing되었고, rescue/apprentice/first-fragment common hooks가 생겼다.
    - 기본 storypack은 `escape from the office` / office isolation 계열로 유지한다.
    - 첫 비-office 기준팩은 `wuxia_jianghu_pack` / **이구학지 — 천기록**이다.
-   - machine-readable storypack DB, separate preview mode 결정, `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, Web/terminal preview launcher/UI wiring은 완료했다.
-   - 다음 작업은 first fight/fragment에서 열린 flags/clues를 서하린 구조, 외지인 조사, 청류문 보호/감시, 수습생/서고 bridge로 연결하는 schema-less content slice다.
+   - machine-readable storypack DB, separate preview mode 결정, `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, Web/terminal preview launcher/UI wiring은 완료했다.
+   - 다음 작업은 `cheongryu_apprentice_entry_resolved`/`cheongryu_trial_started`와 `cheonggi_record_awakened`/`first_fragment_seen` hook을 받아 청류문 습격 route-pressure encounter를 여는 schema-less content slice다.
    - `preview launcher/UI wiring`은 이미 opt-in entrypoint로 구현했으므로 후속 slice에서 다시 구현하지 않는다.
-   - `wuxia_cheongryu_apprentice_entry`는 서하린 구조의 `seo_harin_rescue_resolved`/`taken_under_watch` hook을 받은 뒤 `cheongryu_outer_courtyard`에서 수습생/잡역/채무/서고 hook을 여는 schema-less follow-up으로 설계 완료했다.
-   - `wuxia_cheongryu_raid_route_split`도 설계 완료했지만 later candidate다. rescue/apprentice와 `cheonggi_record_awakened`/`first_fragment_seen` 공통 hook이 runtime에 있어야 하며, faction/route graph schema는 열지 않는다.
-   - `wuxia_cheongryu_raid_wounded_fallback`는 raid split의 `evacuate_the_wounded_first` 이후를 받는 deferred-route 후보로 설계 완료했다. route opener보다 먼저 설계했지만 구현은 raid split 이후 조건부 follow-up이다.
+   - `wuxia_cheongryu_raid_route_split`는 `cheongryu_outer_courtyard`에서 route pressure를 노출하되 faction/route graph schema를 열지 않고 flags/clues/log/presentation으로만 남긴다.
+   - `wuxia_cheongryu_raid_wounded_fallback`는 raid split의 `evacuate_the_wounded_first` 이후를 받는 deferred-route 후보로 설계 완료했다. 구현은 raid split 이후 조건부 follow-up이다.
    - `yageunmong_pack`은 docs/data 후보로 반영됐지만 기본 office runtime을 대체하지 않는다. 야근몽 runtime은 별도 preview 후보로만 연다.
    - 기본 `content.bundle.json`, Web 기본 generated bundle, `src/tui_adv/data/*.yaml`, `escape-office` save/localStorage key는 계속 바꾸지 않는다.
    - 천외편린/각성편린 3택 성장 schema, relation/debt/faction/companion schema는 별도 검증 전까지 열지 않는다.
@@ -1788,7 +1789,7 @@ src/tui_adv/data/secrets.example.yaml
 8. Web player start/save UX first slice 후속: save JSON export/import, settings/reduce-motion UI, 오늘의 seed는 별도 승격 전까지 열지 않는다.
 9. 여러 히든 현실 보물
 10. 전투 시스템 후속 slice는 `supply_closet_auto_brawl` 이후 반복 가치가 확인될 때만 presentation metadata 정리 또는 Rust combat resolver로 승격한다.
-11. 무협 storypack preview 후속: `wuxia_seo_harin_rescue` 구현 뒤 설계 완료된 `wuxia_cheongryu_apprentice_entry` bridge를 이어서 구현한다. 그 다음 later candidate는 `wuxia_cheongryu_raid_route_split`이고, fallback branch 후속은 `wuxia_cheongryu_raid_wounded_fallback`지만, rescue/apprentice/first-fragment/raid hook이 모두 안정화된 뒤에만 연다. rescue 구현에서 flag/destination 이름이 달라지면 후속 docs/DB를 먼저 보정한다.
+11. 무협 storypack preview 후속: `wuxia_seo_harin_rescue`와 `wuxia_cheongryu_apprentice_entry` 구현 완료 상태에서 설계 완료된 `wuxia_cheongryu_raid_route_split` route-pressure bridge를 이어서 구현한다. fallback branch 후속은 `wuxia_cheongryu_raid_wounded_fallback`지만, raid hook이 안정화된 뒤에만 연다. rescue/apprentice 구현의 flag/destination 이름은 후속 docs/DB 기준과 맞다.
 12. 천외편린/각성편린 3택 reward/ability schema는 schema-less bridge가 충분히 검증된 뒤 별도 slice로 검토한다.
 13. 야근몽 storypack preview 후속: `yageunmong_late_night_desk_awake` 또는 각성편린 3택 preview를 별도 storypack preview로 열지 결정한다.
 
@@ -1835,12 +1836,11 @@ Web 또는 terminal renderer가 게임 규칙을 다시 구현하면 Rust GameCo
 
 ## 10. 다음 액션
 
-1. 다음 무협 storypack preview content slice는 `wuxia_seo_harin_rescue`를 구현한다. 그 다음 follow-up은 이미 설계된 `wuxia_cheongryu_apprentice_entry` bridge이고, 그 뒤 later candidate는 `wuxia_cheongryu_raid_route_split`와 조건부 `wuxia_cheongryu_raid_wounded_fallback`이다.
-   - `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`는 이미 separate `storypack_preview` bundle에 구현되어 있다.
+1. 다음 무협 storypack preview content slice는 `wuxia_cheongryu_raid_route_split`를 구현한다. 그 뒤 조건부 follow-up은 이미 설계된 `wuxia_cheongryu_raid_wounded_fallback`이다.
+   - `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`는 이미 separate `storypack_preview` bundle에 구현되어 있다.
    - Web/terminal `preview launcher/UI wiring`도 완료되어 `wuxia_jianghu_pack` preview bundle을 명시적으로 선택/실행할 수 있다.
-   - `wuxia_seo_harin_rescue`는 `jianghu_market_street`에서 `heuksa_bang_first_fight_resolved`와 `cheonggi_record_first_fragment_resolved`를 받은 뒤 `seo_harin_rescue_resolved`/`taken_under_watch`/`rescue_debt_recorded` hook과 `cheongryu_outer_courtyard` destination 후보를 남기는 schema-less 구조/조사 encounter로 구현한다.
-   - 그 다음 `wuxia_cheongryu_apprentice_entry`는 `cheongryu_outer_courtyard`에서 `seo_harin_rescue_resolved`와 `taken_under_watch`를 요구하고, `accept_three_month_trial` fallback을 포함한 four-choice 수습생/잡역/서고 bridge로 구현한다.
-   - `wuxia_cheongryu_raid_route_split`는 rescue/apprentice와 `cheonggi_record_awakened`/`first_fragment_seen` hook이 모두 안정화된 뒤, `evacuate_the_wounded_first` fallback을 포함한 route-pressure encounter로만 연다.
+   - `wuxia_cheongryu_raid_route_split`는 `cheongryu_outer_courtyard`에서 `cheongryu_apprentice_entry_resolved`, `cheongryu_trial_started`, `cheonggi_record_awakened`, `first_fragment_seen`을 요구하고, `evacuate_the_wounded_first` fallback을 포함한 four-choice route-pressure encounter로 구현한다.
+   - route branch는 `righteous_route_started`, `sapa_route_started`, `cheonggi_return_route_started` 같은 flags/clues/log로만 남기고, full faction reputation/route graph/ending system은 열지 않는다.
    - `wuxia_cheongryu_raid_wounded_fallback`는 raid split의 `route_commitment_deferred`/`wounded_saved_flag` branch 이후를 받아 route opener 전 공통 재합류를 제공한다.
    - 다음 content slice도 preview bundle metadata `runtime_mode: storypack_preview`, `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`, `default_location: wuxia_commute_rift`를 유지한다.
    - 기본 `content.bundle.json`, Web 기본 generated bundle, `src/tui_adv/data/*.yaml`, `escape-office` save/localStorage key는 바꾸지 않는다.

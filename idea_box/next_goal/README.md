@@ -1,7 +1,8 @@
 ---
 type: next_goal_prompt
 created: 2026-06-01
-current_goal: wuxia_seo_harin_rescue
+updated: 2026-06-01
+current_goal: wuxia_cheongryu_raid_route_split
 mode: implementation
 ---
 
@@ -23,15 +24,17 @@ mode: implementation
 
 ## 현재 목표
 
-`wuxia_jianghu_pack` storypack preview에 네 번째 runtime encounter `wuxia_seo_harin_rescue`를 구현한다.
+`wuxia_jianghu_pack` storypack preview에 여섯 번째 runtime encounter `wuxia_cheongryu_raid_route_split`를 구현한다.
 
 목적:
 
-- `wuxia_heuksa_bang_first_fight`와 `wuxia_cheonggi_record_first_fragment` 이후의 부상/오해/천기록 hook을 이어받는다.
-- 서하린 구조, 청류문 보호/감시, 다음 수습생 bridge로 연결한다.
+- 이미 구현된 `wuxia_seo_harin_rescue`와 `wuxia_cheongryu_apprentice_entry` 이후의 청류문 공통 루트를 이어받는다.
+- `cheongryu_apprentice_entry_resolved` / `cheongryu_trial_started`와 `cheonggi_record_awakened` / `first_fragment_seen` hook을 요구한다.
+- 청류문 습격을 통해 정파/사파/천기·귀환 route pressure를 처음 노출한다.
+- route graph, faction reputation, companion death, boss combat, reward/ability schema는 열지 않고 기존 encounter schema의 flags/clues/log/presentation만 사용한다.
 - 기본 office bundle을 건드리지 않고 storypack preview bundle에만 추가한다.
 
-이 목표를 별도 readiness 세션, future-design 세션, companion/후일담 세션으로 쪼개지 않는다. 구현 시작 전에 짧게 readiness를 확인하고, blocker가 없으면 그대로 구현한다.
+이 목표를 별도 readiness 세션, future-design 세션, 후일담 세션으로 쪼개지 않는다. 구현 시작 전에 짧게 readiness를 확인하고, blocker가 없으면 그대로 구현한다.
 
 ## 추천 skill / reasoning
 
@@ -68,7 +71,7 @@ git diff --stat HEAD origin/main
 
 - `AGENTS.md`
 - `docs/dev/Development_Plan.md`
-  - 0.15 `wuxia_seo_harin_rescue`
+  - 0.17 `wuxia_cheongryu_raid_route_split`
   - 0.19 Notion 이구학지 운영 기준 반영
 - `docs/dev/Notion_Design_Coverage.md`
 - `idea_box/notion_sources.yml`
@@ -88,34 +91,35 @@ Repo canonical docs가 이 README와 충돌하면 repo docs를 우선하고, 충
 
 구현 전에 다음만 확인한다. blocker가 없으면 별도 보고서만 쓰고 멈추지 말고 구현을 진행한다.
 
-1. 다음 구현 slice가 여전히 `wuxia_seo_harin_rescue`인지 확인한다.
-2. Notion DB row `wuxia_seoharin_intervention` / `서하린의 개입`과 repo `wuxia_seo_harin_rescue` 매핑이 canonical docs에 충분한지 확인한다.
-3. 구현 조건과 금지 범위가 canonical docs와 이 README에서 일치하는지 확인한다.
-4. blocker가 있으면 runtime 구현을 시작하지 말고, 필요한 최소 docs-only 보정 또는 blocker 보고를 먼저 한다.
+1. `wuxia_cheongryu_apprentice_entry`가 같은 preview source/generated bundle에 구현되어 있는지 확인한다.
+2. 모든 apprentice outcome이 최소 `cheongryu_apprentice_entry_resolved`, `cheongryu_trial_started`, `destination_id: cheongryu_outer_courtyard`를 남기는지 확인한다.
+3. `wuxia_cheonggi_record_first_fragment`가 공통 `cheonggi_record_awakened`와 `first_fragment_seen` hook을 남기는지 확인한다.
+4. 다음 구현 slice가 `wuxia_cheongryu_raid_route_split`인지 canonical docs와 이 README가 일치하는지 확인한다.
+5. blocker가 있으면 raid runtime 구현을 시작하지 말고, 필요한 최소 apprentice/first-fragment 보정 또는 blocker 보고를 먼저 한다.
 
 ## 구현 범위
 
-Preview source와 generated preview artifacts에만 `wuxia_seo_harin_rescue`를 추가한다.
+Preview source와 generated preview artifacts에만 `wuxia_cheongryu_raid_route_split`를 추가한다.
 
 Expected runtime behavior:
 
-- 시작 위치: `jianghu_market_street`.
-- 새 destination 후보: `cheongryu_outer_courtyard`.
-- phase: `rescue_and_investigation`.
+- 시작 위치: `cheongryu_outer_courtyard`.
+- phase: `cheongryu_raid` / `route_commitment`.
 - `runtime_mode: storypack_preview` boundary 유지.
-- 기존 preview route `wuxia_commute_rift_arrival` → `wuxia_heuksa_bang_first_fight` → `wuxia_cheonggi_record_first_fragment` 뒤에 붙는다.
+- 기존 preview route `wuxia_commute_rift_arrival` → `wuxia_heuksa_bang_first_fight` → `wuxia_cheonggi_record_first_fragment` → `wuxia_seo_harin_rescue` → `wuxia_cheongryu_apprentice_entry` 뒤에 붙는다.
 - default office bundle에는 무협 id가 계속 없어야 한다.
 
 ## 예상 수정 파일
 
 Preview source:
 
-- `src/tui_adv/storypack-previews/wuxia_jianghu_pack/locations.yaml`
-  - `cheongryu_outer_courtyard` 또는 동등한 청류문 외곽 거점 위치 추가.
 - `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`
-  - `wuxia_seo_harin_rescue` 추가.
+  - `wuxia_cheongryu_apprentice_entry` 뒤에 `wuxia_cheongryu_raid_route_split` 추가.
+- `src/tui_adv/storypack-previews/wuxia_jianghu_pack/locations.yaml`
+  - 가능하면 `cheongryu_outer_courtyard`를 재사용한다.
+  - 새 장소가 꼭 필요하면 `cheongryu_raid_courtyard` 또는 `raid_aftermath_shelter`를 preview-only로 추가한다.
 - `src/tui_adv/storypack-previews/wuxia_jianghu_pack/items.yaml`
-  - 실제 outcome에서 preview-only item을 추가/소모할 때만 수정.
+  - 첫 raid slice에서는 보통 수정하지 않는다. route token/item이 필요하면 preview-only item으로 제한한다.
 
 Generated preview artifacts only:
 
@@ -131,7 +135,7 @@ Likely tests/docs if needed:
 - `crates/escape-wasm/tests/json_contract.rs`
 - `crates/escape-terminal/tests/cli_smoke.rs`
 - `web/src/core/contentBundles.test.ts`
-- docs sync only if implementation changes docs-visible contracts.
+- docs sync only if implementation changes docs-visible status/counts.
 
 ## Required / forbidden conditions
 
@@ -141,25 +145,26 @@ Recommended encounter conditions:
 runtime_mode: storypack_preview
 conditions:
   locations:
-    - jianghu_market_street
+    - cheongryu_outer_courtyard
 required_flags:
-  - heuksa_bang_first_fight_resolved
-  - cheonggi_record_first_fragment_resolved
+  - cheongryu_apprentice_entry_resolved
+  - cheongryu_trial_started
+  - cheonggi_record_awakened
+  - first_fragment_seen
 forbidden_flags:
-  - seo_harin_rescue_resolved
+  - cheongryu_raid_route_split_resolved
 ```
 
-If the existing schema expresses these fields differently, match the existing schema and tests rather than inventing a new schema.
+Branch-specific first-fragment flags such as `cheonggi_fragment_guard_basics_thread` are flavor only, not required eligibility.
 
 ## Stable choice ids
 
 Use these stable choice/action ids unless existing runtime conventions require a mechanical variant:
 
-- `tell_plain_truth` — fallback/safe honesty. 진실을 말하지만 감시 대상으로 이동한다.
-- `ask_for_medical_help_first` — survival priority. 치료/안전은 얻지만 채무 hook을 남긴다.
-- `explain_company_and_commute` — workplace memory probe. 현대어가 통하지 않아 오해와 sanity/resource cost를 남긴다.
-- `show_cheonggi_record_page` — risky record disclosure. 천기록을 보여 도움/위험을 동시에 부른다.
-- `hide_employee_badge` — high-risk concealment. 사원증/수첩은 숨기지만 의심 flag를 키운다.
+- `evacuate_the_wounded_first` — fallback/safe human priority. route commitment를 지연하지만 부상자/청류문 생존 hook을 남긴다.
+- `defend_cheongryu_with_white_path` — righteous route pressure. 백도맹 지원을 받아 청류문을 지키지만 정치적 빚을 남긴다.
+- `trade_with_black_heaven` — sapa survival bargain. 흑천련과 거래해 생존 자원을 얻지만 신뢰/채무 hook을 남긴다.
+- `follow_heavenly_archive` — cheonggi/return truth pressure. 천기각 기록관을 따라 천기록/귀환 단서를 쫓지만 청류문 관계 위험을 남긴다.
 
 ## Outcome hooks
 
@@ -176,39 +181,49 @@ Allowed hook families:
 - `log`
 - optional `presentation` / `effect_cues` if already supported
 
-Every rescue outcome should leave the common bridge hooks needed by the next slice:
+Every raid outcome should leave the common bridge hooks needed by later slices:
 
-- `seo_harin_rescue_resolved`
-- `seo_harin_intervened`
-- `taken_under_watch`
-- preferably `outsider_claim_recorded`
-- `destination_id: cheongryu_outer_courtyard`
+- `cheongryu_raid_route_split_resolved`
+- `cheongryu_raid_survived`
+- `route_commitment_pressure`
+- `destination_id: cheongryu_outer_courtyard` or a preview-only aftermath location
 
 Branch-specific flags/clues/logs may include:
 
-- `rescue_debt_recorded`
-- `seo_harin_noticed_cheonggi_record`
-- `cheonggi_record_must_be_hidden`
-- `cheongryu_name_heard`
-- `sect_identity_matters`
-- `company_words_fail_clue`
-- `sect_protection_has_price`
-- `notebook_draws_sect_attention`
+- `wounded_saved_flag`
+- `route_commitment_deferred`
+- `seo_harin_survived_raid`
+- `righteous_route_started`
+- `baekdo_alliance_debt`
+- `sapa_route_started`
+- `black_heaven_deal_marked`
+- `dowol_debt`
+- `cheonggi_return_route_started`
+- `heavenly_archive_contact`
+- `cheonggi_record_targeted`
+- `martial_knowledge_conflict`
+- `blood_moon_targets_cheonggi_record`
+- `white_path_help_has_price`
+- `black_heaven_bargain_has_teeth`
+- `heavenly_archive_knows_previous_outsiders`
+- `saving_people_delays_route_choice`
 
-Tone: 구조는 구원이 아니라 보호와 감시의 시작이다.
+Tone: 어느 편도 완전히 선하거나 안전하지 않고, 선택하지 않는 것도 대가가 있다.
 
 ## 금지 범위
 
 이 slice에서 열지 않는다.
 
-- 새 `RelationScore`
-- `DebtLedger`
-- `FactionStanding`
-- healing schema
-- companion schema
+- 새 `FactionStanding`
+- `RouteGraph`
+- `BranchLock`
+- `CompanionDeath`
+- `MassCombat`
+- boss combat resolver
 - combat/reward/ability schema
 - 천외편린 3택 lock-in UI
-- `wuxia_cheongryu_apprentice_entry` 구현
+- `wuxia_cheongryu_raid_wounded_fallback` 구현
+- route opener / multi-ending 구현
 - 서하린 companion/emotional-axis 사건 구현
 - 서하린 후일담 구현
 - yageunmong runtime
@@ -218,12 +233,12 @@ Tone: 구조는 구원이 아니라 보호와 감시의 시작이다.
 
 ## 구현 순서
 
-1. Repo 상태와 canonical docs를 읽고, 현재 preview source의 기존 세 encounter/location/item conventions를 확인한다.
+1. Repo 상태와 canonical docs를 읽고, 현재 apprentice/first-fragment implementation이 readiness 조건을 만족하는지 확인한다.
 2. 실패하는 targeted test를 먼저 추가/수정한다.
-   - preview bundle에 `wuxia_seo_harin_rescue`와 `cheongryu_outer_courtyard`가 포함되어야 한다.
+   - preview bundle에 `wuxia_cheongryu_raid_route_split`가 포함되어야 한다.
    - default office bundle에는 무협 id가 없어야 한다.
-   - Rust/Web/terminal/WASM parity에서 encounter/action id가 보여야 한다.
-3. preview source YAML에 location/encounter를 최소 추가한다.
+   - Rust/Web/terminal/WASM parity에서 raid encounter/action id가 보여야 한다.
+3. preview source YAML에 raid route split encounter를 최소 추가한다.
 4. preview bundle export 명령으로 Rust/Web generated preview artifact만 재생성한다.
 5. targeted tests를 통과시킨다.
 6. `git diff --check`로 whitespace를 확인한다.
@@ -247,8 +262,8 @@ Rust/WASM/terminal targeted tests, adapting exact test names to the codebase:
 
 ```bash
 source /home/dudupunch0/.config/tui_adv/tmp-installs.sh && cargo test -p escape-core --test content_bundle
-source /home/dudupunch0/.config/tui_adv/tmp-installs.sh && cargo test -p escape-wasm --test json_contract json_boundary_reaches_wuxia_seo_harin_rescue_through_preview_bundle
-source /home/dudupunch0/.config/tui_adv/tmp-installs.sh && cargo test -p escape-terminal --test cli_smoke content_tui_smoke_reaches_wuxia_seo_harin_rescue
+source /home/dudupunch0/.config/tui_adv/tmp-installs.sh && cargo test -p escape-wasm --test json_contract json_boundary_reaches_wuxia_cheongryu_raid_route_split_through_preview_bundle
+source /home/dudupunch0/.config/tui_adv/tmp-installs.sh && cargo test -p escape-terminal --test cli_smoke content_tui_smoke_reaches_wuxia_cheongryu_raid_route_split
 ```
 
 Web targeted test, if Web bundle parity changed:
@@ -271,7 +286,7 @@ If a command name/test selector differs, inspect existing tests and use the near
 한국어로 간결하게 보고한다.
 
 ```text
-`wuxia_seo_harin_rescue` 구현 완료.
+`wuxia_cheongryu_raid_route_split` 구현 완료.
 
 1. 기준 repo 상태
 - branch:
@@ -286,7 +301,7 @@ If a command name/test selector differs, inspect existing tests and use the near
 
 3. 구현 내용
 - encounter id:
-- destination:
+- location:
 - required/forbidden flags:
 - choice ids:
 - common outcome hooks:

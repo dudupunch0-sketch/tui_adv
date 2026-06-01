@@ -254,12 +254,12 @@
 - [x] 다음 구현 세션의 예상 수정 파일, 테스트, 검증 명령, preview artifact 위치 handoff 작성
 - [x] 기본 office bundle, `escape-office` save/localStorage key, yageunmong runtime 미변경 유지
 
-### 0.2ac 2026-05-31 무협 `wuxia_cheongryu_raid_route_split` later 후보 설계
+### 0.2ac 2026-05-31 무협 `wuxia_cheongryu_raid_route_split` 다음 후보 설계
 
-- [x] `wuxia_cheongryu_raid_route_split`를 rescue/apprentice/first-fragment hook 이후 later 후보로 설계
+- [x] `wuxia_cheongryu_raid_route_split`를 rescue/apprentice/first-fragment hook 이후 다음 후보로 설계
 - [x] raid 선행 조건, location/phase, stable choice id, fallback choice, route outcome hook 문서화
 - [x] faction route graph/mass combat/boss combat/companion death/reward/ability schema와 천외편린 3택 성장 non-goal 재확인
-- [x] later 구현 세션의 예상 수정 파일, 테스트, 검증 명령, preview artifact 위치 handoff 작성
+- [x] 다음 구현 세션의 예상 수정 파일, 테스트, 검증 명령, preview artifact 위치 handoff 작성
 - [x] 기본 office bundle, `escape-office` save/localStorage key, yageunmong runtime 미변경 유지
 
 ### 0.2ad 2026-05-31 무협 `wuxia_cheongryu_raid_wounded_fallback` deferred 후보 설계
@@ -269,6 +269,27 @@
 - [x] route graph/faction/triage/companion death/mass combat/boss combat/reward/ability schema와 천외편린 3택 성장 non-goal 재확인
 - [x] later 구현 세션의 예상 수정 파일, 테스트, 검증 명령, preview artifact 위치 handoff 작성
 - [x] 구현 backlog 순서, 기본 office bundle, `escape-office` save/localStorage key, yageunmong runtime 미변경 유지
+
+### 0.2ae 2026-06-01 무협 `wuxia_seo_harin_rescue` preview runtime slice
+
+- [x] `cheongryu_outer_courtyard` preview location 추가
+- [x] `wuxia_seo_harin_rescue`를 `wuxia_cheonggi_record_first_fragment` 뒤에 schema-less 구조/조사 encounter로 추가
+- [x] `tell_plain_truth`, `ask_for_medical_help_first`, `explain_company_and_commute`, `show_cheonggi_record_page`, `hide_employee_badge` stable choice id 고정
+- [x] 모든 rescue outcome이 `seo_harin_rescue_resolved`, `seo_harin_intervened`, `taken_under_watch`, `outsider_claim_recorded`, `destination_id: cheongryu_outer_courtyard` bridge를 남기도록 구현
+- [x] Rust fixture와 Web generated preview bundle 재생성
+- [x] Python exporter, Rust content fixture, WASM JSON boundary, SuperLightTUI rescue parity 테스트 추가
+- [x] relation/debt/faction/healing/companion/combat/reward/ability schema, 기본 office bundle, `escape-office` save/localStorage key 미변경 유지
+
+### 0.2af 2026-06-01 무협 `wuxia_cheongryu_apprentice_entry` preview runtime slice
+
+- [x] `work_chore_token` preview item 추가
+- [x] `wuxia_cheongryu_apprentice_entry`를 `wuxia_seo_harin_rescue` 뒤에 schema-less 수습생/잡역/서고 bridge encounter로 추가
+- [x] `accept_three_month_trial`, `request_martial_training_immediately`, `organize_chores_like_workflow`, `inspect_archive_during_chore` stable choice id 고정
+- [x] 모든 apprentice outcome이 `cheongryu_apprentice_entry_resolved`, `cheongryu_trial_started`, `seo_harin_mentor_thread`, `destination_id: cheongryu_outer_courtyard` bridge를 남기도록 구현
+- [x] Rust fixture와 Web generated preview bundle 재생성
+- [x] Python exporter, Rust content fixture, WASM JSON boundary, SuperLightTUI apprentice parity 테스트 추가
+- [x] relation/debt/faction/training XP/chore scheduler/combat/reward/ability schema, 기본 office bundle, `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 구현 slice를 `wuxia_cheongryu_raid_route_split`로 갱신
 
 ### 0.3 완료 기준
 

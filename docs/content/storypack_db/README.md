@@ -40,6 +40,6 @@ PYTHONPATH=src python -m pytest tests/test_storypack_db.py -q
 
 - `isolation_pack`: office apocalypse 후보 카드 6개.
 - `yageunmong_pack`: 야근몽 office-dream 후보 카드 6개.
-- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 6개.
+- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 7개.
 
-다음 runtime slice는 이미 결정된 `storypack_preview` mode에서 `wuxia_seo_harin_rescue` 또는 `wuxia_cheongryu_apprentice_entry` bridge를 추가할지 결정하는 것이다. 기본 office bundle에 후보 storypack을 자동으로 섞지 않으며, `yageunmong_pack`은 별도 preview 후보로만 유지한다.
+다음 runtime slice는 이미 결정된 `storypack_preview` mode에서 `wuxia_seo_harin_rescue`를 구현하는 것이다. `wuxia_cheongryu_apprentice_entry`는 설계/handoff 완료된 후속 bridge지만, 서하린 구조/감시/채무 hook과 `cheongryu_outer_courtyard`가 preview source에 생긴 뒤에만 구현한다. `wuxia_cheongryu_raid_route_split`는 그 뒤의 later route-pressure 후보로 설계 완료했지만, rescue/apprentice/first-fragment hook이 안정화되기 전에는 구현하지 않는다. `wuxia_cheongryu_raid_wounded_fallback`은 raid split의 `evacuate_the_wounded_first` branch 이후 조건부 deferred follow-up으로만 연다. 기본 office bundle에 후보 storypack을 자동으로 섞지 않으며, `yageunmong_pack`은 별도 preview 후보로만 유지한다.

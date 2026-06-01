@@ -238,6 +238,38 @@
 - [x] Python exporter, Rust content fixture, WASM JSON boundary, SuperLightTUI first-fragment parity 테스트 추가
 - [x] 천외편린 3택 reward/ability schema, 기본 office bundle, `escape-office` save/localStorage key 미변경 유지
 
+### 0.2aa 2026-05-31 무협 `wuxia_seo_harin_rescue` 후속 slice 설계
+
+- [x] `wuxia_seo_harin_rescue`를 다음 무협 storypack preview 구현 slice로 확정
+- [x] 시작 조건, location/phase, stable choice id, fallback choice, outcome hook 문서화
+- [x] relation/debt/healing/companion/combat/reward/ability schema와 천외편린 3택 성장 non-goal 재확인
+- [x] 다음 구현 세션의 예상 수정 파일, 테스트, 검증 명령, preview artifact 위치 handoff 작성
+- [x] 기본 office bundle, `escape-office` save/localStorage key, yageunmong runtime 미변경 유지
+
+### 0.2ab 2026-05-31 무협 `wuxia_cheongryu_apprentice_entry` 후속 후보 설계
+
+- [x] `wuxia_cheongryu_apprentice_entry`를 `wuxia_seo_harin_rescue` 이후 follow-up 후보로 설계
+- [x] rescue 선행 조건, `cheongryu_outer_courtyard` location, stable choice id, fallback choice, outcome hook 문서화
+- [x] relation/debt/faction/training XP/chore scheduler/combat/reward/ability schema와 천외편린 3택 성장 non-goal 재확인
+- [x] 다음 구현 세션의 예상 수정 파일, 테스트, 검증 명령, preview artifact 위치 handoff 작성
+- [x] 기본 office bundle, `escape-office` save/localStorage key, yageunmong runtime 미변경 유지
+
+### 0.2ac 2026-05-31 무협 `wuxia_cheongryu_raid_route_split` later 후보 설계
+
+- [x] `wuxia_cheongryu_raid_route_split`를 rescue/apprentice/first-fragment hook 이후 later 후보로 설계
+- [x] raid 선행 조건, location/phase, stable choice id, fallback choice, route outcome hook 문서화
+- [x] faction route graph/mass combat/boss combat/companion death/reward/ability schema와 천외편린 3택 성장 non-goal 재확인
+- [x] later 구현 세션의 예상 수정 파일, 테스트, 검증 명령, preview artifact 위치 handoff 작성
+- [x] 기본 office bundle, `escape-office` save/localStorage key, yageunmong runtime 미변경 유지
+
+### 0.2ad 2026-05-31 무협 `wuxia_cheongryu_raid_wounded_fallback` deferred 후보 설계
+
+- [x] raid split의 `evacuate_the_wounded_first` fallback 이후를 받는 deferred-route 후보 설계
+- [x] wounded fallback 선행 조건, location/phase, stable choice id, fallback choice, route starter outcome hook 문서화
+- [x] route graph/faction/triage/companion death/mass combat/boss combat/reward/ability schema와 천외편린 3택 성장 non-goal 재확인
+- [x] later 구현 세션의 예상 수정 파일, 테스트, 검증 명령, preview artifact 위치 handoff 작성
+- [x] 구현 backlog 순서, 기본 office bundle, `escape-office` save/localStorage key, yageunmong runtime 미변경 유지
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

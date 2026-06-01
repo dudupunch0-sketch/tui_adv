@@ -164,32 +164,88 @@ pressure_type: [health, relation, sanity]
 npc_slots: [early_rescuer]
 candidate_characters: [seo_harin]
 summary: 청류문 외문 제자 서하린이 개입해 주인공을 구조하지만, 그를 정체불명의 외지인으로 의심한다.
-setup_text: 전투가 길어지거나 주인공이 쓰러질 즈음, 청류문 외문 제자 서하린이 끼어든다. 흑사방 말단 정도는 제압할 수 있지만 그녀도 주인공을 믿지는 않는다. “무공도 모르는 자가 흑사방 말단을 건드렸다고?” “그 옷차림은 뭐지?” “목에 건 패는 어느 세력의 표식이냐?”
+purpose: 첫 난투와 천기록 첫 편린이 남긴 부상/시선/수첩 hook을 관계와 거점으로 연결한다. 목표는 NPC 동료 시스템이 아니라 서하린의 구조, 외지인 조사, 청류문 보호/감시, 다음 `wuxia_cheongryu_apprentice_entry` bridge를 여는 것이다.
+start_conditions:
+  runtime_mode: storypack_preview
+  after_encounters: [wuxia_heuksa_bang_first_fight, wuxia_cheonggi_record_first_fragment]
+  phase: rescue_and_investigation
+  location: jianghu_market_street
+  required_flags: [heuksa_bang_first_fight_resolved, cheonggi_record_first_fragment_resolved]
+  forbidden_flags: [seo_harin_rescue_resolved]
+  destination_candidate: cheongryu_outer_courtyard
+  routing_note: 현재 preview 순서는 first fight 뒤에 천기록 첫 편린 foreshadow를 보여준다. 따라서 rescue는 `cheonggi_record_first_fragment_resolved` 뒤에 붙여 기존 fragment smoke를 가로막지 않는다. full story에서 구조 순간을 먼저 보이도록 순서를 재편하려면 별도 sequence 재배치 slice로 다룬다.
+setup_text: 시장 담벼락 아래에서 숨을 고르자 흑사방 말단들이 다시 다가온다. 그때 청류문 외문 제자 서하린이 군중을 가르며 끼어든다. 흑사방 정도는 물릴 수 있지만, 그녀도 주인공을 믿지는 않는다. “무공도 모르는 자가 흑사방 말단을 건드렸다고?” “그 옷차림은 뭐지?” “목에 건 패와 그 수첩은 어느 세력의 표식이냐?”
 choice_shapes:
   - id: tell_plain_truth
     role: safe_honesty
-    expected_costs: [suspicion_small]
-    expected_gains: [truthful_outsider_flag]
-  - id: explain_company_and_commute
-    role: workplace_memory_probe
-    expected_costs: [sanity_small, misunderstanding]
-    expected_gains: [company_words_fail_clue]
+    fallback_choice: true
+    label_direction: 있는 그대로 길을 잃은 외지인이라고 말한다
+    expected_costs: [suspicion_small, sanity_small]
+    outcome_hook:
+      resources: {sanity: -2}
+      add_flags: [seo_harin_rescue_resolved, seo_harin_intervened, taken_under_watch, outsider_claim_recorded, truthful_outsider_claim]
+      add_clues: [cheongryu_name_heard, sect_identity_matters]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 진실은 설득력이 낮지만 일관성은 있다. 서하린은 믿기보다 감시하기로 결정한다.
   - id: ask_for_medical_help_first
     role: survival_priority
+    label_direction: 설명보다 치료와 안전한 곳을 먼저 부탁한다
     expected_costs: [debt_small]
-    expected_gains: [injury_stabilized]
+    outcome_hook:
+      resources: {health: 4, sanity: -1}
+      add_flags: [seo_harin_rescue_resolved, seo_harin_intervened, injury_stabilized, rescue_debt_recorded, taken_under_watch]
+      add_clues: [cheongryu_medicine_smells_of_herbs, sect_protection_has_price]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 상처는 임시로 묶이지만 목숨값과 치료비라는 단어가 따라붙는다.
+  - id: explain_company_and_commute
+    role: workplace_memory_probe
+    label_direction: 회사와 출근길을 최대한 논리적으로 설명한다
+    expected_costs: [sanity_small, misunderstanding]
+    outcome_hook:
+      resources: {sanity: -3}
+      add_flags: [seo_harin_rescue_resolved, seo_harin_intervened, company_words_misunderstood, outsider_claim_recorded]
+      add_clues: [company_words_fail_clue, commute_rift_story_sounds_like_madness]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 회사, 출근, 엘리베이터라는 말은 강호의 문법으로 번역되지 않는다. 기록할 말과 숨길 말이 갈라진다.
+  - id: show_cheonggi_record_page
+    role: risky_record_disclosure
+    label_direction: 방금 떠오른 천기록의 글자를 조심스럽게 보여준다
+    expected_costs: [danger_small, suspicion_medium]
+    outcome_hook:
+      resources: {sanity: -2}
+      danger: 1
+      add_flags: [seo_harin_rescue_resolved, seo_harin_intervened, seo_harin_noticed_cheonggi_record, cheonggi_record_must_be_hidden]
+      add_clues: [notebook_draws_sect_attention, cheonggi_record_must_be_hidden]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 수첩은 도움을 부를 수도 있지만, 이름 붙는 순간 표적이 될 수도 있다.
   - id: hide_employee_badge
     role: high_risk_concealment
+    label_direction: 사원증과 수첩을 품 안으로 숨긴다
     expected_costs: [suspicion_medium]
-    expected_gains: [badge_secret_flag]
+    outcome_hook:
+      resources: {sanity: -1}
+      danger: 1
+      add_flags: [seo_harin_rescue_resolved, seo_harin_intervened, badge_secret_flag, seo_harin_suspicion_raised, taken_under_watch]
+      add_clues: [badge_misread_as_sect_token, hiding_marks_you_as_suspicious]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 숨긴 물건은 지켜지지만, 숨기는 동작 자체가 의심을 산다.
 outcome_hooks:
-  possible_flags: [seo_harin_intervened, taken_under_watch, outsider_claim_recorded]
-  possible_clues: [cheongryu_name_heard, sect_identity_matters]
+  possible_flags: [seo_harin_rescue_resolved, seo_harin_intervened, taken_under_watch, outsider_claim_recorded, truthful_outsider_claim, injury_stabilized, rescue_debt_recorded, company_words_misunderstood, seo_harin_noticed_cheonggi_record, cheonggi_record_must_be_hidden, badge_secret_flag, seo_harin_suspicion_raised]
+  possible_clues: [cheongryu_name_heard, sect_identity_matters, cheongryu_medicine_smells_of_herbs, sect_protection_has_price, company_words_fail_clue, commute_rift_story_sounds_like_madness, notebook_draws_sect_attention, cheonggi_record_must_be_hidden, badge_misread_as_sect_token, hiding_marks_you_as_suspicious]
   possible_items: []
-  possible_relations: [seo_harin_suspicion, seo_harin_responsibility]
-main_spine_link: 구조자/멘토 후보를 세우고, 주인공을 청류문 수습생 구간으로 이동시킨다.
-randomization_notes: first_brawl 이후 forced aftermath. 별도 hub random으로 반복하지 않는다.
-promotion_notes: runtime 승격 시 healing/debt/relation은 새 schema 없이 log/flag/clue로만 표현한다.
+  possible_relations: [seo_harin_suspicion, seo_harin_responsibility, seo_harin_cautious_trust]
+  possible_destinations: [cheongryu_outer_courtyard]
+  possible_log_tone:
+    - 구조는 구원이 아니라 보호와 감시의 시작이라는 감각
+    - 현대어/회사어가 강호에서 오해되는 감각
+    - 사원증과 천기록이 도움과 위험을 동시에 부르는 감각
+    - 청류문 수습생/채무/잡역 bridge로 넘어가는 압박
+schema_boundary:
+  allowed_existing_schema: [conditions.locations, required_flags, forbidden_flags, choices.cost, outcome.resources, outcome.danger, outcome.add_flags, outcome.add_clues, outcome.add_items, outcome.remove_items, outcome.destination_id, outcome.log, presentation]
+  forbidden_new_schema: [RelationScore, DebtLedger, FactionStanding, healing_schema, companion_schema, reward_schema, ability_schema, CombatState, fragment_choice_reward]
+main_spine_link: 구조자/멘토 후보를 세우고, 주인공을 청류문 수습생 구간으로 이동시킨다. `wuxia_cheongryu_apprentice_entry`는 이 encounter의 `seo_harin_rescue_resolved`/`taken_under_watch`/`rescue_debt_recorded` 계열 hook을 받아 진행한다.
+randomization_notes: first_brawl/first_fragment 이후 1회성 forced aftermath. 별도 hub random으로 반복하지 않고, `seo_harin_rescue_resolved`로 차단한다.
+promotion_notes: 다음 runtime slice로 확정한다. healing/debt/relation은 새 schema 없이 health/sanity/danger, flags, clues, destination, log로만 표현하고, 기본 office bundle/`escape-office` save key/천외편린 3택 성장 schema는 건드리지 않는다.
 ```
 
 ## 4. `wuxia_cheongryu_apprentice_entry`
@@ -199,6 +255,7 @@ id: wuxia_cheongryu_apprentice_entry
 world_id: wuxia_jianghu
 storypack_id: wuxia_jianghu_pack
 status: candidate
+runtime_preview_design_status: designed_follow_up_not_implemented
 phase: cheongryu_apprenticeship
 priority_class: route_key
 location_tags: [cheongryu_sect, courtyard, apprenticeship]
@@ -208,32 +265,71 @@ pressure_type: [relation, hunger, health]
 npc_slots: [sect_master_guardian, early_rescuer, archive_keeper]
 candidate_characters: [seo_harin, cheongryu_sect_master, old_archive_keeper]
 summary: 청류문이 주인공을 보호하지만, 신분은 정식 제자가 아니라 수습생/객식/잡역/임시 보호 대상이다.
+purpose: 서하린 구조 이후 주인공을 청류문 질서 안에 임시로 넣고, 보호의 대가·잡일·수련 허가·서고 curiosity hook을 연다. 관계/채무/훈련 XP schema가 아니라 기존 flags/clues/log만 사용한다.
 setup_text: 청류문 장문인은 주인공을 위아래로 훑어본다. “무공도 없고, 신분도 없고, 은자도 없고, 말은 반쯤 미쳤구나.” 보호는 공짜가 아니다. 목숨값, 치료비, 숙식비를 갚아야 한다. 처음 맡겨진 일은 무공 수련이 아니라 장작 패기, 물 긷기, 연무장 청소, 약초 말리기, 서고 정리다.
+runtime_preview_start_conditions:
+  runtime_mode: storypack_preview
+  prereq: `wuxia_seo_harin_rescue` runtime slice가 먼저 landing되어야 한다.
+  location: cheongryu_outer_courtyard
+  required_flags: [seo_harin_rescue_resolved, taken_under_watch]
+  forbidden_flags: [cheongryu_apprentice_entry_resolved]
+  note: `rescue_debt_recorded`는 rescue branch별 optional hook일 수 있으므로 필수 조건으로 요구하지 않는다.
 choice_shapes:
   - id: accept_three_month_trial
     role: safe_acceptance
-    expected_costs: [debt_or_time]
-    expected_gains: [cheongryu_apprentice_status]
+    fallback_choice: true
+    label_direction: 석 달 동안 잡일과 수습 조건을 받아들인다
+    expected_costs: [debt_or_time, hunger_small]
+    expected_gains: [cheongryu_apprentice_status, chore_training_open]
+    outcome_hook:
+      add_flags: [cheongryu_apprentice_entry_resolved, cheongryu_trial_started, sect_debt_accepted, chore_training_open]
+      add_clues: [training_starts_with_labor, protection_is_not_membership, sect_rules_written_in_chores]
+      add_items: [work_chore_token]
+      log_direction: 보호는 공짜가 아니며, 잡일은 벌이 아니라 수련의 입구라는 압박을 남긴다.
   - id: request_martial_training_immediately
     role: impatience_probe
-    expected_costs: [relation_risk]
-    expected_gains: [training_rule_clue]
+    label_direction: 지금 당장 무공을 가르쳐 달라고 요구한다
+    expected_costs: [relation_risk, danger_small]
+    expected_gains: [training_rule_clue, sect_master_watch]
+    outcome_hook:
+      add_flags: [cheongryu_apprentice_entry_resolved, cheongryu_trial_started, training_request_denied, sect_rules_explained, sect_master_watch]
+      add_clues: [training_requires_chore_credit, protection_is_not_membership]
+      log_direction: 무공은 동정으로 주는 것이 아니라 문파 규칙과 책임 안에서 허가된다는 톤을 남긴다.
   - id: organize_chores_like_workflow
     role: workplace_skill_translation
-    expected_costs: [sanity_small]
-    expected_gains: [efficiency_reputation_small]
+    label_direction: 회사식 업무 분해로 잡일 동선을 정리한다
+    expected_costs: [sanity_small, fatigue_small]
+    expected_gains: [efficiency_reputation_small, workflow_translation_clue]
+    outcome_hook:
+      add_flags: [cheongryu_apprentice_entry_resolved, cheongryu_trial_started, modern_workflow_noticed, chore_roster_rewritten]
+      add_clues: [workflow_thinking_translates_to_training, sect_rules_written_in_chores]
+      log_direction: 현대 회사원의 분해·기록 습관이 무공 치트가 아니라 잡일 효율과 관찰력으로 먼저 번역된다.
   - id: inspect_archive_during_chore
     role: risky_curiosity
-    expected_costs: [suspicion_or_fatigue]
-    expected_gains: [cheonggi_record_foreshadow]
+    label_direction: 서고 정리 중 잠긴 낡은 장부를 살핀다
+    expected_costs: [suspicion_or_fatigue, sanity_small]
+    expected_gains: [cheonggi_record_foreshadow, archive_hook]
+    outcome_hook:
+      add_flags: [cheongryu_apprentice_entry_resolved, cheongryu_trial_started, old_archive_locked_seen, archive_curiosity_marked]
+      add_clues: [old_archive_locked, cheonggi_record_resonates_near_archive]
+      log_direction: 서고는 천기록/천기각 future hook을 암시하지만, 이번 slice에서 3택 성장 UI를 직접 열지 않는다.
 outcome_hooks:
-  possible_flags: [cheongryu_trial_started, sect_debt_accepted, chore_training_open]
-  possible_clues: [training_starts_with_labor, old_archive_locked]
+  possible_flags: [cheongryu_apprentice_entry_resolved, cheongryu_trial_started, sect_debt_accepted, chore_training_open, training_request_denied, sect_rules_explained, modern_workflow_noticed, chore_roster_rewritten, old_archive_locked_seen, archive_curiosity_marked, seo_harin_mentor_thread, sect_master_watch]
+  possible_clues: [training_starts_with_labor, protection_is_not_membership, training_requires_chore_credit, workflow_thinking_translates_to_training, old_archive_locked, cheonggi_record_resonates_near_archive, sect_rules_written_in_chores]
   possible_items: [work_chore_token]
+  possible_destinations: [cheongryu_outer_courtyard]
   possible_relations: [seo_harin_mentor_thread, sect_master_watch]
-main_spine_link: 소속/채무/거점/훈련을 열어 공용 RPG 시스템이 office 밖에서도 성립하는지 검증한다.
-randomization_notes: route_key hub intro. 이후 반복 잡일 카드는 별도 deck으로 분리할 수 있다.
-promotion_notes: 첫 runtime에서는 location/state schema를 넓히지 않고 narrative outcome과 flags로만 표현한다.
+  possible_log_tone:
+    - 보호는 공짜가 아니고 채무와 규칙을 만든다는 감각
+    - 잡일은 벌이 아니라 청류문식 수련의 입구라는 감각
+    - 현대 회사원의 효율화/기록 습관이 무협 surface에 번역되는 감각
+    - 서고와 천기록은 암시만 남기고 reward UI는 열지 않는 감각
+schema_boundary:
+  allowed_existing_schema: [conditions.locations, required_flags, forbidden_flags, choices.cost, outcome.resources, outcome.danger, outcome.add_flags, outcome.add_clues, outcome.add_items, outcome.remove_items, outcome.destination_id, outcome.log, presentation]
+  forbidden_new_schema: [RelationScore, DebtLedger, FactionStanding, TrainingXP, ChoreScheduler, companion_schema, reward_schema, ability_schema, CombatState, fragment_choice_reward]
+main_spine_link: 소속/채무/거점/훈련을 열어 공용 RPG 시스템이 office 밖에서도 성립하는지 검증한다. 이 card는 `wuxia_seo_harin_rescue`가 남긴 `seo_harin_rescue_resolved`/`taken_under_watch` hook을 받은 뒤 진행한다.
+randomization_notes: route_key hub intro. rescue 직후 forced bridge로 1회만 사용하고, 이후 반복 잡일/서고 카드는 별도 deck으로 분리할 수 있다.
+promotion_notes: follow-up runtime candidate로 설계 완료. `wuxia_seo_harin_rescue` 구현 전에는 승격하지 않는다. 첫 runtime에서는 location/state schema를 넓히지 않고 narrative outcome과 flags/clues/log/presentation으로만 표현한다.
 ```
 
 ## 5. `wuxia_cheonggi_record_first_fragment`
@@ -315,6 +411,7 @@ id: wuxia_cheongryu_raid_route_split
 world_id: wuxia_jianghu
 storypack_id: wuxia_jianghu_pack
 status: candidate
+runtime_preview_design_status: designed_later_not_implemented
 phase: [cheongryu_raid, route_commitment]
 priority_class: route_key
 location_tags: [cheongryu_sect, raid, faction_choice]
@@ -324,30 +421,151 @@ pressure_type: [danger, relation, sanity]
 npc_slots: [righteous_ally, sapa_ally, cheonggi_record_keeper, blood_moon_antagonist]
 candidate_characters: [namgung_seoyun, dowol, yeon_soha, yu_harin]
 summary: 청류문 습격 사건 후 백도맹, 흑천련, 천기각이 서로 다른 명분과 대가를 제시하며 route commitment를 압박한다.
+purpose: 청류문 공통 루트가 충분히 쌓인 뒤 혈월교 습격을 통해 정파/사파/천기·귀환 축의 route pressure를 처음 노출한다. 완전한 faction reputation, route graph, ending system이 아니라 route flag/clue/log hook만 남긴다.
 setup_text: 혈월교의 습격으로 청류문이 무너진다. 백도맹은 늦게 도착하고, 흑천련은 거래를 제안하며, 천기각은 주인공에게 도망치라고 한다. 천기록은 조용히 떨리고, 서하린은 피 묻은 소매로 연무장 문을 막아 선다. 어느 편도 완전히 선하거나 안전하지 않다.
+runtime_preview_start_conditions:
+  runtime_mode: storypack_preview
+  prereq: rescue/apprentice runtime slice가 먼저 landing되어야 한다.
+  location: cheongryu_outer_courtyard
+  required_flags: [cheongryu_apprentice_entry_resolved, cheongryu_trial_started, cheonggi_record_awakened, first_fragment_seen]
+  forbidden_flags: [cheongryu_raid_route_split_resolved]
+  note: fragment branch별 thread flag는 flavor로만 쓰고 eligibility에는 공통 `first_fragment_seen`을 사용한다.
 choice_shapes:
-  - id: defend_cheongryu_with_white_path
-    role: righteous_route_commitment
-    expected_costs: [political_debt, danger_medium]
-    expected_gains: [righteous_route_flag, cheongryu_rebuild_thread]
-  - id: trade_with_black_heaven
-    role: sapa_route_commitment
-    expected_costs: [trust_loss, debt_medium]
-    expected_gains: [sapa_route_flag, survival_resources]
-  - id: follow_heavenly_archive
-    role: return_truth_route_commitment
-    expected_costs: [cheongryu_relation_risk]
-    expected_gains: [cheonggi_return_route_flag, world_rift_clue]
   - id: evacuate_the_wounded_first
     role: safe_human_priority
-    expected_costs: [route_delay]
-    expected_gains: [relation_gain, wounded_saved_flag]
+    fallback_choice: true
+    label_direction: 부상자를 먼저 빼내고 선택을 미룬다
+    expected_costs: [route_delay, danger_small]
+    expected_gains: [relation_gain, wounded_saved_flag, seo_harin_survived_raid]
+    outcome_hook:
+      add_flags: [cheongryu_raid_route_split_resolved, cheongryu_raid_survived, route_commitment_pressure, route_commitment_deferred, wounded_saved_flag, seo_harin_survived_raid]
+      add_clues: [saving_people_delays_route_choice, blood_moon_targets_cheonggi_record]
+      log_direction: 선택을 미뤘지만 아무것도 선택하지 않은 것은 아니며, 사람을 구한 대가와 지연을 남긴다.
+  - id: defend_cheongryu_with_white_path
+    role: righteous_route_commitment
+    label_direction: 백도맹 지원을 받아 청류문을 방어한다
+    expected_costs: [political_debt, danger_medium]
+    expected_gains: [righteous_route_flag, cheongryu_rebuild_thread]
+    outcome_hook:
+      add_flags: [cheongryu_raid_route_split_resolved, cheongryu_raid_survived, route_commitment_pressure, righteous_route_started, baekdo_alliance_debt, cheongryu_rebuild_thread]
+      add_clues: [white_path_help_has_price, martial_knowledge_conflict]
+      log_direction: 정파의 도움은 질서와 명분을 주지만, 청류문과 천기록을 정치적 빚 안에 묶는다.
+  - id: trade_with_black_heaven
+    role: sapa_route_commitment
+    label_direction: 흑천련 도월과 거래해 탈출로를 산다
+    expected_costs: [trust_loss, debt_medium]
+    expected_gains: [sapa_route_flag, survival_resources]
+    outcome_hook:
+      add_flags: [cheongryu_raid_route_split_resolved, cheongryu_raid_survived, route_commitment_pressure, sapa_route_started, black_heaven_deal_marked, dowol_debt]
+      add_clues: [black_heaven_bargain_has_teeth, martial_knowledge_conflict]
+      log_direction: 사파의 거래는 빠른 생존을 주지만, 이후 갚아야 할 이름과 빚을 남긴다.
+  - id: follow_heavenly_archive
+    role: return_truth_route_commitment
+    label_direction: 천기각 기록관을 따라 천기록의 출처를 쫓는다
+    expected_costs: [cheongryu_relation_risk, sanity_small]
+    expected_gains: [cheonggi_return_route_flag, world_rift_clue]
+    outcome_hook:
+      add_flags: [cheongryu_raid_route_split_resolved, cheongryu_raid_survived, route_commitment_pressure, cheonggi_return_route_started, heavenly_archive_contact, cheonggi_record_targeted]
+      add_clues: [heavenly_archive_knows_previous_outsiders, blood_moon_targets_cheonggi_record]
+      log_direction: 귀환과 진실의 단서는 가까워지지만, 청류문을 떠나는 죄책감과 감시를 남긴다.
 outcome_hooks:
-  possible_flags: [cheongryu_raid_survived, route_commitment_pressure]
-  possible_route_flags: [righteous_route_started, sapa_route_started, cheonggi_return_route_started]
-  possible_clues: [martial_knowledge_conflict, cheonggi_record_targeted]
-  possible_relations: [seo_harin_loyalty_test, faction_debt]
-main_spine_link: 중반의 큰 분기점으로 정파/사파/천기·귀환 루트를 연다.
-randomization_notes: 보스/대형 사건급 route_key. 충분한 공통 루트와 천기록 각성 후에만 사용한다.
-promotion_notes: 첫 runtime prototype 후보는 아니다. route system과 storypack gating이 생긴 뒤 중반 slice로 검토한다.
+  possible_flags: [cheongryu_raid_route_split_resolved, cheongryu_raid_survived, route_commitment_pressure, route_commitment_deferred, wounded_saved_flag, seo_harin_survived_raid, righteous_route_started, baekdo_alliance_debt, cheongryu_rebuild_thread, sapa_route_started, black_heaven_deal_marked, dowol_debt, cheonggi_return_route_started, heavenly_archive_contact, cheonggi_record_targeted]
+  possible_route_flags: [righteous_route_started, sapa_route_started, cheonggi_return_route_started, route_commitment_deferred]
+  possible_clues: [martial_knowledge_conflict, blood_moon_targets_cheonggi_record, white_path_help_has_price, black_heaven_bargain_has_teeth, heavenly_archive_knows_previous_outsiders, saving_people_delays_route_choice]
+  possible_relations: [seo_harin_loyalty_test, faction_debt, namgung_seoyun_notice, dowol_debt, heavenly_archive_contact]
+  possible_destinations: [cheongryu_outer_courtyard, cheongryu_raid_courtyard, raid_aftermath_shelter]
+  possible_log_tone:
+    - 어느 편도 완전히 선하거나 안전하지 않다는 감각
+    - 선택하지 않는 것도 대가와 지연을 만든다는 감각
+    - 천기록이 구조물이 아니라 세력들이 노리는 물건으로 바뀌는 감각
+    - route flag는 남기되 ending/route graph 구현은 열지 않는 감각
+schema_boundary:
+  allowed_existing_schema: [conditions.locations, required_flags, forbidden_flags, choices.cost, outcome.resources, outcome.danger, outcome.add_flags, outcome.add_clues, outcome.add_items, outcome.remove_items, outcome.destination_id, outcome.log, presentation]
+  forbidden_new_schema: [FactionStanding, RouteGraph, BranchLock, CompanionDeath, MassCombat, boss_combat_resolver, reward_schema, ability_schema, fragment_choice_reward, multi_ending_implementation]
+main_spine_link: 중반의 큰 분기점으로 정파/사파/천기·귀환 루트 압박을 연다. 이 card는 rescue/apprentice와 first-fragment 공통 hook이 runtime에 들어간 뒤에만 사용한다.
+randomization_notes: 보스/대형 사건급 route_key. 충분한 공통 루트, 청류문 수습생 hook, 천기록 각성 hook 뒤에 1회성 forced route pressure로 사용한다.
+promotion_notes: later runtime candidate로 설계 완료. `wuxia_seo_harin_rescue`와 `wuxia_cheongryu_apprentice_entry` 구현 전에는 승격하지 않는다. 첫 raid runtime은 route flag/clue/log/presentation만 남기고 route graph, faction reputation, boss combat, ending implementation은 별도 slice로 둔다.
+```
+
+## 7. `wuxia_cheongryu_raid_wounded_fallback`
+
+```yaml
+id: wuxia_cheongryu_raid_wounded_fallback
+world_id: wuxia_jianghu
+storypack_id: wuxia_jianghu_pack
+status: candidate
+runtime_preview_design_status: designed_later_not_implemented
+phase: [cheongryu_raid, route_commitment]
+priority_class: route_key
+location_tags: [cheongryu_sect, raid, wounded_shelter, faction_choice]
+surface: [sect_raid, faction_negotiation, sect_courtyard]
+anomaly_type: [faction_pressure, sect_debt]
+pressure_type: [health, danger, relation, sanity]
+npc_slots: [early_rescuer, righteous_ally, sapa_ally, cheonggi_record_keeper]
+candidate_characters: [seo_harin, namgung_seoyun, dowol, yeon_soha]
+summary: raid split에서 부상자를 먼저 대피시킨 뒤, route 선택을 미룬 대가와 신뢰를 기록하고 정파/사파/천기 route pressure를 다시 연다.
+purpose: `evacuate_the_wounded_first` fallback을 dead-end가 아니라 공통 재합류 branch로 만든다. 사람을 구한 선택의 보상과 지연 비용을 flags/clues/log로 남기되, route graph/faction reputation schema는 열지 않는다.
+setup_text: 날이 밝기 전, 임시 피난처에는 숨을 고르는 사람들의 이름이 하나씩 불린다. 서하린은 피 묻은 소매를 감추지 못하고, 백도맹의 약상자는 문장 깃발 아래 놓여 있으며, 흑천련의 붕대는 값표가 붙은 듯하다. 천기록의 빈 장에는 부상자 동선이 지도처럼 번진다. 선택을 미뤘지만, 세계는 그 결정을 잊지 않았다.
+runtime_preview_start_conditions:
+  runtime_mode: storypack_preview
+  prereq: rescue/apprentice/raid split runtime slice가 먼저 landing되어야 한다.
+  location: raid_aftermath_shelter
+  fallback_location_if_no_new_location: cheongryu_outer_courtyard
+  required_flags: [cheongryu_raid_route_split_resolved, route_commitment_deferred, wounded_saved_flag, cheongryu_raid_survived]
+  forbidden_flags: [cheongryu_raid_wounded_fallback_resolved]
+  note: seo_harin_survived_raid는 flavor hook으로 우선 사용하고 eligibility 필수 조건으로 만들지 않는다.
+choice_shapes:
+  - id: stabilize_wounded_until_dawn
+    role: safe_deferred_recovery
+    fallback_choice: true
+    label_direction: 새벽까지 부상자를 안정시키고 명단을 맞춘다
+    expected_costs: [route_delay, fatigue_small]
+    expected_gains: [survivor_roll_call_complete, trust_from_wounded]
+    outcome_hook:
+      add_flags: [cheongryu_raid_wounded_fallback_resolved, deferred_route_reopened, route_commitment_deferred, wounded_shelter_stabilized, survivor_roll_call_complete, route_delay_cost_recorded]
+      add_clues: [saving_people_changed_witnesses, deferred_choice_is_still_choice]
+      log_direction: 사람을 구한 선택은 신뢰를 만들지만, route pressure는 사라지지 않고 더 구체적인 대가로 돌아온다.
+  - id: ask_baekdo_for_medicine_not_command
+    role: delayed_righteous_commitment
+    label_direction: 백도맹에 명령이 아니라 약과 호위를 요청한다
+    expected_costs: [political_debt, autonomy_risk]
+    expected_gains: [righteous_route_flag, medicine_support]
+    outcome_hook:
+      add_flags: [cheongryu_raid_wounded_fallback_resolved, deferred_route_reopened, righteous_route_started, baekdo_medicine_debt, cheongryu_rebuild_thread]
+      add_clues: [medicine_has_banner, white_path_help_has_price]
+      log_direction: 정파의 약상자는 사람을 살리지만, 깃발 아래 놓인 도움은 정치적 빚을 남긴다.
+  - id: trade_black_heaven_bandages_for_exit
+    role: delayed_sapa_bargain
+    label_direction: 흑천련의 붕대와 탈출로를 거래한다
+    expected_costs: [debt_medium, trust_loss]
+    expected_gains: [sapa_route_flag, exit_route_hint]
+    outcome_hook:
+      add_flags: [cheongryu_raid_wounded_fallback_resolved, deferred_route_reopened, sapa_route_started, black_heaven_escape_marker, dowol_debt]
+      add_clues: [black_heaven_help_marks_debt, black_heaven_bargain_has_teeth]
+      log_direction: 사파의 도움은 빠르고 실용적이지만, 붕대 매듭마다 갚아야 할 이름이 묶인다.
+  - id: follow_archive_triage_map
+    role: delayed_return_truth_thread
+    label_direction: 천기각 기록관의 부상자 동선 지도를 따른다
+    expected_costs: [sanity_small, cheongryu_relation_risk]
+    expected_gains: [cheonggi_return_route_flag, previous_outsider_trace]
+    outcome_hook:
+      add_flags: [cheongryu_raid_wounded_fallback_resolved, deferred_route_reopened, cheonggi_return_route_started, heavenly_archive_triage_map_seen, cheonggi_record_targeted]
+      add_clues: [archive_records_count_the_living, heavenly_archive_knows_previous_outsiders]
+      log_direction: 천기각의 지도는 산 사람의 동선을 세지만, 그 선은 주인공이 돌아갈 수 있는 균열과도 이어진다.
+outcome_hooks:
+  possible_flags: [cheongryu_raid_wounded_fallback_resolved, deferred_route_reopened, route_commitment_deferred, wounded_shelter_stabilized, survivor_roll_call_complete, route_delay_cost_recorded, righteous_route_started, baekdo_medicine_debt, cheongryu_rebuild_thread, sapa_route_started, black_heaven_escape_marker, dowol_debt, cheonggi_return_route_started, heavenly_archive_triage_map_seen, cheonggi_record_targeted]
+  possible_route_flags: [righteous_route_started, sapa_route_started, cheonggi_return_route_started, route_commitment_deferred]
+  possible_clues: [saving_people_changed_witnesses, deferred_choice_is_still_choice, medicine_has_banner, white_path_help_has_price, black_heaven_help_marks_debt, black_heaven_bargain_has_teeth, archive_records_count_the_living, heavenly_archive_knows_previous_outsiders]
+  possible_relations: [trust_from_wounded, seo_harin_respect_thread, baekdo_medicine_debt, dowol_debt, heavenly_archive_contact]
+  possible_destinations: [raid_aftermath_shelter, cheongryu_outer_courtyard]
+  possible_log_tone:
+    - 사람을 먼저 구한 선택이 route pressure를 없애지 않고 늦춘다는 감각
+    - fallback도 보상과 대가가 있는 authored branch라는 감각
+    - 이후 route opener가 direct branch와 deferred branch를 같은 route starter flag로 받을 수 있다는 감각
+schema_boundary:
+  allowed_existing_schema: [conditions.locations, required_flags, forbidden_flags, choices.cost, outcome.resources, outcome.danger, outcome.add_flags, outcome.add_clues, outcome.add_items, outcome.remove_items, outcome.destination_id, outcome.log, presentation]
+  forbidden_new_schema: [RouteGraph, FactionStanding, BranchLock, TriageSystem, CompanionDeath, MassCombat, boss_combat_resolver, reward_schema, ability_schema, fragment_choice_reward, multi_ending_implementation]
+main_spine_link: raid split fallback을 정파/사파/천기 route opener 전 공통 재합류 branch로 만든다. direct route choice와 deferred route choice가 같은 route starter flags를 남기게 해 future opener에서 새 any-of condition schema를 요구하지 않게 한다.
+randomization_notes: route split fallback 직후 1회성 forced bridge로만 사용한다. 반복 피난처 deck이나 부상자 관리 시스템으로 확장하지 않는다.
+promotion_notes: later runtime candidate로 설계 완료. `wuxia_cheongryu_raid_route_split` 구현 전에는 승격하지 않는다. 첫 runtime은 flags/clues/log/presentation만 남기고 route graph, faction reputation, triage system, companion death, boss combat, ending implementation은 별도 slice로 둔다.
 ```

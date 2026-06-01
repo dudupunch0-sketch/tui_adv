@@ -464,3 +464,65 @@ encounters:
           add_clues: [archive_records_count_the_living, heavenly_archive_knows_previous_outsiders]
           destination_id: cheongryu_outer_courtyard
           log: 천기각의 지도는 산 사람의 동선을 세지만, 그 선은 주인공이 돌아갈 수 있는 균열과도 이어진다. 기록자는 정체를 드러내지 않고 시선만 남긴다.
+
+  - id: wuxia_baekdo_medicine_debt
+    title: 백도맹 약상자와 청류문의 채무
+    body: 새벽빛이 청류문 외곽 마당에 내려앉을 때, 백도맹 깃발을 단 약상자가 산문 앞에 놓인다. 남궁서윤은 사람을 살릴 수 있는 약과 호위를 내밀지만, 그 뒤에는 지원 명부와 채무 문서가 함께 접혀 있다. 도움은 분명 사람을 살린다. 다만 그 도움은 누구의 이름으로 기록되는지 묻는다.
+    presentation:
+      visual_id: wuxia_baekdo_medicine_debt
+      speaker: 남궁서윤
+      layout: righteous_route_opener
+      effect_cues:
+        - kind: glyph_anomaly
+          source: baekdo_medicine_debt
+          intensity: 0.69
+          stable_terms: [약상자, 백도맹, 채무]
+          distortion: medicine_chest_then_written_debt
+          duration_hint_ms: 1400
+          fallback_text: 약 냄새와 깃발 그림자 사이로 '약상자', '백도맹', '채무'만 선명하게 남는다.
+    conditions:
+      locations: [cheongryu_outer_courtyard]
+      required_flags: [righteous_route_started, cheongryu_rebuild_thread]
+      forbidden_flags: [baekdo_medicine_debt_resolved]
+    choices:
+      - id: accept_medicine_with_written_debt
+        label: 채무 문서를 남기고 약상자와 호위를 받는다
+        outcome:
+          resources:
+            health: 5
+            sanity: -2
+          add_flags: [baekdo_medicine_debt_resolved, righteous_route_opened, white_path_debt_recorded, cheongryu_rebuild_supplies_secured, namgung_seoyun_notice]
+          add_clues: [medicine_has_banner, white_path_help_has_price, qingliu_survival_needs_outside_help]
+          destination_id: cheongryu_outer_courtyard
+          log: 약상자는 사람을 살리고, 문서는 청류문의 이름 옆에 백도맹의 채무를 남긴다. 도움은 따뜻하지만 기록은 차갑다.
+      - id: ask_terms_before_opening_gate
+        label: 산문을 열기 전에 백도맹의 조건을 묻는다
+        outcome:
+          resources:
+            sanity: -2
+          danger: 1
+          add_flags: [baekdo_medicine_debt_resolved, righteous_route_opened, baekdo_terms_questioned, white_path_debt_recorded, namgung_seoyun_notice]
+          add_clues: [white_path_help_has_price, order_can_save_and_bind]
+          destination_id: cheongryu_outer_courtyard
+          log: 조건을 묻자 남궁서윤의 눈빛이 잠깐 굳는다. 정의는 사람을 살릴 수 있지만, 질서는 누가 누구에게 빚졌는지도 함께 적는다.
+      - id: send_supplies_to_wounded_first
+        label: 약과 식량을 장문 명부보다 부상자에게 먼저 돌린다
+        outcome:
+          resources:
+            health: 4
+            hunger: -1
+            sanity: -1
+          add_flags: [baekdo_medicine_debt_resolved, righteous_route_opened, cheongryu_people_first, seo_harin_respect_thread, cheongryu_rebuild_supplies_secured]
+          add_clues: [qingliu_survival_needs_outside_help, order_can_save_and_bind]
+          destination_id: cheongryu_outer_courtyard
+          log: 명부보다 먼저 부상자의 손에 약이 닿는다. 서하린은 아무 말 없이 고개를 끄덕이고, 백도맹 사자는 그 순서를 오래 바라본다.
+      - id: compare_banner_to_record_margin
+        label: 백도맹 깃발과 천기록 여백의 문장을 비교한다
+        outcome:
+          resources:
+            sanity: -3
+          danger: 1
+          add_flags: [baekdo_medicine_debt_resolved, righteous_route_opened, cheonggi_record_notes_baekdo_debt, white_path_debt_recorded]
+          add_clues: [record_counts_debt_not_justice, white_path_help_has_price]
+          destination_id: cheongryu_outer_courtyard
+          log: 천기록의 여백은 답하지 않는다. 다만 깃발의 의와 문서의 채무가 같은 먹으로 기록될 수 있다는 사실만 남긴다.

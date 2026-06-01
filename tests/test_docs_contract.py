@@ -570,16 +570,17 @@ def test_wuxia_cheongryu_raid_wounded_fallback_runtime_slice_is_docs_synced():
     assert "route opener docs-only handoff" in plan
     assert "wuxia_baekdo_medicine_debt" in plan
     assert "wuxia_baekdo_medicine_debt" in next_goal
-    assert "current_goal: implement_wuxia_baekdo_medicine_debt" in next_goal
-    assert "Route opener docs-only handoff" in coverage
+    assert "current_goal: route_opener_followup_after_baekdo" in next_goal
+    assert "Route opener implementation" in coverage
     next_slice = plan.split("현재 최우선 남은 작업:", 1)[1].split("전환 중 유지:", 1)[0]
     assert "wuxia_baekdo_medicine_debt" in next_slice
-    assert "righteous_route_started" in next_slice
-    assert "cheongryu_rebuild_thread" in next_slice
+    assert "route_opener_followup_after_baekdo" in next_slice
+    assert "사파/흑천련 opener" in next_slice
+    assert "천기·귀환 opener" in next_slice
     assert "기본 `content.bundle.json`, Web 기본 generated bundle, `src/tui_adv/data/*.yaml`, `escape-office` save/localStorage key는 계속 바꾸지 않는다" in next_slice
 
 
-def test_wuxia_baekdo_medicine_debt_route_opener_handoff_is_docs_synced():
+def test_wuxia_baekdo_medicine_debt_runtime_slice_is_docs_synced():
     plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     decision = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(encoding="utf-8")
@@ -589,13 +590,17 @@ def test_wuxia_baekdo_medicine_debt_route_opener_handoff_is_docs_synced():
     wuxia_cards = Path("docs/content/encounter_db/wuxia_jianghu_pack.md").read_text(encoding="utf-8")
 
     assert "## 0.20 2026-06-01 docs-only route opener handoff: `wuxia_baekdo_medicine_debt`" in plan
+    assert "## 0.21 2026-06-01 무협 `wuxia_baekdo_medicine_debt` preview runtime slice" in plan
     assert "### 0.2ai 2026-06-01 무협 route opener docs-only handoff" in checklist
-    assert "route opener docs-only handoff 결과: 첫 route opener는 정파/백도맹 약상자 채무 축인 `wuxia_baekdo_medicine_debt`" in decision
+    assert "### 0.2aj 2026-06-01 무협 `wuxia_baekdo_medicine_debt` preview runtime slice" in checklist
+    assert "`wuxia_baekdo_medicine_debt` — preview runtime 구현 완료" in decision
     assert "| `wuxia_baekdo_medicine_debt` | `route_commitment`" in wuxia_pack
+    assert "`wuxia_baekdo_medicine_debt` — preview runtime 구현 완료" in wuxia_pack
     assert "## 9. `wuxia_baekdo_medicine_debt`" in wuxia_cards
-    assert "runtime_preview_design_status: designed_next_not_implemented" in wuxia_cards
+    assert "runtime_preview_design_status: implemented" in wuxia_cards
     assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 9개." in storypack_db_readme
-    assert "current_goal: implement_wuxia_baekdo_medicine_debt" in next_goal
-    assert "runtime-preview-implementation" in next_goal
-    assert "required_flags: [righteous_route_started, cheongryu_rebuild_thread]" in next_goal
-    assert "runtime YAML/Rust/Web/generated artifact" in next_goal
+    assert "route_opener_followup_after_baekdo" in storypack_db_readme
+    assert "current_goal: route_opener_followup_after_baekdo" in next_goal
+    assert "docs-only-handoff" in next_goal
+    assert "사파/흑천련 opener" in next_goal
+    assert "runtime YAML/Rust/Web/generated artifact는 수정하지 않는다" in next_goal

@@ -33,6 +33,7 @@ describe('runtime content bundle registry', () => {
       'wuxia_cheongryu_chore_sparring',
       'wuxia_cheongryu_raid_route_split',
       'wuxia_cheongryu_raid_wounded_fallback',
+      'wuxia_baekdo_medicine_debt',
     ]);
     expect(encounterIds).not.toContain('ex_employee_messenger');
   });

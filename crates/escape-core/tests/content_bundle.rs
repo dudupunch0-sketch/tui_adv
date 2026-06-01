@@ -196,12 +196,12 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&4));
     assert_eq!(bundle.manifest.counts.get("items"), Some(&3));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&8));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&9));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 4);
-    assert_eq!(index.encounters_len(), 8);
+    assert_eq!(index.encounters_len(), 9);
 
     let market = index
         .location("jianghu_market_street")
@@ -555,6 +555,64 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     );
     assert_eq!(
         stabilize.outcome.destination_id.as_deref(),
+        Some("cheongryu_outer_courtyard")
+    );
+
+    let baekdo_debt = index
+        .encounter("wuxia_baekdo_medicine_debt")
+        .expect("baekdo medicine debt route opener encounter");
+    assert_eq!(baekdo_debt.title, "백도맹 약상자와 청류문의 채무");
+    assert_eq!(
+        baekdo_debt.conditions.locations,
+        vec!["cheongryu_outer_courtyard"]
+    );
+    assert_eq!(
+        baekdo_debt.conditions.required_flags,
+        vec!["righteous_route_started", "cheongryu_rebuild_thread"]
+    );
+    assert_eq!(
+        baekdo_debt.conditions.forbidden_flags,
+        vec!["baekdo_medicine_debt_resolved"]
+    );
+    let baekdo_presentation = baekdo_debt
+        .presentation
+        .as_ref()
+        .expect("baekdo route opener presentation");
+    assert_eq!(
+        baekdo_presentation.layout.as_deref(),
+        Some("righteous_route_opener")
+    );
+    assert_eq!(baekdo_presentation.speaker.as_deref(), Some("남궁서윤"));
+    assert_eq!(
+        baekdo_presentation.effect_cues[0].stable_terms,
+        vec!["약상자", "백도맹", "채무"]
+    );
+    assert_eq!(baekdo_debt.choices.len(), 4);
+    let accept_debt = baekdo_debt
+        .choices
+        .iter()
+        .find(|choice| choice.id == "accept_medicine_with_written_debt")
+        .expect("fallback written debt choice");
+    assert_eq!(
+        accept_debt.outcome.add_flags,
+        vec![
+            "baekdo_medicine_debt_resolved",
+            "righteous_route_opened",
+            "white_path_debt_recorded",
+            "cheongryu_rebuild_supplies_secured",
+            "namgung_seoyun_notice"
+        ]
+    );
+    assert_eq!(
+        accept_debt.outcome.add_clues,
+        vec![
+            "medicine_has_banner",
+            "white_path_help_has_price",
+            "qingliu_survival_needs_outside_help"
+        ]
+    );
+    assert_eq!(
+        accept_debt.outcome.destination_id.as_deref(),
         Some("cheongryu_outer_courtyard")
     );
 }

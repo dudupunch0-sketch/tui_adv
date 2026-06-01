@@ -92,6 +92,7 @@ def test_export_web_data_builds_renderer_neutral_content_bundle():
             "wuxia_cheongryu_chore_sparring",
             "wuxia_cheongryu_raid_route_split",
             "wuxia_cheongryu_raid_wounded_fallback",
+            "wuxia_baekdo_medicine_debt",
         }
         for encounter in bundle["content"]["encounters"]
     )
@@ -115,7 +116,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     assert bundle["manifest"]["counts"] == {
         "locations": 4,
         "items": 3,
-        "encounters": 8,
+        "encounters": 9,
         "endings": 1,
         "achievements": 2,
         "secrets": 0,
@@ -136,6 +137,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "wuxia_cheongryu_chore_sparring",
         "wuxia_cheongryu_raid_route_split",
         "wuxia_cheongryu_raid_wounded_fallback",
+        "wuxia_baekdo_medicine_debt",
     ]
     first_fight = bundle["content"]["encounters"][1]
     assert first_fight["conditions"] == {
@@ -366,6 +368,42 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "deferred_choice_is_still_choice",
     ]
     assert stabilize["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
+    baekdo_debt = bundle["content"]["encounters"][8]
+    assert baekdo_debt["conditions"] == {
+        "locations": ["cheongryu_outer_courtyard"],
+        "required_flags": [
+            "righteous_route_started",
+            "cheongryu_rebuild_thread",
+        ],
+        "forbidden_flags": ["baekdo_medicine_debt_resolved"],
+    }
+    assert baekdo_debt["presentation"]["layout"] == "righteous_route_opener"
+    assert baekdo_debt["presentation"]["speaker"] == "남궁서윤"
+    assert baekdo_debt["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "약상자",
+        "백도맹",
+        "채무",
+    ]
+    assert [choice["id"] for choice in baekdo_debt["choices"]] == [
+        "accept_medicine_with_written_debt",
+        "ask_terms_before_opening_gate",
+        "send_supplies_to_wounded_first",
+        "compare_banner_to_record_margin",
+    ]
+    accept_debt = baekdo_debt["choices"][0]
+    assert accept_debt["outcome"]["add_flags"] == [
+        "baekdo_medicine_debt_resolved",
+        "righteous_route_opened",
+        "white_path_debt_recorded",
+        "cheongryu_rebuild_supplies_secured",
+        "namgung_seoyun_notice",
+    ]
+    assert accept_debt["outcome"]["add_clues"] == [
+        "medicine_has_banner",
+        "white_path_help_has_price",
+        "qingliu_survival_needs_outside_help",
+    ]
+    assert accept_debt["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
     assert "dev_desk" not in json.dumps(bundle, ensure_ascii=False)
     assert _missing_private_secret_fields(bundle)
 

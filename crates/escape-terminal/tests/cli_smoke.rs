@@ -574,6 +574,64 @@ fn content_tui_smoke_reaches_wuxia_cheongryu_raid_wounded_fallback() {
 }
 
 #[test]
+fn content_tui_smoke_reaches_wuxia_baekdo_medicine_debt() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--storypack-preview",
+            "wuxia_jianghu_pack",
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:follow_roadside_dust",
+            "--action",
+            "move:jianghu_market_street",
+            "--action",
+            "choice:run_toward_open_street",
+            "--action",
+            "choice:choose_failure_log",
+            "--action",
+            "choice:tell_plain_truth",
+            "--action",
+            "choice:accept_three_month_trial",
+            "--action",
+            "choice:step_back_with_firewood",
+            "--action",
+            "choice:defend_cheongryu_with_white_path",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("위치: 청류문 외곽 마당 (cheongryu_outer_courtyard)"));
+    assert!(stdout.contains("백도맹 약상자와 청류문의 채무"));
+    assert!(stdout.contains("visual id: wuxia_baekdo_medicine_debt"));
+    assert!(stdout.contains("layout: righteous_route_opener"));
+    assert!(stdout.contains("stable terms: 약상자 / 백도맹 / 채무"));
+    assert!(stdout.contains(
+        "choice:accept_medicine_with_written_debt / 채무 문서를 남기고 약상자와 호위를 받는다"
+    ));
+    assert!(stdout.contains(
+        "choice:ask_terms_before_opening_gate / 산문을 열기 전에 백도맹의 조건을 묻는다"
+    ));
+    assert!(stdout.contains(
+        "choice:send_supplies_to_wounded_first / 약과 식량을 장문 명부보다 부상자에게 먼저 돌린다"
+    ));
+    assert!(stdout.contains(
+        "choice:compare_banner_to_record_margin / 백도맹 깃발과 천기록 여백의 문장을 비교한다"
+    ));
+    assert!(!stdout.contains("dev_desk"));
+}
+
+#[test]
 fn content_tui_smoke_renders_final_movement_panel_after_scripted_actions() {
     let bundle_path = content_bundle_path();
     let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))

@@ -2,7 +2,7 @@
 
 Status: docs-only sync + follow-up runtime status note
 Last checked: 2026-06-01T02:53:42+00:00
-Runtime status: `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, and `wuxia_cheongryu_raid_wounded_fallback` were implemented later as separate `storypack_preview` runtime slices; this document remains the Notion coverage ledger.
+Runtime status: `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, and `wuxia_baekdo_medicine_debt` were implemented later as separate `storypack_preview` runtime slices; this document remains the Notion coverage ledger. 2026-06-01 default 전환 이후 Web player 기본 storypack은 이구학지다.
 Raw snapshot policy: live Notion markdown/DB exports were used for audit in `/tmp/tui_adv_notion_wuxia_sync`; raw snapshots are not committed.
 
 ## Purpose
@@ -114,7 +114,7 @@ The epilogue DB is a future design source. None of these 17 rows is runtime impl
 
 Already reflected before this sync:
 
-- `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, and `wuxia_cheongryu_raid_wounded_fallback` exist as separate storypack preview runtime content.
+- `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, and `wuxia_baekdo_medicine_debt` exist as separate storypack preview runtime content.
 - Later route opener/epilogue candidates remain designed docs/handoff candidates, not runtime content.
 - Default office bundle separation and `escape-office` save/localStorage compatibility boundaries were already documented.
 
@@ -136,6 +136,6 @@ Still not runtime implemented:
 
 ## Next implementation handoff
 
-`wuxia_seo_harin_rescue`, mapped from Notion DB row `wuxia_seoharin_intervention` / `서하린의 개입`, `wuxia_cheongryu_apprentice_entry`, mapped from `wuxia_qingliu_apprentice_entry`, `wuxia_cheongryu_raid_route_split`, and `wuxia_cheongryu_raid_wounded_fallback` are implemented in the preview runtime bundle.
+`wuxia_seo_harin_rescue`, mapped from Notion DB row `wuxia_seoharin_intervention` / `서하린의 개입`, `wuxia_cheongryu_apprentice_entry`, mapped from `wuxia_qingliu_apprentice_entry`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, and `wuxia_baekdo_medicine_debt` are implemented in the preview runtime bundle.
 
-Route opener docs-only handoff: the route-opener docs-only selection chose the righteous opener `wuxia_baekdo_medicine_debt` as the next runtime handoff. It accepts both direct raid route and deferred wounded fallback branches through shared `righteous_route_started` + `cheongryu_rebuild_thread` flags; `baekdo_alliance_debt` and `baekdo_medicine_debt` remain branch flavor hooks. The implementation must still avoid default office bundle changes, `escape-office` key changes, and new relation/debt/faction/reward schemas.
+Route opener implementation: the route-opener selection chose and implemented the righteous opener `wuxia_baekdo_medicine_debt`. It accepts both direct raid route and deferred wounded fallback branches through shared `righteous_route_started` + `cheongryu_rebuild_thread` flags; `baekdo_alliance_debt` and `baekdo_medicine_debt` remain branch flavor hooks. The next handoff is `route_opener_followup_after_baekdo`, and it must still avoid legacy office bundle changes, `escape-office` key changes, and new relation/debt/faction/reward schemas.

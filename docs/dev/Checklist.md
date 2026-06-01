@@ -335,6 +335,18 @@
 - [x] storypack DB JSON mirror와 docs contract를 다음 runtime handoff 기준으로 갱신
 - [x] runtime YAML/Rust/Web/generated bundle, 기본 office bundle, `escape-office` save/localStorage key 미변경 유지
 
+### 0.2aj 2026-06-01 무협 `wuxia_baekdo_medicine_debt` preview runtime slice
+
+- [x] `wuxia_baekdo_medicine_debt`를 첫 정파 route opener로 같은 storypack preview source에 추가
+- [x] start conditions를 `righteous_route_started` + `cheongryu_rebuild_thread`로 고정하고 `baekdo_alliance_debt`/`baekdo_medicine_debt`는 flavor hook으로만 유지
+- [x] stable choice id `accept_medicine_with_written_debt`, `ask_terms_before_opening_gate`, `send_supplies_to_wounded_first`, `compare_banner_to_record_margin` 구현
+- [x] 모든 outcome이 `baekdo_medicine_debt_resolved`, `righteous_route_opened`, `destination_id: cheongryu_outer_courtyard` bridge를 남기도록 구현
+- [x] presentation을 `visual_id: wuxia_baekdo_medicine_debt`, `speaker: 남궁서윤`, `layout: righteous_route_opener`, stable terms `약상자 / 백도맹 / 채무`로 고정
+- [x] Rust fixture와 Web generated preview bundle 재생성
+- [x] Python exporter, Rust content fixture, WASM JSON boundary, SuperLightTUI route opener parity, Web content bundle tests 추가
+- [x] route graph/faction reputation/debt ledger/relation/reward/ability schema, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 작업을 `route_opener_followup_after_baekdo` docs-only handoff로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

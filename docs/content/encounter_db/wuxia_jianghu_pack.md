@@ -679,8 +679,8 @@ promotion_notes: preview runtime으로 구현 완료. 첫 runtime은 `cheongryu_
 id: wuxia_baekdo_medicine_debt
 world_id: wuxia_jianghu
 storypack_id: wuxia_jianghu_pack
-status: candidate
-runtime_preview_design_status: designed_next_not_implemented
+status: implemented_in_storypack_preview
+runtime_preview_design_status: implemented
 phase: [route_commitment]
 priority_class: route_key
 location_tags: [cheongryu_sect, faction_choice, righteous_route]
@@ -704,12 +704,12 @@ choice_shapes:
   - id: accept_medicine_with_written_debt
     role: safe_acceptance
     fallback_choice: true
-    label_direction: 약상자를 받고 채무 문서에 청류문 이름을 적는다
+    label_direction: 채무 문서를 남기고 약상자와 호위를 받는다
     expected_costs: [political_debt, autonomy_risk]
     expected_gains: [medicine_support, cheongryu_rebuild_supplies]
     outcome_hook:
-      add_flags: [baekdo_medicine_debt_resolved, righteous_route_opened, white_path_debt_recorded, cheongryu_rebuild_supplies_secured]
-      add_clues: [medicine_has_banner, white_path_help_has_price]
+      add_flags: [baekdo_medicine_debt_resolved, righteous_route_opened, white_path_debt_recorded, cheongryu_rebuild_supplies_secured, namgung_seoyun_notice]
+      add_clues: [medicine_has_banner, white_path_help_has_price, qingliu_survival_needs_outside_help]
       log_direction: 정파의 도움은 사람을 살리지만, 문서에 남은 이름은 이후 선택의 대가가 된다.
   - id: ask_terms_before_opening_gate
     role: negotiation_probe
@@ -722,12 +722,12 @@ choice_shapes:
       log_direction: 조건을 묻는 순간, 도움과 종속의 경계가 얇아진다.
   - id: send_supplies_to_wounded_first
     role: homebase_alignment
-    label_direction: 장문 보고보다 부상자에게 약재를 먼저 보낸다
+    label_direction: 약과 식량을 장문 명부보다 부상자에게 먼저 돌린다
     expected_costs: [political_protocol_risk, fatigue_small]
     expected_gains: [trust_from_wounded, seo_harin_respect_thread]
     outcome_hook:
-      add_flags: [baekdo_medicine_debt_resolved, righteous_route_opened, cheongryu_people_first, seo_harin_respect_thread]
-      add_clues: [qingliu_survival_needs_outside_help, medicine_has_banner]
+      add_flags: [baekdo_medicine_debt_resolved, righteous_route_opened, cheongryu_people_first, seo_harin_respect_thread, cheongryu_rebuild_supplies_secured]
+      add_clues: [qingliu_survival_needs_outside_help, order_can_save_and_bind]
       log_direction: 청류문은 약하지만, 사람을 먼저 살리는 순서가 문파의 이름을 지킨다.
   - id: compare_banner_to_record_margin
     role: cheonggi_observation
@@ -753,5 +753,5 @@ schema_boundary:
   forbidden_new_schema: [RouteGraph, FactionStanding, DebtLedger, RelationScore, BranchLock, reward_schema, ability_schema, fragment_choice_reward, multi_ending_implementation]
 main_spine_link: route commitment의 첫 정파 opener. direct raid branch와 deferred wounded branch를 같은 `righteous_route_started`/`cheongryu_rebuild_thread` 조건으로 받아 any-of schema 없이 정파 루트를 연다.
 randomization_notes: 1회성 route opener. hub random deck으로 반복하지 않는다. `stabilize_wounded_until_dawn`처럼 정파 flag가 없는 deferred branch는 별도 deferred-offer card 전까지 이 opener로 자동 진입하지 않는다.
-promotion_notes: docs-only handoff 완료. 다음 runtime slice 후보이며, preview source에는 아직 구현하지 않는다. 구현 시 기본 office bundle, `escape-office` key, faction route graph/reputation, debt/relation schema는 열지 않는다.
+promotion_notes: preview runtime으로 구현 완료. 첫 정파 route opener는 `cheongryu_outer_courtyard`에서 `righteous_route_started` + `cheongryu_rebuild_thread`를 받아 열리며, 백도맹 약상자/청류문 재건 채무를 flags/clues/log/presentation으로만 남긴다. 기본 office bundle, legacy `escape-office` key, faction route graph/reputation, debt/relation schema는 열지 않았다.
 ```

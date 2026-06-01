@@ -1,10 +1,12 @@
 # Storypack runtime preview mode
 
-Status: 결정 문서 + 일곱 번째 runtime preview 구현 완료 + 다음 route opener docs-only handoff 필요
+Status: 결정 문서 + `wuxia_baekdo_medicine_debt` runtime 구현 완료 + 다음 route opener follow-up handoff 필요
 
 ## Decision: separate preview mode first
 
 첫 비-office runtime prototype은 기본 office runtime bundle에 바로 섞지 않고, **separate preview mode first**로 진행한다.
+
+2026-06-01 `docs/dev/Development_Plan.md` 0.0b 이후 Web/default storypack은 `wuxia_jianghu_pack` / **이구학지 — 천기록**으로 전환했다. 아래 preview-mode contract는 기존 office bundle과 Rust fixture를 섞지 않기 위한 경계로 유지하며, office content는 legacy/parity 경로로 남긴다.
 
 핵심 결정:
 
@@ -23,7 +25,7 @@ Status: 결정 문서 + 일곱 번째 runtime preview 구현 완료 + 다음 rou
 2. 첫 무협 prototype은 아직 gameplay schema 확장보다 “기존 encounter schema로 표현 가능한가”를 확인하는 단계다.
 3. 기본 번들의 `default_location`, route smoke, Web player start/save UX가 office 전제를 갖고 있으므로, 무협 콘텐츠를 같은 bundle에 넣으면 시작 위치와 encounter-first routing이 쉽게 충돌한다.
 
-따라서 첫 단계는 별도 preview mode다. 이 결정은 gating을 영구히 포기한다는 뜻이 아니다. preview mode로 `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`가 기존 schema에서 작동함을 확인했다. 다중 storypack 선택 UI/save migration이 필요해질 때 runtime-level gating을 별도로 연다.
+따라서 첫 단계는 별도 preview mode다. 이 결정은 gating을 영구히 포기한다는 뜻이 아니다. preview mode로 `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`가 기존 schema에서 작동함을 확인했다. 다중 storypack 선택 UI/save migration이 필요해질 때 runtime-level gating을 별도로 연다.
 
 ## Preview mode contract
 
@@ -117,10 +119,13 @@ cargo test -p escape-terminal content_tui_smoke_reaches_wuxia_cheongryu_raid_rou
 7. `wuxia_cheongryu_raid_wounded_fallback` — 구현 완료
    - raid split의 `evacuate_the_wounded_first` 뒤 route 선택을 미룬 대가와 재합류 hook을 연다.
    - `cheongryu_raid_wounded_fallback_resolved`/`deferred_route_reopened`와 정파·사파·천기 route starter flags를 preview bundle에만 남긴다.
+8. `wuxia_baekdo_medicine_debt` — 구현 완료
+   - 정파 route starter를 받아 백도맹 약상자/청류문 재건 채무 opener를 연다.
+   - `righteous_route_started` + `cheongryu_rebuild_thread`만 eligibility로 쓰고, `baekdo_alliance_debt`/`baekdo_medicine_debt`는 branch flavor hook으로만 남긴다.
 
 ## 후속 slice 기준
 
-`wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`는 같은 preview mode에 추가되었고, `preview launcher/UI wiring`도 opt-in entrypoint로 구현되었다. 이미 preview export/check command, Rust/Web preview bundle artifact, terminal `--storypack-preview wuxia_jianghu_pack`, Web start screen preview launcher가 있으므로, 다음은 launcher나 천외편린 reward schema가 아니라 route opener 선택/설계 handoff다.
+`wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`는 같은 preview mode에 추가되었다. 이미 preview export/check command, Rust/Web preview bundle artifact, terminal `--storypack-preview wuxia_jianghu_pack`, Web default 이구학지 start/save wiring이 있으므로, 다음은 launcher나 천외편린 reward schema가 아니라 `route_opener_followup_after_baekdo` handoff다.
 
 구현된 rescue slice:
 
@@ -226,13 +231,13 @@ schema_boundary:
   forbidden: [RouteGraph, FactionStanding, BranchLock, TriageSystem, CompanionDeath, MassCombat, boss_combat_resolver, CombatState, reward_schema, ability_schema, fragment_choice_reward, multi_ending_implementation]
 ```
 
-route opener docs-only handoff 결과: 첫 route opener는 정파/백도맹 약상자 채무 축인 `wuxia_baekdo_medicine_debt`로 결정했다. 다음 runtime slice는 `conditions.locations: [cheongryu_outer_courtyard]`, `required_flags: [righteous_route_started, cheongryu_rebuild_thread]`, `forbidden_flags: [baekdo_medicine_debt_resolved]`를 권장한다. direct branch의 `baekdo_alliance_debt`와 deferred branch의 `baekdo_medicine_debt`는 flavor hook이지 eligibility 필수가 아니다. route graph/faction reputation schema는 열지 않는다.
+`wuxia_baekdo_medicine_debt` — preview runtime 구현 완료. 첫 route opener는 정파/백도맹 약상자 채무 축으로 landing했다. 다음 handoff는 사파/흑천련 opener, 천기·귀환 opener, 또는 `stabilize_wounded_until_dawn` branch를 받는 deferred-offer card 중 하나를 고르는 `route_opener_followup_after_baekdo`다.
 
 Launcher/entrypoint contract:
 
 - Terminal: `escape-terminal --scene content --storypack-preview wuxia_jianghu_pack --seed 123 --tui-smoke`는 built-in preview fixture를 사용한다. `--content-bundle <path>`는 그대로 유지하지만 `--storypack-preview`와 함께 사용할 수 없다.
-- Web: start screen은 기본 office continue/new-game UX와 별도로 `wuxia_jianghu_pack` preview 시작 버튼을 노출한다. Preview run은 기본 office save/localStorage key를 쓰지 않는다.
-- Web bundle registry: `web/src/core/contentBundles.ts`는 default office bundle JSON과 `wuxia_jianghu_pack` generated preview bundle JSON을 분리해 제공한다.
+- Web: start screen의 새 게임 기본 경로는 `wuxia_jianghu_pack` / 이구학지다. 기존 Web start screen preview launcher는 이 default 전환 전 opt-in entrypoint였고, 이구학지 run은 `igu-hakji.*` localStorage key를 쓰며 legacy office save와 섞지 않는다.
+- Web bundle registry: `web/src/core/contentBundles.ts`는 이구학지 default bundle JSON과 legacy office/generated bundle 경계를 분리해 제공한다.
 - 기본 office artifact(`src/tui_adv/data/*.yaml`, 기본 Rust/Web `content.bundle.json`)는 launcher slice에서도 변경하지 않는다.
 
 금지선:

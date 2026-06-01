@@ -39,6 +39,7 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
     assert sorted(db.cards_by_storypack("wuxia_jianghu_pack")) == [
         "wuxia_baekdo_medicine_debt",
         "wuxia_black_heaven_escape_price",
+        "wuxia_boss_first_appearance",
         "wuxia_cheonggi_record_first_fragment",
         "wuxia_cheongryu_apprentice_entry",
         "wuxia_cheongryu_chore_sparring",
@@ -161,6 +162,19 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         in midgame_reunion.outcome_hooks["possible_flags"]
     )
     assert "boss_used_mumyeongs_wound" in midgame_reunion.outcome_hooks["possible_clues"]
+
+    boss_first_appearance = db.encounter_cards["wuxia_boss_first_appearance"]
+    assert boss_first_appearance.world_id == "wuxia_jianghu"
+    assert boss_first_appearance.storypack_id == "wuxia_jianghu_pack"
+    assert boss_first_appearance.priority_class == "route_key"
+    assert "boss_wall_pressure" in boss_first_appearance.phases
+    assert "faction_negotiation" in boss_first_appearance.surfaces
+    assert "safe_reposition" in [choice["role"] for choice in boss_first_appearance.choice_shapes]
+    assert (
+        "boss_first_appearance_resolved"
+        in boss_first_appearance.outcome_hooks["possible_flags"]
+    )
+    assert "boss_reads_people_not_forms" in boss_first_appearance.outcome_hooks["possible_clues"]
 
 
 def test_storypack_db_public_files_validate_cleanly():

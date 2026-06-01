@@ -561,6 +561,22 @@
 - [x] 무명 이탈 진실 전체 reveal, 보스 첫 등장/전투, 청류문 습격 full flashback, 서하린에게 진실 전달, 구원 확정, seed 기반 random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation/reward/ability/epilogue/return schema, 천기록 정체 reveal 미변경 유지
 - [x] 다음 작업을 `wuxia_mumyeong_followup_after_midgame_reunion` docs-only handoff로 갱신
 
+### 0.2bb 2026-06-02 무협 midgame-reunion follow-up docs-only handoff
+
+- [x] Notion 사건 카드 DB `wuxia_mumyeong_departure_truth_summary`, `wuxia_boss_first_appearance`, `wuxia_qingliu_attack_after_war` 재확인
+- [x] Notion search에서 `wuxia_mumyeong_request_for_aid` bridge 후보를 확인했지만, repo 현 handoff 후보 밖 future bridge로 보류
+- [x] `04. 메인 루트 구조`, `05. 사건 카드 운영 규칙`, `07. 천기록 / 천외편린 보상`, `99. 통합 체크포인트`와 비교
+- [x] 다음 runtime 후보를 `wuxia_boss_first_appearance`로 결정
+- [x] `wuxia_mumyeong_departure_truth_summary`는 후반 truth reveal/서하린 진실 전달/무명 구원 조건 확정 범위가 커서 보류
+- [x] `wuxia_qingliu_attack_after_war`는 full flashback/backstory reveal 범위가 커서 보류
+- [x] start conditions를 `conditions.locations: [cheongryu_outer_courtyard]`, `required_flags: [mumyeong_midgame_reunion_resolved, mumyeong_mirror_thread_deepened, cheongryu_raid_survived, midgame_continuity_started]`, `forbidden_flags: [boss_first_appearance_resolved]`로 문서화
+- [x] stable choice id 후보 `read_the_boss_flow_and_fail_to_move`, `pull_seo_harin_behind_broken_gate`, `watch_mumyeong_answer_the_boss`, `retreat_before_the_second_step` 고정
+- [x] 보스 첫 등장은 combat/final resolution이 아니라 압도감, 조직력, 약점 읽기, 무명이 따르는 이유를 flags/clues/log/presentation으로만 표현한다고 명시
+- [x] boss combat/final boss resolution, 무명 이탈 진실 전체 reveal, 청류문 습격 full flashback, 서하린에게 진실 전달, seed 기반 random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation/reward/ability/epilogue/return schema, 천기록 정체 reveal은 열지 않는다고 명시
+- [x] storypack DB JSON mirror와 docs contract를 다음 runtime 후보 기준으로 갱신
+- [x] runtime YAML/Rust/Web generated bundle, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 작업을 `wuxia_boss_first_appearance` runtime implementation으로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

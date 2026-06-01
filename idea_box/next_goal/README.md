@@ -2,8 +2,8 @@
 type: next_goal_prompt
 created: 2026-06-01
 updated: 2026-06-02
-current_goal: wuxia_mumyeong_followup_after_midgame_reunion
-mode: docs-only-handoff
+current_goal: wuxia_boss_first_appearance
+mode: implementation
 ---
 
 # next_goal
@@ -22,22 +22,20 @@ mode: docs-only-handoff
 
 ## 현재 목표
 
-`wuxia_mumyeong_midgame_reunion` runtime implementation은 완료됐다. `wuxia_jianghu_pack` / **이구학지 — 천기록**은 Web/terminal default storypack이자 메인 개발 기준이다.
+`wuxia_mumyeong_midgame_reunion` runtime implementation과 `wuxia_mumyeong_followup_after_midgame_reunion` docs-only handoff는 완료됐다. `wuxia_jianghu_pack` / **이구학지 — 천기록**은 Web/terminal default storypack이자 메인 개발 기준이다.
 
-이번 세션의 목표는 **`wuxia_mumyeong_followup_after_midgame_reunion` docs-only handoff**다.
+이번 세션의 목표는 **`wuxia_boss_first_appearance` runtime implementation**이다.
 
-- Notion 사건 카드 DB와 repo canonical docs를 대조해 midgame reunion 이후의 다음 runtime 후보를 비교한다.
-- 우선 비교 후보는 `wuxia_mumyeong_departure_truth_summary`, `wuxia_boss_first_appearance`, `wuxia_qingliu_attack_after_war`다.
-- 이 세 후보 외에 repo docs가 더 적절한 bridge 후보를 이미 명시하고 있으면 그 충돌/근거를 보고하고, canonical docs 우선순위를 따른다.
-- 이번 목표는 docs-only handoff다. runtime YAML, Rust/Web generated preview bundle, Web default bundle, legacy office bundle은 수정하지 않는다.
-- legacy office `content.bundle.json`, Web legacy generated `content.bundle.json`, `src/tui_adv/data/*.yaml`, legacy `escape-office` save/localStorage key는 수정하지 않는다.
-- seed 기반 random copy-style system/table, 천외편린 3택 reward/ability schema, combat resolver/schema, HP 숫자전, route graph/faction reputation/debt/relation schema, epilogue/return schema, 천기록 정체 reveal은 열지 않는다.
+- `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`에서 `wuxia_mumyeong_midgame_reunion` 뒤에 `wuxia_boss_first_appearance` encounter를 추가한다.
+- Rust/Web storypack preview generated bundle만 재생성한다.
+- 기본 office bundle, Web legacy generated `content.bundle.json`, `src/tui_adv/data/*.yaml`, legacy `escape-office` save/localStorage key는 수정하지 않는다.
+- 이 장면은 보스 전투나 최종 결산이 아니다. 압도감, 조직력, 약점 읽기, 무명이 따르는 이유를 flags/clues/log/presentation으로만 각인한다.
 
 ## 반드시 읽을 문서
 
 - `AGENTS.md`
 - `docs/dev/Development_Plan.md`
-  - section `0.37`: `wuxia_mumyeong_midgame_reunion` preview runtime slice
+  - section `0.38`: docs-only midgame-reunion follow-up handoff
   - 현재 최우선 남은 작업
   - `## 10. 다음 액션`
 - `docs/dev/Storypack_Runtime_Preview_Mode.md`
@@ -57,19 +55,72 @@ mode: docs-only-handoff
 - `wuxia_mumyeong_copy_style_reveal`가 preview runtime에 구현되어 `mumyeong_copy_style_reveal_resolved`, `copy_style_hint_recorded`, `copied_form_family_seen`, `copy_is_surface_not_root`, `breath_mismatch_marks_copy`, `understanding_is_not_copying`, `fragment_candidate_variation_foreshadowed` hook을 남긴다.
 - `wuxia_mumyeong_reads_orthodox_style`가 preview runtime에 구현되어 `mumyeong_reads_orthodox_style_resolved`, `orthodox_style_trace_recorded`, `hyeonakmun_trace_suspected`, `bokho_geumsaesu_name_recorded`, `mumyeong_eye_variation_noted`, `orthodox_control_is_violence`, `departure_truth_still_incomplete` hook을 남긴다.
 - `wuxia_mumyeong_midgame_reunion`가 preview runtime에 구현되어 `mumyeong_midgame_reunion_resolved`, `mumyeong_mirror_thread_deepened`, `seoharin_does_not_call_mumyeong_traitor`, `boss_used_mumyeongs_wound`, `mumyeong_truth_still_incomplete`, `rival_mirror_relationship_deepened`, `hyeonakmun_trace_shared_without_accusation` hook을 남긴다.
-  - stable choice ids: `ask_why_seoharin_never_called_him_traitor`, `show_the_hyeonakmun_trace_without_accusing`, `point_out_the_copied_form_gap`, `keep_blades_low_and_watch_his_answer`
 - Web default storypack은 `wuxia_jianghu_pack` / **이구학지 — 천기록**이며, terminal `--scene content`도 bundle 인자를 생략하면 같은 이구학지 built-in fixture를 기본으로 선택한다.
 
-## handoff 산출물 기준
+## 구현 계약
 
-- `docs/dev/Development_Plan.md`에 새 docs-only handoff section을 추가하거나 현재 최우선/다음 액션을 해당 결과로 갱신한다.
-- `docs/dev/Checklist.md`, `docs/dev/Notion_Design_Coverage.md`, storypack/encounter DB docs와 JSON mirror, design docs를 같은 상태로 동기화한다.
-- `idea_box/next_goal/README.md`는 handoff 결과에 맞춰 다음 단일 목표로 다시 교체한다.
-- Notion reference를 다시 대조했는지, 왜 특정 후보를 선택/보류했는지, 어떤 runtime/schema를 열지 않았는지 기록한다.
+- encounter id: `wuxia_boss_first_appearance`
+- insert after: `wuxia_mumyeong_midgame_reunion`
+- location: `cheongryu_outer_courtyard`
+- required flags:
+  - `mumyeong_midgame_reunion_resolved`
+  - `mumyeong_mirror_thread_deepened`
+  - `cheongryu_raid_survived`
+  - `midgame_continuity_started`
+- forbidden flags:
+  - `boss_first_appearance_resolved`
+- flavor-only flags/clues:
+  - `boss_used_mumyeongs_wound`
+  - `hyeonakmun_trace_shared_without_accusation`
+  - `seoharin_does_not_call_mumyeong_traitor`
+  - `rival_mirror_relationship_deepened`
+  - `reunion_truth_deferred`
+- stable choice ids:
+  - `read_the_boss_flow_and_fail_to_move`
+  - `pull_seo_harin_behind_broken_gate`
+  - `watch_mumyeong_answer_the_boss`
+  - `retreat_before_the_second_step`
+- common outcome hook:
+  - `boss_first_appearance_resolved`
+  - `boss_wall_thread_opened`
+  - `black_serpent_core_pressure_opened`
+  - `destination_id: cheongryu_outer_courtyard`
+- primary clues:
+  - `boss_reads_people_not_forms`
+  - `boss_is_final_logic_wall`
+  - `mumyeong_follows_power_that_saw_his_wound`
+  - `qingliu_cannot_outmuscle_boss_yet`
+- presentation:
+  - `visual_id: wuxia_boss_first_appearance`
+  - `speaker: 흑사방주`
+  - `layout: boss_wall_pressure`
+  - stable terms: `[흑사방주, 무명, 청류문]`
+
+## 명시적 non-goals
+
+- boss combat/final boss resolution
+- `wuxia_mumyeong_departure_truth_summary`
+- `wuxia_qingliu_attack_after_war` full flashback
+- `wuxia_mumyeong_request_for_aid` backstory bridge
+- 무명 구원 확정
+- 서하린에게 진실 전달
+- seed 기반 random copy-style system/table
+- combat resolver/schema 또는 HP 숫자전
+- route graph, faction reputation, relation/debt ledger
+- reward/ability schema, 천외편린 3택 성장
+- epilogue/return system
+- 천기록 identity reveal
+- legacy office bundle/default bundle 변경
 
 ## 검증 명령
 
 ```bash
-PYTHONPATH=src /tmp/dudu-tui-adv-pytest-venv/bin/python -m pytest tests/test_docs_contract.py tests/test_storypack_db.py -q
+PYTHONPATH=src /tmp/dudu-tui-adv-pytest-venv/bin/python -m pytest tests/test_docs_contract.py tests/test_storypack_db.py tests/test_web_data_export.py -q
+cargo test -p escape-core content_bundle
+cargo test -p escape-wasm json_boundary_reaches_wuxia_boss_first_appearance_through_preview_bundle
+cargo test -p escape-terminal content_tui_smoke_reaches_wuxia_boss_first_appearance
+cd web && npm test -- --run src/core/contentBundles.test.ts
+PYTHONPATH=src python3 scripts/export_web_data.py --check --storypack-preview wuxia_jianghu_pack --preview-bundle crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json --preview-bundle web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+cargo fmt --check
 git diff --check
 ```

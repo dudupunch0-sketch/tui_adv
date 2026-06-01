@@ -570,10 +570,11 @@ def test_wuxia_cheongryu_raid_wounded_fallback_runtime_slice_is_docs_synced():
     assert "route opener docs-only handoff" in plan
     assert "wuxia_baekdo_medicine_debt" in plan
     assert "wuxia_baekdo_medicine_debt" in next_goal
-    assert "current_goal: route_opener_followup_after_baekdo" in next_goal
+    assert "current_goal: implement_wuxia_black_heaven_escape_price" in next_goal
     assert "Route opener implementation" in coverage
     next_slice = plan.split("현재 최우선 남은 작업:", 1)[1].split("전환 중 유지:", 1)[0]
     assert "wuxia_baekdo_medicine_debt" in next_slice
+    assert "wuxia_black_heaven_escape_price" in next_slice
     assert "route_opener_followup_after_baekdo" in next_slice
     assert "사파/흑천련 opener" in next_slice
     assert "천기·귀환 opener" in next_slice
@@ -598,9 +599,40 @@ def test_wuxia_baekdo_medicine_debt_runtime_slice_is_docs_synced():
     assert "`wuxia_baekdo_medicine_debt` — preview runtime 구현 완료" in wuxia_pack
     assert "## 9. `wuxia_baekdo_medicine_debt`" in wuxia_cards
     assert "runtime_preview_design_status: implemented" in wuxia_cards
-    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 9개." in storypack_db_readme
+    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 10개." in storypack_db_readme
     assert "route_opener_followup_after_baekdo" in storypack_db_readme
-    assert "current_goal: route_opener_followup_after_baekdo" in next_goal
-    assert "docs-only-handoff" in next_goal
+    assert "current_goal: implement_wuxia_black_heaven_escape_price" in next_goal
+    assert "runtime-preview-implementation" in next_goal
     assert "사파/흑천련 opener" in next_goal
-    assert "runtime YAML/Rust/Web/generated artifact는 수정하지 않는다" in next_goal
+    assert "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml" in next_goal
+
+
+def test_wuxia_black_heaven_escape_price_handoff_is_docs_synced():
+    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    decision = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(encoding="utf-8")
+    coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
+    next_goal = Path("idea_box/next_goal/README.md").read_text(encoding="utf-8")
+    storypack_db_readme = Path("docs/content/storypack_db/README.md").read_text(encoding="utf-8")
+    wuxia_pack = Path("docs/content/storypacks/wuxia_jianghu_pack.md").read_text(encoding="utf-8")
+    wuxia_cards = Path("docs/content/encounter_db/wuxia_jianghu_pack.md").read_text(encoding="utf-8")
+
+    assert "## 0.22 2026-06-01 docs-only route opener follow-up handoff: `wuxia_black_heaven_escape_price`" in plan
+    assert "### 0.2ak 2026-06-01 무협 route opener follow-up docs-only handoff" in checklist
+    assert "`wuxia_black_heaven_escape_price` runtime implementation slice" in decision
+    assert "Route opener follow-up handoff" in coverage
+    assert "wuxia_black_heaven_escape_price" in coverage
+    assert "| `wuxia_black_heaven_escape_price` | `route_commitment`" in wuxia_pack
+    assert "## 10. `wuxia_black_heaven_escape_price`" in wuxia_cards
+    assert "runtime_preview_design_status: designed_next_not_implemented" in wuxia_cards
+    assert "required_flags: [sapa_route_started, dowol_debt]" in wuxia_cards
+    assert "flavor_flags_only: [black_heaven_deal_marked, black_heaven_escape_marker]" in wuxia_cards
+    assert "accept_dowol_marker_for_safehouse" in wuxia_cards
+    assert "ask_who_collects_the_price" in wuxia_cards
+    assert "keep_cheongryu_names_off_ledger" in wuxia_cards
+    assert "map_exit_before_following_dowol" in wuxia_cards
+    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 10개." in storypack_db_readme
+    assert "current_goal: implement_wuxia_black_heaven_escape_price" in next_goal
+    assert "runtime-preview-implementation" in next_goal
+    assert "required start conditions: `[sapa_route_started, dowol_debt]`" in next_goal
+    assert "crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json" in next_goal

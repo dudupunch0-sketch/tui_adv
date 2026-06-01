@@ -175,6 +175,6 @@
       "murim_outsider"
     ],
     "main_spine_support": "office에서 출발한 현대인이 완전히 다른 world에 떨어져도 소속, 평판, 관계, 성장, 전투, 자원, 선택, 엔딩을 같은 engine loop로 설명할 수 있는지 검증한다.",
-    "runtime_promotion_notes": "`wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, and `wuxia_baekdo_medicine_debt` preview runtime은 separate `storypack_preview` bundle에서 완료했다. 2026-06-01 default 전환 이후 Web player 기본 경로는 이구학지이며, 다음 handoff는 `route_opener_followup_after_baekdo`다. 기본 office bundle과 legacy `escape-office` save/localStorage key, 천외편린 3택 성장 schema, faction route graph schema는 변경하지 않는다."
+    "runtime_promotion_notes": "`wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, and `wuxia_baekdo_medicine_debt` preview runtime은 separate `storypack_preview` bundle에서 완료했다. 2026-06-01 default 전환 이후 Web player 기본 경로는 이구학지이며, `route_opener_followup_after_baekdo` docs-only handoff 결과 다음 runtime 후보는 `wuxia_black_heaven_escape_price`다. 기본 office bundle과 legacy `escape-office` save/localStorage key, 천외편린 3택 성장 schema, faction route graph schema는 변경하지 않는다."
   }
 ]

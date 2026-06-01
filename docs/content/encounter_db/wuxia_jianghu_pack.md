@@ -2,12 +2,12 @@
 
 Status: candidate
 
-이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전 상황 카드로 정리한다. `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`는 이 카드에서 separate storypack preview runtime으로 승격된 첫 세 slice이며, 나머지 카드는 아직 후보 상태다.
+이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_baekdo_medicine_debt`까지는 separate storypack preview runtime으로 승격되었고, `wuxia_black_heaven_escape_price`는 다음 runtime 후보로 docs-only handoff가 끝난 상태다.
 
 공통 원칙:
 
 - 모든 카드는 `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`에 속한다.
-- 현재 단계에서는 대부분 runtime encounter가 아니다. 단, `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다.
+- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_baekdo_medicine_debt`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다.
 - 최신 canonical 무협 설정은 **이구학지 — 천기록**이다. 이전의 generic 객잔/소림/무당/아미 placeholder는 superseded로 본다.
 - 플레이어 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계의 시장 한복판에 전이됐다”이다.
 - 선택지는 세부 수치보다 역할과 결과 hook을 먼저 정의한다.
@@ -754,4 +754,87 @@ schema_boundary:
 main_spine_link: route commitment의 첫 정파 opener. direct raid branch와 deferred wounded branch를 같은 `righteous_route_started`/`cheongryu_rebuild_thread` 조건으로 받아 any-of schema 없이 정파 루트를 연다.
 randomization_notes: 1회성 route opener. hub random deck으로 반복하지 않는다. `stabilize_wounded_until_dawn`처럼 정파 flag가 없는 deferred branch는 별도 deferred-offer card 전까지 이 opener로 자동 진입하지 않는다.
 promotion_notes: preview runtime으로 구현 완료. 첫 정파 route opener는 `cheongryu_outer_courtyard`에서 `righteous_route_started` + `cheongryu_rebuild_thread`를 받아 열리며, 백도맹 약상자/청류문 재건 채무를 flags/clues/log/presentation으로만 남긴다. 기본 office bundle, legacy `escape-office` key, faction route graph/reputation, debt/relation schema는 열지 않았다.
+```
+
+## 10. `wuxia_black_heaven_escape_price`
+
+```yaml
+id: wuxia_black_heaven_escape_price
+world_id: wuxia_jianghu
+storypack_id: wuxia_jianghu_pack
+status: candidate
+runtime_preview_design_status: designed_next_not_implemented
+phase: [route_commitment]
+priority_class: route_key
+location_tags: [cheongryu_sect, faction_choice, sapa_route]
+surface: [faction_negotiation, sect_courtyard, market_street]
+anomaly_type: [faction_pressure, sect_debt]
+pressure_type: [danger, sanity, relation]
+npc_slots: [sapa_ally, early_rescuer]
+candidate_characters: [dowol, seo_harin]
+summary: direct raid branch와 deferred wounded fallback branch가 남긴 사파 route starter를 받아, 흑천련의 빠른 탈출로와 도월의 표식이 이름과 값을 남기는 첫 사파 opener다.
+purpose: 사파 루트를 “악의 길”이 아니라 밑바닥의 생존 거래로 보여준다. 청류문 내부 갈등 없이 외부 압박, 시장 장부, 도월의 실리적 도움을 route pressure로 사용한다.
+setup_text: 청류문 바깥 담장 너머 시장 골목에서 도월이 낡은 표식을 굴린다. “흑천련 길은 빠르다. 공짜가 아닐 뿐이지.” 누가 값을 받을지, 누구의 이름이 장부에 남을지는 아직 정해지지 않았다.
+runtime_preview_start_conditions:
+  runtime_mode: storypack_preview
+  prereq: raid split direct sapa branch or wounded fallback delayed sapa branch has landed
+  location: cheongryu_outer_courtyard
+  required_flags: [sapa_route_started, dowol_debt]
+  forbidden_flags: [black_heaven_escape_price_resolved]
+  flavor_flags_only: [black_heaven_deal_marked, black_heaven_escape_marker]
+  note: direct/deferred branch 차이는 flavor hook으로만 읽는다. any-of condition schema를 열지 않는다.
+choice_shapes:
+  - id: accept_dowol_marker_for_safehouse
+    role: safe_acceptance
+    fallback_choice: true
+    label_direction: 도월의 표식을 받고 흑천련 임시 은신처와 탈출로를 얻는다
+    expected_costs: [market_debt, reputation_risk]
+    expected_gains: [safehouse_access, exit_route]
+    outcome_hook:
+      add_flags: [black_heaven_escape_price_resolved, sapa_route_opened, black_heaven_safehouse_marked, market_route_debt_recorded]
+      add_clues: [black_heaven_help_marks_debt, survival_bargain_is_not_loyalty]
+      log_direction: 흑천련의 길은 빠르지만, 표식 하나가 이후 받을 값의 증거가 된다.
+  - id: ask_who_collects_the_price
+    role: negotiation_probe
+    label_direction: 누가, 언제, 어떤 방식으로 값을 받는지 먼저 묻는다
+    expected_costs: [sanity_small, suspicion_small]
+    expected_gains: [terms_revealed, sapa_politics_clue]
+    outcome_hook:
+      add_flags: [black_heaven_escape_price_resolved, sapa_route_opened, dowol_terms_questioned]
+      add_clues: [black_heaven_bargain_has_teeth, survival_bargain_is_not_loyalty]
+      log_direction: 조건을 묻자 도월은 웃는다. 사파의 자비는 계약서보다 먼저 칼집을 보여준다.
+  - id: keep_cheongryu_names_off_ledger
+    role: homebase_alignment
+    label_direction: 청류문 사람들의 이름은 흑천련 장부에 남기지 않는다고 못박는다
+    expected_costs: [danger_small, negotiation_cost]
+    expected_gains: [cheongryu_names_protected, dowol_attention]
+    outcome_hook:
+      add_flags: [black_heaven_escape_price_resolved, sapa_route_opened, cheongryu_names_kept_off_ledger, market_route_debt_recorded]
+      add_clues: [ledger_can_be_bent_not_broken, sapa_can_save_without_mercy]
+      log_direction: 청류문의 이름을 지우는 대신, 당신의 이름이 더 굵은 획으로 남는다.
+  - id: map_exit_before_following_dowol
+    role: survival_observation
+    label_direction: 따라가기 전에 탈출로와 추적선을 먼저 기록한다
+    expected_costs: [time_pressure, fatigue_small]
+    expected_gains: [exit_route_clue, pursuit_pattern_seen]
+    outcome_hook:
+      add_flags: [black_heaven_escape_price_resolved, sapa_route_opened, sapa_survival_principle_seen]
+      add_clues: [sapa_can_save_without_mercy, black_heaven_bargain_has_teeth]
+      log_direction: 흑천련의 길은 사람을 살릴 수 있다. 다만 살아남은 사람이 어디로 빚을 갚으러 갈지도 함께 보여준다.
+outcome_hooks:
+  possible_flags: [black_heaven_escape_price_resolved, sapa_route_opened, black_heaven_safehouse_marked, dowol_terms_questioned, cheongryu_names_kept_off_ledger, market_route_debt_recorded, sapa_survival_principle_seen]
+  possible_route_flags: [sapa_route_opened]
+  possible_clues: [black_heaven_help_marks_debt, black_heaven_bargain_has_teeth, survival_bargain_is_not_loyalty, sapa_can_save_without_mercy, ledger_can_be_bent_not_broken]
+  possible_relations: [dowol_debt, dowol_attention, seo_harin_respect_thread]
+  possible_destinations: [cheongryu_outer_courtyard]
+  possible_log_tone:
+    - 사파의 도움은 빠르고 실제적이라는 감각
+    - 그 도움은 이름, 표식, 장부를 통해 대가를 남긴다는 감각
+    - 청류문 내부 악인이 아니라 외부 생존 거래가 갈등 원천이라는 감각
+schema_boundary:
+  allowed_existing_schema: [conditions.locations, required_flags, forbidden_flags, choices.cost, outcome.resources, outcome.danger, outcome.add_flags, outcome.add_clues, outcome.add_items, outcome.remove_items, outcome.destination_id, outcome.log, presentation]
+  forbidden_new_schema: [RouteGraph, FactionStanding, DebtLedger, RelationScore, BranchLock, reward_schema, ability_schema, fragment_choice_reward, epilogue_schema, multi_ending_implementation]
+main_spine_link: route commitment의 첫 사파 opener. direct raid branch와 deferred wounded branch를 같은 `sapa_route_started`/`dowol_debt` 조건으로 받아 any-of schema 없이 사파 루트를 연다.
+randomization_notes: 1회성 route opener. hub random deck으로 반복하지 않는다. `black_heaven_deal_marked`와 `black_heaven_escape_marker`는 direct/deferred flavor만 바꾸고 eligibility를 가르지 않는다.
+promotion_notes: docs-only handoff 완료, 다음 runtime 구현 후보. `cheongryu_outer_courtyard`에서 `sapa_route_started` + `dowol_debt`를 받아 열리며, 흑천련 탈출로/도월 표식/시장 장부의 값을 flags/clues/log/presentation으로만 남긴다. 기본 office bundle, legacy `escape-office` key, faction route graph/reputation, debt/relation schema는 열지 않는다.
 ```

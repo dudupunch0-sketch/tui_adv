@@ -347,6 +347,17 @@
 - [x] route graph/faction reputation/debt ledger/relation/reward/ability schema, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
 - [x] 다음 작업을 `route_opener_followup_after_baekdo` docs-only handoff로 갱신
 
+### 0.2ak 2026-06-01 무협 route opener follow-up docs-only handoff
+
+- [x] 사파/흑천련 opener, 천기·귀환 opener, deferred-offer card를 Notion reference와 repo hooks 기준으로 비교
+- [x] 다음 runtime 후보를 사파/흑천련 거래 opener `wuxia_black_heaven_escape_price`로 결정
+- [x] start conditions를 `conditions.locations: [cheongryu_outer_courtyard]`, `required_flags: [sapa_route_started, dowol_debt]`, `forbidden_flags: [black_heaven_escape_price_resolved]`로 문서화
+- [x] `black_heaven_deal_marked`와 `black_heaven_escape_marker`는 any-of eligibility가 아니라 branch flavor hook으로만 사용한다고 명시
+- [x] stable choice id 후보 `accept_dowol_marker_for_safehouse`, `ask_who_collects_the_price`, `keep_cheongryu_names_off_ledger`, `map_exit_before_following_dowol` 고정
+- [x] route graph/faction reputation/debt ledger/relation/reward/ability/epilogue schema는 열지 않는다고 명시
+- [x] storypack DB JSON mirror와 docs contract를 다음 runtime handoff 기준으로 갱신
+- [x] runtime YAML/Rust/Web/generated bundle, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

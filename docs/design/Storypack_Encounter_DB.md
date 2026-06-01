@@ -254,7 +254,7 @@ promotion_notes: runtime 승격 시 messenger UI presentation metadata를 붙인
 사람용 후보 문서는 설명/톤/해설을 보존하고, 참조 무결성 검사는 별도 JSON mirror에서 수행한다.
 
 - `docs/content/storypack_db/storypacks.json`: `StorypackRecord` 후보 목록. 현재 `isolation_pack`, `yageunmong_pack`, `wuxia_jianghu_pack`를 포함한다.
-- `docs/content/storypack_db/encounter_situations.json`: `EncounterSituationCard` 후보 목록. 현재 `isolation_pack` 6개, `yageunmong_pack` 6개, `wuxia_jianghu_pack` 9개, 총 21개 repo 후보 카드를 포함한다. Notion 사건 카드 DB 26개 row는 upstream design source이며, 이 mirror에 자동으로 전부 추가하지 않는다.
+- `docs/content/storypack_db/encounter_situations.json`: `EncounterSituationCard` 후보 목록. 현재 `isolation_pack` 6개, `yageunmong_pack` 6개, `wuxia_jianghu_pack` 10개, 총 22개 repo 후보 카드를 포함한다. Notion 사건 카드 DB 26개 row는 upstream design source이며, 이 mirror에 자동으로 전부 추가하지 않는다.
 - `src/tui_adv/game/storypack_db.py`: `load_storypack_db(root)`와 `validate_storypack_db(root)`를 제공한다.
 - `tests/test_storypack_db.py`: office isolation / office dream / wuxia 후보 카드가 같은 DB에서 로드되고, `storypack_id`/`world_id`/taxonomy/fallback/outcome hook 계약을 검증한다.
 
@@ -265,7 +265,7 @@ promotion_notes: runtime 승격 시 messenger UI presentation metadata를 붙인
 - `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt` preview는 완료했다.
 - 이 preview runtime content는 `storypack_preview` bundle에만 들어가며, 기본 office runtime과 `src/tui_adv/data/*.yaml`에는 직접 섞지 않는다.
 - `preview launcher/UI wiring`은 explicit opt-in entrypoint로 구현했다. 후속 content slice에서 다시 열지 않는다.
-- 첫 route opener `wuxia_baekdo_medicine_debt`는 `righteous_route_started` + `cheongryu_rebuild_thread`만 eligibility로 요구하고, direct `baekdo_alliance_debt`와 deferred `baekdo_medicine_debt`는 flavor hook으로만 사용해 구현 완료했다. 다음 handoff는 `route_opener_followup_after_baekdo`다.
+- 첫 route opener `wuxia_baekdo_medicine_debt`는 `righteous_route_started` + `cheongryu_rebuild_thread`만 eligibility로 요구하고, direct `baekdo_alliance_debt`와 deferred `baekdo_medicine_debt`는 flavor hook으로만 사용해 구현 완료했다. `route_opener_followup_after_baekdo` docs-only handoff 결과 다음 runtime 후보는 사파 opener `wuxia_black_heaven_escape_price`다. 이 후보는 `sapa_route_started` + `dowol_debt`만 eligibility로 요구하고, direct `black_heaven_deal_marked`와 deferred `black_heaven_escape_marker`는 flavor hook으로만 사용한다.
 - 필요한 신규 설계는 encounter/choice/outcome 수준으로 제한한다. 새 combat/reward/ability schema, 천외편린 3택 reward schema, faction route graph schema는 별도 slice 전까지 열지 않는다.
 
 2026-06-01 Notion sync 결정:

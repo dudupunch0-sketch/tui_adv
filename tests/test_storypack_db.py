@@ -38,6 +38,7 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
     ]
     assert sorted(db.cards_by_storypack("wuxia_jianghu_pack")) == [
         "wuxia_baekdo_medicine_debt",
+        "wuxia_black_heaven_escape_price",
         "wuxia_cheonggi_record_first_fragment",
         "wuxia_cheongryu_apprentice_entry",
         "wuxia_cheongryu_chore_sparring",
@@ -62,6 +63,15 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
     assert "market_arrival" in arrival.phases
     assert "safe_observe" in [choice["role"] for choice in arrival.choice_shapes]
     assert "wuxia_arrival_confirmed" in arrival.outcome_hooks["possible_flags"]
+
+    black_heaven = db.encounter_cards["wuxia_black_heaven_escape_price"]
+    assert black_heaven.world_id == "wuxia_jianghu"
+    assert black_heaven.storypack_id == "wuxia_jianghu_pack"
+    assert black_heaven.priority_class == "route_key"
+    assert "route_commitment" in black_heaven.phases
+    assert "safe_acceptance" in [choice["role"] for choice in black_heaven.choice_shapes]
+    assert "sapa_route_opened" in black_heaven.outcome_hooks["possible_flags"]
+    assert "black_heaven_bargain_has_teeth" in black_heaven.outcome_hooks["possible_clues"]
 
 
 def test_storypack_db_public_files_validate_cleanly():

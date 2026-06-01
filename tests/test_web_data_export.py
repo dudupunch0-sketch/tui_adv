@@ -101,6 +101,7 @@ def test_export_web_data_builds_renderer_neutral_content_bundle():
             "wuxia_mumyeong_copy_style_reveal",
             "wuxia_mumyeong_reads_orthodox_style",
             "wuxia_mumyeong_midgame_reunion",
+            "wuxia_boss_first_appearance",
         }
         for encounter in bundle["content"]["encounters"]
     )
@@ -124,7 +125,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     assert bundle["manifest"]["counts"] == {
         "locations": 4,
         "items": 3,
-        "encounters": 17,
+        "encounters": 18,
         "endings": 1,
         "achievements": 2,
         "secrets": 0,
@@ -154,6 +155,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "wuxia_mumyeong_copy_style_reveal",
         "wuxia_mumyeong_reads_orthodox_style",
         "wuxia_mumyeong_midgame_reunion",
+        "wuxia_boss_first_appearance",
     ]
     first_fight = bundle["content"]["encounters"][1]
     assert first_fight["conditions"] == {
@@ -727,6 +729,42 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "boss_used_mumyeongs_wound",
     ]
     assert share_trace["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
+    boss = bundle["content"]["encounters"][17]
+    assert boss["conditions"] == {
+        "locations": ["cheongryu_outer_courtyard"],
+        "required_flags": [
+            "mumyeong_midgame_reunion_resolved",
+            "mumyeong_mirror_thread_deepened",
+            "cheongryu_raid_survived",
+            "midgame_continuity_started",
+        ],
+        "forbidden_flags": ["boss_first_appearance_resolved"],
+    }
+    assert boss["presentation"]["layout"] == "boss_wall_pressure"
+    assert boss["presentation"]["speaker"] == "흑사방주"
+    assert boss["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "흑사방주",
+        "무명",
+        "청류문",
+    ]
+    assert [choice["id"] for choice in boss["choices"]] == [
+        "read_the_boss_flow_and_fail_to_move",
+        "pull_seo_harin_behind_broken_gate",
+        "watch_mumyeong_answer_the_boss",
+        "retreat_before_the_second_step",
+    ]
+    watch_mumyeong = boss["choices"][2]
+    assert watch_mumyeong["outcome"]["add_flags"] == [
+        "boss_first_appearance_resolved",
+        "boss_wall_thread_opened",
+        "black_serpent_core_pressure_opened",
+        "mumyeong_reacts_to_boss_voice",
+    ]
+    assert watch_mumyeong["outcome"]["add_clues"] == [
+        "mumyeong_follows_power_that_saw_his_wound",
+        "boss_reads_people_not_forms",
+    ]
+    assert watch_mumyeong["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
     assert "dev_desk" not in json.dumps(bundle, ensure_ascii=False)
     assert _missing_private_secret_fields(bundle)
 

@@ -1543,6 +1543,87 @@ fn json_boundary_reaches_wuxia_mumyeong_midgame_reunion_through_preview_bundle()
 }
 
 #[test]
+fn json_boundary_reaches_wuxia_boss_first_appearance_through_preview_bundle() {
+    let post_reunion_state_json = wuxia_state_after_actions(&[
+        "choice:follow_roadside_dust",
+        "move:jianghu_market_street",
+        "choice:run_toward_open_street",
+        "choice:choose_failure_log",
+        "choice:tell_plain_truth",
+        "choice:accept_three_month_trial",
+        "choice:step_back_with_firewood",
+        "choice:defend_cheongryu_with_white_path",
+        "choice:accept_medicine_with_written_debt",
+        "choice:watch_the_stolen_qingliu_flow",
+        "choice:endure_until_copy_flow_breaks",
+        "choice:listen_for_breath_mismatch",
+        "choice:reconstruct_mumyeongs_sightline",
+        "choice:show_the_hyeonakmun_trace_without_accusing",
+    ]);
+
+    let boss_page_json = scene_page_json(&post_reunion_state_json, WUXIA_PREVIEW_BUNDLE)
+        .expect("boss first appearance scene page should serialize");
+    let boss_page: Value =
+        serde_json::from_str(&boss_page_json).expect("boss page JSON should parse");
+    assert_eq!(boss_page["mode"], "encounter");
+    assert_eq!(boss_page["title"], "보스 첫 등장");
+    assert_eq!(boss_page["location"]["id"], "cheongryu_outer_courtyard");
+    assert_eq!(boss_page["visual"]["id"], "wuxia_boss_first_appearance");
+    assert_eq!(boss_page["visual"]["kind"], "boss_wall_pressure");
+    assert_eq!(boss_page["effect_cues"][0]["stable_terms"][2], "청류문");
+    let boss_action_ids: Vec<&str> = boss_page["actions"]
+        .as_array()
+        .expect("actions should be an array")
+        .iter()
+        .map(|action| action["id"].as_str().expect("action id should be a string"))
+        .collect();
+    assert_eq!(
+        boss_action_ids,
+        vec![
+            "choice:read_the_boss_flow_and_fail_to_move",
+            "choice:pull_seo_harin_behind_broken_gate",
+            "choice:watch_mumyeong_answer_the_boss",
+            "choice:retreat_before_the_second_step",
+        ]
+    );
+
+    let boss_result_json = apply_action_json(
+        &post_reunion_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:watch_mumyeong_answer_the_boss",
+    )
+    .expect("watch Mumyeong answer boss action should serialize");
+    let boss_result: Value =
+        serde_json::from_str(&boss_result_json).expect("boss action should parse");
+    assert_eq!(boss_result["encounter_id"], "wuxia_boss_first_appearance");
+    assert!(boss_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array")
+        .iter()
+        .any(|flag| flag == "boss_first_appearance_resolved"));
+    assert!(boss_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array")
+        .iter()
+        .any(|flag| flag == "boss_wall_thread_opened"));
+    assert!(boss_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array")
+        .iter()
+        .any(|flag| flag == "black_serpent_core_pressure_opened"));
+    assert!(boss_result["state"]["clues"]
+        .as_array()
+        .expect("clues should be an array")
+        .iter()
+        .any(|clue| clue == "mumyeong_follows_power_that_saw_his_wound"));
+    assert!(boss_result["state"]["clues"]
+        .as_array()
+        .expect("clues should be an array")
+        .iter()
+        .any(|clue| clue == "boss_reads_people_not_forms"));
+}
+
+#[test]
 fn json_boundary_reaches_wuxia_black_heaven_escape_price_through_preview_bundle() {
     let state_json =
         new_game_json(123, WUXIA_PREVIEW_BUNDLE).expect("preview new game should serialize");

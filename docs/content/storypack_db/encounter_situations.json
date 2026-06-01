@@ -4586,10 +4586,10 @@
     "notion_event_mapping": {
       "notion_event_id": "wuxia_boss_first_appearance",
       "notion_event_name": "보스 첫 등장",
-      "mapping_status": "next_runtime_selected"
+      "mapping_status": "preview_runtime_implemented"
     },
     "status": "candidate",
-    "mapping_status": "next_runtime_selected",
+    "mapping_status": "preview_runtime_implemented",
     "phase": [
       "midgame_boss",
       "boss_wall_pressure"
@@ -4624,7 +4624,7 @@
     ],
     "summary": "무명 중반 재회 뒤 흑사방 보스가 처음 직접 압박으로 등장하고, 청류안으로 흐름을 읽어도 몸이 따라가지 못하는 벽을 각인한다.",
     "setup_text": "청류문 마당의 소란이 가라앉기도 전에 검은 깃발의 그림자가 문턱에 걸린다. 흑사방주가 한 걸음 들어서자, 천기록의 빈 줄은 이상하게도 아무 해법도 쓰지 않는다. 움직임은 보인다. 사람의 약점을 재는 순서도 보인다. 하지만 몸이 먼저 굳는다.",
-    "runtime_preview_design_status": "next_runtime_selected",
+    "runtime_preview_design_status": "implemented",
     "runtime_preview_start_conditions": {
       "runtime_mode": "storypack_preview",
       "location": "cheongryu_outer_courtyard",
@@ -4792,9 +4792,9 @@
     },
     "main_spine_link": "무명 중반 재회에서 열린 보스가 무명의 상처를 이용했다는 단서를 흑사방 보스의 첫 직접 압박으로 연결하되, 전투 결산이 아니라 최종 논리 벽의 첫 인상으로 남긴다.",
     "randomization_notes": "1회성 boss-wall pressure. midgame reunion common hook 뒤에만 열고 `boss_first_appearance_resolved`로 반복을 막는다. `boss_used_mumyeongs_wound`는 flavor clue로만 사용해 특정 선택지에 갇히지 않게 한다.",
-    "promotion_notes": "`wuxia_mumyeong_followup_after_midgame_reunion` docs-only handoff에서 다음 runtime 후보로 선택했다. `wuxia_mumyeong_departure_truth_summary`는 후반 truth reveal/서하린 진실 전달/구원 조건 확정 때문에 보류했고, `wuxia_qingliu_attack_after_war`는 full flashback/backstory reveal 때문에 보류했다. `wuxia_mumyeong_request_for_aid`는 Notion search에서 확인했지만 repo 현 후보 밖 future bridge로 남긴다. boss combat/final boss resolution, legacy office bundle, legacy `escape-office` key, random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation schema, reward/ability/epilogue/return system, 천기록 정체 reveal은 열지 않는다.",
+    "promotion_notes": "preview runtime으로 구현 완료. `wuxia_mumyeong_followup_after_midgame_reunion` docs-only handoff에서 다음 runtime 후보로 선택했고, 압도감/조직력/약점 읽기/무명이 따르는 이유를 기존 flags/clues/log/presentation으로 landing했다. `wuxia_mumyeong_departure_truth_summary`는 후반 truth reveal/서하린 진실 전달/구원 조건 확정 때문에 보류했고, `wuxia_qingliu_attack_after_war`는 full flashback/backstory reveal 때문에 보류했다. `wuxia_mumyeong_request_for_aid`는 Notion search에서 확인했지만 repo 현 후보 밖 future bridge로 남긴다. boss combat/final boss resolution, legacy office bundle, legacy `escape-office` key, random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation schema, reward/ability/epilogue/return system, 천기록 정체 reveal은 열지 않는다.",
     "runtime_preview_implementation_notes": {
-      "planned_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml",
+      "implemented_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml",
       "insert_after": "wuxia_mumyeong_midgame_reunion",
       "selected_over": [
         "wuxia_mumyeong_departure_truth_summary",
@@ -4803,10 +4803,13 @@
       "deferred_bridge_candidates": [
         "wuxia_mumyeong_request_for_aid"
       ],
-      "generated_artifacts": [],
+      "generated_artifacts": [
+        "crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json",
+        "web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json"
+      ],
       "default_bundle_changed": false,
       "new_schema_opened": false,
-      "next_goal": "wuxia_boss_first_appearance"
+      "next_handoff": "wuxia_boss_followup_after_first_appearance"
     }
   }
 ]

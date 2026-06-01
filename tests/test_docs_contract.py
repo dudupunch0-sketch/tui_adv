@@ -570,7 +570,7 @@ def test_wuxia_cheongryu_raid_wounded_fallback_runtime_slice_is_docs_synced():
     assert "route opener docs-only handoff" in plan
     assert "wuxia_baekdo_medicine_debt" in plan
     assert "wuxia_mumyeong_copy_style_reveal" in next_goal
-    assert "current_goal: wuxia_boss_first_appearance" in next_goal
+    assert "current_goal: wuxia_boss_followup_after_first_appearance" in next_goal
     assert "Route opener implementation" in coverage
     next_slice = plan.split("현재 최우선 남은 작업:", 1)[1].split("전환 중 유지:", 1)[0]
     assert "wuxia_baekdo_medicine_debt" in next_slice
@@ -601,8 +601,8 @@ def test_wuxia_baekdo_medicine_debt_runtime_slice_is_docs_synced():
     assert "runtime_preview_design_status: implemented" in wuxia_cards
     assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 18개." in storypack_db_readme
     assert "wuxia_black_heaven_escape_price" in storypack_db_readme
-    assert "current_goal: wuxia_boss_first_appearance" in next_goal
-    assert "mode: implementation" in next_goal
+    assert "current_goal: wuxia_boss_followup_after_first_appearance" in next_goal
+    assert "mode: docs-only-handoff" in next_goal
     assert "wuxia_mumyeong_first_confrontation" in next_goal
 
 
@@ -634,8 +634,8 @@ def test_wuxia_black_heaven_escape_price_runtime_slice_is_docs_synced():
     assert "map_exit_before_following_dowol" in wuxia_cards
     assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 18개." in storypack_db_readme
     assert "wuxia_heavenly_archive_previous_outsiders" in storypack_db_readme
-    assert "current_goal: wuxia_boss_first_appearance" in next_goal
-    assert "mode: implementation" in next_goal
+    assert "current_goal: wuxia_boss_followup_after_first_appearance" in next_goal
+    assert "mode: docs-only-handoff" in next_goal
     assert "wuxia_mumyeong_first_confrontation" in next_goal
 
 
@@ -667,8 +667,8 @@ def test_wuxia_heavenly_archive_previous_outsiders_runtime_slice_is_docs_synced(
     assert "mark_current_worldline_without_answer" in wuxia_cards
     assert "compare_rift_terms_to_commute_memory" in wuxia_cards
     assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 18개." in storypack_db_readme
-    assert "current_goal: wuxia_boss_first_appearance" in next_goal
-    assert "mode: implementation" in next_goal
+    assert "current_goal: wuxia_boss_followup_after_first_appearance" in next_goal
+    assert "mode: docs-only-handoff" in next_goal
     assert "wuxia_mumyeong_first_confrontation" in next_goal
 
 
@@ -703,8 +703,8 @@ def test_wuxia_wounded_shelter_dawn_offers_runtime_slice_is_docs_synced():
     assert "show_archive_map_to_yeon_soha" in wuxia_cards
     assert "runtime_preview_implementation_notes" in wuxia_cards
     assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 18개." in storypack_db_readme
-    assert "current_goal: wuxia_boss_first_appearance" in next_goal
-    assert "mode: implementation" in next_goal
+    assert "current_goal: wuxia_boss_followup_after_first_appearance" in next_goal
+    assert "mode: docs-only-handoff" in next_goal
     assert "route_midgame_continuity_after_wounded_shelter" in world_model
     assert "route_midgame_continuity_after_wounded_shelter" in encounter_model
     assert "wuxia_wounded_shelter_dawn_offers" in world_model
@@ -738,8 +738,8 @@ def test_wuxia_mumyeong_first_sighting_handoff_is_docs_synced():
     assert "follow_black_serpent_runner" in wuxia_cards
     assert "pretend_not_to_see_the_form" in wuxia_cards
     assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 18개." in storypack_db_readme
-    assert "current_goal: wuxia_boss_first_appearance" in next_goal
-    assert "mode: implementation" in next_goal
+    assert "current_goal: wuxia_boss_followup_after_first_appearance" in next_goal
+    assert "mode: docs-only-handoff" in next_goal
     assert "mumyeong_first_confrontation_resolved" in next_goal
     assert "wuxia_jianghu_pack` / **이구학지 — 천기록**은 Web/terminal default storypack이자 메인 개발 기준" in next_goal
     assert "wuxia_mumyeong_first_sighting" in world_model
@@ -778,8 +778,8 @@ def test_wuxia_mumyeong_first_sighting_runtime_slice_is_docs_synced():
     assert "next_handoff: wuxia_mumyeong_first_confrontation_after_sighting" in wuxia_cards
     assert "무명 첫 목격/첫 대치/카피 무공 공개" in storypack_db_readme
     assert "wuxia_mumyeong_followup_after_copy_style_reveal" in storypack_db_json
-    assert "current_goal: wuxia_boss_first_appearance" in next_goal
-    assert "mode: implementation" in next_goal
+    assert "current_goal: wuxia_boss_followup_after_first_appearance" in next_goal
+    assert "mode: docs-only-handoff" in next_goal
     assert "wuxia_mumyeong_copy_style_reveal" in next_goal
     assert "wuxia_mumyeong_first_confrontation_after_sighting" in world_model
     assert "wuxia_mumyeong_first_confrontation_after_sighting" in encounter_model
@@ -846,8 +846,8 @@ def test_wuxia_mumyeong_first_confrontation_runtime_slice_is_docs_synced():
     assert '"runtime_preview_design_status": "implemented"' in situations_json
     assert '"implemented_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml"' in situations_json
     assert '"next_handoff": "wuxia_mumyeong_followup_after_copy_style_reveal"' in situations_json
-    assert "current_goal: wuxia_boss_first_appearance" in next_goal
-    assert "mode: implementation" in next_goal
+    assert "current_goal: wuxia_boss_followup_after_first_appearance" in next_goal
+    assert "mode: docs-only-handoff" in next_goal
     assert "wuxia_mumyeong_copy_style_reveal" in next_goal
     assert "random copy-style system" in next_goal
     assert "wuxia_mumyeong_first_confrontation" in world_model
@@ -930,8 +930,8 @@ def test_wuxia_mumyeong_copy_style_reveal_runtime_slice_is_docs_synced():
     assert '"runtime_preview_implementation_notes"' in situations_json
     assert '"implemented_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml"' in situations_json
     assert '"next_handoff": "wuxia_mumyeong_followup_after_copy_style_reveal"' in situations_json
-    assert "current_goal: wuxia_boss_first_appearance" in next_goal
-    assert "mode: implementation" in next_goal
+    assert "current_goal: wuxia_boss_followup_after_first_appearance" in next_goal
+    assert "mode: docs-only-handoff" in next_goal
     assert "wuxia_mumyeong_midgame_reunion" in next_goal
     assert "wuxia_boss_first_appearance" in next_goal
     assert "wuxia_mumyeong_departure_truth_summary" in next_goal
@@ -1012,8 +1012,8 @@ def test_wuxia_mumyeong_reads_orthodox_style_runtime_slice_is_docs_synced():
     assert '"runtime_preview_implementation_notes"' in situations_json
     assert '"implemented_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml"' in situations_json
     assert '"next_handoff": "wuxia_mumyeong_followup_after_orthodox_style_trace"' in situations_json
-    assert "current_goal: wuxia_boss_first_appearance" in next_goal
-    assert "mode: implementation" in next_goal
+    assert "current_goal: wuxia_boss_followup_after_first_appearance" in next_goal
+    assert "mode: docs-only-handoff" in next_goal
     assert "mumyeong_reads_orthodox_style_resolved" in next_goal
     assert "orthodox_style_trace_recorded" in next_goal
     assert "wuxia_mumyeong_midgame_reunion" in next_goal
@@ -1094,8 +1094,8 @@ def test_wuxia_mumyeong_midgame_reunion_runtime_slice_is_docs_synced():
     assert '"implemented_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml"' in situations_json
     assert '"insert_after": "wuxia_mumyeong_reads_orthodox_style"' in situations_json
     assert '"next_handoff": "wuxia_mumyeong_followup_after_midgame_reunion"' in situations_json
-    assert "current_goal: wuxia_boss_first_appearance" in next_goal
-    assert "mode: implementation" in next_goal
+    assert "current_goal: wuxia_boss_followup_after_first_appearance" in next_goal
+    assert "mode: docs-only-handoff" in next_goal
     assert "read_the_boss_flow_and_fail_to_move" in next_goal
     assert "wuxia_mumyeong_departure_truth_summary" in next_goal
     assert "wuxia_boss_first_appearance" in next_goal
@@ -1107,7 +1107,7 @@ def test_wuxia_mumyeong_midgame_reunion_runtime_slice_is_docs_synced():
     assert "runtime_status: \"implemented_in_storypack_preview\"" in notion_sources
 
 
-def test_wuxia_boss_first_appearance_handoff_is_docs_synced():
+def test_wuxia_boss_first_appearance_runtime_slice_is_docs_synced():
     plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
@@ -1140,17 +1140,23 @@ def test_wuxia_boss_first_appearance_handoff_is_docs_synced():
         "## 0.38 2026-06-02 docs-only midgame-reunion follow-up handoff: "
         "`wuxia_boss_first_appearance`"
     ) in plan
+    assert (
+        "## 0.39 2026-06-02 무협 `wuxia_boss_first_appearance` "
+        "preview runtime slice"
+    ) in plan
     assert "### 0.2bb 2026-06-02 무협 midgame-reunion follow-up docs-only handoff" in checklist
+    assert "### 0.2bc 2026-06-02 무협 `wuxia_boss_first_appearance` preview runtime slice" in checklist
     assert "Midgame reunion follow-up handoff" in coverage
+    assert "Boss first appearance implementation" in coverage
     assert (
         "| 12 | `wuxia_boss_first_appearance` | 보스 첫 등장 | "
-        "`wuxia_boss_first_appearance` | next runtime selected |"
+        "`wuxia_boss_first_appearance` | preview runtime implemented |"
     ) in coverage
     assert "| `wuxia_boss_first_appearance` | `midgame_boss` / `boss_wall_pressure`" in wuxia_pack
-    assert "18. `wuxia_boss_first_appearance` — 다음 runtime 후보" in wuxia_pack
+    assert "18. `wuxia_boss_first_appearance` — preview runtime 구현 완료" in wuxia_pack
     assert "## 18. `wuxia_boss_first_appearance`" in wuxia_cards
-    assert "mapping_status: next_runtime_selected" in wuxia_cards
-    assert "runtime_preview_design_status: next_runtime_selected" in wuxia_cards
+    assert "mapping_status: preview_runtime_implemented" in wuxia_cards
+    assert "runtime_preview_design_status: implemented" in wuxia_cards
     assert "required_flags: [mumyeong_midgame_reunion_resolved, mumyeong_mirror_thread_deepened, cheongryu_raid_survived, midgame_continuity_started]" in wuxia_cards
     assert "forbidden_flags: [boss_first_appearance_resolved]" in wuxia_cards
     assert "read_the_boss_flow_and_fail_to_move" in wuxia_cards
@@ -1158,20 +1164,26 @@ def test_wuxia_boss_first_appearance_handoff_is_docs_synced():
     assert "watch_mumyeong_answer_the_boss" in wuxia_cards
     assert "retreat_before_the_second_step" in wuxia_cards
     assert "boss_reads_people_not_forms" in wuxia_cards
-    assert "planned_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml" in wuxia_cards
+    assert "implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml" in wuxia_cards
+    assert "next_handoff: wuxia_boss_followup_after_first_appearance" in wuxia_cards
     assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 18개." in storypack_db_readme
-    assert "`wuxia_boss_first_appearance`는 다음 runtime 후보" in storypack_db_readme
+    assert "`wuxia_boss_first_appearance`는 preview runtime에 구현" in storypack_db_readme
     assert "wuxia_boss_first_appearance" in storypack_db_json
+    assert "wuxia_boss_followup_after_first_appearance" in storypack_db_json
     assert '"id": "wuxia_boss_first_appearance"' in situations_json
-    assert '"runtime_preview_design_status": "next_runtime_selected"' in situations_json
-    assert '"planned_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml"' in situations_json
+    assert '"runtime_preview_design_status": "implemented"' in situations_json
+    assert '"implemented_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml"' in situations_json
     assert '"insert_after": "wuxia_mumyeong_midgame_reunion"' in situations_json
-    assert '"next_goal": "wuxia_boss_first_appearance"' in situations_json
-    assert "current_goal: wuxia_boss_first_appearance" in next_goal
-    assert "mode: implementation" in next_goal
+    assert '"next_handoff": "wuxia_boss_followup_after_first_appearance"' in situations_json
+    assert "current_goal: wuxia_boss_followup_after_first_appearance" in next_goal
+    assert "mode: docs-only-handoff" in next_goal
     assert "read_the_boss_flow_and_fail_to_move" in next_goal
     assert "boss_first_appearance_resolved" in next_goal
+    assert "wuxia_mumyeong_request_for_aid" in next_goal
+    assert "wuxia_boss_resolution" in next_goal
     assert "wuxia_boss_first_appearance" in world_model
+    assert "wuxia_boss_followup_after_first_appearance" in world_model
     assert "wuxia_boss_first_appearance" in encounter_model
+    assert "wuxia_boss_followup_after_first_appearance" in encounter_model
     assert "wuxia_boss_first_appearance" in runtime_preview
-    assert "runtime_status: \"next_runtime_selected\"" in notion_sources
+    assert "runtime_status: \"implemented_in_storypack_preview\"" in notion_sources

@@ -577,6 +577,19 @@
 - [x] runtime YAML/Rust/Web generated bundle, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
 - [x] 다음 작업을 `wuxia_boss_first_appearance` runtime implementation으로 갱신
 
+### 0.2bc 2026-06-02 무협 `wuxia_boss_first_appearance` preview runtime slice
+
+- [x] `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`에서 `wuxia_mumyeong_midgame_reunion` 뒤에 `wuxia_boss_first_appearance` 추가
+- [x] start conditions를 `conditions.locations: [cheongryu_outer_courtyard]`, `required_flags: [mumyeong_midgame_reunion_resolved, mumyeong_mirror_thread_deepened, cheongryu_raid_survived, midgame_continuity_started]`, `forbidden_flags: [boss_first_appearance_resolved]`로 구현
+- [x] stable choice id `read_the_boss_flow_and_fail_to_move`, `pull_seo_harin_behind_broken_gate`, `watch_mumyeong_answer_the_boss`, `retreat_before_the_second_step` 구현
+- [x] 모든 선택지가 `boss_first_appearance_resolved`, `boss_wall_thread_opened`, `black_serpent_core_pressure_opened`, `destination_id: cheongryu_outer_courtyard` bridge를 남기도록 구현
+- [x] `wuxia_boss_first_appearance` presentation을 `speaker: 흑사방주`, `layout: boss_wall_pressure`, stable terms `[흑사방주, 무명, 청류문]`로 구현
+- [x] Rust/Web storypack preview generated bundle 재생성
+- [x] Python exporter/docs/storypack DB, Rust content bundle, WASM JSON boundary, terminal smoke, Web default content bundle registry 테스트 갱신
+- [x] 기본 office bundle, Web legacy generated `content.bundle.json`, `src/tui_adv/data/*.yaml`, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] boss combat/final boss resolution, 무명 이탈 진실 전체 reveal, 청류문 습격 full flashback, 서하린에게 진실 전달, 구원 확정, seed 기반 random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation/reward/ability/epilogue/return schema, 천기록 정체 reveal 미변경 유지
+- [x] 다음 작업을 `wuxia_boss_followup_after_first_appearance` docs-only handoff로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

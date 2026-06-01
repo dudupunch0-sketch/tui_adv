@@ -1,6 +1,6 @@
 # Storypack runtime preview mode
 
-Status: 결정 문서 + `wuxia_mumyeong_midgame_reunion` runtime 구현 완료 + `wuxia_boss_first_appearance` runtime implementation next
+Status: 결정 문서 + `wuxia_boss_first_appearance` runtime 구현 완료 + `wuxia_boss_followup_after_first_appearance` docs-only handoff next
 
 ## Decision: separate preview mode first
 
@@ -25,7 +25,7 @@ Status: 결정 문서 + `wuxia_mumyeong_midgame_reunion` runtime 구현 완료 +
 2. 첫 무협 prototype은 아직 gameplay schema 확장보다 “기존 encounter schema로 표현 가능한가”를 확인하는 단계다.
 3. 기본 번들의 `default_location`, route smoke, Web player start/save UX가 office 전제를 갖고 있으므로, 무협 콘텐츠를 같은 bundle에 넣으면 시작 위치와 encounter-first routing이 쉽게 충돌한다.
 
-따라서 첫 단계는 별도 preview mode다. 이 결정은 gating을 영구히 포기한다는 뜻이 아니다. preview mode로 `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`, `wuxia_wounded_shelter_dawn_offers`, `wuxia_mumyeong_first_sighting`, `wuxia_mumyeong_first_confrontation`, `wuxia_mumyeong_copy_style_reveal`, `wuxia_mumyeong_reads_orthodox_style`, `wuxia_mumyeong_midgame_reunion`가 기존 schema에서 작동함을 확인했다. 다음은 `wuxia_boss_first_appearance` runtime implementation이다. 다중 storypack 선택 UI/save migration이 필요해질 때 runtime-level gating을 별도로 연다.
+따라서 첫 단계는 별도 preview mode다. 이 결정은 gating을 영구히 포기한다는 뜻이 아니다. preview mode로 `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`, `wuxia_wounded_shelter_dawn_offers`, `wuxia_mumyeong_first_sighting`, `wuxia_mumyeong_first_confrontation`, `wuxia_mumyeong_copy_style_reveal`, `wuxia_mumyeong_reads_orthodox_style`, `wuxia_mumyeong_midgame_reunion`, `wuxia_boss_first_appearance`가 기존 schema에서 작동함을 확인했다. 다음은 `wuxia_boss_followup_after_first_appearance` docs-only handoff다. 다중 storypack 선택 UI/save migration이 필요해질 때 runtime-level gating을 별도로 연다.
 
 ## Preview mode contract
 
@@ -152,15 +152,15 @@ cargo test -p escape-terminal --test cli_smoke content_tui_smoke_reaches_wuxia_m
    - `mumyeong_reads_orthodox_style_resolved` + `orthodox_style_trace_recorded` + `mumyeong_first_confrontation_resolved` + `mumyeong_rival_thread_opened`를 eligibility로 쓴다.
    - `ask_why_seoharin_never_called_him_traitor`, `show_the_hyeonakmun_trace_without_accusing`, `point_out_the_copied_form_gap`, `keep_blades_low_and_watch_his_answer` stable choice ids와 `mumyeong_midgame_reunion_resolved`/`mumyeong_mirror_thread_deepened` hook을 남긴다.
    - 무명 이탈 진실 전체, 서하린에게 진실 전달, boss first appearance/combat, full flashback, 3택 reward schema는 아직 열지 않는다.
-15. `wuxia_boss_first_appearance` — 다음 runtime 후보
-   - `wuxia_mumyeong_followup_after_midgame_reunion` handoff에서 선택했다.
+15. `wuxia_boss_first_appearance` — 구현 완료
+   - `wuxia_mumyeong_followup_after_midgame_reunion` handoff에서 선택했고, preview runtime으로 구현했다.
    - `mumyeong_midgame_reunion_resolved` + `mumyeong_mirror_thread_deepened` + `cheongryu_raid_survived` + `midgame_continuity_started`를 eligibility로 쓴다.
    - `read_the_boss_flow_and_fail_to_move`, `pull_seo_harin_behind_broken_gate`, `watch_mumyeong_answer_the_boss`, `retreat_before_the_second_step` stable choice ids와 `boss_first_appearance_resolved`/`boss_wall_thread_opened`/`black_serpent_core_pressure_opened` hook을 남긴다.
    - boss combat/final boss resolution, 무명 이탈 진실 전체, 서하린에게 진실 전달, full flashback, 3택 reward schema는 아직 열지 않는다.
 
 ## 후속 slice 기준
 
-`wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`, `wuxia_wounded_shelter_dawn_offers`, `wuxia_mumyeong_first_sighting`, `wuxia_mumyeong_first_confrontation`, `wuxia_mumyeong_copy_style_reveal`, `wuxia_mumyeong_reads_orthodox_style`, `wuxia_mumyeong_midgame_reunion`는 같은 preview mode에 추가되었다. 이미 preview export/check command, Rust/Web preview bundle artifact, terminal default/explicit `--storypack-preview wuxia_jianghu_pack`, Web default 이구학지 start/save wiring이 있으므로, 다음은 launcher나 천외편린 reward schema가 아니라 `wuxia_boss_first_appearance` runtime implementation이다.
+`wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`, `wuxia_wounded_shelter_dawn_offers`, `wuxia_mumyeong_first_sighting`, `wuxia_mumyeong_first_confrontation`, `wuxia_mumyeong_copy_style_reveal`, `wuxia_mumyeong_reads_orthodox_style`, `wuxia_mumyeong_midgame_reunion`, `wuxia_boss_first_appearance`는 같은 preview mode에 추가되었다. 이미 preview export/check command, Rust/Web preview bundle artifact, terminal default/explicit `--storypack-preview wuxia_jianghu_pack`, Web default 이구학지 start/save wiring이 있으므로, 다음은 launcher나 천외편린 reward schema가 아니라 `wuxia_boss_followup_after_first_appearance` docs-only handoff다.
 
 구현된 rescue slice:
 

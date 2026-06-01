@@ -1,13 +1,13 @@
 # 이구학지 — 천기록 encounter situation cards
 
-Status: candidate
+Status: candidate + `wuxia_boss_first_appearance` preview runtime implemented
 
-이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_midgame_reunion`까지는 separate storypack preview runtime으로 승격되었고, 다음 runtime 후보는 `wuxia_boss_first_appearance`다.
+이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_boss_first_appearance`까지는 separate storypack preview runtime으로 승격되었고, 다음 작업은 `wuxia_boss_followup_after_first_appearance` docs-only handoff다.
 
 공통 원칙:
 
 - 모든 카드는 `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`에 속한다.
-- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_midgame_reunion`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. `wuxia_boss_first_appearance`는 docs-only handoff로 선택된 다음 후보이며 아직 runtime YAML에는 없다.
+- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_boss_first_appearance`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. 다음 후보 선택은 `wuxia_boss_followup_after_first_appearance` docs-only handoff에서 진행한다.
 - 최신 canonical 무협 설정은 **이구학지 — 천기록**이다. 이전의 generic 객잔/소림/무당/아미 placeholder는 superseded로 본다.
 - 플레이어 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계의 시장 한복판에 전이됐다”이다.
 - 선택지는 세부 수치보다 역할과 결과 hook을 먼저 정의한다.
@@ -39,7 +39,7 @@ Status: candidate
 | `wuxia_boss_resolution` | 보스 결산 | none yet | future boss result event |
 | `wuxia_mumyeong_first_sighting` | 무명 첫 목격 | `wuxia_mumyeong_first_sighting` | preview runtime implemented |
 | `wuxia_mumyeong_first_confrontation` | 무명 첫 대치 | `wuxia_mumyeong_first_confrontation` | preview runtime implemented |
-| `wuxia_boss_first_appearance` | 보스 첫 등장 | `wuxia_boss_first_appearance` | next runtime selected |
+| `wuxia_boss_first_appearance` | 보스 첫 등장 | `wuxia_boss_first_appearance` | preview runtime implemented |
 | `wuxia_mumyeong_destroys_orthodox_sect` | 정파 문파 멸문 | none yet | future consequence/backstory event |
 | `wuxia_mumyeong_awakening` | 무명의 각성 | none yet | future rival corruption/growth event |
 | `wuxia_boss_recruits_mumyeong` | 흑사방 보스의 스카웃 | none yet | future backstory event |
@@ -679,7 +679,7 @@ promotion_notes: preview runtime으로 구현 완료. 첫 runtime은 `cheongryu_
 id: wuxia_baekdo_medicine_debt
 world_id: wuxia_jianghu
 storypack_id: wuxia_jianghu_pack
-status: implemented_in_storypack_preview
+status: candidate
 runtime_preview_design_status: implemented
 phase: [route_commitment]
 priority_class: route_key
@@ -1576,9 +1576,9 @@ source_refs:
 notion_event_mapping:
   notion_event_id: wuxia_boss_first_appearance
   notion_event_name: 보스 첫 등장
-  mapping_status: next_runtime_selected
-status: candidate
-mapping_status: next_runtime_selected
+  mapping_status: preview_runtime_implemented
+status: implemented_in_storypack_preview
+mapping_status: preview_runtime_implemented
 phase: [midgame_boss, boss_wall_pressure]
 priority_class: route_key
 location_tags: [cheongryu_outer_courtyard, black_serpent_pressure, boss_wall]
@@ -1589,7 +1589,7 @@ npc_slots: [early_rescuer]
 candidate_characters: [black_serpent_boss, mumyeong, seo_harin]
 summary: 무명 중반 재회 뒤 흑사방 보스가 처음 직접 압박으로 등장하고, 청류안으로 흐름을 읽어도 몸이 따라가지 못하는 벽을 각인한다.
 setup_text: 청류문 마당의 소란이 가라앉기도 전에 검은 깃발의 그림자가 문턱에 걸린다. 흑사방주가 한 걸음 들어서자, 천기록의 빈 줄은 이상하게도 아무 해법도 쓰지 않는다. 움직임은 보인다. 사람의 약점을 재는 순서도 보인다. 하지만 몸이 먼저 굳는다.
-runtime_preview_design_status: next_runtime_selected
+runtime_preview_design_status: implemented
 runtime_preview_start_conditions:
   runtime_mode: storypack_preview
   location: cheongryu_outer_courtyard
@@ -1650,14 +1650,16 @@ outcome_hooks:
   possible_destinations: [cheongryu_outer_courtyard]
 main_spine_link: 무명 중반 재회에서 열린 보스가 무명의 상처를 이용했다는 단서를 흑사방 보스의 첫 직접 압박으로 연결하되, 전투 결산이 아니라 최종 논리 벽의 첫 인상으로 남긴다.
 randomization_notes: 1회성 boss-wall pressure. midgame reunion common hook 뒤에만 열고 `boss_first_appearance_resolved`로 반복을 막는다. `boss_used_mumyeongs_wound`는 flavor clue로만 사용해 특정 선택지에 갇히지 않게 한다.
-promotion_notes: `wuxia_mumyeong_followup_after_midgame_reunion` docs-only handoff에서 다음 runtime 후보로 선택했다. `wuxia_mumyeong_departure_truth_summary`는 후반 truth reveal/서하린 진실 전달/구원 조건 확정 때문에 보류했고, `wuxia_qingliu_attack_after_war`는 full flashback/backstory reveal 때문에 보류했다. `wuxia_mumyeong_request_for_aid`는 Notion search에서 확인했지만 repo 현 후보 밖 future bridge로 남긴다. boss combat/final boss resolution, legacy office bundle, legacy `escape-office` key, random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation schema, reward/ability/epilogue/return system, 천기록 정체 reveal은 열지 않는다.
+promotion_notes: preview runtime으로 구현 완료. `wuxia_mumyeong_followup_after_midgame_reunion` docs-only handoff에서 다음 runtime 후보로 선택했고, 압도감/조직력/약점 읽기/무명이 따르는 이유를 기존 flags/clues/log/presentation으로 landing했다. `wuxia_mumyeong_departure_truth_summary`는 후반 truth reveal/서하린 진실 전달/구원 조건 확정 때문에 보류했고, `wuxia_qingliu_attack_after_war`는 full flashback/backstory reveal 때문에 보류했다. `wuxia_mumyeong_request_for_aid`는 Notion search에서 확인했지만 repo 현 후보 밖 future bridge로 남긴다. boss combat/final boss resolution, legacy office bundle, legacy `escape-office` key, random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation schema, reward/ability/epilogue/return system, 천기록 정체 reveal은 열지 않는다.
 runtime_preview_implementation_notes:
-  planned_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
+  implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
   insert_after: wuxia_mumyeong_midgame_reunion
   selected_over: [wuxia_mumyeong_departure_truth_summary, wuxia_qingliu_attack_after_war]
   deferred_bridge_candidates: [wuxia_mumyeong_request_for_aid]
-  generated_artifacts: []
+  generated_artifacts:
+    - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+    - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
   default_bundle_changed: false
   new_schema_opened: false
-  next_goal: wuxia_boss_first_appearance
+  next_handoff: wuxia_boss_followup_after_first_appearance
 ```

@@ -264,8 +264,8 @@ promotion_notes: runtime 승격 시 messenger UI presentation metadata를 붙인
 - `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment` preview는 완료했다.
 - 이 preview runtime content는 `storypack_preview` bundle에만 들어가며, 기본 office runtime과 `src/tui_adv/data/*.yaml`에는 직접 섞지 않는다.
 - `preview launcher/UI wiring`은 explicit opt-in entrypoint로 구현했다. 후속 content slice에서 다시 열지 않는다.
-- 다음 승격 후보는 `wuxia_seo_harin_rescue` 또는 `wuxia_cheongryu_apprentice_entry` bridge다.
-- 필요한 신규 설계는 encounter/choice/outcome 수준으로 제한한다. 새 combat/reward/ability schema, 천외편린 3택 reward schema는 별도 slice 전까지 열지 않는다.
+- 다음 승격 후보는 여전히 `wuxia_seo_harin_rescue`다. `wuxia_cheongryu_apprentice_entry`는 설계/handoff 완료된 후속 bridge지만, 서하린 구조/감시/채무 hook과 `cheongryu_outer_courtyard`가 preview source에 생긴 뒤 여는 순서를 지킨다. `wuxia_cheongryu_raid_route_split`도 later 후보로 설계했지만, rescue/apprentice와 first-fragment 공통 hook이 안정화된 뒤 route-pressure slice로만 연다. `wuxia_cheongryu_raid_wounded_fallback`은 raid split fallback branch 이후 route opener 전 재합류 후보로만 연다.
+- 필요한 신규 설계는 encounter/choice/outcome 수준으로 제한한다. 새 combat/reward/ability schema, 천외편린 3택 reward schema, faction route graph schema는 별도 slice 전까지 열지 않는다.
 
 `validate_storypack_db()`가 검사하는 기준:
 

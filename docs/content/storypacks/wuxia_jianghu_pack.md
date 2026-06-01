@@ -63,7 +63,7 @@ ending_candidates:
   - returnee
   - murim_outsider
 main_spine_support: office에서 출발한 현대인이 완전히 다른 world에 떨어져도 소속, 평판, 관계, 성장, 전투, 자원, 선택, 엔딩을 같은 engine loop로 설명할 수 있는지 검증한다.
-runtime_promotion_notes: `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment` preview는 separate storypack preview mode에서 완료했다. office content와 섞이지 않는 별도 preview bundle을 유지하며, 다음 후속은 서하린 구조/청류문 수습생 bridge 후보 결정이다. 천외편린 3택 성장 schema는 future work로 둔다.
+runtime_promotion_notes: `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment` preview는 separate storypack preview mode에서 완료했다. office content와 섞이지 않는 별도 preview bundle을 유지하며, 다음 구현 slice는 서하린 구조/외지인 조사/청류문 보호·감시 bridge인 `wuxia_seo_harin_rescue`로 확정한다. 그 다음 follow-up인 `wuxia_cheongryu_apprentice_entry`, later route-pressure 후보 `wuxia_cheongryu_raid_route_split`, deferred fallback 후보 `wuxia_cheongryu_raid_wounded_fallback`은 설계/handoff 완료 상태지만 prerequisite runtime hook이 먼저 필요하다. 천외편린 3택 성장 schema와 faction route graph schema는 future work로 둔다.
 ```
 
 ## 최신화 기준
@@ -235,6 +235,7 @@ runtime_promotion_notes: `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_
 | `wuxia_cheongryu_apprentice_entry` | `cheongryu_apprenticeship` | `sect_courtyard`, `training_chore` | 청류문 수습생/객식/잡역으로 편입되고 보호의 대가를 갚기 시작한다. | 높음 |
 | `wuxia_cheonggi_record_first_fragment` | `cheonggi_record_awakening` | `cheonggi_record`, `fragment_choice` | 업무수첩이 천기록과 연결되고 첫 천외편린 3택이 열린다. | 높음 |
 | `wuxia_cheongryu_raid_route_split` | `cheongryu_raid` / `route_commitment` | `sect_raid`, `faction_negotiation` | 청류문 습격 후 백도맹/흑천련/천기각 루트 선택 압박이 생긴다. | 중간 |
+| `wuxia_cheongryu_raid_wounded_fallback` | `cheongryu_raid` / `route_commitment` | `sect_raid`, `faction_negotiation`, `sect_courtyard` | 부상자 대피 fallback 이후 route 선택을 미룬 대가와 재합류 hook을 다룬다. | 중간 |
 
 상세 카드는 `docs/content/encounter_db/wuxia_jianghu_pack.md`에 둔다.
 
@@ -277,15 +278,24 @@ runtime_promotion_notes: `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_
    - updated story의 전제를 가장 직접적으로 고정한다.
    - 기존 encounter schema의 title/body/choices/outcome만으로 구현했다.
    - separate preview bundle metadata와 `default_location: wuxia_commute_rift` 경계를 검증했다.
-2. `wuxia_heuksa_bang_first_fight` — 다음 구현 slice로 확정
-   - 기존 schema-less auto-brawl prototype과 연결하기 좋다.
-   - 숫자 HP 전투가 아니라 결과 hook 중심의 튜토리얼성 첫 전투로 둔다.
-   - stable choice id 후보는 `run_toward_open_street`(fallback), `deescalate_with_words`, `swing_commute_bag`, `loosen_tie_and_drop_shoes`, `crash_in_with_body`다.
-   - outcome은 `resources`, `danger`, `add_flags`, `add_clues`, `add_items`/`remove_items`, `destination_id`, `log`, optional `presentation`만 사용한다.
-   - preview launcher/UI wiring은 follow-up 후보지만 이 slice의 선행 조건은 아니다.
-3. `wuxia_cheonggi_record_first_fragment` — future work
-   - 천외편린 3택 UI/보상 구조는 매력적이지만 새 reward/ability schema로 과확장하기 쉽다.
-   - 첫 전투 slice에서는 선택 결과를 flag/clue/log/presentation text로만 표현하고, 실제 성장 시스템은 별도 검증 뒤 연다.
+2. `wuxia_heuksa_bang_first_fight` — preview 구현 완료
+   - 숫자 HP 전투가 아니라 결과 hook 중심의 튜토리얼성 첫 전투로 구현했다.
+   - 기본 office bundle, Web 기본 generated bundle, `src/tui_adv/data/*.yaml`, `escape-office` key는 변경하지 않았다.
+3. `wuxia_cheonggi_record_first_fragment` — preview 구현 완료
+   - 현재 구현은 첫 난투 뒤 시장에서 뜨는 foreshadow version이다.
+   - 새 reward/ability schema 없이 `cheonggi_record_awakened`, `first_fragment_seen`, fragment thread flags/clues/log/presentation만 남긴다.
+4. `wuxia_seo_harin_rescue` — 다음 구현 slice
+   - first fight/first fragment 이후 서하린 구조, 외지인 조사, 청류문 보호·감시 bridge를 연다.
+   - `cheongryu_outer_courtyard` destination과 `seo_harin_rescue_resolved`/`taken_under_watch` 공통 hook을 보장한다.
+5. `wuxia_cheongryu_apprentice_entry` — 설계 완료 follow-up
+   - rescue hook 이후 청류문 수습생/잡역/채무/서고 bridge를 연다.
+   - `accept_three_month_trial` fallback과 `cheongryu_apprentice_entry_resolved`/`cheongryu_trial_started` 공통 hook을 남긴다.
+6. `wuxia_cheongryu_raid_route_split` — 설계 완료 later candidate
+   - rescue/apprentice와 first-fragment 공통 hook이 안정화된 뒤에만 연다.
+   - 정파/사파/천기·귀환 route pressure를 flags/clues/log로만 남기고, faction route graph나 multi-ending schema는 열지 않는다.
+7. `wuxia_cheongryu_raid_wounded_fallback` — 설계 완료 deferred fallback candidate
+   - raid split의 `evacuate_the_wounded_first` fallback 이후에만 연다.
+   - route opener 전 공통 재합류를 만들되, route graph/faction schema 없이 same route starter flags로 이어 붙인다.
 
 주의:
 

@@ -23,7 +23,7 @@ Status: 결정 문서 + 첫 runtime preview 구현 완료 + 다음 preview slice
 2. 첫 무협 prototype은 아직 gameplay schema 확장보다 “기존 encounter schema로 표현 가능한가”를 확인하는 단계다.
 3. 기본 번들의 `default_location`, route smoke, Web player start/save UX가 office 전제를 갖고 있으므로, 무협 콘텐츠를 같은 bundle에 넣으면 시작 위치와 encounter-first routing이 쉽게 충돌한다.
 
-따라서 첫 단계는 별도 preview mode다. 이 결정은 gating을 영구히 포기한다는 뜻이 아니다. preview mode로 `wuxia_commute_rift_arrival` 또는 `wuxia_heuksa_bang_first_fight`가 기존 schema에서 잘 작동하는지 확인한 뒤, 다중 storypack 선택 UI/save migration이 필요해질 때 runtime-level gating을 연다.
+따라서 첫 단계는 별도 preview mode다. 이 결정은 gating을 영구히 포기한다는 뜻이 아니다. preview mode로 `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`가 기존 schema에서 작동함을 확인했으므로, 다음 `wuxia_seo_harin_rescue`도 같은 preview bundle에서 검증한다. 다중 storypack 선택 UI/save migration이 필요해질 때 runtime-level gating을 별도로 연다.
 
 ## Preview mode contract
 
@@ -103,7 +103,95 @@ cargo test -p escape-terminal content_tui_smoke_reaches_wuxia_cheonggi_record_fi
 
 ## 후속 slice 기준
 
-`wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`는 같은 preview mode에 추가되었고, `preview launcher/UI wiring`도 opt-in entrypoint로 구현되었다. 이미 preview export/check command, Rust/Web preview bundle artifact, terminal `--storypack-preview wuxia_jianghu_pack`, Web start screen preview launcher가 있으므로, 다음 후속은 launcher나 천외편린 reward schema가 아니라 `wuxia_seo_harin_rescue` 또는 `wuxia_cheongryu_apprentice_entry` 같은 bridge content slice다.
+`wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`는 같은 preview mode에 추가되었고, `preview launcher/UI wiring`도 opt-in entrypoint로 구현되었다. 이미 preview export/check command, Rust/Web preview bundle artifact, terminal `--storypack-preview wuxia_jianghu_pack`, Web start screen preview launcher가 있으므로, 다음 즉시 구현은 launcher나 천외편린 reward schema가 아니라 `wuxia_seo_harin_rescue` bridge content slice다. `wuxia_cheongryu_apprentice_entry`는 설계/handoff 완료된 그 다음 follow-up이지만, rescue hook이 preview source에 생긴 뒤에만 구현한다.
+
+다음 구현 slice 결정:
+
+```yaml
+id: wuxia_seo_harin_rescue
+status: designed_not_implemented
+purpose: first fight/first fragment 이후 서하린 구조, 외지인 조사, 청류문 보호/감시, 수습생 bridge를 연다.
+conditions:
+  locations: [jianghu_market_street]
+  required_flags: [heuksa_bang_first_fight_resolved, cheonggi_record_first_fragment_resolved]
+  forbidden_flags: [seo_harin_rescue_resolved]
+recommended_destination: cheongryu_outer_courtyard
+choices:
+  - id: tell_plain_truth              # fallback / safe honesty
+  - id: ask_for_medical_help_first    # survival priority / rescue debt hook
+  - id: explain_company_and_commute   # workplace memory misunderstanding
+  - id: show_cheonggi_record_page     # risky record disclosure
+  - id: hide_employee_badge           # high-risk concealment
+schema_boundary:
+  allowed: [conditions.locations, required_flags, forbidden_flags, choices.cost, outcome.resources, outcome.danger, outcome.add_flags, outcome.add_clues, outcome.add_items, outcome.remove_items, outcome.destination_id, outcome.log, presentation]
+  forbidden: [RelationScore, DebtLedger, FactionStanding, healing_schema, companion_schema, CombatState, reward_schema, ability_schema, fragment_choice_reward]
+```
+
+
+후속 후보 설계:
+
+```yaml
+id: wuxia_cheongryu_apprentice_entry
+status: designed_follow_up_not_implemented
+precondition: `wuxia_seo_harin_rescue` runtime slice가 먼저 landing되어야 한다.
+purpose: rescue 이후 청류문 수습생/잡역/채무/서고 bridge를 연다.
+conditions:
+  locations: [cheongryu_outer_courtyard]
+  required_flags: [seo_harin_rescue_resolved, taken_under_watch]
+  forbidden_flags: [cheongryu_apprentice_entry_resolved]
+choices:
+  - id: accept_three_month_trial       # fallback / safe acceptance
+  - id: request_martial_training_immediately
+  - id: organize_chores_like_workflow
+  - id: inspect_archive_during_chore
+schema_boundary:
+  allowed: [conditions.locations, required_flags, forbidden_flags, choices.cost, outcome.resources, outcome.danger, outcome.add_flags, outcome.add_clues, outcome.add_items, outcome.remove_items, outcome.destination_id, outcome.log, presentation]
+  forbidden: [RelationScore, DebtLedger, FactionStanding, TrainingXP, ChoreScheduler, companion_schema, CombatState, reward_schema, ability_schema, fragment_choice_reward]
+```
+
+
+Later 후보 설계:
+
+```yaml
+id: wuxia_cheongryu_raid_route_split
+status: designed_later_not_implemented
+precondition: rescue/apprentice runtime slice와 first-fragment 공통 hook이 먼저 안정화되어야 한다.
+purpose: 청류문 습격으로 정파/사파/천기·귀환 route pressure를 노출한다.
+conditions:
+  locations: [cheongryu_outer_courtyard]
+  required_flags: [cheongryu_apprentice_entry_resolved, cheongryu_trial_started, cheonggi_record_awakened, first_fragment_seen]
+  forbidden_flags: [cheongryu_raid_route_split_resolved]
+choices:
+  - id: evacuate_the_wounded_first       # fallback / safe human priority
+  - id: defend_cheongryu_with_white_path # righteous route pressure
+  - id: trade_with_black_heaven          # sapa survival bargain
+  - id: follow_heavenly_archive          # cheonggi/return truth pressure
+schema_boundary:
+  allowed: [conditions.locations, required_flags, forbidden_flags, choices.cost, outcome.resources, outcome.danger, outcome.add_flags, outcome.add_clues, outcome.add_items, outcome.remove_items, outcome.destination_id, outcome.log, presentation]
+  forbidden: [FactionStanding, RouteGraph, BranchLock, CompanionDeath, MassCombat, boss_combat_resolver, CombatState, reward_schema, ability_schema, fragment_choice_reward, multi_ending_implementation]
+```
+
+
+Deferred later 후보 설계:
+
+```yaml
+id: wuxia_cheongryu_raid_wounded_fallback
+status: designed_later_not_implemented
+precondition: `wuxia_cheongryu_raid_route_split` runtime slice와 `evacuate_the_wounded_first` branch hook이 먼저 landing되어야 한다.
+purpose: 부상자 대피 fallback 이후 route 선택을 미룬 대가와 재합류 hook을 연다.
+conditions:
+  locations: [raid_aftermath_shelter]  # or cheongryu_outer_courtyard if no new preview location
+  required_flags: [cheongryu_raid_route_split_resolved, route_commitment_deferred, wounded_saved_flag, cheongryu_raid_survived]
+  forbidden_flags: [cheongryu_raid_wounded_fallback_resolved]
+choices:
+  - id: stabilize_wounded_until_dawn          # fallback / safe deferred recovery
+  - id: ask_baekdo_for_medicine_not_command  # delayed righteous commitment
+  - id: trade_black_heaven_bandages_for_exit # delayed sapa bargain
+  - id: follow_archive_triage_map            # delayed cheonggi/return thread
+schema_boundary:
+  allowed: [conditions.locations, required_flags, forbidden_flags, choices.cost, outcome.resources, outcome.danger, outcome.add_flags, outcome.add_clues, outcome.add_items, outcome.remove_items, outcome.destination_id, outcome.log, presentation]
+  forbidden: [RouteGraph, FactionStanding, BranchLock, TriageSystem, CompanionDeath, MassCombat, boss_combat_resolver, CombatState, reward_schema, ability_schema, fragment_choice_reward, multi_ending_implementation]
+```
 
 Launcher/entrypoint contract:
 
@@ -119,7 +207,7 @@ Launcher/entrypoint contract:
 - `escape-office` save/localStorage key를 rename하지 않는다.
 - 천기록/천외편린 3택 성장 schema를 열지 않는다.
 - 실제 회사/통근 경로/사원증 정보 또는 private-only reality hint를 넣지 않는다.
-- 새 `CombatState`, combat resolver, HP 숫자전, 스킬/쿨타임, reward/ability schema를 추가하지 않는다.
+- 새 `CombatState`, combat resolver, HP 숫자전, 스킬/쿨타임, reward/ability schema, relation/debt/faction/companion schema를 추가하지 않는다.
 
 구현된 runtime design:
 

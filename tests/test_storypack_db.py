@@ -40,6 +40,7 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         "wuxia_cheonggi_record_first_fragment",
         "wuxia_cheongryu_apprentice_entry",
         "wuxia_cheongryu_raid_route_split",
+        "wuxia_cheongryu_raid_wounded_fallback",
         "wuxia_commute_rift_arrival",
         "wuxia_heuksa_bang_first_fight",
         "wuxia_seo_harin_rescue",

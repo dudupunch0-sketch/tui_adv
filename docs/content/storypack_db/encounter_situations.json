@@ -3619,5 +3619,263 @@
       "new_schema_opened": false,
       "next_handoff": "wuxia_mumyeong_first_confrontation_after_sighting"
     }
+  },
+  {
+    "id": "wuxia_mumyeong_first_confrontation",
+    "world_id": "wuxia_jianghu",
+    "storypack_id": "wuxia_jianghu_pack",
+    "status": "candidate",
+    "phase": [
+      "midgame_rival",
+      "rival_confrontation"
+    ],
+    "priority_class": "route_key",
+    "location_tags": [
+      "cheongryu_outer_courtyard",
+      "training_yard",
+      "black_serpent_pressure"
+    ],
+    "surface": [
+      "sect_courtyard",
+      "training_chore",
+      "faction_negotiation"
+    ],
+    "anomaly_type": [
+      "faction_pressure",
+      "sect_debt",
+      "qi_deviation"
+    ],
+    "pressure_type": [
+      "health",
+      "sanity",
+      "danger",
+      "relation"
+    ],
+    "npc_slots": [
+      "early_rescuer"
+    ],
+    "candidate_characters": [
+      "seo_harin",
+      "mumyeong"
+    ],
+    "summary": "첫 목격 이후 무명을 라이벌로 확정하는 첫 대치. 이기는 전투가 아니라 버티기, 카피 무공 관찰, 서하린과 무명 사이의 침묵 확인이 핵심이다.",
+    "setup_text": "외원 담장 밑에서 다시 그 흐름이 나타난다. 무명은 청류문이 또 외부자를 주워 왔느냐고 묻지만, 말끝에는 조롱보다 피로가 먼저 묻어난다. 서하린은 칼집에 손을 얹고도 이름을 부르지 않는다.",
+    "runtime_preview_design_status": "handoff_ready",
+    "runtime_preview_start_conditions": {
+      "runtime_mode": "storypack_preview",
+      "location": "cheongryu_outer_courtyard",
+      "required_flags": [
+        "mumyeong_first_sighting_resolved",
+        "midgame_continuity_started",
+        "cheongryu_raid_survived",
+        "first_fragment_seen"
+      ],
+      "forbidden_flags": [
+        "mumyeong_first_confrontation_resolved"
+      ],
+      "flavor_flags_only": [
+        "mumyeong_shadow_seen",
+        "copied_qingliu_flow_noted",
+        "seo_harin_recognized_mumyeong",
+        "mumyeong_wound_thread_opened",
+        "black_serpent_trail_marked",
+        "mumyeong_clue_deferred",
+        "righteous_route_opened",
+        "sapa_route_opened",
+        "cheonggi_return_route_opened"
+      ]
+    },
+    "presentation": {
+      "visual_id": "wuxia_mumyeong_first_confrontation",
+      "speaker": "무명",
+      "layout": "rival_first_confrontation",
+      "effect_cues": [
+        {
+          "stable_terms": [
+            "무명",
+            "서하린",
+            "청류문"
+          ]
+        }
+      ]
+    },
+    "choice_shapes": [
+      {
+        "id": "meet_mumyeong_head_on",
+        "role": "high_risk_confront",
+        "label_direction": "무명과 정면으로 맞선다",
+        "expected_costs": [
+          "danger_medium",
+          "health_risk"
+        ],
+        "expected_gains": [
+          "rival_pressure",
+          "courage_thread"
+        ],
+        "outcome_hook": {
+          "add_flags": [
+            "mumyeong_first_confrontation_resolved",
+            "mumyeong_rival_thread_opened",
+            "rival_endured_not_defeated"
+          ],
+          "add_clues": [
+            "mumyeong_is_not_boss_wall",
+            "winning_is_not_required"
+          ],
+          "destination_id": "cheongryu_outer_courtyard",
+          "log_direction": "정면으로 부딪혔지만 이긴 것은 아니다. 다만 물러서지 않았다는 사실만은 남는다."
+        }
+      },
+      {
+        "id": "endure_until_copy_flow_breaks",
+        "role": "safe_endure",
+        "fallback_choice": true,
+        "label_direction": "버티며 카피한 흐름이 끊기는 순간을 기다린다",
+        "expected_costs": [
+          "sanity_small",
+          "health_risk"
+        ],
+        "expected_gains": [
+          "copied_flow_weakness",
+          "rival_pattern"
+        ],
+        "outcome_hook": {
+          "add_flags": [
+            "mumyeong_first_confrontation_resolved",
+            "mumyeong_rival_thread_opened",
+            "copied_flow_weakness_noted"
+          ],
+          "add_clues": [
+            "copy_style_has_gap",
+            "copied_flow_is_not_qingliu"
+          ],
+          "destination_id": "cheongryu_outer_courtyard",
+          "log_direction": "훔친 흐름은 빠르지만 오래 가지 않는다. 중심이 돌아오는 순간, 빈틈이 생긴다."
+        }
+      },
+      {
+        "id": "watch_seo_harin_hold_back",
+        "role": "companion_observation",
+        "label_direction": "서하린이 왜 끼어들지 않는지 살핀다",
+        "expected_costs": [
+          "relation_risk",
+          "silence_weight"
+        ],
+        "expected_gains": [
+          "seo_harin_wound_thread",
+          "mumyeong_relation_clue"
+        ],
+        "outcome_hook": {
+          "add_flags": [
+            "mumyeong_first_confrontation_resolved",
+            "mumyeong_rival_thread_opened",
+            "seo_harin_mumyeong_silence_confirmed"
+          ],
+          "add_clues": [
+            "seo_harin_does_not_call_him_traitor",
+            "mumyeong_was_not_only_enemy"
+          ],
+          "destination_id": "cheongryu_outer_courtyard",
+          "log_direction": "서하린은 끼어들 수 있는데도 한 박자 늦춘다. 그 침묵은 망설임이 아니라 기억에 가깝다."
+        }
+      },
+      {
+        "id": "read_mumyeongs_copied_form",
+        "role": "information_probe",
+        "label_direction": "무명의 초식이 어디서 어긋나는지 읽는다",
+        "expected_costs": [
+          "sanity_medium",
+          "danger_small"
+        ],
+        "expected_gains": [
+          "copy_defect_clue",
+          "cheonggi_contrast"
+        ],
+        "outcome_hook": {
+          "add_flags": [
+            "mumyeong_first_confrontation_resolved",
+            "mumyeong_rival_thread_opened",
+            "copied_flow_weakness_noted",
+            "cheonggi_copy_contrast_noted"
+          ],
+          "add_clues": [
+            "copy_style_has_gap",
+            "understanding_is_not_copying"
+          ],
+          "destination_id": "cheongryu_outer_courtyard",
+          "log_direction": "같은 선을 그어도 같은 뜻이 되지는 않는다. 훔친 초식과 이해한 흐름은 손끝에서 갈라진다."
+        }
+      },
+      {
+        "id": "do_not_provoke_mumyeong",
+        "role": "safe_deescalate",
+        "label_direction": "도발하지 않고 물러설 거리를 만든다",
+        "expected_costs": [
+          "unresolved_debt",
+          "sanity_small"
+        ],
+        "expected_gains": [
+          "survival_space",
+          "future_confrontation_thread"
+        ],
+        "outcome_hook": {
+          "add_flags": [
+            "mumyeong_first_confrontation_resolved",
+            "mumyeong_rival_thread_opened",
+            "rivalry_deferred_not_avoided"
+          ],
+          "add_clues": [
+            "winning_is_not_required",
+            "not_provoking_still_leaves_debt"
+          ],
+          "destination_id": "cheongryu_outer_courtyard",
+          "log_direction": "싸움을 키우지 않는다고 대치가 사라지지는 않는다. 오늘 피한 말은 다음에 더 날카롭게 돌아온다."
+        }
+      }
+    ],
+    "outcome_hooks": {
+      "possible_flags": [
+        "mumyeong_first_confrontation_resolved",
+        "mumyeong_rival_thread_opened",
+        "rival_endured_not_defeated",
+        "copied_flow_weakness_noted",
+        "seo_harin_mumyeong_silence_confirmed",
+        "cheonggi_copy_contrast_noted",
+        "rivalry_deferred_not_avoided"
+      ],
+      "possible_clues": [
+        "mumyeong_is_not_boss_wall",
+        "winning_is_not_required",
+        "copy_style_has_gap",
+        "copied_flow_is_not_qingliu",
+        "seo_harin_does_not_call_him_traitor",
+        "mumyeong_was_not_only_enemy",
+        "understanding_is_not_copying",
+        "not_provoking_still_leaves_debt"
+      ],
+      "possible_destinations": [
+        "cheongryu_outer_courtyard"
+      ]
+    },
+    "main_spine_link": "무명을 단순 적이 아니라 주인공보다 살짝 앞선 라이벌로 확정하고, 보스가 담당할 최종 벽과 무명의 라이벌 결산을 분리한다.",
+    "randomization_notes": "1회성 midgame confrontation. 첫 목격이 남긴 common hook으로만 열린다. 첫 목격 branch flags와 route opener flags는 문장 flavor에만 사용한다.",
+    "promotion_notes": "docs-only handoff 완료. `wuxia_mumyeong_first_confrontation_after_sighting`에서 첫 대치, 중반 재회, boss first appearance를 비교했고, 첫 대치를 다음 runtime 후보로 골랐다. 전투 사건이지만 승리/패배 resolver가 아니라 버티기/분석 encounter로 구현한다. 기본 office bundle, legacy `escape-office` key, combat resolver/schema, HP 숫자전, route graph/faction reputation/debt/relation schema, reward/ability/epilogue/return system, boss first appearance, 천기록 정체 reveal은 열지 않는다.",
+    "runtime_preview_implementation_notes": {
+      "next_runtime_candidate": true,
+      "source_to_add": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml",
+      "insert_after": "wuxia_mumyeong_first_sighting",
+      "generated_artifacts_to_update": [
+        "crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json",
+        "web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json"
+      ],
+      "selected_over": [
+        "wuxia_mumyeong_midgame_reunion",
+        "wuxia_boss_first_appearance",
+        "route_specific_clue_bridge"
+      ],
+      "default_bundle_changed": false,
+      "new_schema_opened": false,
+      "next_handoff": "wuxia_mumyeong_first_confrontation"
+    }
   }
 ]

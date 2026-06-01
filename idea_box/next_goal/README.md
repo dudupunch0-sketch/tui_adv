@@ -2,8 +2,8 @@
 type: next_goal_prompt
 created: 2026-06-01
 updated: 2026-06-02
-current_goal: wuxia_mumyeong_first_confrontation_after_sighting
-mode: docs-only-handoff
+current_goal: wuxia_mumyeong_first_confrontation
+mode: implementation
 ---
 
 # next_goal
@@ -24,84 +24,170 @@ mode: docs-only-handoff
 
 ## 현재 목표
 
-`wuxia_mumyeong_first_sighting` runtime implementation까지 완료됐다. `wuxia_jianghu_pack` / **이구학지 — 천기록**은 Web/default storypack이자 메인 개발 기준이며, office content는 legacy/parity fixture로 유지한다.
+`wuxia_mumyeong_first_confrontation_after_sighting` docs-only handoff는 완료됐다. `wuxia_jianghu_pack` / **이구학지 — 천기록**은 Web/default storypack이자 메인 개발 기준이며, office content는 legacy/parity fixture로 유지한다.
 
-이번 세션의 목표는 **docs-only handoff**다.
+이번 세션의 목표는 **runtime implementation**이다.
 
-- `wuxia_mumyeong_first_confrontation_after_sighting`를 설계한다.
-- `wuxia_mumyeong_first_sighting` 이후 첫 rival confrontation을 바로 runtime으로 구현할지, 아니면 추가 clue/route flavor bridge를 먼저 둘지 결정한다.
-- Notion 사건 카드 DB `wuxia_mumyeong_first_confrontation`, `wuxia_mumyeong_midgame_reunion`, `wuxia_boss_first_appearance`를 비교하고 다음 runtime 후보 하나만 고른다.
-- 이번 goal에서는 runtime YAML, Rust/Web generated preview bundle, 기본 office bundle을 수정하지 않는다.
+- `wuxia_mumyeong_first_sighting` 뒤에 `wuxia_mumyeong_first_confrontation`를 구현한다.
+- 첫 대치는 “무명을 이기는 전투”가 아니라 “버티기, 카피 무공 관찰, 서하린과 무명 사이의 침묵 확인” encounter로 구현한다.
+- 기존 encounter schema의 flags/clues/resources/danger/log/presentation만 사용한다.
 - 기본 office bundle, legacy `escape-office` save/localStorage key, route graph/faction reputation/debt ledger/relation/reward/ability/epilogue schema, return system, combat resolver/schema, boss combat, 천기록 정체 reveal은 열지 않는다.
+
+이미 완료된 기반:
+
+- `wuxia_wounded_shelter_dawn_offers`까지 route pressure/deferred branch가 정리됐다.
+- 세 route opener는 `route_opener_resolved`로 fan-in되고, `wuxia_mumyeong_first_sighting`가 그 뒤 common midgame bridge로 구현됐다.
 
 ## 반드시 읽을 문서
 
 - `AGENTS.md`
 - `docs/dev/Development_Plan.md`
-  - `## 0.0b 2026-06-01 default storypack 전환`
-  - `## 0.21 2026-06-01 무협 wuxia_baekdo_medicine_debt preview runtime slice`
-  - `## 0.22 2026-06-01 docs-only route opener follow-up handoff: wuxia_black_heaven_escape_price`
-  - `## 0.23 2026-06-02 무협 wuxia_black_heaven_escape_price preview runtime slice`
-  - `## 0.24 2026-06-02 docs-only route opener follow-up handoff: wuxia_heavenly_archive_previous_outsiders`
-  - `## 0.25 2026-06-02 무협 wuxia_heavenly_archive_previous_outsiders preview runtime slice`
-  - `## 0.26 2026-06-02 docs-only route opener follow-up handoff: wuxia_wounded_shelter_dawn_offers`
-  - `## 0.27 2026-06-02 무협 wuxia_wounded_shelter_dawn_offers preview runtime slice`
-  - `## 0.28 2026-06-02 docs-only midgame continuity handoff: wuxia_mumyeong_first_sighting`
   - `## 0.29 2026-06-02 무협 wuxia_mumyeong_first_sighting preview runtime slice`
+  - `## 0.30 2026-06-02 docs-only rival confrontation handoff: wuxia_mumyeong_first_confrontation`
   - 현재 최우선 남은 작업
   - `## 10. 다음 액션`
 - `docs/dev/Storypack_Runtime_Preview_Mode.md`
 - `docs/content/storypacks/wuxia_jianghu_pack.md`
 - `docs/content/encounter_db/wuxia_jianghu_pack.md`
-- `docs/design/Storypack_World_Model.md`
-- `docs/design/Storypack_Encounter_DB.md`
 - `docs/dev/Notion_Design_Coverage.md`
 - `docs/content/storypack_db/README.md`
 - `docs/content/storypack_db/encounter_situations.json`
+- 현재 preview source:
+  - `src/tui_adv/storypack-previews/wuxia_jianghu_pack/locations.yaml`
+  - `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`
+  - `src/tui_adv/storypack-previews/wuxia_jianghu_pack/items.yaml`
 
-## 설계 방향
+## 구현 범위
 
-이미 완료된 기반:
+Preview source와 generated preview artifacts에만 `wuxia_mumyeong_first_confrontation`를 추가한다.
 
-- `wuxia_mumyeong_first_sighting`가 preview runtime에 구현되어 `mumyeong_first_sighting_resolved`, `midgame_continuity_started`, `mumyeong_exists`, `copied_flow_is_not_qingliu` hook을 남긴다.
-- 세 route opener는 `route_opener_resolved`로 fan-in된다.
+Expected runtime behavior:
 
-비교할 후보:
-
-- `wuxia_mumyeong_first_confrontation`: Notion 선행 조건이 첫 목격 이후이므로 직접 후보가 됐다. 단, combat resolver/schema를 열지 않고 기존 encounter schema로 대치/상처/후퇴/관찰을 표현할 수 있는지 먼저 정해야 한다.
-- `wuxia_mumyeong_midgame_reunion`: Notion 선행 조건이 첫 대치와 과거 단서 일부이므로 아직 이르다.
-- `wuxia_boss_first_appearance`: boss-wall logic을 열 수 있지만 boss combat/final-route pressure가 커져 현 slice에는 클 수 있다.
-- route-specific clue bridge: `righteous_route_opened`, `sapa_route_opened`, `cheonggi_return_route_opened` flavor에 따라 무명 대치 전 단서를 하나 더 둘지 비교한다.
-
-결정 기준:
-
-- Notion `04. 메인 루트 구조`, `05. 사건 카드 운영 규칙`, `06. 사이드 퀘스트와 미해결 부채`, `07. 천기록 / 천외편린 보상`, `99. 통합 체크포인트`와 사건 카드 DB row를 대조한다.
-- 새 combat resolver/schema, RouteGraph, FactionStanding, DebtLedger, RelationScore, reward/ability/epilogue/return schema를 열지 않고 가능한 후보를 우선한다.
-- 다음 runtime 후보는 하나만 고르고, 구현은 다음 세션으로 넘긴다.
+- 시작 위치: `cheongryu_outer_courtyard`.
+- phase: `midgame_rival` / `rival_confrontation`.
+- `runtime_mode: storypack_preview` boundary 유지.
+- 기존 preview route `wuxia_commute_rift_arrival` → `wuxia_heuksa_bang_first_fight` → `wuxia_cheonggi_record_first_fragment` → `wuxia_seo_harin_rescue` → `wuxia_cheongryu_apprentice_entry` → raid/route opener → `wuxia_mumyeong_first_sighting` 뒤에 붙는다.
+- default office bundle에는 무협 id가 계속 없어야 한다.
 
 ## 예상 수정 파일
 
-- `docs/dev/Development_Plan.md`
-- `docs/dev/Checklist.md`
-- `docs/dev/Storypack_Runtime_Preview_Mode.md`
-- `docs/dev/Notion_Design_Coverage.md`
-- `docs/content/storypacks/wuxia_jianghu_pack.md`
-- `docs/content/encounter_db/wuxia_jianghu_pack.md`
-- `docs/content/storypack_db/README.md`
-- `docs/content/storypack_db/storypacks.json`
-- `docs/content/storypack_db/encounter_situations.json`
-- `docs/design/Storypack_World_Model.md`
-- `docs/design/Storypack_Encounter_DB.md`
+Preview source:
+
+- `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`
+  - `wuxia_mumyeong_first_sighting` 뒤에 `wuxia_mumyeong_first_confrontation` 추가.
+- `src/tui_adv/storypack-previews/wuxia_jianghu_pack/locations.yaml`
+  - 가능하면 `cheongryu_outer_courtyard`를 재사용한다.
+- `src/tui_adv/storypack-previews/wuxia_jianghu_pack/items.yaml`
+  - 수정하지 않는 것을 기본으로 한다.
+
+Generated preview artifacts only:
+
+- `crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json`
+- `web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json`
+
+Likely tests/docs:
+
+- `tests/test_web_data_export.py`
 - `tests/test_docs_contract.py`
 - `tests/test_storypack_db.py`
-- 이 README
+- `crates/escape-core/tests/content_bundle.rs`
+- `crates/escape-wasm/tests/json_contract.rs`
+- `crates/escape-terminal/tests/cli_smoke.rs`
+- `web/src/core/contentBundles.test.ts`
+- docs sync only if implementation changes docs-visible status/counts.
+
+## Required / forbidden conditions
+
+Recommended encounter conditions:
+
+```yaml
+runtime_mode: storypack_preview
+conditions:
+  locations:
+    - cheongryu_outer_courtyard
+required_flags:
+  - mumyeong_first_sighting_resolved
+  - midgame_continuity_started
+  - cheongryu_raid_survived
+  - first_fragment_seen
+forbidden_flags:
+  - mumyeong_first_confrontation_resolved
+```
+
+Flavor-only flags:
+
+- `mumyeong_shadow_seen`
+- `copied_qingliu_flow_noted`
+- `seo_harin_recognized_mumyeong`
+- `mumyeong_wound_thread_opened`
+- `black_serpent_trail_marked`
+- `mumyeong_clue_deferred`
+- `righteous_route_opened`
+- `sapa_route_opened`
+- `cheonggi_return_route_opened`
+
+## Stable choice ids
+
+Use these stable choice/action ids unless existing runtime conventions require a mechanical variant:
+
+- `meet_mumyeong_head_on` — 위험한 정면 대치. 이기는 선택지가 아니라 물러서지 않았다는 thread를 남긴다.
+- `endure_until_copy_flow_breaks` — fallback/safe endurance. 버티며 카피한 흐름의 끊김을 읽는다.
+- `watch_seo_harin_hold_back` — companion observation. 서하린이 배신자라는 말을 하지 않는 침묵을 본다.
+- `read_mumyeongs_copied_form` — information probe. 훔친 초식과 이해한 흐름의 차이를 읽는다.
+- `do_not_provoke_mumyeong` — de-escalation. 싸움을 키우지 않지만 unresolved rival debt를 남긴다.
+
+## Outcome hooks
+
+기존 runtime schema만 사용한다.
+
+Every outcome should leave the common bridge hooks:
+
+- `mumyeong_first_confrontation_resolved`
+- `mumyeong_rival_thread_opened`
+- `destination_id: cheongryu_outer_courtyard`
+
+Branch-specific flags/clues/logs may include:
+
+- `rival_endured_not_defeated`
+- `copied_flow_weakness_noted`
+- `seo_harin_mumyeong_silence_confirmed`
+- `cheonggi_copy_contrast_noted`
+- `rivalry_deferred_not_avoided`
+- `mumyeong_is_not_boss_wall`
+- `winning_is_not_required`
+- `copy_style_has_gap`
+- `copied_flow_is_not_qingliu`
+- `mumyeong_was_not_only_enemy`
+- `understanding_is_not_copying`
+- `not_provoking_still_leaves_debt`
+
+Tone: 주인공은 아직 무명을 압도하지 못한다. 핵심은 이김이 아니라 버티고 읽는 것이다.
+
+## 금지 범위
+
+이 slice에서 열지 않는다.
+
+- 새 `CombatState`
+- HP 숫자전 / skill cooldown / combat resolver
+- boss first appearance / boss combat
+- `RouteGraph`
+- `FactionStanding`
+- `DebtLedger`
+- `RelationScore`
+- reward/ability/fragment choice schema
+- epilogue/return system
+- 천기록 정체 reveal
+- 기본 office bundle / legacy `escape-office` key 변경
 
 ## 검증 명령
 
 ```bash
-PYTHONPATH=src python3 -m pytest tests/test_docs_contract.py tests/test_storypack_db.py -q
+PYTHONPATH=src python3 -m pytest tests/test_web_data_export.py tests/test_docs_contract.py tests/test_storypack_db.py -q
 python3 scripts/export_web_data.py --storypack-preview wuxia_jianghu_pack --preview-bundle crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json --preview-bundle web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json --check
-git diff --exit-code -- src/tui_adv/storypack-previews/wuxia_jianghu_pack crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+cargo test -p escape-core --test content_bundle
+cargo test -p escape-wasm --test json_contract json_boundary_reaches_wuxia_mumyeong_first_confrontation_through_preview_bundle
+cargo test -p escape-terminal --test cli_smoke content_tui_smoke_reaches_wuxia_mumyeong_first_confrontation
+cd web && npm test -- --run src/core/contentBundles.test.ts
 git diff --exit-code -- src/tui_adv/data crates/escape-core/fixtures/content/content.bundle.json web/src/data/generated/content.bundle.json
 git diff --check
 ```

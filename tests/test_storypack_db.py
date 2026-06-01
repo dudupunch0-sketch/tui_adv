@@ -47,6 +47,7 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         "wuxia_commute_rift_arrival",
         "wuxia_heavenly_archive_previous_outsiders",
         "wuxia_heuksa_bang_first_fight",
+        "wuxia_mumyeong_first_confrontation",
         "wuxia_mumyeong_first_sighting",
         "wuxia_seo_harin_rescue",
         "wuxia_wounded_shelter_dawn_offers",
@@ -105,6 +106,19 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
     assert "safe_observe" in [choice["role"] for choice in mumyeong_sighting.choice_shapes]
     assert "midgame_continuity_started" in mumyeong_sighting.outcome_hooks["possible_flags"]
     assert "mumyeong_exists" in mumyeong_sighting.outcome_hooks["possible_clues"]
+
+    mumyeong_confrontation = db.encounter_cards["wuxia_mumyeong_first_confrontation"]
+    assert mumyeong_confrontation.world_id == "wuxia_jianghu"
+    assert mumyeong_confrontation.storypack_id == "wuxia_jianghu_pack"
+    assert mumyeong_confrontation.priority_class == "route_key"
+    assert "rival_confrontation" in mumyeong_confrontation.phases
+    assert "sect_courtyard" in mumyeong_confrontation.surfaces
+    assert "safe_endure" in [choice["role"] for choice in mumyeong_confrontation.choice_shapes]
+    assert (
+        "mumyeong_first_confrontation_resolved"
+        in mumyeong_confrontation.outcome_hooks["possible_flags"]
+    )
+    assert "winning_is_not_required" in mumyeong_confrontation.outcome_hooks["possible_clues"]
 
 
 def test_storypack_db_public_files_validate_cleanly():

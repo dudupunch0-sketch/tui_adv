@@ -443,6 +443,21 @@
 - [x] any-of condition, route graph/faction reputation/debt/relation/combat/reward/ability/epilogue/return schema, boss first appearance, 무명 첫 대치, 천기록 정체 reveal 미변경 유지
 - [x] 다음 작업을 `wuxia_mumyeong_first_confrontation_after_sighting` docs-only handoff로 갱신
 
+### 0.2as 2026-06-02 무협 rival confrontation docs-only handoff
+
+- [x] Notion 사건 카드 DB `wuxia_mumyeong_first_confrontation`, `wuxia_mumyeong_midgame_reunion`, `wuxia_boss_first_appearance`를 직접 대조
+- [x] Notion 운영 문서 `04. 메인 루트 구조`, `05. 사건 카드 운영 규칙`, `06. 사이드 퀘스트와 미해결 부채`, `07. 천기록 / 천외편린 보상`, `99. 통합 체크포인트`와 repo hook을 대조
+- [x] 다음 runtime 후보를 `wuxia_mumyeong_first_confrontation`로 결정
+- [x] `wuxia_mumyeong_midgame_reunion`은 첫 대치와 과거 단서 일부 이후로 보류
+- [x] `wuxia_boss_first_appearance`는 boss-wall/final logic 압박이 커서 보류
+- [x] start conditions를 `conditions.locations: [cheongryu_outer_courtyard]`, `required_flags: [mumyeong_first_sighting_resolved, midgame_continuity_started, cheongryu_raid_survived, first_fragment_seen]`, `forbidden_flags: [mumyeong_first_confrontation_resolved]`로 문서화
+- [x] stable choice id 후보 `meet_mumyeong_head_on`, `endure_until_copy_flow_breaks`, `watch_seo_harin_hold_back`, `read_mumyeongs_copied_form`, `do_not_provoke_mumyeong` 고정
+- [x] 첫 대치는 승리 판정이 아니라 버티기/관찰/분석 encounter로 구현한다고 명시
+- [x] combat resolver/schema, HP 숫자전, route graph/faction reputation/debt/relation/reward/ability/epilogue/return schema, boss first appearance, 천기록 정체 reveal은 열지 않는다고 명시
+- [x] storypack DB JSON mirror와 docs contract를 다음 runtime handoff 기준으로 갱신
+- [x] runtime YAML/Rust/Web/generated bundle, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 작업을 `wuxia_mumyeong_first_confrontation` runtime implementation으로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

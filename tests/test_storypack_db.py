@@ -47,6 +47,7 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         "wuxia_commute_rift_arrival",
         "wuxia_heavenly_archive_previous_outsiders",
         "wuxia_heuksa_bang_first_fight",
+        "wuxia_mumyeong_copy_style_reveal",
         "wuxia_mumyeong_first_confrontation",
         "wuxia_mumyeong_first_sighting",
         "wuxia_seo_harin_rescue",
@@ -119,6 +120,19 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         in mumyeong_confrontation.outcome_hooks["possible_flags"]
     )
     assert "winning_is_not_required" in mumyeong_confrontation.outcome_hooks["possible_clues"]
+
+    copy_style_reveal = db.encounter_cards["wuxia_mumyeong_copy_style_reveal"]
+    assert copy_style_reveal.world_id == "wuxia_jianghu"
+    assert copy_style_reveal.storypack_id == "wuxia_jianghu_pack"
+    assert copy_style_reveal.priority_class == "route_key"
+    assert "copy_style_analysis" in copy_style_reveal.phases
+    assert "cheonggi_record" in copy_style_reveal.surfaces
+    assert "safe_observe" in [choice["role"] for choice in copy_style_reveal.choice_shapes]
+    assert (
+        "mumyeong_copy_style_reveal_resolved"
+        in copy_style_reveal.outcome_hooks["possible_flags"]
+    )
+    assert "copy_is_surface_not_root" in copy_style_reveal.outcome_hooks["possible_clues"]
 
 
 def test_storypack_db_public_files_validate_cleanly():

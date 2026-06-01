@@ -2,7 +2,7 @@
 
 Status: candidate
 
-이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_first_confrontation`까지는 separate storypack preview runtime으로 승격되었고, 다음 handoff는 `wuxia_mumyeong_followup_after_first_confrontation` docs-only 작업이다.
+이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_first_confrontation`까지는 separate storypack preview runtime으로 승격되었고, `wuxia_mumyeong_followup_after_first_confrontation` handoff는 다음 runtime 후보를 `wuxia_mumyeong_copy_style_reveal`로 결정했다.
 
 공통 원칙:
 
@@ -33,7 +33,7 @@ Status: candidate
 | `wuxia_seoharin_empty_place` | 비워둔 자리 | none yet | future 서하린/무명 clue event |
 | `wuxia_mumyeong_departure_truth_summary` | 무명 이탈의 진실 정리 | none yet | future 무명 truth event |
 | `wuxia_black_serpent_pressures_qingliu` | 흑사방의 청류문 압박 | partial: `wuxia_cheongryu_raid_route_split` background | future pressure/side event |
-| `wuxia_mumyeong_copy_style_reveal` | 무명의 카피 무공 공개 | none yet | next handoff candidate after first confrontation |
+| `wuxia_mumyeong_copy_style_reveal` | 무명의 카피 무공 공개 | `wuxia_mumyeong_copy_style_reveal` | docs-only handoff ready; next runtime candidate |
 | `wuxia_mumyeong_resolution` | 무명 결산 | none yet | future final route event |
 | `wuxia_mumyeong_midgame_reunion` | 무명 중반 재회 | none yet | future rival event |
 | `wuxia_boss_resolution` | 보스 결산 | none yet | future boss result event |
@@ -1237,4 +1237,103 @@ runtime_preview_implementation_notes:
   default_bundle_changed: false
   new_schema_opened: false
   next_handoff: wuxia_mumyeong_followup_after_first_confrontation
+```
+
+## 15. `wuxia_mumyeong_copy_style_reveal`
+
+```yaml
+id: wuxia_mumyeong_copy_style_reveal
+world_id: wuxia_jianghu
+storypack_id: wuxia_jianghu_pack
+source_refs:
+  notion_event_id: wuxia_mumyeong_copy_style_reveal
+  notion_name: 무명의 카피 무공 공개
+  source_page: 09. 이구학지 사건 카드 DB
+  checked_against:
+    - 04. 메인 루트 구조
+    - 05. 사건 카드 운영 규칙
+    - 06. 사이드 퀘스트와 미해결 부채
+    - 07. 천기록 / 천외편린 보상
+    - 99. 통합 체크포인트
+mapping_status: docs_only_handoff_ready
+status: candidate
+phase: [midgame_rival, copy_style_analysis]
+priority_class: route_key
+location_tags: [cheongryu_outer_courtyard, training_yard, rival_shadow]
+surface: [sect_courtyard, cheonggi_record, training_chore]
+anomaly_type: [faction_pressure, qi_deviation, notebook_oracle]
+pressure_type: [sanity, danger, relation]
+npc_slots: [early_rescuer]
+candidate_characters: [seo_harin, mumyeong]
+summary: 첫 대치 이후 무명이 이번 회차에 덧씌운 카피 무공 계열의 윤곽과 결함을 드러낸다.
+purpose: 무명의 카피가 완전한 복사가 아니라 겉흐름만 빠르게 훔치는 방식임을 보여주고, 주인공의 청류안/천기록식 이해와 대비한다. 다음 구현은 seed 기반 random table 없이 기존 flags/clues/log/presentation만으로 copy-style hint를 남긴다.
+setup_text: 첫 대치가 끝난 뒤에도 무명의 움직임은 눈꺼풀 안쪽에 남아 있다. 같은 청류문식처럼 보였던 선은 어느 순간 검로처럼 꺾이고, 어느 순간 보법처럼 미끄러지며, 호흡이 어긋나는 짧은 틈마다 몸에 맞지 않는 초식의 반동을 드러낸다.
+runtime_preview_design_status: handoff_ready
+runtime_preview_start_conditions:
+  runtime_mode: storypack_preview
+  location: cheongryu_outer_courtyard
+  required_flags: [mumyeong_first_confrontation_resolved, mumyeong_rival_thread_opened, midgame_continuity_started]
+  forbidden_flags: [mumyeong_copy_style_reveal_resolved]
+  flavor_flags_only: [copied_flow_weakness_noted, cheonggi_copy_contrast_noted, seo_harin_mumyeong_silence_confirmed, rival_endured_not_defeated, rivalry_deferred_not_avoided, righteous_route_opened, sapa_route_opened, cheonggi_return_route_opened]
+presentation:
+  visual_id: wuxia_mumyeong_copy_style_reveal
+  speaker: 서하린
+  layout: copy_style_analysis
+  effect_cues:
+    - stable_terms: [무명, 청류안, 천기록]
+choice_shapes:
+  - id: read_the_stolen_blade_path
+    role: information_probe
+    label_direction: 훔쳐 쓴 검로가 어디서 꺾이는지 읽는다
+    expected_costs: [sanity_small, danger_small]
+    expected_gains: [copy_family_hint, blade_path_clue]
+    outcome_hook:
+      add_flags: [mumyeong_copy_style_reveal_resolved, copy_style_hint_recorded, copied_blade_path_noted]
+      add_clues: [copied_form_family_seen, copy_is_surface_not_root]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 검로처럼 보이지만 칼끝의 뜻이 이어지지 않는다. 훔친 것은 선이지 중심이 아니다.
+  - id: watch_mumyeongs_footwork
+    role: movement_observation
+    label_direction: 무명의 보법이 땅을 밀어내는 방식을 본다
+    expected_costs: [sanity_small]
+    expected_gains: [footwork_copy_clue, route_pressure_hint]
+    outcome_hook:
+      add_flags: [mumyeong_copy_style_reveal_resolved, copy_style_hint_recorded, copied_footwork_noted]
+      add_clues: [copied_form_family_seen, footwork_without_root_wobbles]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 발은 빠르지만 땅을 믿지 않는다. 남의 보법을 얹은 몸은 한 박자 늦게 흔들린다.
+  - id: listen_for_breath_mismatch
+    role: safe_observe
+    fallback_choice: true
+    label_direction: 거리를 두고 호흡이 어긋나는 박자를 듣는다
+    expected_costs: [sanity_small]
+    expected_gains: [breath_mismatch_clue, safe_distance]
+    outcome_hook:
+      add_flags: [mumyeong_copy_style_reveal_resolved, copy_style_hint_recorded, copied_breath_mismatch_noted]
+      add_clues: [breath_mismatch_marks_copy, understanding_is_not_copying]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 초식은 따라왔지만 숨은 따라오지 못한다. 그 박자가 청류안에 먼저 걸린다.
+  - id: wait_for_body_to_shudder
+    role: risk_timed_observation
+    label_direction: 몸에 맞지 않는 초식이 반동을 내는 순간까지 기다린다
+    expected_costs: [danger_small, health_risk]
+    expected_gains: [copy_side_effect_clue, fragment_foreshadow]
+    outcome_hook:
+      add_flags: [mumyeong_copy_style_reveal_resolved, copy_style_hint_recorded, copy_side_effect_seen]
+      add_clues: [copy_is_surface_not_root, fragment_candidate_variation_foreshadowed]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 무명의 어깨가 아주 짧게 떨린다. 천기록의 빈 줄은 아직 보상을 주지 않지만, 다음 편린의 모양을 기억한다.
+outcome_hooks:
+  possible_flags: [mumyeong_copy_style_reveal_resolved, copy_style_hint_recorded, copied_blade_path_noted, copied_footwork_noted, copied_breath_mismatch_noted, copy_side_effect_seen]
+  possible_clues: [copied_form_family_seen, copy_is_surface_not_root, footwork_without_root_wobbles, breath_mismatch_marks_copy, understanding_is_not_copying, fragment_candidate_variation_foreshadowed]
+  possible_destinations: [cheongryu_outer_courtyard]
+main_spine_link: 무명의 카피 무공을 청류안/천기록의 이해와 대비시키고, 중반 재회와 무명 구원/비구원 변주로 가기 전 필요한 copy-style clue를 쌓는다.
+randomization_notes: Notion상 매 회차 seed 기반 랜덤 카피 무공 후보를 암시하지만, 이 handoff에서는 random copy-style table을 열지 않는다. 첫 implementation은 copy-style family hint를 flags/clues로만 기록한다.
+promotion_notes: docs-only handoff ready. `wuxia_mumyeong_followup_after_first_confrontation`에서 카피 무공 공개, 무명 중반 재회, boss first appearance를 비교했고, 카피 무공 공개를 다음 runtime 후보로 골랐다. 기본 office bundle, legacy `escape-office` key, seed 기반 random copy-style system/table, combat resolver/schema, HP 숫자전, route graph/faction reputation/debt/relation schema, reward/ability/epilogue/return system, boss first appearance, 무명 중반 재회, 천기록 정체 reveal은 열지 않는다.
+runtime_preview_handoff_notes:
+  insert_after: wuxia_mumyeong_first_confrontation
+  selected_over: [wuxia_mumyeong_midgame_reunion, wuxia_boss_first_appearance, route_specific_clue_bridge]
+  default_bundle_changed: false
+  new_schema_opened: false
+  next_handoff: wuxia_mumyeong_copy_style_reveal
 ```

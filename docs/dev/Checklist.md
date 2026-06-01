@@ -470,6 +470,21 @@
 - [x] combat resolver/schema, HP 숫자전, boss first appearance, 무명 중반 재회, route graph/faction reputation/debt/relation/reward/ability/epilogue/return schema, 천기록 정체 reveal 미변경 유지
 - [x] 다음 작업을 `wuxia_mumyeong_followup_after_first_confrontation` docs-only handoff로 갱신
 
+### 0.2au 2026-06-02 무협 post-confrontation follow-up docs-only handoff
+
+- [x] Notion 사건 카드 DB `wuxia_mumyeong_copy_style_reveal`, `wuxia_mumyeong_midgame_reunion`, `wuxia_boss_first_appearance` 재확인
+- [x] `04. 메인 루트 구조`, `05. 사건 카드 운영 규칙`, `06. 사이드 퀘스트와 미해결 부채`, `07. 천기록 / 천외편린 보상`, `99. 통합 체크포인트`와 비교
+- [x] 다음 runtime 후보를 `wuxia_mumyeong_copy_style_reveal`로 결정
+- [x] `wuxia_mumyeong_midgame_reunion`은 무명 과거 단서 일부가 더 필요해 보류
+- [x] `wuxia_boss_first_appearance`는 boss-wall/final logic 압박이 커서 보류
+- [x] start conditions를 `conditions.locations: [cheongryu_outer_courtyard]`, `required_flags: [mumyeong_first_confrontation_resolved, mumyeong_rival_thread_opened, midgame_continuity_started]`, `forbidden_flags: [mumyeong_copy_style_reveal_resolved]`로 문서화
+- [x] stable choice id 후보 `read_the_stolen_blade_path`, `watch_mumyeongs_footwork`, `listen_for_breath_mismatch`, `wait_for_body_to_shudder` 고정
+- [x] seed 기반 random copy-style system/table 없이 flags/clues/log/presentation으로 카피 계열 윤곽만 먼저 구현한다고 명시
+- [x] 천외편린 3택 reward/ability schema, combat resolver/schema, boss first appearance, 무명 중반 재회, route graph/faction reputation/debt/relation/epilogue/return schema, 천기록 정체 reveal은 열지 않는다고 명시
+- [x] storypack DB JSON mirror와 docs contract를 다음 runtime handoff 기준으로 갱신
+- [x] runtime YAML/Rust/Web/generated bundle, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 작업을 `wuxia_mumyeong_copy_style_reveal` runtime implementation으로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

@@ -182,6 +182,6 @@ private/
 다음 주제가 커지면 별도 문서로 분리하고, 그때 이 인덱스와 implementation-map도 같이 갱신한다.
 
 1. `document_contamination_pack`, `meeting_reservation_pack`, `compensation_strike_pack`의 별도 후보 문서
-2. `wuxia_jianghu_pack` / 이구학지 — 천기록의 다음 preview slice: `wuxia_seo_harin_rescue` 구현. 후속 `wuxia_cheongryu_apprentice_entry` bridge, later `wuxia_cheongryu_raid_route_split`, deferred `wuxia_cheongryu_raid_wounded_fallback`는 설계 완료 후보
+2. `wuxia_jianghu_pack` / 이구학지 — 천기록의 다음 preview slice: `wuxia_cheongryu_raid_route_split` route-pressure 구현. `wuxia_seo_harin_rescue`와 `wuxia_cheongryu_apprentice_entry`는 preview runtime 구현 완료, deferred `wuxia_cheongryu_raid_wounded_fallback`는 설계 완료 후보
 3. `yageunmong_pack` / 야근몽의 첫 runtime preview 후보: `yageunmong_late_night_desk_awake` 또는 각성편린 3택 preview
 4. 실시간 UI/UX 점검 후 확정된 화면/입력 변경 사항 기록

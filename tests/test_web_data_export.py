@@ -87,6 +87,8 @@ def test_export_web_data_builds_renderer_neutral_content_bundle():
             "wuxia_commute_rift_arrival",
             "wuxia_heuksa_bang_first_fight",
             "wuxia_cheonggi_record_first_fragment",
+            "wuxia_seo_harin_rescue",
+            "wuxia_cheongryu_apprentice_entry",
         }
         for encounter in bundle["content"]["encounters"]
     )
@@ -108,9 +110,9 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     }
     assert "storypack-previews/wuxia_jianghu_pack" in bundle["source"]
     assert bundle["manifest"]["counts"] == {
-        "locations": 3,
-        "items": 2,
-        "encounters": 3,
+        "locations": 4,
+        "items": 3,
+        "encounters": 5,
         "endings": 1,
         "achievements": 2,
         "secrets": 0,
@@ -119,12 +121,15 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "wuxia_commute_rift",
         "jianghu_roadside",
         "jianghu_market_street",
+        "cheongryu_outer_courtyard",
     ]
     encounter_ids = [encounter["id"] for encounter in bundle["content"]["encounters"]]
     assert encounter_ids == [
         "wuxia_commute_rift_arrival",
         "wuxia_heuksa_bang_first_fight",
         "wuxia_cheonggi_record_first_fragment",
+        "wuxia_seo_harin_rescue",
+        "wuxia_cheongryu_apprentice_entry",
     ]
     first_fight = bundle["content"]["encounters"][1]
     assert first_fight["conditions"] == {
@@ -186,6 +191,65 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "notebook_is_not_search",
         "fragments_are_training_directions",
     ]
+    rescue = bundle["content"]["encounters"][3]
+    assert rescue["conditions"] == {
+        "locations": ["jianghu_market_street"],
+        "required_flags": [
+            "heuksa_bang_first_fight_resolved",
+            "cheonggi_record_first_fragment_resolved",
+        ],
+        "forbidden_flags": ["seo_harin_rescue_resolved"],
+    }
+    assert rescue["presentation"]["layout"] == "rescue_and_investigation"
+    assert rescue["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "서하린",
+        "청류문",
+        "감시",
+    ]
+    assert [choice["id"] for choice in rescue["choices"]] == [
+        "tell_plain_truth",
+        "ask_for_medical_help_first",
+        "explain_company_and_commute",
+        "show_cheonggi_record_page",
+        "hide_employee_badge",
+    ]
+    fallback_rescue = rescue["choices"][0]
+    assert fallback_rescue["outcome"]["add_flags"] == [
+        "seo_harin_rescue_resolved",
+        "seo_harin_intervened",
+        "taken_under_watch",
+        "outsider_claim_recorded",
+        "truthful_outsider_claim",
+    ]
+    assert fallback_rescue["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
+    apprentice = bundle["content"]["encounters"][4]
+    assert apprentice["conditions"] == {
+        "locations": ["cheongryu_outer_courtyard"],
+        "required_flags": ["seo_harin_rescue_resolved", "taken_under_watch"],
+        "forbidden_flags": ["cheongryu_apprentice_entry_resolved"],
+    }
+    assert apprentice["presentation"]["layout"] == "cheongryu_apprenticeship"
+    assert apprentice["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "청류문",
+        "잡일",
+        "수습생",
+    ]
+    assert [choice["id"] for choice in apprentice["choices"]] == [
+        "accept_three_month_trial",
+        "request_martial_training_immediately",
+        "organize_chores_like_workflow",
+        "inspect_archive_during_chore",
+    ]
+    fallback_apprentice = apprentice["choices"][0]
+    assert fallback_apprentice["outcome"]["add_flags"] == [
+        "cheongryu_apprentice_entry_resolved",
+        "cheongryu_trial_started",
+        "seo_harin_mentor_thread",
+        "sect_debt_accepted",
+        "chore_training_open",
+    ]
+    assert fallback_apprentice["outcome"]["add_items"] == ["work_chore_token"]
+    assert fallback_apprentice["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
     assert "dev_desk" not in json.dumps(bundle, ensure_ascii=False)
     assert _missing_private_secret_fields(bundle)
 

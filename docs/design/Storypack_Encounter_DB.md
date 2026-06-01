@@ -262,18 +262,18 @@ promotion_notes: runtime 승격 시 messenger UI presentation metadata를 붙인
 
 2026-05-31 후속 결정:
 
-- `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment` preview는 완료했다.
+- `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue` preview는 완료했다.
 - 이 preview runtime content는 `storypack_preview` bundle에만 들어가며, 기본 office runtime과 `src/tui_adv/data/*.yaml`에는 직접 섞지 않는다.
 - `preview launcher/UI wiring`은 explicit opt-in entrypoint로 구현했다. 후속 content slice에서 다시 열지 않는다.
-- 다음 승격 후보는 여전히 `wuxia_seo_harin_rescue`다. `wuxia_cheongryu_apprentice_entry`는 설계/handoff 완료된 후속 bridge지만, 서하린 구조/감시/채무 hook과 `cheongryu_outer_courtyard`가 preview source에 생긴 뒤 여는 순서를 지킨다. `wuxia_cheongryu_raid_route_split`도 later 후보로 설계했지만, rescue/apprentice와 first-fragment 공통 hook이 안정화된 뒤 route-pressure slice로만 연다. `wuxia_cheongryu_raid_wounded_fallback`은 raid split fallback branch 이후 route opener 전 재합류 후보로만 연다.
+- 다음 승격 후보는 `wuxia_cheongryu_raid_route_split`다. `wuxia_seo_harin_rescue`와 `wuxia_cheongryu_apprentice_entry`가 서하린 구조/감시/채무, 청류문 수습생/잡역, `cheongryu_trial_started` hook을 preview source에 남겼으므로, raid route-pressure slice를 그 hook 뒤에 붙인다. `wuxia_cheongryu_raid_wounded_fallback`은 raid split fallback branch 이후 route opener 전 재합류 후보로만 연다.
 - 필요한 신규 설계는 encounter/choice/outcome 수준으로 제한한다. 새 combat/reward/ability schema, 천외편린 3택 reward schema, faction route graph schema는 별도 slice 전까지 열지 않는다.
 
 2026-06-01 Notion sync 결정:
 
 - Notion 사건 카드 DB 26개는 `docs/dev/Notion_Design_Coverage.md`와 `docs/content/encounter_db/wuxia_jianghu_pack.md`에서 repo 후보와 future source로 매핑한다.
 - Notion 후일담 카드 DB 17개는 future design source다. 아직 runtime epilogue schema/renderer나 machine-readable encounter mirror에 넣지 않는다.
-- Notion `wuxia_seoharin_intervention` / `서하린의 개입`은 repo `wuxia_seo_harin_rescue`에 직접 대응하며 다음 구현 slice로 유지한다.
-- Notion `wuxia_tianjilu_first_fragment`, `wuxia_black_serpent_first_trouble`, `wuxia_prologue_commute_rift`, `wuxia_arrival_market_confusion`은 이미 구현된 preview 초기 beat와 매핑된다. 이 매핑은 runtime completeness 범위를 세 preview encounter로만 제한한다.
+- Notion `wuxia_seoharin_intervention` / `서하린의 개입`은 repo `wuxia_seo_harin_rescue`에 직접 대응하며 preview runtime으로 구현됐다.
+- Notion `wuxia_tianjilu_first_fragment`, `wuxia_black_serpent_first_trouble`, `wuxia_prologue_commute_rift`, `wuxia_arrival_market_confusion`, `wuxia_seoharin_intervention`은 이미 구현된 preview 초기 beat와 매핑된다. 이 매핑은 runtime completeness 범위를 해당 preview encounter들로만 제한한다.
 
 `validate_storypack_db()`가 검사하는 기준:
 

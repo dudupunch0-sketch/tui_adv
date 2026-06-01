@@ -19,3 +19,10 @@ locations:
     connections: [jianghu_roadside]
     tags: [wuxia, market, alley, brawl]
     danger: 2
+
+  - id: cheongryu_outer_courtyard
+    name: 청류문 외곽 마당
+    description: 낡은 현판과 비어 있는 연무장 사이로 청류문의 온기와 결핍이 함께 남은 외곽 마당.
+    connections: [jianghu_market_street]
+    tags: [wuxia, cheongryu_sect, courtyard, watch]
+    danger: 1

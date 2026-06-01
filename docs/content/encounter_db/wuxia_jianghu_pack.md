@@ -2,12 +2,12 @@
 
 Status: candidate
 
-이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_first_confrontation`까지는 separate storypack preview runtime으로 승격되었고, `wuxia_mumyeong_followup_after_first_confrontation` handoff는 다음 runtime 후보를 `wuxia_mumyeong_copy_style_reveal`로 결정했다.
+이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_copy_style_reveal`까지는 separate storypack preview runtime으로 승격되었고, 다음 handoff는 `wuxia_mumyeong_followup_after_copy_style_reveal` docs-only 후보 비교다.
 
 공통 원칙:
 
 - 모든 카드는 `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`에 속한다.
-- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_first_confrontation`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다.
+- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_copy_style_reveal`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다.
 - 최신 canonical 무협 설정은 **이구학지 — 천기록**이다. 이전의 generic 객잔/소림/무당/아미 placeholder는 superseded로 본다.
 - 플레이어 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계의 시장 한복판에 전이됐다”이다.
 - 선택지는 세부 수치보다 역할과 결과 hook을 먼저 정의한다.
@@ -33,7 +33,7 @@ Status: candidate
 | `wuxia_seoharin_empty_place` | 비워둔 자리 | none yet | future 서하린/무명 clue event |
 | `wuxia_mumyeong_departure_truth_summary` | 무명 이탈의 진실 정리 | none yet | future 무명 truth event |
 | `wuxia_black_serpent_pressures_qingliu` | 흑사방의 청류문 압박 | partial: `wuxia_cheongryu_raid_route_split` background | future pressure/side event |
-| `wuxia_mumyeong_copy_style_reveal` | 무명의 카피 무공 공개 | `wuxia_mumyeong_copy_style_reveal` | docs-only handoff ready; next runtime candidate |
+| `wuxia_mumyeong_copy_style_reveal` | 무명의 카피 무공 공개 | `wuxia_mumyeong_copy_style_reveal` | preview runtime implemented |
 | `wuxia_mumyeong_resolution` | 무명 결산 | none yet | future final route event |
 | `wuxia_mumyeong_midgame_reunion` | 무명 중반 재회 | none yet | future rival event |
 | `wuxia_boss_resolution` | 보스 결산 | none yet | future boss result event |
@@ -1255,7 +1255,7 @@ source_refs:
     - 06. 사이드 퀘스트와 미해결 부채
     - 07. 천기록 / 천외편린 보상
     - 99. 통합 체크포인트
-mapping_status: docs_only_handoff_ready
+mapping_status: preview_runtime_implemented
 status: candidate
 phase: [midgame_rival, copy_style_analysis]
 priority_class: route_key
@@ -1268,7 +1268,7 @@ candidate_characters: [seo_harin, mumyeong]
 summary: 첫 대치 이후 무명이 이번 회차에 덧씌운 카피 무공 계열의 윤곽과 결함을 드러낸다.
 purpose: 무명의 카피가 완전한 복사가 아니라 겉흐름만 빠르게 훔치는 방식임을 보여주고, 주인공의 청류안/천기록식 이해와 대비한다. 다음 구현은 seed 기반 random table 없이 기존 flags/clues/log/presentation만으로 copy-style hint를 남긴다.
 setup_text: 첫 대치가 끝난 뒤에도 무명의 움직임은 눈꺼풀 안쪽에 남아 있다. 같은 청류문식처럼 보였던 선은 어느 순간 검로처럼 꺾이고, 어느 순간 보법처럼 미끄러지며, 호흡이 어긋나는 짧은 틈마다 몸에 맞지 않는 초식의 반동을 드러낸다.
-runtime_preview_design_status: handoff_ready
+runtime_preview_design_status: implemented
 runtime_preview_start_conditions:
   runtime_mode: storypack_preview
   location: cheongryu_outer_courtyard
@@ -1329,11 +1329,15 @@ outcome_hooks:
   possible_destinations: [cheongryu_outer_courtyard]
 main_spine_link: 무명의 카피 무공을 청류안/천기록의 이해와 대비시키고, 중반 재회와 무명 구원/비구원 변주로 가기 전 필요한 copy-style clue를 쌓는다.
 randomization_notes: Notion상 매 회차 seed 기반 랜덤 카피 무공 후보를 암시하지만, 이 handoff에서는 random copy-style table을 열지 않는다. 첫 implementation은 copy-style family hint를 flags/clues로만 기록한다.
-promotion_notes: docs-only handoff ready. `wuxia_mumyeong_followup_after_first_confrontation`에서 카피 무공 공개, 무명 중반 재회, boss first appearance를 비교했고, 카피 무공 공개를 다음 runtime 후보로 골랐다. 기본 office bundle, legacy `escape-office` key, seed 기반 random copy-style system/table, combat resolver/schema, HP 숫자전, route graph/faction reputation/debt/relation schema, reward/ability/epilogue/return system, boss first appearance, 무명 중반 재회, 천기록 정체 reveal은 열지 않는다.
-runtime_preview_handoff_notes:
+promotion_notes: preview runtime으로 구현 완료. `wuxia_mumyeong_followup_after_first_confrontation`에서 카피 무공 공개, 무명 중반 재회, boss first appearance를 비교했고, 카피 무공 공개를 runtime으로 landing했다. legacy office bundle, legacy `escape-office` key, seed 기반 random copy-style system/table, combat resolver/schema, HP 숫자전, route graph/faction reputation/debt/relation schema, reward/ability/epilogue/return system, boss first appearance, 무명 중반 재회, 천기록 정체 reveal은 열지 않는다.
+runtime_preview_implementation_notes:
+  implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
   insert_after: wuxia_mumyeong_first_confrontation
+  generated_artifacts:
+    - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+    - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
   selected_over: [wuxia_mumyeong_midgame_reunion, wuxia_boss_first_appearance, route_specific_clue_bridge]
   default_bundle_changed: false
   new_schema_opened: false
-  next_handoff: wuxia_mumyeong_copy_style_reveal
+  next_handoff: wuxia_mumyeong_followup_after_copy_style_reveal
 ```

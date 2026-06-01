@@ -153,11 +153,11 @@ npm run preview:player
 
 ## 핵심 설정
 
-- 기본 storypack 제목: `escape from the office`
+- 기본 storypack: `wuxia_jianghu_pack` / **이구학지 — 천기록**
 - 프로젝트 방향: storypack/world 기반 TUI 선택지 생존 게임 + Web Storybook/GlyphFX primary UX + SuperLightTUI terminal renderer
-- 기본 톤: 블랙코미디 회사 괴담 + 코스믹 호러
+- 기본 톤: 출근복 현대인이 강호에 떨어지는 무협 생존/성장극. 기존 블랙코미디 회사 괴담 + 코스믹 호러 톤은 legacy office content에 남긴다.
 - office-family 후보팩: `yageunmong_pack` / **야근몽**. 전제는 “회사에서 잠깐 잠든 주인공이 자각몽 상태의 회사 악몽에서 업무 완료가 아니라 깨어나기를 목표로 한다”이며, 기본 office runtime을 대체하지 않는다.
-- 첫 비-office 기준팩: `wuxia_jianghu_pack` / **이구학지 — 천기록**. 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계 시장에 전이되고, 천기록/천외편린 성장 구조를 경험한다”. 현재 Web/default storypack이며, preview runtime은 arrival/first fight/first fragment/`wuxia_seo_harin_rescue`/`wuxia_cheongryu_apprentice_entry`/`wuxia_cheongryu_chore_sparring`/`wuxia_cheongryu_raid_route_split`/`wuxia_cheongryu_raid_wounded_fallback`/`wuxia_baekdo_medicine_debt`/`wuxia_black_heaven_escape_price`/`wuxia_heavenly_archive_previous_outsiders`/`wuxia_wounded_shelter_dawn_offers`/`wuxia_mumyeong_first_sighting`/`wuxia_mumyeong_first_confrontation`까지 구현됐다. 다음 runtime 후보는 `wuxia_mumyeong_copy_style_reveal`이다.
+- 첫 비-office 기준팩: `wuxia_jianghu_pack` / **이구학지 — 천기록**. 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계 시장에 전이되고, 천기록/천외편린 성장 구조를 경험한다”. 현재 Web/default storypack이며, preview runtime은 arrival/first fight/first fragment/`wuxia_seo_harin_rescue`/`wuxia_cheongryu_apprentice_entry`/`wuxia_cheongryu_chore_sparring`/`wuxia_cheongryu_raid_route_split`/`wuxia_cheongryu_raid_wounded_fallback`/`wuxia_baekdo_medicine_debt`/`wuxia_black_heaven_escape_price`/`wuxia_heavenly_archive_previous_outsiders`/`wuxia_wounded_shelter_dawn_offers`/`wuxia_mumyeong_first_sighting`/`wuxia_mumyeong_first_confrontation`/`wuxia_mumyeong_copy_style_reveal`까지 구현됐다. 다음 handoff는 `wuxia_mumyeong_followup_after_copy_style_reveal`이다.
 - 1차 재난 타입: 불명 재난
 - 상황: 사람 실종, 연구개발동 규모의 공간/차원 격리, 제한된 외부 인터넷, 간헐적 사내망 연락
 - 핵심 자원: 체력, 정신력, 배터리, 허기, 갈증
@@ -188,11 +188,11 @@ npm run preview:player
 - `docs/design/Mobile_Pixel_Storybook_UI.md`: Web Storybook의 모바일 세로형 픽셀 게임북 board 시각 contract
 - `docs/dev/Development_Plan.md`: canonical main plan. 현재 방향, 다음 작업, 우선순위의 source of truth
 - `docs/dev/Checklist.md`: 단계별 완료 여부 추적용 체크리스트
-- `docs/dev/Storypack_Runtime_Preview_Mode.md`: 무협 runtime prototype을 기본 office bundle과 섞지 않는 preview mode 결정
-- `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`: `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_first_confrontation`까지의 무협 preview source YAML
+- `docs/dev/Storypack_Runtime_Preview_Mode.md`: 이구학지 runtime bundle을 legacy office bundle과 섞지 않는 preview/main boundary 결정
+- `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`: `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_copy_style_reveal`까지의 무협 preview source YAML
 - `crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json`: Rust/GameCore용 무협 preview fixture bundle
 - `web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json`: Web/WASM용 무협 preview generated bundle
-- `web/src/core/contentBundles.ts`: Web default office bundle과 storypack preview bundle registry
+- `web/src/core/contentBundles.ts`: Web default 이구학지 bundle과 legacy office/generated bundle 경계
 - `docs/content/Location_List.md`: 1차 위치 목록
 - `docs/content/Item_List.md`: 1차 아이템 목록
 - `docs/content/Encounter_List.md`: 1차 인카운터 목록

@@ -98,6 +98,7 @@ def test_export_web_data_builds_renderer_neutral_content_bundle():
             "wuxia_wounded_shelter_dawn_offers",
             "wuxia_mumyeong_first_sighting",
             "wuxia_mumyeong_first_confrontation",
+            "wuxia_mumyeong_copy_style_reveal",
         }
         for encounter in bundle["content"]["encounters"]
     )
@@ -121,7 +122,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     assert bundle["manifest"]["counts"] == {
         "locations": 4,
         "items": 3,
-        "encounters": 14,
+        "encounters": 15,
         "endings": 1,
         "achievements": 2,
         "secrets": 0,
@@ -148,6 +149,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "wuxia_wounded_shelter_dawn_offers",
         "wuxia_mumyeong_first_sighting",
         "wuxia_mumyeong_first_confrontation",
+        "wuxia_mumyeong_copy_style_reveal",
     ]
     first_fight = bundle["content"]["encounters"][1]
     assert first_fight["conditions"] == {
@@ -617,6 +619,40 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "copied_flow_is_not_qingliu",
     ]
     assert endure["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
+    copy_style = bundle["content"]["encounters"][14]
+    assert copy_style["conditions"] == {
+        "locations": ["cheongryu_outer_courtyard"],
+        "required_flags": [
+            "mumyeong_first_confrontation_resolved",
+            "mumyeong_rival_thread_opened",
+            "midgame_continuity_started",
+        ],
+        "forbidden_flags": ["mumyeong_copy_style_reveal_resolved"],
+    }
+    assert copy_style["presentation"]["layout"] == "copy_style_analysis"
+    assert copy_style["presentation"]["speaker"] == "서하린"
+    assert copy_style["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "무명",
+        "청류안",
+        "천기록",
+    ]
+    assert [choice["id"] for choice in copy_style["choices"]] == [
+        "read_the_stolen_blade_path",
+        "watch_mumyeongs_footwork",
+        "listen_for_breath_mismatch",
+        "wait_for_body_to_shudder",
+    ]
+    breath = copy_style["choices"][2]
+    assert breath["outcome"]["add_flags"] == [
+        "mumyeong_copy_style_reveal_resolved",
+        "copy_style_hint_recorded",
+        "copied_breath_mismatch_noted",
+    ]
+    assert breath["outcome"]["add_clues"] == [
+        "breath_mismatch_marks_copy",
+        "understanding_is_not_copying",
+    ]
+    assert breath["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
     assert "dev_desk" not in json.dumps(bundle, ensure_ascii=False)
     assert _missing_private_secret_fields(bundle)
 

@@ -1293,6 +1293,92 @@ fn json_boundary_reaches_wuxia_mumyeong_first_confrontation_through_preview_bund
 }
 
 #[test]
+fn json_boundary_reaches_wuxia_mumyeong_copy_style_reveal_through_preview_bundle() {
+    let post_confrontation_state_json = wuxia_state_after_actions(&[
+        "choice:follow_roadside_dust",
+        "move:jianghu_market_street",
+        "choice:run_toward_open_street",
+        "choice:choose_failure_log",
+        "choice:tell_plain_truth",
+        "choice:accept_three_month_trial",
+        "choice:step_back_with_firewood",
+        "choice:defend_cheongryu_with_white_path",
+        "choice:accept_medicine_with_written_debt",
+        "choice:watch_the_stolen_qingliu_flow",
+        "choice:endure_until_copy_flow_breaks",
+    ]);
+
+    let copy_style_page_json =
+        scene_page_json(&post_confrontation_state_json, WUXIA_PREVIEW_BUNDLE)
+            .expect("mumyeong copy style reveal scene page should serialize");
+    let copy_style_page: Value =
+        serde_json::from_str(&copy_style_page_json).expect("copy style page JSON should parse");
+    assert_eq!(copy_style_page["mode"], "encounter");
+    assert_eq!(copy_style_page["title"], "무명의 카피 무공 공개");
+    assert_eq!(
+        copy_style_page["location"]["id"],
+        "cheongryu_outer_courtyard"
+    );
+    assert_eq!(
+        copy_style_page["visual"]["id"],
+        "wuxia_mumyeong_copy_style_reveal"
+    );
+    assert_eq!(copy_style_page["visual"]["kind"], "copy_style_analysis");
+    assert_eq!(
+        copy_style_page["effect_cues"][0]["stable_terms"][1],
+        "청류안"
+    );
+    let copy_style_action_ids: Vec<&str> = copy_style_page["actions"]
+        .as_array()
+        .expect("actions should be an array")
+        .iter()
+        .map(|action| action["id"].as_str().expect("action id should be a string"))
+        .collect();
+    assert_eq!(
+        copy_style_action_ids,
+        vec![
+            "choice:read_the_stolen_blade_path",
+            "choice:watch_mumyeongs_footwork",
+            "choice:listen_for_breath_mismatch",
+            "choice:wait_for_body_to_shudder",
+        ]
+    );
+
+    let copy_style_result_json = apply_action_json(
+        &post_confrontation_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:listen_for_breath_mismatch",
+    )
+    .expect("listen for breath mismatch action should serialize");
+    let copy_style_result: Value =
+        serde_json::from_str(&copy_style_result_json).expect("copy style action should parse");
+    assert_eq!(
+        copy_style_result["encounter_id"],
+        "wuxia_mumyeong_copy_style_reveal"
+    );
+    assert!(copy_style_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array")
+        .iter()
+        .any(|flag| flag == "mumyeong_copy_style_reveal_resolved"));
+    assert!(copy_style_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array")
+        .iter()
+        .any(|flag| flag == "copy_style_hint_recorded"));
+    assert!(copy_style_result["state"]["clues"]
+        .as_array()
+        .expect("clues should be an array")
+        .iter()
+        .any(|clue| clue == "breath_mismatch_marks_copy"));
+    assert!(copy_style_result["state"]["clues"]
+        .as_array()
+        .expect("clues should be an array")
+        .iter()
+        .any(|clue| clue == "understanding_is_not_copying"));
+}
+
+#[test]
 fn json_boundary_reaches_wuxia_black_heaven_escape_price_through_preview_bundle() {
     let state_json =
         new_game_json(123, WUXIA_PREVIEW_BUNDLE).expect("preview new game should serialize");

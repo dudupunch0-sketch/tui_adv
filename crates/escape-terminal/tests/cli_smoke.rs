@@ -923,6 +923,67 @@ fn content_tui_smoke_reaches_wuxia_mumyeong_first_confrontation() {
 }
 
 #[test]
+fn content_tui_smoke_reaches_wuxia_mumyeong_copy_style_reveal() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--storypack-preview",
+            "wuxia_jianghu_pack",
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:follow_roadside_dust",
+            "--action",
+            "move:jianghu_market_street",
+            "--action",
+            "choice:run_toward_open_street",
+            "--action",
+            "choice:choose_failure_log",
+            "--action",
+            "choice:tell_plain_truth",
+            "--action",
+            "choice:accept_three_month_trial",
+            "--action",
+            "choice:step_back_with_firewood",
+            "--action",
+            "choice:defend_cheongryu_with_white_path",
+            "--action",
+            "choice:accept_medicine_with_written_debt",
+            "--action",
+            "choice:watch_the_stolen_qingliu_flow",
+            "--action",
+            "choice:endure_until_copy_flow_breaks",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("위치: 청류문 외곽 마당 (cheongryu_outer_courtyard)"));
+    assert!(stdout.contains("무명의 카피 무공 공개"));
+    assert!(stdout.contains("visual id: wuxia_mumyeong_copy_style_reveal"));
+    assert!(stdout.contains("layout: copy_style_analysis"));
+    assert!(stdout.contains("stable terms: 무명 / 청류안 / 천기록"));
+    assert!(stdout
+        .contains("choice:read_the_stolen_blade_path / 훔쳐 쓴 검로가 어디서 꺾이는지 읽는다"));
+    assert!(stdout
+        .contains("choice:watch_mumyeongs_footwork / 무명의 보법이 땅을 밀어내는 방식을 본다"));
+    assert!(stdout
+        .contains("choice:listen_for_breath_mismatch / 거리를 두고 호흡이 어긋나는 박자를 듣는다"));
+    assert!(stdout.contains(
+        "choice:wait_for_body_to_shudder / 몸에 맞지 않는 초식이 반동을 내는 순간까지 기다린다"
+    ));
+    assert!(!stdout.contains("dev_desk"));
+}
+
+#[test]
 fn content_tui_smoke_renders_final_movement_panel_after_scripted_actions() {
     let bundle_path = content_bundle_path();
     let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))

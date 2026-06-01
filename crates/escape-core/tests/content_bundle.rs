@@ -196,12 +196,12 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&4));
     assert_eq!(bundle.manifest.counts.get("items"), Some(&3));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&14));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&15));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 4);
-    assert_eq!(index.encounters_len(), 14);
+    assert_eq!(index.encounters_len(), 15);
 
     let market = index
         .location("jianghu_market_street")
@@ -910,6 +910,62 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     );
     assert_eq!(
         endure.outcome.destination_id.as_deref(),
+        Some("cheongryu_outer_courtyard")
+    );
+
+    let copy_style = index
+        .encounter("wuxia_mumyeong_copy_style_reveal")
+        .expect("mumyeong copy style reveal encounter");
+    assert_eq!(copy_style.title, "무명의 카피 무공 공개");
+    assert_eq!(
+        copy_style.conditions.locations,
+        vec!["cheongryu_outer_courtyard"]
+    );
+    assert_eq!(
+        copy_style.conditions.required_flags,
+        vec![
+            "mumyeong_first_confrontation_resolved",
+            "mumyeong_rival_thread_opened",
+            "midgame_continuity_started"
+        ]
+    );
+    assert_eq!(
+        copy_style.conditions.forbidden_flags,
+        vec!["mumyeong_copy_style_reveal_resolved"]
+    );
+    let copy_style_presentation = copy_style
+        .presentation
+        .as_ref()
+        .expect("mumyeong copy style presentation");
+    assert_eq!(
+        copy_style_presentation.layout.as_deref(),
+        Some("copy_style_analysis")
+    );
+    assert_eq!(copy_style_presentation.speaker.as_deref(), Some("서하린"));
+    assert_eq!(
+        copy_style_presentation.effect_cues[0].stable_terms,
+        vec!["무명", "청류안", "천기록"]
+    );
+    assert_eq!(copy_style.choices.len(), 4);
+    let breath = copy_style
+        .choices
+        .iter()
+        .find(|choice| choice.id == "listen_for_breath_mismatch")
+        .expect("listen for breath mismatch choice");
+    assert_eq!(
+        breath.outcome.add_flags,
+        vec![
+            "mumyeong_copy_style_reveal_resolved",
+            "copy_style_hint_recorded",
+            "copied_breath_mismatch_noted"
+        ]
+    );
+    assert_eq!(
+        breath.outcome.add_clues,
+        vec!["breath_mismatch_marks_copy", "understanding_is_not_copying"]
+    );
+    assert_eq!(
+        breath.outcome.destination_id.as_deref(),
         Some("cheongryu_outer_courtyard")
     );
 }

@@ -842,3 +842,63 @@ encounters:
           add_clues: [winning_is_not_required, not_provoking_still_leaves_debt]
           destination_id: cheongryu_outer_courtyard
           log: 싸움을 키우지 않는다고 대치가 사라지지는 않는다. 오늘 피한 말은 다음에 더 날카롭게 돌아오고, 무명은 네가 물러선 거리를 기억한다.
+
+  - id: wuxia_mumyeong_copy_style_reveal
+    title: 무명의 카피 무공 공개
+    body: 첫 대치가 끝난 뒤에도 무명의 움직임은 눈꺼풀 안쪽에 남아 있다. 같은 청류문식처럼 보였던 선은 어느 순간 검로처럼 꺾이고, 어느 순간 보법처럼 미끄러지며, 호흡이 어긋나는 짧은 틈마다 몸에 맞지 않는 초식의 반동을 드러낸다.
+    presentation:
+      visual_id: wuxia_mumyeong_copy_style_reveal
+      speaker: 서하린
+      layout: copy_style_analysis
+      effect_cues:
+        - kind: glyph_anomaly
+          source: mumyeong_copy_style_reveal
+          intensity: 0.76
+          stable_terms: [무명, 청류안, 천기록]
+          distortion: copied_style_then_breath_mismatch
+          duration_hint_ms: 1450
+          fallback_text: 흩어지는 검로와 어긋난 호흡 사이로 '무명', '청류안', '천기록'만 흔들리지 않고 남는다.
+    conditions:
+      locations: [cheongryu_outer_courtyard]
+      required_flags: [mumyeong_first_confrontation_resolved, mumyeong_rival_thread_opened, midgame_continuity_started]
+      forbidden_flags: [mumyeong_copy_style_reveal_resolved]
+    choices:
+      - id: read_the_stolen_blade_path
+        label: 훔쳐 쓴 검로가 어디서 꺾이는지 읽는다
+        outcome:
+          resources:
+            sanity: -2
+          danger: 1
+          add_flags: [mumyeong_copy_style_reveal_resolved, copy_style_hint_recorded, copied_blade_path_noted]
+          add_clues: [copied_form_family_seen, copy_is_surface_not_root]
+          destination_id: cheongryu_outer_courtyard
+          log: 검로처럼 보이지만 칼끝의 뜻이 이어지지 않는다. 훔친 것은 선이지 중심이 아니며, 무명의 손목은 늦게 반동을 받는다.
+      - id: watch_mumyeongs_footwork
+        label: 무명의 보법이 땅을 밀어내는 방식을 본다
+        outcome:
+          resources:
+            sanity: -2
+          add_flags: [mumyeong_copy_style_reveal_resolved, copy_style_hint_recorded, copied_footwork_noted]
+          add_clues: [copied_form_family_seen, footwork_without_root_wobbles]
+          destination_id: cheongryu_outer_courtyard
+          log: 발은 빠르지만 땅을 믿지 않는다. 남의 보법을 얹은 몸은 한 박자 늦게 흔들리고, 그 흔들림이 카피의 경계를 그린다.
+      - id: listen_for_breath_mismatch
+        label: 거리를 두고 호흡이 어긋나는 박자를 듣는다
+        outcome:
+          resources:
+            sanity: -1
+          add_flags: [mumyeong_copy_style_reveal_resolved, copy_style_hint_recorded, copied_breath_mismatch_noted]
+          add_clues: [breath_mismatch_marks_copy, understanding_is_not_copying]
+          destination_id: cheongryu_outer_courtyard
+          log: 초식은 따라왔지만 숨은 따라오지 못한다. 그 박자가 청류안에 먼저 걸리고, 천기록은 이해와 복사가 다르다는 문장만 남긴다.
+      - id: wait_for_body_to_shudder
+        label: 몸에 맞지 않는 초식이 반동을 내는 순간까지 기다린다
+        outcome:
+          resources:
+            health: -1
+            sanity: -2
+          danger: 1
+          add_flags: [mumyeong_copy_style_reveal_resolved, copy_style_hint_recorded, copy_side_effect_seen]
+          add_clues: [copy_is_surface_not_root, fragment_candidate_variation_foreshadowed]
+          destination_id: cheongryu_outer_courtyard
+          log: 무명의 어깨가 아주 짧게 떨린다. 천기록의 빈 줄은 아직 보상을 주지 않지만, 다음 편린의 모양을 기억한다.

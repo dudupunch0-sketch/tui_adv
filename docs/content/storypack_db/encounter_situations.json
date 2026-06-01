@@ -3888,10 +3888,10 @@
     "notion_event_mapping": {
       "notion_event_id": "wuxia_mumyeong_copy_style_reveal",
       "notion_event_name": "무명의 카피 무공 공개",
-      "mapping_status": "docs_only_handoff_ready"
+      "mapping_status": "preview_runtime_implemented"
     },
     "status": "candidate",
-    "mapping_status": "docs_only_handoff_ready",
+    "mapping_status": "preview_runtime_implemented",
     "phase": [
       "midgame_rival",
       "copy_style_analysis"
@@ -3926,7 +3926,7 @@
     ],
     "summary": "첫 대치 이후 무명이 이번 회차에 덧씌운 카피 무공 계열의 윤곽과 결함을 드러낸다.",
     "setup_text": "첫 대치가 끝난 뒤에도 무명의 움직임은 눈꺼풀 안쪽에 남아 있다. 같은 청류문식처럼 보였던 선은 어느 순간 검로처럼 꺾이고, 어느 순간 보법처럼 미끄러지며, 호흡이 어긋나는 짧은 틈마다 몸에 맞지 않는 초식의 반동을 드러낸다.",
-    "runtime_preview_design_status": "handoff_ready",
+    "runtime_preview_design_status": "implemented",
     "runtime_preview_start_conditions": {
       "runtime_mode": "storypack_preview",
       "location": "cheongryu_outer_courtyard",
@@ -4091,9 +4091,14 @@
     },
     "main_spine_link": "무명의 카피 무공을 청류안/천기록의 이해와 대비시키고, 중반 재회와 무명 구원/비구원 변주로 가기 전 필요한 copy-style clue를 쌓는다.",
     "randomization_notes": "Notion상 매 회차 seed 기반 랜덤 카피 무공 후보를 암시하지만, 이 handoff에서는 random copy-style table을 열지 않는다. 첫 implementation은 copy-style family hint를 flags/clues로만 기록한다.",
-    "promotion_notes": "docs-only handoff ready. `wuxia_mumyeong_followup_after_first_confrontation`에서 카피 무공 공개, 무명 중반 재회, boss first appearance를 비교했고, 카피 무공 공개를 다음 runtime 후보로 골랐다. 기본 office bundle, legacy `escape-office` key, seed 기반 random copy-style system/table, combat resolver/schema, HP 숫자전, route graph/faction reputation/debt/relation schema, reward/ability/epilogue/return system, boss first appearance, 무명 중반 재회, 천기록 정체 reveal은 열지 않는다.",
-    "runtime_preview_handoff_notes": {
+    "promotion_notes": "preview runtime으로 구현 완료. `wuxia_mumyeong_followup_after_first_confrontation`에서 카피 무공 공개, 무명 중반 재회, boss first appearance를 비교했고, 카피 무공 공개를 runtime으로 landing했다. legacy office bundle, legacy `escape-office` key, seed 기반 random copy-style system/table, combat resolver/schema, HP 숫자전, route graph/faction reputation/debt/relation schema, reward/ability/epilogue/return system, boss first appearance, 무명 중반 재회, 천기록 정체 reveal은 열지 않는다.",
+    "runtime_preview_implementation_notes": {
+      "implemented_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml",
       "insert_after": "wuxia_mumyeong_first_confrontation",
+      "generated_artifacts": [
+        "crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json",
+        "web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json"
+      ],
       "selected_over": [
         "wuxia_mumyeong_midgame_reunion",
         "wuxia_boss_first_appearance",
@@ -4101,7 +4106,7 @@
       ],
       "default_bundle_changed": false,
       "new_schema_opened": false,
-      "next_handoff": "wuxia_mumyeong_copy_style_reveal"
+      "next_handoff": "wuxia_mumyeong_followup_after_copy_style_reveal"
     }
   }
 ]

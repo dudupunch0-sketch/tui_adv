@@ -485,6 +485,18 @@
 - [x] runtime YAML/Rust/Web/generated bundle, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
 - [x] 다음 작업을 `wuxia_mumyeong_copy_style_reveal` runtime implementation으로 갱신
 
+### 0.2av 2026-06-02 무협 `wuxia_mumyeong_copy_style_reveal` preview runtime slice
+
+- [x] `wuxia_mumyeong_copy_style_reveal` encounter를 `wuxia_mumyeong_first_confrontation` 뒤에 storypack preview source로 추가
+- [x] start conditions를 `conditions.locations: [cheongryu_outer_courtyard]`, `required_flags: [mumyeong_first_confrontation_resolved, mumyeong_rival_thread_opened, midgame_continuity_started]`, `forbidden_flags: [mumyeong_copy_style_reveal_resolved]`로 구현
+- [x] stable choice id `read_the_stolen_blade_path`, `watch_mumyeongs_footwork`, `listen_for_breath_mismatch`, `wait_for_body_to_shudder` 구현
+- [x] common hook `mumyeong_copy_style_reveal_resolved`, `copy_style_hint_recorded`, `destination_id: cheongryu_outer_courtyard` 구현
+- [x] 카피 계열 윤곽/호흡 불일치/겉흐름 복사/천외편린 후보 변형 clue와 `copy_style_analysis` presentation hook 구현
+- [x] Rust/Web storypack preview bundle만 재생성하고 legacy office bundle/generated content는 미변경 유지
+- [x] Python exporter/docs/storypack DB, Rust content bundle, WASM JSON boundary, terminal smoke, Web content bundle registry 테스트 갱신
+- [x] seed 기반 random copy-style system/table, combat resolver/schema, HP 숫자전, boss first appearance, 무명 중반 재회, 무명 과거 진실 reveal, route graph/faction reputation/debt/relation/reward/ability/epilogue/return schema, 천기록 정체 reveal 미변경 유지
+- [x] 다음 작업을 `wuxia_mumyeong_followup_after_copy_style_reveal` docs-only handoff로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

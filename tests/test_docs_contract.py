@@ -172,7 +172,7 @@ def test_transition_audio_readiness_is_current_active_plan():
     assert "wuxia_cheongryu_chore_sparring" in next_actions
     assert "wuxia_cheongryu_raid_route_split" in next_actions
     assert "wuxia_cheongryu_raid_wounded_fallback" in next_actions
-    assert "preview launcher/UI wiring`도 완료" in next_actions
+    assert "Web의 별도 preview launcher는 이구학지가 기본이 되면서 목록에서 비워 두었다" in next_actions
     assert "preview mode" in next_actions or "storypack_preview" in next_actions
     assert "`wuxia_heuksa_bang_first_fight`를 같은 `wuxia_jianghu_pack` storypack preview mode에 추가한다" not in next_actions
 
@@ -475,11 +475,11 @@ def test_wuxia_runtime_preview_mode_decision_is_documented_before_runtime_conten
     decision = decision_path.read_text(encoding="utf-8")
 
     assert "Decision: separate preview mode first" in decision
-    assert "`src/tui_adv/data/*.yaml` remains default office runtime content" in decision
-    assert "`wuxia_jianghu_pack` enters runtime only through explicit preview bundle or preview flag" in decision
-    assert "`escape-office` save/localStorage keys remain unchanged" in decision
+    assert "`src/tui_adv/data/*.yaml` remains legacy office runtime content" in decision
+    assert "`wuxia_jianghu_pack` is the Web/default storypack" in decision
+    assert "legacy `escape-office` save/localStorage keys remain unchanged" in decision
     assert "renderer는 `ScenePage`만 표시" in decision
-    assert "no default bundle mixing" in decision
+    assert "no legacy bundle mixing" in decision
 
     assert "docs/dev/Storypack_Runtime_Preview_Mode.md" in index
     assert "docs/dev/Storypack_Runtime_Preview_Mode.md" in readme
@@ -491,7 +491,7 @@ def test_wuxia_runtime_preview_mode_decision_is_documented_before_runtime_conten
     assert "무협 preview launcher/UI wiring 완료" in plan
     assert "무협 `wuxia_cheonggi_record_first_fragment` preview runtime slice 완료" in plan
     assert "--storypack-preview wuxia_jianghu_pack" in decision
-    assert "Web start screen preview launcher" in decision
+    assert "Web 새 게임은 이구학지 default bundle" in decision
 
     next_actions = plan.split("## 10. 다음 액션", 1)[1]
     assert "gating 또는 별도 preview mode를 결정" not in next_actions
@@ -500,7 +500,7 @@ def test_wuxia_runtime_preview_mode_decision_is_documented_before_runtime_conten
     assert "wuxia_cheongryu_apprentice_entry" in next_actions
     assert "wuxia_cheongryu_raid_route_split" in next_actions
     assert "wuxia_cheongryu_raid_wounded_fallback" in next_actions
-    assert "preview launcher/UI wiring`도 완료" in next_actions
+    assert "Web의 별도 preview launcher는 이구학지가 기본이 되면서 목록에서 비워 두었다" in next_actions
     assert "preview mode" in next_actions or "storypack_preview" in next_actions
     assert "`wuxia_heuksa_bang_first_fight`를 같은 `wuxia_jianghu_pack` storypack preview mode에 추가한다" not in next_actions
 
@@ -570,7 +570,7 @@ def test_wuxia_cheongryu_raid_wounded_fallback_runtime_slice_is_docs_synced():
     assert "route opener docs-only handoff" in plan
     assert "wuxia_baekdo_medicine_debt" in plan
     assert "wuxia_mumyeong_copy_style_reveal" in next_goal
-    assert "current_goal: wuxia_mumyeong_copy_style_reveal" in next_goal
+    assert "current_goal: wuxia_mumyeong_followup_after_copy_style_reveal" in next_goal
     assert "Route opener implementation" in coverage
     next_slice = plan.split("현재 최우선 남은 작업:", 1)[1].split("전환 중 유지:", 1)[0]
     assert "wuxia_baekdo_medicine_debt" in next_slice
@@ -578,7 +578,7 @@ def test_wuxia_cheongryu_raid_wounded_fallback_runtime_slice_is_docs_synced():
     assert "wuxia_heavenly_archive_previous_outsiders" in next_slice
     assert "wuxia_wounded_shelter_dawn_offers" in next_slice
     assert "wuxia_mumyeong_first_sighting" in next_slice
-    assert "기본 `content.bundle.json`, Web 기본 generated bundle, `src/tui_adv/data/*.yaml`, `escape-office` save/localStorage key는 계속 바꾸지 않는다" in next_slice
+    assert "legacy office `content.bundle.json`, `src/tui_adv/data/*.yaml`, `escape-office` save/localStorage key는 계속 바꾸지 않는다" in next_slice
 
 
 def test_wuxia_baekdo_medicine_debt_runtime_slice_is_docs_synced():
@@ -601,8 +601,8 @@ def test_wuxia_baekdo_medicine_debt_runtime_slice_is_docs_synced():
     assert "runtime_preview_design_status: implemented" in wuxia_cards
     assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 15개." in storypack_db_readme
     assert "wuxia_black_heaven_escape_price" in storypack_db_readme
-    assert "current_goal: wuxia_mumyeong_copy_style_reveal" in next_goal
-    assert "mode: implementation" in next_goal
+    assert "current_goal: wuxia_mumyeong_followup_after_copy_style_reveal" in next_goal
+    assert "mode: docs-only-handoff" in next_goal
     assert "wuxia_mumyeong_first_confrontation" in next_goal
 
 
@@ -634,8 +634,8 @@ def test_wuxia_black_heaven_escape_price_runtime_slice_is_docs_synced():
     assert "map_exit_before_following_dowol" in wuxia_cards
     assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 15개." in storypack_db_readme
     assert "wuxia_heavenly_archive_previous_outsiders" in storypack_db_readme
-    assert "current_goal: wuxia_mumyeong_copy_style_reveal" in next_goal
-    assert "mode: implementation" in next_goal
+    assert "current_goal: wuxia_mumyeong_followup_after_copy_style_reveal" in next_goal
+    assert "mode: docs-only-handoff" in next_goal
     assert "wuxia_mumyeong_first_confrontation" in next_goal
 
 
@@ -667,8 +667,8 @@ def test_wuxia_heavenly_archive_previous_outsiders_runtime_slice_is_docs_synced(
     assert "mark_current_worldline_without_answer" in wuxia_cards
     assert "compare_rift_terms_to_commute_memory" in wuxia_cards
     assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 15개." in storypack_db_readme
-    assert "current_goal: wuxia_mumyeong_copy_style_reveal" in next_goal
-    assert "mode: implementation" in next_goal
+    assert "current_goal: wuxia_mumyeong_followup_after_copy_style_reveal" in next_goal
+    assert "mode: docs-only-handoff" in next_goal
     assert "wuxia_mumyeong_first_confrontation" in next_goal
 
 
@@ -703,8 +703,8 @@ def test_wuxia_wounded_shelter_dawn_offers_runtime_slice_is_docs_synced():
     assert "show_archive_map_to_yeon_soha" in wuxia_cards
     assert "runtime_preview_implementation_notes" in wuxia_cards
     assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 15개." in storypack_db_readme
-    assert "current_goal: wuxia_mumyeong_copy_style_reveal" in next_goal
-    assert "mode: implementation" in next_goal
+    assert "current_goal: wuxia_mumyeong_followup_after_copy_style_reveal" in next_goal
+    assert "mode: docs-only-handoff" in next_goal
     assert "route_midgame_continuity_after_wounded_shelter" in world_model
     assert "route_midgame_continuity_after_wounded_shelter" in encounter_model
     assert "wuxia_wounded_shelter_dawn_offers" in world_model
@@ -738,8 +738,8 @@ def test_wuxia_mumyeong_first_sighting_handoff_is_docs_synced():
     assert "follow_black_serpent_runner" in wuxia_cards
     assert "pretend_not_to_see_the_form" in wuxia_cards
     assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 15개." in storypack_db_readme
-    assert "current_goal: wuxia_mumyeong_copy_style_reveal" in next_goal
-    assert "mode: implementation" in next_goal
+    assert "current_goal: wuxia_mumyeong_followup_after_copy_style_reveal" in next_goal
+    assert "mode: docs-only-handoff" in next_goal
     assert "mumyeong_first_confrontation_resolved" in next_goal
     assert "wuxia_jianghu_pack` / **이구학지 — 천기록**은 Web/default storypack이자 메인 개발 기준" in next_goal
     assert "wuxia_mumyeong_first_sighting" in world_model
@@ -765,8 +765,8 @@ def test_wuxia_mumyeong_first_sighting_runtime_slice_is_docs_synced():
     assert "Post-opener midgame continuity implementation" in coverage
     assert "preview runtime implemented as common post-opener midgame bridge" in coverage
     assert (
-        "`wuxia_mumyeong_first_sighting`, `wuxia_mumyeong_first_confrontation` "
-        "runtime은 separate storypack preview bundle에서 완료"
+        "`wuxia_mumyeong_first_sighting`, `wuxia_mumyeong_first_confrontation`, "
+        "`wuxia_mumyeong_copy_style_reveal` runtime은 separate storypack preview bundle에서 완료"
     ) in wuxia_pack
     assert "| `wuxia_mumyeong_first_sighting` | `midgame_rival`" in wuxia_pack
     assert "| `wuxia_mumyeong_first_sighting` | `midgame_rival` | `sect_courtyard`, `market_street`, `training_chore` |" in wuxia_pack
@@ -775,13 +775,10 @@ def test_wuxia_mumyeong_first_sighting_runtime_slice_is_docs_synced():
     assert "runtime_preview_implementation_notes" in wuxia_cards
     assert "implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml" in wuxia_cards
     assert "next_handoff: wuxia_mumyeong_first_confrontation_after_sighting" in wuxia_cards
-    assert (
-        "`wuxia_mumyeong_first_sighting`, `wuxia_mumyeong_first_confrontation`는 "
-        "preview runtime에 구현"
-    ) in storypack_db_readme
-    assert "wuxia_mumyeong_followup_after_first_confrontation" in storypack_db_json
-    assert "current_goal: wuxia_mumyeong_copy_style_reveal" in next_goal
-    assert "mode: implementation" in next_goal
+    assert "무명 첫 목격/첫 대치/카피 무공 공개" in storypack_db_readme
+    assert "wuxia_mumyeong_followup_after_copy_style_reveal" in storypack_db_json
+    assert "current_goal: wuxia_mumyeong_followup_after_copy_style_reveal" in next_goal
+    assert "mode: docs-only-handoff" in next_goal
     assert "wuxia_mumyeong_copy_style_reveal" in next_goal
     assert "wuxia_mumyeong_first_confrontation_after_sighting" in world_model
     assert "wuxia_mumyeong_first_confrontation_after_sighting" in encounter_model
@@ -841,22 +838,22 @@ def test_wuxia_mumyeong_first_confrontation_runtime_slice_is_docs_synced():
     assert "read_mumyeongs_copied_form" in wuxia_cards
     assert "do_not_provoke_mumyeong" in wuxia_cards
     assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 15개." in storypack_db_readme
-    assert "`wuxia_mumyeong_first_confrontation`는 preview runtime에 구현" in storypack_db_readme
+    assert "무명 첫 목격/첫 대치/카피 무공 공개" in storypack_db_readme
     assert "wuxia_mumyeong_first_confrontation" in storypack_db_json
-    assert "wuxia_mumyeong_followup_after_first_confrontation" in storypack_db_json
+    assert "wuxia_mumyeong_followup_after_copy_style_reveal" in storypack_db_json
     assert '"id": "wuxia_mumyeong_first_confrontation"' in situations_json
     assert '"runtime_preview_design_status": "implemented"' in situations_json
     assert '"implemented_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml"' in situations_json
-    assert '"next_handoff": "wuxia_mumyeong_followup_after_first_confrontation"' in situations_json
-    assert "current_goal: wuxia_mumyeong_copy_style_reveal" in next_goal
-    assert "mode: implementation" in next_goal
+    assert '"next_handoff": "wuxia_mumyeong_followup_after_copy_style_reveal"' in situations_json
+    assert "current_goal: wuxia_mumyeong_followup_after_copy_style_reveal" in next_goal
+    assert "mode: docs-only-handoff" in next_goal
     assert "wuxia_mumyeong_copy_style_reveal" in next_goal
     assert "random copy-style system" in next_goal
     assert "wuxia_mumyeong_first_confrontation" in world_model
     assert "wuxia_mumyeong_first_confrontation" in encounter_model
 
 
-def test_wuxia_mumyeong_copy_style_reveal_handoff_is_docs_synced():
+def test_wuxia_mumyeong_copy_style_reveal_runtime_slice_is_docs_synced():
     plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     decision = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(encoding="utf-8")
@@ -887,34 +884,59 @@ def test_wuxia_mumyeong_copy_style_reveal_handoff_is_docs_synced():
         "`wuxia_mumyeong_copy_style_reveal`"
     ) in plan
     assert (
+        "## 0.33 2026-06-02 무협 `wuxia_mumyeong_copy_style_reveal` "
+        "preview runtime slice"
+    ) in plan
+    assert (
         "### 0.2au 2026-06-02 무협 post-confrontation follow-up "
         "docs-only handoff"
     ) in checklist
-    assert "`wuxia_mumyeong_copy_style_reveal` handoff ready" in decision
+    assert (
+        "### 0.2av 2026-06-02 무협 `wuxia_mumyeong_copy_style_reveal` "
+        "preview runtime slice"
+    ) in checklist
+    assert "`wuxia_mumyeong_copy_style_reveal` — preview runtime 구현 완료" in decision
     assert "Post-confrontation follow-up handoff" in coverage
+    assert "Post-confrontation follow-up implementation" in coverage
     assert (
         "| 6 | `wuxia_mumyeong_copy_style_reveal` | 무명의 카피 무공 공개 | "
         "`wuxia_mumyeong_copy_style_reveal`"
     ) in coverage
+    assert (
+        "| 6 | `wuxia_mumyeong_copy_style_reveal` | 무명의 카피 무공 공개 | "
+        "`wuxia_mumyeong_copy_style_reveal` | preview runtime implemented |"
+    ) in coverage
     assert "| `wuxia_mumyeong_copy_style_reveal` | `midgame_rival` / `copy_style_analysis`" in wuxia_pack
+    assert "15. `wuxia_mumyeong_copy_style_reveal` — preview runtime 구현 완료" in wuxia_pack
     assert "## 15. `wuxia_mumyeong_copy_style_reveal`" in wuxia_cards
-    assert "mapping_status: docs_only_handoff_ready" in wuxia_cards
-    assert "runtime_preview_design_status: handoff_ready" in wuxia_cards
+    assert "mapping_status: preview_runtime_implemented" in wuxia_cards
+    assert "runtime_preview_design_status: implemented" in wuxia_cards
     assert "required_flags: [mumyeong_first_confrontation_resolved, mumyeong_rival_thread_opened, midgame_continuity_started]" in wuxia_cards
     assert "flavor_flags_only: [copied_flow_weakness_noted, cheonggi_copy_contrast_noted" in wuxia_cards
     assert "read_the_stolen_blade_path" in wuxia_cards
     assert "watch_mumyeongs_footwork" in wuxia_cards
     assert "listen_for_breath_mismatch" in wuxia_cards
     assert "wait_for_body_to_shudder" in wuxia_cards
+    assert "runtime_preview_implementation_notes" in wuxia_cards
+    assert "implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml" in wuxia_cards
+    assert "next_handoff: wuxia_mumyeong_followup_after_copy_style_reveal" in wuxia_cards
     assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 15개." in storypack_db_readme
-    assert "`wuxia_mumyeong_copy_style_reveal`는 docs-only handoff에서 다음 runtime 후보로 확정" in storypack_db_readme
+    assert "`wuxia_mumyeong_copy_style_reveal`는 preview runtime에 구현" in storypack_db_readme
     assert "wuxia_mumyeong_copy_style_reveal" in storypack_db_json
+    assert "wuxia_mumyeong_followup_after_copy_style_reveal" in storypack_db_json
     assert '"id": "wuxia_mumyeong_copy_style_reveal"' in situations_json
-    assert '"runtime_preview_design_status": "handoff_ready"' in situations_json
-    assert '"next_handoff": "wuxia_mumyeong_copy_style_reveal"' in situations_json
-    assert "current_goal: wuxia_mumyeong_copy_style_reveal" in next_goal
-    assert "mode: implementation" in next_goal
-    assert "read_the_stolen_blade_path" in next_goal
+    assert '"runtime_preview_design_status": "implemented"' in situations_json
+    assert '"runtime_preview_implementation_notes"' in situations_json
+    assert '"implemented_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml"' in situations_json
+    assert '"next_handoff": "wuxia_mumyeong_followup_after_copy_style_reveal"' in situations_json
+    assert "current_goal: wuxia_mumyeong_followup_after_copy_style_reveal" in next_goal
+    assert "mode: docs-only-handoff" in next_goal
+    assert "wuxia_mumyeong_midgame_reunion" in next_goal
+    assert "wuxia_boss_first_appearance" in next_goal
+    assert "wuxia_mumyeong_departure_truth_summary" in next_goal
+    assert "wuxia_mumyeong_reads_orthodox_style" in next_goal
     assert "seed 기반 random copy-style system/table" in next_goal
     assert "wuxia_mumyeong_copy_style_reveal" in world_model
+    assert "wuxia_mumyeong_followup_after_copy_style_reveal" in world_model
     assert "wuxia_mumyeong_copy_style_reveal" in encounter_model
+    assert "wuxia_mumyeong_followup_after_copy_style_reveal" in encounter_model

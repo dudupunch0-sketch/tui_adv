@@ -50,6 +50,7 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         "wuxia_mumyeong_copy_style_reveal",
         "wuxia_mumyeong_first_confrontation",
         "wuxia_mumyeong_first_sighting",
+        "wuxia_mumyeong_midgame_reunion",
         "wuxia_mumyeong_reads_orthodox_style",
         "wuxia_seo_harin_rescue",
         "wuxia_wounded_shelter_dawn_offers",
@@ -147,6 +148,19 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         in orthodox_style.outcome_hooks["possible_flags"]
     )
     assert "bokho_geumsaesu_name_recorded" in orthodox_style.outcome_hooks["possible_clues"]
+
+    midgame_reunion = db.encounter_cards["wuxia_mumyeong_midgame_reunion"]
+    assert midgame_reunion.world_id == "wuxia_jianghu"
+    assert midgame_reunion.storypack_id == "wuxia_jianghu_pack"
+    assert midgame_reunion.priority_class == "route_key"
+    assert "rival_reunion" in midgame_reunion.phases
+    assert "sect_courtyard" in midgame_reunion.surfaces
+    assert "safe_observe" in [choice["role"] for choice in midgame_reunion.choice_shapes]
+    assert (
+        "mumyeong_midgame_reunion_resolved"
+        in midgame_reunion.outcome_hooks["possible_flags"]
+    )
+    assert "boss_used_mumyeongs_wound" in midgame_reunion.outcome_hooks["possible_clues"]
 
 
 def test_storypack_db_public_files_validate_cleanly():

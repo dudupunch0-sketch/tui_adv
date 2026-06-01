@@ -532,6 +532,23 @@
 - [x] legacy office fixture는 `--content-bundle` 명시 경로로 유지
 - [x] terminal default smoke 테스트와 README/plan/runtime preview 문서 동기화
 
+### 0.2az 2026-06-02 무협 orthodox-style follow-up docs-only handoff
+
+- [x] Notion 사건 카드 DB `wuxia_mumyeong_midgame_reunion`, `wuxia_mumyeong_departure_truth_summary`, `wuxia_boss_first_appearance`, `wuxia_qingliu_attack_after_war` 재확인
+- [x] `04. 메인 루트 구조`, `05. 사건 카드 운영 규칙`, `07. 천기록 / 천외편린 보상`, `99. 통합 체크포인트`와 비교
+- [x] 다음 runtime 후보를 `wuxia_mumyeong_midgame_reunion`으로 결정
+- [x] `wuxia_mumyeong_departure_truth_summary`는 후반 truth reveal/서하린 진실 전달/무명 구원 조건 확정 범위가 커서 보류
+- [x] `wuxia_boss_first_appearance`는 boss-wall/final logic 압박과 boss combat 기대가 커져 보류
+- [x] `wuxia_qingliu_attack_after_war`는 full flashback/backstory reveal 범위가 커서 보류
+- [x] start conditions를 `conditions.locations: [cheongryu_outer_courtyard]`, `required_flags: [mumyeong_reads_orthodox_style_resolved, orthodox_style_trace_recorded, mumyeong_first_confrontation_resolved, mumyeong_rival_thread_opened]`, `forbidden_flags: [mumyeong_midgame_reunion_resolved]`로 문서화
+- [x] stable choice id 후보 `ask_why_seoharin_never_called_him_traitor`, `show_the_hyeonakmun_trace_without_accusing`, `point_out_the_copied_form_gap`, `keep_blades_low_and_watch_his_answer` 고정
+- [x] common hook `mumyeong_midgame_reunion_resolved`, `mumyeong_mirror_thread_deepened`, `destination_id: cheongryu_outer_courtyard` 문서화
+- [x] 무명 중반 재회는 라이벌/거울 관계와 부분 단서만 다루고, 무명 이탈 진실 전체 reveal/구원 확정/서하린에게 진실 전달은 열지 않는다고 명시
+- [x] 천외편린 3택 reward/ability schema, combat resolver/schema, boss first appearance, full flashback, route graph/faction reputation/debt/relation/epilogue/return schema, 천기록 정체 reveal은 열지 않는다고 명시
+- [x] storypack DB JSON mirror와 docs contract를 다음 runtime 후보 기준으로 갱신
+- [x] runtime YAML/Rust/Web generated bundle, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 작업을 `wuxia_mumyeong_midgame_reunion` runtime implementation으로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

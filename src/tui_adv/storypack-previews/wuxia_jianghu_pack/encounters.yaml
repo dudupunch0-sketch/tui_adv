@@ -1139,3 +1139,62 @@ encounters:
           add_clues: [aid_refusal_precedes_departure_truth, mumyeong_tried_to_save_qingliu]
           destination_id: cheongryu_outer_courtyard
           log: 기록은 접어 둔다. 오늘 밝히지 않는 진실도, 언젠가 누군가를 살릴 수 있다.
+
+  - id: wuxia_mumyeong_awakening
+    title: 무명의 각성
+    body: 접어 둔 서찰과 복호금쇄수의 흔적이 청류문 마당 위에서 겹친다. 천기록은 무명의 재능을 칭찬하지 않는다. 대신 분노가 남의 초식을 훔쳐 덧씌운 순간, 카피가 성장처럼 보였지만 사실 상처의 모양을 따라 번졌다고 적는다.
+    presentation:
+      visual_id: wuxia_mumyeong_awakening
+      speaker: 천기록
+      layout: anger_copy_bloom
+      effect_cues:
+        - kind: glyph_anomaly
+          source: mumyeong_anger_copy_bloom
+          intensity: 0.8
+          stable_terms: [무명, 카피, 분노]
+          distortion: stolen_forms_overlay_wound
+          duration_hint_ms: 1550
+          fallback_text: 번지는 먹자국 속에서도 '무명', '카피', '분노'만 상처 위에 덧씌운 초식처럼 남는다.
+    conditions:
+      locations: [cheongryu_outer_courtyard]
+      required_flags: [mumyeong_request_for_aid_resolved, mumyeong_failed_aid_thread_opened, orthodox_hypocrisy_thread_opened, mumyeong_reads_orthodox_style_resolved, orthodox_style_trace_recorded, mumyeong_copy_style_reveal_resolved, copy_style_hint_recorded, midgame_continuity_started]
+      forbidden_flags: [mumyeong_awakening_resolved]
+    choices:
+      - id: compare_anger_to_copied_flow
+        label: 분노가 베껴 낸 흐름과 복사한 초식을 비교한다
+        outcome:
+          resources:
+            sanity: -2
+          add_flags: [mumyeong_awakening_resolved, mumyeong_awakening_thread_opened, copy_corruption_thread_opened]
+          add_clues: [mumyeong_copy_bloomed_from_anger, copy_is_wound_not_growth]
+          destination_id: cheongryu_outer_courtyard
+          log: 천기록은 무명의 초식이 자란 것이 아니라 상처 위에 덧씌워졌다고 적는다. 카피는 재능의 이름을 빌렸지만, 처음에는 분노의 모양을 하고 있었다.
+      - id: trace_awakening_from_failed_aid
+        label: 도움 요청 실패가 각성으로 이어진 흔적을 좇는다
+        outcome:
+          resources:
+            sanity: -3
+          danger: 1
+          add_flags: [mumyeong_awakening_resolved, mumyeong_awakening_thread_opened, copy_corruption_thread_opened]
+          add_clues: [awakening_points_to_hyeonakmun_without_full_truth, mumyeong_copy_bloomed_from_anger]
+          destination_id: cheongryu_outer_courtyard
+          log: 거절당한 서찰과 정파식 손자국 사이에서 무명의 분노가 처음 형태를 얻는다. 현악문의 이름은 보이지만, 아직 모든 진실을 설명하지는 않는다.
+      - id: ask_what_the_copy_cost_him
+        label: 그 카피가 무명에게 무엇을 빼앗았는지 묻는다
+        outcome:
+          resources:
+            sanity: -2
+          danger: 1
+          add_flags: [mumyeong_awakening_resolved, mumyeong_awakening_thread_opened, copy_corruption_thread_opened]
+          add_clues: [copy_is_wound_not_growth, protagonist_understands_where_mumyeong_overlays]
+          destination_id: cheongryu_outer_courtyard
+          log: 묻는 말은 닿지만 답은 오지 않는다. 침묵이 오히려 카피의 대가를 설명한다. 너는 이해해 재구성하고, 무명은 상처 위에 훔친 흐름을 덧씌운다.
+      - id: stop_before_calling_it_salvation
+        label: 이것을 아직 구원이라고 부르지 않는다
+        outcome:
+          resources:
+            sanity: -1
+          add_flags: [mumyeong_awakening_resolved, mumyeong_awakening_thread_opened, copy_corruption_thread_opened]
+          add_clues: [salvation_truth_still_unready, awakening_points_to_hyeonakmun_without_full_truth]
+          destination_id: cheongryu_outer_courtyard
+          log: 구원은 아직 이름 붙일 수 없다. 오늘은 상처가 어떻게 힘의 모양을 흉내 냈는지만 기록한다.

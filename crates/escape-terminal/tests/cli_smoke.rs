@@ -1279,6 +1279,80 @@ fn content_tui_smoke_reaches_wuxia_mumyeong_request_for_aid() {
 }
 
 #[test]
+fn content_tui_smoke_reaches_wuxia_mumyeong_awakening() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--storypack-preview",
+            "wuxia_jianghu_pack",
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:follow_roadside_dust",
+            "--action",
+            "move:jianghu_market_street",
+            "--action",
+            "choice:run_toward_open_street",
+            "--action",
+            "choice:choose_failure_log",
+            "--action",
+            "choice:tell_plain_truth",
+            "--action",
+            "choice:accept_three_month_trial",
+            "--action",
+            "choice:step_back_with_firewood",
+            "--action",
+            "choice:defend_cheongryu_with_white_path",
+            "--action",
+            "choice:accept_medicine_with_written_debt",
+            "--action",
+            "choice:watch_the_stolen_qingliu_flow",
+            "--action",
+            "choice:endure_until_copy_flow_breaks",
+            "--action",
+            "choice:listen_for_breath_mismatch",
+            "--action",
+            "choice:reconstruct_mumyeongs_sightline",
+            "--action",
+            "choice:show_the_hyeonakmun_trace_without_accusing",
+            "--action",
+            "choice:watch_mumyeong_answer_the_boss",
+            "--action",
+            "choice:search_the_rejected_aid_letters",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("위치: 청류문 외곽 마당 (cheongryu_outer_courtyard)"));
+    assert!(stdout.contains("무명의 각성"));
+    assert!(stdout.contains("visual id: wuxia_mumyeong_awakening"));
+    assert!(stdout.contains("layout: anger_copy_bloom"));
+    assert!(stdout.contains("stable terms: 무명 / 카피 / 분노"));
+    assert!(stdout.contains(
+        "choice:compare_anger_to_copied_flow / 분노가 베껴 낸 흐름과 복사한 초식을 비교한다"
+    ));
+    assert!(stdout.contains(
+        "choice:trace_awakening_from_failed_aid / 도움 요청 실패가 각성으로 이어진 흔적을 좇는다"
+    ));
+    assert!(stdout.contains(
+        "choice:ask_what_the_copy_cost_him / 그 카피가 무명에게 무엇을 빼앗았는지 묻는다"
+    ));
+    assert!(stdout.contains(
+        "choice:stop_before_calling_it_salvation / 이것을 아직 구원이라고 부르지 않는다"
+    ));
+    assert!(!stdout.contains("dev_desk"));
+}
+
+#[test]
 fn content_tui_smoke_renders_final_movement_panel_after_scripted_actions() {
     let bundle_path = content_bundle_path();
     let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))

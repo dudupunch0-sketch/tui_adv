@@ -1,13 +1,13 @@
 # 이구학지 — 천기록 encounter situation cards
 
-Status: candidate + `wuxia_mumyeong_request_for_aid` preview runtime implemented + `wuxia_mumyeong_followup_after_failed_aid` next handoff selected
+Status: candidate + `wuxia_mumyeong_awakening` preview runtime implemented + `wuxia_mumyeong_followup_after_awakening` next handoff selected
 
-이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_request_for_aid`까지는 separate storypack preview runtime으로 승격되었고, 다음은 `wuxia_mumyeong_followup_after_failed_aid` docs-only handoff다.
+이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_awakening`까지는 separate storypack preview runtime으로 승격되었고, 다음은 `wuxia_mumyeong_followup_after_awakening` docs-only handoff다.
 
 공통 원칙:
 
 - 모든 카드는 `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`에 속한다.
-- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_request_for_aid`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. 다음 runtime 후보는 `wuxia_mumyeong_followup_after_failed_aid` handoff에서 다시 고른다.
+- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_awakening`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. 다음 runtime 후보는 `wuxia_mumyeong_followup_after_awakening` handoff에서 다시 고른다.
 - 최신 canonical 무협 설정은 **이구학지 — 천기록**이다. 이전의 generic 객잔/소림/무당/아미 placeholder는 superseded로 본다.
 - 플레이어 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계의 시장 한복판에 전이됐다”이다.
 - 선택지는 세부 수치보다 역할과 결과 hook을 먼저 정의한다.
@@ -41,7 +41,7 @@ Status: candidate + `wuxia_mumyeong_request_for_aid` preview runtime implemented
 | `wuxia_mumyeong_first_confrontation` | 무명 첫 대치 | `wuxia_mumyeong_first_confrontation` | preview runtime implemented |
 | `wuxia_boss_first_appearance` | 보스 첫 등장 | `wuxia_boss_first_appearance` | preview runtime implemented |
 | `wuxia_mumyeong_destroys_orthodox_sect` | 정파 문파 멸문 | none yet | future consequence/backstory event |
-| `wuxia_mumyeong_awakening` | 무명의 각성 | none yet | future rival corruption/growth event |
+| `wuxia_mumyeong_awakening` | 무명의 각성 | `wuxia_mumyeong_awakening` | preview runtime implemented |
 | `wuxia_boss_recruits_mumyeong` | 흑사방 보스의 스카웃 | none yet | future backstory event |
 | `wuxia_mumyeong_reads_orthodox_style` | 무명의 정파 무공 간파 | `wuxia_mumyeong_reads_orthodox_style` | preview runtime implemented |
 | `wuxia_qingliu_attack_after_war` | 무너져가는 청류문 습격 | none yet | future backstory/pressure event |
@@ -1763,4 +1763,105 @@ runtime_preview_implementation_notes:
   default_bundle_changed: false
   new_schema_opened: false
   next_handoff: wuxia_mumyeong_followup_after_failed_aid
+  next_selected_candidate: wuxia_mumyeong_awakening
+```
+
+## 20. `wuxia_mumyeong_awakening`
+
+```yaml
+id: wuxia_mumyeong_awakening
+world_id: wuxia_jianghu
+storypack_id: wuxia_jianghu_pack
+source_refs:
+  - notion_event:wuxia_mumyeong_awakening
+  - docs/dev/Notion_Design_Coverage.md
+notion_event_mapping:
+  notion_event_id: wuxia_mumyeong_awakening
+  notion_event_name: 무명의 각성
+  mapping_status: preview_runtime_implemented
+status: implemented_in_storypack_preview
+mapping_status: preview_runtime_implemented
+phase: [midgame_rival, anger_copy_bloom]
+priority_class: route_key
+location_tags: [cheongryu_outer_courtyard, orthodox_refusal, mumyeong_past]
+surface: [sect_courtyard, cheonggi_record, faction_negotiation]
+anomaly_type: [faction_pressure, qi_deviation]
+pressure_type: [sanity, relation, danger]
+npc_slots: [early_rescuer]
+candidate_characters: [mumyeong, seo_harin]
+summary: 도움 요청 실패와 정파 무공 흔적 이후, 무명이 분노 속에서 카피 무공을 극단적으로 개화한 순간을 추적한다.
+setup_text: 청류문 마당에 접어 둔 거절 서찰과 복호금쇄수의 흔적이 겹쳐 보인다. 천기록은 무명의 재능을 칭찬하지 않고, 분노가 남의 초식을 훔쳐 덧씌운 순간의 결을 적는다.
+runtime_preview_design_status: implemented
+runtime_preview_start_conditions:
+  runtime_mode: storypack_preview
+  conditions:
+    locations: [cheongryu_outer_courtyard]
+  required_flags: [mumyeong_request_for_aid_resolved, mumyeong_failed_aid_thread_opened, orthodox_hypocrisy_thread_opened, mumyeong_reads_orthodox_style_resolved, orthodox_style_trace_recorded, mumyeong_copy_style_reveal_resolved, copy_style_hint_recorded, midgame_continuity_started]
+  forbidden_flags: [mumyeong_awakening_resolved]
+  flavor_flags_only: [mumyeong_tried_to_save_qingliu, orthodox_refusal_broke_mumyeong, boss_logic_found_mumyeongs_wound, aid_refusal_precedes_departure_truth, hyeonakmun_trace_suspected, bokho_geumsaesu_name_recorded, departure_truth_still_incomplete, seoharin_does_not_know_failed_aid]
+presentation:
+  visual_id: wuxia_mumyeong_awakening
+  speaker: 천기록
+  layout: anger_copy_bloom
+  effect_cues:
+    - stable_terms: [무명, 카피, 분노]
+choice_shapes:
+  - id: compare_anger_to_copied_flow
+    role: safe_observe
+    fallback_choice: true
+    label_direction: 분노가 베껴 낸 흐름과 복사한 초식을 비교한다
+    expected_costs: []
+    expected_gains: [copy_wound_clue, safe_distance]
+    outcome_hook:
+      add_flags: [mumyeong_awakening_resolved, mumyeong_awakening_thread_opened, copy_corruption_thread_opened]
+      add_clues: [mumyeong_copy_bloomed_from_anger, copy_is_wound_not_growth]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 천기록은 무명의 초식이 자란 것이 아니라 상처 위에 덧씌워졌다고 적는다.
+  - id: trace_awakening_from_failed_aid
+    role: clue_trace
+    label_direction: 도움 요청 실패가 각성으로 이어진 흔적을 좇는다
+    expected_costs: [sanity_small]
+    expected_gains: [failed_aid_to_anger_bridge, hyeonakmun_context]
+    outcome_hook:
+      add_flags: [mumyeong_awakening_resolved, mumyeong_awakening_thread_opened, copy_corruption_thread_opened]
+      add_clues: [awakening_points_to_hyeonakmun_without_full_truth, mumyeong_copy_bloomed_from_anger]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 거절당한 서찰과 정파식 손자국 사이에서 무명의 분노가 처음 형태를 얻는다.
+  - id: ask_what_the_copy_cost_him
+    role: relation_probe
+    label_direction: 그 카피가 무명에게 무엇을 빼앗았는지 묻는다
+    expected_costs: [relation_risk, sanity_small]
+    expected_gains: [copy_cost_context, mumyeong_mirror_context]
+    outcome_hook:
+      add_flags: [mumyeong_awakening_resolved, mumyeong_awakening_thread_opened, copy_corruption_thread_opened]
+      add_clues: [copy_is_wound_not_growth, protagonist_understands_where_mumyeong_overlays]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 묻는 말은 닿지만 답은 오지 않는다. 침묵이 오히려 카피의 대가를 설명한다.
+  - id: stop_before_calling_it_salvation
+    role: safe_defer
+    label_direction: 이것을 아직 구원이라고 부르지 않는다
+    expected_costs: [unresolved_debt]
+    expected_gains: [truth_boundary, future_salvation_marker]
+    outcome_hook:
+      add_flags: [mumyeong_awakening_resolved, mumyeong_awakening_thread_opened, copy_corruption_thread_opened]
+      add_clues: [salvation_truth_still_unready, awakening_points_to_hyeonakmun_without_full_truth]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 구원은 아직 이름 붙일 수 없다. 오늘은 상처가 어떻게 힘의 모양을 흉내 냈는지만 기록한다.
+outcome_hooks:
+  possible_flags: [mumyeong_awakening_resolved, mumyeong_awakening_thread_opened, copy_corruption_thread_opened]
+  possible_clues: [mumyeong_copy_bloomed_from_anger, copy_is_wound_not_growth, protagonist_understands_where_mumyeong_overlays, awakening_points_to_hyeonakmun_without_full_truth, salvation_truth_still_unready]
+  possible_destinations: [cheongryu_outer_courtyard]
+main_spine_link: 도움 요청 실패 기록과 정파 무공 흔적을 무명의 분노/카피 무공 변질로 잇되, 무명 이탈의 진실 전체나 서하린에게 전달할 구원 조건은 아직 열지 않는다.
+randomization_notes: 1회성 anger/copy bloom bridge. request-for-aid와 orthodox-style trace 뒤에만 열고 `mumyeong_awakening_resolved`로 반복을 막는다.
+promotion_notes: preview runtime으로 구현 완료. `wuxia_mumyeong_followup_after_failed_aid` docs-only handoff에서 다음 runtime 후보로 선택했고, 도움 요청 실패 기록과 정파 무공 흔적을 무명의 분노/카피 무공 변질로 landing했다. `wuxia_mumyeong_departure_truth_summary`는 후반 truth/서하린 진실 전달/구원 조건 범위라 보류했고, `wuxia_qingliu_attack_after_war`는 full flashback source라 보류했으며, `wuxia_boss_resolution`, `wuxia_boss_recruits_mumyeong`, `wuxia_mumyeong_destroys_orthodox_sect`는 후반/final consequence 범위라 보류했다. legacy office bundle, legacy `escape-office` key, random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation schema, reward/ability/epilogue/return system, 천기록 정체 reveal은 열지 않는다.
+runtime_preview_implementation_notes:
+  implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
+  insert_after: wuxia_mumyeong_request_for_aid
+  selected_over: [wuxia_mumyeong_departure_truth_summary, wuxia_qingliu_attack_after_war, wuxia_boss_resolution, wuxia_boss_recruits_mumyeong, wuxia_mumyeong_destroys_orthodox_sect]
+  generated_artifacts:
+    - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+    - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+  default_bundle_changed: false
+  new_schema_opened: false
+  next_handoff: wuxia_mumyeong_followup_after_awakening
 ```

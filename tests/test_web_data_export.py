@@ -103,6 +103,7 @@ def test_export_web_data_builds_renderer_neutral_content_bundle():
             "wuxia_mumyeong_midgame_reunion",
             "wuxia_boss_first_appearance",
             "wuxia_mumyeong_request_for_aid",
+            "wuxia_mumyeong_awakening",
         }
         for encounter in bundle["content"]["encounters"]
     )
@@ -126,7 +127,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     assert bundle["manifest"]["counts"] == {
         "locations": 4,
         "items": 4,
-        "encounters": 19,
+        "encounters": 20,
         "endings": 1,
         "achievements": 2,
         "secrets": 0,
@@ -158,6 +159,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "wuxia_mumyeong_midgame_reunion",
         "wuxia_boss_first_appearance",
         "wuxia_mumyeong_request_for_aid",
+        "wuxia_mumyeong_awakening",
     ]
     first_fight = bundle["content"]["encounters"][1]
     assert first_fight["conditions"] == {
@@ -806,6 +808,45 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "orthodox_refusal_broke_mumyeong",
     ]
     assert rejected_letters["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
+    awakening = bundle["content"]["encounters"][19]
+    assert awakening["conditions"] == {
+        "locations": ["cheongryu_outer_courtyard"],
+        "required_flags": [
+            "mumyeong_request_for_aid_resolved",
+            "mumyeong_failed_aid_thread_opened",
+            "orthodox_hypocrisy_thread_opened",
+            "mumyeong_reads_orthodox_style_resolved",
+            "orthodox_style_trace_recorded",
+            "mumyeong_copy_style_reveal_resolved",
+            "copy_style_hint_recorded",
+            "midgame_continuity_started",
+        ],
+        "forbidden_flags": ["mumyeong_awakening_resolved"],
+    }
+    assert awakening["presentation"]["layout"] == "anger_copy_bloom"
+    assert awakening["presentation"]["speaker"] == "천기록"
+    assert awakening["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "무명",
+        "카피",
+        "분노",
+    ]
+    assert [choice["id"] for choice in awakening["choices"]] == [
+        "compare_anger_to_copied_flow",
+        "trace_awakening_from_failed_aid",
+        "ask_what_the_copy_cost_him",
+        "stop_before_calling_it_salvation",
+    ]
+    compare = awakening["choices"][0]
+    assert compare["outcome"]["add_flags"] == [
+        "mumyeong_awakening_resolved",
+        "mumyeong_awakening_thread_opened",
+        "copy_corruption_thread_opened",
+    ]
+    assert compare["outcome"]["add_clues"] == [
+        "mumyeong_copy_bloomed_from_anger",
+        "copy_is_wound_not_growth",
+    ]
+    assert compare["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
     assert "dev_desk" not in json.dumps(bundle, ensure_ascii=False)
     assert _missing_private_secret_fields(bundle)
 

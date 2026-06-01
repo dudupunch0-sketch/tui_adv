@@ -44,6 +44,7 @@ describe('runtime content bundle registry', () => {
       'wuxia_mumyeong_midgame_reunion',
       'wuxia_boss_first_appearance',
       'wuxia_mumyeong_request_for_aid',
+      'wuxia_mumyeong_awakening',
     ]);
     expect(encounterIds).not.toContain('ex_employee_messenger');
   });

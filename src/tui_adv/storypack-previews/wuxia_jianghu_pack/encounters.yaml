@@ -526,3 +526,65 @@ encounters:
           add_clues: [record_counts_debt_not_justice, white_path_help_has_price]
           destination_id: cheongryu_outer_courtyard
           log: 천기록의 여백은 답하지 않는다. 다만 깃발의 의와 문서의 채무가 같은 먹으로 기록될 수 있다는 사실만 남긴다.
+
+  - id: wuxia_black_heaven_escape_price
+    title: 흑천련 탈출로의 값
+    body: 청류문 바깥 담장 너머 시장 골목에서 도월이 낡은 흑천련 표식을 굴린다. “흑천련 길은 빠르다. 공짜가 아닐 뿐이지.” 붕대와 탈출로는 사람을 살릴 수 있지만, 누가 값을 받을지와 누구의 이름이 장부에 남을지는 아직 정해지지 않았다.
+    presentation:
+      visual_id: wuxia_black_heaven_escape_price
+      speaker: 도월
+      layout: sapa_route_opener
+      effect_cues:
+        - kind: glyph_anomaly
+          source: black_heaven_escape_price
+          intensity: 0.7
+          stable_terms: [탈출로, 흑천련, 값]
+          distortion: alley_marker_then_ledger_lines
+          duration_hint_ms: 1400
+          fallback_text: 어두운 골목과 낡은 표식 사이로 '탈출로', '흑천련', '값'만 선명하게 남는다.
+    conditions:
+      locations: [cheongryu_outer_courtyard]
+      required_flags: [sapa_route_started, dowol_debt]
+      forbidden_flags: [black_heaven_escape_price_resolved]
+    choices:
+      - id: accept_dowol_marker_for_safehouse
+        label: 도월의 표식을 받고 임시 은신처와 탈출로를 얻는다
+        outcome:
+          resources:
+            sanity: -2
+            hunger: -1
+          danger: 1
+          add_flags: [black_heaven_escape_price_resolved, sapa_route_opened, black_heaven_safehouse_marked, market_route_debt_recorded]
+          add_clues: [black_heaven_help_marks_debt, survival_bargain_is_not_loyalty]
+          destination_id: cheongryu_outer_courtyard
+          log: 흑천련의 길은 빠르고 실제적이다. 표식 하나가 임시 은신처를 열지만, 그 표식은 나중에 값을 받을 증거로도 남는다.
+      - id: ask_who_collects_the_price
+        label: 누가 언제 어떤 방식으로 값을 받는지 먼저 묻는다
+        outcome:
+          resources:
+            sanity: -2
+          danger: 1
+          add_flags: [black_heaven_escape_price_resolved, sapa_route_opened, dowol_terms_questioned]
+          add_clues: [black_heaven_bargain_has_teeth, survival_bargain_is_not_loyalty]
+          destination_id: cheongryu_outer_courtyard
+          log: 조건을 묻자 도월은 웃는다. 사파의 도움은 자비가 아니라 거래이고, 거래는 늘 받아 갈 손을 함께 데려온다.
+      - id: keep_cheongryu_names_off_ledger
+        label: 청류문 사람들의 이름은 흑천련 장부에 남기지 않는다
+        outcome:
+          resources:
+            sanity: -2
+          danger: 2
+          add_flags: [black_heaven_escape_price_resolved, sapa_route_opened, cheongryu_names_kept_off_ledger, market_route_debt_recorded]
+          add_clues: [ledger_can_be_bent_not_broken, sapa_can_save_without_mercy]
+          destination_id: cheongryu_outer_courtyard
+          log: 청류문의 이름을 지우는 대신, 당신의 이름이 더 굵은 획으로 남는다. 도월은 그 고집을 어리석음이 아니라 쓸 만한 값으로 본다.
+      - id: map_exit_before_following_dowol
+        label: 따라가기 전에 탈출로와 추적선을 먼저 기록한다
+        outcome:
+          resources:
+            health: -1
+            sanity: -1
+          add_flags: [black_heaven_escape_price_resolved, sapa_route_opened, sapa_survival_principle_seen]
+          add_clues: [sapa_can_save_without_mercy, black_heaven_bargain_has_teeth]
+          destination_id: cheongryu_outer_courtyard
+          log: 흑천련의 길은 사람을 살릴 수 있다. 다만 살아남은 사람이 어디로 빚을 갚으러 갈지도 함께 보여준다.

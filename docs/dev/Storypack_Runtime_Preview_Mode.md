@@ -1,6 +1,6 @@
 # Storypack runtime preview mode
 
-Status: 결정 문서 + `wuxia_baekdo_medicine_debt` runtime 구현 완료 + `wuxia_black_heaven_escape_price` docs-only handoff 완료
+Status: 결정 문서 + `wuxia_black_heaven_escape_price` runtime 구현 완료 + 다음 route opener follow-up handoff 필요
 
 ## Decision: separate preview mode first
 
@@ -25,7 +25,7 @@ Status: 결정 문서 + `wuxia_baekdo_medicine_debt` runtime 구현 완료 + `wu
 2. 첫 무협 prototype은 아직 gameplay schema 확장보다 “기존 encounter schema로 표현 가능한가”를 확인하는 단계다.
 3. 기본 번들의 `default_location`, route smoke, Web player start/save UX가 office 전제를 갖고 있으므로, 무협 콘텐츠를 같은 bundle에 넣으면 시작 위치와 encounter-first routing이 쉽게 충돌한다.
 
-따라서 첫 단계는 별도 preview mode다. 이 결정은 gating을 영구히 포기한다는 뜻이 아니다. preview mode로 `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`가 기존 schema에서 작동함을 확인했다. 다중 storypack 선택 UI/save migration이 필요해질 때 runtime-level gating을 별도로 연다.
+따라서 첫 단계는 별도 preview mode다. 이 결정은 gating을 영구히 포기한다는 뜻이 아니다. preview mode로 `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`가 기존 schema에서 작동함을 확인했다. 다중 storypack 선택 UI/save migration이 필요해질 때 runtime-level gating을 별도로 연다.
 
 ## Preview mode contract
 
@@ -122,10 +122,13 @@ cargo test -p escape-terminal content_tui_smoke_reaches_wuxia_cheongryu_raid_rou
 8. `wuxia_baekdo_medicine_debt` — 구현 완료
    - 정파 route starter를 받아 백도맹 약상자/청류문 재건 채무 opener를 연다.
    - `righteous_route_started` + `cheongryu_rebuild_thread`만 eligibility로 쓰고, `baekdo_alliance_debt`/`baekdo_medicine_debt`는 branch flavor hook으로만 남긴다.
+9. `wuxia_black_heaven_escape_price` — 구현 완료
+   - 사파 route starter를 받아 흑천련 탈출로/도월 표식/시장 장부의 값 opener를 연다.
+   - `sapa_route_started` + `dowol_debt`만 eligibility로 쓰고, `black_heaven_deal_marked`/`black_heaven_escape_marker`는 branch flavor hook으로만 남긴다.
 
 ## 후속 slice 기준
 
-`wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`는 같은 preview mode에 추가되었다. 이미 preview export/check command, Rust/Web preview bundle artifact, terminal `--storypack-preview wuxia_jianghu_pack`, Web default 이구학지 start/save wiring이 있으므로, 다음은 launcher나 천외편린 reward schema가 아니라 `wuxia_black_heaven_escape_price` runtime implementation slice다.
+`wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`는 같은 preview mode에 추가되었다. 이미 preview export/check command, Rust/Web preview bundle artifact, terminal `--storypack-preview wuxia_jianghu_pack`, Web default 이구학지 start/save wiring이 있으므로, 다음은 launcher나 천외편린 reward schema가 아니라 `route_opener_followup_after_black_heaven` handoff다.
 
 구현된 rescue slice:
 
@@ -231,7 +234,9 @@ schema_boundary:
   forbidden: [RouteGraph, FactionStanding, BranchLock, TriageSystem, CompanionDeath, MassCombat, boss_combat_resolver, CombatState, reward_schema, ability_schema, fragment_choice_reward, multi_ending_implementation]
 ```
 
-`wuxia_baekdo_medicine_debt` — preview runtime 구현 완료. 첫 route opener는 정파/백도맹 약상자 채무 축으로 landing했다. `route_opener_followup_after_baekdo` docs-only handoff 결과 다음 handoff는 사파/흑천련 opener `wuxia_black_heaven_escape_price`다. 이 후보는 `sapa_route_started` + `dowol_debt`를 required flags로 쓰고, `black_heaven_deal_marked`와 `black_heaven_escape_marker`는 direct/deferred branch flavor hook으로만 읽는다. 천기·귀환 opener와 deferred-offer card는 후속으로 둔다.
+`wuxia_baekdo_medicine_debt` — preview runtime 구현 완료. 첫 route opener는 정파/백도맹 약상자 채무 축으로 landing했다.
+
+`wuxia_black_heaven_escape_price` — preview runtime 구현 완료. 첫 사파 route opener는 `sapa_route_started` + `dowol_debt`를 required flags로 쓰고, `black_heaven_deal_marked`와 `black_heaven_escape_marker`는 direct/deferred branch flavor hook으로만 읽는다. 천기·귀환 opener와 deferred-offer card는 후속 `route_opener_followup_after_black_heaven` handoff에서 하나만 고른다.
 
 Launcher/entrypoint contract:
 

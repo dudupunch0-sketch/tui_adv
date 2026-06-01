@@ -2,12 +2,12 @@
 
 Status: candidate
 
-이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_baekdo_medicine_debt`까지는 separate storypack preview runtime으로 승격되었고, `wuxia_black_heaven_escape_price`는 다음 runtime 후보로 docs-only handoff가 끝난 상태다.
+이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_black_heaven_escape_price`까지는 separate storypack preview runtime으로 승격되었다.
 
 공통 원칙:
 
 - 모든 카드는 `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`에 속한다.
-- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_baekdo_medicine_debt`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다.
+- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_black_heaven_escape_price`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다.
 - 최신 canonical 무협 설정은 **이구학지 — 천기록**이다. 이전의 generic 객잔/소림/무당/아미 placeholder는 superseded로 본다.
 - 플레이어 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계의 시장 한복판에 전이됐다”이다.
 - 선택지는 세부 수치보다 역할과 결과 hook을 먼저 정의한다.
@@ -762,8 +762,8 @@ promotion_notes: preview runtime으로 구현 완료. 첫 정파 route opener는
 id: wuxia_black_heaven_escape_price
 world_id: wuxia_jianghu
 storypack_id: wuxia_jianghu_pack
-status: candidate
-runtime_preview_design_status: designed_next_not_implemented
+status: implemented_in_storypack_preview
+runtime_preview_design_status: implemented
 phase: [route_commitment]
 priority_class: route_key
 location_tags: [cheongryu_sect, faction_choice, sapa_route]
@@ -836,5 +836,5 @@ schema_boundary:
   forbidden_new_schema: [RouteGraph, FactionStanding, DebtLedger, RelationScore, BranchLock, reward_schema, ability_schema, fragment_choice_reward, epilogue_schema, multi_ending_implementation]
 main_spine_link: route commitment의 첫 사파 opener. direct raid branch와 deferred wounded branch를 같은 `sapa_route_started`/`dowol_debt` 조건으로 받아 any-of schema 없이 사파 루트를 연다.
 randomization_notes: 1회성 route opener. hub random deck으로 반복하지 않는다. `black_heaven_deal_marked`와 `black_heaven_escape_marker`는 direct/deferred flavor만 바꾸고 eligibility를 가르지 않는다.
-promotion_notes: docs-only handoff 완료, 다음 runtime 구현 후보. `cheongryu_outer_courtyard`에서 `sapa_route_started` + `dowol_debt`를 받아 열리며, 흑천련 탈출로/도월 표식/시장 장부의 값을 flags/clues/log/presentation으로만 남긴다. 기본 office bundle, legacy `escape-office` key, faction route graph/reputation, debt/relation schema는 열지 않는다.
+promotion_notes: preview runtime으로 구현 완료. `cheongryu_outer_courtyard`에서 `sapa_route_started` + `dowol_debt`를 받아 열리며, 흑천련 탈출로/도월 표식/시장 장부의 값을 flags/clues/log/presentation으로만 남긴다. 기본 office bundle, legacy `escape-office` key, faction route graph/reputation, debt/relation schema는 열지 않았다. 다음 handoff는 `route_opener_followup_after_black_heaven`다.
 ```

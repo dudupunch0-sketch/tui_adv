@@ -93,6 +93,7 @@ def test_export_web_data_builds_renderer_neutral_content_bundle():
             "wuxia_cheongryu_raid_route_split",
             "wuxia_cheongryu_raid_wounded_fallback",
             "wuxia_baekdo_medicine_debt",
+            "wuxia_black_heaven_escape_price",
         }
         for encounter in bundle["content"]["encounters"]
     )
@@ -116,7 +117,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     assert bundle["manifest"]["counts"] == {
         "locations": 4,
         "items": 3,
-        "encounters": 9,
+        "encounters": 10,
         "endings": 1,
         "achievements": 2,
         "secrets": 0,
@@ -138,6 +139,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "wuxia_cheongryu_raid_route_split",
         "wuxia_cheongryu_raid_wounded_fallback",
         "wuxia_baekdo_medicine_debt",
+        "wuxia_black_heaven_escape_price",
     ]
     first_fight = bundle["content"]["encounters"][1]
     assert first_fight["conditions"] == {
@@ -404,6 +406,40 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "qingliu_survival_needs_outside_help",
     ]
     assert accept_debt["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
+    black_heaven = bundle["content"]["encounters"][9]
+    assert black_heaven["conditions"] == {
+        "locations": ["cheongryu_outer_courtyard"],
+        "required_flags": [
+            "sapa_route_started",
+            "dowol_debt",
+        ],
+        "forbidden_flags": ["black_heaven_escape_price_resolved"],
+    }
+    assert black_heaven["presentation"]["layout"] == "sapa_route_opener"
+    assert black_heaven["presentation"]["speaker"] == "도월"
+    assert black_heaven["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "탈출로",
+        "흑천련",
+        "값",
+    ]
+    assert [choice["id"] for choice in black_heaven["choices"]] == [
+        "accept_dowol_marker_for_safehouse",
+        "ask_who_collects_the_price",
+        "keep_cheongryu_names_off_ledger",
+        "map_exit_before_following_dowol",
+    ]
+    accept_marker = black_heaven["choices"][0]
+    assert accept_marker["outcome"]["add_flags"] == [
+        "black_heaven_escape_price_resolved",
+        "sapa_route_opened",
+        "black_heaven_safehouse_marked",
+        "market_route_debt_recorded",
+    ]
+    assert accept_marker["outcome"]["add_clues"] == [
+        "black_heaven_help_marks_debt",
+        "survival_bargain_is_not_loyalty",
+    ]
+    assert accept_marker["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
     assert "dev_desk" not in json.dumps(bundle, ensure_ascii=False)
     assert _missing_private_secret_fields(bundle)
 

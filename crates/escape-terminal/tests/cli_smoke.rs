@@ -632,6 +632,64 @@ fn content_tui_smoke_reaches_wuxia_baekdo_medicine_debt() {
 }
 
 #[test]
+fn content_tui_smoke_reaches_wuxia_black_heaven_escape_price() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--storypack-preview",
+            "wuxia_jianghu_pack",
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:follow_roadside_dust",
+            "--action",
+            "move:jianghu_market_street",
+            "--action",
+            "choice:run_toward_open_street",
+            "--action",
+            "choice:choose_failure_log",
+            "--action",
+            "choice:tell_plain_truth",
+            "--action",
+            "choice:accept_three_month_trial",
+            "--action",
+            "choice:step_back_with_firewood",
+            "--action",
+            "choice:trade_with_black_heaven",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("위치: 청류문 외곽 마당 (cheongryu_outer_courtyard)"));
+    assert!(stdout.contains("흑천련 탈출로의 값"));
+    assert!(stdout.contains("visual id: wuxia_black_heaven_escape_price"));
+    assert!(stdout.contains("layout: sapa_route_opener"));
+    assert!(stdout.contains("stable terms: 탈출로 / 흑천련 / 값"));
+    assert!(stdout.contains(
+        "choice:accept_dowol_marker_for_safehouse / 도월의 표식을 받고 임시 은신처와 탈출로를 얻는다"
+    ));
+    assert!(stdout.contains(
+        "choice:ask_who_collects_the_price / 누가 언제 어떤 방식으로 값을 받는지 먼저 묻는다"
+    ));
+    assert!(stdout.contains(
+        "choice:keep_cheongryu_names_off_ledger / 청류문 사람들의 이름은 흑천련 장부에 남기지 않는다"
+    ));
+    assert!(stdout.contains(
+        "choice:map_exit_before_following_dowol / 따라가기 전에 탈출로와 추적선을 먼저 기록한다"
+    ));
+    assert!(!stdout.contains("dev_desk"));
+}
+
+#[test]
 fn content_tui_smoke_renders_final_movement_panel_after_scripted_actions() {
     let bundle_path = content_bundle_path();
     let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))

@@ -262,10 +262,10 @@ promotion_notes: runtime 승격 시 messenger UI presentation metadata를 붙인
 
 2026-05-31 후속 결정:
 
-- `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt` preview는 완료했다.
+- `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price` preview는 완료했다.
 - 이 preview runtime content는 `storypack_preview` bundle에만 들어가며, 기본 office runtime과 `src/tui_adv/data/*.yaml`에는 직접 섞지 않는다.
 - `preview launcher/UI wiring`은 explicit opt-in entrypoint로 구현했다. 후속 content slice에서 다시 열지 않는다.
-- 첫 route opener `wuxia_baekdo_medicine_debt`는 `righteous_route_started` + `cheongryu_rebuild_thread`만 eligibility로 요구하고, direct `baekdo_alliance_debt`와 deferred `baekdo_medicine_debt`는 flavor hook으로만 사용해 구현 완료했다. `route_opener_followup_after_baekdo` docs-only handoff 결과 다음 runtime 후보는 사파 opener `wuxia_black_heaven_escape_price`다. 이 후보는 `sapa_route_started` + `dowol_debt`만 eligibility로 요구하고, direct `black_heaven_deal_marked`와 deferred `black_heaven_escape_marker`는 flavor hook으로만 사용한다.
+- 첫 정파 route opener `wuxia_baekdo_medicine_debt`는 `righteous_route_started` + `cheongryu_rebuild_thread`만 eligibility로 요구하고, direct `baekdo_alliance_debt`와 deferred `baekdo_medicine_debt`는 flavor hook으로만 사용해 구현 완료했다. 첫 사파 route opener `wuxia_black_heaven_escape_price`도 `sapa_route_started` + `dowol_debt`만 eligibility로 요구하고, direct `black_heaven_deal_marked`와 deferred `black_heaven_escape_marker`는 flavor hook으로만 사용해 구현 완료했다. 다음 handoff는 `route_opener_followup_after_black_heaven`다.
 - 필요한 신규 설계는 encounter/choice/outcome 수준으로 제한한다. 새 combat/reward/ability schema, 천외편린 3택 reward schema, faction route graph schema는 별도 slice 전까지 열지 않는다.
 
 2026-06-01 Notion sync 결정:

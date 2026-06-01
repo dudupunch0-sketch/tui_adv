@@ -196,12 +196,12 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&4));
     assert_eq!(bundle.manifest.counts.get("items"), Some(&3));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&9));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&10));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 4);
-    assert_eq!(index.encounters_len(), 9);
+    assert_eq!(index.encounters_len(), 10);
 
     let market = index
         .location("jianghu_market_street")
@@ -613,6 +613,62 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     );
     assert_eq!(
         accept_debt.outcome.destination_id.as_deref(),
+        Some("cheongryu_outer_courtyard")
+    );
+
+    let black_heaven = index
+        .encounter("wuxia_black_heaven_escape_price")
+        .expect("black heaven route opener encounter");
+    assert_eq!(black_heaven.title, "흑천련 탈출로의 값");
+    assert_eq!(
+        black_heaven.conditions.locations,
+        vec!["cheongryu_outer_courtyard"]
+    );
+    assert_eq!(
+        black_heaven.conditions.required_flags,
+        vec!["sapa_route_started", "dowol_debt"]
+    );
+    assert_eq!(
+        black_heaven.conditions.forbidden_flags,
+        vec!["black_heaven_escape_price_resolved"]
+    );
+    let black_heaven_presentation = black_heaven
+        .presentation
+        .as_ref()
+        .expect("black heaven route opener presentation");
+    assert_eq!(
+        black_heaven_presentation.layout.as_deref(),
+        Some("sapa_route_opener")
+    );
+    assert_eq!(black_heaven_presentation.speaker.as_deref(), Some("도월"));
+    assert_eq!(
+        black_heaven_presentation.effect_cues[0].stable_terms,
+        vec!["탈출로", "흑천련", "값"]
+    );
+    assert_eq!(black_heaven.choices.len(), 4);
+    let accept_marker = black_heaven
+        .choices
+        .iter()
+        .find(|choice| choice.id == "accept_dowol_marker_for_safehouse")
+        .expect("fallback black heaven marker choice");
+    assert_eq!(
+        accept_marker.outcome.add_flags,
+        vec![
+            "black_heaven_escape_price_resolved",
+            "sapa_route_opened",
+            "black_heaven_safehouse_marked",
+            "market_route_debt_recorded"
+        ]
+    );
+    assert_eq!(
+        accept_marker.outcome.add_clues,
+        vec![
+            "black_heaven_help_marks_debt",
+            "survival_bargain_is_not_loyalty"
+        ]
+    );
+    assert_eq!(
+        accept_marker.outcome.destination_id.as_deref(),
         Some("cheongryu_outer_courtyard")
     );
 }

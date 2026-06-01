@@ -358,6 +358,18 @@
 - [x] storypack DB JSON mirror와 docs contract를 다음 runtime handoff 기준으로 갱신
 - [x] runtime YAML/Rust/Web/generated bundle, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
 
+### 0.2al 2026-06-02 무협 `wuxia_black_heaven_escape_price` preview runtime slice
+
+- [x] `wuxia_black_heaven_escape_price`를 첫 사파 route opener로 같은 storypack preview source에 추가
+- [x] start conditions를 `sapa_route_started` + `dowol_debt`로 고정하고 `black_heaven_deal_marked`/`black_heaven_escape_marker`는 flavor hook으로만 유지
+- [x] stable choice id `accept_dowol_marker_for_safehouse`, `ask_who_collects_the_price`, `keep_cheongryu_names_off_ledger`, `map_exit_before_following_dowol` 구현
+- [x] 모든 outcome이 `black_heaven_escape_price_resolved`, `sapa_route_opened`, `destination_id: cheongryu_outer_courtyard` bridge를 남기도록 구현
+- [x] presentation을 `visual_id: wuxia_black_heaven_escape_price`, `speaker: 도월`, `layout: sapa_route_opener`, stable terms `탈출로 / 흑천련 / 값`으로 고정
+- [x] Rust fixture와 Web generated preview bundle 재생성
+- [x] Python exporter, Rust content fixture, WASM JSON boundary, SuperLightTUI route opener parity, Web content bundle tests 추가
+- [x] route graph/faction reputation/debt ledger/relation/reward/ability/epilogue schema, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 작업을 `route_opener_followup_after_black_heaven` docs-only handoff로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

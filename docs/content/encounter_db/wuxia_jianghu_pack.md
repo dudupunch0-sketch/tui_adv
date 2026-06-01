@@ -1,13 +1,13 @@
 # 이구학지 — 천기록 encounter situation cards
 
-Status: candidate + `wuxia_boss_first_appearance` preview runtime implemented
+Status: candidate + `wuxia_boss_first_appearance` preview runtime implemented + `wuxia_mumyeong_request_for_aid` next runtime selected
 
-이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_boss_first_appearance`까지는 separate storypack preview runtime으로 승격되었고, 다음 작업은 `wuxia_boss_followup_after_first_appearance` docs-only handoff다.
+이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_boss_first_appearance`까지는 separate storypack preview runtime으로 승격되었고, 다음 runtime 후보는 `wuxia_mumyeong_request_for_aid`다.
 
 공통 원칙:
 
 - 모든 카드는 `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`에 속한다.
-- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_boss_first_appearance`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. 다음 후보 선택은 `wuxia_boss_followup_after_first_appearance` docs-only handoff에서 진행한다.
+- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_boss_first_appearance`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. `wuxia_mumyeong_request_for_aid`는 다음 runtime slice 후보로만 선택됐고 아직 runtime YAML/generated artifact에는 들어가지 않았다.
 - 최신 canonical 무협 설정은 **이구학지 — 천기록**이다. 이전의 generic 객잔/소림/무당/아미 placeholder는 superseded로 본다.
 - 플레이어 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계의 시장 한복판에 전이됐다”이다.
 - 선택지는 세부 수치보다 역할과 결과 hook을 먼저 정의한다.
@@ -45,7 +45,7 @@ Status: candidate + `wuxia_boss_first_appearance` preview runtime implemented
 | `wuxia_boss_recruits_mumyeong` | 흑사방 보스의 스카웃 | none yet | future backstory event |
 | `wuxia_mumyeong_reads_orthodox_style` | 무명의 정파 무공 간파 | `wuxia_mumyeong_reads_orthodox_style` | preview runtime implemented |
 | `wuxia_qingliu_attack_after_war` | 무너져가는 청류문 습격 | none yet | future backstory/pressure event |
-| `wuxia_mumyeong_request_for_aid` | 무명의 도움 요청 | none yet | future backstory event |
+| `wuxia_mumyeong_request_for_aid` | 무명의 도움 요청 | `wuxia_mumyeong_request_for_aid` | next runtime selected |
 | `wuxia_tianjilu_first_fragment` | 천기록 첫 천외편린 | `wuxia_cheonggi_record_first_fragment` | preview implemented as schema-less foreshadow; full reward schema future |
 | `wuxia_seoharin_intervention` | 서하린의 개입 | `wuxia_seo_harin_rescue` | preview implemented as schema-less rescue/protection bridge |
 | `wuxia_prologue_commute_rift` | 출근길의 균열 | `wuxia_commute_rift_arrival` | preview implemented |
@@ -1662,4 +1662,103 @@ runtime_preview_implementation_notes:
   default_bundle_changed: false
   new_schema_opened: false
   next_handoff: wuxia_boss_followup_after_first_appearance
+```
+
+## 19. `wuxia_mumyeong_request_for_aid`
+
+```yaml
+id: wuxia_mumyeong_request_for_aid
+world_id: wuxia_jianghu
+storypack_id: wuxia_jianghu_pack
+source_refs:
+  - notion_event:wuxia_mumyeong_request_for_aid
+  - docs/dev/Notion_Design_Coverage.md
+notion_event_mapping:
+  notion_event_id: wuxia_mumyeong_request_for_aid
+  notion_event_name: 무명의 도움 요청
+  mapping_status: next_runtime_selected
+status: candidate
+mapping_status: next_runtime_selected
+phase: [midgame_rival, failed_aid_records]
+priority_class: route_key
+location_tags: [cheongryu_outer_courtyard, orthodox_refusal, mumyeong_past]
+surface: [sect_courtyard, faction_negotiation, cheonggi_record]
+anomaly_type: [faction_pressure]
+pressure_type: [sanity, relation, danger]
+npc_slots: [early_rescuer]
+candidate_characters: [mumyeong, seo_harin, black_serpent_boss]
+summary: 보스 첫 등장 뒤 무명이 청류문을 살리려 정파 문파들에 도움을 청했지만 거절당했다는 기록/소문을 추적한다.
+setup_text: 청류문 마당에 남은 검은 깃발의 먼지가 가라앉자, 천기록의 빈 줄 옆에 오래된 객잔 이름과 반쯤 찢긴 서찰 봉인이 겹쳐 보인다. 무명은 배신자가 되기 전에 살릴 방법을 찾았고, 정파의 문턱은 그를 여러 번 돌려보낸 듯하다.
+runtime_preview_design_status: next_runtime_selected
+runtime_preview_start_conditions:
+  runtime_mode: storypack_preview
+  conditions:
+    locations: [cheongryu_outer_courtyard]
+  required_flags: [boss_first_appearance_resolved, boss_wall_thread_opened, black_serpent_core_pressure_opened, mumyeong_mirror_thread_deepened, orthodox_style_trace_recorded, midgame_continuity_started]
+  forbidden_flags: [mumyeong_request_for_aid_resolved]
+  flavor_flags_only: [boss_used_mumyeongs_wound, hyeonakmun_trace_shared_without_accusation, mumyeong_follows_power_that_saw_his_wound, boss_reads_people_not_forms, boss_is_final_logic_wall, qingliu_cannot_outmuscle_boss_yet, seoharin_does_not_call_mumyeong_traitor]
+presentation:
+  visual_id: wuxia_mumyeong_request_for_aid
+  speaker: 천기록
+  layout: failed_aid_records
+  effect_cues:
+    - stable_terms: [무명, 청류문, 정파]
+choice_shapes:
+  - id: search_the_rejected_aid_letters
+    role: safe_reading
+    label_direction: 거절당한 도움 요청 서찰을 찾아 읽는다
+    expected_costs: []
+    expected_gains: [failed_aid_record, orthodox_refusal_clue]
+    outcome_hook:
+      add_flags: [mumyeong_request_for_aid_resolved, mumyeong_failed_aid_thread_opened, orthodox_hypocrisy_thread_opened, rejected_aid_letters_read]
+      add_clues: [mumyeong_tried_to_save_qingliu, orthodox_refusal_broke_mumyeong]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 서찰에는 도움을 청한 말보다 거절의 예법이 더 길게 남아 있다.
+  - id: follow_old_inn_rumors_about_mumyeong
+    role: rumor_probe
+    label_direction: 객잔에 남은 무명 소문을 좇는다
+    expected_costs: [sanity_small, danger_small]
+    expected_gains: [rumor_thread, boss_logic_clue]
+    outcome_hook:
+      add_flags: [mumyeong_request_for_aid_resolved, mumyeong_failed_aid_thread_opened, orthodox_hypocrisy_thread_opened, inn_rumor_thread_followed]
+      add_clues: [boss_logic_found_mumyeongs_wound, orthodox_refusal_broke_mumyeong]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 사람들은 그가 떠난 날보다 문전박대당한 밤을 더 작게 말한다.
+  - id: ask_seo_harin_what_help_never_came
+    role: relation_probe
+    label_direction: 서하린에게 오지 않았던 도움을 묻는다
+    expected_costs: [relation_risk, sanity_small]
+    expected_gains: [seoharin_silence_context, failed_aid_context]
+    outcome_hook:
+      add_flags: [mumyeong_request_for_aid_resolved, mumyeong_failed_aid_thread_opened, orthodox_hypocrisy_thread_opened, seoharin_failed_aid_question_asked]
+      add_clues: [seoharin_does_not_know_failed_aid, aid_refusal_precedes_departure_truth]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 서하린은 그 서찰을 본 적이 없다고 말한다. 그 무지가 오히려 오래된 상처의 모양을 만든다.
+  - id: keep_the_failed_aid_record_unshown
+    role: safe_defer
+    fallback_choice: true
+    label_direction: 실패한 도움 요청 기록을 아직 보여주지 않는다
+    expected_costs: [unresolved_debt]
+    expected_gains: [safe_distance, future_truth_marker]
+    outcome_hook:
+      add_flags: [mumyeong_request_for_aid_resolved, mumyeong_failed_aid_thread_opened, orthodox_hypocrisy_thread_opened, failed_aid_record_kept_unshown]
+      add_clues: [aid_refusal_precedes_departure_truth, mumyeong_tried_to_save_qingliu]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 기록은 접어 둔다. 오늘 밝히지 않는 진실도, 언젠가 누군가를 살릴 수 있다.
+outcome_hooks:
+  possible_flags: [mumyeong_request_for_aid_resolved, mumyeong_failed_aid_thread_opened, orthodox_hypocrisy_thread_opened, rejected_aid_letters_read, inn_rumor_thread_followed, seoharin_failed_aid_question_asked, failed_aid_record_kept_unshown]
+  possible_clues: [mumyeong_tried_to_save_qingliu, orthodox_refusal_broke_mumyeong, boss_logic_found_mumyeongs_wound, aid_refusal_precedes_departure_truth, seoharin_does_not_know_failed_aid]
+  possible_items: [rejected_aid_letter_fragment]
+  possible_destinations: [cheongryu_outer_courtyard]
+main_spine_link: 보스 첫 등장으로 열린 힘의 논리와 무명의 상처를, 정파가 청류문을 외면한 기록/소문으로 이어서 무명을 단순 배신자가 아닌 실패한 구조자 후보로 만든다.
+randomization_notes: 1회성 failed-aid records bridge. boss first appearance 뒤에만 열고 `mumyeong_request_for_aid_resolved`로 반복을 막는다. 서하린에게 진실을 전달하거나 무명 구원을 확정하지 않는다.
+promotion_notes: next runtime 후보. `wuxia_boss_followup_after_first_appearance` docs-only handoff에서 다음 runtime 후보로 선택했다. `wuxia_mumyeong_departure_truth_summary`는 후반 truth reveal/서하린 진실 전달/구원 조건 확정 때문에 보류했고, `wuxia_qingliu_attack_after_war`는 full flashback/backstory reveal 때문에 보류했으며, `wuxia_boss_resolution`은 final boss/faction/epilogue 결산 때문에 보류했다. legacy office bundle, legacy `escape-office` key, random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation schema, reward/ability/epilogue/return system, 천기록 정체 reveal은 열지 않는다.
+runtime_preview_implementation_notes:
+  planned_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
+  insert_after: wuxia_boss_first_appearance
+  selected_over: [wuxia_mumyeong_departure_truth_summary, wuxia_qingliu_attack_after_war, wuxia_boss_resolution]
+  generated_artifacts: []
+  default_bundle_changed: false
+  new_schema_opened: false
+  next_goal: wuxia_mumyeong_request_for_aid
 ```

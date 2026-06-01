@@ -163,6 +163,10 @@ sources:
         notion_event_name: "보스 첫 등장"
         repo_encounter_id: "wuxia_boss_first_appearance"
         runtime_status: "implemented_in_storypack_preview"
+      - notion_event_id: "wuxia_mumyeong_request_for_aid"
+        notion_event_name: "무명의 도움 요청"
+        repo_encounter_id: "wuxia_mumyeong_request_for_aid"
+        runtime_status: "next_runtime_selected"
     status: "live_checked_docs_synced"
 
   - key: wuxia_10_epilogue_card_db

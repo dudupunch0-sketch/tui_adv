@@ -53,6 +53,7 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         "wuxia_mumyeong_first_sighting",
         "wuxia_mumyeong_midgame_reunion",
         "wuxia_mumyeong_reads_orthodox_style",
+        "wuxia_mumyeong_request_for_aid",
         "wuxia_seo_harin_rescue",
         "wuxia_wounded_shelter_dawn_offers",
     ]
@@ -175,6 +176,21 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         in boss_first_appearance.outcome_hooks["possible_flags"]
     )
     assert "boss_reads_people_not_forms" in boss_first_appearance.outcome_hooks["possible_clues"]
+
+    request_for_aid = db.encounter_cards["wuxia_mumyeong_request_for_aid"]
+    assert request_for_aid.world_id == "wuxia_jianghu"
+    assert request_for_aid.storypack_id == "wuxia_jianghu_pack"
+    assert request_for_aid.priority_class == "route_key"
+    assert "failed_aid_records" in request_for_aid.phases
+    assert "faction_negotiation" in request_for_aid.surfaces
+    assert "safe_reading" in [choice["role"] for choice in request_for_aid.choice_shapes]
+    assert (
+        "mumyeong_request_for_aid_resolved"
+        in request_for_aid.outcome_hooks["possible_flags"]
+    )
+    assert "mumyeong_tried_to_save_qingliu" in request_for_aid.outcome_hooks[
+        "possible_clues"
+    ]
 
 
 def test_storypack_db_public_files_validate_cleanly():

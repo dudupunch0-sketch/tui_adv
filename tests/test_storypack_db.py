@@ -47,6 +47,7 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         "wuxia_commute_rift_arrival",
         "wuxia_heavenly_archive_previous_outsiders",
         "wuxia_heuksa_bang_first_fight",
+        "wuxia_mumyeong_first_sighting",
         "wuxia_seo_harin_rescue",
         "wuxia_wounded_shelter_dawn_offers",
     ]
@@ -94,6 +95,16 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
     assert "safe_care" in [choice["role"] for choice in wounded_shelter.choice_shapes]
     assert "route_commitment_reopened" in wounded_shelter.outcome_hooks["possible_flags"]
     assert "offers_arrive_because_people_lived" in wounded_shelter.outcome_hooks["possible_clues"]
+
+    mumyeong_sighting = db.encounter_cards["wuxia_mumyeong_first_sighting"]
+    assert mumyeong_sighting.world_id == "wuxia_jianghu"
+    assert mumyeong_sighting.storypack_id == "wuxia_jianghu_pack"
+    assert mumyeong_sighting.priority_class == "route_key"
+    assert "midgame_rival" in mumyeong_sighting.phases
+    assert "sect_courtyard" in mumyeong_sighting.surfaces
+    assert "safe_observe" in [choice["role"] for choice in mumyeong_sighting.choice_shapes]
+    assert "midgame_continuity_started" in mumyeong_sighting.outcome_hooks["possible_flags"]
+    assert "mumyeong_exists" in mumyeong_sighting.outcome_hooks["possible_clues"]
 
 
 def test_storypack_db_public_files_validate_cleanly():

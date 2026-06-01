@@ -417,6 +417,19 @@
 - [x] triage/companion death/mass combat/route graph/faction reputation/debt ledger/relation/reward/ability/epilogue schema, return system, 천기록 정체 reveal, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
 - [x] 다음 작업을 `route_midgame_continuity_after_wounded_shelter` docs-only handoff로 갱신
 
+### 0.2aq 2026-06-02 무협 post-opener midgame continuity docs-only handoff
+
+- [x] route별 midgame card 3개, 공통 midgame bridge, deferred-offer 후속 bridge, 무명 첫 대치, boss first appearance를 Notion reference와 repo hooks 기준으로 비교
+- [x] 다음 runtime 후보를 common midgame bridge `wuxia_mumyeong_first_sighting`로 결정
+- [x] Notion 사건 카드 DB `wuxia_mumyeong_first_sighting` / `무명 첫 목격`을 직접 대조하고, 첫 대치/중반 재회는 후속으로 보류
+- [x] 새 any-of condition schema 대신 세 route opener outcome에 공통 `route_opener_resolved` flag를 추가하는 구현 방향 문서화
+- [x] start conditions를 `conditions.locations: [cheongryu_outer_courtyard]`, `required_flags: [route_opener_resolved, cheongryu_raid_survived, cheongryu_trial_started, first_fragment_seen]`, `forbidden_flags: [mumyeong_first_sighting_resolved]`로 문서화
+- [x] route-specific opened flags는 eligibility가 아니라 branch flavor hook으로만 사용한다고 명시
+- [x] stable choice id 후보 `watch_the_stolen_qingliu_flow`, `check_seo_harin_silence`, `follow_black_serpent_runner`, `pretend_not_to_see_the_form` 고정
+- [x] boss combat/combat schema/route graph/faction reputation/relation/debt/reward/ability/epilogue/return schema와 천기록 정체 reveal은 열지 않는다고 명시
+- [x] storypack DB JSON mirror와 docs contract를 다음 runtime handoff 기준으로 갱신
+- [x] runtime YAML/Rust/Web/generated bundle, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

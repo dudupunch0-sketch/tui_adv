@@ -1,0 +1,158 @@
+# Notion source ledger for tui_adv design sync.
+# Raw Notion snapshots are not committed; the 2026-06-01 audit used /tmp/tui_adv_notion_wuxia_sync.
+
+last_checked_at: "2026-06-01T02:53:42+00:00"
+source_policy:
+  repo_canonical_docs_gate_implementation: true
+  raw_notion_to_runtime_allowed: false
+  raw_snapshots_committed: false
+  notes:
+    - "For 이구학지, the parent page is a synopsis/early planning page."
+    - "Latest detailed operating rules come from child management pages plus 사건/후일담 DBs."
+    - "Notion DB rows are design sources, not runtime-complete proof."
+
+sources:
+  - key: wuxia_igu_hakji_parent
+    title: "무협 스토리팩: 이구학지 — 천기록"
+    object: page
+    notion_ref: "notion:36f37e69-695e-8198-86c2-d35c00609441"
+    url: "https://www.notion.so/36f37e69695e819886c2d35c00609441"
+    last_edited_time: "2026-05-31T11:31:00.000Z"
+    precedence_role: "synopsis_parent"
+    related_design_units:
+      - "storypack:wuxia_jianghu_pack"
+      - "system:notion_source_precedence"
+    related_canonical_docs:
+      - "docs/dev/Development_Plan.md"
+      - "docs/dev/Notion_Design_Coverage.md"
+      - "docs/content/storypacks/wuxia_jianghu_pack.md"
+      - "docs/content/encounter_db/wuxia_jianghu_pack.md"
+    status: "live_checked_docs_synced"
+
+  - key: wuxia_00_management_overview
+    title: "00. 스토리팩 관리 개요"
+    object: page
+    notion_ref: "notion:37137e69-695e-81b6-abaa-dd88aec5ede2"
+    last_edited_time: "2026-05-31T02:35:00.000Z"
+    precedence_role: "authoritative_child_doc"
+    status: "live_checked_docs_synced"
+
+  - key: wuxia_01_cheongryu_mun
+    title: "01. 청류문"
+    object: page
+    notion_ref: "notion:37137e69-695e-8181-bda7-edc1d61da7f0"
+    last_edited_time: "2026-05-31T02:35:00.000Z"
+    precedence_role: "authoritative_child_doc"
+    related_design_units:
+      - "faction:cheongryu_mun"
+      - "system:cheongryu_martial_structure"
+    status: "live_checked_docs_synced"
+
+  - key: wuxia_02_characters
+    title: "02. 주요 등장인물"
+    object: page
+    notion_ref: "notion:37137e69-695e-81bc-b6d1-f9bdf7f3c429"
+    last_edited_time: "2026-06-01T01:48:00.000Z"
+    precedence_role: "authoritative_child_doc"
+    related_design_units:
+      - "npc:seo_harin"
+      - "npc:mumyeong"
+      - "npc:black_serpent_boss"
+    status: "live_checked_docs_synced"
+
+  - key: wuxia_seo_harin_detail
+    title: "서하린 상세 설계"
+    object: page
+    notion_ref: "notion:37137e69-695e-81ae-8575-c1a005dc73b3"
+    last_edited_time: "2026-05-31T15:21:00.000Z"
+    precedence_role: "linked_child_detail"
+    related_design_units:
+      - "npc:seo_harin"
+      - "encounter:wuxia_seo_harin_rescue"
+      - "future_epilogue:seoharin_future"
+    status: "live_checked_future_design_source"
+
+  - key: wuxia_03_factions_external_pressure
+    title: "03. 세력과 외부 압박"
+    object: page
+    notion_ref: "notion:37137e69-695e-815c-b207-e6c8805fcbd2"
+    last_edited_time: "2026-06-01T01:48:00.000Z"
+    precedence_role: "authoritative_child_doc"
+    status: "live_checked_docs_synced"
+
+  - key: wuxia_04_main_routes
+    title: "04. 메인 루트 구조"
+    object: page
+    notion_ref: "notion:37137e69-695e-8188-8927-dfb33d4eeec9"
+    last_edited_time: "2026-05-31T08:10:00.000Z"
+    precedence_role: "authoritative_child_doc"
+    status: "live_checked_docs_synced"
+
+  - key: wuxia_05_event_card_rules
+    title: "05. 사건 카드 운영 규칙"
+    object: page
+    notion_ref: "notion:37137e69-695e-812d-8aca-d97eea39964e"
+    last_edited_time: "2026-05-31T08:10:00.000Z"
+    precedence_role: "authoritative_child_doc"
+    status: "live_checked_docs_synced"
+
+  - key: wuxia_06_side_quests_debts
+    title: "06. 사이드 퀘스트와 미해결 부채"
+    object: page
+    notion_ref: "notion:37137e69-695e-8141-954f-d8a519b80e5e"
+    last_edited_time: "2026-05-31T08:10:00.000Z"
+    precedence_role: "authoritative_child_doc"
+    status: "live_checked_docs_synced"
+
+  - key: wuxia_07_cheonggi_fragments
+    title: "07. 천기록 / 천외편린 보상"
+    object: page
+    notion_ref: "notion:37137e69-695e-819e-9d66-d9eef819b02a"
+    last_edited_time: "2026-06-01T01:49:00.000Z"
+    precedence_role: "authoritative_child_doc"
+    related_design_units:
+      - "system:cheonggi_record"
+      - "system:fragment_choice_reward"
+    status: "live_checked_docs_synced"
+
+  - key: wuxia_08_endings_epilogues
+    title: "08. 엔딩과 후일담 연결"
+    object: page
+    notion_ref: "notion:37137e69-695e-8177-a228-d7f96d084622"
+    last_edited_time: "2026-05-31T14:51:00.000Z"
+    precedence_role: "authoritative_child_doc"
+    status: "live_checked_docs_synced"
+
+  - key: wuxia_09_event_card_db
+    title: "09. 이구학지 사건 카드 DB"
+    object: data_source
+    notion_ref: "notion-data-source:3a1bab76-6eb9-48de-afad-5b4f65c996c0"
+    last_edited_time: "2026-05-31T08:04:00.000Z"
+    row_count: 26
+    precedence_role: "authoritative_event_db"
+    mapped_in:
+      - "docs/dev/Notion_Design_Coverage.md"
+      - "docs/content/encounter_db/wuxia_jianghu_pack.md"
+    key_runtime_handoff_mapping:
+      notion_event_id: "wuxia_seoharin_intervention"
+      notion_event_name: "서하린의 개입"
+      repo_encounter_id: "wuxia_seo_harin_rescue"
+      runtime_status: "next_slice_not_implemented"
+    status: "live_checked_docs_synced"
+
+  - key: wuxia_10_epilogue_card_db
+    title: "10. 이구학지 후일담 카드 DB"
+    object: data_source
+    notion_ref: "notion-data-source:85157a3a-6e89-42b5-a6a0-d23e7b2d231f"
+    last_edited_time: "2026-05-31T08:06:00.000Z"
+    row_count: 17
+    precedence_role: "authoritative_epilogue_db"
+    status: "future_design_source_not_runtime"
+
+  - key: wuxia_99_checkpoint
+    title: "99. 통합 체크포인트"
+    object: page
+    notion_ref: "notion:37137e69-695e-81b9-84fc-ca879702a5d1"
+    last_edited_time: "2026-06-01T01:45:00.000Z"
+    precedence_role: "authoritative_checkpoint"
+    status: "live_checked_docs_synced"

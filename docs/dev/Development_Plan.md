@@ -25,6 +25,8 @@
 4. 설계가 끝나면 Notion reference와 결과 설계 문서를 비교해 방향, 톤, 핵심 제약, non-goals가 일치하는지 확인한다.
 5. Notion reference 대조까지 완료했거나 명시적으로 폐기/병합한 경우에만 해당 idea entry를 `done` 처리한다. 단순 import나 설계 아이디어 문서 작성만으로는 `done` 처리하지 않는다.
 
+2026-06-01 추가 규칙: `이구학지 — 천기록` Notion source는 상위 문서가 초기 기획/시놉시스 역할을 하고, 최신 세부 운영 기준은 `00`~`08` 하위 관리 문서와 `09. 이구학지 사건 카드 DB` / `10. 이구학지 후일담 카드 DB`가 우선한다. repo 구현은 여전히 이 파일과 `docs/content/*`, `docs/design/*` canonical docs를 통과해야 하며, Notion DB row를 읽었다는 이유만으로 runtime 구현 완료나 기본 bundle 반영으로 표시하지 않는다. 최신 source ledger와 coverage는 `docs/dev/Notion_Design_Coverage.md` 및 `idea_box/notion_sources.yml`를 본다.
+
 ## 0. 2026-05-22 방향 갱신
 
 현재 개발 방향은 다음과 같이 고정한다.
@@ -1141,6 +1143,60 @@ Read-only inventory:
 - 생성 artifact 위치: preview source는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`, generated preview bundle은 `crates/escape-core/fixtures/content/storypack-preview/`와 `web/src/data/generated/storypack-preview/`에만 둔다.
 - Web/Rust/terminal parity 확인 항목: preview runtime metadata 유지, default location 유지, 기존 arrival/first fight/first fragment/rescue/apprentice/raid route smoke 유지, wounded fallback encounter id/action id/fallback route starter flag 일치, default office bundle에 무협 id 부재, `ScenePage`/action id renderer-neutral 표시 유지.
 - 구현하지 말아야 할 것: rescue/apprentice/raid를 건너뛰는 wounded fallback 구현, 정파/사파/천기 route opener를 같은 slice에 구현, 기본 office bundle 변경, `escape-office` key rename, yageunmong runtime, route graph/faction/reputation/companion death/triage/mass combat/boss combat schema, 천외편린/각성편린 3택 reward schema, 여러 엔딩 구현.
+
+## 0.19 2026-06-01 docs-only sync: Notion 이구학지 운영 기준 반영
+
+현재 상태: docs-only sync 완료. runtime YAML/Rust/Web/generated bundle, 기본 office bundle, `escape-office` save/localStorage key는 수정하지 않았다.
+
+Live-check한 Notion source:
+
+- `무협 스토리팩: 이구학지 — 천기록` parent page
+- `00. 스토리팩 관리 개요`
+- `01. 청류문`
+- `02. 주요 등장인물` 및 linked child `서하린 상세 설계`
+- `03. 세력과 외부 압박`
+- `04. 메인 루트 구조`
+- `05. 사건 카드 운영 규칙`
+- `06. 사이드 퀘스트와 미해결 부채`
+- `07. 천기록 / 천외편린 보상`
+- `08. 엔딩과 후일담 연결`
+- `09. 이구학지 사건 카드 DB` — 26 rows
+- `10. 이구학지 후일담 카드 DB` — 17 rows
+- `99. 통합 체크포인트`
+
+반영한 precedence:
+
+- Notion parent page is synopsis/early plan. Detailed current Notion rules come from child management docs and the two DBs.
+- Repo canonical docs still gate implementation. Notion DB rows become design sources only after being mapped into repo docs.
+- Event/epilogue DB row counts are not runtime completion counts.
+- 천기록의 정체는 끝까지 밝히지 않는다. “정체 접근”은 기록자의 존재감/시선/실시간 기록을 감지하는 정도로 제한한다.
+
+이번 docs-only sync 결과:
+
+- `docs/dev/Notion_Design_Coverage.md`를 추가해 checked source 목록, 26개 사건 카드 row ↔ repo encounter 후보 mapping, 17개 후일담 카드 future-source status를 기록했다.
+- `idea_box/notion_sources.yml`를 추가해 page/data_source id, last edited time, precedence role, handoff mapping을 추적한다.
+- `docs/content/storypacks/wuxia_jianghu_pack.md`에 child docs/DB precedence, 청류문 최신 설정, 천기록 최신 정책을 반영했다.
+- `docs/content/encounter_db/wuxia_jianghu_pack.md`에 Notion 사건 DB mapping을 추가하고, Notion `wuxia_seoharin_intervention` / `서하린의 개입`이 repo `wuxia_seo_harin_rescue`에 대응함을 명시했다.
+- `docs/design/Storypack_World_Model.md`와 `docs/design/Storypack_Encounter_DB.md`에 Notion DB와 repo machine-readable DB의 경계를 반영했다.
+
+이미 runtime에 반영된 것:
+
+- `wuxia_commute_rift_arrival`
+- `wuxia_heuksa_bang_first_fight`
+- `wuxia_cheonggi_record_first_fragment`
+
+아직 runtime 미구현인 것:
+
+- `wuxia_seo_harin_rescue`와 그 이후 모든 무협 후보 card.
+- Notion 사건 DB 26개 중 위 세 preview beat로 매핑되지 않은 나머지 rows.
+- Notion 후일담 카드 DB 17개 전체.
+- full 천외편린 reward/ability schema, faction route graph, epilogue renderer/schema, relation/debt/faction/companion ledgers.
+
+다음 구현 slice:
+
+- 다음 구현 slice는 그대로 `wuxia_seo_harin_rescue`다.
+- 최신 Notion 기준으로는 이 slice가 Notion 사건 DB `wuxia_seoharin_intervention` / `서하린의 개입`에 대응한다.
+- 추가 설계는 필수 blocker가 아니다. 단, 구현 scope를 서하린 companion/emotional-axis 사건이나 후일담까지 확장하려면 별도 docs-only slice가 먼저 필요하다.
 
 ## 1. 목표
 

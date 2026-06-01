@@ -37,8 +37,10 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         "yageunmong_unapproved_meeting_room_loop",
     ]
     assert sorted(db.cards_by_storypack("wuxia_jianghu_pack")) == [
+        "wuxia_baekdo_medicine_debt",
         "wuxia_cheonggi_record_first_fragment",
         "wuxia_cheongryu_apprentice_entry",
+        "wuxia_cheongryu_chore_sparring",
         "wuxia_cheongryu_raid_route_split",
         "wuxia_cheongryu_raid_wounded_fallback",
         "wuxia_commute_rift_arrival",

@@ -636,6 +636,408 @@
           "visual_id": "wuxia_cheongryu_apprentice_entry"
         },
         "title": "청류문 임시 수습생 등록"
+      },
+      {
+        "body": "장작을 옮기던 중 외문 제자가 장난처럼 어깨를 밀어 온다. 정식 대련도, 무공 수업도 아니다. 그러나 장작 더미와 흙먼지 사이에서 몸이 밀리는 순간, 흑사방 난투와 물품창고에서 배운 거리와 균형이 같은 문법으로 겹친다.",
+        "choices": [
+          {
+            "id": "step_back_with_firewood",
+            "label": "장작을 떨어뜨리지 않고 반걸음 물러난다",
+            "outcome": {
+              "add_clues": [
+                "balance_matters_more_than_force",
+                "office_items_can_translate_to_training"
+              ],
+              "add_flags": [
+                "cheongryu_chore_sparring_resolved",
+                "chore_sparring_completed",
+                "balance_training_noticed",
+                "office_combat_model_reused"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "장작은 검이 아니지만 균형을 무너뜨리는 무게가 된다. 반걸음 물러나는 선택은 도망이 아니라 다음 호흡을 남기는 개입이었다.",
+              "resources": {
+                "hunger": 1
+              }
+            }
+          },
+          {
+            "id": "let_shoulder_turn_with_push",
+            "label": "밀리는 힘을 거스르지 않고 어깨를 돌린다",
+            "outcome": {
+              "add_clues": [
+                "breath_changes_balance",
+                "pressure_can_be_turned"
+              ],
+              "add_flags": [
+                "cheongryu_chore_sparring_resolved",
+                "chore_sparring_completed",
+                "cheongryu_flow_reading_started",
+                "pressure_can_be_turned"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "정면으로 버티지 않자 밀림이 회전으로 바뀌었다. 서하린은 그것을 초식이라 부르지 않고, 먼저 숨과 어깨의 방향이라고 설명했다.",
+              "resources": {
+                "sanity": -1
+              }
+            }
+          },
+          {
+            "id": "plant_bare_foot_in_dust",
+            "label": "흙먼지에 발을 박아 미끄러짐을 멈춘다",
+            "outcome": {
+              "add_clues": [
+                "posture_starts_from_ground",
+                "motion_matters_more_than_pose"
+              ],
+              "add_flags": [
+                "cheongryu_chore_sparring_resolved",
+                "chore_sparring_completed",
+                "footwork_training_grounded",
+                "shoes_and_suit_lessons_reused"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "구두를 버렸던 첫 난투의 기억이 흙바닥에서 다시 쓰인다. 발이 멈추지 않되, 미끄러지지 않는 자리를 찾는 것이 첫 수련이 된다.",
+              "resources": {
+                "health": -1
+              }
+            }
+          },
+          {
+            "id": "ask_harin_what_changed",
+            "label": "방금 왜 덜 밀렸는지 서하린에게 묻는다",
+            "outcome": {
+              "add_clues": [
+                "mentor_explains_balance_breath",
+                "flow_axes_are_trainable"
+              ],
+              "add_flags": [
+                "cheongryu_chore_sparring_resolved",
+                "chore_sparring_completed",
+                "seo_harin_mentor_thread",
+                "harin_names_balance_and_breath"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "서하린은 내공보다 먼저 균형, 호흡, 시야를 짚는다. 천기록의 빈 장은 그것이 office 난투와 같은 몸싸움의 축이라는 듯 조용히 떨린다.",
+              "resources": {
+                "sanity": -1
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "cheongryu_chore_sparring_resolved"
+          ],
+          "locations": [
+            "cheongryu_outer_courtyard"
+          ],
+          "required_flags": [
+            "cheongryu_apprentice_entry_resolved",
+            "cheongryu_trial_started",
+            "cheonggi_record_awakened",
+            "first_fragment_seen"
+          ]
+        },
+        "id": "wuxia_cheongryu_chore_sparring",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "dust_balance_then_chore_roster",
+              "duration_hint_ms": 1250,
+              "fallback_text": "흙먼지와 장작 그림자 사이로 '균형', '호흡', '장작'만 또렷하게 남는다.",
+              "intensity": 0.61,
+              "kind": "glyph_anomaly",
+              "source": "cheongryu_chore_sparring",
+              "stable_terms": [
+                "균형",
+                "호흡",
+                "장작"
+              ]
+            }
+          ],
+          "layout": "combat_intervention",
+          "speaker": "서하린",
+          "visual_id": "wuxia_cheongryu_chore_sparring"
+        },
+        "title": "청류문 장작 마당 첫 겨루기"
+      },
+      {
+        "body": "밤 종이 세 번 울리기 전에 혈월교의 불화살이 청류문 외곽 마당을 가른다. 백도맹의 깃발은 늦게 보이고, 흑천련 도월은 탈출로의 값을 묻고, 천기각 기록관은 천기록이 표적이 됐다고 낮게 말한다. 서하린은 피 묻은 소매로 부상자를 막아 세운다. 어느 편도 완전히 선하거나 안전하지 않고, 선택하지 않는 것도 대가가 된다.",
+        "choices": [
+          {
+            "id": "evacuate_the_wounded_first",
+            "label": "부상자를 먼저 빼내고 선택을 미룬다",
+            "outcome": {
+              "add_clues": [
+                "saving_people_delays_route_choice",
+                "blood_moon_targets_cheonggi_record"
+              ],
+              "add_flags": [
+                "cheongryu_raid_route_split_resolved",
+                "cheongryu_raid_survived",
+                "route_commitment_pressure",
+                "route_commitment_deferred",
+                "wounded_saved_flag",
+                "seo_harin_survived_raid"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "부상자를 업고 외곽 마당을 빠져나오자 route 선택은 늦춰졌다. 하지만 사람을 구한 선택도 하나의 선택이며, 천기록을 노린 칼끝은 사라지지 않았다.",
+              "resources": {
+                "health": -2,
+                "sanity": -1
+              }
+            }
+          },
+          {
+            "id": "defend_cheongryu_with_white_path",
+            "label": "백도맹 지원을 받아 청류문을 방어한다",
+            "outcome": {
+              "add_clues": [
+                "white_path_help_has_price",
+                "martial_knowledge_conflict"
+              ],
+              "add_flags": [
+                "cheongryu_raid_route_split_resolved",
+                "cheongryu_raid_survived",
+                "route_commitment_pressure",
+                "righteous_route_started",
+                "baekdo_alliance_debt",
+                "cheongryu_rebuild_thread",
+                "seo_harin_survived_raid"
+              ],
+              "danger": 2,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "백도맹의 검진은 마당을 지켰지만, 깃발 아래의 도움은 정치적 빚이 된다. 청류문은 살아남고, 천기록은 정파의 명분 안에 묶이기 시작한다.",
+              "resources": {
+                "health": -5,
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "trade_with_black_heaven",
+            "label": "흑천련 도월과 거래해 탈출로를 산다",
+            "outcome": {
+              "add_clues": [
+                "black_heaven_bargain_has_teeth",
+                "martial_knowledge_conflict"
+              ],
+              "add_flags": [
+                "cheongryu_raid_route_split_resolved",
+                "cheongryu_raid_survived",
+                "route_commitment_pressure",
+                "sapa_route_started",
+                "black_heaven_deal_marked",
+                "dowol_debt"
+              ],
+              "danger": 2,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "도월의 거래는 빠르고 실용적이었다. 살아남을 길은 열렸지만, 그 길의 매듭마다 흑천련의 이름과 갚아야 할 빚이 묶였다.",
+              "resources": {
+                "hunger": -1,
+                "sanity": -3
+              }
+            }
+          },
+          {
+            "id": "follow_heavenly_archive",
+            "label": "천기각 기록관을 따라 천기록의 출처를 쫓는다",
+            "outcome": {
+              "add_clues": [
+                "heavenly_archive_knows_previous_outsiders",
+                "blood_moon_targets_cheonggi_record"
+              ],
+              "add_flags": [
+                "cheongryu_raid_route_split_resolved",
+                "cheongryu_raid_survived",
+                "route_commitment_pressure",
+                "cheonggi_return_route_started",
+                "heavenly_archive_contact",
+                "cheonggi_record_targeted"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "기록관은 정답을 말하지 않았다. 다만 이전에도 이곳에 떨어진 외지인이 있었다는 시선과, 천기록을 노리는 자들이 이제 너를 보았다는 사실만 남겼다.",
+              "resources": {
+                "sanity": -4
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "cheongryu_raid_route_split_resolved"
+          ],
+          "locations": [
+            "cheongryu_outer_courtyard"
+          ],
+          "required_flags": [
+            "cheongryu_apprentice_entry_resolved",
+            "cheongryu_trial_started",
+            "cheonggi_record_awakened",
+            "first_fragment_seen",
+            "cheongryu_chore_sparring_resolved"
+          ]
+        },
+        "id": "wuxia_cheongryu_raid_route_split",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "burning_courtyard_then_branching_routes",
+              "duration_hint_ms": 1450,
+              "fallback_text": "불길과 깃발, 먹물 선이 겹치는 사이로 '청류문', '백도맹', '천기록'만 흔들리지 않고 남는다.",
+              "intensity": 0.74,
+              "kind": "glyph_anomaly",
+              "source": "cheongryu_raid_route_pressure",
+              "stable_terms": [
+                "청류문",
+                "백도맹",
+                "천기록"
+              ]
+            }
+          ],
+          "layout": "raid_route_pressure",
+          "speaker": "천기록",
+          "visual_id": "wuxia_cheongryu_raid_route_split"
+        },
+        "title": "청류문 습격과 갈라지는 길"
+      },
+      {
+        "body": "날이 밝기 전, 청류문 외곽 마당에는 임시 피난처가 꾸려지고 숨을 고르는 사람들의 이름이 하나씩 불린다. 서하린은 피 묻은 소매를 감추지 못하고, 백도맹의 약상자는 문장 깃발 아래 놓여 있으며, 흑천련의 붕대는 값표가 붙은 듯하다. 천기록의 빈 장에는 부상자 동선이 지도처럼 번진다. 선택을 미뤘지만, 세계는 그 결정을 잊지 않았다.",
+        "choices": [
+          {
+            "id": "stabilize_wounded_until_dawn",
+            "label": "새벽까지 부상자를 안정시키고 명단을 맞춘다",
+            "outcome": {
+              "add_clues": [
+                "saving_people_changed_witnesses",
+                "deferred_choice_is_still_choice"
+              ],
+              "add_flags": [
+                "cheongryu_raid_wounded_fallback_resolved",
+                "deferred_route_reopened",
+                "route_commitment_deferred",
+                "wounded_shelter_stabilized",
+                "survivor_roll_call_complete",
+                "route_delay_cost_recorded"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "사람을 먼저 구한 선택은 신뢰를 만들었다. 그러나 route pressure는 사라지지 않고, 더 구체적인 대가와 다음 선택지로 돌아왔다.",
+              "resources": {
+                "health": -1,
+                "hunger": 1
+              }
+            }
+          },
+          {
+            "id": "ask_baekdo_for_medicine_not_command",
+            "label": "백도맹에 명령이 아니라 약과 호위를 요청한다",
+            "outcome": {
+              "add_clues": [
+                "medicine_has_banner",
+                "white_path_help_has_price"
+              ],
+              "add_flags": [
+                "cheongryu_raid_wounded_fallback_resolved",
+                "deferred_route_reopened",
+                "righteous_route_started",
+                "baekdo_medicine_debt",
+                "cheongryu_rebuild_thread"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "백도맹의 약상자는 사람을 살리지만, 깃발 아래 놓인 도움은 정치적 빚을 남긴다. 늦은 선택도 정파 route의 이름을 갖기 시작했다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "trade_black_heaven_bandages_for_exit",
+            "label": "흑천련의 붕대와 탈출로를 거래한다",
+            "outcome": {
+              "add_clues": [
+                "black_heaven_help_marks_debt",
+                "black_heaven_bargain_has_teeth"
+              ],
+              "add_flags": [
+                "cheongryu_raid_wounded_fallback_resolved",
+                "deferred_route_reopened",
+                "sapa_route_started",
+                "black_heaven_escape_marker",
+                "dowol_debt"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "사파의 도움은 빠르고 실용적이다. 붕대 매듭마다 갚아야 할 이름이 묶이고, 미뤄 둔 route 선택은 거래의 형태로 다시 열린다.",
+              "resources": {
+                "hunger": -1,
+                "sanity": -3
+              }
+            }
+          },
+          {
+            "id": "follow_archive_triage_map",
+            "label": "천기각 기록관의 부상자 동선 지도를 따른다",
+            "outcome": {
+              "add_clues": [
+                "archive_records_count_the_living",
+                "heavenly_archive_knows_previous_outsiders"
+              ],
+              "add_flags": [
+                "cheongryu_raid_wounded_fallback_resolved",
+                "deferred_route_reopened",
+                "cheonggi_return_route_started",
+                "heavenly_archive_triage_map_seen",
+                "cheonggi_record_targeted"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "천기각의 지도는 산 사람의 동선을 세지만, 그 선은 주인공이 돌아갈 수 있는 균열과도 이어진다. 기록자는 정체를 드러내지 않고 시선만 남긴다.",
+              "resources": {
+                "sanity": -3
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "cheongryu_raid_wounded_fallback_resolved"
+          ],
+          "locations": [
+            "cheongryu_outer_courtyard"
+          ],
+          "required_flags": [
+            "cheongryu_raid_route_split_resolved",
+            "route_commitment_deferred",
+            "wounded_saved_flag",
+            "cheongryu_raid_survived"
+          ]
+        },
+        "id": "wuxia_cheongryu_raid_wounded_fallback",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "roll_call_then_deferred_routes",
+              "duration_hint_ms": 1400,
+              "fallback_text": "부상자 명단의 먹줄 사이로 '부상자', '백도맹', '천기각'만 흔들리지 않고 남는다.",
+              "intensity": 0.68,
+              "kind": "glyph_anomaly",
+              "source": "cheongryu_wounded_fallback",
+              "stable_terms": [
+                "부상자",
+                "백도맹",
+                "천기각"
+              ]
+            }
+          ],
+          "layout": "wounded_fallback_route_pressure",
+          "speaker": "천기록",
+          "visual_id": "wuxia_cheongryu_raid_wounded_fallback"
+        },
+        "title": "부상자 피난처와 미뤄진 선택"
       }
     ],
     "endings": [
@@ -753,7 +1155,7 @@
   "manifest": {
     "counts": {
       "achievements": 2,
-      "encounters": 5,
+      "encounters": 8,
       "endings": 1,
       "items": 3,
       "locations": 4,

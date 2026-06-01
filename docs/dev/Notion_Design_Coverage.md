@@ -2,7 +2,7 @@
 
 Status: docs-only sync + follow-up runtime status note
 Last checked: 2026-06-01T02:53:42+00:00
-Runtime status: `wuxia_seo_harin_rescue` and `wuxia_cheongryu_apprentice_entry` were implemented later as separate `storypack_preview` runtime slices; this document remains the Notion coverage ledger.
+Runtime status: `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, and `wuxia_cheongryu_raid_wounded_fallback` were implemented later as separate `storypack_preview` runtime slices; this document remains the Notion coverage ledger.
 Raw snapshot policy: live Notion markdown/DB exports were used for audit in `/tmp/tui_adv_notion_wuxia_sync`; raw snapshots are not committed.
 
 ## Purpose
@@ -114,8 +114,8 @@ The epilogue DB is a future design source. None of these 17 rows is runtime impl
 
 Already reflected before this sync:
 
-- `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, and `wuxia_cheongryu_apprentice_entry` exist as separate storypack preview runtime content.
-- `wuxia_cheongryu_raid_route_split` and `wuxia_cheongryu_raid_wounded_fallback` are designed docs/handoff candidates, not runtime content.
+- `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, and `wuxia_cheongryu_raid_wounded_fallback` exist as separate storypack preview runtime content.
+- Later route opener/epilogue candidates remain designed docs/handoff candidates, not runtime content.
 - Default office bundle separation and `escape-office` save/localStorage compatibility boundaries were already documented.
 
 Synced by the 2026-06-01 docs-only pass:
@@ -129,13 +129,13 @@ Synced by the 2026-06-01 docs-only pass:
 
 Still not runtime implemented:
 
-- `wuxia_cheongryu_raid_route_split` and later repo 후보 cards.
-- Most Notion event DB rows beyond the four already-previewed early beats.
+- Route opener cards after `wuxia_cheongryu_raid_wounded_fallback` and later repo 후보 cards.
+- Most Notion event DB rows beyond the currently previewed early/raid beats.
 - All Notion epilogue DB rows.
 - Full 천외편린 reward/ability schema, faction route graph, epilogue renderer/schema, companion/relation/debt ledgers, and route/multi-ending implementation.
 
 ## Next implementation handoff
 
-The next implementation slice is now `wuxia_cheongryu_raid_route_split`. `wuxia_seo_harin_rescue`, mapped from Notion DB row `wuxia_seoharin_intervention` / `서하린의 개입`, and `wuxia_cheongryu_apprentice_entry`, mapped from `wuxia_qingliu_apprentice_entry`, are implemented in the preview runtime bundle.
+`wuxia_seo_harin_rescue`, mapped from Notion DB row `wuxia_seoharin_intervention` / `서하린의 개입`, `wuxia_cheongryu_apprentice_entry`, mapped from `wuxia_qingliu_apprentice_entry`, `wuxia_cheongryu_raid_route_split`, and `wuxia_cheongryu_raid_wounded_fallback` are implemented in the preview runtime bundle.
 
-No additional design is required before implementing the raid route-pressure bridge unless the desired scope expands into full faction reputation, route graph, boss combat, companion death, or multi-ending systems. The implementation must still avoid default office bundle changes, `escape-office` key changes, and new relation/debt/faction/reward schemas.
+Route opener docs-only handoff: the route-opener docs-only selection chose the righteous opener `wuxia_baekdo_medicine_debt` as the next runtime handoff. It accepts both direct raid route and deferred wounded fallback branches through shared `righteous_route_started` + `cheongryu_rebuild_thread` flags; `baekdo_alliance_debt` and `baekdo_medicine_debt` remain branch flavor hooks. The implementation must still avoid default office bundle changes, `escape-office` key changes, and new relation/debt/faction/reward schemas.

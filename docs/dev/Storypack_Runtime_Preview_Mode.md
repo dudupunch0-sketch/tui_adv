@@ -1,6 +1,6 @@
 # Storypack runtime preview mode
 
-Status: 결정 문서 + 다섯 번째 runtime preview 구현 완료 + 다음 preview slice 설계 확정
+Status: 결정 문서 + 일곱 번째 runtime preview 구현 완료 + 다음 route opener docs-only handoff 필요
 
 ## Decision: separate preview mode first
 
@@ -23,7 +23,7 @@ Status: 결정 문서 + 다섯 번째 runtime preview 구현 완료 + 다음 pre
 2. 첫 무협 prototype은 아직 gameplay schema 확장보다 “기존 encounter schema로 표현 가능한가”를 확인하는 단계다.
 3. 기본 번들의 `default_location`, route smoke, Web player start/save UX가 office 전제를 갖고 있으므로, 무협 콘텐츠를 같은 bundle에 넣으면 시작 위치와 encounter-first routing이 쉽게 충돌한다.
 
-따라서 첫 단계는 별도 preview mode다. 이 결정은 gating을 영구히 포기한다는 뜻이 아니다. preview mode로 `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`가 기존 schema에서 작동함을 확인했으므로, 다음 `wuxia_cheongryu_raid_route_split`도 같은 preview bundle에서 검증한다. 다중 storypack 선택 UI/save migration이 필요해질 때 runtime-level gating을 별도로 연다.
+따라서 첫 단계는 별도 preview mode다. 이 결정은 gating을 영구히 포기한다는 뜻이 아니다. preview mode로 `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`가 기존 schema에서 작동함을 확인했다. 다중 storypack 선택 UI/save migration이 필요해질 때 runtime-level gating을 별도로 연다.
 
 ## Preview mode contract
 
@@ -81,12 +81,14 @@ python scripts/export_web_data.py \
 cargo test -p escape-wasm json_boundary_uses_storypack_preview_default_location
 cargo test -p escape-wasm json_boundary_reaches_wuxia_first_fight_through_preview_bundle
 cargo test -p escape-wasm json_boundary_reaches_wuxia_cheongryu_apprentice_entry_through_preview_bundle
+cargo test -p escape-wasm json_boundary_reaches_wuxia_cheongryu_raid_route_split_through_preview_bundle
 cargo test -p escape-terminal content_tui_smoke_renders_wuxia_storypack_preview_arrival
 cargo test -p escape-terminal content_tui_smoke_renders_wuxia_storypack_preview_first_fight
 cargo test -p escape-terminal content_tui_smoke_launches_wuxia_storypack_preview_by_opt_in_flag
 cargo test -p escape-terminal content_tui_smoke_reaches_wuxia_cheonggi_record_first_fragment
 cargo test -p escape-terminal content_tui_smoke_reaches_wuxia_seo_harin_rescue
 cargo test -p escape-terminal content_tui_smoke_reaches_wuxia_cheongryu_apprentice_entry
+cargo test -p escape-terminal content_tui_smoke_reaches_wuxia_cheongryu_raid_route_split
 ```
 
 ## 첫 prototype 후보
@@ -109,10 +111,16 @@ cargo test -p escape-terminal content_tui_smoke_reaches_wuxia_cheongryu_apprenti
 5. `wuxia_cheongryu_apprentice_entry` — 구현 완료
    - rescue 뒤 청류문 수습생/잡역/채무/서고 curiosity bridge를 연다.
    - `cheongryu_apprentice_entry_resolved`/`cheongryu_trial_started`/`seo_harin_mentor_thread` 공통 hook과 `work_chore_token`을 preview bundle에만 남긴다.
+6. `wuxia_cheongryu_raid_route_split` — 구현 완료
+   - apprentice 뒤 청류문 습격과 정파/사파/천기·귀환 route pressure를 연다.
+   - `cheongryu_raid_route_split_resolved`/`cheongryu_raid_survived`/`route_commitment_pressure` 공통 hook과 deferred fallback branch hook을 preview bundle에만 남긴다.
+7. `wuxia_cheongryu_raid_wounded_fallback` — 구현 완료
+   - raid split의 `evacuate_the_wounded_first` 뒤 route 선택을 미룬 대가와 재합류 hook을 연다.
+   - `cheongryu_raid_wounded_fallback_resolved`/`deferred_route_reopened`와 정파·사파·천기 route starter flags를 preview bundle에만 남긴다.
 
 ## 후속 slice 기준
 
-`wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`는 같은 preview mode에 추가되었고, `preview launcher/UI wiring`도 opt-in entrypoint로 구현되었다. 이미 preview export/check command, Rust/Web preview bundle artifact, terminal `--storypack-preview wuxia_jianghu_pack`, Web start screen preview launcher가 있으므로, 다음 즉시 구현은 launcher나 천외편린 reward schema가 아니라 `wuxia_cheongryu_raid_route_split` route-pressure content slice다.
+`wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`는 같은 preview mode에 추가되었고, `preview launcher/UI wiring`도 opt-in entrypoint로 구현되었다. 이미 preview export/check command, Rust/Web preview bundle artifact, terminal `--storypack-preview wuxia_jianghu_pack`, Web start screen preview launcher가 있으므로, 다음은 launcher나 천외편린 reward schema가 아니라 route opener 선택/설계 handoff다.
 
 구현된 rescue slice:
 
@@ -136,13 +144,35 @@ schema_boundary:
   forbidden: [RelationScore, DebtLedger, FactionStanding, healing_schema, companion_schema, CombatState, reward_schema, ability_schema, fragment_choice_reward]
 ```
 
+구현된 chore sparring slice:
 
-다음 구현 slice 결정:
+```yaml
+id: wuxia_cheongryu_chore_sparring
+storypack_id: wuxia_jianghu_pack
+runtime_mode: storypack_preview
+status: implemented_in_storypack_preview
+purpose: 청류문 수습생 잡역 중 작은 몸싸움을 이구학지/office 공용 basic combat action taxonomy로 검증한다.
+conditions:
+  locations: [cheongryu_outer_courtyard]
+  required_flags: [cheongryu_apprentice_entry_resolved, cheongryu_trial_started, cheonggi_record_awakened, first_fragment_seen]
+  forbidden_flags: [cheongryu_chore_sparring_resolved]
+choices:
+  - id: step_back_with_firewood       # fallback / safe reposition
+  - id: let_shoulder_turn_with_push   # flow response
+  - id: plant_bare_foot_in_dust       # grounded body check
+  - id: ask_harin_what_changed        # mentor question
+schema_boundary:
+  allowed: [conditions.locations, required_flags, forbidden_flags, choices.cost, outcome.resources, outcome.danger, outcome.add_flags, outcome.add_clues, outcome.add_items, outcome.remove_items, outcome.destination_id, outcome.log, presentation]
+  forbidden: [CombatState, combat resolver, HP 숫자전, skill cooldown, reward_schema, ability_schema, relation/debt/faction schema, default office bundle changes]
+```
+
+구현된 raid route split slice:
 
 ```yaml
 id: wuxia_cheongryu_raid_route_split
 storypack_id: wuxia_jianghu_pack
 runtime_mode: storypack_preview
+status: implemented_in_storypack_preview
 start_after:
   - wuxia_cheongryu_apprentice_entry
 required_flags:
@@ -150,8 +180,18 @@ required_flags:
   - cheongryu_trial_started
   - cheonggi_record_awakened
   - first_fragment_seen
+  - cheongryu_chore_sparring_resolved
 forbidden_flags:
   - cheongryu_raid_route_split_resolved
+choices:
+  - id: evacuate_the_wounded_first       # fallback / safe human priority
+  - id: defend_cheongryu_with_white_path # righteous route pressure
+  - id: trade_with_black_heaven          # sapa survival bargain
+  - id: follow_heavenly_archive          # cheonggi/return truth pressure
+common_outcome_hooks:
+  - cheongryu_raid_route_split_resolved
+  - cheongryu_raid_survived
+  - route_commitment_pressure
 non_goals:
   - new faction standing schema
   - route graph schema
@@ -161,38 +201,15 @@ non_goals:
   - default office bundle changes
 ```
 
-
-Next 후보 설계:
-
-```yaml
-id: wuxia_cheongryu_raid_route_split
-status: designed_next_not_implemented
-precondition: rescue/apprentice runtime slice와 first-fragment 공통 hook이 preview runtime에 안정화되어 있다.
-purpose: 청류문 습격으로 정파/사파/천기·귀환 route pressure를 노출한다.
-conditions:
-  locations: [cheongryu_outer_courtyard]
-  required_flags: [cheongryu_apprentice_entry_resolved, cheongryu_trial_started, cheonggi_record_awakened, first_fragment_seen]
-  forbidden_flags: [cheongryu_raid_route_split_resolved]
-choices:
-  - id: evacuate_the_wounded_first       # fallback / safe human priority
-  - id: defend_cheongryu_with_white_path # righteous route pressure
-  - id: trade_with_black_heaven          # sapa survival bargain
-  - id: follow_heavenly_archive          # cheonggi/return truth pressure
-schema_boundary:
-  allowed: [conditions.locations, required_flags, forbidden_flags, choices.cost, outcome.resources, outcome.danger, outcome.add_flags, outcome.add_clues, outcome.add_items, outcome.remove_items, outcome.destination_id, outcome.log, presentation]
-  forbidden: [FactionStanding, RouteGraph, BranchLock, CompanionDeath, MassCombat, boss_combat_resolver, CombatState, reward_schema, ability_schema, fragment_choice_reward, multi_ending_implementation]
-```
-
-
-Deferred later 후보 설계:
+구현된 wounded fallback slice:
 
 ```yaml
 id: wuxia_cheongryu_raid_wounded_fallback
-status: designed_later_not_implemented
-precondition: `wuxia_cheongryu_raid_route_split` runtime slice와 `evacuate_the_wounded_first` branch hook이 먼저 landing되어야 한다.
+status: implemented_in_storypack_preview
+precondition: `wuxia_cheongryu_raid_route_split` runtime slice와 `evacuate_the_wounded_first` branch hook.
 purpose: 부상자 대피 fallback 이후 route 선택을 미룬 대가와 재합류 hook을 연다.
 conditions:
-  locations: [raid_aftermath_shelter]  # or cheongryu_outer_courtyard if no new preview location
+  locations: [cheongryu_outer_courtyard]
   required_flags: [cheongryu_raid_route_split_resolved, route_commitment_deferred, wounded_saved_flag, cheongryu_raid_survived]
   forbidden_flags: [cheongryu_raid_wounded_fallback_resolved]
 choices:
@@ -200,10 +217,16 @@ choices:
   - id: ask_baekdo_for_medicine_not_command  # delayed righteous commitment
   - id: trade_black_heaven_bandages_for_exit # delayed sapa bargain
   - id: follow_archive_triage_map            # delayed cheonggi/return thread
+common_outcome_hooks:
+  - cheongryu_raid_wounded_fallback_resolved
+  - deferred_route_reopened
+  - route_commitment_deferred | righteous_route_started | sapa_route_started | cheonggi_return_route_started
 schema_boundary:
   allowed: [conditions.locations, required_flags, forbidden_flags, choices.cost, outcome.resources, outcome.danger, outcome.add_flags, outcome.add_clues, outcome.add_items, outcome.remove_items, outcome.destination_id, outcome.log, presentation]
   forbidden: [RouteGraph, FactionStanding, BranchLock, TriageSystem, CompanionDeath, MassCombat, boss_combat_resolver, CombatState, reward_schema, ability_schema, fragment_choice_reward, multi_ending_implementation]
 ```
+
+route opener docs-only handoff 결과: 첫 route opener는 정파/백도맹 약상자 채무 축인 `wuxia_baekdo_medicine_debt`로 결정했다. 다음 runtime slice는 `conditions.locations: [cheongryu_outer_courtyard]`, `required_flags: [righteous_route_started, cheongryu_rebuild_thread]`, `forbidden_flags: [baekdo_medicine_debt_resolved]`를 권장한다. direct branch의 `baekdo_alliance_debt`와 deferred branch의 `baekdo_medicine_debt`는 flavor hook이지 eligibility 필수가 아니다. route graph/faction reputation schema는 열지 않는다.
 
 Launcher/entrypoint contract:
 
@@ -291,12 +314,14 @@ cargo test -p escape-core --test content_bundle preview_fixture_indexes_wuxia_fi
 cargo test -p escape-wasm json_boundary_uses_storypack_preview_default_location
 cargo test -p escape-wasm json_boundary_reaches_wuxia_first_fight_through_preview_bundle
 cargo test -p escape-wasm json_boundary_reaches_wuxia_cheongryu_apprentice_entry_through_preview_bundle
+cargo test -p escape-wasm json_boundary_reaches_wuxia_cheongryu_raid_route_split_through_preview_bundle
 cargo test -p escape-terminal content_tui_smoke_renders_wuxia_storypack_preview_arrival
 cargo test -p escape-terminal content_tui_smoke_renders_wuxia_storypack_preview_first_fight
 cargo test -p escape-terminal content_tui_smoke_launches_wuxia_storypack_preview_by_opt_in_flag
 cargo test -p escape-terminal content_tui_smoke_reaches_wuxia_cheonggi_record_first_fragment
 cargo test -p escape-terminal content_tui_smoke_reaches_wuxia_seo_harin_rescue
 cargo test -p escape-terminal content_tui_smoke_reaches_wuxia_cheongryu_apprentice_entry
+cargo test -p escape-terminal content_tui_smoke_reaches_wuxia_cheongryu_raid_route_split
 python3 -m compileall -q src tests
 cargo fmt --check
 git diff --check

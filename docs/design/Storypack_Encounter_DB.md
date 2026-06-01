@@ -254,7 +254,7 @@ promotion_notes: runtime 승격 시 messenger UI presentation metadata를 붙인
 사람용 후보 문서는 설명/톤/해설을 보존하고, 참조 무결성 검사는 별도 JSON mirror에서 수행한다.
 
 - `docs/content/storypack_db/storypacks.json`: `StorypackRecord` 후보 목록. 현재 `isolation_pack`, `yageunmong_pack`, `wuxia_jianghu_pack`를 포함한다.
-- `docs/content/storypack_db/encounter_situations.json`: `EncounterSituationCard` 후보 목록. 현재 `isolation_pack` 6개, `yageunmong_pack` 6개, `wuxia_jianghu_pack` 7개, 총 19개 repo 후보 카드를 포함한다. Notion 사건 카드 DB 26개 row는 upstream design source이며, 이 mirror에 자동으로 전부 추가하지 않는다.
+- `docs/content/storypack_db/encounter_situations.json`: `EncounterSituationCard` 후보 목록. 현재 `isolation_pack` 6개, `yageunmong_pack` 6개, `wuxia_jianghu_pack` 9개, 총 21개 repo 후보 카드를 포함한다. Notion 사건 카드 DB 26개 row는 upstream design source이며, 이 mirror에 자동으로 전부 추가하지 않는다.
 - `src/tui_adv/game/storypack_db.py`: `load_storypack_db(root)`와 `validate_storypack_db(root)`를 제공한다.
 - `tests/test_storypack_db.py`: office isolation / office dream / wuxia 후보 카드가 같은 DB에서 로드되고, `storypack_id`/`world_id`/taxonomy/fallback/outcome hook 계약을 검증한다.
 
@@ -262,10 +262,10 @@ promotion_notes: runtime 승격 시 messenger UI presentation metadata를 붙인
 
 2026-05-31 후속 결정:
 
-- `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue` preview는 완료했다.
+- `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback` preview는 완료했다.
 - 이 preview runtime content는 `storypack_preview` bundle에만 들어가며, 기본 office runtime과 `src/tui_adv/data/*.yaml`에는 직접 섞지 않는다.
 - `preview launcher/UI wiring`은 explicit opt-in entrypoint로 구현했다. 후속 content slice에서 다시 열지 않는다.
-- 다음 승격 후보는 `wuxia_cheongryu_raid_route_split`다. `wuxia_seo_harin_rescue`와 `wuxia_cheongryu_apprentice_entry`가 서하린 구조/감시/채무, 청류문 수습생/잡역, `cheongryu_trial_started` hook을 preview source에 남겼으므로, raid route-pressure slice를 그 hook 뒤에 붙인다. `wuxia_cheongryu_raid_wounded_fallback`은 raid split fallback branch 이후 route opener 전 재합류 후보로만 연다.
+- route opener docs-only handoff에서 첫 승격 후보를 정파 opener `wuxia_baekdo_medicine_debt`로 결정했다. 이 후보는 `righteous_route_started` + `cheongryu_rebuild_thread`만 eligibility로 요구하고, direct `baekdo_alliance_debt`와 deferred `baekdo_medicine_debt`는 flavor hook으로만 사용한다.
 - 필요한 신규 설계는 encounter/choice/outcome 수준으로 제한한다. 새 combat/reward/ability schema, 천외편린 3택 reward schema, faction route graph schema는 별도 slice 전까지 열지 않는다.
 
 2026-06-01 Notion sync 결정:
@@ -273,7 +273,7 @@ promotion_notes: runtime 승격 시 messenger UI presentation metadata를 붙인
 - Notion 사건 카드 DB 26개는 `docs/dev/Notion_Design_Coverage.md`와 `docs/content/encounter_db/wuxia_jianghu_pack.md`에서 repo 후보와 future source로 매핑한다.
 - Notion 후일담 카드 DB 17개는 future design source다. 아직 runtime epilogue schema/renderer나 machine-readable encounter mirror에 넣지 않는다.
 - Notion `wuxia_seoharin_intervention` / `서하린의 개입`은 repo `wuxia_seo_harin_rescue`에 직접 대응하며 preview runtime으로 구현됐다.
-- Notion `wuxia_tianjilu_first_fragment`, `wuxia_black_serpent_first_trouble`, `wuxia_prologue_commute_rift`, `wuxia_arrival_market_confusion`, `wuxia_seoharin_intervention`은 이미 구현된 preview 초기 beat와 매핑된다. 이 매핑은 runtime completeness 범위를 해당 preview encounter들로만 제한한다.
+- Notion `wuxia_tianjilu_first_fragment`, `wuxia_black_serpent_first_trouble`, `wuxia_prologue_commute_rift`, `wuxia_arrival_market_confusion`, `wuxia_seoharin_intervention`과 repo raid route-pressure mapping은 이미 구현된 preview beat와 매핑된다. 이 매핑은 runtime completeness 범위를 해당 preview encounter들로만 제한한다.
 
 `validate_storypack_db()`가 검사하는 기준:
 

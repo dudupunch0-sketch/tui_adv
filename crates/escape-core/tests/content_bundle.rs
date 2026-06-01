@@ -196,12 +196,12 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&4));
     assert_eq!(bundle.manifest.counts.get("items"), Some(&3));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&5));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&8));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 4);
-    assert_eq!(index.encounters_len(), 5);
+    assert_eq!(index.encounters_len(), 8);
 
     let market = index
         .location("jianghu_market_street")
@@ -376,6 +376,185 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(trial.outcome.add_items, vec!["work_chore_token"]);
     assert_eq!(
         trial.outcome.destination_id.as_deref(),
+        Some("cheongryu_outer_courtyard")
+    );
+
+    let sparring = index
+        .encounter("wuxia_cheongryu_chore_sparring")
+        .expect("cheongryu chore sparring encounter");
+    assert_eq!(sparring.title, "청류문 장작 마당 첫 겨루기");
+    assert_eq!(
+        sparring.conditions.locations,
+        vec!["cheongryu_outer_courtyard"]
+    );
+    assert_eq!(
+        sparring.conditions.required_flags,
+        vec![
+            "cheongryu_apprentice_entry_resolved",
+            "cheongryu_trial_started",
+            "cheonggi_record_awakened",
+            "first_fragment_seen"
+        ]
+    );
+    assert_eq!(
+        sparring.conditions.forbidden_flags,
+        vec!["cheongryu_chore_sparring_resolved"]
+    );
+    let sparring_presentation = sparring
+        .presentation
+        .as_ref()
+        .expect("sparring presentation");
+    assert_eq!(
+        sparring_presentation.layout.as_deref(),
+        Some("combat_intervention")
+    );
+    assert_eq!(
+        sparring_presentation.effect_cues[0].stable_terms,
+        vec!["균형", "호흡", "장작"]
+    );
+    assert_eq!(sparring.choices.len(), 4);
+    let fallback_sparring = sparring
+        .choices
+        .iter()
+        .find(|choice| choice.id == "step_back_with_firewood")
+        .expect("step back fallback choice");
+    assert_eq!(
+        fallback_sparring.outcome.add_flags,
+        vec![
+            "cheongryu_chore_sparring_resolved",
+            "chore_sparring_completed",
+            "balance_training_noticed",
+            "office_combat_model_reused"
+        ]
+    );
+    assert_eq!(
+        fallback_sparring.outcome.add_clues,
+        vec![
+            "balance_matters_more_than_force",
+            "office_items_can_translate_to_training"
+        ]
+    );
+    assert_eq!(
+        fallback_sparring.outcome.destination_id.as_deref(),
+        Some("cheongryu_outer_courtyard")
+    );
+
+    let raid = index
+        .encounter("wuxia_cheongryu_raid_route_split")
+        .expect("cheongryu raid route split encounter");
+    assert_eq!(raid.title, "청류문 습격과 갈라지는 길");
+    assert_eq!(raid.conditions.locations, vec!["cheongryu_outer_courtyard"]);
+    assert_eq!(
+        raid.conditions.required_flags,
+        vec![
+            "cheongryu_apprentice_entry_resolved",
+            "cheongryu_trial_started",
+            "cheonggi_record_awakened",
+            "first_fragment_seen",
+            "cheongryu_chore_sparring_resolved"
+        ]
+    );
+    assert_eq!(
+        raid.conditions.forbidden_flags,
+        vec!["cheongryu_raid_route_split_resolved"]
+    );
+    let raid_presentation = raid.presentation.as_ref().expect("raid presentation");
+    assert_eq!(
+        raid_presentation.layout.as_deref(),
+        Some("raid_route_pressure")
+    );
+    assert_eq!(
+        raid_presentation.effect_cues[0].stable_terms,
+        vec!["청류문", "백도맹", "천기록"]
+    );
+    assert_eq!(raid.choices.len(), 4);
+    let fallback_raid = raid
+        .choices
+        .iter()
+        .find(|choice| choice.id == "evacuate_the_wounded_first")
+        .expect("evacuate wounded fallback choice");
+    assert_eq!(
+        fallback_raid.outcome.add_flags,
+        vec![
+            "cheongryu_raid_route_split_resolved",
+            "cheongryu_raid_survived",
+            "route_commitment_pressure",
+            "route_commitment_deferred",
+            "wounded_saved_flag",
+            "seo_harin_survived_raid"
+        ]
+    );
+    assert_eq!(
+        fallback_raid.outcome.add_clues,
+        vec![
+            "saving_people_delays_route_choice",
+            "blood_moon_targets_cheonggi_record"
+        ]
+    );
+    assert_eq!(
+        fallback_raid.outcome.destination_id.as_deref(),
+        Some("cheongryu_outer_courtyard")
+    );
+
+    let wounded_fallback = index
+        .encounter("wuxia_cheongryu_raid_wounded_fallback")
+        .expect("cheongryu raid wounded fallback encounter");
+    assert_eq!(wounded_fallback.title, "부상자 피난처와 미뤄진 선택");
+    assert_eq!(
+        wounded_fallback.conditions.locations,
+        vec!["cheongryu_outer_courtyard"]
+    );
+    assert_eq!(
+        wounded_fallback.conditions.required_flags,
+        vec![
+            "cheongryu_raid_route_split_resolved",
+            "route_commitment_deferred",
+            "wounded_saved_flag",
+            "cheongryu_raid_survived"
+        ]
+    );
+    assert_eq!(
+        wounded_fallback.conditions.forbidden_flags,
+        vec!["cheongryu_raid_wounded_fallback_resolved"]
+    );
+    let wounded_presentation = wounded_fallback
+        .presentation
+        .as_ref()
+        .expect("wounded fallback presentation");
+    assert_eq!(
+        wounded_presentation.layout.as_deref(),
+        Some("wounded_fallback_route_pressure")
+    );
+    assert_eq!(
+        wounded_presentation.effect_cues[0].stable_terms,
+        vec!["부상자", "백도맹", "천기각"]
+    );
+    assert_eq!(wounded_fallback.choices.len(), 4);
+    let stabilize = wounded_fallback
+        .choices
+        .iter()
+        .find(|choice| choice.id == "stabilize_wounded_until_dawn")
+        .expect("stabilize wounded fallback choice");
+    assert_eq!(
+        stabilize.outcome.add_flags,
+        vec![
+            "cheongryu_raid_wounded_fallback_resolved",
+            "deferred_route_reopened",
+            "route_commitment_deferred",
+            "wounded_shelter_stabilized",
+            "survivor_roll_call_complete",
+            "route_delay_cost_recorded"
+        ]
+    );
+    assert_eq!(
+        stabilize.outcome.add_clues,
+        vec![
+            "saving_people_changed_witnesses",
+            "deferred_choice_is_still_choice"
+        ]
+    );
+    assert_eq!(
+        stabilize.outcome.destination_id.as_deref(),
         Some("cheongryu_outer_courtyard")
     );
 }

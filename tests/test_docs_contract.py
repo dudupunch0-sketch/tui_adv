@@ -158,6 +158,9 @@ def test_transition_audio_readiness_is_current_active_plan():
     assert "wuxia_cheonggi_record_first_fragment" in next_slice
     assert "wuxia_seo_harin_rescue" in next_slice
     assert "wuxia_cheongryu_apprentice_entry" in next_slice
+    assert "wuxia_cheongryu_chore_sparring" in next_slice
+    assert "wuxia_cheongryu_raid_route_split" in next_slice
+    assert "wuxia_cheongryu_raid_wounded_fallback" in next_slice
     assert "renderer-neutral" in next_slice
     assert "`wuxia_heuksa_bang_first_fight`를 구현한다" not in next_slice
 
@@ -166,6 +169,9 @@ def test_transition_audio_readiness_is_current_active_plan():
     assert "wuxia_cheonggi_record_first_fragment" in next_actions
     assert "wuxia_seo_harin_rescue" in next_actions
     assert "wuxia_cheongryu_apprentice_entry" in next_actions
+    assert "wuxia_cheongryu_chore_sparring" in next_actions
+    assert "wuxia_cheongryu_raid_route_split" in next_actions
+    assert "wuxia_cheongryu_raid_wounded_fallback" in next_actions
     assert "preview launcher/UI wiring`도 완료" in next_actions
     assert "preview mode" in next_actions or "storypack_preview" in next_actions
     assert "`wuxia_heuksa_bang_first_fight`를 같은 `wuxia_jianghu_pack` storypack preview mode에 추가한다" not in next_actions
@@ -322,21 +328,31 @@ def test_combat_system_auto_brawl_doc_is_indexed_and_backlog_done():
     plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
     idea = Path("idea_box/combat_system.md").read_text(encoding="utf-8")
     doc_path = Path("docs/design/Combat_System_Auto_Brawl.md")
+    basic_doc_path = Path("docs/design/Basic_Combat_Action_Model.md")
 
     assert doc_path.exists()
+    assert basic_doc_path.exists()
     doc = doc_path.read_text(encoding="utf-8")
+    basic_doc = basic_doc_path.read_text(encoding="utf-8")
     assert "docs/design/Combat_System_Auto_Brawl.md" in index
+    assert "docs/design/Basic_Combat_Action_Model.md" in index
     assert "docs/design/Combat_System_Auto_Brawl.md" in readme
+    assert "docs/design/Basic_Combat_Action_Model.md" in readme
     assert "전투 시스템 아이디어 문서화" in checklist
     assert "schema-less combat encounter prototype runtime" in checklist
     assert "docs/design/Combat_System_Auto_Brawl.md" in plan
+    assert "docs/design/Basic_Combat_Action_Model.md" in plan
     assert "`supply_closet_auto_brawl`" in plan
+    assert "`wuxia_cheongryu_chore_sparring`" in plan
     assert "자동 난투 + 상황 개입" in doc
     assert "Rust GameCore" in doc
     assert "ScenePage" in doc
     assert "전투당 개입 요구는 0~3회" in doc
     assert "schema-less combat encounter prototype" in doc
     assert "`supply_closet_auto_brawl`" in doc
+    assert "wuxia_cheongryu_chore_sparring" in basic_doc
+    assert "office 대응 전투 후보 1개 설계/구현" in basic_doc
+    assert "CombatState" in basic_doc
     assert "status: done" in idea
     assert "used_by: docs/design/Combat_System_Auto_Brawl.md" in idea
     assert "이번 처리에서는 런타임 YAML/Rust/Web 코드는 변경하지 않았다" in idea
@@ -408,6 +424,7 @@ def test_storypack_world_model_and_wuxia_pack_are_indexed_and_current():
     assert "wuxia_commute_rift_arrival" in wuxia_cards
     assert "wuxia_heuksa_bang_first_fight" in wuxia_cards
     assert "wuxia_cheonggi_record_first_fragment" in wuxia_cards
+    assert "wuxia_cheongryu_chore_sparring" in wuxia_cards
     assert "wuxia_office_worker_arrival" not in wuxia_cards
     assert "wuxia_duel_bridge_intervention" not in wuxia_cards
 
@@ -420,7 +437,9 @@ def test_storypack_world_model_and_wuxia_pack_are_indexed_and_current():
     assert "무협 `wuxia_heuksa_bang_first_fight` preview runtime slice 완료" in plan
     assert "무협 preview launcher/UI wiring 완료" in plan
     assert "무협 `wuxia_cheonggi_record_first_fragment` preview runtime slice 완료" in plan
+    assert "무협 `wuxia_cheongryu_chore_sparring` preview runtime slice 완료" in plan
     assert "무협 preview launcher/UI wiring" in checklist
+    assert "무협 `wuxia_cheongryu_chore_sparring` preview runtime slice" in checklist
     assert "무협 `wuxia_cheonggi_record_first_fragment` preview runtime slice" in checklist
     assert "첫 비-office 기준팩은 `wuxia_jianghu_pack` / **이구학지 — 천기록**" in plan
     next_slice = plan.split("현재 최우선 남은 작업:", 1)[1].split("전환 중 유지:", 1)[0]
@@ -430,6 +449,9 @@ def test_storypack_world_model_and_wuxia_pack_are_indexed_and_current():
     assert "wuxia_cheonggi_record_first_fragment" in next_slice
     assert "wuxia_seo_harin_rescue" in next_slice
     assert "wuxia_cheongryu_apprentice_entry" in next_slice
+    assert "wuxia_cheongryu_chore_sparring" in next_slice
+    assert "wuxia_cheongryu_raid_route_split" in next_slice
+    assert "wuxia_cheongryu_raid_wounded_fallback" in next_slice
     assert "`wuxia_heuksa_bang_first_fight`를 구현한다" not in next_slice
     assert "PR C audio engine skeleton을 리뷰/머지" not in next_slice
 
@@ -476,6 +498,8 @@ def test_wuxia_runtime_preview_mode_decision_is_documented_before_runtime_conten
     assert "wuxia_cheonggi_record_first_fragment" in next_actions
     assert "wuxia_seo_harin_rescue" in next_actions
     assert "wuxia_cheongryu_apprentice_entry" in next_actions
+    assert "wuxia_cheongryu_raid_route_split" in next_actions
+    assert "wuxia_cheongryu_raid_wounded_fallback" in next_actions
     assert "preview launcher/UI wiring`도 완료" in next_actions
     assert "preview mode" in next_actions or "storypack_preview" in next_actions
     assert "`wuxia_heuksa_bang_first_fight`를 같은 `wuxia_jianghu_pack` storypack preview mode에 추가한다" not in next_actions
@@ -523,6 +547,55 @@ def test_wuxia_commute_rift_arrival_preview_runtime_is_documented_and_indexed():
     assert "기본 office bundle은 계속 `dev_desk`에서 시작" in plan
     assert "jianghu_market_street" in decision
     assert "wuxia_cheonggi_record_first_fragment" in decision
+    assert "wuxia_cheongryu_chore_sparring" in decision
     assert "content_tui_smoke_renders_wuxia_storypack_preview_first_fight" in decision
     assert "content_tui_smoke_launches_wuxia_storypack_preview_by_opt_in_flag" in decision
     assert "content_tui_smoke_reaches_wuxia_cheonggi_record_first_fragment" in decision
+
+
+def test_wuxia_cheongryu_raid_wounded_fallback_runtime_slice_is_docs_synced():
+    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    decision = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(encoding="utf-8")
+    coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
+    next_goal = Path("idea_box/next_goal/README.md").read_text(encoding="utf-8")
+    wuxia_pack = Path("docs/content/storypacks/wuxia_jianghu_pack.md").read_text(encoding="utf-8")
+    wuxia_cards = Path("docs/content/encounter_db/wuxia_jianghu_pack.md").read_text(encoding="utf-8")
+
+    assert "무협 `wuxia_cheongryu_raid_wounded_fallback` preview runtime slice 완료" in plan
+    assert "### 0.2ah 2026-06-01 무협 `wuxia_cheongryu_raid_wounded_fallback` preview runtime slice" in checklist
+    assert "wuxia_cheongryu_raid_wounded_fallback` — 구현 완료" in decision
+    assert "implemented_in_storypack_preview" in wuxia_cards
+    assert "`wuxia_cheongryu_raid_wounded_fallback` — preview runtime 구현 완료" in wuxia_pack
+    assert "route opener docs-only handoff" in plan
+    assert "wuxia_baekdo_medicine_debt" in plan
+    assert "wuxia_baekdo_medicine_debt" in next_goal
+    assert "current_goal: implement_wuxia_baekdo_medicine_debt" in next_goal
+    assert "Route opener docs-only handoff" in coverage
+    next_slice = plan.split("현재 최우선 남은 작업:", 1)[1].split("전환 중 유지:", 1)[0]
+    assert "wuxia_baekdo_medicine_debt" in next_slice
+    assert "righteous_route_started" in next_slice
+    assert "cheongryu_rebuild_thread" in next_slice
+    assert "기본 `content.bundle.json`, Web 기본 generated bundle, `src/tui_adv/data/*.yaml`, `escape-office` save/localStorage key는 계속 바꾸지 않는다" in next_slice
+
+
+def test_wuxia_baekdo_medicine_debt_route_opener_handoff_is_docs_synced():
+    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    decision = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(encoding="utf-8")
+    next_goal = Path("idea_box/next_goal/README.md").read_text(encoding="utf-8")
+    storypack_db_readme = Path("docs/content/storypack_db/README.md").read_text(encoding="utf-8")
+    wuxia_pack = Path("docs/content/storypacks/wuxia_jianghu_pack.md").read_text(encoding="utf-8")
+    wuxia_cards = Path("docs/content/encounter_db/wuxia_jianghu_pack.md").read_text(encoding="utf-8")
+
+    assert "## 0.20 2026-06-01 docs-only route opener handoff: `wuxia_baekdo_medicine_debt`" in plan
+    assert "### 0.2ai 2026-06-01 무협 route opener docs-only handoff" in checklist
+    assert "route opener docs-only handoff 결과: 첫 route opener는 정파/백도맹 약상자 채무 축인 `wuxia_baekdo_medicine_debt`" in decision
+    assert "| `wuxia_baekdo_medicine_debt` | `route_commitment`" in wuxia_pack
+    assert "## 9. `wuxia_baekdo_medicine_debt`" in wuxia_cards
+    assert "runtime_preview_design_status: designed_next_not_implemented" in wuxia_cards
+    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 9개." in storypack_db_readme
+    assert "current_goal: implement_wuxia_baekdo_medicine_debt" in next_goal
+    assert "runtime-preview-implementation" in next_goal
+    assert "required_flags: [righteous_route_started, cheongryu_rebuild_thread]" in next_goal
+    assert "runtime YAML/Rust/Web/generated artifact" in next_goal

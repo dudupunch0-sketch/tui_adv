@@ -175,6 +175,6 @@
       "murim_outsider"
     ],
     "main_spine_support": "office에서 출발한 현대인이 완전히 다른 world에 떨어져도 소속, 평판, 관계, 성장, 전투, 자원, 선택, 엔딩을 같은 engine loop로 설명할 수 있는지 검증한다.",
-    "runtime_promotion_notes": "`wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry` preview는 separate `storypack_preview` mode에서 완료했다. 다음 구현 slice는 `wuxia_cheongryu_raid_route_split`로 확정하며, deferred fallback 후보 `wuxia_cheongryu_raid_wounded_fallback`도 설계/handoff 완료 상태다. 기본 office bundle과 `escape-office` save/localStorage key, 천외편린 3택 성장 schema, faction route graph schema는 변경하지 않는다."
+    "runtime_promotion_notes": "`wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, and `wuxia_cheongryu_raid_wounded_fallback` preview는 separate `storypack_preview` mode에서 완료했다. Route opener docs-only handoff는 정파 opener `wuxia_baekdo_medicine_debt`를 다음 runtime 후보로 결정했다. 기본 office bundle과 `escape-office` save/localStorage key, 천외편린 3택 성장 schema, faction route graph schema는 변경하지 않는다."
   }
 ]

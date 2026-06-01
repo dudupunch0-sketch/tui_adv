@@ -17,6 +17,9 @@ describe('runtime content bundle registry', () => {
     expect(officeEncounterIds).not.toContain('wuxia_cheonggi_record_first_fragment');
     expect(officeEncounterIds).not.toContain('wuxia_seo_harin_rescue');
     expect(officeEncounterIds).not.toContain('wuxia_cheongryu_apprentice_entry');
+    expect(officeEncounterIds).not.toContain('wuxia_cheongryu_chore_sparring');
+    expect(officeEncounterIds).not.toContain('wuxia_cheongryu_raid_route_split');
+    expect(officeEncounterIds).not.toContain('wuxia_cheongryu_raid_wounded_fallback');
   });
 
   it('registers wuxia_jianghu_pack as an explicit Web storypack preview option', () => {
@@ -40,6 +43,9 @@ describe('runtime content bundle registry', () => {
       'wuxia_cheonggi_record_first_fragment',
       'wuxia_seo_harin_rescue',
       'wuxia_cheongryu_apprentice_entry',
+      'wuxia_cheongryu_chore_sparring',
+      'wuxia_cheongryu_raid_route_split',
+      'wuxia_cheongryu_raid_wounded_fallback',
     ]);
   });
 });

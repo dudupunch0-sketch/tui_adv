@@ -148,6 +148,7 @@
 
 - [x] `idea_box/combat_system.md`를 `docs/design/Combat_System_Auto_Brawl.md`로 승격
 - [x] 자동 난투 + 상황 개입을 Rust GameCore/`ScenePage` 호환 설계 후보로 정리
+- [x] `docs/design/Basic_Combat_Action_Model.md`에 이구학지 기준이지만 office에도 재사용하는 기본 전투 액션 taxonomy 정리
 
 ### 0.2o 2026-05-29 schema-less combat encounter prototype runtime
 
@@ -290,6 +291,49 @@
 - [x] Python exporter, Rust content fixture, WASM JSON boundary, SuperLightTUI apprentice parity 테스트 추가
 - [x] relation/debt/faction/training XP/chore scheduler/combat/reward/ability schema, 기본 office bundle, `escape-office` save/localStorage key 미변경 유지
 - [x] 다음 구현 slice를 `wuxia_cheongryu_raid_route_split`로 갱신
+
+### 0.2ag-pre 2026-06-01 무협 `wuxia_cheongryu_chore_sparring` preview runtime slice
+
+- [x] `wuxia_cheongryu_chore_sparring`를 `wuxia_cheongryu_apprentice_entry`와 first fragment 뒤 1회성 training bridge encounter로 추가
+- [x] `step_back_with_firewood`, `let_shoulder_turn_with_push`, `plant_bare_foot_in_dust`, `ask_harin_what_changed` stable choice id 고정
+- [x] 모든 chore sparring outcome이 `cheongryu_chore_sparring_resolved`, `chore_sparring_completed`, `destination_id: cheongryu_outer_courtyard` bridge를 남기도록 구현
+- [x] 자기 resolved flag를 required/forbidden에 동시에 넣지 않고 `forbidden_flags`에만 둔다고 정리
+- [x] Rust fixture와 Web generated preview bundle 재생성
+- [x] Python exporter, Rust content fixture, WASM JSON boundary, SuperLightTUI chore sparring parity, Web content bundle tests 추가
+- [x] CombatState/combat resolver/skill tree/reward/ability/relation score schema, 기본 office bundle, `escape-office` save/localStorage key 미변경 유지
+
+### 0.2ag 2026-06-01 무협 `wuxia_cheongryu_raid_route_split` preview runtime slice
+
+- [x] `wuxia_cheongryu_raid_route_split`를 `wuxia_cheongryu_apprentice_entry`/`wuxia_cheongryu_chore_sparring` 뒤에 schema-less route-pressure encounter로 추가
+- [x] `evacuate_the_wounded_first`, `defend_cheongryu_with_white_path`, `trade_with_black_heaven`, `follow_heavenly_archive` stable choice id 고정
+- [x] 모든 raid outcome이 `cheongryu_raid_route_split_resolved`, `cheongryu_raid_survived`, `route_commitment_pressure`, `destination_id: cheongryu_outer_courtyard` bridge를 남기도록 구현
+- [x] fallback outcome이 `route_commitment_deferred` / `wounded_saved_flag`를 남겨 `wuxia_cheongryu_raid_wounded_fallback` 선행 조건을 충족하도록 구현
+- [x] Rust fixture와 Web generated preview bundle 재생성
+- [x] Python exporter, Rust content fixture, WASM JSON boundary, SuperLightTUI raid parity, Web content bundle tests 추가
+- [x] faction route graph/reputation/companion death/mass combat/boss combat/reward/ability schema, 기본 office bundle, `escape-office` save/localStorage key 미변경 유지
+- [x] 당시 다음 구현 slice를 `wuxia_cheongryu_raid_wounded_fallback`로 갱신했고, 후속 0.2ah에서 구현 완료
+
+### 0.2ah 2026-06-01 무협 `wuxia_cheongryu_raid_wounded_fallback` preview runtime slice
+
+- [x] `wuxia_cheongryu_raid_wounded_fallback`를 `evacuate_the_wounded_first` fallback 뒤 조건부 deferred bridge로 추가
+- [x] `stabilize_wounded_until_dawn`, `ask_baekdo_for_medicine_not_command`, `trade_black_heaven_bandages_for_exit`, `follow_archive_triage_map` stable choice id 고정
+- [x] 모든 wounded fallback outcome이 `cheongryu_raid_wounded_fallback_resolved`, `deferred_route_reopened`, `destination_id: cheongryu_outer_courtyard` bridge를 남기도록 구현
+- [x] route starter flags는 `righteous_route_started`, `sapa_route_started`, `cheonggi_return_route_started`, `route_commitment_deferred`로만 남기고 route graph/faction schema는 열지 않음
+- [x] Rust fixture와 Web generated preview bundle 재생성
+- [x] Python exporter, Rust content fixture, WASM JSON boundary, SuperLightTUI wounded fallback parity, Web content bundle tests 추가
+- [x] faction route graph/reputation/triage/companion death/mass combat/boss combat/reward/ability schema, 기본 office bundle, `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 작업을 route opener 선택/설계 docs-only handoff로 갱신
+
+### 0.2ai 2026-06-01 무협 route opener docs-only handoff
+
+- [x] direct raid branch와 deferred wounded fallback branch가 남기는 route starter flags 확인
+- [x] 첫 route opener 후보를 정파/백도맹 약상자 채무 축 `wuxia_baekdo_medicine_debt`로 결정
+- [x] start conditions를 `conditions.locations: [cheongryu_outer_courtyard]`, `required_flags: [righteous_route_started, cheongryu_rebuild_thread]`, `forbidden_flags: [baekdo_medicine_debt_resolved]`로 문서화
+- [x] `baekdo_alliance_debt`와 `baekdo_medicine_debt`는 any-of eligibility가 아니라 branch flavor hook으로만 사용한다고 명시
+- [x] stable choice id 후보 `accept_medicine_with_written_debt`, `ask_terms_before_opening_gate`, `send_supplies_to_wounded_first`, `compare_banner_to_record_margin` 고정
+- [x] route graph/faction reputation/debt ledger/relation/reward/ability schema는 열지 않는다고 명시
+- [x] storypack DB JSON mirror와 docs contract를 다음 runtime handoff 기준으로 갱신
+- [x] runtime YAML/Rust/Web/generated bundle, 기본 office bundle, `escape-office` save/localStorage key 미변경 유지
 
 ### 0.3 완료 기준
 

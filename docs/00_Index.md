@@ -43,6 +43,7 @@ docs/
   design/
     Game_Loop.md                    # 턴 진행, 인카운터, 선택지 처리 루프
     Combat_System_Auto_Brawl.md     # 자동 난투 + 상황 개입 전투 설계 후보
+    Basic_Combat_Action_Model.md     # 이구학지/office 공용 기본 전투 액션 taxonomy
     Player_State.md                 # 체력/정신력/배터리/허기/갈증 규칙
     Character_Stats_and_Generator.md # 6스탯 등장인물/LLM 생성기 설계 후보
     Storypack_World_Model.md        # office-only 편향을 줄이는 world/storypack 일반화 기준
@@ -68,7 +69,7 @@ docs/
     storypack_db/                   # storypack/card 후보의 machine-readable JSON DB
 
   runtime preview sources/
-    src/tui_adv/storypack-previews/wuxia_jianghu_pack/ # wuxia_commute_rift_arrival + wuxia_heuksa_bang_first_fight + wuxia_cheonggi_record_first_fragment preview source YAML
+    src/tui_adv/storypack-previews/wuxia_jianghu_pack/ # wuxia_commute_rift_arrival부터 wuxia_cheongryu_raid_wounded_fallback까지 preview source YAML
     crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json # Rust/GameCore preview fixture
     web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json # Web/WASM preview bundle
 
@@ -130,6 +131,7 @@ private/
 - `docs/design/Storypack_Encounter_DB.md`
 - `docs/design/Game_Loop.md`
 - `docs/design/Combat_System_Auto_Brawl.md`
+- `docs/design/Basic_Combat_Action_Model.md`
 - `docs/design/Map.md`
 - `docs/design/UI_Rules.md`
 - `docs/design/TUI_Storybook_GlyphFX_Concept.md`
@@ -182,6 +184,6 @@ private/
 다음 주제가 커지면 별도 문서로 분리하고, 그때 이 인덱스와 implementation-map도 같이 갱신한다.
 
 1. `document_contamination_pack`, `meeting_reservation_pack`, `compensation_strike_pack`의 별도 후보 문서
-2. `wuxia_jianghu_pack` / 이구학지 — 천기록의 다음 preview slice: `wuxia_cheongryu_raid_route_split` route-pressure 구현. `wuxia_seo_harin_rescue`와 `wuxia_cheongryu_apprentice_entry`는 preview runtime 구현 완료, deferred `wuxia_cheongryu_raid_wounded_fallback`는 설계 완료 후보
+2. `wuxia_jianghu_pack` / 이구학지 — 천기록 preview는 `wuxia_cheongryu_raid_wounded_fallback`까지 구현 완료. 다음 runtime handoff는 정파 opener `wuxia_baekdo_medicine_debt` 구현
 3. `yageunmong_pack` / 야근몽의 첫 runtime preview 후보: `yageunmong_late_night_desk_awake` 또는 각성편린 3택 preview
 4. 실시간 UI/UX 점검 후 확정된 화면/입력 변경 사항 기록

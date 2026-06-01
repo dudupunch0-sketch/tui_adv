@@ -146,7 +146,7 @@ sources:
       - notion_event_id: "wuxia_qingliu_raid_route_split"
         notion_event_name: "청류문 습격 / 루트 압박"
         repo_encounter_id: "wuxia_cheongryu_raid_route_split"
-        runtime_status: "designed_next_not_implemented"
+        runtime_status: "implemented_in_storypack_preview"
     status: "live_checked_docs_synced"
 
   - key: wuxia_10_epilogue_card_db

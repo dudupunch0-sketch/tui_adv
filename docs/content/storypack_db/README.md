@@ -40,6 +40,6 @@ PYTHONPATH=src python -m pytest tests/test_storypack_db.py -q
 
 - `isolation_pack`: office apocalypse 후보 카드 6개.
 - `yageunmong_pack`: 야근몽 office-dream 후보 카드 6개.
-- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 7개.
+- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 9개.
 
-다음 runtime slice는 이미 결정된 `storypack_preview` mode에서 `wuxia_cheongryu_raid_route_split`를 구현하는 것이다. `wuxia_seo_harin_rescue`와 `wuxia_cheongryu_apprentice_entry`는 preview runtime에 구현되어 서하린 구조/감시/채무, 청류문 수습생/잡역 hook과 `cheongryu_outer_courtyard`를 남긴다. `wuxia_cheongryu_raid_route_split`는 그 뒤의 route-pressure 후보로 설계 완료했고, rescue/apprentice/first-fragment hook이 안정화되었으므로 다음 구현 대상이다. `wuxia_cheongryu_raid_wounded_fallback`은 raid split의 `evacuate_the_wounded_first` branch 이후 조건부 deferred follow-up으로만 연다. 기본 office bundle과 `escape-office` save/localStorage key는 유지한다.
+`wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`는 preview runtime에 구현되어 서하린 구조/감시/채무, 청류문 수습생/잡역 hook, 장작 마당 첫 겨루기 training hook, route-pressure hook, deferred wounded fallback hook과 `cheongryu_outer_courtyard`를 남긴다. 다음 runtime handoff는 정파 opener `wuxia_baekdo_medicine_debt`이며, machine-readable DB에는 docs-only candidate로 추가했다. 기본 office bundle과 `escape-office` save/localStorage key는 유지한다.

@@ -4,6 +4,8 @@
 
 이 문서는 `idea_box/combat_system.md`의 원본 아이디어를 `escape from the office`의 현재 구조에 맞게 승격한 설계 문서다.
 
+기본 공격 형식, 싸우는 형태, 선택지 taxonomy는 `docs/design/Basic_Combat_Action_Model.md`가 담당한다. 이 문서는 상위 철학과 구현 단계, `Basic_Combat_Action_Model.md`는 이구학지와 office가 공유할 수 있는 action authoring 문법이다.
+
 원본 아이디어의 핵심은 다음 한 줄이다.
 
 > 실시간으로 자동 진행되는 MMA식 난투 속에서, 플레이어가 결정적인 상황에만 개입해 전투의 흐름을 바꾸는 시스템.
@@ -410,6 +412,7 @@ SuperLightTUI:
 
 - 원본 source: `idea_box/combat_system.md`
 - 승격 문서: `docs/design/Combat_System_Auto_Brawl.md`
+- 기본 액션 모델: `docs/design/Basic_Combat_Action_Model.md`
 - 상태: 설계 문서화 완료, PR 1 schema-less runtime prototype 구현 완료
 - 첫 runtime slice: `supply_closet_auto_brawl`
 - 유지한 금지선: 새 `CombatState`, 새 combat schema, HP 숫자전, 스킬/쿨타임, renderer gameplay 판정 없음

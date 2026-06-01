@@ -411,6 +411,169 @@ fn content_tui_smoke_reaches_wuxia_cheongryu_apprentice_entry() {
 }
 
 #[test]
+fn content_tui_smoke_reaches_wuxia_cheongryu_chore_sparring() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--storypack-preview",
+            "wuxia_jianghu_pack",
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:follow_roadside_dust",
+            "--action",
+            "move:jianghu_market_street",
+            "--action",
+            "choice:run_toward_open_street",
+            "--action",
+            "choice:choose_failure_log",
+            "--action",
+            "choice:tell_plain_truth",
+            "--action",
+            "choice:accept_three_month_trial",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("위치: 청류문 외곽 마당 (cheongryu_outer_courtyard)"));
+    assert!(stdout.contains("청류문 장작 마당 첫 겨루기"));
+    assert!(stdout.contains("visual id: wuxia_cheongryu_chore_sparring"));
+    assert!(stdout.contains("layout: combat_intervention"));
+    assert!(stdout.contains("stable terms: 균형 / 호흡 / 장작"));
+    assert!(
+        stdout.contains("choice:step_back_with_firewood / 장작을 떨어뜨리지 않고 반걸음 물러난다")
+    );
+    assert!(stdout
+        .contains("choice:let_shoulder_turn_with_push / 밀리는 힘을 거스르지 않고 어깨를 돌린다"));
+    assert!(
+        stdout.contains("choice:plant_bare_foot_in_dust / 흙먼지에 발을 박아 미끄러짐을 멈춘다")
+    );
+    assert!(
+        stdout.contains("choice:ask_harin_what_changed / 방금 왜 덜 밀렸는지 서하린에게 묻는다")
+    );
+    assert!(!stdout.contains("dev_desk"));
+}
+
+#[test]
+fn content_tui_smoke_reaches_wuxia_cheongryu_raid_route_split() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--storypack-preview",
+            "wuxia_jianghu_pack",
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:follow_roadside_dust",
+            "--action",
+            "move:jianghu_market_street",
+            "--action",
+            "choice:run_toward_open_street",
+            "--action",
+            "choice:choose_failure_log",
+            "--action",
+            "choice:tell_plain_truth",
+            "--action",
+            "choice:accept_three_month_trial",
+            "--action",
+            "choice:step_back_with_firewood",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("위치: 청류문 외곽 마당 (cheongryu_outer_courtyard)"));
+    assert!(stdout.contains("청류문 습격과 갈라지는 길"));
+    assert!(stdout.contains("visual id: wuxia_cheongryu_raid_route_split"));
+    assert!(stdout.contains("layout: raid_route_pressure"));
+    assert!(stdout.contains("stable terms: 청류문 / 백도맹 / 천기록"));
+    assert!(
+        stdout.contains("choice:evacuate_the_wounded_first / 부상자를 먼저 빼내고 선택을 미룬다")
+    );
+    assert!(stdout.contains(
+        "choice:defend_cheongryu_with_white_path / 백도맹 지원을 받아 청류문을 방어한다"
+    ));
+    assert!(stdout.contains("choice:trade_with_black_heaven / 흑천련 도월과 거래해 탈출로를 산다"));
+    assert!(stdout
+        .contains("choice:follow_heavenly_archive / 천기각 기록관을 따라 천기록의 출처를 쫓는다"));
+    assert!(!stdout.contains("dev_desk"));
+}
+
+#[test]
+fn content_tui_smoke_reaches_wuxia_cheongryu_raid_wounded_fallback() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--storypack-preview",
+            "wuxia_jianghu_pack",
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:follow_roadside_dust",
+            "--action",
+            "move:jianghu_market_street",
+            "--action",
+            "choice:run_toward_open_street",
+            "--action",
+            "choice:choose_failure_log",
+            "--action",
+            "choice:tell_plain_truth",
+            "--action",
+            "choice:accept_three_month_trial",
+            "--action",
+            "choice:step_back_with_firewood",
+            "--action",
+            "choice:evacuate_the_wounded_first",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("위치: 청류문 외곽 마당 (cheongryu_outer_courtyard)"));
+    assert!(stdout.contains("부상자 피난처와 미뤄진 선택"));
+    assert!(stdout.contains("visual id: wuxia_cheongryu_raid_wounded_fallback"));
+    assert!(stdout.contains("layout: wounded_fallback_route_pressure"));
+    assert!(stdout.contains("stable terms: 부상자 / 백도맹 / 천기각"));
+    assert!(stdout.contains(
+        "choice:stabilize_wounded_until_dawn / 새벽까지 부상자를 안정시키고 명단을 맞춘다"
+    ));
+    assert!(stdout.contains(
+        "choice:ask_baekdo_for_medicine_not_command / 백도맹에 명령이 아니라 약과 호위를 요청한다"
+    ));
+    assert!(stdout.contains(
+        "choice:trade_black_heaven_bandages_for_exit / 흑천련의 붕대와 탈출로를 거래한다"
+    ));
+    assert!(stdout
+        .contains("choice:follow_archive_triage_map / 천기각 기록관의 부상자 동선 지도를 따른다"));
+    assert!(!stdout.contains("dev_desk"));
+}
+
+#[test]
 fn content_tui_smoke_renders_final_movement_panel_after_scripted_actions() {
     let bundle_path = content_bundle_path();
     let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))

@@ -89,6 +89,9 @@ def test_export_web_data_builds_renderer_neutral_content_bundle():
             "wuxia_cheonggi_record_first_fragment",
             "wuxia_seo_harin_rescue",
             "wuxia_cheongryu_apprentice_entry",
+            "wuxia_cheongryu_chore_sparring",
+            "wuxia_cheongryu_raid_route_split",
+            "wuxia_cheongryu_raid_wounded_fallback",
         }
         for encounter in bundle["content"]["encounters"]
     )
@@ -112,7 +115,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     assert bundle["manifest"]["counts"] == {
         "locations": 4,
         "items": 3,
-        "encounters": 5,
+        "encounters": 8,
         "endings": 1,
         "achievements": 2,
         "secrets": 0,
@@ -130,6 +133,9 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "wuxia_cheonggi_record_first_fragment",
         "wuxia_seo_harin_rescue",
         "wuxia_cheongryu_apprentice_entry",
+        "wuxia_cheongryu_chore_sparring",
+        "wuxia_cheongryu_raid_route_split",
+        "wuxia_cheongryu_raid_wounded_fallback",
     ]
     first_fight = bundle["content"]["encounters"][1]
     assert first_fight["conditions"] == {
@@ -250,6 +256,116 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     ]
     assert fallback_apprentice["outcome"]["add_items"] == ["work_chore_token"]
     assert fallback_apprentice["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
+    sparring = bundle["content"]["encounters"][5]
+    assert sparring["conditions"] == {
+        "locations": ["cheongryu_outer_courtyard"],
+        "required_flags": [
+            "cheongryu_apprentice_entry_resolved",
+            "cheongryu_trial_started",
+            "cheonggi_record_awakened",
+            "first_fragment_seen",
+        ],
+        "forbidden_flags": ["cheongryu_chore_sparring_resolved"],
+    }
+    assert sparring["presentation"]["layout"] == "combat_intervention"
+    assert sparring["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "균형",
+        "호흡",
+        "장작",
+    ]
+    assert [choice["id"] for choice in sparring["choices"]] == [
+        "step_back_with_firewood",
+        "let_shoulder_turn_with_push",
+        "plant_bare_foot_in_dust",
+        "ask_harin_what_changed",
+    ]
+    fallback_sparring = sparring["choices"][0]
+    assert fallback_sparring["outcome"]["add_flags"] == [
+        "cheongryu_chore_sparring_resolved",
+        "chore_sparring_completed",
+        "balance_training_noticed",
+        "office_combat_model_reused",
+    ]
+    assert fallback_sparring["outcome"]["add_clues"] == [
+        "balance_matters_more_than_force",
+        "office_items_can_translate_to_training",
+    ]
+    assert fallback_sparring["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
+    raid = bundle["content"]["encounters"][6]
+    assert raid["conditions"] == {
+        "locations": ["cheongryu_outer_courtyard"],
+        "required_flags": [
+            "cheongryu_apprentice_entry_resolved",
+            "cheongryu_trial_started",
+            "cheonggi_record_awakened",
+            "first_fragment_seen",
+            "cheongryu_chore_sparring_resolved",
+        ],
+        "forbidden_flags": ["cheongryu_raid_route_split_resolved"],
+    }
+    assert raid["presentation"]["layout"] == "raid_route_pressure"
+    assert raid["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "청류문",
+        "백도맹",
+        "천기록",
+    ]
+    assert [choice["id"] for choice in raid["choices"]] == [
+        "evacuate_the_wounded_first",
+        "defend_cheongryu_with_white_path",
+        "trade_with_black_heaven",
+        "follow_heavenly_archive",
+    ]
+    fallback_raid = raid["choices"][0]
+    assert fallback_raid["outcome"]["add_flags"] == [
+        "cheongryu_raid_route_split_resolved",
+        "cheongryu_raid_survived",
+        "route_commitment_pressure",
+        "route_commitment_deferred",
+        "wounded_saved_flag",
+        "seo_harin_survived_raid",
+    ]
+    assert fallback_raid["outcome"]["add_clues"] == [
+        "saving_people_delays_route_choice",
+        "blood_moon_targets_cheonggi_record",
+    ]
+    assert fallback_raid["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
+    wounded_fallback = bundle["content"]["encounters"][7]
+    assert wounded_fallback["conditions"] == {
+        "locations": ["cheongryu_outer_courtyard"],
+        "required_flags": [
+            "cheongryu_raid_route_split_resolved",
+            "route_commitment_deferred",
+            "wounded_saved_flag",
+            "cheongryu_raid_survived",
+        ],
+        "forbidden_flags": ["cheongryu_raid_wounded_fallback_resolved"],
+    }
+    assert wounded_fallback["presentation"]["layout"] == "wounded_fallback_route_pressure"
+    assert wounded_fallback["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "부상자",
+        "백도맹",
+        "천기각",
+    ]
+    assert [choice["id"] for choice in wounded_fallback["choices"]] == [
+        "stabilize_wounded_until_dawn",
+        "ask_baekdo_for_medicine_not_command",
+        "trade_black_heaven_bandages_for_exit",
+        "follow_archive_triage_map",
+    ]
+    stabilize = wounded_fallback["choices"][0]
+    assert stabilize["outcome"]["add_flags"] == [
+        "cheongryu_raid_wounded_fallback_resolved",
+        "deferred_route_reopened",
+        "route_commitment_deferred",
+        "wounded_shelter_stabilized",
+        "survivor_roll_call_complete",
+        "route_delay_cost_recorded",
+    ]
+    assert stabilize["outcome"]["add_clues"] == [
+        "saving_people_changed_witnesses",
+        "deferred_choice_is_still_choice",
+    ]
+    assert stabilize["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
     assert "dev_desk" not in json.dumps(bundle, ensure_ascii=False)
     assert _missing_private_secret_fields(bundle)
 

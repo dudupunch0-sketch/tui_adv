@@ -58,6 +58,27 @@ fn content_smoke_prints_seeded_content_turn_from_bundle() {
 }
 
 #[test]
+fn content_smoke_defaults_to_wuxia_storypack_when_no_bundle_is_given() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args(["--scene", "content", "--seed", "123", "--smoke"])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("scene: content"));
+    assert!(stdout.contains("location: wuxia_commute_rift"));
+    assert!(stdout.contains("encounter: wuxia_commute_rift_arrival"));
+    assert!(stdout.contains("[출근길 균열]"));
+    assert!(!stdout.contains("location: dev_desk"));
+}
+
+#[test]
 fn content_scripted_actions_walk_from_encounter_to_movement_turn() {
     let bundle_path = content_bundle_path();
     let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
@@ -979,6 +1000,72 @@ fn content_tui_smoke_reaches_wuxia_mumyeong_copy_style_reveal() {
         .contains("choice:listen_for_breath_mismatch / 거리를 두고 호흡이 어긋나는 박자를 듣는다"));
     assert!(stdout.contains(
         "choice:wait_for_body_to_shudder / 몸에 맞지 않는 초식이 반동을 내는 순간까지 기다린다"
+    ));
+    assert!(!stdout.contains("dev_desk"));
+}
+
+#[test]
+fn content_tui_smoke_reaches_wuxia_mumyeong_reads_orthodox_style() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--storypack-preview",
+            "wuxia_jianghu_pack",
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:follow_roadside_dust",
+            "--action",
+            "move:jianghu_market_street",
+            "--action",
+            "choice:run_toward_open_street",
+            "--action",
+            "choice:choose_failure_log",
+            "--action",
+            "choice:tell_plain_truth",
+            "--action",
+            "choice:accept_three_month_trial",
+            "--action",
+            "choice:step_back_with_firewood",
+            "--action",
+            "choice:defend_cheongryu_with_white_path",
+            "--action",
+            "choice:accept_medicine_with_written_debt",
+            "--action",
+            "choice:watch_the_stolen_qingliu_flow",
+            "--action",
+            "choice:endure_until_copy_flow_breaks",
+            "--action",
+            "choice:listen_for_breath_mismatch",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("위치: 청류문 외곽 마당 (cheongryu_outer_courtyard)"));
+    assert!(stdout.contains("무명의 정파 무공 간파"));
+    assert!(stdout.contains("visual id: wuxia_mumyeong_reads_orthodox_style"));
+    assert!(stdout.contains("layout: orthodox_style_trace"));
+    assert!(stdout.contains("stable terms: 현악문 / 복호금쇄수 / 무명"));
+    assert!(stdout.contains(
+        "choice:compare_copied_form_to_old_wound / 카피된 초식과 오래된 상처의 각도를 맞춰 본다"
+    ));
+    assert!(stdout.contains(
+        "choice:trace_qingliu_eye_variation / 청류안 계열의 시선이 어디서 비틀렸는지 추적한다"
+    ));
+    assert!(stdout.contains(
+        "choice:reconstruct_mumyeongs_sightline / 무명이 그날 보았을 시선을 따라 재구성한다"
+    ));
+    assert!(stdout.contains(
+        "choice:stop_before_truth_becomes_accusation / 진실이 추궁이 되기 전에 기록을 덮는다"
     ));
     assert!(!stdout.contains("dev_desk"));
 }

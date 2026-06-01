@@ -513,6 +513,25 @@
 - [x] runtime YAML/Rust/Web/generated bundle, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
 - [x] 다음 작업을 `wuxia_mumyeong_reads_orthodox_style` runtime implementation으로 갱신
 
+### 0.2ax 2026-06-02 무협 `wuxia_mumyeong_reads_orthodox_style` preview runtime slice
+
+- [x] `wuxia_mumyeong_reads_orthodox_style` encounter를 `wuxia_mumyeong_copy_style_reveal` 뒤에 storypack preview source로 추가
+- [x] start conditions를 `conditions.locations: [cheongryu_outer_courtyard]`, `required_flags: [mumyeong_copy_style_reveal_resolved, copy_style_hint_recorded, midgame_continuity_started, first_fragment_seen]`, `forbidden_flags: [mumyeong_reads_orthodox_style_resolved]`로 구현
+- [x] stable choice id `compare_copied_form_to_old_wound`, `trace_qingliu_eye_variation`, `reconstruct_mumyeongs_sightline`, `stop_before_truth_becomes_accusation` 구현
+- [x] common hook `mumyeong_reads_orthodox_style_resolved`, `orthodox_style_trace_recorded`, `destination_id: cheongryu_outer_courtyard` 구현
+- [x] 현악문/복호금쇄수/무명 시야 변주/정파식 통제 무공 clue와 `orthodox_style_trace` presentation hook 구현
+- [x] Rust/Web storypack preview bundle만 재생성하고 legacy office bundle/generated content는 미변경 유지
+- [x] Python exporter/docs/storypack DB, Rust content bundle, WASM JSON boundary, terminal smoke, Web content bundle registry 테스트 갱신
+- [x] 무명 중반 재회, 보스 첫 등장, 무명 이탈 진실 정리, 청류문 습격 full flashback, seed 기반 random copy-style system/table, combat resolver/schema, HP 숫자전, route graph/faction reputation/debt/relation/reward/ability/epilogue/return schema, 천기록 정체 reveal 미변경 유지
+- [x] 다음 작업을 `wuxia_mumyeong_followup_after_orthodox_style_trace` docs-only handoff로 갱신
+
+### 0.2ay 2026-06-02 terminal default storypack 전환
+
+- [x] `escape-terminal --scene content`가 bundle 인자 없이 `wuxia_jianghu_pack` / **이구학지 — 천기록** built-in fixture를 기본 선택하도록 변경
+- [x] `--storypack-preview wuxia_jianghu_pack`는 명시적 동일 경로로 유지
+- [x] legacy office fixture는 `--content-bundle` 명시 경로로 유지
+- [x] terminal default smoke 테스트와 README/plan/runtime preview 문서 동기화
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

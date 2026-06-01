@@ -99,6 +99,7 @@ def test_export_web_data_builds_renderer_neutral_content_bundle():
             "wuxia_mumyeong_first_sighting",
             "wuxia_mumyeong_first_confrontation",
             "wuxia_mumyeong_copy_style_reveal",
+            "wuxia_mumyeong_reads_orthodox_style",
         }
         for encounter in bundle["content"]["encounters"]
     )
@@ -122,7 +123,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     assert bundle["manifest"]["counts"] == {
         "locations": 4,
         "items": 3,
-        "encounters": 15,
+        "encounters": 16,
         "endings": 1,
         "achievements": 2,
         "secrets": 0,
@@ -150,6 +151,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "wuxia_mumyeong_first_sighting",
         "wuxia_mumyeong_first_confrontation",
         "wuxia_mumyeong_copy_style_reveal",
+        "wuxia_mumyeong_reads_orthodox_style",
     ]
     first_fight = bundle["content"]["encounters"][1]
     assert first_fight["conditions"] == {
@@ -653,6 +655,41 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "understanding_is_not_copying",
     ]
     assert breath["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
+    orthodox_style = bundle["content"]["encounters"][15]
+    assert orthodox_style["conditions"] == {
+        "locations": ["cheongryu_outer_courtyard"],
+        "required_flags": [
+            "mumyeong_copy_style_reveal_resolved",
+            "copy_style_hint_recorded",
+            "midgame_continuity_started",
+            "first_fragment_seen",
+        ],
+        "forbidden_flags": ["mumyeong_reads_orthodox_style_resolved"],
+    }
+    assert orthodox_style["presentation"]["layout"] == "orthodox_style_trace"
+    assert orthodox_style["presentation"]["speaker"] == "천기록"
+    assert orthodox_style["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "현악문",
+        "복호금쇄수",
+        "무명",
+    ]
+    assert [choice["id"] for choice in orthodox_style["choices"]] == [
+        "compare_copied_form_to_old_wound",
+        "trace_qingliu_eye_variation",
+        "reconstruct_mumyeongs_sightline",
+        "stop_before_truth_becomes_accusation",
+    ]
+    reconstruct = orthodox_style["choices"][2]
+    assert reconstruct["outcome"]["add_flags"] == [
+        "mumyeong_reads_orthodox_style_resolved",
+        "orthodox_style_trace_recorded",
+        "mumyeong_sightline_reconstructed",
+    ]
+    assert reconstruct["outcome"]["add_clues"] == [
+        "bokho_geumsaesu_name_recorded",
+        "departure_truth_still_incomplete",
+    ]
+    assert reconstruct["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
     assert "dev_desk" not in json.dumps(bundle, ensure_ascii=False)
     assert _missing_private_secret_fields(bundle)
 

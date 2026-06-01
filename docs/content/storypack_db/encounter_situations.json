@@ -4120,10 +4120,10 @@
     "notion_event_mapping": {
       "notion_event_id": "wuxia_mumyeong_reads_orthodox_style",
       "notion_event_name": "무명의 정파 무공 간파",
-      "mapping_status": "next_runtime_selected"
+      "mapping_status": "preview_runtime_implemented"
     },
     "status": "candidate",
-    "mapping_status": "next_runtime_selected",
+    "mapping_status": "preview_runtime_implemented",
     "phase": [
       "midgame_rival",
       "orthodox_style_trace"
@@ -4158,7 +4158,7 @@
     ],
     "summary": "카피 무공 공개 뒤 무명이 과거에 읽어낸 정파식 제압술 흔적을 현악문/복호금쇄수 단서로 연결한다.",
     "setup_text": "무명의 카피는 완전한 복사가 아니었다. 겉흐름 사이로 손목을 잠그는 각도, 기혈을 누르는 순서, 물러나는 보폭이 삐져나온다. 천기록의 빈 줄은 그 흔적을 현악문과 복호금쇄수라는 이름 옆에 잠시 멈춰 세운다.",
-    "runtime_preview_design_status": "selected_for_next_runtime",
+    "runtime_preview_design_status": "implemented",
     "runtime_preview_start_conditions": {
       "runtime_mode": "storypack_preview",
       "location": "cheongryu_outer_courtyard",
@@ -4324,10 +4324,14 @@
     },
     "main_spine_link": "무명의 카피와 주인공의 이해를 대비한 뒤, 중반 재회와 무명 이탈 진실 정리로 가기 전 필요한 정파 무공 흔적을 쌓는다.",
     "randomization_notes": "현악문/복호금쇄수는 최신 Notion 확정명으로 사용한다. 하지만 이 카드에서는 random copy-style table이나 full flashback을 열지 않고, 정파식 통제 무공 clue만 기록한다.",
-    "promotion_notes": "`wuxia_mumyeong_followup_after_copy_style_reveal` docs-only handoff에서 다음 runtime 후보로 선택했다. `wuxia_mumyeong_midgame_reunion`은 과거 단서가 더 필요해 보류했고, `wuxia_boss_first_appearance`는 boss-wall pressure 때문에 보류했으며, `wuxia_mumyeong_departure_truth_summary`는 후반 truth reveal이라 보류했다.",
-    "runtime_preview_handoff_notes": {
-      "selected_source": "docs/dev/Development_Plan.md#034-2026-06-02-docs-only-post-copy-style-handoff-wuxia_mumyeong_reads_orthodox_style",
+    "promotion_notes": "preview runtime으로 구현 완료. `wuxia_mumyeong_followup_after_copy_style_reveal` docs-only handoff에서 다음 runtime 후보로 선택했고, 현악문/복호금쇄수 단서를 기존 flags/clues/log/presentation으로 landing했다. `wuxia_mumyeong_midgame_reunion`은 과거 단서가 더 필요해 보류했고, `wuxia_boss_first_appearance`는 boss-wall pressure 때문에 보류했으며, `wuxia_mumyeong_departure_truth_summary`는 후반 truth reveal이라 보류했다. legacy office bundle, legacy `escape-office` key, random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation schema, reward/ability/epilogue/return system, 천기록 정체 reveal은 열지 않는다.",
+    "runtime_preview_implementation_notes": {
+      "implemented_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml",
       "insert_after": "wuxia_mumyeong_copy_style_reveal",
+      "generated_artifacts": [
+        "crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json",
+        "web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json"
+      ],
       "selected_over": [
         "wuxia_mumyeong_midgame_reunion",
         "wuxia_boss_first_appearance",
@@ -4335,7 +4339,7 @@
       ],
       "default_bundle_changed": false,
       "new_schema_opened": false,
-      "next_runtime_candidate": "wuxia_mumyeong_reads_orthodox_style"
+      "next_handoff": "wuxia_mumyeong_followup_after_orthodox_style_trace"
     }
   }
 ]

@@ -1379,6 +1379,89 @@ fn json_boundary_reaches_wuxia_mumyeong_copy_style_reveal_through_preview_bundle
 }
 
 #[test]
+fn json_boundary_reaches_wuxia_mumyeong_reads_orthodox_style_through_preview_bundle() {
+    let post_copy_style_state_json = wuxia_state_after_actions(&[
+        "choice:follow_roadside_dust",
+        "move:jianghu_market_street",
+        "choice:run_toward_open_street",
+        "choice:choose_failure_log",
+        "choice:tell_plain_truth",
+        "choice:accept_three_month_trial",
+        "choice:step_back_with_firewood",
+        "choice:defend_cheongryu_with_white_path",
+        "choice:accept_medicine_with_written_debt",
+        "choice:watch_the_stolen_qingliu_flow",
+        "choice:endure_until_copy_flow_breaks",
+        "choice:listen_for_breath_mismatch",
+    ]);
+
+    let orthodox_page_json = scene_page_json(&post_copy_style_state_json, WUXIA_PREVIEW_BUNDLE)
+        .expect("mumyeong orthodox style trace scene page should serialize");
+    let orthodox_page: Value =
+        serde_json::from_str(&orthodox_page_json).expect("orthodox style page JSON should parse");
+    assert_eq!(orthodox_page["mode"], "encounter");
+    assert_eq!(orthodox_page["title"], "무명의 정파 무공 간파");
+    assert_eq!(orthodox_page["location"]["id"], "cheongryu_outer_courtyard");
+    assert_eq!(
+        orthodox_page["visual"]["id"],
+        "wuxia_mumyeong_reads_orthodox_style"
+    );
+    assert_eq!(orthodox_page["visual"]["kind"], "orthodox_style_trace");
+    assert_eq!(
+        orthodox_page["effect_cues"][0]["stable_terms"][1],
+        "복호금쇄수"
+    );
+    let orthodox_action_ids: Vec<&str> = orthodox_page["actions"]
+        .as_array()
+        .expect("actions should be an array")
+        .iter()
+        .map(|action| action["id"].as_str().expect("action id should be a string"))
+        .collect();
+    assert_eq!(
+        orthodox_action_ids,
+        vec![
+            "choice:compare_copied_form_to_old_wound",
+            "choice:trace_qingliu_eye_variation",
+            "choice:reconstruct_mumyeongs_sightline",
+            "choice:stop_before_truth_becomes_accusation",
+        ]
+    );
+
+    let orthodox_result_json = apply_action_json(
+        &post_copy_style_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:reconstruct_mumyeongs_sightline",
+    )
+    .expect("reconstruct mumyeong sightline action should serialize");
+    let orthodox_result: Value =
+        serde_json::from_str(&orthodox_result_json).expect("orthodox action should parse");
+    assert_eq!(
+        orthodox_result["encounter_id"],
+        "wuxia_mumyeong_reads_orthodox_style"
+    );
+    assert!(orthodox_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array")
+        .iter()
+        .any(|flag| flag == "mumyeong_reads_orthodox_style_resolved"));
+    assert!(orthodox_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array")
+        .iter()
+        .any(|flag| flag == "orthodox_style_trace_recorded"));
+    assert!(orthodox_result["state"]["clues"]
+        .as_array()
+        .expect("clues should be an array")
+        .iter()
+        .any(|clue| clue == "bokho_geumsaesu_name_recorded"));
+    assert!(orthodox_result["state"]["clues"]
+        .as_array()
+        .expect("clues should be an array")
+        .iter()
+        .any(|clue| clue == "departure_truth_still_incomplete"));
+}
+
+#[test]
 fn json_boundary_reaches_wuxia_black_heaven_escape_price_through_preview_bundle() {
     let state_json =
         new_game_json(123, WUXIA_PREVIEW_BUNDLE).expect("preview new game should serialize");

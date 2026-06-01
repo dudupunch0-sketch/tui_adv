@@ -145,7 +145,7 @@ npm run preview:player
 
 `npm run wasm:build`는 `wasm-pack build ../crates/escape-wasm --target web --out-dir ../../web/src/core/wasm-pkg`를 실행한다. 생성되는 `web/src/core/wasm-pkg/`는 로컬 build artifact라서 Git에 커밋하지 않는다. `npm run build:wasm`은 Vite build 뒤 `npm run wasm:copy`를 실행해 이 generated package를 `web/dist/assets/wasm-pkg/`로 복사하므로 player artifact의 dynamic WASM import 경로가 함께 배포된다.
 
-현재 브라우저 앱은 Web player start screen을 먼저 표시한 뒤 Web Storybook + GlyphFX renderer를 기본 플레이 화면으로 사용한다. 시작 화면은 localStorage 기반 이어하기/새 게임/seed 표시/save timestamp/reset confirmation을 제공하며, 기본 Web runtime은 `wuxia_jianghu_pack` / **이구학지 — 천기록** bundle을 사용한다. 이구학지 기본 run은 `igu-hakji.rust.save.v1` 계열 key를 사용해 기존 office save와 섞이지 않는다. `web/src/core/wasmRuntime.ts`가 default storypack bundle을 `escape-wasm` JSON-string boundary에 전달해 Rust GameCore의 `ScenePage`/`ActionResult`를 소비한다. Rust/WASM이 없으면 이구학지 기본 player를 시작할 수 없으므로 `npm run build:wasm` 또는 `npm run preview:wasm` 경로로 확인한다. legacy TypeScript mirror와 Python/Textual은 freeze 상태이며, 새 게임 규칙은 Rust GameCore에만 추가한다. 공개 secret JSON과 content bundle에는 실제 사무실 최종 위치나 `final_hint`를 넣지 않는다.
+현재 브라우저 앱은 Web player start screen을 먼저 표시한 뒤 Web Storybook + GlyphFX renderer를 기본 플레이 화면으로 사용한다. 시작 화면은 localStorage 기반 이어하기/새 게임/seed 표시/save timestamp/reset confirmation을 제공하며, 기본 Web runtime은 `wuxia_jianghu_pack` / **이구학지 — 천기록** bundle을 사용한다. terminal content scene도 bundle 인자를 생략하면 같은 이구학지 fixture를 기본으로 사용하며, legacy office content는 `--content-bundle`로 명시 실행한다. 이구학지 기본 Web run은 `igu-hakji.rust.save.v1` 계열 key를 사용해 기존 office save와 섞이지 않는다. `web/src/core/wasmRuntime.ts`가 default storypack bundle을 `escape-wasm` JSON-string boundary에 전달해 Rust GameCore의 `ScenePage`/`ActionResult`를 소비한다. Rust/WASM이 없으면 이구학지 기본 player를 시작할 수 없으므로 `npm run build:wasm` 또는 `npm run preview:wasm` 경로로 확인한다. legacy TypeScript mirror와 Python/Textual은 freeze 상태이며, 새 게임 규칙은 Rust GameCore에만 추가한다. 공개 secret JSON과 content bundle에는 실제 사무실 최종 위치나 `final_hint`를 넣지 않는다.
 
 배포 표면은 현재 Web-only로 결정했다. `npm run build:player`는 Rust/WASM-primary Web 정적 산출물(`web/dist/`)을 만들고, `npm run preview:player`는 같은 경로를 로컬 preview한다. Tauri/Electron은 desktop wrapper의 고유 가치가 생길 때까지 deferred 상태이며, 결정 기록은 `docs/dev/Web_Distribution_Decision.md`에 둔다.
 
@@ -157,7 +157,7 @@ npm run preview:player
 - 프로젝트 방향: storypack/world 기반 TUI 선택지 생존 게임 + Web Storybook/GlyphFX primary UX + SuperLightTUI terminal renderer
 - 기본 톤: 출근복 현대인이 강호에 떨어지는 무협 생존/성장극. 기존 블랙코미디 회사 괴담 + 코스믹 호러 톤은 legacy office content에 남긴다.
 - office-family 후보팩: `yageunmong_pack` / **야근몽**. 전제는 “회사에서 잠깐 잠든 주인공이 자각몽 상태의 회사 악몽에서 업무 완료가 아니라 깨어나기를 목표로 한다”이며, 기본 office runtime을 대체하지 않는다.
-- 첫 비-office 기준팩: `wuxia_jianghu_pack` / **이구학지 — 천기록**. 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계 시장에 전이되고, 천기록/천외편린 성장 구조를 경험한다”. 현재 Web/default storypack이며, preview runtime은 arrival/first fight/first fragment/`wuxia_seo_harin_rescue`/`wuxia_cheongryu_apprentice_entry`/`wuxia_cheongryu_chore_sparring`/`wuxia_cheongryu_raid_route_split`/`wuxia_cheongryu_raid_wounded_fallback`/`wuxia_baekdo_medicine_debt`/`wuxia_black_heaven_escape_price`/`wuxia_heavenly_archive_previous_outsiders`/`wuxia_wounded_shelter_dawn_offers`/`wuxia_mumyeong_first_sighting`/`wuxia_mumyeong_first_confrontation`/`wuxia_mumyeong_copy_style_reveal`까지 구현됐다. 다음 runtime 후보는 `wuxia_mumyeong_reads_orthodox_style`이다.
+- 첫 비-office 기준팩: `wuxia_jianghu_pack` / **이구학지 — 천기록**. 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계 시장에 전이되고, 천기록/천외편린 성장 구조를 경험한다”. 현재 Web/terminal default storypack이며, preview runtime은 arrival/first fight/first fragment/`wuxia_seo_harin_rescue`/`wuxia_cheongryu_apprentice_entry`/`wuxia_cheongryu_chore_sparring`/`wuxia_cheongryu_raid_route_split`/`wuxia_cheongryu_raid_wounded_fallback`/`wuxia_baekdo_medicine_debt`/`wuxia_black_heaven_escape_price`/`wuxia_heavenly_archive_previous_outsiders`/`wuxia_wounded_shelter_dawn_offers`/`wuxia_mumyeong_first_sighting`/`wuxia_mumyeong_first_confrontation`/`wuxia_mumyeong_copy_style_reveal`/`wuxia_mumyeong_reads_orthodox_style`까지 구현됐다. 다음 handoff는 `wuxia_mumyeong_followup_after_orthodox_style_trace` docs-only 후보 비교다.
 - 1차 재난 타입: 불명 재난
 - 상황: 사람 실종, 연구개발동 규모의 공간/차원 격리, 제한된 외부 인터넷, 간헐적 사내망 연락
 - 핵심 자원: 체력, 정신력, 배터리, 허기, 갈증
@@ -189,7 +189,7 @@ npm run preview:player
 - `docs/dev/Development_Plan.md`: canonical main plan. 현재 방향, 다음 작업, 우선순위의 source of truth
 - `docs/dev/Checklist.md`: 단계별 완료 여부 추적용 체크리스트
 - `docs/dev/Storypack_Runtime_Preview_Mode.md`: 이구학지 runtime bundle을 legacy office bundle과 섞지 않는 preview/main boundary 결정
-- `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`: `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_copy_style_reveal`까지의 무협 preview source YAML
+- `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`: `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_reads_orthodox_style`까지의 무협 preview source YAML
 - `crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json`: Rust/GameCore용 무협 preview fixture bundle
 - `web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json`: Web/WASM용 무협 preview generated bundle
 - `web/src/core/contentBundles.ts`: Web default 이구학지 bundle과 legacy office/generated bundle 경계

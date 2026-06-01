@@ -196,12 +196,12 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&4));
     assert_eq!(bundle.manifest.counts.get("items"), Some(&3));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&15));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&16));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 4);
-    assert_eq!(index.encounters_len(), 15);
+    assert_eq!(index.encounters_len(), 16);
 
     let market = index
         .location("jianghu_market_street")
@@ -966,6 +966,66 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     );
     assert_eq!(
         breath.outcome.destination_id.as_deref(),
+        Some("cheongryu_outer_courtyard")
+    );
+
+    let orthodox_style = index
+        .encounter("wuxia_mumyeong_reads_orthodox_style")
+        .expect("mumyeong orthodox style trace encounter");
+    assert_eq!(orthodox_style.title, "무명의 정파 무공 간파");
+    assert_eq!(
+        orthodox_style.conditions.locations,
+        vec!["cheongryu_outer_courtyard"]
+    );
+    assert_eq!(
+        orthodox_style.conditions.required_flags,
+        vec![
+            "mumyeong_copy_style_reveal_resolved",
+            "copy_style_hint_recorded",
+            "midgame_continuity_started",
+            "first_fragment_seen"
+        ]
+    );
+    assert_eq!(
+        orthodox_style.conditions.forbidden_flags,
+        vec!["mumyeong_reads_orthodox_style_resolved"]
+    );
+    let orthodox_presentation = orthodox_style
+        .presentation
+        .as_ref()
+        .expect("mumyeong orthodox style presentation");
+    assert_eq!(
+        orthodox_presentation.layout.as_deref(),
+        Some("orthodox_style_trace")
+    );
+    assert_eq!(orthodox_presentation.speaker.as_deref(), Some("천기록"));
+    assert_eq!(
+        orthodox_presentation.effect_cues[0].stable_terms,
+        vec!["현악문", "복호금쇄수", "무명"]
+    );
+    assert_eq!(orthodox_style.choices.len(), 4);
+    let reconstruct = orthodox_style
+        .choices
+        .iter()
+        .find(|choice| choice.id == "reconstruct_mumyeongs_sightline")
+        .expect("reconstruct mumyeong sightline choice");
+    assert_eq!(
+        reconstruct.outcome.add_flags,
+        vec![
+            "mumyeong_reads_orthodox_style_resolved",
+            "orthodox_style_trace_recorded",
+            "mumyeong_sightline_reconstructed"
+        ]
+    );
+    assert_eq!(
+        reconstruct.outcome.add_clues,
+        vec![
+            "bokho_geumsaesu_name_recorded",
+            "departure_truth_still_incomplete"
+        ]
+    );
+    assert_eq!(
+        reconstruct.outcome.destination_id.as_deref(),
         Some("cheongryu_outer_courtyard")
     );
 }

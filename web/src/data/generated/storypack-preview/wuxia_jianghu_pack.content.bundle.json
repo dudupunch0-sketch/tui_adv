@@ -3824,6 +3824,179 @@
           "visual_id": "wuxia_sado_final_phase_3_outside_calculation"
         },
         "title": "사도 최종전 3페이즈: 계산식 밖"
+      },
+      {
+        "body": "사도는 쓰러졌지만, 흑사방의 장부는 아직 닫히지 않았다. 마지막 장은 사도의 목숨값을 묻지 않는다. 네가 남긴 증거와 사람의 흐름, 무명의 선택 가능성, 천기록의 사용 방식이 사도의 계산법을 어디까지 무너뜨렸는지를 묻는다. 이 결산은 결말이 아니라, 후속 결산들이 어떤 후보를 받을지 정하는 기록이다.",
+        "choices": [
+          {
+            "id": "confirm_true_route_outside_calculation",
+            "label": "계산식 밖의 승리를 결산한다",
+            "outcome": {
+              "add_clues": [
+                "boss_resolution_true_route_requires_unpriced_things",
+                "broken_black_serpent_not_simple_happy_ending",
+                "open_gate_suppresses_closed_gate_candidate"
+              ],
+              "add_flags": [
+                "boss_resolution_resolved",
+                "final_boss_resolution_true_route_confirmed_seeded",
+                "final_result_priority_applied_seeded",
+                "final_epilogue_candidates_true_route_seeded",
+                "final_broken_black_serpent_epilogue_candidate_seeded",
+                "final_seoharin_open_gate_candidate_seeded",
+                "final_mumyeong_second_wooden_sword_candidate_seeded",
+                "final_qingliu_future_high_candidate_seeded"
+              ],
+              "danger": 1,
+              "destination_id": "black_serpent_ledger_vault",
+              "log": "사도는 패배했고, 그의 장부는 비어 있는 칸을 끝내 값으로 바꾸지 못한다. 결산은 흑사방 붕괴와 열린 문 후보를 남기지만, 아직 서하린과 무명의 후속 결산을 대신하지는 않는다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "confirm_meaningful_victory_with_evidence",
+            "label": "증거와 조직망 처리를 결산한다",
+            "outcome": {
+              "add_clues": [
+                "strong_evidence_turns_silence_into_responsibility_evasion",
+                "ledger_secured_is_not_core_network_cut",
+                "broken_black_serpent_with_network_scars"
+              ],
+              "add_flags": [
+                "boss_resolution_resolved",
+                "final_boss_resolution_meaningful_victory_seeded",
+                "final_result_priority_applied_seeded",
+                "final_epilogue_candidates_meaningful_seeded",
+                "final_broken_black_serpent_epilogue_candidate_seeded",
+                "final_alliance_silence_strong_evidence_variant_seeded",
+                "final_black_serpent_banner_suppressed_candidate_seeded"
+              ],
+              "danger": 1,
+              "destination_id": "black_serpent_ledger_vault",
+              "log": "장부와 증거는 사도의 방식이 혼자 선 괴물이 아니었음을 드러낸다. 흑사방은 꺾일 수 있지만, 무림맹의 침묵과 남은 조직망은 책임 회피의 형태로 다음 결산에 넘어간다.",
+              "resources": {
+                "sanity": -1
+              }
+            }
+          },
+          {
+            "id": "confirm_incomplete_victory_residue",
+            "label": "남은 장부와 잔향을 결산한다",
+            "outcome": {
+              "add_clues": [
+                "burned_or_partial_ledger_leaves_residue",
+                "southern_market_rumor_remains_possible",
+                "alliance_silence_can_hide_behind_partial_evidence"
+              ],
+              "add_flags": [
+                "boss_resolution_resolved",
+                "final_boss_resolution_incomplete_victory_seeded",
+                "final_result_priority_applied_seeded",
+                "final_epilogue_candidates_incomplete_seeded",
+                "final_black_serpent_banner_candidate_seeded",
+                "final_southern_market_rumor_candidate_seeded",
+                "final_alliance_silence_partial_evidence_variant_seeded"
+              ],
+              "danger": 2,
+              "destination_id": "black_serpent_ledger_vault",
+              "log": "이겼지만 모든 장부가 닫힌 것은 아니다. 불완전한 증거와 남은 소문은 흑사방의 깃발이 다른 시장에서 다시 보일 수 있다는 후보로 기록된다.",
+              "resources": {
+                "sanity": -1
+              }
+            }
+          },
+          {
+            "id": "confirm_mumyeong_unsaved_successor_risk",
+            "label": "무명 후계 구도의 위험을 결산한다",
+            "outcome": {
+              "add_clues": [
+                "sado_defeat_does_not_save_mumyeong",
+                "black_serpent_new_scale_is_successor_risk",
+                "mumyeong_resolution_still_required"
+              ],
+              "add_flags": [
+                "boss_resolution_resolved",
+                "final_boss_resolution_mumyeong_unsaved_victory_seeded",
+                "final_result_priority_applied_seeded",
+                "final_epilogue_candidates_mumyeong_unsaved_seeded",
+                "final_black_serpent_new_scale_candidate_seeded",
+                "final_mumyeong_resolution_required_seeded"
+              ],
+              "danger": 1,
+              "destination_id": "black_serpent_ledger_vault",
+              "log": "사도의 패배가 곧 무명의 구원을 뜻하지는 않는다. 후계 구도가 끊기지 않았다면, 흑사방은 새 저울을 얻은 채 다음 무명 결산을 기다린다.",
+              "resources": {
+                "health": -1,
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "confirm_corrupted_victory",
+            "label": "사도식 계산으로 남은 승리를 결산한다",
+            "outcome": {
+              "add_clues": [
+                "good_calculation_can_still_be_corruption",
+                "closed_gate_overrides_open_gate_candidate",
+                "cheongirok_corruption_is_not_high_use"
+              ],
+              "add_flags": [
+                "boss_resolution_resolved",
+                "final_boss_resolution_corrupted_victory_seeded",
+                "final_result_priority_applied_seeded",
+                "final_epilogue_candidates_corrupted_seeded",
+                "final_seoharin_closed_gate_candidate_seeded",
+                "final_cheongirok_last_page_corruption_variant_seeded",
+                "final_black_serpent_new_scale_candidate_seeded"
+              ],
+              "danger": 2,
+              "destination_id": "black_serpent_ledger_vault",
+              "log": "승리는 남았지만 결산의 필체가 사도와 닮아 있다. 천기록은 이 결과를 패배로 쓰지 않는다. 다만 열린 문 후보보다 닫힌 문 후보가 먼저 읽히는 오염된 승리로 남긴다.",
+              "resources": {
+                "sanity": -4
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "boss_resolution_resolved"
+          ],
+          "locations": [
+            "black_serpent_ledger_vault"
+          ],
+          "required_flags": [
+            "sado_final_phase_3_outside_calculation_resolved",
+            "final_phase_3_outside_calculation_resolved",
+            "final_combat_result_battle_victory_seeded",
+            "final_state_routing_seeded"
+          ]
+        },
+        "id": "wuxia_boss_resolution",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "final_route_seeds_into_epilogue_candidates",
+              "duration_hint_ms": 2000,
+              "fallback_text": "천기록의 마지막 장에 '보스 결산', '흑사방', '무명', '무림맹'만 다른 먹빛으로 남는다.",
+              "intensity": 0.92,
+              "kind": "glyph_anomaly",
+              "source": "wuxia_boss_resolution",
+              "stable_terms": [
+                "보스 결산",
+                "흑사방",
+                "무명",
+                "무림맹"
+              ]
+            }
+          ],
+          "layout": "boss_resolution_seed",
+          "speaker": "천기록",
+          "visual_id": "wuxia_boss_resolution"
+        },
+        "title": "보스 결산"
       }
     ],
     "endings": [
@@ -3969,7 +4142,7 @@
   "manifest": {
     "counts": {
       "achievements": 2,
-      "encounters": 29,
+      "encounters": 30,
       "endings": 1,
       "items": 4,
       "locations": 5,

@@ -48,6 +48,7 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         "wuxia_black_heaven_escape_price",
         "wuxia_boss_first_appearance",
         "wuxia_boss_recruits_mumyeong",
+        "wuxia_boss_resolution",
         "wuxia_cheonggi_record_first_fragment",
         "wuxia_cheongryu_apprentice_entry",
         "wuxia_cheongryu_chore_sparring",
@@ -347,6 +348,25 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
     assert (
         "sado_calculation_fails_to_price_waiting"
         in outside_calculation.outcome_hooks["possible_clues"]
+    )
+
+    boss_resolution = db.encounter_cards["wuxia_boss_resolution"]
+    assert boss_resolution.world_id == "wuxia_jianghu"
+    assert boss_resolution.storypack_id == "wuxia_jianghu_pack"
+    assert boss_resolution.status == "implemented_in_storypack_preview"
+    assert boss_resolution.priority_class == "route_key"
+    assert "boss_resolution_seed" in boss_resolution.phases
+    assert "faction_negotiation" in boss_resolution.surfaces
+    assert "evidence_priority" in [
+        choice["role"] for choice in boss_resolution.choice_shapes
+    ]
+    assert (
+        "final_boss_resolution_true_route_confirmed_seeded"
+        in boss_resolution.outcome_hooks["possible_flags"]
+    )
+    assert (
+        "sado_defeat_does_not_save_mumyeong"
+        in boss_resolution.outcome_hooks["possible_clues"]
     )
 
 

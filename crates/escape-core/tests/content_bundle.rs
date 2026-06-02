@@ -211,12 +211,12 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&5));
     assert_eq!(bundle.manifest.counts.get("items"), Some(&4));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&29));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&30));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 5);
-    assert_eq!(index.encounters_len(), 29);
+    assert_eq!(index.encounters_len(), 30);
 
     let market = index
         .location("jianghu_market_street")
@@ -1786,6 +1786,73 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert!(empty_place.outcome.add_items.is_empty());
     assert_eq!(
         empty_place.outcome.destination_id.as_deref(),
+        Some("black_serpent_ledger_vault")
+    );
+
+    let boss_resolution = index
+        .encounter("wuxia_boss_resolution")
+        .expect("boss resolution encounter");
+    assert_eq!(boss_resolution.title, "보스 결산");
+    assert_eq!(
+        boss_resolution.conditions.locations,
+        vec!["black_serpent_ledger_vault"]
+    );
+    assert_eq!(
+        boss_resolution.conditions.required_flags,
+        vec![
+            "sado_final_phase_3_outside_calculation_resolved",
+            "final_phase_3_outside_calculation_resolved",
+            "final_combat_result_battle_victory_seeded",
+            "final_state_routing_seeded"
+        ]
+    );
+    assert_eq!(
+        boss_resolution.conditions.forbidden_flags,
+        vec!["boss_resolution_resolved"]
+    );
+    let boss_presentation = boss_resolution
+        .presentation
+        .as_ref()
+        .expect("boss resolution presentation");
+    assert_eq!(
+        boss_presentation.layout.as_deref(),
+        Some("boss_resolution_seed")
+    );
+    assert_eq!(boss_presentation.speaker.as_deref(), Some("천기록"));
+    assert_eq!(
+        boss_presentation.effect_cues[0].stable_terms,
+        vec!["보스 결산", "흑사방", "무명", "무림맹"]
+    );
+    assert_eq!(boss_resolution.choices.len(), 5);
+    let true_route = boss_resolution
+        .choices
+        .iter()
+        .find(|choice| choice.id == "confirm_true_route_outside_calculation")
+        .expect("true-route boss resolution choice");
+    assert_eq!(
+        true_route.outcome.add_flags,
+        vec![
+            "boss_resolution_resolved",
+            "final_boss_resolution_true_route_confirmed_seeded",
+            "final_result_priority_applied_seeded",
+            "final_epilogue_candidates_true_route_seeded",
+            "final_broken_black_serpent_epilogue_candidate_seeded",
+            "final_seoharin_open_gate_candidate_seeded",
+            "final_mumyeong_second_wooden_sword_candidate_seeded",
+            "final_qingliu_future_high_candidate_seeded"
+        ]
+    );
+    assert_eq!(
+        true_route.outcome.add_clues,
+        vec![
+            "boss_resolution_true_route_requires_unpriced_things",
+            "broken_black_serpent_not_simple_happy_ending",
+            "open_gate_suppresses_closed_gate_candidate"
+        ]
+    );
+    assert!(true_route.outcome.add_items.is_empty());
+    assert_eq!(
+        true_route.outcome.destination_id.as_deref(),
         Some("black_serpent_ledger_vault")
     );
 }

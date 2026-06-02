@@ -91,9 +91,9 @@ Deferred until this contract exists and a runtime handoff explicitly opens them:
 
 - `wuxia_seoharin_unsaid_stay`
 - `wuxia_mumyeong_resolution`
-- `wuxia_boss_resolution`
+- full `wuxia_boss_resolution` epilogue renderer beyond the implemented route seed bridge
 - `wuxia_sado_final_battle`
 
-Latest implemented runtime slice: `wuxia_sado_final_phase_3_outside_calculation`.
+Latest implemented runtime slice: `wuxia_boss_resolution`.
 
-`wuxia_sado_final_phase_1_price_tag`, `wuxia_sado_final_phase_2_weakpoint_control`, and `wuxia_sado_final_phase_3_outside_calculation` now use the existing encounter schema to seed final-state clues/flags/logs for the three Sado final phases. The next runtime candidate is `wuxia_boss_resolution` handoff. It must consume phase 3 candidate seeds without opening combat resolver, HP numeric combat, final epilogue schema, `item_unpriced_wooden_sword` payout, Seo Harin truth delivery, `told_seoharin_truth`, or Mumyeong salvation confirmation unless a new approved runtime contract opens them.
+`wuxia_sado_final_phase_1_price_tag`, `wuxia_sado_final_phase_2_weakpoint_control`, `wuxia_sado_final_phase_3_outside_calculation`, and `wuxia_boss_resolution` now use the existing encounter schema to seed final-state clues/flags/logs for the Sado final phases and boss-resolution route bridge. The next runtime candidate is `wuxia_mumyeong_resolution` handoff. It must consume boss-resolution candidate seeds without opening combat resolver, HP numeric combat, final epilogue schema, `item_unpriced_wooden_sword` payout, Seo Harin truth delivery, `told_seoharin_truth`, or Mumyeong salvation confirmation unless a new approved runtime contract opens them.

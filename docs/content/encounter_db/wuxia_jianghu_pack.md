@@ -1,13 +1,13 @@
 # 이구학지 — 천기록 encounter situation cards
 
-Status: candidate + `wuxia_mumyeong_departure_truth_summary` preview runtime implemented + next docs-only handoff selected
+Status: candidate + `wuxia_mumyeong_departure_truth_summary` preview runtime implemented + `wuxia_seoharin_empty_place` selected next runtime candidate
 
-이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_departure_truth_summary`까지는 separate storypack preview runtime으로 승격되었고, 다음은 `wuxia_mumyeong_departure_truth_summary_followup` docs-only handoff다.
+이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_departure_truth_summary`까지는 separate storypack preview runtime으로 승격되었고, `wuxia_mumyeong_departure_truth_summary_followup` docs-only handoff는 다음 runtime 후보를 `wuxia_seoharin_empty_place`로 결정했다.
 
 공통 원칙:
 
 - 모든 카드는 `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`에 속한다.
-- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_departure_truth_summary`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. 다음 후보는 `wuxia_mumyeong_departure_truth_summary_followup`에서 다시 고른다.
+- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_departure_truth_summary`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. 다음 후보는 `wuxia_seoharin_empty_place`다.
 - 최신 canonical 무협 설정은 **이구학지 — 천기록**이다. 이전의 generic 객잔/소림/무당/아미 placeholder는 superseded로 본다.
 - 플레이어 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계의 시장 한복판에 전이됐다”이다.
 - 선택지는 세부 수치보다 역할과 결과 hook을 먼저 정의한다.
@@ -30,7 +30,7 @@ Status: candidate + `wuxia_mumyeong_departure_truth_summary` preview runtime imp
 |---|---|---|---|
 | `wuxia_seoharin_unsaid_stay` | 가지 말라는 말 | none yet | future 서하린 late/return event |
 | `wuxia_seoharin_left_meal` | 남겨둔 밥 | none yet | future 서하린 companion event |
-| `wuxia_seoharin_empty_place` | 비워둔 자리 | none yet | future 서하린/무명 clue event |
+| `wuxia_seoharin_empty_place` | 비워둔 자리 | `wuxia_seoharin_empty_place` | selected next runtime candidate; late empty-place bridge, not truth delivery |
 | `wuxia_mumyeong_departure_truth_summary` | 무명 이탈의 진실 정리 | `wuxia_mumyeong_departure_truth_summary` | preview runtime implemented; sealed summary, not truth delivery |
 | `wuxia_black_serpent_pressures_qingliu` | 흑사방의 청류문 압박 | partial: `wuxia_cheongryu_raid_route_split` background | future pressure/side event |
 | `wuxia_mumyeong_copy_style_reveal` | 무명의 카피 무공 공개 | `wuxia_mumyeong_copy_style_reveal` | preview runtime implemented |
@@ -2243,4 +2243,90 @@ runtime_preview_implementation_notes:
   default_bundle_changed: false
   new_schema_opened: false
   next_handoff: wuxia_mumyeong_departure_truth_summary_followup
+```
+
+## 25. `wuxia_seoharin_empty_place` — 다음 runtime 후보
+
+```yaml
+id: wuxia_seoharin_empty_place
+world_id: wuxia_jianghu
+storypack_id: wuxia_jianghu_pack
+status: candidate
+source_refs:
+  - notion_event:wuxia_seoharin_empty_place
+  - notion_page:사도 최종전 2페이즈: 약점 장악
+  - notion_page:사도 최종전 3페이즈: 계산식 밖
+  - notion_page:최종장 결산 라우팅 마스터
+  - docs/dev/Development_Plan.md#052-2026-06-02-docs-only-departure-truth-summary-follow-up-handoff-wuxia_seoharin_empty_place
+notion_mapping:
+  notion_event_id: wuxia_seoharin_empty_place
+  notion_event_name: 비워둔 자리
+  mapping_status: selected_next_runtime_candidate
+runtime_preview_design_status: selected_next_runtime_candidate
+phase: [midgame_backstory, seoharin_empty_place_bridge]
+priority_class: npc_relation
+location_tags: [cheongryu_outer_courtyard, empty_place, seoharin_axis]
+surface: [sect_courtyard, training_chore, cheonggi_record]
+anomaly_type: [future_record, oath_binding]
+pressure_type: [sanity, relation]
+npc_slots: [early_rescuer]
+candidate_characters: [서하린, 무명]
+summary: sealed departure truth summary 이후 청류문 수련장 한쪽의 비워둔 자리를 다시 보고, 서하린의 기다림을 소유가 아니라 돌아올 자리로 이해하는 late emotional bridge.
+setup_text: 청류문 마당 한쪽의 먼지 없는 빈 자리에는 목검 하나가 가지런히 놓여 있다. 천기록은 그 자리가 아직 이름을 잃지 않았다고 적지만, 서하린은 여전히 누구를 붙잡으려 하지 않는다.
+presentation:
+  visual_id: wuxia_seoharin_empty_place
+  speaker: 서하린
+  layout: empty_place_memory
+  stable_terms: [서하린, 무명, 청류문, 목검]
+conditions:
+  locations: [cheongryu_outer_courtyard]
+  required_flags: [mumyeong_departure_truth_summary_resolved, sealed_departure_truth_summary_prepared, truth_delivery_still_unopened, midgame_continuity_started]
+  forbidden_flags: [seoharin_empty_place_resolved]
+choice_shapes:
+  - id: ask_who_kept_the_empty_place
+    role: relation_probe
+    expected_costs: [sanity_small]
+    expected_gains: [seoharin_remembers_without_possessing]
+    outcome_hook:
+      add_flags: [seoharin_empty_place_resolved, seoharin_axis_opened, empty_place_remembered, truth_delivery_still_unopened]
+      add_clues: [seoharin_remembers_without_possessing]
+      destination_id: cheongryu_outer_courtyard
+  - id: leave_the_place_unclaimed
+    role: safe_observe
+    expected_costs: []
+    expected_gains: [empty_place_is_return_not_claim]
+    outcome_hook:
+      add_flags: [seoharin_empty_place_resolved, seoharin_axis_opened, empty_place_remembered, truth_delivery_still_unopened]
+      add_clues: [empty_place_is_return_not_claim]
+      destination_id: cheongryu_outer_courtyard
+  - id: set_down_the_work_notebook_briefly
+    role: cheonggi_record_probe
+    expected_costs: [sanity_small]
+    expected_gains: [unpriced_wooden_sword_condition_seeded]
+    outcome_hook:
+      add_flags: [seoharin_empty_place_resolved, seoharin_axis_opened, empty_place_remembered, truth_delivery_still_unopened]
+      add_clues: [unpriced_wooden_sword_condition_seeded]
+      destination_id: cheongryu_outer_courtyard
+  - id: step_back_without_naming_mumyeong
+    role: safe_stop
+    expected_costs: [sanity_small]
+    expected_gains: [mumyeong_place_still_unclaimed]
+    outcome_hook:
+      add_flags: [seoharin_empty_place_resolved, seoharin_axis_opened, empty_place_remembered, truth_delivery_still_unopened]
+      add_clues: [mumyeong_place_still_unclaimed]
+      destination_id: cheongryu_outer_courtyard
+outcome_hooks:
+  possible_flags: [seoharin_empty_place_resolved, seoharin_axis_opened, empty_place_remembered, truth_delivery_still_unopened, unpriced_wooden_sword_condition_seeded]
+  possible_clues: [seoharin_remembers_without_possessing, empty_place_is_return_not_claim, mumyeong_place_still_unclaimed, unpriced_wooden_sword_condition_seeded]
+  possible_destinations: [cheongryu_outer_courtyard]
+main_spine_link: sealed departure truth summary가 남긴 무명/서하린 진실 경계를 서하린의 소속감 축으로 넘긴다. 최종전 2/3페이즈의 remembered_empty_place와 seoharin_axis 조건을 준비하되, truth delivery나 final routing은 열지 않는다.
+randomization_notes: 1회성 relation bridge. sealed summary 뒤에만 열고 `seoharin_empty_place_resolved`로 반복을 막는다.
+promotion_notes: `wuxia_mumyeong_departure_truth_summary_followup` docs-only handoff에서 다음 runtime 후보로 선택했다. Notion 원본은 초반 companion card지만, 최신 사도 최종전 2/3페이즈와 최종장 결산 라우팅 마스터가 비워둔 자리 확인을 seoharin_axis/high 및 remembered_empty_place 조건으로 재사용하므로 sealed truth summary 이후 late bridge로 재해석한다. told_seoharin_truth, 서하린 truth delivery, 무명 구원 확정, 무명/보스 결산, 사도 최종전, item_unpriced_wooden_sword 지급, final/epilogue/return schema, route/faction/relation/debt/reward schema, combat resolver/schema, 천기록 identity reveal은 열지 않는다.
+runtime_preview_handoff:
+  handoff_status: selected_next_runtime_candidate
+  insert_after: wuxia_mumyeong_departure_truth_summary
+  selected_over: [wuxia_mumyeong_resolution, wuxia_boss_resolution, wuxia_sado_final_battle, wuxia_sado_final_phase_2_weakpoint_control, wuxia_sado_final_phase_3_outside_calculation]
+  next_runtime_scope: empty_place_memory_bridge
+  default_bundle_changed: false
+  new_schema_opened: false
 ```

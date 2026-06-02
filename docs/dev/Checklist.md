@@ -760,6 +760,21 @@
 - [x] 서하린에게 진실 전달, `told_seoharin_truth`, 무명 구원 확정, 보스 전투/final boss resolution, 무명/보스 결산, seed 기반 random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation/reward/ability/epilogue/return schema, 천기록 정체 reveal 미변경 유지
 - [x] 다음 작업을 `wuxia_mumyeong_departure_truth_summary_followup` docs-only handoff로 갱신
 
+### 0.2bp 2026-06-02 무협 departure truth summary follow-up docs-only handoff
+
+- [x] Notion 사건 카드 DB `wuxia_mumyeong_resolution`, `wuxia_boss_resolution`, `wuxia_seoharin_empty_place`, `wuxia_mumyeong_departure_truth_summary` 재확인
+- [x] 최신 `사도 최종전`, `사도 최종전 2페이즈: 약점 장악`, `사도 최종전 3페이즈: 계산식 밖`, `최종장 결산 라우팅 마스터`, `무명 결산`, `보스 결산` 문서와 비교
+- [x] 다음 runtime 후보를 `wuxia_seoharin_empty_place`로 결정
+- [x] 구현 범위를 sealed departure truth summary 뒤의 late empty-place memory bridge로 제한한다고 문서화
+- [x] `wuxia_mumyeong_resolution`, `wuxia_boss_resolution`, 사도 최종전, final/epilogue/return routing은 최종장 schema 범위라 보류
+- [x] 서하린 truth delivery, `told_seoharin_truth`, 무명 구원 확정, `item_unpriced_wooden_sword` 지급은 미변경 유지
+- [x] start conditions를 `required_flags: [mumyeong_departure_truth_summary_resolved, sealed_departure_truth_summary_prepared, truth_delivery_still_unopened, midgame_continuity_started]`, `forbidden_flags: [seoharin_empty_place_resolved]`로 문서화
+- [x] stable choice id 후보 `ask_who_kept_the_empty_place`, `leave_the_place_unclaimed`, `set_down_the_work_notebook_briefly`, `step_back_without_naming_mumyeong` 고정
+- [x] common hook `seoharin_empty_place_resolved`, `seoharin_axis_opened`, `empty_place_remembered`, `truth_delivery_still_unopened`, `destination_id: cheongryu_outer_courtyard` 고정
+- [x] presentation `visual_id: wuxia_seoharin_empty_place`, `speaker: 서하린`, `layout: empty_place_memory`, stable terms `[서하린, 무명, 청류문, 목검]` 고정
+- [x] runtime YAML/Rust/Web generated bundle, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 작업을 `wuxia_seoharin_empty_place` runtime implementation으로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

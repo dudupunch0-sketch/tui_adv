@@ -67,6 +67,7 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         "wuxia_mumyeong_request_for_aid",
         "wuxia_qingliu_attack_after_war",
         "wuxia_seo_harin_rescue",
+        "wuxia_seoharin_empty_place",
         "wuxia_wounded_shelter_dawn_offers",
     ]
 
@@ -273,6 +274,19 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         in departure_truth.outcome_hooks["possible_flags"]
     )
     assert "salvation_condition_seen_but_unmet" in departure_truth.outcome_hooks[
+        "possible_clues"
+    ]
+
+    empty_place = db.encounter_cards["wuxia_seoharin_empty_place"]
+    assert empty_place.world_id == "wuxia_jianghu"
+    assert empty_place.storypack_id == "wuxia_jianghu_pack"
+    assert empty_place.status == "candidate"
+    assert empty_place.priority_class == "npc_relation"
+    assert "seoharin_empty_place_bridge" in empty_place.phases
+    assert "training_chore" in empty_place.surfaces
+    assert "safe_observe" in [choice["role"] for choice in empty_place.choice_shapes]
+    assert "seoharin_axis_opened" in empty_place.outcome_hooks["possible_flags"]
+    assert "empty_place_is_return_not_claim" in empty_place.outcome_hooks[
         "possible_clues"
     ]
 

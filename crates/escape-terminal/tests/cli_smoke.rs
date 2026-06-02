@@ -1587,6 +1587,88 @@ fn content_tui_smoke_reaches_wuxia_boss_recruits_mumyeong() {
 }
 
 #[test]
+fn content_tui_smoke_reaches_wuxia_mumyeong_departure_truth_summary() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--storypack-preview",
+            "wuxia_jianghu_pack",
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:follow_roadside_dust",
+            "--action",
+            "move:jianghu_market_street",
+            "--action",
+            "choice:run_toward_open_street",
+            "--action",
+            "choice:choose_failure_log",
+            "--action",
+            "choice:tell_plain_truth",
+            "--action",
+            "choice:accept_three_month_trial",
+            "--action",
+            "choice:step_back_with_firewood",
+            "--action",
+            "choice:defend_cheongryu_with_white_path",
+            "--action",
+            "choice:accept_medicine_with_written_debt",
+            "--action",
+            "choice:watch_the_stolen_qingliu_flow",
+            "--action",
+            "choice:endure_until_copy_flow_breaks",
+            "--action",
+            "choice:listen_for_breath_mismatch",
+            "--action",
+            "choice:reconstruct_mumyeongs_sightline",
+            "--action",
+            "choice:show_the_hyeonakmun_trace_without_accusing",
+            "--action",
+            "choice:watch_mumyeong_answer_the_boss",
+            "--action",
+            "choice:search_the_rejected_aid_letters",
+            "--action",
+            "choice:compare_anger_to_copied_flow",
+            "--action",
+            "choice:inspect_bokho_lock_scars",
+            "--action",
+            "choice:read_hyeonakmun_empty_gate_record",
+            "--action",
+            "choice:trace_boss_offer_after_hyeonakmun",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("위치: 청류문 외곽 마당 (cheongryu_outer_courtyard)"));
+    assert!(stdout.contains("봉해 둔 이탈의 진실"));
+    assert!(stdout.contains("visual id: wuxia_mumyeong_departure_truth_summary"));
+    assert!(stdout.contains("layout: sealed_departure_truth_summary"));
+    assert!(stdout.contains("stable terms: 무명 / 서하린 / 현악문 / 흑사방주"));
+    assert!(stdout.contains(
+        "choice:assemble_departure_truth_without_delivering / 전하지 않은 채 이탈의 진실을 정리한다"
+    ));
+    assert!(stdout.contains(
+        "choice:compare_failed_aid_to_recruitment_offer / 거절당한 도움 요청과 보스의 제안을 나란히 놓는다"
+    ));
+    assert!(stdout.contains(
+        "choice:ask_seoharin_what_she_is_ready_to_hear / 서하린이 무엇을 들을 준비가 되었는지 묻는다"
+    ));
+    assert!(stdout.contains(
+        "choice:seal_truth_until_mumyeong_faces_it / 무명이 마주하기 전까지 진실을 봉해 둔다"
+    ));
+    assert!(!stdout.contains("dev_desk"));
+}
+
+#[test]
 fn content_tui_smoke_renders_final_movement_panel_after_scripted_actions() {
     let bundle_path = content_bundle_path();
     let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))

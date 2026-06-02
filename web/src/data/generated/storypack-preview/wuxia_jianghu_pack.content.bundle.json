@@ -2977,6 +2977,136 @@
           "visual_id": "wuxia_boss_recruits_mumyeong"
         },
         "title": "흑사방 보스의 스카웃 흔적"
+      },
+      {
+        "body": "흑사방의 검은 비늘 문양이 사라진 뒤, 천기록은 흩어진 조각들을 한 장으로 접는다. 거절당한 도움 요청, 현악문과 복호금쇄수, 비어 버린 산문, 보스가 먼저 본 상처. 기록은 무명이 왜 떠났는지 이해할 만큼은 이어지지만, 아직 그 문장을 서하린 앞에 내려놓지는 않는다.",
+        "choices": [
+          {
+            "id": "assemble_departure_truth_without_delivering",
+            "label": "전하지 않은 채 이탈의 진실을 정리한다",
+            "outcome": {
+              "add_clues": [
+                "departure_truth_can_be_understood_but_not_spoken_yet",
+                "seoharin_truth_delivery_requires_later_consent"
+              ],
+              "add_flags": [
+                "mumyeong_departure_truth_summary_resolved",
+                "sealed_departure_truth_summary_prepared",
+                "truth_delivery_still_unopened"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "진실은 한 문장으로 묶이기 시작한다. 하지만 그 문장은 아직 서하린에게 건넬 말이 아니라, 봉인해 둔 기록으로 남는다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "compare_failed_aid_to_recruitment_offer",
+            "label": "거절당한 도움 요청과 보스의 제안을 나란히 놓는다",
+            "outcome": {
+              "add_clues": [
+                "boss_used_mumyeongs_wound_after_orthodox_refusal",
+                "departure_truth_can_be_understood_but_not_spoken_yet"
+              ],
+              "add_flags": [
+                "mumyeong_departure_truth_summary_resolved",
+                "sealed_departure_truth_summary_prepared",
+                "truth_delivery_still_unopened"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "정파가 문을 닫은 자리에서 보스는 손을 내밀었다. 그것은 구원이 아니라, 버려진 상처를 자기 힘으로 계산한 제안이었다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "ask_seoharin_what_she_is_ready_to_hear",
+            "label": "서하린이 무엇을 들을 준비가 되었는지 묻는다",
+            "outcome": {
+              "add_clues": [
+                "seoharin_truth_delivery_requires_later_consent",
+                "salvation_condition_seen_but_unmet"
+              ],
+              "add_flags": [
+                "mumyeong_departure_truth_summary_resolved",
+                "sealed_departure_truth_summary_prepared",
+                "truth_delivery_still_unopened"
+              ],
+              "danger": 1,
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "서하린은 무명을 배신자로 부르지 않는다. 그래서 더더욱, 진실은 폭로가 아니라 그녀가 감당할 수 있는 순간을 기다려야 한다.",
+              "resources": {
+                "sanity": -1
+              }
+            }
+          },
+          {
+            "id": "seal_truth_until_mumyeong_faces_it",
+            "label": "무명이 마주하기 전까지 진실을 봉해 둔다",
+            "outcome": {
+              "add_clues": [
+                "salvation_condition_seen_but_unmet",
+                "boss_used_mumyeongs_wound_after_orthodox_refusal"
+              ],
+              "add_flags": [
+                "mumyeong_departure_truth_summary_resolved",
+                "sealed_departure_truth_summary_prepared",
+                "truth_delivery_still_unopened"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "구원 조건처럼 보이는 문장이 떠오르지만, 아직 조건을 만족한 것은 아니다. 천기록은 진실을 접어 두고 다음 대면을 기다린다.",
+              "resources": {
+                "sanity": -1
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "mumyeong_departure_truth_summary_resolved"
+          ],
+          "locations": [
+            "cheongryu_outer_courtyard"
+          ],
+          "required_flags": [
+            "boss_recruits_mumyeong_resolved",
+            "boss_recruitment_thread_opened",
+            "mumyeong_destroys_orthodox_sect_resolved",
+            "hyeonakmun_destruction_thread_opened",
+            "departure_truth_thread_deepened",
+            "mumyeong_request_for_aid_resolved",
+            "mumyeong_failed_aid_thread_opened",
+            "orthodox_hypocrisy_thread_opened",
+            "mumyeong_awakening_resolved",
+            "midgame_continuity_started"
+          ]
+        },
+        "id": "wuxia_mumyeong_departure_truth_summary",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "sealed_truth_page_without_delivery",
+              "duration_hint_ms": 1500,
+              "fallback_text": "봉인된 기록 가장자리에 '무명', '서하린', '현악문', '흑사방주'만 번지지 않은 먹처럼 남는다.",
+              "intensity": 0.74,
+              "kind": "glyph_anomaly",
+              "source": "sealed_departure_truth_summary",
+              "stable_terms": [
+                "무명",
+                "서하린",
+                "현악문",
+                "흑사방주"
+              ]
+            }
+          ],
+          "layout": "sealed_departure_truth_summary",
+          "speaker": "천기록",
+          "visual_id": "wuxia_mumyeong_departure_truth_summary"
+        },
+        "title": "봉해 둔 이탈의 진실"
       }
     ],
     "endings": [
@@ -3106,7 +3236,7 @@
   "manifest": {
     "counts": {
       "achievements": 2,
-      "encounters": 23,
+      "encounters": 24,
       "endings": 1,
       "items": 4,
       "locations": 4,

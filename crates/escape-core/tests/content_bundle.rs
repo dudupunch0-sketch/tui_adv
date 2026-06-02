@@ -211,12 +211,12 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&4));
     assert_eq!(bundle.manifest.counts.get("items"), Some(&4));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&23));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&24));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 4);
-    assert_eq!(index.encounters_len(), 23);
+    assert_eq!(index.encounters_len(), 24);
 
     let market = index
         .location("jianghu_market_street")
@@ -1389,6 +1389,72 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     );
     assert_eq!(
         trace_offer.outcome.destination_id.as_deref(),
+        Some("cheongryu_outer_courtyard")
+    );
+
+    let departure_truth = index
+        .encounter("wuxia_mumyeong_departure_truth_summary")
+        .expect("Mumyeong departure truth summary encounter");
+    assert_eq!(departure_truth.title, "봉해 둔 이탈의 진실");
+    assert_eq!(
+        departure_truth.conditions.locations,
+        vec!["cheongryu_outer_courtyard"]
+    );
+    assert_eq!(
+        departure_truth.conditions.required_flags,
+        vec![
+            "boss_recruits_mumyeong_resolved",
+            "boss_recruitment_thread_opened",
+            "mumyeong_destroys_orthodox_sect_resolved",
+            "hyeonakmun_destruction_thread_opened",
+            "departure_truth_thread_deepened",
+            "mumyeong_request_for_aid_resolved",
+            "mumyeong_failed_aid_thread_opened",
+            "orthodox_hypocrisy_thread_opened",
+            "mumyeong_awakening_resolved",
+            "midgame_continuity_started"
+        ]
+    );
+    assert_eq!(
+        departure_truth.conditions.forbidden_flags,
+        vec!["mumyeong_departure_truth_summary_resolved"]
+    );
+    let departure_presentation = departure_truth
+        .presentation
+        .as_ref()
+        .expect("Mumyeong departure truth summary presentation");
+    assert_eq!(
+        departure_presentation.layout.as_deref(),
+        Some("sealed_departure_truth_summary")
+    );
+    assert_eq!(departure_presentation.speaker.as_deref(), Some("천기록"));
+    assert_eq!(
+        departure_presentation.effect_cues[0].stable_terms,
+        vec!["무명", "서하린", "현악문", "흑사방주"]
+    );
+    assert_eq!(departure_truth.choices.len(), 4);
+    let assemble_truth = departure_truth
+        .choices
+        .iter()
+        .find(|choice| choice.id == "assemble_departure_truth_without_delivering")
+        .expect("assemble departure truth choice");
+    assert_eq!(
+        assemble_truth.outcome.add_flags,
+        vec![
+            "mumyeong_departure_truth_summary_resolved",
+            "sealed_departure_truth_summary_prepared",
+            "truth_delivery_still_unopened"
+        ]
+    );
+    assert_eq!(
+        assemble_truth.outcome.add_clues,
+        vec![
+            "departure_truth_can_be_understood_but_not_spoken_yet",
+            "seoharin_truth_delivery_requires_later_consent"
+        ]
+    );
+    assert_eq!(
+        assemble_truth.outcome.destination_id.as_deref(),
         Some("cheongryu_outer_courtyard")
     );
 }

@@ -214,7 +214,7 @@ sources:
       - notion_event_id: "wuxia_mumyeong_departure_truth_summary"
         notion_event_name: "무명 이탈의 진실 정리"
         repo_encounter_id: "wuxia_mumyeong_departure_truth_summary"
-        runtime_status: "next_runtime_candidate_selected"
+        runtime_status: "implemented_in_storypack_preview"
     status: "live_checked_docs_synced"
 
   - key: wuxia_10_epilogue_card_db

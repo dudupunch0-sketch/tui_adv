@@ -3120,5 +3120,74 @@ guardrails:
 runtime_preview_handoff:
   handoff_status: completed
   implementation_status: implemented
-  next_runtime_scope: final_epilogue_ux_playtest_contract_followup
+  next_runtime_scope: wuxia_return_settlement_contract_handoff_completed
+```
+
+## 36. `wuxia_return_settlement_contract_handoff` — docs-only handoff 완료
+
+```yaml
+id: wuxia_return_settlement_contract_handoff
+world_id: wuxia_jianghu
+storypack_id: wuxia_jianghu_pack
+status: docs_only_handoff_completed
+mapping_status: next_runtime_candidate_selected
+runtime_preview_design_status: handoff_only
+notion_mapping:
+  primary_event_id: wuxia_seoharin_unsaid_stay
+  primary_event_name: 가지 말라는 말
+  primary_page: notion:37137e69-695e-8138-a41d-e153190f85aa
+  related_sources:
+    - 08. 엔딩과 후일담 연결
+    - 11. True Ending 단일 루트
+    - 사도 최종전
+    - 최종장 결산 라우팅 마스터
+    - 사도 최종전 상태값 사전
+    - 06. 사이드 퀘스트와 미해결 부채
+    - 07. 천기록 / 천외편린 보상
+decision: select_return_settlement_as_next_contract_surface
+selected_next_runtime_candidate: wuxia_seoharin_unsaid_stay
+selected_over:
+  - battle_loss_path
+  - reward_ability_schema
+  - relation_debt_faction_ledger
+next_runtime_scope:
+  implementation_id: wuxia_seoharin_unsaid_stay
+  insert_after: wuxia_seoharin_qingliu_resolution
+  insert_before: wuxia_cheongirok_resolution
+  implementation_shape: existing_encounter_schema_seed_bridge
+  summary: 서하린이 주인공의 귀환 가능성을 마주하고, 귀환/정착/불확실성/회피가 이후 후일담 변주 후보로 남도록 한다.
+conditions:
+  locations: [black_serpent_ledger_vault]
+  required_flags: [seoharin_qingliu_resolution_resolved, final_state_routing_seeded, final_result_priority_applied_seeded, final_combat_result_battle_victory_seeded]
+  forbidden_flags: [seoharin_unsaid_stay_resolved]
+choice_shapes:
+  - id: say_return_home_honestly
+    role: safe_identity_return
+    label_direction: 귀환하고 싶다고 솔직히 말한다
+    expected_gains: [final_return_intent_honest_seeded, final_epilogue_return_absence_candidate_seeded]
+  - id: say_you_will_stay_with_qingliu
+    role: safe_settlement
+    label_direction: 청류문에 남겠다고 말한다
+    expected_gains: [final_settlement_intent_honest_seeded, final_epilogue_qingliu_settlement_candidate_seeded]
+  - id: share_uncertainty_without_running
+    role: safe_identity_return
+    label_direction: 아직 모르겠다고 말한다
+    expected_gains: [final_return_settlement_uncertain_shared_seeded, final_epilogue_empty_place_kept_open_seeded]
+  - id: turn_away_from_the_empty_place
+    role: risky_truth_probe
+    label_direction: 말을 돌린다
+    expected_gains: [final_return_settlement_evasion_seeded, final_epilogue_closed_gate_risk_seeded]
+outcome_hooks:
+  possible_flags: [seoharin_unsaid_stay_resolved, final_return_settlement_contract_seeded, final_return_intent_honest_seeded, final_settlement_intent_honest_seeded, final_return_settlement_uncertain_shared_seeded, final_return_settlement_evasion_seeded, final_epilogue_return_absence_candidate_seeded, final_epilogue_qingliu_settlement_candidate_seeded, final_epilogue_empty_place_kept_open_seeded, final_epilogue_closed_gate_risk_seeded]
+  possible_clues: [leaving_can_still_leave_a_place, staying_is_not_payment, uncertainty_can_be_shared_without_escape, evasion_prices_waiting]
+  possible_items: []
+  possible_destinations: [black_serpent_ledger_vault]
+main_spine_link: final epilogue 출력기가 열린 뒤, true-route 기준선 사이에 귀환/정착/침식 관계 분기를 삽입하기 위한 첫 return/settlement seed bridge다.
+randomization_notes: 1회성 late relationship trigger. 서하린·청류문 결산 뒤, 천기록 마지막 장 결산 전에 열어 return/settlement/corruption 후보를 남긴다.
+promotion_notes: docs-only handoff 완료. 다음 runtime은 `wuxia_seoharin_unsaid_stay`를 기존 encounter schema로 구현하되, full modern return ending, post-return settlement scene, return/settlement save/archive schema, relation/debt/faction ledger, reward/ability schema, combat resolver, HP 숫자전, Seo Harin truth delivery, `told_seoharin_truth`, Cheonggi Record identity reveal은 열지 않는다.
+runtime_preview_handoff:
+  handoff_status: completed
+  implementation_status: not_started
+  next_runtime_scope: wuxia_seoharin_unsaid_stay_runtime_implementation
+  guardrails: [no_full_modern_return_ending, no_return_settlement_save_archive_schema, no_relation_debt_faction_ledger, no_reward_or_ability_schema, no_combat_resolver, no_hp_numeric_battle, no_seoharin_truth_delivery, no_told_seoharin_truth, no_cheongirok_identity_reveal]
 ```

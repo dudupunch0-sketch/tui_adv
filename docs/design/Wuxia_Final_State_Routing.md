@@ -1,6 +1,6 @@
 # Wuxia Final State Routing
 
-Status: Notion-synced design contract + first final epilogue runtime implementation, no dedicated result schema
+Status: Notion-synced design contract + first final epilogue runtime implementation + return/settlement handoff, no dedicated result schema
 
 Primary storypack: `wuxia_jianghu_pack` / **이구학지 — 천기록**
 
@@ -154,3 +154,90 @@ Deferred until this contract exists and a runtime handoff explicitly opens them:
 Latest implemented runtime slice: `wuxia_final_epilogue_renderer_contract`.
 
 `wuxia_sado_final_phase_1_price_tag`, `wuxia_sado_final_phase_2_weakpoint_control`, `wuxia_sado_final_phase_3_outside_calculation`, `wuxia_boss_resolution`, `wuxia_mumyeong_resolution`, `wuxia_seoharin_qingliu_resolution`, `wuxia_cheongirok_resolution`, and `wuxia_black_serpent_aftermath` now use the existing encounter schema to seed final-state clues/flags/logs for the Sado final phases, boss-resolution route bridge, Mumyeong-resolution route bridge, Seo Harin/Qingliu epilogue candidate bridge, Cheonggi Record last-page bridge, and Black Serpent aftermath bridge. `wuxia_final_epilogue_renderer_contract` consumes those candidate seeds through Rust GameCore-owned structured body blocks without opening combat resolver, HP numeric combat, return/settlement schema, `item_unpriced_wooden_sword` payout, Seo Harin truth delivery, Cheonggi Record recorder identity reveal, or `told_seoharin_truth` unless a new approved runtime contract opens them.
+
+## Return/Settlement Contract Handoff
+
+Decision from the 2026-06-02 `wuxia_return_settlement_contract_handoff`: the next contract surface after final epilogue UX/playtest is return/settlement, starting with `wuxia_seoharin_unsaid_stay` / `가지 말라는 말`.
+
+Notion evidence:
+
+- `가지 말라는 말` explicitly opens return, settlement, and corruption afterword variations through Seo Harin's late relationship branch.
+- `08. 엔딩과 후일담 연결` keeps "현대 귀환 성공 -> 돌아온 출근길 / 현대 잔상" as an ending/afterword link not yet represented in runtime.
+- `11. True Ending 단일 루트` says the true-route baseline is complete and the next expansion is to insert return, settlement, corruption, conquest, Mumyeong-unsaved, and Seo-Harin-distortion branches into that baseline.
+
+Selected next implementation slice:
+
+| field | value |
+|---|---|
+| runtime id | `wuxia_seoharin_unsaid_stay` |
+| Notion source | `가지 말라는 말` / `37137e69-695e-8138-a41d-e153190f85aa` |
+| insert after | `wuxia_seoharin_qingliu_resolution` |
+| insert before | `wuxia_cheongirok_resolution` |
+| purpose | seed return/settlement/corruption relationship intent before Cheonggi Record and final epilogue consume late final context |
+
+First runtime scope:
+
+- Use the existing encounter schema only.
+- Add a late relationship trigger that asks whether the protagonist wants to return, stay, remain uncertain, or avoid the question.
+- Leave `seoharin_unsaid_stay_resolved` and `final_return_settlement_contract_seeded`.
+- Seed return/settlement/corruption candidates through flags/clues/log/presentation only.
+- Do not create a new return ending schema, modern-life settlement schema, relation ledger, or save/archive surface.
+
+Stable choice ids for the first runtime:
+
+| choice id | meaning | expected seed direction |
+|---|---|---|
+| `say_return_home_honestly` | 귀환하고 싶다고 솔직히 말한다 | return intent without erasing Seo Harin's place |
+| `say_you_will_stay_with_qingliu` | 청류문에 남겠다고 말한다 | settlement intent without treating belonging as payment |
+| `share_uncertainty_without_running` | 아직 모르겠다고 말한다 | both return and settlement remain open |
+| `turn_away_from_the_empty_place` | 말을 돌린다 | closed-gate / distortion risk candidate |
+
+Expected seed vocabulary:
+
+```yaml
+return_settlement_contract_handoff:
+  required_flags:
+    - seoharin_qingliu_resolution_resolved
+    - final_state_routing_seeded
+    - final_result_priority_applied_seeded
+    - final_combat_result_battle_victory_seeded
+  common_flags:
+    - seoharin_unsaid_stay_resolved
+    - final_return_settlement_contract_seeded
+  candidate_flags:
+    return:
+      - final_return_intent_honest_seeded
+      - final_epilogue_return_absence_candidate_seeded
+    settlement:
+      - final_settlement_intent_honest_seeded
+      - final_epilogue_qingliu_settlement_candidate_seeded
+    uncertain:
+      - final_return_settlement_uncertain_shared_seeded
+      - final_epilogue_empty_place_kept_open_seeded
+    evasion:
+      - final_return_settlement_evasion_seeded
+      - final_epilogue_closed_gate_risk_seeded
+  clue_examples:
+    - leaving_can_still_leave_a_place
+    - staying_is_not_payment
+    - uncertainty_can_be_shared_without_escape
+    - evasion_prices_waiting
+```
+
+Rejected as next contract:
+
+- `battle_loss` path: the final epilogue consumer can recognize an approved loss seed, but opening it first would require a final battle container or explicit loss route before this late relationship branch has a place to attach.
+- reward/ability schema: `천기록 / 천외편린 보상` remains important, but it is a broader three-choice growth system rather than the immediate final afterword contract.
+- relation/debt/faction ledger: unresolved debt and faction pressure already appear as afterword principles; a ledger should wait until return/settlement and loss/corruption branches show which persistent axes are worth storing.
+
+Guardrails:
+
+- no full modern return ending or post-return settlement scene in this slice
+- no new `ScenePage` mode
+- no return/settlement save/archive schema
+- no `told_seoharin_truth`
+- no Seo Harin truth-delivery scene
+- no `item_unpriced_wooden_sword` payout
+- no relation/debt/faction ledger
+- no reward/ability schema
+- no combat resolver or HP numeric battle

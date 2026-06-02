@@ -2,9 +2,9 @@
 type: next_goal_prompt
 created: 2026-06-01
 updated: 2026-06-02
-current_goal: wuxia_final_epilogue_ux_playtest_contract_followup
-previous_current_goal: wuxia_final_epilogue_renderer_contract_implementation
-mode: runtime-qa-contract-followup
+current_goal: wuxia_seoharin_unsaid_stay_runtime_implementation
+previous_current_goal: wuxia_return_settlement_contract_handoff
+mode: contract-first-runtime-implementation
 ---
 
 # next_goal
@@ -47,9 +47,19 @@ mode: runtime-qa-contract-followup
 
 `wuxia_final_epilogue_renderer_contract` runtime implementation도 완료됐다. 첫 구현은 새 `ScenePage` mode가 아니라 structured `ScenePage.body_blocks` convention을 선택했고, Rust GameCore가 candidate seed consumption, `final_result_priority`, suppress, card ordering을 소유한다. Web Storybook과 SuperLightTUI는 core 결과를 표시만 하며, 후일담 카드 enable/suppress를 renderer에서 다시 계산하지 않는다.
 
-현재 목표는 `wuxia_final_epilogue_ux_playtest_contract_followup`이다. 실제 플레이/브라우저/terminal 화면에서 `epilogue_result`, `epilogue_card`, `epilogue_suppressed`가 읽기 좋게 표시되는지 확인하고, contract follow-up으로 열어야 할 다음 범위를 정한다. 새 route, return/settlement, reward/ability, relation/debt/faction ledger, combat resolver는 이 QA 없이 바로 열지 않는다.
+`wuxia_final_epilogue_ux_playtest_contract_followup`도 완료됐다. Web Storybook과 SuperLightTUI에서 core-owned `epilogue_*` body block을 읽기 좋은 후일담 화면으로 표시했고, follow-up handoff에서 다음 contract surface를 return/settlement로 결정했다.
+
+`wuxia_return_settlement_contract_handoff`도 완료됐다. Notion `가지 말라는 말`, `08. 엔딩과 후일담 연결`, `11. True Ending 단일 루트`, `사도 최종전`, `최종장 결산 라우팅 마스터`, `사도 최종전 상태값 사전`, `06. 사이드 퀘스트와 미해결 부채`, `07. 천기록 / 천외편린 보상`을 대조해 다음 runtime 후보를 `wuxia_seoharin_unsaid_stay`로 선택했다.
+
+현재 목표는 `wuxia_seoharin_unsaid_stay_runtime_implementation`이다. `docs/design/Wuxia_Final_State_Routing.md`의 `Return/Settlement Contract Handoff`를 계약으로 보고, `가지 말라는 말`을 기존 encounter schema로 구현한다. 이 slice는 full modern return ending이나 settlement schema가 아니라 서하린 late relationship trigger이며, return/settlement/corruption 후보 seed만 남긴다.
 
 이전 목표 표기 이력:
+
+```yaml
+current_goal: wuxia_final_epilogue_ux_playtest_contract_followup
+previous_current_goal: wuxia_final_epilogue_renderer_contract_implementation
+mode: runtime-qa-contract-followup
+```
 
 ```yaml
 current_goal: wuxia_final_epilogue_renderer_contract_implementation
@@ -57,24 +67,31 @@ previous_current_goal: wuxia_final_epilogue_renderer_contract_handoff
 mode: contract-first-runtime-implementation
 ```
 
-## 검증 전 비교할 후보
+## 구현 전 계약
 
-최소 다음 후보와 contract input을 비교한다.
+다음 runtime 구현은 아래 contract를 따른다.
 
-- `wuxia_boss_resolution`
-- `wuxia_mumyeong_resolution`
-- `wuxia_seoharin_qingliu_resolution`
-- `wuxia_cheongirok_resolution`
-- `wuxia_black_serpent_aftermath`
-- `wuxia_final_epilogue_renderer_contract`
-- `epilogue_tianjilu_last_page`
-- `epilogue_open_gate` / `epilogue_closed_gate`
-- `wuxia_seoharin_unsaid_stay`
-- `wuxia_seoharin_empty_place`
-- `wuxia_seoharin_left_meal`
-- `docs/design/Wuxia_Final_State_Routing.md`의 canonical final inputs와 boundary
-- `docs/design/Wuxia_Final_State_Routing.md`의 `Final Epilogue Renderer Contract Handoff`
-- implemented output surface: structured body block convention
+- runtime id: `wuxia_seoharin_unsaid_stay`
+- Notion source: `가지 말라는 말` / `37137e69-695e-8138-a41d-e153190f85aa`
+- insert after: `wuxia_seoharin_qingliu_resolution`
+- insert before: `wuxia_cheongirok_resolution`
+- required flags: `seoharin_qingliu_resolution_resolved`, `final_state_routing_seeded`, `final_result_priority_applied_seeded`, `final_combat_result_battle_victory_seeded`
+- forbidden flag: `seoharin_unsaid_stay_resolved`
+- common flags: `seoharin_unsaid_stay_resolved`, `final_return_settlement_contract_seeded`
+- stable choice id:
+  - `say_return_home_honestly`
+  - `say_you_will_stay_with_qingliu`
+  - `share_uncertainty_without_running`
+  - `turn_away_from_the_empty_place`
+- candidate seeds:
+  - `final_return_intent_honest_seeded`
+  - `final_settlement_intent_honest_seeded`
+  - `final_return_settlement_uncertain_shared_seeded`
+  - `final_return_settlement_evasion_seeded`
+  - `final_epilogue_return_absence_candidate_seeded`
+  - `final_epilogue_qingliu_settlement_candidate_seeded`
+  - `final_epilogue_empty_place_kept_open_seeded`
+  - `final_epilogue_closed_gate_risk_seeded`
 
 ## 반드시 읽을 문서
 
@@ -92,9 +109,12 @@ mode: contract-first-runtime-implementation
   - section `0.64`: `wuxia_black_serpent_aftermath` preview runtime slice
   - section `0.65`: final epilogue renderer contract handoff
   - section `0.66`: `wuxia_final_epilogue_renderer_contract` runtime implementation slice
+  - section `0.67`: final epilogue UX/playtest follow-up
+  - section `0.68`: return/settlement contract docs-only handoff
   - 현재 최우선 남은 작업
   - `## 10. 다음 액션`
 - `docs/design/Wuxia_Final_State_Routing.md`
+  - `Return/Settlement Contract Handoff`
 - `docs/dev/Storypack_Runtime_Preview_Mode.md`
 - `docs/dev/Notion_Design_Coverage.md`
 - `docs/content/storypacks/wuxia_jianghu_pack.md`
@@ -140,28 +160,34 @@ mode: contract-first-runtime-implementation
 - 첫 implementation은 최소 boss/흑사방, 무명, 서하린/청류문, 천기록 candidate group을 core-owned seed consumer로 소비한다.
 - suppress는 card output보다 먼저 적용한다. `corrupted_victory`는 `true_route_victory`보다 우선하고, true route는 successor/new scale/new shadow/closed gate/last bowl/banner/southern market rumor를 suppress한다.
 - strong evidence가 있는 `epilogue_boss_alliance_silence`는 증거 부족이 아니라 책임 회피 변주로 출력한다.
+- `wuxia_return_settlement_contract_handoff`는 `wuxia_seoharin_unsaid_stay`를 다음 runtime 후보로 선택했다.
+- 첫 return/settlement runtime은 full 귀환/정착 결산이 아니라 `final_return_settlement_contract_seeded`와 후보 seed만 남기는 late relationship trigger다.
 
 ## 금지선
 
 - 서하린에게 무명 이탈 진실을 직접 전달하지 않는다.
 - `told_seoharin_truth` flag를 추가하지 않는다.
-- final battle이나 return/settlement 결산을 바로 구현하지 않는다.
+- full final battle이나 full return/settlement 결산을 바로 구현하지 않는다.
+- `wuxia_seoharin_unsaid_stay`는 귀환/정착/침식 후보 seed bridge로만 구현한다.
 - 보스 결산은 route seed bridge까지만 구현됐으며, 별도 승인된 runtime contract 없이 최종 결산 출력기나 후일담을 바로 구현하지 않는다.
 - final epilogue renderer contract는 열렸지만, return schema, combat resolver/schema, HP 숫자전, route graph, faction reputation, relation/debt ledger, reward/ability schema, 천기록 identity reveal을 바로 열지 않는다.
 - `item_unpriced_wooden_sword`를 실제 아이템으로 지급하지 않는다.
 - legacy office bundle, `src/tui_adv/data/*.yaml`, `escape-office` save/localStorage key를 변경하지 않는다.
 - `wuxia_final_epilogue_renderer_contract`를 구현하더라도 combat resolver, HP numeric battle, return/settlement schema를 바로 열지 않는다.
 
-## 이번 follow-up 산출물
+## 이번 implementation 산출물
 
-UX/playtest와 contract follow-up 범위를 정한 뒤 최소 다음 파일을 갱신한다.
+`wuxia_seoharin_unsaid_stay`를 구현하면서 최소 다음 파일을 갱신한다.
 
-- `docs/design/Wuxia_Final_State_Routing.md`
+- `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`
+- `crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json`
+- `web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json`
+- Rust/WASM/terminal/Web route tests or existing targeted tests updated for the inserted event
 - `docs/dev/Development_Plan.md`
 - `docs/dev/Checklist.md`
 - `docs/dev/Notion_Design_Coverage.md`
-- `docs/dev/Storypack_Runtime_Preview_Mode.md`
 - `docs/content/storypacks/wuxia_jianghu_pack.md`
 - `docs/content/encounter_db/wuxia_jianghu_pack.md`
 - `docs/content/storypack_db/storypacks.json`
+- `docs/content/storypack_db/encounter_situations.json`
 - `idea_box/next_goal/README.md`

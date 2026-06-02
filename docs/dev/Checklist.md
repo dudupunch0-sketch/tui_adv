@@ -999,6 +999,20 @@
 - [x] 서하린 truth delivery, `told_seoharin_truth`, 천기록 기록자 정체 reveal 미변경 유지
 - [x] 다음 작업을 return/settlement, final battle loss path, reward/ability, relation/debt/faction ledger 중 하나의 contract handoff 선택으로 갱신
 
+### 0.2cg 2026-06-02 무협 return/settlement contract docs-only handoff
+
+- [x] Notion `가지 말라는 말`, `08. 엔딩과 후일담 연결`, `11. True Ending 단일 루트`, `사도 최종전`, `최종장 결산 라우팅 마스터`, `사도 최종전 상태값 사전` 재확인
+- [x] Notion `06. 사이드 퀘스트와 미해결 부채`, `07. 천기록 / 천외편린 보상`을 next contract 후보 비교용으로 재확인
+- [x] 다음 contract surface를 return/settlement로 결정
+- [x] 다음 runtime 후보를 `wuxia_seoharin_unsaid_stay` / `가지 말라는 말`로 결정
+- [x] 첫 구현 범위를 full return ending이 아니라 서하린 late relationship trigger + return/settlement/corruption 후보 seed bridge로 제한
+- [x] stable choice id `say_return_home_honestly`, `say_you_will_stay_with_qingliu`, `share_uncertainty_without_running`, `turn_away_from_the_empty_place` 확정
+- [x] `docs/design/Wuxia_Final_State_Routing.md`에 required/common/candidate seed와 guardrail 기록
+- [x] final battle loss path, reward/ability schema, relation/debt/faction ledger는 다음 contract로 선택하지 않은 이유 기록
+- [x] full modern return ending, return/settlement save/archive schema, relation/debt/faction ledger, reward/ability schema 미변경 유지
+- [x] combat resolver, HP 숫자전, 서하린 truth delivery, `told_seoharin_truth`, 천기록 기록자 정체 reveal 미변경 유지
+- [x] 다음 작업을 `wuxia_seoharin_unsaid_stay` runtime implementation slice로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

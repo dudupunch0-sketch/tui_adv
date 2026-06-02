@@ -2981,6 +2981,114 @@ fn json_boundary_reaches_wuxia_sado_final_phase_3_outside_calculation_through_pr
 }
 
 #[test]
+fn json_boundary_reaches_wuxia_boss_resolution_through_preview_bundle() {
+    let outside_state_json = wuxia_state_after_actions(&[
+        "choice:follow_roadside_dust",
+        "move:jianghu_market_street",
+        "choice:run_toward_open_street",
+        "choice:choose_failure_log",
+        "choice:tell_plain_truth",
+        "choice:accept_three_month_trial",
+        "choice:step_back_with_firewood",
+        "choice:defend_cheongryu_with_white_path",
+        "choice:accept_medicine_with_written_debt",
+        "choice:watch_the_stolen_qingliu_flow",
+        "choice:endure_until_copy_flow_breaks",
+        "choice:listen_for_breath_mismatch",
+        "choice:reconstruct_mumyeongs_sightline",
+        "choice:show_the_hyeonakmun_trace_without_accusing",
+        "choice:watch_mumyeong_answer_the_boss",
+        "choice:search_the_rejected_aid_letters",
+        "choice:compare_anger_to_copied_flow",
+        "choice:inspect_bokho_lock_scars",
+        "choice:read_hyeonakmun_empty_gate_record",
+        "choice:trace_boss_offer_after_hyeonakmun",
+        "choice:assemble_departure_truth_without_delivering",
+        "choice:set_down_the_work_notebook_briefly",
+        "choice:eat_the_left_meal_quietly",
+        "choice:secure_the_blackscale_ledger",
+        "choice:return_flow_to_mumyeong",
+    ]);
+
+    let boss_result_json = apply_action_json(
+        &outside_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:remember_the_empty_place",
+    )
+    .expect("remember empty place action should serialize");
+    let boss_result: Value =
+        serde_json::from_str(&boss_result_json).expect("phase 3 action JSON should parse");
+    let boss_state_json =
+        serde_json::to_string(&boss_result["state"]).expect("boss state should stringify");
+    let boss_page_json = scene_page_json(&boss_state_json, WUXIA_PREVIEW_BUNDLE)
+        .expect("boss resolution scene page should serialize");
+    let boss_page: Value =
+        serde_json::from_str(&boss_page_json).expect("boss resolution page JSON should parse");
+    assert_eq!(boss_page["mode"], "encounter");
+    assert_eq!(boss_page["title"], "보스 결산");
+    assert_eq!(boss_page["location"]["id"], "black_serpent_ledger_vault");
+    assert_eq!(boss_page["visual"]["id"], "wuxia_boss_resolution");
+    assert_eq!(boss_page["visual"]["kind"], "boss_resolution_seed");
+    assert_eq!(boss_page["effect_cues"][0]["stable_terms"][0], "보스 결산");
+    let boss_action_ids: Vec<&str> = boss_page["actions"]
+        .as_array()
+        .expect("actions should be an array")
+        .iter()
+        .map(|action| action["id"].as_str().expect("action id should be a string"))
+        .collect();
+    assert_eq!(
+        boss_action_ids,
+        vec![
+            "choice:confirm_true_route_outside_calculation",
+            "choice:confirm_meaningful_victory_with_evidence",
+            "choice:confirm_incomplete_victory_residue",
+            "choice:confirm_mumyeong_unsaved_successor_risk",
+            "choice:confirm_corrupted_victory",
+        ]
+    );
+
+    let true_route_result_json = apply_action_json(
+        &boss_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:confirm_true_route_outside_calculation",
+    )
+    .expect("true-route boss resolution action should serialize");
+    let true_route_result: Value = serde_json::from_str(&true_route_result_json)
+        .expect("boss resolution action JSON should parse");
+    assert_eq!(true_route_result["encounter_id"], "wuxia_boss_resolution");
+    assert_eq!(
+        true_route_result["state"]["location_id"],
+        "black_serpent_ledger_vault"
+    );
+    let flags = true_route_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array");
+    assert!(flags.iter().any(|flag| flag == "boss_resolution_resolved"));
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "final_boss_resolution_true_route_confirmed_seeded"));
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "final_result_priority_applied_seeded"));
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "final_epilogue_candidates_true_route_seeded"));
+    assert!(!flags
+        .iter()
+        .any(|flag| flag == "item_unpriced_wooden_sword"));
+    assert!(!flags.iter().any(|flag| flag == "told_seoharin_truth"));
+    let clues = true_route_result["state"]["clues"]
+        .as_array()
+        .expect("clues should be an array");
+    assert!(clues
+        .iter()
+        .any(|clue| clue == "boss_resolution_true_route_requires_unpriced_things"));
+    assert!(clues
+        .iter()
+        .any(|clue| clue == "broken_black_serpent_not_simple_happy_ending"));
+}
+
+#[test]
 fn json_boundary_reports_user_facing_errors() {
     let state_json = new_game_json(123, CONTENT_BUNDLE).expect("new game should serialize");
 

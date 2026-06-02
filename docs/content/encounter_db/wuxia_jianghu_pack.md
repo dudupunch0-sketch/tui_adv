@@ -1,13 +1,13 @@
 # 이구학지 — 천기록 encounter situation cards
 
-Status: candidate + `wuxia_sado_final_phase_3_outside_calculation` preview runtime implemented
+Status: candidate + `wuxia_boss_resolution` preview runtime implemented
 
-이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_sado_final_phase_3_outside_calculation`까지는 separate storypack preview runtime으로 승격되었다.
+이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_boss_resolution`까지는 separate storypack preview runtime으로 승격되었다.
 
 공통 원칙:
 
 - 모든 카드는 `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`에 속한다.
-- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_sado_final_phase_3_outside_calculation`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. `wuxia_sado_final_phase_3_outside_calculation`는 `docs/design/Wuxia_Final_State_Routing.md`의 final state routing contract 이후 세 번째 final-entry slice이며, 다음 handoff 후보는 `wuxia_boss_resolution`이다.
+- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_boss_resolution`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. `wuxia_boss_resolution`는 `docs/design/Wuxia_Final_State_Routing.md`의 final state routing contract와 phase 3 후보 seed 이후 보스 결산 route를 정규화하는 bridge이며, 다음 handoff 후보는 `wuxia_mumyeong_resolution`이다.
 - 최신 canonical 무협 설정은 **이구학지 — 천기록**이다. 이전의 generic 객잔/소림/무당/아미 placeholder는 superseded로 본다.
 - 플레이어 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계의 시장 한복판에 전이됐다”이다.
 - 선택지는 세부 수치보다 역할과 결과 hook을 먼저 정의한다.
@@ -36,7 +36,7 @@ Status: candidate + `wuxia_sado_final_phase_3_outside_calculation` preview runti
 | `wuxia_mumyeong_copy_style_reveal` | 무명의 카피 무공 공개 | `wuxia_mumyeong_copy_style_reveal` | preview runtime implemented |
 | `wuxia_mumyeong_resolution` | 무명 결산 | none yet | future final route event |
 | `wuxia_mumyeong_midgame_reunion` | 무명 중반 재회 | `wuxia_mumyeong_midgame_reunion` | preview runtime implemented |
-| `wuxia_boss_resolution` | 보스 결산 | none yet | future boss result event |
+| `wuxia_boss_resolution` | 보스 결산 | `wuxia_boss_resolution` | preview runtime implemented; route seed bridge, not final epilogue renderer |
 | `wuxia_mumyeong_first_sighting` | 무명 첫 목격 | `wuxia_mumyeong_first_sighting` | preview runtime implemented |
 | `wuxia_mumyeong_first_confrontation` | 무명 첫 대치 | `wuxia_mumyeong_first_confrontation` | preview runtime implemented |
 | `wuxia_boss_first_appearance` | 보스 첫 등장 | `wuxia_boss_first_appearance` | preview runtime implemented |
@@ -62,6 +62,7 @@ Additional final-battle Notion pages outside the 26-row event DB:
 | `사도 최종전 1페이즈: 가격표` | `wuxia_sado_final_phase_1_price_tag` | preview runtime implemented; ledger/evidence/pressure/item-log seed only |
 | `사도 최종전 2페이즈: 약점 장악` | `wuxia_sado_final_phase_2_weakpoint_control` | preview runtime implemented; relationship/weakpoint/final-method seed only |
 | `사도 최종전 3페이즈: 계산식 밖` | `wuxia_sado_final_phase_3_outside_calculation` | preview runtime implemented; outside-calculation/result-candidate seed only |
+| `보스 결산` | `wuxia_boss_resolution` | preview runtime implemented; boss-resolution route/epilogue candidate seed only |
 
 ## 1. `wuxia_commute_rift_arrival`
 
@@ -2671,4 +2672,79 @@ runtime_preview_implementation:
     - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
     - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
   next_handoff: wuxia_boss_resolution_handoff
+```
+
+## 30. `wuxia_boss_resolution` — preview runtime 구현 완료
+
+```yaml
+id: wuxia_boss_resolution
+world_id: wuxia_jianghu
+storypack_id: wuxia_jianghu_pack
+status: implemented_in_storypack_preview
+mapping_status: preview_runtime_implemented
+runtime_preview_design_status: implemented
+implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
+notion_mapping:
+  notion_event_id: wuxia_boss_resolution
+  notion_event_name: 보스 결산
+phase: [final_entry, boss_resolution_seed]
+priority_class: route_key
+location_tags: [black_serpent_ledger_vault, final_resolution, route_normalization]
+surface: [sect_courtyard, faction_negotiation, cheonggi_record]
+anomaly_type: [future_record, faction_pressure, oath_binding]
+pressure_type: [sanity, health, danger]
+npc_slots: [blood_moon_antagonist]
+candidate_characters: [흑사방주, 사도, 무명, 무림맹]
+summary: 사도 최종전 3페이즈가 남긴 combat_result/boss_resolution_route 후보를 보스 결산 route seed와 후속 epilogue candidate seed로 정규화하는 bridge encounter.
+presentation:
+  visual_id: wuxia_boss_resolution
+  speaker: 천기록
+  layout: boss_resolution_seed
+  stable_terms: [보스 결산, 흑사방, 무명, 무림맹]
+conditions:
+  locations: [black_serpent_ledger_vault]
+  required_flags: [sado_final_phase_3_outside_calculation_resolved, final_phase_3_outside_calculation_resolved, final_combat_result_battle_victory_seeded, final_state_routing_seeded]
+  forbidden_flags: [boss_resolution_resolved]
+choice_shapes:
+  - id: confirm_true_route_outside_calculation
+    role: safe_identity_return
+    label_direction: 계산식 밖의 승리를 결산한다
+    expected_gains: [final_boss_resolution_true_route_confirmed_seeded, final_epilogue_candidates_true_route_seeded]
+  - id: confirm_meaningful_victory_with_evidence
+    role: evidence_priority
+    label_direction: 증거와 조직망 처리를 결산한다
+    expected_gains: [final_boss_resolution_meaningful_victory_seeded, final_epilogue_candidates_meaningful_seeded]
+  - id: confirm_incomplete_victory_residue
+    role: safe_pressure_relief
+    label_direction: 남은 장부와 잔향을 결산한다
+    expected_gains: [final_boss_resolution_incomplete_victory_seeded, final_black_serpent_banner_candidate_seeded]
+  - id: confirm_mumyeong_unsaved_successor_risk
+    role: safe_identity_return
+    label_direction: 무명 후계 구도의 위험을 결산한다
+    expected_gains: [final_boss_resolution_mumyeong_unsaved_victory_seeded, final_mumyeong_resolution_required_seeded]
+  - id: confirm_corrupted_victory
+    role: risky_truth_probe
+    label_direction: 사도식 계산으로 남은 승리를 결산한다
+    expected_gains: [final_boss_resolution_corrupted_victory_seeded, final_epilogue_candidates_corrupted_seeded]
+outcome_hooks:
+  possible_flags: [boss_resolution_resolved, final_boss_resolution_true_route_confirmed_seeded, final_boss_resolution_meaningful_victory_seeded, final_boss_resolution_incomplete_victory_seeded, final_boss_resolution_mumyeong_unsaved_victory_seeded, final_boss_resolution_corrupted_victory_seeded, final_result_priority_applied_seeded, final_epilogue_candidates_true_route_seeded, final_epilogue_candidates_meaningful_seeded, final_epilogue_candidates_incomplete_seeded, final_epilogue_candidates_mumyeong_unsaved_seeded, final_epilogue_candidates_corrupted_seeded, final_mumyeong_resolution_required_seeded]
+  possible_clues: [boss_resolution_true_route_requires_unpriced_things, broken_black_serpent_not_simple_happy_ending, open_gate_suppresses_closed_gate_candidate, strong_evidence_turns_silence_into_responsibility_evasion, ledger_secured_is_not_core_network_cut, sado_defeat_does_not_save_mumyeong, black_serpent_new_scale_is_successor_risk, good_calculation_can_still_be_corruption]
+  possible_items: []
+  possible_destinations: [black_serpent_ledger_vault]
+main_spine_link: phase 3가 만든 combat_result/boss_resolution_route 후보를 final_result_priority와 epilogue candidate seed로 정규화하고, 무명/서하린/무림맹 결산이 소비할 입력을 넘긴다.
+randomization_notes: 최종장 보스 결산 1회성 route key. sado_final_phase_3_outside_calculation_resolved 뒤 장부고에서만 열고 boss_resolution_resolved로 반복을 막는다.
+promotion_notes: preview runtime으로 구현 완료. final epilogue renderer, return/settlement schema, combat resolver, HP 숫자전, Seo Harin truth delivery, told_seoharin_truth, Mumyeong salvation confirmation, relation/reward schema, item_unpriced_wooden_sword payout은 열지 않는다.
+runtime_preview_handoff:
+  handoff_status: implemented
+  insert_after: wuxia_sado_final_phase_3_outside_calculation
+  next_runtime_scope: wuxia_mumyeong_resolution_handoff
+  guardrails: [no_final_epilogue_or_return_schema, no_combat_resolver, no_hp_numeric_battle, no_seoharin_truth_delivery, no_told_seoharin_truth, no_mumyeong_salvation_confirmation, no_relation_or_reward_schema, no_item_unpriced_wooden_sword_award]
+runtime_preview_implementation:
+  implementation_status: implemented
+  implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
+  insert_after: wuxia_sado_final_phase_3_outside_calculation
+  generated_artifacts:
+    - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+    - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+  next_handoff: wuxia_mumyeong_resolution_handoff
 ```

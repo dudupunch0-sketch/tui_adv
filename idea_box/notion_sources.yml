@@ -349,13 +349,13 @@ sources:
     notion_ref: "notion:37137e69-695e-8164-ab41-e794aa886dae"
     url: "https://www.notion.so/37137e69695e8164ab41e794aa886dae"
     last_checked_at: "2026-06-02T12:50:00+09:00"
-    precedence_role: "next_runtime_handoff_source_after_sado_phase_3"
+    precedence_role: "implemented_boss_resolution_route_seed_source"
     related_canonical_docs:
       - "docs/design/Wuxia_Final_State_Routing.md"
       - "docs/dev/Development_Plan.md"
       - "idea_box/next_goal/README.md"
-    runtime_status: "next_handoff_candidate"
-    status: "live_checked_next_candidate"
+    runtime_status: "implemented_in_storypack_preview"
+    status: "live_checked_runtime_implemented"
 
   - key: wuxia_mumyeong_resolution
     title: "무명 결산"
@@ -363,10 +363,11 @@ sources:
     notion_ref: "notion:37137e69-695e-8159-8032-ce5f108ca6c8"
     url: "https://www.notion.so/37137e69695e81598032ce5f108ca6c8"
     last_checked_at: "2026-06-02T12:25:00+09:00"
-    precedence_role: "future_mumyeong_salvation_source"
+    precedence_role: "next_runtime_handoff_source_after_boss_resolution"
     related_canonical_docs:
       - "docs/design/Wuxia_Final_State_Routing.md"
-    status: "deferred_until_final_routing_runtime"
+    runtime_status: "next_handoff_candidate"
+    status: "live_checked_next_candidate"
 
   - key: wuxia_seoharin_unsaid_stay
     title: "가지 말라는 말"

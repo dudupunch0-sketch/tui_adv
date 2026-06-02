@@ -883,6 +883,21 @@
 - [x] 기본 office bundle, Web legacy generated `content.bundle.json`, `src/tui_adv/data/*.yaml`, legacy `escape-office` save/localStorage key 미변경 유지
 - [x] 다음 작업을 `wuxia_boss_resolution` handoff 검토로 갱신
 
+### 0.2by 2026-06-02 무협 `wuxia_boss_resolution` preview runtime slice
+
+- [x] Notion `보스 결산`, `최종장 결산 라우팅 마스터`, `사도 최종전 상태값 사전`, `사도 최종전` 재확인
+- [x] `wuxia_boss_resolution`을 기존 encounter schema로 구현 가능한 boss-resolution route seed bridge로 결정
+- [x] `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`에서 `wuxia_sado_final_phase_3_outside_calculation` 뒤에 `wuxia_boss_resolution` 추가
+- [x] start conditions를 `sado_final_phase_3_outside_calculation_resolved`, `final_phase_3_outside_calculation_resolved`, `final_combat_result_battle_victory_seeded`, `final_state_routing_seeded`로 구현
+- [x] stable choice id `confirm_true_route_outside_calculation`, `confirm_meaningful_victory_with_evidence`, `confirm_incomplete_victory_residue`, `confirm_mumyeong_unsaved_successor_risk`, `confirm_corrupted_victory` 구현
+- [x] 모든 선택지가 `boss_resolution_resolved`, `final_result_priority_applied_seeded`, `destination_id: black_serpent_ledger_vault` bridge를 남기도록 구현
+- [x] true/meaningful/incomplete/mumyeong-unsaved/corrupted route seed와 후속 epilogue candidate seed를 flags/clues/log로만 구현
+- [x] Rust/Web storypack preview generated bundle 재생성
+- [x] Python exporter/docs/storypack DB, Rust content bundle, WASM JSON boundary, terminal smoke, Web default content bundle registry 테스트 갱신
+- [x] final epilogue renderer, return/settlement schema, combat resolver, HP 숫자전, 서하린 truth delivery, `told_seoharin_truth`, 무명 구원 확정, relation/reward schema, `item_unpriced_wooden_sword` payout 미변경 유지
+- [x] 기본 office bundle, Web legacy generated `content.bundle.json`, `src/tui_adv/data/*.yaml`, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 작업을 `wuxia_mumyeong_resolution` handoff 검토로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

@@ -675,6 +675,22 @@
 - [x] full flashback, 무명 이탈 진실 전체 reveal, 정파 문파 멸문, boss recruit/final boss resolution, 무명 구원 확정, 서하린에게 진실 전달, seed 기반 random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation/reward/ability/epilogue/return schema, 천기록 정체 reveal 미변경 유지
 - [x] 다음 작업을 `wuxia_qingliu_attack_after_war_followup` docs-only handoff로 갱신
 
+### 0.2bj 2026-06-02 무협 post-Qingliu trace docs-only handoff
+
+- [x] Notion 사건 카드 DB `wuxia_mumyeong_destroys_orthodox_sect`, `wuxia_boss_recruits_mumyeong`, `wuxia_mumyeong_departure_truth_summary`, `wuxia_mumyeong_resolution`, `wuxia_boss_resolution`, `wuxia_seoharin_empty_place` 재확인
+- [x] parent `무협 스토리팩: 이구학지 — 천기록`, `04. 메인 루트 구조`, `99. 통합 체크포인트`와 비교
+- [x] 다음 runtime 후보를 `wuxia_mumyeong_destroys_orthodox_sect`로 결정
+- [x] 구현 범위를 현악문 멸문 전투가 아니라 빈 현악문 산문/기록/풍문을 확인하는 consequence trace로 제한한다고 문서화
+- [x] `wuxia_boss_recruits_mumyeong`은 정파 문파 멸문 이후 후반 스카웃 사건이라 보류
+- [x] `wuxia_mumyeong_departure_truth_summary`는 후반 truth reveal/서하린 진실 전달/무명 구원 조건 확정 범위가 커서 보류
+- [x] `wuxia_mumyeong_resolution`, `wuxia_boss_resolution`은 최종장/후일담 routing 범위라 보류
+- [x] `wuxia_seoharin_empty_place`는 초반 서하린 side beat라 현재 post-Qingliu trace 위치에서는 보류
+- [x] start conditions를 `required_flags: [qingliu_attack_after_war_resolved, qingliu_attack_trace_confirmed, hyeonakmun_attack_thread_opened, mumyeong_awakening_resolved, midgame_continuity_started]`, `forbidden_flags: [mumyeong_destroys_orthodox_sect_resolved]`로 문서화
+- [x] stable choice id 후보 `read_hyeonakmun_empty_gate_record`, `trace_bokho_lock_to_mumyeong`, `ask_why_seoharin_never_heard_full_story`, `stop_before_counting_the_dead` 고정
+- [x] storypack DB JSON mirror와 docs contract를 다음 runtime 후보 기준으로 갱신
+- [x] runtime YAML/Rust/Web generated bundle, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 작업을 `wuxia_mumyeong_destroys_orthodox_sect` runtime implementation으로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

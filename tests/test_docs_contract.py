@@ -570,7 +570,7 @@ def test_wuxia_cheongryu_raid_wounded_fallback_runtime_slice_is_docs_synced():
     assert "route opener docs-only handoff" in plan
     assert "wuxia_baekdo_medicine_debt" in plan
     assert "wuxia_mumyeong_copy_style_reveal" in next_goal
-    assert "current_goal: wuxia_qingliu_attack_after_war_followup" in next_goal
+    assert "current_goal: wuxia_mumyeong_destroys_orthodox_sect" in next_goal
     assert "Route opener implementation" in coverage
     next_slice = plan.split("현재 최우선 남은 작업:", 1)[1].split("전환 중 유지:", 1)[0]
     assert "wuxia_baekdo_medicine_debt" in next_slice
@@ -599,10 +599,10 @@ def test_wuxia_baekdo_medicine_debt_runtime_slice_is_docs_synced():
     assert "`wuxia_baekdo_medicine_debt` — preview runtime 구현 완료" in wuxia_pack
     assert "## 9. `wuxia_baekdo_medicine_debt`" in wuxia_cards
     assert "runtime_preview_design_status: implemented" in wuxia_cards
-    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 21개." in storypack_db_readme
+    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 22개." in storypack_db_readme
     assert "wuxia_black_heaven_escape_price" in storypack_db_readme
-    assert "current_goal: wuxia_qingliu_attack_after_war_followup" in next_goal
-    assert "mode: docs-only-handoff" in next_goal
+    assert "current_goal: wuxia_mumyeong_destroys_orthodox_sect" in next_goal
+    assert "mode: implementation" in next_goal
     assert "wuxia_mumyeong_first_confrontation" in next_goal
 
 
@@ -632,10 +632,10 @@ def test_wuxia_black_heaven_escape_price_runtime_slice_is_docs_synced():
     assert "ask_who_collects_the_price" in wuxia_cards
     assert "keep_cheongryu_names_off_ledger" in wuxia_cards
     assert "map_exit_before_following_dowol" in wuxia_cards
-    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 21개." in storypack_db_readme
+    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 22개." in storypack_db_readme
     assert "wuxia_heavenly_archive_previous_outsiders" in storypack_db_readme
-    assert "current_goal: wuxia_qingliu_attack_after_war_followup" in next_goal
-    assert "mode: docs-only-handoff" in next_goal
+    assert "current_goal: wuxia_mumyeong_destroys_orthodox_sect" in next_goal
+    assert "mode: implementation" in next_goal
     assert "wuxia_mumyeong_first_confrontation" in next_goal
 
 
@@ -666,9 +666,9 @@ def test_wuxia_heavenly_archive_previous_outsiders_runtime_slice_is_docs_synced(
     assert "ask_yeon_soha_what_not_to_read" in wuxia_cards
     assert "mark_current_worldline_without_answer" in wuxia_cards
     assert "compare_rift_terms_to_commute_memory" in wuxia_cards
-    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 21개." in storypack_db_readme
-    assert "current_goal: wuxia_qingliu_attack_after_war_followup" in next_goal
-    assert "mode: docs-only-handoff" in next_goal
+    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 22개." in storypack_db_readme
+    assert "current_goal: wuxia_mumyeong_destroys_orthodox_sect" in next_goal
+    assert "mode: implementation" in next_goal
     assert "wuxia_mumyeong_first_confrontation" in next_goal
 
 
@@ -702,9 +702,9 @@ def test_wuxia_wounded_shelter_dawn_offers_runtime_slice_is_docs_synced():
     assert "send_word_to_dowol_for_quiet_exit" in wuxia_cards
     assert "show_archive_map_to_yeon_soha" in wuxia_cards
     assert "runtime_preview_implementation_notes" in wuxia_cards
-    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 21개." in storypack_db_readme
-    assert "current_goal: wuxia_qingliu_attack_after_war_followup" in next_goal
-    assert "mode: docs-only-handoff" in next_goal
+    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 22개." in storypack_db_readme
+    assert "current_goal: wuxia_mumyeong_destroys_orthodox_sect" in next_goal
+    assert "mode: implementation" in next_goal
     assert "route_midgame_continuity_after_wounded_shelter" in world_model
     assert "route_midgame_continuity_after_wounded_shelter" in encounter_model
     assert "wuxia_wounded_shelter_dawn_offers" in world_model
@@ -737,9 +737,9 @@ def test_wuxia_mumyeong_first_sighting_handoff_is_docs_synced():
     assert "check_seo_harin_silence" in wuxia_cards
     assert "follow_black_serpent_runner" in wuxia_cards
     assert "pretend_not_to_see_the_form" in wuxia_cards
-    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 21개." in storypack_db_readme
-    assert "current_goal: wuxia_qingliu_attack_after_war_followup" in next_goal
-    assert "mode: docs-only-handoff" in next_goal
+    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 22개." in storypack_db_readme
+    assert "current_goal: wuxia_mumyeong_destroys_orthodox_sect" in next_goal
+    assert "mode: implementation" in next_goal
     assert "mumyeong_first_confrontation_resolved" in next_goal
     assert "wuxia_jianghu_pack` / **이구학지 — 천기록**은 Web/terminal default storypack이자 메인 개발 기준" in next_goal
     assert "wuxia_mumyeong_first_sighting" in world_model
@@ -778,8 +778,8 @@ def test_wuxia_mumyeong_first_sighting_runtime_slice_is_docs_synced():
     assert "next_handoff: wuxia_mumyeong_first_confrontation_after_sighting" in wuxia_cards
     assert "무명 첫 목격/첫 대치/카피 무공 공개" in storypack_db_readme
     assert "wuxia_mumyeong_followup_after_copy_style_reveal" in storypack_db_json
-    assert "current_goal: wuxia_qingliu_attack_after_war_followup" in next_goal
-    assert "mode: docs-only-handoff" in next_goal
+    assert "current_goal: wuxia_mumyeong_destroys_orthodox_sect" in next_goal
+    assert "mode: implementation" in next_goal
     assert "wuxia_mumyeong_copy_style_reveal" in next_goal
     assert "wuxia_mumyeong_first_confrontation_after_sighting" in world_model
     assert "wuxia_mumyeong_first_confrontation_after_sighting" in encounter_model
@@ -838,7 +838,7 @@ def test_wuxia_mumyeong_first_confrontation_runtime_slice_is_docs_synced():
     assert "watch_seo_harin_hold_back" in wuxia_cards
     assert "read_mumyeongs_copied_form" in wuxia_cards
     assert "do_not_provoke_mumyeong" in wuxia_cards
-    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 21개." in storypack_db_readme
+    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 22개." in storypack_db_readme
     assert "무명 첫 목격/첫 대치/카피 무공 공개" in storypack_db_readme
     assert "wuxia_mumyeong_first_confrontation" in storypack_db_json
     assert "wuxia_mumyeong_followup_after_copy_style_reveal" in storypack_db_json
@@ -846,8 +846,8 @@ def test_wuxia_mumyeong_first_confrontation_runtime_slice_is_docs_synced():
     assert '"runtime_preview_design_status": "implemented"' in situations_json
     assert '"implemented_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml"' in situations_json
     assert '"next_handoff": "wuxia_mumyeong_followup_after_copy_style_reveal"' in situations_json
-    assert "current_goal: wuxia_qingliu_attack_after_war_followup" in next_goal
-    assert "mode: docs-only-handoff" in next_goal
+    assert "current_goal: wuxia_mumyeong_destroys_orthodox_sect" in next_goal
+    assert "mode: implementation" in next_goal
     assert "wuxia_mumyeong_copy_style_reveal" in next_goal
     assert "random copy-style system" in next_goal
     assert "wuxia_mumyeong_first_confrontation" in world_model
@@ -921,7 +921,7 @@ def test_wuxia_mumyeong_copy_style_reveal_runtime_slice_is_docs_synced():
     assert "runtime_preview_implementation_notes" in wuxia_cards
     assert "implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml" in wuxia_cards
     assert "next_handoff: wuxia_mumyeong_followup_after_copy_style_reveal" in wuxia_cards
-    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 21개." in storypack_db_readme
+    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 22개." in storypack_db_readme
     assert "무명 첫 목격/첫 대치/카피 무공 공개/정파 무공 간파" in storypack_db_readme
     assert "wuxia_mumyeong_copy_style_reveal" in storypack_db_json
     assert "wuxia_mumyeong_followup_after_copy_style_reveal" in storypack_db_json
@@ -930,8 +930,8 @@ def test_wuxia_mumyeong_copy_style_reveal_runtime_slice_is_docs_synced():
     assert '"runtime_preview_implementation_notes"' in situations_json
     assert '"implemented_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml"' in situations_json
     assert '"next_handoff": "wuxia_mumyeong_followup_after_copy_style_reveal"' in situations_json
-    assert "current_goal: wuxia_qingliu_attack_after_war_followup" in next_goal
-    assert "mode: docs-only-handoff" in next_goal
+    assert "current_goal: wuxia_mumyeong_destroys_orthodox_sect" in next_goal
+    assert "mode: implementation" in next_goal
     assert "wuxia_mumyeong_midgame_reunion" in next_goal
     assert "wuxia_boss_first_appearance" in next_goal
     assert "wuxia_mumyeong_departure_truth_summary" in next_goal
@@ -1003,7 +1003,7 @@ def test_wuxia_mumyeong_reads_orthodox_style_runtime_slice_is_docs_synced():
     assert "runtime_preview_implementation_notes" in wuxia_cards
     assert "implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml" in wuxia_cards
     assert "next_handoff: wuxia_mumyeong_followup_after_orthodox_style_trace" in wuxia_cards
-    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 21개." in storypack_db_readme
+    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 22개." in storypack_db_readme
     assert "`wuxia_mumyeong_reads_orthodox_style`는 preview runtime에 구현" in storypack_db_readme
     assert "wuxia_mumyeong_reads_orthodox_style" in storypack_db_json
     assert "wuxia_mumyeong_followup_after_orthodox_style_trace" in storypack_db_json
@@ -1012,8 +1012,8 @@ def test_wuxia_mumyeong_reads_orthodox_style_runtime_slice_is_docs_synced():
     assert '"runtime_preview_implementation_notes"' in situations_json
     assert '"implemented_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml"' in situations_json
     assert '"next_handoff": "wuxia_mumyeong_followup_after_orthodox_style_trace"' in situations_json
-    assert "current_goal: wuxia_qingliu_attack_after_war_followup" in next_goal
-    assert "mode: docs-only-handoff" in next_goal
+    assert "current_goal: wuxia_mumyeong_destroys_orthodox_sect" in next_goal
+    assert "mode: implementation" in next_goal
     assert "mumyeong_reads_orthodox_style_resolved" in next_goal
     assert "orthodox_style_trace_recorded" in next_goal
     assert "wuxia_mumyeong_midgame_reunion" in next_goal
@@ -1084,7 +1084,7 @@ def test_wuxia_mumyeong_midgame_reunion_runtime_slice_is_docs_synced():
     assert "runtime_preview_implementation_notes" in wuxia_cards
     assert "implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml" in wuxia_cards
     assert "next_handoff: wuxia_mumyeong_followup_after_midgame_reunion" in wuxia_cards
-    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 21개." in storypack_db_readme
+    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 22개." in storypack_db_readme
     assert "`wuxia_mumyeong_midgame_reunion`는 preview runtime에 구현" in storypack_db_readme
     assert "wuxia_mumyeong_followup_after_midgame_reunion" in storypack_db_json
     assert "wuxia_mumyeong_midgame_reunion" in storypack_db_json
@@ -1094,8 +1094,8 @@ def test_wuxia_mumyeong_midgame_reunion_runtime_slice_is_docs_synced():
     assert '"implemented_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml"' in situations_json
     assert '"insert_after": "wuxia_mumyeong_reads_orthodox_style"' in situations_json
     assert '"next_handoff": "wuxia_mumyeong_followup_after_midgame_reunion"' in situations_json
-    assert "current_goal: wuxia_qingliu_attack_after_war_followup" in next_goal
-    assert "mode: docs-only-handoff" in next_goal
+    assert "current_goal: wuxia_mumyeong_destroys_orthodox_sect" in next_goal
+    assert "mode: implementation" in next_goal
     assert "wuxia_mumyeong_followup_after_awakening" in next_goal
     assert "wuxia_mumyeong_departure_truth_summary" in next_goal
     assert "wuxia_boss_first_appearance" in next_goal
@@ -1166,7 +1166,7 @@ def test_wuxia_boss_first_appearance_runtime_slice_is_docs_synced():
     assert "boss_reads_people_not_forms" in wuxia_cards
     assert "implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml" in wuxia_cards
     assert "next_handoff: wuxia_boss_followup_after_first_appearance" in wuxia_cards
-    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 21개." in storypack_db_readme
+    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 22개." in storypack_db_readme
     assert "`wuxia_boss_first_appearance`는 preview runtime에 구현" in storypack_db_readme
     assert "wuxia_boss_first_appearance" in storypack_db_json
     assert "wuxia_boss_followup_after_first_appearance" in storypack_db_json
@@ -1175,8 +1175,8 @@ def test_wuxia_boss_first_appearance_runtime_slice_is_docs_synced():
     assert '"implemented_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml"' in situations_json
     assert '"insert_after": "wuxia_mumyeong_midgame_reunion"' in situations_json
     assert '"next_handoff": "wuxia_boss_followup_after_first_appearance"' in situations_json
-    assert "current_goal: wuxia_qingliu_attack_after_war_followup" in next_goal
-    assert "mode: docs-only-handoff" in next_goal
+    assert "current_goal: wuxia_mumyeong_destroys_orthodox_sect" in next_goal
+    assert "mode: implementation" in next_goal
     assert "wuxia_mumyeong_awakening" in next_goal
     assert "boss_first_appearance_resolved" in next_goal
     assert "wuxia_mumyeong_request_for_aid" in next_goal
@@ -1251,7 +1251,7 @@ def test_wuxia_mumyeong_request_for_aid_runtime_slice_is_docs_synced():
     assert "implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml" in wuxia_cards
     assert "insert_after: wuxia_boss_first_appearance" in wuxia_cards
     assert "next_handoff: wuxia_mumyeong_followup_after_failed_aid" in wuxia_cards
-    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 21개." in storypack_db_readme
+    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 22개." in storypack_db_readme
     assert "`wuxia_mumyeong_request_for_aid`는 preview runtime에 구현됐고" in storypack_db_readme
     assert "wuxia_mumyeong_request_for_aid" in storypack_db_json
     assert "wuxia_mumyeong_followup_after_failed_aid" in storypack_db_json
@@ -1260,8 +1260,8 @@ def test_wuxia_mumyeong_request_for_aid_runtime_slice_is_docs_synced():
     assert '"implemented_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml"' in situations_json
     assert '"insert_after": "wuxia_boss_first_appearance"' in situations_json
     assert '"next_handoff": "wuxia_mumyeong_followup_after_failed_aid"' in situations_json
-    assert "current_goal: wuxia_qingliu_attack_after_war_followup" in next_goal
-    assert "mode: docs-only-handoff" in next_goal
+    assert "current_goal: wuxia_mumyeong_destroys_orthodox_sect" in next_goal
+    assert "mode: implementation" in next_goal
     assert "mumyeong_request_for_aid_resolved" in next_goal
     assert "mumyeong_awakening_resolved" in next_goal
     assert "compare_anger_to_copied_flow" in next_goal
@@ -1318,8 +1318,8 @@ def test_wuxia_mumyeong_awakening_runtime_slice_is_docs_synced():
         "| 14 | `wuxia_mumyeong_awakening` | 무명의 각성 | "
         "`wuxia_mumyeong_awakening` | preview runtime implemented |"
     ) in coverage
-    assert "current_goal: wuxia_qingliu_attack_after_war_followup" in next_goal
-    assert "mode: docs-only-handoff" in next_goal
+    assert "current_goal: wuxia_mumyeong_destroys_orthodox_sect" in next_goal
+    assert "mode: implementation" in next_goal
     assert "`wuxia_mumyeong_awakening` runtime implementation은 완료됐다" in next_goal
     assert "`wuxia_mumyeong_followup_after_awakening` docs-only handoff도 완료" in next_goal
     assert "wuxia_qingliu_attack_after_war" in next_goal
@@ -1330,7 +1330,7 @@ def test_wuxia_mumyeong_awakening_runtime_slice_is_docs_synced():
     assert "wuxia_mumyeong_destroys_orthodox_sect" in next_goal
     assert "wuxia_boss_recruits_mumyeong" in next_goal
     assert "wuxia_mumyeong_followup_after_awakening" in next_goal
-    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 21개." in storypack_db_readme
+    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 22개." in storypack_db_readme
     assert "`wuxia_mumyeong_awakening`도 preview runtime에 구현" in storypack_db_readme
     assert "wuxia_mumyeong_awakening" in storypack_db_json
     assert "wuxia_mumyeong_followup_after_awakening" in storypack_db_json
@@ -1400,18 +1400,18 @@ def test_wuxia_qingliu_attack_after_war_handoff_is_docs_synced():
     assert "## 0.45 2026-06-02 무협 `wuxia_qingliu_attack_after_war` preview runtime slice" in plan
     assert "### 0.2bi 2026-06-02 무협 `wuxia_qingliu_attack_after_war` preview runtime slice" in checklist
     assert "Qingliu attack trace implementation" in coverage
-    assert "current_goal: wuxia_qingliu_attack_after_war_followup" in next_goal
-    assert "mode: docs-only-handoff" in next_goal
+    assert "current_goal: wuxia_mumyeong_destroys_orthodox_sect" in next_goal
+    assert "mode: implementation" in next_goal
     assert "`wuxia_qingliu_attack_after_war` runtime implementation은 완료" in next_goal
     assert "wuxia_qingliu_attack_after_war_followup" in next_goal
     assert "mumyeong_awakening_resolved" in next_goal
     assert "qingliu_attack_after_war_resolved" in next_goal
-    assert "inspect_bokho_lock_scars" in next_goal
-    assert "compare_hyeonakmun_trace_to_qingliu_wounds" in next_goal
-    assert "ask_seo_harin_what_she_saw_afterward" in next_goal
-    assert "stop_before_replaying_the_attack" in next_goal
-    assert "full Qingliu attack flashback" in next_goal
-    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 21개." in storypack_db_readme
+    assert "read_hyeonakmun_empty_gate_record" in next_goal
+    assert "trace_bokho_lock_to_mumyeong" in next_goal
+    assert "ask_why_seoharin_never_heard_full_story" in next_goal
+    assert "stop_before_counting_the_dead" in next_goal
+    assert "현악문 멸문 전투를 playable combat으로 만들기" in next_goal
+    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 22개." in storypack_db_readme
     assert "`wuxia_qingliu_attack_after_war`도 preview runtime에 구현" in storypack_db_readme
     assert "wuxia_qingliu_attack_after_war" in storypack_db_json
     assert "wuxia_qingliu_attack_after_war_followup" in storypack_db_json
@@ -1433,3 +1433,71 @@ def test_wuxia_qingliu_attack_after_war_handoff_is_docs_synced():
     assert "청류문 흔적 조사도 기존 encounter schema로 구현 완료" in encounter_model
     assert "Latest implemented runtime: `wuxia_qingliu_attack_after_war`" in runtime_preview
     assert "runtime_status: \"implemented_in_storypack_preview\"" in notion_sources
+
+
+def test_wuxia_mumyeong_destroys_orthodox_sect_handoff_is_docs_synced():
+    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
+    next_goal = Path("idea_box/next_goal/README.md").read_text(encoding="utf-8")
+    storypack_db_readme = Path("docs/content/storypack_db/README.md").read_text(
+        encoding="utf-8"
+    )
+    storypack_db_json = Path("docs/content/storypack_db/storypacks.json").read_text(
+        encoding="utf-8"
+    )
+    situations_json = Path("docs/content/storypack_db/encounter_situations.json").read_text(
+        encoding="utf-8"
+    )
+    wuxia_pack = Path("docs/content/storypacks/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+    wuxia_cards = Path("docs/content/encounter_db/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+    world_model = Path("docs/design/Storypack_World_Model.md").read_text(encoding="utf-8")
+    encounter_model = Path("docs/design/Storypack_Encounter_DB.md").read_text(
+        encoding="utf-8"
+    )
+    runtime_preview = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(
+        encoding="utf-8"
+    )
+    notion_sources = Path("idea_box/notion_sources.yml").read_text(encoding="utf-8")
+
+    assert (
+        "## 0.46 2026-06-02 docs-only post-Qingliu trace handoff: "
+        "`wuxia_mumyeong_destroys_orthodox_sect`"
+    ) in plan
+    assert "### 0.2bj 2026-06-02 무협 post-Qingliu trace docs-only handoff" in checklist
+    assert "Post-Qingliu trace handoff" in coverage
+    assert (
+        "| 13 | `wuxia_mumyeong_destroys_orthodox_sect` | 정파 문파 멸문 | "
+        "`wuxia_mumyeong_destroys_orthodox_sect` | next runtime selected as limited consequence trace |"
+    ) in coverage
+    assert "current_goal: wuxia_mumyeong_destroys_orthodox_sect" in next_goal
+    assert "mode: implementation" in next_goal
+    assert "`wuxia_qingliu_attack_after_war_followup` docs-only handoff는 완료" in next_goal
+    assert "read_hyeonakmun_empty_gate_record" in next_goal
+    assert "trace_bokho_lock_to_mumyeong" in next_goal
+    assert "ask_why_seoharin_never_heard_full_story" in next_goal
+    assert "stop_before_counting_the_dead" in next_goal
+    assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 22개." in storypack_db_readme
+    assert "`wuxia_mumyeong_destroys_orthodox_sect` limited consequence trace" in storypack_db_readme
+    assert "Next runtime candidate: wuxia_mumyeong_destroys_orthodox_sect" in storypack_db_json
+    assert '"id": "wuxia_mumyeong_destroys_orthodox_sect"' in situations_json
+    assert '"runtime_preview_design_status": "next_runtime_selected"' in situations_json
+    assert '"planned_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml"' in situations_json
+    assert '"insert_after": "wuxia_qingliu_attack_after_war"' in situations_json
+    assert '"generated_artifacts_changed": false' in situations_json
+    assert "| `wuxia_mumyeong_destroys_orthodox_sect` | `midgame_backstory` / `hyeonakmun_consequence_trace`" in wuxia_pack
+    assert "22. `wuxia_mumyeong_destroys_orthodox_sect` — 다음 runtime 후보" in wuxia_pack
+    assert "## 22. `wuxia_mumyeong_destroys_orthodox_sect`" in wuxia_cards
+    assert "mapping_status: next_runtime_selected" in wuxia_cards
+    assert "runtime_preview_design_status: next_runtime_selected" in wuxia_cards
+    assert "planned_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml" in wuxia_cards
+    assert "generated_artifacts_changed: false" in wuxia_cards
+    assert "next_step: runtime_implementation" in wuxia_cards
+    assert "limited consequence trace runtime implementation" in world_model
+    assert "limited consequence trace" in encounter_model
+    assert "Next runtime candidate: `wuxia_mumyeong_destroys_orthodox_sect`" in runtime_preview
+    assert "runtime_status: \"next_runtime_selected\"" in notion_sources

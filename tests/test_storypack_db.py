@@ -50,6 +50,7 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         "wuxia_heuksa_bang_first_fight",
         "wuxia_mumyeong_awakening",
         "wuxia_mumyeong_copy_style_reveal",
+        "wuxia_mumyeong_destroys_orthodox_sect",
         "wuxia_mumyeong_first_confrontation",
         "wuxia_mumyeong_first_sighting",
         "wuxia_mumyeong_midgame_reunion",
@@ -206,6 +207,23 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         in qingliu_attack.outcome_hooks["possible_flags"]
     )
     assert "bokho_geumsaesu_used_on_qingliu" in qingliu_attack.outcome_hooks[
+        "possible_clues"
+    ]
+
+    destroys_orthodox = db.encounter_cards["wuxia_mumyeong_destroys_orthodox_sect"]
+    assert destroys_orthodox.world_id == "wuxia_jianghu"
+    assert destroys_orthodox.storypack_id == "wuxia_jianghu_pack"
+    assert destroys_orthodox.priority_class == "route_key"
+    assert "hyeonakmun_consequence_trace" in destroys_orthodox.phases
+    assert "cheonggi_record" in destroys_orthodox.surfaces
+    assert "safe_reading" in [
+        choice["role"] for choice in destroys_orthodox.choice_shapes
+    ]
+    assert (
+        "mumyeong_destroys_orthodox_sect_resolved"
+        in destroys_orthodox.outcome_hooks["possible_flags"]
+    )
+    assert "destruction_is_consequence_not_salvation" in destroys_orthodox.outcome_hooks[
         "possible_clues"
     ]
 

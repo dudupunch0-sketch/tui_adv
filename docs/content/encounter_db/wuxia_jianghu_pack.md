@@ -1,13 +1,13 @@
 # 이구학지 — 천기록 encounter situation cards
 
-Status: candidate + `wuxia_boss_recruits_mumyeong` preview runtime implemented
+Status: candidate + `wuxia_boss_recruits_mumyeong` preview runtime implemented + `wuxia_mumyeong_departure_truth_summary` next candidate selected
 
-이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_boss_recruits_mumyeong`까지는 separate storypack preview runtime으로 승격되었고, 다음은 `wuxia_boss_recruits_mumyeong_followup` docs-only handoff다.
+이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_boss_recruits_mumyeong`까지는 separate storypack preview runtime으로 승격되었고, `wuxia_boss_recruits_mumyeong_followup` docs-only handoff에서 다음 후보를 `wuxia_mumyeong_departure_truth_summary`로 선택했다.
 
 공통 원칙:
 
 - 모든 카드는 `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`에 속한다.
-- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_boss_recruits_mumyeong`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. 다음 runtime 후보는 `wuxia_boss_recruits_mumyeong_followup` docs-only handoff에서 다시 결정한다.
+- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_boss_recruits_mumyeong`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. 다음 runtime 후보는 `wuxia_mumyeong_departure_truth_summary`이며, 구현 범위는 sealed summary로 제한한다.
 - 최신 canonical 무협 설정은 **이구학지 — 천기록**이다. 이전의 generic 객잔/소림/무당/아미 placeholder는 superseded로 본다.
 - 플레이어 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계의 시장 한복판에 전이됐다”이다.
 - 선택지는 세부 수치보다 역할과 결과 hook을 먼저 정의한다.
@@ -31,7 +31,7 @@ Status: candidate + `wuxia_boss_recruits_mumyeong` preview runtime implemented
 | `wuxia_seoharin_unsaid_stay` | 가지 말라는 말 | none yet | future 서하린 late/return event |
 | `wuxia_seoharin_left_meal` | 남겨둔 밥 | none yet | future 서하린 companion event |
 | `wuxia_seoharin_empty_place` | 비워둔 자리 | none yet | future 서하린/무명 clue event |
-| `wuxia_mumyeong_departure_truth_summary` | 무명 이탈의 진실 정리 | none yet | future 무명 truth event |
+| `wuxia_mumyeong_departure_truth_summary` | 무명 이탈의 진실 정리 | next: `wuxia_mumyeong_departure_truth_summary` | next runtime candidate selected; sealed summary, not truth delivery |
 | `wuxia_black_serpent_pressures_qingliu` | 흑사방의 청류문 압박 | partial: `wuxia_cheongryu_raid_route_split` background | future pressure/side event |
 | `wuxia_mumyeong_copy_style_reveal` | 무명의 카피 무공 공개 | `wuxia_mumyeong_copy_style_reveal` | preview runtime implemented |
 | `wuxia_mumyeong_resolution` | 무명 결산 | none yet | future final route event |
@@ -2154,4 +2154,85 @@ runtime_preview_implementation_notes:
   default_bundle_changed: false
   new_schema_opened: false
   next_handoff: wuxia_boss_recruits_mumyeong_followup
+```
+
+## 24. `wuxia_mumyeong_departure_truth_summary` — docs-only handoff / next runtime candidate
+
+```yaml
+id: wuxia_mumyeong_departure_truth_summary
+world_id: wuxia_jianghu
+storypack_id: wuxia_jianghu_pack
+source_refs:
+  - notion_event:wuxia_mumyeong_departure_truth_summary
+  - docs/dev/Notion_Design_Coverage.md
+  - docs/dev/Development_Plan.md#050-2026-06-02-docs-only-boss-recruitment-follow-up-handoff-wuxia_mumyeong_departure_truth_summary
+notion_mapping:
+  notion_event_id: wuxia_mumyeong_departure_truth_summary
+  notion_event_name: 무명 이탈의 진실 정리
+  mapping_status: next_runtime_candidate_selected
+runtime_preview_design_status: candidate_selected
+phase: [midgame_backstory]
+priority_class: main_branch
+location_tags: [sect_courtyard, sealed_truth, mumyeong_past]
+surface: [sect_courtyard, cheonggi_record, faction_negotiation]
+anomaly_type: [future_record, faction_pressure]
+pressure_type: [sanity, relation, danger]
+npc_slots: [rival, early_rescuer, blood_moon_antagonist]
+candidate_characters: [무명, 서하린, 흑사방주]
+summary: 보스 recruitment trace 이후 무명 이탈의 진실을 정리하되, 서하린에게 전달하거나 구원 조건을 만족시키지 않는 sealed summary를 준비한다.
+setup_text: 천기록은 무명의 선택을 변명하지 않는다. 다만 빈 현악문, 거절된 도움 요청, 보스가 본 상처, 서하린이 아직 듣지 못한 문장을 한 장의 봉인된 기록으로 묶는다.
+presentation:
+  visual_id: wuxia_mumyeong_departure_truth_summary
+  speaker: 천기록
+  layout: sealed_departure_truth_summary
+  stable_terms: [무명, 서하린, 현악문, 흑사방주]
+conditions:
+  locations: [cheongryu_outer_courtyard]
+  required_flags: [boss_recruits_mumyeong_resolved, boss_recruitment_thread_opened, mumyeong_destroys_orthodox_sect_resolved, hyeonakmun_destruction_thread_opened, departure_truth_thread_deepened, mumyeong_request_for_aid_resolved, mumyeong_failed_aid_thread_opened, orthodox_hypocrisy_thread_opened, mumyeong_awakening_resolved, midgame_continuity_started]
+  forbidden_flags: [mumyeong_departure_truth_summary_resolved]
+choice_shapes:
+  - id: assemble_departure_truth_without_delivering
+    role: safe_trace
+    expected_costs: [sanity_small]
+    expected_gains: [departure_truth_can_be_understood_but_not_spoken_yet]
+    outcome_hook:
+      add_flags: [mumyeong_departure_truth_summary_resolved, sealed_departure_truth_summary_prepared, truth_delivery_still_unopened]
+      add_clues: [departure_truth_can_be_understood_but_not_spoken_yet]
+      destination_id: cheongryu_outer_courtyard
+  - id: compare_failed_aid_to_recruitment_offer
+    role: moral_read
+    expected_costs: [sanity_small, danger_small]
+    expected_gains: [boss_used_mumyeongs_wound_after_orthodox_refusal]
+    outcome_hook:
+      add_flags: [mumyeong_departure_truth_summary_resolved, sealed_departure_truth_summary_prepared, truth_delivery_still_unopened]
+      add_clues: [boss_used_mumyeongs_wound_after_orthodox_refusal]
+      destination_id: cheongryu_outer_courtyard
+  - id: ask_seoharin_what_she_is_ready_to_hear
+    role: relation_probe
+    expected_costs: [sanity_small]
+    expected_gains: [seoharin_truth_delivery_requires_later_consent]
+    outcome_hook:
+      add_flags: [mumyeong_departure_truth_summary_resolved, sealed_departure_truth_summary_prepared, truth_delivery_still_unopened]
+      add_clues: [seoharin_truth_delivery_requires_later_consent]
+      destination_id: cheongryu_outer_courtyard
+  - id: seal_truth_until_mumyeong_faces_it
+    role: safe_stop
+    expected_costs: [sanity_small]
+    expected_gains: [salvation_condition_seen_but_unmet]
+    outcome_hook:
+      add_flags: [mumyeong_departure_truth_summary_resolved, sealed_departure_truth_summary_prepared, truth_delivery_still_unopened]
+      add_clues: [salvation_condition_seen_but_unmet]
+      destination_id: cheongryu_outer_courtyard
+outcome_hooks:
+  possible_flags: [mumyeong_departure_truth_summary_resolved, sealed_departure_truth_summary_prepared, truth_delivery_still_unopened]
+  possible_clues: [departure_truth_can_be_understood_but_not_spoken_yet, seoharin_truth_delivery_requires_later_consent, boss_used_mumyeongs_wound_after_orthodox_refusal, salvation_condition_seen_but_unmet]
+  possible_destinations: [cheongryu_outer_courtyard]
+main_spine_link: failed-aid records, Hyeonakmun consequence, Mumyeong awakening, and boss recruitment trace를 하나의 sealed truth summary로 묶되, Seo Harin truth delivery와 salvation/final resolution은 다음 단계로 넘긴다.
+randomization_notes: 1회성 sealed summary trace. Boss recruitment trace 뒤에만 열고 `mumyeong_departure_truth_summary_resolved`로 반복을 막는다.
+promotion_notes: `wuxia_boss_recruits_mumyeong_followup` docs-only handoff에서 다음 runtime 후보로 선택했다. runtime YAML/Rust/Web generated artifact는 아직 변경하지 않았다. 서하린에게 진실 전달, told_seoharin_truth, 무명 구원 확정, 무명/보스 결산, final battle, epilogue/return, route/faction/relation/debt/reward schema, 천기록 identity reveal은 열지 않는다.
+runtime_preview_implementation_notes:
+  implementation_status: pending
+  insert_after: wuxia_boss_recruits_mumyeong
+  selected_over: [wuxia_mumyeong_resolution, wuxia_boss_resolution, wuxia_seoharin_empty_place]
+  runtime_artifacts_changed_in_handoff: false
 ```

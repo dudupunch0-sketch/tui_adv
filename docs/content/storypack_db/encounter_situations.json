@@ -5969,7 +5969,7 @@
     },
     "main_spine_link": "현악문 consequence trace를 흑사방 보스가 무명의 상처를 조직 논리로 바꾼 bridge로 연결한다.",
     "randomization_notes": "후반 1회성 trace. boss_recruits_mumyeong_resolved 이후 반복 금지.",
-    "promotion_notes": "preview runtime으로 구현 완료. wuxia_mumyeong_destroys_orthodox_sect_followup docs-only handoff에서 다음 runtime 후보로 선택했고, 보스 스카웃을 구원이나 최종 결산이 아니라 recruitment trace로 제한했다. 무명 이탈 진실 전달, 서하린에게 진실 전달, 무명/보스 최종 결산, epilogue/return, combat resolver/schema, route graph/faction reputation/debt/relation schema, reward/ability schema, 천기록 identity reveal은 열지 않는다.",
+    "promotion_notes": "preview runtime으로 구현 완료. wuxia_mumyeong_destroys_orthodox_sect_followup docs-only handoff에서 다음 runtime 후보로 선택했고, 보스 스카웃을 구원이나 최종 결산이 아니라 recruitment trace로 제한했다. 무명 이탈 진실 전달, 서하린에게 진실 전달, 무명/보스 최종 결산, epilogue/return, combat resolver/schema, route graph/faction reputation/debt/relation schema, reward/ability schema, 천기록 identity reveal은 열지 않는다. wuxia_boss_recruits_mumyeong_followup docs-only handoff에서 다음 runtime 후보는 wuxia_mumyeong_departure_truth_summary로 선택했고, 구현 범위는 sealed_departure_truth_summary로 제한한다.",
     "runtime_preview_implementation": {
       "implemented_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml",
       "insert_after": "wuxia_mumyeong_destroys_orthodox_sect",
@@ -5977,7 +5977,17 @@
         "crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json",
         "web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json"
       ],
-      "next_handoff": "wuxia_boss_recruits_mumyeong_followup"
+      "next_handoff": "wuxia_boss_recruits_mumyeong_followup",
+      "next_runtime_candidate": "wuxia_mumyeong_departure_truth_summary",
+      "next_runtime_scope": "sealed_departure_truth_summary",
+      "next_runtime_guardrails": [
+        "no_seoharin_truth_delivery",
+        "no_told_seoharin_truth",
+        "no_mumyeong_salvation_confirmation",
+        "no_mumyeong_or_boss_resolution",
+        "no_final_battle_or_epilogue_return_schema",
+        "no_tianjilu_identity_reveal"
+      ]
     }
   }
 ]

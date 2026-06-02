@@ -732,6 +732,21 @@
 - [x] 무명 이탈 진실 전체 reveal, 서하린에게 진실 전달, 무명 구원 확정, 보스 전투/final boss resolution, 무명/보스 결산, seed 기반 random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation/reward/ability/epilogue/return schema, 천기록 정체 reveal 미변경 유지
 - [x] 다음 작업을 `wuxia_boss_recruits_mumyeong_followup` docs-only handoff로 갱신
 
+### 0.2bn 2026-06-02 무협 boss recruitment follow-up docs-only handoff
+
+- [x] Notion 사건 카드 DB `wuxia_mumyeong_departure_truth_summary`, `wuxia_mumyeong_resolution`, `wuxia_boss_resolution`, `wuxia_seoharin_empty_place` 및 기존 late/final 후보 재확인
+- [x] 운영 문서 `04. 메인 루트 구조`, `05. 사건 카드 운영 규칙`, `07. 천기록 / 천외편린 보상`, `99. 통합 체크포인트`와 비교
+- [x] 다음 runtime 후보를 `wuxia_mumyeong_departure_truth_summary`로 결정
+- [x] 구현 범위를 `sealed_departure_truth_summary` trace로 제한한다고 문서화
+- [x] `wuxia_mumyeong_resolution`, `wuxia_boss_resolution`은 최종장/후일담 routing 범위라 보류
+- [x] `wuxia_seoharin_empty_place`는 초반 companion/무명 clue beat라 현재 boss recruitment 직후 위치에서는 보류
+- [x] start conditions를 `required_flags: [boss_recruits_mumyeong_resolved, boss_recruitment_thread_opened, mumyeong_destroys_orthodox_sect_resolved, hyeonakmun_destruction_thread_opened, departure_truth_thread_deepened, mumyeong_request_for_aid_resolved, mumyeong_failed_aid_thread_opened, orthodox_hypocrisy_thread_opened, mumyeong_awakening_resolved, midgame_continuity_started]`, `forbidden_flags: [mumyeong_departure_truth_summary_resolved]`로 문서화
+- [x] stable choice id 후보 `assemble_departure_truth_without_delivering`, `compare_failed_aid_to_recruitment_offer`, `ask_seoharin_what_she_is_ready_to_hear`, `seal_truth_until_mumyeong_faces_it` 고정
+- [x] common hook `mumyeong_departure_truth_summary_resolved`, `sealed_departure_truth_summary_prepared`, `truth_delivery_still_unopened`, `destination_id: cheongryu_outer_courtyard` 고정
+- [x] 서하린에게 진실 전달, `told_seoharin_truth`, 무명 구원 확정, 무명/보스 결산, 최종전, epilogue/return, route/faction/relation/debt/reward schema, 천기록 정체 reveal 미변경 유지
+- [x] runtime YAML/Rust/Web generated bundle, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 작업을 `wuxia_mumyeong_departure_truth_summary` runtime implementation으로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

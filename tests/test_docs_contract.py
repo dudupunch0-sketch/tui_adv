@@ -2268,7 +2268,7 @@ def test_wuxia_final_epilogue_runtime_contract_is_docs_synced():
         encoding="utf-8"
     )
 
-    assert "runtime은 arrival/first fight/first fragment부터 `wuxia_battle_loss_epilogue_contract`까지 구현됐다" in readme
+    assert "wuxia_final_epilogue_renderer_contract" in readme
     assert "## 0.66 2026-06-02 무협 `wuxia_final_epilogue_renderer_contract` runtime implementation slice" in plan
     assert "### 0.2ce 2026-06-02 무협 `wuxia_final_epilogue_renderer_contract` runtime implementation slice" in checklist
     assert "Final epilogue renderer implementation" in coverage
@@ -2387,10 +2387,8 @@ def test_wuxia_battle_loss_epilogue_contract_handoff_is_docs_synced():
     assert "Implementation status: `wuxia_battle_loss_epilogue_contract` is now implemented" in final_routing
     assert "current_goal: wuxia_battle_loss_epilogue_contract_implementation" in next_goal
     assert "previous_current_goal: return_settlement_epilogue_followup_handoff" in next_goal
-    assert (
-        "Latest handoff selected runtime: return_settlement_epilogue_followup_handoff selected wuxia_battle_loss_epilogue_contract"
-        in storypack_db_json
-    )
+    assert "return_settlement_epilogue_followup_handoff" in storypack_db_json
+    assert "wuxia_battle_loss_epilogue_contract" in storypack_db_json
     assert "`wuxia_battle_loss_epilogue_contract`는 explicit battle-loss seed" in readme
     assert "38. `return_settlement_epilogue_followup_handoff` — docs-only handoff 완료" in wuxia_pack
     assert "## 39. `return_settlement_epilogue_followup_handoff` — docs-only handoff 완료" in wuxia_cards
@@ -2445,11 +2443,13 @@ def test_wuxia_battle_loss_epilogue_contract_runtime_is_docs_synced():
     assert "## 0.72 2026-06-02 무협 `wuxia_battle_loss_epilogue_contract` runtime slice" in plan
     assert "### 0.2ck 2026-06-02 무협 `wuxia_battle_loss_epilogue_contract` runtime slice" in checklist
     assert "battle-loss epilogue runtime implemented" in coverage
-    assert "Latest implemented runtime: `wuxia_battle_loss_epilogue_contract`" in runtime_preview
-    assert "Latest implemented runtime slice: `wuxia_battle_loss_epilogue_contract`" in final_routing
+    assert "wuxia_battle_loss_epilogue_contract" in runtime_preview
+    assert "wuxia_final_state_canonical_collapse_contract" in runtime_preview
+    assert "wuxia_battle_loss_epilogue_contract" in final_routing
+    assert "Latest implemented runtime slice: `wuxia_final_state_canonical_collapse_contract`" in final_routing
     assert "current_goal: wuxia_battle_loss_epilogue_followup_handoff" in next_goal
     assert "previous_current_goal: wuxia_battle_loss_epilogue_contract_implementation" in next_goal
-    assert "Latest implemented runtime: wuxia_battle_loss_epilogue_contract" in storypack_db_json
+    assert "Historical implemented runtime: wuxia_battle_loss_epilogue_contract" in storypack_db_json
     assert "`wuxia_battle_loss_epilogue_contract`는 explicit battle-loss seed" in readme
     assert "39. `wuxia_battle_loss_epilogue_contract` — runtime 구현 완료" in wuxia_pack
     assert "## 40. `wuxia_battle_loss_epilogue_contract` — runtime 구현 완료" in wuxia_cards
@@ -2517,11 +2517,11 @@ def test_wuxia_battle_loss_epilogue_followup_handoff_is_docs_synced():
         "### 0.2cl 2026-06-02 무협 `wuxia_battle_loss_epilogue_followup_handoff` docs-only handoff"
         in checklist
     )
-    assert "final-state canonical collapse handoff selected" in coverage
+    assert "wuxia_battle_loss_epilogue_followup_handoff" in coverage
     assert "wuxia_final_state_canonical_collapse_contract" in runtime_preview
     assert "## Battle Loss Epilogue Follow-up Handoff" in final_routing
     assert (
-        "Next runtime implementation candidate: `wuxia_final_state_canonical_collapse_contract`"
+        "Decision from the 2026-06-02 `wuxia_battle_loss_epilogue_followup_handoff`"
         in final_routing
     )
     assert (
@@ -2533,13 +2533,10 @@ def test_wuxia_battle_loss_epilogue_followup_handoff_is_docs_synced():
         in next_goal
     )
     assert (
-        "Latest handoff: wuxia_battle_loss_epilogue_followup_handoff selected wuxia_final_state_canonical_collapse_contract"
+        "Latest handoff selected runtime: wuxia_battle_loss_epilogue_followup_handoff selected wuxia_final_state_canonical_collapse_contract"
         in storypack_db_json
     )
-    assert (
-        "Latest handoff: `wuxia_battle_loss_epilogue_followup_handoff` selected `wuxia_final_state_canonical_collapse_contract`"
-        in readme
-    )
+    assert "wuxia_final_state_canonical_collapse_contract" in readme
     assert (
         "40. `wuxia_battle_loss_epilogue_followup_handoff` — docs-only handoff 완료"
         in wuxia_pack
@@ -2559,3 +2556,114 @@ def test_wuxia_battle_loss_epilogue_followup_handoff_is_docs_synced():
 
     assert "playable defeat-route bridge" in final_routing
     assert "no_combat_resolver" in wuxia_cards
+
+
+def test_wuxia_final_state_canonical_collapse_contract_runtime_is_docs_synced():
+    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(
+        encoding="utf-8"
+    )
+    runtime_preview = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(
+        encoding="utf-8"
+    )
+    final_routing = Path("docs/design/Wuxia_Final_State_Routing.md").read_text(
+        encoding="utf-8"
+    )
+    next_goal = Path("idea_box/next_goal/README.md").read_text(encoding="utf-8")
+    storypack_db_json = Path("docs/content/storypack_db/storypacks.json").read_text(
+        encoding="utf-8"
+    )
+    readme = Path("README.md").read_text(encoding="utf-8")
+    wuxia_pack = Path("docs/content/storypacks/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+    wuxia_cards = Path("docs/content/encounter_db/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+    final_epilogue_rs = Path("crates/escape-core/src/final_epilogue.rs").read_text(
+        encoding="utf-8"
+    )
+    route_parity_rs = Path("crates/escape-core/tests/route_parity.rs").read_text(
+        encoding="utf-8"
+    )
+    wasm_json_contract_rs = Path(
+        "crates/escape-wasm/tests/json_contract.rs"
+    ).read_text(encoding="utf-8")
+
+    assert (
+        "## 0.74 2026-06-02 무협 `wuxia_final_state_canonical_collapse_contract` runtime slice"
+        in plan
+    )
+    assert (
+        "### 0.2cm 2026-06-02 무협 `wuxia_final_state_canonical_collapse_contract` runtime slice"
+        in checklist
+    )
+    assert "final-state canonical collapse runtime implemented" in coverage
+    assert (
+        "Latest implemented runtime: `wuxia_final_state_canonical_collapse_contract`"
+        in runtime_preview
+    )
+    assert "## Final State Canonical Collapse Runtime" in final_routing
+    assert (
+        "Implementation status: `wuxia_final_state_canonical_collapse_contract` is now implemented"
+        in final_routing
+    )
+    assert (
+        "current_goal: wuxia_final_state_canonical_collapse_followup_handoff"
+        in next_goal
+    )
+    assert (
+        "previous_current_goal: wuxia_final_state_canonical_collapse_contract_implementation"
+        in next_goal
+    )
+    assert (
+        "Latest runtime slice: wuxia_final_state_canonical_collapse_contract"
+        in storypack_db_json
+    )
+    assert (
+        "runtime은 arrival/first fight/first fragment부터 `wuxia_final_state_canonical_collapse_contract`까지 구현됐다"
+        in readme
+    )
+    assert (
+        "41. `wuxia_final_state_canonical_collapse_contract` — runtime 구현 완료"
+        in wuxia_pack
+    )
+    assert (
+        "## 42. `wuxia_final_state_canonical_collapse_contract` — runtime 구현 완료"
+        in wuxia_cards
+    )
+
+    assert "\"epilogue_state_audit\"" in final_epilogue_rs
+    assert "canonical_state_audit" in final_epilogue_rs
+    assert "COMBAT_RESULT_RULES" in final_epilogue_rs
+    assert "BOSS_RESOLUTION_ROUTE_RULES" in final_epilogue_rs
+    assert "ambiguous_priority_applied" in final_epilogue_rs
+    assert "derived_by_final_result_priority" in final_epilogue_rs
+    assert "not_reached_battle_loss" in final_epilogue_rs
+    for canonical_state in [
+        "combat_result",
+        "boss_resolution_route",
+        "evidence_state",
+        "network_handling",
+        "pressure_state",
+        "seoharin_axis",
+        "qingliu_rebuild",
+        "mumyeong_salvation",
+        "successor_route",
+        "own_flow_choice",
+        "truth_state",
+        "cheongirok_state",
+        "player_method",
+        "item_logs",
+    ]:
+        assert canonical_state in final_epilogue_rs
+
+    assert (
+        "wuxia_final_epilogue_state_audit_collapses_true_corrupted_and_battle_loss_flags"
+        in route_parity_rs
+    )
+    assert (
+        "json_boundary_outputs_wuxia_final_state_audit_block"
+        in wasm_json_contract_rs
+    )

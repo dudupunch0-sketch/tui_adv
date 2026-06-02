@@ -515,6 +515,124 @@ fn wuxia_final_epilogue_battle_loss_outputs_loss_bundle_and_suppresses_optimisti
 }
 
 #[test]
+fn wuxia_final_epilogue_state_audit_collapses_true_corrupted_and_battle_loss_flags() {
+    let content = wuxia_content();
+    let base_flags = [
+        "boss_resolution_resolved",
+        "mumyeong_resolution_resolved",
+        "seoharin_qingliu_resolution_resolved",
+        "cheongirok_resolution_resolved",
+        "black_serpent_aftermath_resolved",
+        "final_result_priority_applied_seeded",
+        "final_state_routing_seeded",
+    ];
+
+    let mut true_flags = base_flags.to_vec();
+    true_flags.extend([
+        "final_combat_result_battle_victory_seeded",
+        "final_boss_resolution_true_route_confirmed_seeded",
+        "final_epilogue_candidates_true_route_seeded",
+        "final_evidence_strong_confirmed_seeded",
+        "final_network_accountability_seeded",
+        "final_pressure_state_eased_confirmed_seeded",
+        "final_epilogue_seoharin_open_gate_candidate_seeded",
+        "final_qingliu_future_high_candidate_seeded",
+        "final_mumyeong_resolution_own_flow_salvation_seeded",
+        "final_successor_route_suppressed_confirmed_seeded",
+        "final_own_flow_choice_chosen_seeded",
+        "final_mumyeong_truth_state_not_forced_seeded",
+        "final_epilogue_tianjilu_true_route_variant_seeded",
+        "final_player_method_outside_calculation_confirmed_seeded",
+        "final_item_logs_blackscale_ledger_seeded",
+    ]);
+    let true_page =
+        scene_page_from_content(&wuxia_final_state_with_flags(&true_flags, &[]), &content)
+            .expect("true route final epilogue should render");
+    let true_audit = body_text_for_kind(&true_page, "epilogue_state_audit");
+    assert!(true_audit.contains("audit_id: final_state_canonical_collapse"));
+    assert!(true_audit.contains("source_contract: wuxia_final_state_canonical_collapse_contract"));
+    assert!(true_audit.contains("final_result_key: true_route_victory"));
+    assert!(true_audit
+        .contains("canonical_state: combat_result\nvalue: battle_victory\nstatus: resolved"));
+    assert!(true_audit.contains(
+        "canonical_state: boss_resolution_route\nvalue: true_route_victory\nstatus: resolved"
+    ));
+    assert!(true_audit.contains("canonical_state: evidence_state\nvalue: strong\nstatus: resolved"));
+    assert!(true_audit
+        .contains("canonical_state: network_handling\nvalue: accountability\nstatus: resolved"));
+    assert!(true_audit.contains("canonical_state: pressure_state\nvalue: eased\nstatus: resolved"));
+    assert!(
+        true_audit.contains("canonical_state: seoharin_axis\nvalue: open_gate\nstatus: resolved")
+    );
+    assert!(true_audit.contains("canonical_state: qingliu_rebuild\nvalue: high\nstatus: resolved"));
+    assert!(true_audit.contains(
+        "canonical_state: mumyeong_salvation\nvalue: own_flow_salvation\nstatus: resolved"
+    ));
+    assert!(true_audit
+        .contains("canonical_state: successor_route\nvalue: suppressed\nstatus: resolved"));
+    assert!(
+        true_audit.contains("canonical_state: own_flow_choice\nvalue: chosen\nstatus: resolved")
+    );
+    assert!(
+        true_audit.contains("canonical_state: truth_state\nvalue: not_forced\nstatus: resolved")
+    );
+    assert!(true_audit.contains(
+        "canonical_state: cheongirok_state\nvalue: blank_true_route_place\nstatus: resolved"
+    ));
+    assert!(true_audit
+        .contains("canonical_state: player_method\nvalue: outside_calculation\nstatus: resolved"));
+    assert!(true_audit
+        .contains("canonical_state: item_logs\nvalue: blackscale_ledger\nstatus: resolved"));
+
+    let mut corrupted_flags = base_flags.to_vec();
+    corrupted_flags.extend([
+        "final_combat_result_battle_victory_seeded",
+        "final_boss_resolution_true_route_confirmed_seeded",
+        "final_epilogue_candidates_true_route_seeded",
+        "final_boss_resolution_corrupted_victory_seeded",
+        "final_epilogue_candidates_corrupted_seeded",
+        "final_cheongirok_state_corruption_high_confirmed_seeded",
+        "final_player_method_sado_style_calculation_echo_seeded",
+    ]);
+    let corrupted_page = scene_page_from_content(
+        &wuxia_final_state_with_flags(&corrupted_flags, &[]),
+        &content,
+    )
+    .expect("corrupted final epilogue should render");
+    let corrupted_audit = body_text_for_kind(&corrupted_page, "epilogue_state_audit");
+    assert!(corrupted_audit.contains("final_result_key: corrupted_victory"));
+    assert!(corrupted_audit.contains(
+        "canonical_state: boss_resolution_route\nvalue: corrupted_victory\nstatus: ambiguous_priority_applied"
+    ));
+    assert!(corrupted_audit.contains("candidate_values: corrupted_victory, true_route_victory"));
+    assert!(corrupted_audit
+        .contains("canonical_state: cheongirok_state\nvalue: corruption_high\nstatus: resolved"));
+    assert!(corrupted_audit.contains(
+        "canonical_state: player_method\nvalue: sado_style_calculation\nstatus: resolved"
+    ));
+
+    let mut battle_loss_flags = base_flags.to_vec();
+    battle_loss_flags.extend([
+        "final_combat_result_battle_loss_seeded",
+        "final_combat_result_battle_victory_seeded",
+    ]);
+    let battle_loss_page = scene_page_from_content(
+        &wuxia_final_state_with_flags(&battle_loss_flags, &[]),
+        &content,
+    )
+    .expect("battle-loss final epilogue should render");
+    let battle_loss_audit = body_text_for_kind(&battle_loss_page, "epilogue_state_audit");
+    assert!(battle_loss_audit.contains("final_result_key: battle_loss"));
+    assert!(battle_loss_audit.contains(
+        "canonical_state: combat_result\nvalue: battle_loss\nstatus: ambiguous_priority_applied"
+    ));
+    assert!(battle_loss_audit.contains("candidate_values: battle_loss, battle_victory"));
+    assert!(battle_loss_audit.contains(
+        "canonical_state: boss_resolution_route\nvalue: not_reached_battle_loss\nstatus: derived_by_final_result_priority"
+    ));
+}
+
+#[test]
 fn wuxia_final_epilogue_corrupted_priority_overrides_true_route_candidates() {
     let content = wuxia_content();
     let state = wuxia_final_state_with_flags(

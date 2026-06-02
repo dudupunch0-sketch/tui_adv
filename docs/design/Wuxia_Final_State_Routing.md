@@ -151,7 +151,7 @@ Deferred until this contract exists and a runtime handoff explicitly opens them:
 - full `wuxia_boss_resolution` epilogue renderer beyond the implemented route seed bridge
 - `wuxia_sado_final_battle`
 
-Latest implemented runtime slice: `wuxia_battle_loss_epilogue_contract`.
+Latest implemented runtime slice: `wuxia_final_state_canonical_collapse_contract`.
 
 Latest contract handoff: `wuxia_battle_loss_epilogue_followup_handoff` selected `wuxia_final_state_canonical_collapse_contract` as the next runtime candidate.
 
@@ -435,4 +435,56 @@ Still closed:
 - Seo Harin truth delivery, `told_seoharin_truth`
 - Cheonggi Record recorder identity reveal
 
-Next runtime implementation candidate: `wuxia_final_state_canonical_collapse_contract`.
+Runtime implementation completed: `wuxia_final_state_canonical_collapse_contract`.
+
+## Final State Canonical Collapse Runtime
+
+Implementation status: `wuxia_final_state_canonical_collapse_contract` is now implemented in `crates/escape-core/src/final_epilogue.rs`.
+
+Runtime result:
+
+- Rust GameCore emits an `epilogue_state_audit` body block immediately after `epilogue_result`.
+- The audit block uses `source_id: wuxia_final_state_canonical_collapse_contract`.
+- The audit block collapses existing `final_*_seeded` local flags into canonical final state labels before Web Storybook or SuperLightTUI display.
+- Missing values are reported as `value: missing`, `status: missing`, `consumed_flags: none`.
+- Conflicting values are reported as `status: ambiguous_priority_applied` with `candidate_values` and `consumed_flags`.
+- Battle loss keeps first priority: contradictory manual battle loss + victory flags collapse to `combat_result: battle_loss`, and missing boss route under battle loss becomes `boss_resolution_route: not_reached_battle_loss`.
+
+Implemented canonical audit keys:
+
+| canonical state | runtime source |
+|---|---|
+| `combat_result` | `final_combat_result_*_seeded` |
+| `boss_resolution_route` | boss-resolution candidate/confirmed/result-priority flags |
+| `evidence_state` | evidence, alliance-silence evidence, and ledger-result flags |
+| `network_handling` | ledger, network cut, accountability, residue, ignored flags |
+| `pressure_state` | eased/partial/unresolved pressure flags |
+| `seoharin_axis` | open gate, empty place, high-preserved, closed gate, last bowl flags |
+| `qingliu_rebuild` | high/partial/weakened Qingliu future and restored-flow flags |
+| `mumyeong_salvation` | own-flow, relational, partial, incomplete, stolen-form, successor, corrupted-unsaved flags |
+| `successor_route` | active/weakened/suppressed successor flags |
+| `own_flow_choice` | chosen/opened/not-opened own-flow flags |
+| `truth_state` | not-forced, partial, sealed-summary flags |
+| `cheongirok_state` | safe-high-use, blank-place, corruption, low-use, method-reflection flags |
+| `player_method` | sado-style, tool-use, outside-calculation, protected-as-person, direct-focus, reflected flags |
+| `item_logs` | blackscale ledger, blank ledger, unpriced wooden sword condition flags |
+
+Verification:
+
+- `crates/escape-core/tests/route_parity.rs::wuxia_final_epilogue_state_audit_collapses_true_corrupted_and_battle_loss_flags`
+- `crates/escape-wasm/tests/json_contract.rs::json_boundary_outputs_wuxia_final_state_audit_block`
+
+Still closed:
+
+- full `wuxia_sado_final_battle` container
+- combat resolver or HP numeric battle
+- playable defeat route / loss encounter sequence
+- new `main_ending_type` runtime enum
+- main ending archive/save surface
+- relation/debt/faction ledger
+- reward/ability schema and 천외편린 three-choice growth UI
+- full modern return ending scene or post-return settlement scene
+- Seo Harin truth delivery, `told_seoharin_truth`
+- Cheonggi Record recorder identity reveal
+
+Next contract decision: `wuxia_final_state_canonical_collapse_followup_handoff`, comparing full final battle container, playable defeat-route bridge, broader corruption/closed-gate branch, reward/ability schema, relation/debt/faction ledger, and main ending archive/save surface after the canonical audit has runtime evidence.

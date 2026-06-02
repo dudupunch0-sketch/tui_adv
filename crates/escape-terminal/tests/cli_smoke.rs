@@ -2574,6 +2574,9 @@ fn content_tui_smoke_reaches_wuxia_final_epilogue_contract() {
     assert!(stdout.contains("layout: ending"));
     assert!(stdout.contains("final_result_key: true_route_victory"));
     assert!(stdout.contains("owned_by: Rust GameCore"));
+    assert!(stdout.contains("audit_id: final_state_canonical_collapse"));
+    assert!(stdout.contains("source_contract: wuxia_final_state_canonical_collapse_contract"));
+    assert!(stdout.contains("canonical_state: combat_result"));
     assert!(stdout.contains("card_id: epilogue_boss_broken_black_serpent"));
     assert!(stdout.contains("card_id: epilogue_mumyeong_second_wooden_sword"));
     assert!(stdout.contains("card_id: epilogue_wuxia_returned_commute"));

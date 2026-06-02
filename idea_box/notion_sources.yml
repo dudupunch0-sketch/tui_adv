@@ -219,9 +219,9 @@ sources:
       - notion_event_id: "wuxia_seoharin_empty_place"
         notion_event_name: "비워둔 자리"
         repo_encounter_id: "wuxia_seoharin_empty_place"
-        runtime_status: "selected_next_runtime_candidate"
-        handoff_status: "selected_after_departure_truth_summary"
-    status: "live_checked_docs_synced_next_runtime_selected"
+        runtime_status: "implemented_in_storypack_preview"
+        handoff_status: "implemented_after_departure_truth_summary"
+    status: "live_checked_docs_synced_runtime_implemented"
 
   - key: wuxia_10_epilogue_card_db
     title: "10. 이구학지 후일담 카드 DB"

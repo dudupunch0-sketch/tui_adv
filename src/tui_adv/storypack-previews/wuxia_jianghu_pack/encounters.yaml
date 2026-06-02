@@ -1434,3 +1434,61 @@ encounters:
           add_clues: [salvation_condition_seen_but_unmet, boss_used_mumyeongs_wound_after_orthodox_refusal]
           destination_id: cheongryu_outer_courtyard
           log: 구원 조건처럼 보이는 문장이 떠오르지만, 아직 조건을 만족한 것은 아니다. 천기록은 진실을 접어 두고 다음 대면을 기다린다.
+
+  - id: wuxia_seoharin_empty_place
+    title: 비워둔 자리
+    body: 봉해 둔 진실을 품은 채 청류문 외곽 마당으로 돌아오자, 서하린은 연무장 가장자리의 빈 자리를 쓸고 있었다. 낡은 목검 하나가 벽에 기대어 있지만, 그녀는 그것을 누구의 것이라고 부르지 않는다. 기다림은 소유가 아니라, 돌아올 수 있는 자리를 지우지 않는 일처럼 보인다.
+    presentation:
+      visual_id: wuxia_seoharin_empty_place
+      speaker: 서하린
+      layout: empty_place_memory
+      effect_cues:
+        - kind: glyph_anomaly
+          source: empty_place_memory
+          intensity: 0.62
+          stable_terms: [서하린, 무명, 청류문, 목검]
+          distortion: unclaimed_wooden_sword_waiting_place
+          duration_hint_ms: 1400
+          fallback_text: 먼지 낀 연무장 위로 '서하린', '무명', '청류문', '목검'만 번지지 않는 이름처럼 남는다.
+    conditions:
+      locations: [cheongryu_outer_courtyard]
+      required_flags: [mumyeong_departure_truth_summary_resolved, sealed_departure_truth_summary_prepared, truth_delivery_still_unopened, midgame_continuity_started]
+      forbidden_flags: [seoharin_empty_place_resolved]
+    choices:
+      - id: ask_who_kept_the_empty_place
+        label: 누가 이 빈 자리를 지켜 왔는지 묻는다
+        outcome:
+          resources:
+            sanity: -1
+          add_flags: [seoharin_empty_place_resolved, seoharin_axis_opened, empty_place_remembered, truth_delivery_still_unopened]
+          add_clues: [seoharin_remembers_without_possessing, mumyeong_place_still_unclaimed]
+          destination_id: cheongryu_outer_courtyard
+          log: 서하린은 대답 대신 먼지를 쓸어낸다. 그 빈 자리는 무명을 변명하기 위한 자리가 아니라, 그가 돌아와도 이름을 빼앗기지 않게 남겨 둔 자리였다.
+      - id: leave_the_place_unclaimed
+        label: 그 자리를 누구의 것이라고 부르지 않는다
+        outcome:
+          resources:
+            sanity: -1
+          add_flags: [seoharin_empty_place_resolved, seoharin_axis_opened, empty_place_remembered, truth_delivery_still_unopened]
+          add_clues: [empty_place_is_return_not_claim, seoharin_remembers_without_possessing]
+          destination_id: cheongryu_outer_courtyard
+          log: 이름을 붙이지 않자, 자리는 더 선명해진다. 기다림은 무명을 소유하는 방식이 아니라, 그가 돌아올 수 있는 길을 막지 않는 방식이었다.
+      - id: set_down_the_work_notebook_briefly
+        label: 업무수첩을 잠시 내려놓고 목검을 본다
+        outcome:
+          resources:
+            sanity: -2
+          danger: 1
+          add_flags: [seoharin_empty_place_resolved, seoharin_axis_opened, empty_place_remembered, truth_delivery_still_unopened]
+          add_clues: [unpriced_wooden_sword_condition_seeded, empty_place_is_return_not_claim]
+          destination_id: cheongryu_outer_courtyard
+          log: 천기록은 목검의 값을 쓰지 않는다. 아직 보상도 아이템도 아니지만, 값이 매겨지지 않은 물건이 언젠가 조건이 될 수 있다는 여백만 남긴다.
+      - id: step_back_without_naming_mumyeong
+        label: 무명의 이름을 꺼내지 않고 한 걸음 물러난다
+        outcome:
+          resources:
+            sanity: -1
+          add_flags: [seoharin_empty_place_resolved, seoharin_axis_opened, empty_place_remembered, truth_delivery_still_unopened]
+          add_clues: [mumyeong_place_still_unclaimed, truth_delivery_still_requires_consent]
+          destination_id: cheongryu_outer_courtyard
+          log: 오늘은 진실을 전하는 날이 아니다. 서하린의 빈 자리는 대답을 강요하지 않고, 무명이 스스로 마주해야 할 순간까지 조용히 남아 있다.

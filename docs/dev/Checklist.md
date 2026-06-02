@@ -775,6 +775,20 @@
 - [x] runtime YAML/Rust/Web generated bundle, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
 - [x] 다음 작업을 `wuxia_seoharin_empty_place` runtime implementation으로 갱신
 
+### 0.2bq 2026-06-02 무협 `wuxia_seoharin_empty_place` preview runtime slice
+
+- [x] `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`에서 `wuxia_mumyeong_departure_truth_summary` 뒤에 `wuxia_seoharin_empty_place` 추가
+- [x] start conditions를 `mumyeong_departure_truth_summary_resolved`, `sealed_departure_truth_summary_prepared`, `truth_delivery_still_unopened`, `midgame_continuity_started`로 구현
+- [x] stable choice id `ask_who_kept_the_empty_place`, `leave_the_place_unclaimed`, `set_down_the_work_notebook_briefly`, `step_back_without_naming_mumyeong` 구현
+- [x] 모든 선택지가 `seoharin_empty_place_resolved`, `seoharin_axis_opened`, `empty_place_remembered`, `truth_delivery_still_unopened`, `destination_id: cheongryu_outer_courtyard` bridge를 남기도록 구현
+- [x] `wuxia_seoharin_empty_place` presentation을 `speaker: 서하린`, `layout: empty_place_memory`, stable terms `[서하린, 무명, 청류문, 목검]`로 구현
+- [x] `unpriced_wooden_sword_condition_seeded`는 clue seed로만 남기고 `item_unpriced_wooden_sword`는 지급하지 않음
+- [x] Rust/Web storypack preview generated bundle 재생성
+- [x] Python exporter/docs/storypack DB, Rust content bundle, WASM JSON boundary, terminal smoke, Web default content bundle registry 테스트 갱신
+- [x] 서하린에게 진실 전달, `told_seoharin_truth`, 무명 구원 확정, 보스 전투/final boss resolution, 무명/보스 결산, seed 기반 random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation/reward/ability/epilogue/return schema, 천기록 정체 reveal 미변경 유지
+- [x] 기본 office bundle, Web legacy generated `content.bundle.json`, `src/tui_adv/data/*.yaml`, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 작업을 `wuxia_seoharin_empty_place_followup` docs-only handoff로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

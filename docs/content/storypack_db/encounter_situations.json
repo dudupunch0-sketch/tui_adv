@@ -6674,10 +6674,11 @@
     "notion_event_mapping": {
       "notion_event_id": "wuxia_seoharin_empty_place",
       "notion_event_name": "비워둔 자리",
-      "mapping_status": "selected_next_runtime_candidate"
+      "mapping_status": "preview_runtime_implemented"
     },
-    "status": "candidate",
-    "mapping_status": "selected_next_runtime_candidate",
+    "status": "implemented_in_storypack_preview",
+    "mapping_status": "preview_runtime_implemented",
+    "runtime_preview_design_status": "implemented",
     "phase": [
       "midgame_backstory",
       "seoharin_empty_place_bridge"
@@ -6785,14 +6786,14 @@
         "seoharin_empty_place_resolved",
         "seoharin_axis_opened",
         "empty_place_remembered",
-        "truth_delivery_still_unopened",
-        "unpriced_wooden_sword_condition_seeded"
+        "truth_delivery_still_unopened"
       ],
       "possible_clues": [
         "seoharin_remembers_without_possessing",
         "empty_place_is_return_not_claim",
         "mumyeong_place_still_unclaimed",
-        "unpriced_wooden_sword_condition_seeded"
+        "unpriced_wooden_sword_condition_seeded",
+        "truth_delivery_still_requires_consent"
       ],
       "possible_items": [],
       "possible_relations": [
@@ -6801,9 +6802,9 @@
     },
     "main_spine_link": "sealed departure truth summary가 남긴 무명/서하린 진실 경계를 서하린의 소속감 축으로 넘긴다. 최종전 2/3페이즈의 remembered_empty_place와 seoharin_axis 조건을 준비하되, truth delivery나 final routing은 열지 않는다.",
     "randomization_notes": "후반 1회성 relation bridge. sealed summary 뒤에만 열고 seoharin_empty_place_resolved로 반복을 막는다.",
-    "promotion_notes": "wuxia_mumyeong_departure_truth_summary_followup docs-only handoff에서 다음 runtime 후보로 선택했다. Notion 원본은 초반 companion card지만, 최신 사도 최종전 2/3페이즈와 최종장 결산 라우팅 마스터가 비워둔 자리 확인을 seoharin_axis/high 및 remembered_empty_place 조건으로 재사용하므로 sealed truth summary 이후 late bridge로 재해석한다. told_seoharin_truth, 서하린 truth delivery, 무명 구원 확정, 무명/보스 결산, 사도 최종전, item_unpriced_wooden_sword 지급, final/epilogue/return schema, route/faction/relation/debt/reward schema, combat resolver/schema, 천기록 identity reveal은 열지 않는다.",
+    "promotion_notes": "preview runtime으로 구현 완료. wuxia_mumyeong_departure_truth_summary_followup docs-only handoff에서 다음 runtime 후보로 선택했고, sealed truth summary 이후 서하린의 비워둔 자리를 late bridge로 재해석해 seoharin_axis_opened/empty_place_remembered를 flags로 남긴다. told_seoharin_truth, 서하린 truth delivery, 무명 구원 확정, 무명/보스 결산, 사도 최종전, item_unpriced_wooden_sword 지급, final/epilogue/return schema, route/faction/relation/debt/reward schema, combat resolver/schema, 천기록 identity reveal은 열지 않는다.",
     "runtime_preview_handoff": {
-      "handoff_status": "selected_next_runtime_candidate",
+      "handoff_status": "implemented",
       "insert_after": "wuxia_mumyeong_departure_truth_summary",
       "selected_over": [
         "wuxia_mumyeong_resolution",
@@ -6823,6 +6824,15 @@
         "no_item_unpriced_wooden_sword_award",
         "no_tianjilu_identity_reveal"
       ]
+    },
+    "runtime_preview_implementation": {
+      "implemented_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml",
+      "insert_after": "wuxia_mumyeong_departure_truth_summary",
+      "generated_artifacts": [
+        "crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json",
+        "web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json"
+      ],
+      "next_handoff": "wuxia_seoharin_empty_place_followup"
     }
   }
 ]

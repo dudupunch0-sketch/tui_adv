@@ -1411,10 +1411,10 @@ def test_wuxia_mumyeong_destroys_orthodox_sect_runtime_slice_is_docs_synced():
     assert "implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml" in wuxia_cards
     assert "generated_artifacts:" in wuxia_cards
     assert "next_handoff: wuxia_mumyeong_destroys_orthodox_sect_followup" in wuxia_cards
-    assert "스물네 개 implemented preview encounter" in world_model
+    assert "스물다섯 개 implemented preview encounter" in world_model
     assert "현악문 consequence trace도 기존 encounter schema로 구현 완료" in encounter_model
-    assert "Latest implemented runtime: `wuxia_mumyeong_departure_truth_summary`" in runtime_preview
-    assert "Next runtime candidate: `wuxia_seoharin_empty_place`" in runtime_preview
+    assert "Latest implemented runtime: `wuxia_seoharin_empty_place`" in runtime_preview
+    assert "Next docs-only handoff: `wuxia_seoharin_empty_place_followup`" in runtime_preview
     assert "runtime_status: \"implemented_in_storypack_preview\"" in notion_sources
 
 
@@ -1464,7 +1464,7 @@ def test_wuxia_boss_recruits_mumyeong_runtime_slice_is_docs_synced():
     assert "`wuxia_boss_recruits_mumyeong`도 preview runtime에 구현" in storypack_db_readme
     assert "Historical handoffs: wuxia_mumyeong_followup_after_copy_style_reveal" in storypack_db_json
     assert "wuxia_boss_recruits_mumyeong_followup" in storypack_db_json
-    assert "Latest runtime slice: wuxia_mumyeong_departure_truth_summary" in storypack_db_json
+    assert "Latest runtime slice: wuxia_seoharin_empty_place" in storypack_db_json
     assert '"id": "wuxia_boss_recruits_mumyeong"' in situations_json
     assert '"insert_after": "wuxia_mumyeong_destroys_orthodox_sect"' in situations_json
     assert '"next_handoff": "wuxia_boss_recruits_mumyeong_followup"' in situations_json
@@ -1476,10 +1476,10 @@ def test_wuxia_boss_recruits_mumyeong_runtime_slice_is_docs_synced():
     assert "stable_terms: [흑사방주, 무명, 현악문]" in wuxia_cards
     assert "next_handoff: wuxia_boss_recruits_mumyeong_followup" in wuxia_cards
     assert "## 24. `wuxia_mumyeong_departure_truth_summary`" in wuxia_cards
-    assert "스물네 개 implemented preview encounter" in world_model
+    assert "스물다섯 개 implemented preview encounter" in world_model
     assert "보스 recruitment trace도 기존 encounter schema로 구현 완료" in encounter_model
-    assert "Latest implemented runtime: `wuxia_mumyeong_departure_truth_summary`" in runtime_preview
-    assert "Next runtime candidate: `wuxia_seoharin_empty_place`" in runtime_preview
+    assert "Latest implemented runtime: `wuxia_seoharin_empty_place`" in runtime_preview
+    assert "Next docs-only handoff: `wuxia_seoharin_empty_place_followup`" in runtime_preview
     assert 'notion_event_id: "wuxia_boss_recruits_mumyeong"' in notion_sources
     assert 'repo_encounter_id: "wuxia_boss_recruits_mumyeong"' in notion_sources
 
@@ -1525,7 +1525,7 @@ def test_wuxia_boss_recruits_followup_handoff_selects_departure_truth_summary():
         "sealed summary scope, not truth delivery |"
     ) in coverage
     assert "`wuxia_mumyeong_departure_truth_summary`도 preview runtime에 구현" in storypack_db_readme
-    assert "Latest runtime slice: wuxia_mumyeong_departure_truth_summary" in storypack_db_json
+    assert "Latest runtime slice: wuxia_seoharin_empty_place" in storypack_db_json
     assert '"next_runtime_scope": "sealed_departure_truth_summary"' in situations_json
     assert "| `wuxia_mumyeong_departure_truth_summary` | `midgame_backstory` / `sealed_departure_truth_summary`" in wuxia_pack
     assert "24. `wuxia_mumyeong_departure_truth_summary` — preview runtime 구현 완료" in wuxia_pack
@@ -1537,9 +1537,9 @@ def test_wuxia_boss_recruits_followup_handoff_selects_departure_truth_summary():
     assert "seal_truth_until_mumyeong_faces_it" in wuxia_cards
     assert "implementation_status: implemented" in wuxia_cards
     assert "next_handoff: wuxia_mumyeong_departure_truth_summary_followup" in wuxia_cards
-    assert "`wuxia_mumyeong_departure_truth_summary_followup` docs-only handoff" in world_model
+    assert "`wuxia_seoharin_empty_place_followup` docs-only handoff" in world_model
     assert "sealed departure truth summary도 기존 encounter schema로 구현 완료" in encounter_model
-    assert "Next runtime candidate: `wuxia_seoharin_empty_place`" in runtime_preview
+    assert "Next docs-only handoff: `wuxia_seoharin_empty_place_followup`" in runtime_preview
     assert 'notion_event_id: "wuxia_mumyeong_departure_truth_summary"' in notion_sources
     assert 'runtime_status: "implemented_in_storypack_preview"' in notion_sources
 
@@ -1576,7 +1576,7 @@ def test_wuxia_mumyeong_departure_truth_summary_runtime_slice_is_docs_synced():
     assert "### 0.2bo 2026-06-02 무협 `wuxia_mumyeong_departure_truth_summary` preview runtime slice" in checklist
     assert "Mumyeong departure truth summary implementation" in coverage
     assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 25개." in storypack_db_readme
-    assert "Latest runtime slice: wuxia_mumyeong_departure_truth_summary" in storypack_db_json
+    assert "Latest runtime slice: wuxia_seoharin_empty_place" in storypack_db_json
     assert '"id": "wuxia_mumyeong_departure_truth_summary"' in situations_json
     assert '"status": "implemented_in_storypack_preview"' in situations_json
     assert '"insert_after": "wuxia_boss_recruits_mumyeong"' in situations_json
@@ -1587,8 +1587,8 @@ def test_wuxia_mumyeong_departure_truth_summary_runtime_slice_is_docs_synced():
     assert "runtime_preview_design_status: implemented" in wuxia_cards
     assert "implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml" in wuxia_cards
     assert "next_handoff: wuxia_mumyeong_departure_truth_summary_followup" in wuxia_cards
-    assert "Latest implemented runtime: `wuxia_mumyeong_departure_truth_summary`" in runtime_preview
-    assert "Next runtime candidate: `wuxia_seoharin_empty_place`" in runtime_preview
+    assert "Latest implemented runtime: `wuxia_seoharin_empty_place`" in runtime_preview
+    assert "Next docs-only handoff: `wuxia_seoharin_empty_place_followup`" in runtime_preview
     assert 'runtime_status: "implemented_in_storypack_preview"' in notion_sources
     assert "told_seoharin_truth" not in encounters_yaml
 
@@ -1632,31 +1632,35 @@ def test_wuxia_departure_truth_summary_followup_selects_seoharin_empty_place():
     assert "Departure truth summary follow-up handoff" in coverage
     assert (
         "| 3 | `wuxia_seoharin_empty_place` | 비워둔 자리 | "
-        "`wuxia_seoharin_empty_place` | selected next runtime candidate; "
+        "`wuxia_seoharin_empty_place` | preview runtime implemented; "
         "late empty-place bridge, not truth delivery |"
     ) in coverage
-    assert "current_goal: wuxia_seoharin_empty_place" in next_goal
-    assert "previous_current_goal: wuxia_mumyeong_departure_truth_summary_followup" in next_goal
-    assert "mode: runtime-implementation" in next_goal
+    assert "current_goal: wuxia_seoharin_empty_place_followup" in next_goal
+    assert "previous_current_goal: wuxia_seoharin_empty_place" in next_goal
+    assert "mode: docs-only-handoff" in next_goal
     assert "ask_who_kept_the_empty_place" in next_goal
-    assert "empty_place_is_return_not_claim" in next_goal
+    assert "unpriced_wooden_sword_condition_seeded" in next_goal
     assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 25개." in storypack_db_readme
-    assert "Next runtime candidate: wuxia_seoharin_empty_place" in storypack_db_json
+    assert "Latest runtime slice: wuxia_seoharin_empty_place" in storypack_db_json
+    assert "Next handoff: wuxia_seoharin_empty_place_followup" in storypack_db_json
     assert '"id": "wuxia_seoharin_empty_place"' in situations_json
-    assert '"mapping_status": "selected_next_runtime_candidate"' in situations_json
+    assert '"mapping_status": "preview_runtime_implemented"' in situations_json
+    assert '"runtime_preview_design_status": "implemented"' in situations_json
     assert '"next_runtime_scope": "empty_place_memory_bridge"' in situations_json
     assert '"insert_after": "wuxia_mumyeong_departure_truth_summary"' in situations_json
-    assert "25. `wuxia_seoharin_empty_place` — 다음 runtime 후보" in wuxia_pack
-    assert "## 25. `wuxia_seoharin_empty_place` — 다음 runtime 후보" in wuxia_cards
+    assert "25. `wuxia_seoharin_empty_place` — preview runtime 구현 완료" in wuxia_pack
+    assert "## 25. `wuxia_seoharin_empty_place` — preview runtime 구현 완료" in wuxia_cards
     assert "runtime_preview_handoff:" in wuxia_cards
+    assert "runtime_preview_implementation:" in wuxia_cards
     assert "ask_who_kept_the_empty_place" in wuxia_cards
     assert "leave_the_place_unclaimed" in wuxia_cards
     assert "set_down_the_work_notebook_briefly" in wuxia_cards
     assert "step_back_without_naming_mumyeong" in wuxia_cards
     assert "seoharin_axis_opened" in wuxia_cards
     assert "empty_place_remembered" in wuxia_cards
-    assert "Next runtime candidate: `wuxia_seoharin_empty_place`" in runtime_preview
-    assert "`wuxia_seoharin_empty_place` runtime implementation" in world_model
-    assert "`wuxia_mumyeong_departure_truth_summary_followup` handoff는 다음 runtime 후보를 `wuxia_seoharin_empty_place`로 결정" in encounter_model
+    assert "Latest implemented runtime: `wuxia_seoharin_empty_place`" in runtime_preview
+    assert "Next docs-only handoff: `wuxia_seoharin_empty_place_followup`" in runtime_preview
+    assert "`wuxia_seoharin_empty_place`까지 YAML/generated bundle에 반영" in world_model
+    assert "late empty-place memory bridge도 기존 encounter schema로 구현 완료" in encounter_model
     assert 'notion_event_id: "wuxia_seoharin_empty_place"' in notion_sources
-    assert 'runtime_status: "selected_next_runtime_candidate"' in notion_sources
+    assert 'runtime_status: "implemented_in_storypack_preview"' in notion_sources

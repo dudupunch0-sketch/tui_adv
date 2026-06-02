@@ -211,12 +211,12 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&4));
     assert_eq!(bundle.manifest.counts.get("items"), Some(&4));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&24));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&25));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 4);
-    assert_eq!(index.encounters_len(), 24);
+    assert_eq!(index.encounters_len(), 25);
 
     let market = index
         .location("jianghu_market_street")
@@ -1455,6 +1455,68 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     );
     assert_eq!(
         assemble_truth.outcome.destination_id.as_deref(),
+        Some("cheongryu_outer_courtyard")
+    );
+
+    let empty_place = index
+        .encounter("wuxia_seoharin_empty_place")
+        .expect("Seo Harin empty-place encounter");
+    assert_eq!(empty_place.title, "비워둔 자리");
+    assert_eq!(
+        empty_place.conditions.locations,
+        vec!["cheongryu_outer_courtyard"]
+    );
+    assert_eq!(
+        empty_place.conditions.required_flags,
+        vec![
+            "mumyeong_departure_truth_summary_resolved",
+            "sealed_departure_truth_summary_prepared",
+            "truth_delivery_still_unopened",
+            "midgame_continuity_started"
+        ]
+    );
+    assert_eq!(
+        empty_place.conditions.forbidden_flags,
+        vec!["seoharin_empty_place_resolved"]
+    );
+    let empty_place_presentation = empty_place
+        .presentation
+        .as_ref()
+        .expect("Seo Harin empty-place presentation");
+    assert_eq!(
+        empty_place_presentation.layout.as_deref(),
+        Some("empty_place_memory")
+    );
+    assert_eq!(empty_place_presentation.speaker.as_deref(), Some("서하린"));
+    assert_eq!(
+        empty_place_presentation.effect_cues[0].stable_terms,
+        vec!["서하린", "무명", "청류문", "목검"]
+    );
+    assert_eq!(empty_place.choices.len(), 4);
+    let ask_empty_place = empty_place
+        .choices
+        .iter()
+        .find(|choice| choice.id == "ask_who_kept_the_empty_place")
+        .expect("ask who kept the empty place choice");
+    assert_eq!(
+        ask_empty_place.outcome.add_flags,
+        vec![
+            "seoharin_empty_place_resolved",
+            "seoharin_axis_opened",
+            "empty_place_remembered",
+            "truth_delivery_still_unopened"
+        ]
+    );
+    assert_eq!(
+        ask_empty_place.outcome.add_clues,
+        vec![
+            "seoharin_remembers_without_possessing",
+            "mumyeong_place_still_unclaimed"
+        ]
+    );
+    assert!(ask_empty_place.outcome.add_items.is_empty());
+    assert_eq!(
+        ask_empty_place.outcome.destination_id.as_deref(),
         Some("cheongryu_outer_courtyard")
     );
 }

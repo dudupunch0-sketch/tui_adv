@@ -280,7 +280,7 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
     empty_place = db.encounter_cards["wuxia_seoharin_empty_place"]
     assert empty_place.world_id == "wuxia_jianghu"
     assert empty_place.storypack_id == "wuxia_jianghu_pack"
-    assert empty_place.status == "candidate"
+    assert empty_place.status == "implemented_in_storypack_preview"
     assert empty_place.priority_class == "npc_relation"
     assert "seoharin_empty_place_bridge" in empty_place.phases
     assert "training_chore" in empty_place.surfaces

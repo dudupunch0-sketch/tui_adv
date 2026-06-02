@@ -675,6 +675,78 @@
 - [x] full flashback, 무명 이탈 진실 전체 reveal, 정파 문파 멸문, boss recruit/final boss resolution, 무명 구원 확정, 서하린에게 진실 전달, seed 기반 random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation/reward/ability/epilogue/return schema, 천기록 정체 reveal 미변경 유지
 - [x] 다음 작업을 `wuxia_qingliu_attack_after_war_followup` docs-only handoff로 갱신
 
+### 0.2bj 2026-06-02 무협 post-Qingliu trace docs-only handoff
+
+- [x] Notion 사건 카드 DB `wuxia_mumyeong_destroys_orthodox_sect`, `wuxia_boss_recruits_mumyeong`, `wuxia_mumyeong_departure_truth_summary`, `wuxia_mumyeong_resolution`, `wuxia_boss_resolution`, `wuxia_seoharin_empty_place` 재확인
+- [x] parent `무협 스토리팩: 이구학지 — 천기록`, `04. 메인 루트 구조`, `99. 통합 체크포인트`와 비교
+- [x] 다음 runtime 후보를 `wuxia_mumyeong_destroys_orthodox_sect`로 결정
+- [x] 구현 범위를 현악문 멸문 전투가 아니라 빈 현악문 산문/기록/풍문을 확인하는 consequence trace로 제한한다고 문서화
+- [x] `wuxia_boss_recruits_mumyeong`은 정파 문파 멸문 이후 후반 스카웃 사건이라 보류
+- [x] `wuxia_mumyeong_departure_truth_summary`는 후반 truth reveal/서하린 진실 전달/무명 구원 조건 확정 범위가 커서 보류
+- [x] `wuxia_mumyeong_resolution`, `wuxia_boss_resolution`은 최종장/후일담 routing 범위라 보류
+- [x] `wuxia_seoharin_empty_place`는 초반 서하린 side beat라 현재 post-Qingliu trace 위치에서는 보류
+- [x] start conditions를 `required_flags: [qingliu_attack_after_war_resolved, qingliu_attack_trace_confirmed, hyeonakmun_attack_thread_opened, mumyeong_awakening_resolved, midgame_continuity_started]`, `forbidden_flags: [mumyeong_destroys_orthodox_sect_resolved]`로 문서화
+- [x] stable choice id 후보 `read_hyeonakmun_empty_gate_record`, `trace_bokho_lock_to_mumyeong`, `ask_why_seoharin_never_heard_full_story`, `stop_before_counting_the_dead` 고정
+- [x] storypack DB JSON mirror와 docs contract를 다음 runtime 후보 기준으로 갱신
+- [x] runtime YAML/Rust/Web generated bundle, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 작업을 `wuxia_mumyeong_destroys_orthodox_sect` runtime implementation으로 갱신
+
+### 0.2bk 2026-06-02 무협 `wuxia_mumyeong_destroys_orthodox_sect` preview runtime slice
+
+- [x] `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`에서 `wuxia_qingliu_attack_after_war` 뒤에 `wuxia_mumyeong_destroys_orthodox_sect` 추가
+- [x] start conditions를 `qingliu_attack_after_war_resolved`, `qingliu_attack_trace_confirmed`, `hyeonakmun_attack_thread_opened`, `mumyeong_awakening_resolved`, `midgame_continuity_started`로 구현
+- [x] stable choice id `read_hyeonakmun_empty_gate_record`, `trace_bokho_lock_to_mumyeong`, `ask_why_seoharin_never_heard_full_story`, `stop_before_counting_the_dead` 구현
+- [x] 모든 선택지가 `mumyeong_destroys_orthodox_sect_resolved`, `hyeonakmun_destruction_thread_opened`, `departure_truth_thread_deepened`, `destination_id: cheongryu_outer_courtyard` bridge를 남기도록 구현
+- [x] `wuxia_mumyeong_destroys_orthodox_sect` presentation을 `speaker: 천기록`, `layout: hyeonakmun_empty_gate_record`, stable terms `[현악문, 복호금쇄수, 무명]`로 구현
+- [x] Rust/Web storypack preview generated bundle 재생성
+- [x] Python exporter/docs/storypack DB, Rust content bundle, WASM JSON boundary, terminal smoke, Web default content bundle registry 테스트 갱신
+- [x] 기본 office bundle, Web legacy generated `content.bundle.json`, `src/tui_adv/data/*.yaml`, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] playable 멸문 전투, full flashback, 무명 이탈 진실 전체 reveal, 보스 스카웃/final boss resolution, 무명 구원 확정, 서하린에게 진실 전달, seed 기반 random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation/reward/ability/epilogue/return schema, 천기록 정체 reveal 미변경 유지
+- [x] 다음 작업을 `wuxia_mumyeong_destroys_orthodox_sect_followup` docs-only handoff로 갱신
+
+### 0.2bl 2026-06-02 무협 Hyeonakmun consequence follow-up docs-only handoff
+
+- [x] Notion 사건 카드 DB `wuxia_boss_recruits_mumyeong`, `wuxia_mumyeong_departure_truth_summary`, `wuxia_mumyeong_resolution`, `wuxia_boss_resolution`, `wuxia_seoharin_empty_place` 재확인
+- [x] 운영 문서 `04. 메인 루트 구조`, `05. 사건 카드 운영 규칙`, `07. 천기록 / 천외편린 보상`, `99. 통합 체크포인트`와 비교
+- [x] 다음 runtime 후보를 `wuxia_boss_recruits_mumyeong`로 결정
+- [x] 구현 범위를 보스가 무명의 상처/힘을 흑사방으로 끌어들이는 recruitment trace로 제한한다고 문서화
+- [x] `wuxia_mumyeong_departure_truth_summary`는 후반 truth/서하린 진실 전달/무명 구원 조건 범위가 커서 보류
+- [x] `wuxia_mumyeong_resolution`, `wuxia_boss_resolution`은 최종장/후일담 routing 범위라 보류
+- [x] `wuxia_seoharin_empty_place`는 초반 companion/epilogue beat라 현재 Hyeonakmun consequence 위치에서는 보류
+- [x] start conditions를 `required_flags: [mumyeong_destroys_orthodox_sect_resolved, hyeonakmun_destruction_thread_opened, departure_truth_thread_deepened, boss_first_appearance_resolved, boss_wall_thread_opened, black_serpent_core_pressure_opened, midgame_continuity_started]`, `forbidden_flags: [boss_recruits_mumyeong_resolved]`로 문서화
+- [x] stable choice id 후보 `trace_boss_offer_after_hyeonakmun`, `read_mumyeong_choice_without_excusing_it`, `search_black_serpent_recruitment_record`, `stop_before_following_him_into_black_serpent` 고정
+- [x] storypack DB JSON mirror와 docs contract를 다음 runtime 후보 기준으로 갱신
+- [x] runtime YAML/Rust/Web generated bundle, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 작업을 `wuxia_boss_recruits_mumyeong` runtime implementation으로 갱신
+
+### 0.2bm 2026-06-02 무협 `wuxia_boss_recruits_mumyeong` preview runtime slice
+
+- [x] `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`에서 `wuxia_mumyeong_destroys_orthodox_sect` 뒤에 `wuxia_boss_recruits_mumyeong` 추가
+- [x] start conditions를 `mumyeong_destroys_orthodox_sect_resolved`, `hyeonakmun_destruction_thread_opened`, `departure_truth_thread_deepened`, `boss_first_appearance_resolved`, `boss_wall_thread_opened`, `black_serpent_core_pressure_opened`, `midgame_continuity_started`로 구현
+- [x] stable choice id `trace_boss_offer_after_hyeonakmun`, `read_mumyeong_choice_without_excusing_it`, `search_black_serpent_recruitment_record`, `stop_before_following_him_into_black_serpent` 구현
+- [x] 모든 선택지가 `boss_recruits_mumyeong_resolved`, `boss_recruitment_thread_opened`, `destination_id: cheongryu_outer_courtyard` bridge를 남기도록 구현
+- [x] `wuxia_boss_recruits_mumyeong` presentation을 `speaker: 천기록`, `layout: boss_recruitment_trace`, stable terms `[흑사방주, 무명, 현악문]`로 구현
+- [x] Rust/Web storypack preview generated bundle 재생성
+- [x] Python exporter/docs/storypack DB, Rust content bundle, WASM JSON boundary, terminal smoke, Web default content bundle registry 테스트 갱신
+- [x] 기본 office bundle, Web legacy generated `content.bundle.json`, `src/tui_adv/data/*.yaml`, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] 무명 이탈 진실 전체 reveal, 서하린에게 진실 전달, 무명 구원 확정, 보스 전투/final boss resolution, 무명/보스 결산, seed 기반 random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation/reward/ability/epilogue/return schema, 천기록 정체 reveal 미변경 유지
+- [x] 다음 작업을 `wuxia_boss_recruits_mumyeong_followup` docs-only handoff로 갱신
+
+### 0.2bn 2026-06-02 무협 boss recruitment follow-up docs-only handoff
+
+- [x] Notion 사건 카드 DB `wuxia_mumyeong_departure_truth_summary`, `wuxia_mumyeong_resolution`, `wuxia_boss_resolution`, `wuxia_seoharin_empty_place` 및 기존 late/final 후보 재확인
+- [x] 운영 문서 `04. 메인 루트 구조`, `05. 사건 카드 운영 규칙`, `07. 천기록 / 천외편린 보상`, `99. 통합 체크포인트`와 비교
+- [x] 다음 runtime 후보를 `wuxia_mumyeong_departure_truth_summary`로 결정
+- [x] 구현 범위를 `sealed_departure_truth_summary` trace로 제한한다고 문서화
+- [x] `wuxia_mumyeong_resolution`, `wuxia_boss_resolution`은 최종장/후일담 routing 범위라 보류
+- [x] `wuxia_seoharin_empty_place`는 초반 companion/무명 clue beat라 현재 boss recruitment 직후 위치에서는 보류
+- [x] start conditions를 `required_flags: [boss_recruits_mumyeong_resolved, boss_recruitment_thread_opened, mumyeong_destroys_orthodox_sect_resolved, hyeonakmun_destruction_thread_opened, departure_truth_thread_deepened, mumyeong_request_for_aid_resolved, mumyeong_failed_aid_thread_opened, orthodox_hypocrisy_thread_opened, mumyeong_awakening_resolved, midgame_continuity_started]`, `forbidden_flags: [mumyeong_departure_truth_summary_resolved]`로 문서화
+- [x] stable choice id 후보 `assemble_departure_truth_without_delivering`, `compare_failed_aid_to_recruitment_offer`, `ask_seoharin_what_she_is_ready_to_hear`, `seal_truth_until_mumyeong_faces_it` 고정
+- [x] common hook `mumyeong_departure_truth_summary_resolved`, `sealed_departure_truth_summary_prepared`, `truth_delivery_still_unopened`, `destination_id: cheongryu_outer_courtyard` 고정
+- [x] 서하린에게 진실 전달, `told_seoharin_truth`, 무명 구원 확정, 무명/보스 결산, 최종전, epilogue/return, route/faction/relation/debt/reward schema, 천기록 정체 reveal 미변경 유지
+- [x] runtime YAML/Rust/Web generated bundle, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 작업을 `wuxia_mumyeong_departure_truth_summary` runtime implementation으로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

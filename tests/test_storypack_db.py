@@ -40,6 +40,7 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         "wuxia_baekdo_medicine_debt",
         "wuxia_black_heaven_escape_price",
         "wuxia_boss_first_appearance",
+        "wuxia_boss_recruits_mumyeong",
         "wuxia_cheonggi_record_first_fragment",
         "wuxia_cheongryu_apprentice_entry",
         "wuxia_cheongryu_chore_sparring",
@@ -50,6 +51,7 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         "wuxia_heuksa_bang_first_fight",
         "wuxia_mumyeong_awakening",
         "wuxia_mumyeong_copy_style_reveal",
+        "wuxia_mumyeong_destroys_orthodox_sect",
         "wuxia_mumyeong_first_confrontation",
         "wuxia_mumyeong_first_sighting",
         "wuxia_mumyeong_midgame_reunion",
@@ -206,6 +208,38 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         in qingliu_attack.outcome_hooks["possible_flags"]
     )
     assert "bokho_geumsaesu_used_on_qingliu" in qingliu_attack.outcome_hooks[
+        "possible_clues"
+    ]
+
+    destroys_orthodox = db.encounter_cards["wuxia_mumyeong_destroys_orthodox_sect"]
+    assert destroys_orthodox.world_id == "wuxia_jianghu"
+    assert destroys_orthodox.storypack_id == "wuxia_jianghu_pack"
+    assert destroys_orthodox.priority_class == "route_key"
+    assert "hyeonakmun_consequence_trace" in destroys_orthodox.phases
+    assert "cheonggi_record" in destroys_orthodox.surfaces
+    assert "safe_reading" in [
+        choice["role"] for choice in destroys_orthodox.choice_shapes
+    ]
+    assert (
+        "mumyeong_destroys_orthodox_sect_resolved"
+        in destroys_orthodox.outcome_hooks["possible_flags"]
+    )
+    assert "destruction_is_consequence_not_salvation" in destroys_orthodox.outcome_hooks[
+        "possible_clues"
+    ]
+
+    boss_recruits = db.encounter_cards["wuxia_boss_recruits_mumyeong"]
+    assert boss_recruits.world_id == "wuxia_jianghu"
+    assert boss_recruits.storypack_id == "wuxia_jianghu_pack"
+    assert boss_recruits.priority_class == "route_key"
+    assert "boss_recruitment_trace" in boss_recruits.phases
+    assert "faction_negotiation" in boss_recruits.surfaces
+    assert "safe_trace" in [choice["role"] for choice in boss_recruits.choice_shapes]
+    assert (
+        "boss_recruits_mumyeong_resolved"
+        in boss_recruits.outcome_hooks["possible_flags"]
+    )
+    assert "recruitment_was_not_salvation" in boss_recruits.outcome_hooks[
         "possible_clues"
     ]
 

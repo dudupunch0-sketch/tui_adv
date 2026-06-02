@@ -211,12 +211,12 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&4));
     assert_eq!(bundle.manifest.counts.get("items"), Some(&4));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&20));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&21));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 4);
-    assert_eq!(index.encounters_len(), 20);
+    assert_eq!(index.encounters_len(), 21);
 
     let market = index
         .location("jianghu_market_street")
@@ -1200,6 +1200,71 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     );
     assert_eq!(
         compare.outcome.destination_id.as_deref(),
+        Some("cheongryu_outer_courtyard")
+    );
+
+    let qingliu_attack = index
+        .encounter("wuxia_qingliu_attack_after_war")
+        .expect("Qingliu attack trace encounter");
+    assert_eq!(qingliu_attack.title, "무너져가는 청류문 습격의 흔적");
+    assert_eq!(
+        qingliu_attack.conditions.locations,
+        vec!["cheongryu_outer_courtyard"]
+    );
+    assert_eq!(
+        qingliu_attack.conditions.required_flags,
+        vec![
+            "mumyeong_awakening_resolved",
+            "mumyeong_awakening_thread_opened",
+            "copy_corruption_thread_opened",
+            "mumyeong_request_for_aid_resolved",
+            "mumyeong_failed_aid_thread_opened",
+            "orthodox_hypocrisy_thread_opened",
+            "mumyeong_reads_orthodox_style_resolved",
+            "orthodox_style_trace_recorded",
+            "midgame_continuity_started"
+        ]
+    );
+    assert_eq!(
+        qingliu_attack.conditions.forbidden_flags,
+        vec!["qingliu_attack_after_war_resolved"]
+    );
+    let qingliu_presentation = qingliu_attack
+        .presentation
+        .as_ref()
+        .expect("Qingliu attack trace presentation");
+    assert_eq!(
+        qingliu_presentation.layout.as_deref(),
+        Some("attack_trace_investigation")
+    );
+    assert_eq!(qingliu_presentation.speaker.as_deref(), Some("천기록"));
+    assert_eq!(
+        qingliu_presentation.effect_cues[0].stable_terms,
+        vec!["청류문", "현악문", "복호금쇄수"]
+    );
+    assert_eq!(qingliu_attack.choices.len(), 4);
+    let lock_scars = qingliu_attack
+        .choices
+        .iter()
+        .find(|choice| choice.id == "inspect_bokho_lock_scars")
+        .expect("inspect Bokho lock scars choice");
+    assert_eq!(
+        lock_scars.outcome.add_flags,
+        vec![
+            "qingliu_attack_after_war_resolved",
+            "qingliu_attack_trace_confirmed",
+            "hyeonakmun_attack_thread_opened"
+        ]
+    );
+    assert_eq!(
+        lock_scars.outcome.add_clues,
+        vec![
+            "bokho_geumsaesu_used_on_qingliu",
+            "full_flashback_still_unopened"
+        ]
+    );
+    assert_eq!(
+        lock_scars.outcome.destination_id.as_deref(),
         Some("cheongryu_outer_courtyard")
     );
 }

@@ -1,13 +1,13 @@
 # 이구학지 — 천기록 encounter situation cards
 
-Status: candidate + `wuxia_mumyeong_awakening` preview runtime implemented + `wuxia_mumyeong_followup_after_awakening` next handoff selected
+Status: candidate + `wuxia_mumyeong_awakening` preview runtime implemented + `wuxia_qingliu_attack_after_war` next runtime selected
 
-이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_awakening`까지는 separate storypack preview runtime으로 승격되었고, 다음은 `wuxia_mumyeong_followup_after_awakening` docs-only handoff다.
+이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_awakening`까지는 separate storypack preview runtime으로 승격되었고, 다음은 `wuxia_qingliu_attack_after_war` runtime implementation이다.
 
 공통 원칙:
 
 - 모든 카드는 `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`에 속한다.
-- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_awakening`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. 다음 runtime 후보는 `wuxia_mumyeong_followup_after_awakening` handoff에서 다시 고른다.
+- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_awakening`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. 다음 runtime 후보는 `wuxia_qingliu_attack_after_war`이며, full flashback이 아니라 현악문/복호금쇄수 흔적 조사로 제한한다.
 - 최신 canonical 무협 설정은 **이구학지 — 천기록**이다. 이전의 generic 객잔/소림/무당/아미 placeholder는 superseded로 본다.
 - 플레이어 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계의 시장 한복판에 전이됐다”이다.
 - 선택지는 세부 수치보다 역할과 결과 hook을 먼저 정의한다.
@@ -44,7 +44,7 @@ Status: candidate + `wuxia_mumyeong_awakening` preview runtime implemented + `wu
 | `wuxia_mumyeong_awakening` | 무명의 각성 | `wuxia_mumyeong_awakening` | preview runtime implemented |
 | `wuxia_boss_recruits_mumyeong` | 흑사방 보스의 스카웃 | none yet | future backstory event |
 | `wuxia_mumyeong_reads_orthodox_style` | 무명의 정파 무공 간파 | `wuxia_mumyeong_reads_orthodox_style` | preview runtime implemented |
-| `wuxia_qingliu_attack_after_war` | 무너져가는 청류문 습격 | none yet | future backstory/pressure event |
+| `wuxia_qingliu_attack_after_war` | 무너져가는 청류문 습격 | `wuxia_qingliu_attack_after_war` | next runtime selected |
 | `wuxia_mumyeong_request_for_aid` | 무명의 도움 요청 | `wuxia_mumyeong_request_for_aid` | preview runtime implemented |
 | `wuxia_tianjilu_first_fragment` | 천기록 첫 천외편린 | `wuxia_cheonggi_record_first_fragment` | preview implemented as schema-less foreshadow; full reward schema future |
 | `wuxia_seoharin_intervention` | 서하린의 개입 | `wuxia_seo_harin_rescue` | preview implemented as schema-less rescue/protection bridge |
@@ -1864,4 +1864,103 @@ runtime_preview_implementation_notes:
   default_bundle_changed: false
   new_schema_opened: false
   next_handoff: wuxia_mumyeong_followup_after_awakening
+```
+
+## 21. `wuxia_qingliu_attack_after_war`
+
+```yaml
+id: wuxia_qingliu_attack_after_war
+world_id: wuxia_jianghu
+storypack_id: wuxia_jianghu_pack
+source_refs:
+  - notion_event:wuxia_qingliu_attack_after_war
+  - docs/dev/Notion_Design_Coverage.md
+  - docs/dev/Development_Plan.md#044-2026-06-02-docs-only-awakening-follow-up-handoff-wuxia_qingliu_attack_after_war
+notion_event_mapping:
+  notion_event_id: wuxia_qingliu_attack_after_war
+  notion_event_name: 무너져가는 청류문 습격
+  mapping_status: next_runtime_selected
+status: candidate
+mapping_status: next_runtime_selected
+phase: [midgame_backstory, attack_trace_investigation]
+priority_class: route_key
+location_tags: [cheongryu_outer_courtyard, hyeonakmun_trace, qingliu_aftermath]
+surface: [sect_courtyard, cheonggi_record, faction_negotiation]
+anomaly_type: [faction_pressure, qi_deviation]
+pressure_type: [sanity, danger, relation]
+npc_slots: [early_rescuer]
+candidate_characters: [seo_harin, mumyeong]
+summary: 무명 각성 이후 청류문 폐허에 남은 현악문/복호금쇄수 흔적을 조사하되, 청류문 습격 전체 회상이나 무명 이탈 진실은 아직 열지 않는다.
+setup_text: 청류문 외원에는 전쟁 뒤의 습격 흔적이 아직 벽과 자물쇠에 남아 있다. 천기록은 장면을 재생하지 않고, 현악문이라는 이름과 복호금쇄수의 손자국이 청류문 상처 위에 어떻게 겹쳤는지만 적는다.
+runtime_preview_design_status: next_runtime_selected
+runtime_preview_start_conditions:
+  runtime_mode: storypack_preview
+  conditions:
+    locations: [cheongryu_outer_courtyard]
+  required_flags: [mumyeong_awakening_resolved, mumyeong_awakening_thread_opened, copy_corruption_thread_opened, mumyeong_request_for_aid_resolved, mumyeong_failed_aid_thread_opened, orthodox_hypocrisy_thread_opened, mumyeong_reads_orthodox_style_resolved, orthodox_style_trace_recorded, midgame_continuity_started]
+  forbidden_flags: [qingliu_attack_after_war_resolved]
+  flavor_flags_only: [hyeonakmun_trace_suspected, bokho_geumsaesu_name_recorded, mumyeong_tried_to_save_qingliu, orthodox_refusal_broke_mumyeong, seoharin_does_not_know_failed_aid, salvation_truth_still_unready, awakening_points_to_hyeonakmun_without_full_truth]
+presentation:
+  visual_id: wuxia_qingliu_attack_after_war
+  speaker: 천기록
+  layout: attack_trace_investigation
+  effect_cues:
+    - stable_terms: [청류문, 현악문, 복호금쇄수]
+choice_shapes:
+  - id: inspect_bokho_lock_scars
+    role: safe_observe
+    fallback_choice: true
+    label_direction: 자물쇠와 문틀에 남은 복호금쇄수 자국을 살핀다
+    expected_costs: []
+    expected_gains: [bokho_trace_clue, safe_distance]
+    outcome_hook:
+      add_flags: [qingliu_attack_after_war_resolved, qingliu_attack_trace_confirmed, hyeonakmun_attack_thread_opened]
+      add_clues: [bokho_geumsaesu_used_on_qingliu, full_flashback_still_unopened]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 천기록은 자물쇠의 상처가 무너진 힘이 아니라 잠그고 부러뜨린 손길이라고 적는다.
+  - id: compare_hyeonakmun_trace_to_qingliu_wounds
+    role: clue_compare
+    label_direction: 현악문 흔적과 청류문 상처의 결을 대조한다
+    expected_costs: [sanity_small]
+    expected_gains: [hyeonakmun_trace_context, main_sect_boundary]
+    outcome_hook:
+      add_flags: [qingliu_attack_after_war_resolved, qingliu_attack_trace_confirmed, hyeonakmun_attack_thread_opened]
+      add_clues: [qingliu_attack_trace_points_to_hyeonakmun, main_sect_not_directly_accused]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 이름은 현악문 쪽을 향하지만, 천기록은 아직 한 문파 전체를 죄인으로 쓰지 않는다.
+  - id: ask_seo_harin_what_she_saw_afterward
+    role: relation_probe
+    label_direction: 서하린이 습격 뒤에 무엇을 보았는지 조심스레 묻는다
+    expected_costs: [sanity_small, relation_risk]
+    expected_gains: [seoharin_aftermath_context, partial_truth_boundary]
+    outcome_hook:
+      add_flags: [qingliu_attack_after_war_resolved, qingliu_attack_trace_confirmed, hyeonakmun_attack_thread_opened]
+      add_clues: [seoharin_saw_aftermath_not_full_truth, qingliu_attack_trace_points_to_hyeonakmun]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 서하린의 기억은 피와 빈방에 멈춰 있다. 그녀도 습격의 중심을 보지는 못했다.
+  - id: stop_before_replaying_the_attack
+    role: safe_defer
+    label_direction: 습격을 다시 재생하기 전에 기록을 덮는다
+    expected_costs: [unresolved_debt]
+    expected_gains: [flashback_boundary, future_truth_marker]
+    outcome_hook:
+      add_flags: [qingliu_attack_after_war_resolved, qingliu_attack_trace_confirmed, hyeonakmun_attack_thread_opened]
+      add_clues: [full_flashback_still_unopened, seoharin_saw_aftermath_not_full_truth]
+      destination_id: cheongryu_outer_courtyard
+      log_direction: 오늘은 회상이 아니라 흔적만 읽는다. 공격의 밤은 아직 장면으로 열리지 않는다.
+outcome_hooks:
+  possible_flags: [qingliu_attack_after_war_resolved, qingliu_attack_trace_confirmed, hyeonakmun_attack_thread_opened]
+  possible_clues: [qingliu_attack_trace_points_to_hyeonakmun, bokho_geumsaesu_used_on_qingliu, seoharin_saw_aftermath_not_full_truth, main_sect_not_directly_accused, full_flashback_still_unopened]
+  possible_destinations: [cheongryu_outer_courtyard]
+main_spine_link: 무명 각성 이후 정파 무공 흔적을 청류문 습격 상처로 좁혀, 현악문/복호금쇄수 thread를 강화한다. 다만 무명 이탈의 진실 전체나 서하린에게 전달할 구원 조건은 아직 열지 않는다.
+randomization_notes: 1회성 attack-trace investigation. 각성, failed-aid, orthodox-style trace 뒤에만 열고 `qingliu_attack_after_war_resolved`로 반복을 막는다.
+promotion_notes: next runtime 후보로 선택. `wuxia_mumyeong_followup_after_awakening` handoff에서 무명 각성 이후 후보들을 비교했고, `wuxia_qingliu_attack_after_war`를 full flashback이 아니라 현악문/복호금쇄수 흔적 조사로 제한해 선택했다. `wuxia_mumyeong_destroys_orthodox_sect`, `wuxia_boss_recruits_mumyeong`, `wuxia_mumyeong_departure_truth_summary`, `wuxia_mumyeong_resolution`, `wuxia_boss_resolution`은 후반/final/truth/salvation 범위라 보류한다. legacy office bundle, legacy `escape-office` key, random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation schema, reward/ability/epilogue/return system, 천기록 정체 reveal은 열지 않는다.
+runtime_preview_implementation_notes:
+  planned_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
+  insert_after: wuxia_mumyeong_awakening
+  selected_over: [wuxia_mumyeong_destroys_orthodox_sect, wuxia_boss_recruits_mumyeong, wuxia_mumyeong_departure_truth_summary, wuxia_mumyeong_resolution, wuxia_boss_resolution]
+  generated_artifacts_changed: false
+  default_bundle_changed: false
+  new_schema_opened: false
+  next_step: runtime_implementation
 ```

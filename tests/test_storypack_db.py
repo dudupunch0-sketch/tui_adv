@@ -46,15 +46,16 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         "wuxia_cheongryu_raid_route_split",
         "wuxia_cheongryu_raid_wounded_fallback",
         "wuxia_commute_rift_arrival",
-            "wuxia_heavenly_archive_previous_outsiders",
-            "wuxia_heuksa_bang_first_fight",
-            "wuxia_mumyeong_awakening",
-            "wuxia_mumyeong_copy_style_reveal",
-            "wuxia_mumyeong_first_confrontation",
-            "wuxia_mumyeong_first_sighting",
+        "wuxia_heavenly_archive_previous_outsiders",
+        "wuxia_heuksa_bang_first_fight",
+        "wuxia_mumyeong_awakening",
+        "wuxia_mumyeong_copy_style_reveal",
+        "wuxia_mumyeong_first_confrontation",
+        "wuxia_mumyeong_first_sighting",
         "wuxia_mumyeong_midgame_reunion",
         "wuxia_mumyeong_reads_orthodox_style",
         "wuxia_mumyeong_request_for_aid",
+        "wuxia_qingliu_attack_after_war",
         "wuxia_seo_harin_rescue",
         "wuxia_wounded_shelter_dawn_offers",
     ]
@@ -190,6 +191,21 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         in request_for_aid.outcome_hooks["possible_flags"]
     )
     assert "mumyeong_tried_to_save_qingliu" in request_for_aid.outcome_hooks[
+        "possible_clues"
+    ]
+
+    qingliu_attack = db.encounter_cards["wuxia_qingliu_attack_after_war"]
+    assert qingliu_attack.world_id == "wuxia_jianghu"
+    assert qingliu_attack.storypack_id == "wuxia_jianghu_pack"
+    assert qingliu_attack.priority_class == "route_key"
+    assert "attack_trace_investigation" in qingliu_attack.phases
+    assert "cheonggi_record" in qingliu_attack.surfaces
+    assert "safe_observe" in [choice["role"] for choice in qingliu_attack.choice_shapes]
+    assert (
+        "qingliu_attack_trace_confirmed"
+        in qingliu_attack.outcome_hooks["possible_flags"]
+    )
+    assert "bokho_geumsaesu_used_on_qingliu" in qingliu_attack.outcome_hooks[
         "possible_clues"
     ]
 

@@ -648,6 +648,20 @@
 - [x] truth reveal, full Qingliu flashback, 정파 문파 멸문, boss recruit/final boss resolution, 무명 구원 확정, 서하린에게 진실 전달, seed 기반 random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation/reward/ability/epilogue/return schema, 천기록 정체 reveal 미변경 유지
 - [x] 다음 작업을 `wuxia_mumyeong_followup_after_awakening` docs-only handoff로 갱신
 
+### 0.2bh 2026-06-02 무협 awakening follow-up docs-only handoff
+
+- [x] Notion 사건 카드 DB `wuxia_mumyeong_destroys_orthodox_sect`, `wuxia_boss_recruits_mumyeong`, `wuxia_mumyeong_departure_truth_summary`, `wuxia_qingliu_attack_after_war`, `wuxia_mumyeong_resolution` 재확인
+- [x] future guardrail source `wuxia_boss_resolution`, `wuxia_seoharin_empty_place`, `wuxia_mumyeong_request_for_aid` 확인
+- [x] `04. 메인 루트 구조`, `05. 사건 카드 운영 규칙`, `07. 천기록 / 천외편린 보상`, `99. 통합 체크포인트`와 비교
+- [x] 다음 runtime 후보를 `wuxia_qingliu_attack_after_war`로 결정
+- [x] `wuxia_qingliu_attack_after_war`는 full flashback이 아니라 현악문/복호금쇄수 흔적 조사로 제한한다고 문서화
+- [x] `wuxia_mumyeong_destroys_orthodox_sect`, `wuxia_boss_recruits_mumyeong`, `wuxia_mumyeong_departure_truth_summary`, `wuxia_mumyeong_resolution`, `wuxia_boss_resolution`는 후반/final/truth/salvation 범위가 커서 보류
+- [x] start conditions를 `required_flags: [mumyeong_awakening_resolved, mumyeong_awakening_thread_opened, copy_corruption_thread_opened, mumyeong_request_for_aid_resolved, mumyeong_failed_aid_thread_opened, orthodox_hypocrisy_thread_opened, mumyeong_reads_orthodox_style_resolved, orthodox_style_trace_recorded, midgame_continuity_started]`, `forbidden_flags: [qingliu_attack_after_war_resolved]`로 문서화
+- [x] stable choice id 후보 `inspect_bokho_lock_scars`, `compare_hyeonakmun_trace_to_qingliu_wounds`, `ask_seo_harin_what_she_saw_afterward`, `stop_before_replaying_the_attack` 고정
+- [x] storypack DB JSON mirror와 docs contract를 다음 runtime 후보 기준으로 갱신
+- [x] runtime YAML/Rust/Web generated bundle, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 작업을 `wuxia_qingliu_attack_after_war` runtime implementation으로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

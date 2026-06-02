@@ -2329,7 +2329,7 @@ def test_wuxia_return_settlement_epilogue_contract_is_docs_synced():
     assert "return/settlement epilogue branch runtime implemented" in coverage
     assert "`wuxia_return_settlement_epilogue_contract`가 기존 renderer-neutral boundary에서 작동함을 확인했다" in runtime_preview
     assert "Latest implemented runtime slice: `wuxia_return_settlement_epilogue_contract`" in final_routing
-    assert "current_goal: return_settlement_epilogue_followup_handoff" in next_goal
+    assert "return_settlement_epilogue_followup_handoff" in next_goal
     assert "previous_current_goal: wuxia_return_settlement_epilogue_contract_implementation" in next_goal
     assert "Latest implemented runtime: wuxia_return_settlement_epilogue_contract" in storypack_db_json
     assert "\"next_handoff\": \"return_settlement_epilogue_followup_handoff\"" in situations_json
@@ -2343,3 +2343,65 @@ def test_wuxia_return_settlement_epilogue_contract_is_docs_synced():
     assert "return_settlement_evasion" in final_epilogue_rs
     assert "main_ending_type" not in final_epilogue_rs
     assert "told_seoharin_truth" not in final_epilogue_rs
+
+
+def test_wuxia_battle_loss_epilogue_contract_handoff_is_docs_synced():
+    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(
+        encoding="utf-8"
+    )
+    runtime_preview = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(
+        encoding="utf-8"
+    )
+    final_routing = Path("docs/design/Wuxia_Final_State_Routing.md").read_text(
+        encoding="utf-8"
+    )
+    next_goal = Path("idea_box/next_goal/README.md").read_text(encoding="utf-8")
+    storypack_db_json = Path("docs/content/storypack_db/storypacks.json").read_text(
+        encoding="utf-8"
+    )
+    readme = Path("README.md").read_text(encoding="utf-8")
+    wuxia_pack = Path("docs/content/storypacks/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+    wuxia_cards = Path("docs/content/encounter_db/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+    final_epilogue_rs = Path("crates/escape-core/src/final_epilogue.rs").read_text(
+        encoding="utf-8"
+    )
+
+    assert (
+        "## 0.71 2026-06-02 무협 return_settlement_epilogue_followup_handoff docs-only handoff: battle-loss epilogue contract"
+        in plan
+    )
+    assert (
+        "### 0.2cj 2026-06-02 무협 return/settlement epilogue follow-up docs-only handoff"
+        in checklist
+    )
+    assert "battle-loss epilogue handoff selected" in coverage
+    assert "wuxia_battle_loss_epilogue_contract" in runtime_preview
+    assert (
+        "Next runtime implementation candidate: `wuxia_battle_loss_epilogue_contract`"
+        in final_routing
+    )
+    assert "current_goal: wuxia_battle_loss_epilogue_contract_implementation" in next_goal
+    assert "previous_current_goal: return_settlement_epilogue_followup_handoff" in next_goal
+    assert (
+        "Latest handoff: return_settlement_epilogue_followup_handoff selected wuxia_battle_loss_epilogue_contract"
+        in storypack_db_json
+    )
+    assert "최신 handoff는 다음 runtime 후보를 `wuxia_battle_loss_epilogue_contract`로 선택했다" in readme
+    assert "38. `return_settlement_epilogue_followup_handoff` — docs-only handoff 완료" in wuxia_pack
+    assert "## 39. `return_settlement_epilogue_followup_handoff` — docs-only handoff 완료" in wuxia_cards
+
+    assert "FinalResult::BattleLoss" in final_epilogue_rs
+    assert "final_combat_result_battle_loss_seeded" in final_epilogue_rs
+    assert "epilogue_boss_black_serpent_banner" in final_epilogue_rs
+    assert "epilogue_wuxia_southern_market_rumor" in final_epilogue_rs
+    assert "epilogue_mumyeong_black_serpent_new_scale" in final_epilogue_rs
+    assert "epilogue_seoharin_closed_gate" in final_epilogue_rs
+    assert "epilogue_tianjilu_last_page" in final_epilogue_rs
+    assert "wuxia_sado_final_battle" not in final_epilogue_rs
+    assert "battle_loss_hp" not in final_epilogue_rs

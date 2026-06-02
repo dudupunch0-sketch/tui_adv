@@ -1041,6 +1041,16 @@
 - [x] reward/ability schema, combat resolver, HP 숫자전, 서하린 truth delivery, `told_seoharin_truth`, 천기록 기록자 정체 reveal 미변경 유지
 - [x] 다음 작업을 `return_settlement_epilogue_followup_handoff` docs-only contract slice로 갱신
 
+### 0.2cj 2026-06-02 무협 return/settlement epilogue follow-up docs-only handoff
+
+- [x] Notion `최종장 결산 라우팅 마스터`, `사도 최종전`, `사도 최종전 상태값 사전`, `08. 엔딩과 후일담 연결` 재대조
+- [x] Notion 후일담 DB row `흑사방의 깃발`, `검은 뱀의 새 비늘`, `닫힌 산문`, `천기록의 마지막 장` 재대조
+- [x] `06. 사이드 퀘스트와 미해결 부채`, `07. 천기록 / 천외편린 보상`, `01. 메인 엔딩 구조` 범위 재대조
+- [x] battle-loss branch, broader corruption/closed-gate branch, reward/ability schema, relation/debt/faction ledger, main ending archive/save surface 비교
+- [x] 다음 runtime 후보를 `wuxia_battle_loss_epilogue_contract`로 결정
+- [x] `docs/design/Wuxia_Final_State_Routing.md`에 battle-loss bundle, suppress rule, still-closed 범위 기록
+- [x] full final battle container, combat resolver, HP 숫자전, archive/save schema, relation/debt/faction ledger, reward/ability schema 미변경 유지
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

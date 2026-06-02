@@ -4521,6 +4521,167 @@
           "visual_id": "wuxia_cheongirok_resolution"
         },
         "title": "천기록 결산"
+      },
+      {
+        "body": "천기록의 마지막 장을 덮어도, 흑사방의 장부고에는 아직 끊어진 줄과 남은 매듭이 걸려 있다. 보스가 쓰러졌다는 사실, 깃발이 접혔다는 소문, 남쪽 장터의 빚 이야기, 무림맹의 침묵이 서로 다른 종이 위에 남는다. 이 장면은 후일담을 출력하지 않는다. 다만 부러진 검은 뱀, 접히지 않은 깃발, 장터 풍문, 책임 회피의 침묵을 future renderer가 읽을 수 있는 씨앗으로 정리한다.",
+        "choices": [
+          {
+            "id": "mark_broken_serpent_without_erasing_scars",
+            "label": "부러진 검은 뱀을 상처째 기록한다",
+            "outcome": {
+              "add_clues": [
+                "broken_serpent_still_leaves_network_scars",
+                "boss_defeat_is_not_total_cleanup",
+                "future_epilogue_renderer_still_unopened"
+              ],
+              "add_flags": [
+                "black_serpent_aftermath_resolved",
+                "final_black_serpent_aftermath_broken_serpent_seeded",
+                "final_epilogue_boss_broken_black_serpent_variant_ready_seeded",
+                "final_broken_black_serpent_epilogue_candidate_reinforced_seeded"
+              ],
+              "danger": 1,
+              "destination_id": "black_serpent_ledger_vault",
+              "log": "검은 뱀은 부러졌지만, 비늘 자국은 장부와 길목에 남아 있다. 천기록은 승리를 지우지 않되, 그것을 완전한 청소로 바꾸지도 않는다. 후일담 출력기는 아직 열리지 않는다.",
+              "resources": {
+                "sanity": -1
+              }
+            }
+          },
+          {
+            "id": "fold_the_banner_without_calling_it_gone",
+            "label": "깃발을 접되 사라졌다고 쓰지 않는다",
+            "outcome": {
+              "add_clues": [
+                "banner_can_return_when_pressure_unresolved",
+                "organization_logic_outlives_one_boss",
+                "southern_market_rumor_remains_possible"
+              ],
+              "add_flags": [
+                "black_serpent_aftermath_resolved",
+                "final_black_serpent_aftermath_banner_residue_seeded",
+                "final_black_serpent_banner_candidate_reinforced_seeded",
+                "final_southern_market_rumor_candidate_seeded"
+              ],
+              "danger": 2,
+              "destination_id": "black_serpent_ledger_vault",
+              "log": "깃발은 접힌다. 하지만 조직의 방식은 천 조각 하나보다 오래 남는다. 남쪽 장터의 빚 이야기와 잔당의 이름은 아직 같은 페이지에서 서로를 부를 수 있다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "send_ledger_to_alliance_and_watch_silence",
+            "label": "장부를 무림맹에 보내고 침묵을 본다",
+            "outcome": {
+              "add_clues": [
+                "alliance_silence_can_be_responsibility_evasion",
+                "strong_evidence_does_not_force_confession",
+                "ledger_can_be_buried_as_private_document"
+              ],
+              "add_flags": [
+                "black_serpent_aftermath_resolved",
+                "final_black_serpent_aftermath_alliance_silence_seeded",
+                "final_alliance_silence_responsibility_evasion_seeded",
+                "final_broken_black_serpent_epilogue_candidate_reinforced_seeded"
+              ],
+              "danger": 1,
+              "destination_id": "black_serpent_ledger_vault",
+              "log": "장부가 무림맹으로 향한다. 답장이 오지 않는다고 해서 증거가 사라지는 것은 아니다. 침묵은 무죄 판결이 아니라 책임을 미루는 변주 후보로 남는다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "listen_for_southern_market_debt_rumor",
+            "label": "남쪽 장터의 빚 풍문을 듣는다",
+            "outcome": {
+              "add_clues": [
+                "southern_market_rumor_is_unresolved_debt_not_blame",
+                "pressure_can_move_without_banner",
+                "trade_routes_remember_black_serpent"
+              ],
+              "add_flags": [
+                "black_serpent_aftermath_resolved",
+                "final_black_serpent_aftermath_southern_market_rumor_seeded",
+                "final_southern_market_rumor_candidate_reinforced_seeded",
+                "final_black_serpent_pressure_unresolved_variant_seeded"
+              ],
+              "danger": 2,
+              "destination_id": "black_serpent_ledger_vault",
+              "log": "남쪽 장터에서는 아직 빚 이야기가 돈다. 그것은 네 책임을 새로 씌우는 말이 아니라, 압박이 다른 길목으로 옮겨 갔다는 풍문이다. 천기록은 장터의 목소리를 후보로만 남긴다.",
+              "resources": {
+                "health": -1,
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "let_true_route_suppress_the_banner",
+            "label": "진로의 결과로 깃발과 풍문을 눌러 둔다",
+            "outcome": {
+              "add_clues": [
+                "true_route_can_suppress_banner_and_rumor",
+                "pressure_eased_does_not_rewrite_scars",
+                "future_epilogue_renderer_still_unopened"
+              ],
+              "add_flags": [
+                "black_serpent_aftermath_resolved",
+                "final_black_serpent_aftermath_banner_suppressed_seeded",
+                "final_black_serpent_banner_suppressed_candidate_seeded",
+                "final_southern_market_rumor_suppressed_candidate_seeded"
+              ],
+              "danger": 0,
+              "destination_id": "black_serpent_ledger_vault",
+              "log": "핵심 줄이 끊어진 길에서는 깃발과 장터 풍문이 함께 낮아질 수 있다. 그렇다고 상처가 없던 일이 되는 것은 아니다. 천기록은 억제 후보만 남기고, 후일담 출력은 아직 열지 않는다.",
+              "resources": {
+                "sanity": -1
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "black_serpent_aftermath_resolved"
+          ],
+          "locations": [
+            "black_serpent_ledger_vault"
+          ],
+          "required_flags": [
+            "cheongirok_resolution_resolved",
+            "seoharin_qingliu_resolution_resolved",
+            "mumyeong_resolution_resolved",
+            "boss_resolution_resolved",
+            "final_result_priority_applied_seeded",
+            "final_combat_result_battle_victory_seeded",
+            "final_state_routing_seeded"
+          ]
+        },
+        "id": "wuxia_black_serpent_aftermath",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "aftermath_cards_are_seeded_not_rendered",
+              "duration_hint_ms": 2200,
+              "fallback_text": "장부 여백에 '흑사방', '장부', '깃발', '남쪽 장터'라는 말만 검은 실처럼 이어졌다가 끊어진다.",
+              "intensity": 0.86,
+              "kind": "glyph_anomaly",
+              "source": "wuxia_black_serpent_aftermath",
+              "stable_terms": [
+                "흑사방",
+                "장부",
+                "깃발",
+                "남쪽 장터"
+              ]
+            }
+          ],
+          "layout": "black_serpent_aftermath_seed",
+          "speaker": "천기록",
+          "visual_id": "wuxia_black_serpent_aftermath"
+        },
+        "title": "흑사방 후일담 씨앗"
       }
     ],
     "endings": [
@@ -4666,7 +4827,7 @@
   "manifest": {
     "counts": {
       "achievements": 2,
-      "encounters": 33,
+      "encounters": 34,
       "endings": 1,
       "items": 4,
       "locations": 5,

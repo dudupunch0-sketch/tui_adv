@@ -2446,6 +2446,8 @@ fn content_tui_smoke_reaches_wuxia_cheongirok_resolution() {
             "choice:ask_mumyeong_for_own_flow",
             "--action",
             "choice:leave_the_gate_unclosed",
+            "--action",
+            "choice:turn_the_last_page_without_question",
         ])
         .output()
         .expect("escape-terminal executable should run");
@@ -2462,11 +2464,15 @@ fn content_tui_smoke_reaches_wuxia_cheongirok_resolution() {
     assert!(stdout.contains("visual id: wuxia_cheongirok_resolution"));
     assert!(stdout.contains("layout: cheongirok_resolution_seed"));
     assert!(stdout.contains("stable terms: 천기록 / 마지막 장 / 빈칸 / 기록자"));
-    assert!(stdout.contains("choice:turn_the_last_page_without_question / 질문하지 않고 마지막 장을 넘긴다"));
-    assert!(stdout.contains("choice:leave_blank_as_unpriced_place / 빈칸을 값이 아닌 자리로 남긴다"));
-    assert!(stdout.contains("choice:read_the_lines_that_align_like_ledger / 장부처럼 줄 맞는 글자를 읽는다"));
-    assert!(stdout.contains("choice:close_record_before_it_becomes_answer / 답이 되기 전에 기록을 덮는다"));
-    assert!(stdout.contains("choice:let_record_reflect_the_method / 결과보다 사용 방식을 비추게 둔다"));
+    assert!(stdout.contains("흑사방 후일담 씨앗"));
+    assert!(stdout.contains("visual id: wuxia_black_serpent_aftermath"));
+    assert!(stdout.contains("layout: black_serpent_aftermath_seed"));
+    assert!(stdout.contains("stable terms: 흑사방 / 장부 / 깃발 / 남쪽 장터"));
+    assert!(stdout.contains("choice:mark_broken_serpent_without_erasing_scars / 부러진 검은 뱀을 상처째 기록한다"));
+    assert!(stdout.contains("choice:fold_the_banner_without_calling_it_gone / 깃발을 접되 사라졌다고 쓰지 않는다"));
+    assert!(stdout.contains("choice:send_ledger_to_alliance_and_watch_silence / 장부를 무림맹에 보내고 침묵을 본다"));
+    assert!(stdout.contains("choice:listen_for_southern_market_debt_rumor / 남쪽 장터의 빚 풍문을 듣는다"));
+    assert!(stdout.contains("choice:let_true_route_suppress_the_banner / 진로의 결과로 깃발과 풍문을 눌러 둔다"));
     assert!(!stdout.contains("final_cheongirok_identity_revealed"));
     assert!(!stdout.contains("told_seoharin_truth"));
     assert!(!stdout.contains("item_unpriced_wooden_sword"));

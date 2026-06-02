@@ -211,12 +211,12 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&5));
     assert_eq!(bundle.manifest.counts.get("items"), Some(&4));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&30));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&33));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 5);
-    assert_eq!(index.encounters_len(), 30);
+    assert_eq!(index.encounters_len(), 33);
 
     let market = index
         .location("jianghu_market_street")
@@ -1853,6 +1853,210 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert!(true_route.outcome.add_items.is_empty());
     assert_eq!(
         true_route.outcome.destination_id.as_deref(),
+        Some("black_serpent_ledger_vault")
+    );
+
+    let mumyeong_resolution = index
+        .encounter("wuxia_mumyeong_resolution")
+        .expect("mumyeong resolution encounter");
+    assert_eq!(mumyeong_resolution.title, "무명 결산");
+    assert_eq!(
+        mumyeong_resolution.conditions.locations,
+        vec!["black_serpent_ledger_vault"]
+    );
+    assert_eq!(
+        mumyeong_resolution.conditions.required_flags,
+        vec![
+            "boss_resolution_resolved",
+            "final_result_priority_applied_seeded",
+            "final_combat_result_battle_victory_seeded",
+            "final_state_routing_seeded"
+        ]
+    );
+    assert_eq!(
+        mumyeong_resolution.conditions.forbidden_flags,
+        vec!["mumyeong_resolution_resolved"]
+    );
+    let mumyeong_presentation = mumyeong_resolution
+        .presentation
+        .as_ref()
+        .expect("mumyeong resolution presentation");
+    assert_eq!(
+        mumyeong_presentation.layout.as_deref(),
+        Some("mumyeong_resolution_seed")
+    );
+    assert_eq!(mumyeong_presentation.speaker.as_deref(), Some("무명"));
+    assert_eq!(
+        mumyeong_presentation.effect_cues[0].stable_terms,
+        vec!["무명", "자기 흐름", "사과", "검은 뱀"]
+    );
+    assert_eq!(mumyeong_resolution.choices.len(), 6);
+    let own_flow = mumyeong_resolution
+        .choices
+        .iter()
+        .find(|choice| choice.id == "ask_mumyeong_for_own_flow")
+        .expect("own-flow mumyeong resolution choice");
+    assert_eq!(
+        own_flow.outcome.add_flags,
+        vec![
+            "mumyeong_resolution_resolved",
+            "final_mumyeong_resolution_own_flow_salvation_seeded",
+            "final_mumyeong_own_flow_choice_confirmed_seeded",
+            "final_mumyeong_successor_route_suppressed_seeded",
+            "final_epilogue_mumyeong_stolen_forms_stopped_candidate_seeded",
+            "final_epilogue_mumyeong_second_wooden_sword_candidate_seeded",
+            "final_epilogue_seoharin_open_gate_reinforced_seeded"
+        ]
+    );
+    assert_eq!(
+        own_flow.outcome.add_clues,
+        vec![
+            "mumyeong_salvation_is_not_return_to_qingliu",
+            "own_flow_suppresses_successor_route",
+            "second_wooden_sword_is_candidate_not_payout"
+        ]
+    );
+    assert!(own_flow.outcome.add_items.is_empty());
+    assert_eq!(
+        own_flow.outcome.destination_id.as_deref(),
+        Some("black_serpent_ledger_vault")
+    );
+
+    let seoharin_qingliu_resolution = index
+        .encounter("wuxia_seoharin_qingliu_resolution")
+        .expect("seoharin qingliu resolution encounter");
+    assert_eq!(seoharin_qingliu_resolution.title, "서하린·청류문 결산");
+    assert_eq!(
+        seoharin_qingliu_resolution.conditions.locations,
+        vec!["black_serpent_ledger_vault"]
+    );
+    assert_eq!(
+        seoharin_qingliu_resolution.conditions.required_flags,
+        vec![
+            "mumyeong_resolution_resolved",
+            "boss_resolution_resolved",
+            "final_result_priority_applied_seeded",
+            "final_combat_result_battle_victory_seeded",
+            "final_state_routing_seeded"
+        ]
+    );
+    assert_eq!(
+        seoharin_qingliu_resolution.conditions.forbidden_flags,
+        vec!["seoharin_qingliu_resolution_resolved"]
+    );
+    let seoharin_qingliu_presentation = seoharin_qingliu_resolution
+        .presentation
+        .as_ref()
+        .expect("seoharin qingliu resolution presentation");
+    assert_eq!(
+        seoharin_qingliu_presentation.layout.as_deref(),
+        Some("seoharin_qingliu_resolution_seed")
+    );
+    assert_eq!(
+        seoharin_qingliu_presentation.speaker.as_deref(),
+        Some("서하린")
+    );
+    assert_eq!(
+        seoharin_qingliu_presentation.effect_cues[0].stable_terms,
+        vec!["서하린", "청류문", "산문", "목검"]
+    );
+    assert_eq!(seoharin_qingliu_resolution.choices.len(), 5);
+    let open_gate = seoharin_qingliu_resolution
+        .choices
+        .iter()
+        .find(|choice| choice.id == "leave_the_gate_unclosed")
+        .expect("open-gate seoharin qingliu resolution choice");
+    assert_eq!(
+        open_gate.outcome.add_flags,
+        vec![
+            "seoharin_qingliu_resolution_resolved",
+            "final_seoharin_qingliu_resolution_positive_future_seeded",
+            "final_epilogue_seoharin_future_candidate_seeded",
+            "final_epilogue_seoharin_open_gate_candidate_seeded",
+            "final_epilogue_qingliu_future_candidate_seeded",
+            "final_epilogue_qingliu_restored_martial_art_conditional_seeded"
+        ]
+    );
+    assert_eq!(
+        open_gate.outcome.add_clues,
+        vec![
+            "open_gate_is_not_possession",
+            "seoharin_future_depends_on_return_place_not_claim",
+            "qingliu_future_is_poor_but_flowing"
+        ]
+    );
+    assert!(open_gate.outcome.add_items.is_empty());
+    assert_eq!(
+        open_gate.outcome.destination_id.as_deref(),
+        Some("black_serpent_ledger_vault")
+    );
+
+    let cheongirok_resolution = index
+        .encounter("wuxia_cheongirok_resolution")
+        .expect("cheongirok resolution encounter");
+    assert_eq!(cheongirok_resolution.title, "천기록 결산");
+    assert_eq!(
+        cheongirok_resolution.conditions.locations,
+        vec!["black_serpent_ledger_vault"]
+    );
+    assert_eq!(
+        cheongirok_resolution.conditions.required_flags,
+        vec![
+            "seoharin_qingliu_resolution_resolved",
+            "mumyeong_resolution_resolved",
+            "boss_resolution_resolved",
+            "final_result_priority_applied_seeded",
+            "final_combat_result_battle_victory_seeded",
+            "final_state_routing_seeded"
+        ]
+    );
+    assert_eq!(
+        cheongirok_resolution.conditions.forbidden_flags,
+        vec!["cheongirok_resolution_resolved"]
+    );
+    let cheongirok_presentation = cheongirok_resolution
+        .presentation
+        .as_ref()
+        .expect("cheongirok resolution presentation");
+    assert_eq!(
+        cheongirok_presentation.layout.as_deref(),
+        Some("cheongirok_resolution_seed")
+    );
+    assert_eq!(
+        cheongirok_presentation.speaker.as_deref(),
+        Some("천기록")
+    );
+    assert_eq!(
+        cheongirok_presentation.effect_cues[0].stable_terms,
+        vec!["천기록", "마지막 장", "빈칸", "기록자"]
+    );
+    assert_eq!(cheongirok_resolution.choices.len(), 5);
+    let safe_page = cheongirok_resolution
+        .choices
+        .iter()
+        .find(|choice| choice.id == "turn_the_last_page_without_question")
+        .expect("safe high-use cheongirok resolution choice");
+    assert_eq!(
+        safe_page.outcome.add_flags,
+        vec![
+            "cheongirok_resolution_resolved",
+            "final_cheongirok_resolution_safe_high_use_seeded",
+            "final_cheongirok_state_high_use_not_corruption_seeded",
+            "final_epilogue_tianjilu_last_page_candidate_seeded",
+            "final_epilogue_tianjilu_safe_high_use_variant_seeded"
+        ]
+    );
+    assert_eq!(
+        safe_page.outcome.add_clues,
+        vec![
+            "record_does_not_answer_questions",
+            "high_use_is_not_corruption",
+            "last_page_turns_without_identity_reveal"
+        ]
+    );
+    assert!(safe_page.outcome.add_items.is_empty());
+    assert_eq!(
+        safe_page.outcome.destination_id.as_deref(),
         Some("black_serpent_ledger_vault")
     );
 }

@@ -61,7 +61,7 @@ This contract explicitly keeps these surfaces closed:
 1. `wuxia_sado_final_phase_1_price_tag` can seed `network_handling`, `evidence_state`, `pressure_state`, and `item_logs` through existing encounter hooks.
 2. `wuxia_sado_final_phase_2_weakpoint_control` can seed `seoharin_axis`, `qingliu_rebuild`, `mumyeong_salvation`, `successor_route`, `own_flow_choice`, `truth_state`, `cheongirok_state`, `player_method`, and evidence pressure through existing encounter hooks.
 3. `wuxia_sado_final_phase_3_outside_calculation` can seed `combat_result`, `boss_resolution_route` candidates, final `seoharin_axis`/`qingliu_rebuild`/`mumyeong_salvation`/`successor_route`/`own_flow_choice`, evidence pressure, `cheongirok_state`, and `player_method` interpretation through existing encounter hooks. These are still preview seeds, not a dedicated result schema.
-4. `wuxia_boss_resolution`, `wuxia_mumyeong_resolution`, Seo Harin late companion/return branches, Black Serpent settlement, and Cheonggi Record settlement consume these states instead of recomputing them independently.
+4. `wuxia_boss_resolution`, `wuxia_mumyeong_resolution`, `wuxia_seoharin_qingliu_resolution`, Black Serpent settlement, and Cheonggi Record settlement consume these states instead of recomputing them independently.
 
 ## Final Result Priority
 
@@ -90,10 +90,10 @@ This contract explicitly keeps these surfaces closed:
 Deferred until this contract exists and a runtime handoff explicitly opens them:
 
 - `wuxia_seoharin_unsaid_stay`
-- `wuxia_mumyeong_resolution`
+- full `wuxia_mumyeong_resolution` epilogue renderer beyond the implemented route seed bridge
 - full `wuxia_boss_resolution` epilogue renderer beyond the implemented route seed bridge
 - `wuxia_sado_final_battle`
 
-Latest implemented runtime slice: `wuxia_boss_resolution`.
+Latest implemented runtime slice: `wuxia_cheongirok_resolution`.
 
-`wuxia_sado_final_phase_1_price_tag`, `wuxia_sado_final_phase_2_weakpoint_control`, `wuxia_sado_final_phase_3_outside_calculation`, and `wuxia_boss_resolution` now use the existing encounter schema to seed final-state clues/flags/logs for the Sado final phases and boss-resolution route bridge. The next runtime candidate is `wuxia_mumyeong_resolution` handoff. It must consume boss-resolution candidate seeds without opening combat resolver, HP numeric combat, final epilogue schema, `item_unpriced_wooden_sword` payout, Seo Harin truth delivery, `told_seoharin_truth`, or Mumyeong salvation confirmation unless a new approved runtime contract opens them.
+`wuxia_sado_final_phase_1_price_tag`, `wuxia_sado_final_phase_2_weakpoint_control`, `wuxia_sado_final_phase_3_outside_calculation`, `wuxia_boss_resolution`, `wuxia_mumyeong_resolution`, `wuxia_seoharin_qingliu_resolution`, and `wuxia_cheongirok_resolution` now use the existing encounter schema to seed final-state clues/flags/logs for the Sado final phases, boss-resolution route bridge, Mumyeong-resolution route bridge, Seo Harin/Qingliu epilogue candidate bridge, and Cheonggi Record last-page bridge. The next runtime candidate is `wuxia_black_serpent_aftermath` handoff. It must consume final epilogue candidate seeds without opening combat resolver, HP numeric combat, final epilogue schema, `item_unpriced_wooden_sword` payout, Seo Harin truth delivery, Cheonggi Record recorder identity reveal, or `told_seoharin_truth` unless a new approved runtime contract opens them.

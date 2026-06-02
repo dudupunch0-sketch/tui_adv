@@ -363,11 +363,45 @@ sources:
     notion_ref: "notion:37137e69-695e-8159-8032-ce5f108ca6c8"
     url: "https://www.notion.so/37137e69695e81598032ce5f108ca6c8"
     last_checked_at: "2026-06-02T12:25:00+09:00"
-    precedence_role: "next_runtime_handoff_source_after_boss_resolution"
+    precedence_role: "implemented_mumyeong_resolution_route_seed_source"
     related_canonical_docs:
       - "docs/design/Wuxia_Final_State_Routing.md"
-    runtime_status: "next_handoff_candidate"
-    status: "live_checked_next_candidate"
+      - "docs/dev/Development_Plan.md"
+      - "idea_box/next_goal/README.md"
+    runtime_status: "implemented_in_storypack_preview"
+    status: "live_checked_runtime_implemented"
+
+  - key: wuxia_seoharin_qingliu_resolution
+    title: "서하린/청류문 결산 seed bridge"
+    object: derived_runtime_handoff
+    notion_refs:
+      - "notion:37137e69-695e-8138-a41d-e153190f85aa"
+      - "notion:37137e69-695e-81ec-8a40-c612b4c7a4d6"
+      - "notion:37137e69-695e-81b3-a8bb-db07c3342e7e"
+      - "notion:37137e69-695e-8177-8e0c-f12fbf19b567"
+      - "notion:37137e69-695e-812c-a469-d0cb91a75cf1"
+      - "notion:37237e69-695e-81d2-8ce2-d1c738c3e923"
+      - "notion:37337e69-695e-81c7-a9fd-e0a0e22005e2"
+    last_checked_at: "2026-06-02T12:25:00+09:00"
+    precedence_role: "implemented_seoharin_qingliu_resolution_route_seed_bridge"
+    related_design_units:
+      - "encounter:wuxia_seoharin_qingliu_resolution"
+      - "epilogue_candidate:seoharin_future"
+      - "epilogue_candidate:qingliu_future"
+      - "epilogue_candidate:open_gate"
+      - "epilogue_candidate:closed_gate"
+      - "system:final_epilogue_master_matrix"
+    related_canonical_docs:
+      - "docs/design/Wuxia_Final_State_Routing.md"
+      - "docs/dev/Development_Plan.md"
+      - "docs/dev/Notion_Design_Coverage.md"
+      - "docs/content/storypacks/wuxia_jianghu_pack.md"
+      - "docs/content/encounter_db/wuxia_jianghu_pack.md"
+      - "idea_box/next_goal/README.md"
+    runtime_status: "implemented_in_storypack_preview"
+    implementation_scope: "seed_bridge_only_no_final_epilogue_renderer"
+    next_handoff_candidate: "wuxia_cheongirok_resolution_handoff"
+    status: "live_checked_runtime_implemented"
 
   - key: wuxia_seoharin_unsaid_stay
     title: "가지 말라는 말"
@@ -375,11 +409,70 @@ sources:
     notion_ref: "notion:37137e69-695e-8138-a41d-e153190f85aa"
     url: "https://www.notion.so/37137e69695e8138a41de153190f85aa"
     last_checked_at: "2026-06-02T12:25:00+09:00"
-    precedence_role: "future_seoharin_final_relationship_source"
+    precedence_role: "seoharin_qingliu_resolution_source"
     related_canonical_docs:
       - "docs/design/Wuxia_Final_State_Routing.md"
       - "idea_box/next_goal/README.md"
-    status: "deferred_until_final_relationship_schema"
+    consumed_by:
+      - "encounter:wuxia_seoharin_qingliu_resolution"
+    runtime_status: "partially_consumed_in_storypack_preview"
+    remaining_scope: "full seoharin return-or-absence epilogue still future design"
+    status: "live_checked_runtime_source_consumed"
+
+  - key: wuxia_cheongirok_resolution
+    title: "천기록의 마지막 장"
+    object: page
+    notion_ref: "notion:37137e69-695e-8196-b7b2-c9f27d91e976"
+    url: "https://www.notion.so/37137e69695e8196b7b2c9f27d91e976"
+    last_checked_at: "2026-06-02T12:25:00+09:00"
+    precedence_role: "implemented_cheongirok_resolution_route_seed_source"
+    related_design_units:
+      - "encounter:wuxia_cheongirok_resolution"
+      - "system:cheongirok_state"
+      - "system:final_result_priority"
+      - "system:final_epilogue_master_matrix"
+    related_canonical_docs:
+      - "docs/design/Wuxia_Final_State_Routing.md"
+      - "docs/dev/Development_Plan.md"
+      - "docs/dev/Notion_Design_Coverage.md"
+      - "idea_box/next_goal/README.md"
+    required_prior_runtime:
+      - "wuxia_boss_resolution"
+      - "wuxia_mumyeong_resolution"
+      - "wuxia_seoharin_qingliu_resolution"
+    consumed_by:
+      - "encounter:wuxia_cheongirok_resolution"
+    runtime_status: "implemented_in_storypack_preview"
+    implementation_scope: "seed_bridge_only_no_final_epilogue_renderer_no_identity_reveal"
+    next_handoff_candidate: "wuxia_black_serpent_aftermath_handoff"
+    status: "live_checked_runtime_implemented"
+
+  - key: wuxia_black_serpent_aftermath
+    title: "흑사방 aftermath handoff"
+    object: derived_runtime_handoff
+    notion_refs:
+      - "notion:37237e69-695e-81d2-8ce2-d1c738c3e923"
+      - "notion:37137e69-695e-8177-a228-d7f96d084622"
+    last_checked_at: "2026-06-02T12:25:00+09:00"
+    precedence_role: "next_black_serpent_aftermath_handoff_candidate"
+    related_design_units:
+      - "encounter:wuxia_black_serpent_aftermath"
+      - "epilogue_candidate:broken_black_serpent"
+      - "epilogue_candidate:black_serpent_banner"
+      - "epilogue_candidate:southern_market_rumor"
+      - "system:final_epilogue_master_matrix"
+    related_canonical_docs:
+      - "docs/design/Wuxia_Final_State_Routing.md"
+      - "docs/dev/Development_Plan.md"
+      - "docs/dev/Notion_Design_Coverage.md"
+      - "idea_box/next_goal/README.md"
+    required_prior_runtime:
+      - "wuxia_boss_resolution"
+      - "wuxia_mumyeong_resolution"
+      - "wuxia_seoharin_qingliu_resolution"
+      - "wuxia_cheongirok_resolution"
+    runtime_status: "next_handoff_candidate"
+    status: "live_checked_next_candidate"
 
   - key: wuxia_99_checkpoint
     title: "99. 통합 체크포인트"

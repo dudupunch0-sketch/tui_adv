@@ -114,6 +114,9 @@ def test_export_web_data_builds_renderer_neutral_content_bundle():
             "wuxia_sado_final_phase_2_weakpoint_control",
             "wuxia_sado_final_phase_3_outside_calculation",
             "wuxia_boss_resolution",
+            "wuxia_mumyeong_resolution",
+            "wuxia_seoharin_qingliu_resolution",
+            "wuxia_cheongirok_resolution",
         }
         for encounter in bundle["content"]["encounters"]
     )
@@ -137,7 +140,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     assert bundle["manifest"]["counts"] == {
         "locations": 5,
         "items": 4,
-        "encounters": 30,
+        "encounters": 33,
         "endings": 1,
         "achievements": 2,
         "secrets": 0,
@@ -181,7 +184,53 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "wuxia_sado_final_phase_2_weakpoint_control",
         "wuxia_sado_final_phase_3_outside_calculation",
         "wuxia_boss_resolution",
+        "wuxia_mumyeong_resolution",
+        "wuxia_seoharin_qingliu_resolution",
+        "wuxia_cheongirok_resolution",
     ]
+    cheongirok = bundle["content"]["encounters"][32]
+    assert cheongirok["conditions"] == {
+        "locations": ["black_serpent_ledger_vault"],
+        "required_flags": [
+            "seoharin_qingliu_resolution_resolved",
+            "mumyeong_resolution_resolved",
+            "boss_resolution_resolved",
+            "final_result_priority_applied_seeded",
+            "final_combat_result_battle_victory_seeded",
+            "final_state_routing_seeded",
+        ],
+        "forbidden_flags": ["cheongirok_resolution_resolved"],
+    }
+    assert cheongirok["presentation"]["layout"] == "cheongirok_resolution_seed"
+    assert cheongirok["presentation"]["speaker"] == "천기록"
+    assert cheongirok["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "천기록",
+        "마지막 장",
+        "빈칸",
+        "기록자",
+    ]
+    assert [choice["id"] for choice in cheongirok["choices"]] == [
+        "turn_the_last_page_without_question",
+        "leave_blank_as_unpriced_place",
+        "read_the_lines_that_align_like_ledger",
+        "close_record_before_it_becomes_answer",
+        "let_record_reflect_the_method",
+    ]
+    safe_last_page = cheongirok["choices"][0]
+    assert safe_last_page["outcome"]["add_flags"] == [
+        "cheongirok_resolution_resolved",
+        "final_cheongirok_resolution_safe_high_use_seeded",
+        "final_cheongirok_state_high_use_not_corruption_seeded",
+        "final_epilogue_tianjilu_last_page_candidate_seeded",
+        "final_epilogue_tianjilu_safe_high_use_variant_seeded",
+    ]
+    assert safe_last_page["outcome"]["add_clues"] == [
+        "record_does_not_answer_questions",
+        "high_use_is_not_corruption",
+        "last_page_turns_without_identity_reveal",
+    ]
+    assert safe_last_page["outcome"]["destination_id"] == "black_serpent_ledger_vault"
+    assert "add_items" not in safe_last_page["outcome"]
     first_fight = bundle["content"]["encounters"][1]
     assert first_fight["conditions"] == {
         "locations": ["jianghu_market_street"],

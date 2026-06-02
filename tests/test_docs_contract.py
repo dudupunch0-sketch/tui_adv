@@ -1414,7 +1414,7 @@ def test_wuxia_mumyeong_destroys_orthodox_sect_runtime_slice_is_docs_synced():
     assert "스물여섯 개 implemented preview encounter" in world_model
     assert "현악문 consequence trace도 기존 encounter schema로 구현 완료" in encounter_model
     assert "Latest implemented runtime: `wuxia_seoharin_left_meal`" in runtime_preview
-    assert "Next docs-only handoff: `wuxia_seoharin_left_meal_followup`" in runtime_preview
+    assert "Next design/runtime gate: `docs/design/Wuxia_Final_State_Routing.md`" in runtime_preview
     assert "runtime_status: \"implemented_in_storypack_preview\"" in notion_sources
 
 
@@ -1479,7 +1479,7 @@ def test_wuxia_boss_recruits_mumyeong_runtime_slice_is_docs_synced():
     assert "스물여섯 개 implemented preview encounter" in world_model
     assert "보스 recruitment trace도 기존 encounter schema로 구현 완료" in encounter_model
     assert "Latest implemented runtime: `wuxia_seoharin_left_meal`" in runtime_preview
-    assert "Next docs-only handoff: `wuxia_seoharin_left_meal_followup`" in runtime_preview
+    assert "Next design/runtime gate: `docs/design/Wuxia_Final_State_Routing.md`" in runtime_preview
     assert 'notion_event_id: "wuxia_boss_recruits_mumyeong"' in notion_sources
     assert 'repo_encounter_id: "wuxia_boss_recruits_mumyeong"' in notion_sources
 
@@ -1537,9 +1537,9 @@ def test_wuxia_boss_recruits_followup_handoff_selects_departure_truth_summary():
     assert "seal_truth_until_mumyeong_faces_it" in wuxia_cards
     assert "implementation_status: implemented" in wuxia_cards
     assert "next_handoff: wuxia_mumyeong_departure_truth_summary_followup" in wuxia_cards
-    assert "`wuxia_seoharin_left_meal_followup` docs-only handoff" in world_model
+    assert "`wuxia_sado_final_phase_1_price_tag` handoff/runtime candidate" in world_model
     assert "sealed departure truth summary도 기존 encounter schema로 구현 완료" in encounter_model
-    assert "Next docs-only handoff: `wuxia_seoharin_left_meal_followup`" in runtime_preview
+    assert "Next design/runtime gate: `docs/design/Wuxia_Final_State_Routing.md`" in runtime_preview
     assert 'notion_event_id: "wuxia_mumyeong_departure_truth_summary"' in notion_sources
     assert 'runtime_status: "implemented_in_storypack_preview"' in notion_sources
 
@@ -1588,7 +1588,7 @@ def test_wuxia_mumyeong_departure_truth_summary_runtime_slice_is_docs_synced():
     assert "implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml" in wuxia_cards
     assert "next_handoff: wuxia_mumyeong_departure_truth_summary_followup" in wuxia_cards
     assert "Latest implemented runtime: `wuxia_seoharin_left_meal`" in runtime_preview
-    assert "Next docs-only handoff: `wuxia_seoharin_left_meal_followup`" in runtime_preview
+    assert "Next design/runtime gate: `docs/design/Wuxia_Final_State_Routing.md`" in runtime_preview
     assert 'runtime_status: "implemented_in_storypack_preview"' in notion_sources
     assert "told_seoharin_truth" not in encounters_yaml
 
@@ -1635,14 +1635,15 @@ def test_wuxia_departure_truth_summary_followup_selects_seoharin_empty_place():
         "`wuxia_seoharin_empty_place` | preview runtime implemented; "
         "late empty-place bridge, not truth delivery |"
     ) in coverage
-    assert "current_goal: wuxia_seoharin_left_meal_followup" in next_goal
-    assert "previous_current_goal: wuxia_seoharin_left_meal" in next_goal
-    assert "mode: docs-only-handoff" in next_goal
-    assert "eat_the_left_meal_quietly" in next_goal
-    assert "belonging_is_daily_care" in next_goal
+    assert "current_goal: wuxia_sado_final_phase_1_price_tag_handoff" in next_goal
+    assert "previous_current_goal: wuxia_sado_final_state_routing_contract" in next_goal
+    assert "mode: docs-first-runtime-handoff" in next_goal
+    assert "docs/design/Wuxia_Final_State_Routing.md" in next_goal
+    assert "wuxia_sado_final_phase_1_price_tag" in next_goal
     assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 26개." in storypack_db_readme
     assert "Latest runtime slice: wuxia_seoharin_left_meal" in storypack_db_json
-    assert "Next handoff: wuxia_seoharin_left_meal_followup" in storypack_db_json
+    assert "Latest handoff: wuxia_seoharin_left_meal_followup selected docs/design/Wuxia_Final_State_Routing.md" in storypack_db_json
+    assert "Next runtime candidate: wuxia_sado_final_phase_1_price_tag" in storypack_db_json
     assert '"id": "wuxia_seoharin_empty_place"' in situations_json
     assert '"mapping_status": "preview_runtime_implemented"' in situations_json
     assert '"runtime_preview_design_status": "implemented"' in situations_json
@@ -1659,7 +1660,7 @@ def test_wuxia_departure_truth_summary_followup_selects_seoharin_empty_place():
     assert "seoharin_axis_opened" in wuxia_cards
     assert "empty_place_remembered" in wuxia_cards
     assert "Latest implemented runtime: `wuxia_seoharin_left_meal`" in runtime_preview
-    assert "Next docs-only handoff: `wuxia_seoharin_left_meal_followup`" in runtime_preview
+    assert "Next design/runtime gate: `docs/design/Wuxia_Final_State_Routing.md`" in runtime_preview
     assert "`wuxia_seoharin_left_meal`까지 YAML/generated bundle에 반영" in world_model
     assert "late empty-place memory bridge도 기존 encounter schema로 구현 완료" in encounter_model
     assert 'notion_event_id: "wuxia_seoharin_empty_place"' in notion_sources
@@ -1714,13 +1715,14 @@ def test_wuxia_seoharin_left_meal_runtime_slice_is_docs_synced():
         "`wuxia_seoharin_left_meal` | preview runtime implemented; "
         "daily-care belonging bridge, not final return choice |"
     ) in coverage
-    assert "current_goal: wuxia_seoharin_left_meal_followup" in next_goal
-    assert "previous_current_goal: wuxia_seoharin_left_meal" in next_goal
-    assert "eat_the_left_meal_quietly" in next_goal
-    assert "pass_without_eating_the_meal" in next_goal
+    assert "current_goal: wuxia_sado_final_phase_1_price_tag_handoff" in next_goal
+    assert "previous_current_goal: wuxia_sado_final_state_routing_contract" in next_goal
+    assert "wuxia_sado_final_phase_1_price_tag" in next_goal
+    assert "canonical_final_inputs" in next_goal
     assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 26개." in storypack_db_readme
     assert "Latest runtime slice: wuxia_seoharin_left_meal" in storypack_db_json
-    assert "Next handoff: wuxia_seoharin_left_meal_followup" in storypack_db_json
+    assert "Latest handoff: wuxia_seoharin_left_meal_followup selected docs/design/Wuxia_Final_State_Routing.md" in storypack_db_json
+    assert "Next runtime candidate: wuxia_sado_final_phase_1_price_tag" in storypack_db_json
     assert '"id": "wuxia_seoharin_left_meal"' in situations_json
     assert '"surface": [' in situations_json
     assert '"food"' in situations_json
@@ -1735,9 +1737,73 @@ def test_wuxia_seoharin_left_meal_runtime_slice_is_docs_synced():
     assert "joke_about_who_ordered_extra_rice" in wuxia_cards
     assert "pass_without_eating_the_meal" in wuxia_cards
     assert "Latest implemented runtime: `wuxia_seoharin_left_meal`" in runtime_preview
-    assert "Next docs-only handoff: `wuxia_seoharin_left_meal_followup`" in runtime_preview
+    assert "Next design/runtime gate: `docs/design/Wuxia_Final_State_Routing.md`" in runtime_preview
     assert "`wuxia_seoharin_left_meal`까지 YAML/generated bundle에 반영" in world_model
     assert "left-meal daily-care bridge도 기존 encounter schema로 구현 완료" in encounter_model
     assert 'notion_event_id: "wuxia_seoharin_left_meal"' in notion_sources
     assert 'runtime_status: "implemented_in_storypack_preview"' in notion_sources
     assert "told_seoharin_truth" not in encounters_yaml
+
+
+def test_wuxia_final_state_routing_contract_is_docs_synced():
+    index = Path("docs/00_Index.md").read_text(encoding="utf-8")
+    readme = Path("README.md").read_text(encoding="utf-8")
+    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
+    runtime_preview = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(
+        encoding="utf-8"
+    )
+    wuxia_pack = Path("docs/content/storypacks/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+    wuxia_cards = Path("docs/content/encounter_db/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+    storypack_db_json = Path("docs/content/storypack_db/storypacks.json").read_text(
+        encoding="utf-8"
+    )
+    next_goal = Path("idea_box/next_goal/README.md").read_text(encoding="utf-8")
+    notion_sources = Path("idea_box/notion_sources.yml").read_text(encoding="utf-8")
+    doc_path = Path("docs/design/Wuxia_Final_State_Routing.md")
+
+    assert doc_path.exists()
+    doc = doc_path.read_text(encoding="utf-8")
+    assert "docs/design/Wuxia_Final_State_Routing.md" in index
+    assert "docs/design/Wuxia_Final_State_Routing.md" in readme
+    assert "Wuxia Final State Routing" in doc
+    assert "canonical_final_inputs" in doc
+    assert "combat_result" in doc
+    assert "boss_resolution_route" in doc
+    assert "evidence_state" in doc
+    assert "network_handling" in doc
+    assert "seoharin_axis" in doc
+    assert "mumyeong_salvation" in doc
+    assert "item_logs" in doc
+    assert "item_unpriced_wooden_sword" in doc
+    assert "final_result_priority" in doc
+    assert "final_epilogue_master_matrix" in doc
+    assert "state_alias_and_deprecation_policy" in doc
+    assert "item_log_state" in doc
+    assert "local_helper_only" in doc
+    assert "wuxia_sado_final_phase_1_price_tag" in doc
+    assert "no combat resolver" in doc
+    assert "no HP numeric battle" in doc
+
+    assert "## 0.56 2026-06-02 docs-only Seo Harin left-meal follow-up handoff: final state routing contract" in plan
+    assert "### 0.2bt 2026-06-02 무협 Seo Harin left-meal follow-up docs-only handoff" in checklist
+    assert "### 0.2bu 2026-06-02 무협 final state routing contract docs slice" in checklist
+    assert "Seo Harin left-meal follow-up handoff" in coverage
+    assert "최종장 결산 라우팅 마스터" in coverage
+    assert "사도 최종전 상태값 사전" in coverage
+    assert "Next design/runtime gate: `docs/design/Wuxia_Final_State_Routing.md`" in runtime_preview
+    assert "the next runtime candidate after the state contract is `wuxia_sado_final_phase_1_price_tag`" in runtime_preview
+    assert "wuxia_sado_final_phase_1_price_tag" in wuxia_pack
+    assert "wuxia_sado_final_phase_1_price_tag" in wuxia_cards
+    assert "Next runtime candidate: wuxia_sado_final_phase_1_price_tag" in storypack_db_json
+    assert "current_goal: wuxia_sado_final_phase_1_price_tag_handoff" in next_goal
+    assert "previous_current_goal: wuxia_sado_final_state_routing_contract" in next_goal
+    assert "wuxia_final_routing_master" in notion_sources
+    assert "37237e69-695e-81d2-8ce2-d1c738c3e923" in notion_sources
+    assert "wuxia_sado_final_state_glossary" in notion_sources
+    assert "37337e69-695e-81c7-a9fd-e0a0e22005e2" in notion_sources

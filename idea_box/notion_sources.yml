@@ -2,7 +2,7 @@
 # Raw Notion snapshots are not committed; the 2026-06-01 audit used /tmp/tui_adv_notion_wuxia_sync.
 # The 2026-06-02 야근몽 expansion used live Notion fetches only.
 
-last_checked_at: "2026-06-02T12:05:00+09:00"
+last_checked_at: "2026-06-02T12:25:00+09:00"
 source_policy:
   repo_canonical_docs_gate_implementation: true
   raw_notion_to_runtime_allowed: false
@@ -236,6 +236,103 @@ sources:
     row_count: 17
     precedence_role: "authoritative_epilogue_db"
     status: "future_design_source_not_runtime"
+
+  - key: wuxia_final_routing_master
+    title: "최종장 결산 라우팅 마스터"
+    object: page
+    notion_ref: "notion:37237e69-695e-81d2-8ce2-d1c738c3e923"
+    url: "https://www.notion.so/37237e69695e81d28ce2d1c738c3e923"
+    last_checked_at: "2026-06-02T12:25:00+09:00"
+    precedence_role: "authoritative_final_routing_contract_source"
+    related_design_units:
+      - "system:final_result_priority"
+      - "system:final_epilogue_master_matrix"
+    related_canonical_docs:
+      - "docs/design/Wuxia_Final_State_Routing.md"
+      - "docs/dev/Development_Plan.md"
+      - "docs/dev/Notion_Design_Coverage.md"
+    status: "live_checked_docs_synced"
+
+  - key: wuxia_sado_final_state_glossary
+    title: "사도 최종전 상태값 사전"
+    object: page
+    notion_ref: "notion:37337e69-695e-81c7-a9fd-e0a0e22005e2"
+    url: "https://www.notion.so/37337e69695e81c7a9fde0a0e22005e2"
+    last_checked_at: "2026-06-02T12:25:00+09:00"
+    precedence_role: "authoritative_final_state_glossary"
+    related_design_units:
+      - "system:canonical_final_inputs"
+      - "system:state_alias_and_deprecation_policy"
+    related_canonical_docs:
+      - "docs/design/Wuxia_Final_State_Routing.md"
+      - "docs/dev/Notion_Design_Coverage.md"
+    status: "live_checked_docs_synced"
+
+  - key: wuxia_sado_final_battle
+    title: "사도 최종전"
+    object: page
+    notion_ref: "notion:37237e69-695e-8169-97a3-d8106a817275"
+    url: "https://www.notion.so/37237e69695e816997a3d8106a817275"
+    last_checked_at: "2026-06-02T12:25:00+09:00"
+    precedence_role: "future_final_battle_source"
+    related_design_units:
+      - "encounter:wuxia_sado_final_battle"
+    related_canonical_docs:
+      - "docs/design/Wuxia_Final_State_Routing.md"
+    status: "deferred_until_final_schema"
+
+  - key: wuxia_sado_final_phase_1_price_tag
+    title: "사도 최종전 1페이즈: 가격표"
+    object: page
+    notion_ref: "notion:37237e69-695e-81e2-aac7-cecfce3e4239"
+    url: "https://www.notion.so/37237e69695e81e2aac7cecfce3e4239"
+    last_checked_at: "2026-06-02T12:25:00+09:00"
+    precedence_role: "next_runtime_candidate_source_after_state_contract"
+    related_design_units:
+      - "encounter:wuxia_sado_final_phase_1_price_tag"
+      - "system:evidence_state"
+      - "system:network_handling"
+      - "system:pressure_state"
+      - "system:item_logs"
+    related_canonical_docs:
+      - "docs/design/Wuxia_Final_State_Routing.md"
+      - "idea_box/next_goal/README.md"
+    runtime_status: "candidate_after_final_state_contract"
+    status: "live_checked_next_candidate"
+
+  - key: wuxia_boss_resolution
+    title: "보스 결산"
+    object: page
+    notion_ref: "notion:37137e69-695e-8164-ab41-e794aa886dae"
+    url: "https://www.notion.so/37137e69695e8164ab41e794aa886dae"
+    last_checked_at: "2026-06-02T12:25:00+09:00"
+    precedence_role: "future_final_resolution_source"
+    related_canonical_docs:
+      - "docs/design/Wuxia_Final_State_Routing.md"
+    status: "deferred_until_final_routing_runtime"
+
+  - key: wuxia_mumyeong_resolution
+    title: "무명 결산"
+    object: page
+    notion_ref: "notion:37137e69-695e-8159-8032-ce5f108ca6c8"
+    url: "https://www.notion.so/37137e69695e81598032ce5f108ca6c8"
+    last_checked_at: "2026-06-02T12:25:00+09:00"
+    precedence_role: "future_mumyeong_salvation_source"
+    related_canonical_docs:
+      - "docs/design/Wuxia_Final_State_Routing.md"
+    status: "deferred_until_final_routing_runtime"
+
+  - key: wuxia_seoharin_unsaid_stay
+    title: "가지 말라는 말"
+    object: page
+    notion_ref: "notion:37137e69-695e-8138-a41d-e153190f85aa"
+    url: "https://www.notion.so/37137e69695e8138a41de153190f85aa"
+    last_checked_at: "2026-06-02T12:25:00+09:00"
+    precedence_role: "future_seoharin_final_relationship_source"
+    related_canonical_docs:
+      - "docs/design/Wuxia_Final_State_Routing.md"
+      - "idea_box/next_goal/README.md"
+    status: "deferred_until_final_relationship_schema"
 
   - key: wuxia_99_checkpoint
     title: "99. 통합 체크포인트"

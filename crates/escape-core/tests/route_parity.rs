@@ -4,10 +4,17 @@ use escape_core::{
 };
 
 const CONTENT_BUNDLE: &str = include_str!("../fixtures/content/content.bundle.json");
+const WUXIA_PREVIEW_BUNDLE: &str =
+    include_str!("../fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json");
 
 fn content() -> ContentIndex {
     let bundle = load_content_bundle(CONTENT_BUNDLE).expect("content bundle should load");
     index_content_bundle(&bundle).expect("content bundle should index")
+}
+
+fn wuxia_content() -> ContentIndex {
+    let bundle = load_content_bundle(WUXIA_PREVIEW_BUNDLE).expect("wuxia bundle should load");
+    index_content_bundle(&bundle).expect("wuxia bundle should index")
 }
 
 fn seen_all_encounters(state: &mut GameState, content: &ContentIndex) {
@@ -33,6 +40,24 @@ fn apply_sequence(mut state: GameState, content: &ContentIndex, actions: &[&str]
             .state;
     }
     state
+}
+
+fn wuxia_final_state_with_flags(flags: &[&str], clues: &[&str]) -> GameState {
+    let content = wuxia_content();
+    let mut state = new_game_from_content_at(123, &content, "black_serpent_ledger_vault")
+        .expect("wuxia final state should start in ledger vault");
+    state.flags = flags.iter().map(|flag| (*flag).to_string()).collect();
+    state.clues = clues.iter().map(|clue| (*clue).to_string()).collect();
+    state
+}
+
+fn body_text_for_kind(page: &escape_core::ScenePage, kind: &str) -> String {
+    page.body_blocks
+        .iter()
+        .filter(|block| block.kind == kind)
+        .map(|block| block.text.as_str())
+        .collect::<Vec<_>>()
+        .join("\n---\n")
 }
 
 #[test]
@@ -259,6 +284,160 @@ fn escape_commute_scene_page_includes_post_escape_aftermath_report() {
     assert!(!body.contains("actual_ip_address"));
     assert!(!body.contains("office_location"));
     assert!(!body.contains("treasure_location"));
+}
+
+#[test]
+fn wuxia_final_epilogue_scene_page_outputs_core_owned_cards_and_true_route_suppression() {
+    let content = wuxia_content();
+    let state = wuxia_final_state_with_flags(
+        &[
+            "boss_resolution_resolved",
+            "mumyeong_resolution_resolved",
+            "seoharin_qingliu_resolution_resolved",
+            "cheongirok_resolution_resolved",
+            "black_serpent_aftermath_resolved",
+            "final_result_priority_applied_seeded",
+            "final_combat_result_battle_victory_seeded",
+            "final_state_routing_seeded",
+            "final_boss_resolution_true_route_confirmed_seeded",
+            "final_epilogue_candidates_true_route_seeded",
+            "final_broken_black_serpent_epilogue_candidate_seeded",
+            "final_black_serpent_banner_candidate_reinforced_seeded",
+            "final_southern_market_rumor_candidate_reinforced_seeded",
+            "final_mumyeong_resolution_own_flow_salvation_seeded",
+            "final_epilogue_mumyeong_stolen_forms_stopped_candidate_seeded",
+            "final_epilogue_mumyeong_second_wooden_sword_candidate_seeded",
+            "final_epilogue_mumyeong_black_serpent_new_scale_candidate_seeded",
+            "final_epilogue_mumyeong_new_shadow_variant_seeded",
+            "final_epilogue_seoharin_future_candidate_seeded",
+            "final_epilogue_seoharin_empty_place_candidate_seeded",
+            "final_epilogue_seoharin_open_gate_candidate_seeded",
+            "final_epilogue_seoharin_closed_gate_candidate_seeded",
+            "final_epilogue_qingliu_future_candidate_seeded",
+            "final_epilogue_qingliu_restored_martial_art_conditional_seeded",
+            "final_epilogue_tianjilu_true_route_variant_seeded",
+        ],
+        &["true_route_can_suppress_banner_and_rumor"],
+    );
+
+    let page =
+        scene_page_from_content(&state, &content).expect("final epilogue page should render");
+    let result_text = body_text_for_kind(&page, "epilogue_result");
+    let card_text = body_text_for_kind(&page, "epilogue_card");
+    let suppressed_text = body_text_for_kind(&page, "epilogue_suppressed");
+
+    assert_eq!(page.mode, SceneMode::Ending);
+    assert_eq!(page.title, "이구학지 결산");
+    assert!(result_text.contains("final_result_key: true_route_victory"));
+    assert!(result_text.contains("owned_by: Rust GameCore"));
+    assert!(card_text.contains("card_id: epilogue_boss_broken_black_serpent"));
+    assert!(card_text.contains("variant: true_route_victory"));
+    assert!(card_text.contains("card_id: epilogue_mumyeong_stolen_forms_stopped"));
+    assert!(card_text.contains("card_id: epilogue_mumyeong_second_wooden_sword"));
+    assert!(card_text.contains("card_id: epilogue_seoharin_future"));
+    assert!(card_text.contains("card_id: epilogue_seoharin_empty_place"));
+    assert!(card_text.contains("card_id: epilogue_seoharin_open_gate"));
+    assert!(card_text.contains("card_id: epilogue_qingliu_future"));
+    assert!(card_text.contains("card_id: epilogue_qingliu_restored_martial_art"));
+    assert!(card_text.contains("card_id: epilogue_tianjilu_last_page"));
+    assert!(card_text.contains("consumed_seeds: final_epilogue_tianjilu_true_route_variant_seeded"));
+    assert!(!card_text.contains("card_id: epilogue_boss_black_serpent_banner"));
+    assert!(!card_text.contains("card_id: epilogue_wuxia_southern_market_rumor"));
+    assert!(!card_text.contains("card_id: epilogue_mumyeong_black_serpent_new_scale"));
+    assert!(!card_text.contains("card_id: epilogue_mumyeong_new_shadow"));
+    assert!(!card_text.contains("card_id: epilogue_seoharin_closed_gate"));
+    assert!(suppressed_text.contains("card_id: epilogue_boss_black_serpent_banner"));
+    assert!(suppressed_text.contains("card_id: epilogue_wuxia_southern_market_rumor"));
+    assert!(suppressed_text.contains("card_id: epilogue_mumyeong_black_serpent_new_scale"));
+    assert!(suppressed_text.contains("card_id: epilogue_mumyeong_new_shadow"));
+    assert!(suppressed_text.contains("card_id: epilogue_seoharin_closed_gate"));
+    assert!(suppressed_text.contains("suppressed_by: true_route_victory"));
+    assert!(!card_text.contains("told_seoharin_truth"));
+    assert!(!card_text.contains("item_unpriced_wooden_sword payout"));
+}
+
+#[test]
+fn wuxia_final_epilogue_corrupted_priority_overrides_true_route_candidates() {
+    let content = wuxia_content();
+    let state = wuxia_final_state_with_flags(
+        &[
+            "boss_resolution_resolved",
+            "mumyeong_resolution_resolved",
+            "seoharin_qingliu_resolution_resolved",
+            "cheongirok_resolution_resolved",
+            "black_serpent_aftermath_resolved",
+            "final_result_priority_applied_seeded",
+            "final_combat_result_battle_victory_seeded",
+            "final_state_routing_seeded",
+            "final_boss_resolution_true_route_confirmed_seeded",
+            "final_epilogue_candidates_true_route_seeded",
+            "final_boss_resolution_corrupted_victory_seeded",
+            "final_epilogue_candidates_corrupted_seeded",
+            "final_cheongirok_state_corruption_high_confirmed_seeded",
+            "final_player_method_sado_style_calculation_echo_seeded",
+            "final_epilogue_seoharin_open_gate_candidate_seeded",
+            "final_epilogue_seoharin_empty_place_candidate_seeded",
+            "final_epilogue_mumyeong_stolen_forms_stopped_candidate_seeded",
+            "final_epilogue_mumyeong_black_serpent_new_scale_candidate_seeded",
+            "final_epilogue_seoharin_closed_gate_candidate_seeded",
+            "final_epilogue_tianjilu_last_page_corruption_variant_seeded",
+        ],
+        &[],
+    );
+
+    let page =
+        scene_page_from_content(&state, &content).expect("final epilogue page should render");
+    let result_text = body_text_for_kind(&page, "epilogue_result");
+    let card_text = body_text_for_kind(&page, "epilogue_card");
+    let suppressed_text = body_text_for_kind(&page, "epilogue_suppressed");
+
+    assert!(result_text.contains("final_result_key: corrupted_victory"));
+    assert!(card_text.contains("card_id: epilogue_boss_broken_black_serpent"));
+    assert!(card_text.contains("card_id: epilogue_mumyeong_black_serpent_new_scale"));
+    assert!(card_text.contains("card_id: epilogue_seoharin_closed_gate"));
+    assert!(card_text.contains("variant: corruption_variant"));
+    assert!(!card_text.contains("card_id: epilogue_seoharin_open_gate"));
+    assert!(!card_text.contains("card_id: epilogue_seoharin_empty_place"));
+    assert!(!card_text.contains("card_id: epilogue_mumyeong_stolen_forms_stopped"));
+    assert!(suppressed_text.contains("card_id: epilogue_seoharin_open_gate"));
+    assert!(suppressed_text.contains("card_id: epilogue_seoharin_empty_place"));
+    assert!(suppressed_text.contains("card_id: epilogue_mumyeong_stolen_forms_stopped"));
+    assert!(suppressed_text.contains("suppressed_by: corrupted_victory"));
+}
+
+#[test]
+fn wuxia_final_epilogue_strong_evidence_alliance_silence_is_responsibility_evasion() {
+    let content = wuxia_content();
+    let state = wuxia_final_state_with_flags(
+        &[
+            "boss_resolution_resolved",
+            "mumyeong_resolution_resolved",
+            "seoharin_qingliu_resolution_resolved",
+            "cheongirok_resolution_resolved",
+            "black_serpent_aftermath_resolved",
+            "final_result_priority_applied_seeded",
+            "final_combat_result_battle_victory_seeded",
+            "final_state_routing_seeded",
+            "final_boss_resolution_meaningful_victory_seeded",
+            "final_epilogue_candidates_meaningful_seeded",
+            "final_evidence_strong_seeded",
+            "final_alliance_silence_strong_evidence_variant_seeded",
+            "final_black_serpent_aftermath_alliance_silence_seeded",
+            "final_alliance_silence_responsibility_evasion_seeded",
+        ],
+        &["strong_evidence_turns_silence_into_responsibility_evasion"],
+    );
+
+    let page =
+        scene_page_from_content(&state, &content).expect("final epilogue page should render");
+    let result_text = body_text_for_kind(&page, "epilogue_result");
+    let card_text = body_text_for_kind(&page, "epilogue_card");
+
+    assert!(result_text.contains("final_result_key: meaningful_victory"));
+    assert!(card_text.contains("card_id: epilogue_boss_alliance_silence"));
+    assert!(card_text.contains("variant: responsibility_evasion"));
+    assert!(card_text.contains("final_alliance_silence_responsibility_evasion_seeded"));
+    assert!(card_text.contains("증거 부족 판정이 아니다"));
 }
 
 #[test]

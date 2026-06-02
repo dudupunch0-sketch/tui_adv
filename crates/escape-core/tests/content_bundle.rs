@@ -2022,10 +2022,7 @@ fn preview_fixture_indexes_wuxia_first_fight() {
         cheongirok_presentation.layout.as_deref(),
         Some("cheongirok_resolution_seed")
     );
-    assert_eq!(
-        cheongirok_presentation.speaker.as_deref(),
-        Some("천기록")
-    );
+    assert_eq!(cheongirok_presentation.speaker.as_deref(), Some("천기록"));
     assert_eq!(
         cheongirok_presentation.effect_cues[0].stable_terms,
         vec!["천기록", "마지막 장", "빈칸", "기록자"]

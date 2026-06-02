@@ -2,6 +2,7 @@ use crate::content::{
     ContentIndex, EncounterDef, EndingDef, LocationDef, PresentationEffectCue, PublicSecretDef,
 };
 use crate::effects::EffectCue;
+use crate::final_epilogue::final_epilogue_body_blocks;
 use crate::state::{GameHistoryEntry, GameState, PlayerState};
 use crate::turn::{content_turn_view, ActionView, BlockedActionView, ContentTurnError, TurnView};
 use serde::{Deserialize, Serialize};
@@ -213,7 +214,7 @@ fn scene_page_from_turn_view(
         },
         chapter_label: chapter_label_for_scene(state, location, &source_id),
         status_summary: status_summary(state),
-        body_blocks: body_blocks(content, ending, &mode, &view.body, &source_id),
+        body_blocks: body_blocks(content, ending, &mode, &view.body, &source_id, state),
         dialogue_entries,
         visual: SceneVisual {
             id: visual_id,
@@ -247,6 +248,7 @@ fn body_blocks(
     mode: &SceneMode,
     body: &str,
     source_id: &str,
+    state: &GameState,
 ) -> Vec<BodyBlock> {
     let mut blocks = vec![BodyBlock {
         kind: if matches!(mode, SceneMode::Ending) {
@@ -267,6 +269,10 @@ fn body_blocks(
             text: public_secret_summary(secret),
             source_id: Some(secret.id.clone()),
         });
+    }
+
+    if let Some(ending) = ending {
+        blocks.extend(final_epilogue_body_blocks(state, &ending.id));
     }
 
     blocks

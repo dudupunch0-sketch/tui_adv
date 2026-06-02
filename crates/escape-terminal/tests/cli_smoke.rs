@@ -2372,7 +2372,9 @@ fn content_tui_smoke_reaches_wuxia_seoharin_qingliu_resolution() {
     assert!(stdout.contains(
         "choice:mark_qingliu_pressure_still_unresolved / 남은 압박을 청류문의 약화 변주로 표시한다"
     ));
-    assert!(stdout.contains("choice:close_the_gate_with_sado_logic / 사도식 보호 논리로 산문을 닫는다"));
+    assert!(
+        stdout.contains("choice:close_the_gate_with_sado_logic / 사도식 보호 논리로 산문을 닫는다")
+    );
     assert!(!stdout.contains("told_seoharin_truth"));
     assert!(!stdout.contains("item_unpriced_wooden_sword"));
 }
@@ -2468,14 +2470,118 @@ fn content_tui_smoke_reaches_wuxia_cheongirok_resolution() {
     assert!(stdout.contains("visual id: wuxia_black_serpent_aftermath"));
     assert!(stdout.contains("layout: black_serpent_aftermath_seed"));
     assert!(stdout.contains("stable terms: 흑사방 / 장부 / 깃발 / 남쪽 장터"));
-    assert!(stdout.contains("choice:mark_broken_serpent_without_erasing_scars / 부러진 검은 뱀을 상처째 기록한다"));
-    assert!(stdout.contains("choice:fold_the_banner_without_calling_it_gone / 깃발을 접되 사라졌다고 쓰지 않는다"));
-    assert!(stdout.contains("choice:send_ledger_to_alliance_and_watch_silence / 장부를 무림맹에 보내고 침묵을 본다"));
-    assert!(stdout.contains("choice:listen_for_southern_market_debt_rumor / 남쪽 장터의 빚 풍문을 듣는다"));
-    assert!(stdout.contains("choice:let_true_route_suppress_the_banner / 진로의 결과로 깃발과 풍문을 눌러 둔다"));
+    assert!(stdout.contains(
+        "choice:mark_broken_serpent_without_erasing_scars / 부러진 검은 뱀을 상처째 기록한다"
+    ));
+    assert!(stdout.contains(
+        "choice:fold_the_banner_without_calling_it_gone / 깃발을 접되 사라졌다고 쓰지 않는다"
+    ));
+    assert!(stdout.contains(
+        "choice:send_ledger_to_alliance_and_watch_silence / 장부를 무림맹에 보내고 침묵을 본다"
+    ));
+    assert!(stdout
+        .contains("choice:listen_for_southern_market_debt_rumor / 남쪽 장터의 빚 풍문을 듣는다"));
+    assert!(stdout.contains(
+        "choice:let_true_route_suppress_the_banner / 진로의 결과로 깃발과 풍문을 눌러 둔다"
+    ));
     assert!(!stdout.contains("final_cheongirok_identity_revealed"));
     assert!(!stdout.contains("told_seoharin_truth"));
     assert!(!stdout.contains("item_unpriced_wooden_sword"));
+}
+
+#[test]
+fn content_tui_smoke_reaches_wuxia_final_epilogue_contract() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--storypack-preview",
+            "wuxia_jianghu_pack",
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:follow_roadside_dust",
+            "--action",
+            "move:jianghu_market_street",
+            "--action",
+            "choice:run_toward_open_street",
+            "--action",
+            "choice:choose_failure_log",
+            "--action",
+            "choice:tell_plain_truth",
+            "--action",
+            "choice:accept_three_month_trial",
+            "--action",
+            "choice:step_back_with_firewood",
+            "--action",
+            "choice:defend_cheongryu_with_white_path",
+            "--action",
+            "choice:accept_medicine_with_written_debt",
+            "--action",
+            "choice:watch_the_stolen_qingliu_flow",
+            "--action",
+            "choice:endure_until_copy_flow_breaks",
+            "--action",
+            "choice:listen_for_breath_mismatch",
+            "--action",
+            "choice:reconstruct_mumyeongs_sightline",
+            "--action",
+            "choice:show_the_hyeonakmun_trace_without_accusing",
+            "--action",
+            "choice:watch_mumyeong_answer_the_boss",
+            "--action",
+            "choice:search_the_rejected_aid_letters",
+            "--action",
+            "choice:compare_anger_to_copied_flow",
+            "--action",
+            "choice:inspect_bokho_lock_scars",
+            "--action",
+            "choice:read_hyeonakmun_empty_gate_record",
+            "--action",
+            "choice:trace_boss_offer_after_hyeonakmun",
+            "--action",
+            "choice:assemble_departure_truth_without_delivering",
+            "--action",
+            "choice:set_down_the_work_notebook_briefly",
+            "--action",
+            "choice:eat_the_left_meal_quietly",
+            "--action",
+            "choice:secure_the_blackscale_ledger",
+            "--action",
+            "choice:return_flow_to_mumyeong",
+            "--action",
+            "choice:remember_the_empty_place",
+            "--action",
+            "choice:confirm_true_route_outside_calculation",
+            "--action",
+            "choice:ask_mumyeong_for_own_flow",
+            "--action",
+            "choice:leave_the_gate_unclosed",
+            "--action",
+            "choice:turn_the_last_page_without_question",
+            "--action",
+            "choice:mark_broken_serpent_without_erasing_scars",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("이구학지 결산"));
+    assert!(stdout.contains("visual id: ending:wuxia_final_epilogue_renderer_contract"));
+    assert!(stdout.contains("layout: ending"));
+    assert!(stdout.contains("final_result_key: true_route_victory"));
+    assert!(stdout.contains("owned_by: Rust GameCore"));
+    assert!(stdout.contains("card_id: epilogue_boss_broken_black_serpent"));
+    assert!(stdout.contains("card_id: epilogue_mumyeong_second_wooden_sword"));
+    assert!(!stdout.contains("told_seoharin_truth"));
+    assert!(!stdout.contains("final_cheongirok_identity_revealed"));
 }
 
 #[test]

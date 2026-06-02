@@ -695,6 +695,31 @@ button {
   word-break: keep-all;
 }
 
+.storybook-body p[data-body-kind="epilogue_result"],
+.storybook-body p[data-body-kind="epilogue_card"],
+.storybook-body p[data-body-kind="epilogue_suppressed"] {
+  padding: 12px 14px;
+  border-left: 4px double rgba(63, 52, 35, 0.42);
+  background: rgba(255, 247, 205, 0.2);
+  color: #332c22;
+  font-family: "IBM Plex Mono", "JetBrains Mono", "D2Coding", "Noto Serif KR", monospace;
+  font-size: clamp(0.86rem, 2.6vw, 1rem);
+  line-height: 1.58;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.storybook-body p[data-body-kind="epilogue_card"] {
+  border-color: rgba(47, 125, 63, 0.55);
+  background: rgba(47, 125, 63, 0.09);
+}
+
+.storybook-body p[data-body-kind="epilogue_suppressed"] {
+  border-color: rgba(158, 60, 63, 0.48);
+  background: rgba(158, 60, 63, 0.08);
+  color: var(--muted-ink);
+}
+
 .dialogue-stack {
   display: grid;
   gap: 8px;

@@ -3057,15 +3057,15 @@ runtime_preview_implementation:
   next_handoff: wuxia_final_epilogue_renderer_contract_handoff
 ```
 
-## 35. `wuxia_final_epilogue_renderer_contract` — docs-only handoff 완료
+## 35. `wuxia_final_epilogue_renderer_contract` — runtime 구현 완료
 
 ```yaml
 id: wuxia_final_epilogue_renderer_contract
 world_id: wuxia_jianghu
 storypack_id: wuxia_jianghu_pack
-status: docs_only_handoff_completed
-mapping_status: contract_handoff_completed
-runtime_preview_design_status: next_implementation_candidate
+status: implemented_in_storypack_preview
+mapping_status: runtime_contract_implemented
+runtime_preview_design_status: implemented
 notion_mapping:
   notion_event_id: final_epilogue_renderer_contract
   notion_event_name: 최종 후일담 renderer contract
@@ -3082,7 +3082,12 @@ required_seed_bridges:
   - wuxia_cheongirok_resolution
   - wuxia_black_serpent_aftermath
 decision: no_additional_seed_bridge_required
-next_runtime_scope: wuxia_final_epilogue_renderer_contract_implementation
+implementation_scope: core_owned_structured_body_blocks
+ending_id: wuxia_final_epilogue_renderer_contract
+implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/endings.yaml
+generated_artifacts:
+  - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+  - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
 core_renderer_boundary:
   core_owns:
     - final_result_priority
@@ -3092,6 +3097,10 @@ core_renderer_boundary:
   renderers_display_only:
     - Web Storybook
     - SuperLightTUI
+body_block_contract:
+  mode: ending
+  block_kinds: [epilogue_result, epilogue_card, epilogue_suppressed, epilogue_contract_error]
+  renderer_rule: display_only_no_card_recomputation
 candidate_groups:
   boss_black_serpent: [broken_serpent, black_serpent_banner, alliance_silence, southern_market_rumor]
   mumyeong: [own_flow_salvation, second_wooden_sword, unsent_apology, end_of_stolen_forms, new_scale_or_shadow, last_bowl]
@@ -3110,6 +3119,6 @@ guardrails:
   - no_legacy_office_bundle_or_escape_office_key_change
 runtime_preview_handoff:
   handoff_status: completed
-  implementation_status: not_started
-  next_runtime_scope: wuxia_final_epilogue_renderer_contract_implementation
+  implementation_status: implemented
+  next_runtime_scope: final_epilogue_ux_playtest_contract_followup
 ```

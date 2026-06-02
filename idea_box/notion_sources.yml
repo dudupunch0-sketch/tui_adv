@@ -179,6 +179,10 @@ sources:
         notion_event_name: "정파 문파 멸문"
         repo_encounter_id: "wuxia_mumyeong_destroys_orthodox_sect"
         runtime_status: "implemented_in_storypack_preview"
+      - notion_event_id: "wuxia_boss_recruits_mumyeong"
+        notion_event_name: "흑사방 보스의 스카웃"
+        repo_encounter_id: "wuxia_boss_recruits_mumyeong"
+        runtime_status: "implemented_in_storypack_preview"
     status: "live_checked_docs_synced"
 
   - key: wuxia_10_epilogue_card_db

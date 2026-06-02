@@ -106,6 +106,7 @@ def test_export_web_data_builds_renderer_neutral_content_bundle():
             "wuxia_mumyeong_awakening",
             "wuxia_qingliu_attack_after_war",
             "wuxia_mumyeong_destroys_orthodox_sect",
+            "wuxia_boss_recruits_mumyeong",
         }
         for encounter in bundle["content"]["encounters"]
     )
@@ -129,7 +130,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     assert bundle["manifest"]["counts"] == {
         "locations": 4,
         "items": 4,
-        "encounters": 22,
+        "encounters": 23,
         "endings": 1,
         "achievements": 2,
         "secrets": 0,
@@ -164,6 +165,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "wuxia_mumyeong_awakening",
         "wuxia_qingliu_attack_after_war",
         "wuxia_mumyeong_destroys_orthodox_sect",
+        "wuxia_boss_recruits_mumyeong",
     ]
     first_fight = bundle["content"]["encounters"][1]
     assert first_fight["conditions"] == {
@@ -927,6 +929,44 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "destruction_is_consequence_not_salvation",
     ]
     assert read_record["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
+    boss_recruit = bundle["content"]["encounters"][22]
+    assert boss_recruit["conditions"] == {
+        "locations": ["cheongryu_outer_courtyard"],
+        "required_flags": [
+            "mumyeong_destroys_orthodox_sect_resolved",
+            "hyeonakmun_destruction_thread_opened",
+            "departure_truth_thread_deepened",
+            "boss_first_appearance_resolved",
+            "boss_wall_thread_opened",
+            "black_serpent_core_pressure_opened",
+            "midgame_continuity_started",
+        ],
+        "forbidden_flags": ["boss_recruits_mumyeong_resolved"],
+    }
+    assert boss_recruit["presentation"]["layout"] == "boss_recruitment_trace"
+    assert boss_recruit["presentation"]["speaker"] == "천기록"
+    assert boss_recruit["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "흑사방주",
+        "무명",
+        "현악문",
+    ]
+    assert [choice["id"] for choice in boss_recruit["choices"]] == [
+        "trace_boss_offer_after_hyeonakmun",
+        "read_mumyeong_choice_without_excusing_it",
+        "search_black_serpent_recruitment_record",
+        "stop_before_following_him_into_black_serpent",
+    ]
+    trace_offer = boss_recruit["choices"][0]
+    assert trace_offer["outcome"]["add_flags"] == [
+        "boss_recruits_mumyeong_resolved",
+        "boss_recruitment_thread_opened",
+        "boss_saw_mumyeongs_wound",
+    ]
+    assert trace_offer["outcome"]["add_clues"] == [
+        "boss_recruited_mumyeong_after_hyeonakmun",
+        "recruitment_was_not_salvation",
+    ]
+    assert trace_offer["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
     assert "dev_desk" not in json.dumps(bundle, ensure_ascii=False)
     assert _missing_private_secret_fields(bundle)
 

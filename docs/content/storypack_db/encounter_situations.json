@@ -5760,5 +5760,224 @@
       "new_schema_opened": false,
       "next_handoff": "wuxia_mumyeong_destroys_orthodox_sect_followup"
     }
+  },
+  {
+    "id": "wuxia_boss_recruits_mumyeong",
+    "world_id": "wuxia_jianghu",
+    "storypack_id": "wuxia_jianghu_pack",
+    "source_refs": [
+      "notion_event:wuxia_boss_recruits_mumyeong",
+      "docs/dev/Notion_Design_Coverage.md",
+      "docs/dev/Development_Plan.md#048-2026-06-02-docs-only-hyeonakmun-consequence-follow-up-handoff-wuxia_boss_recruits_mumyeong",
+      "docs/dev/Development_Plan.md#049-2026-06-02-무협-wuxia_boss_recruits_mumyeong-preview-runtime-slice"
+    ],
+    "notion_event_mapping": {
+      "notion_event_id": "wuxia_boss_recruits_mumyeong",
+      "notion_event_name": "흑사방 보스의 스카웃",
+      "mapping_status": "preview_runtime_implemented"
+    },
+    "status": "implemented_in_storypack_preview",
+    "mapping_status": "preview_runtime_implemented",
+    "phase": [
+      "midgame_backstory",
+      "boss_recruitment_trace"
+    ],
+    "priority_class": "route_key",
+    "location_tags": [
+      "cheongryu_outer_courtyard",
+      "black_serpent",
+      "mumyeong_past"
+    ],
+    "surface": [
+      "sect_courtyard",
+      "cheonggi_record",
+      "faction_negotiation"
+    ],
+    "anomaly_type": [
+      "faction_pressure",
+      "qi_deviation"
+    ],
+    "pressure_type": [
+      "sanity",
+      "danger",
+      "relation"
+    ],
+    "npc_slots": [
+      "blood_moon_antagonist"
+    ],
+    "candidate_characters": [
+      "mumyeong",
+      "black_serpent_boss"
+    ],
+    "summary": "현악문 consequence trace 이후 흑사방 보스가 무명의 힘과 상처를 알아보고 스카웃한 흔적을 확인하되, 보스 결산이나 무명 구원 확정은 열지 않는다.",
+    "setup_text": "빈 현악문 산문에서 돌아온 뒤 천기록의 여백에 흑사방의 검은 비늘 문양이 겹친다. 보스는 무명을 구원한 것이 아니라, 설 곳을 잃은 상처를 조직의 힘으로 바꿀 수 있다고 계산했다.",
+    "runtime_preview_design_status": "implemented",
+    "runtime_preview_start_conditions": {
+      "runtime_mode": "storypack_preview",
+      "conditions": {
+        "locations": [
+          "cheongryu_outer_courtyard"
+        ]
+      },
+      "required_flags": [
+        "mumyeong_destroys_orthodox_sect_resolved",
+        "hyeonakmun_destruction_thread_opened",
+        "departure_truth_thread_deepened",
+        "boss_first_appearance_resolved",
+        "boss_wall_thread_opened",
+        "black_serpent_core_pressure_opened",
+        "midgame_continuity_started"
+      ],
+      "forbidden_flags": [
+        "boss_recruits_mumyeong_resolved"
+      ],
+      "flavor_flags_only": [
+        "hyeonakmun_was_destroyed_after_qingliu_attack",
+        "mumyeong_destroyed_hyeonakmun_alone",
+        "destruction_is_consequence_not_salvation",
+        "boss_reads_people_not_forms",
+        "mumyeong_follows_power_that_saw_his_wound",
+        "seoharin_truth_delivery_still_unopened"
+      ]
+    },
+    "presentation": {
+      "visual_id": "wuxia_boss_recruits_mumyeong",
+      "speaker": "천기록",
+      "layout": "boss_recruitment_trace",
+      "effect_cues": [
+        {
+          "stable_terms": [
+            "흑사방주",
+            "무명",
+            "현악문"
+          ]
+        }
+      ]
+    },
+    "choice_shapes": [
+      {
+        "id": "trace_boss_offer_after_hyeonakmun",
+        "role": "safe_trace",
+        "fallback_choice": true,
+        "label_direction": "현악문 뒤에 이어진 보스의 제안을 추적한다",
+        "expected_costs": [
+          "sanity_small",
+          "danger_small"
+        ],
+        "expected_gains": [
+          "boss_recruitment_origin_clue"
+        ],
+        "outcome_hook": {
+          "add_flags": [
+            "boss_recruits_mumyeong_resolved",
+            "boss_recruitment_thread_opened",
+            "boss_saw_mumyeongs_wound"
+          ],
+          "add_clues": [
+            "boss_recruited_mumyeong_after_hyeonakmun",
+            "recruitment_was_not_salvation"
+          ]
+        }
+      },
+      {
+        "id": "read_mumyeong_choice_without_excusing_it",
+        "role": "truth_boundary",
+        "label_direction": "무명의 선택을 변명하지 않고 해석한다",
+        "expected_costs": [
+          "sanity_small"
+        ],
+        "expected_gains": [
+          "mumyeong_choice_context"
+        ],
+        "outcome_hook": {
+          "add_flags": [
+            "boss_recruits_mumyeong_resolved",
+            "boss_recruitment_thread_opened",
+            "mumyeong_choice_thread_deepened"
+          ],
+          "add_clues": [
+            "mumyeong_had_nowhere_to_stand_after_destruction",
+            "boss_turned_wound_into_power"
+          ]
+        }
+      },
+      {
+        "id": "search_black_serpent_recruitment_record",
+        "role": "record_probe",
+        "label_direction": "흑사방의 스카웃 기록을 찾는다",
+        "expected_costs": [
+          "sanity_small",
+          "danger_small"
+        ],
+        "expected_gains": [
+          "black_serpent_recruitment_record"
+        ],
+        "outcome_hook": {
+          "add_flags": [
+            "boss_recruits_mumyeong_resolved",
+            "boss_recruitment_thread_opened",
+            "black_serpent_recruitment_record_seen"
+          ],
+          "add_clues": [
+            "black_serpent_recruits_wounds_not_names",
+            "boss_reads_people_not_forms"
+          ]
+        }
+      },
+      {
+        "id": "stop_before_following_him_into_black_serpent",
+        "role": "safe_stop",
+        "label_direction": "흑사방 안쪽까지 따라가기 전에 기록을 멈춘다",
+        "expected_costs": [
+          "sanity_small"
+        ],
+        "expected_gains": [
+          "future_boundary_kept"
+        ],
+        "outcome_hook": {
+          "add_flags": [
+            "boss_recruits_mumyeong_resolved",
+            "boss_recruitment_thread_opened",
+            "final_boss_resolution_still_unopened"
+          ],
+          "add_clues": [
+            "departure_truth_not_ready_for_seoharin",
+            "boss_resolution_still_unopened"
+          ]
+        }
+      }
+    ],
+    "outcome_hooks": {
+      "possible_flags": [
+        "boss_recruits_mumyeong_resolved",
+        "boss_recruitment_thread_opened",
+        "boss_saw_mumyeongs_wound",
+        "mumyeong_choice_thread_deepened",
+        "black_serpent_recruitment_record_seen",
+        "final_boss_resolution_still_unopened"
+      ],
+      "possible_clues": [
+        "boss_recruited_mumyeong_after_hyeonakmun",
+        "recruitment_was_not_salvation",
+        "mumyeong_had_nowhere_to_stand_after_destruction",
+        "boss_turned_wound_into_power",
+        "black_serpent_recruits_wounds_not_names",
+        "departure_truth_not_ready_for_seoharin",
+        "boss_resolution_still_unopened"
+      ],
+      "possible_items": []
+    },
+    "main_spine_link": "현악문 consequence trace를 흑사방 보스가 무명의 상처를 조직 논리로 바꾼 bridge로 연결한다.",
+    "randomization_notes": "후반 1회성 trace. boss_recruits_mumyeong_resolved 이후 반복 금지.",
+    "promotion_notes": "preview runtime으로 구현 완료. wuxia_mumyeong_destroys_orthodox_sect_followup docs-only handoff에서 다음 runtime 후보로 선택했고, 보스 스카웃을 구원이나 최종 결산이 아니라 recruitment trace로 제한했다. 무명 이탈 진실 전달, 서하린에게 진실 전달, 무명/보스 최종 결산, epilogue/return, combat resolver/schema, route graph/faction reputation/debt/relation schema, reward/ability schema, 천기록 identity reveal은 열지 않는다.",
+    "runtime_preview_implementation": {
+      "implemented_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml",
+      "insert_after": "wuxia_mumyeong_destroys_orthodox_sect",
+      "generated_artifacts": [
+        "crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json",
+        "web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json"
+      ],
+      "next_handoff": "wuxia_boss_recruits_mumyeong_followup"
+    }
   }
 ]

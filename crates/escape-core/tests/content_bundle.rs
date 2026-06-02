@@ -211,12 +211,12 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&4));
     assert_eq!(bundle.manifest.counts.get("items"), Some(&4));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&22));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&23));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 4);
-    assert_eq!(index.encounters_len(), 22);
+    assert_eq!(index.encounters_len(), 23);
 
     let market = index
         .location("jianghu_market_street")
@@ -1326,6 +1326,69 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     );
     assert_eq!(
         read_record.outcome.destination_id.as_deref(),
+        Some("cheongryu_outer_courtyard")
+    );
+
+    let boss_recruit = index
+        .encounter("wuxia_boss_recruits_mumyeong")
+        .expect("Boss recruits Mumyeong trace encounter");
+    assert_eq!(boss_recruit.title, "흑사방 보스의 스카웃 흔적");
+    assert_eq!(
+        boss_recruit.conditions.locations,
+        vec!["cheongryu_outer_courtyard"]
+    );
+    assert_eq!(
+        boss_recruit.conditions.required_flags,
+        vec![
+            "mumyeong_destroys_orthodox_sect_resolved",
+            "hyeonakmun_destruction_thread_opened",
+            "departure_truth_thread_deepened",
+            "boss_first_appearance_resolved",
+            "boss_wall_thread_opened",
+            "black_serpent_core_pressure_opened",
+            "midgame_continuity_started"
+        ]
+    );
+    assert_eq!(
+        boss_recruit.conditions.forbidden_flags,
+        vec!["boss_recruits_mumyeong_resolved"]
+    );
+    let recruit_presentation = boss_recruit
+        .presentation
+        .as_ref()
+        .expect("Boss recruitment trace presentation");
+    assert_eq!(
+        recruit_presentation.layout.as_deref(),
+        Some("boss_recruitment_trace")
+    );
+    assert_eq!(recruit_presentation.speaker.as_deref(), Some("천기록"));
+    assert_eq!(
+        recruit_presentation.effect_cues[0].stable_terms,
+        vec!["흑사방주", "무명", "현악문"]
+    );
+    assert_eq!(boss_recruit.choices.len(), 4);
+    let trace_offer = boss_recruit
+        .choices
+        .iter()
+        .find(|choice| choice.id == "trace_boss_offer_after_hyeonakmun")
+        .expect("trace boss offer choice");
+    assert_eq!(
+        trace_offer.outcome.add_flags,
+        vec![
+            "boss_recruits_mumyeong_resolved",
+            "boss_recruitment_thread_opened",
+            "boss_saw_mumyeongs_wound"
+        ]
+    );
+    assert_eq!(
+        trace_offer.outcome.add_clues,
+        vec![
+            "boss_recruited_mumyeong_after_hyeonakmun",
+            "recruitment_was_not_salvation"
+        ]
+    );
+    assert_eq!(
+        trace_offer.outcome.destination_id.as_deref(),
         Some("cheongryu_outer_courtyard")
     );
 }

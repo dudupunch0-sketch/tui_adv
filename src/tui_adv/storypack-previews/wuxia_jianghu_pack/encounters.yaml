@@ -1316,3 +1316,62 @@ encounters:
           add_clues: [boss_recruitment_still_unopened, seoharin_truth_delivery_still_unopened]
           destination_id: cheongryu_outer_courtyard
           log: 죽은 사람의 수를 세기 시작하면 장면이 열린다. 천기록은 아직 그 문을 열지 않고, 다음에 누가 이 결과를 이용했는지만 빈칸으로 남긴다.
+
+  - id: wuxia_boss_recruits_mumyeong
+    title: 흑사방 보스의 스카웃 흔적
+    body: 빈 현악문 산문에서 돌아온 뒤에도 천기록의 여백은 닫히지 않는다. 부러진 현판의 먹자국 끝에 흑사방의 검은 비늘 문양이 겹치고, 무명이 청류문에도 현악문에도 남을 수 없게 된 순간을 누군가 계산했다는 문장이 떠오른다. 그것은 구원이 아니라, 상처를 힘으로 바꾸는 제안이었다.
+    presentation:
+      visual_id: wuxia_boss_recruits_mumyeong
+      speaker: 천기록
+      layout: boss_recruitment_trace
+      effect_cues:
+        - kind: glyph_anomaly
+          source: boss_recruits_mumyeong
+          intensity: 0.76
+          stable_terms: [흑사방주, 무명, 현악문]
+          distortion: black_serpent_offer_over_empty_gate
+          duration_hint_ms: 1500
+          fallback_text: 검은 비늘 문양이 번져도 '흑사방주', '무명', '현악문'만 제안서의 글씨처럼 또렷하게 남는다.
+    conditions:
+      locations: [cheongryu_outer_courtyard]
+      required_flags: [mumyeong_destroys_orthodox_sect_resolved, hyeonakmun_destruction_thread_opened, departure_truth_thread_deepened, boss_first_appearance_resolved, boss_wall_thread_opened, black_serpent_core_pressure_opened, midgame_continuity_started]
+      forbidden_flags: [boss_recruits_mumyeong_resolved]
+    choices:
+      - id: trace_boss_offer_after_hyeonakmun
+        label: 현악문 뒤에 이어진 보스의 제안을 추적한다
+        outcome:
+          resources:
+            sanity: -2
+          danger: 1
+          add_flags: [boss_recruits_mumyeong_resolved, boss_recruitment_thread_opened, boss_saw_mumyeongs_wound]
+          add_clues: [boss_recruited_mumyeong_after_hyeonakmun, recruitment_was_not_salvation]
+          destination_id: cheongryu_outer_courtyard
+          log: 보스는 무명을 건져 올린 것이 아니다. 그가 설 곳을 잃은 순간을 보고, 그 상처가 조직 안에서 얼마나 큰 힘이 될지 먼저 셈했다.
+      - id: read_mumyeong_choice_without_excusing_it
+        label: 무명의 선택을 변명하지 않고 해석한다
+        outcome:
+          resources:
+            sanity: -2
+          add_flags: [boss_recruits_mumyeong_resolved, boss_recruitment_thread_opened, mumyeong_choice_thread_deepened]
+          add_clues: [mumyeong_had_nowhere_to_stand_after_destruction, boss_turned_wound_into_power]
+          destination_id: cheongryu_outer_courtyard
+          log: 무명이 어디에도 돌아갈 수 없었다는 사실은 그의 선택을 지워 주지 않는다. 다만 누가 그 빈틈을 가장 먼저 이용했는지는 선명해진다.
+      - id: search_black_serpent_recruitment_record
+        label: 흑사방의 스카웃 기록을 찾는다
+        outcome:
+          resources:
+            sanity: -1
+          danger: 1
+          add_flags: [boss_recruits_mumyeong_resolved, boss_recruitment_thread_opened, black_serpent_recruitment_record_seen]
+          add_clues: [black_serpent_recruits_wounds_not_names, boss_reads_people_not_forms]
+          destination_id: cheongryu_outer_courtyard
+          log: 흑사방 기록은 이름보다 결핍을 먼저 적는다. 보스가 읽은 것은 무명의 초식이 아니라, 그가 더는 돌아갈 이름을 믿지 못하게 된 자리였다.
+      - id: stop_before_following_him_into_black_serpent
+        label: 흑사방 안쪽까지 따라가기 전에 기록을 멈춘다
+        outcome:
+          resources:
+            sanity: -1
+          add_flags: [boss_recruits_mumyeong_resolved, boss_recruitment_thread_opened, final_boss_resolution_still_unopened]
+          add_clues: [departure_truth_not_ready_for_seoharin, boss_resolution_still_unopened]
+          destination_id: cheongryu_outer_courtyard
+          log: 지금 본 것은 입구뿐이다. 무명이 왜 따랐는지와 서하린에게 무엇을 전해야 하는지는 남았지만, 보스의 최종 장부를 펼치기에는 아직 이르다.

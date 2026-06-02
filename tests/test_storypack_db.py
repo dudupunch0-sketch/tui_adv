@@ -40,6 +40,7 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         "wuxia_baekdo_medicine_debt",
         "wuxia_black_heaven_escape_price",
         "wuxia_boss_first_appearance",
+        "wuxia_boss_recruits_mumyeong",
         "wuxia_cheonggi_record_first_fragment",
         "wuxia_cheongryu_apprentice_entry",
         "wuxia_cheongryu_chore_sparring",
@@ -224,6 +225,21 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         in destroys_orthodox.outcome_hooks["possible_flags"]
     )
     assert "destruction_is_consequence_not_salvation" in destroys_orthodox.outcome_hooks[
+        "possible_clues"
+    ]
+
+    boss_recruits = db.encounter_cards["wuxia_boss_recruits_mumyeong"]
+    assert boss_recruits.world_id == "wuxia_jianghu"
+    assert boss_recruits.storypack_id == "wuxia_jianghu_pack"
+    assert boss_recruits.priority_class == "route_key"
+    assert "boss_recruitment_trace" in boss_recruits.phases
+    assert "faction_negotiation" in boss_recruits.surfaces
+    assert "safe_trace" in [choice["role"] for choice in boss_recruits.choice_shapes]
+    assert (
+        "boss_recruits_mumyeong_resolved"
+        in boss_recruits.outcome_hooks["possible_flags"]
+    )
+    assert "recruitment_was_not_salvation" in boss_recruits.outcome_hooks[
         "possible_clues"
     ]
 

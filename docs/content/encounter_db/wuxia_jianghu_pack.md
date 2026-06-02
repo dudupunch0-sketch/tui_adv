@@ -1,13 +1,13 @@
 # 이구학지 — 천기록 encounter situation cards
 
-Status: candidate + `wuxia_mumyeong_destroys_orthodox_sect` preview runtime implemented
+Status: candidate + `wuxia_boss_recruits_mumyeong` preview runtime implemented
 
-이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_destroys_orthodox_sect`까지는 separate storypack preview runtime으로 승격되었고, 다음은 `wuxia_mumyeong_destroys_orthodox_sect_followup` docs-only handoff다.
+이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_boss_recruits_mumyeong`까지는 separate storypack preview runtime으로 승격되었고, 다음은 `wuxia_boss_recruits_mumyeong_followup` docs-only handoff다.
 
 공통 원칙:
 
 - 모든 카드는 `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`에 속한다.
-- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_destroys_orthodox_sect`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. 다음 runtime 후보는 `wuxia_mumyeong_destroys_orthodox_sect_followup` docs-only handoff에서 다시 결정한다.
+- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_boss_recruits_mumyeong`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. 다음 runtime 후보는 `wuxia_boss_recruits_mumyeong_followup` docs-only handoff에서 다시 결정한다.
 - 최신 canonical 무협 설정은 **이구학지 — 천기록**이다. 이전의 generic 객잔/소림/무당/아미 placeholder는 superseded로 본다.
 - 플레이어 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계의 시장 한복판에 전이됐다”이다.
 - 선택지는 세부 수치보다 역할과 결과 hook을 먼저 정의한다.
@@ -42,7 +42,7 @@ Status: candidate + `wuxia_mumyeong_destroys_orthodox_sect` preview runtime impl
 | `wuxia_boss_first_appearance` | 보스 첫 등장 | `wuxia_boss_first_appearance` | preview runtime implemented |
 | `wuxia_mumyeong_destroys_orthodox_sect` | 정파 문파 멸문 | `wuxia_mumyeong_destroys_orthodox_sect` | preview runtime implemented |
 | `wuxia_mumyeong_awakening` | 무명의 각성 | `wuxia_mumyeong_awakening` | preview runtime implemented |
-| `wuxia_boss_recruits_mumyeong` | 흑사방 보스의 스카웃 | none yet | future backstory event |
+| `wuxia_boss_recruits_mumyeong` | 흑사방 보스의 스카웃 | `wuxia_boss_recruits_mumyeong` | preview runtime implemented |
 | `wuxia_mumyeong_reads_orthodox_style` | 무명의 정파 무공 간파 | `wuxia_mumyeong_reads_orthodox_style` | preview runtime implemented |
 | `wuxia_qingliu_attack_after_war` | 무너져가는 청류문 습격 | `wuxia_qingliu_attack_after_war` | preview runtime implemented |
 | `wuxia_mumyeong_request_for_aid` | 무명의 도움 요청 | `wuxia_mumyeong_request_for_aid` | preview runtime implemented |
@@ -2066,4 +2066,92 @@ runtime_preview_implementation_notes:
   default_bundle_changed: false
   new_schema_opened: false
   next_handoff: wuxia_mumyeong_destroys_orthodox_sect_followup
+```
+
+## 23. `wuxia_boss_recruits_mumyeong`
+
+```yaml
+id: wuxia_boss_recruits_mumyeong
+world_id: wuxia_jianghu
+storypack_id: wuxia_jianghu_pack
+status: implemented_in_storypack_preview
+source_refs:
+  - notion_event:wuxia_boss_recruits_mumyeong
+  - docs/dev/Notion_Design_Coverage.md
+  - docs/dev/Development_Plan.md#048-2026-06-02-docs-only-hyeonakmun-consequence-follow-up-handoff-wuxia_boss_recruits_mumyeong
+  - docs/dev/Development_Plan.md#049-2026-06-02-무협-wuxia_boss_recruits_mumyeong-preview-runtime-slice
+notion_mapping:
+  notion_event_id: wuxia_boss_recruits_mumyeong
+  notion_event_name: 흑사방 보스의 스카웃
+  mapping_status: preview_runtime_implemented
+runtime_preview_design_status: implemented
+phase: [midgame_backstory]
+priority_class: main_branch
+location_tags: [sect_courtyard, ruined_gate, recruitment_trace]
+surface: [sect_courtyard, cheonggi_record, faction_negotiation]
+anomaly_type: [boss_recruitment_trace]
+pressure_type: [danger, sanity]
+npc_slots: [rival, blood_moon_antagonist]
+candidate_characters: [무명, 흑사방주]
+summary: 현악문 consequence 이후 흑사방 보스가 무명의 상처와 힘을 보고 스카웃했다는 흔적을 확인한다.
+setup_text: 천기록은 빈 현악문 산문 뒤에 이어진 장면을 곧장 열지 않는다. 대신 검은 비늘 문양과 짧은 문장만 남긴다. 흑사방주는 무명의 이름보다 먼저 상처를 보았고, 그 상처를 힘으로 바꿀 자리를 제안했다.
+presentation:
+  visual_id: wuxia_boss_recruits_mumyeong
+  speaker: 천기록
+  layout: boss_recruitment_trace
+  stable_terms: [흑사방주, 무명, 현악문]
+conditions:
+  locations: [cheongryu_outer_courtyard]
+  required_flags: [mumyeong_destroys_orthodox_sect_resolved, hyeonakmun_destruction_thread_opened, departure_truth_thread_deepened, boss_first_appearance_resolved, boss_wall_thread_opened, black_serpent_core_pressure_opened, midgame_continuity_started]
+  forbidden_flags: [boss_recruits_mumyeong_resolved]
+choice_shapes:
+  - id: trace_boss_offer_after_hyeonakmun
+    role: safe_trace
+    expected_costs: [sanity_small, danger_small]
+    expected_gains: [boss_recruited_mumyeong_after_hyeonakmun, recruitment_was_not_salvation]
+    outcome_hook:
+      add_flags: [boss_recruits_mumyeong_resolved, boss_recruitment_thread_opened, boss_saw_mumyeongs_wound]
+      add_clues: [boss_recruited_mumyeong_after_hyeonakmun, recruitment_was_not_salvation]
+      destination_id: cheongryu_outer_courtyard
+  - id: read_mumyeong_choice_without_excusing_it
+    role: moral_read
+    expected_costs: [sanity_small]
+    expected_gains: [mumyeong_had_nowhere_to_stand_after_destruction, boss_turned_wound_into_power]
+    outcome_hook:
+      add_flags: [boss_recruits_mumyeong_resolved, boss_recruitment_thread_opened, mumyeong_choice_thread_deepened]
+      add_clues: [mumyeong_had_nowhere_to_stand_after_destruction, boss_turned_wound_into_power]
+      destination_id: cheongryu_outer_courtyard
+  - id: search_black_serpent_recruitment_record
+    role: risky_investigation
+    expected_costs: [sanity_small, danger_small]
+    expected_gains: [black_serpent_recruits_wounds_not_names, boss_reads_people_not_forms]
+    outcome_hook:
+      add_flags: [boss_recruits_mumyeong_resolved, boss_recruitment_thread_opened, black_serpent_recruitment_record_seen]
+      add_clues: [black_serpent_recruits_wounds_not_names, boss_reads_people_not_forms]
+      destination_id: cheongryu_outer_courtyard
+  - id: stop_before_following_him_into_black_serpent
+    role: safe_stop
+    expected_costs: [sanity_small]
+    expected_gains: [departure_truth_not_ready_for_seoharin, boss_resolution_still_unopened]
+    outcome_hook:
+      add_flags: [boss_recruits_mumyeong_resolved, boss_recruitment_thread_opened, final_boss_resolution_still_unopened]
+      add_clues: [departure_truth_not_ready_for_seoharin, boss_resolution_still_unopened]
+      destination_id: cheongryu_outer_courtyard
+outcome_hooks:
+  possible_flags: [boss_recruits_mumyeong_resolved, boss_recruitment_thread_opened, boss_saw_mumyeongs_wound, mumyeong_choice_thread_deepened, black_serpent_recruitment_record_seen, final_boss_resolution_still_unopened]
+  possible_clues: [boss_recruited_mumyeong_after_hyeonakmun, recruitment_was_not_salvation, mumyeong_had_nowhere_to_stand_after_destruction, boss_turned_wound_into_power, black_serpent_recruits_wounds_not_names, boss_reads_people_not_forms, departure_truth_not_ready_for_seoharin, boss_resolution_still_unopened]
+  possible_destinations: [cheongryu_outer_courtyard]
+main_spine_link: 현악문 consequence trace가 남긴 무명의 선택과 보스 first appearance의 weakness-reading hook을 연결하되, 무명 이탈 진실 전달과 보스 최종 결산은 다음 사건으로 넘긴다.
+randomization_notes: 1회성 boss recruitment trace. Hyeonakmun consequence 뒤에만 열고 `boss_recruits_mumyeong_resolved`로 반복을 막는다.
+promotion_notes: preview runtime으로 구현 완료. `wuxia_mumyeong_destroys_orthodox_sect_followup` docs-only handoff에서 다음 runtime 후보로 선택했고, 보스 스카웃을 구원이나 최종 결산이 아니라 recruitment trace로 제한했다. 무명 이탈 진실 전달, 서하린에게 진실 전달, 무명/보스 최종 결산, epilogue/return, combat resolver/schema, route graph/faction reputation/debt/relation schema, reward/ability schema, 천기록 identity reveal은 열지 않는다.
+runtime_preview_implementation_notes:
+  implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
+  insert_after: wuxia_mumyeong_destroys_orthodox_sect
+  selected_over: [wuxia_mumyeong_departure_truth_summary, wuxia_mumyeong_resolution, wuxia_boss_resolution, wuxia_seoharin_empty_place]
+  generated_artifacts:
+    - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+    - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+  default_bundle_changed: false
+  new_schema_opened: false
+  next_handoff: wuxia_boss_recruits_mumyeong_followup
 ```

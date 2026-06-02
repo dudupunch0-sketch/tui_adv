@@ -1976,6 +1976,93 @@ fn json_boundary_reaches_wuxia_mumyeong_destroys_orthodox_sect_through_preview_b
 }
 
 #[test]
+fn json_boundary_reaches_wuxia_boss_recruits_mumyeong_through_preview_bundle() {
+    let post_consequence_state_json = wuxia_state_after_actions(&[
+        "choice:follow_roadside_dust",
+        "move:jianghu_market_street",
+        "choice:run_toward_open_street",
+        "choice:choose_failure_log",
+        "choice:tell_plain_truth",
+        "choice:accept_three_month_trial",
+        "choice:step_back_with_firewood",
+        "choice:defend_cheongryu_with_white_path",
+        "choice:accept_medicine_with_written_debt",
+        "choice:watch_the_stolen_qingliu_flow",
+        "choice:endure_until_copy_flow_breaks",
+        "choice:listen_for_breath_mismatch",
+        "choice:reconstruct_mumyeongs_sightline",
+        "choice:show_the_hyeonakmun_trace_without_accusing",
+        "choice:watch_mumyeong_answer_the_boss",
+        "choice:search_the_rejected_aid_letters",
+        "choice:compare_anger_to_copied_flow",
+        "choice:inspect_bokho_lock_scars",
+        "choice:read_hyeonakmun_empty_gate_record",
+    ]);
+
+    let recruit_page_json = scene_page_json(&post_consequence_state_json, WUXIA_PREVIEW_BUNDLE)
+        .expect("Boss recruitment trace scene page should serialize");
+    let recruit_page: Value =
+        serde_json::from_str(&recruit_page_json).expect("Boss recruitment page JSON should parse");
+    assert_eq!(recruit_page["mode"], "encounter");
+    assert_eq!(recruit_page["title"], "흑사방 보스의 스카웃 흔적");
+    assert_eq!(recruit_page["location"]["id"], "cheongryu_outer_courtyard");
+    assert_eq!(
+        recruit_page["visual"]["id"],
+        "wuxia_boss_recruits_mumyeong"
+    );
+    assert_eq!(recruit_page["visual"]["kind"], "boss_recruitment_trace");
+    assert_eq!(recruit_page["effect_cues"][0]["stable_terms"][0], "흑사방주");
+    let recruit_action_ids: Vec<&str> = recruit_page["actions"]
+        .as_array()
+        .expect("actions should be an array")
+        .iter()
+        .map(|action| action["id"].as_str().expect("action id should be a string"))
+        .collect();
+    assert_eq!(
+        recruit_action_ids,
+        vec![
+            "choice:trace_boss_offer_after_hyeonakmun",
+            "choice:read_mumyeong_choice_without_excusing_it",
+            "choice:search_black_serpent_recruitment_record",
+            "choice:stop_before_following_him_into_black_serpent",
+        ]
+    );
+
+    let recruit_result_json = apply_action_json(
+        &post_consequence_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:trace_boss_offer_after_hyeonakmun",
+    )
+    .expect("trace boss recruitment offer action should serialize");
+    let recruit_result: Value =
+        serde_json::from_str(&recruit_result_json).expect("Boss recruitment action should parse");
+    assert_eq!(
+        recruit_result["encounter_id"],
+        "wuxia_boss_recruits_mumyeong"
+    );
+    assert!(recruit_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array")
+        .iter()
+        .any(|flag| flag == "boss_recruits_mumyeong_resolved"));
+    assert!(recruit_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array")
+        .iter()
+        .any(|flag| flag == "boss_recruitment_thread_opened"));
+    assert!(recruit_result["state"]["clues"]
+        .as_array()
+        .expect("clues should be an array")
+        .iter()
+        .any(|clue| clue == "boss_recruited_mumyeong_after_hyeonakmun"));
+    assert!(recruit_result["state"]["clues"]
+        .as_array()
+        .expect("clues should be an array")
+        .iter()
+        .any(|clue| clue == "recruitment_was_not_salvation"));
+}
+
+#[test]
 fn json_boundary_reaches_wuxia_black_heaven_escape_price_through_preview_bundle() {
     let state_json =
         new_game_json(123, WUXIA_PREVIEW_BUNDLE).expect("preview new game should serialize");

@@ -1752,6 +1752,86 @@ fn content_tui_smoke_reaches_wuxia_seoharin_empty_place() {
 }
 
 #[test]
+fn content_tui_smoke_reaches_wuxia_seoharin_left_meal() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--storypack-preview",
+            "wuxia_jianghu_pack",
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:follow_roadside_dust",
+            "--action",
+            "move:jianghu_market_street",
+            "--action",
+            "choice:run_toward_open_street",
+            "--action",
+            "choice:choose_failure_log",
+            "--action",
+            "choice:tell_plain_truth",
+            "--action",
+            "choice:accept_three_month_trial",
+            "--action",
+            "choice:step_back_with_firewood",
+            "--action",
+            "choice:defend_cheongryu_with_white_path",
+            "--action",
+            "choice:accept_medicine_with_written_debt",
+            "--action",
+            "choice:watch_the_stolen_qingliu_flow",
+            "--action",
+            "choice:endure_until_copy_flow_breaks",
+            "--action",
+            "choice:listen_for_breath_mismatch",
+            "--action",
+            "choice:reconstruct_mumyeongs_sightline",
+            "--action",
+            "choice:show_the_hyeonakmun_trace_without_accusing",
+            "--action",
+            "choice:watch_mumyeong_answer_the_boss",
+            "--action",
+            "choice:search_the_rejected_aid_letters",
+            "--action",
+            "choice:compare_anger_to_copied_flow",
+            "--action",
+            "choice:inspect_bokho_lock_scars",
+            "--action",
+            "choice:read_hyeonakmun_empty_gate_record",
+            "--action",
+            "choice:trace_boss_offer_after_hyeonakmun",
+            "--action",
+            "choice:assemble_departure_truth_without_delivering",
+            "--action",
+            "choice:set_down_the_work_notebook_briefly",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("위치: 청류문 외곽 마당 (cheongryu_outer_courtyard)"));
+    assert!(stdout.contains("남겨둔 밥"));
+    assert!(stdout.contains("visual id: wuxia_seoharin_left_meal"));
+    assert!(stdout.contains("layout: left_meal_memory"));
+    assert!(stdout.contains("stable terms: 서하린 / 밥그릇 / 청류문 / 귀환"));
+    assert!(stdout.contains("choice:eat_the_left_meal_quietly / 말없이 남겨 둔 밥을 먹는다"));
+    assert!(stdout.contains("choice:thank_seoharin_for_the_bowl / 서하린에게 고맙다고 말한다"));
+    assert!(stdout
+        .contains("choice:joke_about_who_ordered_extra_rice / 누가 밥을 더 지었냐고 농담한다"));
+    assert!(stdout.contains("choice:pass_without_eating_the_meal / 먹지 않고 지나친다"));
+    assert!(!stdout.contains("told_seoharin_truth"));
+    assert!(!stdout.contains("item_unpriced_wooden_sword"));
+}
+
+#[test]
 fn content_tui_smoke_renders_final_movement_panel_after_scripted_actions() {
     let bundle_path = content_bundle_path();
     let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))

@@ -789,6 +789,33 @@
 - [x] 기본 office bundle, Web legacy generated `content.bundle.json`, `src/tui_adv/data/*.yaml`, legacy `escape-office` save/localStorage key 미변경 유지
 - [x] 다음 작업을 `wuxia_seoharin_empty_place_followup` docs-only handoff로 갱신
 
+### 0.2br 2026-06-02 무협 Seo Harin empty-place follow-up docs-only handoff
+
+- [x] Notion 사건 카드 DB `wuxia_seoharin_left_meal`, `wuxia_seoharin_unsaid_stay`, `wuxia_mumyeong_resolution`, `wuxia_boss_resolution` 재확인
+- [x] Notion `남겨둔 밥`, `가지 말라는 말`, `무명 결산`, `사도 최종전 3페이즈: 계산식 밖` 원문 fetch로 대조
+- [x] 다음 runtime 후보를 `wuxia_seoharin_left_meal`로 결정
+- [x] 구현 범위를 `seoharin_axis_opened` 뒤 daily-care/belonging bridge로 제한한다고 문서화
+- [x] `wuxia_seoharin_unsaid_stay`는 final return/settlement/corruption relationship branch라 보류
+- [x] 무명/보스 결산과 사도 최종전은 final/epilogue/combat/reward/item-log/relation-state schema 범위라 보류
+- [x] start conditions를 `required_flags: [seoharin_empty_place_resolved, seoharin_axis_opened, empty_place_remembered, truth_delivery_still_unopened, midgame_continuity_started]`, `forbidden_flags: [seoharin_left_meal_resolved]`로 문서화
+- [x] stable choice id 후보 `eat_the_left_meal_quietly`, `thank_seoharin_for_the_bowl`, `joke_about_who_ordered_extra_rice`, `pass_without_eating_the_meal` 고정
+- [x] runtime YAML/Rust/Web generated bundle, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 작업을 `wuxia_seoharin_left_meal` runtime implementation으로 갱신
+
+### 0.2bs 2026-06-02 무협 `wuxia_seoharin_left_meal` preview runtime slice
+
+- [x] `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`에서 `wuxia_seoharin_empty_place` 뒤에 `wuxia_seoharin_left_meal` 추가
+- [x] start conditions를 `seoharin_empty_place_resolved`, `seoharin_axis_opened`, `empty_place_remembered`, `truth_delivery_still_unopened`, `midgame_continuity_started`로 구현
+- [x] stable choice id `eat_the_left_meal_quietly`, `thank_seoharin_for_the_bowl`, `joke_about_who_ordered_extra_rice`, `pass_without_eating_the_meal` 구현
+- [x] 긍정 선택은 `seoharin_left_meal_resolved`, `seoharin_axis_deepened`, `qingliu_belonging_warmed`, `truth_delivery_still_unopened`, `destination_id: cheongryu_outer_courtyard` bridge를 남기도록 구현
+- [x] 거절 선택은 `seoharin_left_meal_resolved`, `seoharin_axis_still_open`, `left_meal_left_untouched`, `truth_delivery_still_unopened`, `destination_id: cheongryu_outer_courtyard` bridge를 남기도록 구현
+- [x] `wuxia_seoharin_left_meal` presentation을 `speaker: 서하린`, `layout: left_meal_memory`, stable terms `[서하린, 밥그릇, 청류문, 귀환]`로 구현
+- [x] Rust/Web storypack preview generated bundle 재생성
+- [x] Python exporter/docs/storypack DB, Rust content bundle, WASM JSON boundary, terminal smoke, Web default content bundle registry 테스트 갱신
+- [x] 서하린에게 진실 전달, `told_seoharin_truth`, final return/settlement choice, 무명/보스 결산, 사도 최종전, combat/reward/relation/epilogue/return schema, 천기록 정체 reveal 미변경 유지
+- [x] 기본 office bundle, Web legacy generated `content.bundle.json`, `src/tui_adv/data/*.yaml`, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 작업을 `wuxia_seoharin_left_meal_followup` docs-only handoff로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

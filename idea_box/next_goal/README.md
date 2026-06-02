@@ -2,8 +2,8 @@
 type: next_goal_prompt
 created: 2026-06-01
 updated: 2026-06-02
-current_goal: wuxia_seoharin_empty_place_followup
-previous_current_goal: wuxia_seoharin_empty_place
+current_goal: wuxia_seoharin_left_meal_followup
+previous_current_goal: wuxia_seoharin_left_meal
 mode: docs-only-handoff
 ---
 
@@ -25,29 +25,29 @@ mode: docs-only-handoff
 
 `wuxia_jianghu_pack` / **이구학지 — 천기록**은 Web/terminal default storypack이자 메인 개발 기준이다.
 
-`wuxia_seoharin_empty_place` runtime implementation은 완료됐다. 이 slice는 `wuxia_mumyeong_departure_truth_summary` 뒤에서 서하린의 “비워둔 자리”를 late emotional bridge로 landing했고, `seoharin_empty_place_resolved`, `seoharin_axis_opened`, `empty_place_remembered`, `truth_delivery_still_unopened` hook을 남겼다. `item_unpriced_wooden_sword`는 지급하지 않고 `unpriced_wooden_sword_condition_seeded` clue만 남겼다.
+`wuxia_seoharin_left_meal` runtime implementation은 완료됐다. 이 slice는 `wuxia_seoharin_empty_place` 뒤에서 서하린이 남겨 둔 식은 밥 한 그릇을 통해 말보다 생활로 드러나는 소속감 bridge를 landing했고, `seoharin_left_meal_resolved`, `seoharin_axis_deepened`, `qingliu_belonging_warmed`, `left_meal_left_untouched`, `truth_delivery_still_unopened` hook을 남겼다. `wuxia_seoharin_unsaid_stay`의 귀환/정착/침식 최종 관계 분기, 무명/보스 결산, 사도 최종전, `item_unpriced_wooden_sword` 지급은 열지 않았다.
 
-이번 목표는 `wuxia_seoharin_empty_place_followup` docs-only handoff다. Notion 사건 카드 DB와 최신 final routing 문서를 다시 확인해, 다음 runtime 후보를 결정한다.
+이번 목표는 `wuxia_seoharin_left_meal_followup` docs-only handoff다. Notion 사건 카드 DB, 후일담/최종 routing 문서, repo canonical docs를 다시 확인해 다음 runtime 후보를 결정한다.
 
 ## 비교할 후보
 
 최소 다음 후보를 비교한다.
 
+- `wuxia_seoharin_unsaid_stay`
 - `wuxia_mumyeong_resolution`
 - `wuxia_boss_resolution`
 - `wuxia_sado_final_battle`
 - `wuxia_sado_final_phase_2_weakpoint_control`
 - `wuxia_sado_final_phase_3_outside_calculation`
-- `wuxia_seoharin_unsaid_stay`
-- `wuxia_seoharin_left_meal`
+- final-route state dictionary / 무명 구원 / 보스 결산 / 서하린 late companion 후보
 - 남은 late truth/final/companion 후보
 
 ## 반드시 읽을 문서
 
 - `AGENTS.md`
 - `docs/dev/Development_Plan.md`
-  - section `0.52`: `wuxia_mumyeong_departure_truth_summary_followup` docs-only handoff
-  - section `0.53`: `wuxia_seoharin_empty_place` preview runtime slice
+  - section `0.54`: `wuxia_seoharin_left_meal` 선택 handoff
+  - section `0.55`: `wuxia_seoharin_left_meal` preview runtime slice
   - 현재 최우선 남은 작업
   - `## 10. 다음 액션`
 - `docs/dev/Storypack_Runtime_Preview_Mode.md`
@@ -61,10 +61,10 @@ mode: docs-only-handoff
 ## 이미 완료된 기반
 
 - Web/terminal default storypack은 `wuxia_jianghu_pack` / **이구학지 — 천기록**이다.
-- `wuxia_mumyeong_departure_truth_summary`까지 runtime slice는 완료됐다.
-- `wuxia_seoharin_empty_place`도 preview runtime으로 구현됐다.
-- `wuxia_seoharin_empty_place`는 `mumyeong_departure_truth_summary_resolved`, `sealed_departure_truth_summary_prepared`, `truth_delivery_still_unopened`, `midgame_continuity_started`를 요구하고 `seoharin_empty_place_resolved`로 반복을 막는다.
-- stable choice id는 `ask_who_kept_the_empty_place`, `leave_the_place_unclaimed`, `set_down_the_work_notebook_briefly`, `step_back_without_naming_mumyeong`다.
+- `wuxia_mumyeong_departure_truth_summary`, `wuxia_seoharin_empty_place`, `wuxia_seoharin_left_meal`까지 runtime slice는 완료됐다.
+- `wuxia_seoharin_left_meal`은 `seoharin_empty_place_resolved`, `seoharin_axis_opened`, `empty_place_remembered`, `truth_delivery_still_unopened`, `midgame_continuity_started`를 요구하고 `seoharin_left_meal_resolved`로 반복을 막는다.
+- stable choice id는 `eat_the_left_meal_quietly`, `thank_seoharin_for_the_bowl`, `joke_about_who_ordered_extra_rice`, `pass_without_eating_the_meal`다.
+- 긍정 선택은 `seoharin_axis_deepened`/`qingliu_belonging_warmed`와 `left_meal_was_kept_for_return`/`belonging_is_daily_care` clue를 남기고, 거절 선택은 `seoharin_axis_still_open`/`left_meal_left_untouched`와 `last_bowl_epilogue_seeded` clue를 남긴다.
 
 ## 금지선
 
@@ -88,15 +88,3 @@ mode: docs-only-handoff
 - `docs/content/storypack_db/storypacks.json`
 - `docs/content/storypack_db/encounter_situations.json`
 - `idea_box/next_goal/README.md`
-- 관련 docs/storypack DB contract tests
-
-## 검증 명령
-
-docs-only handoff라면 최소 다음을 실행한다.
-
-```bash
-python3 -m json.tool docs/content/storypack_db/storypacks.json >/dev/null
-python3 -m json.tool docs/content/storypack_db/encounter_situations.json >/dev/null
-PYTHONPATH=src /tmp/dudu-tui-adv-pytest-venv/bin/python -m pytest tests/test_docs_contract.py tests/test_storypack_db.py -q
-git diff --check
-```

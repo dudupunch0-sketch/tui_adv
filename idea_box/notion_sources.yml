@@ -221,6 +221,11 @@ sources:
         repo_encounter_id: "wuxia_seoharin_empty_place"
         runtime_status: "implemented_in_storypack_preview"
         handoff_status: "implemented_after_departure_truth_summary"
+      - notion_event_id: "wuxia_seoharin_left_meal"
+        notion_event_name: "남겨둔 밥"
+        repo_encounter_id: "wuxia_seoharin_left_meal"
+        runtime_status: "implemented_in_storypack_preview"
+        handoff_status: "implemented_after_empty_place"
     status: "live_checked_docs_synced_runtime_implemented"
 
   - key: wuxia_10_epilogue_card_db

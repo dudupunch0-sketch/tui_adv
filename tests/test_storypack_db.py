@@ -68,6 +68,7 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         "wuxia_qingliu_attack_after_war",
         "wuxia_seo_harin_rescue",
         "wuxia_seoharin_empty_place",
+        "wuxia_seoharin_left_meal",
         "wuxia_wounded_shelter_dawn_offers",
     ]
 
@@ -289,6 +290,18 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
     assert "empty_place_is_return_not_claim" in empty_place.outcome_hooks[
         "possible_clues"
     ]
+
+    left_meal = db.encounter_cards["wuxia_seoharin_left_meal"]
+    assert left_meal.world_id == "wuxia_jianghu"
+    assert left_meal.storypack_id == "wuxia_jianghu_pack"
+    assert left_meal.status == "implemented_in_storypack_preview"
+    assert left_meal.priority_class == "npc_relation"
+    assert "seoharin_belonging_bridge" in left_meal.phases
+    assert "food" in left_meal.surfaces
+    assert "daily_care" in left_meal.surfaces
+    assert "safe_stop" in [choice["role"] for choice in left_meal.choice_shapes]
+    assert "seoharin_axis_deepened" in left_meal.outcome_hooks["possible_flags"]
+    assert "belonging_is_daily_care" in left_meal.outcome_hooks["possible_clues"]
 
 
 def test_storypack_db_public_files_validate_cleanly():

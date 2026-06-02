@@ -109,6 +109,7 @@ def test_export_web_data_builds_renderer_neutral_content_bundle():
             "wuxia_boss_recruits_mumyeong",
             "wuxia_mumyeong_departure_truth_summary",
             "wuxia_seoharin_empty_place",
+            "wuxia_seoharin_left_meal",
         }
         for encounter in bundle["content"]["encounters"]
     )
@@ -132,7 +133,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     assert bundle["manifest"]["counts"] == {
         "locations": 4,
         "items": 4,
-        "encounters": 25,
+        "encounters": 26,
         "endings": 1,
         "achievements": 2,
         "secrets": 0,
@@ -170,6 +171,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "wuxia_boss_recruits_mumyeong",
         "wuxia_mumyeong_departure_truth_summary",
         "wuxia_seoharin_empty_place",
+        "wuxia_seoharin_left_meal",
     ]
     first_fight = bundle["content"]["encounters"][1]
     assert first_fight["conditions"] == {

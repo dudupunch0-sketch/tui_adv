@@ -2569,6 +2569,91 @@ fn json_boundary_reaches_wuxia_heavenly_archive_previous_outsiders_through_previ
 }
 
 #[test]
+fn json_boundary_reaches_wuxia_seoharin_left_meal_through_preview_bundle() {
+    let empty_place_state_json = wuxia_state_after_actions(&[
+        "choice:follow_roadside_dust",
+        "move:jianghu_market_street",
+        "choice:run_toward_open_street",
+        "choice:choose_failure_log",
+        "choice:tell_plain_truth",
+        "choice:accept_three_month_trial",
+        "choice:step_back_with_firewood",
+        "choice:defend_cheongryu_with_white_path",
+        "choice:accept_medicine_with_written_debt",
+        "choice:watch_the_stolen_qingliu_flow",
+        "choice:endure_until_copy_flow_breaks",
+        "choice:listen_for_breath_mismatch",
+        "choice:reconstruct_mumyeongs_sightline",
+        "choice:show_the_hyeonakmun_trace_without_accusing",
+        "choice:watch_mumyeong_answer_the_boss",
+        "choice:search_the_rejected_aid_letters",
+        "choice:compare_anger_to_copied_flow",
+        "choice:inspect_bokho_lock_scars",
+        "choice:read_hyeonakmun_empty_gate_record",
+        "choice:trace_boss_offer_after_hyeonakmun",
+        "choice:assemble_departure_truth_without_delivering",
+        "choice:set_down_the_work_notebook_briefly",
+    ]);
+
+    let left_meal_page_json = scene_page_json(&empty_place_state_json, WUXIA_PREVIEW_BUNDLE)
+        .expect("Seo Harin left-meal scene page should serialize");
+    let left_meal_page: Value = serde_json::from_str(&left_meal_page_json)
+        .expect("Seo Harin left-meal page JSON should parse");
+    assert_eq!(left_meal_page["mode"], "encounter");
+    assert_eq!(left_meal_page["title"], "남겨둔 밥");
+    assert_eq!(left_meal_page["visual"]["id"], "wuxia_seoharin_left_meal");
+    assert_eq!(left_meal_page["visual"]["kind"], "left_meal_memory");
+    assert_eq!(
+        left_meal_page["effect_cues"][0]["stable_terms"][1],
+        "밥그릇"
+    );
+    let left_meal_action_ids: Vec<&str> = left_meal_page["actions"]
+        .as_array()
+        .expect("actions should be an array")
+        .iter()
+        .map(|action| action["id"].as_str().expect("action id should be a string"))
+        .collect();
+    assert_eq!(
+        left_meal_action_ids,
+        vec![
+            "choice:eat_the_left_meal_quietly",
+            "choice:thank_seoharin_for_the_bowl",
+            "choice:joke_about_who_ordered_extra_rice",
+            "choice:pass_without_eating_the_meal",
+        ]
+    );
+
+    let left_meal_result_json = apply_action_json(
+        &empty_place_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:eat_the_left_meal_quietly",
+    )
+    .expect("eat left meal action should serialize");
+    let left_meal_result: Value = serde_json::from_str(&left_meal_result_json)
+        .expect("Seo Harin left-meal action should parse");
+    assert_eq!(left_meal_result["encounter_id"], "wuxia_seoharin_left_meal");
+    let flags = left_meal_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array");
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "seoharin_left_meal_resolved"));
+    assert!(flags.iter().any(|flag| flag == "seoharin_axis_deepened"));
+    assert!(flags.iter().any(|flag| flag == "qingliu_belonging_warmed"));
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "truth_delivery_still_unopened"));
+    assert!(!flags.iter().any(|flag| flag == "told_seoharin_truth"));
+    let clues = left_meal_result["state"]["clues"]
+        .as_array()
+        .expect("clues should be an array");
+    assert!(clues
+        .iter()
+        .any(|clue| clue == "left_meal_was_kept_for_return"));
+    assert!(clues.iter().any(|clue| clue == "belonging_is_daily_care"));
+}
+
+#[test]
 fn json_boundary_reports_user_facing_errors() {
     let state_json = new_game_json(123, CONTENT_BUNDLE).expect("new game should serialize");
 

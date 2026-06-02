@@ -3234,6 +3234,133 @@
           "visual_id": "wuxia_seoharin_empty_place"
         },
         "title": "비워둔 자리"
+      },
+      {
+        "body": "늦게 돌아온 청류문 부엌 근처에는 식은 밥 한 그릇이 덮여 있다. 서하린은 설명 대신 짧게 말한다. \"네 몫도 있다. 먹어.\" 밥은 남은 것이 아니라 남겨 둔 것이고, 청류문은 선언보다 먼저 누군가의 몫을 지우지 않는 곳처럼 느껴진다.",
+        "choices": [
+          {
+            "id": "eat_the_left_meal_quietly",
+            "label": "말없이 남겨 둔 밥을 먹는다",
+            "outcome": {
+              "add_clues": [
+                "left_meal_was_kept_for_return",
+                "belonging_is_daily_care"
+              ],
+              "add_flags": [
+                "seoharin_left_meal_resolved",
+                "seoharin_axis_deepened",
+                "qingliu_belonging_warmed",
+                "truth_delivery_still_unopened"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "밥은 식었지만, 누군가의 몫이 지워지지 않았다는 사실은 따뜻하다. 청류문은 돌아왔을 때 한 그릇이 남아 있는 곳으로 조금 더 선명해진다.",
+              "resources": {
+                "sanity": 1
+              }
+            }
+          },
+          {
+            "id": "thank_seoharin_for_the_bowl",
+            "label": "서하린에게 고맙다고 말한다",
+            "outcome": {
+              "add_clues": [
+                "seoharin_care_named_without_claim",
+                "left_meal_was_kept_for_return"
+              ],
+              "add_flags": [
+                "seoharin_left_meal_resolved",
+                "seoharin_axis_deepened",
+                "qingliu_belonging_warmed",
+                "truth_delivery_still_unopened"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "서하린은 \"남았을 뿐이야\"라고 말하지만, 밥그릇은 처음부터 덮여 있었다. 고마움은 대답을 얻지 못해도 관계의 방향을 조금 바꾼다.",
+              "resources": {
+                "sanity": -1
+              }
+            }
+          },
+          {
+            "id": "joke_about_who_ordered_extra_rice",
+            "label": "누가 밥을 더 지었냐고 농담한다",
+            "outcome": {
+              "add_clues": [
+                "seoharin_deflects_care_with_plain_words",
+                "belonging_is_daily_care"
+              ],
+              "add_flags": [
+                "seoharin_left_meal_resolved",
+                "seoharin_axis_deepened",
+                "qingliu_belonging_warmed",
+                "truth_delivery_still_unopened"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "농담은 잠깐 부엌의 어색함을 덜어낸다. 서하린은 대꾸하지 않지만, 빈 그릇을 치우는 손길이 네가 이곳에 돌아온 사실을 이미 받아들였다고 말한다.",
+              "resources": {
+                "sanity": -1
+              }
+            }
+          },
+          {
+            "id": "pass_without_eating_the_meal",
+            "label": "먹지 않고 지나친다",
+            "outcome": {
+              "add_clues": [
+                "last_bowl_epilogue_seeded",
+                "belonging_can_be_refused"
+              ],
+              "add_flags": [
+                "seoharin_left_meal_resolved",
+                "seoharin_axis_still_open",
+                "left_meal_left_untouched",
+                "truth_delivery_still_unopened"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "밥그릇은 그대로 남는다. 아무도 붙잡지 않지만, 먹지 않은 한 그릇은 언젠가 마지막 밥그릇으로 기억될 수 있다는 식은 여백을 남긴다.",
+              "resources": {
+                "sanity": -1
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "seoharin_left_meal_resolved"
+          ],
+          "locations": [
+            "cheongryu_outer_courtyard"
+          ],
+          "required_flags": [
+            "seoharin_empty_place_resolved",
+            "seoharin_axis_opened",
+            "empty_place_remembered",
+            "truth_delivery_still_unopened",
+            "midgame_continuity_started"
+          ]
+        },
+        "id": "wuxia_seoharin_left_meal",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "covered_bowl_waiting_after_late_return",
+              "duration_hint_ms": 1300,
+              "fallback_text": "식은 밥그릇 가장자리로 '서하린', '밥그릇', '청류문', '귀환'만 따뜻한 김처럼 남는다.",
+              "intensity": 0.52,
+              "kind": "glyph_anomaly",
+              "source": "left_meal_memory",
+              "stable_terms": [
+                "서하린",
+                "밥그릇",
+                "청류문",
+                "귀환"
+              ]
+            }
+          ],
+          "layout": "left_meal_memory",
+          "speaker": "서하린",
+          "visual_id": "wuxia_seoharin_left_meal"
+        },
+        "title": "남겨둔 밥"
       }
     ],
     "endings": [
@@ -3363,7 +3490,7 @@
   "manifest": {
     "counts": {
       "achievements": 2,
-      "encounters": 25,
+      "encounters": 26,
       "endings": 1,
       "items": 4,
       "locations": 4,

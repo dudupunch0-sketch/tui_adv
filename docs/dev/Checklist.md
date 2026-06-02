@@ -986,6 +986,19 @@
 - [x] 기본 office bundle, Web legacy generated `content.bundle.json`, `src/tui_adv/data/*.yaml`, legacy `escape-office` save/localStorage key 미변경 유지
 - [x] 다음 작업을 final epilogue UX/playtest 및 contract follow-up 검증으로 갱신
 
+### 0.2cf 2026-06-02 무협 final epilogue UX/playtest follow-up
+
+- [x] Web Storybook이 `epilogue_result`, `epilogue_card`, `epilogue_suppressed`, `epilogue_contract_error` body block을 양피지형 후일담 section으로 표시
+- [x] 후일담 prose는 본문에 즉시 노출하고, contract metadata는 접힌 `details` 기록으로 보관
+- [x] `data-body-kind`, `data-source-id`, metadata field key data attribute를 유지해 renderer-neutral contract test point 보존
+- [x] final epilogue 화면에서 직전 result history row가 summary 영역에 중복 노출되지 않도록 처리
+- [x] SuperLightTUI가 epilogue heading, compact metadata/prose, whitespace wrap으로 40-line snapshot 안에 핵심 카드 내용을 유지
+- [x] local ignored `web/src/core/wasm-pkg/` stale 상태에서는 Web playtest가 final epilogue block을 못 받는 문제 확인 및 local WASM package 재빌드
+- [x] fresh Web run에서 scripted final route가 빈 action choice와 10개 core-owned epilogue block으로 끝나는지 DOM playtest
+- [x] combat resolver, HP 숫자전, return/settlement schema, relation/debt/faction ledger, reward/ability schema, `item_unpriced_wooden_sword` payout 미변경 유지
+- [x] 서하린 truth delivery, `told_seoharin_truth`, 천기록 기록자 정체 reveal 미변경 유지
+- [x] 다음 작업을 return/settlement, final battle loss path, reward/ability, relation/debt/faction ledger 중 하나의 contract handoff 선택으로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

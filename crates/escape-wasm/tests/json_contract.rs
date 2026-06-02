@@ -2654,6 +2654,333 @@ fn json_boundary_reaches_wuxia_seoharin_left_meal_through_preview_bundle() {
 }
 
 #[test]
+fn json_boundary_reaches_wuxia_sado_final_phase_1_price_tag_through_preview_bundle() {
+    let price_tag_state_json = wuxia_state_after_actions(&[
+        "choice:follow_roadside_dust",
+        "move:jianghu_market_street",
+        "choice:run_toward_open_street",
+        "choice:choose_failure_log",
+        "choice:tell_plain_truth",
+        "choice:accept_three_month_trial",
+        "choice:step_back_with_firewood",
+        "choice:defend_cheongryu_with_white_path",
+        "choice:accept_medicine_with_written_debt",
+        "choice:watch_the_stolen_qingliu_flow",
+        "choice:endure_until_copy_flow_breaks",
+        "choice:listen_for_breath_mismatch",
+        "choice:reconstruct_mumyeongs_sightline",
+        "choice:show_the_hyeonakmun_trace_without_accusing",
+        "choice:watch_mumyeong_answer_the_boss",
+        "choice:search_the_rejected_aid_letters",
+        "choice:compare_anger_to_copied_flow",
+        "choice:inspect_bokho_lock_scars",
+        "choice:read_hyeonakmun_empty_gate_record",
+        "choice:trace_boss_offer_after_hyeonakmun",
+        "choice:assemble_departure_truth_without_delivering",
+        "choice:set_down_the_work_notebook_briefly",
+        "choice:eat_the_left_meal_quietly",
+    ]);
+
+    let price_tag_page_json = scene_page_json(&price_tag_state_json, WUXIA_PREVIEW_BUNDLE)
+        .expect("Sado final phase 1 price-tag scene page should serialize");
+    let price_tag_page: Value = serde_json::from_str(&price_tag_page_json)
+        .expect("Sado final phase 1 price-tag page JSON should parse");
+    assert_eq!(price_tag_page["mode"], "encounter");
+    assert_eq!(price_tag_page["title"], "사도 최종전 1페이즈: 가격표");
+    assert_eq!(
+        price_tag_page["location"]["id"],
+        "cheongryu_outer_courtyard"
+    );
+    assert_eq!(
+        price_tag_page["visual"]["id"],
+        "wuxia_sado_final_phase_1_price_tag"
+    );
+    assert_eq!(price_tag_page["visual"]["kind"], "final_phase_price_tag");
+    assert_eq!(price_tag_page["effect_cues"][0]["stable_terms"][1], "장부");
+    let price_tag_action_ids: Vec<&str> = price_tag_page["actions"]
+        .as_array()
+        .expect("actions should be an array")
+        .iter()
+        .map(|action| action["id"].as_str().expect("action id should be a string"))
+        .collect();
+    assert_eq!(
+        price_tag_action_ids,
+        vec![
+            "choice:approach_sado_before_the_ledger",
+            "choice:burn_the_blackscale_ledger",
+            "choice:secure_the_blackscale_ledger",
+            "choice:ease_hostage_pressure_first",
+        ]
+    );
+
+    let secure_ledger_result_json = apply_action_json(
+        &price_tag_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:secure_the_blackscale_ledger",
+    )
+    .expect("secure blackscale ledger action should serialize");
+    let secure_ledger_result: Value = serde_json::from_str(&secure_ledger_result_json)
+        .expect("Sado final phase 1 price-tag action should parse");
+    assert_eq!(
+        secure_ledger_result["encounter_id"],
+        "wuxia_sado_final_phase_1_price_tag"
+    );
+    assert_eq!(
+        secure_ledger_result["state"]["location_id"],
+        "black_serpent_ledger_vault"
+    );
+    let flags = secure_ledger_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array");
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "sado_final_phase_1_price_tag_resolved"));
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "final_state_routing_seeded"));
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "final_network_ledger_secured_seeded"));
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "final_evidence_strong_seeded"));
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "final_item_logs_blackscale_ledger_seeded"));
+    assert!(!flags
+        .iter()
+        .any(|flag| flag == "wuxia_sado_final_battle_started"));
+    let clues = secure_ledger_result["state"]["clues"]
+        .as_array()
+        .expect("clues should be an array");
+    assert!(clues
+        .iter()
+        .any(|clue| clue == "item_blackscale_ledger_logged"));
+    assert!(clues
+        .iter()
+        .any(|clue| clue == "black_serpent_network_structure_seen"));
+}
+
+#[test]
+fn json_boundary_reaches_wuxia_sado_final_phase_2_weakpoint_control_through_preview_bundle() {
+    let weakpoint_state_json = wuxia_state_after_actions(&[
+        "choice:follow_roadside_dust",
+        "move:jianghu_market_street",
+        "choice:run_toward_open_street",
+        "choice:choose_failure_log",
+        "choice:tell_plain_truth",
+        "choice:accept_three_month_trial",
+        "choice:step_back_with_firewood",
+        "choice:defend_cheongryu_with_white_path",
+        "choice:accept_medicine_with_written_debt",
+        "choice:watch_the_stolen_qingliu_flow",
+        "choice:endure_until_copy_flow_breaks",
+        "choice:listen_for_breath_mismatch",
+        "choice:reconstruct_mumyeongs_sightline",
+        "choice:show_the_hyeonakmun_trace_without_accusing",
+        "choice:watch_mumyeong_answer_the_boss",
+        "choice:search_the_rejected_aid_letters",
+        "choice:compare_anger_to_copied_flow",
+        "choice:inspect_bokho_lock_scars",
+        "choice:read_hyeonakmun_empty_gate_record",
+        "choice:trace_boss_offer_after_hyeonakmun",
+        "choice:assemble_departure_truth_without_delivering",
+        "choice:set_down_the_work_notebook_briefly",
+        "choice:eat_the_left_meal_quietly",
+        "choice:secure_the_blackscale_ledger",
+    ]);
+
+    let weakpoint_page_json = scene_page_json(&weakpoint_state_json, WUXIA_PREVIEW_BUNDLE)
+        .expect("Sado final phase 2 weakpoint-control scene page should serialize");
+    let weakpoint_page: Value = serde_json::from_str(&weakpoint_page_json)
+        .expect("Sado final phase 2 weakpoint-control page JSON should parse");
+    assert_eq!(weakpoint_page["mode"], "encounter");
+    assert_eq!(weakpoint_page["title"], "사도 최종전 2페이즈: 약점 장악");
+    assert_eq!(
+        weakpoint_page["location"]["id"],
+        "black_serpent_ledger_vault"
+    );
+    assert_eq!(
+        weakpoint_page["visual"]["id"],
+        "wuxia_sado_final_phase_2_weakpoint_control"
+    );
+    assert_eq!(
+        weakpoint_page["visual"]["kind"],
+        "final_phase_weakpoint_control"
+    );
+    assert_eq!(weakpoint_page["effect_cues"][0]["stable_terms"][3], "약점");
+    let weakpoint_action_ids: Vec<&str> = weakpoint_page["actions"]
+        .as_array()
+        .expect("actions should be an array")
+        .iter()
+        .map(|action| action["id"].as_str().expect("action id should be a string"))
+        .collect();
+    assert_eq!(
+        weakpoint_action_ids,
+        vec![
+            "choice:respond_to_seoharin_pressure",
+            "choice:return_flow_to_mumyeong",
+            "choice:read_dangerous_cheongirok_sentence",
+            "choice:focus_on_sado",
+        ]
+    );
+
+    let return_flow_result_json = apply_action_json(
+        &weakpoint_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:return_flow_to_mumyeong",
+    )
+    .expect("return flow to Mumyeong action should serialize");
+    let return_flow_result: Value = serde_json::from_str(&return_flow_result_json)
+        .expect("Sado final phase 2 weakpoint-control action should parse");
+    assert_eq!(
+        return_flow_result["encounter_id"],
+        "wuxia_sado_final_phase_2_weakpoint_control"
+    );
+    assert_eq!(
+        return_flow_result["state"]["location_id"],
+        "black_serpent_ledger_vault"
+    );
+    let flags = return_flow_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array");
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "sado_final_phase_2_weakpoint_control_resolved"));
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "final_phase_2_weakpoint_control_resolved"));
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "final_mumyeong_salvation_partial_seeded"));
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "final_successor_route_suppressed_seeded"));
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "final_player_method_protected_as_person_seeded"));
+    assert!(!flags
+        .iter()
+        .any(|flag| flag == "wuxia_sado_final_battle_started"));
+    let clues = return_flow_result["state"]["clues"]
+        .as_array()
+        .expect("clues should be an array");
+    assert!(clues.iter().any(|clue| clue == "mumyeong_flow_is_not_tool"));
+    assert!(clues.iter().any(|clue| clue == "successor_logic_wavers"));
+}
+
+#[test]
+fn json_boundary_reaches_wuxia_sado_final_phase_3_outside_calculation_through_preview_bundle() {
+    let outside_state_json = wuxia_state_after_actions(&[
+        "choice:follow_roadside_dust",
+        "move:jianghu_market_street",
+        "choice:run_toward_open_street",
+        "choice:choose_failure_log",
+        "choice:tell_plain_truth",
+        "choice:accept_three_month_trial",
+        "choice:step_back_with_firewood",
+        "choice:defend_cheongryu_with_white_path",
+        "choice:accept_medicine_with_written_debt",
+        "choice:watch_the_stolen_qingliu_flow",
+        "choice:endure_until_copy_flow_breaks",
+        "choice:listen_for_breath_mismatch",
+        "choice:reconstruct_mumyeongs_sightline",
+        "choice:show_the_hyeonakmun_trace_without_accusing",
+        "choice:watch_mumyeong_answer_the_boss",
+        "choice:search_the_rejected_aid_letters",
+        "choice:compare_anger_to_copied_flow",
+        "choice:inspect_bokho_lock_scars",
+        "choice:read_hyeonakmun_empty_gate_record",
+        "choice:trace_boss_offer_after_hyeonakmun",
+        "choice:assemble_departure_truth_without_delivering",
+        "choice:set_down_the_work_notebook_briefly",
+        "choice:eat_the_left_meal_quietly",
+        "choice:secure_the_blackscale_ledger",
+        "choice:return_flow_to_mumyeong",
+    ]);
+
+    let outside_page_json = scene_page_json(&outside_state_json, WUXIA_PREVIEW_BUNDLE)
+        .expect("Sado final phase 3 outside-calculation scene page should serialize");
+    let outside_page: Value = serde_json::from_str(&outside_page_json)
+        .expect("Sado final phase 3 outside-calculation page JSON should parse");
+    assert_eq!(outside_page["mode"], "encounter");
+    assert_eq!(outside_page["title"], "사도 최종전 3페이즈: 계산식 밖");
+    assert_eq!(outside_page["location"]["id"], "black_serpent_ledger_vault");
+    assert_eq!(
+        outside_page["visual"]["id"],
+        "wuxia_sado_final_phase_3_outside_calculation"
+    );
+    assert_eq!(
+        outside_page["visual"]["kind"],
+        "final_phase_outside_calculation"
+    );
+    assert_eq!(outside_page["effect_cues"][0]["stable_terms"][0], "계산식");
+    let outside_action_ids: Vec<&str> = outside_page["actions"]
+        .as_array()
+        .expect("actions should be an array")
+        .iter()
+        .map(|action| action["id"].as_str().expect("action id should be a string"))
+        .collect();
+    assert_eq!(
+        outside_action_ids,
+        vec![
+            "choice:remember_the_empty_place",
+            "choice:let_mumyeong_choose_own_flow",
+            "choice:endure_with_qingliu_will",
+            "choice:point_to_blank_in_ledger",
+            "choice:answer_with_sado_calculation",
+        ]
+    );
+
+    let empty_place_result_json = apply_action_json(
+        &outside_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:remember_the_empty_place",
+    )
+    .expect("remember empty place action should serialize");
+    let empty_place_result: Value = serde_json::from_str(&empty_place_result_json)
+        .expect("Sado final phase 3 outside-calculation action should parse");
+    assert_eq!(
+        empty_place_result["encounter_id"],
+        "wuxia_sado_final_phase_3_outside_calculation"
+    );
+    assert_eq!(
+        empty_place_result["state"]["location_id"],
+        "black_serpent_ledger_vault"
+    );
+    let flags = empty_place_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array");
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "sado_final_phase_3_outside_calculation_resolved"));
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "final_phase_3_outside_calculation_resolved"));
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "final_combat_result_battle_victory_seeded"));
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "final_boss_resolution_true_route_candidate_seeded"));
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "final_player_method_outside_calculation_confirmed_seeded"));
+    assert!(!flags
+        .iter()
+        .any(|flag| flag == "wuxia_sado_final_battle_started"));
+    let clues = empty_place_result["state"]["clues"]
+        .as_array()
+        .expect("clues should be an array");
+    assert!(clues
+        .iter()
+        .any(|clue| clue == "empty_place_is_not_for_sale"));
+    assert!(clues
+        .iter()
+        .any(|clue| clue == "sado_calculation_fails_to_price_waiting"));
+}
+
+#[test]
 fn json_boundary_reports_user_facing_errors() {
     let state_json = new_game_json(123, CONTENT_BUNDLE).expect("new game should serialize");
 

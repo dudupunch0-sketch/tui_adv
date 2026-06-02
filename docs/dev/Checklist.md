@@ -835,6 +835,54 @@
 - [x] 다음 runtime 후보 `wuxia_sado_final_phase_1_price_tag`와 no combat resolver/no HP boundary 문서화
 - [x] README, docs index, main plan, Notion coverage, storypack docs, next_goal handoff 동기화
 
+### 0.2bv 2026-06-02 무협 `wuxia_sado_final_phase_1_price_tag` preview runtime slice
+
+- [x] Notion `사도 최종전 1페이즈: 가격표`, `사도 최종전`, phase 2/3, 보스/무명 결산, 서하린 late branch 재확인
+- [x] `wuxia_sado_final_phase_1_price_tag`를 기존 encounter schema로 구현 가능한 final-entry slice로 결정
+- [x] `src/tui_adv/storypack-previews/wuxia_jianghu_pack/locations.yaml`에 `black_serpent_ledger_vault` 추가
+- [x] `cheongryu_outer_courtyard`와 `black_serpent_ledger_vault`를 왕복 연결
+- [x] `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`에서 `wuxia_seoharin_left_meal` 뒤에 `wuxia_sado_final_phase_1_price_tag` 추가
+- [x] start conditions를 `seoharin_left_meal_resolved`, `seoharin_empty_place_resolved`, `seoharin_axis_opened`, `empty_place_remembered`, `truth_delivery_still_unopened`, `boss_recruits_mumyeong_resolved`, `boss_recruitment_thread_opened`, `boss_first_appearance_resolved`, `black_serpent_core_pressure_opened`, `sealed_departure_truth_summary_prepared`, `midgame_continuity_started`로 구현
+- [x] stable choice id `approach_sado_before_the_ledger`, `burn_the_blackscale_ledger`, `secure_the_blackscale_ledger`, `ease_hostage_pressure_first` 구현
+- [x] 모든 선택지가 `sado_final_phase_1_price_tag_resolved`, `final_state_routing_seeded`, `destination_id: black_serpent_ledger_vault` bridge를 남기도록 구현
+- [x] direct/ledger burn/ledger secure/pressure relief별 `network_handling`, `evidence_state`, `pressure_state`, `item_logs` seed를 flags/clues/log로만 구현
+- [x] `secure_the_blackscale_ledger`는 `item_blackscale_ledger_logged` clue와 `final_item_logs_blackscale_ledger_seeded` flag만 남기고 새 item 지급은 하지 않음
+- [x] Rust/Web storypack preview generated bundle 재생성
+- [x] Python exporter/docs/storypack DB, Rust content bundle, WASM JSON boundary, terminal smoke, Web default content bundle registry 테스트 갱신
+- [x] combat resolver, HP 숫자전, final epilogue/return schema, 서하린 truth delivery, `told_seoharin_truth`, 무명 구원 확정, relation/reward schema, `item_unpriced_wooden_sword` payout 미변경 유지
+- [x] 기본 office bundle, Web legacy generated `content.bundle.json`, `src/tui_adv/data/*.yaml`, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 작업을 `wuxia_sado_final_phase_2_weakpoint_control` handoff 검토로 갱신
+
+### 0.2bw 2026-06-02 무협 `wuxia_sado_final_phase_2_weakpoint_control` preview runtime slice
+
+- [x] Notion `사도 최종전 2페이즈: 약점 장악`, `사도 최종전 3페이즈: 계산식 밖`, `사도 최종전`, `보스 결산` 재확인
+- [x] `wuxia_sado_final_phase_2_weakpoint_control`을 기존 encounter schema로 구현 가능한 final-entry slice로 결정
+- [x] `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`에서 `wuxia_sado_final_phase_1_price_tag` 뒤에 `wuxia_sado_final_phase_2_weakpoint_control` 추가
+- [x] start conditions를 `sado_final_phase_1_price_tag_resolved`, `final_state_routing_seeded`로 구현
+- [x] stable choice id `respond_to_seoharin_pressure`, `return_flow_to_mumyeong`, `read_dangerous_cheongirok_sentence`, `focus_on_sado` 구현
+- [x] 모든 선택지가 `sado_final_phase_2_weakpoint_control_resolved`, `final_phase_2_weakpoint_control_resolved`, `destination_id: black_serpent_ledger_vault` bridge를 남기도록 구현
+- [x] 서하린/무명/천기록/사도 집중별 `seoharin_axis`, `qingliu_rebuild`, `mumyeong_salvation`, `successor_route`, `own_flow_choice`, `cheongirok_state`, `player_method` seed를 flags/clues/log로만 구현
+- [x] Rust/Web storypack preview generated bundle 재생성
+- [x] Python exporter/docs/storypack DB, Rust content bundle, Web default content bundle registry 테스트 갱신
+- [x] combat resolver, HP 숫자전, final epilogue/return schema, 서하린 truth delivery, `told_seoharin_truth`, 무명 구원 확정, relation/reward schema, `item_unpriced_wooden_sword` payout 미변경 유지
+- [x] 기본 office bundle, Web legacy generated `content.bundle.json`, `src/tui_adv/data/*.yaml`, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 작업을 `wuxia_sado_final_phase_3_outside_calculation` handoff 검토로 갱신
+
+### 0.2bx 2026-06-02 무협 `wuxia_sado_final_phase_3_outside_calculation` preview runtime slice
+
+- [x] Notion `사도 최종전 3페이즈: 계산식 밖`, `사도 최종전`, `보스 결산`, `최종장 결산 라우팅 마스터`, `사도 최종전 상태값 사전` 재확인
+- [x] `wuxia_sado_final_phase_3_outside_calculation`을 기존 encounter schema로 구현 가능한 final-entry slice로 결정
+- [x] `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`에서 `wuxia_sado_final_phase_2_weakpoint_control` 뒤에 `wuxia_sado_final_phase_3_outside_calculation` 추가
+- [x] start conditions를 `sado_final_phase_2_weakpoint_control_resolved`, `final_phase_2_weakpoint_control_resolved`, `final_state_routing_seeded`로 구현
+- [x] stable choice id `remember_the_empty_place`, `let_mumyeong_choose_own_flow`, `endure_with_qingliu_will`, `point_to_blank_in_ledger`, `answer_with_sado_calculation` 구현
+- [x] 모든 선택지가 `sado_final_phase_3_outside_calculation_resolved`, `final_phase_3_outside_calculation_resolved`, `final_combat_result_battle_victory_seeded`, `destination_id: black_serpent_ledger_vault` bridge를 남기도록 구현
+- [x] true/meaningful/corrupted boss resolution candidate와 서하린/무명/청류문/장부/천기록 final-state seed를 flags/clues/log로만 구현
+- [x] Rust/Web storypack preview generated bundle 재생성
+- [x] Python exporter/docs/storypack DB, Rust content bundle, WASM JSON boundary, terminal smoke, Web default content bundle registry 테스트 갱신
+- [x] combat resolver, HP 숫자전, 보스 결산 출력기, final epilogue/return schema, 서하린 truth delivery, `told_seoharin_truth`, 무명 구원 확정, relation/reward schema, `item_unpriced_wooden_sword` payout 미변경 유지
+- [x] 기본 office bundle, Web legacy generated `content.bundle.json`, `src/tui_adv/data/*.yaml`, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 작업을 `wuxia_boss_resolution` handoff 검토로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

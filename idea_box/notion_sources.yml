@@ -287,7 +287,7 @@ sources:
     notion_ref: "notion:37237e69-695e-81e2-aac7-cecfce3e4239"
     url: "https://www.notion.so/37237e69695e81e2aac7cecfce3e4239"
     last_checked_at: "2026-06-02T12:25:00+09:00"
-    precedence_role: "next_runtime_candidate_source_after_state_contract"
+    precedence_role: "implemented_final_entry_runtime_source"
     related_design_units:
       - "encounter:wuxia_sado_final_phase_1_price_tag"
       - "system:evidence_state"
@@ -296,20 +296,66 @@ sources:
       - "system:item_logs"
     related_canonical_docs:
       - "docs/design/Wuxia_Final_State_Routing.md"
+      - "docs/dev/Development_Plan.md"
       - "idea_box/next_goal/README.md"
-    runtime_status: "candidate_after_final_state_contract"
-    status: "live_checked_next_candidate"
+    runtime_status: "implemented_in_storypack_preview"
+    status: "live_checked_runtime_implemented"
+
+  - key: wuxia_sado_final_phase_2_weakpoint_control
+    title: "사도 최종전 2페이즈: 약점 통제"
+    object: page
+    notion_ref: "notion:37237e69-695e-8184-8beb-ccf56ae8fcd1"
+    url: "https://www.notion.so/37237e69695e81848bebccf56ae8fcd1"
+    last_checked_at: "2026-06-02T12:25:00+09:00"
+    precedence_role: "implemented_final_entry_runtime_source"
+    related_design_units:
+      - "encounter:wuxia_sado_final_phase_2_weakpoint_control"
+      - "system:seoharin_axis"
+      - "system:qingliu_rebuild"
+      - "system:mumyeong_salvation"
+      - "system:successor_route"
+      - "system:cheongirok_state"
+      - "system:player_method"
+    related_canonical_docs:
+      - "docs/design/Wuxia_Final_State_Routing.md"
+      - "docs/dev/Development_Plan.md"
+      - "idea_box/next_goal/README.md"
+    runtime_status: "implemented_in_storypack_preview"
+    status: "live_checked_runtime_implemented"
+
+  - key: wuxia_sado_final_phase_3_outside_calculation
+    title: "사도 최종전 3페이즈: 계산식 밖"
+    object: page
+    notion_ref: "notion:37237e69-695e-8107-b9ab-cab708a6c5dd"
+    url: "https://www.notion.so/37237e69695e8107b9abcab708a6c5dd"
+    last_checked_at: "2026-06-02T12:50:00+09:00"
+    precedence_role: "implemented_final_entry_runtime_source"
+    related_design_units:
+      - "encounter:wuxia_sado_final_phase_3_outside_calculation"
+      - "system:boss_resolution_route"
+      - "system:combat_result"
+      - "system:own_flow_choice"
+      - "system:player_method"
+    related_canonical_docs:
+      - "docs/design/Wuxia_Final_State_Routing.md"
+      - "docs/dev/Development_Plan.md"
+      - "idea_box/next_goal/README.md"
+    runtime_status: "implemented_in_storypack_preview"
+    status: "live_checked_runtime_implemented"
 
   - key: wuxia_boss_resolution
     title: "보스 결산"
     object: page
     notion_ref: "notion:37137e69-695e-8164-ab41-e794aa886dae"
     url: "https://www.notion.so/37137e69695e8164ab41e794aa886dae"
-    last_checked_at: "2026-06-02T12:25:00+09:00"
-    precedence_role: "future_final_resolution_source"
+    last_checked_at: "2026-06-02T12:50:00+09:00"
+    precedence_role: "next_runtime_handoff_source_after_sado_phase_3"
     related_canonical_docs:
       - "docs/design/Wuxia_Final_State_Routing.md"
-    status: "deferred_until_final_routing_runtime"
+      - "docs/dev/Development_Plan.md"
+      - "idea_box/next_goal/README.md"
+    runtime_status: "next_handoff_candidate"
+    status: "live_checked_next_candidate"
 
   - key: wuxia_mumyeong_resolution
     title: "무명 결산"

@@ -32,7 +32,7 @@ Machine-readable mirror는 `docs/content/storypack_db/storypacks.json`에 둔다
 | id | 이름 | status | 한 줄 컨셉 | 주 surface | 문서 |
 |---|---|---|---|---|---|
 | `isolation_pack` | 차원격리팩 | candidate | 회사 일부 공간이 격리되고, 사내 시스템으로 다른 격리자들과 연결된다. | messenger, cctv, meeting_minutes, organization_chart | `isolation_pack.md` |
-| `yageunmong_pack` | 야근몽 | candidate | 회사에서 잠깐 엎드려 잠든 주인공이 자각몽 상태의 회사 악몽에서 깨어나려 한다. | messenger, approval_system, meeting_minutes, office_object, security_gate | `yageunmong_pack.md` |
+| `yageunmong_pack` | 야근몽 | candidate | 회사에서 잠깐 엎드려 잠든 주인공이 자각몽 상태의 회사 악몽에서 깨어나려 한다. | messenger, approval_system, meeting_minutes, build_log, office_object, security_gate | `yageunmong_pack.md` |
 | `wuxia_jianghu_pack` | 이구학지 — 천기록 | candidate | 현대 회사원이 본인 몸과 출근복장 그대로 무협 세계 시장에 전이되고, 흑사방 첫 전투와 청류문 수습생 구간을 거쳐 천기록/천외편린 성장 구조를 경험한다. | commute_rift, market_street, sect_courtyard, cheonggi_record, fragment_choice | `wuxia_jianghu_pack.md` |
 | `document_contamination_pack` | 문서오염팩 | raw | 평범한 업무 문서를 열람한 사람들이 현실을 다르게 인식한다. | document_viewer, intranet, organization_chart | 추후 분리 |
 | `meeting_reservation_pack` | 회의실예약팩 | raw | 회의실 예약 조건이 과거/미래/다른 세계선 회의 공간으로 이어진다. | reservation_panel, meeting_minutes | 추후 분리 |
@@ -40,7 +40,7 @@ Machine-readable mirror는 `docs/content/storypack_db/storypacks.json`에 둔다
 
 ## 우선순위
 
-첫 설계 slice는 `isolation_pack`으로 시작했다. 2026-05-29부터는 office-only 편향을 줄이기 위해 `wuxia_jianghu_pack`을 첫 비-office 기준 storypack으로 함께 관리했고, 2026-06-01 이후 Web/default storypack은 **이구학지 — 천기록**이며 2026-06-02 이후 terminal content scene default도 이구학지 fixture다. 현재 무협팩의 canonical story는 Notion에서 갱신된 이구학지이며, 이전의 generic 무협 placeholder는 superseded다. 2026-05-31에는 Notion-origin `야근몽`을 별도 office-family 후보인 `yageunmong_pack`으로 문서화하고, live Notion Markdown 대조 후 관련 idea entry를 done 처리했다. 이는 legacy office bundle을 삭제한다는 뜻이 아니다.
+첫 설계 slice는 `isolation_pack`으로 시작했다. 2026-05-29부터는 office-only 편향을 줄이기 위해 `wuxia_jianghu_pack`을 첫 비-office 기준 storypack으로 함께 관리했고, 2026-06-01 이후 Web/default storypack은 **이구학지 — 천기록**이며 2026-06-02 이후 terminal content scene default도 이구학지 fixture다. 현재 무협팩의 canonical story는 Notion에서 갱신된 이구학지이며, 이전의 generic 무협 placeholder는 superseded다. 2026-05-31에는 Notion-origin `야근몽`을 별도 office-family 후보인 `yageunmong_pack`으로 문서화하고, live Notion Markdown 대조 후 관련 idea entry를 done 처리했다. 2026-06-02에는 같은 Notion 원문을 다시 확인해 이구학지식 route-pressure/동료 구출/후일담 handoff 구조로 후보 카드를 12개까지 확장했다. 이는 legacy office bundle을 삭제한다는 뜻이 아니다.
 
 나머지 팩은 다음 조건을 만족할 때 별도 문서로 승격한다.
 

@@ -1,5 +1,6 @@
 # Notion source ledger for tui_adv design sync.
 # Raw Notion snapshots are not committed; the 2026-06-01 audit used /tmp/tui_adv_notion_wuxia_sync.
+# The 2026-06-02 야근몽 expansion used live Notion fetches only.
 
 last_checked_at: "2026-06-02T09:49:00+09:00"
 source_policy:
@@ -10,8 +11,35 @@ source_policy:
     - "For 이구학지, the parent page is a synopsis/early planning page."
     - "Latest detailed operating rules come from child management pages plus 사건/후일담 DBs."
     - "Notion DB rows are design sources, not runtime-complete proof."
+    - "For 야근몽, no dedicated 사건/후일담 DB was found on 2026-06-02; the parent page is the live concept source and repo cards are design handoff candidates."
 
 sources:
+  - key: yageunmong_parent
+    title: "회사 스토리팩: 야근몽"
+    object: page
+    notion_ref: "notion:36f37e69-695e-8113-9dd5-ddc56a633226"
+    url: "https://www.notion.so/36f37e69695e81139dd5ddc56a633226"
+    last_edited_time: "2026-06-01T23:54:27.854Z"
+    last_checked_at: "2026-06-02T08:54:27+09:00"
+    precedence_role: "concept_parent"
+    related_design_units:
+      - "storypack:yageunmong_pack"
+      - "system:awakening_fragment"
+      - "system:office_dream_route_pressure"
+    related_canonical_docs:
+      - "docs/content/storypacks/yageunmong_pack.md"
+      - "docs/content/encounter_db/yageunmong_pack.md"
+      - "docs/content/storypack_db/storypacks.json"
+      - "docs/content/storypack_db/encounter_situations.json"
+      - "docs/dev/Notion_Design_Coverage.md"
+    repo_expansion_status:
+      candidate_cards_before: 6
+      candidate_cards_after: 12
+      runtime_status: "docs_only_not_runtime"
+      notion_event_db_status: "none_found_2026_06_02"
+      notion_page_sync_note: "appended_2026_06_02"
+    status: "live_checked_docs_synced_notion_appended"
+
   - key: wuxia_igu_hakji_parent
     title: "무협 스토리팩: 이구학지 — 천기록"
     object: page

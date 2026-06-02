@@ -1,8 +1,9 @@
 use escape_core::{
     apply_action_from_content, index_content_bundle, load_content_bundle, new_game,
     new_game_from_content_at, scene_page_from_content, turn_view, turn_view_from_content,
-    ActionView, BlockedActionView, ContentBundle, ContentIndex, EffectCue, GameState, SceneAction,
-    SceneBlockedAction, SceneEffectCue, SceneMode, ScenePage, TurnView, DEFAULT_START_LOCATION_ID,
+    ActionView, BlockedActionView, BodyBlock, ContentBundle, ContentIndex, EffectCue, GameState,
+    SceneAction, SceneBlockedAction, SceneEffectCue, SceneMode, ScenePage, TurnView,
+    DEFAULT_START_LOCATION_ID,
 };
 use std::io::{self, Write};
 use std::path::PathBuf;
@@ -759,10 +760,78 @@ fn render_scene_body(ui: &mut slt::Context, page: &ScenePage) {
         ui.text(format!("{}: {}", entry.speaker, entry.text));
     }
     for block in &page.body_blocks {
-        for line in block.text.lines() {
-            ui.text(line);
+        if let Some(heading) = scene_body_block_heading(block) {
+            ui.text(heading);
+        }
+        let lines = compact_terminal_body_block_lines(block);
+        for line in lines {
+            for wrapped in wrap_terminal_body_line(line, 76) {
+                ui.text(wrapped);
+            }
         }
     }
+}
+
+fn compact_terminal_body_block_lines(block: &BodyBlock) -> Vec<&str> {
+    match block.kind.as_str() {
+        "epilogue_result" => block
+            .text
+            .lines()
+            .filter(|line| {
+                line.starts_with("final_result_key:")
+                    || line.starts_with("result_title:")
+                    || line.starts_with("owned_by:")
+            })
+            .collect(),
+        "epilogue_card" => block
+            .text
+            .lines()
+            .filter(|line| line.starts_with("card_id:") || !line.contains(": "))
+            .collect(),
+        "epilogue_suppressed" => block
+            .text
+            .lines()
+            .filter(|line| line.starts_with("card_id:") || line.starts_with("suppressed_by:"))
+            .collect(),
+        _ => block.text.lines().collect(),
+    }
+}
+
+fn scene_body_block_heading(block: &BodyBlock) -> Option<&'static str> {
+    match block.kind.as_str() {
+        "epilogue_result" => Some("[결산 판정]"),
+        "epilogue_card" => Some("[후일담 카드]"),
+        "epilogue_suppressed" => Some("[억제된 후일담 후보]"),
+        "epilogue_contract_error" => Some("[후일담 계약 오류]"),
+        _ => None,
+    }
+}
+
+fn wrap_terminal_body_line(line: &str, max_chars: usize) -> Vec<String> {
+    let mut rows = Vec::new();
+    let mut remaining = line.trim_end();
+    while remaining.chars().count() > max_chars {
+        let mut last_space_byte = None;
+        let mut hard_break_byte = remaining.len();
+        for (char_count, (byte_index, ch)) in remaining.char_indices().enumerate() {
+            if char_count >= max_chars {
+                hard_break_byte = byte_index;
+                break;
+            }
+            if ch.is_whitespace() {
+                last_space_byte = Some(byte_index);
+            }
+        }
+        let break_byte = last_space_byte
+            .filter(|byte_index| *byte_index > 0)
+            .unwrap_or(hard_break_byte);
+        rows.push(remaining[..break_byte].trim_end().to_string());
+        remaining = remaining[break_byte..].trim_start();
+    }
+    if rows.is_empty() || !remaining.is_empty() {
+        rows.push(remaining.to_string());
+    }
+    rows
 }
 
 fn scene_visual_card_lines(page: &ScenePage) -> Vec<String> {

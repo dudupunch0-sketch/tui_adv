@@ -1974,3 +1974,74 @@ encounters:
           add_clues: [closed_gate_is_protection_as_possession, sado_style_calculation_closes_return_place, open_gate_and_closed_gate_are_mutually_exclusive]
           destination_id: black_serpent_ledger_vault
           log: 산문은 닫힌다. 안쪽은 더 안전해 보이지만, 돌아오는 길은 더 좁아진다. 천기록은 이것을 서하린의 단순 비극이 아니라 소속감이 사도식 소유와 닮아가는 침식 후보로 남긴다.
+
+  - id: wuxia_cheongirok_resolution
+    title: "천기록 결산"
+    body: 서하린과 청류문의 장이 잠시 멎자, 천기록의 마지막 장이 거의 빈 종이처럼 펼쳐진다. 그곳에는 정답도, 기록자의 이름도 없다. 다만 네가 기록을 이해의 보조로 썼는지, 사람을 줄 세우는 계산 도구로 썼는지에 따라 먹빛의 결이 달라진다. 이 결산은 후일담을 출력하지 않고, 마지막 장의 안전한 여운과 오염 변주 후보만 남긴다.
+    presentation:
+      visual_id: wuxia_cheongirok_resolution
+      speaker: 천기록
+      layout: cheongirok_resolution_seed
+      effect_cues:
+        - kind: glyph_anomaly
+          source: wuxia_cheongirok_resolution
+          intensity: 0.9
+          stable_terms: [천기록, 마지막 장, 빈칸, 기록자]
+          distortion: blank_last_page_reflects_method_not_answer
+          duration_hint_ms: 2100
+          fallback_text: 천기록의 마지막 장 위에 '천기록', '마지막 장', '빈칸', '기록자'만 번졌다가 지워진다.
+    conditions:
+      locations: [black_serpent_ledger_vault]
+      required_flags: [seoharin_qingliu_resolution_resolved, mumyeong_resolution_resolved, boss_resolution_resolved, final_result_priority_applied_seeded, final_combat_result_battle_victory_seeded, final_state_routing_seeded]
+      forbidden_flags: [cheongirok_resolution_resolved]
+    choices:
+      - id: turn_the_last_page_without_question
+        label: 질문하지 않고 마지막 장을 넘긴다
+        outcome:
+          resources:
+            sanity: -1
+          danger: 1
+          add_flags: [cheongirok_resolution_resolved, final_cheongirok_resolution_safe_high_use_seeded, final_cheongirok_state_high_use_not_corruption_seeded, final_epilogue_tianjilu_last_page_candidate_seeded, final_epilogue_tianjilu_safe_high_use_variant_seeded]
+          add_clues: [record_does_not_answer_questions, high_use_is_not_corruption, last_page_turns_without_identity_reveal]
+          destination_id: black_serpent_ledger_vault
+          log: 천기록은 대답하지 않는다. 너는 마지막 장을 정답지처럼 붙잡지 않고 넘긴다. 많은 것을 보았다는 사실은 남지만, 그것이 곧 침식이라는 결론은 기록되지 않는다.
+      - id: leave_blank_as_unpriced_place
+        label: 빈칸을 값이 아닌 자리로 남긴다
+        outcome:
+          resources:
+            sanity: -2
+          danger: 1
+          add_flags: [cheongirok_resolution_resolved, final_cheongirok_resolution_blank_place_seeded, final_epilogue_tianjilu_true_route_variant_seeded, final_unpriced_wooden_sword_condition_preserved_seeded, final_epilogue_seoharin_empty_place_candidate_reinforced_seeded, final_epilogue_seoharin_open_gate_candidate_reinforced_seeded]
+          add_clues: [blank_space_is_not_missing_answer, unpriced_wooden_sword_remains_condition_not_item, true_route_blank_page_is_left_for_people]
+          destination_id: black_serpent_ledger_vault
+          log: 마지막 장의 빈칸은 실패한 답안지가 아니다. 값이 매겨지지 않은 목검과 닫히지 않은 산문처럼, 누군가가 돌아오거나 돌아오지 않을 자리를 남기는 방식이다. 천기록은 아이템을 지급하지 않는다.
+      - id: read_the_lines_that_align_like_ledger
+        label: 장부처럼 줄 맞는 글자를 읽는다
+        outcome:
+          resources:
+            sanity: -4
+          danger: 2
+          add_flags: [cheongirok_resolution_resolved, final_cheongirok_resolution_corruption_variant_seeded, final_cheongirok_state_corruption_high_confirmed_seeded, final_player_method_sado_style_calculation_echo_seeded, final_epilogue_tianjilu_last_page_corruption_variant_seeded, final_epilogue_seoharin_closed_gate_candidate_seeded]
+          add_clues: [record_can_be_misused_as_calculation, calculation_reduces_people_into_lines, corruption_variant_is_method_trace_not_punishment]
+          destination_id: black_serpent_ledger_vault
+          log: 천기록의 글자는 어느 순간 장부처럼 줄을 맞춘다. 그것은 기록자의 판결이 아니다. 네가 사람과 관계를 값으로 정렬하려 했던 방식이 마지막 장에 되비친 흔적이다.
+      - id: close_record_before_it_becomes_answer
+        label: 답이 되기 전에 기록을 덮는다
+        outcome:
+          resources:
+            sanity: -1
+          danger: 0
+          add_flags: [cheongirok_resolution_resolved, final_cheongirok_resolution_low_use_silence_seeded, final_epilogue_tianjilu_last_page_candidate_seeded, final_cheongirok_identity_reveal_suppressed_seeded]
+          add_clues: [not_every_blank_requires_reading, recorder_identity_stays_unrevealed, low_use_can_still_leave_afterimage]
+          destination_id: black_serpent_ledger_vault
+          log: 너는 마지막 장을 더 파고들지 않는다. 기록은 조용히 덮이고, 기록자의 정체는 끝내 이름이 되지 않는다. 그래도 빈 장의 여운은 다음 후일담 후보로 남는다.
+      - id: let_record_reflect_the_method
+        label: 결과보다 사용 방식을 비추게 둔다
+        outcome:
+          resources:
+            sanity: -2
+          danger: 1
+          add_flags: [cheongirok_resolution_resolved, final_cheongirok_resolution_method_reflection_seeded, final_player_method_reflected_not_judged_seeded, final_epilogue_tianjilu_last_page_candidate_seeded, final_epilogue_candidates_ready_for_future_renderer_seeded]
+          add_clues: [last_page_reflects_method_not_morality_score, cheongirok_is_not_boss_defeat_tool, future_epilogue_renderer_still_unopened]
+          destination_id: black_serpent_ledger_vault
+          log: 마지막 장은 승패를 다시 계산하지 않는다. 그 장은 네가 어떤 방식으로 사람, 기록, 증거, 관계를 다루었는지만 조용히 비춘다. 출력기는 아직 열리지 않고, 후보만 남는다.

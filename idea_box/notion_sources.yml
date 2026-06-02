@@ -425,7 +425,7 @@ sources:
     notion_ref: "notion:37137e69-695e-8196-b7b2-c9f27d91e976"
     url: "https://www.notion.so/37137e69695e8196b7b2c9f27d91e976"
     last_checked_at: "2026-06-02T12:25:00+09:00"
-    precedence_role: "next_cheongirok_resolution_handoff_source"
+    precedence_role: "implemented_cheongirok_resolution_route_seed_source"
     related_design_units:
       - "encounter:wuxia_cheongirok_resolution"
       - "system:cheongirok_state"
@@ -440,6 +440,37 @@ sources:
       - "wuxia_boss_resolution"
       - "wuxia_mumyeong_resolution"
       - "wuxia_seoharin_qingliu_resolution"
+    consumed_by:
+      - "encounter:wuxia_cheongirok_resolution"
+    runtime_status: "implemented_in_storypack_preview"
+    implementation_scope: "seed_bridge_only_no_final_epilogue_renderer_no_identity_reveal"
+    next_handoff_candidate: "wuxia_black_serpent_aftermath_handoff"
+    status: "live_checked_runtime_implemented"
+
+  - key: wuxia_black_serpent_aftermath
+    title: "흑사방 aftermath handoff"
+    object: derived_runtime_handoff
+    notion_refs:
+      - "notion:37237e69-695e-81d2-8ce2-d1c738c3e923"
+      - "notion:37137e69-695e-8177-a228-d7f96d084622"
+    last_checked_at: "2026-06-02T12:25:00+09:00"
+    precedence_role: "next_black_serpent_aftermath_handoff_candidate"
+    related_design_units:
+      - "encounter:wuxia_black_serpent_aftermath"
+      - "epilogue_candidate:broken_black_serpent"
+      - "epilogue_candidate:black_serpent_banner"
+      - "epilogue_candidate:southern_market_rumor"
+      - "system:final_epilogue_master_matrix"
+    related_canonical_docs:
+      - "docs/design/Wuxia_Final_State_Routing.md"
+      - "docs/dev/Development_Plan.md"
+      - "docs/dev/Notion_Design_Coverage.md"
+      - "idea_box/next_goal/README.md"
+    required_prior_runtime:
+      - "wuxia_boss_resolution"
+      - "wuxia_mumyeong_resolution"
+      - "wuxia_seoharin_qingliu_resolution"
+      - "wuxia_cheongirok_resolution"
     runtime_status: "next_handoff_candidate"
     status: "live_checked_next_candidate"
 

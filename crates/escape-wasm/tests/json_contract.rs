@@ -3346,6 +3346,73 @@ fn json_boundary_reaches_wuxia_seoharin_qingliu_resolution_after_mumyeong_resolu
     assert!(clues
         .iter()
         .any(|clue| clue == "qingliu_future_is_poor_but_flowing"));
+
+    let cheongirok_state_json = serde_json::to_string(&open_gate_result["state"])
+        .expect("cheongirok state should stringify");
+    let cheongirok_page_json = scene_page_json(&cheongirok_state_json, WUXIA_PREVIEW_BUNDLE)
+        .expect("cheongirok resolution scene page should serialize");
+    let cheongirok_page: Value = serde_json::from_str(&cheongirok_page_json)
+        .expect("cheongirok page JSON should parse");
+
+    assert_eq!(cheongirok_page["mode"], "encounter");
+    assert_eq!(cheongirok_page["title"], "천기록 결산");
+    assert_eq!(
+        cheongirok_page["visual"]["id"],
+        "wuxia_cheongirok_resolution"
+    );
+    assert_eq!(
+        cheongirok_page["visual"]["kind"],
+        "cheongirok_resolution_seed"
+    );
+    assert_eq!(cheongirok_page["effect_cues"][0]["stable_terms"][0], "천기록");
+    let cheongirok_action_ids: Vec<&str> = cheongirok_page["actions"]
+        .as_array()
+        .expect("actions should be an array")
+        .iter()
+        .map(|action| action["id"].as_str().expect("action id should be a string"))
+        .collect();
+    assert_eq!(
+        cheongirok_action_ids,
+        vec![
+            "choice:turn_the_last_page_without_question",
+            "choice:leave_blank_as_unpriced_place",
+            "choice:read_the_lines_that_align_like_ledger",
+            "choice:close_record_before_it_becomes_answer",
+            "choice:let_record_reflect_the_method",
+        ]
+    );
+
+    let last_page_result_json = apply_action_json(
+        &cheongirok_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:turn_the_last_page_without_question",
+    )
+    .expect("safe high-use cheongirok resolution action should serialize");
+    let last_page_result: Value = serde_json::from_str(&last_page_result_json)
+        .expect("cheongirok resolution action JSON should parse");
+    assert_eq!(
+        last_page_result["encounter_id"],
+        "wuxia_cheongirok_resolution"
+    );
+    let flags = last_page_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array");
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "cheongirok_resolution_resolved"));
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "final_cheongirok_state_high_use_not_corruption_seeded"));
+    assert!(!flags
+        .iter()
+        .any(|flag| flag == "final_cheongirok_identity_revealed"));
+    assert!(!flags.iter().any(|flag| flag == "told_seoharin_truth"));
+    let clues = last_page_result["state"]["clues"]
+        .as_array()
+        .expect("clues should be an array");
+    assert!(clues
+        .iter()
+        .any(|clue| clue == "record_does_not_answer_questions"));
 }
 
 #[test]

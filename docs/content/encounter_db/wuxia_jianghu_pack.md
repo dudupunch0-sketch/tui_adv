@@ -1,13 +1,13 @@
 # 이구학지 — 천기록 encounter situation cards
 
-Status: candidate + `wuxia_seoharin_qingliu_resolution` preview runtime implemented
+Status: candidate + `wuxia_cheongirok_resolution` preview runtime implemented
 
-이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_seoharin_qingliu_resolution`까지는 separate storypack preview runtime으로 승격되었다.
+이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_cheongirok_resolution`까지는 separate storypack preview runtime으로 승격되었다.
 
 공통 원칙:
 
 - 모든 카드는 `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`에 속한다.
-- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_seoharin_qingliu_resolution`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. `wuxia_seoharin_qingliu_resolution`는 `docs/design/Wuxia_Final_State_Routing.md`의 final state routing contract와 boss/mumyeong resolution seed 이후 서하린·청류문 결산 route를 정규화하는 bridge이며, 다음 handoff 후보는 `wuxia_cheongirok_resolution`이다.
+- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_cheongirok_resolution`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. `wuxia_cheongirok_resolution`는 `docs/design/Wuxia_Final_State_Routing.md`의 final state routing contract와 boss/mumyeong/seoharin-qingliu resolution seed 이후 천기록 마지막 장 route를 정규화하는 bridge이며, 다음 handoff 후보는 `wuxia_black_serpent_aftermath`이다.
 - 최신 canonical 무협 설정은 **이구학지 — 천기록**이다. 이전의 generic 객잔/소림/무당/아미 placeholder는 superseded로 본다.
 - 플레이어 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계의 시장 한복판에 전이됐다”이다.
 - 선택지는 세부 수치보다 역할과 결과 hook을 먼저 정의한다.
@@ -2903,4 +2903,80 @@ runtime_preview_implementation:
     - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
     - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
   next_handoff: wuxia_cheongirok_resolution_handoff
+```
+
+## 33. `wuxia_cheongirok_resolution` — preview runtime 구현 완료
+
+```yaml
+id: wuxia_cheongirok_resolution
+world_id: wuxia_jianghu
+storypack_id: wuxia_jianghu_pack
+status: implemented_in_storypack_preview
+mapping_status: preview_runtime_implemented
+runtime_preview_design_status: implemented
+implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
+notion_mapping:
+  notion_event_id: epilogue_tianjilu_last_page
+  notion_event_name: 천기록의 마지막 장
+  related_source: 07. 천기록 / 천외편린 보상
+phase: [final_entry, cheongirok_resolution_seed]
+priority_class: route_key
+location_tags: [black_serpent_ledger_vault, final_resolution, route_normalization]
+surface: [cheonggi_record, faction_negotiation]
+anomaly_type: [future_record, faction_pressure, oath_binding]
+pressure_type: [sanity, danger]
+npc_slots: [cheonggi_record_keeper]
+candidate_characters: [천기록, 기록자, 주인공]
+summary: 서하린/청류문 결산 뒤 Cheonggi Record 사용 방식과 침식 여부를 안전한 마지막 장, 빈칸/true-route, corruption, low-use silence 후보 seed로 정규화하는 bridge encounter.
+presentation:
+  visual_id: wuxia_cheongirok_resolution
+  speaker: 천기록
+  layout: cheongirok_resolution_seed
+  stable_terms: [천기록, 마지막 장, 빈칸, 기록자]
+conditions:
+  locations: [black_serpent_ledger_vault]
+  required_flags: [seoharin_qingliu_resolution_resolved, mumyeong_resolution_resolved, boss_resolution_resolved, final_result_priority_applied_seeded, final_combat_result_battle_victory_seeded, final_state_routing_seeded]
+  forbidden_flags: [cheongirok_resolution_resolved]
+choice_shapes:
+  - id: turn_the_last_page_without_question
+    role: safe_reading
+    label_direction: 질문하지 않고 마지막 장을 넘긴다
+    expected_gains: [final_cheongirok_state_high_use_not_corruption_seeded, final_epilogue_tianjilu_safe_high_use_variant_seeded]
+  - id: leave_blank_as_unpriced_place
+    role: safe_identity_return
+    label_direction: 빈칸을 값이 아닌 자리로 남긴다
+    expected_gains: [final_epilogue_tianjilu_true_route_variant_seeded, final_unpriced_wooden_sword_condition_preserved_seeded]
+  - id: read_the_lines_that_align_like_ledger
+    role: risky_truth_probe
+    label_direction: 장부처럼 줄 맞는 글자를 읽는다
+    expected_gains: [final_cheongirok_state_corruption_high_confirmed_seeded, final_epilogue_tianjilu_last_page_corruption_variant_seeded]
+  - id: close_record_before_it_becomes_answer
+    role: safe_reading
+    label_direction: 답이 되기 전에 기록을 덮는다
+    expected_gains: [final_cheongirok_resolution_low_use_silence_seeded, final_cheongirok_identity_reveal_suppressed_seeded]
+  - id: let_record_reflect_the_method
+    role: safe_observe
+    label_direction: 결과보다 사용 방식을 비추게 둔다
+    expected_gains: [final_player_method_reflected_not_judged_seeded, final_epilogue_candidates_ready_for_future_renderer_seeded]
+outcome_hooks:
+  possible_flags: [cheongirok_resolution_resolved, final_cheongirok_resolution_safe_high_use_seeded, final_cheongirok_state_high_use_not_corruption_seeded, final_cheongirok_resolution_blank_place_seeded, final_cheongirok_resolution_corruption_variant_seeded, final_cheongirok_state_corruption_high_confirmed_seeded, final_cheongirok_resolution_low_use_silence_seeded, final_cheongirok_identity_reveal_suppressed_seeded, final_player_method_reflected_not_judged_seeded, final_epilogue_tianjilu_last_page_candidate_seeded, final_epilogue_tianjilu_safe_high_use_variant_seeded, final_epilogue_tianjilu_true_route_variant_seeded, final_epilogue_tianjilu_last_page_corruption_variant_seeded, final_epilogue_candidates_ready_for_future_renderer_seeded]
+  possible_clues: [record_does_not_answer_questions, high_use_is_not_corruption, last_page_turns_without_identity_reveal, blank_space_is_not_missing_answer, unpriced_wooden_sword_remains_condition_not_item, record_can_be_misused_as_calculation, corruption_variant_is_method_trace_not_punishment, recorder_identity_stays_unrevealed, last_page_reflects_method_not_morality_score, future_epilogue_renderer_still_unopened]
+  possible_items: []
+  possible_destinations: [black_serpent_ledger_vault]
+main_spine_link: 서하린/청류문 결산 뒤 천기록 사용 방식과 cheongirok_state/player_method 조건을 최종 마지막 장 후보 seed로 정규화하고, 후속 black serpent aftermath handoff가 소비할 final epilogue candidate 입력을 남긴다.
+randomization_notes: 최종장 천기록 결산 1회성 route key. seoharin_qingliu_resolution_resolved 뒤 장부고에서만 열고 cheongirok_resolution_resolved로 반복을 막는다.
+promotion_notes: preview runtime으로 구현 완료. final epilogue renderer, return/settlement schema, combat resolver, HP 숫자전, Seo Harin truth delivery, told_seoharin_truth, relation/reward schema, item_unpriced_wooden_sword payout, cheongirok identity reveal은 열지 않는다. 천기록 마지막 장은 정답이 아니라 사용 방식의 흔적으로만 남긴다.
+runtime_preview_handoff:
+  handoff_status: implemented
+  insert_after: wuxia_seoharin_qingliu_resolution
+  next_runtime_scope: wuxia_black_serpent_aftermath_handoff
+  guardrails: [no_final_epilogue_or_return_schema, no_combat_resolver, no_hp_numeric_battle, no_seoharin_truth_delivery, no_told_seoharin_truth, no_item_unpriced_wooden_sword_award, no_cheongirok_identity_reveal]
+runtime_preview_implementation:
+  implementation_status: implemented
+  implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
+  insert_after: wuxia_seoharin_qingliu_resolution
+  generated_artifacts:
+    - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+    - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+  next_handoff: wuxia_black_serpent_aftermath_handoff
 ```

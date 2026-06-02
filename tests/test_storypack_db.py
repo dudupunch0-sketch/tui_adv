@@ -50,6 +50,7 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         "wuxia_boss_recruits_mumyeong",
         "wuxia_boss_resolution",
         "wuxia_cheonggi_record_first_fragment",
+        "wuxia_cheongirok_resolution",
         "wuxia_cheongryu_apprentice_entry",
         "wuxia_cheongryu_chore_sparring",
         "wuxia_cheongryu_raid_route_split",
@@ -412,6 +413,26 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         in seoharin_qingliu_resolution.outcome_hooks["possible_clues"]
     )
     assert seoharin_qingliu_resolution.outcome_hooks["possible_items"] == []
+
+    cheongirok_resolution = db.encounter_cards["wuxia_cheongirok_resolution"]
+    assert cheongirok_resolution.world_id == "wuxia_jianghu"
+    assert cheongirok_resolution.storypack_id == "wuxia_jianghu_pack"
+    assert cheongirok_resolution.status == "implemented_in_storypack_preview"
+    assert cheongirok_resolution.priority_class == "route_key"
+    assert "cheongirok_resolution_seed" in cheongirok_resolution.phases
+    assert "cheonggi_record" in cheongirok_resolution.surfaces
+    assert "safe_reading" in [
+        choice["role"] for choice in cheongirok_resolution.choice_shapes
+    ]
+    assert (
+        "final_epilogue_tianjilu_safe_high_use_variant_seeded"
+        in cheongirok_resolution.outcome_hooks["possible_flags"]
+    )
+    assert (
+        "record_does_not_answer_questions"
+        in cheongirok_resolution.outcome_hooks["possible_clues"]
+    )
+    assert cheongirok_resolution.outcome_hooks["possible_items"] == []
 
 
 def test_storypack_db_public_files_validate_cleanly():

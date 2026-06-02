@@ -8740,5 +8740,290 @@
       ],
       "next_handoff": "wuxia_cheongirok_resolution_handoff"
     }
+  },
+  {
+    "id": "wuxia_cheongirok_resolution",
+    "world_id": "wuxia_jianghu",
+    "storypack_id": "wuxia_jianghu_pack",
+    "status": "implemented_in_storypack_preview",
+    "mapping_status": "preview_runtime_implemented",
+    "runtime_preview_design_status": "implemented",
+    "implemented_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml",
+    "source_refs": [
+      "notion:37137e69-695e-8196-b7b2-c9f27d91e976",
+      "notion:37137e69-695e-8177-a228-d7f96d084622",
+      "notion:37237e69-695e-81d2-8ce2-d1c738c3e923",
+      "notion:37337e69-695e-81c7-a9fd-e0a0e22005e2",
+      "notion:37137e69-695e-819e-9d66-d9eef819b02a"
+    ],
+    "notion_mapping": {
+      "notion_event_id": "epilogue_tianjilu_last_page",
+      "notion_event_name": "천기록의 마지막 장",
+      "related_source": "07. 천기록 / 천외편린 보상",
+      "derived_runtime_id": "wuxia_cheongirok_resolution"
+    },
+    "phase": [
+      "final_entry",
+      "cheongirok_resolution_seed"
+    ],
+    "priority_class": "route_key",
+    "location_tags": [
+      "black_serpent_ledger_vault",
+      "final_resolution",
+      "route_normalization"
+    ],
+    "surface": [
+      "cheonggi_record",
+      "faction_negotiation"
+    ],
+    "anomaly_type": [
+      "future_record",
+      "faction_pressure",
+      "oath_binding"
+    ],
+    "pressure_type": [
+      "sanity",
+      "danger"
+    ],
+    "npc_slots": [
+      "cheonggi_record_keeper"
+    ],
+    "candidate_characters": [
+      "천기록",
+      "기록자",
+      "주인공"
+    ],
+    "summary": "서하린/청류문 결산 뒤 Cheonggi Record 사용 방식과 침식 여부를 안전한 마지막 장, 빈칸/true-route, corruption, low-use silence 후보 seed로 정규화하는 bridge encounter.",
+    "setup_text": "서하린과 청류문 결산 이후 천기록의 마지막 장이 열린다. 이 장은 기록자의 정체나 최종 답을 공개하지 않고, 플레이어가 천기록을 이해의 보조로 썼는지 사도식 계산 도구로 썼는지를 후일담 후보 seed로만 남긴다.",
+    "presentation": {
+      "visual_id": "wuxia_cheongirok_resolution",
+      "speaker": "천기록",
+      "layout": "cheongirok_resolution_seed",
+      "stable_terms": [
+        "천기록",
+        "마지막 장",
+        "빈칸",
+        "기록자"
+      ]
+    },
+    "conditions": {
+      "locations": [
+        "black_serpent_ledger_vault"
+      ],
+      "required_flags": [
+        "seoharin_qingliu_resolution_resolved",
+        "mumyeong_resolution_resolved",
+        "boss_resolution_resolved",
+        "final_result_priority_applied_seeded",
+        "final_combat_result_battle_victory_seeded",
+        "final_state_routing_seeded"
+      ],
+      "forbidden_flags": [
+        "cheongirok_resolution_resolved"
+      ]
+    },
+    "choice_shapes": [
+      {
+        "id": "turn_the_last_page_without_question",
+        "role": "safe_reading",
+        "label_direction": "질문하지 않고 마지막 장을 넘긴다",
+        "expected_costs": [
+          "sanity_small",
+          "danger_small"
+        ],
+        "expected_gains": [
+          "final_cheongirok_state_high_use_not_corruption_seeded",
+          "final_epilogue_tianjilu_safe_high_use_variant_seeded"
+        ],
+        "outcome_hook": {
+          "add_flags": [
+            "cheongirok_resolution_resolved",
+            "final_cheongirok_resolution_safe_high_use_seeded",
+            "final_cheongirok_state_high_use_not_corruption_seeded",
+            "final_epilogue_tianjilu_last_page_candidate_seeded",
+            "final_epilogue_tianjilu_safe_high_use_variant_seeded"
+          ],
+          "add_clues": [
+            "record_does_not_answer_questions",
+            "high_use_is_not_corruption",
+            "last_page_turns_without_identity_reveal"
+          ],
+          "destination_id": "black_serpent_ledger_vault"
+        }
+      },
+      {
+        "id": "leave_blank_as_unpriced_place",
+        "role": "safe_identity_return",
+        "label_direction": "빈칸을 값이 아닌 자리로 남긴다",
+        "expected_costs": [
+          "sanity_medium",
+          "danger_small"
+        ],
+        "expected_gains": [
+          "final_epilogue_tianjilu_true_route_variant_seeded",
+          "final_unpriced_wooden_sword_condition_preserved_seeded"
+        ],
+        "outcome_hook": {
+          "add_flags": [
+            "cheongirok_resolution_resolved",
+            "final_cheongirok_resolution_blank_place_seeded",
+            "final_epilogue_tianjilu_true_route_variant_seeded",
+            "final_unpriced_wooden_sword_condition_preserved_seeded",
+            "final_epilogue_seoharin_empty_place_candidate_reinforced_seeded",
+            "final_epilogue_seoharin_open_gate_candidate_reinforced_seeded"
+          ],
+          "add_clues": [
+            "blank_space_is_not_missing_answer",
+            "unpriced_wooden_sword_remains_condition_not_item",
+            "true_route_blank_page_is_left_for_people"
+          ],
+          "destination_id": "black_serpent_ledger_vault"
+        }
+      },
+      {
+        "id": "read_the_lines_that_align_like_ledger",
+        "role": "risky_truth_probe",
+        "label_direction": "장부처럼 줄 맞는 글자를 읽는다",
+        "expected_costs": [
+          "sanity_high",
+          "danger_medium"
+        ],
+        "expected_gains": [
+          "final_cheongirok_state_corruption_high_confirmed_seeded",
+          "final_epilogue_tianjilu_last_page_corruption_variant_seeded"
+        ],
+        "outcome_hook": {
+          "add_flags": [
+            "cheongirok_resolution_resolved",
+            "final_cheongirok_resolution_corruption_variant_seeded",
+            "final_cheongirok_state_corruption_high_confirmed_seeded",
+            "final_player_method_sado_style_calculation_echo_seeded",
+            "final_epilogue_tianjilu_last_page_corruption_variant_seeded",
+            "final_epilogue_seoharin_closed_gate_candidate_seeded"
+          ],
+          "add_clues": [
+            "record_can_be_misused_as_calculation",
+            "calculation_reduces_people_into_lines",
+            "corruption_variant_is_method_trace_not_punishment"
+          ],
+          "destination_id": "black_serpent_ledger_vault"
+        }
+      },
+      {
+        "id": "close_record_before_it_becomes_answer",
+        "role": "safe_reading",
+        "label_direction": "답이 되기 전에 기록을 덮는다",
+        "expected_costs": [
+          "sanity_small"
+        ],
+        "expected_gains": [
+          "final_cheongirok_resolution_low_use_silence_seeded",
+          "final_cheongirok_identity_reveal_suppressed_seeded"
+        ],
+        "outcome_hook": {
+          "add_flags": [
+            "cheongirok_resolution_resolved",
+            "final_cheongirok_resolution_low_use_silence_seeded",
+            "final_epilogue_tianjilu_last_page_candidate_seeded",
+            "final_cheongirok_identity_reveal_suppressed_seeded"
+          ],
+          "add_clues": [
+            "not_every_blank_requires_reading",
+            "recorder_identity_stays_unrevealed",
+            "low_use_can_still_leave_afterimage"
+          ],
+          "destination_id": "black_serpent_ledger_vault"
+        }
+      },
+      {
+        "id": "let_record_reflect_the_method",
+        "role": "safe_observe",
+        "label_direction": "결과보다 사용 방식을 비추게 둔다",
+        "expected_costs": [
+          "sanity_medium",
+          "danger_small"
+        ],
+        "expected_gains": [
+          "final_player_method_reflected_not_judged_seeded",
+          "final_epilogue_candidates_ready_for_future_renderer_seeded"
+        ],
+        "outcome_hook": {
+          "add_flags": [
+            "cheongirok_resolution_resolved",
+            "final_cheongirok_resolution_method_reflection_seeded",
+            "final_player_method_reflected_not_judged_seeded",
+            "final_epilogue_tianjilu_last_page_candidate_seeded",
+            "final_epilogue_candidates_ready_for_future_renderer_seeded"
+          ],
+          "add_clues": [
+            "last_page_reflects_method_not_morality_score",
+            "cheongirok_is_not_boss_defeat_tool",
+            "future_epilogue_renderer_still_unopened"
+          ],
+          "destination_id": "black_serpent_ledger_vault"
+        }
+      }
+    ],
+    "outcome_hooks": {
+      "possible_flags": [
+        "cheongirok_resolution_resolved",
+        "final_cheongirok_resolution_safe_high_use_seeded",
+        "final_cheongirok_state_high_use_not_corruption_seeded",
+        "final_cheongirok_resolution_blank_place_seeded",
+        "final_cheongirok_resolution_corruption_variant_seeded",
+        "final_cheongirok_state_corruption_high_confirmed_seeded",
+        "final_cheongirok_resolution_low_use_silence_seeded",
+        "final_cheongirok_identity_reveal_suppressed_seeded",
+        "final_player_method_reflected_not_judged_seeded",
+        "final_epilogue_tianjilu_last_page_candidate_seeded",
+        "final_epilogue_tianjilu_safe_high_use_variant_seeded",
+        "final_epilogue_tianjilu_true_route_variant_seeded",
+        "final_epilogue_tianjilu_last_page_corruption_variant_seeded",
+        "final_epilogue_candidates_ready_for_future_renderer_seeded"
+      ],
+      "possible_clues": [
+        "record_does_not_answer_questions",
+        "high_use_is_not_corruption",
+        "last_page_turns_without_identity_reveal",
+        "blank_space_is_not_missing_answer",
+        "unpriced_wooden_sword_remains_condition_not_item",
+        "record_can_be_misused_as_calculation",
+        "corruption_variant_is_method_trace_not_punishment",
+        "recorder_identity_stays_unrevealed",
+        "last_page_reflects_method_not_morality_score",
+        "future_epilogue_renderer_still_unopened"
+      ],
+      "possible_items": [],
+      "possible_destinations": [
+        "black_serpent_ledger_vault"
+      ]
+    },
+    "main_spine_link": "서하린/청류문 결산 뒤 천기록 사용 방식과 cheongirok_state/player_method 조건을 최종 마지막 장 후보 seed로 정규화하고, 후속 black serpent aftermath handoff가 소비할 final epilogue candidate 입력을 남긴다.",
+    "randomization_notes": "최종장 천기록 결산 1회성 route key. seoharin_qingliu_resolution_resolved 뒤 장부고에서만 열고 cheongirok_resolution_resolved로 반복을 막는다.",
+    "promotion_notes": "preview runtime으로 구현 완료. final epilogue renderer, return/settlement schema, combat resolver, HP 숫자전, Seo Harin truth delivery, told_seoharin_truth, relation/reward schema, item_unpriced_wooden_sword payout, cheongirok identity reveal은 열지 않는다. 천기록 마지막 장은 정답이 아니라 사용 방식의 흔적으로만 남긴다.",
+    "runtime_preview_handoff": {
+      "handoff_status": "implemented",
+      "insert_after": "wuxia_seoharin_qingliu_resolution",
+      "next_runtime_scope": "wuxia_black_serpent_aftermath_handoff",
+      "guardrails": [
+        "no_final_epilogue_or_return_schema",
+        "no_combat_resolver",
+        "no_hp_numeric_battle",
+        "no_seoharin_truth_delivery",
+        "no_told_seoharin_truth",
+        "no_item_unpriced_wooden_sword_award",
+        "no_cheongirok_identity_reveal"
+      ]
+    },
+    "runtime_preview_implementation": {
+      "implementation_status": "implemented",
+      "implemented_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml",
+      "insert_after": "wuxia_seoharin_qingliu_resolution",
+      "generated_artifacts": [
+        "crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json",
+        "web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json"
+      ],
+      "next_handoff": "wuxia_black_serpent_aftermath_handoff"
+    }
   }
 ]

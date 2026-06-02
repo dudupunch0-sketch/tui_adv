@@ -1,10 +1,10 @@
 # Wuxia Final State Routing
 
-Status: Notion-synced design contract + first final epilogue runtime implementation + `wuxia_seoharin_unsaid_stay` return/settlement trigger runtime, no dedicated result schema
+Status: Notion-synced design contract + final epilogue runtime implementation + return/settlement epilogue branch runtime, no dedicated result schema
 
 Primary storypack: `wuxia_jianghu_pack` / **이구학지 — 천기록**
 
-This document records the final-chapter state, routing vocabulary, final epilogue seed-consumption contract, and first return/settlement trigger used by the current runtime slices. It does not add a combat resolver, HP numeric battle, full return/settlement schema, relation ledger, reward schema, or item payout. Runtime work still has to pass through `docs/dev/Development_Plan.md`.
+This document records the final-chapter state, routing vocabulary, final epilogue seed-consumption contract, and return/settlement branch consumption used by the current runtime slices. It does not add a combat resolver, HP numeric battle, full return/settlement schema, relation ledger, reward schema, or item payout. Runtime work still has to pass through `docs/dev/Development_Plan.md`.
 
 ## Source References
 
@@ -151,7 +151,7 @@ Deferred until this contract exists and a runtime handoff explicitly opens them:
 - full `wuxia_boss_resolution` epilogue renderer beyond the implemented route seed bridge
 - `wuxia_sado_final_battle`
 
-Latest implemented runtime slice: `wuxia_final_epilogue_renderer_contract`.
+Latest implemented runtime slice: `wuxia_return_settlement_epilogue_contract`.
 
 `wuxia_sado_final_phase_1_price_tag`, `wuxia_sado_final_phase_2_weakpoint_control`, `wuxia_sado_final_phase_3_outside_calculation`, `wuxia_boss_resolution`, `wuxia_mumyeong_resolution`, `wuxia_seoharin_qingliu_resolution`, `wuxia_cheongirok_resolution`, and `wuxia_black_serpent_aftermath` now use the existing encounter schema to seed final-state clues/flags/logs for the Sado final phases, boss-resolution route bridge, Mumyeong-resolution route bridge, Seo Harin/Qingliu epilogue candidate bridge, Cheonggi Record last-page bridge, and Black Serpent aftermath bridge. `wuxia_final_epilogue_renderer_contract` consumes those candidate seeds through Rust GameCore-owned structured body blocks without opening combat resolver, HP numeric combat, return/settlement schema, `item_unpriced_wooden_sword` payout, Seo Harin truth delivery, Cheonggi Record recorder identity reveal, or `told_seoharin_truth` unless a new approved runtime contract opens them.
 
@@ -250,3 +250,55 @@ Guardrails:
 - no relation/debt/faction ledger
 - no reward/ability schema
 - no combat resolver or HP numeric battle
+
+## Return/Settlement Follow-up Handoff
+
+Decision from the 2026-06-02 `return_settlement_followup_handoff`: the next implementation after `wuxia_seoharin_unsaid_stay` is `wuxia_return_settlement_epilogue_contract`.
+
+Notion comparison:
+
+- `가지 말라는 말` already leaves four concrete player intents: honest return, honest settlement, shared uncertainty, and evasion.
+- `08. 엔딩과 후일담 연결` links modern return to "돌아온 출근길 / 현대 잔상", while keeping Seo Harin/Qingliu cards as separate afterword cards.
+- `01. 메인 엔딩 구조` keeps `return` and `settlement` as internal planning categories; player-facing output should use poetic titles such as "돌아온 출근길" and "청류문에 남은 외지인" rather than exposing enum names.
+- `09. 예시 엔딩` has a concrete "돌아온 출근길" direction and a "청류문에 남은 외지인" direction, but marks these as verification examples that still need final story review.
+- `10. 이구학지 후일담 카드 DB` has Seo Harin/Qingliu/closed-gate cards but no dedicated committed "돌아온 출근길" row yet, so the first runtime should be a branch card group in the existing final epilogue body block convention rather than a new archive/main-ending schema.
+- `07. 천기록 / 천외편린 보상` is a broader three-choice reward/growth system and remains larger than this immediate afterword contract.
+- `06. 사이드 퀘스트와 미해결 부채` supports unresolved debt as afterword traces, not as a blocking ledger schema.
+
+Selected implementation:
+
+| field | value |
+|---|---|
+| runtime id | `wuxia_return_settlement_epilogue_contract` |
+| implementation owner | `crates/escape-core/src/final_epilogue.rs` |
+| output shape | existing `ScenePage.body_blocks` with `kind: epilogue_card` / `epilogue_suppressed` |
+| input bridge | `wuxia_seoharin_unsaid_stay` seed flags |
+| renderer role | Web Storybook and SuperLightTUI display only |
+
+Implemented branch cards:
+
+| card id | variant | consumed seeds |
+|---|---|---|
+| `epilogue_wuxia_returned_commute` | `honest_return` | `final_return_intent_honest_seeded`, `final_epilogue_return_absence_candidate_seeded` |
+| `epilogue_wuxia_qingliu_settlement` | `honest_settlement` | `final_settlement_intent_honest_seeded`, `final_epilogue_qingliu_settlement_candidate_seeded` |
+| `epilogue_wuxia_empty_place_kept_open` | `uncertain_shared` | `final_return_settlement_uncertain_shared_seeded`, `final_epilogue_empty_place_kept_open_seeded` |
+| `epilogue_wuxia_closed_gate_risk` | `evasion_risk` | `final_return_settlement_evasion_seeded`, `final_epilogue_closed_gate_risk_seeded` |
+
+Conflict rule:
+
+- `epilogue_wuxia_closed_gate_risk` suppresses the optimistic return/settlement/open-place branch cards if contradictory seeds are manually present in the same state.
+- It does not automatically become `epilogue_seoharin_closed_gate`; the closed gate remains a darker corruption/possession result owned by the existing Seo Harin/Qingliu axis.
+
+Still closed:
+
+- new `main_ending_type` runtime enum
+- full modern return ending scene or post-return settlement scene
+- return/settlement save/archive schema
+- relation/debt/faction ledger
+- reward/ability schema and 천외편린 three-choice growth UI
+- `item_unpriced_wooden_sword` payout
+- combat resolver, HP numeric battle, or full `wuxia_sado_final_battle`
+- Seo Harin truth delivery, `told_seoharin_truth`
+- Cheonggi Record recorder identity reveal
+
+Next contract decision: `return_settlement_epilogue_followup_handoff`, comparing battle-loss branch, broader corruption/closed-gate branch, reward/ability schema, relation/debt/faction ledger, and main ending archive/save surfaces after the return/settlement branch cards have runtime evidence.

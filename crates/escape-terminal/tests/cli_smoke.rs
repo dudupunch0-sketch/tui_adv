@@ -2466,21 +2466,18 @@ fn content_tui_smoke_reaches_wuxia_cheongirok_resolution() {
     assert!(stdout.contains("visual id: wuxia_cheongirok_resolution"));
     assert!(stdout.contains("layout: cheongirok_resolution_seed"));
     assert!(stdout.contains("stable terms: 천기록 / 마지막 장 / 빈칸 / 기록자"));
-    assert!(stdout.contains(
-        "choice:turn_the_last_page_without_question / 질문하지 않고 마지막 장을 넘긴다"
-    ));
-    assert!(stdout.contains(
-        "choice:leave_blank_as_unpriced_place / 빈칸을 값이 아닌 자리로 남긴다"
-    ));
-    assert!(stdout.contains(
-        "choice:read_the_lines_that_align_like_ledger / 장부처럼 줄 맞는 글자를 읽는다"
-    ));
-    assert!(stdout.contains(
-        "choice:close_record_before_it_becomes_answer / 답이 되기 전에 기록을 덮는다"
-    ));
-    assert!(stdout.contains(
-        "choice:let_record_reflect_the_method / 결과보다 사용 방식을 비추게 둔다"
-    ));
+    assert!(stdout
+        .contains("choice:turn_the_last_page_without_question / 질문하지 않고 마지막 장을 넘긴다"));
+    assert!(
+        stdout.contains("choice:leave_blank_as_unpriced_place / 빈칸을 값이 아닌 자리로 남긴다")
+    );
+    assert!(stdout
+        .contains("choice:read_the_lines_that_align_like_ledger / 장부처럼 줄 맞는 글자를 읽는다"));
+    assert!(stdout
+        .contains("choice:close_record_before_it_becomes_answer / 답이 되기 전에 기록을 덮는다"));
+    assert!(
+        stdout.contains("choice:let_record_reflect_the_method / 결과보다 사용 방식을 비추게 둔다")
+    );
     assert!(!stdout.contains("final_cheongirok_identity_revealed"));
     assert!(!stdout.contains("told_seoharin_truth"));
     assert!(!stdout.contains("item_unpriced_wooden_sword"));
@@ -2579,6 +2576,7 @@ fn content_tui_smoke_reaches_wuxia_final_epilogue_contract() {
     assert!(stdout.contains("owned_by: Rust GameCore"));
     assert!(stdout.contains("card_id: epilogue_boss_broken_black_serpent"));
     assert!(stdout.contains("card_id: epilogue_mumyeong_second_wooden_sword"));
+    assert!(stdout.contains("card_id: epilogue_wuxia_returned_commute"));
     assert!(!stdout.contains("told_seoharin_truth"));
     assert!(!stdout.contains("final_cheongirok_identity_revealed"));
 }

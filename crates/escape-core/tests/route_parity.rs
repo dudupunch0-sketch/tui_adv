@@ -357,6 +357,117 @@ fn wuxia_final_epilogue_scene_page_outputs_core_owned_cards_and_true_route_suppr
 }
 
 #[test]
+fn wuxia_final_epilogue_consumes_return_settlement_branch_seeds() {
+    let content = wuxia_content();
+    let base_flags = [
+        "boss_resolution_resolved",
+        "mumyeong_resolution_resolved",
+        "seoharin_qingliu_resolution_resolved",
+        "cheongirok_resolution_resolved",
+        "black_serpent_aftermath_resolved",
+        "final_result_priority_applied_seeded",
+        "final_combat_result_battle_victory_seeded",
+        "final_state_routing_seeded",
+        "final_boss_resolution_true_route_confirmed_seeded",
+        "final_epilogue_candidates_true_route_seeded",
+    ];
+
+    let mut return_flags = base_flags.to_vec();
+    return_flags.extend([
+        "final_return_settlement_contract_seeded",
+        "final_return_intent_honest_seeded",
+        "final_epilogue_return_absence_candidate_seeded",
+    ]);
+    let return_page =
+        scene_page_from_content(&wuxia_final_state_with_flags(&return_flags, &[]), &content)
+            .expect("return branch epilogue should render");
+    let return_cards = body_text_for_kind(&return_page, "epilogue_card");
+    assert!(
+        return_cards.contains("card_id: epilogue_wuxia_returned_commute"),
+        "{return_cards}"
+    );
+    assert!(return_cards.contains("variant: honest_return"));
+    assert!(return_cards.contains("final_epilogue_return_absence_candidate_seeded"));
+    assert!(!return_cards.contains("card_id: epilogue_wuxia_qingliu_settlement"));
+
+    let mut settlement_flags = base_flags.to_vec();
+    settlement_flags.extend([
+        "final_return_settlement_contract_seeded",
+        "final_settlement_intent_honest_seeded",
+        "final_epilogue_qingliu_settlement_candidate_seeded",
+    ]);
+    let settlement_page = scene_page_from_content(
+        &wuxia_final_state_with_flags(&settlement_flags, &[]),
+        &content,
+    )
+    .expect("settlement branch epilogue should render");
+    let settlement_cards = body_text_for_kind(&settlement_page, "epilogue_card");
+    assert!(settlement_cards.contains("card_id: epilogue_wuxia_qingliu_settlement"));
+    assert!(settlement_cards.contains("variant: honest_settlement"));
+    assert!(settlement_cards.contains("final_epilogue_qingliu_settlement_candidate_seeded"));
+
+    let mut uncertain_flags = base_flags.to_vec();
+    uncertain_flags.extend([
+        "final_return_settlement_contract_seeded",
+        "final_return_settlement_uncertain_shared_seeded",
+        "final_epilogue_empty_place_kept_open_seeded",
+    ]);
+    let uncertain_page = scene_page_from_content(
+        &wuxia_final_state_with_flags(&uncertain_flags, &[]),
+        &content,
+    )
+    .expect("uncertain branch epilogue should render");
+    let uncertain_cards = body_text_for_kind(&uncertain_page, "epilogue_card");
+    assert!(uncertain_cards.contains("card_id: epilogue_wuxia_empty_place_kept_open"));
+    assert!(uncertain_cards.contains("variant: uncertain_shared"));
+    assert!(uncertain_cards.contains("final_epilogue_empty_place_kept_open_seeded"));
+}
+
+#[test]
+fn wuxia_final_epilogue_evasion_risk_suppresses_return_settlement_candidates() {
+    let content = wuxia_content();
+    let state = wuxia_final_state_with_flags(
+        &[
+            "boss_resolution_resolved",
+            "mumyeong_resolution_resolved",
+            "seoharin_qingliu_resolution_resolved",
+            "cheongirok_resolution_resolved",
+            "black_serpent_aftermath_resolved",
+            "final_result_priority_applied_seeded",
+            "final_combat_result_battle_victory_seeded",
+            "final_state_routing_seeded",
+            "final_boss_resolution_true_route_confirmed_seeded",
+            "final_epilogue_candidates_true_route_seeded",
+            "final_return_settlement_contract_seeded",
+            "final_return_intent_honest_seeded",
+            "final_epilogue_return_absence_candidate_seeded",
+            "final_settlement_intent_honest_seeded",
+            "final_epilogue_qingliu_settlement_candidate_seeded",
+            "final_return_settlement_uncertain_shared_seeded",
+            "final_epilogue_empty_place_kept_open_seeded",
+            "final_return_settlement_evasion_seeded",
+            "final_epilogue_closed_gate_risk_seeded",
+        ],
+        &[],
+    );
+
+    let page = scene_page_from_content(&state, &content)
+        .expect("evasion risk branch epilogue should render");
+    let card_text = body_text_for_kind(&page, "epilogue_card");
+    let suppressed_text = body_text_for_kind(&page, "epilogue_suppressed");
+
+    assert!(card_text.contains("card_id: epilogue_wuxia_closed_gate_risk"));
+    assert!(card_text.contains("variant: evasion_risk"));
+    assert!(!card_text.contains("card_id: epilogue_wuxia_returned_commute"));
+    assert!(!card_text.contains("card_id: epilogue_wuxia_qingliu_settlement"));
+    assert!(!card_text.contains("card_id: epilogue_wuxia_empty_place_kept_open"));
+    assert!(suppressed_text.contains("card_id: epilogue_wuxia_returned_commute"));
+    assert!(suppressed_text.contains("card_id: epilogue_wuxia_qingliu_settlement"));
+    assert!(suppressed_text.contains("card_id: epilogue_wuxia_empty_place_kept_open"));
+    assert!(suppressed_text.contains("suppressed_by: return_settlement_evasion"));
+}
+
+#[test]
 fn wuxia_final_epilogue_corrupted_priority_overrides_true_route_candidates() {
     let content = wuxia_content();
     let state = wuxia_final_state_with_flags(

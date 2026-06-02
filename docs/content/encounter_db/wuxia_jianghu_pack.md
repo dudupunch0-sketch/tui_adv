@@ -1,13 +1,13 @@
 # 이구학지 — 천기록 encounter situation cards
 
-Status: candidate + `wuxia_seoharin_unsaid_stay` preview runtime implemented
+Status: candidate + `wuxia_seoharin_unsaid_stay` preview runtime implemented + return/settlement epilogue consumer implemented
 
 이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_seoharin_unsaid_stay`까지는 separate storypack preview runtime으로 승격되었다.
 
 공통 원칙:
 
 - 모든 카드는 `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`에 속한다.
-- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_seoharin_unsaid_stay`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. `wuxia_seoharin_unsaid_stay`는 `docs/design/Wuxia_Final_State_Routing.md`의 return/settlement handoff를 existing encounter schema로 구현한 late relationship trigger이며, full return/settlement schema는 아직 열지 않는다.
+- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_seoharin_unsaid_stay`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. `wuxia_seoharin_unsaid_stay`는 `docs/design/Wuxia_Final_State_Routing.md`의 return/settlement handoff를 existing encounter schema로 구현한 late relationship trigger이며, `wuxia_return_settlement_epilogue_contract`가 그 seed를 final epilogue body block branch cards로 소비한다. full return/settlement schema는 아직 열지 않는다.
 - 최신 canonical 무협 설정은 **이구학지 — 천기록**이다. 이전의 generic 객잔/소림/무당/아미 placeholder는 superseded로 본다.
 - 플레이어 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계의 시장 한복판에 전이됐다”이다.
 - 선택지는 세부 수치보다 역할과 결과 hook을 먼저 정의한다.
@@ -3184,11 +3184,11 @@ outcome_hooks:
   possible_destinations: [black_serpent_ledger_vault]
 main_spine_link: final epilogue 출력기가 열린 뒤, true-route 기준선 사이에 귀환/정착/침식 관계 분기를 삽입하기 위한 첫 return/settlement seed bridge다.
 randomization_notes: 1회성 late relationship trigger. 서하린·청류문 결산 뒤, 천기록 마지막 장 결산 전에 열어 return/settlement/corruption 후보를 남긴다.
-promotion_notes: docs-only handoff 완료. 다음 runtime은 `wuxia_seoharin_unsaid_stay`를 기존 encounter schema로 구현하되, full modern return ending, post-return settlement scene, return/settlement save/archive schema, relation/debt/faction ledger, reward/ability schema, combat resolver, HP 숫자전, Seo Harin truth delivery, `told_seoharin_truth`, Cheonggi Record identity reveal은 열지 않는다.
+promotion_notes: docs-only handoff 완료. `wuxia_seoharin_unsaid_stay` runtime은 구현 완료했고, 후속 `wuxia_return_settlement_epilogue_contract`도 existing final epilogue body block consumer로 구현 완료했다. full modern return ending, post-return settlement scene, return/settlement save/archive schema, relation/debt/faction ledger, reward/ability schema, combat resolver, HP 숫자전, Seo Harin truth delivery, `told_seoharin_truth`, Cheonggi Record identity reveal은 여전히 열지 않는다.
 runtime_preview_handoff:
   handoff_status: completed
   implementation_status: implemented
-  next_runtime_scope: return_settlement_followup_handoff
+  next_runtime_scope: wuxia_return_settlement_epilogue_contract_completed
   guardrails: [no_full_modern_return_ending, no_return_settlement_save_archive_schema, no_relation_debt_faction_ledger, no_reward_or_ability_schema, no_combat_resolver, no_hp_numeric_battle, no_seoharin_truth_delivery, no_told_seoharin_truth, no_cheongirok_identity_reveal]
 ```
 
@@ -3231,4 +3231,48 @@ generated_artifacts:
   - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
 promotion_notes: preview runtime으로 구현 완료. 첫 runtime은 귀환/정착 엔딩 자체가 아니라 서하린 late relationship trigger이며, return/settlement/corruption 후보 seed만 existing encounter schema의 flags/clues/log/presentation hook으로 남긴다.
 guardrails: [no_full_modern_return_ending, no_return_settlement_save_archive_schema, no_relation_debt_faction_ledger, no_reward_or_ability_schema, no_combat_resolver, no_hp_numeric_battle, no_seoharin_truth_delivery, no_told_seoharin_truth, no_cheongirok_identity_reveal]
+```
+
+## 38. `wuxia_return_settlement_epilogue_contract` — runtime 구현 완료
+
+```yaml
+id: wuxia_return_settlement_epilogue_contract
+status: implemented_in_rust_core
+kind: final_epilogue_branch_consumer
+implementation_owner: crates/escape-core/src/final_epilogue.rs
+source_contracts:
+  - return_settlement_followup_handoff
+  - docs/design/Wuxia_Final_State_Routing.md
+notion_sources_checked:
+  - 가지 말라는 말
+  - 08. 엔딩과 후일담 연결
+  - 01. 메인 엔딩 구조
+  - 09. 예시 엔딩
+  - 10. 이구학지 후일담 카드 DB
+  - 06. 사이드 퀘스트와 미해결 부채
+  - 07. 천기록 / 천외편린 보상
+input_seed_bridge:
+  from: wuxia_seoharin_unsaid_stay
+  common_flag: final_return_settlement_contract_seeded
+output_body_blocks:
+  - card_id: epilogue_wuxia_returned_commute
+    variant: honest_return
+    consumed_seeds: [final_return_intent_honest_seeded, final_epilogue_return_absence_candidate_seeded]
+  - card_id: epilogue_wuxia_qingliu_settlement
+    variant: honest_settlement
+    consumed_seeds: [final_settlement_intent_honest_seeded, final_epilogue_qingliu_settlement_candidate_seeded]
+  - card_id: epilogue_wuxia_empty_place_kept_open
+    variant: uncertain_shared
+    consumed_seeds: [final_return_settlement_uncertain_shared_seeded, final_epilogue_empty_place_kept_open_seeded]
+  - card_id: epilogue_wuxia_closed_gate_risk
+    variant: evasion_risk
+    consumed_seeds: [final_return_settlement_evasion_seeded, final_epilogue_closed_gate_risk_seeded]
+suppress_rule:
+  return_settlement_evasion:
+    suppresses:
+      - epilogue_wuxia_returned_commute
+      - epilogue_wuxia_qingliu_settlement
+      - epilogue_wuxia_empty_place_kept_open
+guardrails: [no_new_main_ending_type_enum, no_full_modern_return_scene, no_return_settlement_save_archive_schema, no_relation_debt_faction_ledger, no_reward_or_ability_schema, no_combat_resolver, no_hp_numeric_battle, no_seoharin_truth_delivery, no_told_seoharin_truth, no_cheongirok_identity_reveal]
+next_handoff: return_settlement_epilogue_followup_handoff
 ```

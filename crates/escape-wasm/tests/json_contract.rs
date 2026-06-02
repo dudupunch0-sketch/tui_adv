@@ -3356,14 +3356,8 @@ fn json_boundary_reaches_wuxia_seoharin_qingliu_resolution_after_mumyeong_resolu
 
     assert_eq!(unsaid_page["mode"], "encounter");
     assert_eq!(unsaid_page["title"], "가지 말라는 말");
-    assert_eq!(
-        unsaid_page["visual"]["id"],
-        "wuxia_seoharin_unsaid_stay"
-    );
-    assert_eq!(
-        unsaid_page["visual"]["kind"],
-        "seoharin_unsaid_stay_seed"
-    );
+    assert_eq!(unsaid_page["visual"]["id"], "wuxia_seoharin_unsaid_stay");
+    assert_eq!(unsaid_page["visual"]["kind"], "seoharin_unsaid_stay_seed");
     assert_eq!(unsaid_page["effect_cues"][0]["stable_terms"][0], "서하린");
     let unsaid_action_ids: Vec<&str> = unsaid_page["actions"]
         .as_array()
@@ -3588,6 +3582,13 @@ fn json_boundary_reaches_wuxia_seoharin_qingliu_resolution_after_mumyeong_resolu
                 .as_str()
                 .expect("epilogue card text should be a string")
                 .contains("card_id: epilogue_boss_broken_black_serpent")
+    }));
+    assert!(body_blocks.iter().any(|block| {
+        block["kind"] == "epilogue_card"
+            && block["text"]
+                .as_str()
+                .expect("epilogue card text should be a string")
+                .contains("card_id: epilogue_wuxia_returned_commute")
     }));
     assert!(final_page["actions"]
         .as_array()

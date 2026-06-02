@@ -287,7 +287,7 @@ sources:
     notion_ref: "notion:37237e69-695e-81e2-aac7-cecfce3e4239"
     url: "https://www.notion.so/37237e69695e81e2aac7cecfce3e4239"
     last_checked_at: "2026-06-02T12:25:00+09:00"
-    precedence_role: "next_runtime_candidate_source_after_state_contract"
+    precedence_role: "implemented_final_entry_runtime_source"
     related_design_units:
       - "encounter:wuxia_sado_final_phase_1_price_tag"
       - "system:evidence_state"
@@ -296,8 +296,30 @@ sources:
       - "system:item_logs"
     related_canonical_docs:
       - "docs/design/Wuxia_Final_State_Routing.md"
+      - "docs/dev/Development_Plan.md"
       - "idea_box/next_goal/README.md"
-    runtime_status: "candidate_after_final_state_contract"
+    runtime_status: "implemented_in_storypack_preview"
+    status: "live_checked_runtime_implemented"
+
+  - key: wuxia_sado_final_phase_2_weakpoint_control
+    title: "사도 최종전 2페이즈: 약점 통제"
+    object: page
+    notion_ref: "notion:37237e69-695e-8184-8beb-ccf56ae8fcd1"
+    url: "https://www.notion.so/37237e69695e81848bebccf56ae8fcd1"
+    last_checked_at: "2026-06-02T12:25:00+09:00"
+    precedence_role: "next_runtime_candidate_source_after_price_tag"
+    related_design_units:
+      - "encounter:wuxia_sado_final_phase_2_weakpoint_control"
+      - "system:seoharin_axis"
+      - "system:qingliu_rebuild"
+      - "system:mumyeong_salvation"
+      - "system:successor_route"
+      - "system:cheongirok_state"
+      - "system:player_method"
+    related_canonical_docs:
+      - "docs/design/Wuxia_Final_State_Routing.md"
+      - "idea_box/next_goal/README.md"
+    runtime_status: "candidate_after_price_tag"
     status: "live_checked_next_candidate"
 
   - key: wuxia_boss_resolution

@@ -110,6 +110,7 @@ def test_export_web_data_builds_renderer_neutral_content_bundle():
             "wuxia_mumyeong_departure_truth_summary",
             "wuxia_seoharin_empty_place",
             "wuxia_seoharin_left_meal",
+            "wuxia_sado_final_phase_1_price_tag",
         }
         for encounter in bundle["content"]["encounters"]
     )
@@ -131,9 +132,9 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     }
     assert "storypack-previews/wuxia_jianghu_pack" in bundle["source"]
     assert bundle["manifest"]["counts"] == {
-        "locations": 4,
+        "locations": 5,
         "items": 4,
-        "encounters": 26,
+        "encounters": 27,
         "endings": 1,
         "achievements": 2,
         "secrets": 0,
@@ -143,6 +144,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "jianghu_roadside",
         "jianghu_market_street",
         "cheongryu_outer_courtyard",
+        "black_serpent_ledger_vault",
     ]
     encounter_ids = [encounter["id"] for encounter in bundle["content"]["encounters"]]
     assert encounter_ids == [
@@ -172,6 +174,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "wuxia_mumyeong_departure_truth_summary",
         "wuxia_seoharin_empty_place",
         "wuxia_seoharin_left_meal",
+        "wuxia_sado_final_phase_1_price_tag",
     ]
     first_fight = bundle["content"]["encounters"][1]
     assert first_fight["conditions"] == {
@@ -973,6 +976,53 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "recruitment_was_not_salvation",
     ]
     assert trace_offer["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
+    price_tag = bundle["content"]["encounters"][26]
+    assert price_tag["conditions"] == {
+        "locations": ["cheongryu_outer_courtyard"],
+        "required_flags": [
+            "seoharin_left_meal_resolved",
+            "seoharin_empty_place_resolved",
+            "seoharin_axis_opened",
+            "empty_place_remembered",
+            "truth_delivery_still_unopened",
+            "boss_recruits_mumyeong_resolved",
+            "boss_recruitment_thread_opened",
+            "boss_first_appearance_resolved",
+            "black_serpent_core_pressure_opened",
+            "sealed_departure_truth_summary_prepared",
+            "midgame_continuity_started",
+        ],
+        "forbidden_flags": ["sado_final_phase_1_price_tag_resolved"],
+    }
+    assert price_tag["presentation"]["layout"] == "final_phase_price_tag"
+    assert price_tag["presentation"]["speaker"] == "흑사방주"
+    assert price_tag["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "흑사방주",
+        "장부",
+        "빚",
+        "청류문",
+    ]
+    assert [choice["id"] for choice in price_tag["choices"]] == [
+        "approach_sado_before_the_ledger",
+        "burn_the_blackscale_ledger",
+        "secure_the_blackscale_ledger",
+        "ease_hostage_pressure_first",
+    ]
+    secure_ledger = price_tag["choices"][2]
+    assert secure_ledger["outcome"]["add_flags"] == [
+        "sado_final_phase_1_price_tag_resolved",
+        "final_state_routing_seeded",
+        "final_price_tag_ledger_secured",
+        "final_network_ledger_secured_seeded",
+        "final_evidence_strong_seeded",
+        "final_item_logs_blackscale_ledger_seeded",
+    ]
+    assert secure_ledger["outcome"]["add_clues"] == [
+        "item_blackscale_ledger_logged",
+        "black_serpent_network_structure_seen",
+        "alliance_silence_accountability_seeded",
+    ]
+    assert secure_ledger["outcome"]["destination_id"] == "black_serpent_ledger_vault"
     assert "dev_desk" not in json.dumps(bundle, ensure_ascii=False)
     assert _missing_private_secret_fields(bundle)
 

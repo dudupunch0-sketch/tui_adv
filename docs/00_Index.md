@@ -70,7 +70,7 @@ docs/
     storypack_db/                   # storypack/card 후보의 machine-readable JSON DB
 
   runtime preview sources/
-    src/tui_adv/storypack-previews/wuxia_jianghu_pack/ # wuxia_commute_rift_arrival부터 wuxia_seoharin_left_meal까지 preview source YAML
+    src/tui_adv/storypack-previews/wuxia_jianghu_pack/ # wuxia_commute_rift_arrival부터 wuxia_sado_final_phase_1_price_tag까지 preview source YAML
     crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json # Rust/GameCore preview fixture
     web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json # Web/WASM preview bundle
 

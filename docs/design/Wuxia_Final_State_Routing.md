@@ -15,7 +15,7 @@ The 2026-06-02 `wuxia_seoharin_left_meal_followup` check compared late companion
 | `최종장 결산 라우팅 마스터` | `37237e69-695e-81d2-8ce2-d1c738c3e923` | final result priority and final epilogue master matrix |
 | `사도 최종전 상태값 사전` | `37337e69-695e-81c7-a9fd-e0a0e22005e2` | canonical final inputs and alias/deprecation policy |
 | `사도 최종전` | `37237e69-695e-8169-97a3-d8106a817275` | required final battle container |
-| `사도 최종전 1페이즈: 가격표` | `37237e69-695e-81e2-aac7-cecfce3e4239` | next runtime candidate after this contract |
+| `사도 최종전 1페이즈: 가격표` | `37237e69-695e-81e2-aac7-cecfce3e4239` | implemented first final-entry runtime slice after this contract |
 | `사도 최종전 2페이즈: 약점 통제` | `37237e69-695e-8184-8beb-ccf56ae8fcd1` | deferred phase until state contract exists |
 | `사도 최종전 3페이즈: 계산식 밖` | `37237e69-695e-8107-b9ab-cab708a6c5dd` | deferred phase until state contract exists |
 | `보스 결산` | `37137e69-695e-8164-ab41-e794aa886dae` | deferred boss result card |
@@ -96,6 +96,6 @@ Deferred until this contract exists and a runtime handoff explicitly opens them:
 - `wuxia_sado_final_phase_2_weakpoint_control`
 - `wuxia_sado_final_phase_3_outside_calculation`
 
-Next runtime candidate after this design contract: `wuxia_sado_final_phase_1_price_tag`.
+Next runtime candidate after the implemented price-tag slice: `wuxia_sado_final_phase_2_weakpoint_control`.
 
-That candidate should still use the existing encounter schema first. It may seed final-state clues/flags/logs for the price-tag phase, but it must not open combat resolver, HP numeric combat, final epilogue schema, `item_unpriced_wooden_sword` payout, Seo Harin truth delivery, `told_seoharin_truth`, or Mumyeong salvation confirmation.
+`wuxia_sado_final_phase_1_price_tag` now uses the existing encounter schema to seed final-state clues/flags/logs for the price-tag phase. Phase 2 should continue that approach first: it must not open combat resolver, HP numeric combat, final epilogue schema, `item_unpriced_wooden_sword` payout, Seo Harin truth delivery, `told_seoharin_truth`, or Mumyeong salvation confirmation.

@@ -23,6 +23,13 @@ locations:
   - id: cheongryu_outer_courtyard
     name: 청류문 외곽 마당
     description: 낡은 현판과 비어 있는 연무장 사이로 청류문의 온기와 결핍이 함께 남은 외곽 마당.
-    connections: [jianghu_market_street]
+    connections: [jianghu_market_street, black_serpent_ledger_vault]
     tags: [wuxia, cheongryu_sect, courtyard, watch]
     danger: 1
+
+  - id: black_serpent_ledger_vault
+    name: 흑사방 장부고
+    description: 검은 비늘 장부와 빚 문서가 줄처럼 매달린 흑사방의 장부고. 사도의 가격표가 전장처럼 펼쳐진다.
+    connections: [cheongryu_outer_courtyard]
+    tags: [wuxia, black_serpent, ledger_vault, final_phase]
+    danger: 3

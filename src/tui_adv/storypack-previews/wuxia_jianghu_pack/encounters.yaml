@@ -1549,3 +1549,66 @@ encounters:
           add_clues: [last_bowl_epilogue_seeded, belonging_can_be_refused]
           destination_id: cheongryu_outer_courtyard
           log: 밥그릇은 그대로 남는다. 아무도 붙잡지 않지만, 먹지 않은 한 그릇은 언젠가 마지막 밥그릇으로 기억될 수 있다는 식은 여백을 남긴다.
+
+  - id: wuxia_sado_final_phase_1_price_tag
+    title: "사도 최종전 1페이즈: 가격표"
+    body: 남겨둔 밥의 온기가 식기도 전에, 천기록의 여백은 흑사방 장부고로 접힌다. 검은 비늘 장부와 표국 통행세 기록, 약점 장부와 청류문 후원서 조각이 줄처럼 매달려 있고, 흑사방주는 칼보다 먼저 빚이 움직인다는 듯 웃는다. 이곳의 첫 싸움은 사도를 약하게 만드는 일이 아니라, 네가 무엇을 지키고 무엇을 포기했는지 가격표에 남기는 일이다.
+    presentation:
+      visual_id: wuxia_sado_final_phase_1_price_tag
+      speaker: 흑사방주
+      layout: final_phase_price_tag
+      effect_cues:
+        - kind: glyph_anomaly
+          source: sado_final_phase_1_price_tag
+          intensity: 0.82
+          stable_terms: [흑사방주, 장부, 빚, 청류문]
+          distortion: ledger_strings_name_every_price
+          duration_hint_ms: 1700
+          fallback_text: 검은 비늘 장부 위로 '흑사방주', '장부', '빚', '청류문'만 매겨지지 않은 값처럼 남는다.
+    conditions:
+      locations: [cheongryu_outer_courtyard]
+      required_flags: [seoharin_left_meal_resolved, seoharin_empty_place_resolved, seoharin_axis_opened, empty_place_remembered, truth_delivery_still_unopened, boss_recruits_mumyeong_resolved, boss_recruitment_thread_opened, boss_first_appearance_resolved, black_serpent_core_pressure_opened, sealed_departure_truth_summary_prepared, midgame_continuity_started]
+      forbidden_flags: [sado_final_phase_1_price_tag_resolved]
+    choices:
+      - id: approach_sado_before_the_ledger
+        label: 장부보다 먼저 사도에게 접근한다
+        outcome:
+          resources:
+            health: -3
+            sanity: -2
+          danger: 2
+          add_flags: [sado_final_phase_1_price_tag_resolved, final_state_routing_seeded, final_price_tag_direct_approach, final_network_ignored_seeded, final_evidence_none_or_low_seeded, final_pressure_unresolved_seeded]
+          add_clues: [sado_is_not_weakened_by_direct_bravery, black_serpent_network_may_remain, alliance_silence_evidence_weak]
+          destination_id: black_serpent_ledger_vault
+          log: 칼끝은 빠르게 사도에게 닿지만, 장부의 줄은 끊어지지 않는다. 네가 몸으로 벌어낸 시간만큼 흑사방의 이름 없는 빚은 다른 손으로 옮겨 적힌다.
+      - id: burn_the_blackscale_ledger
+        label: 검은 비늘 장부를 불태운다
+        outcome:
+          resources:
+            sanity: -2
+          danger: 1
+          add_flags: [sado_final_phase_1_price_tag_resolved, final_state_routing_seeded, final_price_tag_ledger_burned, final_network_partially_destroyed_seeded, final_evidence_partial_seeded, final_pressure_partially_eased_seeded]
+          add_clues: [debt_outlasts_burned_paper, evidence_burned_with_pressure]
+          destination_id: black_serpent_ledger_vault
+          log: 장부는 탄다. 하지만 타는 냄새 사이로 사도는 종이가 사라져도 질투와 빚은 더 오래 남는다고 말한다. 일부 압박은 풀리지만, 증거도 함께 재가 된다.
+      - id: secure_the_blackscale_ledger
+        label: 장부를 확보한다
+        outcome:
+          resources:
+            sanity: -2
+          danger: 1
+          add_flags: [sado_final_phase_1_price_tag_resolved, final_state_routing_seeded, final_price_tag_ledger_secured, final_network_ledger_secured_seeded, final_evidence_strong_seeded, final_item_logs_blackscale_ledger_seeded]
+          add_clues: [item_blackscale_ledger_logged, black_serpent_network_structure_seen, alliance_silence_accountability_seeded]
+          destination_id: black_serpent_ledger_vault
+          log: 검은 비늘 장부는 무겁다. 들고 나가면 네가 본 것도 함께 들고 나가야 한다는 사도의 말처럼, 당장의 칼 한 수를 포기한 대신 조직의 구조가 손안에 남는다.
+      - id: ease_hostage_pressure_first
+        label: 인질성 압박을 먼저 해소한다
+        outcome:
+          resources:
+            health: -1
+            sanity: -1
+          danger: 1
+          add_flags: [sado_final_phase_1_price_tag_resolved, final_state_routing_seeded, final_price_tag_pressure_eased, final_pressure_eased_seeded, final_qingliu_rebuild_partial_seeded, final_seoharin_axis_high_seeded]
+          add_clues: [hostage_pressure_eased_before_boss, qingliu_market_pressure_softened, seoharin_waiting_is_not_price]
+          destination_id: black_serpent_ledger_vault
+          log: 먼저 지키는 것을 보면 나중에 무엇을 누르면 되는지도 보인다는 사도의 목소리가 낮게 깔린다. 그래도 매달린 이름 몇 개가 내려오고, 청류문과 시장의 숨통은 조금 트인다.

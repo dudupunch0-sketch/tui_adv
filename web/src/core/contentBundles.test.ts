@@ -58,6 +58,7 @@ describe('runtime content bundle registry', () => {
       'wuxia_mumyeong_resolution',
       'wuxia_seoharin_qingliu_resolution',
       'wuxia_cheongirok_resolution',
+      'wuxia_black_serpent_aftermath',
     ]);
     expect(encounterIds).not.toContain('ex_employee_messenger');
   });

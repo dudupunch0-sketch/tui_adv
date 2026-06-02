@@ -2,8 +2,8 @@
 type: next_goal_prompt
 created: 2026-06-01
 updated: 2026-06-02
-current_goal: wuxia_black_serpent_aftermath_handoff
-previous_current_goal: wuxia_cheongirok_resolution
+current_goal: wuxia_final_epilogue_renderer_contract_handoff
+previous_current_goal: wuxia_black_serpent_aftermath
 mode: docs-first-runtime-handoff
 ---
 
@@ -41,7 +41,9 @@ mode: docs-first-runtime-handoff
 
 `wuxia_cheongirok_resolution` runtime implementation도 완료됐다. 천기록 결산은 final epilogue renderer 없이 마지막 장의 high-use-not-corruption, blank true-route place, corruption, low-use silence, method-reflection 후보 seed만 기존 encounter schema로 남겼다.
 
-현재 목표는 `wuxia_black_serpent_aftermath_handoff`다. Notion의 최종장 결산 라우팅 source, 천기록 마지막 장 seed, 보스/무명/서하린/청류문/천기록 결산 seed를 repo canonical docs와 다시 대조해, 다음 runtime slice를 기존 encounter schema로 열 수 있는지 또는 별도 흑사방 aftermath/후일담 contract가 먼저 필요한지 결정한다.
+`wuxia_black_serpent_aftermath` runtime implementation도 완료됐다. 흑사방 aftermath는 final epilogue renderer 없이 부러진 검은 뱀, 깃발 잔존, 남쪽 장터 빚 풍문, 무림맹 침묵, true-route 억제 후보 seed만 기존 encounter schema로 남겼다.
+
+현재 목표는 `wuxia_final_epilogue_renderer_contract_handoff`다. Notion의 최종장 결산 라우팅 source, `08. 엔딩과 후일담 연결`, 지금까지 쌓인 보스/무명/서하린/청류문/천기록/흑사방 aftermath seed를 repo canonical docs와 다시 대조해, 실제 후일담 renderer를 열 수 있는 계약을 설계할지 또는 아직 더 많은 seed bridge가 필요한지 결정한다.
 
 ## 비교할 후보
 
@@ -52,6 +54,7 @@ mode: docs-first-runtime-handoff
 - `wuxia_seoharin_qingliu_resolution`
 - `wuxia_cheongirok_resolution`
 - `wuxia_black_serpent_aftermath`
+- `wuxia_final_epilogue_renderer_contract`
 - `epilogue_tianjilu_last_page`
 - `epilogue_open_gate` / `epilogue_closed_gate`
 - `wuxia_seoharin_unsaid_stay`
@@ -72,6 +75,7 @@ mode: docs-first-runtime-handoff
   - section `0.61`: `wuxia_mumyeong_resolution` preview runtime slice
   - section `0.62`: `wuxia_seoharin_qingliu_resolution` preview runtime slice
   - section `0.63`: `wuxia_cheongirok_resolution` preview runtime slice
+  - section `0.64`: `wuxia_black_serpent_aftermath` preview runtime slice
   - 현재 최우선 남은 작업
   - `## 10. 다음 액션`
 - `docs/design/Wuxia_Final_State_Routing.md`
@@ -86,7 +90,7 @@ mode: docs-first-runtime-handoff
 ## 이미 완료된 기반
 
 - Web/terminal default storypack은 `wuxia_jianghu_pack` / **이구학지 — 천기록**이다.
-- `wuxia_mumyeong_departure_truth_summary`, `wuxia_seoharin_empty_place`, `wuxia_seoharin_left_meal`, `wuxia_sado_final_phase_1_price_tag`, `wuxia_sado_final_phase_2_weakpoint_control`, `wuxia_sado_final_phase_3_outside_calculation`, `wuxia_boss_resolution`, `wuxia_mumyeong_resolution`, `wuxia_seoharin_qingliu_resolution`, `wuxia_cheongirok_resolution`까지 runtime slice는 완료됐다.
+- `wuxia_mumyeong_departure_truth_summary`, `wuxia_seoharin_empty_place`, `wuxia_seoharin_left_meal`, `wuxia_sado_final_phase_1_price_tag`, `wuxia_sado_final_phase_2_weakpoint_control`, `wuxia_sado_final_phase_3_outside_calculation`, `wuxia_boss_resolution`, `wuxia_mumyeong_resolution`, `wuxia_seoharin_qingliu_resolution`, `wuxia_cheongirok_resolution`, `wuxia_black_serpent_aftermath`까지 runtime slice는 완료됐다.
 - `docs/design/Wuxia_Final_State_Routing.md`는 `canonical_final_inputs`, `final_result_priority`, `final_epilogue_master_matrix` handoff boundary, state alias/deprecation policy를 소유한다.
 - `wuxia_seoharin_left_meal`은 `seoharin_empty_place_resolved`, `seoharin_axis_opened`, `empty_place_remembered`, `truth_delivery_still_unopened`, `midgame_continuity_started`를 요구하고 `seoharin_left_meal_resolved`로 반복을 막는다.
 - stable choice id는 `eat_the_left_meal_quietly`, `thank_seoharin_for_the_bowl`, `joke_about_who_ordered_extra_rice`, `pass_without_eating_the_meal`다.
@@ -112,6 +116,9 @@ mode: docs-first-runtime-handoff
 - `wuxia_cheongirok_resolution`은 `seoharin_qingliu_resolution_resolved`, `mumyeong_resolution_resolved`, `boss_resolution_resolved`, `final_result_priority_applied_seeded`, `final_combat_result_battle_victory_seeded`, `final_state_routing_seeded`를 요구하고 `cheongirok_resolution_resolved`로 반복을 막는다.
 - cheongirok resolution stable choice id는 `turn_the_last_page_without_question`, `leave_blank_as_unpriced_place`, `read_the_lines_that_align_like_ledger`, `close_record_before_it_becomes_answer`, `let_record_reflect_the_method`다.
 - cheongirok resolution은 `final_cheongirok_resolution_*_seeded`, `final_epilogue_tianjilu_*_seeded`, `final_player_method_reflected_not_judged_seeded` 같은 후보 seed만 남기며 final epilogue renderer, return/settlement schema, 천기록 기록자 정체 reveal을 열지 않는다.
+- `wuxia_black_serpent_aftermath`는 `cheongirok_resolution_resolved`, `seoharin_qingliu_resolution_resolved`, `mumyeong_resolution_resolved`, `boss_resolution_resolved`, `final_result_priority_applied_seeded`, `final_combat_result_battle_victory_seeded`, `final_state_routing_seeded`를 요구하고 `black_serpent_aftermath_resolved`로 반복을 막는다.
+- black serpent aftermath stable choice id는 `mark_broken_serpent_without_erasing_scars`, `fold_the_banner_without_calling_it_gone`, `send_ledger_to_alliance_and_watch_silence`, `listen_for_southern_market_debt_rumor`, `let_true_route_suppress_the_banner`다.
+- black serpent aftermath는 `final_black_serpent_aftermath_*_seeded`, `final_black_serpent_banner_*_candidate_seeded`, `final_southern_market_rumor_*_candidate_seeded`, `final_alliance_silence_responsibility_evasion_seeded` 같은 후보 seed만 남기며 final epilogue renderer, return/settlement schema를 열지 않는다.
 
 ## 금지선
 
@@ -122,7 +129,7 @@ mode: docs-first-runtime-handoff
 - final/epilogue/return schema, combat resolver/schema, HP 숫자전, route graph, faction reputation, relation/debt ledger, reward/ability schema, 천기록 identity reveal을 바로 열지 않는다.
 - `item_unpriced_wooden_sword`를 실제 아이템으로 지급하지 않는다.
 - legacy office bundle, `src/tui_adv/data/*.yaml`, `escape-office` save/localStorage key를 변경하지 않는다.
-- `wuxia_black_serpent_aftermath` 후보를 검토하더라도 combat resolver, HP numeric battle, final epilogue renderer, return/settlement schema를 바로 열지 않는다.
+- `wuxia_final_epilogue_renderer_contract` 후보를 검토하더라도 combat resolver, HP numeric battle, return/settlement schema를 바로 열지 않는다. final epilogue renderer를 열려면 core/renderer 책임과 candidate seed 소비 규칙을 먼저 별도 계약으로 고정한다.
 
 ## 이번 handoff 산출물
 

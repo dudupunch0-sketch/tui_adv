@@ -211,12 +211,12 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&5));
     assert_eq!(bundle.manifest.counts.get("items"), Some(&4));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&33));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&34));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 5);
-    assert_eq!(index.encounters_len(), 33);
+    assert_eq!(index.encounters_len(), 34);
 
     let market = index
         .location("jianghu_market_street")
@@ -2057,6 +2057,72 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert!(safe_page.outcome.add_items.is_empty());
     assert_eq!(
         safe_page.outcome.destination_id.as_deref(),
+        Some("black_serpent_ledger_vault")
+    );
+
+    let black_serpent_aftermath = index
+        .encounter("wuxia_black_serpent_aftermath")
+        .expect("black serpent aftermath encounter");
+    assert_eq!(black_serpent_aftermath.title, "흑사방 후일담 씨앗");
+    assert_eq!(
+        black_serpent_aftermath.conditions.locations,
+        vec!["black_serpent_ledger_vault"]
+    );
+    assert_eq!(
+        black_serpent_aftermath.conditions.required_flags,
+        vec![
+            "cheongirok_resolution_resolved",
+            "seoharin_qingliu_resolution_resolved",
+            "mumyeong_resolution_resolved",
+            "boss_resolution_resolved",
+            "final_result_priority_applied_seeded",
+            "final_combat_result_battle_victory_seeded",
+            "final_state_routing_seeded"
+        ]
+    );
+    assert_eq!(
+        black_serpent_aftermath.conditions.forbidden_flags,
+        vec!["black_serpent_aftermath_resolved"]
+    );
+    let aftermath_presentation = black_serpent_aftermath
+        .presentation
+        .as_ref()
+        .expect("black serpent aftermath presentation");
+    assert_eq!(
+        aftermath_presentation.layout.as_deref(),
+        Some("black_serpent_aftermath_seed")
+    );
+    assert_eq!(aftermath_presentation.speaker.as_deref(), Some("천기록"));
+    assert_eq!(
+        aftermath_presentation.effect_cues[0].stable_terms,
+        vec!["흑사방", "장부", "깃발", "남쪽 장터"]
+    );
+    assert_eq!(black_serpent_aftermath.choices.len(), 5);
+    let broken_serpent = black_serpent_aftermath
+        .choices
+        .iter()
+        .find(|choice| choice.id == "mark_broken_serpent_without_erasing_scars")
+        .expect("broken serpent aftermath choice");
+    assert_eq!(
+        broken_serpent.outcome.add_flags,
+        vec![
+            "black_serpent_aftermath_resolved",
+            "final_black_serpent_aftermath_broken_serpent_seeded",
+            "final_epilogue_boss_broken_black_serpent_variant_ready_seeded",
+            "final_broken_black_serpent_epilogue_candidate_reinforced_seeded"
+        ]
+    );
+    assert_eq!(
+        broken_serpent.outcome.add_clues,
+        vec![
+            "broken_serpent_still_leaves_network_scars",
+            "boss_defeat_is_not_total_cleanup",
+            "future_epilogue_renderer_still_unopened"
+        ]
+    );
+    assert!(broken_serpent.outcome.add_items.is_empty());
+    assert_eq!(
+        broken_serpent.outcome.destination_id.as_deref(),
         Some("black_serpent_ledger_vault")
     );
 }

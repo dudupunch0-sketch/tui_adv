@@ -943,6 +943,21 @@
 - [x] 기본 office bundle, Web legacy generated `content.bundle.json`, `src/tui_adv/data/*.yaml`, legacy `escape-office` save/localStorage key 미변경 유지
 - [x] 다음 작업을 `wuxia_black_serpent_aftermath` handoff 검토로 갱신
 
+### 0.2cc 2026-06-02 무협 `wuxia_black_serpent_aftermath` preview runtime slice
+
+- [x] Notion `08. 엔딩과 후일담 연결`, `최종장 결산 라우팅 마스터`, `사도 최종전 상태값 사전` 재확인
+- [x] `wuxia_black_serpent_aftermath`를 기존 encounter schema로 구현 가능한 Black Serpent aftermath route seed bridge로 결정
+- [x] `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`에서 `wuxia_cheongirok_resolution` 뒤에 `wuxia_black_serpent_aftermath` 추가
+- [x] start conditions를 `cheongirok_resolution_resolved`, `seoharin_qingliu_resolution_resolved`, `mumyeong_resolution_resolved`, `boss_resolution_resolved`, `final_result_priority_applied_seeded`, `final_combat_result_battle_victory_seeded`, `final_state_routing_seeded`로 구현
+- [x] stable choice id `mark_broken_serpent_without_erasing_scars`, `fold_the_banner_without_calling_it_gone`, `send_ledger_to_alliance_and_watch_silence`, `listen_for_southern_market_debt_rumor`, `let_true_route_suppress_the_banner` 구현
+- [x] 모든 선택지가 `black_serpent_aftermath_resolved`, `destination_id: black_serpent_ledger_vault` bridge를 남기도록 구현
+- [x] broken serpent/banner residue/alliance silence/southern market rumor/true-route suppression epilogue candidate seed를 flags/clues/log로만 구현
+- [x] Rust/Web storypack preview generated bundle 재생성
+- [x] Python exporter/docs/storypack DB, Rust content bundle, WASM JSON boundary, terminal smoke, Web default content bundle registry 테스트 갱신
+- [x] final epilogue renderer, return/settlement schema, combat resolver, HP 숫자전, 서하린 truth delivery, `told_seoharin_truth`, relation/reward schema, `item_unpriced_wooden_sword` payout, 천기록 기록자 정체 reveal 미변경 유지
+- [x] 기본 office bundle, Web legacy generated `content.bundle.json`, `src/tui_adv/data/*.yaml`, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 작업을 `wuxia_final_epilogue_renderer_contract` handoff 검토로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

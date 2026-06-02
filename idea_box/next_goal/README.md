@@ -2,9 +2,9 @@
 type: next_goal_prompt
 created: 2026-06-01
 updated: 2026-06-02
-current_goal: return_settlement_epilogue_followup_handoff
-previous_current_goal: wuxia_return_settlement_epilogue_contract_implementation
-mode: docs-only-contract-selection
+current_goal: wuxia_battle_loss_epilogue_contract_implementation
+previous_current_goal: return_settlement_epilogue_followup_handoff
+mode: contract-first-runtime-implementation
 ---
 
 # next_goal
@@ -57,9 +57,17 @@ mode: docs-only-contract-selection
 
 `wuxia_return_settlement_epilogue_contract_implementation`도 완료됐다. Rust GameCore-owned final epilogue consumer가 `wuxia_seoharin_unsaid_stay` seed를 소비해 `epilogue_wuxia_returned_commute`, `epilogue_wuxia_qingliu_settlement`, `epilogue_wuxia_empty_place_kept_open`, `epilogue_wuxia_closed_gate_risk` branch cards를 출력한다. Web Storybook과 SuperLightTUI는 core body block을 표시만 하며, return/settlement card enable/suppress를 renderer에서 다시 계산하지 않는다.
 
-현재 목표는 `return_settlement_epilogue_followup_handoff`다. 방금 구현한 return/settlement branch card runtime을 기준으로 battle-loss branch, broader corruption/closed-gate branch, reward/ability schema, relation/debt/faction ledger, main ending archive/save surface 중 무엇을 먼저 열지 Notion source와 repo canonical docs를 다시 비교한다.
+`return_settlement_epilogue_followup_handoff`도 완료됐다. Notion `최종장 결산 라우팅 마스터`, `사도 최종전`, `사도 최종전 상태값 사전`, `08. 엔딩과 후일담 연결`, `닫힌 산문`, `흑사방의 깃발`, `검은 뱀의 새 비늘`, `천기록의 마지막 장`, `06. 사이드 퀘스트와 미해결 부채`, `07. 천기록 / 천외편린 보상`, `01. 메인 엔딩 구조`를 대조한 결과, 다음 runtime 후보를 `wuxia_battle_loss_epilogue_contract`로 결정했다.
+
+현재 목표는 `wuxia_battle_loss_epilogue_contract_implementation`이다. 기존 Rust final epilogue body block consumer를 확장해 명시적 `final_combat_result_battle_loss_seeded` seed가 Notion battle-loss bundle을 출력하게 한다. 이 구현은 full combat resolver, HP 숫자전, playable defeat route, final battle container, archive/save schema를 열지 않는다.
 
 이전 목표 표기 이력:
+
+```yaml
+current_goal: return_settlement_epilogue_followup_handoff
+previous_current_goal: wuxia_return_settlement_epilogue_contract_implementation
+mode: docs-only-contract-selection
+```
 
 ```yaml
 current_goal: wuxia_return_settlement_epilogue_contract_implementation
@@ -131,6 +139,56 @@ next_decision:
   compare: [battle_loss_branch, broader_corruption_closed_gate_branch, reward_ability_schema, relation_debt_faction_ledger, main_ending_archive_save_surface]
 ```
 
+완료된 return/settlement epilogue follow-up handoff:
+
+```yaml
+completed_handoff:
+  id: return_settlement_epilogue_followup_handoff
+  selected_next_runtime: wuxia_battle_loss_epilogue_contract
+  selected_reason: battle_loss is already first in final_result_priority and has an explicit Notion afterword bundle
+  compared:
+    - battle_loss_branch
+    - broader_corruption_closed_gate_branch
+    - reward_ability_schema
+    - relation_debt_faction_ledger
+    - main_ending_archive_save_surface
+  notion_sources_checked:
+    - 최종장 결산 라우팅 마스터
+    - 사도 최종전
+    - 사도 최종전 상태값 사전
+    - 08. 엔딩과 후일담 연결
+    - 닫힌 산문
+    - 흑사방의 깃발
+    - 검은 뱀의 새 비늘
+    - 천기록의 마지막 장
+    - 06. 사이드 퀘스트와 미해결 부채
+    - 07. 천기록 / 천외편린 보상
+    - 01. 메인 엔딩 구조
+next_runtime:
+  id: wuxia_battle_loss_epilogue_contract
+  implementation_owner: crates/escape-core/src/final_epilogue.rs
+  output_shape: existing ScenePage.body_blocks
+  input_seed: final_combat_result_battle_loss_seeded
+  output_cards:
+    - epilogue_boss_black_serpent_banner
+    - epilogue_wuxia_southern_market_rumor
+    - epilogue_mumyeong_black_serpent_new_scale
+    - epilogue_seoharin_closed_gate
+    - epilogue_tianjilu_last_page
+  suppresses:
+    - epilogue_boss_broken_black_serpent
+    - epilogue_seoharin_open_gate
+    - epilogue_mumyeong_stolen_forms_stopped
+  guardrails:
+    - no_full_sado_final_battle_container
+    - no_combat_resolver
+    - no_hp_numeric_battle
+    - no_playable_defeat_route
+    - no_main_ending_archive_save_surface
+    - no_relation_debt_faction_ledger
+    - no_reward_ability_schema
+```
+
 완료된 runtime contract 이력:
 
 - runtime id: `wuxia_seoharin_unsaid_stay`
@@ -173,6 +231,9 @@ next_decision:
   - section `0.66`: `wuxia_final_epilogue_renderer_contract` runtime implementation slice
   - section `0.67`: final epilogue UX/playtest follow-up
   - section `0.68`: return/settlement contract docs-only handoff
+  - section `0.69`: `wuxia_seoharin_unsaid_stay` runtime slice
+  - section `0.70`: `wuxia_return_settlement_epilogue_contract` runtime slice
+  - section `0.71`: return/settlement epilogue follow-up handoff
   - 현재 최우선 남은 작업
   - `## 10. 다음 액션`
 - `docs/design/Wuxia_Final_State_Routing.md`

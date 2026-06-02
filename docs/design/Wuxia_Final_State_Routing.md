@@ -302,3 +302,58 @@ Still closed:
 - Cheonggi Record recorder identity reveal
 
 Next contract decision: `return_settlement_epilogue_followup_handoff`, comparing battle-loss branch, broader corruption/closed-gate branch, reward/ability schema, relation/debt/faction ledger, and main ending archive/save surfaces after the return/settlement branch cards have runtime evidence.
+
+## Return/Settlement Epilogue Follow-up Handoff
+
+Decision from the 2026-06-02 `return_settlement_epilogue_followup_handoff`: the next implementation after `wuxia_return_settlement_epilogue_contract` is `wuxia_battle_loss_epilogue_contract`.
+
+Notion comparison:
+
+- `최종장 결산 라우팅 마스터` already defines `battle_loss` as the first final result priority and maps it to `epilogue_boss_black_serpent_banner`, `epilogue_wuxia_southern_market_rumor`, `epilogue_mumyeong_black_serpent_new_scale`, `epilogue_seoharin_closed_gate`, and `epilogue_tianjilu_last_page_corruption_variant`.
+- `사도 최종전` and `사도 최종전 상태값 사전` both treat `combat_result: battle_loss` as a canonical final value, but they do not require a numeric HP resolver for this handoff.
+- `08. 엔딩과 후일담 연결` repeats the battle-loss output bundle and frames it as darker afterword bias, not player blame.
+- `흑사방의 깃발`, `검은 뱀의 새 비늘`, `닫힌 산문`, and `천기록의 마지막 장` all have battle-loss/corruption variants in the epilogue DB.
+- The broader closed-gate/corruption branch is already partially represented by `epilogue_seoharin_closed_gate`, `epilogue_tianjilu_last_page` corruption variant, and corrupted result priority; the missing immediate gap is the loss result bundle itself.
+- `07. 천기록 / 천외편린 보상` still implies a broader three-choice reward/ability system and should remain future work.
+- `06. 사이드 퀘스트와 미해결 부채` supports unresolved pressure as afterword traces, but it does not require a relation/debt/faction ledger before the loss bundle can be printed.
+- `01. 메인 엔딩 구조` keeps `main_ending_type` as internal planning vocabulary, so this slice should not open a player-facing archive/save surface.
+
+Selected next implementation:
+
+| field | value |
+|---|---|
+| runtime id | `wuxia_battle_loss_epilogue_contract` |
+| implementation owner | `crates/escape-core/src/final_epilogue.rs` |
+| output shape | existing `ScenePage.body_blocks` |
+| input bridge | explicit `final_combat_result_battle_loss_seeded` final-state seed |
+| renderer role | Web Storybook and SuperLightTUI display only |
+
+Intended battle-loss bundle:
+
+| card id | variant direction | source |
+|---|---|---|
+| `epilogue_boss_black_serpent_banner` | `battle_loss_residue` | Notion `흑사방의 깃발` |
+| `epilogue_wuxia_southern_market_rumor` | `unresolved_debt` | Notion `06`, `08`, final routing master |
+| `epilogue_mumyeong_black_serpent_new_scale` | `battle_loss_successor_pressure` | Notion `검은 뱀의 새 비늘` |
+| `epilogue_seoharin_closed_gate` | `battle_loss_or_corruption` | Notion `닫힌 산문` |
+| `epilogue_tianjilu_last_page` | `corruption_variant` | Notion `천기록의 마지막 장` |
+
+Conflict rule for the next implementation:
+
+- `battle_loss` should suppress optimistic victory cards such as `epilogue_boss_broken_black_serpent`, `epilogue_seoharin_open_gate`, and `epilogue_mumyeong_stolen_forms_stopped`.
+- It may coexist with unresolved-pressure rumor cards.
+- It must not imply that a full numeric combat resolver, HP battle, or playable defeat route has been opened.
+
+Still closed:
+
+- full `wuxia_sado_final_battle` container
+- combat resolver or HP numeric battle
+- main ending archive/save surface
+- relation/debt/faction ledger
+- reward/ability schema and 천외편린 three-choice growth UI
+- full modern return ending scene or post-return settlement scene
+- `item_unpriced_wooden_sword` payout
+- Seo Harin truth delivery, `told_seoharin_truth`
+- Cheonggi Record recorder identity reveal
+
+Next runtime implementation candidate: `wuxia_battle_loss_epilogue_contract`.

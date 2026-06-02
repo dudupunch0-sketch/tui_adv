@@ -2234,3 +2234,64 @@ def test_wuxia_black_serpent_aftermath_runtime_slice_is_docs_synced():
     assert "told_seoharin_truth" not in encounters_yaml
     assert "wuxia_sado_final_battle_started" not in encounters_yaml
     assert "item_unpriced_wooden_sword" not in encounters_yaml
+
+
+def test_wuxia_final_epilogue_runtime_contract_is_docs_synced():
+    readme = Path("README.md").read_text(encoding="utf-8")
+    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
+    runtime_preview = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(
+        encoding="utf-8"
+    )
+    final_routing = Path("docs/design/Wuxia_Final_State_Routing.md").read_text(
+        encoding="utf-8"
+    )
+    next_goal = Path("idea_box/next_goal/README.md").read_text(encoding="utf-8")
+    notion_sources = Path("idea_box/notion_sources.yml").read_text(encoding="utf-8")
+    storypack_db_readme = Path("docs/content/storypack_db/README.md").read_text(
+        encoding="utf-8"
+    )
+    storypack_db_json = Path("docs/content/storypack_db/storypacks.json").read_text(
+        encoding="utf-8"
+    )
+    wuxia_pack = Path("docs/content/storypacks/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+    wuxia_cards = Path("docs/content/encounter_db/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+    endings_yaml = Path(
+        "src/tui_adv/storypack-previews/wuxia_jianghu_pack/endings.yaml"
+    ).read_text(encoding="utf-8")
+    final_epilogue_rs = Path("crates/escape-core/src/final_epilogue.rs").read_text(
+        encoding="utf-8"
+    )
+
+    assert "runtime은 arrival/first fight/first fragment부터 `wuxia_final_epilogue_renderer_contract`까지 구현됐다" in readme
+    assert "## 0.66 2026-06-02 무협 `wuxia_final_epilogue_renderer_contract` runtime implementation slice" in plan
+    assert "### 0.2ce 2026-06-02 무협 `wuxia_final_epilogue_renderer_contract` runtime implementation slice" in checklist
+    assert "Final epilogue renderer implementation" in coverage
+    assert "Latest implemented runtime: `wuxia_final_epilogue_renderer_contract`" in runtime_preview
+    assert "Latest implemented runtime slice: `wuxia_final_epilogue_renderer_contract`" in final_routing
+    assert "current_goal: wuxia_final_epilogue_ux_playtest_contract_followup" in next_goal
+    assert "previous_current_goal: wuxia_final_epilogue_renderer_contract_implementation" in next_goal
+    assert "runtime_status: \"implemented_in_storypack_preview\"" in notion_sources
+    assert "previous_runtime_status: \"next_implementation_candidate\"" in notion_sources
+
+    assert "runtime final ending/system contract" in storypack_db_readme
+    assert "Latest implemented runtime: wuxia_final_epilogue_renderer_contract" in storypack_db_json
+    assert "35. `wuxia_final_epilogue_renderer_contract` — runtime 구현 완료" in wuxia_pack
+    assert "## 35. `wuxia_final_epilogue_renderer_contract` — runtime 구현 완료" in wuxia_cards
+    assert "body_block_contract:" in wuxia_cards
+    assert "block_kinds: [epilogue_result, epilogue_card, epilogue_suppressed, epilogue_contract_error]" in wuxia_cards
+
+    assert "id: wuxia_final_epilogue_renderer_contract" in endings_yaml
+    assert "kind: final_epilogue_contract" in endings_yaml
+    assert "boss_resolution_resolved" in endings_yaml
+    assert "black_serpent_aftermath_resolved" in endings_yaml
+
+    assert "epilogue_result" in final_epilogue_rs
+    assert "epilogue_card" in final_epilogue_rs
+    assert "epilogue_suppressed" in final_epilogue_rs
+    assert "final_result_key" in final_epilogue_rs

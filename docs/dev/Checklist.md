@@ -972,6 +972,20 @@
 - [x] 기본 office bundle, Web legacy generated `content.bundle.json`, `src/tui_adv/data/*.yaml`, legacy `escape-office` save/localStorage key 미변경 유지
 - [x] 다음 작업을 `wuxia_final_epilogue_renderer_contract` implementation slice 검토로 갱신
 
+### 0.2ce 2026-06-02 무협 `wuxia_final_epilogue_renderer_contract` runtime implementation slice
+
+- [x] `wuxia_final_epilogue_renderer_contract`를 preview ending으로 추가
+- [x] Rust GameCore-owned final epilogue seed consumer 구현
+- [x] final result priority, seed consumption, suppress, card ordering을 renderer가 아니라 core에서 처리
+- [x] structured `ScenePage.body_blocks` convention으로 `epilogue_result`, `epilogue_card`, `epilogue_suppressed` 출력
+- [x] Web Storybook과 SuperLightTUI는 core 제공 body block 표시만 하도록 검증
+- [x] Rust/Web storypack preview generated bundle 재생성
+- [x] Rust core direct-state route parity, WASM JSON boundary, terminal smoke, Web Storybook pass-through 테스트 추가
+- [x] combat resolver, HP 숫자전, return/settlement schema, relation/debt/faction ledger, reward/ability schema, `item_unpriced_wooden_sword` payout 미변경 유지
+- [x] 서하린 truth delivery, `told_seoharin_truth`, 천기록 기록자 정체 reveal 미변경 유지
+- [x] 기본 office bundle, Web legacy generated `content.bundle.json`, `src/tui_adv/data/*.yaml`, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 작업을 final epilogue UX/playtest 및 contract follow-up 검증으로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

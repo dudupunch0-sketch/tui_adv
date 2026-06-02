@@ -479,14 +479,14 @@ sources:
     status: "live_checked_runtime_implemented"
 
   - key: wuxia_final_epilogue_renderer_contract
-    title: "최종 후일담 renderer contract handoff"
+    title: "최종 후일담 renderer contract implementation"
     object: derived_runtime_handoff
     notion_refs:
       - "notion:37237e69-695e-81d2-8ce2-d1c738c3e923"
       - "notion:37137e69-695e-8177-a228-d7f96d084622"
       - "notion:37337e69-695e-81c7-a9fd-e0a0e22005e2"
-    last_checked_at: "2026-06-02T13:20:00+09:00"
-    precedence_role: "completed_final_epilogue_renderer_contract_handoff"
+    last_checked_at: "2026-06-02T19:35:00+09:00"
+    precedence_role: "implemented_final_epilogue_seed_consumer"
     related_design_units:
       - "system:final_epilogue_renderer_contract"
       - "system:final_epilogue_master_matrix"
@@ -505,8 +505,15 @@ sources:
     consumed_by:
       - "system:wuxia_final_epilogue_renderer_contract"
     handoff_decision: "no_additional_seed_bridge_required_before_core_owned_implementation"
-    runtime_status: "next_implementation_candidate"
-    status: "live_checked_handoff_completed"
+    implementation_scope: "core_owned_structured_scene_page_body_blocks"
+    previous_runtime_status: "next_implementation_candidate"
+    body_block_kinds:
+      - "epilogue_result"
+      - "epilogue_card"
+      - "epilogue_suppressed"
+      - "epilogue_contract_error"
+    runtime_status: "implemented_in_storypack_preview"
+    status: "live_checked_runtime_implemented"
 
   - key: wuxia_99_checkpoint
     title: "99. 통합 체크포인트"

@@ -1,10 +1,10 @@
 # Wuxia Final State Routing
 
-Status: Notion-synced design contract + final epilogue renderer contract handoff, not runtime schema
+Status: Notion-synced design contract + first final epilogue runtime implementation, no dedicated result schema
 
 Primary storypack: `wuxia_jianghu_pack` / **이구학지 — 천기록**
 
-This document records the final-chapter state, routing vocabulary, and final epilogue seed-consumption contract that must be settled before the next final-route runtime slices. It does not add a combat resolver, HP numeric battle, implemented epilogue renderer, relation ledger, reward schema, or item payout. Runtime work still has to pass through `docs/dev/Development_Plan.md`.
+This document records the final-chapter state, routing vocabulary, and final epilogue seed-consumption contract used by the first runtime slice. It does not add a combat resolver, HP numeric battle, return/settlement schema, relation ledger, reward schema, or item payout. Runtime work still has to pass through `docs/dev/Development_Plan.md`.
 
 ## Source References
 
@@ -31,7 +31,7 @@ This contract explicitly keeps these surfaces closed:
 
 - no combat resolver
 - no HP numeric battle
-- no implemented final epilogue renderer
+- no dedicated final epilogue schema beyond structured `ScenePage.body_blocks`
 - no return/settlement schema
 - no relation/debt/faction ledger
 - no reward/ability schema
@@ -76,18 +76,18 @@ This contract explicitly keeps these surfaces closed:
 6. `incomplete_victory`
 7. `basic_victory`
 
-`final_epilogue_master_matrix` is the next consumer. This document records its input vocabulary and the seed-consumption contract; it does not implement the epilogue matrix.
+`final_epilogue_master_matrix` is consumed by `wuxia_final_epilogue_renderer_contract` as the first runtime consumer. This document records its input vocabulary and the seed-consumption contract; the current runtime implementation exposes the result as structured `ScenePage.body_blocks`, not as a new top-level result schema.
 
 ## Final Epilogue Renderer Contract Handoff
 
 Decision from the 2026-06-02 `wuxia_final_epilogue_renderer_contract_handoff`: no additional seed bridge is required before opening the final epilogue contract. `wuxia_boss_resolution`, `wuxia_mumyeong_resolution`, `wuxia_seoharin_qingliu_resolution`, `wuxia_cheongirok_resolution`, and `wuxia_black_serpent_aftermath` already leave the candidate seeds needed by the Notion master matrix.
 
-The next implementation slice may open a core-owned final epilogue seed consumer, but only under this boundary:
+The first implementation slice opened a core-owned final epilogue seed consumer under this boundary:
 
 - Rust GameCore owns final result priority, seed consumption, suppress resolution, and card ordering.
 - Web Storybook and SuperLightTUI render the core result only; they must not recompute route quality, enable conditions, or suppress rules.
 - Candidate seeds remain `flags`/`clues`/`log` inputs until a dedicated card-output schema is approved.
-- If a `ScenePage`-level epilogue output shape is introduced, each card must expose its card id, variant, consumed seeds, and suppressed-by reason when applicable.
+- The selected output shape is a structured body block convention inside the existing `ScenePage.mode: ending` path. Each emitted card exposes its card id, variant, group, consumed seeds, and body text; suppressed candidates expose their suppressed-by reason through `epilogue_suppressed`.
 - The contract may output main result plus epilogue cards, but it must not add return/settlement, reward/ability, relation/debt/faction, or combat-resource systems.
 
 Required preconditions for the first contract implementation:
@@ -127,12 +127,12 @@ Mandatory suppress examples:
 - banner and southern market rumor can coexist only when not suppressed by true route, core network cut, or eased pressure.
 - strong evidence changes alliance silence into responsibility evasion, not proof failure.
 
-Open implementation questions for the next slice:
+Implementation choices resolved by the first slice:
 
-- whether card output is a new renderer-neutral `ScenePage` mode or a structured body block convention first
-- whether suppressed-card debug/audit output is test-only or player-visible
-- how to order cards within the same result tier without creating route-score UI
-- whether `battle_loss` should be implemented in the first contract slice or remain deferred until an approved loss path exists
+- card output is structured body blocks first, not a new renderer-neutral `ScenePage` mode.
+- suppressed-card audit output is core-owned and renderer-visible as `epilogue_suppressed` body blocks when a suppressed candidate was actually present.
+- card order is fixed by group/order tables in Rust GameCore rather than route-score UI.
+- `battle_loss` is recognized by result priority when its approved seed exists, but no numeric combat resolver or HP battle path is opened in this slice.
 
 ## State Alias And Deprecation Policy
 
@@ -151,6 +151,6 @@ Deferred until this contract exists and a runtime handoff explicitly opens them:
 - full `wuxia_boss_resolution` epilogue renderer beyond the implemented route seed bridge
 - `wuxia_sado_final_battle`
 
-Latest implemented runtime slice: `wuxia_black_serpent_aftermath`.
+Latest implemented runtime slice: `wuxia_final_epilogue_renderer_contract`.
 
-`wuxia_sado_final_phase_1_price_tag`, `wuxia_sado_final_phase_2_weakpoint_control`, `wuxia_sado_final_phase_3_outside_calculation`, `wuxia_boss_resolution`, `wuxia_mumyeong_resolution`, `wuxia_seoharin_qingliu_resolution`, `wuxia_cheongirok_resolution`, and `wuxia_black_serpent_aftermath` now use the existing encounter schema to seed final-state clues/flags/logs for the Sado final phases, boss-resolution route bridge, Mumyeong-resolution route bridge, Seo Harin/Qingliu epilogue candidate bridge, Cheonggi Record last-page bridge, and Black Serpent aftermath bridge. The `wuxia_final_epilogue_renderer_contract_handoff` decision is that no additional seed bridge is required before the final epilogue contract. The next runtime candidate is a core-owned `wuxia_final_epilogue_renderer_contract` implementation slice that consumes those candidate seeds without opening combat resolver, HP numeric combat, return/settlement schema, `item_unpriced_wooden_sword` payout, Seo Harin truth delivery, Cheonggi Record recorder identity reveal, or `told_seoharin_truth` unless a new approved runtime contract opens them.
+`wuxia_sado_final_phase_1_price_tag`, `wuxia_sado_final_phase_2_weakpoint_control`, `wuxia_sado_final_phase_3_outside_calculation`, `wuxia_boss_resolution`, `wuxia_mumyeong_resolution`, `wuxia_seoharin_qingliu_resolution`, `wuxia_cheongirok_resolution`, and `wuxia_black_serpent_aftermath` now use the existing encounter schema to seed final-state clues/flags/logs for the Sado final phases, boss-resolution route bridge, Mumyeong-resolution route bridge, Seo Harin/Qingliu epilogue candidate bridge, Cheonggi Record last-page bridge, and Black Serpent aftermath bridge. `wuxia_final_epilogue_renderer_contract` consumes those candidate seeds through Rust GameCore-owned structured body blocks without opening combat resolver, HP numeric combat, return/settlement schema, `item_unpriced_wooden_sword` payout, Seo Harin truth delivery, Cheonggi Record recorder identity reveal, or `told_seoharin_truth` unless a new approved runtime contract opens them.

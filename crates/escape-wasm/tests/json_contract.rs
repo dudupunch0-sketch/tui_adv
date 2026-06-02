@@ -3270,8 +3270,8 @@ fn json_boundary_reaches_wuxia_seoharin_qingliu_resolution_after_mumyeong_resolu
         .expect("seoharin qingliu state should stringify");
     let seoharin_page_json = scene_page_json(&seoharin_state_json, WUXIA_PREVIEW_BUNDLE)
         .expect("seoharin qingliu resolution scene page should serialize");
-    let seoharin_page: Value = serde_json::from_str(&seoharin_page_json)
-        .expect("seoharin qingliu page JSON should parse");
+    let seoharin_page: Value =
+        serde_json::from_str(&seoharin_page_json).expect("seoharin qingliu page JSON should parse");
 
     assert_eq!(seoharin_page["mode"], "encounter");
     assert_eq!(seoharin_page["title"], "서하린·청류문 결산");
@@ -3351,8 +3351,8 @@ fn json_boundary_reaches_wuxia_seoharin_qingliu_resolution_after_mumyeong_resolu
         .expect("cheongirok state should stringify");
     let cheongirok_page_json = scene_page_json(&cheongirok_state_json, WUXIA_PREVIEW_BUNDLE)
         .expect("cheongirok resolution scene page should serialize");
-    let cheongirok_page: Value = serde_json::from_str(&cheongirok_page_json)
-        .expect("cheongirok page JSON should parse");
+    let cheongirok_page: Value =
+        serde_json::from_str(&cheongirok_page_json).expect("cheongirok page JSON should parse");
 
     assert_eq!(cheongirok_page["mode"], "encounter");
     assert_eq!(cheongirok_page["title"], "천기록 결산");
@@ -3364,7 +3364,10 @@ fn json_boundary_reaches_wuxia_seoharin_qingliu_resolution_after_mumyeong_resolu
         cheongirok_page["visual"]["kind"],
         "cheongirok_resolution_seed"
     );
-    assert_eq!(cheongirok_page["effect_cues"][0]["stable_terms"][0], "천기록");
+    assert_eq!(
+        cheongirok_page["effect_cues"][0]["stable_terms"][0],
+        "천기록"
+    );
     let cheongirok_action_ids: Vec<&str> = cheongirok_page["actions"]
         .as_array()
         .expect("actions should be an array")
@@ -3431,7 +3434,10 @@ fn json_boundary_reaches_wuxia_seoharin_qingliu_resolution_after_mumyeong_resolu
         aftermath_page["visual"]["kind"],
         "black_serpent_aftermath_seed"
     );
-    assert_eq!(aftermath_page["effect_cues"][0]["stable_terms"][0], "흑사방");
+    assert_eq!(
+        aftermath_page["effect_cues"][0]["stable_terms"][0],
+        "흑사방"
+    );
     let aftermath_action_ids: Vec<&str> = aftermath_page["actions"]
         .as_array()
         .expect("actions should be an array")
@@ -3467,9 +3473,9 @@ fn json_boundary_reaches_wuxia_seoharin_qingliu_resolution_after_mumyeong_resolu
     assert!(flags
         .iter()
         .any(|flag| flag == "black_serpent_aftermath_resolved"));
-    assert!(flags.iter().any(
-        |flag| flag == "final_epilogue_boss_broken_black_serpent_variant_ready_seeded"
-    ));
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "final_epilogue_boss_broken_black_serpent_variant_ready_seeded"));
     assert!(!flags
         .iter()
         .any(|flag| flag == "final_epilogue_renderer_opened"));
@@ -3480,6 +3486,41 @@ fn json_boundary_reaches_wuxia_seoharin_qingliu_resolution_after_mumyeong_resolu
     assert!(clues
         .iter()
         .any(|clue| clue == "broken_serpent_still_leaves_network_scars"));
+
+    let final_state_json = serde_json::to_string(&broken_serpent_result["state"])
+        .expect("final epilogue state should stringify");
+    let final_page_json = scene_page_json(&final_state_json, WUXIA_PREVIEW_BUNDLE)
+        .expect("final epilogue scene page should serialize");
+    let final_page: Value =
+        serde_json::from_str(&final_page_json).expect("final epilogue page JSON should parse");
+
+    assert_eq!(final_page["mode"], "ending");
+    assert_eq!(final_page["title"], "이구학지 결산");
+    assert_eq!(
+        final_page["visual"]["id"],
+        "ending:wuxia_final_epilogue_renderer_contract"
+    );
+    let body_blocks = final_page["body_blocks"]
+        .as_array()
+        .expect("final body blocks should be an array");
+    assert!(body_blocks.iter().any(|block| {
+        block["kind"] == "epilogue_result"
+            && block["text"]
+                .as_str()
+                .expect("epilogue result text should be a string")
+                .contains("final_result_key: true_route_victory")
+    }));
+    assert!(body_blocks.iter().any(|block| {
+        block["kind"] == "epilogue_card"
+            && block["text"]
+                .as_str()
+                .expect("epilogue card text should be a string")
+                .contains("card_id: epilogue_boss_broken_black_serpent")
+    }));
+    assert!(final_page["actions"]
+        .as_array()
+        .expect("final page actions should be an array")
+        .is_empty());
 }
 
 #[test]

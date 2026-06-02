@@ -1,6 +1,6 @@
 # Wuxia Final State Routing
 
-Status: Notion-synced design contract + final epilogue runtime implementation + return/settlement epilogue branch runtime, no dedicated result schema
+Status: Notion-synced design contract + final epilogue runtime implementation + final-state audit runtime + Sado final battle container handoff, no dedicated result schema
 
 Primary storypack: `wuxia_jianghu_pack` / **이구학지 — 천기록**
 
@@ -153,7 +153,7 @@ Deferred until this contract exists and a runtime handoff explicitly opens them:
 
 Latest implemented runtime slice: `wuxia_final_state_canonical_collapse_contract`.
 
-Latest contract handoff: `wuxia_battle_loss_epilogue_followup_handoff` selected `wuxia_final_state_canonical_collapse_contract` as the next runtime candidate.
+Latest contract handoff: `wuxia_final_state_canonical_collapse_followup_handoff` selected `wuxia_sado_final_battle` as the next container-only runtime candidate.
 
 `wuxia_sado_final_phase_1_price_tag`, `wuxia_sado_final_phase_2_weakpoint_control`, `wuxia_sado_final_phase_3_outside_calculation`, `wuxia_boss_resolution`, `wuxia_mumyeong_resolution`, `wuxia_seoharin_qingliu_resolution`, `wuxia_cheongirok_resolution`, and `wuxia_black_serpent_aftermath` now use the existing encounter schema to seed final-state clues/flags/logs for the Sado final phases, boss-resolution route bridge, Mumyeong-resolution route bridge, Seo Harin/Qingliu epilogue candidate bridge, Cheonggi Record last-page bridge, and Black Serpent aftermath bridge. `wuxia_final_epilogue_renderer_contract`, `wuxia_return_settlement_epilogue_contract`, and `wuxia_battle_loss_epilogue_contract` consume those candidate/result seeds through Rust GameCore-owned structured body blocks without opening combat resolver, HP numeric combat, full return/settlement schema, `item_unpriced_wooden_sword` payout, Seo Harin truth delivery, Cheonggi Record recorder identity reveal, or `told_seoharin_truth` unless a new approved runtime contract opens them.
 
@@ -487,4 +487,69 @@ Still closed:
 - Seo Harin truth delivery, `told_seoharin_truth`
 - Cheonggi Record recorder identity reveal
 
-Next contract decision: `wuxia_final_state_canonical_collapse_followup_handoff`, comparing full final battle container, playable defeat-route bridge, broader corruption/closed-gate branch, reward/ability schema, relation/debt/faction ledger, and main ending archive/save surface after the canonical audit has runtime evidence.
+Next contract decision completed: `wuxia_final_state_canonical_collapse_followup_handoff`.
+
+## Final State Collapse Follow-up Handoff
+
+Decision from the 2026-06-02 `wuxia_final_state_canonical_collapse_followup_handoff`: the next implementation after `wuxia_final_state_canonical_collapse_contract` is the `wuxia_sado_final_battle` container-only runtime.
+
+Notion evidence:
+
+- `사도 최종전` owns event id `wuxia_sado_final_battle`, marks the battle as required, forbids peaceful resolution, and says pre-battle dialogue must not weaken Sado.
+- The same Notion event separates the container from its phase cards: phase 1 handles ledger/evidence/network/pressure, phase 2 handles weakpoint/relationship/record pressure, and phase 3 handles outside-calculation final input candidates.
+- `최종장 결산 라우팅 마스터` and `사도 최종전 상태값 사전` now have runtime evidence through `epilogue_state_audit`; canonical final labels can be trusted before opening the battle container.
+- `08. 엔딩과 후일담 연결` keeps afterword output as fulfilled cards plus suppress rules, so a battle opening does not need to create archive/save or reward surfaces.
+- `06. 사이드 퀘스트와 미해결 부채` supports debt as afterword rumor/absence, not a required persistent ledger before the battle container.
+- `07. 천기록 / 천외편린 보상` is a separate three-choice growth system with side effects and should not be bundled into the required final battle opening.
+- `01. 메인 엔딩 구조` and `06. 엔딩 아카이브` keep `main_ending_type`, discovered counts, and replayable archive cards as player-facing persistence work after the core battle path exists.
+
+Candidate comparison:
+
+| candidate | decision |
+|---|---|
+| full final battle container | Selected, but scoped as a container-only runtime for the Notion event id `wuxia_sado_final_battle`. It opens the required battle framing and routes into phase 1 without numeric combat. |
+| playable defeat-route bridge | Deferred until the required battle container exists; defeat UX needs a stable entry point and route back into loss afterword output. |
+| broader corruption/closed-gate branch | Deferred; corrupted priority, closed-gate cards, and the audit labels already expose the first surface. |
+| reward/ability schema | Deferred; 천외편린 needs a separate three-choice growth/reward UI and side-effect model. |
+| relation/debt/faction ledger | Deferred; unresolved pressure can remain as afterword/audit traces for now. |
+| main ending archive/save surface | Deferred; archive categories, discovered counts, and persistence should follow a stable ending path. |
+
+Selected next implementation:
+
+| field | value |
+|---|---|
+| runtime id | `wuxia_sado_final_battle` |
+| implementation handoff | `wuxia_sado_final_battle_container_implementation` |
+| Notion source | `사도 최종전` / `37237e69-695e-8169-97a3-d8106a817275` |
+| implementation owner | storypack preview source YAML and generated Rust/Web bundles |
+| output shape | existing encounter schema, not a new `ScenePage` mode |
+| route target | `wuxia_sado_final_phase_1_price_tag` |
+| renderer role | Web Storybook and SuperLightTUI display only |
+
+Implementation contract:
+
+- Add the required Sado final battle opening encounter under id `wuxia_sado_final_battle`.
+- Use `black_serpent_ledger_vault` as the battlefield and make the text establish the ledger-room frame from Notion.
+- Provide four stable stance choices matching the Notion dialogue directions:
+  - affirm priceless heart
+  - resist uncertainty without handing it to the ledger
+  - cite Qingliu as evidence outside Sado's calculation
+  - cut off the words and enter battle
+- Every choice must leave `sado_final_battle_started`, `sado_final_battle_container_resolved`, `sado_final_battle_required_confirmed`, and `sado_dialogue_does_not_weaken_boss`.
+- Each choice may leave one stance-specific `final_player_stance_*_seeded` flag, but must route to the existing phase-1 path rather than resolving combat.
+- Add exporter, Rust content fixture, WASM JSON boundary, and SuperLightTUI route smoke coverage.
+
+Still closed:
+
+- combat resolver or HP numeric battle
+- playable defeat route / loss encounter sequence
+- broader corruption/closed-gate branch beyond existing card/audit surfaces
+- new `main_ending_type` runtime enum
+- main ending archive/save surface
+- relation/debt/faction ledger
+- reward/ability schema and 천외편린 three-choice growth UI
+- full modern return ending scene or post-return settlement scene
+- Seo Harin truth delivery, `told_seoharin_truth`
+- Cheonggi Record recorder identity reveal
+
+Next runtime implementation candidate: `wuxia_sado_final_battle`.

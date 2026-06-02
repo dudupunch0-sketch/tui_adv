@@ -2667,3 +2667,86 @@ def test_wuxia_final_state_canonical_collapse_contract_runtime_is_docs_synced():
         "json_boundary_outputs_wuxia_final_state_audit_block"
         in wasm_json_contract_rs
     )
+
+
+def test_wuxia_final_state_collapse_followup_handoff_is_docs_synced():
+    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(
+        encoding="utf-8"
+    )
+    runtime_preview = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(
+        encoding="utf-8"
+    )
+    final_routing = Path("docs/design/Wuxia_Final_State_Routing.md").read_text(
+        encoding="utf-8"
+    )
+    next_goal = Path("idea_box/next_goal/README.md").read_text(encoding="utf-8")
+    storypack_db_json = Path("docs/content/storypack_db/storypacks.json").read_text(
+        encoding="utf-8"
+    )
+    readme = Path("README.md").read_text(encoding="utf-8")
+    wuxia_pack = Path("docs/content/storypacks/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+    wuxia_cards = Path("docs/content/encounter_db/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+    encounters_yaml = Path(
+        "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml"
+    ).read_text(encoding="utf-8")
+
+    assert (
+        "## 0.75 2026-06-02 무협 `wuxia_final_state_canonical_collapse_followup_handoff` docs-only handoff: Sado final battle container"
+        in plan
+    )
+    assert (
+        "### 0.2cn 2026-06-02 무협 `wuxia_final_state_canonical_collapse_followup_handoff` docs-only handoff"
+        in checklist
+    )
+    assert (
+        "final-state canonical collapse runtime implemented + Sado final battle container handoff selected"
+        in coverage
+    )
+    assert (
+        "The subsequent `wuxia_final_state_canonical_collapse_followup_handoff` selected `wuxia_sado_final_battle`"
+        in coverage
+    )
+    assert "Sado final battle container handoff 완료" in runtime_preview
+    assert (
+        "The next runtime implementation is `wuxia_sado_final_battle_container_implementation`"
+        in runtime_preview
+    )
+    assert "## Final State Collapse Follow-up Handoff" in final_routing
+    assert (
+        "Latest contract handoff: `wuxia_final_state_canonical_collapse_followup_handoff` selected `wuxia_sado_final_battle`"
+        in final_routing
+    )
+    assert (
+        "current_goal: wuxia_sado_final_battle_container_implementation"
+        in next_goal
+    )
+    assert (
+        "previous_current_goal: wuxia_final_state_canonical_collapse_followup_handoff"
+        in next_goal
+    )
+    assert (
+        "Latest handoff selected runtime: wuxia_final_state_canonical_collapse_followup_handoff selected wuxia_sado_final_battle"
+        in storypack_db_json
+    )
+    assert (
+        "Latest next handoff: `wuxia_final_state_canonical_collapse_followup_handoff` selected `wuxia_sado_final_battle`"
+        in readme
+    )
+    assert (
+        "42. `wuxia_final_state_canonical_collapse_followup_handoff` — docs-only handoff 완료"
+        in wuxia_pack
+    )
+    assert (
+        "## 43. `wuxia_final_state_canonical_collapse_followup_handoff` — docs-only handoff 완료"
+        in wuxia_cards
+    )
+    assert "next_runtime_contract:" in wuxia_cards
+    assert "id: wuxia_sado_final_battle" in wuxia_cards
+    assert "implementation_handoff: wuxia_sado_final_battle_container_implementation" in wuxia_cards
+    assert "sado_final_battle_container_resolved" not in encounters_yaml

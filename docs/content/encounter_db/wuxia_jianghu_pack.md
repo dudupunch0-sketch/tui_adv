@@ -7,7 +7,7 @@ Status: candidate + `wuxia_seoharin_unsaid_stay` preview runtime implemented + r
 공통 원칙:
 
 - 모든 카드는 `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`에 속한다.
-- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_seoharin_unsaid_stay`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. `wuxia_seoharin_unsaid_stay`는 `docs/design/Wuxia_Final_State_Routing.md`의 return/settlement handoff를 existing encounter schema로 구현한 late relationship trigger이며, `wuxia_return_settlement_epilogue_contract`가 그 seed를 final epilogue body block branch cards로 소비한다. `wuxia_battle_loss_epilogue_contract`도 기존 final epilogue body block consumer로 구현되어 explicit loss seed를 battle-loss bundle로 소비한다. `wuxia_final_state_canonical_collapse_contract`는 `epilogue_state_audit` body block으로 existing `final_*_seeded` flags를 canonical final state labels로 collapse한다. full return/settlement schema와 full final battle container는 아직 열지 않는다.
+- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_seoharin_unsaid_stay`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. `wuxia_seoharin_unsaid_stay`는 `docs/design/Wuxia_Final_State_Routing.md`의 return/settlement handoff를 existing encounter schema로 구현한 late relationship trigger이며, `wuxia_return_settlement_epilogue_contract`가 그 seed를 final epilogue body block branch cards로 소비한다. `wuxia_battle_loss_epilogue_contract`도 기존 final epilogue body block consumer로 구현되어 explicit loss seed를 battle-loss bundle로 소비한다. `wuxia_final_state_canonical_collapse_contract`는 `epilogue_state_audit` body block으로 existing `final_*_seeded` flags를 canonical final state labels로 collapse한다. `wuxia_final_state_canonical_collapse_followup_handoff`는 다음 runtime 후보를 `wuxia_sado_final_battle` container-only implementation으로 결정했다. full return/settlement schema, combat resolver, HP numeric battle, playable defeat route, archive/save, relation/debt/faction ledger, and reward/ability schema는 아직 열지 않는다.
 - 최신 canonical 무협 설정은 **이구학지 — 천기록**이다. 이전의 generic 객잔/소림/무당/아미 placeholder는 superseded로 본다.
 - 플레이어 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계의 시장 한복판에 전이됐다”이다.
 - 선택지는 세부 수치보다 역할과 결과 hook을 먼저 정의한다.
@@ -3476,4 +3476,48 @@ guardrails:
   - no_relation_debt_faction_ledger
   - no_reward_ability_schema
 next_handoff: wuxia_final_state_canonical_collapse_followup_handoff
+```
+
+## 43. `wuxia_final_state_canonical_collapse_followup_handoff` — docs-only handoff 완료
+
+```yaml
+id: wuxia_final_state_canonical_collapse_followup_handoff
+status: docs_only_handoff_completed
+selected_next_runtime: wuxia_sado_final_battle
+selected_next_scope: container_only_existing_encounter_schema
+notion_sources_checked:
+  - 사도 최종전
+  - 최종장 결산 라우팅 마스터
+  - 사도 최종전 상태값 사전
+  - 08. 엔딩과 후일담 연결
+  - 06. 사이드 퀘스트와 미해결 부채
+  - 07. 천기록 / 천외편린 보상
+  - 01. 메인 엔딩 구조
+  - 06. 엔딩 아카이브
+compared_candidates:
+  - full_final_battle_container
+  - playable_defeat_route_bridge
+  - broader_corruption_closed_gate_branch
+  - reward_ability_schema
+  - relation_debt_faction_ledger
+  - main_ending_archive_save_surface
+next_runtime_contract:
+  id: wuxia_sado_final_battle
+  implementation_handoff: wuxia_sado_final_battle_container_implementation
+  insert_before: wuxia_sado_final_phase_1_price_tag
+  route_target: wuxia_sado_final_phase_1_price_tag
+  battlefield: black_serpent_ledger_vault
+  output_shape: existing_encounter_schema
+  common_flags:
+    - sado_final_battle_started
+    - sado_final_battle_container_resolved
+    - sado_final_battle_required_confirmed
+    - sado_dialogue_does_not_weaken_boss
+guardrails:
+  - no_combat_resolver
+  - no_hp_numeric_battle
+  - no_playable_defeat_route
+  - no_main_ending_archive_save_surface
+  - no_relation_debt_faction_ledger
+  - no_reward_ability_schema
 ```

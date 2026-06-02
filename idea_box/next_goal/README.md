@@ -2,9 +2,9 @@
 type: next_goal_prompt
 created: 2026-06-01
 updated: 2026-06-02
-current_goal: wuxia_final_state_canonical_collapse_followup_handoff
-previous_current_goal: wuxia_final_state_canonical_collapse_contract_implementation
-mode: docs-only-contract-selection
+current_goal: wuxia_sado_final_battle_container_implementation
+previous_current_goal: wuxia_final_state_canonical_collapse_followup_handoff
+mode: contract-first-runtime-implementation
 ---
 
 # next_goal
@@ -65,9 +65,17 @@ mode: docs-only-contract-selection
 
 `wuxia_final_state_canonical_collapse_contract_implementation`도 완료됐다. 기존 `final_*_seeded` local flags를 Rust GameCore가 canonical final state labels로 collapse하고, existing `ScenePage.body_blocks`에 `epilogue_state_audit` block을 출력한다. Rust route parity는 true/corrupted/battle-loss audit summary를 검증하고, WASM JSON boundary는 audit block이 player boundary를 통과하는지 검증한다.
 
-현재 목표는 `wuxia_final_state_canonical_collapse_followup_handoff`이다. final-state audit runtime evidence 이후 full final battle container, playable defeat-route bridge, broader corruption/closed-gate branch, reward/ability schema, relation/debt/faction ledger, main ending archive/save surface 중 무엇을 먼저 열지 비교한다.
+`wuxia_final_state_canonical_collapse_followup_handoff`도 완료됐다. final-state audit runtime evidence 이후 Notion `사도 최종전`, final routing/state glossary, ending/afterword, side debt, reward, main ending, archive/save sources를 대조했고, 다음 runtime 후보를 `wuxia_sado_final_battle` container-only implementation으로 결정했다.
+
+현재 목표는 `wuxia_sado_final_battle_container_implementation`이다. Notion event id `wuxia_sado_final_battle`를 기존 encounter schema로 구현해 required final battle opening, battlefield, pre-battle stance choices, and phase-1 bridge를 열되, combat resolver, HP 숫자전, playable defeat route, archive/save surface, relation/debt/faction ledger, reward/ability schema는 열지 않는다.
 
 이전 목표 표기 이력:
+
+```yaml
+current_goal: wuxia_final_state_canonical_collapse_followup_handoff
+previous_current_goal: wuxia_final_state_canonical_collapse_contract_implementation
+mode: docs-only-contract-selection
+```
 
 ```yaml
 current_goal: wuxia_final_state_canonical_collapse_contract_implementation
@@ -153,25 +161,20 @@ completed_runtime:
     - crates/escape-core/tests/route_parity.rs::wuxia_final_epilogue_state_audit_collapses_true_corrupted_and_battle_loss_flags
     - crates/escape-wasm/tests/json_contract.rs::json_boundary_outputs_wuxia_final_state_audit_block
 next_decision:
-  id: wuxia_final_state_canonical_collapse_followup_handoff
-  compare:
-    - full_final_battle_container
-    - playable_defeat_route_bridge
-    - broader_corruption_closed_gate_branch
-    - reward_ability_schema
-    - relation_debt_faction_ledger
-    - main_ending_archive_save_surface
+  id: wuxia_sado_final_battle_container_implementation
+  selected_runtime: wuxia_sado_final_battle
+  selected_scope: container_only_existing_encounter_schema
 completed_handoff:
-  id: wuxia_battle_loss_epilogue_followup_handoff
-  selected_next_runtime: wuxia_final_state_canonical_collapse_contract
-  selected_reason: current runtime consumes raw final_*_seeded flags while the Notion final-state glossary requires local suffix values to collapse before final routing
+  id: wuxia_final_state_canonical_collapse_followup_handoff
+  selected_next_runtime: wuxia_sado_final_battle
+  selected_reason: canonical final-state audit is now runtime evidence, and Notion 사도 최종전 requires a battle container that frames stance and routes into the already implemented phase cards
   compared:
     - full_final_battle_container
+    - playable_defeat_route_bridge
     - broader_corruption_closed_gate_branch
     - reward_ability_schema
     - relation_debt_faction_ledger
     - main_ending_archive_save_surface
-    - playable_defeat_route_bridge
   notion_sources_checked:
     - 최종장 결산 라우팅 마스터
     - 사도 최종전
@@ -184,28 +187,24 @@ completed_handoff:
     - 01. 메인 엔딩 구조
     - 06. 엔딩 아카이브
 next_runtime:
-  id: wuxia_final_state_canonical_collapse_contract
-  implementation_owner: crates/escape-core/src/final_epilogue.rs
-  output_shape: existing ScenePage.body_blocks
-  likely_block_kind: epilogue_state_audit
-  input_source: existing final_*_seeded flags
-  canonical_states:
-    - combat_result
-    - boss_resolution_route
-    - evidence_state
-    - network_handling
-    - pressure_state
-    - seoharin_axis
-    - qingliu_rebuild
-    - mumyeong_salvation
-    - successor_route
-    - own_flow_choice
-    - truth_state
-    - cheongirok_state
-    - player_method
-    - item_logs
+  id: wuxia_sado_final_battle
+  implementation_owner:
+    - src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
+    - generated Rust/Web storypack-preview bundles
+  output_shape: existing encounter schema
+  insert_before: wuxia_sado_final_phase_1_price_tag
+  route_target: wuxia_sado_final_phase_1_price_tag
+  stable_choice_directions:
+    - affirm_priceless_heart
+    - resist_uncertainty_without_ledger
+    - cite_qingliu_as_evidence_outside_calculation
+    - cut_words_and_enter_battle
+  common_flags:
+    - sado_final_battle_started
+    - sado_final_battle_container_resolved
+    - sado_final_battle_required_confirmed
+    - sado_dialogue_does_not_weaken_boss
   guardrails:
-    - do_not_open_full_final_battle_container
     - do_not_open_combat_resolver_or_hp_numeric_battle
     - do_not_open_playable_defeat_route
     - do_not_open_main_ending_archive_or_save_surface

@@ -258,6 +258,80 @@ fn build_candidates(facts: &FinalFacts<'_>, final_result: FinalResult) -> Vec<Ca
         );
     }
 
+    if matches!(final_result, FinalResult::BattleLoss) {
+        push_card(
+            &mut cards,
+            facts,
+            "epilogue_boss_black_serpent_banner",
+            "battle_loss_residue",
+            "boss_black_serpent",
+            &[
+                "final_combat_result_battle_loss_seeded",
+                "final_black_serpent_banner_candidate_seeded",
+                "final_black_serpent_banner_candidate_reinforced_seeded",
+                "final_epilogue_boss_black_serpent_banner_conditional_seeded",
+                "final_black_serpent_aftermath_banner_residue_seeded",
+            ],
+            "흑사방의 깃발은 승리 후 정리된 잔당이 아니라, 패배 뒤에도 같은 방식으로 사람을 재는 압박으로 남는다.",
+        );
+        push_card(
+            &mut cards,
+            facts,
+            "epilogue_wuxia_southern_market_rumor",
+            "unresolved_debt",
+            "boss_black_serpent",
+            &[
+                "final_combat_result_battle_loss_seeded",
+                "final_southern_market_rumor_candidate_seeded",
+                "final_southern_market_rumor_candidate_reinforced_seeded",
+                "final_epilogue_southern_market_rumor_conditional_seeded",
+                "final_black_serpent_aftermath_southern_market_rumor_seeded",
+            ],
+            "남쪽 장터의 풍문은 책임을 한 사람에게 돌리지 않는다. 다만 갚히지 않은 압박이 다른 길목으로 옮겨 간다.",
+        );
+        push_card(
+            &mut cards,
+            facts,
+            "epilogue_mumyeong_black_serpent_new_scale",
+            "battle_loss_successor_pressure",
+            "mumyeong",
+            &[
+                "final_combat_result_battle_loss_seeded",
+                "final_black_serpent_new_scale_candidate_seeded",
+                "final_mumyeong_successor_route_active_seeded",
+                "final_epilogue_mumyeong_black_serpent_new_scale_candidate_seeded",
+            ],
+            "검은 뱀의 새 비늘은 무명을 구하지 못한 패배가 사도식 후계 압박으로 이어지는 어두운 흔적이다.",
+        );
+        push_card(
+            &mut cards,
+            facts,
+            "epilogue_seoharin_closed_gate",
+            "battle_loss_or_corruption",
+            "seoharin_qingliu",
+            &[
+                "final_combat_result_battle_loss_seeded",
+                "final_seoharin_closed_gate_candidate_seeded",
+                "final_epilogue_seoharin_closed_gate_candidate_seeded",
+            ],
+            "닫힌 산문은 패배를 벌주는 문장이 아니다. 지켜야 했던 곳이 더 좁은 보호 논리로 닫히는 후일담이다.",
+        );
+        push_card(
+            &mut cards,
+            facts,
+            "epilogue_tianjilu_last_page",
+            "corruption_variant",
+            "cheongirok",
+            &[
+                "final_combat_result_battle_loss_seeded",
+                "final_epilogue_tianjilu_last_page_corruption_variant_seeded",
+                "final_cheongirok_state_corruption_high_seeded",
+                "final_cheongirok_state_corruption_high_confirmed_seeded",
+            ],
+            "천기록의 마지막 장은 패배를 점수로 매기지 않는다. 사람을 계산식 안에 넣으려 한 흔적만 오염 변주로 비춘다.",
+        );
+    }
+
     if matches!(
         final_result,
         FinalResult::BasicVictory
@@ -655,6 +729,19 @@ fn apply_suppress_rules(
     candidates: &mut Vec<CardCandidate>,
 ) -> Vec<SuppressedCard> {
     let mut suppressed = Vec::new();
+
+    if matches!(final_result, FinalResult::BattleLoss) {
+        suppress_cards(
+            candidates,
+            &mut suppressed,
+            &[
+                "epilogue_boss_broken_black_serpent",
+                "epilogue_seoharin_open_gate",
+                "epilogue_mumyeong_stolen_forms_stopped",
+            ],
+            "battle_loss",
+        );
+    }
 
     if matches!(final_result, FinalResult::CorruptedVictory) {
         suppress_cards(

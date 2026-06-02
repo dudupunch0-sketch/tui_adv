@@ -1,7 +1,7 @@
 use escape_wasm::{
     apply_action_json, load_state_json, new_game_json, save_state_json, scene_page_json,
 };
-use serde_json::Value;
+use serde_json::{json, Value};
 
 const CONTENT_BUNDLE: &str = include_str!("../../escape-core/fixtures/content/content.bundle.json");
 
@@ -3594,6 +3594,61 @@ fn json_boundary_reaches_wuxia_seoharin_qingliu_resolution_after_mumyeong_resolu
         .as_array()
         .expect("final page actions should be an array")
         .is_empty());
+}
+
+#[test]
+fn json_boundary_outputs_wuxia_battle_loss_epilogue_bundle() {
+    let state_json =
+        new_game_json(123, WUXIA_PREVIEW_BUNDLE).expect("preview new game should serialize");
+    let mut state: Value = serde_json::from_str(&state_json).expect("state JSON should parse");
+    state["location_id"] = json!("black_serpent_ledger_vault");
+    state["flags"] = json!([
+        "boss_resolution_resolved",
+        "mumyeong_resolution_resolved",
+        "seoharin_qingliu_resolution_resolved",
+        "cheongirok_resolution_resolved",
+        "black_serpent_aftermath_resolved",
+        "final_result_priority_applied_seeded",
+        "final_combat_result_battle_loss_seeded",
+        "final_state_routing_seeded",
+        "final_broken_black_serpent_epilogue_candidate_seeded",
+        "final_epilogue_mumyeong_stolen_forms_stopped_candidate_seeded",
+        "final_epilogue_seoharin_open_gate_candidate_seeded"
+    ]);
+    let battle_loss_state_json =
+        serde_json::to_string(&state).expect("battle-loss state should stringify");
+    let final_page_json = scene_page_json(&battle_loss_state_json, WUXIA_PREVIEW_BUNDLE)
+        .expect("battle-loss final epilogue page should serialize");
+    let final_page: Value =
+        serde_json::from_str(&final_page_json).expect("final page JSON should parse");
+    let body_blocks = final_page["body_blocks"]
+        .as_array()
+        .expect("final body blocks should be an array");
+    let all_body_text = body_blocks
+        .iter()
+        .map(|block| {
+            block["text"]
+                .as_str()
+                .expect("body block text should be a string")
+        })
+        .collect::<Vec<_>>()
+        .join("\n---\n");
+
+    assert_eq!(final_page["mode"], "ending");
+    assert_eq!(final_page["title"], "이구학지 결산");
+    assert!(all_body_text.contains("final_result_key: battle_loss"));
+    assert!(all_body_text.contains("card_id: epilogue_boss_black_serpent_banner"));
+    assert!(all_body_text.contains("variant: battle_loss_residue"));
+    assert!(all_body_text.contains("card_id: epilogue_wuxia_southern_market_rumor"));
+    assert!(all_body_text.contains("card_id: epilogue_mumyeong_black_serpent_new_scale"));
+    assert!(all_body_text.contains("variant: battle_loss_successor_pressure"));
+    assert!(all_body_text.contains("card_id: epilogue_seoharin_closed_gate"));
+    assert!(all_body_text.contains("variant: battle_loss_or_corruption"));
+    assert!(all_body_text.contains("card_id: epilogue_tianjilu_last_page"));
+    assert!(all_body_text.contains("suppressed_by: battle_loss"));
+    assert!(all_body_text.contains("card_id: epilogue_boss_broken_black_serpent"));
+    assert!(all_body_text.contains("card_id: epilogue_seoharin_open_gate"));
+    assert!(all_body_text.contains("card_id: epilogue_mumyeong_stolen_forms_stopped"));
 }
 
 #[test]

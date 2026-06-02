@@ -151,9 +151,9 @@ Deferred until this contract exists and a runtime handoff explicitly opens them:
 - full `wuxia_boss_resolution` epilogue renderer beyond the implemented route seed bridge
 - `wuxia_sado_final_battle`
 
-Latest implemented runtime slice: `wuxia_return_settlement_epilogue_contract`.
+Latest implemented runtime slice: `wuxia_battle_loss_epilogue_contract`.
 
-`wuxia_sado_final_phase_1_price_tag`, `wuxia_sado_final_phase_2_weakpoint_control`, `wuxia_sado_final_phase_3_outside_calculation`, `wuxia_boss_resolution`, `wuxia_mumyeong_resolution`, `wuxia_seoharin_qingliu_resolution`, `wuxia_cheongirok_resolution`, and `wuxia_black_serpent_aftermath` now use the existing encounter schema to seed final-state clues/flags/logs for the Sado final phases, boss-resolution route bridge, Mumyeong-resolution route bridge, Seo Harin/Qingliu epilogue candidate bridge, Cheonggi Record last-page bridge, and Black Serpent aftermath bridge. `wuxia_final_epilogue_renderer_contract` consumes those candidate seeds through Rust GameCore-owned structured body blocks without opening combat resolver, HP numeric combat, return/settlement schema, `item_unpriced_wooden_sword` payout, Seo Harin truth delivery, Cheonggi Record recorder identity reveal, or `told_seoharin_truth` unless a new approved runtime contract opens them.
+`wuxia_sado_final_phase_1_price_tag`, `wuxia_sado_final_phase_2_weakpoint_control`, `wuxia_sado_final_phase_3_outside_calculation`, `wuxia_boss_resolution`, `wuxia_mumyeong_resolution`, `wuxia_seoharin_qingliu_resolution`, `wuxia_cheongirok_resolution`, and `wuxia_black_serpent_aftermath` now use the existing encounter schema to seed final-state clues/flags/logs for the Sado final phases, boss-resolution route bridge, Mumyeong-resolution route bridge, Seo Harin/Qingliu epilogue candidate bridge, Cheonggi Record last-page bridge, and Black Serpent aftermath bridge. `wuxia_final_epilogue_renderer_contract`, `wuxia_return_settlement_epilogue_contract`, and `wuxia_battle_loss_epilogue_contract` consume those candidate/result seeds through Rust GameCore-owned structured body blocks without opening combat resolver, HP numeric combat, full return/settlement schema, `item_unpriced_wooden_sword` payout, Seo Harin truth delivery, Cheonggi Record recorder identity reveal, or `told_seoharin_truth` unless a new approved runtime contract opens them.
 
 ## Return/Settlement Contract Handoff
 
@@ -318,7 +318,7 @@ Notion comparison:
 - `06. 사이드 퀘스트와 미해결 부채` supports unresolved pressure as afterword traces, but it does not require a relation/debt/faction ledger before the loss bundle can be printed.
 - `01. 메인 엔딩 구조` keeps `main_ending_type` as internal planning vocabulary, so this slice should not open a player-facing archive/save surface.
 
-Selected next implementation:
+Selected implementation:
 
 | field | value |
 |---|---|
@@ -338,7 +338,7 @@ Intended battle-loss bundle:
 | `epilogue_seoharin_closed_gate` | `battle_loss_or_corruption` | Notion `닫힌 산문` |
 | `epilogue_tianjilu_last_page` | `corruption_variant` | Notion `천기록의 마지막 장` |
 
-Conflict rule for the next implementation:
+Conflict rule:
 
 - `battle_loss` should suppress optimistic victory cards such as `epilogue_boss_broken_black_serpent`, `epilogue_seoharin_open_gate`, and `epilogue_mumyeong_stolen_forms_stopped`.
 - It may coexist with unresolved-pressure rumor cards.
@@ -356,4 +356,6 @@ Still closed:
 - Seo Harin truth delivery, `told_seoharin_truth`
 - Cheonggi Record recorder identity reveal
 
-Next runtime implementation candidate: `wuxia_battle_loss_epilogue_contract`.
+Implementation status: `wuxia_battle_loss_epilogue_contract` is now implemented in `crates/escape-core/src/final_epilogue.rs`. It consumes `final_combat_result_battle_loss_seeded`, emits the five battle-loss cards above, suppresses optimistic victory cards through `battle_loss`, and keeps the final epilogue ending YAML gate from being victory-only.
+
+Next contract decision: `wuxia_battle_loss_epilogue_followup_handoff`, comparing full final battle container, broader corruption/closed-gate branch, reward/ability schema, relation/debt/faction ledger, main ending archive/save surface, and playable defeat-route bridge after the battle-loss branch cards have runtime evidence.

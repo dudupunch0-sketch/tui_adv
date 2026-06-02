@@ -1096,6 +1096,17 @@
 - [x] combat resolver, HP 숫자전, playable defeat route, archive/save schema, relation/debt/faction ledger, reward/ability schema 미변경 유지
 - [x] 다음 작업을 `wuxia_sado_final_battle_container_implementation` runtime slice로 갱신
 
+### 0.2co 2026-06-02 무협 `wuxia_sado_final_battle_container_implementation` runtime slice
+
+- [x] `wuxia_sado_final_battle` container/opening encounter를 existing encounter schema로 추가
+- [x] `black_serpent_ledger_vault` battlefield와 `wuxia_sado_final_phase_1_price_tag` bridge 연결
+- [x] 네 stance choice와 stance-specific `final_player_stance_*_seeded` hook 구현
+- [x] 모든 stance outcome에 `sado_final_battle_started`, `sado_final_battle_container_resolved`, `sado_final_battle_required_confirmed`, `sado_dialogue_does_not_weaken_boss` common hook 적용
+- [x] Rust fixture와 Web generated preview bundle 재생성
+- [x] Python exporter, Rust content fixture, WASM JSON boundary, SuperLightTUI smoke 검증
+- [x] combat resolver, HP 숫자전, playable defeat route, archive/save schema, relation/debt/faction ledger, reward/ability schema 미변경 유지
+- [x] 다음 작업을 `wuxia_sado_final_battle_container_followup_handoff` docs-only contract slice로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

@@ -211,12 +211,12 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&5));
     assert_eq!(bundle.manifest.counts.get("items"), Some(&4));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&35));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&36));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 5);
-    assert_eq!(index.encounters_len(), 35);
+    assert_eq!(index.encounters_len(), 36);
 
     let market = index
         .location("jianghu_market_street")
@@ -1589,17 +1589,93 @@ fn preview_fixture_indexes_wuxia_first_fight() {
         Some("cheongryu_outer_courtyard")
     );
 
+    let sado_battle = index
+        .encounter("wuxia_sado_final_battle")
+        .expect("Sado final battle container encounter");
+    assert_eq!(sado_battle.title, "사도 최종전");
+    assert_eq!(
+        sado_battle.conditions.locations,
+        vec!["cheongryu_outer_courtyard"]
+    );
+    assert_eq!(
+        sado_battle.conditions.required_flags,
+        vec![
+            "seoharin_left_meal_resolved",
+            "seoharin_empty_place_resolved",
+            "seoharin_axis_opened",
+            "empty_place_remembered",
+            "truth_delivery_still_unopened",
+            "boss_recruits_mumyeong_resolved",
+            "boss_recruitment_thread_opened",
+            "boss_first_appearance_resolved",
+            "black_serpent_core_pressure_opened",
+            "sealed_departure_truth_summary_prepared",
+            "midgame_continuity_started"
+        ]
+    );
+    assert_eq!(
+        sado_battle.conditions.forbidden_flags,
+        vec!["sado_final_battle_container_resolved"]
+    );
+    let sado_battle_presentation = sado_battle
+        .presentation
+        .as_ref()
+        .expect("Sado final battle container presentation");
+    assert_eq!(
+        sado_battle_presentation.layout.as_deref(),
+        Some("final_battle_container")
+    );
+    assert_eq!(
+        sado_battle_presentation.speaker.as_deref(),
+        Some("흑사방주")
+    );
+    assert_eq!(
+        sado_battle_presentation.effect_cues[0].stable_terms,
+        vec!["흑사방주", "장부고", "값", "전투"]
+    );
+    assert_eq!(sado_battle.choices.len(), 4);
+    let affirm_priceless = sado_battle
+        .choices
+        .iter()
+        .find(|choice| choice.id == "affirm_priceless_heart_before_sado")
+        .expect("affirm priceless heart choice");
+    assert_eq!(
+        affirm_priceless.outcome.add_flags,
+        vec![
+            "sado_final_battle_started",
+            "sado_final_battle_container_resolved",
+            "sado_final_battle_required_confirmed",
+            "sado_dialogue_does_not_weaken_boss",
+            "final_player_stance_priceless_heart_seeded"
+        ]
+    );
+    assert_eq!(
+        affirm_priceless.outcome.add_clues,
+        vec![
+            "heart_has_no_ledger_price",
+            "sado_battle_required_not_weakened"
+        ]
+    );
+    assert_eq!(
+        affirm_priceless.outcome.destination_id.as_deref(),
+        Some("black_serpent_ledger_vault")
+    );
+
     let price_tag = index
         .encounter("wuxia_sado_final_phase_1_price_tag")
         .expect("Sado final phase 1 price-tag encounter");
     assert_eq!(price_tag.title, "사도 최종전 1페이즈: 가격표");
     assert_eq!(
         price_tag.conditions.locations,
-        vec!["cheongryu_outer_courtyard"]
+        vec!["black_serpent_ledger_vault"]
     );
     assert_eq!(
         price_tag.conditions.required_flags,
         vec![
+            "sado_final_battle_started",
+            "sado_final_battle_container_resolved",
+            "sado_final_battle_required_confirmed",
+            "sado_dialogue_does_not_weaken_boss",
             "seoharin_left_meal_resolved",
             "seoharin_empty_place_resolved",
             "seoharin_axis_opened",

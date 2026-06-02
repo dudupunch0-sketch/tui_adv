@@ -1875,7 +1875,7 @@ def test_wuxia_sado_final_phase_1_price_tag_runtime_slice_is_docs_synced():
     assert "`wuxia_black_serpent_aftermath`까지 YAML/generated bundle에 반영" in world_model
     assert "`wuxia_black_serpent_aftermath`도 기존 encounter schema로 구현 완료" in encounter_model
     assert "told_seoharin_truth" not in encounters_yaml
-    assert "wuxia_sado_final_battle_started" not in encounters_yaml
+    assert "sado_final_battle_container_resolved" in encounters_yaml
 
 
 def test_wuxia_sado_final_phase_3_outside_calculation_runtime_slice_is_docs_synced():
@@ -2000,7 +2000,7 @@ def test_wuxia_sado_final_phase_3_outside_calculation_runtime_slice_is_docs_sync
     assert "`wuxia_black_serpent_aftermath`까지 YAML/generated bundle에 반영" in world_model
     assert "`wuxia_black_serpent_aftermath`도 기존 encounter schema로 구현 완료" in encounter_model
     assert "told_seoharin_truth" not in encounters_yaml
-    assert "wuxia_sado_final_battle_started" not in encounters_yaml
+    assert "sado_final_battle_container_resolved" in encounters_yaml
     assert "item_unpriced_wooden_sword" not in encounters_yaml
 
 
@@ -2078,7 +2078,7 @@ def test_wuxia_seoharin_qingliu_resolution_runtime_slice_is_docs_synced():
     assert "runtime_status: \"next_implementation_candidate\"" in notion_sources
 
     assert "told_seoharin_truth" not in encounters_yaml
-    assert "wuxia_sado_final_battle_started" not in encounters_yaml
+    assert "sado_final_battle_container_resolved" in encounters_yaml
     assert "item_unpriced_wooden_sword" not in encounters_yaml
 
 
@@ -2157,7 +2157,7 @@ def test_wuxia_cheongirok_resolution_runtime_slice_is_docs_synced():
     assert "runtime_status: \"next_implementation_candidate\"" in notion_sources
 
     assert "told_seoharin_truth" not in encounters_yaml
-    assert "wuxia_sado_final_battle_started" not in encounters_yaml
+    assert "sado_final_battle_container_resolved" in encounters_yaml
     assert "item_unpriced_wooden_sword" not in encounters_yaml
 
 
@@ -2232,7 +2232,7 @@ def test_wuxia_black_serpent_aftermath_runtime_slice_is_docs_synced():
     assert "runtime_status: \"next_implementation_candidate\"" in notion_sources
 
     assert "told_seoharin_truth" not in encounters_yaml
-    assert "wuxia_sado_final_battle_started" not in encounters_yaml
+    assert "sado_final_battle_container_resolved" in encounters_yaml
     assert "item_unpriced_wooden_sword" not in encounters_yaml
 
 
@@ -2600,10 +2600,7 @@ def test_wuxia_final_state_canonical_collapse_contract_runtime_is_docs_synced():
         in checklist
     )
     assert "final-state canonical collapse runtime implemented" in coverage
-    assert (
-        "Latest implemented runtime: `wuxia_final_state_canonical_collapse_contract`"
-        in runtime_preview
-    )
+    assert "Latest epilogue runtime output: `epilogue_state_audit`" in runtime_preview
     assert "## Final State Canonical Collapse Runtime" in final_routing
     assert (
         "Implementation status: `wuxia_final_state_canonical_collapse_contract` is now implemented"
@@ -2621,10 +2618,7 @@ def test_wuxia_final_state_canonical_collapse_contract_runtime_is_docs_synced():
         "Latest runtime slice: wuxia_final_state_canonical_collapse_contract"
         in storypack_db_json
     )
-    assert (
-        "runtime은 arrival/first fight/first fragment부터 `wuxia_final_state_canonical_collapse_contract`까지 구현됐다"
-        in readme
-    )
+    assert "`wuxia_final_state_canonical_collapse_contract`는 `epilogue_state_audit`" in readme
     assert (
         "41. `wuxia_final_state_canonical_collapse_contract` — runtime 구현 완료"
         in wuxia_pack
@@ -2669,7 +2663,7 @@ def test_wuxia_final_state_canonical_collapse_contract_runtime_is_docs_synced():
     )
 
 
-def test_wuxia_final_state_collapse_followup_handoff_is_docs_synced():
+def test_wuxia_sado_final_battle_container_runtime_is_docs_synced():
     plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(
@@ -2696,57 +2690,53 @@ def test_wuxia_final_state_collapse_followup_handoff_is_docs_synced():
         "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml"
     ).read_text(encoding="utf-8")
 
+    assert "## 0.76 2026-06-02 무협 `wuxia_sado_final_battle_container_implementation` runtime slice" in plan
     assert (
-        "## 0.75 2026-06-02 무협 `wuxia_final_state_canonical_collapse_followup_handoff` docs-only handoff: Sado final battle container"
-        in plan
-    )
-    assert (
-        "### 0.2cn 2026-06-02 무협 `wuxia_final_state_canonical_collapse_followup_handoff` docs-only handoff"
+        "### 0.2co 2026-06-02 무협 `wuxia_sado_final_battle_container_implementation` runtime slice"
         in checklist
     )
+    assert "`wuxia_sado_final_battle_container_implementation` implemented" in coverage
+    assert "Latest implemented runtime: `wuxia_sado_final_battle`" in runtime_preview
+    assert "## Sado Final Battle Container Runtime" in final_routing
+    assert "Implementation status: `wuxia_sado_final_battle_container_implementation` is now implemented" in final_routing
     assert (
-        "final-state canonical collapse runtime implemented + Sado final battle container handoff selected"
-        in coverage
-    )
-    assert (
-        "The subsequent `wuxia_final_state_canonical_collapse_followup_handoff` selected `wuxia_sado_final_battle`"
-        in coverage
-    )
-    assert "Sado final battle container handoff 완료" in runtime_preview
-    assert (
-        "The next runtime implementation is `wuxia_sado_final_battle_container_implementation`"
-        in runtime_preview
-    )
-    assert "## Final State Collapse Follow-up Handoff" in final_routing
-    assert (
-        "Latest contract handoff: `wuxia_final_state_canonical_collapse_followup_handoff` selected `wuxia_sado_final_battle`"
-        in final_routing
-    )
-    assert (
-        "current_goal: wuxia_sado_final_battle_container_implementation"
+        "current_goal: wuxia_sado_final_battle_container_followup_handoff"
         in next_goal
     )
     assert (
-        "previous_current_goal: wuxia_final_state_canonical_collapse_followup_handoff"
+        "previous_current_goal: wuxia_sado_final_battle_container_implementation"
         in next_goal
     )
+    assert "completed_runtime:" in next_goal
+    assert "id: wuxia_sado_final_battle_container_implementation" in next_goal
+    assert "id: wuxia_sado_final_battle_container_followup_handoff" in next_goal
     assert (
-        "Latest handoff selected runtime: wuxia_final_state_canonical_collapse_followup_handoff selected wuxia_sado_final_battle"
+        "Latest runtime slice: wuxia_sado_final_battle_container_implementation"
         in storypack_db_json
     )
     assert (
-        "Latest next handoff: `wuxia_final_state_canonical_collapse_followup_handoff` selected `wuxia_sado_final_battle`"
+        "Latest implemented runtime: wuxia_sado_final_battle opens"
+        in storypack_db_json
+    )
+    assert (
+        "Latest next handoff: `wuxia_sado_final_battle_container_followup_handoff`"
         in readme
     )
     assert (
-        "42. `wuxia_final_state_canonical_collapse_followup_handoff` — docs-only handoff 완료"
+        "43. `wuxia_sado_final_battle_container_implementation` — runtime 구현 완료"
         in wuxia_pack
     )
     assert (
-        "## 43. `wuxia_final_state_canonical_collapse_followup_handoff` — docs-only handoff 완료"
+        "## 44. `wuxia_sado_final_battle_container_implementation` — runtime 구현 완료"
         in wuxia_cards
     )
-    assert "next_runtime_contract:" in wuxia_cards
     assert "id: wuxia_sado_final_battle" in wuxia_cards
     assert "implementation_handoff: wuxia_sado_final_battle_container_implementation" in wuxia_cards
-    assert "sado_final_battle_container_resolved" not in encounters_yaml
+    assert "layout: final_battle_container" in wuxia_cards
+    assert "affirm_priceless_heart_before_sado" in wuxia_cards
+    assert "keep_uncertainty_out_of_the_ledger" in wuxia_cards
+    assert "name_qingliu_as_calculation_break" in wuxia_cards
+    assert "cut_words_and_enter_sado_battle" in wuxia_cards
+    assert "sado_final_battle_container_resolved" in encounters_yaml
+    assert "final_player_stance_priceless_heart_seeded" in encounters_yaml
+    assert "locations: [black_serpent_ledger_vault]" in encounters_yaml

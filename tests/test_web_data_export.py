@@ -127,7 +127,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     assert bundle["manifest"]["counts"] == {
         "locations": 4,
         "items": 4,
-        "encounters": 20,
+        "encounters": 21,
         "endings": 1,
         "achievements": 2,
         "secrets": 0,
@@ -160,6 +160,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "wuxia_boss_first_appearance",
         "wuxia_mumyeong_request_for_aid",
         "wuxia_mumyeong_awakening",
+        "wuxia_qingliu_attack_after_war",
     ]
     first_fight = bundle["content"]["encounters"][1]
     assert first_fight["conditions"] == {
@@ -847,6 +848,46 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "copy_is_wound_not_growth",
     ]
     assert compare["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
+    qingliu_attack = bundle["content"]["encounters"][20]
+    assert qingliu_attack["conditions"] == {
+        "locations": ["cheongryu_outer_courtyard"],
+        "required_flags": [
+            "mumyeong_awakening_resolved",
+            "mumyeong_awakening_thread_opened",
+            "copy_corruption_thread_opened",
+            "mumyeong_request_for_aid_resolved",
+            "mumyeong_failed_aid_thread_opened",
+            "orthodox_hypocrisy_thread_opened",
+            "mumyeong_reads_orthodox_style_resolved",
+            "orthodox_style_trace_recorded",
+            "midgame_continuity_started",
+        ],
+        "forbidden_flags": ["qingliu_attack_after_war_resolved"],
+    }
+    assert qingliu_attack["presentation"]["layout"] == "attack_trace_investigation"
+    assert qingliu_attack["presentation"]["speaker"] == "천기록"
+    assert qingliu_attack["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "청류문",
+        "현악문",
+        "복호금쇄수",
+    ]
+    assert [choice["id"] for choice in qingliu_attack["choices"]] == [
+        "inspect_bokho_lock_scars",
+        "compare_hyeonakmun_trace_to_qingliu_wounds",
+        "ask_seo_harin_what_she_saw_afterward",
+        "stop_before_replaying_the_attack",
+    ]
+    lock_scars = qingliu_attack["choices"][0]
+    assert lock_scars["outcome"]["add_flags"] == [
+        "qingliu_attack_after_war_resolved",
+        "qingliu_attack_trace_confirmed",
+        "hyeonakmun_attack_thread_opened",
+    ]
+    assert lock_scars["outcome"]["add_clues"] == [
+        "bokho_geumsaesu_used_on_qingliu",
+        "full_flashback_still_unopened",
+    ]
+    assert lock_scars["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
     assert "dev_desk" not in json.dumps(bundle, ensure_ascii=False)
     assert _missing_private_secret_fields(bundle)
 

@@ -1,13 +1,13 @@
 # 이구학지 — 천기록 encounter situation cards
 
-Status: candidate + `wuxia_mumyeong_awakening` preview runtime implemented + `wuxia_qingliu_attack_after_war` next runtime selected
+Status: candidate + `wuxia_qingliu_attack_after_war` preview runtime implemented + follow-up handoff pending
 
-이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_awakening`까지는 separate storypack preview runtime으로 승격되었고, 다음은 `wuxia_qingliu_attack_after_war` runtime implementation이다.
+이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_qingliu_attack_after_war`까지는 separate storypack preview runtime으로 승격되었고, 다음은 `wuxia_qingliu_attack_after_war_followup` docs-only handoff다.
 
 공통 원칙:
 
 - 모든 카드는 `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`에 속한다.
-- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_awakening`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. 다음 runtime 후보는 `wuxia_qingliu_attack_after_war`이며, full flashback이 아니라 현악문/복호금쇄수 흔적 조사로 제한한다.
+- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_qingliu_attack_after_war`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. 다음 runtime 후보는 `wuxia_qingliu_attack_after_war_followup` handoff에서 결정한다.
 - 최신 canonical 무협 설정은 **이구학지 — 천기록**이다. 이전의 generic 객잔/소림/무당/아미 placeholder는 superseded로 본다.
 - 플레이어 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계의 시장 한복판에 전이됐다”이다.
 - 선택지는 세부 수치보다 역할과 결과 hook을 먼저 정의한다.
@@ -44,7 +44,7 @@ Status: candidate + `wuxia_mumyeong_awakening` preview runtime implemented + `wu
 | `wuxia_mumyeong_awakening` | 무명의 각성 | `wuxia_mumyeong_awakening` | preview runtime implemented |
 | `wuxia_boss_recruits_mumyeong` | 흑사방 보스의 스카웃 | none yet | future backstory event |
 | `wuxia_mumyeong_reads_orthodox_style` | 무명의 정파 무공 간파 | `wuxia_mumyeong_reads_orthodox_style` | preview runtime implemented |
-| `wuxia_qingliu_attack_after_war` | 무너져가는 청류문 습격 | `wuxia_qingliu_attack_after_war` | next runtime selected |
+| `wuxia_qingliu_attack_after_war` | 무너져가는 청류문 습격 | `wuxia_qingliu_attack_after_war` | preview runtime implemented |
 | `wuxia_mumyeong_request_for_aid` | 무명의 도움 요청 | `wuxia_mumyeong_request_for_aid` | preview runtime implemented |
 | `wuxia_tianjilu_first_fragment` | 천기록 첫 천외편린 | `wuxia_cheonggi_record_first_fragment` | preview implemented as schema-less foreshadow; full reward schema future |
 | `wuxia_seoharin_intervention` | 서하린의 개입 | `wuxia_seo_harin_rescue` | preview implemented as schema-less rescue/protection bridge |
@@ -1879,9 +1879,9 @@ source_refs:
 notion_event_mapping:
   notion_event_id: wuxia_qingliu_attack_after_war
   notion_event_name: 무너져가는 청류문 습격
-  mapping_status: next_runtime_selected
-status: candidate
-mapping_status: next_runtime_selected
+  mapping_status: preview_runtime_implemented
+status: implemented_in_storypack_preview
+mapping_status: preview_runtime_implemented
 phase: [midgame_backstory, attack_trace_investigation]
 priority_class: route_key
 location_tags: [cheongryu_outer_courtyard, hyeonakmun_trace, qingliu_aftermath]
@@ -1892,7 +1892,7 @@ npc_slots: [early_rescuer]
 candidate_characters: [seo_harin, mumyeong]
 summary: 무명 각성 이후 청류문 폐허에 남은 현악문/복호금쇄수 흔적을 조사하되, 청류문 습격 전체 회상이나 무명 이탈 진실은 아직 열지 않는다.
 setup_text: 청류문 외원에는 전쟁 뒤의 습격 흔적이 아직 벽과 자물쇠에 남아 있다. 천기록은 장면을 재생하지 않고, 현악문이라는 이름과 복호금쇄수의 손자국이 청류문 상처 위에 어떻게 겹쳤는지만 적는다.
-runtime_preview_design_status: next_runtime_selected
+runtime_preview_design_status: implemented
 runtime_preview_start_conditions:
   runtime_mode: storypack_preview
   conditions:
@@ -1954,13 +1954,15 @@ outcome_hooks:
   possible_destinations: [cheongryu_outer_courtyard]
 main_spine_link: 무명 각성 이후 정파 무공 흔적을 청류문 습격 상처로 좁혀, 현악문/복호금쇄수 thread를 강화한다. 다만 무명 이탈의 진실 전체나 서하린에게 전달할 구원 조건은 아직 열지 않는다.
 randomization_notes: 1회성 attack-trace investigation. 각성, failed-aid, orthodox-style trace 뒤에만 열고 `qingliu_attack_after_war_resolved`로 반복을 막는다.
-promotion_notes: next runtime 후보로 선택. `wuxia_mumyeong_followup_after_awakening` handoff에서 무명 각성 이후 후보들을 비교했고, `wuxia_qingliu_attack_after_war`를 full flashback이 아니라 현악문/복호금쇄수 흔적 조사로 제한해 선택했다. `wuxia_mumyeong_destroys_orthodox_sect`, `wuxia_boss_recruits_mumyeong`, `wuxia_mumyeong_departure_truth_summary`, `wuxia_mumyeong_resolution`, `wuxia_boss_resolution`은 후반/final/truth/salvation 범위라 보류한다. legacy office bundle, legacy `escape-office` key, random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation schema, reward/ability/epilogue/return system, 천기록 정체 reveal은 열지 않는다.
+promotion_notes: preview runtime으로 구현 완료. `wuxia_mumyeong_followup_after_awakening` handoff에서 무명 각성 이후 후보들을 비교했고, `wuxia_qingliu_attack_after_war`를 full flashback이 아니라 현악문/복호금쇄수 흔적 조사로 제한해 선택했다. `wuxia_mumyeong_destroys_orthodox_sect`, `wuxia_boss_recruits_mumyeong`, `wuxia_mumyeong_departure_truth_summary`, `wuxia_mumyeong_resolution`, `wuxia_boss_resolution`은 후반/final/truth/salvation 범위라 보류한다. legacy office bundle, legacy `escape-office` key, random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation schema, reward/ability/epilogue/return system, 천기록 정체 reveal은 열지 않는다.
 runtime_preview_implementation_notes:
-  planned_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
+  implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
   insert_after: wuxia_mumyeong_awakening
   selected_over: [wuxia_mumyeong_destroys_orthodox_sect, wuxia_boss_recruits_mumyeong, wuxia_mumyeong_departure_truth_summary, wuxia_mumyeong_resolution, wuxia_boss_resolution]
-  generated_artifacts_changed: false
+  generated_artifacts:
+    - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+    - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
   default_bundle_changed: false
   new_schema_opened: false
-  next_step: runtime_implementation
+  next_handoff: wuxia_qingliu_attack_after_war_followup
 ```

@@ -2,8 +2,8 @@
 type: next_goal_prompt
 created: 2026-06-01
 updated: 2026-06-02
-current_goal: wuxia_qingliu_attack_after_war
-mode: implementation
+current_goal: wuxia_qingliu_attack_after_war_followup
+mode: docs-only-handoff
 ---
 
 # next_goal
@@ -22,14 +22,13 @@ mode: implementation
 
 ## 현재 목표
 
-`wuxia_mumyeong_awakening` runtime implementation은 완료됐다. `wuxia_jianghu_pack` / **이구학지 — 천기록**은 Web/terminal default storypack이자 메인 개발 기준이다. `wuxia_mumyeong_followup_after_awakening` docs-only handoff도 완료됐고, 다음 runtime 후보로 `wuxia_qingliu_attack_after_war`가 선택됐다.
+`wuxia_mumyeong_awakening` runtime implementation은 완료됐다. `wuxia_qingliu_attack_after_war` runtime implementation은 완료됐다. `wuxia_jianghu_pack` / **이구학지 — 천기록**은 Web/terminal default storypack이자 메인 개발 기준이다. `wuxia_mumyeong_followup_after_awakening` docs-only handoff도 완료됐고, 선택된 `wuxia_qingliu_attack_after_war`는 full flashback 없이 현악문/복호금쇄수 흔적 조사로 preview runtime에 landing했다.
 
-이번 세션의 목표는 **`wuxia_qingliu_attack_after_war` runtime implementation**이다.
+이번 세션의 다음 목표는 **`wuxia_qingliu_attack_after_war_followup` docs-only handoff**다.
 
-- `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`에서 `wuxia_mumyeong_awakening` 뒤에 새 encounter를 추가한다.
-- Rust/Web storypack preview generated bundle을 갱신한다.
-- Python exporter/docs/storypack DB, Rust/WASM/terminal/Web default bundle registry 테스트를 필요한 만큼 추가한다.
-- 구현 범위는 full Qingliu attack flashback이 아니라 현악문/복호금쇄수 흔적 조사다.
+- Notion 사건 카드 DB와 repo hooks를 다시 대조해 `wuxia_qingliu_attack_after_war` 다음 후보를 고른다.
+- 최소 후보군: `wuxia_mumyeong_destroys_orthodox_sect`, `wuxia_boss_recruits_mumyeong`, `wuxia_mumyeong_departure_truth_summary`, `wuxia_mumyeong_resolution`, `wuxia_boss_resolution`, 필요 시 `wuxia_seoharin_empty_place`.
+- 다음 runtime 후보를 고르더라도 이번 docs-only handoff에서는 YAML/Rust/Web generated artifact를 변경하지 않는다.
 - 기본 office bundle, Web legacy generated `content.bundle.json`, `src/tui_adv/data/*.yaml`, legacy `escape-office` save/localStorage key는 수정하지 않는다.
 
 ## 반드시 읽을 문서
@@ -38,6 +37,7 @@ mode: implementation
 - `docs/dev/Development_Plan.md`
   - section `0.43`: `wuxia_mumyeong_awakening` preview runtime slice
   - section `0.44`: `wuxia_qingliu_attack_after_war` docs-only handoff
+  - section `0.45`: `wuxia_qingliu_attack_after_war` preview runtime slice
   - 현재 최우선 남은 작업
   - `## 10. 다음 액션`
 - `docs/dev/Storypack_Runtime_Preview_Mode.md`
@@ -60,9 +60,12 @@ mode: implementation
 - `wuxia_mumyeong_awakening`가 preview runtime에 구현되어 `mumyeong_awakening_resolved`, `mumyeong_awakening_thread_opened`, `copy_corruption_thread_opened` hook을 남긴다.
 - `wuxia_mumyeong_awakening` primary clues는 `mumyeong_copy_bloomed_from_anger`, `copy_is_wound_not_growth`, `protagonist_understands_where_mumyeong_overlays`, `awakening_points_to_hyeonakmun_without_full_truth`, `salvation_truth_still_unready`다.
 - `wuxia_mumyeong_awakening` stable choice id는 `compare_anger_to_copied_flow`, `trace_awakening_from_failed_aid`, `ask_what_the_copy_cost_him`, `stop_before_calling_it_salvation`다.
+- `wuxia_qingliu_attack_after_war`가 preview runtime에 구현되어 `qingliu_attack_after_war_resolved`, `qingliu_attack_trace_confirmed`, `hyeonakmun_attack_thread_opened` hook을 남긴다.
+- `wuxia_qingliu_attack_after_war` primary clues는 `qingliu_attack_trace_points_to_hyeonakmun`, `bokho_geumsaesu_used_on_qingliu`, `seoharin_saw_aftermath_not_full_truth`, `main_sect_not_directly_accused`, `full_flashback_still_unopened`다.
+- `wuxia_qingliu_attack_after_war` stable choice id는 `inspect_bokho_lock_scars`, `compare_hyeonakmun_trace_to_qingliu_wounds`, `ask_seo_harin_what_she_saw_afterward`, `stop_before_replaying_the_attack`다.
 - Historical handoffs include `wuxia_mumyeong_first_confrontation_after_sighting`, `wuxia_mumyeong_followup_after_first_confrontation`, `wuxia_mumyeong_followup_after_copy_style_reveal`, `wuxia_mumyeong_followup_after_orthodox_style_trace`, `wuxia_mumyeong_followup_after_midgame_reunion`, `wuxia_boss_followup_after_first_appearance`, `wuxia_mumyeong_followup_after_failed_aid`, and `wuxia_mumyeong_followup_after_awakening`.
 
-## 구현 계약
+## 완료된 구현 계약
 
 - encounter id: `wuxia_qingliu_attack_after_war`
 - source: `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`
@@ -111,7 +114,7 @@ common outcome hook:
 
 ## 구현 범위
 
-해야 할 것:
+완료한 것:
 
 - 무명 각성 이후 청류문 외원에 남은 상처를 조사하는 encounter를 만든다.
 - 현악문/복호금쇄수 단서를 강화한다.
@@ -135,6 +138,22 @@ common outcome hook:
 - epilogue/return system
 - 천기록 identity reveal
 - legacy office bundle/default bundle 변경
+
+## 다음 handoff 범위
+
+해야 할 것:
+
+- 청류문 습격 흔적 조사 이후 가장 작은 다음 runtime 후보를 고른다.
+- 후보를 고를 때 full flashback, 무명 구원 확정, 서하린 진실 전달, 보스 최종 결산을 너무 일찍 열지 않는지 확인한다.
+- 다음 후보의 required/forbidden flags, stable choice ids, common hooks, non-goals를 문서화한다.
+- `docs/dev/Development_Plan.md`, `docs/dev/Checklist.md`, `docs/dev/Notion_Design_Coverage.md`, `docs/content/storypack_db/*`, `docs/content/storypacks/wuxia_jianghu_pack.md`, `docs/content/encounter_db/wuxia_jianghu_pack.md`, `idea_box/notion_sources.yml`를 docs-only로 동기화한다.
+
+하지 말 것:
+
+- runtime YAML/Rust/Web generated bundle 변경
+- full Qingliu attack flashback/backstory reveal
+- 정파 문파 멸문, 보스 스카웃, 무명 이탈 진실 전체, final boss resolution을 바로 구현
+- 새 combat/reward/route graph/faction/relation/debt/epilogue/return schema 열기
 
 ## 검증 명령
 

@@ -45,6 +45,7 @@ describe('runtime content bundle registry', () => {
       'wuxia_boss_first_appearance',
       'wuxia_mumyeong_request_for_aid',
       'wuxia_mumyeong_awakening',
+      'wuxia_qingliu_attack_after_war',
     ]);
     expect(encounterIds).not.toContain('ex_employee_messenger');
   });

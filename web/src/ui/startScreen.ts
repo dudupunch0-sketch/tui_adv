@@ -204,7 +204,7 @@ function renderSummary(summary: PlayerRunSummary): string {
 
 function renderResetConfirmation(): string {
   return `<section class="start-reset-confirmation" role="alert" aria-label="새 게임 확인">
-    <p>기존 저장을 지우고 새 격리 run을 시작할까요?</p>
+    <p>기존 저장을 지우고 새 모험을 시작할까요?</p>
     <div>
       <button type="button" data-player-action="confirm-new-game">기존 저장 삭제 후 시작</button>
       <button type="button" data-player-action="cancel-new-game">돌아가기</button>

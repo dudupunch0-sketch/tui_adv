@@ -662,6 +662,19 @@
 - [x] runtime YAML/Rust/Web generated bundle, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
 - [x] 다음 작업을 `wuxia_qingliu_attack_after_war` runtime implementation으로 갱신
 
+### 0.2bi 2026-06-02 무협 `wuxia_qingliu_attack_after_war` preview runtime slice
+
+- [x] `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`에서 `wuxia_mumyeong_awakening` 뒤에 `wuxia_qingliu_attack_after_war` 추가
+- [x] start conditions를 `mumyeong_awakening_resolved`, `mumyeong_awakening_thread_opened`, `copy_corruption_thread_opened`, `mumyeong_request_for_aid_resolved`, `mumyeong_failed_aid_thread_opened`, `orthodox_hypocrisy_thread_opened`, `mumyeong_reads_orthodox_style_resolved`, `orthodox_style_trace_recorded`, `midgame_continuity_started`로 구현
+- [x] stable choice id `inspect_bokho_lock_scars`, `compare_hyeonakmun_trace_to_qingliu_wounds`, `ask_seo_harin_what_she_saw_afterward`, `stop_before_replaying_the_attack` 구현
+- [x] 모든 선택지가 `qingliu_attack_after_war_resolved`, `qingliu_attack_trace_confirmed`, `hyeonakmun_attack_thread_opened`, `destination_id: cheongryu_outer_courtyard` bridge를 남기도록 구현
+- [x] `wuxia_qingliu_attack_after_war` presentation을 `speaker: 천기록`, `layout: attack_trace_investigation`, stable terms `[청류문, 현악문, 복호금쇄수]`로 구현
+- [x] Rust/Web storypack preview generated bundle 재생성
+- [x] Python exporter/docs/storypack DB, Rust content bundle, WASM JSON boundary, terminal smoke, Web default content bundle registry 테스트 갱신
+- [x] 기본 office bundle, Web legacy generated `content.bundle.json`, `src/tui_adv/data/*.yaml`, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] full flashback, 무명 이탈 진실 전체 reveal, 정파 문파 멸문, boss recruit/final boss resolution, 무명 구원 확정, 서하린에게 진실 전달, seed 기반 random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation/reward/ability/epilogue/return schema, 천기록 정체 reveal 미변경 유지
+- [x] 다음 작업을 `wuxia_qingliu_attack_after_war_followup` docs-only handoff로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

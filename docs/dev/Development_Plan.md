@@ -2302,6 +2302,49 @@ non-goals:
 - legacy office bundle/default bundle, legacy `escape-office` save/localStorage key 변경
 - runtime YAML/Rust/Web generated artifact 변경은 이 handoff commit에서 하지 않는다
 
+## 0.45 2026-06-02 무협 `wuxia_qingliu_attack_after_war` preview runtime slice
+
+현재 상태: preview runtime 구현 완료. `wuxia_mumyeong_awakening` 뒤에 청류문 습격 흔적 조사 encounter를 추가했고, full flashback/backstory reveal 없이 현악문/복호금쇄수 trace만 기존 encounter schema로 landing했다. 기본 storypack은 계속 `wuxia_jianghu_pack` / **이구학지 — 천기록**이다.
+
+구현:
+
+- `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`에서 `wuxia_mumyeong_awakening` 뒤에 `wuxia_qingliu_attack_after_war`를 추가했다.
+- start condition은 `mumyeong_awakening_resolved`, `mumyeong_awakening_thread_opened`, `copy_corruption_thread_opened`, `mumyeong_request_for_aid_resolved`, `mumyeong_failed_aid_thread_opened`, `orthodox_hypocrisy_thread_opened`, `mumyeong_reads_orthodox_style_resolved`, `orthodox_style_trace_recorded`, `midgame_continuity_started`이며, `qingliu_attack_after_war_resolved`로 반복을 막는다.
+- stable choice id는 `inspect_bokho_lock_scars`, `compare_hyeonakmun_trace_to_qingliu_wounds`, `ask_seo_harin_what_she_saw_afterward`, `stop_before_replaying_the_attack`다.
+- 모든 선택지는 `qingliu_attack_after_war_resolved`, `qingliu_attack_trace_confirmed`, `hyeonakmun_attack_thread_opened`, `destination_id: cheongryu_outer_courtyard` bridge를 남긴다.
+- primary clues는 `qingliu_attack_trace_points_to_hyeonakmun`, `bokho_geumsaesu_used_on_qingliu`, `seoharin_saw_aftermath_not_full_truth`, `main_sect_not_directly_accused`, `full_flashback_still_unopened`다.
+- presentation은 `visual_id: wuxia_qingliu_attack_after_war`, `speaker: 천기록`, `layout: attack_trace_investigation`, stable terms `[청류문, 현악문, 복호금쇄수]`로 구현했다.
+
+Generated artifacts:
+
+- `crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json`
+- `web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json`
+
+검증:
+
+- Python exporter/docs/storypack DB 테스트는 21개 이구학지 encounter와 `wuxia_qingliu_attack_after_war` 카드 구현 상태를 확인한다.
+- Rust content bundle fixture 테스트는 청류문 encounter 조건, presentation, 첫 choice outcome hooks를 검증한다.
+- WASM JSON boundary는 무명 각성 이후 `wuxia_qingliu_attack_after_war` scene page와 `inspect_bokho_lock_scars` 결과 hook을 검증한다.
+- SuperLightTUI smoke는 같은 action chain으로 `무너져가는 청류문 습격의 흔적`, `wuxia_qingliu_attack_after_war`, `attack_trace_investigation`, stable terms, 네 선택지를 표시하는지 검증한다.
+- Web default content bundle registry는 이구학지 default bundle encounter list 끝에 `wuxia_qingliu_attack_after_war`가 포함되는지 확인한다.
+
+non-goals:
+
+- 청류문 습격 full flashback/backstory reveal
+- 정파 문파 멸문 runtime 구현
+- 보스 스카웃/보스 전투/final boss resolution
+- 무명 이탈 진실 전체 reveal
+- 서하린에게 진실 전달
+- 무명 구원 확정
+- reward/ability schema, seed 기반 random copy-style system/table
+- combat resolver/schema 또는 HP 숫자전
+- route graph, faction reputation, relation/debt ledger
+- epilogue/return system
+- 천기록 identity reveal
+- legacy office bundle/default bundle, legacy `escape-office` save/localStorage key 변경
+
+다음은 `wuxia_qingliu_attack_after_war_followup` docs-only handoff다. 다음 handoff는 최소 `wuxia_mumyeong_destroys_orthodox_sect`, `wuxia_boss_recruits_mumyeong`, `wuxia_mumyeong_departure_truth_summary`, `wuxia_mumyeong_resolution`, `wuxia_boss_resolution`을 Notion 사건 카드 DB와 repo hooks로 다시 비교한다.
+
 ## 1. 목표
 
 국내 최고 대기업 IT/반도체 회사의 연구개발동 같은 사무실을 배경으로 한 TUI 기반 랜덤 인카운터 선택지 생존 게임을 만든다.
@@ -2882,20 +2925,21 @@ src/tui_adv/data/secrets.example.yaml
 62. 무협 failed-aid follow-up docs-only handoff 완료: Notion 사건 카드 DB `wuxia_mumyeong_awakening`, `wuxia_mumyeong_departure_truth_summary`, `wuxia_qingliu_attack_after_war`, `wuxia_boss_resolution`, `wuxia_boss_recruits_mumyeong`, `wuxia_mumyeong_destroys_orthodox_sect`와 운영 문서 `04`/`05`/`07`/`99`를 대조해 다음 runtime 후보를 `wuxia_mumyeong_awakening`으로 결정했다. 이 handoff는 도움 요청 실패와 정파 무공 흔적을 무명의 분노/카피 무공 변질로 잇되, runtime YAML/Rust/Web/generated artifact와 legacy office bundle은 변경하지 않았다.
 63. 무협 `wuxia_mumyeong_awakening` preview runtime slice 완료: 무명의 각성을 같은 storypack preview source에 추가했다. stable choice id 4개, `mumyeong_awakening_resolved`/`mumyeong_awakening_thread_opened`/`copy_corruption_thread_opened` common hook, 무명의 카피가 재능이 아니라 분노와 상처에서 개화했다는 clue, Rust/Web generated preview artifact, Python/Rust/WASM/terminal/Web default bundle registry 테스트를 갱신했다. 기본 storypack은 이구학지이며, legacy office bundle과 `escape-office` save/localStorage key는 변경하지 않았다.
 64. 무협 awakening follow-up docs-only handoff 완료: Notion 사건 카드 DB `wuxia_mumyeong_destroys_orthodox_sect`, `wuxia_boss_recruits_mumyeong`, `wuxia_mumyeong_departure_truth_summary`, `wuxia_qingliu_attack_after_war`, `wuxia_mumyeong_resolution`와 운영 문서 `04`/`05`/`07`/`99`를 대조해 다음 runtime 후보를 `wuxia_qingliu_attack_after_war`로 결정했다. 단, 다음 구현은 청류문 습격 full flashback이 아니라 현악문/복호금쇄수 흔적 조사로 제한하고, runtime YAML/Rust/Web/generated artifact와 legacy office bundle은 이 handoff에서 변경하지 않았다.
+65. 무협 `wuxia_qingliu_attack_after_war` preview runtime slice 완료: 무명 각성 뒤 청류문 외원에 남은 현악문/복호금쇄수 흔적 조사를 같은 storypack preview source에 추가했다. stable choice id 4개, `qingliu_attack_after_war_resolved`/`qingliu_attack_trace_confirmed`/`hyeonakmun_attack_thread_opened` common hook, full flashback을 아직 열지 않는 clue, Rust/Web generated preview artifact, Python/Rust/WASM/terminal/Web default bundle registry 테스트를 갱신했다. 기본 storypack은 이구학지이며, legacy office bundle과 `escape-office` save/localStorage key는 변경하지 않았다.
 
 현재 최우선 남은 작업:
 
-1. 무협 storypack preview/main의 다음 작업은 `wuxia_qingliu_attack_after_war` runtime implementation이다. `wuxia_mumyeong_followup_after_awakening` handoff는 완료됐고, 다음 세션은 청류문 습격 전체 회상이 아니라 현악문/복호금쇄수 흔적 조사 encounter를 기존 schema로 구현한다.
+1. 무협 storypack preview/main의 다음 작업은 `wuxia_qingliu_attack_after_war_followup` docs-only handoff다. `wuxia_qingliu_attack_after_war` runtime implementation은 완료됐고, 다음 세션은 청류문 흔적 조사 이후 후속 후보를 Notion 사건 카드 DB와 repo hooks로 다시 고른다.
    - 현재 Web/terminal default storypack은 `wuxia_jianghu_pack` / **이구학지 — 천기록**이다.
    - `escape from the office` / office isolation 계열은 legacy/parity content로 유지한다.
-   - machine-readable storypack DB, preview mode 결정, `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`, `wuxia_wounded_shelter_dawn_offers`, `wuxia_mumyeong_first_sighting`, `wuxia_mumyeong_first_confrontation`, `wuxia_mumyeong_copy_style_reveal`, `wuxia_mumyeong_reads_orthodox_style`, `wuxia_mumyeong_midgame_reunion`, `wuxia_boss_first_appearance`, `wuxia_mumyeong_request_for_aid`, `wuxia_mumyeong_awakening`, boss follow-up handoff, failed-aid follow-up handoff, Web/default 이구학지 start/save wiring, terminal default 이구학지 bundle 선택은 완료했다.
+   - machine-readable storypack DB, preview mode 결정, `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`, `wuxia_wounded_shelter_dawn_offers`, `wuxia_mumyeong_first_sighting`, `wuxia_mumyeong_first_confrontation`, `wuxia_mumyeong_copy_style_reveal`, `wuxia_mumyeong_reads_orthodox_style`, `wuxia_mumyeong_midgame_reunion`, `wuxia_boss_first_appearance`, `wuxia_mumyeong_request_for_aid`, `wuxia_mumyeong_awakening`, `wuxia_qingliu_attack_after_war`, boss follow-up handoff, failed-aid follow-up handoff, Web/default 이구학지 start/save wiring, terminal default 이구학지 bundle 선택은 완료했다.
    - copy-style reveal은 `copy_style_hint_recorded`, `copied_form_family_seen`, `copy_is_surface_not_root`, `breath_mismatch_marks_copy`, `understanding_is_not_copying`, `fragment_candidate_variation_foreshadowed` hook을 남겼다.
    - orthodox style trace는 `mumyeong_reads_orthodox_style_resolved`, `orthodox_style_trace_recorded`, `hyeonakmun_trace_suspected`, `bokho_geumsaesu_name_recorded`, `departure_truth_still_incomplete` hook을 남겼다.
    - midgame reunion은 `mumyeong_midgame_reunion_resolved`, `mumyeong_mirror_thread_deepened`, `seoharin_does_not_call_mumyeong_traitor`, `boss_used_mumyeongs_wound`, `mumyeong_truth_still_incomplete`, `rival_mirror_relationship_deepened`, `hyeonakmun_trace_shared_without_accusation` hook을 남겼다.
    - boss first appearance는 `boss_first_appearance_resolved`, `boss_wall_thread_opened`, `black_serpent_core_pressure_opened`, `boss_reads_people_not_forms`, `boss_is_final_logic_wall`, `mumyeong_follows_power_that_saw_his_wound`, `qingliu_cannot_outmuscle_boss_yet` hook을 남겼다.
    - mumyeong request for aid는 `mumyeong_request_for_aid_resolved`, `mumyeong_failed_aid_thread_opened`, `orthodox_hypocrisy_thread_opened`, `rejected_aid_letters_read`, `inn_rumor_thread_followed`, `seoharin_failed_aid_question_asked`, `failed_aid_record_kept_unshown`, `mumyeong_tried_to_save_qingliu`, `orthodox_refusal_broke_mumyeong`, `boss_logic_found_mumyeongs_wound`, `aid_refusal_precedes_departure_truth`, `seoharin_does_not_know_failed_aid` hook과 `rejected_aid_letter_fragment` item을 남겼다.
    - mumyeong awakening은 `mumyeong_awakening_resolved`, `mumyeong_awakening_thread_opened`, `copy_corruption_thread_opened`, `mumyeong_copy_bloomed_from_anger`, `copy_is_wound_not_growth`, `protagonist_understands_where_mumyeong_overlays`, `awakening_points_to_hyeonakmun_without_full_truth`, `salvation_truth_still_unready` hook을 남겼다.
-   - 다음 `wuxia_qingliu_attack_after_war` 구현은 `mumyeong_awakening_resolved`, `mumyeong_awakening_thread_opened`, `copy_corruption_thread_opened`, `mumyeong_request_for_aid_resolved`, `mumyeong_failed_aid_thread_opened`, `orthodox_hypocrisy_thread_opened`, `mumyeong_reads_orthodox_style_resolved`, `orthodox_style_trace_recorded`, `midgame_continuity_started`를 요구하고, `qingliu_attack_after_war_resolved`로 반복을 막는다.
+   - `wuxia_qingliu_attack_after_war` 구현은 `mumyeong_awakening_resolved`, `mumyeong_awakening_thread_opened`, `copy_corruption_thread_opened`, `mumyeong_request_for_aid_resolved`, `mumyeong_failed_aid_thread_opened`, `orthodox_hypocrisy_thread_opened`, `mumyeong_reads_orthodox_style_resolved`, `orthodox_style_trace_recorded`, `midgame_continuity_started`를 요구하고, `qingliu_attack_after_war_resolved`로 반복을 막는다.
    - stable choice id는 `inspect_bokho_lock_scars`, `compare_hyeonakmun_trace_to_qingliu_wounds`, `ask_seo_harin_what_she_saw_afterward`, `stop_before_replaying_the_attack`로 고정한다.
    - common hook은 `qingliu_attack_after_war_resolved`, `qingliu_attack_trace_confirmed`, `hyeonakmun_attack_thread_opened`, `qingliu_attack_trace_points_to_hyeonakmun`, `bokho_geumsaesu_used_on_qingliu`, `seoharin_saw_aftermath_not_full_truth`, `main_sect_not_directly_accused`, `full_flashback_still_unopened`, `destination_id: cheongryu_outer_courtyard`다.
    - `preview launcher/UI wiring`은 이미 구현했으므로 후속 slice에서 다시 구현하지 않는다.
@@ -2903,7 +2947,7 @@ src/tui_adv/data/secrets.example.yaml
    - `yageunmong_pack`은 docs/data 후보로 반영됐지만 기본 office runtime을 대체하지 않는다. 야근몽 runtime은 별도 preview 후보로만 연다.
    - legacy office `content.bundle.json`, `src/tui_adv/data/*.yaml`, `escape-office` save/localStorage key는 계속 바꾸지 않는다.
    - 천외편린/각성편린 3택 성장 schema, relation/debt/faction/companion schema는 별도 검증 전까지 열지 않는다.
-   - 보스 첫 등장, 무명의 도움 요청 실패 기록, 무명의 각성은 열었지만 보스 전투/최종 결산, 무명 이탈 진실 정리, 정파 문파 멸문, 보스 스카웃은 보류했다. 다음 `wuxia_qingliu_attack_after_war` runtime에서도 truth reveal, 구원 확정, 서하린에게 진실 전달, full flashback을 바로 열지 않는다.
+   - 보스 첫 등장, 무명의 도움 요청 실패 기록, 무명의 각성, 청류문 흔적 조사는 열었지만 보스 전투/최종 결산, 무명 이탈 진실 정리, 정파 문파 멸문, 보스 스카웃은 보류했다. 다음 handoff에서도 truth reveal, 구원 확정, 서하린에게 진실 전달, full flashback을 바로 열지 않는다.
    - Rust GameCore / `ScenePage` / WASM JSON boundary 책임 분리와 renderer-neutral 원칙을 유지한다.
 
 전환 중 유지:
@@ -2973,8 +3017,8 @@ Web 또는 terminal renderer가 게임 규칙을 다시 구현하면 Rust GameCo
 
 ## 10. 다음 액션
 
-1. 다음 무협 storypack preview/main 작업은 `wuxia_qingliu_attack_after_war` runtime implementation이다.
-   - `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`, `wuxia_wounded_shelter_dawn_offers`, `wuxia_mumyeong_first_sighting`, `wuxia_mumyeong_first_confrontation`, `wuxia_mumyeong_copy_style_reveal`, `wuxia_mumyeong_reads_orthodox_style`, `wuxia_mumyeong_midgame_reunion`, `wuxia_boss_first_appearance`, `wuxia_mumyeong_request_for_aid`, `wuxia_mumyeong_awakening`는 이미 이구학지 runtime bundle에 구현되어 있다.
+1. 다음 무협 storypack preview/main 작업은 `wuxia_qingliu_attack_after_war_followup` docs-only handoff다.
+   - `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`, `wuxia_wounded_shelter_dawn_offers`, `wuxia_mumyeong_first_sighting`, `wuxia_mumyeong_first_confrontation`, `wuxia_mumyeong_copy_style_reveal`, `wuxia_mumyeong_reads_orthodox_style`, `wuxia_mumyeong_midgame_reunion`, `wuxia_boss_first_appearance`, `wuxia_mumyeong_request_for_aid`, `wuxia_mumyeong_awakening`, `wuxia_qingliu_attack_after_war`는 이미 이구학지 runtime bundle에 구현되어 있다.
    - Web/terminal default storypack은 이구학지이며, terminal도 `--scene content` 기본 실행에서 같은 bundle을 사용한다. `--storypack-preview wuxia_jianghu_pack`는 명시적 동일 경로로 남겼고, Web의 별도 preview launcher는 이구학지가 기본이 되면서 목록에서 비워 두었다.
    - 이구학지 runtime은 계속 `storypack_preview` 계열 bundle metadata와 `default_location: wuxia_commute_rift` 시작점을 유지하되, Web player에서는 이를 `storypack_main`으로 감싼 default bundle JSON으로 사용한다.
    - `wuxia_mumyeong_copy_style_reveal` 구현으로 `mumyeong_copy_style_reveal_resolved`, `copy_style_hint_recorded`, `copied_form_family_seen`, `copy_is_surface_not_root`, `breath_mismatch_marks_copy`, `understanding_is_not_copying`, `fragment_candidate_variation_foreshadowed` hook이 생겼다.
@@ -2983,7 +3027,7 @@ Web 또는 terminal renderer가 게임 규칙을 다시 구현하면 Rust GameCo
    - `wuxia_boss_first_appearance` 구현으로 `boss_first_appearance_resolved`, `boss_wall_thread_opened`, `black_serpent_core_pressure_opened`, `boss_reads_people_not_forms`, `boss_is_final_logic_wall`, `mumyeong_follows_power_that_saw_his_wound`, `qingliu_cannot_outmuscle_boss_yet` hook이 생겼다.
    - `wuxia_mumyeong_request_for_aid` 구현으로 `mumyeong_request_for_aid_resolved`, `mumyeong_failed_aid_thread_opened`, `orthodox_hypocrisy_thread_opened`, `rejected_aid_letters_read`, `inn_rumor_thread_followed`, `seoharin_failed_aid_question_asked`, `failed_aid_record_kept_unshown`, `mumyeong_tried_to_save_qingliu`, `orthodox_refusal_broke_mumyeong`, `boss_logic_found_mumyeongs_wound`, `aid_refusal_precedes_departure_truth`, `seoharin_does_not_know_failed_aid` hook과 `rejected_aid_letter_fragment` item이 생겼다.
    - `wuxia_mumyeong_awakening` 구현으로 `mumyeong_awakening_resolved`, `mumyeong_awakening_thread_opened`, `copy_corruption_thread_opened`, `mumyeong_copy_bloomed_from_anger`, `copy_is_wound_not_growth`, `protagonist_understands_where_mumyeong_overlays`, `awakening_points_to_hyeonakmun_without_full_truth`, `salvation_truth_still_unready` hook이 생겼다.
-   - `wuxia_mumyeong_followup_after_awakening` handoff에서 `wuxia_qingliu_attack_after_war`를 다음 runtime 후보로 정했다. 구현 범위는 full flashback이 아니라 현악문/복호금쇄수 흔적 조사다.
+   - `wuxia_mumyeong_followup_after_awakening` handoff에서 정한 `wuxia_qingliu_attack_after_war`는 preview runtime 구현 완료다. 구현 범위는 full flashback이 아니라 현악문/복호금쇄수 흔적 조사였다.
    - required flags는 `mumyeong_awakening_resolved`, `mumyeong_awakening_thread_opened`, `copy_corruption_thread_opened`, `mumyeong_request_for_aid_resolved`, `mumyeong_failed_aid_thread_opened`, `orthodox_hypocrisy_thread_opened`, `mumyeong_reads_orthodox_style_resolved`, `orthodox_style_trace_recorded`, `midgame_continuity_started`다.
    - stable choice id는 `inspect_bokho_lock_scars`, `compare_hyeonakmun_trace_to_qingliu_wounds`, `ask_seo_harin_what_she_saw_afterward`, `stop_before_replaying_the_attack`다.
    - `wuxia_mumyeong_departure_truth_summary`, `wuxia_mumyeong_destroys_orthodox_sect`, `wuxia_boss_recruits_mumyeong`, `wuxia_mumyeong_resolution`, `wuxia_boss_resolution`은 후반 truth/full flashback/final resolution 범위라 이번 runtime slice에서는 열지 않는다.

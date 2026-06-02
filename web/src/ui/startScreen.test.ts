@@ -112,6 +112,8 @@ describe('player start/save UX', () => {
     expect(html).toContain('2026-05-26 05:00');
     expect(html).toContain('data-player-action="confirm-new-game"');
     expect(html).toContain('data-player-action="cancel-new-game"');
+    expect(html).toContain('기존 저장을 지우고 새 모험을 시작할까요?');
+    expect(html).not.toContain('새 격리 run');
   });
 
   it('writes and reads public run summary metadata without changing Rust save JSON', () => {

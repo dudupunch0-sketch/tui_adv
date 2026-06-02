@@ -57,6 +57,7 @@ describe('runtime content bundle registry', () => {
       'wuxia_boss_resolution',
       'wuxia_mumyeong_resolution',
       'wuxia_seoharin_qingliu_resolution',
+      'wuxia_seoharin_unsaid_stay',
       'wuxia_cheongirok_resolution',
       'wuxia_black_serpent_aftermath',
     ]);

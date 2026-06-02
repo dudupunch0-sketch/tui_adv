@@ -46,6 +46,7 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
     assert sorted(db.cards_by_storypack("wuxia_jianghu_pack")) == [
         "wuxia_baekdo_medicine_debt",
         "wuxia_black_heaven_escape_price",
+        "wuxia_black_serpent_aftermath",
         "wuxia_boss_first_appearance",
         "wuxia_boss_recruits_mumyeong",
         "wuxia_boss_resolution",
@@ -433,6 +434,26 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         in cheongirok_resolution.outcome_hooks["possible_clues"]
     )
     assert cheongirok_resolution.outcome_hooks["possible_items"] == []
+
+    black_serpent_aftermath = db.encounter_cards["wuxia_black_serpent_aftermath"]
+    assert black_serpent_aftermath.world_id == "wuxia_jianghu"
+    assert black_serpent_aftermath.storypack_id == "wuxia_jianghu_pack"
+    assert black_serpent_aftermath.status == "implemented_in_storypack_preview"
+    assert black_serpent_aftermath.priority_class == "route_key"
+    assert "black_serpent_aftermath_seed" in black_serpent_aftermath.phases
+    assert "faction_negotiation" in black_serpent_aftermath.surfaces
+    assert "safe_evidence" in [
+        choice["role"] for choice in black_serpent_aftermath.choice_shapes
+    ]
+    assert (
+        "final_epilogue_boss_broken_black_serpent_variant_ready_seeded"
+        in black_serpent_aftermath.outcome_hooks["possible_flags"]
+    )
+    assert (
+        "southern_market_rumor_is_unresolved_debt_not_blame"
+        in black_serpent_aftermath.outcome_hooks["possible_clues"]
+    )
+    assert black_serpent_aftermath.outcome_hooks["possible_items"] == []
 
 
 def test_storypack_db_public_files_validate_cleanly():

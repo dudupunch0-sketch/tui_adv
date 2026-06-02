@@ -3413,6 +3413,73 @@ fn json_boundary_reaches_wuxia_seoharin_qingliu_resolution_after_mumyeong_resolu
     assert!(clues
         .iter()
         .any(|clue| clue == "record_does_not_answer_questions"));
+
+    let aftermath_state_json = serde_json::to_string(&last_page_result["state"])
+        .expect("aftermath state should stringify");
+    let aftermath_page_json = scene_page_json(&aftermath_state_json, WUXIA_PREVIEW_BUNDLE)
+        .expect("black serpent aftermath scene page should serialize");
+    let aftermath_page: Value = serde_json::from_str(&aftermath_page_json)
+        .expect("black serpent aftermath page JSON should parse");
+
+    assert_eq!(aftermath_page["mode"], "encounter");
+    assert_eq!(aftermath_page["title"], "흑사방 후일담 씨앗");
+    assert_eq!(
+        aftermath_page["visual"]["id"],
+        "wuxia_black_serpent_aftermath"
+    );
+    assert_eq!(
+        aftermath_page["visual"]["kind"],
+        "black_serpent_aftermath_seed"
+    );
+    assert_eq!(aftermath_page["effect_cues"][0]["stable_terms"][0], "흑사방");
+    let aftermath_action_ids: Vec<&str> = aftermath_page["actions"]
+        .as_array()
+        .expect("actions should be an array")
+        .iter()
+        .map(|action| action["id"].as_str().expect("action id should be a string"))
+        .collect();
+    assert_eq!(
+        aftermath_action_ids,
+        vec![
+            "choice:mark_broken_serpent_without_erasing_scars",
+            "choice:fold_the_banner_without_calling_it_gone",
+            "choice:send_ledger_to_alliance_and_watch_silence",
+            "choice:listen_for_southern_market_debt_rumor",
+            "choice:let_true_route_suppress_the_banner",
+        ]
+    );
+
+    let broken_serpent_result_json = apply_action_json(
+        &aftermath_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:mark_broken_serpent_without_erasing_scars",
+    )
+    .expect("broken serpent aftermath action should serialize");
+    let broken_serpent_result: Value = serde_json::from_str(&broken_serpent_result_json)
+        .expect("black serpent aftermath action JSON should parse");
+    assert_eq!(
+        broken_serpent_result["encounter_id"],
+        "wuxia_black_serpent_aftermath"
+    );
+    let flags = broken_serpent_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array");
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "black_serpent_aftermath_resolved"));
+    assert!(flags.iter().any(
+        |flag| flag == "final_epilogue_boss_broken_black_serpent_variant_ready_seeded"
+    ));
+    assert!(!flags
+        .iter()
+        .any(|flag| flag == "final_epilogue_renderer_opened"));
+    assert!(!flags.iter().any(|flag| flag == "told_seoharin_truth"));
+    let clues = broken_serpent_result["state"]["clues"]
+        .as_array()
+        .expect("clues should be an array");
+    assert!(clues
+        .iter()
+        .any(|clue| clue == "broken_serpent_still_leaves_network_scars"));
 }
 
 #[test]

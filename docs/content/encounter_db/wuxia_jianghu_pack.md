@@ -1,13 +1,13 @@
 # 이구학지 — 천기록 encounter situation cards
 
-Status: candidate + `wuxia_cheongirok_resolution` preview runtime implemented
+Status: candidate + `wuxia_black_serpent_aftermath` preview runtime implemented
 
-이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_cheongirok_resolution`까지는 separate storypack preview runtime으로 승격되었다.
+이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_black_serpent_aftermath`까지는 separate storypack preview runtime으로 승격되었다.
 
 공통 원칙:
 
 - 모든 카드는 `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`에 속한다.
-- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_cheongirok_resolution`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. `wuxia_cheongirok_resolution`는 `docs/design/Wuxia_Final_State_Routing.md`의 final state routing contract와 boss/mumyeong/seoharin-qingliu resolution seed 이후 천기록 마지막 장 route를 정규화하는 bridge이며, 다음 handoff 후보는 `wuxia_black_serpent_aftermath`이다.
+- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_black_serpent_aftermath`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. `wuxia_black_serpent_aftermath`는 `docs/design/Wuxia_Final_State_Routing.md`의 final state routing contract와 Cheonggi Record resolution seed 이후 흑사방 aftermath 후보를 정규화하는 bridge이며, 다음 handoff 후보는 `wuxia_final_epilogue_renderer_contract`이다.
 - 최신 canonical 무협 설정은 **이구학지 — 천기록**이다. 이전의 generic 객잔/소림/무당/아미 placeholder는 superseded로 본다.
 - 플레이어 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계의 시장 한복판에 전이됐다”이다.
 - 선택지는 세부 수치보다 역할과 결과 hook을 먼저 정의한다.
@@ -2979,4 +2979,80 @@ runtime_preview_implementation:
     - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
     - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
   next_handoff: wuxia_black_serpent_aftermath_handoff
+```
+
+## 34. `wuxia_black_serpent_aftermath` — preview runtime 구현 완료
+
+```yaml
+id: wuxia_black_serpent_aftermath
+world_id: wuxia_jianghu
+storypack_id: wuxia_jianghu_pack
+status: implemented_in_storypack_preview
+mapping_status: preview_runtime_implemented
+runtime_preview_design_status: implemented
+implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
+notion_mapping:
+  notion_event_id: black_serpent_aftermath
+  notion_event_name: 흑사방 aftermath
+  related_source: 08. 엔딩과 후일담 연결 / 최종장 결산 라우팅 마스터
+phase: [final_entry, black_serpent_aftermath_seed]
+priority_class: route_key
+location_tags: [black_serpent_ledger_vault, final_resolution, aftermath_normalization]
+surface: [black_serpent_ledger, market_rumor, faction_negotiation]
+anomaly_type: [future_record, faction_pressure, debt_rumor]
+pressure_type: [sanity, danger]
+npc_slots: [cheonggi_record_keeper, black_serpent_remnant, alliance_scribe]
+candidate_characters: [천기록, 흑사방 잔당, 무림맹 문사, 남쪽 장터 사람들, 주인공]
+summary: 천기록 결산 뒤 흑사방 잔향을 부러진 검은 뱀, 깃발 잔존, 남쪽 장터 빚 풍문, 무림맹 침묵 후보 seed로 정규화하는 bridge encounter.
+presentation:
+  visual_id: wuxia_black_serpent_aftermath
+  speaker: 천기록
+  layout: black_serpent_aftermath_seed
+  stable_terms: [흑사방, 장부, 깃발, 남쪽 장터]
+conditions:
+  locations: [black_serpent_ledger_vault]
+  required_flags: [cheongirok_resolution_resolved, seoharin_qingliu_resolution_resolved, mumyeong_resolution_resolved, boss_resolution_resolved, final_result_priority_applied_seeded, final_combat_result_battle_victory_seeded, final_state_routing_seeded]
+  forbidden_flags: [black_serpent_aftermath_resolved]
+choice_shapes:
+  - id: mark_broken_serpent_without_erasing_scars
+    role: safe_evidence
+    label_direction: 부러진 검은 뱀을 상처째 기록한다
+    expected_gains: [final_epilogue_boss_broken_black_serpent_variant_ready_seeded, final_broken_black_serpent_epilogue_candidate_reinforced_seeded]
+  - id: fold_the_banner_without_calling_it_gone
+    role: residue_risk
+    label_direction: 깃발을 접되 사라졌다고 쓰지 않는다
+    expected_gains: [final_black_serpent_banner_candidate_reinforced_seeded, final_southern_market_rumor_candidate_seeded]
+  - id: send_ledger_to_alliance_and_watch_silence
+    role: alliance_silence
+    label_direction: 장부를 무림맹에 보내고 침묵을 본다
+    expected_gains: [final_alliance_silence_responsibility_evasion_seeded, final_broken_black_serpent_epilogue_candidate_reinforced_seeded]
+  - id: listen_for_southern_market_debt_rumor
+    role: market_rumor
+    label_direction: 남쪽 장터의 빚 풍문을 듣는다
+    expected_gains: [final_southern_market_rumor_candidate_reinforced_seeded, final_black_serpent_pressure_unresolved_variant_seeded]
+  - id: let_true_route_suppress_the_banner
+    role: suppression_candidate
+    label_direction: 진로의 결과로 깃발과 풍문을 눌러 둔다
+    expected_gains: [final_black_serpent_banner_suppressed_candidate_seeded, final_southern_market_rumor_suppressed_candidate_seeded]
+outcome_hooks:
+  possible_flags: [black_serpent_aftermath_resolved, final_black_serpent_aftermath_broken_serpent_seeded, final_black_serpent_aftermath_banner_residue_seeded, final_black_serpent_aftermath_alliance_silence_seeded, final_black_serpent_aftermath_southern_market_rumor_seeded, final_black_serpent_aftermath_banner_suppressed_seeded, final_epilogue_boss_broken_black_serpent_variant_ready_seeded, final_broken_black_serpent_epilogue_candidate_reinforced_seeded, final_black_serpent_banner_candidate_reinforced_seeded, final_southern_market_rumor_candidate_seeded, final_southern_market_rumor_candidate_reinforced_seeded, final_black_serpent_pressure_unresolved_variant_seeded, final_alliance_silence_responsibility_evasion_seeded, final_black_serpent_banner_suppressed_candidate_seeded, final_southern_market_rumor_suppressed_candidate_seeded]
+  possible_clues: [broken_serpent_still_leaves_network_scars, boss_defeat_is_not_total_cleanup, future_epilogue_renderer_still_unopened, banner_can_return_when_pressure_unresolved, organization_logic_outlives_one_boss, southern_market_rumor_remains_possible, alliance_silence_can_be_responsibility_evasion, strong_evidence_does_not_force_confession, ledger_can_be_buried_as_private_document, southern_market_rumor_is_unresolved_debt_not_blame, pressure_can_move_without_banner, trade_routes_remember_black_serpent, true_route_can_suppress_banner_and_rumor, pressure_eased_does_not_rewrite_scars]
+  possible_items: []
+  possible_destinations: [black_serpent_ledger_vault]
+main_spine_link: 천기록 결산 뒤 final epilogue master matrix의 black_serpent_axis를 future renderer 후보 seed로 정리한다.
+randomization_notes: 최종장 흑사방 aftermath 1회성 route key. cheongirok_resolution_resolved 뒤 장부고에서만 열고 black_serpent_aftermath_resolved로 반복을 막는다.
+promotion_notes: preview runtime으로 구현 완료. final epilogue renderer, return/settlement schema, combat resolver, HP 숫자전, Seo Harin truth delivery, told_seoharin_truth, relation/reward schema, item_unpriced_wooden_sword payout, Cheonggi Record identity reveal은 열지 않는다.
+runtime_preview_handoff:
+  handoff_status: implemented
+  insert_after: wuxia_cheongirok_resolution
+  next_runtime_scope: wuxia_final_epilogue_renderer_contract_handoff
+  guardrails: [no_final_epilogue_or_return_schema, no_combat_resolver, no_hp_numeric_battle, no_seoharin_truth_delivery, no_told_seoharin_truth, no_item_unpriced_wooden_sword_award, no_cheongirok_identity_reveal]
+runtime_preview_implementation:
+  implementation_status: implemented
+  implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
+  insert_after: wuxia_cheongirok_resolution
+  generated_artifacts:
+    - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+    - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+  next_handoff: wuxia_final_epilogue_renderer_contract_handoff
 ```

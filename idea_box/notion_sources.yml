@@ -448,13 +448,13 @@ sources:
     status: "live_checked_runtime_implemented"
 
   - key: wuxia_black_serpent_aftermath
-    title: "흑사방 aftermath handoff"
+    title: "흑사방 aftermath"
     object: derived_runtime_handoff
     notion_refs:
       - "notion:37237e69-695e-81d2-8ce2-d1c738c3e923"
       - "notion:37137e69-695e-8177-a228-d7f96d084622"
     last_checked_at: "2026-06-02T12:25:00+09:00"
-    precedence_role: "next_black_serpent_aftermath_handoff_candidate"
+    precedence_role: "implemented_black_serpent_aftermath_route_seed_source"
     related_design_units:
       - "encounter:wuxia_black_serpent_aftermath"
       - "epilogue_candidate:broken_black_serpent"
@@ -471,6 +471,37 @@ sources:
       - "wuxia_mumyeong_resolution"
       - "wuxia_seoharin_qingliu_resolution"
       - "wuxia_cheongirok_resolution"
+    consumed_by:
+      - "encounter:wuxia_black_serpent_aftermath"
+    runtime_status: "implemented_in_storypack_preview"
+    implementation_scope: "seed_bridge_only_no_final_epilogue_renderer_no_return_schema"
+    next_handoff_candidate: "wuxia_final_epilogue_renderer_contract_handoff"
+    status: "live_checked_runtime_implemented"
+
+  - key: wuxia_final_epilogue_renderer_contract
+    title: "최종 후일담 renderer contract handoff"
+    object: derived_runtime_handoff
+    notion_refs:
+      - "notion:37237e69-695e-81d2-8ce2-d1c738c3e923"
+      - "notion:37137e69-695e-8177-a228-d7f96d084622"
+      - "notion:37337e69-695e-81c7-a9fd-e0a0e22005e2"
+    last_checked_at: "2026-06-02T12:50:00+09:00"
+    precedence_role: "next_final_epilogue_renderer_contract_handoff_candidate"
+    related_design_units:
+      - "system:final_epilogue_renderer_contract"
+      - "system:final_epilogue_master_matrix"
+      - "encounter:wuxia_black_serpent_aftermath"
+    related_canonical_docs:
+      - "docs/design/Wuxia_Final_State_Routing.md"
+      - "docs/dev/Development_Plan.md"
+      - "docs/dev/Notion_Design_Coverage.md"
+      - "idea_box/next_goal/README.md"
+    required_prior_runtime:
+      - "wuxia_boss_resolution"
+      - "wuxia_mumyeong_resolution"
+      - "wuxia_seoharin_qingliu_resolution"
+      - "wuxia_cheongirok_resolution"
+      - "wuxia_black_serpent_aftermath"
     runtime_status: "next_handoff_candidate"
     status: "live_checked_next_candidate"
 

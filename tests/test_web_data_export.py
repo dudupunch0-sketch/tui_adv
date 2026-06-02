@@ -140,7 +140,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     assert bundle["manifest"]["counts"] == {
         "locations": 5,
         "items": 4,
-        "encounters": 33,
+        "encounters": 34,
         "endings": 1,
         "achievements": 2,
         "secrets": 0,
@@ -187,6 +187,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "wuxia_mumyeong_resolution",
         "wuxia_seoharin_qingliu_resolution",
         "wuxia_cheongirok_resolution",
+        "wuxia_black_serpent_aftermath",
     ]
     cheongirok = bundle["content"]["encounters"][32]
     assert cheongirok["conditions"] == {
@@ -231,6 +232,49 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     ]
     assert safe_last_page["outcome"]["destination_id"] == "black_serpent_ledger_vault"
     assert "add_items" not in safe_last_page["outcome"]
+    black_serpent_aftermath = bundle["content"]["encounters"][33]
+    assert black_serpent_aftermath["conditions"] == {
+        "locations": ["black_serpent_ledger_vault"],
+        "required_flags": [
+            "cheongirok_resolution_resolved",
+            "seoharin_qingliu_resolution_resolved",
+            "mumyeong_resolution_resolved",
+            "boss_resolution_resolved",
+            "final_result_priority_applied_seeded",
+            "final_combat_result_battle_victory_seeded",
+            "final_state_routing_seeded",
+        ],
+        "forbidden_flags": ["black_serpent_aftermath_resolved"],
+    }
+    assert black_serpent_aftermath["presentation"]["layout"] == "black_serpent_aftermath_seed"
+    assert black_serpent_aftermath["presentation"]["speaker"] == "천기록"
+    assert black_serpent_aftermath["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "흑사방",
+        "장부",
+        "깃발",
+        "남쪽 장터",
+    ]
+    assert [choice["id"] for choice in black_serpent_aftermath["choices"]] == [
+        "mark_broken_serpent_without_erasing_scars",
+        "fold_the_banner_without_calling_it_gone",
+        "send_ledger_to_alliance_and_watch_silence",
+        "listen_for_southern_market_debt_rumor",
+        "let_true_route_suppress_the_banner",
+    ]
+    broken_serpent = black_serpent_aftermath["choices"][0]
+    assert broken_serpent["outcome"]["add_flags"] == [
+        "black_serpent_aftermath_resolved",
+        "final_black_serpent_aftermath_broken_serpent_seeded",
+        "final_epilogue_boss_broken_black_serpent_variant_ready_seeded",
+        "final_broken_black_serpent_epilogue_candidate_reinforced_seeded",
+    ]
+    assert broken_serpent["outcome"]["add_clues"] == [
+        "broken_serpent_still_leaves_network_scars",
+        "boss_defeat_is_not_total_cleanup",
+        "future_epilogue_renderer_still_unopened",
+    ]
+    assert broken_serpent["outcome"]["destination_id"] == "black_serpent_ledger_vault"
+    assert "add_items" not in broken_serpent["outcome"]
     first_fight = bundle["content"]["encounters"][1]
     assert first_fight["conditions"] == {
         "locations": ["jianghu_market_street"],

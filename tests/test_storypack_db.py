@@ -16,6 +16,7 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
     assert db.storypacks["yageunmong_pack"].world_id == "office_dream"
     assert db.storypacks["yageunmong_pack"].name == "야근몽"
     assert "approval_system" in db.storypacks["yageunmong_pack"].main_surfaces
+    assert "build_log" in db.storypacks["yageunmong_pack"].main_surfaces
     assert db.storypacks["wuxia_jianghu_pack"].world_id == "wuxia_jianghu"
     assert db.storypacks["wuxia_jianghu_pack"].name == "이구학지 — 천기록"
     assert "cheonggi_record" in db.storypacks["wuxia_jianghu_pack"].main_surfaces
@@ -30,11 +31,17 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
     ]
     assert sorted(db.cards_by_storypack("yageunmong_pack")) == [
         "yageunmong_awakening_fragment_choice",
+        "yageunmong_clockout_gate_route_split",
         "yageunmong_clockout_gate_self",
+        "yageunmong_coworker_meeting_room_rescue",
+        "yageunmong_dead_project_server_log",
+        "yageunmong_elevator_unapproved_floor",
         "yageunmong_late_night_desk_awake",
         "yageunmong_manager_approval_trap",
         "yageunmong_reality_anchor_pantry",
         "yageunmong_unapproved_meeting_room_loop",
+        "yageunmong_unread_mail_wall",
+        "yageunmong_wake_desk_aftermath",
     ]
     assert sorted(db.cards_by_storypack("wuxia_jianghu_pack")) == [
         "wuxia_baekdo_medicine_debt",
@@ -68,6 +75,16 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
     assert "lucid_dream_awareness" in yageun_opening.phases
     assert "safe_observe" in [choice["role"] for choice in yageun_opening.choice_shapes]
     assert "yageunmong_started" in yageun_opening.outcome_hooks["possible_flags"]
+
+    coworker_rescue = db.encounter_cards["yageunmong_coworker_meeting_room_rescue"]
+    assert coworker_rescue.priority_class == "npc_relation"
+    assert "meeting_minutes" in coworker_rescue.surfaces
+    assert "safe_honesty" in [choice["role"] for choice in coworker_rescue.choice_shapes]
+    assert "coworker_rescue_thread" in coworker_rescue.outcome_hooks["possible_relations"]
+
+    yageun_route_split = db.encounter_cards["yageunmong_clockout_gate_route_split"]
+    assert "wake_resolution" in yageun_route_split.phases
+    assert "wake_up_route_started" in yageun_route_split.outcome_hooks["possible_route_flags"]
 
     arrival = db.encounter_cards["wuxia_commute_rift_arrival"]
     assert arrival.world_id == "wuxia_jianghu"

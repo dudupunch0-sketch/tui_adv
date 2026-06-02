@@ -1028,6 +1028,19 @@
 - [x] reward/ability schema, combat resolver, HP 숫자전, 서하린 truth delivery, `told_seoharin_truth`, 천기록 기록자 정체 reveal 미변경 유지
 - [x] 다음 작업을 `return_settlement_followup_handoff` docs-only contract slice로 갱신
 
+### 0.2ci 2026-06-02 무협 `wuxia_return_settlement_epilogue_contract` runtime slice
+
+- [x] Notion `가지 말라는 말`, `08. 엔딩과 후일담 연결`, `01. 메인 엔딩 구조`, `09. 예시 엔딩`, `10. 이구학지 후일담 카드 DB`, `06. 사이드 퀘스트와 미해결 부채`, `07. 천기록 / 천외편린 보상` 대조
+- [x] 다음 runtime을 새 main ending enum/schema가 아니라 existing final epilogue body block branch 확장으로 결정
+- [x] `crates/escape-core/src/final_epilogue.rs`에 return/settlement branch card group 추가
+- [x] `epilogue_wuxia_returned_commute`, `epilogue_wuxia_qingliu_settlement`, `epilogue_wuxia_empty_place_kept_open`, `epilogue_wuxia_closed_gate_risk` card id 적용
+- [x] `final_return_intent_honest_seeded`, `final_settlement_intent_honest_seeded`, `final_return_settlement_uncertain_shared_seeded`, `final_return_settlement_evasion_seeded` 후보 seed 소비
+- [x] contradictory direct-state seed에서 `epilogue_wuxia_closed_gate_risk`가 optimistic branch cards를 `return_settlement_evasion`으로 suppress
+- [x] Rust core route parity, WASM JSON boundary, SuperLightTUI smoke assertions 갱신
+- [x] full modern return scene, return/settlement save/archive schema, relation/debt/faction ledger 미변경 유지
+- [x] reward/ability schema, combat resolver, HP 숫자전, 서하린 truth delivery, `told_seoharin_truth`, 천기록 기록자 정체 reveal 미변경 유지
+- [x] 다음 작업을 `return_settlement_epilogue_followup_handoff` docs-only contract slice로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

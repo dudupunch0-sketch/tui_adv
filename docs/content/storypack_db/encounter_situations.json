@@ -8961,14 +8961,14 @@
         "black_serpent_ledger_vault"
       ]
     },
-    "main_spine_link": "서하린·청류문 결산 뒤 Cheonggi Record 마지막 장 전에 열리는 첫 return/settlement seed bridge다. 후속 final epilogue는 이 seed를 귀환/정착/침식 변주 후보로 소비할 수 있다.",
+    "main_spine_link": "서하린·청류문 결산 뒤 Cheonggi Record 마지막 장 전에 열리는 첫 return/settlement seed bridge다. `wuxia_return_settlement_epilogue_contract`가 이 seed를 귀환/정착/불확실성/닫힌 문 위험 branch card로 소비한다.",
     "randomization_notes": "최종장 1회성 late relationship trigger. seoharin_qingliu_resolution_resolved 뒤 장부고에서만 열고 seoharin_unsaid_stay_resolved로 반복을 막는다.",
-    "promotion_notes": "preview runtime으로 구현 완료. full modern return ending, return/settlement save/archive schema, relation/debt/faction ledger, reward/ability schema, combat resolver, HP 숫자전, Seo Harin truth delivery, told_seoharin_truth, Cheonggi Record identity reveal은 열지 않는다.",
+    "promotion_notes": "preview runtime으로 구현 완료. 후속 `wuxia_return_settlement_epilogue_contract`도 Rust GameCore-owned final epilogue body block consumer로 구현 완료했다. full modern return ending, return/settlement save/archive schema, relation/debt/faction ledger, reward/ability schema, combat resolver, HP 숫자전, Seo Harin truth delivery, told_seoharin_truth, Cheonggi Record identity reveal은 열지 않는다.",
     "runtime_preview_handoff": {
       "handoff_status": "implemented",
       "insert_after": "wuxia_seoharin_qingliu_resolution",
       "insert_before": "wuxia_cheongirok_resolution",
-      "next_runtime_scope": "return_settlement_followup_handoff",
+      "next_runtime_scope": "wuxia_return_settlement_epilogue_contract_completed",
       "guardrails": [
         "no_full_modern_return_ending",
         "no_return_settlement_save_archive_schema",
@@ -8988,7 +8988,7 @@
         "crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json",
         "web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json"
       ],
-      "next_handoff": "return_settlement_followup_handoff"
+      "next_handoff": "return_settlement_epilogue_followup_handoff"
     }
   },
   {

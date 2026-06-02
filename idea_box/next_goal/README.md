@@ -2,8 +2,8 @@
 type: next_goal_prompt
 created: 2026-06-01
 updated: 2026-06-02
-current_goal: return_settlement_followup_handoff
-previous_current_goal: wuxia_seoharin_unsaid_stay_runtime_implementation
+current_goal: return_settlement_epilogue_followup_handoff
+previous_current_goal: wuxia_return_settlement_epilogue_contract_implementation
 mode: docs-only-contract-selection
 ---
 
@@ -53,9 +53,25 @@ mode: docs-only-contract-selection
 
 `wuxia_seoharin_unsaid_stay_runtime_implementation`도 완료됐다. Notion `가지 말라는 말`과 `Return/Settlement Contract Handoff`를 계약으로 삼아, `wuxia_seoharin_qingliu_resolution` 뒤와 `wuxia_cheongirok_resolution` 앞에 서하린 late relationship trigger를 추가했다. 이 slice는 full modern return ending이나 settlement schema가 아니라 `final_return_settlement_contract_seeded`와 return/settlement/uncertainty/evasion 후보 seed만 남긴다.
 
-현재 목표는 `return_settlement_followup_handoff`다. 방금 구현한 `wuxia_seoharin_unsaid_stay` seed를 기준으로 full modern return ending, settlement afterword, corruption/closed-gate branch, battle-loss path, reward/ability schema, relation/debt/faction ledger 중 무엇을 먼저 열지 Notion source와 repo canonical docs를 다시 비교한다.
+`return_settlement_followup_handoff`도 완료됐다. Notion `가지 말라는 말`, `08. 엔딩과 후일담 연결`, `01. 메인 엔딩 구조`, `09. 예시 엔딩`, `10. 이구학지 후일담 카드 DB`, `06. 사이드 퀘스트와 미해결 부채`, `07. 천기록 / 천외편린 보상`을 대조한 결과, 다음 runtime은 full modern return ending이나 save/archive schema가 아니라 existing final epilogue body block consumer를 확장하는 `wuxia_return_settlement_epilogue_contract`로 결정했다.
+
+`wuxia_return_settlement_epilogue_contract_implementation`도 완료됐다. Rust GameCore-owned final epilogue consumer가 `wuxia_seoharin_unsaid_stay` seed를 소비해 `epilogue_wuxia_returned_commute`, `epilogue_wuxia_qingliu_settlement`, `epilogue_wuxia_empty_place_kept_open`, `epilogue_wuxia_closed_gate_risk` branch cards를 출력한다. Web Storybook과 SuperLightTUI는 core body block을 표시만 하며, return/settlement card enable/suppress를 renderer에서 다시 계산하지 않는다.
+
+현재 목표는 `return_settlement_epilogue_followup_handoff`다. 방금 구현한 return/settlement branch card runtime을 기준으로 battle-loss branch, broader corruption/closed-gate branch, reward/ability schema, relation/debt/faction ledger, main ending archive/save surface 중 무엇을 먼저 열지 Notion source와 repo canonical docs를 다시 비교한다.
 
 이전 목표 표기 이력:
+
+```yaml
+current_goal: wuxia_return_settlement_epilogue_contract_implementation
+previous_current_goal: return_settlement_followup_handoff
+mode: contract-first-runtime-implementation
+```
+
+```yaml
+current_goal: return_settlement_followup_handoff
+previous_current_goal: wuxia_seoharin_unsaid_stay_runtime_implementation
+mode: docs-only-contract-selection
+```
 
 ```yaml
 current_goal: wuxia_seoharin_unsaid_stay_runtime_implementation
@@ -91,6 +107,28 @@ completed_runtime:
 next_decision:
   id: return_settlement_followup_handoff
   compare: [full_modern_return_ending, settlement_afterword, corruption_closed_gate_branch, battle_loss_path, reward_ability_schema, relation_debt_faction_ledger]
+```
+
+완료된 return/settlement epilogue runtime:
+
+```yaml
+completed_runtime:
+  id: wuxia_return_settlement_epilogue_contract
+  implementation_owner: crates/escape-core/src/final_epilogue.rs
+  output_shape: existing ScenePage.body_blocks
+  card_ids:
+    return: epilogue_wuxia_returned_commute
+    settlement: epilogue_wuxia_qingliu_settlement
+    uncertain: epilogue_wuxia_empty_place_kept_open
+    evasion: epilogue_wuxia_closed_gate_risk
+  suppress:
+    evasion_risk_suppresses:
+      - epilogue_wuxia_returned_commute
+      - epilogue_wuxia_qingliu_settlement
+      - epilogue_wuxia_empty_place_kept_open
+next_decision:
+  id: return_settlement_epilogue_followup_handoff
+  compare: [battle_loss_branch, broader_corruption_closed_gate_branch, reward_ability_schema, relation_debt_faction_ledger, main_ending_archive_save_surface]
 ```
 
 완료된 runtime contract 이력:

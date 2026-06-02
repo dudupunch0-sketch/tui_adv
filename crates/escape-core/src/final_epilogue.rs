@@ -185,6 +185,79 @@ impl<'a> FinalFacts<'a> {
 fn build_candidates(facts: &FinalFacts<'_>, final_result: FinalResult) -> Vec<CardCandidate> {
     let mut cards = Vec::new();
 
+    if facts.has_any_flag(&[
+        "final_return_intent_honest_seeded",
+        "final_epilogue_return_absence_candidate_seeded",
+    ]) {
+        push_card(
+            &mut cards,
+            facts,
+            "epilogue_wuxia_returned_commute",
+            "honest_return",
+            "return_settlement",
+            &[
+                "final_return_settlement_contract_seeded",
+                "final_return_intent_honest_seeded",
+                "final_epilogue_return_absence_candidate_seeded",
+            ],
+            "돌아온 출근길은 도망친 보상이 아니다. 소매 끝의 흙먼지와 빈 업무수첩 한 줄이 강호에 두고 온 자리를 기억한다.",
+        );
+    }
+    if facts.has_any_flag(&[
+        "final_settlement_intent_honest_seeded",
+        "final_epilogue_qingliu_settlement_candidate_seeded",
+    ]) {
+        push_card(
+            &mut cards,
+            facts,
+            "epilogue_wuxia_qingliu_settlement",
+            "honest_settlement",
+            "return_settlement",
+            &[
+                "final_return_settlement_contract_seeded",
+                "final_settlement_intent_honest_seeded",
+                "final_epilogue_qingliu_settlement_candidate_seeded",
+            ],
+            "청류문에 남은 외지인은 사원증을 태워 영웅이 되지 않는다. 낯선 단추 하나가 창고 상자에 남고, 아무도 그것에 가격을 붙이지 않는다.",
+        );
+    }
+    if facts.has_any_flag(&[
+        "final_return_settlement_uncertain_shared_seeded",
+        "final_epilogue_empty_place_kept_open_seeded",
+    ]) {
+        push_card(
+            &mut cards,
+            facts,
+            "epilogue_wuxia_empty_place_kept_open",
+            "uncertain_shared",
+            "return_settlement",
+            &[
+                "final_return_settlement_contract_seeded",
+                "final_return_settlement_uncertain_shared_seeded",
+                "final_epilogue_empty_place_kept_open_seeded",
+            ],
+            "아직 모른다는 대답은 회피가 아니었다. 빈자리는 귀환과 정착 어느 쪽도 미리 닫지 않는 약속으로 남는다.",
+        );
+    }
+    if facts.has_any_flag(&[
+        "final_return_settlement_evasion_seeded",
+        "final_epilogue_closed_gate_risk_seeded",
+    ]) {
+        push_card(
+            &mut cards,
+            facts,
+            "epilogue_wuxia_closed_gate_risk",
+            "evasion_risk",
+            "return_settlement",
+            &[
+                "final_return_settlement_contract_seeded",
+                "final_return_settlement_evasion_seeded",
+                "final_epilogue_closed_gate_risk_seeded",
+            ],
+            "말을 돌린 자리에는 닫힌 산문이 확정되지 않는다. 다만 기다림을 설명하지 않은 비용이 문고리에 남는다.",
+        );
+    }
+
     if matches!(
         final_result,
         FinalResult::BasicVictory
@@ -643,6 +716,22 @@ fn apply_suppress_rules(
             &mut suppressed,
             &["epilogue_seoharin_last_bowl"],
             "empty_place_vs_last_bowl",
+        );
+    }
+
+    if candidates
+        .iter()
+        .any(|card| card.id == "epilogue_wuxia_closed_gate_risk")
+    {
+        suppress_cards(
+            candidates,
+            &mut suppressed,
+            &[
+                "epilogue_wuxia_returned_commute",
+                "epilogue_wuxia_qingliu_settlement",
+                "epilogue_wuxia_empty_place_kept_open",
+            ],
+            "return_settlement_evasion",
         );
     }
 

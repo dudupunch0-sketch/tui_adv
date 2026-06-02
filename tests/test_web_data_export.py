@@ -112,6 +112,7 @@ def test_export_web_data_builds_renderer_neutral_content_bundle():
             "wuxia_seoharin_left_meal",
             "wuxia_sado_final_phase_1_price_tag",
             "wuxia_sado_final_phase_2_weakpoint_control",
+            "wuxia_sado_final_phase_3_outside_calculation",
         }
         for encounter in bundle["content"]["encounters"]
     )
@@ -135,7 +136,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     assert bundle["manifest"]["counts"] == {
         "locations": 5,
         "items": 4,
-        "encounters": 28,
+        "encounters": 29,
         "endings": 1,
         "achievements": 2,
         "secrets": 0,
@@ -177,6 +178,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "wuxia_seoharin_left_meal",
         "wuxia_sado_final_phase_1_price_tag",
         "wuxia_sado_final_phase_2_weakpoint_control",
+        "wuxia_sado_final_phase_3_outside_calculation",
     ]
     first_fight = bundle["content"]["encounters"][1]
     assert first_fight["conditions"] == {

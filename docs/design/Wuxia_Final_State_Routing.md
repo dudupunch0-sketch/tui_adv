@@ -17,7 +17,7 @@ The 2026-06-02 `wuxia_seoharin_left_meal_followup` check compared late companion
 | `사도 최종전` | `37237e69-695e-8169-97a3-d8106a817275` | required final battle container |
 | `사도 최종전 1페이즈: 가격표` | `37237e69-695e-81e2-aac7-cecfce3e4239` | implemented first final-entry runtime slice after this contract |
 | `사도 최종전 2페이즈: 약점 장악` | `37237e69-695e-8184-8beb-ccf56ae8fcd1` | implemented second final-entry runtime slice after phase 1 |
-| `사도 최종전 3페이즈: 계산식 밖` | `37237e69-695e-8107-b9ab-cab708a6c5dd` | next handoff candidate after phase 2 |
+| `사도 최종전 3페이즈: 계산식 밖` | `37237e69-695e-8107-b9ab-cab708a6c5dd` | implemented third final-entry runtime slice after phase 2 |
 | `보스 결산` | `37137e69-695e-8164-ab41-e794aa886dae` | deferred boss result card |
 | `무명 결산` | `37137e69-695e-8159-8032-ce5f108ca6c8` | deferred Mumyeong salvation result card |
 | `가지 말라는 말` | `37137e69-695e-8138-a41d-e153190f85aa` | deferred Seo Harin final relationship branch |
@@ -60,7 +60,7 @@ This contract explicitly keeps these surfaces closed:
 
 1. `wuxia_sado_final_phase_1_price_tag` can seed `network_handling`, `evidence_state`, `pressure_state`, and `item_logs` through existing encounter hooks.
 2. `wuxia_sado_final_phase_2_weakpoint_control` can seed `seoharin_axis`, `qingliu_rebuild`, `mumyeong_salvation`, `successor_route`, `own_flow_choice`, `truth_state`, `cheongirok_state`, `player_method`, and evidence pressure through existing encounter hooks.
-3. Phase 3 should finalize `combat_result`, `boss_resolution_route`, and the last player-method interpretation only after the next handoff opens it.
+3. `wuxia_sado_final_phase_3_outside_calculation` can seed `combat_result`, `boss_resolution_route` candidates, final `seoharin_axis`/`qingliu_rebuild`/`mumyeong_salvation`/`successor_route`/`own_flow_choice`, evidence pressure, `cheongirok_state`, and `player_method` interpretation through existing encounter hooks. These are still preview seeds, not a dedicated result schema.
 4. `wuxia_boss_resolution`, `wuxia_mumyeong_resolution`, Seo Harin late companion/return branches, Black Serpent settlement, and Cheonggi Record settlement consume these states instead of recomputing them independently.
 
 ## Final Result Priority
@@ -93,9 +93,7 @@ Deferred until this contract exists and a runtime handoff explicitly opens them:
 - `wuxia_mumyeong_resolution`
 - `wuxia_boss_resolution`
 - `wuxia_sado_final_battle`
-- `wuxia_sado_final_phase_2_weakpoint_control`
-- `wuxia_sado_final_phase_3_outside_calculation`
 
-Next runtime candidate after the implemented price-tag slice: `wuxia_sado_final_phase_2_weakpoint_control`.
+Latest implemented runtime slice: `wuxia_sado_final_phase_3_outside_calculation`.
 
-`wuxia_sado_final_phase_1_price_tag` now uses the existing encounter schema to seed final-state clues/flags/logs for the price-tag phase. Phase 2 should continue that approach first: it must not open combat resolver, HP numeric combat, final epilogue schema, `item_unpriced_wooden_sword` payout, Seo Harin truth delivery, `told_seoharin_truth`, or Mumyeong salvation confirmation.
+`wuxia_sado_final_phase_1_price_tag`, `wuxia_sado_final_phase_2_weakpoint_control`, and `wuxia_sado_final_phase_3_outside_calculation` now use the existing encounter schema to seed final-state clues/flags/logs for the three Sado final phases. The next runtime candidate is `wuxia_boss_resolution` handoff. It must consume phase 3 candidate seeds without opening combat resolver, HP numeric combat, final epilogue schema, `item_unpriced_wooden_sword` payout, Seo Harin truth delivery, `told_seoharin_truth`, or Mumyeong salvation confirmation unless a new approved runtime contract opens them.

@@ -3650,6 +3650,180 @@
           "visual_id": "wuxia_sado_final_phase_2_weakpoint_control"
         },
         "title": "사도 최종전 2페이즈: 약점 장악"
+      },
+      {
+        "body": "장부고의 먹줄이 잠깐 멈춘다. 사도는 흔들리지 않았고, 그의 칼끝도 느려지지 않았다. 달라진 것은 네가 지금까지 남긴 자리와 흐름, 장부의 빈칸과 천기록의 사용 방식이다. 사도를 쓰러뜨리는 것과 사도의 계산법을 무력화하는 것은 다르다. 이제 남는 것은 사도의 계산식 밖에서 무엇이 실제로 작동하는지 보여 주는 선택뿐이다.",
+        "choices": [
+          {
+            "id": "remember_the_empty_place",
+            "label": "비워둔 자리를 떠올린다",
+            "outcome": {
+              "add_clues": [
+                "empty_place_is_not_for_sale",
+                "unpriced_wooden_sword_condition_rises",
+                "sado_calculation_fails_to_price_waiting"
+              ],
+              "add_flags": [
+                "sado_final_phase_3_outside_calculation_resolved",
+                "final_phase_3_outside_calculation_resolved",
+                "final_combat_result_battle_victory_seeded",
+                "final_boss_resolution_true_route_candidate_seeded",
+                "final_seoharin_axis_high_preserved_seeded",
+                "final_unpriced_wooden_sword_condition_raised_seeded",
+                "final_player_method_outside_calculation_confirmed_seeded"
+              ],
+              "danger": 1,
+              "destination_id": "black_serpent_ledger_vault",
+              "log": "사도는 기다림에도 값이 붙는다고 말한다. 하지만 그 자리는 팔려고 비워 둔 것이 아니었다. 비어 있는 칸은 결핍이 아니라, 장부가 끝내 적지 못한 소속의 방식으로 남는다.",
+              "resources": {
+                "health": -1,
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "let_mumyeong_choose_own_flow",
+            "label": "무명에게 자기 흐름을 선택하게 한다",
+            "outcome": {
+              "add_clues": [
+                "mumyeong_choice_is_not_a_tool",
+                "black_serpent_new_scale_suppressed",
+                "stolen_flow_stops_by_choice"
+              ],
+              "add_flags": [
+                "sado_final_phase_3_outside_calculation_resolved",
+                "final_phase_3_outside_calculation_resolved",
+                "final_combat_result_battle_victory_seeded",
+                "final_boss_resolution_true_or_meaningful_candidate_seeded",
+                "final_mumyeong_salvation_substantial_candidate_seeded",
+                "final_successor_route_suppressed_confirmed_seeded",
+                "final_own_flow_choice_chosen_seeded",
+                "final_player_method_protected_as_person_confirmed_seeded"
+              ],
+              "danger": 1,
+              "destination_id": "black_serpent_ledger_vault",
+              "log": "무명은 네가 던진 답을 따라 움직이지 않는다. 그는 한 박자 늦게, 훔친 흐름이 아닌 자기 흐름으로 사도의 줄을 끊는다. 그 느림 때문에 칼 한 수를 잃지만, 후계 구도는 더는 같은 모양으로 이어지지 못한다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "endure_with_qingliu_will",
+            "label": "청류문의 뜻으로 버틴다",
+            "outcome": {
+              "add_clues": [
+                "qingliu_will_is_not_for_sale",
+                "starving_does_not_set_a_price",
+                "calculation_error_line_opened"
+              ],
+              "add_flags": [
+                "sado_final_phase_3_outside_calculation_resolved",
+                "final_phase_3_outside_calculation_resolved",
+                "final_combat_result_battle_victory_seeded",
+                "final_boss_resolution_meaningful_candidate_seeded",
+                "final_qingliu_rebuild_high_candidate_seeded",
+                "final_pressure_state_eased_confirmed_seeded",
+                "final_evidence_strong_support_seeded"
+              ],
+              "danger": 1,
+              "destination_id": "black_serpent_ledger_vault",
+              "log": "뜻도 굶으면 팔린다는 사도의 말이 장부고를 울린다. 너는 굶어도 팔지 않으려고 뜻이라 부르는 것이라고 답하고, 청류문의 이름 몇 개가 줄에서 내려온다. 승리는 빠르지 않지만, 압박은 더 이상 같은 값으로 작동하지 않는다.",
+              "resources": {
+                "health": -2,
+                "sanity": -1
+              }
+            }
+          },
+          {
+            "id": "point_to_blank_in_ledger",
+            "label": "장부의 빈칸을 지적한다",
+            "outcome": {
+              "add_clues": [
+                "blank_space_in_sado_ledger_seen",
+                "unpriced_things_remain_unfinished",
+                "alliance_silence_can_be_answered"
+              ],
+              "add_flags": [
+                "sado_final_phase_3_outside_calculation_resolved",
+                "final_phase_3_outside_calculation_resolved",
+                "final_combat_result_battle_victory_seeded",
+                "final_boss_resolution_meaningful_or_true_candidate_seeded",
+                "final_item_logs_blank_ledger_seen_seeded",
+                "final_evidence_strong_confirmed_seeded",
+                "final_network_accountability_seeded"
+              ],
+              "danger": 2,
+              "destination_id": "black_serpent_ledger_vault",
+              "log": "네 장부에도 비어 있는 칸이 있었다고 말하자, 사도는 아직 계산이 끝나지 않았을 뿐이라고 답한다. 그러나 빈칸은 그의 과거를 폭로하지 않는다. 다만 흑사방의 계산법이 세상 전부를 쓰지 못했다는 증거로 남는다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "answer_with_sado_calculation",
+            "label": "사도식 계산으로 맞선다",
+            "outcome": {
+              "add_clues": [
+                "good_calculation_is_not_good_victory",
+                "unnamed_ledger_title_risk",
+                "closed_gate_corruption_seeded"
+              ],
+              "add_flags": [
+                "sado_final_phase_3_outside_calculation_resolved",
+                "final_phase_3_outside_calculation_resolved",
+                "final_combat_result_battle_victory_seeded",
+                "final_boss_resolution_corrupted_candidate_seeded",
+                "final_cheongirok_state_corruption_high_seeded",
+                "final_player_method_sado_style_calculation_seeded",
+                "final_successor_route_active_risk_seeded"
+              ],
+              "danger": 2,
+              "destination_id": "black_serpent_ledger_vault",
+              "log": "계산은 정확하다. 천기록의 문장과 사도의 장부가 잠깐 같은 방향을 가리키고, 너는 가장 빠른 길을 본다. 사도는 좋은 계산이었다고 말한다. 이길 수는 있지만, 그 승리의 제목은 아직 네 장부에 적히지 않았다.",
+              "resources": {
+                "sanity": -4
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "sado_final_phase_3_outside_calculation_resolved"
+          ],
+          "locations": [
+            "black_serpent_ledger_vault"
+          ],
+          "required_flags": [
+            "sado_final_phase_2_weakpoint_control_resolved",
+            "final_phase_2_weakpoint_control_resolved",
+            "final_state_routing_seeded"
+          ]
+        },
+        "id": "wuxia_sado_final_phase_3_outside_calculation",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "unpriced_lines_hold_against_ledger_formula",
+              "duration_hint_ms": 1900,
+              "fallback_text": "장부의 검은 칸 사이로 '계산식', '서하린', '무명', '목검'만 값이 쓰이지 않은 채 남는다.",
+              "intensity": 0.9,
+              "kind": "glyph_anomaly",
+              "source": "sado_final_phase_3_outside_calculation",
+              "stable_terms": [
+                "계산식",
+                "서하린",
+                "무명",
+                "목검"
+              ]
+            }
+          ],
+          "layout": "final_phase_outside_calculation",
+          "speaker": "흑사방주",
+          "visual_id": "wuxia_sado_final_phase_3_outside_calculation"
+        },
+        "title": "사도 최종전 3페이즈: 계산식 밖"
       }
     ],
     "endings": [
@@ -3795,7 +3969,7 @@
   "manifest": {
     "counts": {
       "achievements": 2,
-      "encounters": 28,
+      "encounters": 29,
       "endings": 1,
       "items": 4,
       "locations": 5,

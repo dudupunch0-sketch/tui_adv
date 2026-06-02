@@ -2870,6 +2870,117 @@ fn json_boundary_reaches_wuxia_sado_final_phase_2_weakpoint_control_through_prev
 }
 
 #[test]
+fn json_boundary_reaches_wuxia_sado_final_phase_3_outside_calculation_through_preview_bundle() {
+    let outside_state_json = wuxia_state_after_actions(&[
+        "choice:follow_roadside_dust",
+        "move:jianghu_market_street",
+        "choice:run_toward_open_street",
+        "choice:choose_failure_log",
+        "choice:tell_plain_truth",
+        "choice:accept_three_month_trial",
+        "choice:step_back_with_firewood",
+        "choice:defend_cheongryu_with_white_path",
+        "choice:accept_medicine_with_written_debt",
+        "choice:watch_the_stolen_qingliu_flow",
+        "choice:endure_until_copy_flow_breaks",
+        "choice:listen_for_breath_mismatch",
+        "choice:reconstruct_mumyeongs_sightline",
+        "choice:show_the_hyeonakmun_trace_without_accusing",
+        "choice:watch_mumyeong_answer_the_boss",
+        "choice:search_the_rejected_aid_letters",
+        "choice:compare_anger_to_copied_flow",
+        "choice:inspect_bokho_lock_scars",
+        "choice:read_hyeonakmun_empty_gate_record",
+        "choice:trace_boss_offer_after_hyeonakmun",
+        "choice:assemble_departure_truth_without_delivering",
+        "choice:set_down_the_work_notebook_briefly",
+        "choice:eat_the_left_meal_quietly",
+        "choice:secure_the_blackscale_ledger",
+        "choice:return_flow_to_mumyeong",
+    ]);
+
+    let outside_page_json = scene_page_json(&outside_state_json, WUXIA_PREVIEW_BUNDLE)
+        .expect("Sado final phase 3 outside-calculation scene page should serialize");
+    let outside_page: Value = serde_json::from_str(&outside_page_json)
+        .expect("Sado final phase 3 outside-calculation page JSON should parse");
+    assert_eq!(outside_page["mode"], "encounter");
+    assert_eq!(outside_page["title"], "사도 최종전 3페이즈: 계산식 밖");
+    assert_eq!(outside_page["location"]["id"], "black_serpent_ledger_vault");
+    assert_eq!(
+        outside_page["visual"]["id"],
+        "wuxia_sado_final_phase_3_outside_calculation"
+    );
+    assert_eq!(
+        outside_page["visual"]["kind"],
+        "final_phase_outside_calculation"
+    );
+    assert_eq!(outside_page["effect_cues"][0]["stable_terms"][0], "계산식");
+    let outside_action_ids: Vec<&str> = outside_page["actions"]
+        .as_array()
+        .expect("actions should be an array")
+        .iter()
+        .map(|action| action["id"].as_str().expect("action id should be a string"))
+        .collect();
+    assert_eq!(
+        outside_action_ids,
+        vec![
+            "choice:remember_the_empty_place",
+            "choice:let_mumyeong_choose_own_flow",
+            "choice:endure_with_qingliu_will",
+            "choice:point_to_blank_in_ledger",
+            "choice:answer_with_sado_calculation",
+        ]
+    );
+
+    let empty_place_result_json = apply_action_json(
+        &outside_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:remember_the_empty_place",
+    )
+    .expect("remember empty place action should serialize");
+    let empty_place_result: Value = serde_json::from_str(&empty_place_result_json)
+        .expect("Sado final phase 3 outside-calculation action should parse");
+    assert_eq!(
+        empty_place_result["encounter_id"],
+        "wuxia_sado_final_phase_3_outside_calculation"
+    );
+    assert_eq!(
+        empty_place_result["state"]["location_id"],
+        "black_serpent_ledger_vault"
+    );
+    let flags = empty_place_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array");
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "sado_final_phase_3_outside_calculation_resolved"));
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "final_phase_3_outside_calculation_resolved"));
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "final_combat_result_battle_victory_seeded"));
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "final_boss_resolution_true_route_candidate_seeded"));
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "final_player_method_outside_calculation_confirmed_seeded"));
+    assert!(!flags
+        .iter()
+        .any(|flag| flag == "wuxia_sado_final_battle_started"));
+    let clues = empty_place_result["state"]["clues"]
+        .as_array()
+        .expect("clues should be an array");
+    assert!(clues
+        .iter()
+        .any(|clue| clue == "empty_place_is_not_for_sale"));
+    assert!(clues
+        .iter()
+        .any(|clue| clue == "sado_calculation_fails_to_price_waiting"));
+}
+
+#[test]
 fn json_boundary_reports_user_facing_errors() {
     let state_json = new_game_json(123, CONTENT_BUNDLE).expect("new game should serialize");
 

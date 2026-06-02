@@ -53,6 +53,7 @@ describe('runtime content bundle registry', () => {
       'wuxia_seoharin_left_meal',
       'wuxia_sado_final_phase_1_price_tag',
       'wuxia_sado_final_phase_2_weakpoint_control',
+      'wuxia_sado_final_phase_3_outside_calculation',
     ]);
     expect(encounterIds).not.toContain('ex_employee_messenger');
   });

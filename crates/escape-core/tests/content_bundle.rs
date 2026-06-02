@@ -211,12 +211,12 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&5));
     assert_eq!(bundle.manifest.counts.get("items"), Some(&4));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&28));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&29));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 5);
-    assert_eq!(index.encounters_len(), 28);
+    assert_eq!(index.encounters_len(), 29);
 
     let market = index
         .location("jianghu_market_street")
@@ -1721,6 +1721,71 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert!(return_flow.outcome.add_items.is_empty());
     assert_eq!(
         return_flow.outcome.destination_id.as_deref(),
+        Some("black_serpent_ledger_vault")
+    );
+
+    let outside_calculation = index
+        .encounter("wuxia_sado_final_phase_3_outside_calculation")
+        .expect("Sado final phase 3 outside-calculation encounter");
+    assert_eq!(outside_calculation.title, "사도 최종전 3페이즈: 계산식 밖");
+    assert_eq!(
+        outside_calculation.conditions.locations,
+        vec!["black_serpent_ledger_vault"]
+    );
+    assert_eq!(
+        outside_calculation.conditions.required_flags,
+        vec![
+            "sado_final_phase_2_weakpoint_control_resolved",
+            "final_phase_2_weakpoint_control_resolved",
+            "final_state_routing_seeded"
+        ]
+    );
+    assert_eq!(
+        outside_calculation.conditions.forbidden_flags,
+        vec!["sado_final_phase_3_outside_calculation_resolved"]
+    );
+    let outside_presentation = outside_calculation
+        .presentation
+        .as_ref()
+        .expect("Sado final phase 3 outside-calculation presentation");
+    assert_eq!(
+        outside_presentation.layout.as_deref(),
+        Some("final_phase_outside_calculation")
+    );
+    assert_eq!(outside_presentation.speaker.as_deref(), Some("흑사방주"));
+    assert_eq!(
+        outside_presentation.effect_cues[0].stable_terms,
+        vec!["계산식", "서하린", "무명", "목검"]
+    );
+    assert_eq!(outside_calculation.choices.len(), 5);
+    let empty_place = outside_calculation
+        .choices
+        .iter()
+        .find(|choice| choice.id == "remember_the_empty_place")
+        .expect("remember the empty place choice");
+    assert_eq!(
+        empty_place.outcome.add_flags,
+        vec![
+            "sado_final_phase_3_outside_calculation_resolved",
+            "final_phase_3_outside_calculation_resolved",
+            "final_combat_result_battle_victory_seeded",
+            "final_boss_resolution_true_route_candidate_seeded",
+            "final_seoharin_axis_high_preserved_seeded",
+            "final_unpriced_wooden_sword_condition_raised_seeded",
+            "final_player_method_outside_calculation_confirmed_seeded"
+        ]
+    );
+    assert_eq!(
+        empty_place.outcome.add_clues,
+        vec![
+            "empty_place_is_not_for_sale",
+            "unpriced_wooden_sword_condition_rises",
+            "sado_calculation_fails_to_price_waiting"
+        ]
+    );
+    assert!(empty_place.outcome.add_items.is_empty());
+    assert_eq!(
+        empty_place.outcome.destination_id.as_deref(),
         Some("black_serpent_ledger_vault")
     );
 }

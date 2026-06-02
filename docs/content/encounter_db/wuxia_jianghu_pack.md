@@ -1,13 +1,13 @@
 # 이구학지 — 천기록 encounter situation cards
 
-Status: candidate + `wuxia_seoharin_unsaid_stay` preview runtime implemented + return/settlement epilogue consumer implemented + battle-loss epilogue consumer implemented
+Status: candidate + `wuxia_seoharin_unsaid_stay` preview runtime implemented + return/settlement epilogue consumer implemented + battle-loss epilogue consumer implemented + final-state canonical collapse handoff selected
 
 이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_seoharin_unsaid_stay`까지는 separate storypack preview runtime으로 승격되었다.
 
 공통 원칙:
 
 - 모든 카드는 `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`에 속한다.
-- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_seoharin_unsaid_stay`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. `wuxia_seoharin_unsaid_stay`는 `docs/design/Wuxia_Final_State_Routing.md`의 return/settlement handoff를 existing encounter schema로 구현한 late relationship trigger이며, `wuxia_return_settlement_epilogue_contract`가 그 seed를 final epilogue body block branch cards로 소비한다. `wuxia_battle_loss_epilogue_contract`도 기존 final epilogue body block consumer로 구현되어 explicit loss seed를 battle-loss bundle로 소비한다. full return/settlement schema와 full final battle container는 아직 열지 않는다.
+- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_seoharin_unsaid_stay`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. `wuxia_seoharin_unsaid_stay`는 `docs/design/Wuxia_Final_State_Routing.md`의 return/settlement handoff를 existing encounter schema로 구현한 late relationship trigger이며, `wuxia_return_settlement_epilogue_contract`가 그 seed를 final epilogue body block branch cards로 소비한다. `wuxia_battle_loss_epilogue_contract`도 기존 final epilogue body block consumer로 구현되어 explicit loss seed를 battle-loss bundle로 소비한다. Latest handoff: `wuxia_battle_loss_epilogue_followup_handoff` selected `wuxia_final_state_canonical_collapse_contract`. full return/settlement schema와 full final battle container는 아직 열지 않는다.
 - 최신 canonical 무협 설정은 **이구학지 — 천기록**이다. 이전의 generic 객잔/소림/무당/아미 placeholder는 superseded로 본다.
 - 플레이어 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계의 시장 한복판에 전이됐다”이다.
 - 선택지는 세부 수치보다 역할과 결과 hook을 먼저 정의한다.
@@ -3369,4 +3369,62 @@ guardrails:
   - no_relation_debt_faction_ledger
   - no_reward_ability_schema
 next_handoff: wuxia_battle_loss_epilogue_followup_handoff
+```
+
+## 41. `wuxia_battle_loss_epilogue_followup_handoff` — docs-only handoff 완료
+
+```yaml
+id: wuxia_battle_loss_epilogue_followup_handoff
+status: docs_only_handoff_complete
+selected_next_runtime: wuxia_final_state_canonical_collapse_contract
+source_contracts:
+  - docs/design/Wuxia_Final_State_Routing.md
+  - docs/dev/Development_Plan.md#0.73
+notion_sources_checked:
+  - 최종장 결산 라우팅 마스터
+  - 사도 최종전
+  - 사도 최종전 상태값 사전
+  - 08. 엔딩과 후일담 연결
+  - 06. 사이드 퀘스트와 미해결 부채
+  - 07. 천기록 / 천외편린 보상
+  - 03. 세력과 외부 압박
+  - 엔딩 시스템
+  - 01. 메인 엔딩 구조
+  - 06. 엔딩 아카이브
+compared_candidates:
+  - full_final_battle_container
+  - broader_corruption_closed_gate_branch
+  - reward_ability_schema
+  - relation_debt_faction_ledger
+  - main_ending_archive_save_surface
+  - playable_defeat_route_bridge
+next_runtime_contract:
+  id: wuxia_final_state_canonical_collapse_contract
+  implementation_owner: crates/escape-core/src/final_epilogue.rs
+  output_shape: existing ScenePage.body_blocks
+  likely_block_kind: epilogue_state_audit
+  input_source: existing final_*_seeded flags
+  canonical_states:
+    - combat_result
+    - boss_resolution_route
+    - evidence_state
+    - network_handling
+    - pressure_state
+    - seoharin_axis
+    - qingliu_rebuild
+    - mumyeong_salvation
+    - successor_route
+    - own_flow_choice
+    - truth_state
+    - cheongirok_state
+    - player_method
+    - item_logs
+  guardrails:
+    - no_full_sado_final_battle_container
+    - no_combat_resolver
+    - no_hp_numeric_battle
+    - no_playable_defeat_route
+    - no_main_ending_archive_save_surface
+    - no_relation_debt_faction_ledger
+    - no_reward_ability_schema
 ```

@@ -760,6 +760,81 @@
 - [x] 서하린에게 진실 전달, `told_seoharin_truth`, 무명 구원 확정, 보스 전투/final boss resolution, 무명/보스 결산, seed 기반 random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation/reward/ability/epilogue/return schema, 천기록 정체 reveal 미변경 유지
 - [x] 다음 작업을 `wuxia_mumyeong_departure_truth_summary_followup` docs-only handoff로 갱신
 
+### 0.2bp 2026-06-02 무협 departure truth summary follow-up docs-only handoff
+
+- [x] Notion 사건 카드 DB `wuxia_mumyeong_resolution`, `wuxia_boss_resolution`, `wuxia_seoharin_empty_place`, `wuxia_mumyeong_departure_truth_summary` 재확인
+- [x] 최신 `사도 최종전`, `사도 최종전 2페이즈: 약점 장악`, `사도 최종전 3페이즈: 계산식 밖`, `최종장 결산 라우팅 마스터`, `무명 결산`, `보스 결산` 문서와 비교
+- [x] 다음 runtime 후보를 `wuxia_seoharin_empty_place`로 결정
+- [x] 구현 범위를 sealed departure truth summary 뒤의 late empty-place memory bridge로 제한한다고 문서화
+- [x] `wuxia_mumyeong_resolution`, `wuxia_boss_resolution`, 사도 최종전, final/epilogue/return routing은 최종장 schema 범위라 보류
+- [x] 서하린 truth delivery, `told_seoharin_truth`, 무명 구원 확정, `item_unpriced_wooden_sword` 지급은 미변경 유지
+- [x] start conditions를 `required_flags: [mumyeong_departure_truth_summary_resolved, sealed_departure_truth_summary_prepared, truth_delivery_still_unopened, midgame_continuity_started]`, `forbidden_flags: [seoharin_empty_place_resolved]`로 문서화
+- [x] stable choice id 후보 `ask_who_kept_the_empty_place`, `leave_the_place_unclaimed`, `set_down_the_work_notebook_briefly`, `step_back_without_naming_mumyeong` 고정
+- [x] common hook `seoharin_empty_place_resolved`, `seoharin_axis_opened`, `empty_place_remembered`, `truth_delivery_still_unopened`, `destination_id: cheongryu_outer_courtyard` 고정
+- [x] presentation `visual_id: wuxia_seoharin_empty_place`, `speaker: 서하린`, `layout: empty_place_memory`, stable terms `[서하린, 무명, 청류문, 목검]` 고정
+- [x] runtime YAML/Rust/Web generated bundle, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 작업을 `wuxia_seoharin_empty_place` runtime implementation으로 갱신
+
+### 0.2bq 2026-06-02 무협 `wuxia_seoharin_empty_place` preview runtime slice
+
+- [x] `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`에서 `wuxia_mumyeong_departure_truth_summary` 뒤에 `wuxia_seoharin_empty_place` 추가
+- [x] start conditions를 `mumyeong_departure_truth_summary_resolved`, `sealed_departure_truth_summary_prepared`, `truth_delivery_still_unopened`, `midgame_continuity_started`로 구현
+- [x] stable choice id `ask_who_kept_the_empty_place`, `leave_the_place_unclaimed`, `set_down_the_work_notebook_briefly`, `step_back_without_naming_mumyeong` 구현
+- [x] 모든 선택지가 `seoharin_empty_place_resolved`, `seoharin_axis_opened`, `empty_place_remembered`, `truth_delivery_still_unopened`, `destination_id: cheongryu_outer_courtyard` bridge를 남기도록 구현
+- [x] `wuxia_seoharin_empty_place` presentation을 `speaker: 서하린`, `layout: empty_place_memory`, stable terms `[서하린, 무명, 청류문, 목검]`로 구현
+- [x] `unpriced_wooden_sword_condition_seeded`는 clue seed로만 남기고 `item_unpriced_wooden_sword`는 지급하지 않음
+- [x] Rust/Web storypack preview generated bundle 재생성
+- [x] Python exporter/docs/storypack DB, Rust content bundle, WASM JSON boundary, terminal smoke, Web default content bundle registry 테스트 갱신
+- [x] 서하린에게 진실 전달, `told_seoharin_truth`, 무명 구원 확정, 보스 전투/final boss resolution, 무명/보스 결산, seed 기반 random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation/reward/ability/epilogue/return schema, 천기록 정체 reveal 미변경 유지
+- [x] 기본 office bundle, Web legacy generated `content.bundle.json`, `src/tui_adv/data/*.yaml`, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 작업을 `wuxia_seoharin_empty_place_followup` docs-only handoff로 갱신
+
+### 0.2br 2026-06-02 무협 Seo Harin empty-place follow-up docs-only handoff
+
+- [x] Notion 사건 카드 DB `wuxia_seoharin_left_meal`, `wuxia_seoharin_unsaid_stay`, `wuxia_mumyeong_resolution`, `wuxia_boss_resolution` 재확인
+- [x] Notion `남겨둔 밥`, `가지 말라는 말`, `무명 결산`, `사도 최종전 3페이즈: 계산식 밖` 원문 fetch로 대조
+- [x] 다음 runtime 후보를 `wuxia_seoharin_left_meal`로 결정
+- [x] 구현 범위를 `seoharin_axis_opened` 뒤 daily-care/belonging bridge로 제한한다고 문서화
+- [x] `wuxia_seoharin_unsaid_stay`는 final return/settlement/corruption relationship branch라 보류
+- [x] 무명/보스 결산과 사도 최종전은 final/epilogue/combat/reward/item-log/relation-state schema 범위라 보류
+- [x] start conditions를 `required_flags: [seoharin_empty_place_resolved, seoharin_axis_opened, empty_place_remembered, truth_delivery_still_unopened, midgame_continuity_started]`, `forbidden_flags: [seoharin_left_meal_resolved]`로 문서화
+- [x] stable choice id 후보 `eat_the_left_meal_quietly`, `thank_seoharin_for_the_bowl`, `joke_about_who_ordered_extra_rice`, `pass_without_eating_the_meal` 고정
+- [x] runtime YAML/Rust/Web generated bundle, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 작업을 `wuxia_seoharin_left_meal` runtime implementation으로 갱신
+
+### 0.2bs 2026-06-02 무협 `wuxia_seoharin_left_meal` preview runtime slice
+
+- [x] `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`에서 `wuxia_seoharin_empty_place` 뒤에 `wuxia_seoharin_left_meal` 추가
+- [x] start conditions를 `seoharin_empty_place_resolved`, `seoharin_axis_opened`, `empty_place_remembered`, `truth_delivery_still_unopened`, `midgame_continuity_started`로 구현
+- [x] stable choice id `eat_the_left_meal_quietly`, `thank_seoharin_for_the_bowl`, `joke_about_who_ordered_extra_rice`, `pass_without_eating_the_meal` 구현
+- [x] 긍정 선택은 `seoharin_left_meal_resolved`, `seoharin_axis_deepened`, `qingliu_belonging_warmed`, `truth_delivery_still_unopened`, `destination_id: cheongryu_outer_courtyard` bridge를 남기도록 구현
+- [x] 거절 선택은 `seoharin_left_meal_resolved`, `seoharin_axis_still_open`, `left_meal_left_untouched`, `truth_delivery_still_unopened`, `destination_id: cheongryu_outer_courtyard` bridge를 남기도록 구현
+- [x] `wuxia_seoharin_left_meal` presentation을 `speaker: 서하린`, `layout: left_meal_memory`, stable terms `[서하린, 밥그릇, 청류문, 귀환]`로 구현
+- [x] Rust/Web storypack preview generated bundle 재생성
+- [x] Python exporter/docs/storypack DB, Rust content bundle, WASM JSON boundary, terminal smoke, Web default content bundle registry 테스트 갱신
+- [x] 서하린에게 진실 전달, `told_seoharin_truth`, final return/settlement choice, 무명/보스 결산, 사도 최종전, combat/reward/relation/epilogue/return schema, 천기록 정체 reveal 미변경 유지
+- [x] 기본 office bundle, Web legacy generated `content.bundle.json`, `src/tui_adv/data/*.yaml`, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 작업을 `wuxia_seoharin_left_meal_followup` docs-only handoff로 갱신
+
+### 0.2bt 2026-06-02 무협 Seo Harin left-meal follow-up docs-only handoff
+
+- [x] Notion `가지 말라는 말`, `무명 결산`, `보스 결산`, `사도 최종전`, `최종장 결산 라우팅 마스터`, `사도 최종전 상태값 사전` 재확인
+- [x] `wuxia_seoharin_unsaid_stay`는 final return/settlement/corruption relationship branch라 보류
+- [x] `wuxia_mumyeong_resolution`과 `wuxia_boss_resolution`은 final epilogue matrix와 salvation/result routing을 요구하므로 보류
+- [x] `wuxia_sado_final_battle` 및 phase 2/3은 final battle/result schema가 필요하므로 보류
+- [x] 직접 final runtime 구현 전에 final-route state dictionary를 repo design contract로 먼저 고정하기로 결정
+- [x] 다음 runtime 후보를 `wuxia_sado_final_phase_1_price_tag`로 선택하되 기존 encounter schema handoff로 제한
+- [x] 서하린 truth delivery, `told_seoharin_truth`, 무명 구원 확정, final epilogue/return schema, combat resolver/HP 숫자전, relation/debt/faction/reward schema, `item_unpriced_wooden_sword` payout 미변경 유지
+
+### 0.2bu 2026-06-02 무협 final state routing contract docs slice
+
+- [x] `docs/design/Wuxia_Final_State_Routing.md` 추가
+- [x] `canonical_final_inputs`와 `combat_result`, `boss_resolution_route`, `evidence_state`, `network_handling`, `pressure_state`, `seoharin_axis`, `mumyeong_salvation`, `item_logs` contract 문서화
+- [x] `final_result_priority`와 `final_epilogue_master_matrix` handoff boundary 문서화
+- [x] `state_alias_and_deprecation_policy`, `item_log_state` local helper only, deprecated aliases 문서화
+- [x] 다음 runtime 후보 `wuxia_sado_final_phase_1_price_tag`와 no combat resolver/no HP boundary 문서화
+- [x] README, docs index, main plan, Notion coverage, storypack docs, next_goal handoff 동기화
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

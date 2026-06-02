@@ -48,6 +48,7 @@ docs/
     Character_Stats_and_Generator.md # 6스탯 등장인물/LLM 생성기 설계 후보
     Storypack_World_Model.md        # office-only 편향을 줄이는 world/storypack 일반화 기준
     Storypack_Encounter_DB.md       # 스토리팩/인카운터 상황 카드/NPC DB 설계
+    Wuxia_Final_State_Routing.md     # 이구학지 최종장 상태값/결산 라우팅 contract
     Map.md                          # 사무실 위치, 연결, 구역별 역할
     UI_Rules.md                     # 사내 시스템형 TUI, 글리치, 선택지 오염 규칙
     TUI_Storybook_GlyphFX_Concept.md # Web primary UX로 채택한 TUI풍 스토리북 + GlyphFX 방향
@@ -69,7 +70,7 @@ docs/
     storypack_db/                   # storypack/card 후보의 machine-readable JSON DB
 
   runtime preview sources/
-    src/tui_adv/storypack-previews/wuxia_jianghu_pack/ # wuxia_commute_rift_arrival부터 wuxia_mumyeong_departure_truth_summary까지 preview source YAML
+    src/tui_adv/storypack-previews/wuxia_jianghu_pack/ # wuxia_commute_rift_arrival부터 wuxia_seoharin_left_meal까지 preview source YAML
     crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json # Rust/GameCore preview fixture
     web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json # Web/WASM preview bundle
 
@@ -129,6 +130,7 @@ private/
 - `docs/design/Character_Stats_and_Generator.md`
 - `docs/design/Storypack_World_Model.md`
 - `docs/design/Storypack_Encounter_DB.md`
+- `docs/design/Wuxia_Final_State_Routing.md`
 - `docs/design/Game_Loop.md`
 - `docs/design/Combat_System_Auto_Brawl.md`
 - `docs/design/Basic_Combat_Action_Model.md`
@@ -184,6 +186,6 @@ private/
 다음 주제가 커지면 별도 문서로 분리하고, 그때 이 인덱스와 implementation-map도 같이 갱신한다.
 
 1. `document_contamination_pack`, `meeting_reservation_pack`, `compensation_strike_pack`의 별도 후보 문서
-2. `wuxia_jianghu_pack` / 이구학지 — 천기록 preview/main은 `wuxia_mumyeong_departure_truth_summary`까지 구현 완료. 다음은 `wuxia_mumyeong_departure_truth_summary_followup` docs-only handoff
+2. `wuxia_jianghu_pack` / 이구학지 — 천기록 preview/main은 `wuxia_seoharin_left_meal`까지 구현 완료. `wuxia_seoharin_left_meal_followup`은 최종 상태 라우팅 contract를 먼저 열기로 결정했고, 다음 runtime 후보는 `wuxia_sado_final_phase_1_price_tag`
 3. `yageunmong_pack` / 야근몽의 첫 runtime preview 후보: `yageunmong_late_night_desk_awake` 또는 각성편린 3택 preview
 4. 실시간 UI/UX 점검 후 확정된 화면/입력 변경 사항 기록

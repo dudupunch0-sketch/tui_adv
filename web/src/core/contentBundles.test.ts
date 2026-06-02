@@ -49,6 +49,8 @@ describe('runtime content bundle registry', () => {
       'wuxia_mumyeong_destroys_orthodox_sect',
       'wuxia_boss_recruits_mumyeong',
       'wuxia_mumyeong_departure_truth_summary',
+      'wuxia_seoharin_empty_place',
+      'wuxia_seoharin_left_meal',
     ]);
     expect(encounterIds).not.toContain('ex_employee_messenger');
   });

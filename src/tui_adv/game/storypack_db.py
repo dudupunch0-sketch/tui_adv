@@ -54,6 +54,8 @@ _ALLOWED_SURFACES = {
     "fragment_choice",
     "sect_raid",
     "faction_negotiation",
+    "food",
+    "daily_care",
 }
 _ALLOWED_ANOMALY_TYPES = {
     "mismatched_floor",

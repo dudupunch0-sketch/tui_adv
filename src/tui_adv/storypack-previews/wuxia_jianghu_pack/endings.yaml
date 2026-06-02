@@ -13,5 +13,5 @@ endings:
     priority: 900
     conditions:
       locations: [black_serpent_ledger_vault]
-      required_flags: [boss_resolution_resolved, mumyeong_resolution_resolved, seoharin_qingliu_resolution_resolved, cheongirok_resolution_resolved, black_serpent_aftermath_resolved, final_result_priority_applied_seeded, final_combat_result_battle_victory_seeded, final_state_routing_seeded]
+      required_flags: [boss_resolution_resolved, mumyeong_resolution_resolved, seoharin_qingliu_resolution_resolved, cheongirok_resolution_resolved, black_serpent_aftermath_resolved, final_result_priority_applied_seeded, final_state_routing_seeded]
     text: 사도의 장부고가 조용해지자 천기록은 마지막 장을 다시 펼친다. 이제 선택지는 없다. 지금까지 남긴 씨앗을 Rust GameCore가 읽고, 후일담 카드는 계산이 아니라 기록으로만 출력된다.

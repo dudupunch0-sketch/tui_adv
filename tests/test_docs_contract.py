@@ -2268,7 +2268,7 @@ def test_wuxia_final_epilogue_runtime_contract_is_docs_synced():
         encoding="utf-8"
     )
 
-    assert "runtime은 arrival/first fight/first fragment부터 `wuxia_return_settlement_epilogue_contract`까지 구현됐다" in readme
+    assert "runtime은 arrival/first fight/first fragment부터 `wuxia_battle_loss_epilogue_contract`까지 구현됐다" in readme
     assert "## 0.66 2026-06-02 무협 `wuxia_final_epilogue_renderer_contract` runtime implementation slice" in plan
     assert "### 0.2ce 2026-06-02 무협 `wuxia_final_epilogue_renderer_contract` runtime implementation slice" in checklist
     assert "Final epilogue renderer implementation" in coverage
@@ -2327,11 +2327,12 @@ def test_wuxia_return_settlement_epilogue_contract_is_docs_synced():
     assert "## 0.70 2026-06-02 무협 `wuxia_return_settlement_epilogue_contract` runtime slice" in plan
     assert "### 0.2ci 2026-06-02 무협 `wuxia_return_settlement_epilogue_contract` runtime slice" in checklist
     assert "return/settlement epilogue branch runtime implemented" in coverage
-    assert "`wuxia_return_settlement_epilogue_contract`가 기존 renderer-neutral boundary에서 작동함을 확인했다" in runtime_preview
-    assert "Latest implemented runtime slice: `wuxia_return_settlement_epilogue_contract`" in final_routing
+    assert "`wuxia_return_settlement_epilogue_contract`" in runtime_preview
+    assert "return schema나 archive/save surface를 열지 않는다" in runtime_preview
+    assert "| runtime id | `wuxia_return_settlement_epilogue_contract` |" in final_routing
     assert "return_settlement_epilogue_followup_handoff" in next_goal
-    assert "previous_current_goal: wuxia_return_settlement_epilogue_contract_implementation" in next_goal
-    assert "Latest implemented runtime: wuxia_return_settlement_epilogue_contract" in storypack_db_json
+    assert "wuxia_return_settlement_epilogue_contract_implementation" in next_goal
+    assert "wuxia_return_settlement_epilogue_contract" in storypack_db_json
     assert "\"next_handoff\": \"return_settlement_epilogue_followup_handoff\"" in situations_json
     assert "37. `wuxia_return_settlement_epilogue_contract` — runtime 구현 완료" in wuxia_pack
     assert "## 38. `wuxia_return_settlement_epilogue_contract` — runtime 구현 완료" in wuxia_cards
@@ -2380,19 +2381,17 @@ def test_wuxia_battle_loss_epilogue_contract_handoff_is_docs_synced():
         "### 0.2cj 2026-06-02 무협 return/settlement epilogue follow-up docs-only handoff"
         in checklist
     )
-    assert "battle-loss epilogue handoff selected" in coverage
+    assert "return_settlement_epilogue_followup_handoff" in coverage
     assert "wuxia_battle_loss_epilogue_contract" in runtime_preview
-    assert (
-        "Next runtime implementation candidate: `wuxia_battle_loss_epilogue_contract`"
-        in final_routing
-    )
+    assert "Decision from the 2026-06-02 `return_settlement_epilogue_followup_handoff`" in final_routing
+    assert "Implementation status: `wuxia_battle_loss_epilogue_contract` is now implemented" in final_routing
     assert "current_goal: wuxia_battle_loss_epilogue_contract_implementation" in next_goal
     assert "previous_current_goal: return_settlement_epilogue_followup_handoff" in next_goal
     assert (
-        "Latest handoff: return_settlement_epilogue_followup_handoff selected wuxia_battle_loss_epilogue_contract"
+        "Latest handoff selected runtime: return_settlement_epilogue_followup_handoff selected wuxia_battle_loss_epilogue_contract"
         in storypack_db_json
     )
-    assert "최신 handoff는 다음 runtime 후보를 `wuxia_battle_loss_epilogue_contract`로 선택했다" in readme
+    assert "`wuxia_battle_loss_epilogue_contract`는 explicit battle-loss seed" in readme
     assert "38. `return_settlement_epilogue_followup_handoff` — docs-only handoff 완료" in wuxia_pack
     assert "## 39. `return_settlement_epilogue_followup_handoff` — docs-only handoff 완료" in wuxia_cards
 
@@ -2405,3 +2404,82 @@ def test_wuxia_battle_loss_epilogue_contract_handoff_is_docs_synced():
     assert "epilogue_tianjilu_last_page" in final_epilogue_rs
     assert "wuxia_sado_final_battle" not in final_epilogue_rs
     assert "battle_loss_hp" not in final_epilogue_rs
+
+
+def test_wuxia_battle_loss_epilogue_contract_runtime_is_docs_synced():
+    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(
+        encoding="utf-8"
+    )
+    runtime_preview = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(
+        encoding="utf-8"
+    )
+    final_routing = Path("docs/design/Wuxia_Final_State_Routing.md").read_text(
+        encoding="utf-8"
+    )
+    next_goal = Path("idea_box/next_goal/README.md").read_text(encoding="utf-8")
+    storypack_db_json = Path("docs/content/storypack_db/storypacks.json").read_text(
+        encoding="utf-8"
+    )
+    readme = Path("README.md").read_text(encoding="utf-8")
+    wuxia_pack = Path("docs/content/storypacks/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+    wuxia_cards = Path("docs/content/encounter_db/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+    endings_yaml = Path(
+        "src/tui_adv/storypack-previews/wuxia_jianghu_pack/endings.yaml"
+    ).read_text(encoding="utf-8")
+    final_epilogue_rs = Path("crates/escape-core/src/final_epilogue.rs").read_text(
+        encoding="utf-8"
+    )
+    route_parity_rs = Path("crates/escape-core/tests/route_parity.rs").read_text(
+        encoding="utf-8"
+    )
+    wasm_json_contract_rs = Path(
+        "crates/escape-wasm/tests/json_contract.rs"
+    ).read_text(encoding="utf-8")
+
+    assert "## 0.72 2026-06-02 무협 `wuxia_battle_loss_epilogue_contract` runtime slice" in plan
+    assert "### 0.2ck 2026-06-02 무협 `wuxia_battle_loss_epilogue_contract` runtime slice" in checklist
+    assert "battle-loss epilogue runtime implemented" in coverage
+    assert "Latest implemented runtime: `wuxia_battle_loss_epilogue_contract`" in runtime_preview
+    assert "Latest implemented runtime slice: `wuxia_battle_loss_epilogue_contract`" in final_routing
+    assert "current_goal: wuxia_battle_loss_epilogue_followup_handoff" in next_goal
+    assert "previous_current_goal: wuxia_battle_loss_epilogue_contract_implementation" in next_goal
+    assert "Latest implemented runtime: wuxia_battle_loss_epilogue_contract" in storypack_db_json
+    assert "`wuxia_battle_loss_epilogue_contract`는 explicit battle-loss seed" in readme
+    assert "39. `wuxia_battle_loss_epilogue_contract` — runtime 구현 완료" in wuxia_pack
+    assert "## 40. `wuxia_battle_loss_epilogue_contract` — runtime 구현 완료" in wuxia_cards
+
+    assert (
+        "required_flags: [boss_resolution_resolved, mumyeong_resolution_resolved, "
+        "seoharin_qingliu_resolution_resolved, cheongirok_resolution_resolved, "
+        "black_serpent_aftermath_resolved, final_result_priority_applied_seeded, "
+        "final_state_routing_seeded]"
+    ) in endings_yaml
+
+    assert "FinalResult::BattleLoss" in final_epilogue_rs
+    assert "final_combat_result_battle_loss_seeded" in final_epilogue_rs
+    assert "battle_loss_residue" in final_epilogue_rs
+    assert "battle_loss_successor_pressure" in final_epilogue_rs
+    assert "battle_loss_or_corruption" in final_epilogue_rs
+    assert "epilogue_boss_black_serpent_banner" in final_epilogue_rs
+    assert "epilogue_wuxia_southern_market_rumor" in final_epilogue_rs
+    assert "epilogue_mumyeong_black_serpent_new_scale" in final_epilogue_rs
+    assert "epilogue_seoharin_closed_gate" in final_epilogue_rs
+    assert "epilogue_tianjilu_last_page" in final_epilogue_rs
+    assert "epilogue_boss_broken_black_serpent" in final_epilogue_rs
+    assert "epilogue_seoharin_open_gate" in final_epilogue_rs
+    assert "epilogue_mumyeong_stolen_forms_stopped" in final_epilogue_rs
+
+    assert (
+        "wuxia_final_epilogue_battle_loss_outputs_loss_bundle_and_suppresses_optimistic_cards"
+        in route_parity_rs
+    )
+    assert (
+        "json_boundary_outputs_wuxia_battle_loss_epilogue_bundle"
+        in wasm_json_contract_rs
+    )

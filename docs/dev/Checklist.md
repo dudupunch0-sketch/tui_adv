@@ -1051,6 +1051,17 @@
 - [x] `docs/design/Wuxia_Final_State_Routing.md`에 battle-loss bundle, suppress rule, still-closed 범위 기록
 - [x] full final battle container, combat resolver, HP 숫자전, archive/save schema, relation/debt/faction ledger, reward/ability schema 미변경 유지
 
+### 0.2ck 2026-06-02 무협 `wuxia_battle_loss_epilogue_contract` runtime slice
+
+- [x] Existing final epilogue body block consumer가 `final_combat_result_battle_loss_seeded`를 소비
+- [x] `epilogue_boss_black_serpent_banner`, `epilogue_wuxia_southern_market_rumor`, `epilogue_mumyeong_black_serpent_new_scale`, `epilogue_seoharin_closed_gate`, `epilogue_tianjilu_last_page` loss bundle 출력
+- [x] optimistic victory cards `epilogue_boss_broken_black_serpent`, `epilogue_seoharin_open_gate`, `epilogue_mumyeong_stolen_forms_stopped`를 `battle_loss`로 suppress
+- [x] final epilogue ending YAML gate를 victory-only required flag에서 Rust consumer-owned victory/loss precondition으로 전환
+- [x] Rust fixture와 Web generated storypack-preview bundle 재생성
+- [x] Rust route parity test와 WASM JSON boundary test 추가
+- [x] full final battle container, combat resolver, HP 숫자전, playable defeat route, archive/save schema, relation/debt/faction ledger, reward/ability schema 미변경 유지
+- [x] 다음 작업을 `wuxia_battle_loss_epilogue_followup_handoff` docs-only contract slice로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

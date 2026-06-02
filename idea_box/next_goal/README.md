@@ -2,9 +2,9 @@
 type: next_goal_prompt
 created: 2026-06-01
 updated: 2026-06-02
-current_goal: wuxia_battle_loss_epilogue_contract_implementation
-previous_current_goal: return_settlement_epilogue_followup_handoff
-mode: contract-first-runtime-implementation
+current_goal: wuxia_battle_loss_epilogue_followup_handoff
+previous_current_goal: wuxia_battle_loss_epilogue_contract_implementation
+mode: docs-only-contract-selection
 ---
 
 # next_goal
@@ -59,9 +59,17 @@ mode: contract-first-runtime-implementation
 
 `return_settlement_epilogue_followup_handoff`도 완료됐다. Notion `최종장 결산 라우팅 마스터`, `사도 최종전`, `사도 최종전 상태값 사전`, `08. 엔딩과 후일담 연결`, `닫힌 산문`, `흑사방의 깃발`, `검은 뱀의 새 비늘`, `천기록의 마지막 장`, `06. 사이드 퀘스트와 미해결 부채`, `07. 천기록 / 천외편린 보상`, `01. 메인 엔딩 구조`를 대조한 결과, 다음 runtime 후보를 `wuxia_battle_loss_epilogue_contract`로 결정했다.
 
-현재 목표는 `wuxia_battle_loss_epilogue_contract_implementation`이다. 기존 Rust final epilogue body block consumer를 확장해 명시적 `final_combat_result_battle_loss_seeded` seed가 Notion battle-loss bundle을 출력하게 한다. 이 구현은 full combat resolver, HP 숫자전, playable defeat route, final battle container, archive/save schema를 열지 않는다.
+`wuxia_battle_loss_epilogue_contract_implementation`도 완료됐다. 기존 Rust final epilogue body block consumer가 명시적 `final_combat_result_battle_loss_seeded` seed를 소비해 Notion battle-loss bundle 5장을 출력하고, optimistic victory cards를 `battle_loss`로 suppress한다. final epilogue ending YAML gate는 victory-only required flag를 제거하고 Rust consumer가 victory/loss 승인 precondition을 소유한다.
+
+현재 목표는 `wuxia_battle_loss_epilogue_followup_handoff`이다. battle-loss bundle이 runtime evidence를 얻었으므로, 다음에는 full final battle container, broader corruption/closed-gate branch, reward/ability schema, relation/debt/faction ledger, main ending archive/save surface, playable defeat-route bridge 중 무엇을 먼저 열지 비교한다.
 
 이전 목표 표기 이력:
+
+```yaml
+current_goal: wuxia_battle_loss_epilogue_contract_implementation
+previous_current_goal: return_settlement_epilogue_followup_handoff
+mode: contract-first-runtime-implementation
+```
 
 ```yaml
 current_goal: return_settlement_epilogue_followup_handoff
@@ -189,6 +197,38 @@ next_runtime:
     - no_reward_ability_schema
 ```
 
+완료된 battle-loss epilogue runtime:
+
+```yaml
+completed_runtime:
+  id: wuxia_battle_loss_epilogue_contract
+  implementation_owner: crates/escape-core/src/final_epilogue.rs
+  input_seed: final_combat_result_battle_loss_seeded
+  output_shape: existing ScenePage.body_blocks
+  card_ids:
+    - card_id: epilogue_boss_black_serpent_banner
+      variant: battle_loss_residue
+    - card_id: epilogue_wuxia_southern_market_rumor
+      variant: unresolved_debt
+    - card_id: epilogue_mumyeong_black_serpent_new_scale
+      variant: battle_loss_successor_pressure
+    - card_id: epilogue_seoharin_closed_gate
+      variant: battle_loss_or_corruption
+    - card_id: epilogue_tianjilu_last_page
+      variant: corruption_variant
+  suppresses:
+    - epilogue_boss_broken_black_serpent
+    - epilogue_seoharin_open_gate
+    - epilogue_mumyeong_stolen_forms_stopped
+  gate_note: final_epilogue_ending_gate_no_longer_victory_only
+  tests:
+    - crates/escape-core/tests/route_parity.rs
+    - crates/escape-wasm/tests/json_contract.rs
+next_decision:
+  id: wuxia_battle_loss_epilogue_followup_handoff
+  compare: [full_final_battle_container, broader_corruption_closed_gate_branch, reward_ability_schema, relation_debt_faction_ledger, main_ending_archive_save_surface, playable_defeat_route_bridge]
+```
+
 완료된 runtime contract 이력:
 
 - runtime id: `wuxia_seoharin_unsaid_stay`
@@ -234,6 +274,7 @@ next_runtime:
   - section `0.69`: `wuxia_seoharin_unsaid_stay` runtime slice
   - section `0.70`: `wuxia_return_settlement_epilogue_contract` runtime slice
   - section `0.71`: return/settlement epilogue follow-up handoff
+  - section `0.72`: `wuxia_battle_loss_epilogue_contract` runtime slice
   - 현재 최우선 남은 작업
   - `## 10. 다음 액션`
 - `docs/design/Wuxia_Final_State_Routing.md`

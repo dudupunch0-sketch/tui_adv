@@ -1,13 +1,13 @@
 # 이구학지 — 천기록 encounter situation cards
 
-Status: candidate + `wuxia_seoharin_unsaid_stay` preview runtime implemented + return/settlement epilogue consumer implemented + battle-loss epilogue handoff selected
+Status: candidate + `wuxia_seoharin_unsaid_stay` preview runtime implemented + return/settlement epilogue consumer implemented + battle-loss epilogue consumer implemented
 
 이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_seoharin_unsaid_stay`까지는 separate storypack preview runtime으로 승격되었다.
 
 공통 원칙:
 
 - 모든 카드는 `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`에 속한다.
-- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_seoharin_unsaid_stay`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. `wuxia_seoharin_unsaid_stay`는 `docs/design/Wuxia_Final_State_Routing.md`의 return/settlement handoff를 existing encounter schema로 구현한 late relationship trigger이며, `wuxia_return_settlement_epilogue_contract`가 그 seed를 final epilogue body block branch cards로 소비한다. `return_settlement_epilogue_followup_handoff`는 다음 runtime 후보를 `wuxia_battle_loss_epilogue_contract`로 선택했다. full return/settlement schema는 아직 열지 않는다.
+- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_seoharin_unsaid_stay`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. `wuxia_seoharin_unsaid_stay`는 `docs/design/Wuxia_Final_State_Routing.md`의 return/settlement handoff를 existing encounter schema로 구현한 late relationship trigger이며, `wuxia_return_settlement_epilogue_contract`가 그 seed를 final epilogue body block branch cards로 소비한다. `wuxia_battle_loss_epilogue_contract`도 기존 final epilogue body block consumer로 구현되어 explicit loss seed를 battle-loss bundle로 소비한다. full return/settlement schema와 full final battle container는 아직 열지 않는다.
 - 최신 canonical 무협 설정은 **이구학지 — 천기록**이다. 이전의 generic 객잔/소림/무당/아미 placeholder는 superseded로 본다.
 - 플레이어 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계의 시장 한복판에 전이됐다”이다.
 - 선택지는 세부 수치보다 역할과 결과 hook을 먼저 정의한다.
@@ -3323,4 +3323,50 @@ next_runtime_contract:
     - epilogue_seoharin_open_gate
     - epilogue_mumyeong_stolen_forms_stopped
 guardrails: [no_full_sado_final_battle_container, no_combat_resolver, no_hp_numeric_battle, no_playable_defeat_route, no_main_ending_archive_save_surface, no_relation_debt_faction_ledger, no_reward_ability_schema]
+```
+
+## 40. `wuxia_battle_loss_epilogue_contract` — runtime 구현 완료
+
+```yaml
+id: wuxia_battle_loss_epilogue_contract
+status: implemented_in_rust_core
+kind: final_epilogue_branch_consumer
+implementation_owner: crates/escape-core/src/final_epilogue.rs
+source_contracts:
+  - docs/design/Wuxia_Final_State_Routing.md
+  - return_settlement_epilogue_followup_handoff
+input_seed: final_combat_result_battle_loss_seeded
+output_body_blocks:
+  - card_id: epilogue_boss_black_serpent_banner
+    variant: battle_loss_residue
+  - card_id: epilogue_wuxia_southern_market_rumor
+    variant: unresolved_debt
+  - card_id: epilogue_mumyeong_black_serpent_new_scale
+    variant: battle_loss_successor_pressure
+  - card_id: epilogue_seoharin_closed_gate
+    variant: battle_loss_or_corruption
+  - card_id: epilogue_tianjilu_last_page
+    variant: corruption_variant
+suppress_rule:
+  battle_loss:
+    suppresses:
+      - epilogue_boss_broken_black_serpent
+      - epilogue_seoharin_open_gate
+      - epilogue_mumyeong_stolen_forms_stopped
+ending_gate: final_epilogue_ending_gate_uses_core_precondition
+generated_artifacts:
+  - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+  - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+tests:
+  - crates/escape-core/tests/route_parity.rs
+  - crates/escape-wasm/tests/json_contract.rs
+guardrails:
+  - no_full_sado_final_battle_container
+  - no_combat_resolver
+  - no_hp_numeric_battle
+  - no_playable_defeat_route
+  - no_main_ending_archive_save_surface
+  - no_relation_debt_faction_ledger
+  - no_reward_ability_schema
+next_handoff: wuxia_battle_loss_epilogue_followup_handoff
 ```

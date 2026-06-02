@@ -58,6 +58,7 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         "wuxia_heuksa_bang_first_fight",
         "wuxia_mumyeong_awakening",
         "wuxia_mumyeong_copy_style_reveal",
+        "wuxia_mumyeong_departure_truth_summary",
         "wuxia_mumyeong_destroys_orthodox_sect",
         "wuxia_mumyeong_first_confrontation",
         "wuxia_mumyeong_first_sighting",
@@ -257,6 +258,21 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         in boss_recruits.outcome_hooks["possible_flags"]
     )
     assert "recruitment_was_not_salvation" in boss_recruits.outcome_hooks[
+        "possible_clues"
+    ]
+
+    departure_truth = db.encounter_cards["wuxia_mumyeong_departure_truth_summary"]
+    assert departure_truth.world_id == "wuxia_jianghu"
+    assert departure_truth.storypack_id == "wuxia_jianghu_pack"
+    assert departure_truth.priority_class == "route_key"
+    assert "sealed_departure_truth_summary" in departure_truth.phases
+    assert "cheonggi_record" in departure_truth.surfaces
+    assert "safe_trace" in [choice["role"] for choice in departure_truth.choice_shapes]
+    assert (
+        "sealed_departure_truth_summary_prepared"
+        in departure_truth.outcome_hooks["possible_flags"]
+    )
+    assert "salvation_condition_seen_but_unmet" in departure_truth.outcome_hooks[
         "possible_clues"
     ]
 

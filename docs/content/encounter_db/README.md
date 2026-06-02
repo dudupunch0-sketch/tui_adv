@@ -50,7 +50,7 @@ promotion_notes:
 
 - `isolation_pack.md`: 차원격리팩 첫 slice 후보 카드 6개.
 - `yageunmong_pack.md`: 야근몽 office-dream 후보 카드 12개.
-- `wuxia_jianghu_pack.md`: 이구학지 — 천기록 무협 기준팩 후보 카드 23개.
+- `wuxia_jianghu_pack.md`: 이구학지 — 천기록 무협 기준팩 후보 카드 24개.
 
 Machine-readable mirror는 `docs/content/storypack_db/encounter_situations.json`이다. 이 JSON은 runtime encounter가 아니라 후보 카드 DB이며, `src/tui_adv/game/storypack_db.py`의 `validate_storypack_db()`가 storypack/world/taxonomy/fallback/outcome hook 계약을 검사한다.
 

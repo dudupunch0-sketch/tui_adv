@@ -6483,7 +6483,7 @@
     },
     "main_spine_link": "현악문 consequence trace를 흑사방 보스가 무명의 상처를 조직 논리로 바꾼 bridge로 연결한다.",
     "randomization_notes": "후반 1회성 trace. boss_recruits_mumyeong_resolved 이후 반복 금지.",
-    "promotion_notes": "preview runtime으로 구현 완료. wuxia_mumyeong_destroys_orthodox_sect_followup docs-only handoff에서 다음 runtime 후보로 선택했고, 보스 스카웃을 구원이나 최종 결산이 아니라 recruitment trace로 제한했다. 무명 이탈 진실 전달, 서하린에게 진실 전달, 무명/보스 최종 결산, epilogue/return, combat resolver/schema, route graph/faction reputation/debt/relation schema, reward/ability schema, 천기록 identity reveal은 열지 않는다. wuxia_boss_recruits_mumyeong_followup docs-only handoff에서 다음 runtime 후보는 wuxia_mumyeong_departure_truth_summary로 선택했고, 구현 범위는 sealed_departure_truth_summary로 제한한다.",
+    "promotion_notes": "preview runtime으로 구현 완료. wuxia_mumyeong_destroys_orthodox_sect_followup docs-only handoff에서 다음 runtime 후보로 선택했고, 보스 스카웃을 구원이나 최종 결산이 아니라 recruitment trace로 제한했다. 무명 이탈 진실 전달, 서하린에게 진실 전달, 무명/보스 최종 결산, epilogue/return, combat resolver/schema, route graph/faction reputation/debt/relation schema, reward/ability schema, 천기록 identity reveal은 열지 않는다. wuxia_boss_recruits_mumyeong_followup docs-only handoff에서 다음 runtime 후보는 wuxia_mumyeong_departure_truth_summary로 선택했고, 구현 범위는 sealed_departure_truth_summary로 제한했다.",
     "runtime_preview_implementation": {
       "implemented_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml",
       "insert_after": "wuxia_mumyeong_destroys_orthodox_sect",
@@ -6502,6 +6502,162 @@
         "no_final_battle_or_epilogue_return_schema",
         "no_tianjilu_identity_reveal"
       ]
+    }
+  },
+  {
+    "id": "wuxia_mumyeong_departure_truth_summary",
+    "world_id": "wuxia_jianghu",
+    "storypack_id": "wuxia_jianghu_pack",
+    "source_refs": [
+      "notion_event:wuxia_mumyeong_departure_truth_summary",
+      "docs/dev/Notion_Design_Coverage.md",
+      "docs/dev/Development_Plan.md#050-2026-06-02-docs-only-boss-recruitment-follow-up-handoff-wuxia_mumyeong_departure_truth_summary"
+    ],
+    "notion_event_mapping": {
+      "notion_event_id": "wuxia_mumyeong_departure_truth_summary",
+      "notion_event_name": "무명 이탈의 진실 정리",
+      "mapping_status": "preview_runtime_implemented"
+    },
+    "status": "implemented_in_storypack_preview",
+    "mapping_status": "preview_runtime_implemented",
+    "phase": [
+      "midgame_backstory",
+      "sealed_departure_truth_summary"
+    ],
+    "priority_class": "route_key",
+    "location_tags": [
+      "cheongryu_outer_courtyard",
+      "sealed_truth",
+      "mumyeong_past"
+    ],
+    "surface": [
+      "sect_courtyard",
+      "cheonggi_record",
+      "faction_negotiation"
+    ],
+    "anomaly_type": [
+      "future_record",
+      "faction_pressure"
+    ],
+    "pressure_type": [
+      "sanity",
+      "relation",
+      "danger"
+    ],
+    "npc_slots": [
+      "early_rescuer",
+      "blood_moon_antagonist"
+    ],
+    "candidate_characters": [
+      "무명",
+      "서하린",
+      "흑사방주"
+    ],
+    "summary": "보스 recruitment trace 이후 무명 이탈의 진실을 정리하되, 서하린에게 전달하거나 구원 조건을 만족시키지 않는 sealed summary를 준비한다.",
+    "setup_text": "천기록은 무명의 선택을 변명하지 않는다. 다만 빈 현악문, 거절된 도움 요청, 보스가 본 상처, 서하린이 아직 듣지 못한 문장을 한 장의 봉인된 기록으로 묶는다.",
+    "presentation": {
+      "visual_id": "wuxia_mumyeong_departure_truth_summary",
+      "speaker": "천기록",
+      "layout": "sealed_departure_truth_summary",
+      "stable_terms": [
+        "무명",
+        "서하린",
+        "현악문",
+        "흑사방주"
+      ]
+    },
+    "runtime_preview_start_conditions": {
+      "locations": [
+        "cheongryu_outer_courtyard"
+      ],
+      "required_flags": [
+        "boss_recruits_mumyeong_resolved",
+        "boss_recruitment_thread_opened",
+        "mumyeong_destroys_orthodox_sect_resolved",
+        "hyeonakmun_destruction_thread_opened",
+        "departure_truth_thread_deepened",
+        "mumyeong_request_for_aid_resolved",
+        "mumyeong_failed_aid_thread_opened",
+        "orthodox_hypocrisy_thread_opened",
+        "mumyeong_awakening_resolved",
+        "midgame_continuity_started"
+      ],
+      "forbidden_flags": [
+        "mumyeong_departure_truth_summary_resolved"
+      ]
+    },
+    "choice_shapes": [
+      {
+        "id": "assemble_departure_truth_without_delivering",
+        "role": "safe_trace",
+        "label_direction": "전하지 않은 채 이탈의 진실을 정리한다",
+        "expected_costs": [
+          "sanity_small"
+        ],
+        "expected_gains": [
+          "departure_truth_can_be_understood_but_not_spoken_yet"
+        ]
+      },
+      {
+        "id": "compare_failed_aid_to_recruitment_offer",
+        "role": "moral_read",
+        "label_direction": "거절당한 도움 요청과 보스의 제안을 나란히 놓는다",
+        "expected_costs": [
+          "sanity_small",
+          "danger_small"
+        ],
+        "expected_gains": [
+          "boss_used_mumyeongs_wound_after_orthodox_refusal"
+        ]
+      },
+      {
+        "id": "ask_seoharin_what_she_is_ready_to_hear",
+        "role": "relation_probe",
+        "label_direction": "서하린이 무엇을 들을 준비가 되었는지 묻는다",
+        "expected_costs": [
+          "sanity_small"
+        ],
+        "expected_gains": [
+          "seoharin_truth_delivery_requires_later_consent"
+        ]
+      },
+      {
+        "id": "seal_truth_until_mumyeong_faces_it",
+        "role": "safe_stop",
+        "label_direction": "무명이 마주하기 전까지 진실을 봉해 둔다",
+        "expected_costs": [
+          "sanity_small"
+        ],
+        "expected_gains": [
+          "salvation_condition_seen_but_unmet"
+        ]
+      }
+    ],
+    "outcome_hooks": {
+      "possible_flags": [
+        "mumyeong_departure_truth_summary_resolved",
+        "sealed_departure_truth_summary_prepared",
+        "truth_delivery_still_unopened"
+      ],
+      "possible_clues": [
+        "departure_truth_can_be_understood_but_not_spoken_yet",
+        "seoharin_truth_delivery_requires_later_consent",
+        "boss_used_mumyeongs_wound_after_orthodox_refusal",
+        "salvation_condition_seen_but_unmet"
+      ],
+      "possible_items": []
+    },
+    "main_spine_link": "failed-aid records, Hyeonakmun consequence, Mumyeong awakening, and boss recruitment trace를 하나의 sealed truth summary로 묶되, Seo Harin truth delivery와 salvation/final resolution은 다음 단계로 넘긴다.",
+    "randomization_notes": "후반 1회성 sealed summary trace. boss recruitment trace 뒤에만 열고 mumyeong_departure_truth_summary_resolved로 반복을 막는다.",
+    "promotion_notes": "preview runtime으로 구현 완료. wuxia_boss_recruits_mumyeong_followup docs-only handoff에서 다음 runtime 후보로 선택했고, 무명 이탈 진실을 서하린에게 전달하거나 구원 조건을 만족시키지 않는 sealed summary로 제한했다. told_seoharin_truth, 무명/보스 결산, final battle, epilogue/return, combat resolver/schema, route graph/faction reputation/debt/relation schema, reward/ability schema, 천기록 identity reveal은 열지 않는다.",
+    "runtime_preview_implementation": {
+      "implemented_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml",
+      "insert_after": "wuxia_boss_recruits_mumyeong",
+      "generated_artifacts": [
+        "crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json",
+        "web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json"
+      ],
+      "next_handoff": "wuxia_mumyeong_departure_truth_summary_followup"
     }
   }
 ]

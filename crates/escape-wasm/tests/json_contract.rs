@@ -3089,6 +3089,127 @@ fn json_boundary_reaches_wuxia_boss_resolution_through_preview_bundle() {
 }
 
 #[test]
+fn json_boundary_reaches_wuxia_mumyeong_resolution_after_boss_resolution() {
+    let outside_state_json = wuxia_state_after_actions(&[
+        "choice:follow_roadside_dust",
+        "move:jianghu_market_street",
+        "choice:run_toward_open_street",
+        "choice:choose_failure_log",
+        "choice:tell_plain_truth",
+        "choice:accept_three_month_trial",
+        "choice:step_back_with_firewood",
+        "choice:defend_cheongryu_with_white_path",
+        "choice:accept_medicine_with_written_debt",
+        "choice:watch_the_stolen_qingliu_flow",
+        "choice:endure_until_copy_flow_breaks",
+        "choice:listen_for_breath_mismatch",
+        "choice:reconstruct_mumyeongs_sightline",
+        "choice:show_the_hyeonakmun_trace_without_accusing",
+        "choice:watch_mumyeong_answer_the_boss",
+        "choice:search_the_rejected_aid_letters",
+        "choice:compare_anger_to_copied_flow",
+        "choice:inspect_bokho_lock_scars",
+        "choice:read_hyeonakmun_empty_gate_record",
+        "choice:trace_boss_offer_after_hyeonakmun",
+        "choice:assemble_departure_truth_without_delivering",
+        "choice:set_down_the_work_notebook_briefly",
+        "choice:eat_the_left_meal_quietly",
+        "choice:secure_the_blackscale_ledger",
+        "choice:return_flow_to_mumyeong",
+    ]);
+    let boss_result_json = apply_action_json(
+        &outside_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:remember_the_empty_place",
+    )
+    .expect("remember empty place action should serialize");
+    let boss_result: Value =
+        serde_json::from_str(&boss_result_json).expect("phase 3 action JSON should parse");
+    let boss_state_json =
+        serde_json::to_string(&boss_result["state"]).expect("boss state should stringify");
+    let mumyeong_result_json = apply_action_json(
+        &boss_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:confirm_mumyeong_unsaved_successor_risk",
+    )
+    .expect("boss resolution successor-risk action should serialize");
+    let mumyeong_result: Value =
+        serde_json::from_str(&mumyeong_result_json).expect("boss resolution JSON should parse");
+    let mumyeong_state_json =
+        serde_json::to_string(&mumyeong_result["state"]).expect("mumyeong state should stringify");
+    let mumyeong_page_json = scene_page_json(&mumyeong_state_json, WUXIA_PREVIEW_BUNDLE)
+        .expect("mumyeong resolution scene page should serialize");
+    let mumyeong_page: Value =
+        serde_json::from_str(&mumyeong_page_json).expect("mumyeong page JSON should parse");
+
+    assert_eq!(mumyeong_page["mode"], "encounter");
+    assert_eq!(mumyeong_page["title"], "무명 결산");
+    assert_eq!(
+        mumyeong_page["location"]["id"],
+        "black_serpent_ledger_vault"
+    );
+    assert_eq!(mumyeong_page["visual"]["id"], "wuxia_mumyeong_resolution");
+    assert_eq!(mumyeong_page["visual"]["kind"], "mumyeong_resolution_seed");
+    assert_eq!(mumyeong_page["effect_cues"][0]["stable_terms"][0], "무명");
+    let mumyeong_action_ids: Vec<&str> = mumyeong_page["actions"]
+        .as_array()
+        .expect("actions should be an array")
+        .iter()
+        .map(|action| action["id"].as_str().expect("action id should be a string"))
+        .collect();
+    assert_eq!(
+        mumyeong_action_ids,
+        vec![
+            "choice:ask_mumyeong_for_own_flow",
+            "choice:reveal_boss_used_mumyeongs_wound",
+            "choice:leave_room_for_unsent_apology",
+            "choice:let_stolen_forms_end",
+            "choice:confirm_black_serpent_successor_risk",
+            "choice:judge_with_sado_style_calculation",
+        ]
+    );
+
+    let own_flow_result_json = apply_action_json(
+        &mumyeong_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:ask_mumyeong_for_own_flow",
+    )
+    .expect("own-flow mumyeong resolution action should serialize");
+    let own_flow_result: Value = serde_json::from_str(&own_flow_result_json)
+        .expect("mumyeong resolution action JSON should parse");
+    assert_eq!(own_flow_result["encounter_id"], "wuxia_mumyeong_resolution");
+    assert_eq!(
+        own_flow_result["state"]["location_id"],
+        "black_serpent_ledger_vault"
+    );
+    let flags = own_flow_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array");
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "mumyeong_resolution_resolved"));
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "final_mumyeong_resolution_own_flow_salvation_seeded"));
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "final_mumyeong_successor_route_suppressed_seeded"));
+    assert!(!flags
+        .iter()
+        .any(|flag| flag == "item_unpriced_wooden_sword"));
+    assert!(!flags.iter().any(|flag| flag == "told_seoharin_truth"));
+    let clues = own_flow_result["state"]["clues"]
+        .as_array()
+        .expect("clues should be an array");
+    assert!(clues
+        .iter()
+        .any(|clue| clue == "mumyeong_salvation_is_not_return_to_qingliu"));
+    assert!(clues
+        .iter()
+        .any(|clue| clue == "own_flow_suppresses_successor_route"));
+}
+
+#[test]
 fn json_boundary_reports_user_facing_errors() {
     let state_json = new_game_json(123, CONTENT_BUNDLE).expect("new game should serialize");
 

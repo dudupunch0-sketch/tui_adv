@@ -1,13 +1,13 @@
 # 이구학지 — 천기록 encounter situation cards
 
-Status: candidate + `wuxia_boss_resolution` preview runtime implemented
+Status: candidate + `wuxia_mumyeong_resolution` preview runtime implemented
 
-이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_boss_resolution`까지는 separate storypack preview runtime으로 승격되었다.
+이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_resolution`까지는 separate storypack preview runtime으로 승격되었다.
 
 공통 원칙:
 
 - 모든 카드는 `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`에 속한다.
-- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_boss_resolution`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. `wuxia_boss_resolution`는 `docs/design/Wuxia_Final_State_Routing.md`의 final state routing contract와 phase 3 후보 seed 이후 보스 결산 route를 정규화하는 bridge이며, 다음 handoff 후보는 `wuxia_mumyeong_resolution`이다.
+- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_resolution`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. `wuxia_mumyeong_resolution`는 `docs/design/Wuxia_Final_State_Routing.md`의 final state routing contract와 boss resolution seed 이후 무명 결산 route를 정규화하는 bridge이며, 다음 handoff 후보는 `wuxia_seoharin_qingliu_resolution`이다.
 - 최신 canonical 무협 설정은 **이구학지 — 천기록**이다. 이전의 generic 객잔/소림/무당/아미 placeholder는 superseded로 본다.
 - 플레이어 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계의 시장 한복판에 전이됐다”이다.
 - 선택지는 세부 수치보다 역할과 결과 hook을 먼저 정의한다.
@@ -34,7 +34,7 @@ Status: candidate + `wuxia_boss_resolution` preview runtime implemented
 | `wuxia_mumyeong_departure_truth_summary` | 무명 이탈의 진실 정리 | `wuxia_mumyeong_departure_truth_summary` | preview runtime implemented; sealed summary, not truth delivery |
 | `wuxia_black_serpent_pressures_qingliu` | 흑사방의 청류문 압박 | partial: `wuxia_cheongryu_raid_route_split` background | future pressure/side event |
 | `wuxia_mumyeong_copy_style_reveal` | 무명의 카피 무공 공개 | `wuxia_mumyeong_copy_style_reveal` | preview runtime implemented |
-| `wuxia_mumyeong_resolution` | 무명 결산 | none yet | future final route event |
+| `wuxia_mumyeong_resolution` | 무명 결산 | `wuxia_mumyeong_resolution` | preview runtime implemented; Mumyeong-resolution route/epilogue candidate seed only |
 | `wuxia_mumyeong_midgame_reunion` | 무명 중반 재회 | `wuxia_mumyeong_midgame_reunion` | preview runtime implemented |
 | `wuxia_boss_resolution` | 보스 결산 | `wuxia_boss_resolution` | preview runtime implemented; route seed bridge, not final epilogue renderer |
 | `wuxia_mumyeong_first_sighting` | 무명 첫 목격 | `wuxia_mumyeong_first_sighting` | preview runtime implemented |
@@ -63,6 +63,7 @@ Additional final-battle Notion pages outside the 26-row event DB:
 | `사도 최종전 2페이즈: 약점 장악` | `wuxia_sado_final_phase_2_weakpoint_control` | preview runtime implemented; relationship/weakpoint/final-method seed only |
 | `사도 최종전 3페이즈: 계산식 밖` | `wuxia_sado_final_phase_3_outside_calculation` | preview runtime implemented; outside-calculation/result-candidate seed only |
 | `보스 결산` | `wuxia_boss_resolution` | preview runtime implemented; boss-resolution route/epilogue candidate seed only |
+| `무명 결산` | `wuxia_mumyeong_resolution` | preview runtime implemented; Mumyeong-resolution route/epilogue candidate seed only |
 
 ## 1. `wuxia_commute_rift_arrival`
 
@@ -2747,4 +2748,83 @@ runtime_preview_implementation:
     - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
     - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
   next_handoff: wuxia_mumyeong_resolution_handoff
+```
+
+## 31. `wuxia_mumyeong_resolution` — preview runtime 구현 완료
+
+```yaml
+id: wuxia_mumyeong_resolution
+world_id: wuxia_jianghu
+storypack_id: wuxia_jianghu_pack
+status: implemented_in_storypack_preview
+mapping_status: preview_runtime_implemented
+runtime_preview_design_status: implemented
+implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
+notion_mapping:
+  notion_event_id: wuxia_mumyeong_resolution
+  notion_event_name: 무명 결산
+phase: [final_entry, mumyeong_resolution_seed]
+priority_class: route_key
+location_tags: [black_serpent_ledger_vault, final_resolution, route_normalization]
+surface: [sect_courtyard, faction_negotiation, cheonggi_record]
+anomaly_type: [future_record, faction_pressure, oath_binding]
+pressure_type: [sanity, health, danger]
+npc_slots: [blood_moon_antagonist]
+candidate_characters: [무명, 서하린, 사도, 청류문]
+summary: boss resolution이 남긴 무명 축 후보를 무명 결산 route seed와 후속 epilogue candidate seed로 정규화하는 bridge encounter.
+presentation:
+  visual_id: wuxia_mumyeong_resolution
+  speaker: 무명
+  layout: mumyeong_resolution_seed
+  stable_terms: [무명, 자기 흐름, 사과, 검은 뱀]
+conditions:
+  locations: [black_serpent_ledger_vault]
+  required_flags: [boss_resolution_resolved, final_result_priority_applied_seeded, final_combat_result_battle_victory_seeded, final_state_routing_seeded]
+  forbidden_flags: [mumyeong_resolution_resolved]
+choice_shapes:
+  - id: ask_mumyeong_for_own_flow
+    role: safe_identity_return
+    label_direction: 무명에게 자기 흐름을 묻는다
+    expected_gains: [final_mumyeong_resolution_own_flow_salvation_seeded, final_epilogue_mumyeong_second_wooden_sword_candidate_seeded]
+  - id: reveal_boss_used_mumyeongs_wound
+    role: evidence_priority
+    label_direction: 보스가 무명의 상처를 이용했음을 드러낸다
+    expected_gains: [final_mumyeong_resolution_relational_salvation_seeded, final_epilogue_mumyeong_unsent_apology_candidate_seeded]
+  - id: leave_room_for_unsent_apology
+    role: safe_pressure_relief
+    label_direction: 전하지 못한 사과가 남을 자리를 둔다
+    expected_gains: [final_mumyeong_resolution_incomplete_salvation_seeded, final_epilogue_mumyeong_unsent_apology_candidate_seeded]
+  - id: let_stolen_forms_end
+    role: safe_pressure_relief
+    label_direction: 훔친 초식의 끝을 받아들인다
+    expected_gains: [final_mumyeong_resolution_end_of_stolen_forms_seeded, final_epilogue_mumyeong_end_of_stolen_forms_candidate_seeded]
+  - id: confirm_black_serpent_successor_risk
+    role: risky_truth_probe
+    label_direction: 검은 뱀의 새 비늘을 결산한다
+    expected_gains: [final_mumyeong_resolution_black_serpent_successor_seeded, final_epilogue_mumyeong_black_serpent_new_scale_candidate_seeded]
+  - id: judge_with_sado_style_calculation
+    role: risky_truth_probe
+    label_direction: 사도식 계산으로 무명을 판정한다
+    expected_gains: [final_mumyeong_resolution_corrupted_unsaved_seeded, final_epilogue_seoharin_closed_gate_candidate_seeded]
+outcome_hooks:
+  possible_flags: [mumyeong_resolution_resolved, final_mumyeong_resolution_own_flow_salvation_seeded, final_mumyeong_resolution_relational_salvation_seeded, final_mumyeong_resolution_incomplete_salvation_seeded, final_mumyeong_resolution_end_of_stolen_forms_seeded, final_mumyeong_resolution_black_serpent_successor_seeded, final_mumyeong_resolution_corrupted_unsaved_seeded, final_epilogue_mumyeong_second_wooden_sword_candidate_seeded, final_epilogue_mumyeong_unsent_apology_candidate_seeded, final_epilogue_mumyeong_black_serpent_new_scale_candidate_seeded]
+  possible_clues: [mumyeong_salvation_is_not_return_to_qingliu, own_flow_suppresses_successor_route, second_wooden_sword_is_candidate_not_payout, truth_can_open_apology_without_forcing_identity, partial_truth_keeps_apology, successor_can_weaken_without_salvation, sado_defeat_does_not_remove_successor_route, corrupted_tool_use_overrides_successor_route]
+  possible_items: []
+  possible_destinations: [black_serpent_ledger_vault]
+main_spine_link: 보스 결산이 만든 무명 route 후보를 후속 epilogue candidate seed로 정규화하고, 서하린/청류문/천기록 결산이 소비할 입력을 넘긴다.
+randomization_notes: 최종장 무명 결산 1회성 route key. boss_resolution_resolved 뒤 장부고에서만 열고 mumyeong_resolution_resolved로 반복을 막는다.
+promotion_notes: preview runtime으로 구현 완료. final epilogue renderer, return/settlement schema, combat resolver, HP 숫자전, Seo Harin truth delivery, told_seoharin_truth, relation/reward schema, item_unpriced_wooden_sword payout은 열지 않는다. 무명 구원은 최종 확정이 아니라 route/epilogue candidate seed로만 남긴다.
+runtime_preview_handoff:
+  handoff_status: implemented
+  insert_after: wuxia_boss_resolution
+  next_runtime_scope: wuxia_seoharin_qingliu_resolution_handoff
+  guardrails: [no_final_epilogue_or_return_schema, no_combat_resolver, no_hp_numeric_battle, no_seoharin_truth_delivery, no_told_seoharin_truth, no_item_unpriced_wooden_sword_award]
+runtime_preview_implementation:
+  implementation_status: implemented
+  implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
+  insert_after: wuxia_boss_resolution
+  generated_artifacts:
+    - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+    - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+  next_handoff: wuxia_seoharin_qingliu_resolution_handoff
 ```

@@ -363,11 +363,13 @@ sources:
     notion_ref: "notion:37137e69-695e-8159-8032-ce5f108ca6c8"
     url: "https://www.notion.so/37137e69695e81598032ce5f108ca6c8"
     last_checked_at: "2026-06-02T12:25:00+09:00"
-    precedence_role: "next_runtime_handoff_source_after_boss_resolution"
+    precedence_role: "implemented_mumyeong_resolution_route_seed_source"
     related_canonical_docs:
       - "docs/design/Wuxia_Final_State_Routing.md"
-    runtime_status: "next_handoff_candidate"
-    status: "live_checked_next_candidate"
+      - "docs/dev/Development_Plan.md"
+      - "idea_box/next_goal/README.md"
+    runtime_status: "implemented_in_storypack_preview"
+    status: "live_checked_runtime_implemented"
 
   - key: wuxia_seoharin_unsaid_stay
     title: "가지 말라는 말"
@@ -375,11 +377,12 @@ sources:
     notion_ref: "notion:37137e69-695e-8138-a41d-e153190f85aa"
     url: "https://www.notion.so/37137e69695e8138a41de153190f85aa"
     last_checked_at: "2026-06-02T12:25:00+09:00"
-    precedence_role: "future_seoharin_final_relationship_source"
+    precedence_role: "next_seoharin_qingliu_resolution_handoff_source"
     related_canonical_docs:
       - "docs/design/Wuxia_Final_State_Routing.md"
       - "idea_box/next_goal/README.md"
-    status: "deferred_until_final_relationship_schema"
+    runtime_status: "next_handoff_candidate"
+    status: "live_checked_next_candidate"
 
   - key: wuxia_99_checkpoint
     title: "99. 통합 체크포인트"

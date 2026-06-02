@@ -2184,6 +2184,102 @@ fn content_tui_smoke_reaches_wuxia_boss_resolution() {
 }
 
 #[test]
+fn content_tui_smoke_reaches_wuxia_mumyeong_resolution() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--storypack-preview",
+            "wuxia_jianghu_pack",
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:follow_roadside_dust",
+            "--action",
+            "move:jianghu_market_street",
+            "--action",
+            "choice:run_toward_open_street",
+            "--action",
+            "choice:choose_failure_log",
+            "--action",
+            "choice:tell_plain_truth",
+            "--action",
+            "choice:accept_three_month_trial",
+            "--action",
+            "choice:step_back_with_firewood",
+            "--action",
+            "choice:defend_cheongryu_with_white_path",
+            "--action",
+            "choice:accept_medicine_with_written_debt",
+            "--action",
+            "choice:watch_the_stolen_qingliu_flow",
+            "--action",
+            "choice:endure_until_copy_flow_breaks",
+            "--action",
+            "choice:listen_for_breath_mismatch",
+            "--action",
+            "choice:reconstruct_mumyeongs_sightline",
+            "--action",
+            "choice:show_the_hyeonakmun_trace_without_accusing",
+            "--action",
+            "choice:watch_mumyeong_answer_the_boss",
+            "--action",
+            "choice:search_the_rejected_aid_letters",
+            "--action",
+            "choice:compare_anger_to_copied_flow",
+            "--action",
+            "choice:inspect_bokho_lock_scars",
+            "--action",
+            "choice:read_hyeonakmun_empty_gate_record",
+            "--action",
+            "choice:trace_boss_offer_after_hyeonakmun",
+            "--action",
+            "choice:assemble_departure_truth_without_delivering",
+            "--action",
+            "choice:set_down_the_work_notebook_briefly",
+            "--action",
+            "choice:eat_the_left_meal_quietly",
+            "--action",
+            "choice:secure_the_blackscale_ledger",
+            "--action",
+            "choice:return_flow_to_mumyeong",
+            "--action",
+            "choice:remember_the_empty_place",
+            "--action",
+            "choice:confirm_mumyeong_unsaved_successor_risk",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("위치: 흑사방 장부고 (black_serpent_ledger_vault)"));
+    assert!(stdout.contains("무명 결산"));
+    assert!(stdout.contains("visual id: wuxia_mumyeong_resolution"));
+    assert!(stdout.contains("layout: mumyeong_resolution_seed"));
+    assert!(stdout.contains("stable terms: 무명 / 자기 흐름 / 사과 / 검은 뱀"));
+    assert!(stdout.contains("choice:ask_mumyeong_for_own_flow / 무명에게 자기 흐름을 묻는다"));
+    assert!(stdout.contains(
+        "choice:reveal_boss_used_mumyeongs_wound / 보스가 무명의 상처를 이용했음을 드러낸다"
+    ));
+    assert!(stdout
+        .contains("choice:leave_room_for_unsent_apology / 전하지 못한 사과가 남을 자리를 둔다"));
+    assert!(stdout.contains("choice:let_stolen_forms_end / 훔친 초식의 끝을 받아들인다"));
+    assert!(stdout
+        .contains("choice:confirm_black_serpent_successor_risk / 검은 뱀의 새 비늘을 결산한다"));
+    assert!(stdout
+        .contains("choice:judge_with_sado_style_calculation / 사도식 계산으로 무명을 판정한다"));
+    assert!(!stdout.contains("told_seoharin_truth"));
+    assert!(!stdout.contains("item_unpriced_wooden_sword"));
+}
+
+#[test]
 fn content_tui_smoke_renders_final_movement_panel_after_scripted_actions() {
     let bundle_path = content_bundle_path();
     let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))

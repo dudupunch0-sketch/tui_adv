@@ -211,12 +211,12 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&5));
     assert_eq!(bundle.manifest.counts.get("items"), Some(&4));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&30));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&31));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 5);
-    assert_eq!(index.encounters_len(), 30);
+    assert_eq!(index.encounters_len(), 31);
 
     let market = index
         .location("jianghu_market_street")
@@ -1853,6 +1853,72 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert!(true_route.outcome.add_items.is_empty());
     assert_eq!(
         true_route.outcome.destination_id.as_deref(),
+        Some("black_serpent_ledger_vault")
+    );
+
+    let mumyeong_resolution = index
+        .encounter("wuxia_mumyeong_resolution")
+        .expect("mumyeong resolution encounter");
+    assert_eq!(mumyeong_resolution.title, "무명 결산");
+    assert_eq!(
+        mumyeong_resolution.conditions.locations,
+        vec!["black_serpent_ledger_vault"]
+    );
+    assert_eq!(
+        mumyeong_resolution.conditions.required_flags,
+        vec![
+            "boss_resolution_resolved",
+            "final_result_priority_applied_seeded",
+            "final_combat_result_battle_victory_seeded",
+            "final_state_routing_seeded"
+        ]
+    );
+    assert_eq!(
+        mumyeong_resolution.conditions.forbidden_flags,
+        vec!["mumyeong_resolution_resolved"]
+    );
+    let mumyeong_presentation = mumyeong_resolution
+        .presentation
+        .as_ref()
+        .expect("mumyeong resolution presentation");
+    assert_eq!(
+        mumyeong_presentation.layout.as_deref(),
+        Some("mumyeong_resolution_seed")
+    );
+    assert_eq!(mumyeong_presentation.speaker.as_deref(), Some("무명"));
+    assert_eq!(
+        mumyeong_presentation.effect_cues[0].stable_terms,
+        vec!["무명", "자기 흐름", "사과", "검은 뱀"]
+    );
+    assert_eq!(mumyeong_resolution.choices.len(), 6);
+    let own_flow = mumyeong_resolution
+        .choices
+        .iter()
+        .find(|choice| choice.id == "ask_mumyeong_for_own_flow")
+        .expect("own-flow mumyeong resolution choice");
+    assert_eq!(
+        own_flow.outcome.add_flags,
+        vec![
+            "mumyeong_resolution_resolved",
+            "final_mumyeong_resolution_own_flow_salvation_seeded",
+            "final_mumyeong_own_flow_choice_confirmed_seeded",
+            "final_mumyeong_successor_route_suppressed_seeded",
+            "final_epilogue_mumyeong_stolen_forms_stopped_candidate_seeded",
+            "final_epilogue_mumyeong_second_wooden_sword_candidate_seeded",
+            "final_epilogue_seoharin_open_gate_reinforced_seeded"
+        ]
+    );
+    assert_eq!(
+        own_flow.outcome.add_clues,
+        vec![
+            "mumyeong_salvation_is_not_return_to_qingliu",
+            "own_flow_suppresses_successor_route",
+            "second_wooden_sword_is_candidate_not_payout"
+        ]
+    );
+    assert!(own_flow.outcome.add_items.is_empty());
+    assert_eq!(
+        own_flow.outcome.destination_id.as_deref(),
         Some("black_serpent_ledger_vault")
     );
 }

@@ -66,6 +66,7 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         "wuxia_mumyeong_midgame_reunion",
         "wuxia_mumyeong_reads_orthodox_style",
         "wuxia_mumyeong_request_for_aid",
+        "wuxia_mumyeong_resolution",
         "wuxia_qingliu_attack_after_war",
         "wuxia_sado_final_phase_1_price_tag",
         "wuxia_sado_final_phase_2_weakpoint_control",
@@ -367,6 +368,25 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
     assert (
         "sado_defeat_does_not_save_mumyeong"
         in boss_resolution.outcome_hooks["possible_clues"]
+    )
+
+    mumyeong_resolution = db.encounter_cards["wuxia_mumyeong_resolution"]
+    assert mumyeong_resolution.world_id == "wuxia_jianghu"
+    assert mumyeong_resolution.storypack_id == "wuxia_jianghu_pack"
+    assert mumyeong_resolution.status == "implemented_in_storypack_preview"
+    assert mumyeong_resolution.priority_class == "route_key"
+    assert "mumyeong_resolution_seed" in mumyeong_resolution.phases
+    assert "faction_negotiation" in mumyeong_resolution.surfaces
+    assert "safe_identity_return" in [
+        choice["role"] for choice in mumyeong_resolution.choice_shapes
+    ]
+    assert (
+        "final_mumyeong_resolution_own_flow_salvation_seeded"
+        in mumyeong_resolution.outcome_hooks["possible_flags"]
+    )
+    assert (
+        "mumyeong_salvation_is_not_return_to_qingliu"
+        in mumyeong_resolution.outcome_hooks["possible_clues"]
     )
 
 

@@ -1820,3 +1820,85 @@ encounters:
           add_clues: [good_calculation_can_still_be_corruption, closed_gate_overrides_open_gate_candidate, cheongirok_corruption_is_not_high_use]
           destination_id: black_serpent_ledger_vault
           log: 승리는 남았지만 결산의 필체가 사도와 닮아 있다. 천기록은 이 결과를 패배로 쓰지 않는다. 다만 열린 문 후보보다 닫힌 문 후보가 먼저 읽히는 오염된 승리로 남긴다.
+
+  - id: wuxia_mumyeong_resolution
+    title: "무명 결산"
+    body: 보스 결산은 사도의 장부를 닫았지만, 무명의 이름 없는 장은 아직 남아 있다. 이 결산은 무명이 청류문으로 돌아오는지를 먼저 묻지 않는다. 훔친 초식이 어디서 멈추는지, 흑사방 후계 구도가 끊기는지, 서하린과 청류문으로 다시 이어질 여지가 남는지를 기록한다. 결말 카드를 바로 지급하지 않고, 후속 후일담 후보만 씨앗으로 남긴다.
+    presentation:
+      visual_id: wuxia_mumyeong_resolution
+      speaker: 무명
+      layout: mumyeong_resolution_seed
+      effect_cues:
+        - kind: glyph_anomaly
+          source: wuxia_mumyeong_resolution
+          intensity: 0.9
+          stable_terms: [무명, 자기 흐름, 사과, 검은 뱀]
+          distortion: stolen_forms_split_into_resolution_candidates
+          duration_hint_ms: 2000
+          fallback_text: 이름 없는 장 위에 '무명', '자기 흐름', '사과', '검은 뱀'이 서로 다른 먹빛으로 갈라진다.
+    conditions:
+      locations: [black_serpent_ledger_vault]
+      required_flags: [boss_resolution_resolved, final_result_priority_applied_seeded, final_combat_result_battle_victory_seeded, final_state_routing_seeded]
+      forbidden_flags: [mumyeong_resolution_resolved]
+    choices:
+      - id: ask_mumyeong_for_own_flow
+        label: 무명에게 자기 흐름을 묻는다
+        outcome:
+          resources:
+            sanity: -2
+          danger: 1
+          add_flags: [mumyeong_resolution_resolved, final_mumyeong_resolution_own_flow_salvation_seeded, final_mumyeong_own_flow_choice_confirmed_seeded, final_mumyeong_successor_route_suppressed_seeded, final_epilogue_mumyeong_stolen_forms_stopped_candidate_seeded, final_epilogue_mumyeong_second_wooden_sword_candidate_seeded, final_epilogue_seoharin_open_gate_reinforced_seeded]
+          add_clues: [mumyeong_salvation_is_not_return_to_qingliu, own_flow_suppresses_successor_route, second_wooden_sword_is_candidate_not_payout]
+          destination_id: black_serpent_ledger_vault
+          log: 너는 무명에게 누구의 초식이 더 강한지 묻지 않는다. 자기 흐름을 묻자, 훔친 형식의 틈 사이로 처음 듣는 호흡이 남는다. 천기록은 이것을 귀환이 아니라 후계 구도 억제와 두 번째 목검 후보로 적는다.
+      - id: reveal_boss_used_mumyeongs_wound
+        label: 보스가 무명의 상처를 이용했음을 드러낸다
+        outcome:
+          resources:
+            sanity: -2
+          danger: 1
+          add_flags: [mumyeong_resolution_resolved, final_mumyeong_resolution_relational_salvation_seeded, final_mumyeong_truth_state_not_forced_seeded, final_mumyeong_successor_route_weakened_seeded, final_epilogue_mumyeong_unsent_apology_candidate_seeded, final_epilogue_mumyeong_second_wooden_sword_candidate_seeded]
+          add_clues: [truth_can_open_apology_without_forcing_identity, boss_used_wound_but_does_not_define_mumyeong, relational_salvation_is_not_full_return]
+          destination_id: black_serpent_ledger_vault
+          log: 사도가 본 것은 무명의 재능이 아니라 상처를 권력으로 바꾸는 자리였다. 그 사실은 무명을 대신 구원하지 않는다. 다만 사과와 두 번째 목검 후보가 강요 없는 진실의 자리로 열린다.
+      - id: leave_room_for_unsent_apology
+        label: 전하지 못한 사과가 남을 자리를 둔다
+        outcome:
+          resources:
+            sanity: -1
+          danger: 1
+          add_flags: [mumyeong_resolution_resolved, final_mumyeong_resolution_incomplete_salvation_seeded, final_mumyeong_truth_state_partial_seeded, final_epilogue_mumyeong_unsent_apology_candidate_seeded, final_epilogue_mumyeong_second_wooden_sword_conditional_seeded]
+          add_clues: [partial_truth_keeps_apology, incomplete_salvation_is_still_a_trace, apology_is_not_truth_delivery]
+          destination_id: black_serpent_ledger_vault
+          log: 모든 말을 전하지 않았기 때문에 남는 말도 있다. 무명의 결산은 완전한 구원이 아니라 미완의 사과 후보를 남기고, 두 번째 목검은 조건부 흔적으로만 적힌다.
+      - id: let_stolen_forms_end
+        label: 훔친 초식의 끝을 받아들인다
+        outcome:
+          resources:
+            health: -1
+            sanity: -2
+          danger: 2
+          add_flags: [mumyeong_resolution_resolved, final_mumyeong_resolution_end_of_stolen_forms_seeded, final_mumyeong_successor_route_weakened_seeded, final_mumyeong_own_flow_not_opened_seeded, final_epilogue_mumyeong_end_of_stolen_forms_candidate_seeded, final_epilogue_mumyeong_unsent_apology_conditional_seeded]
+          add_clues: [successor_can_weaken_without_salvation, end_of_stolen_forms_is_not_execution_reward, stolen_forms_stop_by_cost_not_punishment]
+          destination_id: black_serpent_ledger_vault
+          log: 훔친 초식은 멈춘다. 그러나 멈춤이 곧 구원은 아니다. 몸에 남은 대가와 끝난 형식만 장부에 남고, 사과는 조건부 잔향으로 밀려난다.
+      - id: confirm_black_serpent_successor_risk
+        label: 검은 뱀의 새 비늘을 결산한다
+        outcome:
+          resources:
+            sanity: -3
+          danger: 2
+          add_flags: [mumyeong_resolution_resolved, final_mumyeong_resolution_black_serpent_successor_seeded, final_mumyeong_successor_route_active_seeded, final_epilogue_mumyeong_black_serpent_new_scale_candidate_seeded, final_epilogue_mumyeong_new_shadow_variant_seeded, final_epilogue_seoharin_last_bowl_conditional_seeded]
+          add_clues: [sado_defeat_does_not_remove_successor_route, black_serpent_new_scale_is_not_mumyeong_identity, last_bowl_depends_on_low_seoharin_axis]
+          destination_id: black_serpent_ledger_vault
+          log: 사도가 쓰러져도 흑사방의 저울은 새 비늘을 찾는다. 무명은 이름이 아니라 후계 구도 위험으로 기록되고, 서하린의 마지막 밥상은 관계축이 낮을 때만 따라붙는 조건부 후보가 된다.
+      - id: judge_with_sado_style_calculation
+        label: 사도식 계산으로 무명을 판정한다
+        outcome:
+          resources:
+            sanity: -4
+          danger: 2
+          add_flags: [mumyeong_resolution_resolved, final_mumyeong_resolution_corrupted_unsaved_seeded, final_mumyeong_player_method_tool_use_seeded, final_epilogue_mumyeong_black_serpent_new_scale_candidate_seeded, final_epilogue_seoharin_closed_gate_candidate_seeded, final_epilogue_tianjilu_last_page_corruption_variant_seeded]
+          add_clues: [corrupted_tool_use_overrides_successor_route, tool_use_turns_salvation_into_scale, closed_gate_can_follow_sado_style_calculation]
+          destination_id: black_serpent_ledger_vault
+          log: 너는 무명을 사람으로 보지 않고 계산의 잔여값으로 본다. 결산은 빠르게 끝나지만, 천기록의 마지막 장은 사도와 닮은 필체로 닫힌 문과 검은 뱀의 새 비늘 후보를 먼저 적는다.

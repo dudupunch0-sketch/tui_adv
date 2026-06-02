@@ -162,7 +162,7 @@ npm run preview:player
 - 프로젝트 방향: storypack/world 기반 TUI 선택지 생존 게임 + Web Storybook/GlyphFX primary UX + SuperLightTUI terminal renderer
 - 기본 톤: 출근복 현대인이 강호에 떨어지는 무협 생존/성장극. 기존 블랙코미디 회사 괴담 + 코스믹 호러 톤은 legacy office content에 남긴다.
 - office-family 후보팩: `yageunmong_pack` / **야근몽**. 전제는 “회사에서 잠깐 잠든 주인공이 자각몽 상태의 회사 악몽에서 업무 완료가 아니라 깨어나기를 목표로 한다”이며, 기본 office runtime을 대체하지 않는다.
-- 현재 기본 개발 기준팩: `wuxia_jianghu_pack` / **이구학지 — 천기록**. 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계 시장에 전이되고, 천기록/천외편린 성장 구조를 경험한다”. 현재 Web/terminal default storypack이며, runtime은 arrival/first fight/first fragment부터 `wuxia_boss_resolution`까지 구현됐다. 사도 최종전 1/2/3페이즈는 combat resolver 없이 장부/약점/계산식 밖 선택을 final-state seed로 남기고, 보스 결산은 final epilogue renderer 없이 route/후속 epilogue candidate seed만 남긴다. 다음 handoff 후보는 `wuxia_mumyeong_resolution`이다.
+- 현재 기본 개발 기준팩: `wuxia_jianghu_pack` / **이구학지 — 천기록**. 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계 시장에 전이되고, 천기록/천외편린 성장 구조를 경험한다”. 현재 Web/terminal default storypack이며, runtime은 arrival/first fight/first fragment부터 `wuxia_mumyeong_resolution`까지 구현됐다. 사도 최종전 1/2/3페이즈는 combat resolver 없이 장부/약점/계산식 밖 선택을 final-state seed로 남기고, 보스/무명 결산은 final epilogue renderer 없이 route/후속 epilogue candidate seed만 남긴다. 다음 handoff 후보는 `wuxia_seoharin_qingliu_resolution`이다.
 - 1차 재난 타입: 불명 재난
 - 상황: 사람 실종, 연구개발동 규모의 공간/차원 격리, 제한된 외부 인터넷, 간헐적 사내망 연락
 - 핵심 자원: 체력, 정신력, 배터리, 허기, 갈증
@@ -195,7 +195,7 @@ npm run preview:player
 - `docs/dev/Development_Plan.md`: canonical main plan. 현재 방향, 다음 작업, 우선순위의 source of truth
 - `docs/dev/Checklist.md`: 단계별 완료 여부 추적용 체크리스트
 - `docs/dev/Storypack_Runtime_Preview_Mode.md`: 이구학지 runtime bundle을 legacy office bundle과 섞지 않는 preview/main boundary 결정
-- `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`: `wuxia_commute_rift_arrival`부터 `wuxia_boss_resolution`까지의 이구학지 source YAML
+- `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`: `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_resolution`까지의 이구학지 source YAML
 - `crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json`: Rust/GameCore용 무협 preview fixture bundle
 - `web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json`: Web/WASM용 무협 preview generated bundle
 - `web/src/core/contentBundles.ts`: Web default 이구학지 bundle과 legacy office/generated bundle 경계

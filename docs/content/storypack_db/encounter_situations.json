@@ -8130,5 +8130,321 @@
       ],
       "next_handoff": "wuxia_mumyeong_resolution_handoff"
     }
+  },
+  {
+    "id": "wuxia_mumyeong_resolution",
+    "world_id": "wuxia_jianghu",
+    "storypack_id": "wuxia_jianghu_pack",
+    "status": "implemented_in_storypack_preview",
+    "source_refs": [
+      "notion_page:무명 결산",
+      "notion_page:최종장 결산 라우팅 마스터",
+      "notion_page:사도 최종전 상태값 사전",
+      "docs/design/Wuxia_Final_State_Routing.md",
+      "docs/dev/Development_Plan.md#061-2026-06-02-무협-wuxia_mumyeong_resolution-preview-runtime-slice"
+    ],
+    "notion_mapping": {
+      "notion_event_id": "wuxia_mumyeong_resolution",
+      "notion_event_name": "무명 결산",
+      "mapping_status": "preview_runtime_implemented"
+    },
+    "runtime_preview_design_status": "implemented",
+    "implemented_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml",
+    "phase": [
+      "final_entry",
+      "mumyeong_resolution_seed"
+    ],
+    "priority_class": "route_key",
+    "location_tags": [
+      "black_serpent_ledger_vault",
+      "final_resolution",
+      "route_normalization"
+    ],
+    "surface": [
+      "sect_courtyard",
+      "faction_negotiation",
+      "cheonggi_record"
+    ],
+    "anomaly_type": [
+      "future_record",
+      "faction_pressure",
+      "oath_binding"
+    ],
+    "pressure_type": [
+      "sanity",
+      "health",
+      "danger"
+    ],
+    "npc_slots": [
+      "blood_moon_antagonist"
+    ],
+    "candidate_characters": [
+      "무명",
+      "서하린",
+      "사도",
+      "청류문"
+    ],
+    "summary": "보스 결산 뒤 무명의 구원/미완/비구원/후계 위험 후보를 후속 epilogue candidate seed로 정규화하는 bridge encounter.",
+    "setup_text": "사도는 쓰러졌지만 무명의 훔친 초식과 흑사방 후계 구도는 아직 닫히지 않았다. 무명 결산은 귀환 여부가 아니라 자기 흐름, 사과, 후계 억제, 오염 판정의 후보를 기록한다.",
+    "presentation": {
+      "visual_id": "wuxia_mumyeong_resolution",
+      "speaker": "무명",
+      "layout": "mumyeong_resolution_seed",
+      "stable_terms": [
+        "무명",
+        "자기 흐름",
+        "사과",
+        "검은 뱀"
+      ]
+    },
+    "conditions": {
+      "locations": [
+        "black_serpent_ledger_vault"
+      ],
+      "required_flags": [
+        "boss_resolution_resolved",
+        "final_result_priority_applied_seeded",
+        "final_combat_result_battle_victory_seeded",
+        "final_state_routing_seeded"
+      ],
+      "forbidden_flags": [
+        "mumyeong_resolution_resolved"
+      ]
+    },
+    "choice_shapes": [
+      {
+        "id": "ask_mumyeong_for_own_flow",
+        "role": "safe_identity_return",
+        "label_direction": "무명에게 자기 흐름을 묻는다",
+        "expected_costs": [
+          "sanity_medium",
+          "danger_small"
+        ],
+        "expected_gains": [
+          "final_mumyeong_resolution_own_flow_salvation_seeded",
+          "final_epilogue_mumyeong_second_wooden_sword_candidate_seeded"
+        ],
+        "outcome_hook": {
+          "add_flags": [
+            "mumyeong_resolution_resolved",
+            "final_mumyeong_resolution_own_flow_salvation_seeded",
+            "final_mumyeong_own_flow_choice_confirmed_seeded",
+            "final_mumyeong_successor_route_suppressed_seeded",
+            "final_epilogue_mumyeong_stolen_forms_stopped_candidate_seeded",
+            "final_epilogue_mumyeong_second_wooden_sword_candidate_seeded",
+            "final_epilogue_seoharin_open_gate_reinforced_seeded"
+          ],
+          "add_clues": [
+            "mumyeong_salvation_is_not_return_to_qingliu",
+            "own_flow_suppresses_successor_route",
+            "second_wooden_sword_is_candidate_not_payout"
+          ],
+          "destination_id": "black_serpent_ledger_vault"
+        }
+      },
+      {
+        "id": "reveal_boss_used_mumyeongs_wound",
+        "role": "evidence_priority",
+        "label_direction": "보스가 무명의 상처를 이용했음을 드러낸다",
+        "expected_costs": [
+          "sanity_medium",
+          "danger_small"
+        ],
+        "expected_gains": [
+          "final_mumyeong_resolution_relational_salvation_seeded",
+          "final_epilogue_mumyeong_unsent_apology_candidate_seeded"
+        ],
+        "outcome_hook": {
+          "add_flags": [
+            "mumyeong_resolution_resolved",
+            "final_mumyeong_resolution_relational_salvation_seeded",
+            "final_mumyeong_truth_state_not_forced_seeded",
+            "final_mumyeong_successor_route_weakened_seeded",
+            "final_epilogue_mumyeong_unsent_apology_candidate_seeded",
+            "final_epilogue_mumyeong_second_wooden_sword_candidate_seeded"
+          ],
+          "add_clues": [
+            "truth_can_open_apology_without_forcing_identity",
+            "boss_used_wound_but_does_not_define_mumyeong",
+            "relational_salvation_is_not_full_return"
+          ],
+          "destination_id": "black_serpent_ledger_vault"
+        }
+      },
+      {
+        "id": "leave_room_for_unsent_apology",
+        "role": "safe_pressure_relief",
+        "label_direction": "전하지 못한 사과가 남을 자리를 둔다",
+        "expected_costs": [
+          "sanity_small",
+          "danger_small"
+        ],
+        "expected_gains": [
+          "final_mumyeong_resolution_incomplete_salvation_seeded",
+          "final_epilogue_mumyeong_unsent_apology_candidate_seeded"
+        ],
+        "outcome_hook": {
+          "add_flags": [
+            "mumyeong_resolution_resolved",
+            "final_mumyeong_resolution_incomplete_salvation_seeded",
+            "final_mumyeong_truth_state_partial_seeded",
+            "final_epilogue_mumyeong_unsent_apology_candidate_seeded",
+            "final_epilogue_mumyeong_second_wooden_sword_conditional_seeded"
+          ],
+          "add_clues": [
+            "partial_truth_keeps_apology",
+            "incomplete_salvation_is_still_a_trace",
+            "apology_is_not_truth_delivery"
+          ],
+          "destination_id": "black_serpent_ledger_vault"
+        }
+      },
+      {
+        "id": "let_stolen_forms_end",
+        "role": "safe_pressure_relief",
+        "label_direction": "훔친 초식의 끝을 받아들인다",
+        "expected_costs": [
+          "health_small",
+          "sanity_medium",
+          "danger_medium"
+        ],
+        "expected_gains": [
+          "final_mumyeong_resolution_end_of_stolen_forms_seeded",
+          "final_epilogue_mumyeong_end_of_stolen_forms_candidate_seeded"
+        ],
+        "outcome_hook": {
+          "add_flags": [
+            "mumyeong_resolution_resolved",
+            "final_mumyeong_resolution_end_of_stolen_forms_seeded",
+            "final_mumyeong_successor_route_weakened_seeded",
+            "final_mumyeong_own_flow_not_opened_seeded",
+            "final_epilogue_mumyeong_end_of_stolen_forms_candidate_seeded",
+            "final_epilogue_mumyeong_unsent_apology_conditional_seeded"
+          ],
+          "add_clues": [
+            "successor_can_weaken_without_salvation",
+            "end_of_stolen_forms_is_not_execution_reward",
+            "stolen_forms_stop_by_cost_not_punishment"
+          ],
+          "destination_id": "black_serpent_ledger_vault"
+        }
+      },
+      {
+        "id": "confirm_black_serpent_successor_risk",
+        "role": "risky_truth_probe",
+        "label_direction": "검은 뱀의 새 비늘을 결산한다",
+        "expected_costs": [
+          "sanity_high",
+          "danger_medium"
+        ],
+        "expected_gains": [
+          "final_mumyeong_resolution_black_serpent_successor_seeded",
+          "final_epilogue_mumyeong_black_serpent_new_scale_candidate_seeded"
+        ],
+        "outcome_hook": {
+          "add_flags": [
+            "mumyeong_resolution_resolved",
+            "final_mumyeong_resolution_black_serpent_successor_seeded",
+            "final_mumyeong_successor_route_active_seeded",
+            "final_epilogue_mumyeong_black_serpent_new_scale_candidate_seeded",
+            "final_epilogue_mumyeong_new_shadow_variant_seeded",
+            "final_epilogue_seoharin_last_bowl_conditional_seeded"
+          ],
+          "add_clues": [
+            "sado_defeat_does_not_remove_successor_route",
+            "black_serpent_new_scale_is_not_mumyeong_identity",
+            "last_bowl_depends_on_low_seoharin_axis"
+          ],
+          "destination_id": "black_serpent_ledger_vault"
+        }
+      },
+      {
+        "id": "judge_with_sado_style_calculation",
+        "role": "risky_truth_probe",
+        "label_direction": "사도식 계산으로 무명을 판정한다",
+        "expected_costs": [
+          "sanity_high",
+          "danger_medium"
+        ],
+        "expected_gains": [
+          "final_mumyeong_resolution_corrupted_unsaved_seeded",
+          "final_epilogue_seoharin_closed_gate_candidate_seeded"
+        ],
+        "outcome_hook": {
+          "add_flags": [
+            "mumyeong_resolution_resolved",
+            "final_mumyeong_resolution_corrupted_unsaved_seeded",
+            "final_mumyeong_player_method_tool_use_seeded",
+            "final_epilogue_mumyeong_black_serpent_new_scale_candidate_seeded",
+            "final_epilogue_seoharin_closed_gate_candidate_seeded",
+            "final_epilogue_tianjilu_last_page_corruption_variant_seeded"
+          ],
+          "add_clues": [
+            "corrupted_tool_use_overrides_successor_route",
+            "tool_use_turns_salvation_into_scale",
+            "closed_gate_can_follow_sado_style_calculation"
+          ],
+          "destination_id": "black_serpent_ledger_vault"
+        }
+      }
+    ],
+    "outcome_hooks": {
+      "possible_flags": [
+        "mumyeong_resolution_resolved",
+        "final_mumyeong_resolution_own_flow_salvation_seeded",
+        "final_mumyeong_resolution_relational_salvation_seeded",
+        "final_mumyeong_resolution_incomplete_salvation_seeded",
+        "final_mumyeong_resolution_end_of_stolen_forms_seeded",
+        "final_mumyeong_resolution_black_serpent_successor_seeded",
+        "final_mumyeong_resolution_corrupted_unsaved_seeded",
+        "final_mumyeong_successor_route_suppressed_seeded",
+        "final_mumyeong_successor_route_weakened_seeded",
+        "final_mumyeong_successor_route_active_seeded",
+        "final_epilogue_mumyeong_second_wooden_sword_candidate_seeded",
+        "final_epilogue_mumyeong_unsent_apology_candidate_seeded",
+        "final_epilogue_mumyeong_black_serpent_new_scale_candidate_seeded",
+        "final_epilogue_seoharin_open_gate_reinforced_seeded",
+        "final_epilogue_seoharin_closed_gate_candidate_seeded"
+      ],
+      "possible_clues": [
+        "mumyeong_salvation_is_not_return_to_qingliu",
+        "own_flow_suppresses_successor_route",
+        "second_wooden_sword_is_candidate_not_payout",
+        "truth_can_open_apology_without_forcing_identity",
+        "partial_truth_keeps_apology",
+        "successor_can_weaken_without_salvation",
+        "sado_defeat_does_not_remove_successor_route",
+        "corrupted_tool_use_overrides_successor_route"
+      ],
+      "possible_items": [],
+      "possible_destinations": [
+        "black_serpent_ledger_vault"
+      ]
+    },
+    "main_spine_link": "보스 결산이 만든 후속 route seed를 무명 축 epilogue candidate seed로 정규화하고, 서하린/청류문/천기록 결산이 소비할 입력을 남긴다.",
+    "randomization_notes": "최종장 무명 결산 1회성 route key. boss_resolution_resolved 뒤 장부고에서만 열고 mumyeong_resolution_resolved로 반복을 막는다.",
+    "promotion_notes": "preview runtime으로 구현 완료. final epilogue renderer, return/settlement schema, combat resolver, HP 숫자전, Seo Harin truth delivery, told_seoharin_truth, item_unpriced_wooden_sword payout은 열지 않는다. 무명 구원은 최종 확정이 아니라 route/epilogue candidate seed로만 남긴다.",
+    "runtime_preview_handoff": {
+      "handoff_status": "implemented",
+      "insert_after": "wuxia_boss_resolution",
+      "next_runtime_scope": "wuxia_seoharin_qingliu_resolution_handoff",
+      "guardrails": [
+        "no_final_epilogue_or_return_schema",
+        "no_combat_resolver",
+        "no_hp_numeric_battle",
+        "no_seoharin_truth_delivery",
+        "no_told_seoharin_truth",
+        "no_item_unpriced_wooden_sword_award"
+      ]
+    },
+    "runtime_preview_implementation": {
+      "implemented_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml",
+      "insert_after": "wuxia_boss_resolution",
+      "generated_artifacts": [
+        "crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json",
+        "web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json"
+      ],
+      "next_handoff": "wuxia_seoharin_qingliu_resolution_handoff"
+    }
   }
 ]

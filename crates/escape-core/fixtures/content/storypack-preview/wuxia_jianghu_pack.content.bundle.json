@@ -3511,6 +3511,145 @@
           "visual_id": "wuxia_sado_final_phase_1_price_tag"
         },
         "title": "사도 최종전 1페이즈: 가격표"
+      },
+      {
+        "body": "장부고의 줄들이 한 번에 팽팽해진다. 사도는 칼을 먼저 겨누지 않는다. 그는 서하린이 비워 둔 자리와 무명이 훔친 흐름, 청류문이 팔지 않으려 한 뜻과 천기록의 위험한 문장까지 차례로 가격표에 올린다. 네가 지키는 것이 약점이 되는 순간, 너는 그것을 약점으로만 남길지 계산식 밖의 방식으로 돌려놓을지 선택해야 한다.",
+        "choices": [
+          {
+            "id": "respond_to_seoharin_pressure",
+            "label": "서하린 관련 압박에 대응한다",
+            "outcome": {
+              "add_clues": [
+                "seoharin_waiting_is_not_debt",
+                "qingliu_belonging_not_price",
+                "unpriced_wooden_sword_condition_rises"
+              ],
+              "add_flags": [
+                "sado_final_phase_2_weakpoint_control_resolved",
+                "final_phase_2_weakpoint_control_resolved",
+                "final_seoharin_axis_high_seeded",
+                "final_qingliu_rebuild_partial_seeded",
+                "final_player_method_outside_calculation_seeded"
+              ],
+              "danger": 1,
+              "destination_id": "black_serpent_ledger_vault",
+              "log": "사도는 기다림도 결국 빚이라고 말하지만, 너는 그 자리가 팔려고 비워 둔 것이 아니었음을 붙든다. 청류문과 서하린의 이름은 약점으로만 남지 않는다.",
+              "resources": {
+                "health": -1,
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "return_flow_to_mumyeong",
+            "label": "무명에게 흐름을 돌려준다",
+            "outcome": {
+              "add_clues": [
+                "mumyeong_flow_is_not_tool",
+                "successor_logic_wavers",
+                "stolen_form_can_stop"
+              ],
+              "add_flags": [
+                "sado_final_phase_2_weakpoint_control_resolved",
+                "final_phase_2_weakpoint_control_resolved",
+                "final_mumyeong_salvation_partial_seeded",
+                "final_successor_route_suppressed_seeded",
+                "final_own_flow_choice_opened_seeded",
+                "final_player_method_protected_as_person_seeded"
+              ],
+              "danger": 1,
+              "destination_id": "black_serpent_ledger_vault",
+              "log": "무명을 사도에게 맞설 도구로 밀어 넣지 않는다. 네가 한 걸음 물러난 틈에, 훔친 초식이 아닌 자기 흐름을 고를 수 있는 아주 좁은 틈이 열린다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "read_dangerous_cheongirok_sentence",
+            "label": "천기록의 위험한 문장을 읽는다",
+            "outcome": {
+              "add_clues": [
+                "cheongirok_understanding_not_calculation",
+                "text_corruption_risk_recorded",
+                "ledger_hidden_connection_seen"
+              ],
+              "add_flags": [
+                "sado_final_phase_2_weakpoint_control_resolved",
+                "final_phase_2_weakpoint_control_resolved",
+                "final_cheongirok_state_high_use_seeded",
+                "final_cheongirok_corruption_risk_seeded",
+                "final_evidence_partial_or_strong_seeded",
+                "final_player_method_used_as_tool_risk_seeded"
+              ],
+              "danger": 2,
+              "destination_id": "black_serpent_ledger_vault",
+              "log": "천기록의 문장은 장부고의 숨은 연결을 한 번에 비춘다. 이해는 빨라지지만, 사람과 관계를 계산하는 방식이 사도의 붓끝과 닮아갈 위험도 함께 번진다.",
+              "resources": {
+                "sanity": -3
+              }
+            }
+          },
+          {
+            "id": "focus_on_sado",
+            "label": "사도에게 집중한다",
+            "outcome": {
+              "add_clues": [
+                "direct_focus_leaves_pressure_behind",
+                "sado_reads_people_before_sword"
+              ],
+              "add_flags": [
+                "sado_final_phase_2_weakpoint_control_resolved",
+                "final_phase_2_weakpoint_control_resolved",
+                "final_player_method_direct_boss_focus_seeded",
+                "final_relationship_pressure_unspent_seeded",
+                "final_network_residue_possible_seeded"
+              ],
+              "danger": 2,
+              "destination_id": "black_serpent_ledger_vault",
+              "log": "사람보다 사도의 목을 먼저 본다. 틀린 선택은 아니지만, 장부고의 줄 몇 개는 그대로 남아 네가 돌보지 못한 이름들을 계속 당긴다.",
+              "resources": {
+                "health": -2,
+                "sanity": -1
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "sado_final_phase_2_weakpoint_control_resolved"
+          ],
+          "locations": [
+            "black_serpent_ledger_vault"
+          ],
+          "required_flags": [
+            "sado_final_phase_1_price_tag_resolved",
+            "final_state_routing_seeded"
+          ]
+        },
+        "id": "wuxia_sado_final_phase_2_weakpoint_control",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "guarded_names_turn_to_pressure_points",
+              "duration_hint_ms": 1800,
+              "fallback_text": "장부의 먹줄 사이로 '서하린', '무명', '천기록', '약점'만 압박점처럼 떠오른다.",
+              "intensity": 0.86,
+              "kind": "glyph_anomaly",
+              "source": "sado_final_phase_2_weakpoint_control",
+              "stable_terms": [
+                "서하린",
+                "무명",
+                "천기록",
+                "약점"
+              ]
+            }
+          ],
+          "layout": "final_phase_weakpoint_control",
+          "speaker": "흑사방주",
+          "visual_id": "wuxia_sado_final_phase_2_weakpoint_control"
+        },
+        "title": "사도 최종전 2페이즈: 약점 장악"
       }
     ],
     "endings": [
@@ -3656,7 +3795,7 @@
   "manifest": {
     "counts": {
       "achievements": 2,
-      "encounters": 27,
+      "encounters": 28,
       "endings": 1,
       "items": 4,
       "locations": 5,

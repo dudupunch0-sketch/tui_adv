@@ -853,6 +853,21 @@
 - [x] 기본 office bundle, Web legacy generated `content.bundle.json`, `src/tui_adv/data/*.yaml`, legacy `escape-office` save/localStorage key 미변경 유지
 - [x] 다음 작업을 `wuxia_sado_final_phase_2_weakpoint_control` handoff 검토로 갱신
 
+### 0.2bw 2026-06-02 무협 `wuxia_sado_final_phase_2_weakpoint_control` preview runtime slice
+
+- [x] Notion `사도 최종전 2페이즈: 약점 장악`, `사도 최종전 3페이즈: 계산식 밖`, `사도 최종전`, `보스 결산` 재확인
+- [x] `wuxia_sado_final_phase_2_weakpoint_control`을 기존 encounter schema로 구현 가능한 final-entry slice로 결정
+- [x] `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`에서 `wuxia_sado_final_phase_1_price_tag` 뒤에 `wuxia_sado_final_phase_2_weakpoint_control` 추가
+- [x] start conditions를 `sado_final_phase_1_price_tag_resolved`, `final_state_routing_seeded`로 구현
+- [x] stable choice id `respond_to_seoharin_pressure`, `return_flow_to_mumyeong`, `read_dangerous_cheongirok_sentence`, `focus_on_sado` 구현
+- [x] 모든 선택지가 `sado_final_phase_2_weakpoint_control_resolved`, `final_phase_2_weakpoint_control_resolved`, `destination_id: black_serpent_ledger_vault` bridge를 남기도록 구현
+- [x] 서하린/무명/천기록/사도 집중별 `seoharin_axis`, `qingliu_rebuild`, `mumyeong_salvation`, `successor_route`, `own_flow_choice`, `cheongirok_state`, `player_method` seed를 flags/clues/log로만 구현
+- [x] Rust/Web storypack preview generated bundle 재생성
+- [x] Python exporter/docs/storypack DB, Rust content bundle, Web default content bundle registry 테스트 갱신
+- [x] combat resolver, HP 숫자전, final epilogue/return schema, 서하린 truth delivery, `told_seoharin_truth`, 무명 구원 확정, relation/reward schema, `item_unpriced_wooden_sword` payout 미변경 유지
+- [x] 기본 office bundle, Web legacy generated `content.bundle.json`, `src/tui_adv/data/*.yaml`, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 작업을 `wuxia_sado_final_phase_3_outside_calculation` handoff 검토로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

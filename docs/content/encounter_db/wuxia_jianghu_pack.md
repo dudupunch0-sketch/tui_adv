@@ -1,13 +1,13 @@
 # 이구학지 — 천기록 encounter situation cards
 
-Status: candidate + `wuxia_sado_final_phase_1_price_tag` preview runtime implemented
+Status: candidate + `wuxia_sado_final_phase_2_weakpoint_control` preview runtime implemented
 
-이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_sado_final_phase_1_price_tag`까지는 separate storypack preview runtime으로 승격되었다.
+이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_sado_final_phase_2_weakpoint_control`까지는 separate storypack preview runtime으로 승격되었다.
 
 공통 원칙:
 
 - 모든 카드는 `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`에 속한다.
-- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_sado_final_phase_1_price_tag`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. `wuxia_sado_final_phase_1_price_tag`는 `docs/design/Wuxia_Final_State_Routing.md`의 final state routing contract 이후 첫 final-entry slice이며, 다음 handoff 후보는 `wuxia_sado_final_phase_2_weakpoint_control`이다.
+- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_sado_final_phase_2_weakpoint_control`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. `wuxia_sado_final_phase_2_weakpoint_control`는 `docs/design/Wuxia_Final_State_Routing.md`의 final state routing contract 이후 두 번째 final-entry slice이며, 다음 handoff 후보는 `wuxia_sado_final_phase_3_outside_calculation`이다.
 - 최신 canonical 무협 설정은 **이구학지 — 천기록**이다. 이전의 generic 객잔/소림/무당/아미 placeholder는 superseded로 본다.
 - 플레이어 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계의 시장 한복판에 전이됐다”이다.
 - 선택지는 세부 수치보다 역할과 결과 hook을 먼저 정의한다.
@@ -60,8 +60,8 @@ Additional final-battle Notion pages outside the 26-row event DB:
 | Notion page | repo mapping | status |
 |---|---|---|
 | `사도 최종전 1페이즈: 가격표` | `wuxia_sado_final_phase_1_price_tag` | preview runtime implemented; ledger/evidence/pressure/item-log seed only |
-| `사도 최종전 2페이즈: 약점 장악` | none yet | future final phase handoff |
-| `사도 최종전 3페이즈: 계산식 밖` | none yet | future final phase handoff |
+| `사도 최종전 2페이즈: 약점 장악` | `wuxia_sado_final_phase_2_weakpoint_control` | preview runtime implemented; relationship/weakpoint/final-method seed only |
+| `사도 최종전 3페이즈: 계산식 밖` | none yet | next final phase handoff |
 
 ## 1. `wuxia_commute_rift_arrival`
 
@@ -2519,4 +2519,81 @@ runtime_preview_implementation:
     - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
     - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
   next_handoff: wuxia_sado_final_phase_2_weakpoint_control_handoff
+```
+
+## 28. `wuxia_sado_final_phase_2_weakpoint_control` — preview runtime 구현 완료
+
+```yaml
+id: wuxia_sado_final_phase_2_weakpoint_control
+world_id: wuxia_jianghu
+storypack_id: wuxia_jianghu_pack
+status: implemented_in_storypack_preview
+source_refs:
+  - notion_page:사도 최종전 2페이즈: 약점 장악
+  - notion_page:사도 최종전 3페이즈: 계산식 밖
+  - docs/design/Wuxia_Final_State_Routing.md
+notion_mapping:
+  notion_event_id: wuxia_sado_final_phase_2_weakpoint_control
+  notion_event_name: 사도 최종전 2페이즈: 약점 장악
+  mapping_status: preview_runtime_implemented
+runtime_preview_design_status: implemented
+implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
+phase: [final_entry, weakpoint_control_phase]
+priority_class: route_key
+location_tags: [black_serpent_ledger_vault, final_phase, weakpoint_pressure]
+surface: [sect_courtyard, faction_negotiation, cheonggi_record]
+anomaly_type: [future_record, faction_pressure, oath_binding]
+pressure_type: [sanity, health, danger]
+npc_slots: [blood_moon_antagonist]
+candidate_characters: [흑사방주, 사도, 서하린, 무명]
+summary: 사도 최종전 1페이즈의 장부/증거/압박 seed 뒤, 사도가 서하린·무명·청류문·천기록을 플레이어의 약점으로 계산하는 2페이즈 encounter.
+setup_text: 사도는 검 대신 이름을 꺼낸다. 서하린의 기다림, 무명의 상처, 청류문의 빚, 천기록의 문장이 모두 같은 장부 위에 올라가고, 플레이어는 무엇을 약점이 아니라 사람으로 남길지 골라야 한다.
+presentation:
+  visual_id: wuxia_sado_final_phase_2_weakpoint_control
+  speaker: 흑사방주
+  layout: final_phase_weakpoint_control
+  stable_terms: [서하린, 무명, 천기록, 약점]
+conditions:
+  locations: [black_serpent_ledger_vault]
+  required_flags: [sado_final_phase_1_price_tag_resolved, final_state_routing_seeded]
+  forbidden_flags: [sado_final_phase_2_weakpoint_control_resolved]
+choice_shapes:
+  - id: respond_to_seoharin_pressure
+    role: safe_pressure_relief
+    expected_costs: [health_small, sanity_medium, danger_small]
+    expected_gains: [final_seoharin_axis_high_seeded, final_qingliu_rebuild_partial_seeded]
+  - id: return_flow_to_mumyeong
+    role: safe_identity_return
+    expected_costs: [sanity_medium, danger_small]
+    expected_gains: [final_mumyeong_salvation_partial_seeded, final_successor_route_suppressed_seeded]
+  - id: read_dangerous_cheongirok_sentence
+    role: risky_truth_probe
+    expected_costs: [sanity_high, danger_medium]
+    expected_gains: [final_cheongirok_state_high_use_seeded, final_evidence_partial_or_strong_seeded]
+  - id: focus_on_sado
+    role: direct_duel_pressure
+    expected_costs: [health_medium, sanity_small, danger_medium]
+    expected_gains: [final_player_method_direct_boss_focus_seeded, final_relationship_pressure_unspent_seeded]
+outcome_hooks:
+  possible_flags: [sado_final_phase_2_weakpoint_control_resolved, final_phase_2_weakpoint_control_resolved, final_seoharin_axis_high_seeded, final_qingliu_rebuild_partial_seeded, final_player_method_outside_calculation_seeded, final_mumyeong_salvation_partial_seeded, final_successor_route_suppressed_seeded, final_own_flow_choice_opened_seeded, final_player_method_protected_as_person_seeded, final_cheongirok_state_high_use_seeded, final_cheongirok_corruption_risk_seeded, final_evidence_partial_or_strong_seeded, final_player_method_used_as_tool_risk_seeded, final_player_method_direct_boss_focus_seeded, final_relationship_pressure_unspent_seeded, final_network_residue_possible_seeded]
+  possible_clues: [seoharin_waiting_is_not_debt, qingliu_belonging_not_price, unpriced_wooden_sword_condition_rises, mumyeong_flow_is_not_tool, successor_logic_wavers, stolen_form_can_stop, cheongirok_understanding_not_calculation, text_corruption_risk_recorded, ledger_hidden_connection_seen, direct_focus_leaves_pressure_behind, sado_reads_people_before_sword]
+  possible_items: []
+  possible_destinations: [black_serpent_ledger_vault]
+main_spine_link: phase 1이 남긴 final_state_routing_seeded 뒤에 약점 압박 대응을 붙인다. 사도는 관계 때문에 약해지지 않고, 관계축은 플레이어의 응답 방식과 이후 epilogue 조건을 결정하는 seed로만 남는다.
+randomization_notes: 최종장 2페이즈 1회성 route key. `sado_final_phase_1_price_tag_resolved` 뒤에만 열고 `sado_final_phase_2_weakpoint_control_resolved`로 반복을 막는다.
+promotion_notes: preview runtime으로 구현 완료. combat resolver, HP 숫자전, final epilogue/return schema, Seo Harin truth delivery, told_seoharin_truth, Mumyeong salvation confirmation, relation/reward schema, item_unpriced_wooden_sword payout은 열지 않는다.
+runtime_preview_handoff:
+  handoff_status: implemented
+  insert_after: wuxia_sado_final_phase_1_price_tag
+  selected_over: [wuxia_sado_final_phase_3_outside_calculation, wuxia_sado_final_battle, wuxia_boss_resolution, wuxia_mumyeong_resolution, wuxia_seoharin_unsaid_stay]
+  next_runtime_scope: sado_phase_3_outside_calculation_handoff
+  default_bundle_changed: false
+  new_schema_opened: false
+runtime_preview_implementation:
+  implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
+  insert_after: wuxia_sado_final_phase_1_price_tag
+  generated_artifacts:
+    - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+    - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+  next_handoff: wuxia_sado_final_phase_3_outside_calculation_handoff
 ```

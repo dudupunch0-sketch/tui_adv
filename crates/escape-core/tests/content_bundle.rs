@@ -211,12 +211,12 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&5));
     assert_eq!(bundle.manifest.counts.get("items"), Some(&4));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&27));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&28));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 5);
-    assert_eq!(index.encounters_len(), 27);
+    assert_eq!(index.encounters_len(), 28);
 
     let market = index
         .location("jianghu_market_street")
@@ -1625,10 +1625,7 @@ fn preview_fixture_indexes_wuxia_first_fight() {
         price_tag_presentation.layout.as_deref(),
         Some("final_phase_price_tag")
     );
-    assert_eq!(
-        price_tag_presentation.speaker.as_deref(),
-        Some("흑사방주")
-    );
+    assert_eq!(price_tag_presentation.speaker.as_deref(), Some("흑사방주"));
     assert_eq!(
         price_tag_presentation.effect_cues[0].stable_terms,
         vec!["흑사방주", "장부", "빚", "청류문"]
@@ -1661,6 +1658,69 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert!(secure_ledger.outcome.add_items.is_empty());
     assert_eq!(
         secure_ledger.outcome.destination_id.as_deref(),
+        Some("black_serpent_ledger_vault")
+    );
+
+    let weakpoint = index
+        .encounter("wuxia_sado_final_phase_2_weakpoint_control")
+        .expect("Sado final phase 2 weakpoint-control encounter");
+    assert_eq!(weakpoint.title, "사도 최종전 2페이즈: 약점 장악");
+    assert_eq!(
+        weakpoint.conditions.locations,
+        vec!["black_serpent_ledger_vault"]
+    );
+    assert_eq!(
+        weakpoint.conditions.required_flags,
+        vec![
+            "sado_final_phase_1_price_tag_resolved",
+            "final_state_routing_seeded"
+        ]
+    );
+    assert_eq!(
+        weakpoint.conditions.forbidden_flags,
+        vec!["sado_final_phase_2_weakpoint_control_resolved"]
+    );
+    let weakpoint_presentation = weakpoint
+        .presentation
+        .as_ref()
+        .expect("Sado final phase 2 weakpoint-control presentation");
+    assert_eq!(
+        weakpoint_presentation.layout.as_deref(),
+        Some("final_phase_weakpoint_control")
+    );
+    assert_eq!(weakpoint_presentation.speaker.as_deref(), Some("흑사방주"));
+    assert_eq!(
+        weakpoint_presentation.effect_cues[0].stable_terms,
+        vec!["서하린", "무명", "천기록", "약점"]
+    );
+    assert_eq!(weakpoint.choices.len(), 4);
+    let return_flow = weakpoint
+        .choices
+        .iter()
+        .find(|choice| choice.id == "return_flow_to_mumyeong")
+        .expect("return flow to Mumyeong choice");
+    assert_eq!(
+        return_flow.outcome.add_flags,
+        vec![
+            "sado_final_phase_2_weakpoint_control_resolved",
+            "final_phase_2_weakpoint_control_resolved",
+            "final_mumyeong_salvation_partial_seeded",
+            "final_successor_route_suppressed_seeded",
+            "final_own_flow_choice_opened_seeded",
+            "final_player_method_protected_as_person_seeded"
+        ]
+    );
+    assert_eq!(
+        return_flow.outcome.add_clues,
+        vec![
+            "mumyeong_flow_is_not_tool",
+            "successor_logic_wavers",
+            "stolen_form_can_stop"
+        ]
+    );
+    assert!(return_flow.outcome.add_items.is_empty());
+    assert_eq!(
+        return_flow.outcome.destination_id.as_deref(),
         Some("black_serpent_ledger_vault")
     );
 }

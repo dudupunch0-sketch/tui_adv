@@ -67,6 +67,7 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         "wuxia_mumyeong_request_for_aid",
         "wuxia_qingliu_attack_after_war",
         "wuxia_sado_final_phase_1_price_tag",
+        "wuxia_sado_final_phase_2_weakpoint_control",
         "wuxia_seo_harin_rescue",
         "wuxia_seoharin_empty_place",
         "wuxia_seoharin_left_meal",
@@ -314,6 +315,17 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
     assert "safe_pressure_relief" in [choice["role"] for choice in price_tag.choice_shapes]
     assert "final_evidence_strong_seeded" in price_tag.outcome_hooks["possible_flags"]
     assert "item_blackscale_ledger_logged" in price_tag.outcome_hooks["possible_clues"]
+
+    weakpoint = db.encounter_cards["wuxia_sado_final_phase_2_weakpoint_control"]
+    assert weakpoint.world_id == "wuxia_jianghu"
+    assert weakpoint.storypack_id == "wuxia_jianghu_pack"
+    assert weakpoint.status == "implemented_in_storypack_preview"
+    assert weakpoint.priority_class == "route_key"
+    assert "weakpoint_control_phase" in weakpoint.phases
+    assert "faction_negotiation" in weakpoint.surfaces
+    assert "safe_pressure_relief" in [choice["role"] for choice in weakpoint.choice_shapes]
+    assert "final_mumyeong_salvation_partial_seeded" in weakpoint.outcome_hooks["possible_flags"]
+    assert "cheongirok_understanding_not_calculation" in weakpoint.outcome_hooks["possible_clues"]
 
 
 def test_storypack_db_public_files_validate_cleanly():

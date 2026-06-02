@@ -7234,5 +7234,268 @@
       ],
       "next_handoff": "wuxia_sado_final_phase_2_weakpoint_control_handoff"
     }
+  },
+  {
+    "id": "wuxia_sado_final_phase_2_weakpoint_control",
+    "world_id": "wuxia_jianghu",
+    "storypack_id": "wuxia_jianghu_pack",
+    "status": "implemented_in_storypack_preview",
+    "source_refs": [
+      "notion_page:사도 최종전 2페이즈: 약점 장악",
+      "notion_page:사도 최종전 3페이즈: 계산식 밖",
+      "notion_page:보스 결산",
+      "docs/design/Wuxia_Final_State_Routing.md",
+      "docs/dev/Development_Plan.md#058-2026-06-02-무협-wuxia_sado_final_phase_2_weakpoint_control-preview-runtime-slice"
+    ],
+    "notion_mapping": {
+      "notion_event_id": "wuxia_sado_final_phase_2_weakpoint_control",
+      "notion_event_name": "사도 최종전 2페이즈: 약점 장악",
+      "mapping_status": "preview_runtime_implemented"
+    },
+    "runtime_preview_design_status": "implemented",
+    "implemented_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml",
+    "phase": [
+      "final_entry",
+      "weakpoint_control_phase"
+    ],
+    "priority_class": "route_key",
+    "location_tags": [
+      "black_serpent_ledger_vault",
+      "final_phase"
+    ],
+    "surface": [
+      "sect_courtyard",
+      "faction_negotiation",
+      "cheonggi_record"
+    ],
+    "anomaly_type": [
+      "future_record",
+      "faction_pressure",
+      "oath_binding"
+    ],
+    "pressure_type": [
+      "sanity",
+      "health",
+      "danger"
+    ],
+    "npc_slots": [
+      "blood_moon_antagonist"
+    ],
+    "candidate_characters": [
+      "흑사방주",
+      "사도",
+      "서하린",
+      "무명"
+    ],
+    "summary": "사도 최종전 2페이즈에서 서하린, 무명, 청류문, 천기록 축을 사도가 약점으로 읽고, 플레이어가 이를 final-state seed로 어떻게 돌려놓을지 선택하는 encounter.",
+    "setup_text": "흑사방 장부고의 줄이 팽팽해지고, 사도는 지키려는 것이 곧 약점이라고 말한다. 이 페이즈는 사도를 약화시키는 장치가 아니라 플레이어의 대응 방식과 후일담 입력값을 남긴다.",
+    "presentation": {
+      "visual_id": "wuxia_sado_final_phase_2_weakpoint_control",
+      "speaker": "흑사방주",
+      "layout": "final_phase_weakpoint_control",
+      "stable_terms": [
+        "서하린",
+        "무명",
+        "천기록",
+        "약점"
+      ]
+    },
+    "conditions": {
+      "locations": [
+        "black_serpent_ledger_vault"
+      ],
+      "required_flags": [
+        "sado_final_phase_1_price_tag_resolved",
+        "final_state_routing_seeded"
+      ],
+      "forbidden_flags": [
+        "sado_final_phase_2_weakpoint_control_resolved"
+      ]
+    },
+    "choice_shapes": [
+      {
+        "id": "respond_to_seoharin_pressure",
+        "role": "safe_pressure_relief",
+        "label_direction": "서하린 관련 압박에 대응한다",
+        "expected_costs": [
+          "health_small",
+          "sanity_small"
+        ],
+        "expected_gains": [
+          "final_seoharin_axis_high_seeded",
+          "final_qingliu_rebuild_partial_seeded"
+        ],
+        "outcome_hook": {
+          "add_flags": [
+            "sado_final_phase_2_weakpoint_control_resolved",
+            "final_phase_2_weakpoint_control_resolved",
+            "final_seoharin_axis_high_seeded",
+            "final_qingliu_rebuild_partial_seeded",
+            "final_player_method_outside_calculation_seeded"
+          ],
+          "add_clues": [
+            "seoharin_waiting_is_not_debt",
+            "qingliu_belonging_not_price",
+            "unpriced_wooden_sword_condition_rises"
+          ],
+          "destination_id": "black_serpent_ledger_vault"
+        }
+      },
+      {
+        "id": "return_flow_to_mumyeong",
+        "role": "safe_identity_return",
+        "label_direction": "무명에게 흐름을 돌려준다",
+        "expected_costs": [
+          "sanity_small",
+          "combat_opportunity"
+        ],
+        "expected_gains": [
+          "final_mumyeong_salvation_partial_seeded",
+          "final_successor_route_suppressed_seeded"
+        ],
+        "outcome_hook": {
+          "add_flags": [
+            "sado_final_phase_2_weakpoint_control_resolved",
+            "final_phase_2_weakpoint_control_resolved",
+            "final_mumyeong_salvation_partial_seeded",
+            "final_successor_route_suppressed_seeded",
+            "final_own_flow_choice_opened_seeded",
+            "final_player_method_protected_as_person_seeded"
+          ],
+          "add_clues": [
+            "mumyeong_flow_is_not_tool",
+            "successor_logic_wavers",
+            "stolen_form_can_stop"
+          ],
+          "destination_id": "black_serpent_ledger_vault"
+        }
+      },
+      {
+        "id": "read_dangerous_cheongirok_sentence",
+        "role": "risky_truth_probe",
+        "label_direction": "천기록의 위험한 문장을 읽는다",
+        "expected_costs": [
+          "sanity_medium",
+          "corruption_risk"
+        ],
+        "expected_gains": [
+          "final_cheongirok_state_high_use_seeded",
+          "final_evidence_partial_or_strong_seeded"
+        ],
+        "outcome_hook": {
+          "add_flags": [
+            "sado_final_phase_2_weakpoint_control_resolved",
+            "final_phase_2_weakpoint_control_resolved",
+            "final_cheongirok_state_high_use_seeded",
+            "final_cheongirok_corruption_risk_seeded",
+            "final_evidence_partial_or_strong_seeded",
+            "final_player_method_used_as_tool_risk_seeded"
+          ],
+          "add_clues": [
+            "cheongirok_understanding_not_calculation",
+            "text_corruption_risk_recorded",
+            "ledger_hidden_connection_seen"
+          ],
+          "destination_id": "black_serpent_ledger_vault"
+        }
+      },
+      {
+        "id": "focus_on_sado",
+        "role": "direct_duel_pressure",
+        "label_direction": "사도에게 집중한다",
+        "expected_costs": [
+          "health_medium",
+          "relationship_pressure_unspent"
+        ],
+        "expected_gains": [
+          "final_player_method_direct_boss_focus_seeded"
+        ],
+        "outcome_hook": {
+          "add_flags": [
+            "sado_final_phase_2_weakpoint_control_resolved",
+            "final_phase_2_weakpoint_control_resolved",
+            "final_player_method_direct_boss_focus_seeded",
+            "final_relationship_pressure_unspent_seeded",
+            "final_network_residue_possible_seeded"
+          ],
+          "add_clues": [
+            "direct_focus_leaves_pressure_behind",
+            "sado_reads_people_before_sword"
+          ],
+          "destination_id": "black_serpent_ledger_vault"
+        }
+      }
+    ],
+    "outcome_hooks": {
+      "possible_flags": [
+        "sado_final_phase_2_weakpoint_control_resolved",
+        "final_phase_2_weakpoint_control_resolved",
+        "final_seoharin_axis_high_seeded",
+        "final_qingliu_rebuild_partial_seeded",
+        "final_player_method_outside_calculation_seeded",
+        "final_mumyeong_salvation_partial_seeded",
+        "final_successor_route_suppressed_seeded",
+        "final_own_flow_choice_opened_seeded",
+        "final_player_method_protected_as_person_seeded",
+        "final_cheongirok_state_high_use_seeded",
+        "final_cheongirok_corruption_risk_seeded",
+        "final_evidence_partial_or_strong_seeded",
+        "final_player_method_used_as_tool_risk_seeded",
+        "final_player_method_direct_boss_focus_seeded",
+        "final_relationship_pressure_unspent_seeded",
+        "final_network_residue_possible_seeded"
+      ],
+      "possible_clues": [
+        "seoharin_waiting_is_not_debt",
+        "qingliu_belonging_not_price",
+        "unpriced_wooden_sword_condition_rises",
+        "mumyeong_flow_is_not_tool",
+        "successor_logic_wavers",
+        "stolen_form_can_stop",
+        "cheongirok_understanding_not_calculation",
+        "text_corruption_risk_recorded",
+        "ledger_hidden_connection_seen",
+        "direct_focus_leaves_pressure_behind",
+        "sado_reads_people_before_sword"
+      ],
+      "possible_items": [],
+      "possible_destinations": [
+        "black_serpent_ledger_vault"
+      ]
+    },
+    "main_spine_link": "phase 1의 ledger/evidence/pressure seed 뒤에 이어지는 final-entry slice. 관계축은 사도 디버프가 아니라 플레이어가 무엇을 어떻게 지키는지에 대한 final-state seed로 남긴다.",
+    "randomization_notes": "최종장 2페이즈 1회성 route key. sado_final_phase_1_price_tag_resolved 뒤 장부고에서만 열고 sado_final_phase_2_weakpoint_control_resolved로 반복을 막는다.",
+    "promotion_notes": "preview runtime으로 구현 완료. 사도 최종전 전체, phase 3, 보스 결산, 무명 결산, 서하린 late relationship branch는 계속 보류하고, 2페이즈 약점 장악만 schema-less relation/identity/cheongirok/player-method seed로 landing했다. combat resolver, HP 숫자전, final epilogue/return schema, Seo Harin truth delivery, told_seoharin_truth, Mumyeong salvation confirmation, relation/reward schema, item_unpriced_wooden_sword payout, legacy office bundle, legacy escape-office key는 열지 않는다.",
+    "runtime_preview_handoff": {
+      "handoff_status": "implemented",
+      "insert_after": "wuxia_sado_final_phase_1_price_tag",
+      "selected_over": [
+        "wuxia_sado_final_battle",
+        "wuxia_sado_final_phase_3_outside_calculation",
+        "wuxia_boss_resolution",
+        "wuxia_mumyeong_resolution",
+        "wuxia_seoharin_unsaid_stay"
+      ],
+      "next_runtime_scope": "sado_phase_3_outside_calculation_handoff",
+      "guardrails": [
+        "no_combat_resolver",
+        "no_hp_numeric_battle",
+        "no_final_epilogue_or_return_schema",
+        "no_seoharin_truth_delivery",
+        "no_told_seoharin_truth",
+        "no_mumyeong_salvation_confirmation",
+        "no_relation_or_reward_schema",
+        "no_item_unpriced_wooden_sword_award"
+      ]
+    },
+    "runtime_preview_implementation": {
+      "implemented_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml",
+      "insert_after": "wuxia_sado_final_phase_1_price_tag",
+      "generated_artifacts": [
+        "crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json",
+        "web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json"
+      ],
+      "next_handoff": "wuxia_sado_final_phase_3_outside_calculation_handoff"
+    }
   }
 ]

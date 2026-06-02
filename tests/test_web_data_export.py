@@ -111,6 +111,7 @@ def test_export_web_data_builds_renderer_neutral_content_bundle():
             "wuxia_seoharin_empty_place",
             "wuxia_seoharin_left_meal",
             "wuxia_sado_final_phase_1_price_tag",
+            "wuxia_sado_final_phase_2_weakpoint_control",
         }
         for encounter in bundle["content"]["encounters"]
     )
@@ -134,7 +135,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     assert bundle["manifest"]["counts"] == {
         "locations": 5,
         "items": 4,
-        "encounters": 27,
+        "encounters": 28,
         "endings": 1,
         "achievements": 2,
         "secrets": 0,
@@ -175,6 +176,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "wuxia_seoharin_empty_place",
         "wuxia_seoharin_left_meal",
         "wuxia_sado_final_phase_1_price_tag",
+        "wuxia_sado_final_phase_2_weakpoint_control",
     ]
     first_fight = bundle["content"]["encounters"][1]
     assert first_fight["conditions"] == {
@@ -1023,6 +1025,44 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "alliance_silence_accountability_seeded",
     ]
     assert secure_ledger["outcome"]["destination_id"] == "black_serpent_ledger_vault"
+    weakpoint = bundle["content"]["encounters"][27]
+    assert weakpoint["conditions"] == {
+        "locations": ["black_serpent_ledger_vault"],
+        "required_flags": [
+            "sado_final_phase_1_price_tag_resolved",
+            "final_state_routing_seeded",
+        ],
+        "forbidden_flags": ["sado_final_phase_2_weakpoint_control_resolved"],
+    }
+    assert weakpoint["presentation"]["layout"] == "final_phase_weakpoint_control"
+    assert weakpoint["presentation"]["speaker"] == "흑사방주"
+    assert weakpoint["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "서하린",
+        "무명",
+        "천기록",
+        "약점",
+    ]
+    assert [choice["id"] for choice in weakpoint["choices"]] == [
+        "respond_to_seoharin_pressure",
+        "return_flow_to_mumyeong",
+        "read_dangerous_cheongirok_sentence",
+        "focus_on_sado",
+    ]
+    return_flow = weakpoint["choices"][1]
+    assert return_flow["outcome"]["add_flags"] == [
+        "sado_final_phase_2_weakpoint_control_resolved",
+        "final_phase_2_weakpoint_control_resolved",
+        "final_mumyeong_salvation_partial_seeded",
+        "final_successor_route_suppressed_seeded",
+        "final_own_flow_choice_opened_seeded",
+        "final_player_method_protected_as_person_seeded",
+    ]
+    assert return_flow["outcome"]["add_clues"] == [
+        "mumyeong_flow_is_not_tool",
+        "successor_logic_wavers",
+        "stolen_form_can_stop",
+    ]
+    assert return_flow["outcome"]["destination_id"] == "black_serpent_ledger_vault"
     assert "dev_desk" not in json.dumps(bundle, ensure_ascii=False)
     assert _missing_private_secret_fields(bundle)
 

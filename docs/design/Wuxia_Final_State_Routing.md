@@ -16,8 +16,8 @@ The 2026-06-02 `wuxia_seoharin_left_meal_followup` check compared late companion
 | `사도 최종전 상태값 사전` | `37337e69-695e-81c7-a9fd-e0a0e22005e2` | canonical final inputs and alias/deprecation policy |
 | `사도 최종전` | `37237e69-695e-8169-97a3-d8106a817275` | required final battle container |
 | `사도 최종전 1페이즈: 가격표` | `37237e69-695e-81e2-aac7-cecfce3e4239` | implemented first final-entry runtime slice after this contract |
-| `사도 최종전 2페이즈: 약점 통제` | `37237e69-695e-8184-8beb-ccf56ae8fcd1` | deferred phase until state contract exists |
-| `사도 최종전 3페이즈: 계산식 밖` | `37237e69-695e-8107-b9ab-cab708a6c5dd` | deferred phase until state contract exists |
+| `사도 최종전 2페이즈: 약점 장악` | `37237e69-695e-8184-8beb-ccf56ae8fcd1` | implemented second final-entry runtime slice after phase 1 |
+| `사도 최종전 3페이즈: 계산식 밖` | `37237e69-695e-8107-b9ab-cab708a6c5dd` | next handoff candidate after phase 2 |
 | `보스 결산` | `37137e69-695e-8164-ab41-e794aa886dae` | deferred boss result card |
 | `무명 결산` | `37137e69-695e-8159-8032-ce5f108ca6c8` | deferred Mumyeong salvation result card |
 | `가지 말라는 말` | `37137e69-695e-8138-a41d-e153190f85aa` | deferred Seo Harin final relationship branch |
@@ -59,8 +59,8 @@ This contract explicitly keeps these surfaces closed:
 ## State Lifecycle
 
 1. `wuxia_sado_final_phase_1_price_tag` can seed `network_handling`, `evidence_state`, `pressure_state`, and `item_logs` through existing encounter hooks.
-2. Phase 2 should later update `seoharin_axis`, `qingliu_rebuild`, `mumyeong_salvation`, `successor_route`, `cheongirok_state`, `player_method`, and evidence pressure, but only after the next handoff opens it.
-3. Phase 3 should finalize `combat_result` and the last player-method interpretation.
+2. `wuxia_sado_final_phase_2_weakpoint_control` can seed `seoharin_axis`, `qingliu_rebuild`, `mumyeong_salvation`, `successor_route`, `own_flow_choice`, `truth_state`, `cheongirok_state`, `player_method`, and evidence pressure through existing encounter hooks.
+3. Phase 3 should finalize `combat_result`, `boss_resolution_route`, and the last player-method interpretation only after the next handoff opens it.
 4. `wuxia_boss_resolution`, `wuxia_mumyeong_resolution`, Seo Harin late companion/return branches, Black Serpent settlement, and Cheonggi Record settlement consume these states instead of recomputing them independently.
 
 ## Final Result Priority

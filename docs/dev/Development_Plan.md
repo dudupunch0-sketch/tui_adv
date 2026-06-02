@@ -2881,6 +2881,32 @@ non-goals:
 
 다음 handoff 후보는 `wuxia_seoharin_qingliu_resolution`이다. 무명 결산이 남긴 열린 문/닫힌 문/마지막 밥상/청류문 복구 후보를 소비하되, 구현 전 Notion의 서하린 late branch와 final routing contract를 다시 대조한다.
 
+## 0.62 2026-06-02 무협 `wuxia_seoharin_qingliu_resolution` preview runtime slice
+
+현재 상태: preview runtime 구현 완료. Notion `가지 말라는 말`, `서하린의 후일`, `청류문의 후일`, `닫히지 않은 산문`, `닫힌 산문`, `최종장 결산 라우팅 마스터`, `사도 최종전 상태값 사전`을 대조해 기존 encounter schema만으로 landing했다. 이 slice는 최종 후일담 출력기가 아니라 무명 결산 뒤 서하린/청류문 축 후보를 open-gate/empty-place/Qingliu future/weakened-pressure/closed-gate epilogue candidate seed로 정규화하는 bridge다.
+
+구현:
+
+- `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`에서 `wuxia_mumyeong_resolution` 뒤에 `wuxia_seoharin_qingliu_resolution`을 추가했다.
+- required flags는 `mumyeong_resolution_resolved`, `boss_resolution_resolved`, `final_result_priority_applied_seeded`, `final_combat_result_battle_victory_seeded`, `final_state_routing_seeded`다.
+- forbidden flag는 `seoharin_qingliu_resolution_resolved`다.
+- stable choice id는 `leave_the_gate_unclosed`, `record_qingliu_rebuild_without_glory`, `keep_empty_place_for_return_or_absence`, `mark_qingliu_pressure_still_unresolved`, `close_the_gate_with_sado_logic`다.
+- common hook은 `seoharin_qingliu_resolution_resolved`, `destination_id: black_serpent_ledger_vault`다.
+- 선택지는 서하린 긍정 후일/열린 산문/비워둔 자리/청류문 안정·약화/닫힌 산문 후보 seed만 남긴다.
+- Rust/Web generated storypack preview bundle을 재생성했다.
+
+계속 닫아 둘 범위:
+
+- final epilogue renderer, return/settlement schema
+- combat resolver, HP numeric battle, full `wuxia_sado_final_battle` container
+- 서하린 truth delivery, `told_seoharin_truth`
+- 실제 아이템 `item_unpriced_wooden_sword` payout
+- route graph, faction reputation, relation/debt ledger
+- reward/ability schema
+- legacy office bundle, `src/tui_adv/data/*.yaml`, legacy `escape-office` save/localStorage key
+
+다음 handoff 후보는 `wuxia_cheongirok_resolution`이다. 서하린/청류문 결산이 남긴 open-gate/closed-gate/Qingliu future 후보와 final routing contract의 `cheongirok_state`/`player_method` 조건을 소비하되, 구현 전 Notion `천기록의 마지막 장`, `08. 엔딩과 후일담 연결`, final routing contract를 다시 대조한다.
+
 ## 1. 목표
 
 국내 최고 대기업 IT/반도체 회사의 연구개발동 같은 사무실을 배경으로 한 TUI 기반 랜덤 인카운터 선택지 생존 게임을 만든다.
@@ -3481,7 +3507,7 @@ src/tui_adv/data/secrets.example.yaml
 
 현재 최우선 남은 작업:
 
-1. 무협 storypack preview/main의 다음 작업은 `wuxia_seoharin_qingliu_resolution` handoff/runtime candidate 검토다. `wuxia_sado_final_phase_1_price_tag`, `wuxia_sado_final_phase_2_weakpoint_control`, `wuxia_sado_final_phase_3_outside_calculation`, `wuxia_boss_resolution`, `wuxia_mumyeong_resolution`은 기존 encounter schema로 구현 완료됐고, `docs/design/Wuxia_Final_State_Routing.md`가 canonical final inputs/result priority/alias policy를 소유한다.
+1. 무협 storypack preview/main의 다음 작업은 `wuxia_cheongirok_resolution` handoff/runtime candidate 검토다. `wuxia_sado_final_phase_1_price_tag`, `wuxia_sado_final_phase_2_weakpoint_control`, `wuxia_sado_final_phase_3_outside_calculation`, `wuxia_boss_resolution`, `wuxia_mumyeong_resolution`, `wuxia_seoharin_qingliu_resolution`은 기존 encounter schema로 구현 완료됐고, `docs/design/Wuxia_Final_State_Routing.md`가 canonical final inputs/result priority/alias policy를 소유한다.
    - 현재 Web/terminal default storypack은 `wuxia_jianghu_pack` / **이구학지 — 천기록**이다.
    - `escape from the office` / office isolation 계열은 legacy/parity content로 유지한다.
    - machine-readable storypack DB, preview mode 결정, `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`, `wuxia_wounded_shelter_dawn_offers`, `wuxia_mumyeong_first_sighting`, `wuxia_mumyeong_first_confrontation`, `wuxia_mumyeong_copy_style_reveal`, `wuxia_mumyeong_reads_orthodox_style`, `wuxia_mumyeong_midgame_reunion`, `wuxia_boss_first_appearance`, `wuxia_mumyeong_request_for_aid`, `wuxia_mumyeong_awakening`, `wuxia_qingliu_attack_after_war`, `wuxia_mumyeong_destroys_orthodox_sect`, `wuxia_boss_recruits_mumyeong`, `wuxia_mumyeong_departure_truth_summary`, `wuxia_seoharin_empty_place`, `wuxia_seoharin_left_meal`, `wuxia_sado_final_phase_1_price_tag`, `wuxia_sado_final_phase_2_weakpoint_control`, `wuxia_sado_final_phase_3_outside_calculation`, `wuxia_boss_resolution`, `wuxia_mumyeong_resolution`, boss follow-up handoff, failed-aid follow-up handoff, Web/default 이구학지 start/save wiring, terminal default 이구학지 bundle 선택은 완료했다.
@@ -3539,7 +3565,7 @@ src/tui_adv/data/secrets.example.yaml
 8. Web player start/save UX first slice 후속: save JSON export/import, settings/reduce-motion UI, 오늘의 seed는 별도 승격 전까지 열지 않는다.
 9. 여러 히든 현실 보물
 10. 전투 시스템 후속 slice는 `docs/design/Basic_Combat_Action_Model.md`의 action taxonomy를 기준으로 `supply_closet_auto_brawl`와 `wuxia_cheongryu_chore_sparring` 이후에도 반복 가치가 확인될 때만 presentation metadata 정리 또는 Rust combat resolver로 승격한다.
-11. 무협 storypack 후속: 정파/사파/천기·귀환 opener(`wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`), deferred-offer card `wuxia_wounded_shelter_dawn_offers`, common midgame bridge `wuxia_mumyeong_first_sighting`, rival first confrontation `wuxia_mumyeong_first_confrontation`, copy-style reveal `wuxia_mumyeong_copy_style_reveal`, orthodox style trace `wuxia_mumyeong_reads_orthodox_style`, midgame reunion `wuxia_mumyeong_midgame_reunion`, boss first appearance `wuxia_boss_first_appearance`, Mumyeong aid request `wuxia_mumyeong_request_for_aid`, Mumyeong awakening `wuxia_mumyeong_awakening`, Qingliu attack trace `wuxia_qingliu_attack_after_war`, Hyeonakmun consequence trace `wuxia_mumyeong_destroys_orthodox_sect`, boss recruitment trace `wuxia_boss_recruits_mumyeong`, sealed departure truth summary `wuxia_mumyeong_departure_truth_summary`, Seo Harin empty-place bridge `wuxia_seoharin_empty_place`, Seo Harin left-meal bridge `wuxia_seoharin_left_meal`, Sado final phase 1 price-tag/ledger bridge `wuxia_sado_final_phase_1_price_tag`, Sado final phase 2 weakpoint-control bridge `wuxia_sado_final_phase_2_weakpoint_control`, Sado final phase 3 outside-calculation bridge `wuxia_sado_final_phase_3_outside_calculation`, boss resolution route seed bridge `wuxia_boss_resolution`, Mumyeong resolution route seed bridge `wuxia_mumyeong_resolution`까지 구현 완료했다. 다음 runtime 후보는 `wuxia_seoharin_qingliu_resolution` handoff다.
+11. 무협 storypack 후속: 정파/사파/천기·귀환 opener(`wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`), deferred-offer card `wuxia_wounded_shelter_dawn_offers`, common midgame bridge `wuxia_mumyeong_first_sighting`, rival first confrontation `wuxia_mumyeong_first_confrontation`, copy-style reveal `wuxia_mumyeong_copy_style_reveal`, orthodox style trace `wuxia_mumyeong_reads_orthodox_style`, midgame reunion `wuxia_mumyeong_midgame_reunion`, boss first appearance `wuxia_boss_first_appearance`, Mumyeong aid request `wuxia_mumyeong_request_for_aid`, Mumyeong awakening `wuxia_mumyeong_awakening`, Qingliu attack trace `wuxia_qingliu_attack_after_war`, Hyeonakmun consequence trace `wuxia_mumyeong_destroys_orthodox_sect`, boss recruitment trace `wuxia_boss_recruits_mumyeong`, sealed departure truth summary `wuxia_mumyeong_departure_truth_summary`, Seo Harin empty-place bridge `wuxia_seoharin_empty_place`, Seo Harin left-meal bridge `wuxia_seoharin_left_meal`, Sado final phase 1 price-tag/ledger bridge `wuxia_sado_final_phase_1_price_tag`, Sado final phase 2 weakpoint-control bridge `wuxia_sado_final_phase_2_weakpoint_control`, Sado final phase 3 outside-calculation bridge `wuxia_sado_final_phase_3_outside_calculation`, boss resolution route seed bridge `wuxia_boss_resolution`, Mumyeong resolution route seed bridge `wuxia_mumyeong_resolution`, Seo Harin/Qingliu resolution route seed bridge `wuxia_seoharin_qingliu_resolution`까지 구현 완료했다. 다음 runtime 후보는 `wuxia_cheongirok_resolution` handoff다.
 12. 천외편린/각성편린 3택 reward/ability schema는 schema-less bridge가 충분히 검증된 뒤 별도 slice로 검토한다.
 13. 야근몽 storypack preview 후속: `yageunmong_late_night_desk_awake` 또는 각성편린 3택 preview를 별도 storypack preview로 열지 결정한다.
 
@@ -3586,7 +3612,7 @@ Web 또는 terminal renderer가 게임 규칙을 다시 구현하면 Rust GameCo
 
 ## 10. 다음 액션
 
-1. 다음 무협 storypack preview/main 작업은 `wuxia_seoharin_qingliu_resolution` handoff/runtime candidate 검토다. `wuxia_sado_final_phase_1_price_tag`, `wuxia_sado_final_phase_2_weakpoint_control`, `wuxia_sado_final_phase_3_outside_calculation`, `wuxia_boss_resolution`, `wuxia_mumyeong_resolution`은 final state routing contract 기준으로 구현 완료했다.
+1. 다음 무협 storypack preview/main 작업은 `wuxia_cheongirok_resolution` handoff/runtime candidate 검토다. `wuxia_sado_final_phase_1_price_tag`, `wuxia_sado_final_phase_2_weakpoint_control`, `wuxia_sado_final_phase_3_outside_calculation`, `wuxia_boss_resolution`, `wuxia_mumyeong_resolution`, `wuxia_seoharin_qingliu_resolution`은 final state routing contract 기준으로 구현 완료했다.
    - `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`, `wuxia_wounded_shelter_dawn_offers`, `wuxia_mumyeong_first_sighting`, `wuxia_mumyeong_first_confrontation`, `wuxia_mumyeong_copy_style_reveal`, `wuxia_mumyeong_reads_orthodox_style`, `wuxia_mumyeong_midgame_reunion`, `wuxia_boss_first_appearance`, `wuxia_mumyeong_request_for_aid`, `wuxia_mumyeong_awakening`, `wuxia_qingliu_attack_after_war`, `wuxia_mumyeong_destroys_orthodox_sect`, `wuxia_boss_recruits_mumyeong`, `wuxia_mumyeong_departure_truth_summary`, `wuxia_seoharin_empty_place`, `wuxia_seoharin_left_meal`, `wuxia_sado_final_phase_1_price_tag`, `wuxia_sado_final_phase_2_weakpoint_control`, `wuxia_sado_final_phase_3_outside_calculation`는 이미 이구학지 runtime bundle에 구현되어 있다.
    - Web/terminal default storypack은 이구학지이며, terminal도 `--scene content` 기본 실행에서 같은 bundle을 사용한다. `--storypack-preview wuxia_jianghu_pack`는 명시적 동일 경로로 남겼고, Web의 별도 preview launcher는 이구학지가 기본이 되면서 목록에서 비워 두었다.
    - 이구학지 runtime은 계속 `storypack_preview` 계열 bundle metadata와 `default_location: wuxia_commute_rift` 시작점을 유지하되, Web player에서는 이를 `storypack_main`으로 감싼 default bundle JSON으로 사용한다.
@@ -3622,7 +3648,7 @@ Web 또는 terminal renderer가 게임 규칙을 다시 구현하면 Rust GameCo
    - required flags는 `seoharin_empty_place_resolved`, `seoharin_axis_opened`, `empty_place_remembered`, `truth_delivery_still_unopened`, `midgame_continuity_started`다.
    - stable choice id는 `eat_the_left_meal_quietly`, `thank_seoharin_for_the_bowl`, `joke_about_who_ordered_extra_rice`, `pass_without_eating_the_meal`다.
    - common hook은 `seoharin_left_meal_resolved`, `truth_delivery_still_unopened`, `destination_id: cheongryu_outer_courtyard`이며, 긍정 선택은 `seoharin_axis_deepened`/`qingliu_belonging_warmed`, 거절 선택은 `seoharin_axis_still_open`/`left_meal_left_untouched`를 남긴다.
-   - `wuxia_sado_final_phase_1_price_tag`, `wuxia_sado_final_phase_2_weakpoint_control`, `wuxia_sado_final_phase_3_outside_calculation`, `wuxia_boss_resolution`, `wuxia_mumyeong_resolution`는 preview runtime 구현 완료다. ledger/evidence/pressure/item-log seed, weakpoint/final-method seed, outside-calculation result candidate seed, boss-resolution route seed, Mumyeong-resolution route seed를 기존 encounter schema로만 남겼고, 다음 runtime 후보는 `wuxia_seoharin_qingliu_resolution` handoff다. `wuxia_sado_final_battle`, `wuxia_seoharin_unsaid_stay`, 남은 final/late companion 후보는 계속 보류한다.
+   - `wuxia_sado_final_phase_1_price_tag`, `wuxia_sado_final_phase_2_weakpoint_control`, `wuxia_sado_final_phase_3_outside_calculation`, `wuxia_boss_resolution`, `wuxia_mumyeong_resolution`, `wuxia_seoharin_qingliu_resolution`는 preview runtime 구현 완료다. ledger/evidence/pressure/item-log seed, weakpoint/final-method seed, outside-calculation result candidate seed, boss-resolution route seed, Mumyeong-resolution route seed, Seo Harin/Qingliu epilogue candidate seed를 기존 encounter schema로만 남겼고, 다음 runtime 후보는 `wuxia_cheongirok_resolution` handoff다. `wuxia_sado_final_battle`, `wuxia_seoharin_unsaid_stay`, 남은 final/late companion 후보는 계속 보류한다.
    - seed 기반 random copy-style system/table, 천외편린 3택 reward/ability schema, boss combat/final resolution, 서하린에게 진실 전달, 무명 구원 확정, `told_seoharin_truth`, 무명/보스 결산, epilogue/return system은 바로 열지 않는다.
    - legacy office `content.bundle.json`, `src/tui_adv/data/*.yaml`, `escape-office` save/localStorage key는 바꾸지 않는다.
    - Rust GameCore / `ScenePage` / WASM JSON boundary가 가진 gameplay truth를 renderer가 재계산하지 않는다.

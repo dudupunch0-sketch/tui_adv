@@ -115,6 +115,7 @@ def test_export_web_data_builds_renderer_neutral_content_bundle():
             "wuxia_sado_final_phase_3_outside_calculation",
             "wuxia_boss_resolution",
             "wuxia_mumyeong_resolution",
+            "wuxia_seoharin_qingliu_resolution",
         }
         for encounter in bundle["content"]["encounters"]
     )
@@ -138,7 +139,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     assert bundle["manifest"]["counts"] == {
         "locations": 5,
         "items": 4,
-        "encounters": 31,
+        "encounters": 32,
         "endings": 1,
         "achievements": 2,
         "secrets": 0,
@@ -183,6 +184,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "wuxia_sado_final_phase_3_outside_calculation",
         "wuxia_boss_resolution",
         "wuxia_mumyeong_resolution",
+        "wuxia_seoharin_qingliu_resolution",
     ]
     first_fight = bundle["content"]["encounters"][1]
     assert first_fight["conditions"] == {

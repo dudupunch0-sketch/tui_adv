@@ -3210,6 +3210,145 @@ fn json_boundary_reaches_wuxia_mumyeong_resolution_after_boss_resolution() {
 }
 
 #[test]
+fn json_boundary_reaches_wuxia_seoharin_qingliu_resolution_after_mumyeong_resolution() {
+    let outside_state_json = wuxia_state_after_actions(&[
+        "choice:follow_roadside_dust",
+        "move:jianghu_market_street",
+        "choice:run_toward_open_street",
+        "choice:choose_failure_log",
+        "choice:tell_plain_truth",
+        "choice:accept_three_month_trial",
+        "choice:step_back_with_firewood",
+        "choice:defend_cheongryu_with_white_path",
+        "choice:accept_medicine_with_written_debt",
+        "choice:watch_the_stolen_qingliu_flow",
+        "choice:endure_until_copy_flow_breaks",
+        "choice:listen_for_breath_mismatch",
+        "choice:reconstruct_mumyeongs_sightline",
+        "choice:show_the_hyeonakmun_trace_without_accusing",
+        "choice:watch_mumyeong_answer_the_boss",
+        "choice:search_the_rejected_aid_letters",
+        "choice:compare_anger_to_copied_flow",
+        "choice:inspect_bokho_lock_scars",
+        "choice:read_hyeonakmun_empty_gate_record",
+        "choice:trace_boss_offer_after_hyeonakmun",
+        "choice:assemble_departure_truth_without_delivering",
+        "choice:set_down_the_work_notebook_briefly",
+        "choice:eat_the_left_meal_quietly",
+        "choice:secure_the_blackscale_ledger",
+        "choice:return_flow_to_mumyeong",
+    ]);
+    let phase_3_result_json = apply_action_json(
+        &outside_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:remember_the_empty_place",
+    )
+    .expect("remember empty place action should serialize");
+    let phase_3_result: Value =
+        serde_json::from_str(&phase_3_result_json).expect("phase 3 action JSON should parse");
+    let boss_state_json =
+        serde_json::to_string(&phase_3_result["state"]).expect("boss state should stringify");
+    let boss_result_json = apply_action_json(
+        &boss_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:confirm_true_route_outside_calculation",
+    )
+    .expect("true-route boss resolution action should serialize");
+    let boss_result: Value =
+        serde_json::from_str(&boss_result_json).expect("boss resolution JSON should parse");
+    let mumyeong_state_json =
+        serde_json::to_string(&boss_result["state"]).expect("mumyeong state should stringify");
+    let mumyeong_result_json = apply_action_json(
+        &mumyeong_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:ask_mumyeong_for_own_flow",
+    )
+    .expect("own-flow mumyeong resolution action should serialize");
+    let mumyeong_result: Value =
+        serde_json::from_str(&mumyeong_result_json).expect("mumyeong resolution JSON should parse");
+    let seoharin_state_json = serde_json::to_string(&mumyeong_result["state"])
+        .expect("seoharin qingliu state should stringify");
+    let seoharin_page_json = scene_page_json(&seoharin_state_json, WUXIA_PREVIEW_BUNDLE)
+        .expect("seoharin qingliu resolution scene page should serialize");
+    let seoharin_page: Value = serde_json::from_str(&seoharin_page_json)
+        .expect("seoharin qingliu page JSON should parse");
+
+    assert_eq!(seoharin_page["mode"], "encounter");
+    assert_eq!(seoharin_page["title"], "서하린·청류문 결산");
+    assert_eq!(
+        seoharin_page["location"]["id"],
+        "black_serpent_ledger_vault"
+    );
+    assert_eq!(
+        seoharin_page["visual"]["id"],
+        "wuxia_seoharin_qingliu_resolution"
+    );
+    assert_eq!(
+        seoharin_page["visual"]["kind"],
+        "seoharin_qingliu_resolution_seed"
+    );
+    assert_eq!(seoharin_page["effect_cues"][0]["stable_terms"][0], "서하린");
+    let action_ids: Vec<&str> = seoharin_page["actions"]
+        .as_array()
+        .expect("actions should be an array")
+        .iter()
+        .map(|action| action["id"].as_str().expect("action id should be a string"))
+        .collect();
+    assert_eq!(
+        action_ids,
+        vec![
+            "choice:leave_the_gate_unclosed",
+            "choice:record_qingliu_rebuild_without_glory",
+            "choice:keep_empty_place_for_return_or_absence",
+            "choice:mark_qingliu_pressure_still_unresolved",
+            "choice:close_the_gate_with_sado_logic",
+        ]
+    );
+
+    let open_gate_result_json = apply_action_json(
+        &seoharin_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:leave_the_gate_unclosed",
+    )
+    .expect("open-gate seoharin qingliu resolution action should serialize");
+    let open_gate_result: Value = serde_json::from_str(&open_gate_result_json)
+        .expect("seoharin qingliu resolution action JSON should parse");
+    assert_eq!(
+        open_gate_result["encounter_id"],
+        "wuxia_seoharin_qingliu_resolution"
+    );
+    assert_eq!(
+        open_gate_result["state"]["location_id"],
+        "black_serpent_ledger_vault"
+    );
+    let flags = open_gate_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array");
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "seoharin_qingliu_resolution_resolved"));
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "final_epilogue_seoharin_open_gate_candidate_seeded"));
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "final_epilogue_qingliu_future_candidate_seeded"));
+    assert!(!flags
+        .iter()
+        .any(|flag| flag == "item_unpriced_wooden_sword"));
+    assert!(!flags.iter().any(|flag| flag == "told_seoharin_truth"));
+    let clues = open_gate_result["state"]["clues"]
+        .as_array()
+        .expect("clues should be an array");
+    assert!(clues
+        .iter()
+        .any(|clue| clue == "open_gate_is_not_possession"));
+    assert!(clues
+        .iter()
+        .any(|clue| clue == "qingliu_future_is_poor_but_flowing"));
+}
+
+#[test]
 fn json_boundary_reports_user_facing_errors() {
     let state_json = new_game_json(123, CONTENT_BUNDLE).expect("new game should serialize");
 

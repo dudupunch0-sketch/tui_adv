@@ -1902,3 +1902,75 @@ encounters:
           add_clues: [corrupted_tool_use_overrides_successor_route, tool_use_turns_salvation_into_scale, closed_gate_can_follow_sado_style_calculation]
           destination_id: black_serpent_ledger_vault
           log: 너는 무명을 사람으로 보지 않고 계산의 잔여값으로 본다. 결산은 빠르게 끝나지만, 천기록의 마지막 장은 사도와 닮은 필체로 닫힌 문과 검은 뱀의 새 비늘 후보를 먼저 적는다.
+
+  - id: wuxia_seoharin_qingliu_resolution
+    title: "서하린·청류문 결산"
+    body: 무명의 이름 없는 장이 잠시 덮이고, 천기록은 청류문 산문으로 돌아온다. 서하린은 닫을 수 있는 문 앞에 서 있고, 청류문의 수련장에는 아직 새는 지붕과 다시 걸린 목검이 함께 남아 있다. 이 결산은 후일담을 출력하지 않는다. 서하린의 기다림이 돌아올 자리로 남는지, 청류문의 흐름이 다시 이어질 조건을 얻었는지만 다음 장의 후보로 남긴다.
+    presentation:
+      visual_id: wuxia_seoharin_qingliu_resolution
+      speaker: 서하린
+      layout: seoharin_qingliu_resolution_seed
+      effect_cues:
+        - kind: glyph_anomaly
+          source: wuxia_seoharin_qingliu_resolution
+          intensity: 0.88
+          stable_terms: [서하린, 청류문, 산문, 목검]
+          distortion: open_gate_and_leaking_roof_split_into_aftermath_seeds
+          duration_hint_ms: 1950
+          fallback_text: 청류문 산문 위에 '서하린', '청류문', '산문', '목검'만 닫히지 않은 먹빛으로 남는다.
+    conditions:
+      locations: [black_serpent_ledger_vault]
+      required_flags: [mumyeong_resolution_resolved, boss_resolution_resolved, final_result_priority_applied_seeded, final_combat_result_battle_victory_seeded, final_state_routing_seeded]
+      forbidden_flags: [seoharin_qingliu_resolution_resolved]
+    choices:
+      - id: leave_the_gate_unclosed
+        label: 산문을 닫지 않는 결산을 남긴다
+        outcome:
+          resources:
+            sanity: -2
+          danger: 1
+          add_flags: [seoharin_qingliu_resolution_resolved, final_seoharin_qingliu_resolution_positive_future_seeded, final_epilogue_seoharin_future_candidate_seeded, final_epilogue_seoharin_open_gate_candidate_seeded, final_epilogue_qingliu_future_candidate_seeded, final_epilogue_qingliu_restored_martial_art_conditional_seeded]
+          add_clues: [open_gate_is_not_possession, seoharin_future_depends_on_return_place_not_claim, qingliu_future_is_poor_but_flowing]
+          destination_id: black_serpent_ledger_vault
+          log: 서하린은 산문을 열어 둔다. 그것은 용서나 보상 연애가 아니라, 돌아오는 사람이 길을 잃지 않게 하는 방식이다. 청류문은 가난하지만 다시 흐르는 후보로 기록된다.
+      - id: record_qingliu_rebuild_without_glory
+        label: 청류문 재건을 강호 최강이 아닌 흐름으로 적는다
+        outcome:
+          resources:
+            sanity: -1
+          danger: 1
+          add_flags: [seoharin_qingliu_resolution_resolved, final_seoharin_qingliu_resolution_qingliu_stable_seeded, final_epilogue_qingliu_future_high_candidate_seeded, final_epilogue_qingliu_restored_martial_art_candidate_seeded, final_epilogue_boss_alliance_silence_conditional_seeded]
+          add_clues: [qingliu_rebuild_is_not_power_ranking, restored_martial_art_is_flow_not_reward, alliance_silence_can_coexist_with_rebuild]
+          destination_id: black_serpent_ledger_vault
+          log: 청류문은 강호 최강이 되지 않는다. 새는 지붕과 다시 놓인 물동이, 복구된 초식의 흐름이 함께 남는다. 재건은 명예가 아니라 끊긴 물길을 다시 잇는 후보로 적힌다.
+      - id: keep_empty_place_for_return_or_absence
+        label: 비워둔 자리를 귀환과 부재 양쪽으로 남긴다
+        outcome:
+          resources:
+            sanity: -2
+          danger: 1
+          add_flags: [seoharin_qingliu_resolution_resolved, final_seoharin_qingliu_resolution_empty_place_seeded, final_epilogue_seoharin_empty_place_candidate_seeded, final_epilogue_seoharin_future_candidate_seeded, final_unpriced_wooden_sword_condition_preserved_seeded]
+          add_clues: [empty_place_can_be_return_or_absence, unpriced_wooden_sword_remains_log_not_item, seoharin_waiting_is_permission_not_price]
+          destination_id: black_serpent_ledger_vault
+          log: 빈 자리는 돌아오는 사람의 자리일 수도, 오래 비어 있을 자리일 수도 있다. 천기록은 목검을 지급하지 않는다. 다만 값이 매겨지지 않은 조건이 아직 사도의 장부 밖에 남았다고 적는다.
+      - id: mark_qingliu_pressure_still_unresolved
+        label: 남은 압박을 청류문의 약화 변주로 표시한다
+        outcome:
+          resources:
+            health: -1
+            sanity: -2
+          danger: 2
+          add_flags: [seoharin_qingliu_resolution_resolved, final_seoharin_qingliu_resolution_unresolved_pressure_seeded, final_epilogue_qingliu_future_weakened_variant_seeded, final_epilogue_southern_market_rumor_conditional_seeded, final_epilogue_boss_black_serpent_banner_conditional_seeded]
+          add_clues: [qingliu_survival_can_remain_wounded, unresolved_pressure_is_not_player_blame, southern_market_rumor_remains_conditional]
+          destination_id: black_serpent_ledger_vault
+          log: 청류문은 살아남았지만, 표국 길목의 소문과 후원자의 침묵이 모두 사라진 것은 아니다. 결산은 실패 판정이 아니라 약화 변주와 미해결 풍문 후보를 남긴다.
+      - id: close_the_gate_with_sado_logic
+        label: 사도식 보호 논리로 산문을 닫는다
+        outcome:
+          resources:
+            sanity: -4
+          danger: 2
+          add_flags: [seoharin_qingliu_resolution_resolved, final_seoharin_qingliu_resolution_closed_gate_seeded, final_epilogue_seoharin_closed_gate_candidate_seeded, final_epilogue_seoharin_open_gate_suppressed_seeded, final_epilogue_qingliu_future_dark_variant_seeded, final_epilogue_tianjilu_last_page_corruption_variant_seeded]
+          add_clues: [closed_gate_is_protection_as_possession, sado_style_calculation_closes_return_place, open_gate_and_closed_gate_are_mutually_exclusive]
+          destination_id: black_serpent_ledger_vault
+          log: 산문은 닫힌다. 안쪽은 더 안전해 보이지만, 돌아오는 길은 더 좁아진다. 천기록은 이것을 서하린의 단순 비극이 아니라 소속감이 사도식 소유와 닮아가는 침식 후보로 남긴다.

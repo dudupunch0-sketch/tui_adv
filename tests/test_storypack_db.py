@@ -74,6 +74,7 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         "wuxia_seo_harin_rescue",
         "wuxia_seoharin_empty_place",
         "wuxia_seoharin_left_meal",
+        "wuxia_seoharin_qingliu_resolution",
         "wuxia_wounded_shelter_dawn_offers",
     ]
 
@@ -388,6 +389,29 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         "mumyeong_salvation_is_not_return_to_qingliu"
         in mumyeong_resolution.outcome_hooks["possible_clues"]
     )
+
+    seoharin_qingliu_resolution = db.encounter_cards[
+        "wuxia_seoharin_qingliu_resolution"
+    ]
+    assert seoharin_qingliu_resolution.world_id == "wuxia_jianghu"
+    assert seoharin_qingliu_resolution.storypack_id == "wuxia_jianghu_pack"
+    assert seoharin_qingliu_resolution.status == "implemented_in_storypack_preview"
+    assert seoharin_qingliu_resolution.priority_class == "route_key"
+    assert "seoharin_qingliu_resolution_seed" in seoharin_qingliu_resolution.phases
+    assert "sect_courtyard" in seoharin_qingliu_resolution.surfaces
+    assert "faction_negotiation" in seoharin_qingliu_resolution.surfaces
+    assert "safe_identity_return" in [
+        choice["role"] for choice in seoharin_qingliu_resolution.choice_shapes
+    ]
+    assert (
+        "final_epilogue_seoharin_open_gate_candidate_seeded"
+        in seoharin_qingliu_resolution.outcome_hooks["possible_flags"]
+    )
+    assert (
+        "open_gate_is_not_possession"
+        in seoharin_qingliu_resolution.outcome_hooks["possible_clues"]
+    )
+    assert seoharin_qingliu_resolution.outcome_hooks["possible_items"] == []
 
 
 def test_storypack_db_public_files_validate_cleanly():

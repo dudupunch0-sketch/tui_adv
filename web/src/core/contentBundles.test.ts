@@ -56,6 +56,7 @@ describe('runtime content bundle registry', () => {
       'wuxia_sado_final_phase_3_outside_calculation',
       'wuxia_boss_resolution',
       'wuxia_mumyeong_resolution',
+      'wuxia_seoharin_qingliu_resolution',
     ]);
     expect(encounterIds).not.toContain('ex_employee_messenger');
   });

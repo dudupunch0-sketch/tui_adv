@@ -211,12 +211,12 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&5));
     assert_eq!(bundle.manifest.counts.get("items"), Some(&4));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&31));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&32));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 5);
-    assert_eq!(index.encounters_len(), 31);
+    assert_eq!(index.encounters_len(), 32);
 
     let market = index
         .location("jianghu_market_street")
@@ -1919,6 +1919,75 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert!(own_flow.outcome.add_items.is_empty());
     assert_eq!(
         own_flow.outcome.destination_id.as_deref(),
+        Some("black_serpent_ledger_vault")
+    );
+
+    let seoharin_qingliu_resolution = index
+        .encounter("wuxia_seoharin_qingliu_resolution")
+        .expect("seoharin qingliu resolution encounter");
+    assert_eq!(seoharin_qingliu_resolution.title, "서하린·청류문 결산");
+    assert_eq!(
+        seoharin_qingliu_resolution.conditions.locations,
+        vec!["black_serpent_ledger_vault"]
+    );
+    assert_eq!(
+        seoharin_qingliu_resolution.conditions.required_flags,
+        vec![
+            "mumyeong_resolution_resolved",
+            "boss_resolution_resolved",
+            "final_result_priority_applied_seeded",
+            "final_combat_result_battle_victory_seeded",
+            "final_state_routing_seeded"
+        ]
+    );
+    assert_eq!(
+        seoharin_qingliu_resolution.conditions.forbidden_flags,
+        vec!["seoharin_qingliu_resolution_resolved"]
+    );
+    let seoharin_qingliu_presentation = seoharin_qingliu_resolution
+        .presentation
+        .as_ref()
+        .expect("seoharin qingliu resolution presentation");
+    assert_eq!(
+        seoharin_qingliu_presentation.layout.as_deref(),
+        Some("seoharin_qingliu_resolution_seed")
+    );
+    assert_eq!(
+        seoharin_qingliu_presentation.speaker.as_deref(),
+        Some("서하린")
+    );
+    assert_eq!(
+        seoharin_qingliu_presentation.effect_cues[0].stable_terms,
+        vec!["서하린", "청류문", "산문", "목검"]
+    );
+    assert_eq!(seoharin_qingliu_resolution.choices.len(), 5);
+    let open_gate = seoharin_qingliu_resolution
+        .choices
+        .iter()
+        .find(|choice| choice.id == "leave_the_gate_unclosed")
+        .expect("open-gate seoharin qingliu resolution choice");
+    assert_eq!(
+        open_gate.outcome.add_flags,
+        vec![
+            "seoharin_qingliu_resolution_resolved",
+            "final_seoharin_qingliu_resolution_positive_future_seeded",
+            "final_epilogue_seoharin_future_candidate_seeded",
+            "final_epilogue_seoharin_open_gate_candidate_seeded",
+            "final_epilogue_qingliu_future_candidate_seeded",
+            "final_epilogue_qingliu_restored_martial_art_conditional_seeded"
+        ]
+    );
+    assert_eq!(
+        open_gate.outcome.add_clues,
+        vec![
+            "open_gate_is_not_possession",
+            "seoharin_future_depends_on_return_place_not_claim",
+            "qingliu_future_is_poor_but_flowing"
+        ]
+    );
+    assert!(open_gate.outcome.add_items.is_empty());
+    assert_eq!(
+        open_gate.outcome.destination_id.as_deref(),
         Some("black_serpent_ledger_vault")
     );
 }

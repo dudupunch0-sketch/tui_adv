@@ -913,6 +913,21 @@
 - [x] 기본 office bundle, Web legacy generated `content.bundle.json`, `src/tui_adv/data/*.yaml`, legacy `escape-office` save/localStorage key 미변경 유지
 - [x] 다음 작업을 `wuxia_seoharin_qingliu_resolution` handoff 검토로 갱신
 
+### 0.2ca 2026-06-02 무협 `wuxia_seoharin_qingliu_resolution` preview runtime slice
+
+- [x] Notion `가지 말라는 말`, `서하린의 후일`, `청류문의 후일`, `닫히지 않은 산문`, `닫힌 산문`, `최종장 결산 라우팅 마스터`, `사도 최종전 상태값 사전` 재확인
+- [x] `wuxia_seoharin_qingliu_resolution`을 기존 encounter schema로 구현 가능한 Seo Harin/Qingliu resolution route seed bridge로 결정
+- [x] `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`에서 `wuxia_mumyeong_resolution` 뒤에 `wuxia_seoharin_qingliu_resolution` 추가
+- [x] start conditions를 `mumyeong_resolution_resolved`, `boss_resolution_resolved`, `final_result_priority_applied_seeded`, `final_combat_result_battle_victory_seeded`, `final_state_routing_seeded`로 구현
+- [x] stable choice id `leave_the_gate_unclosed`, `record_qingliu_rebuild_without_glory`, `keep_empty_place_for_return_or_absence`, `mark_qingliu_pressure_still_unresolved`, `close_the_gate_with_sado_logic` 구현
+- [x] 모든 선택지가 `seoharin_qingliu_resolution_resolved`, `destination_id: black_serpent_ledger_vault` bridge를 남기도록 구현
+- [x] open-gate/empty-place/Qingliu future/weakened-pressure/closed-gate epilogue candidate seed를 flags/clues/log로만 구현
+- [x] Rust/Web storypack preview generated bundle 재생성
+- [x] Python exporter/docs/storypack DB, Rust content bundle, WASM JSON boundary, terminal smoke, Web default content bundle registry 테스트 갱신
+- [x] final epilogue renderer, return/settlement schema, combat resolver, HP 숫자전, 서하린 truth delivery, `told_seoharin_truth`, relation/reward schema, `item_unpriced_wooden_sword` payout 미변경 유지
+- [x] 기본 office bundle, Web legacy generated `content.bundle.json`, `src/tui_adv/data/*.yaml`, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 작업을 `wuxia_cheongirok_resolution` handoff 검토로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

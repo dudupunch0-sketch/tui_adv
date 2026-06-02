@@ -958,6 +958,20 @@
 - [x] 기본 office bundle, Web legacy generated `content.bundle.json`, `src/tui_adv/data/*.yaml`, legacy `escape-office` save/localStorage key 미변경 유지
 - [x] 다음 작업을 `wuxia_final_epilogue_renderer_contract` handoff 검토로 갱신
 
+### 0.2cd 2026-06-02 무협 final epilogue renderer contract docs-only handoff
+
+- [x] Notion `최종장 결산 라우팅 마스터`, `08. 엔딩과 후일담 연결`, `사도 최종전 상태값 사전` 재확인
+- [x] `wuxia_boss_resolution`, `wuxia_mumyeong_resolution`, `wuxia_seoharin_qingliu_resolution`, `wuxia_cheongirok_resolution`, `wuxia_black_serpent_aftermath` seed bridge 대조
+- [x] 추가 seed bridge 없이 `wuxia_final_epilogue_renderer_contract` implementation slice를 열 수 있다고 결정
+- [x] Rust GameCore가 seed consumption, `final_result_priority`, suppress, card ordering을 소유하는 boundary 문서화
+- [x] Web Storybook/SuperLightTUI는 core 결과 표시만 하며 후일담 카드 enable/suppress를 재계산하지 않는 boundary 문서화
+- [x] `docs/design/Wuxia_Final_State_Routing.md`에 candidate group, preconditions, suppress examples, open implementation questions 추가
+- [x] runtime YAML/Rust/Web/generated artifact 미변경 유지
+- [x] final epilogue output schema, return/settlement schema, combat resolver, HP 숫자전, relation/debt/faction ledger, reward/ability schema, `item_unpriced_wooden_sword` payout 미변경 유지
+- [x] 서하린 truth delivery, `told_seoharin_truth`, 천기록 기록자 정체 reveal 미변경 유지
+- [x] 기본 office bundle, Web legacy generated `content.bundle.json`, `src/tui_adv/data/*.yaml`, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 작업을 `wuxia_final_epilogue_renderer_contract` implementation slice 검토로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

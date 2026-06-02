@@ -3056,3 +3056,60 @@ runtime_preview_implementation:
     - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
   next_handoff: wuxia_final_epilogue_renderer_contract_handoff
 ```
+
+## 35. `wuxia_final_epilogue_renderer_contract` — docs-only handoff 완료
+
+```yaml
+id: wuxia_final_epilogue_renderer_contract
+world_id: wuxia_jianghu
+storypack_id: wuxia_jianghu_pack
+status: docs_only_handoff_completed
+mapping_status: contract_handoff_completed
+runtime_preview_design_status: next_implementation_candidate
+notion_mapping:
+  notion_event_id: final_epilogue_renderer_contract
+  notion_event_name: 최종 후일담 renderer contract
+  related_sources:
+    - 최종장 결산 라우팅 마스터
+    - 08. 엔딩과 후일담 연결
+    - 사도 최종전 상태값 사전
+phase: [final_entry, final_epilogue_contract]
+priority_class: system_contract
+required_seed_bridges:
+  - wuxia_boss_resolution
+  - wuxia_mumyeong_resolution
+  - wuxia_seoharin_qingliu_resolution
+  - wuxia_cheongirok_resolution
+  - wuxia_black_serpent_aftermath
+decision: no_additional_seed_bridge_required
+next_runtime_scope: wuxia_final_epilogue_renderer_contract_implementation
+core_renderer_boundary:
+  core_owns:
+    - final_result_priority
+    - seed_consumption
+    - suppress_resolution
+    - card_ordering
+  renderers_display_only:
+    - Web Storybook
+    - SuperLightTUI
+candidate_groups:
+  boss_black_serpent: [broken_serpent, black_serpent_banner, alliance_silence, southern_market_rumor]
+  mumyeong: [own_flow_salvation, second_wooden_sword, unsent_apology, end_of_stolen_forms, new_scale_or_shadow, last_bowl]
+  seoharin_qingliu: [seoharin_future, empty_place, open_gate, closed_gate, qingliu_future, restored_martial_art]
+  cheongirok: [safe_high_use_last_page, true_route_blank_place, corruption_variant, low_use_silence]
+guardrails:
+  - no_combat_resolver
+  - no_hp_numeric_battle
+  - no_return_or_settlement_schema
+  - no_relation_debt_faction_ledger
+  - no_reward_or_ability_schema
+  - no_item_unpriced_wooden_sword_award
+  - no_seoharin_truth_delivery
+  - no_told_seoharin_truth
+  - no_cheongirok_identity_reveal
+  - no_legacy_office_bundle_or_escape_office_key_change
+runtime_preview_handoff:
+  handoff_status: completed
+  implementation_status: not_started
+  next_runtime_scope: wuxia_final_epilogue_renderer_contract_implementation
+```

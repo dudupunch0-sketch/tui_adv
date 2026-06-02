@@ -77,6 +77,7 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         "wuxia_seoharin_empty_place",
         "wuxia_seoharin_left_meal",
         "wuxia_seoharin_qingliu_resolution",
+        "wuxia_seoharin_unsaid_stay",
         "wuxia_wounded_shelter_dawn_offers",
     ]
 
@@ -414,6 +415,34 @@ def test_storypack_db_loads_office_wuxia_and_yageunmong_candidate_records():
         in seoharin_qingliu_resolution.outcome_hooks["possible_clues"]
     )
     assert seoharin_qingliu_resolution.outcome_hooks["possible_items"] == []
+
+    seoharin_unsaid_stay = db.encounter_cards["wuxia_seoharin_unsaid_stay"]
+    assert seoharin_unsaid_stay.world_id == "wuxia_jianghu"
+    assert seoharin_unsaid_stay.storypack_id == "wuxia_jianghu_pack"
+    assert seoharin_unsaid_stay.status == "implemented_in_storypack_preview"
+    assert seoharin_unsaid_stay.priority_class == "route_key"
+    assert "seoharin_unsaid_stay_seed" in seoharin_unsaid_stay.phases
+    assert "return_settlement_trigger" in seoharin_unsaid_stay.phases
+    assert "daily_care" in seoharin_unsaid_stay.surfaces
+    assert "safe_identity_return" in [
+        choice["role"] for choice in seoharin_unsaid_stay.choice_shapes
+    ]
+    assert "safe_settlement" in [
+        choice["role"] for choice in seoharin_unsaid_stay.choice_shapes
+    ]
+    assert (
+        "final_return_settlement_contract_seeded"
+        in seoharin_unsaid_stay.outcome_hooks["possible_flags"]
+    )
+    assert (
+        "final_epilogue_closed_gate_risk_seeded"
+        in seoharin_unsaid_stay.outcome_hooks["possible_flags"]
+    )
+    assert (
+        "leaving_can_still_leave_a_place"
+        in seoharin_unsaid_stay.outcome_hooks["possible_clues"]
+    )
+    assert seoharin_unsaid_stay.outcome_hooks["possible_items"] == []
 
     cheongirok_resolution = db.encounter_cards["wuxia_cheongirok_resolution"]
     assert cheongirok_resolution.world_id == "wuxia_jianghu"

@@ -211,12 +211,12 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&5));
     assert_eq!(bundle.manifest.counts.get("items"), Some(&4));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&34));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&35));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 5);
-    assert_eq!(index.encounters_len(), 34);
+    assert_eq!(index.encounters_len(), 35);
 
     let market = index
         .location("jianghu_market_street")
@@ -1991,6 +1991,69 @@ fn preview_fixture_indexes_wuxia_first_fight() {
         Some("black_serpent_ledger_vault")
     );
 
+    let seoharin_unsaid_stay = index
+        .encounter("wuxia_seoharin_unsaid_stay")
+        .expect("seoharin unsaid stay encounter");
+    assert_eq!(seoharin_unsaid_stay.title, "가지 말라는 말");
+    assert_eq!(
+        seoharin_unsaid_stay.conditions.locations,
+        vec!["black_serpent_ledger_vault"]
+    );
+    assert_eq!(
+        seoharin_unsaid_stay.conditions.required_flags,
+        vec![
+            "seoharin_qingliu_resolution_resolved",
+            "final_state_routing_seeded",
+            "final_result_priority_applied_seeded",
+            "final_combat_result_battle_victory_seeded"
+        ]
+    );
+    assert_eq!(
+        seoharin_unsaid_stay.conditions.forbidden_flags,
+        vec!["seoharin_unsaid_stay_resolved"]
+    );
+    let unsaid_presentation = seoharin_unsaid_stay
+        .presentation
+        .as_ref()
+        .expect("seoharin unsaid stay presentation");
+    assert_eq!(
+        unsaid_presentation.layout.as_deref(),
+        Some("seoharin_unsaid_stay_seed")
+    );
+    assert_eq!(unsaid_presentation.speaker.as_deref(), Some("서하린"));
+    assert_eq!(
+        unsaid_presentation.effect_cues[0].stable_terms,
+        vec!["서하린", "귀환", "청류문", "빈자리"]
+    );
+    assert_eq!(seoharin_unsaid_stay.choices.len(), 4);
+    let honest_return = seoharin_unsaid_stay
+        .choices
+        .iter()
+        .find(|choice| choice.id == "say_return_home_honestly")
+        .expect("honest return seoharin unsaid stay choice");
+    assert_eq!(
+        honest_return.outcome.add_flags,
+        vec![
+            "seoharin_unsaid_stay_resolved",
+            "final_return_settlement_contract_seeded",
+            "final_return_intent_honest_seeded",
+            "final_epilogue_return_absence_candidate_seeded"
+        ]
+    );
+    assert_eq!(
+        honest_return.outcome.add_clues,
+        vec![
+            "leaving_can_still_leave_a_place",
+            "return_intent_is_not_erasing_qingliu",
+            "seoharin_place_is_permission_not_price"
+        ]
+    );
+    assert!(honest_return.outcome.add_items.is_empty());
+    assert_eq!(
+        honest_return.outcome.destination_id.as_deref(),
+        Some("black_serpent_ledger_vault")
+    );
+
     let cheongirok_resolution = index
         .encounter("wuxia_cheongirok_resolution")
         .expect("cheongirok resolution encounter");
@@ -2002,6 +2065,7 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(
         cheongirok_resolution.conditions.required_flags,
         vec![
+            "seoharin_unsaid_stay_resolved",
             "seoharin_qingliu_resolution_resolved",
             "mumyeong_resolution_resolved",
             "boss_resolution_resolved",

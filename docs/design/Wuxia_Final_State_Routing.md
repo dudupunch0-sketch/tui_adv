@@ -1,10 +1,10 @@
 # Wuxia Final State Routing
 
-Status: Notion-synced design contract + first final epilogue runtime implementation + return/settlement handoff, no dedicated result schema
+Status: Notion-synced design contract + first final epilogue runtime implementation + `wuxia_seoharin_unsaid_stay` return/settlement trigger runtime, no dedicated result schema
 
 Primary storypack: `wuxia_jianghu_pack` / **이구학지 — 천기록**
 
-This document records the final-chapter state, routing vocabulary, and final epilogue seed-consumption contract used by the first runtime slice. It does not add a combat resolver, HP numeric battle, return/settlement schema, relation ledger, reward schema, or item payout. Runtime work still has to pass through `docs/dev/Development_Plan.md`.
+This document records the final-chapter state, routing vocabulary, final epilogue seed-consumption contract, and first return/settlement trigger used by the current runtime slices. It does not add a combat resolver, HP numeric battle, full return/settlement schema, relation ledger, reward schema, or item payout. Runtime work still has to pass through `docs/dev/Development_Plan.md`.
 
 ## Source References
 
@@ -159,6 +159,8 @@ Latest implemented runtime slice: `wuxia_final_epilogue_renderer_contract`.
 
 Decision from the 2026-06-02 `wuxia_return_settlement_contract_handoff`: the next contract surface after final epilogue UX/playtest is return/settlement, starting with `wuxia_seoharin_unsaid_stay` / `가지 말라는 말`.
 
+Runtime status: implemented in the preview/main storypack path as `wuxia_seoharin_unsaid_stay`. This implementation inserted the trigger after `wuxia_seoharin_qingliu_resolution` and before `wuxia_cheongirok_resolution`, then made `wuxia_cheongirok_resolution` require `seoharin_unsaid_stay_resolved` so the late relationship seed cannot be skipped in the normal final route.
+
 Notion evidence:
 
 - `가지 말라는 말` explicitly opens return, settlement, and corruption afterword variations through Seo Harin's late relationship branch.
@@ -182,6 +184,13 @@ First runtime scope:
 - Leave `seoharin_unsaid_stay_resolved` and `final_return_settlement_contract_seeded`.
 - Seed return/settlement/corruption candidates through flags/clues/log/presentation only.
 - Do not create a new return ending schema, modern-life settlement schema, relation ledger, or save/archive surface.
+
+Implementation result:
+
+- `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml` owns the runtime source.
+- Rust/Web generated preview bundles include the encounter.
+- `wuxia_cheongirok_resolution` now requires `seoharin_unsaid_stay_resolved`.
+- The next contract decision is `return_settlement_followup_handoff`, which compares full return ending, settlement afterword, corruption/closed-gate branch, battle-loss path, reward/ability schema, and relation/debt/faction ledger.
 
 Stable choice ids for the first runtime:
 

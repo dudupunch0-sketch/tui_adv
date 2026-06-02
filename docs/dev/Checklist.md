@@ -1013,6 +1013,21 @@
 - [x] combat resolver, HP 숫자전, 서하린 truth delivery, `told_seoharin_truth`, 천기록 기록자 정체 reveal 미변경 유지
 - [x] 다음 작업을 `wuxia_seoharin_unsaid_stay` runtime implementation slice로 갱신
 
+### 0.2ch 2026-06-02 무협 `wuxia_seoharin_unsaid_stay` preview runtime slice
+
+- [x] Notion `가지 말라는 말` 원문과 `Return/Settlement Contract Handoff` 대조
+- [x] `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`에 `wuxia_seoharin_unsaid_stay` 추가
+- [x] `wuxia_seoharin_qingliu_resolution` 뒤, `wuxia_cheongirok_resolution` 앞에 삽입
+- [x] `say_return_home_honestly`, `say_you_will_stay_with_qingliu`, `share_uncertainty_without_running`, `turn_away_from_the_empty_place` stable choice id 적용
+- [x] `seoharin_unsaid_stay_resolved`, `final_return_settlement_contract_seeded` common hook 적용
+- [x] return/settlement/uncertainty/evasion 후보 seed를 flags/clues/log/presentation hook으로만 남김
+- [x] `wuxia_cheongirok_resolution` required flags에 `seoharin_unsaid_stay_resolved` 추가
+- [x] Rust/Web generated preview bundle 갱신
+- [x] Python storypack DB/export, Rust content bundle, WASM JSON boundary, terminal smoke, Web default bundle registry 테스트 갱신
+- [x] full modern return ending, return/settlement save/archive schema, relation/debt/faction ledger 미변경 유지
+- [x] reward/ability schema, combat resolver, HP 숫자전, 서하린 truth delivery, `told_seoharin_truth`, 천기록 기록자 정체 reveal 미변경 유지
+- [x] 다음 작업을 `return_settlement_followup_handoff` docs-only contract slice로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

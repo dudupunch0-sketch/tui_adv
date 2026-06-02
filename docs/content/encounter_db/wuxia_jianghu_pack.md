@@ -1,13 +1,13 @@
 # 이구학지 — 천기록 encounter situation cards
 
-Status: candidate + `wuxia_black_serpent_aftermath` preview runtime implemented
+Status: candidate + `wuxia_seoharin_unsaid_stay` preview runtime implemented
 
-이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_black_serpent_aftermath`까지는 separate storypack preview runtime으로 승격되었다.
+이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_seoharin_unsaid_stay`까지는 separate storypack preview runtime으로 승격되었다.
 
 공통 원칙:
 
 - 모든 카드는 `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`에 속한다.
-- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_black_serpent_aftermath`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. `wuxia_black_serpent_aftermath`는 `docs/design/Wuxia_Final_State_Routing.md`의 final state routing contract와 Cheonggi Record resolution seed 이후 흑사방 aftermath 후보를 정규화하는 bridge이며, 다음 handoff 후보는 `wuxia_final_epilogue_renderer_contract`이다.
+- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_seoharin_unsaid_stay`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. `wuxia_seoharin_unsaid_stay`는 `docs/design/Wuxia_Final_State_Routing.md`의 return/settlement handoff를 existing encounter schema로 구현한 late relationship trigger이며, full return/settlement schema는 아직 열지 않는다.
 - 최신 canonical 무협 설정은 **이구학지 — 천기록**이다. 이전의 generic 객잔/소림/무당/아미 placeholder는 superseded로 본다.
 - 플레이어 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계의 시장 한복판에 전이됐다”이다.
 - 선택지는 세부 수치보다 역할과 결과 hook을 먼저 정의한다.
@@ -28,7 +28,7 @@ Status: candidate + `wuxia_black_serpent_aftermath` preview runtime implemented
 
 | Notion event id | Notion name | repo mapping | status |
 |---|---|---|---|
-| `wuxia_seoharin_unsaid_stay` | 가지 말라는 말 | none yet | future 서하린 late/return event |
+| `wuxia_seoharin_unsaid_stay` | 가지 말라는 말 | `wuxia_seoharin_unsaid_stay` | preview runtime implemented; return/settlement trigger seed only |
 | `wuxia_seoharin_left_meal` | 남겨둔 밥 | `wuxia_seoharin_left_meal` | preview runtime implemented; relationship/belonging bridge, not final return choice |
 | `wuxia_seoharin_empty_place` | 비워둔 자리 | `wuxia_seoharin_empty_place` | preview runtime implemented; late empty-place bridge, not truth delivery |
 | `wuxia_mumyeong_departure_truth_summary` | 무명 이탈의 진실 정리 | `wuxia_mumyeong_departure_truth_summary` | preview runtime implemented; sealed summary, not truth delivery |
@@ -3187,7 +3187,48 @@ randomization_notes: 1회성 late relationship trigger. 서하린·청류문 결
 promotion_notes: docs-only handoff 완료. 다음 runtime은 `wuxia_seoharin_unsaid_stay`를 기존 encounter schema로 구현하되, full modern return ending, post-return settlement scene, return/settlement save/archive schema, relation/debt/faction ledger, reward/ability schema, combat resolver, HP 숫자전, Seo Harin truth delivery, `told_seoharin_truth`, Cheonggi Record identity reveal은 열지 않는다.
 runtime_preview_handoff:
   handoff_status: completed
-  implementation_status: not_started
-  next_runtime_scope: wuxia_seoharin_unsaid_stay_runtime_implementation
+  implementation_status: implemented
+  next_runtime_scope: return_settlement_followup_handoff
   guardrails: [no_full_modern_return_ending, no_return_settlement_save_archive_schema, no_relation_debt_faction_ledger, no_reward_or_ability_schema, no_combat_resolver, no_hp_numeric_battle, no_seoharin_truth_delivery, no_told_seoharin_truth, no_cheongirok_identity_reveal]
+```
+
+## 37. `wuxia_seoharin_unsaid_stay` — preview runtime 구현 완료
+
+```yaml
+id: wuxia_seoharin_unsaid_stay
+world_id: wuxia_jianghu
+storypack_id: wuxia_jianghu_pack
+status: implemented_in_storypack_preview
+mapping_status: preview_runtime_implemented
+source:
+  notion: 가지 말라는 말 / 37137e69-695e-8138-a41d-e153190f85aa
+  contract: docs/design/Wuxia_Final_State_Routing.md#returnsettlement-contract-handoff
+insert_after: wuxia_seoharin_qingliu_resolution
+insert_before: wuxia_cheongirok_resolution
+conditions:
+  locations: [black_serpent_ledger_vault]
+  required_flags: [seoharin_qingliu_resolution_resolved, final_state_routing_seeded, final_result_priority_applied_seeded, final_combat_result_battle_victory_seeded]
+  forbidden_flags: [seoharin_unsaid_stay_resolved]
+presentation:
+  visual_id: wuxia_seoharin_unsaid_stay
+  speaker: 서하린
+  layout: seoharin_unsaid_stay_seed
+  stable_terms: [서하린, 귀환, 청류문, 빈자리]
+choice_shapes:
+  - id: say_return_home_honestly
+    expected_gains: [final_return_intent_honest_seeded, final_epilogue_return_absence_candidate_seeded]
+  - id: say_you_will_stay_with_qingliu
+    expected_gains: [final_settlement_intent_honest_seeded, final_epilogue_qingliu_settlement_candidate_seeded]
+  - id: share_uncertainty_without_running
+    expected_gains: [final_return_settlement_uncertain_shared_seeded, final_epilogue_empty_place_kept_open_seeded]
+  - id: turn_away_from_the_empty_place
+    expected_gains: [final_return_settlement_evasion_seeded, final_epilogue_closed_gate_risk_seeded]
+common_hooks:
+  add_flags: [seoharin_unsaid_stay_resolved, final_return_settlement_contract_seeded]
+  destination_id: black_serpent_ledger_vault
+generated_artifacts:
+  - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+  - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+promotion_notes: preview runtime으로 구현 완료. 첫 runtime은 귀환/정착 엔딩 자체가 아니라 서하린 late relationship trigger이며, return/settlement/corruption 후보 seed만 existing encounter schema의 flags/clues/log/presentation hook으로 남긴다.
+guardrails: [no_full_modern_return_ending, no_return_settlement_save_archive_schema, no_relation_debt_faction_ledger, no_reward_or_ability_schema, no_combat_resolver, no_hp_numeric_battle, no_seoharin_truth_delivery, no_told_seoharin_truth, no_cheongirok_identity_reveal]
 ```

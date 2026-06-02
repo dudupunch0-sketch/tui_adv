@@ -1975,6 +1975,67 @@ encounters:
           destination_id: black_serpent_ledger_vault
           log: 산문은 닫힌다. 안쪽은 더 안전해 보이지만, 돌아오는 길은 더 좁아진다. 천기록은 이것을 서하린의 단순 비극이 아니라 소속감이 사도식 소유와 닮아가는 침식 후보로 남긴다.
 
+  - id: wuxia_seoharin_unsaid_stay
+    title: "가지 말라는 말"
+    body: 청류문 산문이 닫히지 않은 채 저녁빛을 받는다. 서하린은 네가 언젠가 돌아갈 수 있다는 사실을 알고도 붙잡는 말을 꺼내지 않는다. 다만 사람이 빠지면 자리가 빈다는 말만 남기고, 그 빈자리를 귀환과 정착, 불확실성과 회피가 갈라지는 후일담 후보로 넘긴다.
+    presentation:
+      visual_id: wuxia_seoharin_unsaid_stay
+      speaker: 서하린
+      layout: seoharin_unsaid_stay_seed
+      effect_cues:
+        - kind: glyph_anomaly
+          source: wuxia_seoharin_unsaid_stay
+          intensity: 0.86
+          stable_terms: [서하린, 귀환, 청류문, 빈자리]
+          distortion: unsaid_stay_splits_return_and_settlement_seeds
+          duration_hint_ms: 1900
+          fallback_text: 열린 산문 아래에 '서하린', '귀환', '청류문', '빈자리'만 서로 다른 먹빛으로 남는다.
+    conditions:
+      locations: [black_serpent_ledger_vault]
+      required_flags: [seoharin_qingliu_resolution_resolved, final_state_routing_seeded, final_result_priority_applied_seeded, final_combat_result_battle_victory_seeded]
+      forbidden_flags: [seoharin_unsaid_stay_resolved]
+    choices:
+      - id: say_return_home_honestly
+        label: 귀환하고 싶다고 솔직히 말한다
+        outcome:
+          resources:
+            sanity: -2
+          danger: 1
+          add_flags: [seoharin_unsaid_stay_resolved, final_return_settlement_contract_seeded, final_return_intent_honest_seeded, final_epilogue_return_absence_candidate_seeded]
+          add_clues: [leaving_can_still_leave_a_place, return_intent_is_not_erasing_qingliu, seoharin_place_is_permission_not_price]
+          destination_id: black_serpent_ledger_vault
+          log: 너는 돌아가고 싶다는 말을 숨기지 않는다. 서하린은 붙잡지 않고, 대신 비어 있을 수 있는 자리를 지운 척하지 않는다. 귀환 후보는 이별이 아니라 돌아올 수 있는 자리와 함께 남는다.
+      - id: say_you_will_stay_with_qingliu
+        label: 청류문에 남겠다고 말한다
+        outcome:
+          resources:
+            sanity: -1
+          danger: 1
+          add_flags: [seoharin_unsaid_stay_resolved, final_return_settlement_contract_seeded, final_settlement_intent_honest_seeded, final_epilogue_qingliu_settlement_candidate_seeded]
+          add_clues: [staying_is_not_payment, belonging_can_be_chosen_without_debt, qingliu_home_is_not_reward]
+          destination_id: black_serpent_ledger_vault
+          log: 너는 청류문에 남겠다고 말한다. 그것은 목숨값을 갚는 선언도, 서하린에게 주는 보상도 아니다. 정착 후보는 빚이 아니라 선택한 소속의 언어로 남는다.
+      - id: share_uncertainty_without_running
+        label: 아직 모르겠다고 말한다
+        outcome:
+          resources:
+            sanity: -1
+          danger: 0
+          add_flags: [seoharin_unsaid_stay_resolved, final_return_settlement_contract_seeded, final_return_settlement_uncertain_shared_seeded, final_epilogue_empty_place_kept_open_seeded]
+          add_clues: [uncertainty_can_be_shared_without_escape, empty_place_can_hold_return_and_stay, not_knowing_is_not_evasion]
+          destination_id: black_serpent_ledger_vault
+          log: 아직 모른다는 말은 답이 아니지만 도망도 아니다. 서하린은 그 불확실성을 들은 채 산문을 닫지 않고, 빈자리는 귀환과 정착 양쪽으로 열려 있는 후보가 된다.
+      - id: turn_away_from_the_empty_place
+        label: 말을 돌린다
+        outcome:
+          resources:
+            sanity: -3
+          danger: 1
+          add_flags: [seoharin_unsaid_stay_resolved, final_return_settlement_contract_seeded, final_return_settlement_evasion_seeded, final_epilogue_closed_gate_risk_seeded]
+          add_clues: [evasion_prices_waiting, not_answering_can_close_the_gate, fear_of_leaving_becomes_method_trace]
+          destination_id: black_serpent_ledger_vault
+          log: 너는 빈자리에 대한 말을 돌린다. 대답하지 않은 말도 장부처럼 남고, 서하린의 기다림은 닫힌 산문 위험 후보로 기울기 시작한다.
+
   - id: wuxia_cheongirok_resolution
     title: "천기록 결산"
     body: 서하린과 청류문의 장이 잠시 멎자, 천기록의 마지막 장이 거의 빈 종이처럼 펼쳐진다. 그곳에는 정답도, 기록자의 이름도 없다. 다만 네가 기록을 이해의 보조로 썼는지, 사람을 줄 세우는 계산 도구로 썼는지에 따라 먹빛의 결이 달라진다. 이 결산은 후일담을 출력하지 않고, 마지막 장의 안전한 여운과 오염 변주 후보만 남긴다.
@@ -1992,7 +2053,7 @@ encounters:
           fallback_text: 천기록의 마지막 장 위에 '천기록', '마지막 장', '빈칸', '기록자'만 번졌다가 지워진다.
     conditions:
       locations: [black_serpent_ledger_vault]
-      required_flags: [seoharin_qingliu_resolution_resolved, mumyeong_resolution_resolved, boss_resolution_resolved, final_result_priority_applied_seeded, final_combat_result_battle_victory_seeded, final_state_routing_seeded]
+      required_flags: [seoharin_unsaid_stay_resolved, seoharin_qingliu_resolution_resolved, mumyeong_resolution_resolved, boss_resolution_resolved, final_result_priority_applied_seeded, final_combat_result_battle_victory_seeded, final_state_routing_seeded]
       forbidden_flags: [cheongirok_resolution_resolved]
     choices:
       - id: turn_the_last_page_without_question

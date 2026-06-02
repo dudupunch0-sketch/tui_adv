@@ -2,9 +2,9 @@
 type: next_goal_prompt
 created: 2026-06-01
 updated: 2026-06-02
-current_goal: wuxia_seoharin_unsaid_stay_runtime_implementation
-previous_current_goal: wuxia_return_settlement_contract_handoff
-mode: contract-first-runtime-implementation
+current_goal: return_settlement_followup_handoff
+previous_current_goal: wuxia_seoharin_unsaid_stay_runtime_implementation
+mode: docs-only-contract-selection
 ---
 
 # next_goal
@@ -51,9 +51,17 @@ mode: contract-first-runtime-implementation
 
 `wuxia_return_settlement_contract_handoff`도 완료됐다. Notion `가지 말라는 말`, `08. 엔딩과 후일담 연결`, `11. True Ending 단일 루트`, `사도 최종전`, `최종장 결산 라우팅 마스터`, `사도 최종전 상태값 사전`, `06. 사이드 퀘스트와 미해결 부채`, `07. 천기록 / 천외편린 보상`을 대조해 다음 runtime 후보를 `wuxia_seoharin_unsaid_stay`로 선택했다.
 
-현재 목표는 `wuxia_seoharin_unsaid_stay_runtime_implementation`이다. `docs/design/Wuxia_Final_State_Routing.md`의 `Return/Settlement Contract Handoff`를 계약으로 보고, `가지 말라는 말`을 기존 encounter schema로 구현한다. 이 slice는 full modern return ending이나 settlement schema가 아니라 서하린 late relationship trigger이며, return/settlement/corruption 후보 seed만 남긴다.
+`wuxia_seoharin_unsaid_stay_runtime_implementation`도 완료됐다. Notion `가지 말라는 말`과 `Return/Settlement Contract Handoff`를 계약으로 삼아, `wuxia_seoharin_qingliu_resolution` 뒤와 `wuxia_cheongirok_resolution` 앞에 서하린 late relationship trigger를 추가했다. 이 slice는 full modern return ending이나 settlement schema가 아니라 `final_return_settlement_contract_seeded`와 return/settlement/uncertainty/evasion 후보 seed만 남긴다.
+
+현재 목표는 `return_settlement_followup_handoff`다. 방금 구현한 `wuxia_seoharin_unsaid_stay` seed를 기준으로 full modern return ending, settlement afterword, corruption/closed-gate branch, battle-loss path, reward/ability schema, relation/debt/faction ledger 중 무엇을 먼저 열지 Notion source와 repo canonical docs를 다시 비교한다.
 
 이전 목표 표기 이력:
+
+```yaml
+current_goal: wuxia_seoharin_unsaid_stay_runtime_implementation
+previous_current_goal: wuxia_return_settlement_contract_handoff
+mode: contract-first-runtime-implementation
+```
 
 ```yaml
 current_goal: wuxia_final_epilogue_ux_playtest_contract_followup
@@ -67,9 +75,25 @@ previous_current_goal: wuxia_final_epilogue_renderer_contract_handoff
 mode: contract-first-runtime-implementation
 ```
 
-## 구현 전 계약
+## 다음 handoff 계약
 
-다음 runtime 구현은 아래 contract를 따른다.
+다음 handoff는 아래 runtime 결과를 입력으로 삼는다.
+
+```yaml
+completed_runtime:
+  id: wuxia_seoharin_unsaid_stay
+  common_flags: [seoharin_unsaid_stay_resolved, final_return_settlement_contract_seeded]
+  candidate_flags:
+    return: [final_return_intent_honest_seeded, final_epilogue_return_absence_candidate_seeded]
+    settlement: [final_settlement_intent_honest_seeded, final_epilogue_qingliu_settlement_candidate_seeded]
+    uncertain: [final_return_settlement_uncertain_shared_seeded, final_epilogue_empty_place_kept_open_seeded]
+    evasion: [final_return_settlement_evasion_seeded, final_epilogue_closed_gate_risk_seeded]
+next_decision:
+  id: return_settlement_followup_handoff
+  compare: [full_modern_return_ending, settlement_afterword, corruption_closed_gate_branch, battle_loss_path, reward_ability_schema, relation_debt_faction_ledger]
+```
+
+완료된 runtime contract 이력:
 
 - runtime id: `wuxia_seoharin_unsaid_stay`
 - Notion source: `가지 말라는 말` / `37137e69-695e-8138-a41d-e153190f85aa`
@@ -168,16 +192,16 @@ mode: contract-first-runtime-implementation
 - 서하린에게 무명 이탈 진실을 직접 전달하지 않는다.
 - `told_seoharin_truth` flag를 추가하지 않는다.
 - full final battle이나 full return/settlement 결산을 바로 구현하지 않는다.
-- `wuxia_seoharin_unsaid_stay`는 귀환/정착/침식 후보 seed bridge로만 구현한다.
+- `wuxia_seoharin_unsaid_stay`는 귀환/정착/침식 후보 seed bridge로만 구현했으며, 다음 handoff에서 full return/settlement 여부를 다시 결정한다.
 - 보스 결산은 route seed bridge까지만 구현됐으며, 별도 승인된 runtime contract 없이 최종 결산 출력기나 후일담을 바로 구현하지 않는다.
 - final epilogue renderer contract는 열렸지만, return schema, combat resolver/schema, HP 숫자전, route graph, faction reputation, relation/debt ledger, reward/ability schema, 천기록 identity reveal을 바로 열지 않는다.
 - `item_unpriced_wooden_sword`를 실제 아이템으로 지급하지 않는다.
 - legacy office bundle, `src/tui_adv/data/*.yaml`, `escape-office` save/localStorage key를 변경하지 않는다.
 - `wuxia_final_epilogue_renderer_contract`를 구현하더라도 combat resolver, HP numeric battle, return/settlement schema를 바로 열지 않는다.
 
-## 이번 implementation 산출물
+## 완료된 implementation 산출물
 
-`wuxia_seoharin_unsaid_stay`를 구현하면서 최소 다음 파일을 갱신한다.
+`wuxia_seoharin_unsaid_stay` 구현에서 최소 다음 파일을 갱신했다.
 
 - `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`
 - `crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json`

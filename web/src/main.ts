@@ -40,7 +40,7 @@ import {
 import { renderStorybookPage } from './ui/storybook/render';
 
 const DEFAULT_SEED = 123;
-const REQUIRE_WASM = import.meta.env.VITE_REQUIRE_WASM !== 'false';
+const REQUIRE_WASM = import.meta.env.VITE_REQUIRE_WASM === 'true';
 const STORYPACK_PREVIEW_ACTION_PREFIX = 'start-storypack-preview:';
 
 type PlayerScreen = 'start' | 'game';

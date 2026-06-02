@@ -3347,7 +3347,79 @@ fn json_boundary_reaches_wuxia_seoharin_qingliu_resolution_after_mumyeong_resolu
         .iter()
         .any(|clue| clue == "qingliu_future_is_poor_but_flowing"));
 
-    let cheongirok_state_json = serde_json::to_string(&open_gate_result["state"])
+    let unsaid_state_json = serde_json::to_string(&open_gate_result["state"])
+        .expect("seoharin unsaid stay state should stringify");
+    let unsaid_page_json = scene_page_json(&unsaid_state_json, WUXIA_PREVIEW_BUNDLE)
+        .expect("seoharin unsaid stay scene page should serialize");
+    let unsaid_page: Value =
+        serde_json::from_str(&unsaid_page_json).expect("seoharin unsaid page JSON should parse");
+
+    assert_eq!(unsaid_page["mode"], "encounter");
+    assert_eq!(unsaid_page["title"], "가지 말라는 말");
+    assert_eq!(
+        unsaid_page["visual"]["id"],
+        "wuxia_seoharin_unsaid_stay"
+    );
+    assert_eq!(
+        unsaid_page["visual"]["kind"],
+        "seoharin_unsaid_stay_seed"
+    );
+    assert_eq!(unsaid_page["effect_cues"][0]["stable_terms"][0], "서하린");
+    let unsaid_action_ids: Vec<&str> = unsaid_page["actions"]
+        .as_array()
+        .expect("actions should be an array")
+        .iter()
+        .map(|action| action["id"].as_str().expect("action id should be a string"))
+        .collect();
+    assert_eq!(
+        unsaid_action_ids,
+        vec![
+            "choice:say_return_home_honestly",
+            "choice:say_you_will_stay_with_qingliu",
+            "choice:share_uncertainty_without_running",
+            "choice:turn_away_from_the_empty_place",
+        ]
+    );
+
+    let honest_return_result_json = apply_action_json(
+        &unsaid_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:say_return_home_honestly",
+    )
+    .expect("honest return seoharin unsaid stay action should serialize");
+    let honest_return_result: Value = serde_json::from_str(&honest_return_result_json)
+        .expect("seoharin unsaid stay action JSON should parse");
+    assert_eq!(
+        honest_return_result["encounter_id"],
+        "wuxia_seoharin_unsaid_stay"
+    );
+    let flags = honest_return_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array");
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "seoharin_unsaid_stay_resolved"));
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "final_return_settlement_contract_seeded"));
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "final_return_intent_honest_seeded"));
+    assert!(flags
+        .iter()
+        .any(|flag| flag == "final_epilogue_return_absence_candidate_seeded"));
+    assert!(!flags.iter().any(|flag| flag == "told_seoharin_truth"));
+    assert!(!flags
+        .iter()
+        .any(|flag| flag == "return_settlement_schema_opened"));
+    let clues = honest_return_result["state"]["clues"]
+        .as_array()
+        .expect("clues should be an array");
+    assert!(clues
+        .iter()
+        .any(|clue| clue == "leaving_can_still_leave_a_place"));
+
+    let cheongirok_state_json = serde_json::to_string(&honest_return_result["state"])
         .expect("cheongirok state should stringify");
     let cheongirok_page_json = scene_page_json(&cheongirok_state_json, WUXIA_PREVIEW_BUNDLE)
         .expect("cheongirok resolution scene page should serialize");

@@ -2,9 +2,9 @@
 type: next_goal_prompt
 created: 2026-06-01
 updated: 2026-06-02
-current_goal: wuxia_battle_loss_epilogue_followup_handoff
-previous_current_goal: wuxia_battle_loss_epilogue_contract_implementation
-mode: docs-only-contract-selection
+current_goal: wuxia_final_state_canonical_collapse_contract_implementation
+previous_current_goal: wuxia_battle_loss_epilogue_followup_handoff
+mode: contract-first-runtime-implementation
 ---
 
 # next_goal
@@ -61,9 +61,17 @@ mode: docs-only-contract-selection
 
 `wuxia_battle_loss_epilogue_contract_implementation`도 완료됐다. 기존 Rust final epilogue body block consumer가 명시적 `final_combat_result_battle_loss_seeded` seed를 소비해 Notion battle-loss bundle 5장을 출력하고, optimistic victory cards를 `battle_loss`로 suppress한다. final epilogue ending YAML gate는 victory-only required flag를 제거하고 Rust consumer가 victory/loss 승인 precondition을 소유한다.
 
-현재 목표는 `wuxia_battle_loss_epilogue_followup_handoff`이다. battle-loss bundle이 runtime evidence를 얻었으므로, 다음에는 full final battle container, broader corruption/closed-gate branch, reward/ability schema, relation/debt/faction ledger, main ending archive/save surface, playable defeat-route bridge 중 무엇을 먼저 열지 비교한다.
+`wuxia_battle_loss_epilogue_followup_handoff`도 완료됐다. battle-loss bundle이 runtime evidence를 얻은 뒤 full final battle container, broader corruption/closed-gate branch, reward/ability schema, relation/debt/faction ledger, main ending archive/save surface, playable defeat-route bridge를 비교했고, 다음 runtime 후보를 `wuxia_final_state_canonical_collapse_contract`로 선택했다.
+
+현재 목표는 `wuxia_final_state_canonical_collapse_contract_implementation`이다. 기존 `final_*_seeded` local flags를 Rust GameCore가 canonical final state labels로 collapse하고, existing `ScenePage.body_blocks`에 `epilogue_state_audit` block을 출력하는 첫 runtime contract를 구현한다.
 
 이전 목표 표기 이력:
+
+```yaml
+current_goal: wuxia_battle_loss_epilogue_followup_handoff
+previous_current_goal: wuxia_battle_loss_epilogue_contract_implementation
+mode: docs-only-contract-selection
+```
 
 ```yaml
 current_goal: wuxia_battle_loss_epilogue_contract_implementation
@@ -109,7 +117,63 @@ mode: contract-first-runtime-implementation
 
 ## 다음 handoff 계약
 
-다음 handoff는 아래 runtime 결과를 입력으로 삼는다.
+최신 완료 handoff와 다음 runtime 계약:
+
+```yaml
+completed_handoff:
+  id: wuxia_battle_loss_epilogue_followup_handoff
+  selected_next_runtime: wuxia_final_state_canonical_collapse_contract
+  selected_reason: current runtime consumes raw final_*_seeded flags while the Notion final-state glossary requires local suffix values to collapse before final routing
+  compared:
+    - full_final_battle_container
+    - broader_corruption_closed_gate_branch
+    - reward_ability_schema
+    - relation_debt_faction_ledger
+    - main_ending_archive_save_surface
+    - playable_defeat_route_bridge
+  notion_sources_checked:
+    - 최종장 결산 라우팅 마스터
+    - 사도 최종전
+    - 사도 최종전 상태값 사전
+    - 08. 엔딩과 후일담 연결
+    - 06. 사이드 퀘스트와 미해결 부채
+    - 07. 천기록 / 천외편린 보상
+    - 03. 세력과 외부 압박
+    - 엔딩 시스템
+    - 01. 메인 엔딩 구조
+    - 06. 엔딩 아카이브
+next_runtime:
+  id: wuxia_final_state_canonical_collapse_contract
+  implementation_owner: crates/escape-core/src/final_epilogue.rs
+  output_shape: existing ScenePage.body_blocks
+  likely_block_kind: epilogue_state_audit
+  input_source: existing final_*_seeded flags
+  canonical_states:
+    - combat_result
+    - boss_resolution_route
+    - evidence_state
+    - network_handling
+    - pressure_state
+    - seoharin_axis
+    - qingliu_rebuild
+    - mumyeong_salvation
+    - successor_route
+    - own_flow_choice
+    - truth_state
+    - cheongirok_state
+    - player_method
+    - item_logs
+  guardrails:
+    - do_not_open_full_final_battle_container
+    - do_not_open_combat_resolver_or_hp_numeric_battle
+    - do_not_open_playable_defeat_route
+    - do_not_open_main_ending_archive_or_save_surface
+    - do_not_open_relation_debt_faction_ledger
+    - do_not_open_reward_ability_schema
+    - keep_web_and_terminal_renderers_display_only
+```
+
+이전 return/settlement handoff는 아래 runtime 결과를 입력으로 삼았다.
 
 ```yaml
 completed_runtime:
@@ -275,10 +339,12 @@ next_decision:
   - section `0.70`: `wuxia_return_settlement_epilogue_contract` runtime slice
   - section `0.71`: return/settlement epilogue follow-up handoff
   - section `0.72`: `wuxia_battle_loss_epilogue_contract` runtime slice
+  - section `0.73`: `wuxia_battle_loss_epilogue_followup_handoff` docs-only handoff
   - 현재 최우선 남은 작업
   - `## 10. 다음 액션`
 - `docs/design/Wuxia_Final_State_Routing.md`
   - `Return/Settlement Contract Handoff`
+  - `Battle Loss Epilogue Follow-up Handoff`
 - `docs/dev/Storypack_Runtime_Preview_Mode.md`
 - `docs/dev/Notion_Design_Coverage.md`
 - `docs/content/storypacks/wuxia_jianghu_pack.md`

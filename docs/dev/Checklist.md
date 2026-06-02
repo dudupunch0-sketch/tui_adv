@@ -1062,6 +1062,17 @@
 - [x] full final battle container, combat resolver, HP 숫자전, playable defeat route, archive/save schema, relation/debt/faction ledger, reward/ability schema 미변경 유지
 - [x] 다음 작업을 `wuxia_battle_loss_epilogue_followup_handoff` docs-only contract slice로 갱신
 
+### 0.2cl 2026-06-02 무협 `wuxia_battle_loss_epilogue_followup_handoff` docs-only handoff
+
+- [x] Notion `최종장 결산 라우팅 마스터`, `사도 최종전`, `사도 최종전 상태값 사전`, `08. 엔딩과 후일담 연결` 재대조
+- [x] Notion `06. 사이드 퀘스트와 미해결 부채`, `07. 천기록 / 천외편린 보상`, `03. 세력과 외부 압박`, `엔딩 시스템`, `01. 메인 엔딩 구조`, `06. 엔딩 아카이브` 재대조
+- [x] full final battle container, broader corruption/closed-gate branch, reward/ability schema, relation/debt/faction ledger, main ending archive/save surface, playable defeat-route bridge 비교
+- [x] 다음 runtime 후보를 `wuxia_final_state_canonical_collapse_contract`로 결정
+- [x] 기존 `final_*_seeded` local flags를 canonical final state labels로 접는 scope 기록
+- [x] `ScenePage.body_blocks` 기반 `epilogue_state_audit` audit block 후보 기록
+- [x] full final battle container, combat resolver, HP 숫자전, playable defeat route, archive/save schema, relation/debt/faction ledger, reward/ability schema 미변경 유지
+- [x] 다음 작업을 `wuxia_final_state_canonical_collapse_contract_implementation`으로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

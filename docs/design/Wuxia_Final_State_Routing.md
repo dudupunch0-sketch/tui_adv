@@ -153,6 +153,8 @@ Deferred until this contract exists and a runtime handoff explicitly opens them:
 
 Latest implemented runtime slice: `wuxia_battle_loss_epilogue_contract`.
 
+Latest contract handoff: `wuxia_battle_loss_epilogue_followup_handoff` selected `wuxia_final_state_canonical_collapse_contract` as the next runtime candidate.
+
 `wuxia_sado_final_phase_1_price_tag`, `wuxia_sado_final_phase_2_weakpoint_control`, `wuxia_sado_final_phase_3_outside_calculation`, `wuxia_boss_resolution`, `wuxia_mumyeong_resolution`, `wuxia_seoharin_qingliu_resolution`, `wuxia_cheongirok_resolution`, and `wuxia_black_serpent_aftermath` now use the existing encounter schema to seed final-state clues/flags/logs for the Sado final phases, boss-resolution route bridge, Mumyeong-resolution route bridge, Seo Harin/Qingliu epilogue candidate bridge, Cheonggi Record last-page bridge, and Black Serpent aftermath bridge. `wuxia_final_epilogue_renderer_contract`, `wuxia_return_settlement_epilogue_contract`, and `wuxia_battle_loss_epilogue_contract` consume those candidate/result seeds through Rust GameCore-owned structured body blocks without opening combat resolver, HP numeric combat, full return/settlement schema, `item_unpriced_wooden_sword` payout, Seo Harin truth delivery, Cheonggi Record recorder identity reveal, or `told_seoharin_truth` unless a new approved runtime contract opens them.
 
 ## Return/Settlement Contract Handoff
@@ -358,4 +360,79 @@ Still closed:
 
 Implementation status: `wuxia_battle_loss_epilogue_contract` is now implemented in `crates/escape-core/src/final_epilogue.rs`. It consumes `final_combat_result_battle_loss_seeded`, emits the five battle-loss cards above, suppresses optimistic victory cards through `battle_loss`, and keeps the final epilogue ending YAML gate from being victory-only.
 
-Next contract decision: `wuxia_battle_loss_epilogue_followup_handoff`, comparing full final battle container, broader corruption/closed-gate branch, reward/ability schema, relation/debt/faction ledger, main ending archive/save surface, and playable defeat-route bridge after the battle-loss branch cards have runtime evidence.
+Next contract decision completed: `wuxia_battle_loss_epilogue_followup_handoff`.
+
+## Battle Loss Epilogue Follow-up Handoff
+
+Decision from the 2026-06-02 `wuxia_battle_loss_epilogue_followup_handoff`: the next implementation after `wuxia_battle_loss_epilogue_contract` is `wuxia_final_state_canonical_collapse_contract`.
+
+Notion evidence:
+
+- `최종장 결산 라우팅 마스터` owns `canonical_final_inputs`, `final_result_priority`, `final_epilogue_master_matrix`, and final conflict rules.
+- `사도 최종전` and `사도 최종전 상태값 사전` both treat final values as routing labels, not stats, moral scores, Sado debuffs, or renderer-side guesses.
+- `사도 최종전 상태값 사전` explicitly requires local values such as `*_seed`, `*_candidate`, `*_seen`, `*_trace`, and the current repo's `*_seeded` flags to collapse before final routing consumes them.
+- `08. 엔딩과 후일담 연결` keeps fulfilled afterword cards additive, with suppression handled by result priority and conflict rules.
+- `06. 사이드 퀘스트와 미해결 부채`, `07. 천기록 / 천외편린 보상`, and `03. 세력과 외부 압박` are broader systems whose traces can be summarized before ledger/reward schemas are opened.
+- `엔딩 시스템`, `01. 메인 엔딩 구조`, and `06. 엔딩 아카이브` keep player-facing archive/save work separate from the immediate final routing contract.
+
+Candidate comparison:
+
+| candidate | decision |
+|---|---|
+| full final battle container | Deferred; it would couple combat resolver, playable defeat, and archive/save scope before canonical final inputs are stable. |
+| broader corruption/closed-gate branch | Deferred; existing cards and corrupted priority already express the first surface, while canonical collapse will clarify which seeds drive it. |
+| reward/ability schema | Deferred; 천외편린 three-choice reward needs a separate growth system. |
+| relation/debt/faction ledger | Deferred; faction and debt traces can remain afterword/audit lines until persistent ledger axes are proven. |
+| main ending archive/save surface | Deferred; archive categories and undiscovered counts are player-facing persistence work. |
+| playable defeat-route bridge | Deferred; good future candidate, but loss/victory mid-route flags would mix without canonical collapse first. |
+
+Selected next implementation:
+
+| field | value |
+|---|---|
+| runtime id | `wuxia_final_state_canonical_collapse_contract` |
+| implementation owner | `crates/escape-core/src/final_epilogue.rs` |
+| output shape | existing `ScenePage.body_blocks` |
+| likely block kind | `epilogue_state_audit` |
+| input source | existing `final_*_seeded` flags |
+| renderer role | Web Storybook and SuperLightTUI display only |
+
+Canonical states to report:
+
+- `combat_result`
+- `boss_resolution_route`
+- `evidence_state`
+- `network_handling`
+- `pressure_state`
+- `seoharin_axis`
+- `qingliu_rebuild`
+- `mumyeong_salvation`
+- `successor_route`
+- `own_flow_choice`
+- `truth_state`
+- `cheongirok_state`
+- `player_method`
+- `item_logs`
+
+Implementation contract:
+
+- Collapse local suffix flags such as `*_seeded`, `*_candidate_seeded`, `*_seen`, and `*_trace` into canonical final state labels before final routing/audit output.
+- Preserve `final_result_priority`, especially `battle_loss` first and `corrupted_victory` overriding partial true-route conditions.
+- Report missing, ambiguous, or contradictory canonical inputs as structured audit lines rather than renderer-side guesses.
+- Add direct-state Rust route parity coverage for true, corrupted, and battle-loss summaries.
+- Add a WASM JSON boundary check proving the `epilogue_state_audit` body block crosses the player boundary.
+
+Still closed:
+
+- full `wuxia_sado_final_battle` container
+- combat resolver or HP numeric battle
+- playable defeat route / loss encounter sequence
+- new `main_ending_type` runtime enum
+- main ending archive/save surface
+- relation/debt/faction ledger
+- reward/ability schema and 천외편린 three-choice growth UI
+- full modern return ending scene or post-return settlement scene
+- Seo Harin truth delivery, `told_seoharin_truth`
+- Cheonggi Record recorder identity reveal
+
+Next runtime implementation candidate: `wuxia_final_state_canonical_collapse_contract`.

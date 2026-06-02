@@ -5534,15 +5534,16 @@
     "source_refs": [
       "notion_event:wuxia_mumyeong_destroys_orthodox_sect",
       "docs/dev/Notion_Design_Coverage.md",
-      "docs/dev/Development_Plan.md#046-2026-06-02-docs-only-post-qingliu-trace-handoff-wuxia_mumyeong_destroys_orthodox_sect"
+      "docs/dev/Development_Plan.md#046-2026-06-02-docs-only-post-qingliu-trace-handoff-wuxia_mumyeong_destroys_orthodox_sect",
+      "docs/dev/Development_Plan.md#047-2026-06-02-무협-wuxia_mumyeong_destroys_orthodox_sect-preview-runtime-slice"
     ],
     "notion_event_mapping": {
       "notion_event_id": "wuxia_mumyeong_destroys_orthodox_sect",
       "notion_event_name": "정파 문파 멸문",
-      "mapping_status": "next_runtime_selected"
+      "mapping_status": "preview_runtime_implemented"
     },
-    "status": "candidate",
-    "mapping_status": "next_runtime_selected",
+    "status": "implemented_in_storypack_preview",
+    "mapping_status": "preview_runtime_implemented",
     "phase": [
       "midgame_backstory",
       "hyeonakmun_consequence_trace"
@@ -5577,7 +5578,7 @@
     ],
     "summary": "청류문 흔적 조사 이후 빈 현악문 산문과 기록/풍문으로 무명이 현악문을 멸문시켰다는 consequence를 확인하되, playable 멸문 전투나 full flashback은 열지 않는다.",
     "setup_text": "현악문이라는 이름은 청류문 외원의 흉터에서 끝나지 않는다. 천기록은 멸문 장면을 재생하지 않고, 비어 버린 산문과 부러진 현판, 복호금쇄수의 이름이 사라진 장부 가장자리만 적는다.",
-    "runtime_preview_design_status": "next_runtime_selected",
+    "runtime_preview_design_status": "implemented",
     "runtime_preview_start_conditions": {
       "runtime_mode": "storypack_preview",
       "conditions": {
@@ -5740,9 +5741,9 @@
     },
     "main_spine_link": "청류문 습격 흔적 조사가 남긴 현악문 thread를 무명의 후속 consequence로 좁힌다. 다만 무명 이탈의 진실 전체, 서하린에게 진실 전달, 보스 스카웃은 아직 다음 사건으로 넘긴다.",
     "randomization_notes": "1회성 Hyeonakmun consequence trace. Qingliu attack trace 뒤에만 열고 mumyeong_destroys_orthodox_sect_resolved로 반복을 막는다.",
-    "promotion_notes": "wuxia_qingliu_attack_after_war_followup docs-only handoff에서 다음 runtime 후보로 선택했다. Notion 사건 카드 DB의 정파 문파 멸문을 전투/멸문 flashback으로 직접 재생하지 않고, 빈 현악문 산문과 기록/풍문을 확인하는 limited consequence trace로 제한한다. wuxia_boss_recruits_mumyeong, wuxia_mumyeong_departure_truth_summary, wuxia_mumyeong_resolution, wuxia_boss_resolution은 후반/final/truth/salvation 범위라 보류한다. legacy office bundle, legacy escape-office key, random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation schema, reward/ability/epilogue/return system, 천기록 정체 reveal은 열지 않는다.",
+    "promotion_notes": "preview runtime으로 구현 완료. wuxia_qingliu_attack_after_war_followup docs-only handoff에서 선택한 뒤, Notion 사건 카드 DB의 정파 문파 멸문을 playable 전투/flashback이 아니라 빈 현악문 산문과 기록/풍문을 확인하는 limited consequence trace로 landing했다. wuxia_boss_recruits_mumyeong, wuxia_mumyeong_departure_truth_summary, wuxia_mumyeong_resolution, wuxia_boss_resolution, wuxia_seoharin_empty_place는 다음 handoff에서 다시 비교한다. legacy office bundle, legacy escape-office key, random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation schema, reward/ability/epilogue/return system, 천기록 정체 reveal은 열지 않는다.",
     "runtime_preview_implementation_notes": {
-      "planned_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml",
+      "implemented_source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml",
       "insert_after": "wuxia_qingliu_attack_after_war",
       "selected_over": [
         "wuxia_boss_recruits_mumyeong",
@@ -5751,10 +5752,13 @@
         "wuxia_boss_resolution",
         "wuxia_seoharin_empty_place"
       ],
-      "generated_artifacts_changed": false,
+      "generated_artifacts": [
+        "crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json",
+        "web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json"
+      ],
       "default_bundle_changed": false,
       "new_schema_opened": false,
-      "next_step": "runtime_implementation"
+      "next_handoff": "wuxia_mumyeong_destroys_orthodox_sect_followup"
     }
   }
 ]

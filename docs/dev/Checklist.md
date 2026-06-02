@@ -691,6 +691,19 @@
 - [x] runtime YAML/Rust/Web generated bundle, 기본 office bundle, legacy `escape-office` save/localStorage key 미변경 유지
 - [x] 다음 작업을 `wuxia_mumyeong_destroys_orthodox_sect` runtime implementation으로 갱신
 
+### 0.2bk 2026-06-02 무협 `wuxia_mumyeong_destroys_orthodox_sect` preview runtime slice
+
+- [x] `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`에서 `wuxia_qingliu_attack_after_war` 뒤에 `wuxia_mumyeong_destroys_orthodox_sect` 추가
+- [x] start conditions를 `qingliu_attack_after_war_resolved`, `qingliu_attack_trace_confirmed`, `hyeonakmun_attack_thread_opened`, `mumyeong_awakening_resolved`, `midgame_continuity_started`로 구현
+- [x] stable choice id `read_hyeonakmun_empty_gate_record`, `trace_bokho_lock_to_mumyeong`, `ask_why_seoharin_never_heard_full_story`, `stop_before_counting_the_dead` 구현
+- [x] 모든 선택지가 `mumyeong_destroys_orthodox_sect_resolved`, `hyeonakmun_destruction_thread_opened`, `departure_truth_thread_deepened`, `destination_id: cheongryu_outer_courtyard` bridge를 남기도록 구현
+- [x] `wuxia_mumyeong_destroys_orthodox_sect` presentation을 `speaker: 천기록`, `layout: hyeonakmun_empty_gate_record`, stable terms `[현악문, 복호금쇄수, 무명]`로 구현
+- [x] Rust/Web storypack preview generated bundle 재생성
+- [x] Python exporter/docs/storypack DB, Rust content bundle, WASM JSON boundary, terminal smoke, Web default content bundle registry 테스트 갱신
+- [x] 기본 office bundle, Web legacy generated `content.bundle.json`, `src/tui_adv/data/*.yaml`, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] playable 멸문 전투, full flashback, 무명 이탈 진실 전체 reveal, 보스 스카웃/final boss resolution, 무명 구원 확정, 서하린에게 진실 전달, seed 기반 random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation/reward/ability/epilogue/return schema, 천기록 정체 reveal 미변경 유지
+- [x] 다음 작업을 `wuxia_mumyeong_destroys_orthodox_sect_followup` docs-only handoff로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

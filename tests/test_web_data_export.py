@@ -104,6 +104,8 @@ def test_export_web_data_builds_renderer_neutral_content_bundle():
             "wuxia_boss_first_appearance",
             "wuxia_mumyeong_request_for_aid",
             "wuxia_mumyeong_awakening",
+            "wuxia_qingliu_attack_after_war",
+            "wuxia_mumyeong_destroys_orthodox_sect",
         }
         for encounter in bundle["content"]["encounters"]
     )
@@ -127,7 +129,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     assert bundle["manifest"]["counts"] == {
         "locations": 4,
         "items": 4,
-        "encounters": 21,
+        "encounters": 22,
         "endings": 1,
         "achievements": 2,
         "secrets": 0,
@@ -161,6 +163,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "wuxia_mumyeong_request_for_aid",
         "wuxia_mumyeong_awakening",
         "wuxia_qingliu_attack_after_war",
+        "wuxia_mumyeong_destroys_orthodox_sect",
     ]
     first_fight = bundle["content"]["encounters"][1]
     assert first_fight["conditions"] == {
@@ -888,6 +891,42 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "full_flashback_still_unopened",
     ]
     assert lock_scars["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
+    destroys_orthodox = bundle["content"]["encounters"][21]
+    assert destroys_orthodox["conditions"] == {
+        "locations": ["cheongryu_outer_courtyard"],
+        "required_flags": [
+            "qingliu_attack_after_war_resolved",
+            "qingliu_attack_trace_confirmed",
+            "hyeonakmun_attack_thread_opened",
+            "mumyeong_awakening_resolved",
+            "midgame_continuity_started",
+        ],
+        "forbidden_flags": ["mumyeong_destroys_orthodox_sect_resolved"],
+    }
+    assert destroys_orthodox["presentation"]["layout"] == "hyeonakmun_empty_gate_record"
+    assert destroys_orthodox["presentation"]["speaker"] == "천기록"
+    assert destroys_orthodox["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "현악문",
+        "복호금쇄수",
+        "무명",
+    ]
+    assert [choice["id"] for choice in destroys_orthodox["choices"]] == [
+        "read_hyeonakmun_empty_gate_record",
+        "trace_bokho_lock_to_mumyeong",
+        "ask_why_seoharin_never_heard_full_story",
+        "stop_before_counting_the_dead",
+    ]
+    read_record = destroys_orthodox["choices"][0]
+    assert read_record["outcome"]["add_flags"] == [
+        "mumyeong_destroys_orthodox_sect_resolved",
+        "hyeonakmun_destruction_thread_opened",
+        "departure_truth_thread_deepened",
+    ]
+    assert read_record["outcome"]["add_clues"] == [
+        "hyeonakmun_was_destroyed_after_qingliu_attack",
+        "destruction_is_consequence_not_salvation",
+    ]
+    assert read_record["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
     assert "dev_desk" not in json.dumps(bundle, ensure_ascii=False)
     assert _missing_private_secret_fields(bundle)
 

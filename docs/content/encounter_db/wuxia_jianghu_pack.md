@@ -1,13 +1,13 @@
 # 이구학지 — 천기록 encounter situation cards
 
-Status: candidate + `wuxia_qingliu_attack_after_war` preview runtime implemented + `wuxia_mumyeong_destroys_orthodox_sect` selected
+Status: candidate + `wuxia_mumyeong_destroys_orthodox_sect` preview runtime implemented
 
-이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_qingliu_attack_after_war`까지는 separate storypack preview runtime으로 승격되었고, 다음 runtime 후보는 `wuxia_mumyeong_destroys_orthodox_sect` limited consequence trace다.
+이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_destroys_orthodox_sect`까지는 separate storypack preview runtime으로 승격되었고, 다음은 `wuxia_mumyeong_destroys_orthodox_sect_followup` docs-only handoff다.
 
 공통 원칙:
 
 - 모든 카드는 `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`에 속한다.
-- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_qingliu_attack_after_war`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. 다음 runtime 후보는 `wuxia_qingliu_attack_after_war_followup` handoff에서 `wuxia_mumyeong_destroys_orthodox_sect`로 결정했다.
+- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_mumyeong_destroys_orthodox_sect`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. 다음 runtime 후보는 `wuxia_mumyeong_destroys_orthodox_sect_followup` docs-only handoff에서 다시 결정한다.
 - 최신 canonical 무협 설정은 **이구학지 — 천기록**이다. 이전의 generic 객잔/소림/무당/아미 placeholder는 superseded로 본다.
 - 플레이어 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계의 시장 한복판에 전이됐다”이다.
 - 선택지는 세부 수치보다 역할과 결과 hook을 먼저 정의한다.
@@ -40,7 +40,7 @@ Status: candidate + `wuxia_qingliu_attack_after_war` preview runtime implemented
 | `wuxia_mumyeong_first_sighting` | 무명 첫 목격 | `wuxia_mumyeong_first_sighting` | preview runtime implemented |
 | `wuxia_mumyeong_first_confrontation` | 무명 첫 대치 | `wuxia_mumyeong_first_confrontation` | preview runtime implemented |
 | `wuxia_boss_first_appearance` | 보스 첫 등장 | `wuxia_boss_first_appearance` | preview runtime implemented |
-| `wuxia_mumyeong_destroys_orthodox_sect` | 정파 문파 멸문 | `wuxia_mumyeong_destroys_orthodox_sect` | next runtime selected as limited consequence trace |
+| `wuxia_mumyeong_destroys_orthodox_sect` | 정파 문파 멸문 | `wuxia_mumyeong_destroys_orthodox_sect` | preview runtime implemented |
 | `wuxia_mumyeong_awakening` | 무명의 각성 | `wuxia_mumyeong_awakening` | preview runtime implemented |
 | `wuxia_boss_recruits_mumyeong` | 흑사방 보스의 스카웃 | none yet | future backstory event |
 | `wuxia_mumyeong_reads_orthodox_style` | 무명의 정파 무공 간파 | `wuxia_mumyeong_reads_orthodox_style` | preview runtime implemented |
@@ -1980,9 +1980,9 @@ source_refs:
 notion_event_mapping:
   notion_event_id: wuxia_mumyeong_destroys_orthodox_sect
   notion_event_name: 정파 문파 멸문
-  mapping_status: next_runtime_selected
-status: candidate
-mapping_status: next_runtime_selected
+  mapping_status: preview_runtime_implemented
+status: implemented_in_storypack_preview
+mapping_status: preview_runtime_implemented
 phase: [midgame_backstory, hyeonakmun_consequence_trace]
 priority_class: route_key
 location_tags: [cheongryu_outer_courtyard, hyeonakmun_trace, destroyed_orthodox_sect]
@@ -1993,7 +1993,7 @@ npc_slots: [early_rescuer]
 candidate_characters: [seo_harin, mumyeong, black_serpent_boss]
 summary: 청류문 흔적 조사 이후 빈 현악문 산문과 기록/풍문으로 무명이 현악문을 멸문시켰다는 consequence를 확인하되, playable 멸문 전투나 full flashback은 열지 않는다.
 setup_text: 현악문이라는 이름은 청류문 외원의 흉터에서 끝나지 않는다. 천기록은 멸문 장면을 재생하지 않고, 비어 버린 산문과 부러진 현판, 복호금쇄수의 이름이 사라진 장부 가장자리만 적는다.
-runtime_preview_design_status: next_runtime_selected
+runtime_preview_design_status: implemented
 runtime_preview_start_conditions:
   runtime_mode: storypack_preview
   conditions:
@@ -2055,13 +2055,15 @@ outcome_hooks:
   possible_destinations: [cheongryu_outer_courtyard]
 main_spine_link: 청류문 습격 흔적 조사가 남긴 현악문 thread를 무명의 후속 consequence로 좁힌다. 다만 무명 이탈의 진실 전체, 서하린에게 진실 전달, 보스 스카웃은 아직 다음 사건으로 넘긴다.
 randomization_notes: 1회성 Hyeonakmun consequence trace. Qingliu attack trace 뒤에만 열고 `mumyeong_destroys_orthodox_sect_resolved`로 반복을 막는다.
-promotion_notes: `wuxia_qingliu_attack_after_war_followup` docs-only handoff에서 다음 runtime 후보로 선택했다. Notion 사건 카드 DB의 정파 문파 멸문을 전투/멸문 flashback으로 직접 재생하지 않고, 빈 현악문 산문과 기록/풍문을 확인하는 limited consequence trace로 제한한다. `wuxia_boss_recruits_mumyeong`, `wuxia_mumyeong_departure_truth_summary`, `wuxia_mumyeong_resolution`, `wuxia_boss_resolution`은 후반/final/truth/salvation 범위라 보류한다. legacy office bundle, legacy `escape-office` key, random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation schema, reward/ability/epilogue/return system, 천기록 정체 reveal은 열지 않는다.
+promotion_notes: preview runtime으로 구현 완료. `wuxia_qingliu_attack_after_war_followup` docs-only handoff에서 다음 runtime 후보로 선택했고, Notion 사건 카드 DB의 정파 문파 멸문을 전투/멸문 flashback으로 직접 재생하지 않고 빈 현악문 산문과 기록/풍문을 확인하는 limited consequence trace로 landing했다. `wuxia_boss_recruits_mumyeong`, `wuxia_mumyeong_departure_truth_summary`, `wuxia_mumyeong_resolution`, `wuxia_boss_resolution`, `wuxia_seoharin_empty_place`는 다음 handoff에서 다시 비교한다. legacy office bundle, legacy `escape-office` key, random copy-style system/table, combat resolver/schema, route graph/faction reputation/debt/relation schema, reward/ability/epilogue/return system, 천기록 정체 reveal은 열지 않는다.
 runtime_preview_implementation_notes:
-  planned_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
+  implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml
   insert_after: wuxia_qingliu_attack_after_war
   selected_over: [wuxia_boss_recruits_mumyeong, wuxia_mumyeong_departure_truth_summary, wuxia_mumyeong_resolution, wuxia_boss_resolution, wuxia_seoharin_empty_place]
-  generated_artifacts_changed: false
+  generated_artifacts:
+    - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+    - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
   default_bundle_changed: false
   new_schema_opened: false
-  next_step: runtime_implementation
+  next_handoff: wuxia_mumyeong_destroys_orthodox_sect_followup
 ```

@@ -1881,6 +1881,101 @@ fn json_boundary_reaches_wuxia_qingliu_attack_after_war_through_preview_bundle()
 }
 
 #[test]
+fn json_boundary_reaches_wuxia_mumyeong_destroys_orthodox_sect_through_preview_bundle() {
+    let post_qingliu_state_json = wuxia_state_after_actions(&[
+        "choice:follow_roadside_dust",
+        "move:jianghu_market_street",
+        "choice:run_toward_open_street",
+        "choice:choose_failure_log",
+        "choice:tell_plain_truth",
+        "choice:accept_three_month_trial",
+        "choice:step_back_with_firewood",
+        "choice:defend_cheongryu_with_white_path",
+        "choice:accept_medicine_with_written_debt",
+        "choice:watch_the_stolen_qingliu_flow",
+        "choice:endure_until_copy_flow_breaks",
+        "choice:listen_for_breath_mismatch",
+        "choice:reconstruct_mumyeongs_sightline",
+        "choice:show_the_hyeonakmun_trace_without_accusing",
+        "choice:watch_mumyeong_answer_the_boss",
+        "choice:search_the_rejected_aid_letters",
+        "choice:compare_anger_to_copied_flow",
+        "choice:inspect_bokho_lock_scars",
+    ]);
+
+    let consequence_page_json = scene_page_json(&post_qingliu_state_json, WUXIA_PREVIEW_BUNDLE)
+        .expect("Hyeonakmun consequence trace scene page should serialize");
+    let consequence_page: Value = serde_json::from_str(&consequence_page_json)
+        .expect("Hyeonakmun consequence page JSON should parse");
+    assert_eq!(consequence_page["mode"], "encounter");
+    assert_eq!(consequence_page["title"], "비어 버린 현악문 산문");
+    assert_eq!(
+        consequence_page["location"]["id"],
+        "cheongryu_outer_courtyard"
+    );
+    assert_eq!(
+        consequence_page["visual"]["id"],
+        "wuxia_mumyeong_destroys_orthodox_sect"
+    );
+    assert_eq!(
+        consequence_page["visual"]["kind"],
+        "hyeonakmun_empty_gate_record"
+    );
+    assert_eq!(
+        consequence_page["effect_cues"][0]["stable_terms"][2],
+        "무명"
+    );
+    let consequence_action_ids: Vec<&str> = consequence_page["actions"]
+        .as_array()
+        .expect("actions should be an array")
+        .iter()
+        .map(|action| action["id"].as_str().expect("action id should be a string"))
+        .collect();
+    assert_eq!(
+        consequence_action_ids,
+        vec![
+            "choice:read_hyeonakmun_empty_gate_record",
+            "choice:trace_bokho_lock_to_mumyeong",
+            "choice:ask_why_seoharin_never_heard_full_story",
+            "choice:stop_before_counting_the_dead",
+        ]
+    );
+
+    let consequence_result_json = apply_action_json(
+        &post_qingliu_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:read_hyeonakmun_empty_gate_record",
+    )
+    .expect("read Hyeonakmun empty gate record action should serialize");
+    let consequence_result: Value = serde_json::from_str(&consequence_result_json)
+        .expect("Hyeonakmun consequence action should parse");
+    assert_eq!(
+        consequence_result["encounter_id"],
+        "wuxia_mumyeong_destroys_orthodox_sect"
+    );
+    assert!(consequence_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array")
+        .iter()
+        .any(|flag| flag == "mumyeong_destroys_orthodox_sect_resolved"));
+    assert!(consequence_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array")
+        .iter()
+        .any(|flag| flag == "hyeonakmun_destruction_thread_opened"));
+    assert!(consequence_result["state"]["clues"]
+        .as_array()
+        .expect("clues should be an array")
+        .iter()
+        .any(|clue| clue == "hyeonakmun_was_destroyed_after_qingliu_attack"));
+    assert!(consequence_result["state"]["clues"]
+        .as_array()
+        .expect("clues should be an array")
+        .iter()
+        .any(|clue| clue == "destruction_is_consequence_not_salvation"));
+}
+
+#[test]
 fn json_boundary_reaches_wuxia_black_heaven_escape_price_through_preview_bundle() {
     let state_json =
         new_game_json(123, WUXIA_PREVIEW_BUNDLE).expect("preview new game should serialize");

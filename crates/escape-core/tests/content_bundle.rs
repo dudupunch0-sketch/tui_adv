@@ -211,12 +211,12 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&4));
     assert_eq!(bundle.manifest.counts.get("items"), Some(&4));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&21));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&22));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 4);
-    assert_eq!(index.encounters_len(), 21);
+    assert_eq!(index.encounters_len(), 22);
 
     let market = index
         .location("jianghu_market_street")
@@ -1265,6 +1265,67 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     );
     assert_eq!(
         lock_scars.outcome.destination_id.as_deref(),
+        Some("cheongryu_outer_courtyard")
+    );
+
+    let destroys_orthodox = index
+        .encounter("wuxia_mumyeong_destroys_orthodox_sect")
+        .expect("Mumyeong destroys orthodox sect consequence trace encounter");
+    assert_eq!(destroys_orthodox.title, "비어 버린 현악문 산문");
+    assert_eq!(
+        destroys_orthodox.conditions.locations,
+        vec!["cheongryu_outer_courtyard"]
+    );
+    assert_eq!(
+        destroys_orthodox.conditions.required_flags,
+        vec![
+            "qingliu_attack_after_war_resolved",
+            "qingliu_attack_trace_confirmed",
+            "hyeonakmun_attack_thread_opened",
+            "mumyeong_awakening_resolved",
+            "midgame_continuity_started"
+        ]
+    );
+    assert_eq!(
+        destroys_orthodox.conditions.forbidden_flags,
+        vec!["mumyeong_destroys_orthodox_sect_resolved"]
+    );
+    let destroys_presentation = destroys_orthodox
+        .presentation
+        .as_ref()
+        .expect("Hyeonakmun consequence trace presentation");
+    assert_eq!(
+        destroys_presentation.layout.as_deref(),
+        Some("hyeonakmun_empty_gate_record")
+    );
+    assert_eq!(destroys_presentation.speaker.as_deref(), Some("천기록"));
+    assert_eq!(
+        destroys_presentation.effect_cues[0].stable_terms,
+        vec!["현악문", "복호금쇄수", "무명"]
+    );
+    assert_eq!(destroys_orthodox.choices.len(), 4);
+    let read_record = destroys_orthodox
+        .choices
+        .iter()
+        .find(|choice| choice.id == "read_hyeonakmun_empty_gate_record")
+        .expect("read Hyeonakmun empty gate record choice");
+    assert_eq!(
+        read_record.outcome.add_flags,
+        vec![
+            "mumyeong_destroys_orthodox_sect_resolved",
+            "hyeonakmun_destruction_thread_opened",
+            "departure_truth_thread_deepened"
+        ]
+    );
+    assert_eq!(
+        read_record.outcome.add_clues,
+        vec![
+            "hyeonakmun_was_destroyed_after_qingliu_attack",
+            "destruction_is_consequence_not_salvation"
+        ]
+    );
+    assert_eq!(
+        read_record.outcome.destination_id.as_deref(),
         Some("cheongryu_outer_courtyard")
     );
 }

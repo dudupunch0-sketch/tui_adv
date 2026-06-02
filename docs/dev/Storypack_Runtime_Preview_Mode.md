@@ -1,6 +1,6 @@
 # Storypack runtime preview mode
 
-Status: 결정 문서 + `wuxia_qingliu_attack_after_war` runtime 구현 완료 + `wuxia_mumyeong_destroys_orthodox_sect` selected
+Status: 결정 문서 + `wuxia_mumyeong_destroys_orthodox_sect` runtime 구현 완료 + next docs-only handoff selected
 
 ## Decision: separate preview mode first
 
@@ -25,7 +25,7 @@ Status: 결정 문서 + `wuxia_qingliu_attack_after_war` runtime 구현 완료 +
 2. 첫 무협 prototype은 아직 gameplay schema 확장보다 “기존 encounter schema로 표현 가능한가”를 확인하는 단계다.
 3. 기본 번들의 `default_location`, route smoke, Web player start/save UX가 office 전제를 갖고 있으므로, 무협 콘텐츠를 같은 bundle에 넣으면 시작 위치와 encounter-first routing이 쉽게 충돌한다.
 
-따라서 첫 단계는 별도 preview mode다. 이 결정은 gating을 영구히 포기한다는 뜻이 아니다. preview mode로 `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`, `wuxia_wounded_shelter_dawn_offers`, `wuxia_mumyeong_first_sighting`, `wuxia_mumyeong_first_confrontation`, `wuxia_mumyeong_copy_style_reveal`, `wuxia_mumyeong_reads_orthodox_style`, `wuxia_mumyeong_midgame_reunion`, `wuxia_boss_first_appearance`, `wuxia_mumyeong_request_for_aid`, `wuxia_mumyeong_awakening`, `wuxia_qingliu_attack_after_war`가 기존 schema에서 작동함을 확인했다. 다음은 `wuxia_mumyeong_destroys_orthodox_sect` limited consequence trace implementation이며, 다중 storypack 선택 UI/save migration이 필요해질 때 runtime-level gating을 별도로 연다.
+따라서 첫 단계는 별도 preview mode다. 이 결정은 gating을 영구히 포기한다는 뜻이 아니다. preview mode로 `wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`, `wuxia_wounded_shelter_dawn_offers`, `wuxia_mumyeong_first_sighting`, `wuxia_mumyeong_first_confrontation`, `wuxia_mumyeong_copy_style_reveal`, `wuxia_mumyeong_reads_orthodox_style`, `wuxia_mumyeong_midgame_reunion`, `wuxia_boss_first_appearance`, `wuxia_mumyeong_request_for_aid`, `wuxia_mumyeong_awakening`, `wuxia_qingliu_attack_after_war`, `wuxia_mumyeong_destroys_orthodox_sect`가 기존 schema에서 작동함을 확인했다. 다음은 `wuxia_mumyeong_destroys_orthodox_sect_followup` docs-only handoff이며, 다중 storypack 선택 UI/save migration이 필요해질 때 runtime-level gating을 별도로 연다.
 
 ## Preview mode contract
 
@@ -175,13 +175,19 @@ cargo test -p escape-terminal --test cli_smoke content_tui_smoke_reaches_wuxia_m
    - `inspect_bokho_lock_scars`, `compare_hyeonakmun_trace_to_qingliu_wounds`, `ask_seo_harin_what_she_saw_afterward`, `stop_before_replaying_the_attack` stable choice ids와 `qingliu_attack_after_war_resolved`/`qingliu_attack_trace_confirmed`/`hyeonakmun_attack_thread_opened` hook을 남긴다.
    - full Qingliu attack flashback, 무명 이탈 진실 전체, 서하린에게 진실 전달, 정파 문파 멸문, boss recruit/final boss resolution, random copy-style/reward schema는 아직 열지 않는다.
 
+19. `wuxia_mumyeong_destroys_orthodox_sect` — 구현 완료
+   - `wuxia_qingliu_attack_after_war_followup` handoff에서 선택했고, preview runtime으로 구현했다.
+   - `qingliu_attack_after_war_resolved` + `qingliu_attack_trace_confirmed` + `hyeonakmun_attack_thread_opened` + `mumyeong_awakening_resolved` + `midgame_continuity_started`를 eligibility로 쓴다.
+   - `read_hyeonakmun_empty_gate_record`, `trace_bokho_lock_to_mumyeong`, `ask_why_seoharin_never_heard_full_story`, `stop_before_counting_the_dead` stable choice ids와 `mumyeong_destroys_orthodox_sect_resolved`/`hyeonakmun_destruction_thread_opened`/`departure_truth_thread_deepened` hook을 남긴다.
+   - playable Hyeonakmun destruction combat, full flashback, Seo Harin truth delivery, Mumyeong salvation confirmation, boss recruitment, final boss resolution, random copy-style/reward schema는 아직 열지 않는다.
+
 ## 후속 slice 기준
 
-`wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`, `wuxia_wounded_shelter_dawn_offers`, `wuxia_mumyeong_first_sighting`, `wuxia_mumyeong_first_confrontation`, `wuxia_mumyeong_copy_style_reveal`, `wuxia_mumyeong_reads_orthodox_style`, `wuxia_mumyeong_midgame_reunion`, `wuxia_boss_first_appearance`, `wuxia_mumyeong_request_for_aid`, `wuxia_mumyeong_awakening`, `wuxia_qingliu_attack_after_war`는 같은 preview/main storypack 경로에 추가되었다. 이미 preview export/check command, Rust/Web preview bundle artifact, terminal default/explicit `--storypack-preview wuxia_jianghu_pack`, Web default 이구학지 start/save wiring이 있으므로, 다음은 launcher나 천외편린 reward schema가 아니라 `wuxia_mumyeong_destroys_orthodox_sect` limited consequence trace runtime implementation이다.
+`wuxia_commute_rift_arrival`, `wuxia_heuksa_bang_first_fight`, `wuxia_cheonggi_record_first_fragment`, `wuxia_seo_harin_rescue`, `wuxia_cheongryu_apprentice_entry`, `wuxia_cheongryu_chore_sparring`, `wuxia_cheongryu_raid_route_split`, `wuxia_cheongryu_raid_wounded_fallback`, `wuxia_baekdo_medicine_debt`, `wuxia_black_heaven_escape_price`, `wuxia_heavenly_archive_previous_outsiders`, `wuxia_wounded_shelter_dawn_offers`, `wuxia_mumyeong_first_sighting`, `wuxia_mumyeong_first_confrontation`, `wuxia_mumyeong_copy_style_reveal`, `wuxia_mumyeong_reads_orthodox_style`, `wuxia_mumyeong_midgame_reunion`, `wuxia_boss_first_appearance`, `wuxia_mumyeong_request_for_aid`, `wuxia_mumyeong_awakening`, `wuxia_qingliu_attack_after_war`, `wuxia_mumyeong_destroys_orthodox_sect`는 같은 preview/main storypack 경로에 추가되었다. 이미 preview export/check command, Rust/Web preview bundle artifact, terminal default/explicit `--storypack-preview wuxia_jianghu_pack`, Web default 이구학지 start/save wiring이 있으므로, 다음은 launcher나 천외편린 reward schema가 아니라 `wuxia_mumyeong_destroys_orthodox_sect_followup` docs-only handoff다.
 
-Latest implemented runtime: `wuxia_qingliu_attack_after_war`. `wuxia_mumyeong_followup_after_awakening` handoff에서 선택했고, `wuxia_mumyeong_awakening` 뒤에 삽입했다. 이 slice는 청류문 습격 전체 회상이나 무명 이탈 truth reveal이 아니라 `attack_trace_investigation` layout으로 현악문/복호금쇄수 흔적만 조사한다.
+Latest implemented runtime: `wuxia_mumyeong_destroys_orthodox_sect`. `wuxia_qingliu_attack_after_war_followup` handoff에서 선택했고, `wuxia_qingliu_attack_after_war` 뒤에 삽입했다. 이 slice는 현악문 멸문 전투나 full flashback이 아니라 `hyeonakmun_empty_gate_record` layout으로 빈 현악문 산문/기록/풍문만 확인한다.
 
-Next runtime candidate: `wuxia_mumyeong_destroys_orthodox_sect`, selected by `wuxia_qingliu_attack_after_war_followup` as a limited empty-Hyeonakmun record/rumor trace.
+Next docs-only handoff: `wuxia_mumyeong_destroys_orthodox_sect_followup`, comparing boss recruitment, departure truth summary, Mumyeong resolution, boss resolution, and Seo Harin empty-place candidates before opening any new runtime slice.
 
 구현된 rescue slice:
 

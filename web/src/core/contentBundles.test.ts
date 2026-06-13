@@ -52,6 +52,7 @@ describe('runtime content bundle registry', () => {
       'wuxia_seoharin_empty_place',
       'wuxia_seoharin_left_meal',
       'wuxia_sado_final_battle',
+      'wuxia_sado_battle_loss_route_bridge',
       'wuxia_sado_final_phase_1_price_tag',
       'wuxia_sado_final_phase_2_weakpoint_control',
       'wuxia_sado_final_phase_3_outside_calculation',

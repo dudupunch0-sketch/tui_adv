@@ -1,13 +1,13 @@
 # 이구학지 — 천기록 encounter situation cards
 
-Status: candidate + `wuxia_seoharin_unsaid_stay` preview runtime implemented + return/settlement epilogue consumer implemented + battle-loss epilogue consumer implemented + final-state canonical collapse runtime implemented + Sado final battle container runtime implemented
+Status: candidate + `wuxia_seoharin_unsaid_stay` preview runtime implemented + return/settlement epilogue consumer implemented + battle-loss epilogue consumer implemented + final-state canonical collapse runtime implemented + Sado final battle container runtime implemented + Sado battle-loss route bridge runtime implemented
 
 이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_seoharin_unsaid_stay`까지는 separate storypack preview runtime으로 승격되었다.
 
 공통 원칙:
 
 - 모든 카드는 `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`에 속한다.
-- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_sado_final_battle` container까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. `wuxia_seoharin_unsaid_stay`는 `docs/design/Wuxia_Final_State_Routing.md`의 return/settlement handoff를 existing encounter schema로 구현한 late relationship trigger이며, `wuxia_return_settlement_epilogue_contract`가 그 seed를 final epilogue body block branch cards로 소비한다. `wuxia_battle_loss_epilogue_contract`도 기존 final epilogue body block consumer로 구현되어 explicit loss seed를 battle-loss bundle로 소비한다. `wuxia_final_state_canonical_collapse_contract`는 `epilogue_state_audit` body block으로 existing `final_*_seeded` flags를 canonical final state labels로 collapse한다. `wuxia_sado_final_battle_container_implementation`은 `wuxia_sado_final_battle`를 required battle opening, battlefield, stance choices, common hooks, and phase-1 bridge만 여는 container-only runtime으로 구현했다. full return/settlement schema, combat resolver, HP numeric battle, playable defeat route, archive/save, relation/debt/faction ledger, and reward/ability schema는 아직 열지 않는다.
+- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_sado_final_battle` container까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. `wuxia_seoharin_unsaid_stay`는 `docs/design/Wuxia_Final_State_Routing.md`의 return/settlement handoff를 existing encounter schema로 구현한 late relationship trigger이며, `wuxia_return_settlement_epilogue_contract`가 그 seed를 final epilogue body block branch cards로 소비한다. `wuxia_battle_loss_epilogue_contract`도 기존 final epilogue body block consumer로 구현되어 explicit loss seed를 battle-loss bundle로 소비한다. `wuxia_final_state_canonical_collapse_contract`는 `epilogue_state_audit` body block으로 existing `final_*_seeded` flags를 canonical final state labels로 collapse한다. `wuxia_sado_final_battle_container_implementation`은 `wuxia_sado_final_battle`를 required battle opening, battlefield, stance choices, common hooks, and phase-1 bridge만 여는 container-only runtime으로 구현했다. `wuxia_sado_battle_loss_route_bridge_implementation`은 loss-route choice와 bridge encounter를 추가해 `final_combat_result_battle_loss_seeded`를 실제 플레이 경로에서 만들고 BattleLoss epilogue consumer로 routing한다. full return/settlement schema, combat resolver, HP numeric battle, archive/save, relation/debt/faction ledger, and reward/ability schema는 아직 열지 않는다.
 - 최신 canonical 무협 설정은 **이구학지 — 천기록**이다. 이전의 generic 객잔/소림/무당/아미 placeholder는 superseded로 본다.
 - 플레이어 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계의 시장 한복판에 전이됐다”이다.
 - 선택지는 세부 수치보다 역할과 결과 hook을 먼저 정의한다.
@@ -3568,4 +3568,52 @@ guardrails:
   - no_relation_debt_faction_ledger
   - no_reward_ability_schema
 next_handoff: wuxia_sado_final_battle_container_followup_handoff
+```
+
+## 45. `wuxia_sado_battle_loss_route_bridge_implementation` — runtime 구현 완료
+
+```yaml
+id: wuxia_sado_battle_loss_route_bridge
+status: implemented_in_storypack_preview
+implementation_handoff: wuxia_sado_battle_loss_route_bridge_implementation
+source_handoff: wuxia_sado_final_battle_container_followup_handoff
+insert_after: wuxia_sado_final_battle
+insert_before: wuxia_sado_final_phase_1_price_tag
+bundle_index: 27
+entry_condition: sado_battle_loss_route_chosen
+entry_location: black_serpent_ledger_vault
+loss_route_choice_on_container:
+  id: throw_away_every_lever_against_sado
+  sets_flag: sado_battle_loss_route_chosen
+  destination: black_serpent_ledger_vault
+presentation:
+  visual_id: wuxia_sado_battle_loss_route_bridge
+  layout: battle_loss_bridge
+  stable_terms: [패배, 가격표, 결산]
+choice_ids:
+  - let_the_unpriced_value_fall_unbought
+  - fall_while_naming_what_was_not_protected
+output_flags:
+  - final_combat_result_battle_loss_seeded
+completion_flags:
+  - boss_resolution_resolved
+  - mumyeong_resolution_resolved
+  - seoharin_qingliu_resolution_resolved
+  - cheongirok_resolution_resolved
+  - black_serpent_aftermath_resolved
+  - final_result_priority_applied_seeded
+  - final_state_routing_seeded
+epilogue_routing:
+  result_title: 패배 결산
+  audit_id: final_state_canonical_collapse
+victory_exclusion:
+  forbidden_flag_added_to: wuxia_sado_final_phase_1_price_tag
+  flag: sado_battle_loss_route_chosen
+guardrails:
+  - no_combat_resolver
+  - no_hp_numeric_battle
+  - no_main_ending_archive_save_surface
+  - no_relation_debt_faction_ledger
+  - no_reward_ability_schema
+next_handoff: wuxia_sado_battle_loss_route_bridge_followup_handoff
 ```

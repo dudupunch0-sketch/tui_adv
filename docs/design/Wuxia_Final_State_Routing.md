@@ -1,6 +1,6 @@
 # Wuxia Final State Routing
 
-Status: Notion-synced design contract + final epilogue runtime implementation + final-state audit runtime + Sado final battle container runtime, no dedicated result schema
+Status: Notion-synced design contract + final epilogue runtime implementation + final-state audit runtime + Sado final battle container runtime + Sado battle-loss route handoff, no dedicated result schema
 
 Primary storypack: `wuxia_jianghu_pack` / **이구학지 — 천기록**
 
@@ -597,4 +597,100 @@ Still closed:
 - Seo Harin truth delivery, `told_seoharin_truth`
 - Cheonggi Record recorder identity reveal
 
-Next contract decision: `wuxia_sado_final_battle_container_followup_handoff`, comparing playable defeat-route bridge, battle-loss route UX, broader corruption/closed-gate branch, combat resolver/HP numeric battle, reward/ability schema, relation/debt/faction ledger, and main ending archive/save surface after the required battle container has runtime evidence.
+Next contract decision completed: `wuxia_sado_final_battle_container_followup_handoff`.
+
+## Sado Final Battle Container Follow-up Handoff
+
+Decision from the 2026-06-03 `wuxia_sado_final_battle_container_followup_handoff`: the next implementation after `wuxia_sado_final_battle_container_implementation` is the `wuxia_sado_battle_loss_route_bridge` playable defeat-route bridge.
+
+Notion evidence:
+
+- `사도 최종전` marks the Sado battle as required and forbids a peaceful resolution, but it also separates defeating Sado from defeating Sado's calculation.
+- The same page keeps `wuxia_sado_final_battle` as the container/philosophy card and delegates actual battle choice/result candidates to the phase cards.
+- `사도 최종전 상태값 사전` treats final values as routing labels, not stats, moral scores, or boss debuffs; local `*_seed` values must collapse before final routing.
+- `최종장 결산 라우팅 마스터` makes `battle_loss` the highest-priority final result. The Rust final epilogue consumer already understands `final_combat_result_battle_loss_seeded`, but no current playable encounter emits that seed.
+- `08. 엔딩과 후일담 연결` already defines the battle-loss output bundle, so the next missing runtime surface is route eligibility, not a new epilogue renderer.
+- `01. 메인 엔딩 구조` and `06. 엔딩 아카이브` keep player-facing ending categories, discovered counts, replay, and save/archive work separate from the first playable loss bridge.
+- `06. 사이드 퀘스트와 미해결 부채` and `07. 천기록 / 천외편린 보상` support deferring debt ledgers and reward/ability schema until after the loss path has runtime evidence.
+
+Candidate comparison:
+
+| candidate | decision |
+|---|---|
+| playable defeat-route bridge / battle-loss route UX | Selected. The loss afterword consumer and canonical audit exist, and the Sado container now gives the route a stable entry point. |
+| broader corruption/closed-gate branch | Deferred; corrupted priority, closed-gate variants, and `epilogue_state_audit` already expose the first branch surface. |
+| combat resolver / HP numeric battle | Rejected for this slice; Notion frames Sado battle cost as pressure/evidence/opportunity/afterword changes, not HP. |
+| reward/ability schema | Deferred; 천외편린 reward is a separate three-choice growth and side-effect system. |
+| relation/debt/faction ledger | Deferred; debt and faction pressure remain afterword/audit traces for now. |
+| main ending archive/save surface | Deferred; archive/discovered-count/replay persistence should follow a stable ending path. |
+
+Selected next implementation:
+
+| field | value |
+|---|---|
+| runtime id | `wuxia_sado_battle_loss_route_bridge` |
+| implementation handoff | `wuxia_sado_battle_loss_route_bridge_implementation` |
+| input runtime | `wuxia_sado_final_battle` plus existing Sado phase route |
+| output seed | `final_combat_result_battle_loss_seeded` |
+| final consumer | `wuxia_final_epilogue_renderer_contract` battle-loss body-block consumer |
+| output shape | existing encounter schema, not a new `ScenePage` mode |
+| renderer role | Web Storybook and SuperLightTUI display only |
+
+Implementation contract:
+
+- Add one bridge encounter under id `wuxia_sado_battle_loss_route_bridge`.
+- Require the Sado final battle container hooks so it is only reachable after `wuxia_sado_final_battle`.
+- Emit explicit `final_combat_result_battle_loss_seeded` and any minimal route-completion hook needed to make the existing final epilogue contract eligible.
+- Express loss as failed pressure/evidence/opportunity inside the Sado battle, not numeric HP depletion.
+- Route into the existing final epilogue battle-loss consumer without renderer-side result inference.
+- Add exporter, Rust content fixture, WASM JSON boundary, and SuperLightTUI smoke coverage.
+
+Still closed:
+
+- combat resolver or HP numeric battle
+- broader corruption/closed-gate branch beyond existing card/audit surfaces
+- new `main_ending_type` runtime enum
+- main ending archive/save surface
+- relation/debt/faction ledger
+- reward/ability schema and 천외편린 three-choice growth UI
+- full modern return ending scene or post-return settlement scene
+- Seo Harin truth delivery, `told_seoharin_truth`
+- Cheonggi Record recorder identity reveal
+
+Next runtime implementation selected: `wuxia_sado_battle_loss_route_bridge`.
+
+## Sado Battle-Loss Route Bridge Runtime
+
+Implementation status: `wuxia_sado_battle_loss_route_bridge_implementation` is now implemented.
+
+Runtime id: `wuxia_sado_battle_loss_route_bridge`.
+
+Implementation owner:
+
+- `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`
+- `crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json`
+- `web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json`
+
+Runtime contract:
+
+- A 5th choice `throw_away_every_lever_against_sado` was added to `wuxia_sado_final_battle`. It sets `sado_battle_loss_route_chosen` and routes to `black_serpent_ledger_vault`.
+- `wuxia_sado_battle_loss_route_bridge` is inserted between `wuxia_sado_final_battle` and `wuxia_sado_final_phase_1_price_tag` (bundle index 27).
+- Its required entry condition is `sado_battle_loss_route_chosen`.
+- The two stable choice ids are `let_the_unpriced_value_fall_unbought` and `fall_while_naming_what_was_not_protected`.
+- Both choices emit `final_combat_result_battle_loss_seeded` plus all 7 completion flags required by the final epilogue contract: `boss_resolution_resolved`, `mumyeong_resolution_resolved`, `seoharin_qingliu_resolution_resolved`, `cheongirok_resolution_resolved`, `black_serpent_aftermath_resolved`, `final_result_priority_applied_seeded`, `final_state_routing_seeded`.
+- The encounter routes into the existing BattleLoss epilogue path (`result_title: 패배 결산`, `audit_id: final_state_canonical_collapse`).
+- `wuxia_sado_final_phase_1_price_tag` now lists `sado_battle_loss_route_chosen` in `forbidden_flags`, making the victory and loss routes mutually exclusive.
+
+Still closed:
+
+- combat resolver or HP numeric battle
+- broader corruption/closed-gate branch beyond existing card/audit surfaces
+- new `main_ending_type` runtime enum
+- main ending archive/save surface
+- relation/debt/faction ledger
+- reward/ability schema and 천외편린 three-choice growth UI
+- full modern return ending scene or post-return settlement scene
+- Seo Harin truth delivery, `told_seoharin_truth`
+- Cheonggi Record recorder identity reveal
+
+Next contract decision: `wuxia_sado_battle_loss_route_bridge_followup_handoff`.

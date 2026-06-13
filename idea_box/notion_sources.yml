@@ -515,6 +515,32 @@ sources:
     runtime_status: "implemented_in_storypack_preview"
     status: "live_checked_runtime_implemented"
 
+  - key: wuxia_sado_battle_loss_route_bridge
+    title: "사도 최종전 패배 루트 bridge"
+    object: derived_runtime_handoff
+    notion_refs:
+      - "notion:37237e69-695e-8169-97a3-d8106a817275"
+      - "notion:37237e69-695e-81d2-8ce2-d1c738c3e923"
+      - "notion:37337e69-695e-81c7-a9fd-e0a0e22005e2"
+    last_checked_at: "2026-06-13T00:00:00+09:00"
+    precedence_role: "implemented_battle_loss_route_bridge"
+    related_design_units:
+      - "encounter:wuxia_sado_battle_loss_route_bridge"
+      - "choice:throw_away_every_lever_against_sado"
+      - "flag:sado_battle_loss_route_chosen"
+      - "flag:final_combat_result_battle_loss_seeded"
+    related_canonical_docs:
+      - "docs/design/Wuxia_Final_State_Routing.md"
+      - "docs/dev/Development_Plan.md"
+      - "docs/dev/Notion_Design_Coverage.md"
+    required_prior_runtime:
+      - "wuxia_sado_final_battle"
+    consumed_by:
+      - "system:wuxia_battle_loss_epilogue_contract"
+    implementation_scope: "loss_route_choice_on_container_plus_bridge_encounter_no_combat_resolver"
+    runtime_status: "implemented_in_storypack_preview"
+    status: "live_checked_runtime_implemented"
+
   - key: wuxia_99_checkpoint
     title: "99. 통합 체크포인트"
     object: page

@@ -1107,6 +1107,28 @@
 - [x] combat resolver, HP 숫자전, playable defeat route, archive/save schema, relation/debt/faction ledger, reward/ability schema 미변경 유지
 - [x] 다음 작업을 `wuxia_sado_final_battle_container_followup_handoff` docs-only contract slice로 갱신
 
+### 0.2cp 2026-06-03 무협 `wuxia_sado_final_battle_container_followup_handoff` docs-only handoff
+
+- [x] Notion `사도 최종전`, `사도 최종전 상태값 사전`, `최종장 결산 라우팅 마스터`, `08. 엔딩과 후일담 연결` 재대조
+- [x] Notion `06. 사이드 퀘스트와 미해결 부채`, `07. 천기록 / 천외편린 보상`, `01. 메인 엔딩 구조`, `06. 엔딩 아카이브` 재대조
+- [x] playable defeat-route bridge, battle-loss route UX, broader corruption/closed-gate branch, combat resolver/HP numeric battle, reward/ability schema, relation/debt/faction ledger, main ending archive/save surface 비교
+- [x] 다음 runtime 후보를 `wuxia_sado_battle_loss_route_bridge`로 결정
+- [x] 첫 구현 범위는 existing encounter schema에서 explicit `final_combat_result_battle_loss_seeded`를 만들고 기존 final epilogue battle-loss consumer로 넘기는 bridge로 기록
+- [x] combat resolver, HP 숫자전, archive/save schema, relation/debt/faction ledger, reward/ability schema 미변경 유지
+- [x] 다음 작업을 `wuxia_sado_battle_loss_route_bridge_implementation` runtime slice로 갱신
+
+### 0.2cq 2026-06-13 무협 `wuxia_sado_battle_loss_route_bridge` runtime slice
+
+- [x] `wuxia_sado_final_battle`의 5번째 선택지 `throw_away_every_lever_against_sado`를 추가하고 `sado_battle_loss_route_chosen` flag와 `black_serpent_ledger_vault` destination 연결
+- [x] `wuxia_sado_battle_loss_route_bridge` encounter를 `wuxia_sado_final_battle`과 `wuxia_sado_final_phase_1_price_tag` 사이에 추가 (bundle index 27)
+- [x] `let_the_unpriced_value_fall_unbought`, `fall_while_naming_what_was_not_protected` stable choice id 구현
+- [x] 두 choice outcome 모두 `final_combat_result_battle_loss_seeded` + 완료 flag 7개 (`boss_resolution_resolved`, `mumyeong_resolution_resolved`, `seoharin_qingliu_resolution_resolved`, `cheongirok_resolution_resolved`, `black_serpent_aftermath_resolved`, `final_result_priority_applied_seeded`, `final_state_routing_seeded`) 방출
+- [x] result_title `패배 결산`, audit_id `final_state_canonical_collapse` BattleLoss epilogue로 routing
+- [x] `wuxia_sado_final_phase_1_price_tag`에 `sado_battle_loss_route_chosen`을 `forbidden_flags`에 추가 (victory/loss route 상호 배제)
+- [x] Rust fixture와 Web generated preview bundle 재생성
+- [x] cargo test --workspace = green, pytest = green
+- [x] combat resolver, HP 숫자전, archive/save schema, relation/debt/faction ledger, reward/ability schema 미변경 유지
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

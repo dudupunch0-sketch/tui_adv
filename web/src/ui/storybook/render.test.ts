@@ -148,6 +148,77 @@ describe('Web Storybook renderer', () => {
     expect(html).toContain('선택지로 거리, 균형, 도주로를 고른다');
   });
 
+  it('passes through core-owned final epilogue body blocks without route recomputation', () => {
+    const html = renderStorybookPage(
+      samplePrinterPage({
+        mode: 'ending',
+        title: '이구학지 결산',
+        location: {
+          id: 'black_serpent_ledger_vault',
+          name: '흑사방 장부고',
+          description: '먹줄이 식은 장부고.',
+        },
+        body_blocks: [
+          {
+            kind: 'system',
+            text: '천기록은 마지막 장을 다시 펼친다.',
+            source_id: 'wuxia_final_epilogue_renderer_contract',
+          },
+          {
+            kind: 'epilogue_result',
+            text: 'final_result_key: true_route_victory\nowned_by: Rust GameCore',
+            source_id: 'wuxia_final_epilogue_renderer_contract',
+          },
+          {
+            kind: 'epilogue_card',
+            text: 'card_id: epilogue_boss_broken_black_serpent\nvariant: true_route_victory',
+            source_id: 'epilogue_boss_broken_black_serpent',
+          },
+          {
+            kind: 'epilogue_suppressed',
+            text: 'card_id: epilogue_boss_black_serpent_banner\nsuppressed_by: true_route_victory',
+            source_id: 'epilogue_boss_black_serpent_banner',
+          },
+        ],
+        actions: [],
+        blocked_actions: [],
+        visual: {
+          id: 'ending:wuxia_final_epilogue_renderer_contract',
+          kind: 'ending',
+          alt: '이구학지 결산',
+          source_id: 'wuxia_final_epilogue_renderer_contract',
+        },
+        history_entries: [
+          {
+            kind: 'action',
+            text: '후일담 출력기는 아직 열리지 않는다.',
+            source_id: 'wuxia_black_serpent_aftermath',
+          },
+        ],
+      }),
+    );
+
+    expect(html).toContain('data-mode="ending"');
+    expect(html).toContain('class="epilogue-block epilogue-block--epilogue_result"');
+    expect(html).toContain('class="epilogue-block epilogue-block--epilogue_card"');
+    expect(html).toContain('class="epilogue-block epilogue-block--epilogue_suppressed"');
+    expect(html).toContain('data-body-kind="epilogue_result"');
+    expect(html).toContain('data-body-kind="epilogue_card"');
+    expect(html).toContain('data-body-kind="epilogue_suppressed"');
+    expect(html).toContain('계약 기록');
+    expect(html).toContain('후일담 카드');
+    expect(html).toContain('data-field-key="final_result_key"');
+    expect(html).toContain('true_route_victory');
+    expect(html).toContain('data-field-key="owned_by"');
+    expect(html).toContain('Rust GameCore');
+    expect(html).toContain('data-field-key="card_id"');
+    expect(html).toContain('epilogue_boss_broken_black_serpent');
+    expect(html).toContain('data-field-key="suppressed_by"');
+    expect(html).toContain('현재 실행할 수 있는 행동이 없다.');
+    expect(html).not.toContain('<p class="storybook-summary">후일담 출력기는 아직 열리지 않는다.</p>');
+    expect(html).not.toContain('final_epilogue_renderer_opened');
+  });
+
   it('keeps GlyphFX stable terms and fallback text readable for reduced-motion rendering', () => {
     const html = renderStorybookPage(samplePrinterPage());
 

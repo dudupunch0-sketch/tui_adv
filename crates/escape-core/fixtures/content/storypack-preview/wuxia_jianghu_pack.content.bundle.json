@@ -1969,6 +1969,106 @@
         "title": "무명의 카피 무공 공개"
       },
       {
+        "body": "카피 무공의 흔적을 복기하던 밤, 업무수첩의 빈 장이 다시 펼쳐진다. 이번에는 세 문장이 동시에 떠오른다. 검색창이 아니다. 즉시 강해지는 보상도 아니다. 세 후보 중 하나의 방향만 붙들 수 있고, 나머지 둘은 이 순간 사라진다.",
+        "choices": [
+          {
+            "id": "choose_modern_martial_thread",
+            "label": "'거리 조절과 방어 자세 해석' 방향을 붙든다",
+            "outcome": {
+              "add_clues": [
+                "two_unchosen_fragments_lost",
+                "modern_martial_distance_guard_direction"
+              ],
+              "add_flags": [
+                "cheonoe_reward_modern_martial_thread",
+                "cheonoe_pyeonrin_first_reward_resolved",
+                "cheonoe_pyeonrin_reward_schema_opened"
+              ],
+              "log": "천기록은 무공 구결이 아니라 상대와의 거리, 팔꿈치와 턱의 각도, 방어 자세가 어긋나는 순간을 읽는 과제를 남겼다. 나머지 두 방향은 이 순간 수첩에서 흘러 사라졌다.",
+              "resources": {
+                "sanity": -1
+              }
+            }
+          },
+          {
+            "id": "choose_analysis_thread",
+            "label": "'복기와 원인 분석' 방향을 붙든다",
+            "outcome": {
+              "add_clues": [
+                "two_unchosen_fragments_lost",
+                "analysis_review_loop_direction"
+              ],
+              "add_flags": [
+                "cheonoe_reward_analysis_thread",
+                "cheonoe_pyeonrin_first_reward_resolved",
+                "cheonoe_pyeonrin_reward_schema_opened"
+              ],
+              "log": "천기록은 결과보다 원인을 먼저 쓰는 방식을 남겼다. 무엇이 틀렸는지 거슬러 올라가 적는 복기 루프가 오늘 밤의 숙제다. 나머지 두 방향은 이 순간 수첩에서 흘러 사라졌다.",
+              "resources": {
+                "sanity": -1
+              }
+            }
+          },
+          {
+            "id": "choose_survival_tactics_thread",
+            "label": "'다수전 회피와 지형 활용' 방향을 붙든다",
+            "outcome": {
+              "add_clues": [
+                "two_unchosen_fragments_lost",
+                "survival_terrain_escape_direction"
+              ],
+              "add_flags": [
+                "cheonoe_reward_survival_tactics_thread",
+                "cheonoe_pyeonrin_first_reward_resolved",
+                "cheonoe_pyeonrin_reward_schema_opened"
+              ],
+              "log": "천기록은 이기는 법이 아니라 지형을 등지고 수를 줄이는 회피 전술을 남겼다. 싸우지 않고 살아남는 동선이 오늘 밤의 숙제다. 나머지 두 방향은 이 순간 수첩에서 흘러 사라졌다.",
+              "resources": {
+                "sanity": -1
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "cheonoe_pyeonrin_first_reward_resolved"
+          ],
+          "locations": [
+            "cheongryu_outer_courtyard"
+          ],
+          "required_flags": [
+            "mumyeong_copy_style_reveal_resolved",
+            "copy_style_hint_recorded",
+            "midgame_continuity_started",
+            "cheongryu_raid_survived",
+            "cheonggi_record_awakened",
+            "first_fragment_seen"
+          ]
+        },
+        "id": "wuxia_cheonoe_pyeonrin_first_reward",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "three_phrases_surface_two_fade",
+              "duration_hint_ms": 1600,
+              "fallback_text": "업무수첩 위에 세 문장이 동시에 번지더니, '천기록', '편린', '수련 방향'만 또렷이 남고 나머지 둘은 흐려진다.",
+              "intensity": 0.8,
+              "kind": "glyph_anomaly",
+              "source": "cheonoe_pyeonrin_first_reward",
+              "stable_terms": [
+                "천기록",
+                "편린",
+                "수련 방향"
+              ]
+            }
+          ],
+          "layout": "fragment_choice",
+          "speaker": "천기록",
+          "visual_id": "wuxia_cheonoe_pyeonrin_first_reward"
+        },
+        "title": "천외편린 첫 보상"
+      },
+      {
         "body": "무명의 카피는 완전한 복사가 아니었다. 겉흐름 사이로 손목을 잠그는 각도, 기혈을 누르는 순서, 물러나는 보폭이 삐져나온다. 천기록의 빈 줄은 그 흔적을 현악문과 복호금쇄수라는 이름 옆에 잠시 멈춰 세운다.",
         "choices": [
           {
@@ -3363,6 +3463,295 @@
         "title": "남겨둔 밥"
       },
       {
+        "body": "남겨둔 밥의 온기가 식기도 전에, 천기록의 여백은 흑사방 장부고로 접힌다. 검은 비늘 장부와 통행세 기록, 약점 문서와 청류문 후원서 조각이 줄처럼 매달려 있다. 흑사방주는 칼을 뽑기 전에 묻는다. \"사람에게 값이 없다면, 너는 무엇으로 그 값을 증명할 거지?\" 이 대화는 사도를 약하게 만들지 않는다. 다만 네가 어떤 마음으로 피할 수 없는 전투에 들어가는지 기록한다.",
+        "choices": [
+          {
+            "id": "affirm_priceless_heart_before_sado",
+            "label": "있다. 네가 값을 매기지 못했을 뿐이다.",
+            "outcome": {
+              "add_clues": [
+                "heart_has_no_ledger_price",
+                "sado_battle_required_not_weakened"
+              ],
+              "add_flags": [
+                "sado_final_battle_started",
+                "sado_final_battle_container_resolved",
+                "sado_final_battle_required_confirmed",
+                "sado_dialogue_does_not_weaken_boss",
+                "final_player_stance_priceless_heart_seeded"
+              ],
+              "danger": 1,
+              "destination_id": "black_serpent_ledger_vault",
+              "log": "사도는 웃음을 거두지 않는다. 네 대답은 그를 약하게 만들지 못하지만, 사람의 값을 장부 밖에 두겠다는 태도는 전투의 첫 줄에 남는다.",
+              "resources": {
+                "sanity": -1
+              }
+            }
+          },
+          {
+            "id": "keep_uncertainty_out_of_the_ledger",
+            "label": "없을지도 모른다. 그래도 네 장부에는 넘기지 않겠다.",
+            "outcome": {
+              "add_clues": [
+                "uncertainty_refuses_black_serpent_ledger",
+                "sado_battle_required_not_weakened"
+              ],
+              "add_flags": [
+                "sado_final_battle_started",
+                "sado_final_battle_container_resolved",
+                "sado_final_battle_required_confirmed",
+                "sado_dialogue_does_not_weaken_boss",
+                "final_player_stance_uncertain_but_resisting_ledger_seeded"
+              ],
+              "danger": 1,
+              "destination_id": "black_serpent_ledger_vault",
+              "log": "확신이 없다는 말은 항복이 되지 않는다. 사도는 그 불확실성까지 가격표에 올리려 하지만, 너는 그것만큼은 장부에 넘기지 않는다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "name_qingliu_as_calculation_break",
+            "label": "청류문은 네 계산대로 움직이지 않았다.",
+            "outcome": {
+              "add_clues": [
+                "qingliu_exists_outside_sado_calculation",
+                "sado_battle_required_not_weakened"
+              ],
+              "add_flags": [
+                "sado_final_battle_started",
+                "sado_final_battle_container_resolved",
+                "sado_final_battle_required_confirmed",
+                "sado_dialogue_does_not_weaken_boss",
+                "final_player_stance_qingliu_breaks_calculation_seeded"
+              ],
+              "danger": 1,
+              "destination_id": "black_serpent_ledger_vault",
+              "log": "청류문은 가난했고 무너졌고 늦었다. 그래도 사도의 계산대로만 움직이지 않았다는 사실은, 전투가 시작되기 전 장부 한복판에 작은 오차로 박힌다.",
+              "resources": {
+                "sanity": -1
+              }
+            }
+          },
+          {
+            "id": "cut_words_and_enter_sado_battle",
+            "label": "사람에게 값을 매기는 놈과는 더 말할 필요 없다",
+            "outcome": {
+              "add_clues": [
+                "words_end_before_sado_battle",
+                "sado_battle_required_not_weakened"
+              ],
+              "add_flags": [
+                "sado_final_battle_started",
+                "sado_final_battle_container_resolved",
+                "sado_final_battle_required_confirmed",
+                "sado_dialogue_does_not_weaken_boss",
+                "final_player_stance_words_cut_for_battle_seeded"
+              ],
+              "danger": 2,
+              "destination_id": "black_serpent_ledger_vault",
+              "log": "더 말하지 않자 장부고의 줄이 팽팽해진다. 대화는 끝났고, 사도는 여전히 약해지지 않았다. 이제 가격표의 첫 장을 몸으로 넘겨야 한다.",
+              "resources": {
+                "health": -1,
+                "sanity": -1
+              }
+            }
+          },
+          {
+            "id": "throw_away_every_lever_against_sado",
+            "label": "증거도 압박도 기회도 버리고 그저 사도에게 덤빈다",
+            "outcome": {
+              "add_clues": [
+                "entered_sado_battle_without_leverage",
+                "sado_battle_required_not_weakened"
+              ],
+              "add_flags": [
+                "sado_final_battle_started",
+                "sado_final_battle_container_resolved",
+                "sado_final_battle_required_confirmed",
+                "sado_dialogue_does_not_weaken_boss",
+                "final_player_stance_no_leverage_seeded",
+                "sado_battle_loss_route_chosen"
+              ],
+              "danger": 3,
+              "destination_id": "black_serpent_ledger_vault",
+              "log": "장부도, 약점도, 인질의 줄도 보지 않고 사도에게 곧장 덤빈다. 사도는 웃지도 않는다. 계산을 버린 싸움은 용감해 보이지만, 그가 매겨 둔 값을 단 한 줄도 지우지 못한 채 너를 더 깊은 장부고 안쪽으로 끌고 들어간다.",
+              "resources": {
+                "health": -3,
+                "sanity": -2
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "sado_final_battle_container_resolved"
+          ],
+          "locations": [
+            "cheongryu_outer_courtyard"
+          ],
+          "required_flags": [
+            "seoharin_left_meal_resolved",
+            "seoharin_empty_place_resolved",
+            "seoharin_axis_opened",
+            "empty_place_remembered",
+            "truth_delivery_still_unopened",
+            "boss_recruits_mumyeong_resolved",
+            "boss_recruitment_thread_opened",
+            "boss_first_appearance_resolved",
+            "black_serpent_core_pressure_opened",
+            "sealed_departure_truth_summary_prepared",
+            "midgame_continuity_started"
+          ]
+        },
+        "id": "wuxia_sado_final_battle",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "price_question_before_required_battle",
+              "duration_hint_ms": 1700,
+              "fallback_text": "장부고의 먹줄 사이로 '흑사방주', '장부고', '값', '전투'만 전투 전 문답처럼 선명하게 남는다.",
+              "intensity": 0.8,
+              "kind": "glyph_anomaly",
+              "source": "sado_final_battle_opening",
+              "stable_terms": [
+                "흑사방주",
+                "장부고",
+                "값",
+                "전투"
+              ]
+            }
+          ],
+          "layout": "final_battle_container",
+          "speaker": "흑사방주",
+          "visual_id": "wuxia_sado_final_battle"
+        },
+        "title": "사도 최종전"
+      },
+      {
+        "body": "지렛대를 버린 싸움은 오래가지 못한다. 검은 비늘 장부는 끊기지 않았고, 매달린 빚도 인질의 줄도 그대로다. 사도는 너를 쓰러뜨리되 죽이지는 않는다. 패배는 점수가 아니라 기록이다. 네가 무엇을 지키지 못했고 어떤 압박을 풀지 못했으며 어떤 기회를 흘려보냈는지, 천기록의 마지막 장이 패배의 결로 접힌다.",
+        "choices": [
+          {
+            "id": "let_the_unpriced_value_fall_unbought",
+            "label": "값 매겨지지 않은 것을 끝내 팔지 않은 채 쓰러진다",
+            "outcome": {
+              "add_clues": [
+                "defeat_did_not_sell_the_unpriced_heart",
+                "loss_is_recorded_not_scored",
+                "black_serpent_ledger_outlived_the_fight"
+              ],
+              "add_flags": [
+                "sado_battle_loss_route_bridge_resolved",
+                "final_combat_result_battle_loss_seeded",
+                "final_state_routing_seeded",
+                "final_result_priority_applied_seeded",
+                "boss_resolution_resolved",
+                "mumyeong_resolution_resolved",
+                "seoharin_qingliu_resolution_resolved",
+                "cheongirok_resolution_resolved",
+                "black_serpent_aftermath_resolved",
+                "final_black_serpent_aftermath_banner_residue_seeded",
+                "final_southern_market_rumor_candidate_seeded",
+                "final_mumyeong_successor_route_active_seeded",
+                "final_seoharin_closed_gate_candidate_seeded",
+                "final_cheongirok_state_corruption_high_seeded"
+              ],
+              "danger": 1,
+              "destination_id": "black_serpent_ledger_vault",
+              "log": "너는 졌다. 그러나 값 매겨지지 않은 것 하나만은 끝내 사도의 장부에 넘기지 않았다. 천기록은 승패를 다시 계산하지 않고, 무엇이 풀리지 않은 채 남았는지를 패배의 결로 적는다.",
+              "resources": {
+                "health": -2,
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "fall_while_naming_what_was_not_protected",
+            "label": "지키지 못한 것의 이름을 부르며 무너진다",
+            "outcome": {
+              "add_clues": [
+                "named_the_unprotected_before_falling",
+                "pressure_remained_unresolved_in_loss",
+                "successor_pressure_outlived_the_defeat"
+              ],
+              "add_flags": [
+                "sado_battle_loss_route_bridge_resolved",
+                "final_combat_result_battle_loss_seeded",
+                "final_state_routing_seeded",
+                "final_result_priority_applied_seeded",
+                "boss_resolution_resolved",
+                "mumyeong_resolution_resolved",
+                "seoharin_qingliu_resolution_resolved",
+                "cheongirok_resolution_resolved",
+                "black_serpent_aftermath_resolved",
+                "final_black_serpent_aftermath_banner_residue_seeded",
+                "final_southern_market_rumor_candidate_seeded",
+                "final_mumyeong_successor_route_active_seeded",
+                "final_seoharin_closed_gate_candidate_seeded",
+                "final_cheongirok_state_corruption_high_seeded"
+              ],
+              "danger": 2,
+              "destination_id": "black_serpent_ledger_vault",
+              "log": "쓰러지면서도 너는 지키지 못한 것들의 이름을 하나씩 부른다. 사도의 계산은 그 이름들을 지우지 못한다. 패배 뒤에도 풀리지 않은 압박은 남고, 천기록은 그것을 변명 없이 기록한다.",
+              "resources": {
+                "health": -3,
+                "sanity": -1
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "sado_battle_loss_route_bridge_resolved"
+          ],
+          "locations": [
+            "black_serpent_ledger_vault"
+          ],
+          "required_flags": [
+            "sado_final_battle_started",
+            "sado_final_battle_container_resolved",
+            "sado_final_battle_required_confirmed",
+            "sado_dialogue_does_not_weaken_boss",
+            "sado_battle_loss_route_chosen",
+            "seoharin_left_meal_resolved",
+            "seoharin_empty_place_resolved",
+            "seoharin_axis_opened",
+            "empty_place_remembered",
+            "truth_delivery_still_unopened",
+            "boss_recruits_mumyeong_resolved",
+            "boss_recruitment_thread_opened",
+            "boss_first_appearance_resolved",
+            "black_serpent_core_pressure_opened",
+            "sealed_departure_truth_summary_prepared",
+            "midgame_continuity_started"
+          ]
+        },
+        "id": "wuxia_sado_battle_loss_route_bridge",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "lost_battle_collapses_into_loss_record",
+              "duration_hint_ms": 2300,
+              "fallback_text": "무너진 장부고 위로 '사도', '장부', '패배', '마지막 장'만 검게 번졌다가 가라앉는다.",
+              "intensity": 0.92,
+              "kind": "glyph_anomaly",
+              "source": "wuxia_sado_battle_loss_route_bridge",
+              "stable_terms": [
+                "사도",
+                "장부",
+                "패배",
+                "마지막 장"
+              ]
+            }
+          ],
+          "layout": "final_battle_loss_bridge",
+          "speaker": "천기록",
+          "visual_id": "wuxia_sado_battle_loss_route_bridge"
+        },
+        "title": "사도 최종전: 패배의 길"
+      },
+      {
         "body": "남겨둔 밥의 온기가 식기도 전에, 천기록의 여백은 흑사방 장부고로 접힌다. 검은 비늘 장부와 표국 통행세 기록, 약점 장부와 청류문 후원서 조각이 줄처럼 매달려 있고, 흑사방주는 칼보다 먼저 빚이 움직인다는 듯 웃는다. 이곳의 첫 싸움은 사도를 약하게 만드는 일이 아니라, 네가 무엇을 지키고 무엇을 포기했는지 가격표에 남기는 일이다.",
         "choices": [
           {
@@ -3469,12 +3858,17 @@
         ],
         "conditions": {
           "forbidden_flags": [
-            "sado_final_phase_1_price_tag_resolved"
+            "sado_final_phase_1_price_tag_resolved",
+            "sado_battle_loss_route_chosen"
           ],
           "locations": [
-            "cheongryu_outer_courtyard"
+            "black_serpent_ledger_vault"
           ],
           "required_flags": [
+            "sado_final_battle_started",
+            "sado_final_battle_container_resolved",
+            "sado_final_battle_required_confirmed",
+            "sado_dialogue_does_not_weaken_boss",
             "seoharin_left_meal_resolved",
             "seoharin_empty_place_resolved",
             "seoharin_axis_opened",
@@ -4358,6 +4752,140 @@
         "title": "서하린·청류문 결산"
       },
       {
+        "body": "청류문 산문이 닫히지 않은 채 저녁빛을 받는다. 서하린은 네가 언젠가 돌아갈 수 있다는 사실을 알고도 붙잡는 말을 꺼내지 않는다. 다만 사람이 빠지면 자리가 빈다는 말만 남기고, 그 빈자리를 귀환과 정착, 불확실성과 회피가 갈라지는 후일담 후보로 넘긴다.",
+        "choices": [
+          {
+            "id": "say_return_home_honestly",
+            "label": "귀환하고 싶다고 솔직히 말한다",
+            "outcome": {
+              "add_clues": [
+                "leaving_can_still_leave_a_place",
+                "return_intent_is_not_erasing_qingliu",
+                "seoharin_place_is_permission_not_price"
+              ],
+              "add_flags": [
+                "seoharin_unsaid_stay_resolved",
+                "final_return_settlement_contract_seeded",
+                "final_return_intent_honest_seeded",
+                "final_epilogue_return_absence_candidate_seeded"
+              ],
+              "danger": 1,
+              "destination_id": "black_serpent_ledger_vault",
+              "log": "너는 돌아가고 싶다는 말을 숨기지 않는다. 서하린은 붙잡지 않고, 대신 비어 있을 수 있는 자리를 지운 척하지 않는다. 귀환 후보는 이별이 아니라 돌아올 수 있는 자리와 함께 남는다.",
+              "resources": {
+                "sanity": -2
+              }
+            }
+          },
+          {
+            "id": "say_you_will_stay_with_qingliu",
+            "label": "청류문에 남겠다고 말한다",
+            "outcome": {
+              "add_clues": [
+                "staying_is_not_payment",
+                "belonging_can_be_chosen_without_debt",
+                "qingliu_home_is_not_reward"
+              ],
+              "add_flags": [
+                "seoharin_unsaid_stay_resolved",
+                "final_return_settlement_contract_seeded",
+                "final_settlement_intent_honest_seeded",
+                "final_epilogue_qingliu_settlement_candidate_seeded"
+              ],
+              "danger": 1,
+              "destination_id": "black_serpent_ledger_vault",
+              "log": "너는 청류문에 남겠다고 말한다. 그것은 목숨값을 갚는 선언도, 서하린에게 주는 보상도 아니다. 정착 후보는 빚이 아니라 선택한 소속의 언어로 남는다.",
+              "resources": {
+                "sanity": -1
+              }
+            }
+          },
+          {
+            "id": "share_uncertainty_without_running",
+            "label": "아직 모르겠다고 말한다",
+            "outcome": {
+              "add_clues": [
+                "uncertainty_can_be_shared_without_escape",
+                "empty_place_can_hold_return_and_stay",
+                "not_knowing_is_not_evasion"
+              ],
+              "add_flags": [
+                "seoharin_unsaid_stay_resolved",
+                "final_return_settlement_contract_seeded",
+                "final_return_settlement_uncertain_shared_seeded",
+                "final_epilogue_empty_place_kept_open_seeded"
+              ],
+              "danger": 0,
+              "destination_id": "black_serpent_ledger_vault",
+              "log": "아직 모른다는 말은 답이 아니지만 도망도 아니다. 서하린은 그 불확실성을 들은 채 산문을 닫지 않고, 빈자리는 귀환과 정착 양쪽으로 열려 있는 후보가 된다.",
+              "resources": {
+                "sanity": -1
+              }
+            }
+          },
+          {
+            "id": "turn_away_from_the_empty_place",
+            "label": "말을 돌린다",
+            "outcome": {
+              "add_clues": [
+                "evasion_prices_waiting",
+                "not_answering_can_close_the_gate",
+                "fear_of_leaving_becomes_method_trace"
+              ],
+              "add_flags": [
+                "seoharin_unsaid_stay_resolved",
+                "final_return_settlement_contract_seeded",
+                "final_return_settlement_evasion_seeded",
+                "final_epilogue_closed_gate_risk_seeded"
+              ],
+              "danger": 1,
+              "destination_id": "black_serpent_ledger_vault",
+              "log": "너는 빈자리에 대한 말을 돌린다. 대답하지 않은 말도 장부처럼 남고, 서하린의 기다림은 닫힌 산문 위험 후보로 기울기 시작한다.",
+              "resources": {
+                "sanity": -3
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "seoharin_unsaid_stay_resolved"
+          ],
+          "locations": [
+            "black_serpent_ledger_vault"
+          ],
+          "required_flags": [
+            "seoharin_qingliu_resolution_resolved",
+            "final_state_routing_seeded",
+            "final_result_priority_applied_seeded",
+            "final_combat_result_battle_victory_seeded"
+          ]
+        },
+        "id": "wuxia_seoharin_unsaid_stay",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "unsaid_stay_splits_return_and_settlement_seeds",
+              "duration_hint_ms": 1900,
+              "fallback_text": "열린 산문 아래에 '서하린', '귀환', '청류문', '빈자리'만 서로 다른 먹빛으로 남는다.",
+              "intensity": 0.86,
+              "kind": "glyph_anomaly",
+              "source": "wuxia_seoharin_unsaid_stay",
+              "stable_terms": [
+                "서하린",
+                "귀환",
+                "청류문",
+                "빈자리"
+              ]
+            }
+          ],
+          "layout": "seoharin_unsaid_stay_seed",
+          "speaker": "서하린",
+          "visual_id": "wuxia_seoharin_unsaid_stay"
+        },
+        "title": "가지 말라는 말"
+      },
+      {
         "body": "서하린과 청류문의 장이 잠시 멎자, 천기록의 마지막 장이 거의 빈 종이처럼 펼쳐진다. 그곳에는 정답도, 기록자의 이름도 없다. 다만 네가 기록을 이해의 보조로 썼는지, 사람을 줄 세우는 계산 도구로 썼는지에 따라 먹빛의 결이 달라진다. 이 결산은 후일담을 출력하지 않고, 마지막 장의 안전한 여운과 오염 변주 후보만 남긴다.",
         "choices": [
           {
@@ -4490,6 +5018,7 @@
             "black_serpent_ledger_vault"
           ],
           "required_flags": [
+            "seoharin_unsaid_stay_resolved",
             "seoharin_qingliu_resolution_resolved",
             "mumyeong_resolution_resolved",
             "boss_resolution_resolved",
@@ -4696,6 +5225,27 @@
         "name": "강호의 사원증",
         "priority": 10,
         "text": "사원증은 부적처럼 남았다. 아직 돌아갈 길은 없지만, 천기록은 당신을 이방인으로 기억하기 시작한다."
+      },
+      {
+        "conditions": {
+          "locations": [
+            "black_serpent_ledger_vault"
+          ],
+          "required_flags": [
+            "boss_resolution_resolved",
+            "mumyeong_resolution_resolved",
+            "seoharin_qingliu_resolution_resolved",
+            "cheongirok_resolution_resolved",
+            "black_serpent_aftermath_resolved",
+            "final_result_priority_applied_seeded",
+            "final_state_routing_seeded"
+          ]
+        },
+        "id": "wuxia_final_epilogue_renderer_contract",
+        "kind": "final_epilogue_contract",
+        "name": "이구학지 결산",
+        "priority": 900,
+        "text": "사도의 장부고가 조용해지자 천기록은 마지막 장을 다시 펼친다. 이제 선택지는 없다. 지금까지 남긴 씨앗을 Rust GameCore가 읽고, 후일담 카드는 계산이 아니라 기록으로만 출력된다."
       }
     ],
     "items": [
@@ -4827,8 +5377,8 @@
   "manifest": {
     "counts": {
       "achievements": 2,
-      "encounters": 34,
-      "endings": 1,
+      "encounters": 38,
+      "endings": 2,
       "items": 4,
       "locations": 5,
       "secrets": 0

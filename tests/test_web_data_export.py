@@ -110,12 +110,14 @@ def test_export_web_data_builds_renderer_neutral_content_bundle():
             "wuxia_mumyeong_departure_truth_summary",
             "wuxia_seoharin_empty_place",
             "wuxia_seoharin_left_meal",
+            "wuxia_sado_final_battle",
             "wuxia_sado_final_phase_1_price_tag",
             "wuxia_sado_final_phase_2_weakpoint_control",
             "wuxia_sado_final_phase_3_outside_calculation",
             "wuxia_boss_resolution",
             "wuxia_mumyeong_resolution",
             "wuxia_seoharin_qingliu_resolution",
+            "wuxia_seoharin_unsaid_stay",
             "wuxia_cheongirok_resolution",
         }
         for encounter in bundle["content"]["encounters"]
@@ -140,8 +142,8 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     assert bundle["manifest"]["counts"] == {
         "locations": 5,
         "items": 4,
-        "encounters": 34,
-        "endings": 1,
+        "encounters": 38,
+        "endings": 2,
         "achievements": 2,
         "secrets": 0,
     }
@@ -169,6 +171,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "wuxia_mumyeong_first_sighting",
         "wuxia_mumyeong_first_confrontation",
         "wuxia_mumyeong_copy_style_reveal",
+        "wuxia_cheonoe_pyeonrin_first_reward",
         "wuxia_mumyeong_reads_orthodox_style",
         "wuxia_mumyeong_midgame_reunion",
         "wuxia_boss_first_appearance",
@@ -180,19 +183,23 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "wuxia_mumyeong_departure_truth_summary",
         "wuxia_seoharin_empty_place",
         "wuxia_seoharin_left_meal",
+        "wuxia_sado_final_battle",
+        "wuxia_sado_battle_loss_route_bridge",
         "wuxia_sado_final_phase_1_price_tag",
         "wuxia_sado_final_phase_2_weakpoint_control",
         "wuxia_sado_final_phase_3_outside_calculation",
         "wuxia_boss_resolution",
         "wuxia_mumyeong_resolution",
         "wuxia_seoharin_qingliu_resolution",
+        "wuxia_seoharin_unsaid_stay",
         "wuxia_cheongirok_resolution",
         "wuxia_black_serpent_aftermath",
     ]
-    cheongirok = bundle["content"]["encounters"][32]
+    cheongirok = bundle["content"]["encounters"][36]
     assert cheongirok["conditions"] == {
         "locations": ["black_serpent_ledger_vault"],
         "required_flags": [
+            "seoharin_unsaid_stay_resolved",
             "seoharin_qingliu_resolution_resolved",
             "mumyeong_resolution_resolved",
             "boss_resolution_resolved",
@@ -232,7 +239,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     ]
     assert safe_last_page["outcome"]["destination_id"] == "black_serpent_ledger_vault"
     assert "add_items" not in safe_last_page["outcome"]
-    black_serpent_aftermath = bundle["content"]["encounters"][33]
+    black_serpent_aftermath = bundle["content"]["encounters"][37]
     assert black_serpent_aftermath["conditions"] == {
         "locations": ["black_serpent_ledger_vault"],
         "required_flags": [
@@ -777,7 +784,41 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "understanding_is_not_copying",
     ]
     assert breath["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
-    orthodox_style = bundle["content"]["encounters"][15]
+    first_reward = bundle["content"]["encounters"][15]
+    assert first_reward["id"] == "wuxia_cheonoe_pyeonrin_first_reward"
+    assert first_reward["conditions"] == {
+        "locations": ["cheongryu_outer_courtyard"],
+        "required_flags": [
+            "mumyeong_copy_style_reveal_resolved",
+            "copy_style_hint_recorded",
+            "midgame_continuity_started",
+            "cheongryu_raid_survived",
+            "cheonggi_record_awakened",
+            "first_fragment_seen",
+        ],
+        "forbidden_flags": ["cheonoe_pyeonrin_first_reward_resolved"],
+    }
+    assert first_reward["presentation"]["layout"] == "fragment_choice"
+    assert first_reward["presentation"]["speaker"] == "천기록"
+    assert first_reward["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "천기록",
+        "편린",
+        "수련 방향",
+    ]
+    assert [choice["id"] for choice in first_reward["choices"]] == [
+        "choose_modern_martial_thread",
+        "choose_analysis_thread",
+        "choose_survival_tactics_thread",
+    ]
+    analysis_choice = first_reward["choices"][1]
+    assert analysis_choice["outcome"]["add_flags"] == [
+        "cheonoe_reward_analysis_thread",
+        "cheonoe_pyeonrin_first_reward_resolved",
+        "cheonoe_pyeonrin_reward_schema_opened",
+    ]
+    assert "two_unchosen_fragments_lost" in analysis_choice["outcome"]["add_clues"]
+    assert "analysis_review_loop_direction" in analysis_choice["outcome"]["add_clues"]
+    orthodox_style = bundle["content"]["encounters"][16]
     assert orthodox_style["conditions"] == {
         "locations": ["cheongryu_outer_courtyard"],
         "required_flags": [
@@ -812,7 +853,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "departure_truth_still_incomplete",
     ]
     assert reconstruct["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
-    midgame_reunion = bundle["content"]["encounters"][16]
+    midgame_reunion = bundle["content"]["encounters"][17]
     assert midgame_reunion["conditions"] == {
         "locations": ["cheongryu_outer_courtyard"],
         "required_flags": [
@@ -847,7 +888,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "boss_used_mumyeongs_wound",
     ]
     assert share_trace["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
-    boss = bundle["content"]["encounters"][17]
+    boss = bundle["content"]["encounters"][18]
     assert boss["conditions"] == {
         "locations": ["cheongryu_outer_courtyard"],
         "required_flags": [
@@ -883,7 +924,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "boss_reads_people_not_forms",
     ]
     assert watch_mumyeong["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
-    request_for_aid = bundle["content"]["encounters"][18]
+    request_for_aid = bundle["content"]["encounters"][19]
     assert request_for_aid["conditions"] == {
         "locations": ["cheongryu_outer_courtyard"],
         "required_flags": [
@@ -922,7 +963,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "orthodox_refusal_broke_mumyeong",
     ]
     assert rejected_letters["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
-    awakening = bundle["content"]["encounters"][19]
+    awakening = bundle["content"]["encounters"][20]
     assert awakening["conditions"] == {
         "locations": ["cheongryu_outer_courtyard"],
         "required_flags": [
@@ -961,7 +1002,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "copy_is_wound_not_growth",
     ]
     assert compare["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
-    qingliu_attack = bundle["content"]["encounters"][20]
+    qingliu_attack = bundle["content"]["encounters"][21]
     assert qingliu_attack["conditions"] == {
         "locations": ["cheongryu_outer_courtyard"],
         "required_flags": [
@@ -1001,7 +1042,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "full_flashback_still_unopened",
     ]
     assert lock_scars["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
-    destroys_orthodox = bundle["content"]["encounters"][21]
+    destroys_orthodox = bundle["content"]["encounters"][22]
     assert destroys_orthodox["conditions"] == {
         "locations": ["cheongryu_outer_courtyard"],
         "required_flags": [
@@ -1037,7 +1078,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "destruction_is_consequence_not_salvation",
     ]
     assert read_record["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
-    boss_recruit = bundle["content"]["encounters"][22]
+    boss_recruit = bundle["content"]["encounters"][23]
     assert boss_recruit["conditions"] == {
         "locations": ["cheongryu_outer_courtyard"],
         "required_flags": [
@@ -1075,8 +1116,8 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "recruitment_was_not_salvation",
     ]
     assert trace_offer["outcome"]["destination_id"] == "cheongryu_outer_courtyard"
-    price_tag = bundle["content"]["encounters"][26]
-    assert price_tag["conditions"] == {
+    sado_battle = bundle["content"]["encounters"][27]
+    assert sado_battle["conditions"] == {
         "locations": ["cheongryu_outer_courtyard"],
         "required_flags": [
             "seoharin_left_meal_resolved",
@@ -1091,7 +1132,53 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
             "sealed_departure_truth_summary_prepared",
             "midgame_continuity_started",
         ],
-        "forbidden_flags": ["sado_final_phase_1_price_tag_resolved"],
+        "forbidden_flags": ["sado_final_battle_container_resolved"],
+    }
+    assert sado_battle["presentation"]["layout"] == "final_battle_container"
+    assert sado_battle["presentation"]["speaker"] == "흑사방주"
+    assert sado_battle["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "흑사방주",
+        "장부고",
+        "값",
+        "전투",
+    ]
+    assert [choice["id"] for choice in sado_battle["choices"]] == [
+        "affirm_priceless_heart_before_sado",
+        "keep_uncertainty_out_of_the_ledger",
+        "name_qingliu_as_calculation_break",
+        "cut_words_and_enter_sado_battle",
+        "throw_away_every_lever_against_sado",
+    ]
+    affirm_priceless = sado_battle["choices"][0]
+    assert affirm_priceless["outcome"]["add_flags"] == [
+        "sado_final_battle_started",
+        "sado_final_battle_container_resolved",
+        "sado_final_battle_required_confirmed",
+        "sado_dialogue_does_not_weaken_boss",
+        "final_player_stance_priceless_heart_seeded",
+    ]
+    assert affirm_priceless["outcome"]["destination_id"] == "black_serpent_ledger_vault"
+    price_tag = bundle["content"]["encounters"][29]
+    assert price_tag["conditions"] == {
+        "locations": ["black_serpent_ledger_vault"],
+        "required_flags": [
+            "sado_final_battle_started",
+            "sado_final_battle_container_resolved",
+            "sado_final_battle_required_confirmed",
+            "sado_dialogue_does_not_weaken_boss",
+            "seoharin_left_meal_resolved",
+            "seoharin_empty_place_resolved",
+            "seoharin_axis_opened",
+            "empty_place_remembered",
+            "truth_delivery_still_unopened",
+            "boss_recruits_mumyeong_resolved",
+            "boss_recruitment_thread_opened",
+            "boss_first_appearance_resolved",
+            "black_serpent_core_pressure_opened",
+            "sealed_departure_truth_summary_prepared",
+            "midgame_continuity_started",
+        ],
+        "forbidden_flags": ["sado_final_phase_1_price_tag_resolved", "sado_battle_loss_route_chosen"],
     }
     assert price_tag["presentation"]["layout"] == "final_phase_price_tag"
     assert price_tag["presentation"]["speaker"] == "흑사방주"
@@ -1122,7 +1209,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "alliance_silence_accountability_seeded",
     ]
     assert secure_ledger["outcome"]["destination_id"] == "black_serpent_ledger_vault"
-    weakpoint = bundle["content"]["encounters"][27]
+    weakpoint = bundle["content"]["encounters"][30]
     assert weakpoint["conditions"] == {
         "locations": ["black_serpent_ledger_vault"],
         "required_flags": [

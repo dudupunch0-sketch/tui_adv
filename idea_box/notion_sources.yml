@@ -479,14 +479,14 @@ sources:
     status: "live_checked_runtime_implemented"
 
   - key: wuxia_final_epilogue_renderer_contract
-    title: "최종 후일담 renderer contract handoff"
+    title: "최종 후일담 renderer contract implementation"
     object: derived_runtime_handoff
     notion_refs:
       - "notion:37237e69-695e-81d2-8ce2-d1c738c3e923"
       - "notion:37137e69-695e-8177-a228-d7f96d084622"
       - "notion:37337e69-695e-81c7-a9fd-e0a0e22005e2"
-    last_checked_at: "2026-06-02T12:50:00+09:00"
-    precedence_role: "next_final_epilogue_renderer_contract_handoff_candidate"
+    last_checked_at: "2026-06-02T19:35:00+09:00"
+    precedence_role: "implemented_final_epilogue_seed_consumer"
     related_design_units:
       - "system:final_epilogue_renderer_contract"
       - "system:final_epilogue_master_matrix"
@@ -502,8 +502,69 @@ sources:
       - "wuxia_seoharin_qingliu_resolution"
       - "wuxia_cheongirok_resolution"
       - "wuxia_black_serpent_aftermath"
-    runtime_status: "next_handoff_candidate"
-    status: "live_checked_next_candidate"
+    consumed_by:
+      - "system:wuxia_final_epilogue_renderer_contract"
+    handoff_decision: "no_additional_seed_bridge_required_before_core_owned_implementation"
+    implementation_scope: "core_owned_structured_scene_page_body_blocks"
+    previous_runtime_status: "next_implementation_candidate"
+    body_block_kinds:
+      - "epilogue_result"
+      - "epilogue_card"
+      - "epilogue_suppressed"
+      - "epilogue_contract_error"
+    runtime_status: "implemented_in_storypack_preview"
+    status: "live_checked_runtime_implemented"
+
+  - key: wuxia_sado_battle_loss_route_bridge
+    title: "사도 최종전 패배 루트 bridge"
+    object: derived_runtime_handoff
+    notion_refs:
+      - "notion:37237e69-695e-8169-97a3-d8106a817275"
+      - "notion:37237e69-695e-81d2-8ce2-d1c738c3e923"
+      - "notion:37337e69-695e-81c7-a9fd-e0a0e22005e2"
+    last_checked_at: "2026-06-13T00:00:00+09:00"
+    precedence_role: "implemented_battle_loss_route_bridge"
+    related_design_units:
+      - "encounter:wuxia_sado_battle_loss_route_bridge"
+      - "choice:throw_away_every_lever_against_sado"
+      - "flag:sado_battle_loss_route_chosen"
+      - "flag:final_combat_result_battle_loss_seeded"
+    related_canonical_docs:
+      - "docs/design/Wuxia_Final_State_Routing.md"
+      - "docs/dev/Development_Plan.md"
+      - "docs/dev/Notion_Design_Coverage.md"
+    required_prior_runtime:
+      - "wuxia_sado_final_battle"
+    consumed_by:
+      - "system:wuxia_battle_loss_epilogue_contract"
+    implementation_scope: "loss_route_choice_on_container_plus_bridge_encounter_no_combat_resolver"
+    runtime_status: "implemented_in_storypack_preview"
+    status: "live_checked_runtime_implemented"
+
+  - key: wuxia_cheonoe_pyeonrin_first_reward
+    title: "천외편린 첫 보상 (Cheonoe Pyeonrin First Reward)"
+    object: encounter
+    notion_ref: "notion:07-cheonoe-pyeonrin-reward-grammar"
+    last_edited_time: "2026-06-14T00:00:00.000Z"
+    precedence_role: "implemented_first_reward_grammar_runtime"
+    related_design_units:
+      - "encounter:wuxia_cheonoe_pyeonrin_first_reward"
+      - "choice:choose_modern_martial_thread"
+      - "choice:choose_analysis_thread"
+      - "choice:choose_survival_tactics_thread"
+      - "flag:cheonoe_pyeonrin_reward_schema_opened"
+      - "flag:cheonoe_pyeonrin_first_reward_resolved"
+    related_canonical_docs:
+      - "docs/design/Wuxia_Cheonoe_Pyeonrin_Reward.md"
+      - "docs/dev/Development_Plan.md"
+      - "docs/dev/Notion_Design_Coverage.md"
+    required_prior_runtime:
+      - "wuxia_mumyeong_copy_style_reveal"
+    consumed_by:
+      - "system:cheonoe_pyeonrin_reward_schema_thread_flags"
+    implementation_scope: "fragment_choice_three_candidates_thread_flag_clue_log_no_numeric_stats"
+    runtime_status: "implemented_in_storypack_preview"
+    status: "live_checked_runtime_implemented"
 
   - key: wuxia_99_checkpoint
     title: "99. 통합 체크포인트"

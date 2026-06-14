@@ -958,6 +958,188 @@
 - [x] 기본 office bundle, Web legacy generated `content.bundle.json`, `src/tui_adv/data/*.yaml`, legacy `escape-office` save/localStorage key 미변경 유지
 - [x] 다음 작업을 `wuxia_final_epilogue_renderer_contract` handoff 검토로 갱신
 
+### 0.2cd 2026-06-02 무협 final epilogue renderer contract docs-only handoff
+
+- [x] Notion `최종장 결산 라우팅 마스터`, `08. 엔딩과 후일담 연결`, `사도 최종전 상태값 사전` 재확인
+- [x] `wuxia_boss_resolution`, `wuxia_mumyeong_resolution`, `wuxia_seoharin_qingliu_resolution`, `wuxia_cheongirok_resolution`, `wuxia_black_serpent_aftermath` seed bridge 대조
+- [x] 추가 seed bridge 없이 `wuxia_final_epilogue_renderer_contract` implementation slice를 열 수 있다고 결정
+- [x] Rust GameCore가 seed consumption, `final_result_priority`, suppress, card ordering을 소유하는 boundary 문서화
+- [x] Web Storybook/SuperLightTUI는 core 결과 표시만 하며 후일담 카드 enable/suppress를 재계산하지 않는 boundary 문서화
+- [x] `docs/design/Wuxia_Final_State_Routing.md`에 candidate group, preconditions, suppress examples, open implementation questions 추가
+- [x] runtime YAML/Rust/Web/generated artifact 미변경 유지
+- [x] final epilogue output schema, return/settlement schema, combat resolver, HP 숫자전, relation/debt/faction ledger, reward/ability schema, `item_unpriced_wooden_sword` payout 미변경 유지
+- [x] 서하린 truth delivery, `told_seoharin_truth`, 천기록 기록자 정체 reveal 미변경 유지
+- [x] 기본 office bundle, Web legacy generated `content.bundle.json`, `src/tui_adv/data/*.yaml`, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 작업을 `wuxia_final_epilogue_renderer_contract` implementation slice 검토로 갱신
+
+### 0.2ce 2026-06-02 무협 `wuxia_final_epilogue_renderer_contract` runtime implementation slice
+
+- [x] `wuxia_final_epilogue_renderer_contract`를 preview ending으로 추가
+- [x] Rust GameCore-owned final epilogue seed consumer 구현
+- [x] final result priority, seed consumption, suppress, card ordering을 renderer가 아니라 core에서 처리
+- [x] structured `ScenePage.body_blocks` convention으로 `epilogue_result`, `epilogue_card`, `epilogue_suppressed` 출력
+- [x] Web Storybook과 SuperLightTUI는 core 제공 body block 표시만 하도록 검증
+- [x] Rust/Web storypack preview generated bundle 재생성
+- [x] Rust core direct-state route parity, WASM JSON boundary, terminal smoke, Web Storybook pass-through 테스트 추가
+- [x] combat resolver, HP 숫자전, return/settlement schema, relation/debt/faction ledger, reward/ability schema, `item_unpriced_wooden_sword` payout 미변경 유지
+- [x] 서하린 truth delivery, `told_seoharin_truth`, 천기록 기록자 정체 reveal 미변경 유지
+- [x] 기본 office bundle, Web legacy generated `content.bundle.json`, `src/tui_adv/data/*.yaml`, legacy `escape-office` save/localStorage key 미변경 유지
+- [x] 다음 작업을 final epilogue UX/playtest 및 contract follow-up 검증으로 갱신
+
+### 0.2cf 2026-06-02 무협 final epilogue UX/playtest follow-up
+
+- [x] Web Storybook이 `epilogue_result`, `epilogue_card`, `epilogue_suppressed`, `epilogue_contract_error` body block을 양피지형 후일담 section으로 표시
+- [x] 후일담 prose는 본문에 즉시 노출하고, contract metadata는 접힌 `details` 기록으로 보관
+- [x] `data-body-kind`, `data-source-id`, metadata field key data attribute를 유지해 renderer-neutral contract test point 보존
+- [x] final epilogue 화면에서 직전 result history row가 summary 영역에 중복 노출되지 않도록 처리
+- [x] SuperLightTUI가 epilogue heading, compact metadata/prose, whitespace wrap으로 40-line snapshot 안에 핵심 카드 내용을 유지
+- [x] local ignored `web/src/core/wasm-pkg/` stale 상태에서는 Web playtest가 final epilogue block을 못 받는 문제 확인 및 local WASM package 재빌드
+- [x] fresh Web run에서 scripted final route가 빈 action choice와 10개 core-owned epilogue block으로 끝나는지 DOM playtest
+- [x] combat resolver, HP 숫자전, return/settlement schema, relation/debt/faction ledger, reward/ability schema, `item_unpriced_wooden_sword` payout 미변경 유지
+- [x] 서하린 truth delivery, `told_seoharin_truth`, 천기록 기록자 정체 reveal 미변경 유지
+- [x] 다음 작업을 return/settlement, final battle loss path, reward/ability, relation/debt/faction ledger 중 하나의 contract handoff 선택으로 갱신
+
+### 0.2cg 2026-06-02 무협 return/settlement contract docs-only handoff
+
+- [x] Notion `가지 말라는 말`, `08. 엔딩과 후일담 연결`, `11. True Ending 단일 루트`, `사도 최종전`, `최종장 결산 라우팅 마스터`, `사도 최종전 상태값 사전` 재확인
+- [x] Notion `06. 사이드 퀘스트와 미해결 부채`, `07. 천기록 / 천외편린 보상`을 next contract 후보 비교용으로 재확인
+- [x] 다음 contract surface를 return/settlement로 결정
+- [x] 다음 runtime 후보를 `wuxia_seoharin_unsaid_stay` / `가지 말라는 말`로 결정
+- [x] 첫 구현 범위를 full return ending이 아니라 서하린 late relationship trigger + return/settlement/corruption 후보 seed bridge로 제한
+- [x] stable choice id `say_return_home_honestly`, `say_you_will_stay_with_qingliu`, `share_uncertainty_without_running`, `turn_away_from_the_empty_place` 확정
+- [x] `docs/design/Wuxia_Final_State_Routing.md`에 required/common/candidate seed와 guardrail 기록
+- [x] final battle loss path, reward/ability schema, relation/debt/faction ledger는 다음 contract로 선택하지 않은 이유 기록
+- [x] full modern return ending, return/settlement save/archive schema, relation/debt/faction ledger, reward/ability schema 미변경 유지
+- [x] combat resolver, HP 숫자전, 서하린 truth delivery, `told_seoharin_truth`, 천기록 기록자 정체 reveal 미변경 유지
+- [x] 다음 작업을 `wuxia_seoharin_unsaid_stay` runtime implementation slice로 갱신
+
+### 0.2ch 2026-06-02 무협 `wuxia_seoharin_unsaid_stay` preview runtime slice
+
+- [x] Notion `가지 말라는 말` 원문과 `Return/Settlement Contract Handoff` 대조
+- [x] `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`에 `wuxia_seoharin_unsaid_stay` 추가
+- [x] `wuxia_seoharin_qingliu_resolution` 뒤, `wuxia_cheongirok_resolution` 앞에 삽입
+- [x] `say_return_home_honestly`, `say_you_will_stay_with_qingliu`, `share_uncertainty_without_running`, `turn_away_from_the_empty_place` stable choice id 적용
+- [x] `seoharin_unsaid_stay_resolved`, `final_return_settlement_contract_seeded` common hook 적용
+- [x] return/settlement/uncertainty/evasion 후보 seed를 flags/clues/log/presentation hook으로만 남김
+- [x] `wuxia_cheongirok_resolution` required flags에 `seoharin_unsaid_stay_resolved` 추가
+- [x] Rust/Web generated preview bundle 갱신
+- [x] Python storypack DB/export, Rust content bundle, WASM JSON boundary, terminal smoke, Web default bundle registry 테스트 갱신
+- [x] full modern return ending, return/settlement save/archive schema, relation/debt/faction ledger 미변경 유지
+- [x] reward/ability schema, combat resolver, HP 숫자전, 서하린 truth delivery, `told_seoharin_truth`, 천기록 기록자 정체 reveal 미변경 유지
+- [x] 다음 작업을 `return_settlement_followup_handoff` docs-only contract slice로 갱신
+
+### 0.2ci 2026-06-02 무협 `wuxia_return_settlement_epilogue_contract` runtime slice
+
+- [x] Notion `가지 말라는 말`, `08. 엔딩과 후일담 연결`, `01. 메인 엔딩 구조`, `09. 예시 엔딩`, `10. 이구학지 후일담 카드 DB`, `06. 사이드 퀘스트와 미해결 부채`, `07. 천기록 / 천외편린 보상` 대조
+- [x] 다음 runtime을 새 main ending enum/schema가 아니라 existing final epilogue body block branch 확장으로 결정
+- [x] `crates/escape-core/src/final_epilogue.rs`에 return/settlement branch card group 추가
+- [x] `epilogue_wuxia_returned_commute`, `epilogue_wuxia_qingliu_settlement`, `epilogue_wuxia_empty_place_kept_open`, `epilogue_wuxia_closed_gate_risk` card id 적용
+- [x] `final_return_intent_honest_seeded`, `final_settlement_intent_honest_seeded`, `final_return_settlement_uncertain_shared_seeded`, `final_return_settlement_evasion_seeded` 후보 seed 소비
+- [x] contradictory direct-state seed에서 `epilogue_wuxia_closed_gate_risk`가 optimistic branch cards를 `return_settlement_evasion`으로 suppress
+- [x] Rust core route parity, WASM JSON boundary, SuperLightTUI smoke assertions 갱신
+- [x] full modern return scene, return/settlement save/archive schema, relation/debt/faction ledger 미변경 유지
+- [x] reward/ability schema, combat resolver, HP 숫자전, 서하린 truth delivery, `told_seoharin_truth`, 천기록 기록자 정체 reveal 미변경 유지
+- [x] 다음 작업을 `return_settlement_epilogue_followup_handoff` docs-only contract slice로 갱신
+
+### 0.2cj 2026-06-02 무협 return/settlement epilogue follow-up docs-only handoff
+
+- [x] Notion `최종장 결산 라우팅 마스터`, `사도 최종전`, `사도 최종전 상태값 사전`, `08. 엔딩과 후일담 연결` 재대조
+- [x] Notion 후일담 DB row `흑사방의 깃발`, `검은 뱀의 새 비늘`, `닫힌 산문`, `천기록의 마지막 장` 재대조
+- [x] `06. 사이드 퀘스트와 미해결 부채`, `07. 천기록 / 천외편린 보상`, `01. 메인 엔딩 구조` 범위 재대조
+- [x] battle-loss branch, broader corruption/closed-gate branch, reward/ability schema, relation/debt/faction ledger, main ending archive/save surface 비교
+- [x] 다음 runtime 후보를 `wuxia_battle_loss_epilogue_contract`로 결정
+- [x] `docs/design/Wuxia_Final_State_Routing.md`에 battle-loss bundle, suppress rule, still-closed 범위 기록
+- [x] full final battle container, combat resolver, HP 숫자전, archive/save schema, relation/debt/faction ledger, reward/ability schema 미변경 유지
+
+### 0.2ck 2026-06-02 무협 `wuxia_battle_loss_epilogue_contract` runtime slice
+
+- [x] Existing final epilogue body block consumer가 `final_combat_result_battle_loss_seeded`를 소비
+- [x] `epilogue_boss_black_serpent_banner`, `epilogue_wuxia_southern_market_rumor`, `epilogue_mumyeong_black_serpent_new_scale`, `epilogue_seoharin_closed_gate`, `epilogue_tianjilu_last_page` loss bundle 출력
+- [x] optimistic victory cards `epilogue_boss_broken_black_serpent`, `epilogue_seoharin_open_gate`, `epilogue_mumyeong_stolen_forms_stopped`를 `battle_loss`로 suppress
+- [x] final epilogue ending YAML gate를 victory-only required flag에서 Rust consumer-owned victory/loss precondition으로 전환
+- [x] Rust fixture와 Web generated storypack-preview bundle 재생성
+- [x] Rust route parity test와 WASM JSON boundary test 추가
+- [x] full final battle container, combat resolver, HP 숫자전, playable defeat route, archive/save schema, relation/debt/faction ledger, reward/ability schema 미변경 유지
+- [x] 다음 작업을 `wuxia_battle_loss_epilogue_followup_handoff` docs-only contract slice로 갱신
+
+### 0.2cl 2026-06-02 무협 `wuxia_battle_loss_epilogue_followup_handoff` docs-only handoff
+
+- [x] Notion `최종장 결산 라우팅 마스터`, `사도 최종전`, `사도 최종전 상태값 사전`, `08. 엔딩과 후일담 연결` 재대조
+- [x] Notion `06. 사이드 퀘스트와 미해결 부채`, `07. 천기록 / 천외편린 보상`, `03. 세력과 외부 압박`, `엔딩 시스템`, `01. 메인 엔딩 구조`, `06. 엔딩 아카이브` 재대조
+- [x] full final battle container, broader corruption/closed-gate branch, reward/ability schema, relation/debt/faction ledger, main ending archive/save surface, playable defeat-route bridge 비교
+- [x] 다음 runtime 후보를 `wuxia_final_state_canonical_collapse_contract`로 결정
+- [x] 기존 `final_*_seeded` local flags를 canonical final state labels로 접는 scope 기록
+- [x] `ScenePage.body_blocks` 기반 `epilogue_state_audit` audit block 후보 기록
+- [x] full final battle container, combat resolver, HP 숫자전, playable defeat route, archive/save schema, relation/debt/faction ledger, reward/ability schema 미변경 유지
+- [x] 다음 작업을 `wuxia_final_state_canonical_collapse_contract_implementation`으로 갱신
+
+### 0.2cm 2026-06-02 무협 `wuxia_final_state_canonical_collapse_contract` runtime slice
+
+- [x] `crates/escape-core/src/final_epilogue.rs`에 `epilogue_state_audit` body block 추가
+- [x] `combat_result`, `boss_resolution_route`, `evidence_state`, `network_handling`, `pressure_state`, `seoharin_axis`, `qingliu_rebuild`, `mumyeong_salvation`, `successor_route`, `own_flow_choice`, `truth_state`, `cheongirok_state`, `player_method`, `item_logs` canonical collapse 구현
+- [x] ambiguous local flags는 `status: ambiguous_priority_applied`와 `candidate_values`로 보고
+- [x] missing canonical inputs는 `status: missing`, `consumed_flags: none`으로 보고
+- [x] battle-loss priority는 `combat_result: battle_loss`와 `boss_resolution_route: not_reached_battle_loss` derived audit로 검증
+- [x] Rust route parity direct-state test로 true/corrupted/battle-loss audit summary 검증
+- [x] WASM JSON boundary test로 `epilogue_state_audit` block 전달 검증
+- [x] Web Storybook과 SuperLightTUI display-only boundary 유지
+- [x] full final battle container, combat resolver, HP 숫자전, playable defeat route, archive/save schema, relation/debt/faction ledger, reward/ability schema 미변경 유지
+- [x] 다음 작업을 `wuxia_final_state_canonical_collapse_followup_handoff` docs-only contract slice로 갱신
+
+### 0.2cn 2026-06-02 무협 `wuxia_final_state_canonical_collapse_followup_handoff` docs-only handoff
+
+- [x] Notion `사도 최종전`, `최종장 결산 라우팅 마스터`, `사도 최종전 상태값 사전`, `08. 엔딩과 후일담 연결` 재대조
+- [x] Notion `06. 사이드 퀘스트와 미해결 부채`, `07. 천기록 / 천외편린 보상`, `엔딩 시스템`, `01. 메인 엔딩 구조`, `06. 엔딩 아카이브` 재대조
+- [x] full final battle container, playable defeat-route bridge, broader corruption/closed-gate branch, reward/ability schema, relation/debt/faction ledger, main ending archive/save surface 비교
+- [x] 다음 runtime 후보를 `wuxia_sado_final_battle` container-only implementation으로 결정
+- [x] `wuxia_sado_final_battle`는 전투 전 stance choices와 phase-1 bridge만 열고 combat resolver를 열지 않는 scope 기록
+- [x] combat resolver, HP 숫자전, playable defeat route, archive/save schema, relation/debt/faction ledger, reward/ability schema 미변경 유지
+- [x] 다음 작업을 `wuxia_sado_final_battle_container_implementation` runtime slice로 갱신
+
+### 0.2co 2026-06-02 무협 `wuxia_sado_final_battle_container_implementation` runtime slice
+
+- [x] `wuxia_sado_final_battle` container/opening encounter를 existing encounter schema로 추가
+- [x] `black_serpent_ledger_vault` battlefield와 `wuxia_sado_final_phase_1_price_tag` bridge 연결
+- [x] 네 stance choice와 stance-specific `final_player_stance_*_seeded` hook 구현
+- [x] 모든 stance outcome에 `sado_final_battle_started`, `sado_final_battle_container_resolved`, `sado_final_battle_required_confirmed`, `sado_dialogue_does_not_weaken_boss` common hook 적용
+- [x] Rust fixture와 Web generated preview bundle 재생성
+- [x] Python exporter, Rust content fixture, WASM JSON boundary, SuperLightTUI smoke 검증
+- [x] combat resolver, HP 숫자전, playable defeat route, archive/save schema, relation/debt/faction ledger, reward/ability schema 미변경 유지
+- [x] 다음 작업을 `wuxia_sado_final_battle_container_followup_handoff` docs-only contract slice로 갱신
+
+### 0.2cp 2026-06-03 무협 `wuxia_sado_final_battle_container_followup_handoff` docs-only handoff
+
+- [x] Notion `사도 최종전`, `사도 최종전 상태값 사전`, `최종장 결산 라우팅 마스터`, `08. 엔딩과 후일담 연결` 재대조
+- [x] Notion `06. 사이드 퀘스트와 미해결 부채`, `07. 천기록 / 천외편린 보상`, `01. 메인 엔딩 구조`, `06. 엔딩 아카이브` 재대조
+- [x] playable defeat-route bridge, battle-loss route UX, broader corruption/closed-gate branch, combat resolver/HP numeric battle, reward/ability schema, relation/debt/faction ledger, main ending archive/save surface 비교
+- [x] 다음 runtime 후보를 `wuxia_sado_battle_loss_route_bridge`로 결정
+- [x] 첫 구현 범위는 existing encounter schema에서 explicit `final_combat_result_battle_loss_seeded`를 만들고 기존 final epilogue battle-loss consumer로 넘기는 bridge로 기록
+- [x] combat resolver, HP 숫자전, archive/save schema, relation/debt/faction ledger, reward/ability schema 미변경 유지
+- [x] 다음 작업을 `wuxia_sado_battle_loss_route_bridge_implementation` runtime slice로 갱신
+
+### 0.2cr 2026-06-14 무협 `wuxia_cheonoe_pyeonrin_first_reward` runtime slice
+
+- [x] `wuxia_cheonoe_pyeonrin_first_reward` encounter를 `wuxia_mumyeong_copy_style_reveal`과 `wuxia_mumyeong_reads_orthodox_style` 사이에 추가 (bundle index 15)
+- [x] `choose_modern_martial_thread`, `choose_analysis_thread`, `choose_survival_tactics_thread` 3개 선택지 구현 (decline 없음)
+- [x] 각 choice outcome: chosen thread flag + `cheonoe_pyeonrin_first_reward_resolved` + `cheonoe_pyeonrin_reward_schema_opened` 방출
+- [x] add_clues: `two_unchosen_fragments_lost` + per-계열 해석 clue
+- [x] layout: fragment_choice, speaker: 천기록, glyph_anomaly effect_cue (three_phrases_surface_two_fade)
+- [x] Rust fixture와 Web generated preview bundle 재생성
+- [x] cargo test --workspace = green, pytest = green, npm run test = green
+- [x] numeric ability stat, combat resolver, add_items, route/faction/ledger flag 미추가 유지
+
+### 0.2cq 2026-06-13 무협 `wuxia_sado_battle_loss_route_bridge` runtime slice
+
+- [x] `wuxia_sado_final_battle`의 5번째 선택지 `throw_away_every_lever_against_sado`를 추가하고 `sado_battle_loss_route_chosen` flag와 `black_serpent_ledger_vault` destination 연결
+- [x] `wuxia_sado_battle_loss_route_bridge` encounter를 `wuxia_sado_final_battle`과 `wuxia_sado_final_phase_1_price_tag` 사이에 추가 (bundle index 27)
+- [x] `let_the_unpriced_value_fall_unbought`, `fall_while_naming_what_was_not_protected` stable choice id 구현
+- [x] 두 choice outcome 모두 `final_combat_result_battle_loss_seeded` + 완료 flag 7개 (`boss_resolution_resolved`, `mumyeong_resolution_resolved`, `seoharin_qingliu_resolution_resolved`, `cheongirok_resolution_resolved`, `black_serpent_aftermath_resolved`, `final_result_priority_applied_seeded`, `final_state_routing_seeded`) 방출
+- [x] result_title `패배 결산`, audit_id `final_state_canonical_collapse` BattleLoss epilogue로 routing
+- [x] `wuxia_sado_final_phase_1_price_tag`에 `sado_battle_loss_route_chosen`을 `forbidden_flags`에 추가 (victory/loss route 상호 배제)
+- [x] Rust fixture와 Web generated preview bundle 재생성
+- [x] cargo test --workspace = green, pytest = green
+- [x] combat resolver, HP 숫자전, archive/save schema, relation/debt/faction ledger, reward/ability schema 미변경 유지
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

@@ -1,13 +1,13 @@
 # 이구학지 — 천기록 encounter situation cards
 
-Status: candidate + `wuxia_black_serpent_aftermath` preview runtime implemented
+Status: candidate + `wuxia_seoharin_unsaid_stay` preview runtime implemented + return/settlement epilogue consumer implemented + battle-loss epilogue consumer implemented + final-state canonical collapse runtime implemented + Sado final battle container runtime implemented + Sado battle-loss route bridge runtime implemented
 
-이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_black_serpent_aftermath`까지는 separate storypack preview runtime으로 승격되었다.
+이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_seoharin_unsaid_stay`까지는 separate storypack preview runtime으로 승격되었다.
 
 공통 원칙:
 
 - 모든 카드는 `world_id: wuxia_jianghu`, `storypack_id: wuxia_jianghu_pack`에 속한다.
-- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_black_serpent_aftermath`까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. `wuxia_black_serpent_aftermath`는 `docs/design/Wuxia_Final_State_Routing.md`의 final state routing contract와 Cheonggi Record resolution seed 이후 흑사방 aftermath 후보를 정규화하는 bridge이며, 다음 handoff 후보는 `wuxia_final_epilogue_renderer_contract`이다.
+- 현재 단계에서는 이 문서의 JSON/YAML형 카드가 runtime source of truth는 아니다. `wuxia_commute_rift_arrival`부터 `wuxia_sado_final_battle` container까지는 `src/tui_adv/storypack-previews/wuxia_jianghu_pack/`의 preview source와 별도 generated preview bundle에 반영됐다. `wuxia_seoharin_unsaid_stay`는 `docs/design/Wuxia_Final_State_Routing.md`의 return/settlement handoff를 existing encounter schema로 구현한 late relationship trigger이며, `wuxia_return_settlement_epilogue_contract`가 그 seed를 final epilogue body block branch cards로 소비한다. `wuxia_battle_loss_epilogue_contract`도 기존 final epilogue body block consumer로 구현되어 explicit loss seed를 battle-loss bundle로 소비한다. `wuxia_final_state_canonical_collapse_contract`는 `epilogue_state_audit` body block으로 existing `final_*_seeded` flags를 canonical final state labels로 collapse한다. `wuxia_sado_final_battle_container_implementation`은 `wuxia_sado_final_battle`를 required battle opening, battlefield, stance choices, common hooks, and phase-1 bridge만 여는 container-only runtime으로 구현했다. `wuxia_sado_battle_loss_route_bridge_implementation`은 loss-route choice와 bridge encounter를 추가해 `final_combat_result_battle_loss_seeded`를 실제 플레이 경로에서 만들고 BattleLoss epilogue consumer로 routing한다. full return/settlement schema, combat resolver, HP numeric battle, archive/save, relation/debt/faction ledger, and reward/ability schema는 아직 열지 않는다.
 - 최신 canonical 무협 설정은 **이구학지 — 천기록**이다. 이전의 generic 객잔/소림/무당/아미 placeholder는 superseded로 본다.
 - 플레이어 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계의 시장 한복판에 전이됐다”이다.
 - 선택지는 세부 수치보다 역할과 결과 hook을 먼저 정의한다.
@@ -28,7 +28,7 @@ Status: candidate + `wuxia_black_serpent_aftermath` preview runtime implemented
 
 | Notion event id | Notion name | repo mapping | status |
 |---|---|---|---|
-| `wuxia_seoharin_unsaid_stay` | 가지 말라는 말 | none yet | future 서하린 late/return event |
+| `wuxia_seoharin_unsaid_stay` | 가지 말라는 말 | `wuxia_seoharin_unsaid_stay` | preview runtime implemented; return/settlement trigger seed only |
 | `wuxia_seoharin_left_meal` | 남겨둔 밥 | `wuxia_seoharin_left_meal` | preview runtime implemented; relationship/belonging bridge, not final return choice |
 | `wuxia_seoharin_empty_place` | 비워둔 자리 | `wuxia_seoharin_empty_place` | preview runtime implemented; late empty-place bridge, not truth delivery |
 | `wuxia_mumyeong_departure_truth_summary` | 무명 이탈의 진실 정리 | `wuxia_mumyeong_departure_truth_summary` | preview runtime implemented; sealed summary, not truth delivery |
@@ -3055,4 +3055,619 @@ runtime_preview_implementation:
     - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
     - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
   next_handoff: wuxia_final_epilogue_renderer_contract_handoff
+```
+
+## 35. `wuxia_final_epilogue_renderer_contract` — runtime 구현 완료
+
+```yaml
+id: wuxia_final_epilogue_renderer_contract
+world_id: wuxia_jianghu
+storypack_id: wuxia_jianghu_pack
+status: implemented_in_storypack_preview
+mapping_status: runtime_contract_implemented
+runtime_preview_design_status: implemented
+notion_mapping:
+  notion_event_id: final_epilogue_renderer_contract
+  notion_event_name: 최종 후일담 renderer contract
+  related_sources:
+    - 최종장 결산 라우팅 마스터
+    - 08. 엔딩과 후일담 연결
+    - 사도 최종전 상태값 사전
+phase: [final_entry, final_epilogue_contract]
+priority_class: system_contract
+required_seed_bridges:
+  - wuxia_boss_resolution
+  - wuxia_mumyeong_resolution
+  - wuxia_seoharin_qingliu_resolution
+  - wuxia_cheongirok_resolution
+  - wuxia_black_serpent_aftermath
+decision: no_additional_seed_bridge_required
+implementation_scope: core_owned_structured_body_blocks
+ending_id: wuxia_final_epilogue_renderer_contract
+implemented_source: src/tui_adv/storypack-previews/wuxia_jianghu_pack/endings.yaml
+generated_artifacts:
+  - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+  - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+core_renderer_boundary:
+  core_owns:
+    - final_result_priority
+    - seed_consumption
+    - suppress_resolution
+    - card_ordering
+  renderers_display_only:
+    - Web Storybook
+    - SuperLightTUI
+body_block_contract:
+  mode: ending
+  block_kinds: [epilogue_result, epilogue_card, epilogue_suppressed, epilogue_contract_error]
+  renderer_rule: display_only_no_card_recomputation
+candidate_groups:
+  boss_black_serpent: [broken_serpent, black_serpent_banner, alliance_silence, southern_market_rumor]
+  mumyeong: [own_flow_salvation, second_wooden_sword, unsent_apology, end_of_stolen_forms, new_scale_or_shadow, last_bowl]
+  seoharin_qingliu: [seoharin_future, empty_place, open_gate, closed_gate, qingliu_future, restored_martial_art]
+  cheongirok: [safe_high_use_last_page, true_route_blank_place, corruption_variant, low_use_silence]
+guardrails:
+  - no_combat_resolver
+  - no_hp_numeric_battle
+  - no_return_or_settlement_schema
+  - no_relation_debt_faction_ledger
+  - no_reward_or_ability_schema
+  - no_item_unpriced_wooden_sword_award
+  - no_seoharin_truth_delivery
+  - no_told_seoharin_truth
+  - no_cheongirok_identity_reveal
+  - no_legacy_office_bundle_or_escape_office_key_change
+runtime_preview_handoff:
+  handoff_status: completed
+  implementation_status: implemented
+  next_runtime_scope: wuxia_return_settlement_contract_handoff_completed
+```
+
+## 36. `wuxia_return_settlement_contract_handoff` — docs-only handoff 완료
+
+```yaml
+id: wuxia_return_settlement_contract_handoff
+world_id: wuxia_jianghu
+storypack_id: wuxia_jianghu_pack
+status: docs_only_handoff_completed
+mapping_status: next_runtime_candidate_selected
+runtime_preview_design_status: handoff_only
+notion_mapping:
+  primary_event_id: wuxia_seoharin_unsaid_stay
+  primary_event_name: 가지 말라는 말
+  primary_page: notion:37137e69-695e-8138-a41d-e153190f85aa
+  related_sources:
+    - 08. 엔딩과 후일담 연결
+    - 11. True Ending 단일 루트
+    - 사도 최종전
+    - 최종장 결산 라우팅 마스터
+    - 사도 최종전 상태값 사전
+    - 06. 사이드 퀘스트와 미해결 부채
+    - 07. 천기록 / 천외편린 보상
+decision: select_return_settlement_as_next_contract_surface
+selected_next_runtime_candidate: wuxia_seoharin_unsaid_stay
+selected_over:
+  - battle_loss_path
+  - reward_ability_schema
+  - relation_debt_faction_ledger
+next_runtime_scope:
+  implementation_id: wuxia_seoharin_unsaid_stay
+  insert_after: wuxia_seoharin_qingliu_resolution
+  insert_before: wuxia_cheongirok_resolution
+  implementation_shape: existing_encounter_schema_seed_bridge
+  summary: 서하린이 주인공의 귀환 가능성을 마주하고, 귀환/정착/불확실성/회피가 이후 후일담 변주 후보로 남도록 한다.
+conditions:
+  locations: [black_serpent_ledger_vault]
+  required_flags: [seoharin_qingliu_resolution_resolved, final_state_routing_seeded, final_result_priority_applied_seeded, final_combat_result_battle_victory_seeded]
+  forbidden_flags: [seoharin_unsaid_stay_resolved]
+choice_shapes:
+  - id: say_return_home_honestly
+    role: safe_identity_return
+    label_direction: 귀환하고 싶다고 솔직히 말한다
+    expected_gains: [final_return_intent_honest_seeded, final_epilogue_return_absence_candidate_seeded]
+  - id: say_you_will_stay_with_qingliu
+    role: safe_settlement
+    label_direction: 청류문에 남겠다고 말한다
+    expected_gains: [final_settlement_intent_honest_seeded, final_epilogue_qingliu_settlement_candidate_seeded]
+  - id: share_uncertainty_without_running
+    role: safe_identity_return
+    label_direction: 아직 모르겠다고 말한다
+    expected_gains: [final_return_settlement_uncertain_shared_seeded, final_epilogue_empty_place_kept_open_seeded]
+  - id: turn_away_from_the_empty_place
+    role: risky_truth_probe
+    label_direction: 말을 돌린다
+    expected_gains: [final_return_settlement_evasion_seeded, final_epilogue_closed_gate_risk_seeded]
+outcome_hooks:
+  possible_flags: [seoharin_unsaid_stay_resolved, final_return_settlement_contract_seeded, final_return_intent_honest_seeded, final_settlement_intent_honest_seeded, final_return_settlement_uncertain_shared_seeded, final_return_settlement_evasion_seeded, final_epilogue_return_absence_candidate_seeded, final_epilogue_qingliu_settlement_candidate_seeded, final_epilogue_empty_place_kept_open_seeded, final_epilogue_closed_gate_risk_seeded]
+  possible_clues: [leaving_can_still_leave_a_place, staying_is_not_payment, uncertainty_can_be_shared_without_escape, evasion_prices_waiting]
+  possible_items: []
+  possible_destinations: [black_serpent_ledger_vault]
+main_spine_link: final epilogue 출력기가 열린 뒤, true-route 기준선 사이에 귀환/정착/침식 관계 분기를 삽입하기 위한 첫 return/settlement seed bridge다.
+randomization_notes: 1회성 late relationship trigger. 서하린·청류문 결산 뒤, 천기록 마지막 장 결산 전에 열어 return/settlement/corruption 후보를 남긴다.
+promotion_notes: docs-only handoff 완료. `wuxia_seoharin_unsaid_stay` runtime은 구현 완료했고, 후속 `wuxia_return_settlement_epilogue_contract`도 existing final epilogue body block consumer로 구현 완료했다. full modern return ending, post-return settlement scene, return/settlement save/archive schema, relation/debt/faction ledger, reward/ability schema, combat resolver, HP 숫자전, Seo Harin truth delivery, `told_seoharin_truth`, Cheonggi Record identity reveal은 여전히 열지 않는다.
+runtime_preview_handoff:
+  handoff_status: completed
+  implementation_status: implemented
+  next_runtime_scope: wuxia_return_settlement_epilogue_contract_completed
+  guardrails: [no_full_modern_return_ending, no_return_settlement_save_archive_schema, no_relation_debt_faction_ledger, no_reward_or_ability_schema, no_combat_resolver, no_hp_numeric_battle, no_seoharin_truth_delivery, no_told_seoharin_truth, no_cheongirok_identity_reveal]
+```
+
+## 37. `wuxia_seoharin_unsaid_stay` — preview runtime 구현 완료
+
+```yaml
+id: wuxia_seoharin_unsaid_stay
+world_id: wuxia_jianghu
+storypack_id: wuxia_jianghu_pack
+status: implemented_in_storypack_preview
+mapping_status: preview_runtime_implemented
+source:
+  notion: 가지 말라는 말 / 37137e69-695e-8138-a41d-e153190f85aa
+  contract: docs/design/Wuxia_Final_State_Routing.md#returnsettlement-contract-handoff
+insert_after: wuxia_seoharin_qingliu_resolution
+insert_before: wuxia_cheongirok_resolution
+conditions:
+  locations: [black_serpent_ledger_vault]
+  required_flags: [seoharin_qingliu_resolution_resolved, final_state_routing_seeded, final_result_priority_applied_seeded, final_combat_result_battle_victory_seeded]
+  forbidden_flags: [seoharin_unsaid_stay_resolved]
+presentation:
+  visual_id: wuxia_seoharin_unsaid_stay
+  speaker: 서하린
+  layout: seoharin_unsaid_stay_seed
+  stable_terms: [서하린, 귀환, 청류문, 빈자리]
+choice_shapes:
+  - id: say_return_home_honestly
+    expected_gains: [final_return_intent_honest_seeded, final_epilogue_return_absence_candidate_seeded]
+  - id: say_you_will_stay_with_qingliu
+    expected_gains: [final_settlement_intent_honest_seeded, final_epilogue_qingliu_settlement_candidate_seeded]
+  - id: share_uncertainty_without_running
+    expected_gains: [final_return_settlement_uncertain_shared_seeded, final_epilogue_empty_place_kept_open_seeded]
+  - id: turn_away_from_the_empty_place
+    expected_gains: [final_return_settlement_evasion_seeded, final_epilogue_closed_gate_risk_seeded]
+common_hooks:
+  add_flags: [seoharin_unsaid_stay_resolved, final_return_settlement_contract_seeded]
+  destination_id: black_serpent_ledger_vault
+generated_artifacts:
+  - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+  - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+promotion_notes: preview runtime으로 구현 완료. 첫 runtime은 귀환/정착 엔딩 자체가 아니라 서하린 late relationship trigger이며, return/settlement/corruption 후보 seed만 existing encounter schema의 flags/clues/log/presentation hook으로 남긴다.
+guardrails: [no_full_modern_return_ending, no_return_settlement_save_archive_schema, no_relation_debt_faction_ledger, no_reward_or_ability_schema, no_combat_resolver, no_hp_numeric_battle, no_seoharin_truth_delivery, no_told_seoharin_truth, no_cheongirok_identity_reveal]
+```
+
+## 38. `wuxia_return_settlement_epilogue_contract` — runtime 구현 완료
+
+```yaml
+id: wuxia_return_settlement_epilogue_contract
+status: implemented_in_rust_core
+kind: final_epilogue_branch_consumer
+implementation_owner: crates/escape-core/src/final_epilogue.rs
+source_contracts:
+  - return_settlement_followup_handoff
+  - docs/design/Wuxia_Final_State_Routing.md
+notion_sources_checked:
+  - 가지 말라는 말
+  - 08. 엔딩과 후일담 연결
+  - 01. 메인 엔딩 구조
+  - 09. 예시 엔딩
+  - 10. 이구학지 후일담 카드 DB
+  - 06. 사이드 퀘스트와 미해결 부채
+  - 07. 천기록 / 천외편린 보상
+input_seed_bridge:
+  from: wuxia_seoharin_unsaid_stay
+  common_flag: final_return_settlement_contract_seeded
+output_body_blocks:
+  - card_id: epilogue_wuxia_returned_commute
+    variant: honest_return
+    consumed_seeds: [final_return_intent_honest_seeded, final_epilogue_return_absence_candidate_seeded]
+  - card_id: epilogue_wuxia_qingliu_settlement
+    variant: honest_settlement
+    consumed_seeds: [final_settlement_intent_honest_seeded, final_epilogue_qingliu_settlement_candidate_seeded]
+  - card_id: epilogue_wuxia_empty_place_kept_open
+    variant: uncertain_shared
+    consumed_seeds: [final_return_settlement_uncertain_shared_seeded, final_epilogue_empty_place_kept_open_seeded]
+  - card_id: epilogue_wuxia_closed_gate_risk
+    variant: evasion_risk
+    consumed_seeds: [final_return_settlement_evasion_seeded, final_epilogue_closed_gate_risk_seeded]
+suppress_rule:
+  return_settlement_evasion:
+    suppresses:
+      - epilogue_wuxia_returned_commute
+      - epilogue_wuxia_qingliu_settlement
+      - epilogue_wuxia_empty_place_kept_open
+guardrails: [no_new_main_ending_type_enum, no_full_modern_return_scene, no_return_settlement_save_archive_schema, no_relation_debt_faction_ledger, no_reward_or_ability_schema, no_combat_resolver, no_hp_numeric_battle, no_seoharin_truth_delivery, no_told_seoharin_truth, no_cheongirok_identity_reveal]
+next_handoff: return_settlement_epilogue_followup_handoff
+```
+
+## 39. `return_settlement_epilogue_followup_handoff` — docs-only handoff 완료
+
+```yaml
+id: return_settlement_epilogue_followup_handoff
+status: completed_docs_only_handoff
+selected_next_runtime: wuxia_battle_loss_epilogue_contract
+source_contracts:
+  - docs/design/Wuxia_Final_State_Routing.md
+notion_sources_checked:
+  - 최종장 결산 라우팅 마스터
+  - 사도 최종전
+  - 사도 최종전 상태값 사전
+  - 08. 엔딩과 후일담 연결
+  - 닫힌 산문
+  - 흑사방의 깃발
+  - 검은 뱀의 새 비늘
+  - 천기록의 마지막 장
+  - 06. 사이드 퀘스트와 미해결 부채
+  - 07. 천기록 / 천외편린 보상
+  - 01. 메인 엔딩 구조
+compared_candidates:
+  - battle_loss_branch
+  - broader_corruption_closed_gate_branch
+  - reward_ability_schema
+  - relation_debt_faction_ledger
+  - main_ending_archive_save_surface
+next_runtime_contract:
+  id: wuxia_battle_loss_epilogue_contract
+  implementation_owner: crates/escape-core/src/final_epilogue.rs
+  input_seed: final_combat_result_battle_loss_seeded
+  output_body_blocks:
+    - card_id: epilogue_boss_black_serpent_banner
+      variant: battle_loss_residue
+    - card_id: epilogue_wuxia_southern_market_rumor
+      variant: unresolved_debt
+    - card_id: epilogue_mumyeong_black_serpent_new_scale
+      variant: battle_loss_successor_pressure
+    - card_id: epilogue_seoharin_closed_gate
+      variant: battle_loss_or_corruption
+    - card_id: epilogue_tianjilu_last_page
+      variant: corruption_variant
+  suppresses:
+    - epilogue_boss_broken_black_serpent
+    - epilogue_seoharin_open_gate
+    - epilogue_mumyeong_stolen_forms_stopped
+guardrails: [no_full_sado_final_battle_container, no_combat_resolver, no_hp_numeric_battle, no_playable_defeat_route, no_main_ending_archive_save_surface, no_relation_debt_faction_ledger, no_reward_ability_schema]
+```
+
+## 40. `wuxia_battle_loss_epilogue_contract` — runtime 구현 완료
+
+```yaml
+id: wuxia_battle_loss_epilogue_contract
+status: implemented_in_rust_core
+kind: final_epilogue_branch_consumer
+implementation_owner: crates/escape-core/src/final_epilogue.rs
+source_contracts:
+  - docs/design/Wuxia_Final_State_Routing.md
+  - return_settlement_epilogue_followup_handoff
+input_seed: final_combat_result_battle_loss_seeded
+output_body_blocks:
+  - card_id: epilogue_boss_black_serpent_banner
+    variant: battle_loss_residue
+  - card_id: epilogue_wuxia_southern_market_rumor
+    variant: unresolved_debt
+  - card_id: epilogue_mumyeong_black_serpent_new_scale
+    variant: battle_loss_successor_pressure
+  - card_id: epilogue_seoharin_closed_gate
+    variant: battle_loss_or_corruption
+  - card_id: epilogue_tianjilu_last_page
+    variant: corruption_variant
+suppress_rule:
+  battle_loss:
+    suppresses:
+      - epilogue_boss_broken_black_serpent
+      - epilogue_seoharin_open_gate
+      - epilogue_mumyeong_stolen_forms_stopped
+ending_gate: final_epilogue_ending_gate_uses_core_precondition
+generated_artifacts:
+  - crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+  - web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json
+tests:
+  - crates/escape-core/tests/route_parity.rs
+  - crates/escape-wasm/tests/json_contract.rs
+guardrails:
+  - no_full_sado_final_battle_container
+  - no_combat_resolver
+  - no_hp_numeric_battle
+  - no_playable_defeat_route
+  - no_main_ending_archive_save_surface
+  - no_relation_debt_faction_ledger
+  - no_reward_ability_schema
+next_handoff: wuxia_battle_loss_epilogue_followup_handoff
+```
+
+## 41. `wuxia_battle_loss_epilogue_followup_handoff` — docs-only handoff 완료
+
+```yaml
+id: wuxia_battle_loss_epilogue_followup_handoff
+status: docs_only_handoff_complete
+selected_next_runtime: wuxia_final_state_canonical_collapse_contract
+source_contracts:
+  - docs/design/Wuxia_Final_State_Routing.md
+  - docs/dev/Development_Plan.md#0.73
+notion_sources_checked:
+  - 최종장 결산 라우팅 마스터
+  - 사도 최종전
+  - 사도 최종전 상태값 사전
+  - 08. 엔딩과 후일담 연결
+  - 06. 사이드 퀘스트와 미해결 부채
+  - 07. 천기록 / 천외편린 보상
+  - 03. 세력과 외부 압박
+  - 엔딩 시스템
+  - 01. 메인 엔딩 구조
+  - 06. 엔딩 아카이브
+compared_candidates:
+  - full_final_battle_container
+  - broader_corruption_closed_gate_branch
+  - reward_ability_schema
+  - relation_debt_faction_ledger
+  - main_ending_archive_save_surface
+  - playable_defeat_route_bridge
+next_runtime_contract:
+  id: wuxia_final_state_canonical_collapse_contract
+  implementation_owner: crates/escape-core/src/final_epilogue.rs
+  output_shape: existing ScenePage.body_blocks
+  likely_block_kind: epilogue_state_audit
+  input_source: existing final_*_seeded flags
+  canonical_states:
+    - combat_result
+    - boss_resolution_route
+    - evidence_state
+    - network_handling
+    - pressure_state
+    - seoharin_axis
+    - qingliu_rebuild
+    - mumyeong_salvation
+    - successor_route
+    - own_flow_choice
+    - truth_state
+    - cheongirok_state
+    - player_method
+    - item_logs
+  guardrails:
+    - no_full_sado_final_battle_container
+    - no_combat_resolver
+    - no_hp_numeric_battle
+    - no_playable_defeat_route
+    - no_main_ending_archive_save_surface
+    - no_relation_debt_faction_ledger
+    - no_reward_ability_schema
+```
+
+## 42. `wuxia_final_state_canonical_collapse_contract` — runtime 구현 완료
+
+```yaml
+id: wuxia_final_state_canonical_collapse_contract
+status: implemented_in_rust_core
+kind: final_epilogue_state_audit_consumer
+implementation_owner: crates/escape-core/src/final_epilogue.rs
+source_contracts:
+  - docs/design/Wuxia_Final_State_Routing.md
+  - wuxia_battle_loss_epilogue_followup_handoff
+output_body_blocks:
+  - kind: epilogue_state_audit
+    source_id: wuxia_final_state_canonical_collapse_contract
+    position: after_epilogue_result_before_cards
+input_source: existing final_*_seeded flags
+canonical_states:
+  - combat_result
+  - boss_resolution_route
+  - evidence_state
+  - network_handling
+  - pressure_state
+  - seoharin_axis
+  - qingliu_rebuild
+  - mumyeong_salvation
+  - successor_route
+  - own_flow_choice
+  - truth_state
+  - cheongirok_state
+  - player_method
+  - item_logs
+status_policy:
+  resolved: exactly one canonical value matched
+  ambiguous_priority_applied: multiple canonical candidate values matched and first-priority value was selected
+  derived_by_final_result_priority: battle-loss priority derived a value without a local boss route seed
+  missing: no local seed produced the canonical state
+tests:
+  - crates/escape-core/tests/route_parity.rs::wuxia_final_epilogue_state_audit_collapses_true_corrupted_and_battle_loss_flags
+  - crates/escape-wasm/tests/json_contract.rs::json_boundary_outputs_wuxia_final_state_audit_block
+guardrails:
+  - no_full_sado_final_battle_container
+  - no_combat_resolver
+  - no_hp_numeric_battle
+  - no_playable_defeat_route
+  - no_main_ending_archive_save_surface
+  - no_relation_debt_faction_ledger
+  - no_reward_ability_schema
+next_handoff: wuxia_final_state_canonical_collapse_followup_handoff
+```
+
+## 43. `wuxia_final_state_canonical_collapse_followup_handoff` — docs-only handoff 완료
+
+```yaml
+id: wuxia_final_state_canonical_collapse_followup_handoff
+status: docs_only_handoff_completed
+selected_next_runtime: wuxia_sado_final_battle
+selected_next_scope: container_only_existing_encounter_schema
+notion_sources_checked:
+  - 사도 최종전
+  - 최종장 결산 라우팅 마스터
+  - 사도 최종전 상태값 사전
+  - 08. 엔딩과 후일담 연결
+  - 06. 사이드 퀘스트와 미해결 부채
+  - 07. 천기록 / 천외편린 보상
+  - 01. 메인 엔딩 구조
+  - 06. 엔딩 아카이브
+compared_candidates:
+  - full_final_battle_container
+  - playable_defeat_route_bridge
+  - broader_corruption_closed_gate_branch
+  - reward_ability_schema
+  - relation_debt_faction_ledger
+  - main_ending_archive_save_surface
+next_runtime_contract:
+  id: wuxia_sado_final_battle
+  implementation_handoff: wuxia_sado_final_battle_container_implementation
+  insert_before: wuxia_sado_final_phase_1_price_tag
+  route_target: wuxia_sado_final_phase_1_price_tag
+  battlefield: black_serpent_ledger_vault
+  output_shape: existing_encounter_schema
+  common_flags:
+    - sado_final_battle_started
+    - sado_final_battle_container_resolved
+    - sado_final_battle_required_confirmed
+    - sado_dialogue_does_not_weaken_boss
+guardrails:
+  - no_combat_resolver
+  - no_hp_numeric_battle
+  - no_playable_defeat_route
+  - no_main_ending_archive_save_surface
+  - no_relation_debt_faction_ledger
+  - no_reward_ability_schema
+```
+
+## 44. `wuxia_sado_final_battle_container_implementation` — runtime 구현 완료
+
+```yaml
+id: wuxia_sado_final_battle
+status: implemented_in_storypack_preview
+implementation_handoff: wuxia_sado_final_battle_container_implementation
+source_handoff: wuxia_final_state_canonical_collapse_followup_handoff
+insert_before: wuxia_sado_final_phase_1_price_tag
+entry_location: cheongryu_outer_courtyard
+battlefield: black_serpent_ledger_vault
+route_target: wuxia_sado_final_phase_1_price_tag
+presentation:
+  visual_id: wuxia_sado_final_battle
+  speaker: 흑사방주
+  layout: final_battle_container
+  stable_terms: [흑사방주, 장부고, 값, 전투]
+choice_ids:
+  - affirm_priceless_heart_before_sado
+  - keep_uncertainty_out_of_the_ledger
+  - name_qingliu_as_calculation_break
+  - cut_words_and_enter_sado_battle
+common_flags:
+  - sado_final_battle_started
+  - sado_final_battle_container_resolved
+  - sado_final_battle_required_confirmed
+  - sado_dialogue_does_not_weaken_boss
+stance_flags:
+  - final_player_stance_priceless_heart_seeded
+  - final_player_stance_uncertain_but_resisting_ledger_seeded
+  - final_player_stance_qingliu_breaks_calculation_seeded
+  - final_player_stance_words_cut_for_battle_seeded
+phase_1_bridge:
+  location: black_serpent_ledger_vault
+  required_flags:
+    - sado_final_battle_started
+    - sado_final_battle_container_resolved
+    - sado_final_battle_required_confirmed
+    - sado_dialogue_does_not_weaken_boss
+guardrails:
+  - no_combat_resolver
+  - no_hp_numeric_battle
+  - no_playable_defeat_route
+  - no_main_ending_archive_save_surface
+  - no_relation_debt_faction_ledger
+  - no_reward_ability_schema
+next_handoff: wuxia_sado_final_battle_container_followup_handoff
+```
+
+## 45. `wuxia_sado_battle_loss_route_bridge_implementation` — runtime 구현 완료
+
+```yaml
+id: wuxia_sado_battle_loss_route_bridge
+status: implemented_in_storypack_preview
+implementation_handoff: wuxia_sado_battle_loss_route_bridge_implementation
+source_handoff: wuxia_sado_final_battle_container_followup_handoff
+insert_after: wuxia_sado_final_battle
+insert_before: wuxia_sado_final_phase_1_price_tag
+bundle_index: 27
+entry_condition: sado_battle_loss_route_chosen
+entry_location: black_serpent_ledger_vault
+loss_route_choice_on_container:
+  id: throw_away_every_lever_against_sado
+  sets_flag: sado_battle_loss_route_chosen
+  destination: black_serpent_ledger_vault
+presentation:
+  visual_id: wuxia_sado_battle_loss_route_bridge
+  layout: battle_loss_bridge
+  stable_terms: [패배, 가격표, 결산]
+choice_ids:
+  - let_the_unpriced_value_fall_unbought
+  - fall_while_naming_what_was_not_protected
+output_flags:
+  - final_combat_result_battle_loss_seeded
+completion_flags:
+  - boss_resolution_resolved
+  - mumyeong_resolution_resolved
+  - seoharin_qingliu_resolution_resolved
+  - cheongirok_resolution_resolved
+  - black_serpent_aftermath_resolved
+  - final_result_priority_applied_seeded
+  - final_state_routing_seeded
+epilogue_routing:
+  result_title: 패배 결산
+  audit_id: final_state_canonical_collapse
+victory_exclusion:
+  forbidden_flag_added_to: wuxia_sado_final_phase_1_price_tag
+  flag: sado_battle_loss_route_chosen
+guardrails:
+  - no_combat_resolver
+  - no_hp_numeric_battle
+  - no_main_ending_archive_save_surface
+  - no_relation_debt_faction_ledger
+  - no_reward_ability_schema
+next_handoff: wuxia_sado_battle_loss_route_bridge_followup_handoff
+```
+
+
+## 46. `wuxia_cheonoe_pyeonrin_first_reward_implementation` -- runtime 구현 완료
+
+```yaml
+id: wuxia_cheonoe_pyeonrin_first_reward
+status: implemented_in_storypack_preview
+implementation_handoff: wuxia_cheonoe_pyeonrin_first_reward_implementation
+source_handoff: wuxia_sado_battle_loss_route_bridge_followup_handoff
+insert_after: wuxia_mumyeong_copy_style_reveal
+insert_before: wuxia_mumyeong_reads_orthodox_style
+bundle_index: 15
+entry_location: cheongryu_outer_courtyard
+presentation:
+  visual_id: wuxia_cheonoe_pyeonrin_first_reward
+  speaker: 천기록
+  layout: fragment_choice
+  stable_terms: [천기록, 편린, 수련 방향]
+  effect_cue: three_phrases_surface_two_fade
+conditions:
+  required_flags:
+    - mumyeong_copy_style_reveal_resolved
+    - copy_style_hint_recorded
+    - midgame_continuity_started
+    - cheongryu_raid_survived
+    - cheonggi_record_awakened
+    - first_fragment_seen
+  forbidden_flags:
+    - cheonoe_pyeonrin_first_reward_resolved
+choice_ids:
+  - choose_modern_martial_thread
+  - choose_analysis_thread
+  - choose_survival_tactics_thread
+thread_flags:
+  - cheonoe_reward_modern_martial_thread
+  - cheonoe_reward_analysis_thread
+  - cheonoe_reward_survival_tactics_thread
+completion_flags:
+  - cheonoe_pyeonrin_first_reward_resolved
+  - cheonoe_pyeonrin_reward_schema_opened
+clues:
+  - two_unchosen_fragments_lost
+  - modern_martial_distance_guard_direction
+  - analysis_review_loop_direction
+  - survival_terrain_escape_direction
+guardrails:
+  - no_combat_resolver
+  - no_hp_numeric_battle
+  - no_numeric_ability_stats
+  - no_add_items_granting_combat_power
+  - no_route_faction_ledger_flags
+  - no_fourth_decline_choice
+next_handoff: wuxia_cheonoe_pyeonrin_first_reward_followup_handoff
 ```

@@ -1464,7 +1464,7 @@ def test_wuxia_boss_recruits_mumyeong_runtime_slice_is_docs_synced():
     assert "`wuxia_boss_recruits_mumyeong`도 preview runtime에 구현" in storypack_db_readme
     assert "Historical handoffs: wuxia_mumyeong_followup_after_copy_style_reveal" in storypack_db_json
     assert "wuxia_boss_recruits_mumyeong_followup" in storypack_db_json
-    assert "Latest runtime slice: wuxia_black_serpent_aftermath" in storypack_db_json
+    assert "wuxia_black_serpent_aftermath" in storypack_db_json
     assert '"id": "wuxia_boss_recruits_mumyeong"' in situations_json
     assert '"insert_after": "wuxia_mumyeong_destroys_orthodox_sect"' in situations_json
     assert '"next_handoff": "wuxia_boss_recruits_mumyeong_followup"' in situations_json
@@ -1525,7 +1525,7 @@ def test_wuxia_boss_recruits_followup_handoff_selects_departure_truth_summary():
         "sealed summary scope, not truth delivery |"
     ) in coverage
     assert "`wuxia_mumyeong_departure_truth_summary`도 preview runtime에 구현" in storypack_db_readme
-    assert "Latest runtime slice: wuxia_black_serpent_aftermath" in storypack_db_json
+    assert "wuxia_black_serpent_aftermath" in storypack_db_json
     assert '"next_runtime_scope": "sealed_departure_truth_summary"' in situations_json
     assert "| `wuxia_mumyeong_departure_truth_summary` | `midgame_backstory` / `sealed_departure_truth_summary`" in wuxia_pack
     assert "24. `wuxia_mumyeong_departure_truth_summary` — preview runtime 구현 완료" in wuxia_pack
@@ -1576,7 +1576,7 @@ def test_wuxia_mumyeong_departure_truth_summary_runtime_slice_is_docs_synced():
     assert "### 0.2bo 2026-06-02 무협 `wuxia_mumyeong_departure_truth_summary` preview runtime slice" in checklist
     assert "Mumyeong departure truth summary implementation" in coverage
     assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 34개." in storypack_db_readme
-    assert "Latest runtime slice: wuxia_black_serpent_aftermath" in storypack_db_json
+    assert "wuxia_black_serpent_aftermath" in storypack_db_json
     assert '"id": "wuxia_mumyeong_departure_truth_summary"' in situations_json
     assert '"status": "implemented_in_storypack_preview"' in situations_json
     assert '"insert_after": "wuxia_boss_recruits_mumyeong"' in situations_json
@@ -1635,15 +1635,15 @@ def test_wuxia_departure_truth_summary_followup_selects_seoharin_empty_place():
         "`wuxia_seoharin_empty_place` | preview runtime implemented; "
         "late empty-place bridge, not truth delivery |"
     ) in coverage
-    assert "current_goal: wuxia_final_epilogue_renderer_contract_handoff" in next_goal
-    assert "previous_current_goal: wuxia_black_serpent_aftermath" in next_goal
-    assert "mode: docs-first-runtime-handoff" in next_goal
+    assert "current_goal: wuxia_final_epilogue_renderer_contract_implementation" in next_goal
+    assert "previous_current_goal: wuxia_final_epilogue_renderer_contract_handoff" in next_goal
+    assert "mode: contract-first-runtime-implementation" in next_goal
     assert "docs/design/Wuxia_Final_State_Routing.md" in next_goal
     assert "wuxia_sado_final_phase_1_price_tag" in next_goal
     assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 34개." in storypack_db_readme
-    assert "Latest runtime slice: wuxia_black_serpent_aftermath" in storypack_db_json
-    assert "Latest handoff: wuxia_black_serpent_aftermath_handoff implemented Black Serpent aftermath route seed bridge and deferred wuxia_final_epilogue_renderer_contract" in storypack_db_json
-    assert "Next runtime candidate: wuxia_final_epilogue_renderer_contract" in storypack_db_json
+    assert "wuxia_black_serpent_aftermath" in storypack_db_json
+    assert "wuxia_final_epilogue_renderer_contract_handoff" in storypack_db_json
+    assert "wuxia_final_epilogue_renderer_contract" in storypack_db_json
     assert '"id": "wuxia_seoharin_empty_place"' in situations_json
     assert '"mapping_status": "preview_runtime_implemented"' in situations_json
     assert '"runtime_preview_design_status": "implemented"' in situations_json
@@ -1715,14 +1715,14 @@ def test_wuxia_seoharin_left_meal_runtime_slice_is_docs_synced():
         "`wuxia_seoharin_left_meal` | preview runtime implemented; "
         "daily-care belonging bridge, not final return choice |"
     ) in coverage
-    assert "current_goal: wuxia_final_epilogue_renderer_contract_handoff" in next_goal
-    assert "previous_current_goal: wuxia_black_serpent_aftermath" in next_goal
+    assert "current_goal: wuxia_final_epilogue_renderer_contract_implementation" in next_goal
+    assert "previous_current_goal: wuxia_final_epilogue_renderer_contract_handoff" in next_goal
     assert "wuxia_sado_final_phase_1_price_tag" in next_goal
     assert "canonical_final_inputs" in next_goal
     assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 34개." in storypack_db_readme
-    assert "Latest runtime slice: wuxia_black_serpent_aftermath" in storypack_db_json
-    assert "Latest handoff: wuxia_black_serpent_aftermath_handoff implemented Black Serpent aftermath route seed bridge and deferred wuxia_final_epilogue_renderer_contract" in storypack_db_json
-    assert "Next runtime candidate: wuxia_final_epilogue_renderer_contract" in storypack_db_json
+    assert "wuxia_black_serpent_aftermath" in storypack_db_json
+    assert "wuxia_final_epilogue_renderer_contract_handoff" in storypack_db_json
+    assert "wuxia_final_epilogue_renderer_contract" in storypack_db_json
     assert '"id": "wuxia_seoharin_left_meal"' in situations_json
     assert '"surface": [' in situations_json
     assert '"food"' in situations_json
@@ -1800,9 +1800,9 @@ def test_wuxia_final_state_routing_contract_is_docs_synced():
     assert "Latest implemented runtime is `wuxia_black_serpent_aftermath`" in runtime_preview
     assert "wuxia_sado_final_phase_1_price_tag" in wuxia_pack
     assert "wuxia_sado_final_phase_1_price_tag" in wuxia_cards
-    assert "Next runtime candidate: wuxia_final_epilogue_renderer_contract" in storypack_db_json
-    assert "current_goal: wuxia_final_epilogue_renderer_contract_handoff" in next_goal
-    assert "previous_current_goal: wuxia_black_serpent_aftermath" in next_goal
+    assert "wuxia_final_epilogue_renderer_contract" in storypack_db_json
+    assert "current_goal: wuxia_final_epilogue_renderer_contract_implementation" in next_goal
+    assert "previous_current_goal: wuxia_final_epilogue_renderer_contract_handoff" in next_goal
     assert "wuxia_final_routing_master" in notion_sources
     assert "37237e69-695e-81d2-8ce2-d1c738c3e923" in notion_sources
     assert "wuxia_sado_final_state_glossary" in notion_sources
@@ -1845,11 +1845,11 @@ def test_wuxia_sado_final_phase_1_price_tag_runtime_slice_is_docs_synced():
     assert "### 0.2bv 2026-06-02 무협 `wuxia_sado_final_phase_1_price_tag` preview runtime slice" in checklist
     assert "Sado final phase 1 price-tag implementation" in coverage
     assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 34개." in storypack_db_readme
-    assert "Latest runtime slice: wuxia_black_serpent_aftermath" in storypack_db_json
-    assert "Latest handoff: wuxia_black_serpent_aftermath_handoff implemented Black Serpent aftermath route seed bridge and deferred wuxia_final_epilogue_renderer_contract" in storypack_db_json
-    assert "Next runtime candidate: wuxia_final_epilogue_renderer_contract" in storypack_db_json
-    assert "current_goal: wuxia_final_epilogue_renderer_contract_handoff" in next_goal
-    assert "previous_current_goal: wuxia_black_serpent_aftermath" in next_goal
+    assert "wuxia_black_serpent_aftermath" in storypack_db_json
+    assert "wuxia_final_epilogue_renderer_contract_handoff" in storypack_db_json
+    assert "wuxia_final_epilogue_renderer_contract" in storypack_db_json
+    assert "current_goal: wuxia_final_epilogue_renderer_contract_implementation" in next_goal
+    assert "previous_current_goal: wuxia_final_epilogue_renderer_contract_handoff" in next_goal
     assert "wuxia_sado_final_phase_2_weakpoint_control" in next_goal
     assert 'key: wuxia_sado_final_phase_1_price_tag' in notion_sources
     assert 'runtime_status: "implemented_in_storypack_preview"' in notion_sources
@@ -1875,7 +1875,7 @@ def test_wuxia_sado_final_phase_1_price_tag_runtime_slice_is_docs_synced():
     assert "`wuxia_black_serpent_aftermath`까지 YAML/generated bundle에 반영" in world_model
     assert "`wuxia_black_serpent_aftermath`도 기존 encounter schema로 구현 완료" in encounter_model
     assert "told_seoharin_truth" not in encounters_yaml
-    assert "wuxia_sado_final_battle_started" not in encounters_yaml
+    assert "sado_final_battle_container_resolved" in encounters_yaml
 
 
 def test_wuxia_sado_final_phase_3_outside_calculation_runtime_slice_is_docs_synced():
@@ -1920,11 +1920,11 @@ def test_wuxia_sado_final_phase_3_outside_calculation_runtime_slice_is_docs_sync
     assert "Boss resolution implementation" in coverage
     assert "Mumyeong resolution implementation" in coverage
     assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 34개." in storypack_db_readme
-    assert "Latest runtime slice: wuxia_black_serpent_aftermath" in storypack_db_json
-    assert "Latest handoff: wuxia_black_serpent_aftermath_handoff implemented Black Serpent aftermath route seed bridge and deferred wuxia_final_epilogue_renderer_contract" in storypack_db_json
-    assert "Next runtime candidate: wuxia_final_epilogue_renderer_contract" in storypack_db_json
-    assert "current_goal: wuxia_final_epilogue_renderer_contract_handoff" in next_goal
-    assert "previous_current_goal: wuxia_black_serpent_aftermath" in next_goal
+    assert "wuxia_black_serpent_aftermath" in storypack_db_json
+    assert "wuxia_final_epilogue_renderer_contract_handoff" in storypack_db_json
+    assert "wuxia_final_epilogue_renderer_contract" in storypack_db_json
+    assert "current_goal: wuxia_final_epilogue_renderer_contract_implementation" in next_goal
+    assert "previous_current_goal: wuxia_final_epilogue_renderer_contract_handoff" in next_goal
     assert "phase 3 stable choice id는 `remember_the_empty_place`, `let_mumyeong_choose_own_flow`, `endure_with_qingliu_will`, `point_to_blank_in_ledger`, `answer_with_sado_calculation`" in next_goal
     assert "boss resolution stable choice id는 `confirm_true_route_outside_calculation`, `confirm_meaningful_victory_with_evidence`, `confirm_incomplete_victory_residue`, `confirm_mumyeong_unsaved_successor_risk`, `confirm_corrupted_victory`" in next_goal
     assert "mumyeong resolution stable choice id는 `ask_mumyeong_for_own_flow`, `reveal_boss_used_mumyeongs_wound`, `leave_room_for_unsent_apology`, `let_stolen_forms_end`, `confirm_black_serpent_successor_risk`, `judge_with_sado_style_calculation`" in next_goal
@@ -1932,7 +1932,7 @@ def test_wuxia_sado_final_phase_3_outside_calculation_runtime_slice_is_docs_sync
     assert 'runtime_status: "implemented_in_storypack_preview"' in notion_sources
     assert 'key: wuxia_boss_resolution' in notion_sources
     assert 'key: wuxia_mumyeong_resolution' in notion_sources
-    assert 'runtime_status: "next_handoff_candidate"' in notion_sources
+    assert 'runtime_status: "next_implementation_candidate"' in notion_sources
 
     assert '"id": "wuxia_sado_final_phase_3_outside_calculation"' in situations_json
     assert '"status": "implemented_in_storypack_preview"' in situations_json
@@ -2000,7 +2000,7 @@ def test_wuxia_sado_final_phase_3_outside_calculation_runtime_slice_is_docs_sync
     assert "`wuxia_black_serpent_aftermath`까지 YAML/generated bundle에 반영" in world_model
     assert "`wuxia_black_serpent_aftermath`도 기존 encounter schema로 구현 완료" in encounter_model
     assert "told_seoharin_truth" not in encounters_yaml
-    assert "wuxia_sado_final_battle_started" not in encounters_yaml
+    assert "sado_final_battle_container_resolved" in encounters_yaml
     assert "item_unpriced_wooden_sword" not in encounters_yaml
 
 
@@ -2042,11 +2042,11 @@ def test_wuxia_seoharin_qingliu_resolution_runtime_slice_is_docs_synced():
     assert "### 0.2ca 2026-06-02 무협 `wuxia_seoharin_qingliu_resolution` preview runtime slice" in checklist
     assert "Seo Harin/Qingliu resolution implementation" in coverage
     assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 34개." in storypack_db_readme
-    assert "Latest runtime slice: wuxia_black_serpent_aftermath" in storypack_db_json
-    assert "Latest handoff: wuxia_black_serpent_aftermath_handoff implemented Black Serpent aftermath route seed bridge and deferred wuxia_final_epilogue_renderer_contract" in storypack_db_json
-    assert "Next runtime candidate: wuxia_final_epilogue_renderer_contract" in storypack_db_json
-    assert "current_goal: wuxia_final_epilogue_renderer_contract_handoff" in next_goal
-    assert "previous_current_goal: wuxia_black_serpent_aftermath" in next_goal
+    assert "wuxia_black_serpent_aftermath" in storypack_db_json
+    assert "wuxia_final_epilogue_renderer_contract_handoff" in storypack_db_json
+    assert "wuxia_final_epilogue_renderer_contract" in storypack_db_json
+    assert "current_goal: wuxia_final_epilogue_renderer_contract_implementation" in next_goal
+    assert "previous_current_goal: wuxia_final_epilogue_renderer_contract_handoff" in next_goal
 
     assert '"id": "wuxia_seoharin_qingliu_resolution"' in situations_json
     assert '"status": "implemented_in_storypack_preview"' in situations_json
@@ -2075,10 +2075,10 @@ def test_wuxia_seoharin_qingliu_resolution_runtime_slice_is_docs_synced():
     assert "`wuxia_black_serpent_aftermath`도 기존 encounter schema로 구현 완료" in encounter_model
     assert "key: wuxia_seoharin_qingliu_resolution" in notion_sources
     assert "key: wuxia_cheongirok_resolution" in notion_sources
-    assert "runtime_status: \"next_handoff_candidate\"" in notion_sources
+    assert "runtime_status: \"next_implementation_candidate\"" in notion_sources
 
     assert "told_seoharin_truth" not in encounters_yaml
-    assert "wuxia_sado_final_battle_started" not in encounters_yaml
+    assert "sado_final_battle_container_resolved" in encounters_yaml
     assert "item_unpriced_wooden_sword" not in encounters_yaml
 
 
@@ -2121,10 +2121,10 @@ def test_wuxia_cheongirok_resolution_runtime_slice_is_docs_synced():
     assert "### 0.2cb 2026-06-02 무협 `wuxia_cheongirok_resolution` preview runtime slice" in checklist
     assert "Cheongirok resolution implementation" in coverage
     assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 34개." in storypack_db_readme
-    assert "Latest runtime slice: wuxia_black_serpent_aftermath" in storypack_db_json
-    assert "Next runtime candidate: wuxia_final_epilogue_renderer_contract" in storypack_db_json
-    assert "current_goal: wuxia_final_epilogue_renderer_contract_handoff" in next_goal
-    assert "previous_current_goal: wuxia_black_serpent_aftermath" in next_goal
+    assert "wuxia_black_serpent_aftermath" in storypack_db_json
+    assert "wuxia_final_epilogue_renderer_contract" in storypack_db_json
+    assert "current_goal: wuxia_final_epilogue_renderer_contract_implementation" in next_goal
+    assert "previous_current_goal: wuxia_final_epilogue_renderer_contract_handoff" in next_goal
 
     assert '"id": "wuxia_cheongirok_resolution"' in situations_json
     assert '"status": "implemented_in_storypack_preview"' in situations_json
@@ -2154,10 +2154,10 @@ def test_wuxia_cheongirok_resolution_runtime_slice_is_docs_synced():
     assert "key: wuxia_cheongirok_resolution" in notion_sources
     assert "key: wuxia_black_serpent_aftermath" in notion_sources
     assert "runtime_status: \"implemented_in_storypack_preview\"" in notion_sources
-    assert "runtime_status: \"next_handoff_candidate\"" in notion_sources
+    assert "runtime_status: \"next_implementation_candidate\"" in notion_sources
 
     assert "told_seoharin_truth" not in encounters_yaml
-    assert "wuxia_sado_final_battle_started" not in encounters_yaml
+    assert "sado_final_battle_container_resolved" in encounters_yaml
     assert "item_unpriced_wooden_sword" not in encounters_yaml
 
 
@@ -2199,10 +2199,10 @@ def test_wuxia_black_serpent_aftermath_runtime_slice_is_docs_synced():
     assert "### 0.2cc 2026-06-02 무협 `wuxia_black_serpent_aftermath` preview runtime slice" in checklist
     assert "Black Serpent aftermath implementation" in coverage
     assert "- `wuxia_jianghu_pack`: 이구학지 — 천기록 후보 카드 34개." in storypack_db_readme
-    assert "Latest runtime slice: wuxia_black_serpent_aftermath" in storypack_db_json
-    assert "Next runtime candidate: wuxia_final_epilogue_renderer_contract" in storypack_db_json
-    assert "current_goal: wuxia_final_epilogue_renderer_contract_handoff" in next_goal
-    assert "previous_current_goal: wuxia_black_serpent_aftermath" in next_goal
+    assert "wuxia_black_serpent_aftermath" in storypack_db_json
+    assert "wuxia_final_epilogue_renderer_contract" in storypack_db_json
+    assert "current_goal: wuxia_final_epilogue_renderer_contract_implementation" in next_goal
+    assert "previous_current_goal: wuxia_final_epilogue_renderer_contract_handoff" in next_goal
 
     assert '"id": "wuxia_black_serpent_aftermath"' in situations_json
     assert '"insert_after": "wuxia_cheongirok_resolution"' in situations_json
@@ -2229,8 +2229,609 @@ def test_wuxia_black_serpent_aftermath_runtime_slice_is_docs_synced():
     assert "key: wuxia_black_serpent_aftermath" in notion_sources
     assert "key: wuxia_final_epilogue_renderer_contract" in notion_sources
     assert "runtime_status: \"implemented_in_storypack_preview\"" in notion_sources
-    assert "runtime_status: \"next_handoff_candidate\"" in notion_sources
+    assert "runtime_status: \"next_implementation_candidate\"" in notion_sources
 
     assert "told_seoharin_truth" not in encounters_yaml
-    assert "wuxia_sado_final_battle_started" not in encounters_yaml
+    assert "sado_final_battle_container_resolved" in encounters_yaml
     assert "item_unpriced_wooden_sword" not in encounters_yaml
+
+
+def test_wuxia_final_epilogue_runtime_contract_is_docs_synced():
+    readme = Path("README.md").read_text(encoding="utf-8")
+    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
+    runtime_preview = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(
+        encoding="utf-8"
+    )
+    final_routing = Path("docs/design/Wuxia_Final_State_Routing.md").read_text(
+        encoding="utf-8"
+    )
+    next_goal = Path("idea_box/next_goal/README.md").read_text(encoding="utf-8")
+    notion_sources = Path("idea_box/notion_sources.yml").read_text(encoding="utf-8")
+    storypack_db_readme = Path("docs/content/storypack_db/README.md").read_text(
+        encoding="utf-8"
+    )
+    storypack_db_json = Path("docs/content/storypack_db/storypacks.json").read_text(
+        encoding="utf-8"
+    )
+    wuxia_pack = Path("docs/content/storypacks/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+    wuxia_cards = Path("docs/content/encounter_db/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+    endings_yaml = Path(
+        "src/tui_adv/storypack-previews/wuxia_jianghu_pack/endings.yaml"
+    ).read_text(encoding="utf-8")
+    final_epilogue_rs = Path("crates/escape-core/src/final_epilogue.rs").read_text(
+        encoding="utf-8"
+    )
+
+    assert "wuxia_final_epilogue_renderer_contract" in readme
+    assert "## 0.66 2026-06-02 무협 `wuxia_final_epilogue_renderer_contract` runtime implementation slice" in plan
+    assert "### 0.2ce 2026-06-02 무협 `wuxia_final_epilogue_renderer_contract` runtime implementation slice" in checklist
+    assert "Final epilogue renderer implementation" in coverage
+    assert "`wuxia_final_epilogue_renderer_contract`" in runtime_preview
+    assert "`wuxia_final_epilogue_renderer_contract`" in final_routing
+    assert "current_goal: wuxia_final_epilogue_ux_playtest_contract_followup" in next_goal
+    assert "previous_current_goal: wuxia_final_epilogue_renderer_contract_implementation" in next_goal
+    assert "runtime_status: \"implemented_in_storypack_preview\"" in notion_sources
+    assert "previous_runtime_status: \"next_implementation_candidate\"" in notion_sources
+
+    assert "runtime final ending/system contract" in storypack_db_readme
+    assert "wuxia_final_epilogue_renderer_contract" in storypack_db_json
+    assert "35. `wuxia_final_epilogue_renderer_contract` — runtime 구현 완료" in wuxia_pack
+    assert "## 35. `wuxia_final_epilogue_renderer_contract` — runtime 구현 완료" in wuxia_cards
+    assert "body_block_contract:" in wuxia_cards
+    assert "block_kinds: [epilogue_result, epilogue_card, epilogue_suppressed, epilogue_contract_error]" in wuxia_cards
+
+    assert "id: wuxia_final_epilogue_renderer_contract" in endings_yaml
+    assert "kind: final_epilogue_contract" in endings_yaml
+    assert "boss_resolution_resolved" in endings_yaml
+    assert "black_serpent_aftermath_resolved" in endings_yaml
+
+    assert "epilogue_result" in final_epilogue_rs
+    assert "epilogue_card" in final_epilogue_rs
+    assert "epilogue_suppressed" in final_epilogue_rs
+    assert "final_result_key" in final_epilogue_rs
+
+
+def test_wuxia_return_settlement_epilogue_contract_is_docs_synced():
+    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
+    runtime_preview = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(
+        encoding="utf-8"
+    )
+    final_routing = Path("docs/design/Wuxia_Final_State_Routing.md").read_text(
+        encoding="utf-8"
+    )
+    next_goal = Path("idea_box/next_goal/README.md").read_text(encoding="utf-8")
+    storypack_db_json = Path("docs/content/storypack_db/storypacks.json").read_text(
+        encoding="utf-8"
+    )
+    situations_json = Path(
+        "docs/content/storypack_db/encounter_situations.json"
+    ).read_text(encoding="utf-8")
+    wuxia_pack = Path("docs/content/storypacks/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+    wuxia_cards = Path("docs/content/encounter_db/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+    final_epilogue_rs = Path("crates/escape-core/src/final_epilogue.rs").read_text(
+        encoding="utf-8"
+    )
+
+    assert "## 0.70 2026-06-02 무협 `wuxia_return_settlement_epilogue_contract` runtime slice" in plan
+    assert "### 0.2ci 2026-06-02 무협 `wuxia_return_settlement_epilogue_contract` runtime slice" in checklist
+    assert "return/settlement epilogue branch runtime implemented" in coverage
+    assert "`wuxia_return_settlement_epilogue_contract`" in runtime_preview
+    assert "return schema나 archive/save surface를 열지 않는다" in runtime_preview
+    assert "| runtime id | `wuxia_return_settlement_epilogue_contract` |" in final_routing
+    assert "return_settlement_epilogue_followup_handoff" in next_goal
+    assert "wuxia_return_settlement_epilogue_contract_implementation" in next_goal
+    assert "wuxia_return_settlement_epilogue_contract" in storypack_db_json
+    assert "\"next_handoff\": \"return_settlement_epilogue_followup_handoff\"" in situations_json
+    assert "37. `wuxia_return_settlement_epilogue_contract` — runtime 구현 완료" in wuxia_pack
+    assert "## 38. `wuxia_return_settlement_epilogue_contract` — runtime 구현 완료" in wuxia_cards
+
+    assert "epilogue_wuxia_returned_commute" in final_epilogue_rs
+    assert "epilogue_wuxia_qingliu_settlement" in final_epilogue_rs
+    assert "epilogue_wuxia_empty_place_kept_open" in final_epilogue_rs
+    assert "epilogue_wuxia_closed_gate_risk" in final_epilogue_rs
+    assert "return_settlement_evasion" in final_epilogue_rs
+    assert "main_ending_type" not in final_epilogue_rs
+    assert "told_seoharin_truth" not in final_epilogue_rs
+
+
+def test_wuxia_battle_loss_epilogue_contract_handoff_is_docs_synced():
+    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(
+        encoding="utf-8"
+    )
+    runtime_preview = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(
+        encoding="utf-8"
+    )
+    final_routing = Path("docs/design/Wuxia_Final_State_Routing.md").read_text(
+        encoding="utf-8"
+    )
+    next_goal = Path("idea_box/next_goal/README.md").read_text(encoding="utf-8")
+    storypack_db_json = Path("docs/content/storypack_db/storypacks.json").read_text(
+        encoding="utf-8"
+    )
+    readme = Path("README.md").read_text(encoding="utf-8")
+    wuxia_pack = Path("docs/content/storypacks/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+    wuxia_cards = Path("docs/content/encounter_db/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+    final_epilogue_rs = Path("crates/escape-core/src/final_epilogue.rs").read_text(
+        encoding="utf-8"
+    )
+
+    assert (
+        "## 0.71 2026-06-02 무협 return_settlement_epilogue_followup_handoff docs-only handoff: battle-loss epilogue contract"
+        in plan
+    )
+    assert (
+        "### 0.2cj 2026-06-02 무협 return/settlement epilogue follow-up docs-only handoff"
+        in checklist
+    )
+    assert "return_settlement_epilogue_followup_handoff" in coverage
+    assert "wuxia_battle_loss_epilogue_contract" in runtime_preview
+    assert "Decision from the 2026-06-02 `return_settlement_epilogue_followup_handoff`" in final_routing
+    assert "Implementation status: `wuxia_battle_loss_epilogue_contract` is now implemented" in final_routing
+    assert "current_goal: wuxia_battle_loss_epilogue_contract_implementation" in next_goal
+    assert "previous_current_goal: return_settlement_epilogue_followup_handoff" in next_goal
+    assert "return_settlement_epilogue_followup_handoff" in storypack_db_json
+    assert "wuxia_battle_loss_epilogue_contract" in storypack_db_json
+    assert "`wuxia_battle_loss_epilogue_contract`는 explicit battle-loss seed" in readme
+    assert "38. `return_settlement_epilogue_followup_handoff` — docs-only handoff 완료" in wuxia_pack
+    assert "## 39. `return_settlement_epilogue_followup_handoff` — docs-only handoff 완료" in wuxia_cards
+
+    assert "FinalResult::BattleLoss" in final_epilogue_rs
+    assert "final_combat_result_battle_loss_seeded" in final_epilogue_rs
+    assert "epilogue_boss_black_serpent_banner" in final_epilogue_rs
+    assert "epilogue_wuxia_southern_market_rumor" in final_epilogue_rs
+    assert "epilogue_mumyeong_black_serpent_new_scale" in final_epilogue_rs
+    assert "epilogue_seoharin_closed_gate" in final_epilogue_rs
+    assert "epilogue_tianjilu_last_page" in final_epilogue_rs
+    assert "wuxia_sado_final_battle" not in final_epilogue_rs
+    assert "battle_loss_hp" not in final_epilogue_rs
+
+
+def test_wuxia_battle_loss_epilogue_contract_runtime_is_docs_synced():
+    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(
+        encoding="utf-8"
+    )
+    runtime_preview = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(
+        encoding="utf-8"
+    )
+    final_routing = Path("docs/design/Wuxia_Final_State_Routing.md").read_text(
+        encoding="utf-8"
+    )
+    next_goal = Path("idea_box/next_goal/README.md").read_text(encoding="utf-8")
+    storypack_db_json = Path("docs/content/storypack_db/storypacks.json").read_text(
+        encoding="utf-8"
+    )
+    readme = Path("README.md").read_text(encoding="utf-8")
+    wuxia_pack = Path("docs/content/storypacks/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+    wuxia_cards = Path("docs/content/encounter_db/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+    endings_yaml = Path(
+        "src/tui_adv/storypack-previews/wuxia_jianghu_pack/endings.yaml"
+    ).read_text(encoding="utf-8")
+    final_epilogue_rs = Path("crates/escape-core/src/final_epilogue.rs").read_text(
+        encoding="utf-8"
+    )
+    route_parity_rs = Path("crates/escape-core/tests/route_parity.rs").read_text(
+        encoding="utf-8"
+    )
+    wasm_json_contract_rs = Path(
+        "crates/escape-wasm/tests/json_contract.rs"
+    ).read_text(encoding="utf-8")
+
+    assert "## 0.72 2026-06-02 무협 `wuxia_battle_loss_epilogue_contract` runtime slice" in plan
+    assert "### 0.2ck 2026-06-02 무협 `wuxia_battle_loss_epilogue_contract` runtime slice" in checklist
+    assert "battle-loss epilogue runtime implemented" in coverage
+    assert "wuxia_battle_loss_epilogue_contract" in runtime_preview
+    assert "wuxia_final_state_canonical_collapse_contract" in runtime_preview
+    assert "wuxia_battle_loss_epilogue_contract" in final_routing
+    assert "Latest implemented runtime slice: `wuxia_final_state_canonical_collapse_contract`" in final_routing
+    assert "current_goal: wuxia_battle_loss_epilogue_followup_handoff" in next_goal
+    assert "previous_current_goal: wuxia_battle_loss_epilogue_contract_implementation" in next_goal
+    assert "Historical implemented runtime: wuxia_battle_loss_epilogue_contract" in storypack_db_json
+    assert "`wuxia_battle_loss_epilogue_contract`는 explicit battle-loss seed" in readme
+    assert "39. `wuxia_battle_loss_epilogue_contract` — runtime 구현 완료" in wuxia_pack
+    assert "## 40. `wuxia_battle_loss_epilogue_contract` — runtime 구현 완료" in wuxia_cards
+
+    assert (
+        "required_flags: [boss_resolution_resolved, mumyeong_resolution_resolved, "
+        "seoharin_qingliu_resolution_resolved, cheongirok_resolution_resolved, "
+        "black_serpent_aftermath_resolved, final_result_priority_applied_seeded, "
+        "final_state_routing_seeded]"
+    ) in endings_yaml
+
+    assert "FinalResult::BattleLoss" in final_epilogue_rs
+    assert "final_combat_result_battle_loss_seeded" in final_epilogue_rs
+    assert "battle_loss_residue" in final_epilogue_rs
+    assert "battle_loss_successor_pressure" in final_epilogue_rs
+    assert "battle_loss_or_corruption" in final_epilogue_rs
+    assert "epilogue_boss_black_serpent_banner" in final_epilogue_rs
+    assert "epilogue_wuxia_southern_market_rumor" in final_epilogue_rs
+    assert "epilogue_mumyeong_black_serpent_new_scale" in final_epilogue_rs
+    assert "epilogue_seoharin_closed_gate" in final_epilogue_rs
+    assert "epilogue_tianjilu_last_page" in final_epilogue_rs
+    assert "epilogue_boss_broken_black_serpent" in final_epilogue_rs
+    assert "epilogue_seoharin_open_gate" in final_epilogue_rs
+    assert "epilogue_mumyeong_stolen_forms_stopped" in final_epilogue_rs
+
+    assert (
+        "wuxia_final_epilogue_battle_loss_outputs_loss_bundle_and_suppresses_optimistic_cards"
+        in route_parity_rs
+    )
+    assert (
+        "json_boundary_outputs_wuxia_battle_loss_epilogue_bundle"
+        in wasm_json_contract_rs
+    )
+
+
+def test_wuxia_battle_loss_epilogue_followup_handoff_is_docs_synced():
+    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(
+        encoding="utf-8"
+    )
+    runtime_preview = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(
+        encoding="utf-8"
+    )
+    final_routing = Path("docs/design/Wuxia_Final_State_Routing.md").read_text(
+        encoding="utf-8"
+    )
+    next_goal = Path("idea_box/next_goal/README.md").read_text(encoding="utf-8")
+    storypack_db_json = Path("docs/content/storypack_db/storypacks.json").read_text(
+        encoding="utf-8"
+    )
+    readme = Path("README.md").read_text(encoding="utf-8")
+    wuxia_pack = Path("docs/content/storypacks/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+    wuxia_cards = Path("docs/content/encounter_db/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+
+    assert (
+        "## 0.73 2026-06-02 무협 `wuxia_battle_loss_epilogue_followup_handoff` docs-only handoff: final-state canonical collapse"
+        in plan
+    )
+    assert (
+        "### 0.2cl 2026-06-02 무협 `wuxia_battle_loss_epilogue_followup_handoff` docs-only handoff"
+        in checklist
+    )
+    assert "wuxia_battle_loss_epilogue_followup_handoff" in coverage
+    assert "wuxia_final_state_canonical_collapse_contract" in runtime_preview
+    assert "## Battle Loss Epilogue Follow-up Handoff" in final_routing
+    assert (
+        "Decision from the 2026-06-02 `wuxia_battle_loss_epilogue_followup_handoff`"
+        in final_routing
+    )
+    assert (
+        "current_goal: wuxia_final_state_canonical_collapse_contract_implementation"
+        in next_goal
+    )
+    assert (
+        "previous_current_goal: wuxia_battle_loss_epilogue_followup_handoff"
+        in next_goal
+    )
+    assert (
+        "Latest handoff selected runtime: wuxia_battle_loss_epilogue_followup_handoff selected wuxia_final_state_canonical_collapse_contract"
+        in storypack_db_json
+    )
+    assert "wuxia_final_state_canonical_collapse_contract" in readme
+    assert (
+        "40. `wuxia_battle_loss_epilogue_followup_handoff` — docs-only handoff 완료"
+        in wuxia_pack
+    )
+    assert (
+        "## 41. `wuxia_battle_loss_epilogue_followup_handoff` — docs-only handoff 완료"
+        in wuxia_cards
+    )
+
+    for doc in (plan, final_routing, next_goal, wuxia_pack, wuxia_cards):
+        assert "epilogue_state_audit" in doc
+        assert "final_*_seeded" in doc
+        assert "combat_result" in doc
+        assert "boss_resolution_route" in doc
+        assert "cheongirok_state" in doc
+        assert "player_method" in doc
+
+    assert "playable defeat-route bridge" in final_routing
+    assert "no_combat_resolver" in wuxia_cards
+
+
+def test_wuxia_final_state_canonical_collapse_contract_runtime_is_docs_synced():
+    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(
+        encoding="utf-8"
+    )
+    runtime_preview = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(
+        encoding="utf-8"
+    )
+    final_routing = Path("docs/design/Wuxia_Final_State_Routing.md").read_text(
+        encoding="utf-8"
+    )
+    next_goal = Path("idea_box/next_goal/README.md").read_text(encoding="utf-8")
+    storypack_db_json = Path("docs/content/storypack_db/storypacks.json").read_text(
+        encoding="utf-8"
+    )
+    readme = Path("README.md").read_text(encoding="utf-8")
+    wuxia_pack = Path("docs/content/storypacks/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+    wuxia_cards = Path("docs/content/encounter_db/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+    final_epilogue_rs = Path("crates/escape-core/src/final_epilogue.rs").read_text(
+        encoding="utf-8"
+    )
+    route_parity_rs = Path("crates/escape-core/tests/route_parity.rs").read_text(
+        encoding="utf-8"
+    )
+    wasm_json_contract_rs = Path(
+        "crates/escape-wasm/tests/json_contract.rs"
+    ).read_text(encoding="utf-8")
+
+    assert (
+        "## 0.74 2026-06-02 무협 `wuxia_final_state_canonical_collapse_contract` runtime slice"
+        in plan
+    )
+    assert (
+        "### 0.2cm 2026-06-02 무협 `wuxia_final_state_canonical_collapse_contract` runtime slice"
+        in checklist
+    )
+    assert "final-state canonical collapse runtime implemented" in coverage
+    assert "Latest epilogue runtime output: `epilogue_state_audit`" in runtime_preview
+    assert "## Final State Canonical Collapse Runtime" in final_routing
+    assert (
+        "Implementation status: `wuxia_final_state_canonical_collapse_contract` is now implemented"
+        in final_routing
+    )
+    assert (
+        "current_goal: wuxia_final_state_canonical_collapse_followup_handoff"
+        in next_goal
+    )
+    assert (
+        "previous_current_goal: wuxia_final_state_canonical_collapse_contract_implementation"
+        in next_goal
+    )
+    assert (
+        "Latest runtime slice: wuxia_final_state_canonical_collapse_contract"
+        in storypack_db_json
+    )
+    assert "`wuxia_final_state_canonical_collapse_contract`는 `epilogue_state_audit`" in readme
+    assert (
+        "41. `wuxia_final_state_canonical_collapse_contract` — runtime 구현 완료"
+        in wuxia_pack
+    )
+    assert (
+        "## 42. `wuxia_final_state_canonical_collapse_contract` — runtime 구현 완료"
+        in wuxia_cards
+    )
+
+    assert "\"epilogue_state_audit\"" in final_epilogue_rs
+    assert "canonical_state_audit" in final_epilogue_rs
+    assert "COMBAT_RESULT_RULES" in final_epilogue_rs
+    assert "BOSS_RESOLUTION_ROUTE_RULES" in final_epilogue_rs
+    assert "ambiguous_priority_applied" in final_epilogue_rs
+    assert "derived_by_final_result_priority" in final_epilogue_rs
+    assert "not_reached_battle_loss" in final_epilogue_rs
+    for canonical_state in [
+        "combat_result",
+        "boss_resolution_route",
+        "evidence_state",
+        "network_handling",
+        "pressure_state",
+        "seoharin_axis",
+        "qingliu_rebuild",
+        "mumyeong_salvation",
+        "successor_route",
+        "own_flow_choice",
+        "truth_state",
+        "cheongirok_state",
+        "player_method",
+        "item_logs",
+    ]:
+        assert canonical_state in final_epilogue_rs
+
+    assert (
+        "wuxia_final_epilogue_state_audit_collapses_true_corrupted_and_battle_loss_flags"
+        in route_parity_rs
+    )
+    assert (
+        "json_boundary_outputs_wuxia_final_state_audit_block"
+        in wasm_json_contract_rs
+    )
+
+
+def test_wuxia_sado_final_battle_container_runtime_is_docs_synced():
+    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(
+        encoding="utf-8"
+    )
+    runtime_preview = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(
+        encoding="utf-8"
+    )
+    final_routing = Path("docs/design/Wuxia_Final_State_Routing.md").read_text(
+        encoding="utf-8"
+    )
+    next_goal = Path("idea_box/next_goal/README.md").read_text(encoding="utf-8")
+    storypack_db_json = Path("docs/content/storypack_db/storypacks.json").read_text(
+        encoding="utf-8"
+    )
+    readme = Path("README.md").read_text(encoding="utf-8")
+    wuxia_pack = Path("docs/content/storypacks/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+    wuxia_cards = Path("docs/content/encounter_db/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+    encounters_yaml = Path(
+        "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml"
+    ).read_text(encoding="utf-8")
+
+    assert "## 0.76 2026-06-02 무협 `wuxia_sado_final_battle_container_implementation` runtime slice" in plan
+    assert (
+        "### 0.2co 2026-06-02 무협 `wuxia_sado_final_battle_container_implementation` runtime slice"
+        in checklist
+    )
+    assert "`wuxia_sado_final_battle_container_implementation` implemented" in coverage
+    assert "Latest implemented runtime: `wuxia_sado_final_battle`" in runtime_preview
+    assert "## Sado Final Battle Container Runtime" in final_routing
+    assert "Implementation status: `wuxia_sado_final_battle_container_implementation` is now implemented" in final_routing
+    assert (
+        "current_goal: wuxia_sado_final_battle_container_followup_handoff"
+        in next_goal
+    )
+    assert (
+        "previous_current_goal: wuxia_sado_final_battle_container_implementation"
+        in next_goal
+    )
+    assert "completed_runtime:" in next_goal
+    assert "id: wuxia_sado_final_battle_container_implementation" in next_goal
+    assert "id: wuxia_sado_final_battle_container_followup_handoff" in next_goal
+    assert (
+        "Latest runtime slice: wuxia_sado_final_battle_container_implementation"
+        in storypack_db_json
+    )
+    assert (
+        "Latest implemented runtime: wuxia_sado_final_battle opens"
+        in storypack_db_json
+    )
+    assert (
+        "Latest next handoff: `wuxia_sado_final_battle_container_followup_handoff`"
+        in readme
+    )
+    assert (
+        "43. `wuxia_sado_final_battle_container_implementation` — runtime 구현 완료"
+        in wuxia_pack
+    )
+    assert (
+        "## 44. `wuxia_sado_final_battle_container_implementation` — runtime 구현 완료"
+        in wuxia_cards
+    )
+    assert "id: wuxia_sado_final_battle" in wuxia_cards
+    assert "implementation_handoff: wuxia_sado_final_battle_container_implementation" in wuxia_cards
+    assert "layout: final_battle_container" in wuxia_cards
+    assert "affirm_priceless_heart_before_sado" in wuxia_cards
+    assert "keep_uncertainty_out_of_the_ledger" in wuxia_cards
+    assert "name_qingliu_as_calculation_break" in wuxia_cards
+    assert "cut_words_and_enter_sado_battle" in wuxia_cards
+    assert "sado_final_battle_container_resolved" in encounters_yaml
+    assert "final_player_stance_priceless_heart_seeded" in encounters_yaml
+    assert "locations: [black_serpent_ledger_vault]" in encounters_yaml
+
+
+def test_wuxia_sado_battle_loss_route_bridge_runtime_slice_is_docs_synced():
+    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(
+        encoding="utf-8"
+    )
+    final_routing = Path("docs/design/Wuxia_Final_State_Routing.md").read_text(
+        encoding="utf-8"
+    )
+    wuxia_cards = Path("docs/content/encounter_db/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+    encounters_yaml = Path(
+        "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml"
+    ).read_text(encoding="utf-8")
+
+    assert "## 0.78 2026-06-13 무협 `wuxia_sado_battle_loss_route_bridge_implementation` runtime slice" in plan
+    assert "wuxia_sado_battle_loss_route_bridge_implementation` runtime slice는 구현/검증 완료됐다" in plan
+    assert (
+        "### 0.2cq 2026-06-13 무협 `wuxia_sado_battle_loss_route_bridge` runtime slice"
+        in checklist
+    )
+    assert "`wuxia_sado_battle_loss_route_bridge_implementation` is now implemented" in coverage
+    assert "wuxia_sado_battle_loss_route_bridge" in coverage
+    assert "## Sado Battle-Loss Route Bridge Runtime" in final_routing
+    assert "Implementation status: `wuxia_sado_battle_loss_route_bridge_implementation` is now implemented" in final_routing
+    assert "throw_away_every_lever_against_sado" in final_routing
+    assert "sado_battle_loss_route_chosen" in final_routing
+    assert "let_the_unpriced_value_fall_unbought" in final_routing
+    assert "fall_while_naming_what_was_not_protected" in final_routing
+    assert "final_combat_result_battle_loss_seeded" in final_routing
+    assert (
+        "## 45. `wuxia_sado_battle_loss_route_bridge_implementation` — runtime 구현 완료"
+        in wuxia_cards
+    )
+    assert "id: wuxia_sado_battle_loss_route_bridge" in wuxia_cards
+    assert "implementation_handoff: wuxia_sado_battle_loss_route_bridge_implementation" in wuxia_cards
+    assert "let_the_unpriced_value_fall_unbought" in wuxia_cards
+    assert "fall_while_naming_what_was_not_protected" in wuxia_cards
+    assert "throw_away_every_lever_against_sado" in wuxia_cards
+    assert "id: wuxia_sado_battle_loss_route_bridge" in encounters_yaml
+    assert "throw_away_every_lever_against_sado" in encounters_yaml
+    assert "sado_battle_loss_route_chosen" in encounters_yaml
+    assert "let_the_unpriced_value_fall_unbought" in encounters_yaml
+    assert "fall_while_naming_what_was_not_protected" in encounters_yaml
+    assert "final_combat_result_battle_loss_seeded" in encounters_yaml
+
+
+def test_wuxia_cheonoe_pyeonrin_first_reward_runtime_slice_is_docs_synced():
+    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(
+        encoding="utf-8"
+    )
+    reward_design = Path("docs/design/Wuxia_Cheonoe_Pyeonrin_Reward.md").read_text(
+        encoding="utf-8"
+    )
+    wuxia_cards = Path("docs/content/encounter_db/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+    encounters_yaml = Path(
+        "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml"
+    ).read_text(encoding="utf-8")
+    notion_sources = Path("idea_box/notion_sources.yml").read_text(encoding="utf-8")
+
+    assert "## 0.80 2026-06-14 무협 `wuxia_cheonoe_pyeonrin_first_reward_implementation` runtime slice" in plan
+    assert (
+        "### 0.2cr 2026-06-14 무협 `wuxia_cheonoe_pyeonrin_first_reward` runtime slice"
+        in checklist
+    )
+    assert "wuxia_cheonoe_pyeonrin_first_reward_implementation" in coverage
+    assert "cheonoe_pyeonrin_reward_schema_opened" in coverage
+    assert "wuxia_cheonoe_pyeonrin_first_reward" in coverage
+    assert "wuxia_cheonoe_pyeonrin_first_reward" in reward_design
+    assert "cheonoe_pyeonrin_reward_schema_opened" in reward_design
+    assert (
+        "## 46. `wuxia_cheonoe_pyeonrin_first_reward_implementation` -- runtime 구현 완료"
+        in wuxia_cards
+    )
+    assert "id: wuxia_cheonoe_pyeonrin_first_reward" in wuxia_cards
+    assert "implementation_handoff: wuxia_cheonoe_pyeonrin_first_reward_implementation" in wuxia_cards
+    assert "choose_modern_martial_thread" in wuxia_cards
+    assert "choose_analysis_thread" in wuxia_cards
+    assert "choose_survival_tactics_thread" in wuxia_cards
+    assert "id: wuxia_cheonoe_pyeonrin_first_reward" in encounters_yaml
+    assert "choose_modern_martial_thread" in encounters_yaml
+    assert "choose_analysis_thread" in encounters_yaml
+    assert "choose_survival_tactics_thread" in encounters_yaml
+    assert "cheonoe_pyeonrin_reward_schema_opened" in encounters_yaml
+    assert "cheonoe_pyeonrin_first_reward_resolved" in encounters_yaml
+    assert "two_unchosen_fragments_lost" in encounters_yaml
+    assert "wuxia_cheonoe_pyeonrin_first_reward" in notion_sources
+    assert "implemented_in_storypack_preview" in notion_sources

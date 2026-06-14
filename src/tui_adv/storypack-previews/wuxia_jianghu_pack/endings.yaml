@@ -6,3 +6,12 @@ endings:
     conditions:
       required_flags: [wuxia_arrival_grounded]
     text: 사원증은 부적처럼 남았다. 아직 돌아갈 길은 없지만, 천기록은 당신을 이방인으로 기억하기 시작한다.
+
+  - id: wuxia_final_epilogue_renderer_contract
+    name: 이구학지 결산
+    kind: final_epilogue_contract
+    priority: 900
+    conditions:
+      locations: [black_serpent_ledger_vault]
+      required_flags: [boss_resolution_resolved, mumyeong_resolution_resolved, seoharin_qingliu_resolution_resolved, cheongirok_resolution_resolved, black_serpent_aftermath_resolved, final_result_priority_applied_seeded, final_state_routing_seeded]
+    text: 사도의 장부고가 조용해지자 천기록은 마지막 장을 다시 펼친다. 이제 선택지는 없다. 지금까지 남긴 씨앗을 Rust GameCore가 읽고, 후일담 카드는 계산이 아니라 기록으로만 출력된다.

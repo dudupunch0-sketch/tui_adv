@@ -211,12 +211,12 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&5));
     assert_eq!(bundle.manifest.counts.get("items"), Some(&4));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&34));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&38));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 5);
-    assert_eq!(index.encounters_len(), 34);
+    assert_eq!(index.encounters_len(), 38);
 
     let market = index
         .location("jianghu_market_street")
@@ -993,7 +993,62 @@ fn preview_fixture_indexes_wuxia_first_fight() {
         Some("cheongryu_outer_courtyard")
     );
 
-    let orthodox_style = index
+    let first_reward = index
+        .encounter("wuxia_cheonoe_pyeonrin_first_reward")
+        .expect("cheonoe pyeonrin first reward encounter");
+    assert_eq!(first_reward.title, "천외편린 첫 보상");
+    assert_eq!(
+        first_reward.conditions.locations,
+        vec!["cheongryu_outer_courtyard"]
+    );
+    assert_eq!(
+        first_reward.conditions.required_flags,
+        vec![
+            "mumyeong_copy_style_reveal_resolved",
+            "copy_style_hint_recorded",
+            "midgame_continuity_started",
+            "cheongryu_raid_survived",
+            "cheonggi_record_awakened",
+            "first_fragment_seen",
+        ]
+    );
+    assert_eq!(
+        first_reward.conditions.forbidden_flags,
+        vec!["cheonoe_pyeonrin_first_reward_resolved"]
+    );
+    let reward_presentation = first_reward
+        .presentation
+        .as_ref()
+        .expect("cheonoe pyeonrin first reward presentation");
+    assert_eq!(
+        reward_presentation.layout.as_deref(),
+        Some("fragment_choice")
+    );
+    assert_eq!(reward_presentation.speaker.as_deref(), Some("천기록"));
+    assert_eq!(
+        reward_presentation.effect_cues[0].stable_terms,
+        vec!["천기록", "편린", "수련 방향"]
+    );
+    assert_eq!(first_reward.choices.len(), 3);
+    let analysis = first_reward
+        .choices
+        .iter()
+        .find(|choice| choice.id == "choose_analysis_thread")
+        .expect("choose analysis thread choice");
+    assert_eq!(
+        analysis.outcome.add_flags,
+        vec![
+            "cheonoe_reward_analysis_thread",
+            "cheonoe_pyeonrin_first_reward_resolved",
+            "cheonoe_pyeonrin_reward_schema_opened",
+        ]
+    );
+    assert_eq!(
+        analysis.outcome.add_clues,
+        vec!["two_unchosen_fragments_lost", "analysis_review_loop_direction"]
+    );
+
+        let orthodox_style = index
         .encounter("wuxia_mumyeong_reads_orthodox_style")
         .expect("mumyeong orthodox style trace encounter");
     assert_eq!(orthodox_style.title, "무명의 정파 무공 간파");
@@ -1589,16 +1644,16 @@ fn preview_fixture_indexes_wuxia_first_fight() {
         Some("cheongryu_outer_courtyard")
     );
 
-    let price_tag = index
-        .encounter("wuxia_sado_final_phase_1_price_tag")
-        .expect("Sado final phase 1 price-tag encounter");
-    assert_eq!(price_tag.title, "사도 최종전 1페이즈: 가격표");
+    let sado_battle = index
+        .encounter("wuxia_sado_final_battle")
+        .expect("Sado final battle container encounter");
+    assert_eq!(sado_battle.title, "사도 최종전");
     assert_eq!(
-        price_tag.conditions.locations,
+        sado_battle.conditions.locations,
         vec!["cheongryu_outer_courtyard"]
     );
     assert_eq!(
-        price_tag.conditions.required_flags,
+        sado_battle.conditions.required_flags,
         vec![
             "seoharin_left_meal_resolved",
             "seoharin_empty_place_resolved",
@@ -1614,8 +1669,84 @@ fn preview_fixture_indexes_wuxia_first_fight() {
         ]
     );
     assert_eq!(
+        sado_battle.conditions.forbidden_flags,
+        vec!["sado_final_battle_container_resolved"]
+    );
+    let sado_battle_presentation = sado_battle
+        .presentation
+        .as_ref()
+        .expect("Sado final battle container presentation");
+    assert_eq!(
+        sado_battle_presentation.layout.as_deref(),
+        Some("final_battle_container")
+    );
+    assert_eq!(
+        sado_battle_presentation.speaker.as_deref(),
+        Some("흑사방주")
+    );
+    assert_eq!(
+        sado_battle_presentation.effect_cues[0].stable_terms,
+        vec!["흑사방주", "장부고", "값", "전투"]
+    );
+    assert_eq!(sado_battle.choices.len(), 5);
+    let affirm_priceless = sado_battle
+        .choices
+        .iter()
+        .find(|choice| choice.id == "affirm_priceless_heart_before_sado")
+        .expect("affirm priceless heart choice");
+    assert_eq!(
+        affirm_priceless.outcome.add_flags,
+        vec![
+            "sado_final_battle_started",
+            "sado_final_battle_container_resolved",
+            "sado_final_battle_required_confirmed",
+            "sado_dialogue_does_not_weaken_boss",
+            "final_player_stance_priceless_heart_seeded"
+        ]
+    );
+    assert_eq!(
+        affirm_priceless.outcome.add_clues,
+        vec![
+            "heart_has_no_ledger_price",
+            "sado_battle_required_not_weakened"
+        ]
+    );
+    assert_eq!(
+        affirm_priceless.outcome.destination_id.as_deref(),
+        Some("black_serpent_ledger_vault")
+    );
+
+    let price_tag = index
+        .encounter("wuxia_sado_final_phase_1_price_tag")
+        .expect("Sado final phase 1 price-tag encounter");
+    assert_eq!(price_tag.title, "사도 최종전 1페이즈: 가격표");
+    assert_eq!(
+        price_tag.conditions.locations,
+        vec!["black_serpent_ledger_vault"]
+    );
+    assert_eq!(
+        price_tag.conditions.required_flags,
+        vec![
+            "sado_final_battle_started",
+            "sado_final_battle_container_resolved",
+            "sado_final_battle_required_confirmed",
+            "sado_dialogue_does_not_weaken_boss",
+            "seoharin_left_meal_resolved",
+            "seoharin_empty_place_resolved",
+            "seoharin_axis_opened",
+            "empty_place_remembered",
+            "truth_delivery_still_unopened",
+            "boss_recruits_mumyeong_resolved",
+            "boss_recruitment_thread_opened",
+            "boss_first_appearance_resolved",
+            "black_serpent_core_pressure_opened",
+            "sealed_departure_truth_summary_prepared",
+            "midgame_continuity_started"
+        ]
+    );
+    assert_eq!(
         price_tag.conditions.forbidden_flags,
-        vec!["sado_final_phase_1_price_tag_resolved"]
+        vec!["sado_final_phase_1_price_tag_resolved", "sado_battle_loss_route_chosen"]
     );
     let price_tag_presentation = price_tag
         .presentation
@@ -1991,6 +2122,69 @@ fn preview_fixture_indexes_wuxia_first_fight() {
         Some("black_serpent_ledger_vault")
     );
 
+    let seoharin_unsaid_stay = index
+        .encounter("wuxia_seoharin_unsaid_stay")
+        .expect("seoharin unsaid stay encounter");
+    assert_eq!(seoharin_unsaid_stay.title, "가지 말라는 말");
+    assert_eq!(
+        seoharin_unsaid_stay.conditions.locations,
+        vec!["black_serpent_ledger_vault"]
+    );
+    assert_eq!(
+        seoharin_unsaid_stay.conditions.required_flags,
+        vec![
+            "seoharin_qingliu_resolution_resolved",
+            "final_state_routing_seeded",
+            "final_result_priority_applied_seeded",
+            "final_combat_result_battle_victory_seeded"
+        ]
+    );
+    assert_eq!(
+        seoharin_unsaid_stay.conditions.forbidden_flags,
+        vec!["seoharin_unsaid_stay_resolved"]
+    );
+    let unsaid_presentation = seoharin_unsaid_stay
+        .presentation
+        .as_ref()
+        .expect("seoharin unsaid stay presentation");
+    assert_eq!(
+        unsaid_presentation.layout.as_deref(),
+        Some("seoharin_unsaid_stay_seed")
+    );
+    assert_eq!(unsaid_presentation.speaker.as_deref(), Some("서하린"));
+    assert_eq!(
+        unsaid_presentation.effect_cues[0].stable_terms,
+        vec!["서하린", "귀환", "청류문", "빈자리"]
+    );
+    assert_eq!(seoharin_unsaid_stay.choices.len(), 4);
+    let honest_return = seoharin_unsaid_stay
+        .choices
+        .iter()
+        .find(|choice| choice.id == "say_return_home_honestly")
+        .expect("honest return seoharin unsaid stay choice");
+    assert_eq!(
+        honest_return.outcome.add_flags,
+        vec![
+            "seoharin_unsaid_stay_resolved",
+            "final_return_settlement_contract_seeded",
+            "final_return_intent_honest_seeded",
+            "final_epilogue_return_absence_candidate_seeded"
+        ]
+    );
+    assert_eq!(
+        honest_return.outcome.add_clues,
+        vec![
+            "leaving_can_still_leave_a_place",
+            "return_intent_is_not_erasing_qingliu",
+            "seoharin_place_is_permission_not_price"
+        ]
+    );
+    assert!(honest_return.outcome.add_items.is_empty());
+    assert_eq!(
+        honest_return.outcome.destination_id.as_deref(),
+        Some("black_serpent_ledger_vault")
+    );
+
     let cheongirok_resolution = index
         .encounter("wuxia_cheongirok_resolution")
         .expect("cheongirok resolution encounter");
@@ -2002,6 +2196,7 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(
         cheongirok_resolution.conditions.required_flags,
         vec![
+            "seoharin_unsaid_stay_resolved",
             "seoharin_qingliu_resolution_resolved",
             "mumyeong_resolution_resolved",
             "boss_resolution_resolved",
@@ -2022,10 +2217,7 @@ fn preview_fixture_indexes_wuxia_first_fight() {
         cheongirok_presentation.layout.as_deref(),
         Some("cheongirok_resolution_seed")
     );
-    assert_eq!(
-        cheongirok_presentation.speaker.as_deref(),
-        Some("천기록")
-    );
+    assert_eq!(cheongirok_presentation.speaker.as_deref(), Some("천기록"));
     assert_eq!(
         cheongirok_presentation.effect_cues[0].stable_terms,
         vec!["천기록", "마지막 장", "빈칸", "기록자"]

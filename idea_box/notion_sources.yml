@@ -541,6 +541,31 @@ sources:
     runtime_status: "implemented_in_storypack_preview"
     status: "live_checked_runtime_implemented"
 
+  - key: wuxia_cheonoe_pyeonrin_first_reward
+    title: "천외편린 첫 보상 (Cheonoe Pyeonrin First Reward)"
+    object: encounter
+    notion_ref: "notion:07-cheonoe-pyeonrin-reward-grammar"
+    last_edited_time: "2026-06-14T00:00:00.000Z"
+    precedence_role: "implemented_first_reward_grammar_runtime"
+    related_design_units:
+      - "encounter:wuxia_cheonoe_pyeonrin_first_reward"
+      - "choice:choose_modern_martial_thread"
+      - "choice:choose_analysis_thread"
+      - "choice:choose_survival_tactics_thread"
+      - "flag:cheonoe_pyeonrin_reward_schema_opened"
+      - "flag:cheonoe_pyeonrin_first_reward_resolved"
+    related_canonical_docs:
+      - "docs/design/Wuxia_Cheonoe_Pyeonrin_Reward.md"
+      - "docs/dev/Development_Plan.md"
+      - "docs/dev/Notion_Design_Coverage.md"
+    required_prior_runtime:
+      - "wuxia_mumyeong_copy_style_reveal"
+    consumed_by:
+      - "system:cheonoe_pyeonrin_reward_schema_thread_flags"
+    implementation_scope: "fragment_choice_three_candidates_thread_flag_clue_log_no_numeric_stats"
+    runtime_status: "implemented_in_storypack_preview"
+    status: "live_checked_runtime_implemented"
+
   - key: wuxia_99_checkpoint
     title: "99. 통합 체크포인트"
     object: page

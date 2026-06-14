@@ -2788,3 +2788,50 @@ def test_wuxia_sado_battle_loss_route_bridge_runtime_slice_is_docs_synced():
     assert "let_the_unpriced_value_fall_unbought" in encounters_yaml
     assert "fall_while_naming_what_was_not_protected" in encounters_yaml
     assert "final_combat_result_battle_loss_seeded" in encounters_yaml
+
+
+def test_wuxia_cheonoe_pyeonrin_first_reward_runtime_slice_is_docs_synced():
+    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(
+        encoding="utf-8"
+    )
+    reward_design = Path("docs/design/Wuxia_Cheonoe_Pyeonrin_Reward.md").read_text(
+        encoding="utf-8"
+    )
+    wuxia_cards = Path("docs/content/encounter_db/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+    encounters_yaml = Path(
+        "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml"
+    ).read_text(encoding="utf-8")
+    notion_sources = Path("idea_box/notion_sources.yml").read_text(encoding="utf-8")
+
+    assert "## 0.80 2026-06-14 무협 `wuxia_cheonoe_pyeonrin_first_reward_implementation` runtime slice" in plan
+    assert (
+        "### 0.2cr 2026-06-14 무협 `wuxia_cheonoe_pyeonrin_first_reward` runtime slice"
+        in checklist
+    )
+    assert "wuxia_cheonoe_pyeonrin_first_reward_implementation" in coverage
+    assert "cheonoe_pyeonrin_reward_schema_opened" in coverage
+    assert "wuxia_cheonoe_pyeonrin_first_reward" in coverage
+    assert "wuxia_cheonoe_pyeonrin_first_reward" in reward_design
+    assert "cheonoe_pyeonrin_reward_schema_opened" in reward_design
+    assert (
+        "## 46. `wuxia_cheonoe_pyeonrin_first_reward_implementation` -- runtime 구현 완료"
+        in wuxia_cards
+    )
+    assert "id: wuxia_cheonoe_pyeonrin_first_reward" in wuxia_cards
+    assert "implementation_handoff: wuxia_cheonoe_pyeonrin_first_reward_implementation" in wuxia_cards
+    assert "choose_modern_martial_thread" in wuxia_cards
+    assert "choose_analysis_thread" in wuxia_cards
+    assert "choose_survival_tactics_thread" in wuxia_cards
+    assert "id: wuxia_cheonoe_pyeonrin_first_reward" in encounters_yaml
+    assert "choose_modern_martial_thread" in encounters_yaml
+    assert "choose_analysis_thread" in encounters_yaml
+    assert "choose_survival_tactics_thread" in encounters_yaml
+    assert "cheonoe_pyeonrin_reward_schema_opened" in encounters_yaml
+    assert "cheonoe_pyeonrin_first_reward_resolved" in encounters_yaml
+    assert "two_unchosen_fragments_lost" in encounters_yaml
+    assert "wuxia_cheonoe_pyeonrin_first_reward" in notion_sources
+    assert "implemented_in_storypack_preview" in notion_sources

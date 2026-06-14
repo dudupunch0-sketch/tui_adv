@@ -1117,6 +1117,17 @@
 - [x] combat resolver, HP 숫자전, archive/save schema, relation/debt/faction ledger, reward/ability schema 미변경 유지
 - [x] 다음 작업을 `wuxia_sado_battle_loss_route_bridge_implementation` runtime slice로 갱신
 
+### 0.2cr 2026-06-14 무협 `wuxia_cheonoe_pyeonrin_first_reward` runtime slice
+
+- [x] `wuxia_cheonoe_pyeonrin_first_reward` encounter를 `wuxia_mumyeong_copy_style_reveal`과 `wuxia_mumyeong_reads_orthodox_style` 사이에 추가 (bundle index 15)
+- [x] `choose_modern_martial_thread`, `choose_analysis_thread`, `choose_survival_tactics_thread` 3개 선택지 구현 (decline 없음)
+- [x] 각 choice outcome: chosen thread flag + `cheonoe_pyeonrin_first_reward_resolved` + `cheonoe_pyeonrin_reward_schema_opened` 방출
+- [x] add_clues: `two_unchosen_fragments_lost` + per-계열 해석 clue
+- [x] layout: fragment_choice, speaker: 천기록, glyph_anomaly effect_cue (three_phrases_surface_two_fade)
+- [x] Rust fixture와 Web generated preview bundle 재생성
+- [x] cargo test --workspace = green, pytest = green, npm run test = green
+- [x] numeric ability stat, combat resolver, add_items, route/faction/ledger flag 미추가 유지
+
 ### 0.2cq 2026-06-13 무협 `wuxia_sado_battle_loss_route_bridge` runtime slice
 
 - [x] `wuxia_sado_final_battle`의 5번째 선택지 `throw_away_every_lever_against_sado`를 추가하고 `sado_battle_loss_route_chosen` flag와 `black_serpent_ledger_vault` destination 연결

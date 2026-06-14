@@ -903,6 +903,51 @@ encounters:
           destination_id: cheongryu_outer_courtyard
           log: 무명의 어깨가 아주 짧게 떨린다. 천기록의 빈 줄은 아직 보상을 주지 않지만, 다음 편린의 모양을 기억한다.
 
+  - id: wuxia_cheonoe_pyeonrin_first_reward
+    title: 천외편린 첫 보상
+    body: 카피 무공의 흔적을 복기하던 밤, 업무수첩의 빈 장이 다시 펼쳐진다. 이번에는 세 문장이 동시에 떠오른다. 검색창이 아니다. 즉시 강해지는 보상도 아니다. 세 후보 중 하나의 방향만 붙들 수 있고, 나머지 둘은 이 순간 사라진다.
+    presentation:
+      visual_id: wuxia_cheonoe_pyeonrin_first_reward
+      speaker: 천기록
+      layout: fragment_choice
+      effect_cues:
+        - kind: glyph_anomaly
+          source: cheonoe_pyeonrin_first_reward
+          intensity: 0.80
+          stable_terms: [천기록, 편린, 수련 방향]
+          distortion: three_phrases_surface_two_fade
+          duration_hint_ms: 1600
+          fallback_text: 업무수첩 위에 세 문장이 동시에 번지더니, '천기록', '편린', '수련 방향'만 또렷이 남고 나머지 둘은 흐려진다.
+    conditions:
+      locations: [cheongryu_outer_courtyard]
+      required_flags: [mumyeong_copy_style_reveal_resolved, copy_style_hint_recorded, midgame_continuity_started, cheongryu_raid_survived, cheonggi_record_awakened, first_fragment_seen]
+      forbidden_flags: [cheonoe_pyeonrin_first_reward_resolved]
+    choices:
+      - id: choose_modern_martial_thread
+        label: "'거리 조절과 방어 자세 해석' 방향을 붙든다"
+        outcome:
+          resources:
+            sanity: -1
+          add_flags: [cheonoe_reward_modern_martial_thread, cheonoe_pyeonrin_first_reward_resolved, cheonoe_pyeonrin_reward_schema_opened]
+          add_clues: [two_unchosen_fragments_lost, modern_martial_distance_guard_direction]
+          log: 천기록은 무공 구결이 아니라 상대와의 거리, 팔꿈치와 턱의 각도, 방어 자세가 어긋나는 순간을 읽는 과제를 남겼다. 나머지 두 방향은 이 순간 수첩에서 흘러 사라졌다.
+      - id: choose_analysis_thread
+        label: "'복기와 원인 분석' 방향을 붙든다"
+        outcome:
+          resources:
+            sanity: -1
+          add_flags: [cheonoe_reward_analysis_thread, cheonoe_pyeonrin_first_reward_resolved, cheonoe_pyeonrin_reward_schema_opened]
+          add_clues: [two_unchosen_fragments_lost, analysis_review_loop_direction]
+          log: 천기록은 결과보다 원인을 먼저 쓰는 방식을 남겼다. 무엇이 틀렸는지 거슬러 올라가 적는 복기 루프가 오늘 밤의 숙제다. 나머지 두 방향은 이 순간 수첩에서 흘러 사라졌다.
+      - id: choose_survival_tactics_thread
+        label: "'다수전 회피와 지형 활용' 방향을 붙든다"
+        outcome:
+          resources:
+            sanity: -1
+          add_flags: [cheonoe_reward_survival_tactics_thread, cheonoe_pyeonrin_first_reward_resolved, cheonoe_pyeonrin_reward_schema_opened]
+          add_clues: [two_unchosen_fragments_lost, survival_terrain_escape_direction]
+          log: 천기록은 이기는 법이 아니라 지형을 등지고 수를 줄이는 회피 전술을 남겼다. 싸우지 않고 살아남는 동선이 오늘 밤의 숙제다. 나머지 두 방향은 이 순간 수첩에서 흘러 사라졌다.
+
   - id: wuxia_mumyeong_reads_orthodox_style
     title: 무명의 정파 무공 간파
     body: 무명의 카피는 완전한 복사가 아니었다. 겉흐름 사이로 손목을 잠그는 각도, 기혈을 누르는 순서, 물러나는 보폭이 삐져나온다. 천기록의 빈 줄은 그 흔적을 현악문과 복호금쇄수라는 이름 옆에 잠시 멈춰 세운다.

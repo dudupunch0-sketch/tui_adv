@@ -211,12 +211,12 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&5));
     assert_eq!(bundle.manifest.counts.get("items"), Some(&4));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&37));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&38));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 5);
-    assert_eq!(index.encounters_len(), 37);
+    assert_eq!(index.encounters_len(), 38);
 
     let market = index
         .location("jianghu_market_street")
@@ -993,7 +993,62 @@ fn preview_fixture_indexes_wuxia_first_fight() {
         Some("cheongryu_outer_courtyard")
     );
 
-    let orthodox_style = index
+    let first_reward = index
+        .encounter("wuxia_cheonoe_pyeonrin_first_reward")
+        .expect("cheonoe pyeonrin first reward encounter");
+    assert_eq!(first_reward.title, "천외편린 첫 보상");
+    assert_eq!(
+        first_reward.conditions.locations,
+        vec!["cheongryu_outer_courtyard"]
+    );
+    assert_eq!(
+        first_reward.conditions.required_flags,
+        vec![
+            "mumyeong_copy_style_reveal_resolved",
+            "copy_style_hint_recorded",
+            "midgame_continuity_started",
+            "cheongryu_raid_survived",
+            "cheonggi_record_awakened",
+            "first_fragment_seen",
+        ]
+    );
+    assert_eq!(
+        first_reward.conditions.forbidden_flags,
+        vec!["cheonoe_pyeonrin_first_reward_resolved"]
+    );
+    let reward_presentation = first_reward
+        .presentation
+        .as_ref()
+        .expect("cheonoe pyeonrin first reward presentation");
+    assert_eq!(
+        reward_presentation.layout.as_deref(),
+        Some("fragment_choice")
+    );
+    assert_eq!(reward_presentation.speaker.as_deref(), Some("천기록"));
+    assert_eq!(
+        reward_presentation.effect_cues[0].stable_terms,
+        vec!["천기록", "편린", "수련 방향"]
+    );
+    assert_eq!(first_reward.choices.len(), 3);
+    let analysis = first_reward
+        .choices
+        .iter()
+        .find(|choice| choice.id == "choose_analysis_thread")
+        .expect("choose analysis thread choice");
+    assert_eq!(
+        analysis.outcome.add_flags,
+        vec![
+            "cheonoe_reward_analysis_thread",
+            "cheonoe_pyeonrin_first_reward_resolved",
+            "cheonoe_pyeonrin_reward_schema_opened",
+        ]
+    );
+    assert_eq!(
+        analysis.outcome.add_clues,
+        vec!["two_unchosen_fragments_lost", "analysis_review_loop_direction"]
+    );
+
+        let orthodox_style = index
         .encounter("wuxia_mumyeong_reads_orthodox_style")
         .expect("mumyeong orthodox style trace encounter");
     assert_eq!(orthodox_style.title, "무명의 정파 무공 간파");

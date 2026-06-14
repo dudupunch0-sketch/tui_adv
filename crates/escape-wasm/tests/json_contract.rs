@@ -1379,6 +1379,90 @@ fn json_boundary_reaches_wuxia_mumyeong_copy_style_reveal_through_preview_bundle
 }
 
 #[test]
+fn json_boundary_reaches_wuxia_cheonoe_pyeonrin_first_reward_through_preview_bundle() {
+    let post_copy_style_state_json = wuxia_state_after_actions(&[
+        "choice:follow_roadside_dust",
+        "move:jianghu_market_street",
+        "choice:run_toward_open_street",
+        "choice:choose_failure_log",
+        "choice:tell_plain_truth",
+        "choice:accept_three_month_trial",
+        "choice:step_back_with_firewood",
+        "choice:defend_cheongryu_with_white_path",
+        "choice:accept_medicine_with_written_debt",
+        "choice:watch_the_stolen_qingliu_flow",
+        "choice:endure_until_copy_flow_breaks",
+        "choice:listen_for_breath_mismatch",
+    ]);
+
+    let reward_page_json = scene_page_json(&post_copy_style_state_json, WUXIA_PREVIEW_BUNDLE)
+        .expect("cheonoe pyeonrin first reward scene page should serialize");
+    let reward_page: Value =
+        serde_json::from_str(&reward_page_json).expect("reward page JSON should parse");
+    assert_eq!(reward_page["mode"], "encounter");
+    assert_eq!(reward_page["title"], "천외편린 첫 보상");
+    assert_eq!(reward_page["location"]["id"], "cheongryu_outer_courtyard");
+    assert_eq!(
+        reward_page["visual"]["id"],
+        "wuxia_cheonoe_pyeonrin_first_reward"
+    );
+    assert_eq!(reward_page["visual"]["kind"], "fragment_choice");
+    assert_eq!(reward_page["effect_cues"][0]["stable_terms"][0], "천기록");
+    let reward_action_ids: Vec<&str> = reward_page["actions"]
+        .as_array()
+        .expect("actions should be an array")
+        .iter()
+        .map(|action| action["id"].as_str().expect("action id should be a string"))
+        .collect();
+    assert_eq!(
+        reward_action_ids,
+        vec![
+            "choice:choose_modern_martial_thread",
+            "choice:choose_analysis_thread",
+            "choice:choose_survival_tactics_thread",
+        ]
+    );
+
+    let reward_result_json = apply_action_json(
+        &post_copy_style_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:choose_analysis_thread",
+    )
+    .expect("choose analysis thread action should serialize");
+    let reward_result: Value =
+        serde_json::from_str(&reward_result_json).expect("reward action should parse");
+    assert_eq!(
+        reward_result["encounter_id"],
+        "wuxia_cheonoe_pyeonrin_first_reward"
+    );
+    assert!(reward_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array")
+        .iter()
+        .any(|flag| flag == "cheonoe_pyeonrin_reward_schema_opened"));
+    assert!(reward_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array")
+        .iter()
+        .any(|flag| flag == "cheonoe_reward_analysis_thread"));
+    assert!(reward_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array")
+        .iter()
+        .any(|flag| flag == "cheonoe_pyeonrin_first_reward_resolved"));
+    assert!(reward_result["state"]["clues"]
+        .as_array()
+        .expect("clues should be an array")
+        .iter()
+        .any(|clue| clue == "two_unchosen_fragments_lost"));
+    assert!(reward_result["state"]["clues"]
+        .as_array()
+        .expect("clues should be an array")
+        .iter()
+        .any(|clue| clue == "analysis_review_loop_direction"));
+}
+
+#[test]
 fn json_boundary_reaches_wuxia_mumyeong_reads_orthodox_style_through_preview_bundle() {
     let post_copy_style_state_json = wuxia_state_after_actions(&[
         "choice:follow_roadside_dust",
@@ -1393,6 +1477,7 @@ fn json_boundary_reaches_wuxia_mumyeong_reads_orthodox_style_through_preview_bun
         "choice:watch_the_stolen_qingliu_flow",
         "choice:endure_until_copy_flow_breaks",
         "choice:listen_for_breath_mismatch",
+        "choice:choose_analysis_thread",
     ]);
 
     let orthodox_page_json = scene_page_json(&post_copy_style_state_json, WUXIA_PREVIEW_BUNDLE)
@@ -1427,8 +1512,23 @@ fn json_boundary_reaches_wuxia_mumyeong_reads_orthodox_style_through_preview_bun
         ]
     );
 
+    let post_reward_state_json = wuxia_state_after_actions(&[
+        "choice:follow_roadside_dust",
+        "move:jianghu_market_street",
+        "choice:run_toward_open_street",
+        "choice:choose_failure_log",
+        "choice:tell_plain_truth",
+        "choice:accept_three_month_trial",
+        "choice:step_back_with_firewood",
+        "choice:defend_cheongryu_with_white_path",
+        "choice:accept_medicine_with_written_debt",
+        "choice:watch_the_stolen_qingliu_flow",
+        "choice:endure_until_copy_flow_breaks",
+        "choice:listen_for_breath_mismatch",
+        "choice:choose_analysis_thread",
+    ]);
     let orthodox_result_json = apply_action_json(
-        &post_copy_style_state_json,
+        &post_reward_state_json,
         WUXIA_PREVIEW_BUNDLE,
         "choice:reconstruct_mumyeongs_sightline",
     )
@@ -1476,6 +1576,7 @@ fn json_boundary_reaches_wuxia_mumyeong_midgame_reunion_through_preview_bundle()
         "choice:watch_the_stolen_qingliu_flow",
         "choice:endure_until_copy_flow_breaks",
         "choice:listen_for_breath_mismatch",
+        "choice:choose_analysis_thread",
         "choice:reconstruct_mumyeongs_sightline",
     ]);
 
@@ -1557,6 +1658,7 @@ fn json_boundary_reaches_wuxia_boss_first_appearance_through_preview_bundle() {
         "choice:watch_the_stolen_qingliu_flow",
         "choice:endure_until_copy_flow_breaks",
         "choice:listen_for_breath_mismatch",
+        "choice:choose_analysis_thread",
         "choice:reconstruct_mumyeongs_sightline",
         "choice:show_the_hyeonakmun_trace_without_accusing",
     ]);
@@ -1638,6 +1740,7 @@ fn json_boundary_reaches_wuxia_mumyeong_request_for_aid_through_preview_bundle()
         "choice:watch_the_stolen_qingliu_flow",
         "choice:endure_until_copy_flow_breaks",
         "choice:listen_for_breath_mismatch",
+        "choice:choose_analysis_thread",
         "choice:reconstruct_mumyeongs_sightline",
         "choice:show_the_hyeonakmun_trace_without_accusing",
         "choice:watch_mumyeong_answer_the_boss",
@@ -1726,6 +1829,7 @@ fn json_boundary_reaches_wuxia_mumyeong_awakening_through_preview_bundle() {
         "choice:watch_the_stolen_qingliu_flow",
         "choice:endure_until_copy_flow_breaks",
         "choice:listen_for_breath_mismatch",
+        "choice:choose_analysis_thread",
         "choice:reconstruct_mumyeongs_sightline",
         "choice:show_the_hyeonakmun_trace_without_accusing",
         "choice:watch_mumyeong_answer_the_boss",
@@ -1807,6 +1911,7 @@ fn json_boundary_reaches_wuxia_qingliu_attack_after_war_through_preview_bundle()
         "choice:watch_the_stolen_qingliu_flow",
         "choice:endure_until_copy_flow_breaks",
         "choice:listen_for_breath_mismatch",
+        "choice:choose_analysis_thread",
         "choice:reconstruct_mumyeongs_sightline",
         "choice:show_the_hyeonakmun_trace_without_accusing",
         "choice:watch_mumyeong_answer_the_boss",
@@ -1895,6 +2000,7 @@ fn json_boundary_reaches_wuxia_mumyeong_destroys_orthodox_sect_through_preview_b
         "choice:watch_the_stolen_qingliu_flow",
         "choice:endure_until_copy_flow_breaks",
         "choice:listen_for_breath_mismatch",
+        "choice:choose_analysis_thread",
         "choice:reconstruct_mumyeongs_sightline",
         "choice:show_the_hyeonakmun_trace_without_accusing",
         "choice:watch_mumyeong_answer_the_boss",
@@ -1990,6 +2096,7 @@ fn json_boundary_reaches_wuxia_boss_recruits_mumyeong_through_preview_bundle() {
         "choice:watch_the_stolen_qingliu_flow",
         "choice:endure_until_copy_flow_breaks",
         "choice:listen_for_breath_mismatch",
+        "choice:choose_analysis_thread",
         "choice:reconstruct_mumyeongs_sightline",
         "choice:show_the_hyeonakmun_trace_without_accusing",
         "choice:watch_mumyeong_answer_the_boss",
@@ -2077,6 +2184,7 @@ fn json_boundary_reaches_wuxia_mumyeong_departure_truth_summary_through_preview_
         "choice:watch_the_stolen_qingliu_flow",
         "choice:endure_until_copy_flow_breaks",
         "choice:listen_for_breath_mismatch",
+        "choice:choose_analysis_thread",
         "choice:reconstruct_mumyeongs_sightline",
         "choice:show_the_hyeonakmun_trace_without_accusing",
         "choice:watch_mumyeong_answer_the_boss",
@@ -2169,6 +2277,7 @@ fn json_boundary_reaches_wuxia_seoharin_empty_place_through_preview_bundle() {
         "choice:watch_the_stolen_qingliu_flow",
         "choice:endure_until_copy_flow_breaks",
         "choice:listen_for_breath_mismatch",
+        "choice:choose_analysis_thread",
         "choice:reconstruct_mumyeongs_sightline",
         "choice:show_the_hyeonakmun_trace_without_accusing",
         "choice:watch_mumyeong_answer_the_boss",
@@ -2583,6 +2692,7 @@ fn json_boundary_reaches_wuxia_seoharin_left_meal_through_preview_bundle() {
         "choice:watch_the_stolen_qingliu_flow",
         "choice:endure_until_copy_flow_breaks",
         "choice:listen_for_breath_mismatch",
+        "choice:choose_analysis_thread",
         "choice:reconstruct_mumyeongs_sightline",
         "choice:show_the_hyeonakmun_trace_without_accusing",
         "choice:watch_mumyeong_answer_the_boss",
@@ -2668,6 +2778,7 @@ fn json_boundary_reaches_wuxia_sado_final_phase_1_price_tag_through_preview_bund
         "choice:watch_the_stolen_qingliu_flow",
         "choice:endure_until_copy_flow_breaks",
         "choice:listen_for_breath_mismatch",
+        "choice:choose_analysis_thread",
         "choice:reconstruct_mumyeongs_sightline",
         "choice:show_the_hyeonakmun_trace_without_accusing",
         "choice:watch_mumyeong_answer_the_boss",
@@ -2835,6 +2946,7 @@ fn json_boundary_reaches_wuxia_sado_final_phase_2_weakpoint_control_through_prev
         "choice:watch_the_stolen_qingliu_flow",
         "choice:endure_until_copy_flow_breaks",
         "choice:listen_for_breath_mismatch",
+        "choice:choose_analysis_thread",
         "choice:reconstruct_mumyeongs_sightline",
         "choice:show_the_hyeonakmun_trace_without_accusing",
         "choice:watch_mumyeong_answer_the_boss",
@@ -2942,6 +3054,7 @@ fn json_boundary_reaches_wuxia_sado_final_phase_3_outside_calculation_through_pr
         "choice:watch_the_stolen_qingliu_flow",
         "choice:endure_until_copy_flow_breaks",
         "choice:listen_for_breath_mismatch",
+        "choice:choose_analysis_thread",
         "choice:reconstruct_mumyeongs_sightline",
         "choice:show_the_hyeonakmun_trace_without_accusing",
         "choice:watch_mumyeong_answer_the_boss",
@@ -3052,6 +3165,7 @@ fn json_boundary_reaches_wuxia_boss_resolution_through_preview_bundle() {
         "choice:watch_the_stolen_qingliu_flow",
         "choice:endure_until_copy_flow_breaks",
         "choice:listen_for_breath_mismatch",
+        "choice:choose_analysis_thread",
         "choice:reconstruct_mumyeongs_sightline",
         "choice:show_the_hyeonakmun_trace_without_accusing",
         "choice:watch_mumyeong_answer_the_boss",
@@ -3161,6 +3275,7 @@ fn json_boundary_reaches_wuxia_mumyeong_resolution_after_boss_resolution() {
         "choice:watch_the_stolen_qingliu_flow",
         "choice:endure_until_copy_flow_breaks",
         "choice:listen_for_breath_mismatch",
+        "choice:choose_analysis_thread",
         "choice:reconstruct_mumyeongs_sightline",
         "choice:show_the_hyeonakmun_trace_without_accusing",
         "choice:watch_mumyeong_answer_the_boss",
@@ -3283,6 +3398,7 @@ fn json_boundary_reaches_wuxia_seoharin_qingliu_resolution_after_mumyeong_resolu
         "choice:watch_the_stolen_qingliu_flow",
         "choice:endure_until_copy_flow_breaks",
         "choice:listen_for_breath_mismatch",
+        "choice:choose_analysis_thread",
         "choice:reconstruct_mumyeongs_sightline",
         "choice:show_the_hyeonakmun_trace_without_accusing",
         "choice:watch_mumyeong_answer_the_boss",

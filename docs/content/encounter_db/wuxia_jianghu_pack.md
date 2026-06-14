@@ -3617,3 +3617,57 @@ guardrails:
   - no_reward_ability_schema
 next_handoff: wuxia_sado_battle_loss_route_bridge_followup_handoff
 ```
+
+
+## 46. `wuxia_cheonoe_pyeonrin_first_reward_implementation` -- runtime 구현 완료
+
+```yaml
+id: wuxia_cheonoe_pyeonrin_first_reward
+status: implemented_in_storypack_preview
+implementation_handoff: wuxia_cheonoe_pyeonrin_first_reward_implementation
+source_handoff: wuxia_sado_battle_loss_route_bridge_followup_handoff
+insert_after: wuxia_mumyeong_copy_style_reveal
+insert_before: wuxia_mumyeong_reads_orthodox_style
+bundle_index: 15
+entry_location: cheongryu_outer_courtyard
+presentation:
+  visual_id: wuxia_cheonoe_pyeonrin_first_reward
+  speaker: 천기록
+  layout: fragment_choice
+  stable_terms: [천기록, 편린, 수련 방향]
+  effect_cue: three_phrases_surface_two_fade
+conditions:
+  required_flags:
+    - mumyeong_copy_style_reveal_resolved
+    - copy_style_hint_recorded
+    - midgame_continuity_started
+    - cheongryu_raid_survived
+    - cheonggi_record_awakened
+    - first_fragment_seen
+  forbidden_flags:
+    - cheonoe_pyeonrin_first_reward_resolved
+choice_ids:
+  - choose_modern_martial_thread
+  - choose_analysis_thread
+  - choose_survival_tactics_thread
+thread_flags:
+  - cheonoe_reward_modern_martial_thread
+  - cheonoe_reward_analysis_thread
+  - cheonoe_reward_survival_tactics_thread
+completion_flags:
+  - cheonoe_pyeonrin_first_reward_resolved
+  - cheonoe_pyeonrin_reward_schema_opened
+clues:
+  - two_unchosen_fragments_lost
+  - modern_martial_distance_guard_direction
+  - analysis_review_loop_direction
+  - survival_terrain_escape_direction
+guardrails:
+  - no_combat_resolver
+  - no_hp_numeric_battle
+  - no_numeric_ability_stats
+  - no_add_items_granting_combat_power
+  - no_route_faction_ledger_flags
+  - no_fourth_decline_choice
+next_handoff: wuxia_cheonoe_pyeonrin_first_reward_followup_handoff
+```

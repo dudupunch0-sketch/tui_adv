@@ -3508,6 +3508,93 @@ Still closed:
 
 Next contract decision: `wuxia_sado_battle_loss_route_bridge_followup_handoff`.
 
+## 0.80 2026-06-14 무협 `wuxia_cheonoe_pyeonrin_first_reward_implementation` runtime slice
+
+현재 상태: runtime implementation 완료. `wuxia_sado_battle_loss_route_bridge_followup_handoff`에서 선택한 천외편린 3택 보상 스키마 첫 runtime을 기존 encounter schema로 구현했다.
+
+구현 결과:
+
+- `wuxia_cheonoe_pyeonrin_first_reward` encounter를 `wuxia_mumyeong_copy_style_reveal`과 `wuxia_mumyeong_reads_orthodox_style` 사이에 삽입했다 (bundle index 15).
+- layout: fragment_choice, speaker: 천기록, glyph_anomaly effect_cue (three_phrases_surface_two_fade)로 천기록 특유의 표현 방식을 유지했다.
+- required_flags: `mumyeong_copy_style_reveal_resolved`, `copy_style_hint_recorded`, `midgame_continuity_started`, `cheongryu_raid_survived`, `cheonggi_record_awakened`, `first_fragment_seen`으로 큰 전투 후 / 수련 한계 발현 시점을 gate했다.
+- 정확히 3개 후보(현대 무술: `choose_modern_martial_thread`, 사고법: `choose_analysis_thread`, 생존 전술: `choose_survival_tactics_thread`), 1택, 나머지 2개 소실. decline 4번째 선택지 없음.
+- 각 choice outcome: chosen thread flag + `cheonoe_pyeonrin_first_reward_resolved` + `cheonoe_pyeonrin_reward_schema_opened` + `two_unchosen_fragments_lost` + per-계열 clue + sanity: -1.
+- 숫자 능력치/아이템 전투력/route/faction/ledger flag 없음. 첫 천외편린 3택 보상 grammar를 runtime으로 열었다.
+- Rust fixture와 Web generated preview bundle 재생성 완료.
+- `cargo test --workspace` 및 `pytest` 및 `npm run test` 모두 green.
+
+Still closed:
+
+- combat resolver or HP numeric battle
+- broader corruption/closed-gate branch beyond existing card/audit surfaces
+- new `main_ending_type` runtime enum
+- main ending archive/save surface
+- relation/debt/faction ledger
+- 천외편린 numeric ability stats, reusable reward-table, repeatable reward economy, 귀환 단서 계열 candidate
+- full modern return ending scene or post-return settlement scene
+- Seo Harin truth delivery, `told_seoharin_truth`
+- Cheonggi Record recorder identity reveal
+
+Next contract decision: `wuxia_cheonoe_pyeonrin_first_reward_followup_handoff`.
+
+## 0.79 2026-06-14 무협 `wuxia_sado_battle_loss_route_bridge_followup_handoff` docs-only handoff: 천외편린 3택 보상 스키마
+
+현재 상태: docs-only contract selection 완료. playable battle-loss route가 runtime evidence를 얻었으므로 Notion 원본과 repo canonical docs를 다시 대조했고, 다음 runtime 후보를 천외편린 3택 보상 스키마(`wuxia_cheonoe_pyeonrin_first_reward`)로 결정했다. 계약은 `docs/design/Wuxia_Cheonoe_Pyeonrin_Reward.md`로 승격했다.
+
+Notion 대조:
+
+- `07. 천기록 / 천외편린 보상`은 천기록을 검색창이 아니라 조건 만족 시 후보 3개를 제시하는 기연으로 규정하고, 항상 3택 중 1택, 나머지 2개는 그 순간 사라진다고 못박는다.
+- 같은 문서는 보상이 즉시 강해지는 능력치가 아니라 수련 방향/과제/해석이 열리는 것이라고 한다. 따라서 첫 슬라이스는 숫자 능력치나 combat resolver 없이 thread flag/clue/presentation으로만 구현한다.
+- 천기록 정체는 끝까지 비공개이며 "정체 접근"은 존재감/시선/실시간 기록 감지로 제한된다. 보상 화면도 이 제약을 깨지 않는다.
+- 후보 계열은 현대 무술/훈련법/응급 처치/생존 전술/사고법/귀환 단서로 정의되며, 귀환 단서는 희귀 후기 계열이므로 첫 보상에서는 제외한다.
+- `09. 사건 카드 DB` row 19(`wuxia_tianjilu_first_fragment`)는 기존 `wuxia_cheonggi_record_first_fragment`로 schema-less foreshadow만 구현돼 있어, 정식 3택 reward grammar는 아직 열리지 않았다. 이번 슬라이스가 그 grammar의 첫 runtime이다.
+
+후보 비교:
+
+| candidate | decision |
+|---|---|
+| 천외편린 3택 보상 스키마 | Select. Notion 07 grammar가 가장 자기완결적이고 설계 성숙도가 높으며, 곳곳에서 "future"로 차단돼 있어 핵심 성장 루프를 연다. 숫자 없이 thread/clue로 첫 슬라이스 구현 가능. |
+| combat resolver / HP numeric battle | Reject for this slice. 비용은 여전히 disadvantage/opportunity/pressure 변화로 두고 숫자전을 열지 않는다. |
+| broader corruption/closed-gate branch | Defer. 기존 card/audit surface로 충분. |
+| relation/debt/faction ledger | Defer. afterword/audit trace로 유지. |
+| main ending archive/save surface | Defer. 안정적 ending path 뒤에 연다. |
+| Seo Harin truth delivery / Cheonggi 정체 reveal | Reject permanently for runtime. 보안/설계 정책상 `told_seoharin_truth`와 천기록 정체 reveal은 코드베이스에 넣지 않는다. |
+
+Selected next implementation:
+
+| field | value |
+|---|---|
+| runtime id | `wuxia_cheonoe_pyeonrin_first_reward` |
+| handoff id | `wuxia_cheonoe_pyeonrin_first_reward_implementation` |
+| contract doc | `docs/design/Wuxia_Cheonoe_Pyeonrin_Reward.md` |
+| input runtime | 기존 `wuxia_cheonggi_record_first_fragment` foreshadow + post-raid midgame 흐름 |
+| output flag | `cheonoe_pyeonrin_reward_schema_opened` + 선택 계열 thread flag |
+| implementation owner | 기존 `wuxia_jianghu_pack` encounter schema와 생성 Rust/Web bundle |
+| purpose | 천외편린 3택 보상 grammar를 숫자 능력치 없이 첫 runtime으로 연다 |
+
+First implementation scope:
+
+- 기존 encounter schema만 사용한다.
+- `wuxia_cheonoe_pyeonrin_first_reward` 인카운터를 추가한다. `layout: fragment_choice`, `speaker: 천기록`.
+- 발현 timing은 큰 전투 후 / 수련 한계 밤에 맞춘다. 기존 flag로 gate해 first-eligible 순서가 기존 인카운터를 가로채지 않게 한다.
+- 정확히 3개 후보(현대 무술/사고법/생존 전술), 1택, 나머지 2개 소실. decline 4번째 선택지는 두지 않는다.
+- 효과는 thread flag/clue/log/presentation만. 숫자 능력치/아이템 전투력/route/faction/ledger flag는 추가하지 않는다.
+- exporter, Rust content fixture, WASM JSON boundary, SuperLightTUI route smoke coverage를 추가한다.
+
+Still closed:
+
+- combat resolver or HP numeric battle
+- broader corruption/closed-gate branch beyond existing card/audit surfaces
+- new `main_ending_type` runtime enum
+- main ending archive/save surface
+- relation/debt/faction ledger
+- 천외편린 numeric ability stats, reusable reward-table, repeatable reward economy, 귀환 단서 계열 candidate
+- full modern return ending scene or post-return settlement scene
+- Seo Harin truth delivery, `told_seoharin_truth`
+- Cheonggi Record recorder identity reveal
+
+Next runtime implementation candidate: `wuxia_cheonoe_pyeonrin_first_reward`.
+
 ## 1. 목표
 
 국내 최고 대기업 IT/반도체 회사의 연구개발동 같은 사무실을 배경으로 한 TUI 기반 랜덤 인카운터 선택지 생존 게임을 만든다.

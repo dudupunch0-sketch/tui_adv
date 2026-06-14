@@ -2,9 +2,9 @@
 type: next_goal_prompt
 created: 2026-06-01
 updated: 2026-06-02
-current_goal: wuxia_sado_final_battle_container_implementation
-previous_current_goal: wuxia_final_state_canonical_collapse_followup_handoff
-mode: contract-first-runtime-implementation
+current_goal: wuxia_sado_final_battle_container_followup_handoff
+previous_current_goal: wuxia_sado_final_battle_container_implementation
+mode: docs-only-contract-selection
 ---
 
 # next_goal
@@ -67,9 +67,17 @@ mode: contract-first-runtime-implementation
 
 `wuxia_final_state_canonical_collapse_followup_handoff`도 완료됐다. final-state audit runtime evidence 이후 Notion `사도 최종전`, final routing/state glossary, ending/afterword, side debt, reward, main ending, archive/save sources를 대조했고, 다음 runtime 후보를 `wuxia_sado_final_battle` container-only implementation으로 결정했다.
 
-현재 목표는 `wuxia_sado_final_battle_container_implementation`이다. Notion event id `wuxia_sado_final_battle`를 기존 encounter schema로 구현해 required final battle opening, battlefield, pre-battle stance choices, and phase-1 bridge를 열되, combat resolver, HP 숫자전, playable defeat route, archive/save surface, relation/debt/faction ledger, reward/ability schema는 열지 않는다.
+`wuxia_sado_final_battle_container_implementation`도 완료됐다. Notion event id `wuxia_sado_final_battle`를 기존 encounter schema로 구현했고, required final battle opening, `black_serpent_ledger_vault` battlefield, pre-battle stance choices, common final-battle hooks, and phase-1 bridge만 열었다. combat resolver, HP 숫자전, playable defeat route, archive/save surface, relation/debt/faction ledger, reward/ability schema는 아직 열지 않는다.
+
+현재 목표는 `wuxia_sado_final_battle_container_followup_handoff`이다. Sado final battle container runtime evidence를 기준으로 Notion `사도 최종전`, final routing/state glossary, battle-loss/return-settlement/final-state audit docs, side debt, reward, main ending, archive/save sources를 다시 대조하고 다음 runtime 후보 하나를 선택한다.
 
 이전 목표 표기 이력:
+
+```yaml
+current_goal: wuxia_sado_final_battle_container_implementation
+previous_current_goal: wuxia_final_state_canonical_collapse_followup_handoff
+mode: contract-first-runtime-implementation
+```
 
 ```yaml
 current_goal: wuxia_final_state_canonical_collapse_followup_handoff
@@ -160,10 +168,33 @@ completed_runtime:
   tests:
     - crates/escape-core/tests/route_parity.rs::wuxia_final_epilogue_state_audit_collapses_true_corrupted_and_battle_loss_flags
     - crates/escape-wasm/tests/json_contract.rs::json_boundary_outputs_wuxia_final_state_audit_block
-next_decision:
+completed_runtime:
   id: wuxia_sado_final_battle_container_implementation
   selected_runtime: wuxia_sado_final_battle
-  selected_scope: container_only_existing_encounter_schema
+  implemented_scope: container_only_existing_encounter_schema
+  inserted_before: wuxia_sado_final_phase_1_price_tag
+  battlefield: black_serpent_ledger_vault
+  common_flags:
+    - sado_final_battle_started
+    - sado_final_battle_container_resolved
+    - sado_final_battle_required_confirmed
+    - sado_dialogue_does_not_weaken_boss
+  tests:
+    - crates/escape-core/tests/content_bundle.rs::fixture_content_bundle_loads_counts_and_public_sections
+    - crates/escape-wasm/tests/json_contract.rs::json_boundary_reaches_wuxia_sado_final_phase_1_price_tag_through_preview_bundle
+    - crates/escape-terminal/tests/cli_smoke.rs::content_tui_smoke_reaches_wuxia_sado_final_battle_container
+next_decision:
+  id: wuxia_sado_final_battle_container_followup_handoff
+  mode: docs_only_contract_selection
+  input_runtime: wuxia_sado_final_battle
+  compare_candidates:
+    - playable_defeat_route_bridge
+    - battle_loss_route_ux
+    - broader_corruption_closed_gate_branch
+    - combat_resolver_hp_numeric_battle
+    - reward_ability_schema
+    - relation_debt_faction_ledger
+    - main_ending_archive_save_surface
 completed_handoff:
   id: wuxia_final_state_canonical_collapse_followup_handoff
   selected_next_runtime: wuxia_sado_final_battle
@@ -186,7 +217,7 @@ completed_handoff:
     - 엔딩 시스템
     - 01. 메인 엔딩 구조
     - 06. 엔딩 아카이브
-next_runtime:
+implemented_runtime:
   id: wuxia_sado_final_battle
   implementation_owner:
     - src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml

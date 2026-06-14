@@ -1832,7 +1832,7 @@ fn content_tui_smoke_reaches_wuxia_seoharin_left_meal() {
 }
 
 #[test]
-fn content_tui_smoke_reaches_wuxia_sado_final_phase_1_price_tag() {
+fn content_tui_smoke_reaches_wuxia_sado_final_battle_container() {
     let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
         .args([
             "--scene",
@@ -1900,17 +1900,23 @@ fn content_tui_smoke_reaches_wuxia_sado_final_phase_1_price_tag() {
 
     let stdout = String::from_utf8_lossy(&output.stdout);
     assert!(stdout.contains("위치: 청류문 외곽 마당 (cheongryu_outer_courtyard)"));
-    assert!(stdout.contains("사도 최종전 1페이즈: 가격표"));
-    assert!(stdout.contains("visual id: wuxia_sado_final_phase_1_price_tag"));
-    assert!(stdout.contains("layout: final_phase_price_tag"));
-    assert!(stdout.contains("stable terms: 흑사방주 / 장부 / 빚 / 청류문"));
-    assert!(
-        stdout.contains("choice:approach_sado_before_the_ledger / 장부보다 먼저 사도에게 접근한다")
-    );
-    assert!(stdout.contains("choice:burn_the_blackscale_ledger / 검은 비늘 장부를 불태운다"));
-    assert!(stdout.contains("choice:secure_the_blackscale_ledger / 장부를 확보한다"));
-    assert!(stdout.contains("choice:ease_hostage_pressure_first / 인질성 압박을 먼저 해소한다"));
-    assert!(!stdout.contains("wuxia_sado_final_battle_started"));
+    assert!(stdout.contains("사도 최종전"));
+    assert!(stdout.contains("visual id: wuxia_sado_final_battle"));
+    assert!(stdout.contains("layout: final_battle_container"));
+    assert!(stdout.contains("stable terms: 흑사방주 / 장부고 / 값 / 전투"));
+    assert!(stdout.contains(
+        "choice:affirm_priceless_heart_before_sado / 있다. 네가 값을 매기지 못했을 뿐이다."
+    ));
+    assert!(stdout.contains(
+        "choice:keep_uncertainty_out_of_the_ledger / 없을지도 모른다. 그래도 네 장부에는 넘기지 않겠다."
+    ));
+    assert!(stdout.contains(
+        "choice:name_qingliu_as_calculation_break / 청류문은 네 계산대로 움직이지 않았다."
+    ));
+    assert!(stdout.contains(
+        "choice:cut_words_and_enter_sado_battle / 사람에게 값을 매기는 놈과는 더 말할 필요 없다"
+    ));
+    assert!(!stdout.contains("sado_final_phase_1_price_tag_resolved"));
     assert!(!stdout.contains("item_unpriced_wooden_sword"));
 }
 
@@ -1971,6 +1977,8 @@ fn content_tui_smoke_reaches_wuxia_sado_final_phase_2_weakpoint_control() {
             "choice:set_down_the_work_notebook_briefly",
             "--action",
             "choice:eat_the_left_meal_quietly",
+            "--action",
+            "choice:affirm_priceless_heart_before_sado",
             "--action",
             "choice:secure_the_blackscale_ledger",
         ])
@@ -2055,6 +2063,8 @@ fn content_tui_smoke_reaches_wuxia_sado_final_phase_3_outside_calculation() {
             "choice:set_down_the_work_notebook_briefly",
             "--action",
             "choice:eat_the_left_meal_quietly",
+            "--action",
+            "choice:affirm_priceless_heart_before_sado",
             "--action",
             "choice:secure_the_blackscale_ledger",
             "--action",
@@ -2143,6 +2153,8 @@ fn content_tui_smoke_reaches_wuxia_boss_resolution() {
             "choice:set_down_the_work_notebook_briefly",
             "--action",
             "choice:eat_the_left_meal_quietly",
+            "--action",
+            "choice:affirm_priceless_heart_before_sado",
             "--action",
             "choice:secure_the_blackscale_ledger",
             "--action",
@@ -2241,6 +2253,8 @@ fn content_tui_smoke_reaches_wuxia_mumyeong_resolution() {
             "--action",
             "choice:eat_the_left_meal_quietly",
             "--action",
+            "choice:affirm_priceless_heart_before_sado",
+            "--action",
             "choice:secure_the_blackscale_ledger",
             "--action",
             "choice:return_flow_to_mumyeong",
@@ -2336,6 +2350,8 @@ fn content_tui_smoke_reaches_wuxia_seoharin_qingliu_resolution() {
             "choice:set_down_the_work_notebook_briefly",
             "--action",
             "choice:eat_the_left_meal_quietly",
+            "--action",
+            "choice:affirm_priceless_heart_before_sado",
             "--action",
             "choice:secure_the_blackscale_ledger",
             "--action",
@@ -2436,6 +2452,8 @@ fn content_tui_smoke_reaches_wuxia_cheongirok_resolution() {
             "choice:set_down_the_work_notebook_briefly",
             "--action",
             "choice:eat_the_left_meal_quietly",
+            "--action",
+            "choice:affirm_priceless_heart_before_sado",
             "--action",
             "choice:secure_the_blackscale_ledger",
             "--action",
@@ -2540,6 +2558,8 @@ fn content_tui_smoke_reaches_wuxia_final_epilogue_contract() {
             "choice:set_down_the_work_notebook_briefly",
             "--action",
             "choice:eat_the_left_meal_quietly",
+            "--action",
+            "choice:affirm_priceless_heart_before_sado",
             "--action",
             "choice:secure_the_blackscale_ledger",
             "--action",

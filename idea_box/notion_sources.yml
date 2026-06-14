@@ -631,3 +631,47 @@ sources:
     implementation_scope: "analysis_bridge_gated_cheonoe_reward_analysis_thread_no_combat_resolver"
     runtime_status: "implemented_in_storypack_preview"
     status: "live_checked_runtime_implemented"
+
+  - key: wuxia_return_modern_commute_scene
+    title: 귀환 출근길 엔딩 장면 (Return Modern Commute Scene S4)
+    object: encounter
+    notion_ref: notion:08-ending-epilogue-connection
+    last_edited_time: 2026-06-14T00:00:00.000Z
+    precedence_role: playable_return_ending_scene
+    related_design_units:
+      - encounter:wuxia_return_modern_commute_scene
+      - choice:carry_calluses_without_explaining
+      - choice:note_the_empty_work_notebook_line
+      - choice:let_the_dirt_stay_on_the_sleeve
+      - flag:wuxia_return_modern_commute_scene_resolved
+      - flag:epilogue_wuxia_returned_commute
+    required_prior_runtime:
+      - wuxia_seoharin_unsaid_stay
+      - wuxia_black_serpent_aftermath
+    consumed_by:
+      - flag:final_return_intent_honest_seeded
+    implementation_scope: playable_return_scene_flag_clue_log_presentation_only_no_combat_resolver
+    runtime_status: implemented_in_storypack_preview
+    status: live_checked_runtime_implemented
+
+  - key: wuxia_settlement_stay_scene
+    title: 정착 선택 엔딩 장면 (Settlement Stay Scene S5)
+    object: encounter
+    notion_ref: notion:08-ending-epilogue-connection
+    last_edited_time: 2026-06-14T00:00:00.000Z
+    precedence_role: playable_settlement_ending_scene
+    related_design_units:
+      - encounter:wuxia_settlement_stay_scene
+      - choice:place_the_button_in_the_storage_box
+      - choice:walk_the_qingliu_outer_path_again
+      - choice:stay_without_announcing_it
+      - flag:wuxia_settlement_stay_scene_resolved
+      - flag:epilogue_wuxia_qingliu_settlement
+    required_prior_runtime:
+      - wuxia_seoharin_unsaid_stay
+      - wuxia_black_serpent_aftermath
+    consumed_by:
+      - flag:final_settlement_intent_honest_seeded
+    implementation_scope: playable_settlement_scene_flag_clue_log_presentation_only_no_combat_resolver
+    runtime_status: implemented_in_storypack_preview
+    status: live_checked_runtime_implemented

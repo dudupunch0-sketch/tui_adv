@@ -2905,3 +2905,69 @@ def test_wuxia_cheonoe_pyeonrin_second_reward_is_docs_synced():
     assert "two_unchosen_fragments_lost_second" in encounters_yaml
     assert "wuxia_cheonoe_pyeonrin_second_reward" in notion_sources
     assert "implemented_in_storypack_preview" in notion_sources
+
+
+def test_wuxia_return_modern_commute_scene_is_docs_synced():
+    plan = Path('docs/dev/Development_Plan.md').read_text(encoding='utf-8')
+    checklist = Path('docs/dev/Checklist.md').read_text(encoding='utf-8')
+    coverage = Path('docs/dev/Notion_Design_Coverage.md').read_text(encoding='utf-8')
+    wuxia_pack = Path('docs/content/storypacks/wuxia_jianghu_pack.md').read_text(
+        encoding='utf-8'
+    )
+    wuxia_cards = Path('docs/content/encounter_db/wuxia_jianghu_pack.md').read_text(
+        encoding='utf-8'
+    )
+    notion_sources = Path('idea_box/notion_sources.yml').read_text(encoding='utf-8')
+    encounters_yaml = Path(
+        'src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml'
+    ).read_text(encoding='utf-8')
+
+    assert 'wuxia_return_modern_commute_scene' in plan
+    assert '[DONE] S4' in plan
+    assert '0.2cs2' in checklist
+    assert 'S4' in checklist
+    assert 'wuxia_return_modern_commute_scene' in coverage
+    assert 'epilogue_wuxia_returned_commute' in coverage
+    assert 'wuxia_return_modern_commute_scene' in wuxia_pack
+    assert 'wuxia_return_modern_commute_scene' in wuxia_cards
+    assert 'id: wuxia_return_modern_commute_scene' in wuxia_cards
+    assert 'carry_calluses_without_explaining' in wuxia_cards
+    assert 'id: wuxia_return_modern_commute_scene' in encounters_yaml
+    assert 'carry_calluses_without_explaining' in encounters_yaml
+    assert 'wuxia_return_modern_commute_scene_resolved' in encounters_yaml
+    assert 'epilogue_wuxia_returned_commute' in encounters_yaml
+    assert 'wuxia_return_modern_commute_scene' in notion_sources
+    assert 'implemented_in_storypack_preview' in notion_sources
+
+
+def test_wuxia_settlement_stay_scene_is_docs_synced():
+    plan = Path('docs/dev/Development_Plan.md').read_text(encoding='utf-8')
+    checklist = Path('docs/dev/Checklist.md').read_text(encoding='utf-8')
+    coverage = Path('docs/dev/Notion_Design_Coverage.md').read_text(encoding='utf-8')
+    wuxia_pack = Path('docs/content/storypacks/wuxia_jianghu_pack.md').read_text(
+        encoding='utf-8'
+    )
+    wuxia_cards = Path('docs/content/encounter_db/wuxia_jianghu_pack.md').read_text(
+        encoding='utf-8'
+    )
+    notion_sources = Path('idea_box/notion_sources.yml').read_text(encoding='utf-8')
+    encounters_yaml = Path(
+        'src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml'
+    ).read_text(encoding='utf-8')
+
+    assert 'wuxia_settlement_stay_scene' in plan
+    assert '[DONE] S5' in plan
+    assert '0.2cs2' in checklist
+    assert 'S5' in checklist
+    assert 'wuxia_settlement_stay_scene' in coverage
+    assert 'epilogue_wuxia_qingliu_settlement' in coverage
+    assert 'wuxia_settlement_stay_scene' in wuxia_pack
+    assert 'wuxia_settlement_stay_scene' in wuxia_cards
+    assert 'id: wuxia_settlement_stay_scene' in wuxia_cards
+    assert 'place_the_button_in_the_storage_box' in wuxia_cards
+    assert 'id: wuxia_settlement_stay_scene' in encounters_yaml
+    assert 'place_the_button_in_the_storage_box' in encounters_yaml
+    assert 'wuxia_settlement_stay_scene_resolved' in encounters_yaml
+    assert 'epilogue_wuxia_qingliu_settlement' in encounters_yaml
+    assert 'wuxia_settlement_stay_scene' in notion_sources
+    assert 'implemented_in_storypack_preview' in notion_sources

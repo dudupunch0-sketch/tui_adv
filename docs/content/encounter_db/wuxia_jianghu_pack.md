@@ -3819,3 +3819,71 @@ guardrails:
   - no_route_faction_ledger_flags
 next_handoff: none (S3 완료; wuxia_sado_final_phase_2_weakpoint_control로 이어짐)
 ```
+
+## 50. `wuxia_return_modern_commute_scene` -- S4 귀환 엔딩 playable scene, runtime 구현 완료
+
+```yaml
+id: wuxia_return_modern_commute_scene
+world_id: wuxia_jianghu
+storypack_id: wuxia_jianghu_pack
+status: preview_runtime
+implementation_handoff: wuxia_S4_return_commute_scene
+phase: [ending_scene]
+priority_class: ending_beat
+location_tags: [black_serpent_ledger_vault]
+surface: [return_settlement, ending_scene]
+presentation:
+  visual_id: wuxia_return_modern_commute_scene
+  speaker: 천기록
+  layout: return_commute_scene
+conditions:
+  locations: [black_serpent_ledger_vault]
+  required_flags:
+    - seoharin_unsaid_stay_resolved
+    - final_return_settlement_contract_seeded
+    - final_return_intent_honest_seeded
+    - cheongirok_resolution_resolved
+    - final_combat_result_battle_victory_seeded
+    - final_result_priority_applied_seeded
+  forbidden_flags: [wuxia_return_modern_commute_scene_resolved]
+choices:
+  - id: carry_calluses_without_explaining
+  - id: note_the_empty_work_notebook_line
+  - id: let_the_dirt_stay_on_the_sleeve
+guardrails:
+  - mutually_exclusive_with_settlement_scene
+```
+
+## 51. `wuxia_settlement_stay_scene` -- S5 정착 엔딩 playable scene, runtime 구현 완료
+
+```yaml
+id: wuxia_settlement_stay_scene
+world_id: wuxia_jianghu
+storypack_id: wuxia_jianghu_pack
+status: preview_runtime
+implementation_handoff: wuxia_S5_settlement_stay_scene
+phase: [ending_scene]
+priority_class: ending_beat
+location_tags: [black_serpent_ledger_vault]
+surface: [return_settlement, ending_scene]
+presentation:
+  visual_id: wuxia_settlement_stay_scene
+  speaker: 서하린
+  layout: settlement_stay_scene
+conditions:
+  locations: [black_serpent_ledger_vault]
+  required_flags:
+    - seoharin_unsaid_stay_resolved
+    - final_return_settlement_contract_seeded
+    - final_settlement_intent_honest_seeded
+    - cheongirok_resolution_resolved
+    - final_combat_result_battle_victory_seeded
+    - final_result_priority_applied_seeded
+  forbidden_flags: [wuxia_settlement_stay_scene_resolved]
+choices:
+  - id: place_the_button_in_the_storage_box
+  - id: walk_the_qingliu_outer_path_again
+  - id: stay_without_announcing_it
+guardrails:
+  - mutually_exclusive_with_return_scene
+```

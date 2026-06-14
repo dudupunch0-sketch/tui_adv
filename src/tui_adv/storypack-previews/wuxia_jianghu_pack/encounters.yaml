@@ -2308,7 +2308,7 @@ encounters:
           resources:
             sanity: -1
           danger: 0
-          add_flags: [seoharin_unsaid_stay_resolved, final_return_settlement_contract_seeded, final_return_settlement_uncertain_shared_seeded, final_epilogue_empty_place_kept_open_seeded]
+          add_flags: [seoharin_unsaid_stay_resolved, final_return_settlement_contract_seeded, final_return_settlement_uncertain_shared_seeded, final_epilogue_empty_place_kept_open_seeded, wuxia_ending_scene_resolved]
           add_clues: [uncertainty_can_be_shared_without_escape, empty_place_can_hold_return_and_stay, not_knowing_is_not_evasion]
           destination_id: black_serpent_ledger_vault
           log: 아직 모른다는 말은 답이 아니지만 도망도 아니다. 서하린은 그 불확실성을 들은 채 산문을 닫지 않고, 빈자리는 귀환과 정착 양쪽으로 열려 있는 후보가 된다.
@@ -2318,7 +2318,7 @@ encounters:
           resources:
             sanity: -3
           danger: 1
-          add_flags: [seoharin_unsaid_stay_resolved, final_return_settlement_contract_seeded, final_return_settlement_evasion_seeded, final_epilogue_closed_gate_risk_seeded]
+          add_flags: [seoharin_unsaid_stay_resolved, final_return_settlement_contract_seeded, final_return_settlement_evasion_seeded, final_epilogue_closed_gate_risk_seeded, wuxia_ending_scene_resolved]
           add_clues: [evasion_prices_waiting, not_answering_can_close_the_gate, fear_of_leaving_becomes_method_trace]
           destination_id: black_serpent_ledger_vault
           log: 너는 빈자리에 대한 말을 돌린다. 대답하지 않은 말도 장부처럼 남고, 서하린의 기다림은 닫힌 산문 위험 후보로 기울기 시작한다.
@@ -2394,6 +2394,96 @@ encounters:
           destination_id: black_serpent_ledger_vault
           log: 마지막 장은 승패를 다시 계산하지 않는다. 그 장은 네가 어떤 방식으로 사람, 기록, 증거, 관계를 다루었는지만 조용히 비춘다. 출력기는 아직 열리지 않고, 후보만 남는다.
 
+  - id: wuxia_return_modern_commute_scene
+    title: "귀환 출근길"
+    body: 흑사방 장부고의 소음이 사라지고, 눈을 뜨자 현대의 책상이 있다. 소매 안쪽에 흙먼지가 남아 있고, 업무수첩 한 줄이 비어 있다. 강호에 두고 온 자리는 이곳에서 지워지지 않는다. 귀환은 보상이 아니고, 청류문의 빈자리는 사라진 것이 아니다.
+    presentation:
+      visual_id: wuxia_return_modern_commute_scene
+      speaker: 천기록
+      layout: return_commute_scene
+      effect_cues:
+        - kind: glyph_anomaly
+          source: wuxia_return_modern_commute_scene
+          intensity: 0.72
+          stable_terms: [출근길, 흙먼지, 업무수첩, 청류문]
+          distortion: returned_commute_carries_murim_trace
+          duration_hint_ms: 1800
+          fallback_text: 현대 책상 위에 '출근길', '흙먼지', '업무수첩', '청류문'만 먹빛처럼 남는다.
+    conditions:
+      locations: [black_serpent_ledger_vault]
+      required_flags: [seoharin_unsaid_stay_resolved, final_return_settlement_contract_seeded, final_return_intent_honest_seeded, cheongirok_resolution_resolved, final_combat_result_battle_victory_seeded, final_result_priority_applied_seeded]
+      forbidden_flags: [wuxia_return_modern_commute_scene_resolved]
+    choices:
+      - id: carry_calluses_without_explaining
+        label: 굳은살을 설명하지 않고 자리로 돌아간다
+        outcome:
+          danger: 0
+          add_flags: [wuxia_return_modern_commute_scene_resolved, epilogue_wuxia_returned_commute, return_commute_trace_carried_silently, wuxia_ending_scene_resolved]
+          add_clues: [calluses_are_not_proof_but_remain, returning_does_not_erase_qingliu_place, commute_route_holds_murim_memory]
+          destination_id: black_serpent_ledger_vault
+          log: 너는 굳은살이 생긴 손을 내려다보지만 설명하지 않는다. 출근길은 달라지지 않았지만, 소매 끝의 흙먼지는 청류문에 두고 온 자리를 기억한다. 귀환은 탈출이 아니었다.
+      - id: note_the_empty_work_notebook_line
+        label: 비어 있는 업무수첩 한 줄을 본다
+        outcome:
+          danger: 0
+          add_flags: [wuxia_return_modern_commute_scene_resolved, epilogue_wuxia_returned_commute, return_commute_notebook_line_noted, wuxia_ending_scene_resolved]
+          add_clues: [empty_notebook_line_holds_jianghu_absence, return_does_not_close_the_empty_place, written_record_can_hold_silence]
+          destination_id: black_serpent_ledger_vault
+          log: 업무수첩 한 줄이 비어 있다. 그것은 강호에서 쓰지 못한 말이다. 너는 그 빈 줄을 채우지 않는다. 귀환 후보는 이별이 아니라 비어 있는 자리와 함께 남는다.
+      - id: let_the_dirt_stay_on_the_sleeve
+        label: 소매 끝의 흙먼지를 털지 않는다
+        outcome:
+          danger: 0
+          add_flags: [wuxia_return_modern_commute_scene_resolved, epilogue_wuxia_returned_commute, return_commute_sleeve_trace_kept, wuxia_ending_scene_resolved]
+          add_clues: [dirt_is_not_proof_but_witness, murim_trace_survives_the_commute, returning_body_remembers_qingliu]
+          destination_id: black_serpent_ledger_vault
+          log: 너는 소매 끝의 흙먼지를 털지 않는다. 그것은 증거가 아니지만 증인이다. 현대의 출근길은 계속되고, 청류문의 자리는 이쪽에서도 지워지지 않는다.
+
+  - id: wuxia_settlement_stay_scene
+    title: "정착 선택"
+    body: 흑사방 장부고가 조용해지고, 청류문의 단추 하나가 손안에 남는다. 사원증은 없어도 된다. 이곳에 남는다는 것은 빚을 갚는 일도, 영웅이 되는 일도 아니다. 낯선 창고 상자 한 곳에 사원증 없이 단추 하나가 남고, 아무도 그것에 가격을 붙이지 않는다.
+    presentation:
+      visual_id: wuxia_settlement_stay_scene
+      speaker: 서하린
+      layout: settlement_stay_scene
+      effect_cues:
+        - kind: glyph_anomaly
+          source: wuxia_settlement_stay_scene
+          intensity: 0.74
+          stable_terms: [청류문, 단추, 창고, 소속감]
+          distortion: settlement_belonging_not_price_not_heroism
+          duration_hint_ms: 1900
+          fallback_text: 창고 어귀에 '청류문', '단추', '창고', '소속감'만 조용히 남는다.
+    conditions:
+      locations: [black_serpent_ledger_vault]
+      required_flags: [seoharin_unsaid_stay_resolved, final_return_settlement_contract_seeded, final_settlement_intent_honest_seeded, cheongirok_resolution_resolved, final_combat_result_battle_victory_seeded, final_result_priority_applied_seeded]
+      forbidden_flags: [wuxia_settlement_stay_scene_resolved]
+    choices:
+      - id: place_the_button_in_the_storage_box
+        label: 단추를 창고 상자에 조용히 넣는다
+        outcome:
+          danger: 0
+          add_flags: [wuxia_settlement_stay_scene_resolved, epilogue_wuxia_qingliu_settlement, settlement_button_placed_without_price, wuxia_ending_scene_resolved]
+          add_clues: [button_is_belonging_not_debt_payment, settlement_is_chosen_not_owed, storage_box_holds_unpriced_place]
+          destination_id: black_serpent_ledger_vault
+          log: 너는 단추를 창고 상자에 넣는다. 그것은 대가가 아니다. 청류문에 남는다는 것은 목숨값을 치르는 것도, 서하린에게 보상하는 것도 아니다. 소속감은 빚의 언어로 쓰이지 않는다.
+      - id: walk_the_qingliu_outer_path_again
+        label: 청류문 외곽 길을 다시 걷는다
+        outcome:
+          danger: 0
+          add_flags: [wuxia_settlement_stay_scene_resolved, epilogue_wuxia_qingliu_settlement, settlement_outer_path_walked_again, wuxia_ending_scene_resolved]
+          add_clues: [outer_path_is_daily_belonging_not_claim, staying_requires_no_heroic_title, familiar_path_confirms_chosen_place]
+          destination_id: black_serpent_ledger_vault
+          log: 너는 청류문 외곽 길을 다시 걷는다. 영웅이 되지 않아도 이 길은 낯설지 않다. 정착은 소유가 아니라 매일 선택하는 소속감이다.
+      - id: stay_without_announcing_it
+        label: 남겠다고 선언하지 않고 그냥 남는다
+        outcome:
+          danger: 0
+          add_flags: [wuxia_settlement_stay_scene_resolved, epilogue_wuxia_qingliu_settlement, settlement_quiet_stay_without_announcement, wuxia_ending_scene_resolved]
+          add_clues: [staying_does_not_need_announcement, belonging_can_be_daily_not_declarative, qingliu_place_holds_without_title]
+          destination_id: black_serpent_ledger_vault
+          log: 너는 남겠다는 말을 하지 않는다. 그냥 남는다. 청류문의 자리는 선언이 없어도 매일 조금씩 자기 것이 된다. 그것은 소유가 아니라 소속이다.
+
   - id: wuxia_black_serpent_aftermath
     title: "흑사방 후일담 씨앗"
     body: 천기록의 마지막 장을 덮어도, 흑사방의 장부고에는 아직 끊어진 줄과 남은 매듭이 걸려 있다. 보스가 쓰러졌다는 사실, 깃발이 접혔다는 소문, 남쪽 장터의 빚 이야기, 무림맹의 침묵이 서로 다른 종이 위에 남는다. 이 장면은 후일담을 출력하지 않는다. 다만 부러진 검은 뱀, 접히지 않은 깃발, 장터 풍문, 책임 회피의 침묵을 future renderer가 읽을 수 있는 씨앗으로 정리한다.
@@ -2411,7 +2501,7 @@ encounters:
           fallback_text: 장부 여백에 '흑사방', '장부', '깃발', '남쪽 장터'라는 말만 검은 실처럼 이어졌다가 끊어진다.
     conditions:
       locations: [black_serpent_ledger_vault]
-      required_flags: [cheongirok_resolution_resolved, seoharin_qingliu_resolution_resolved, mumyeong_resolution_resolved, boss_resolution_resolved, final_result_priority_applied_seeded, final_combat_result_battle_victory_seeded, final_state_routing_seeded]
+      required_flags: [cheongirok_resolution_resolved, seoharin_qingliu_resolution_resolved, mumyeong_resolution_resolved, boss_resolution_resolved, final_result_priority_applied_seeded, final_combat_result_battle_victory_seeded, final_state_routing_seeded, wuxia_ending_scene_resolved]
       forbidden_flags: [black_serpent_aftermath_resolved]
     choices:
       - id: mark_broken_serpent_without_erasing_scars

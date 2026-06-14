@@ -211,12 +211,12 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&5));
     assert_eq!(bundle.manifest.counts.get("items"), Some(&4));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&41));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&43));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 5);
-    assert_eq!(index.encounters_len(), 41);
+    assert_eq!(index.encounters_len(), 43);
 
     let market = index
         .location("jianghu_market_street")
@@ -2311,7 +2311,8 @@ fn preview_fixture_indexes_wuxia_first_fight() {
             "boss_resolution_resolved",
             "final_result_priority_applied_seeded",
             "final_combat_result_battle_victory_seeded",
-            "final_state_routing_seeded"
+            "final_state_routing_seeded",
+            "wuxia_ending_scene_resolved"
         ]
     );
     assert_eq!(

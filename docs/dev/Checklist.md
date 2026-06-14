@@ -1118,6 +1118,13 @@
 - [x] 다음 작업을 `wuxia_sado_battle_loss_route_bridge_implementation` runtime slice로 갱신
 
 
+### 0.2cs2 2026-06-14 무협 S4-S5 runtime slices (이구학지 완성 로드맵 0.83 A묶음 4-5)
+
+- [x] S4: `wuxia_return_modern_commute_scene` 추가 — 귀환 엔딩 장면. `final_return_intent_honest_seeded + cheongirok_resolution_resolved` 게이팅. 3택(굳은살/업무수첩/흙먼지). `epilogue_wuxia_returned_commute` 방출. 정착 장면과 forbidden_flags로 상호 배타.
+- [x] S5: `wuxia_settlement_stay_scene` 추가 — 정착 엔딩 장면. `final_settlement_intent_honest_seeded + cheongirok_resolution_resolved` 게이팅. 3택(단추/외곽길/조용히 남기). `epilogue_wuxia_qingliu_settlement` 방출. 귀환 장면과 상호 배타.
+- [x] cli_smoke 4개 추가 (S4/S5 도달+resolved). 번들 재생성.
+- [x] combat resolver, HP 숫자전, 기록자 정체 reveal, 새 persistent schema 미추가.
+
 ### 0.2cs 2026-06-14 무협 S1-S3 runtime slices (이구학지 완성 로드맵 0.83 A묶음 1-3)
 
 - [x] S1: `wuxia_cheonggi_record_writing_sense` 추가 — 천기록 기록자 중간 암시 이벤트. required_flags에 `mumyeong_request_for_aid_resolved` 포함 6개로 게이팅, 3택(응시/외면/한 줄 적기), cheonggi_recorder_presence_sensed 방출. 기록자 정체/음성/호명 없음.

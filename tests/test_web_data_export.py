@@ -145,7 +145,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     assert bundle["manifest"]["counts"] == {
         "locations": 5,
         "items": 4,
-        "encounters": 41,
+        "encounters": 43,
         "endings": 2,
         "achievements": 2,
         "secrets": 0,
@@ -199,6 +199,8 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "wuxia_seoharin_qingliu_resolution",
         "wuxia_seoharin_unsaid_stay",
         "wuxia_cheongirok_resolution",
+        "wuxia_return_modern_commute_scene",
+        "wuxia_settlement_stay_scene",
         "wuxia_black_serpent_aftermath",
     ]
     cheongirok = bundle["content"]["encounters"][39]
@@ -245,7 +247,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     ]
     assert safe_last_page["outcome"]["destination_id"] == "black_serpent_ledger_vault"
     assert "add_items" not in safe_last_page["outcome"]
-    black_serpent_aftermath = bundle["content"]["encounters"][40]
+    black_serpent_aftermath = bundle["content"]["encounters"][42]
     assert black_serpent_aftermath["conditions"] == {
         "locations": ["black_serpent_ledger_vault"],
         "required_flags": [
@@ -256,6 +258,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
             "final_result_priority_applied_seeded",
             "final_combat_result_battle_victory_seeded",
             "final_state_routing_seeded",
+            "wuxia_ending_scene_resolved",
         ],
         "forbidden_flags": ["black_serpent_aftermath_resolved"],
     }

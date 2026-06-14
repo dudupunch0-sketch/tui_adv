@@ -2783,6 +2783,8 @@ fn content_tui_smoke_reaches_wuxia_final_epilogue_contract() {
             "--action",
             "choice:turn_the_last_page_without_question",
             "--action",
+            "choice:carry_calluses_without_explaining",
+            "--action",
             "choice:mark_broken_serpent_without_erasing_scars",
         ])
         .output()
@@ -3547,4 +3549,225 @@ fn run_escape_terminal_with_input(args: &[&str], input: &str) -> Output {
     child
         .wait_with_output()
         .expect("escape-terminal output should be captured")
+}
+
+#[test]
+fn content_tui_smoke_reaches_wuxia_return_modern_commute_scene() {
+    // Ends at turn_the_last_page_without_question; S4 fires (gated by wuxia_ending_scene_resolved).
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene","content","--storypack-preview","wuxia_jianghu_pack",
+            "--seed","123","--tui-smoke",
+            "--action","choice:follow_roadside_dust",
+            "--action","move:jianghu_market_street",
+            "--action","choice:run_toward_open_street",
+            "--action","choice:choose_failure_log",
+            "--action","choice:tell_plain_truth",
+            "--action","choice:accept_three_month_trial",
+            "--action","choice:step_back_with_firewood",
+            "--action","choice:defend_cheongryu_with_white_path",
+            "--action","choice:accept_medicine_with_written_debt",
+            "--action","choice:watch_the_stolen_qingliu_flow",
+            "--action","choice:endure_until_copy_flow_breaks",
+            "--action","choice:listen_for_breath_mismatch",
+            "--action","choice:choose_analysis_thread",
+            "--action","choice:reconstruct_mumyeongs_sightline",
+            "--action","choice:show_the_hyeonakmun_trace_without_accusing",
+            "--action","choice:watch_mumyeong_answer_the_boss",
+            "--action","choice:search_the_rejected_aid_letters",
+            "--action","choice:stare_at_the_record_without_moving",
+            "--action","choice:compare_anger_to_copied_flow",
+            "--action","choice:inspect_bokho_lock_scars",
+            "--action","choice:read_hyeonakmun_empty_gate_record",
+            "--action","choice:trace_boss_offer_after_hyeonakmun",
+            "--action","choice:assemble_departure_truth_without_delivering",
+            "--action","choice:set_down_the_work_notebook_briefly",
+            "--action","choice:eat_the_left_meal_quietly",
+            "--action","choice:choose_training_method_thread",
+            "--action","choice:affirm_priceless_heart_before_sado",
+            "--action","choice:secure_the_blackscale_ledger",
+            "--action","choice:note_and_move_forward",
+            "--action","choice:return_flow_to_mumyeong",
+            "--action","choice:remember_the_empty_place",
+            "--action","choice:confirm_true_route_outside_calculation",
+            "--action","choice:ask_mumyeong_for_own_flow",
+            "--action","choice:leave_the_gate_unclosed",
+            "--action","choice:say_return_home_honestly",
+            "--action","choice:turn_the_last_page_without_question",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+    assert!(output.status.success(),"expected success, stderr was: {}",String::from_utf8_lossy(&output.stderr));
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("visual id: wuxia_return_modern_commute_scene"));
+    assert!(stdout.contains("layout: return_commute_scene"));
+    assert!(stdout.contains("choice:carry_calluses_without_explaining /"));
+    assert!(stdout.contains("choice:note_the_empty_work_notebook_line /"));
+    assert!(stdout.contains("choice:let_the_dirt_stay_on_the_sleeve /"));
+    assert!(!stdout.contains("visual id: wuxia_settlement_stay_scene"));
+    assert!(!stdout.contains("visual id: wuxia_black_serpent_aftermath"));
+}
+#[test]
+fn content_tui_smoke_wuxia_return_modern_commute_scene_sets_resolved_flag() {
+    // S4 choice first, then black_serpent_aftermath; epilogue shows card_id: epilogue_wuxia_returned_commute.
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene","content","--storypack-preview","wuxia_jianghu_pack",
+            "--seed","123","--tui-smoke",
+            "--action","choice:follow_roadside_dust",
+            "--action","move:jianghu_market_street",
+            "--action","choice:run_toward_open_street",
+            "--action","choice:choose_failure_log",
+            "--action","choice:tell_plain_truth",
+            "--action","choice:accept_three_month_trial",
+            "--action","choice:step_back_with_firewood",
+            "--action","choice:defend_cheongryu_with_white_path",
+            "--action","choice:accept_medicine_with_written_debt",
+            "--action","choice:watch_the_stolen_qingliu_flow",
+            "--action","choice:endure_until_copy_flow_breaks",
+            "--action","choice:listen_for_breath_mismatch",
+            "--action","choice:choose_analysis_thread",
+            "--action","choice:reconstruct_mumyeongs_sightline",
+            "--action","choice:show_the_hyeonakmun_trace_without_accusing",
+            "--action","choice:watch_mumyeong_answer_the_boss",
+            "--action","choice:search_the_rejected_aid_letters",
+            "--action","choice:stare_at_the_record_without_moving",
+            "--action","choice:compare_anger_to_copied_flow",
+            "--action","choice:inspect_bokho_lock_scars",
+            "--action","choice:read_hyeonakmun_empty_gate_record",
+            "--action","choice:trace_boss_offer_after_hyeonakmun",
+            "--action","choice:assemble_departure_truth_without_delivering",
+            "--action","choice:set_down_the_work_notebook_briefly",
+            "--action","choice:eat_the_left_meal_quietly",
+            "--action","choice:choose_training_method_thread",
+            "--action","choice:affirm_priceless_heart_before_sado",
+            "--action","choice:secure_the_blackscale_ledger",
+            "--action","choice:note_and_move_forward",
+            "--action","choice:return_flow_to_mumyeong",
+            "--action","choice:remember_the_empty_place",
+            "--action","choice:confirm_true_route_outside_calculation",
+            "--action","choice:ask_mumyeong_for_own_flow",
+            "--action","choice:leave_the_gate_unclosed",
+            "--action","choice:say_return_home_honestly",
+            "--action","choice:turn_the_last_page_without_question",
+            "--action","choice:carry_calluses_without_explaining",
+            "--action","choice:mark_broken_serpent_without_erasing_scars",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+    assert!(output.status.success(),"expected success, stderr was: {}",String::from_utf8_lossy(&output.stderr));
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("card_id: epilogue_wuxia_returned_commute"));
+    assert!(stdout.contains("visual id: ending:wuxia_final_epilogue_renderer_contract"));
+    assert!(!stdout.contains("card_id: epilogue_wuxia_qingliu_settlement"));
+}
+#[test]
+fn content_tui_smoke_reaches_wuxia_settlement_stay_scene() {
+    // Ends at turn_the_last_page_without_question (settlement intent); S5 fires next.
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene","content","--storypack-preview","wuxia_jianghu_pack",
+            "--seed","123","--tui-smoke",
+            "--action","choice:follow_roadside_dust",
+            "--action","move:jianghu_market_street",
+            "--action","choice:run_toward_open_street",
+            "--action","choice:choose_failure_log",
+            "--action","choice:tell_plain_truth",
+            "--action","choice:accept_three_month_trial",
+            "--action","choice:step_back_with_firewood",
+            "--action","choice:defend_cheongryu_with_white_path",
+            "--action","choice:accept_medicine_with_written_debt",
+            "--action","choice:watch_the_stolen_qingliu_flow",
+            "--action","choice:endure_until_copy_flow_breaks",
+            "--action","choice:listen_for_breath_mismatch",
+            "--action","choice:choose_analysis_thread",
+            "--action","choice:reconstruct_mumyeongs_sightline",
+            "--action","choice:show_the_hyeonakmun_trace_without_accusing",
+            "--action","choice:watch_mumyeong_answer_the_boss",
+            "--action","choice:search_the_rejected_aid_letters",
+            "--action","choice:stare_at_the_record_without_moving",
+            "--action","choice:compare_anger_to_copied_flow",
+            "--action","choice:inspect_bokho_lock_scars",
+            "--action","choice:read_hyeonakmun_empty_gate_record",
+            "--action","choice:trace_boss_offer_after_hyeonakmun",
+            "--action","choice:assemble_departure_truth_without_delivering",
+            "--action","choice:set_down_the_work_notebook_briefly",
+            "--action","choice:eat_the_left_meal_quietly",
+            "--action","choice:choose_training_method_thread",
+            "--action","choice:affirm_priceless_heart_before_sado",
+            "--action","choice:secure_the_blackscale_ledger",
+            "--action","choice:note_and_move_forward",
+            "--action","choice:return_flow_to_mumyeong",
+            "--action","choice:remember_the_empty_place",
+            "--action","choice:confirm_true_route_outside_calculation",
+            "--action","choice:ask_mumyeong_for_own_flow",
+            "--action","choice:leave_the_gate_unclosed",
+            "--action","choice:say_you_will_stay_with_qingliu",
+            "--action","choice:turn_the_last_page_without_question",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+    assert!(output.status.success(),"expected success, stderr was: {}",String::from_utf8_lossy(&output.stderr));
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("visual id: wuxia_settlement_stay_scene"));
+    assert!(stdout.contains("layout: settlement_stay_scene"));
+    assert!(stdout.contains("choice:place_the_button_in_the_storage_box /"));
+    assert!(stdout.contains("choice:walk_the_qingliu_outer_path_again /"));
+    assert!(stdout.contains("choice:stay_without_announcing_it /"));
+    assert!(!stdout.contains("visual id: wuxia_return_modern_commute_scene"));
+    assert!(!stdout.contains("visual id: wuxia_black_serpent_aftermath"));
+}
+#[test]
+fn content_tui_smoke_wuxia_settlement_stay_scene_sets_resolved_flag() {
+    // S5 choice first, then black_serpent_aftermath; epilogue shows card_id: epilogue_wuxia_qingliu_settlement.
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene","content","--storypack-preview","wuxia_jianghu_pack",
+            "--seed","123","--tui-smoke",
+            "--action","choice:follow_roadside_dust",
+            "--action","move:jianghu_market_street",
+            "--action","choice:run_toward_open_street",
+            "--action","choice:choose_failure_log",
+            "--action","choice:tell_plain_truth",
+            "--action","choice:accept_three_month_trial",
+            "--action","choice:step_back_with_firewood",
+            "--action","choice:defend_cheongryu_with_white_path",
+            "--action","choice:accept_medicine_with_written_debt",
+            "--action","choice:watch_the_stolen_qingliu_flow",
+            "--action","choice:endure_until_copy_flow_breaks",
+            "--action","choice:listen_for_breath_mismatch",
+            "--action","choice:choose_analysis_thread",
+            "--action","choice:reconstruct_mumyeongs_sightline",
+            "--action","choice:show_the_hyeonakmun_trace_without_accusing",
+            "--action","choice:watch_mumyeong_answer_the_boss",
+            "--action","choice:search_the_rejected_aid_letters",
+            "--action","choice:stare_at_the_record_without_moving",
+            "--action","choice:compare_anger_to_copied_flow",
+            "--action","choice:inspect_bokho_lock_scars",
+            "--action","choice:read_hyeonakmun_empty_gate_record",
+            "--action","choice:trace_boss_offer_after_hyeonakmun",
+            "--action","choice:assemble_departure_truth_without_delivering",
+            "--action","choice:set_down_the_work_notebook_briefly",
+            "--action","choice:eat_the_left_meal_quietly",
+            "--action","choice:choose_training_method_thread",
+            "--action","choice:affirm_priceless_heart_before_sado",
+            "--action","choice:secure_the_blackscale_ledger",
+            "--action","choice:note_and_move_forward",
+            "--action","choice:return_flow_to_mumyeong",
+            "--action","choice:remember_the_empty_place",
+            "--action","choice:confirm_true_route_outside_calculation",
+            "--action","choice:ask_mumyeong_for_own_flow",
+            "--action","choice:leave_the_gate_unclosed",
+            "--action","choice:say_you_will_stay_with_qingliu",
+            "--action","choice:turn_the_last_page_without_question",
+            "--action","choice:place_the_button_in_the_storage_box",
+            "--action","choice:mark_broken_serpent_without_erasing_scars",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+    assert!(output.status.success(),"expected success, stderr was: {}",String::from_utf8_lossy(&output.stderr));
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("card_id: epilogue_wuxia_qingliu_settlement"));
+    assert!(stdout.contains("visual id: ending:wuxia_final_epilogue_renderer_contract"));
+    assert!(!stdout.contains("card_id: epilogue_wuxia_returned_commute"));
 }

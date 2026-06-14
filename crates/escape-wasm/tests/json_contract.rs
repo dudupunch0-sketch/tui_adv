@@ -3683,7 +3683,42 @@ fn json_boundary_reaches_wuxia_seoharin_qingliu_resolution_after_mumyeong_resolu
         .iter()
         .any(|clue| clue == "record_does_not_answer_questions"));
 
-    let aftermath_state_json = serde_json::to_string(&last_page_result["state"])
+    // After cheongirok_resolution with return intent, S4 (wuxia_return_modern_commute_scene)
+    // fires before wuxia_black_serpent_aftermath (gated by wuxia_ending_scene_resolved).
+    let s4_state_json = serde_json::to_string(&last_page_result["state"])
+        .expect("s4 state should stringify");
+    let s4_page_json = scene_page_json(&s4_state_json, WUXIA_PREVIEW_BUNDLE)
+        .expect("return commute scene page should serialize");
+    let s4_page: Value = serde_json::from_str(&s4_page_json)
+        .expect("return commute scene page JSON should parse");
+    assert_eq!(s4_page["mode"], "encounter");
+    assert_eq!(s4_page["title"], "귀환 출근길");
+    assert_eq!(s4_page["visual"]["id"], "wuxia_return_modern_commute_scene");
+    let s4_action_ids: Vec<&str> = s4_page["actions"]
+        .as_array()
+        .expect("s4 actions should be an array")
+        .iter()
+        .map(|action| action["id"].as_str().expect("action id should be a string"))
+        .collect();
+    assert!(s4_action_ids.contains(&"choice:carry_calluses_without_explaining"));
+
+    let s4_result_json = apply_action_json(
+        &s4_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:carry_calluses_without_explaining",
+    )
+    .expect("return commute scene action should serialize");
+    let s4_result: Value = serde_json::from_str(&s4_result_json)
+        .expect("return commute scene action JSON should parse");
+    assert_eq!(s4_result["encounter_id"], "wuxia_return_modern_commute_scene");
+    let s4_flags = s4_result["state"]["flags"]
+        .as_array()
+        .expect("flags should be an array");
+    assert!(s4_flags.iter().any(|flag| flag == "wuxia_return_modern_commute_scene_resolved"));
+    assert!(s4_flags.iter().any(|flag| flag == "epilogue_wuxia_returned_commute"));
+    assert!(s4_flags.iter().any(|flag| flag == "wuxia_ending_scene_resolved"));
+
+    let aftermath_state_json = serde_json::to_string(&s4_result["state"])
         .expect("aftermath state should stringify");
     let aftermath_page_json = scene_page_json(&aftermath_state_json, WUXIA_PREVIEW_BUNDLE)
         .expect("black serpent aftermath scene page should serialize");

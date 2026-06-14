@@ -65,6 +65,8 @@ describe('runtime content bundle registry', () => {
       'wuxia_seoharin_qingliu_resolution',
       'wuxia_seoharin_unsaid_stay',
       'wuxia_cheongirok_resolution',
+      'wuxia_return_modern_commute_scene',
+      'wuxia_settlement_stay_scene',
       'wuxia_black_serpent_aftermath',
     ]);
     expect(encounterIds).not.toContain('ex_employee_messenger');

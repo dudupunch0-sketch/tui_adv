@@ -2,9 +2,9 @@
 type: next_goal_prompt
 created: 2026-06-01
 updated: 2026-06-02
-current_goal: wuxia_final_state_canonical_collapse_contract_implementation
-previous_current_goal: wuxia_battle_loss_epilogue_followup_handoff
-mode: contract-first-runtime-implementation
+current_goal: wuxia_final_state_canonical_collapse_followup_handoff
+previous_current_goal: wuxia_final_state_canonical_collapse_contract_implementation
+mode: docs-only-contract-selection
 ---
 
 # next_goal
@@ -63,9 +63,17 @@ mode: contract-first-runtime-implementation
 
 `wuxia_battle_loss_epilogue_followup_handoff`도 완료됐다. battle-loss bundle이 runtime evidence를 얻은 뒤 full final battle container, broader corruption/closed-gate branch, reward/ability schema, relation/debt/faction ledger, main ending archive/save surface, playable defeat-route bridge를 비교했고, 다음 runtime 후보를 `wuxia_final_state_canonical_collapse_contract`로 선택했다.
 
-현재 목표는 `wuxia_final_state_canonical_collapse_contract_implementation`이다. 기존 `final_*_seeded` local flags를 Rust GameCore가 canonical final state labels로 collapse하고, existing `ScenePage.body_blocks`에 `epilogue_state_audit` block을 출력하는 첫 runtime contract를 구현한다.
+`wuxia_final_state_canonical_collapse_contract_implementation`도 완료됐다. 기존 `final_*_seeded` local flags를 Rust GameCore가 canonical final state labels로 collapse하고, existing `ScenePage.body_blocks`에 `epilogue_state_audit` block을 출력한다. Rust route parity는 true/corrupted/battle-loss audit summary를 검증하고, WASM JSON boundary는 audit block이 player boundary를 통과하는지 검증한다.
+
+현재 목표는 `wuxia_final_state_canonical_collapse_followup_handoff`이다. final-state audit runtime evidence 이후 full final battle container, playable defeat-route bridge, broader corruption/closed-gate branch, reward/ability schema, relation/debt/faction ledger, main ending archive/save surface 중 무엇을 먼저 열지 비교한다.
 
 이전 목표 표기 이력:
+
+```yaml
+current_goal: wuxia_final_state_canonical_collapse_contract_implementation
+previous_current_goal: wuxia_battle_loss_epilogue_followup_handoff
+mode: contract-first-runtime-implementation
+```
 
 ```yaml
 current_goal: wuxia_battle_loss_epilogue_followup_handoff
@@ -120,6 +128,39 @@ mode: contract-first-runtime-implementation
 최신 완료 handoff와 다음 runtime 계약:
 
 ```yaml
+completed_runtime:
+  id: wuxia_final_state_canonical_collapse_contract
+  implementation_owner: crates/escape-core/src/final_epilogue.rs
+  output_body_block:
+    kind: epilogue_state_audit
+    source_id: wuxia_final_state_canonical_collapse_contract
+  canonical_states:
+    - combat_result
+    - boss_resolution_route
+    - evidence_state
+    - network_handling
+    - pressure_state
+    - seoharin_axis
+    - qingliu_rebuild
+    - mumyeong_salvation
+    - successor_route
+    - own_flow_choice
+    - truth_state
+    - cheongirok_state
+    - player_method
+    - item_logs
+  tests:
+    - crates/escape-core/tests/route_parity.rs::wuxia_final_epilogue_state_audit_collapses_true_corrupted_and_battle_loss_flags
+    - crates/escape-wasm/tests/json_contract.rs::json_boundary_outputs_wuxia_final_state_audit_block
+next_decision:
+  id: wuxia_final_state_canonical_collapse_followup_handoff
+  compare:
+    - full_final_battle_container
+    - playable_defeat_route_bridge
+    - broader_corruption_closed_gate_branch
+    - reward_ability_schema
+    - relation_debt_faction_ledger
+    - main_ending_archive_save_surface
 completed_handoff:
   id: wuxia_battle_loss_epilogue_followup_handoff
   selected_next_runtime: wuxia_final_state_canonical_collapse_contract
@@ -340,11 +381,13 @@ next_decision:
   - section `0.71`: return/settlement epilogue follow-up handoff
   - section `0.72`: `wuxia_battle_loss_epilogue_contract` runtime slice
   - section `0.73`: `wuxia_battle_loss_epilogue_followup_handoff` docs-only handoff
+  - section `0.74`: `wuxia_final_state_canonical_collapse_contract` runtime slice
   - 현재 최우선 남은 작업
   - `## 10. 다음 액션`
 - `docs/design/Wuxia_Final_State_Routing.md`
   - `Return/Settlement Contract Handoff`
   - `Battle Loss Epilogue Follow-up Handoff`
+  - `Final State Canonical Collapse Runtime`
 - `docs/dev/Storypack_Runtime_Preview_Mode.md`
 - `docs/dev/Notion_Design_Coverage.md`
 - `docs/content/storypacks/wuxia_jianghu_pack.md`

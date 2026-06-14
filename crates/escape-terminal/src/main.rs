@@ -786,7 +786,18 @@ fn compact_terminal_body_block_lines(block: &BodyBlock) -> Vec<&str> {
         "epilogue_card" => block
             .text
             .lines()
-            .filter(|line| line.starts_with("card_id:") || !line.contains(": "))
+            .filter(|line| line.starts_with("card_id:"))
+            .collect(),
+        "epilogue_state_audit" => block
+            .text
+            .lines()
+            .filter(|line| {
+                line.starts_with("audit_id:")
+                    || line.starts_with("source_contract:")
+                    || line.starts_with("final_result_key:")
+                    || line.starts_with("canonical_state: combat_result")
+                    || line.starts_with("canonical_state: boss_resolution_route")
+            })
             .collect(),
         "epilogue_suppressed" => block
             .text
@@ -800,7 +811,7 @@ fn compact_terminal_body_block_lines(block: &BodyBlock) -> Vec<&str> {
 fn scene_body_block_heading(block: &BodyBlock) -> Option<&'static str> {
     match block.kind.as_str() {
         "epilogue_result" => Some("[결산 판정]"),
-        "epilogue_card" => Some("[후일담 카드]"),
+        "epilogue_state_audit" => Some("[결산 상태 감사]"),
         "epilogue_suppressed" => Some("[억제된 후일담 후보]"),
         "epilogue_contract_error" => Some("[후일담 계약 오류]"),
         _ => None,

@@ -1073,6 +1073,19 @@
 - [x] full final battle container, combat resolver, HP 숫자전, playable defeat route, archive/save schema, relation/debt/faction ledger, reward/ability schema 미변경 유지
 - [x] 다음 작업을 `wuxia_final_state_canonical_collapse_contract_implementation`으로 갱신
 
+### 0.2cm 2026-06-02 무협 `wuxia_final_state_canonical_collapse_contract` runtime slice
+
+- [x] `crates/escape-core/src/final_epilogue.rs`에 `epilogue_state_audit` body block 추가
+- [x] `combat_result`, `boss_resolution_route`, `evidence_state`, `network_handling`, `pressure_state`, `seoharin_axis`, `qingliu_rebuild`, `mumyeong_salvation`, `successor_route`, `own_flow_choice`, `truth_state`, `cheongirok_state`, `player_method`, `item_logs` canonical collapse 구현
+- [x] ambiguous local flags는 `status: ambiguous_priority_applied`와 `candidate_values`로 보고
+- [x] missing canonical inputs는 `status: missing`, `consumed_flags: none`으로 보고
+- [x] battle-loss priority는 `combat_result: battle_loss`와 `boss_resolution_route: not_reached_battle_loss` derived audit로 검증
+- [x] Rust route parity direct-state test로 true/corrupted/battle-loss audit summary 검증
+- [x] WASM JSON boundary test로 `epilogue_state_audit` block 전달 검증
+- [x] Web Storybook과 SuperLightTUI display-only boundary 유지
+- [x] full final battle container, combat resolver, HP 숫자전, playable defeat route, archive/save schema, relation/debt/faction ledger, reward/ability schema 미변경 유지
+- [x] 다음 작업을 `wuxia_final_state_canonical_collapse_followup_handoff` docs-only contract slice로 갱신
+
 ### 0.3 완료 기준
 
 - [x] README 또는 인덱스만 보고 프로젝트 방향을 이해할 수 있다.

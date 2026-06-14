@@ -80,6 +80,7 @@ pub(crate) fn final_epilogue_body_blocks(state: &GameState, ending_id: &str) -> 
         text: final_result_text(final_result),
         source_id: Some(FINAL_EPILOGUE_ENDING_ID.to_string()),
     }];
+    blocks.push(state_audit_block(&facts, final_result));
     blocks.extend(candidates.iter().map(card_block));
     blocks.extend(suppressed.iter().map(suppressed_block));
     blocks
@@ -181,6 +182,542 @@ impl<'a> FinalFacts<'a> {
         FinalResult::BasicVictory
     }
 }
+
+#[derive(Clone, Debug)]
+struct StateRule {
+    value: &'static str,
+    flags: &'static [&'static str],
+}
+
+#[derive(Clone, Debug)]
+struct AuditEntry {
+    key: &'static str,
+    value: &'static str,
+    status: &'static str,
+    consumed_flags: Vec<String>,
+    candidate_values: Vec<&'static str>,
+}
+
+fn state_audit_block(facts: &FinalFacts<'_>, final_result: FinalResult) -> BodyBlock {
+    let mut text = format!(
+        "audit_id: final_state_canonical_collapse\nowned_by: Rust GameCore\nsource_contract: wuxia_final_state_canonical_collapse_contract\nfinal_result_key: {}\nrouting_note: local final_*_seeded flags were collapsed before renderer display; renderer must not infer canonical final states.",
+        final_result.key()
+    );
+    for entry in canonical_state_audit(facts, final_result) {
+        text.push_str(&format!(
+            "\ncanonical_state: {}\nvalue: {}\nstatus: {}\nconsumed_flags: {}\ncandidate_values: {}",
+            entry.key,
+            entry.value,
+            entry.status,
+            if entry.consumed_flags.is_empty() {
+                "none".to_string()
+            } else {
+                seeds_text(&entry.consumed_flags)
+            },
+            if entry.candidate_values.is_empty() {
+                "none".to_string()
+            } else {
+                entry.candidate_values.join(", ")
+            }
+        ));
+    }
+    BodyBlock {
+        kind: "epilogue_state_audit".to_string(),
+        text,
+        source_id: Some("wuxia_final_state_canonical_collapse_contract".to_string()),
+    }
+}
+
+fn canonical_state_audit(facts: &FinalFacts<'_>, final_result: FinalResult) -> Vec<AuditEntry> {
+    let mut entries = vec![
+        resolve_state("combat_result", facts, COMBAT_RESULT_RULES),
+        resolve_state("boss_resolution_route", facts, BOSS_RESOLUTION_ROUTE_RULES),
+        resolve_state("evidence_state", facts, EVIDENCE_STATE_RULES),
+        resolve_state("network_handling", facts, NETWORK_HANDLING_RULES),
+        resolve_state("pressure_state", facts, PRESSURE_STATE_RULES),
+        resolve_state("seoharin_axis", facts, SEOHARIN_AXIS_RULES),
+        resolve_state("qingliu_rebuild", facts, QINGLIU_REBUILD_RULES),
+        resolve_state("mumyeong_salvation", facts, MUMYEONG_SALVATION_RULES),
+        resolve_state("successor_route", facts, SUCCESSOR_ROUTE_RULES),
+        resolve_state("own_flow_choice", facts, OWN_FLOW_CHOICE_RULES),
+        resolve_state("truth_state", facts, TRUTH_STATE_RULES),
+        resolve_state("cheongirok_state", facts, CHEONGIROK_STATE_RULES),
+        resolve_state("player_method", facts, PLAYER_METHOD_RULES),
+        resolve_state("item_logs", facts, ITEM_LOG_RULES),
+    ];
+
+    if matches!(final_result, FinalResult::BattleLoss)
+        && entries[1].status == "missing"
+        && facts.has_flag("final_combat_result_battle_loss_seeded")
+    {
+        entries[1] = AuditEntry {
+            key: "boss_resolution_route",
+            value: "not_reached_battle_loss",
+            status: "derived_by_final_result_priority",
+            consumed_flags: facts.consumed_flags(&["final_combat_result_battle_loss_seeded"]),
+            candidate_values: vec!["not_reached_battle_loss"],
+        };
+    }
+
+    entries
+}
+
+fn resolve_state(key: &'static str, facts: &FinalFacts<'_>, rules: &[StateRule]) -> AuditEntry {
+    let mut consumed = BTreeSet::new();
+    let mut candidate_values = Vec::new();
+    for rule in rules {
+        let rule_flags = facts.consumed_flags(rule.flags);
+        if !rule_flags.is_empty() {
+            candidate_values.push(rule.value);
+            consumed.extend(rule_flags);
+        }
+    }
+
+    if candidate_values.is_empty() {
+        return AuditEntry {
+            key,
+            value: "missing",
+            status: "missing",
+            consumed_flags: Vec::new(),
+            candidate_values,
+        };
+    }
+
+    let value = candidate_values[0];
+    let distinct_values = candidate_values
+        .iter()
+        .copied()
+        .collect::<BTreeSet<&'static str>>();
+    let status = if distinct_values.len() > 1 {
+        "ambiguous_priority_applied"
+    } else {
+        "resolved"
+    };
+
+    AuditEntry {
+        key,
+        value,
+        status,
+        consumed_flags: consumed.into_iter().collect(),
+        candidate_values,
+    }
+}
+
+const COMBAT_RESULT_RULES: &[StateRule] = &[
+    StateRule {
+        value: "battle_loss",
+        flags: &["final_combat_result_battle_loss_seeded"],
+    },
+    StateRule {
+        value: "battle_victory",
+        flags: &["final_combat_result_battle_victory_seeded"],
+    },
+];
+
+const BOSS_RESOLUTION_ROUTE_RULES: &[StateRule] = &[
+    StateRule {
+        value: "corrupted_victory",
+        flags: &[
+            "final_boss_resolution_corrupted_candidate_seeded",
+            "final_boss_resolution_corrupted_victory_seeded",
+            "final_epilogue_candidates_corrupted_seeded",
+        ],
+    },
+    StateRule {
+        value: "true_route_victory",
+        flags: &[
+            "final_boss_resolution_true_route_candidate_seeded",
+            "final_boss_resolution_true_route_confirmed_seeded",
+            "final_epilogue_candidates_true_route_seeded",
+        ],
+    },
+    StateRule {
+        value: "mumyeong_unsaved_victory",
+        flags: &[
+            "final_boss_resolution_mumyeong_unsaved_victory_seeded",
+            "final_epilogue_candidates_mumyeong_unsaved_seeded",
+        ],
+    },
+    StateRule {
+        value: "meaningful_victory",
+        flags: &[
+            "final_boss_resolution_true_or_meaningful_candidate_seeded",
+            "final_boss_resolution_meaningful_candidate_seeded",
+            "final_boss_resolution_meaningful_or_true_candidate_seeded",
+            "final_boss_resolution_meaningful_victory_seeded",
+            "final_epilogue_candidates_meaningful_seeded",
+        ],
+    },
+    StateRule {
+        value: "incomplete_victory",
+        flags: &[
+            "final_boss_resolution_incomplete_victory_seeded",
+            "final_epilogue_candidates_incomplete_seeded",
+        ],
+    },
+];
+
+const EVIDENCE_STATE_RULES: &[StateRule] = &[
+    StateRule {
+        value: "strong",
+        flags: &[
+            "final_evidence_strong_seeded",
+            "final_evidence_strong_support_seeded",
+            "final_evidence_strong_confirmed_seeded",
+            "final_alliance_silence_strong_evidence_variant_seeded",
+        ],
+    },
+    StateRule {
+        value: "partial_or_strong",
+        flags: &["final_evidence_partial_or_strong_seeded"],
+    },
+    StateRule {
+        value: "partial",
+        flags: &[
+            "final_evidence_partial_seeded",
+            "final_alliance_silence_partial_evidence_variant_seeded",
+        ],
+    },
+    StateRule {
+        value: "none_or_low",
+        flags: &["final_evidence_none_or_low_seeded"],
+    },
+];
+
+const NETWORK_HANDLING_RULES: &[StateRule] = &[
+    StateRule {
+        value: "core_cut",
+        flags: &[
+            "final_network_core_cut_seeded",
+            "final_network_core_network_cut_seeded",
+        ],
+    },
+    StateRule {
+        value: "accountability",
+        flags: &[
+            "final_network_ledger_secured_seeded",
+            "final_network_accountability_seeded",
+        ],
+    },
+    StateRule {
+        value: "partially_destroyed",
+        flags: &["final_network_partially_destroyed_seeded"],
+    },
+    StateRule {
+        value: "residue_possible",
+        flags: &["final_network_residue_possible_seeded"],
+    },
+    StateRule {
+        value: "ignored",
+        flags: &["final_network_ignored_seeded"],
+    },
+];
+
+const PRESSURE_STATE_RULES: &[StateRule] = &[
+    StateRule {
+        value: "eased",
+        flags: &[
+            "final_pressure_eased_seeded",
+            "final_pressure_state_eased_confirmed_seeded",
+        ],
+    },
+    StateRule {
+        value: "partially_eased",
+        flags: &["final_pressure_partially_eased_seeded"],
+    },
+    StateRule {
+        value: "unresolved",
+        flags: &[
+            "final_pressure_unresolved_seeded",
+            "final_black_serpent_pressure_unresolved_variant_seeded",
+        ],
+    },
+];
+
+const SEOHARIN_AXIS_RULES: &[StateRule] = &[
+    StateRule {
+        value: "open_gate",
+        flags: &[
+            "final_seoharin_open_gate_candidate_seeded",
+            "final_epilogue_seoharin_open_gate_candidate_seeded",
+            "final_epilogue_seoharin_open_gate_candidate_reinforced_seeded",
+            "final_epilogue_seoharin_open_gate_reinforced_seeded",
+        ],
+    },
+    StateRule {
+        value: "empty_place",
+        flags: &[
+            "final_seoharin_qingliu_resolution_empty_place_seeded",
+            "final_epilogue_seoharin_empty_place_candidate_seeded",
+            "final_epilogue_seoharin_empty_place_candidate_reinforced_seeded",
+        ],
+    },
+    StateRule {
+        value: "high_preserved",
+        flags: &[
+            "final_seoharin_axis_high_preserved_seeded",
+            "final_seoharin_axis_high_seeded",
+            "final_epilogue_seoharin_future_candidate_seeded",
+        ],
+    },
+    StateRule {
+        value: "closed_gate",
+        flags: &[
+            "final_seoharin_closed_gate_candidate_seeded",
+            "final_epilogue_seoharin_closed_gate_candidate_seeded",
+            "final_return_settlement_evasion_seeded",
+            "final_epilogue_closed_gate_risk_seeded",
+        ],
+    },
+    StateRule {
+        value: "last_bowl",
+        flags: &[
+            "last_bowl_epilogue_seeded",
+            "final_epilogue_seoharin_last_bowl_conditional_seeded",
+        ],
+    },
+];
+
+const QINGLIU_REBUILD_RULES: &[StateRule] = &[
+    StateRule {
+        value: "high",
+        flags: &[
+            "final_qingliu_rebuild_high_candidate_seeded",
+            "final_qingliu_future_high_candidate_seeded",
+            "final_epilogue_qingliu_future_high_candidate_seeded",
+            "final_epilogue_qingliu_restored_martial_art_candidate_seeded",
+            "final_epilogue_qingliu_restored_martial_art_conditional_seeded",
+        ],
+    },
+    StateRule {
+        value: "partial",
+        flags: &[
+            "final_qingliu_rebuild_partial_seeded",
+            "final_epilogue_qingliu_future_candidate_seeded",
+        ],
+    },
+    StateRule {
+        value: "weakened",
+        flags: &[
+            "final_epilogue_qingliu_future_weakened_variant_seeded",
+            "final_epilogue_qingliu_future_dark_variant_seeded",
+        ],
+    },
+];
+
+const MUMYEONG_SALVATION_RULES: &[StateRule] = &[
+    StateRule {
+        value: "own_flow_salvation",
+        flags: &[
+            "final_mumyeong_resolution_own_flow_salvation_seeded",
+            "final_epilogue_mumyeong_stolen_forms_stopped_candidate_seeded",
+        ],
+    },
+    StateRule {
+        value: "relational_salvation",
+        flags: &[
+            "final_mumyeong_resolution_relational_salvation_seeded",
+            "final_epilogue_mumyeong_unsent_apology_candidate_seeded",
+        ],
+    },
+    StateRule {
+        value: "substantial_candidate",
+        flags: &["final_mumyeong_salvation_substantial_candidate_seeded"],
+    },
+    StateRule {
+        value: "partial",
+        flags: &["final_mumyeong_salvation_partial_seeded"],
+    },
+    StateRule {
+        value: "incomplete",
+        flags: &[
+            "final_mumyeong_resolution_incomplete_salvation_seeded",
+            "final_epilogue_mumyeong_second_wooden_sword_conditional_seeded",
+        ],
+    },
+    StateRule {
+        value: "end_of_stolen_forms",
+        flags: &[
+            "final_mumyeong_resolution_end_of_stolen_forms_seeded",
+            "final_epilogue_mumyeong_end_of_stolen_forms_candidate_seeded",
+        ],
+    },
+    StateRule {
+        value: "black_serpent_successor",
+        flags: &[
+            "final_mumyeong_resolution_black_serpent_successor_seeded",
+            "final_epilogue_mumyeong_black_serpent_new_scale_candidate_seeded",
+        ],
+    },
+    StateRule {
+        value: "corrupted_unsaved",
+        flags: &[
+            "final_mumyeong_resolution_corrupted_unsaved_seeded",
+            "final_mumyeong_player_method_tool_use_seeded",
+        ],
+    },
+];
+
+const SUCCESSOR_ROUTE_RULES: &[StateRule] = &[
+    StateRule {
+        value: "active_risk",
+        flags: &[
+            "final_successor_route_active_risk_seeded",
+            "final_mumyeong_successor_route_active_seeded",
+            "final_black_serpent_new_scale_candidate_seeded",
+            "final_epilogue_mumyeong_black_serpent_new_scale_candidate_seeded",
+        ],
+    },
+    StateRule {
+        value: "weakened",
+        flags: &["final_mumyeong_successor_route_weakened_seeded"],
+    },
+    StateRule {
+        value: "suppressed",
+        flags: &[
+            "final_successor_route_suppressed_seeded",
+            "final_successor_route_suppressed_confirmed_seeded",
+            "final_mumyeong_successor_route_suppressed_seeded",
+        ],
+    },
+];
+
+const OWN_FLOW_CHOICE_RULES: &[StateRule] = &[
+    StateRule {
+        value: "chosen",
+        flags: &[
+            "final_own_flow_choice_chosen_seeded",
+            "final_mumyeong_own_flow_choice_confirmed_seeded",
+            "final_mumyeong_resolution_own_flow_salvation_seeded",
+        ],
+    },
+    StateRule {
+        value: "opened",
+        flags: &["final_own_flow_choice_opened_seeded"],
+    },
+    StateRule {
+        value: "not_opened",
+        flags: &["final_mumyeong_own_flow_not_opened_seeded"],
+    },
+];
+
+const TRUTH_STATE_RULES: &[StateRule] = &[
+    StateRule {
+        value: "not_forced",
+        flags: &[
+            "final_mumyeong_truth_state_not_forced_seeded",
+            "truth_delivery_still_unopened",
+        ],
+    },
+    StateRule {
+        value: "partial",
+        flags: &["final_mumyeong_truth_state_partial_seeded"],
+    },
+    StateRule {
+        value: "sealed_summary_prepared",
+        flags: &["sealed_departure_truth_summary_prepared"],
+    },
+];
+
+const CHEONGIROK_STATE_RULES: &[StateRule] = &[
+    StateRule {
+        value: "corruption_high",
+        flags: &[
+            "final_cheongirok_state_corruption_high_seeded",
+            "final_cheongirok_state_corruption_high_confirmed_seeded",
+            "final_cheongirok_resolution_corruption_variant_seeded",
+            "final_epilogue_tianjilu_last_page_corruption_variant_seeded",
+        ],
+    },
+    StateRule {
+        value: "safe_high_use",
+        flags: &[
+            "final_cheongirok_state_high_use_seeded",
+            "final_cheongirok_state_high_use_not_corruption_seeded",
+            "final_cheongirok_resolution_safe_high_use_seeded",
+            "final_epilogue_tianjilu_safe_high_use_variant_seeded",
+        ],
+    },
+    StateRule {
+        value: "blank_true_route_place",
+        flags: &[
+            "final_cheongirok_resolution_blank_place_seeded",
+            "final_epilogue_tianjilu_true_route_variant_seeded",
+        ],
+    },
+    StateRule {
+        value: "low_use_silence",
+        flags: &["final_cheongirok_resolution_low_use_silence_seeded"],
+    },
+    StateRule {
+        value: "method_reflection",
+        flags: &[
+            "final_cheongirok_resolution_method_reflection_seeded",
+            "final_player_method_reflected_not_judged_seeded",
+        ],
+    },
+    StateRule {
+        value: "corruption_risk",
+        flags: &["final_cheongirok_corruption_risk_seeded"],
+    },
+];
+
+const PLAYER_METHOD_RULES: &[StateRule] = &[
+    StateRule {
+        value: "sado_style_calculation",
+        flags: &[
+            "final_player_method_sado_style_calculation_seeded",
+            "final_player_method_sado_style_calculation_echo_seeded",
+        ],
+    },
+    StateRule {
+        value: "tool_use",
+        flags: &[
+            "final_player_method_used_as_tool_risk_seeded",
+            "final_mumyeong_player_method_tool_use_seeded",
+        ],
+    },
+    StateRule {
+        value: "outside_calculation",
+        flags: &[
+            "final_player_method_outside_calculation_seeded",
+            "final_player_method_outside_calculation_confirmed_seeded",
+        ],
+    },
+    StateRule {
+        value: "protected_as_person",
+        flags: &[
+            "final_player_method_protected_as_person_seeded",
+            "final_player_method_protected_as_person_confirmed_seeded",
+        ],
+    },
+    StateRule {
+        value: "direct_boss_focus",
+        flags: &["final_player_method_direct_boss_focus_seeded"],
+    },
+    StateRule {
+        value: "reflected_not_judged",
+        flags: &["final_player_method_reflected_not_judged_seeded"],
+    },
+];
+
+const ITEM_LOG_RULES: &[StateRule] = &[
+    StateRule {
+        value: "blackscale_ledger",
+        flags: &["final_item_logs_blackscale_ledger_seeded"],
+    },
+    StateRule {
+        value: "blank_ledger",
+        flags: &["final_item_logs_blank_ledger_seen_seeded"],
+    },
+    StateRule {
+        value: "unpriced_wooden_sword_condition",
+        flags: &[
+            "final_unpriced_wooden_sword_condition_raised_seeded",
+            "final_unpriced_wooden_sword_condition_preserved_seeded",
+        ],
+    },
+];
 
 fn build_candidates(facts: &FinalFacts<'_>, final_result: FinalResult) -> Vec<CardCandidate> {
     let mut cards = Vec::new();

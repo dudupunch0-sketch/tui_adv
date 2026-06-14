@@ -3652,6 +3652,71 @@ fn json_boundary_outputs_wuxia_battle_loss_epilogue_bundle() {
 }
 
 #[test]
+fn json_boundary_outputs_wuxia_final_state_audit_block() {
+    let state_json =
+        new_game_json(123, WUXIA_PREVIEW_BUNDLE).expect("preview new game should serialize");
+    let mut state: Value = serde_json::from_str(&state_json).expect("state JSON should parse");
+    state["location_id"] = json!("black_serpent_ledger_vault");
+    state["flags"] = json!([
+        "boss_resolution_resolved",
+        "mumyeong_resolution_resolved",
+        "seoharin_qingliu_resolution_resolved",
+        "cheongirok_resolution_resolved",
+        "black_serpent_aftermath_resolved",
+        "final_result_priority_applied_seeded",
+        "final_combat_result_battle_victory_seeded",
+        "final_state_routing_seeded",
+        "final_boss_resolution_true_route_confirmed_seeded",
+        "final_epilogue_candidates_true_route_seeded",
+        "final_evidence_strong_confirmed_seeded",
+        "final_network_accountability_seeded",
+        "final_pressure_state_eased_confirmed_seeded",
+        "final_epilogue_seoharin_open_gate_candidate_seeded",
+        "final_qingliu_future_high_candidate_seeded",
+        "final_mumyeong_resolution_own_flow_salvation_seeded",
+        "final_successor_route_suppressed_confirmed_seeded",
+        "final_own_flow_choice_chosen_seeded",
+        "final_mumyeong_truth_state_not_forced_seeded",
+        "final_epilogue_tianjilu_true_route_variant_seeded",
+        "final_player_method_outside_calculation_confirmed_seeded",
+        "final_item_logs_blackscale_ledger_seeded"
+    ]);
+    let final_state_json =
+        serde_json::to_string(&state).expect("final-state audit state should stringify");
+    let final_page_json = scene_page_json(&final_state_json, WUXIA_PREVIEW_BUNDLE)
+        .expect("final-state audit page should serialize");
+    let final_page: Value =
+        serde_json::from_str(&final_page_json).expect("final page JSON should parse");
+    let body_blocks = final_page["body_blocks"]
+        .as_array()
+        .expect("final body blocks should be an array");
+    let audit_block = body_blocks
+        .iter()
+        .find(|block| block["kind"] == "epilogue_state_audit")
+        .expect("final state audit block should cross the JSON boundary");
+    let audit_text = audit_block["text"]
+        .as_str()
+        .expect("audit block text should be a string");
+
+    assert_eq!(final_page["mode"], "ending");
+    assert_eq!(
+        audit_block["source_id"],
+        "wuxia_final_state_canonical_collapse_contract"
+    );
+    assert!(audit_text.contains("audit_id: final_state_canonical_collapse"));
+    assert!(audit_text.contains("owned_by: Rust GameCore"));
+    assert!(audit_text.contains("final_result_key: true_route_victory"));
+    assert!(audit_text.contains("canonical_state: combat_result\nvalue: battle_victory"));
+    assert!(
+        audit_text.contains("canonical_state: boss_resolution_route\nvalue: true_route_victory")
+    );
+    assert!(audit_text.contains("canonical_state: evidence_state\nvalue: strong"));
+    assert!(audit_text.contains("canonical_state: network_handling\nvalue: accountability"));
+    assert!(audit_text.contains("canonical_state: player_method\nvalue: outside_calculation"));
+    assert!(audit_text.contains("canonical_state: item_logs\nvalue: blackscale_ledger"));
+}
+
+#[test]
 fn json_boundary_reports_user_facing_errors() {
     let state_json = new_game_json(123, CONTENT_BUNDLE).expect("new game should serialize");
 

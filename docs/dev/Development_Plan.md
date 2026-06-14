@@ -3575,6 +3575,48 @@ Still closed:
 
 Next runtime implementation candidate: `yageunmong_late_night_desk_awake` 중심 야근몽 첫 preview slice.
 
+## 0.82 2026-06-14 작업 우선순위 결정: 이구학지 완성 최우선, 야근몽/기타 팩 보류
+
+사용자 지시(2026-06-14):
+
+1. **최우선 = 이구학지(`wuxia_jianghu_pack`) 완성.** 야근몽 등 다른 팩은 별도 트랙으로 따로 작업하므로 지금은 손대지 않는다. 0.81의 야근몽 첫 런타임 슬라이스 구현은 **보류**(plan만 남김).
+2. 이구학지가 완성되면 멈추고, 야근몽 등 나머지 팩을 개발할지 사용자에게 **물어본 뒤** 진행한다.
+3. 작업 방식: plan=Opus(main), 구현=Sonnet subagent. 슬라이스마다 아주 짧게 보고.
+
+"이구학지 완성"의 정의(설계 flow 기준):
+
+- Notion `99. 통합 체크포인트`는 설계 미결정 항목 0 = 설계는 확정 상태. 따라서 완성 = **남은 설계/Notion 콘텐츠 중 허용 항목의 런타임 구현**.
+- 영구 제외(완성 조건에서 빼는 항목): `told_seoharin_truth`(서하린 진실 전달), 천기록 기록자 **정체 reveal**, 숫자 combat resolver/HP 숫자전(Notion이 사도전 등에서 숫자전을 금지). 이들은 "완성"에 포함하지 않는다.
+- 천기록 기록자 **중간 암시 이벤트**(실시간으로 한 획씩 적히는 발견 / 글자 대화)는 정체 reveal이 아니므로 허용 = 구현 대상.
+
+남은 이구학지 슬라이스의 정밀 목록/순서는 read-only 갭분석으로 확정한 뒤 이 문서에 로드맵으로 승격한다.
+
+## 0.83 2026-06-14 이구학지 완성 로드맵 (갭분석 기반)
+
+read-only 갭분석 결과를 바탕으로 "이구학지 완성"을 다음 두 묶음으로 나눈다.
+
+### A. 완성 IN-SCOPE 콘텐츠 슬라이스 (지금 순서대로 구현)
+
+기존 seed→epilogue-card 경량 설계 철학을 유지하는 콘텐츠/내러티브 갭. 새 무거운 엔진 스키마 없이 기존 encounter/flag/clue/presentation/epilogue consumer로 구현한다.
+
+1. **S1 — 천기록 기록자 중간 암시 이벤트** (`wuxia_cheonggi_record_writing_sense`). Notion 99/storypack 179-182 근거. 정체 reveal 아님. 가드: 기록자 정체/기원 설명 금지, 기록자 음성/응답 금지, 호명 금지, 감지(실시간 필사/시선/존재감)만, 초자연인지 불안인지 모호하게. flag/clue/presentation만. 크기 S.
+2. **S2 — 추가 천외편린 3택 보상 offering(들)** (중반·후반 발현). storypack 221-222 발현 timing. 1차와 동일 grammar(3택 1선 2소실), 숫자 없음. 후반 offering에 귀환 단서 계열 후보 1개 허용 가능(정체 reveal 아님). 크기 M.
+3. **S3 — 천외편린 선택 결과의 경량 소비** (chosen thread가 이후 encounter에서 clue/해석 hint를 여는 정도). 숫자 능력치/패시브 수치 없음. 크기 M.
+4. **S4 — 귀환 엔딩 SCENE** (현대 출근길 복귀 장면). 현재 seed+epilogue card만 있음 → 실제 장면화. 크기 M.
+5. **S5 — 정착 엔딩 SCENE** (청류문/무림 정착 장면). 동일. 크기 M.
+6. **S6 — main ending 구분 라벨 + route 엔딩 식별** (divine_sword/white_path_prison/black_night_gentleman/debtor_of_all/returnee/murim_outsider를 epilogue 출력에서 명시적으로 구분). 무거운 archive/save UI 없이 라벨/route 식별 수준. 크기 M.
+
+### B. 경계 항목 — 이구학지 완성 직전 사용자에게 scope 확인 후 결정
+
+다음은 Notion에 설계는 있으나 무거운 신규 엔진 스키마/모호 범위라, 경량 설계 철학과 충돌한다. A 묶음을 끝낸 뒤 사용자에게 "이것까지 이구학지 완성에 포함할지" 묻는다.
+
+- 관계/부채/세력 영속 원장(ledger) 시스템 (L, 신규 persistent schema + UI)
+- 별도 corruption/distortion 엔딩 SCENE 심화 (현재 closed-gate/corruption은 epilogue card로 존재)
+- 최종전 외 추가 playable 패배 경로 (현재 사도전 5번째 선택으로 도달 가능 — 갭분석 권고는 현행 유지)
+- 영구 제외: `told_seoharin_truth`, 천기록 기록자 정체 reveal, 숫자 combat resolver/HP 숫자전
+
+진행: A를 S1→S6 순서로 Sonnet subagent 구현, 슬라이스마다 짧게 보고. A 완료 후 멈추고 B + 타 팩(야근몽 등) 진행 여부를 사용자에게 확인한다.
+
 ## 0.79 2026-06-14 무협 `wuxia_sado_battle_loss_route_bridge_followup_handoff` docs-only handoff: 천외편린 3택 보상 스키마
 
 현재 상태: docs-only contract selection 완료. playable battle-loss route가 runtime evidence를 얻었으므로 Notion 원본과 repo canonical docs를 다시 대조했고, 다음 runtime 후보를 천외편린 3택 보상 스키마(`wuxia_cheonoe_pyeonrin_first_reward`)로 결정했다. 계약은 `docs/design/Wuxia_Cheonoe_Pyeonrin_Reward.md`로 승격했다.

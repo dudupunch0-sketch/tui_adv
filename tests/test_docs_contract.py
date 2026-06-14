@@ -2342,7 +2342,7 @@ def test_wuxia_return_settlement_epilogue_contract_is_docs_synced():
     assert "epilogue_wuxia_empty_place_kept_open" in final_epilogue_rs
     assert "epilogue_wuxia_closed_gate_risk" in final_epilogue_rs
     assert "return_settlement_evasion" in final_epilogue_rs
-    assert "main_ending_type" not in final_epilogue_rs
+    assert "main_ending_type" in final_epilogue_rs  # S6: now implemented
     assert "told_seoharin_truth" not in final_epilogue_rs
 
 
@@ -2971,3 +2971,45 @@ def test_wuxia_settlement_stay_scene_is_docs_synced():
     assert 'epilogue_wuxia_qingliu_settlement' in encounters_yaml
     assert 'wuxia_settlement_stay_scene' in notion_sources
     assert 'implemented_in_storypack_preview' in notion_sources
+
+
+def test_wuxia_s6_main_ending_type_labels_are_docs_synced():
+    plan = Path('docs/dev/Development_Plan.md').read_text(encoding='utf-8')
+    checklist = Path('docs/dev/Checklist.md').read_text(encoding='utf-8')
+    coverage = Path('docs/dev/Notion_Design_Coverage.md').read_text(encoding='utf-8')
+    final_routing = Path('docs/design/Wuxia_Final_State_Routing.md').read_text(
+        encoding='utf-8'
+    )
+    final_epilogue_rs = Path(
+        'crates/escape-core/src/final_epilogue.rs'
+    ).read_text(encoding='utf-8')
+
+    assert '[DONE] S6' in plan
+    assert '0.86' in plan
+    assert 'main_ending_type' in plan
+    assert 'S6' in checklist
+    assert '0.2cs3' in checklist
+    assert 'MainEndingType' in checklist
+    assert 'main_ending_type' in coverage
+    assert 'cheongryu_divine_sword' in coverage
+    assert 'white_path_prison' in coverage
+    assert 'black_night_gentleman' in coverage
+    assert 'debtor_of_all_under_heaven' in coverage
+    assert 'returnee' in coverage
+    assert 'murim_outsider' in coverage
+    assert 'S6 Main Ending Type Label' in final_routing
+    assert 'cheongryu_divine_sword' in final_routing
+    assert 'white_path_prison' in final_routing
+    assert 'black_night_gentleman' in final_routing
+    assert 'debtor_of_all_under_heaven' in final_routing
+    assert 'returnee' in final_routing
+    assert 'murim_outsider' in final_routing
+    assert 'main_ending_type' in final_epilogue_rs
+    assert 'MainEndingType' in final_epilogue_rs
+    assert 'main_ending_label' in final_epilogue_rs
+    assert 'cheongryu_divine_sword' in final_epilogue_rs
+    assert 'white_path_prison' in final_epilogue_rs
+    assert 'black_night_gentleman' in final_epilogue_rs
+    assert 'debtor_of_all_under_heaven' in final_epilogue_rs
+    assert 'returnee' in final_epilogue_rs
+    assert 'murim_outsider' in final_epilogue_rs

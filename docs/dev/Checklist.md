@@ -1118,6 +1118,15 @@
 - [x] 다음 작업을 `wuxia_sado_battle_loss_route_bridge_implementation` runtime slice로 갱신
 
 
+
+### 0.2cs3 2026-06-14 무협 S6 엔딩 타입 라벨 (이구학지 완성 로드맵 0.83 A묶음 완료)
+
+- [x] S6: `MainEndingType` enum 추가 — `final_epilogue.rs` 내부에 6개 메인 엔딩 타입 라벨 구현. `epilogue_result` body block에 `main_ending_type` + `main_ending_label` 필드 추가. 기존 `final_*_seeded` 시드 조합으로 battle_loss / returnee / murim_outsider / cheongryu_divine_sword / white_path_prison / black_night_gentleman / debtor_of_all_under_heaven 구분.
+- [x] route_parity 7개 테스트 추가 (6개 엔딩 + battle_loss). 기존 15개 유지.
+- [x] cargo test --workspace green (0 failed), pytest 257 green, vitest 66 green.
+- [x] new persistent schema, save/archive surface, ScenePage mode 미추가. 기록자 정체 reveal 없음. told_seoharin_truth 없음.
+- [x] 로드맵 A묶음(S1-S6) 완료.
+
 ### 0.2cs2 2026-06-14 무협 S4-S5 runtime slices (이구학지 완성 로드맵 0.83 A묶음 4-5)
 
 - [x] S4: `wuxia_return_modern_commute_scene` 추가 — 귀환 엔딩 장면. `final_return_intent_honest_seeded + cheongirok_resolution_resolved` 게이팅. 3택(굳은살/업무수첩/흙먼지). `epilogue_wuxia_returned_commute` 방출. 정착 장면과 forbidden_flags로 상호 배타.

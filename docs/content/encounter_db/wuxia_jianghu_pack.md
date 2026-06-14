@@ -1,6 +1,6 @@
 # 이구학지 — 천기록 encounter situation cards
 
-Status: candidate + `wuxia_seoharin_unsaid_stay` preview runtime implemented + return/settlement epilogue consumer implemented + battle-loss epilogue consumer implemented + final-state canonical collapse runtime implemented + Sado final battle container runtime implemented + Sado battle-loss route bridge runtime implemented
+Status: candidate + `wuxia_seoharin_unsaid_stay` preview runtime implemented + return/settlement epilogue consumer implemented + battle-loss epilogue consumer implemented + final-state canonical collapse runtime implemented + Sado final battle container runtime implemented + Sado battle-loss route bridge runtime implemented + 천기록 writing-sense S1 + 천외편린 second reward S2 + analysis-thread phase1 bridge S3 runtime implemented
 
 이 문서는 `docs/content/storypacks/wuxia_jianghu_pack.md`의 후보 인카운터를 runtime YAML 승격 전/후 상황 카드로 정리한다. `wuxia_commute_rift_arrival`부터 `wuxia_seoharin_unsaid_stay`까지는 separate storypack preview runtime으로 승격되었다.
 
@@ -30,6 +30,8 @@ Status: candidate + `wuxia_seoharin_unsaid_stay` preview runtime implemented + r
 |---|---|---|---|
 | `wuxia_seoharin_unsaid_stay` | 가지 말라는 말 | `wuxia_seoharin_unsaid_stay` | preview runtime implemented; return/settlement trigger seed only |
 | `wuxia_seoharin_left_meal` | 남겨둔 밥 | `wuxia_seoharin_left_meal` | preview runtime implemented; relationship/belonging bridge, not final return choice |
+| `wuxia_cheonggi_record_writing_sense` | 적히는 감각 | `wuxia_cheonggi_record_writing_sense` | preview runtime implemented; ambient writing-sense bridge, no 천기록 identity reveal |
+| `wuxia_cheonoe_pyeonrin_second_reward` | 천외편린 두 번째 보상 | `wuxia_cheonoe_pyeonrin_second_reward` | preview runtime implemented; fragment-choice bridge before sado final battle |
 | `wuxia_seoharin_empty_place` | 비워둔 자리 | `wuxia_seoharin_empty_place` | preview runtime implemented; late empty-place bridge, not truth delivery |
 | `wuxia_mumyeong_departure_truth_summary` | 무명 이탈의 진실 정리 | `wuxia_mumyeong_departure_truth_summary` | preview runtime implemented; sealed summary, not truth delivery |
 | `wuxia_black_serpent_pressures_qingliu` | 흑사방의 청류문 압박 | partial: `wuxia_cheongryu_raid_route_split` background | future pressure/side event |
@@ -64,6 +66,7 @@ Additional final-battle Notion pages outside the 26-row event DB:
 | `사도 최종전 3페이즈: 계산식 밖` | `wuxia_sado_final_phase_3_outside_calculation` | preview runtime implemented; outside-calculation/result-candidate seed only |
 | `보스 결산` | `wuxia_boss_resolution` | preview runtime implemented; boss-resolution route/epilogue candidate seed only |
 | `무명 결산` | `wuxia_mumyeong_resolution` | preview runtime implemented; Mumyeong-resolution route/epilogue candidate seed only |
+| `천외편린 복기 루프 1페이즈 연결` | `wuxia_cheonoe_analysis_thread_phase1_bridge` | preview runtime implemented; analysis-thread phase1 bridge, cheonoe_reward_analysis_thread gated |
 
 ## 1. `wuxia_commute_rift_arrival`
 
@@ -3670,4 +3673,149 @@ guardrails:
   - no_route_faction_ledger_flags
   - no_fourth_decline_choice
 next_handoff: wuxia_cheonoe_pyeonrin_first_reward_followup_handoff
+```
+
+## 47. `wuxia_cheonggi_record_writing_sense` — preview runtime 구현 완료
+
+```yaml
+id: wuxia_cheonggi_record_writing_sense
+world_id: wuxia_jianghu
+storypack_id: wuxia_jianghu_pack
+status: preview_runtime
+implementation_handoff: wuxia_S1_cheonggi_record_writing_sense
+phase: [midgame_bridge]
+priority_class: ambient_event
+location_tags: [cheongryu_outer_courtyard]
+surface: [cheonggi_record, writing_sense]
+anomaly_type: cheonggi_record_manifestation
+presentation:
+  visual_id: wuxia_cheonggi_record_writing_sense
+  speaker: 천기록
+  layout: cheonggi_record
+conditions:
+  locations: [cheongryu_outer_courtyard]
+  required_flags:
+    - mumyeong_midgame_reunion_resolved
+    - mumyeong_mirror_thread_deepened
+    - midgame_continuity_started
+    - cheonggi_record_awakened
+    - first_fragment_seen
+    - mumyeong_request_for_aid_resolved
+  forbidden_flags: [cheonggi_record_writing_sense_resolved]
+choices:
+  - id: stare_at_the_record_without_moving
+    label: 기록을 응시한다
+    outcome:
+      add_flags: [cheonggi_record_writing_sense_resolved, cheonggi_recorder_presence_sensed, writing_sense_received_silently]
+      add_clues: [record_writes_in_realtime, presence_is_not_voice]
+  - id: look_away_and_steady_breath
+    label: 시선을 외면하고 호흡을 고른다
+    outcome:
+      add_flags: [cheonggi_record_writing_sense_resolved, cheonggi_recorder_presence_sensed, writing_sense_deflected]
+      add_clues: [record_writes_in_realtime, unease_not_supernatural]
+  - id: write_a_line_of_your_own
+    label: 떠오른 생각을 한 줄 적어본다
+    outcome:
+      add_flags: [cheonggi_record_writing_sense_resolved, cheonggi_recorder_presence_sensed, writing_sense_mirrored_back]
+      add_clues: [record_writes_in_realtime, protagonist_wrote_first]
+guardrails:
+  - no_combat_resolver
+  - no_hp_numeric_battle
+  - no_numeric_ability_stats
+  - no_cheonggi_identity_reveal
+  - no_told_seoharin_truth
+  - no_route_faction_ledger_flags
+next_handoff: none (S1 완료; 다음 후보는 기존 gate에서 선택)
+```
+
+## 48. `wuxia_cheonoe_pyeonrin_second_reward` — preview runtime 구현 완료
+
+```yaml
+id: wuxia_cheonoe_pyeonrin_second_reward
+world_id: wuxia_jianghu
+storypack_id: wuxia_jianghu_pack
+status: preview_runtime
+implementation_handoff: wuxia_S2_cheonoe_pyeonrin_second_reward
+phase: [midgame_bridge, pre_final_battle]
+priority_class: ambient_event
+location_tags: [cheongryu_outer_courtyard]
+surface: [cheonggi_record, fragment_choice, reward]
+anomaly_type: cheonggi_record_fragment
+presentation:
+  visual_id: wuxia_cheonoe_pyeonrin_second_reward
+  speaker: 천기록
+  layout: fragment_choice
+conditions:
+  locations: [cheongryu_outer_courtyard]
+  required_flags:
+    - cheonoe_pyeonrin_reward_schema_opened
+    - seoharin_left_meal_resolved
+    - midgame_continuity_started
+  forbidden_flags: [cheonoe_pyeonrin_second_reward_resolved]
+choices:
+  - id: choose_training_method_thread
+    label: 체계적 수련법 방향을 붙든다
+    outcome:
+      add_flags: [cheonoe_reward_training_method_thread, cheonoe_pyeonrin_second_reward_resolved, two_unchosen_fragments_lost_second]
+  - id: choose_first_aid_thread
+    label: 응급 처치와 부상 대응 방향을 붙든다
+    outcome:
+      add_flags: [cheonoe_reward_first_aid_thread, cheonoe_pyeonrin_second_reward_resolved, two_unchosen_fragments_lost_second]
+  - id: choose_return_clue_thread
+    label: 귀환의 실마리 방향을 붙든다
+    outcome:
+      add_flags: [cheonoe_reward_return_clue_thread, cheonoe_pyeonrin_second_reward_resolved, two_unchosen_fragments_lost_second]
+guardrails:
+  - no_combat_resolver
+  - no_hp_numeric_battle
+  - no_numeric_ability_stats
+  - no_cheonggi_identity_reveal
+  - no_told_seoharin_truth
+  - no_route_faction_ledger_flags
+next_handoff: none (S2 완료; wuxia_sado_final_battle로 이어짐)
+```
+
+## 49. `wuxia_cheonoe_analysis_thread_phase1_bridge` — preview runtime 구현 완료
+
+```yaml
+id: wuxia_cheonoe_analysis_thread_phase1_bridge
+world_id: wuxia_jianghu
+storypack_id: wuxia_jianghu_pack
+status: preview_runtime
+implementation_handoff: wuxia_S3_cheonoe_analysis_thread_phase1_bridge
+phase: [final_battle]
+priority_class: ambient_event
+location_tags: [black_serpent_ledger_vault]
+surface: [cheonggi_record, analysis_thread, ledger]
+anomaly_type: cheonggi_record_analysis
+presentation:
+  visual_id: wuxia_cheonoe_analysis_thread_phase1_bridge
+  speaker: 천기록
+  layout: cheonggi_record
+conditions:
+  locations: [black_serpent_ledger_vault]
+  required_flags:
+    - sado_final_phase_1_price_tag_resolved
+    - final_state_routing_seeded
+    - cheonoe_reward_analysis_thread
+  forbidden_flags: [cheonoe_analysis_thread_phase1_bridge_resolved]
+choices:
+  - id: apply_review_loop_to_ledger_structure
+    label: 장부고의 논리 구조에 복기 루프를 적용한다
+    outcome:
+      add_flags: [cheonoe_analysis_thread_phase1_bridge_resolved, analysis_thread_ledger_reading_applied]
+      add_clues: [analysis_thread_reveals_extra_weakpoint_reading, ledger_structure_review_loop_opened]
+  - id: note_and_move_forward
+    label: 메모만 하고 다음 페이즈로 넘어간다
+    outcome:
+      add_flags: [cheonoe_analysis_thread_phase1_bridge_resolved, analysis_thread_noted_not_applied]
+      add_clues: [analysis_thread_presence_noted]
+guardrails:
+  - no_combat_resolver
+  - no_hp_numeric_battle
+  - no_numeric_ability_stats
+  - no_cheonggi_identity_reveal
+  - no_told_seoharin_truth
+  - no_route_faction_ledger_flags
+next_handoff: none (S3 완료; wuxia_sado_final_phase_2_weakpoint_control로 이어짐)
 ```

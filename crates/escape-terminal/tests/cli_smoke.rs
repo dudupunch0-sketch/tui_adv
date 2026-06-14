@@ -1439,6 +1439,8 @@ fn content_tui_smoke_reaches_wuxia_mumyeong_awakening() {
             "choice:watch_mumyeong_answer_the_boss",
             "--action",
             "choice:search_the_rejected_aid_letters",
+            "--action",
+            "choice:stare_at_the_record_without_moving",
         ])
         .output()
         .expect("escape-terminal executable should run");
@@ -1515,6 +1517,8 @@ fn content_tui_smoke_reaches_wuxia_qingliu_attack_after_war() {
             "choice:watch_mumyeong_answer_the_boss",
             "--action",
             "choice:search_the_rejected_aid_letters",
+            "--action",
+            "choice:stare_at_the_record_without_moving",
             "--action",
             "choice:compare_anger_to_copied_flow",
         ])
@@ -1593,6 +1597,8 @@ fn content_tui_smoke_reaches_wuxia_mumyeong_destroys_orthodox_sect() {
             "choice:watch_mumyeong_answer_the_boss",
             "--action",
             "choice:search_the_rejected_aid_letters",
+            "--action",
+            "choice:stare_at_the_record_without_moving",
             "--action",
             "choice:compare_anger_to_copied_flow",
             "--action",
@@ -1673,6 +1679,8 @@ fn content_tui_smoke_reaches_wuxia_boss_recruits_mumyeong() {
             "choice:watch_mumyeong_answer_the_boss",
             "--action",
             "choice:search_the_rejected_aid_letters",
+            "--action",
+            "choice:stare_at_the_record_without_moving",
             "--action",
             "choice:compare_anger_to_copied_flow",
             "--action",
@@ -1755,6 +1763,8 @@ fn content_tui_smoke_reaches_wuxia_mumyeong_departure_truth_summary() {
             "choice:watch_mumyeong_answer_the_boss",
             "--action",
             "choice:search_the_rejected_aid_letters",
+            "--action",
+            "choice:stare_at_the_record_without_moving",
             "--action",
             "choice:compare_anger_to_copied_flow",
             "--action",
@@ -1839,6 +1849,8 @@ fn content_tui_smoke_reaches_wuxia_seoharin_empty_place() {
             "choice:watch_mumyeong_answer_the_boss",
             "--action",
             "choice:search_the_rejected_aid_letters",
+            "--action",
+            "choice:stare_at_the_record_without_moving",
             "--action",
             "choice:compare_anger_to_copied_flow",
             "--action",
@@ -1925,6 +1937,8 @@ fn content_tui_smoke_reaches_wuxia_seoharin_left_meal() {
             "--action",
             "choice:search_the_rejected_aid_letters",
             "--action",
+            "choice:stare_at_the_record_without_moving",
+            "--action",
             "choice:compare_anger_to_copied_flow",
             "--action",
             "choice:inspect_bokho_lock_scars",
@@ -2007,6 +2021,8 @@ fn content_tui_smoke_reaches_wuxia_sado_final_battle_container() {
             "--action",
             "choice:search_the_rejected_aid_letters",
             "--action",
+            "choice:stare_at_the_record_without_moving",
+            "--action",
             "choice:compare_anger_to_copied_flow",
             "--action",
             "choice:inspect_bokho_lock_scars",
@@ -2020,6 +2036,8 @@ fn content_tui_smoke_reaches_wuxia_sado_final_battle_container() {
             "choice:set_down_the_work_notebook_briefly",
             "--action",
             "choice:eat_the_left_meal_quietly",
+            "--action",
+            "choice:choose_training_method_thread",
         ])
         .output()
         .expect("escape-terminal executable should run");
@@ -2098,6 +2116,8 @@ fn content_tui_smoke_reaches_wuxia_sado_final_phase_2_weakpoint_control() {
             "--action",
             "choice:search_the_rejected_aid_letters",
             "--action",
+            "choice:stare_at_the_record_without_moving",
+            "--action",
             "choice:compare_anger_to_copied_flow",
             "--action",
             "choice:inspect_bokho_lock_scars",
@@ -2112,9 +2132,13 @@ fn content_tui_smoke_reaches_wuxia_sado_final_phase_2_weakpoint_control() {
             "--action",
             "choice:eat_the_left_meal_quietly",
             "--action",
+            "choice:choose_training_method_thread",
+            "--action",
             "choice:affirm_priceless_heart_before_sado",
             "--action",
             "choice:secure_the_blackscale_ledger",
+            "--action",
+            "choice:note_and_move_forward",
         ])
         .output()
         .expect("escape-terminal executable should run");
@@ -2186,6 +2210,8 @@ fn content_tui_smoke_reaches_wuxia_sado_final_phase_3_outside_calculation() {
             "--action",
             "choice:search_the_rejected_aid_letters",
             "--action",
+            "choice:stare_at_the_record_without_moving",
+            "--action",
             "choice:compare_anger_to_copied_flow",
             "--action",
             "choice:inspect_bokho_lock_scars",
@@ -2200,9 +2226,13 @@ fn content_tui_smoke_reaches_wuxia_sado_final_phase_3_outside_calculation() {
             "--action",
             "choice:eat_the_left_meal_quietly",
             "--action",
+            "choice:choose_training_method_thread",
+            "--action",
             "choice:affirm_priceless_heart_before_sado",
             "--action",
             "choice:secure_the_blackscale_ledger",
+            "--action",
+            "choice:note_and_move_forward",
             "--action",
             "choice:return_flow_to_mumyeong",
         ])
@@ -2278,6 +2308,8 @@ fn content_tui_smoke_reaches_wuxia_boss_resolution() {
             "--action",
             "choice:search_the_rejected_aid_letters",
             "--action",
+            "choice:stare_at_the_record_without_moving",
+            "--action",
             "choice:compare_anger_to_copied_flow",
             "--action",
             "choice:inspect_bokho_lock_scars",
@@ -2292,9 +2324,13 @@ fn content_tui_smoke_reaches_wuxia_boss_resolution() {
             "--action",
             "choice:eat_the_left_meal_quietly",
             "--action",
+            "choice:choose_training_method_thread",
+            "--action",
             "choice:affirm_priceless_heart_before_sado",
             "--action",
             "choice:secure_the_blackscale_ledger",
+            "--action",
+            "choice:note_and_move_forward",
             "--action",
             "choice:return_flow_to_mumyeong",
             "--action",
@@ -2379,6 +2415,8 @@ fn content_tui_smoke_reaches_wuxia_mumyeong_resolution() {
             "--action",
             "choice:search_the_rejected_aid_letters",
             "--action",
+            "choice:stare_at_the_record_without_moving",
+            "--action",
             "choice:compare_anger_to_copied_flow",
             "--action",
             "choice:inspect_bokho_lock_scars",
@@ -2393,9 +2431,13 @@ fn content_tui_smoke_reaches_wuxia_mumyeong_resolution() {
             "--action",
             "choice:eat_the_left_meal_quietly",
             "--action",
+            "choice:choose_training_method_thread",
+            "--action",
             "choice:affirm_priceless_heart_before_sado",
             "--action",
             "choice:secure_the_blackscale_ledger",
+            "--action",
+            "choice:note_and_move_forward",
             "--action",
             "choice:return_flow_to_mumyeong",
             "--action",
@@ -2479,6 +2521,8 @@ fn content_tui_smoke_reaches_wuxia_seoharin_qingliu_resolution() {
             "--action",
             "choice:search_the_rejected_aid_letters",
             "--action",
+            "choice:stare_at_the_record_without_moving",
+            "--action",
             "choice:compare_anger_to_copied_flow",
             "--action",
             "choice:inspect_bokho_lock_scars",
@@ -2493,9 +2537,13 @@ fn content_tui_smoke_reaches_wuxia_seoharin_qingliu_resolution() {
             "--action",
             "choice:eat_the_left_meal_quietly",
             "--action",
+            "choice:choose_training_method_thread",
+            "--action",
             "choice:affirm_priceless_heart_before_sado",
             "--action",
             "choice:secure_the_blackscale_ledger",
+            "--action",
+            "choice:note_and_move_forward",
             "--action",
             "choice:return_flow_to_mumyeong",
             "--action",
@@ -2583,6 +2631,8 @@ fn content_tui_smoke_reaches_wuxia_cheongirok_resolution() {
             "--action",
             "choice:search_the_rejected_aid_letters",
             "--action",
+            "choice:stare_at_the_record_without_moving",
+            "--action",
             "choice:compare_anger_to_copied_flow",
             "--action",
             "choice:inspect_bokho_lock_scars",
@@ -2597,9 +2647,13 @@ fn content_tui_smoke_reaches_wuxia_cheongirok_resolution() {
             "--action",
             "choice:eat_the_left_meal_quietly",
             "--action",
+            "choice:choose_training_method_thread",
+            "--action",
             "choice:affirm_priceless_heart_before_sado",
             "--action",
             "choice:secure_the_blackscale_ledger",
+            "--action",
+            "choice:note_and_move_forward",
             "--action",
             "choice:return_flow_to_mumyeong",
             "--action",
@@ -2691,6 +2745,8 @@ fn content_tui_smoke_reaches_wuxia_final_epilogue_contract() {
             "--action",
             "choice:search_the_rejected_aid_letters",
             "--action",
+            "choice:stare_at_the_record_without_moving",
+            "--action",
             "choice:compare_anger_to_copied_flow",
             "--action",
             "choice:inspect_bokho_lock_scars",
@@ -2705,9 +2761,13 @@ fn content_tui_smoke_reaches_wuxia_final_epilogue_contract() {
             "--action",
             "choice:eat_the_left_meal_quietly",
             "--action",
+            "choice:choose_training_method_thread",
+            "--action",
             "choice:affirm_priceless_heart_before_sado",
             "--action",
             "choice:secure_the_blackscale_ledger",
+            "--action",
+            "choice:note_and_move_forward",
             "--action",
             "choice:return_flow_to_mumyeong",
             "--action",
@@ -2796,6 +2856,8 @@ fn content_tui_smoke_reaches_wuxia_sado_battle_loss_route_bridge_and_loss_epilog
             "--action",
             "choice:search_the_rejected_aid_letters",
             "--action",
+            "choice:stare_at_the_record_without_moving",
+            "--action",
             "choice:compare_anger_to_copied_flow",
             "--action",
             "choice:inspect_bokho_lock_scars",
@@ -2809,6 +2871,8 @@ fn content_tui_smoke_reaches_wuxia_sado_battle_loss_route_bridge_and_loss_epilog
             "choice:set_down_the_work_notebook_briefly",
             "--action",
             "choice:eat_the_left_meal_quietly",
+            "--action",
+            "choice:choose_training_method_thread",
             "--action",
             "choice:throw_away_every_lever_against_sado",
             "--action",
@@ -2840,6 +2904,169 @@ fn content_tui_smoke_reaches_wuxia_sado_battle_loss_route_bridge_and_loss_epilog
     assert!(!stdout.contains("told_seoharin_truth"));
 }
 
+
+#[test]
+fn content_tui_smoke_reaches_wuxia_cheonggi_record_writing_sense() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene", "content",
+            "--storypack-preview", "wuxia_jianghu_pack",
+            "--seed", "123",
+            "--tui-smoke",
+            "--action", "choice:follow_roadside_dust",
+            "--action", "move:jianghu_market_street",
+            "--action", "choice:run_toward_open_street",
+            "--action", "choice:choose_failure_log",
+            "--action", "choice:tell_plain_truth",
+            "--action", "choice:accept_three_month_trial",
+            "--action", "choice:step_back_with_firewood",
+            "--action", "choice:defend_cheongryu_with_white_path",
+            "--action", "choice:accept_medicine_with_written_debt",
+            "--action", "choice:watch_the_stolen_qingliu_flow",
+            "--action", "choice:endure_until_copy_flow_breaks",
+            "--action", "choice:listen_for_breath_mismatch",
+            "--action", "choice:choose_analysis_thread",
+            "--action", "choice:reconstruct_mumyeongs_sightline",
+            "--action", "choice:show_the_hyeonakmun_trace_without_accusing",
+            "--action", "choice:watch_mumyeong_answer_the_boss",
+            "--action", "choice:search_the_rejected_aid_letters",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+    assert!(output.status.success(), "expected success, stderr was: {}", String::from_utf8_lossy(&output.stderr));
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("visual id: wuxia_cheonggi_record_writing_sense"));
+    assert!(stdout.contains("layout: cheonggi_record"));
+    assert!(stdout.contains("choice:stare_at_the_record_without_moving /"));
+    assert!(stdout.contains("choice:look_away_and_steady_breath /"));
+    assert!(stdout.contains("choice:write_a_line_of_your_own /"));
+    assert!(!stdout.contains("cheonggi_record_writing_sense_resolved"));
+    assert!(!stdout.contains("dev_desk"));
+}
+
+
+#[test]
+fn content_tui_smoke_cheonggi_record_writing_sense_sets_resolved_flag() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene","content","--storypack-preview","wuxia_jianghu_pack",
+            "--seed","123","--tui-smoke",
+            "--action","choice:follow_roadside_dust",
+            "--action","move:jianghu_market_street",
+            "--action","choice:run_toward_open_street",
+            "--action","choice:choose_failure_log",
+            "--action","choice:tell_plain_truth",
+            "--action","choice:accept_three_month_trial",
+            "--action","choice:step_back_with_firewood",
+            "--action","choice:defend_cheongryu_with_white_path",
+            "--action","choice:accept_medicine_with_written_debt",
+            "--action","choice:watch_the_stolen_qingliu_flow",
+            "--action","choice:endure_until_copy_flow_breaks",
+            "--action","choice:listen_for_breath_mismatch",
+            "--action","choice:choose_analysis_thread",
+            "--action","choice:reconstruct_mumyeongs_sightline",
+            "--action","choice:show_the_hyeonakmun_trace_without_accusing",
+            "--action","choice:watch_mumyeong_answer_the_boss",
+            "--action","choice:search_the_rejected_aid_letters",
+            "--action","choice:stare_at_the_record_without_moving",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+    assert!(output.status.success(),"expected success, stderr was: {}",String::from_utf8_lossy(&output.stderr));
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    // After S1 resolves, next encounter fires (mumyeong_awakening)
+    assert!(stdout.contains("visual id: wuxia_mumyeong_awakening"));
+    assert!(!stdout.contains("visual id: wuxia_cheonggi_record_writing_sense"));
+    assert!(!stdout.contains("dev_desk"));
+}
+
+#[test]
+fn content_tui_smoke_reaches_wuxia_cheonoe_pyeonrin_second_reward() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene","content","--storypack-preview","wuxia_jianghu_pack",
+            "--seed","123","--tui-smoke",
+            "--action","choice:follow_roadside_dust",
+            "--action","move:jianghu_market_street",
+            "--action","choice:run_toward_open_street",
+            "--action","choice:choose_failure_log",
+            "--action","choice:tell_plain_truth",
+            "--action","choice:accept_three_month_trial",
+            "--action","choice:step_back_with_firewood",
+            "--action","choice:defend_cheongryu_with_white_path",
+            "--action","choice:accept_medicine_with_written_debt",
+            "--action","choice:watch_the_stolen_qingliu_flow",
+            "--action","choice:endure_until_copy_flow_breaks",
+            "--action","choice:listen_for_breath_mismatch",
+            "--action","choice:choose_analysis_thread",
+            "--action","choice:reconstruct_mumyeongs_sightline",
+            "--action","choice:show_the_hyeonakmun_trace_without_accusing",
+            "--action","choice:watch_mumyeong_answer_the_boss",
+            "--action","choice:search_the_rejected_aid_letters",
+            "--action","choice:stare_at_the_record_without_moving",
+            "--action","choice:compare_anger_to_copied_flow",
+            "--action","choice:inspect_bokho_lock_scars",
+            "--action","choice:read_hyeonakmun_empty_gate_record",
+            "--action","choice:trace_boss_offer_after_hyeonakmun",
+            "--action","choice:assemble_departure_truth_without_delivering",
+            "--action","choice:set_down_the_work_notebook_briefly",
+            "--action","choice:eat_the_left_meal_quietly",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+    assert!(output.status.success(),"expected success, stderr was: {}",String::from_utf8_lossy(&output.stderr));
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("visual id: wuxia_cheonoe_pyeonrin_second_reward"));
+    assert!(stdout.contains("layout: fragment_choice"));
+    assert!(stdout.contains("choice:choose_training_method_thread /"));
+    assert!(stdout.contains("choice:choose_first_aid_thread /"));
+    assert!(stdout.contains("choice:choose_return_clue_thread /"));
+    assert!(!stdout.contains("cheonoe_pyeonrin_second_reward_resolved"));
+    assert!(!stdout.contains("dev_desk"));
+}
+
+#[test]
+fn content_tui_smoke_cheonoe_pyeonrin_second_reward_sets_resolved_flag() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene","content","--storypack-preview","wuxia_jianghu_pack",
+            "--seed","123","--tui-smoke",
+            "--action","choice:follow_roadside_dust",
+            "--action","move:jianghu_market_street",
+            "--action","choice:run_toward_open_street",
+            "--action","choice:choose_failure_log",
+            "--action","choice:tell_plain_truth",
+            "--action","choice:accept_three_month_trial",
+            "--action","choice:step_back_with_firewood",
+            "--action","choice:defend_cheongryu_with_white_path",
+            "--action","choice:accept_medicine_with_written_debt",
+            "--action","choice:watch_the_stolen_qingliu_flow",
+            "--action","choice:endure_until_copy_flow_breaks",
+            "--action","choice:listen_for_breath_mismatch",
+            "--action","choice:choose_analysis_thread",
+            "--action","choice:reconstruct_mumyeongs_sightline",
+            "--action","choice:show_the_hyeonakmun_trace_without_accusing",
+            "--action","choice:watch_mumyeong_answer_the_boss",
+            "--action","choice:search_the_rejected_aid_letters",
+            "--action","choice:stare_at_the_record_without_moving",
+            "--action","choice:compare_anger_to_copied_flow",
+            "--action","choice:inspect_bokho_lock_scars",
+            "--action","choice:read_hyeonakmun_empty_gate_record",
+            "--action","choice:trace_boss_offer_after_hyeonakmun",
+            "--action","choice:assemble_departure_truth_without_delivering",
+            "--action","choice:set_down_the_work_notebook_briefly",
+            "--action","choice:eat_the_left_meal_quietly",
+            "--action","choice:choose_training_method_thread",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+    assert!(output.status.success(),"expected success, stderr was: {}",String::from_utf8_lossy(&output.stderr));
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    // After S2 resolves, sado_final_battle fires next
+    assert!(stdout.contains("visual id: wuxia_sado_final_battle"));
+    assert!(!stdout.contains("visual id: wuxia_cheonoe_pyeonrin_second_reward"));
+    assert!(!stdout.contains("dev_desk"));
+}
 #[test]
 fn content_tui_smoke_renders_final_movement_panel_after_scripted_actions() {
     let bundle_path = content_bundle_path();

@@ -211,12 +211,12 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&5));
     assert_eq!(bundle.manifest.counts.get("items"), Some(&4));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&38));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&41));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 5);
-    assert_eq!(index.encounters_len(), 38);
+    assert_eq!(index.encounters_len(), 41);
 
     let market = index
         .location("jianghu_market_street")
@@ -1644,6 +1644,34 @@ fn preview_fixture_indexes_wuxia_first_fight() {
         Some("cheongryu_outer_courtyard")
     );
 
+
+    let second_reward = index
+        .encounter("wuxia_cheonoe_pyeonrin_second_reward")
+        .expect("cheonoe pyeonrin second reward encounter");
+    assert_eq!(second_reward.title, "천외편린 두 번째 보상");
+    assert_eq!(
+        second_reward.conditions.required_flags,
+        vec![
+            "cheonoe_pyeonrin_reward_schema_opened",
+            "seoharin_left_meal_resolved",
+            "midgame_continuity_started",
+        ]
+    );
+    assert_eq!(
+        second_reward.conditions.forbidden_flags,
+        vec!["cheonoe_pyeonrin_second_reward_resolved"]
+    );
+    let second_reward_presentation = second_reward
+        .presentation
+        .as_ref()
+        .expect("cheonoe pyeonrin second reward presentation");
+    assert_eq!(second_reward_presentation.layout.as_deref(), Some("fragment_choice"));
+    assert_eq!(second_reward_presentation.speaker.as_deref(), Some("천기록"));
+    assert_eq!(second_reward.choices.len(), 3);
+    let return_clue = second_reward.choices.iter().find(|c| c.id == "choose_return_clue_thread").expect("return clue choice");
+    assert_eq!(return_clue.outcome.add_flags, vec!["cheonoe_reward_return_clue_thread", "cheonoe_pyeonrin_second_reward_resolved", "two_unchosen_fragments_lost_second"]);
+    assert_eq!(return_clue.outcome.add_clues, vec!["two_unchosen_fragments_lost", "return_clue_faint_direction"]);
+
     let sado_battle = index
         .encounter("wuxia_sado_final_battle")
         .expect("Sado final battle container encounter");
@@ -1791,6 +1819,20 @@ fn preview_fixture_indexes_wuxia_first_fight() {
         secure_ledger.outcome.destination_id.as_deref(),
         Some("black_serpent_ledger_vault")
     );
+
+
+    let analysis_bridge = index
+        .encounter("wuxia_cheonoe_analysis_thread_phase1_bridge")
+        .expect("cheonoe analysis thread phase1 bridge encounter");
+    assert_eq!(analysis_bridge.title, "복기 루프 — 장부고의 틈");
+    assert_eq!(analysis_bridge.conditions.required_flags, vec!["sado_final_phase_1_price_tag_resolved", "final_state_routing_seeded", "cheonoe_reward_analysis_thread"]);
+    assert_eq!(analysis_bridge.conditions.forbidden_flags, vec!["cheonoe_analysis_thread_phase1_bridge_resolved"]);
+    let bridge_presentation = analysis_bridge.presentation.as_ref().expect("analysis bridge presentation");
+    assert_eq!(bridge_presentation.layout.as_deref(), Some("cheonggi_record"));
+    assert_eq!(bridge_presentation.speaker.as_deref(), Some("천기록"));
+    assert_eq!(analysis_bridge.choices.len(), 2);
+    let apply_loop = analysis_bridge.choices.iter().find(|c| c.id == "apply_review_loop_to_ledger_structure").expect("apply review loop choice");
+    assert!(apply_loop.outcome.add_clues.iter().any(|c| c == "analysis_thread_reveals_extra_weakpoint_reading"));
 
     let weakpoint = index
         .encounter("wuxia_sado_final_phase_2_weakpoint_control")

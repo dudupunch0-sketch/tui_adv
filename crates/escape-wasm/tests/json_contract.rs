@@ -1834,6 +1834,7 @@ fn json_boundary_reaches_wuxia_mumyeong_awakening_through_preview_bundle() {
         "choice:show_the_hyeonakmun_trace_without_accusing",
         "choice:watch_mumyeong_answer_the_boss",
         "choice:search_the_rejected_aid_letters",
+        "choice:stare_at_the_record_without_moving",
     ]);
 
     let awakening_page_json = scene_page_json(&post_request_state_json, WUXIA_PREVIEW_BUNDLE)
@@ -1916,6 +1917,7 @@ fn json_boundary_reaches_wuxia_qingliu_attack_after_war_through_preview_bundle()
         "choice:show_the_hyeonakmun_trace_without_accusing",
         "choice:watch_mumyeong_answer_the_boss",
         "choice:search_the_rejected_aid_letters",
+        "choice:stare_at_the_record_without_moving",
         "choice:compare_anger_to_copied_flow",
     ]);
 
@@ -2005,6 +2007,7 @@ fn json_boundary_reaches_wuxia_mumyeong_destroys_orthodox_sect_through_preview_b
         "choice:show_the_hyeonakmun_trace_without_accusing",
         "choice:watch_mumyeong_answer_the_boss",
         "choice:search_the_rejected_aid_letters",
+        "choice:stare_at_the_record_without_moving",
         "choice:compare_anger_to_copied_flow",
         "choice:inspect_bokho_lock_scars",
     ]);
@@ -2101,6 +2104,7 @@ fn json_boundary_reaches_wuxia_boss_recruits_mumyeong_through_preview_bundle() {
         "choice:show_the_hyeonakmun_trace_without_accusing",
         "choice:watch_mumyeong_answer_the_boss",
         "choice:search_the_rejected_aid_letters",
+        "choice:stare_at_the_record_without_moving",
         "choice:compare_anger_to_copied_flow",
         "choice:inspect_bokho_lock_scars",
         "choice:read_hyeonakmun_empty_gate_record",
@@ -2189,6 +2193,7 @@ fn json_boundary_reaches_wuxia_mumyeong_departure_truth_summary_through_preview_
         "choice:show_the_hyeonakmun_trace_without_accusing",
         "choice:watch_mumyeong_answer_the_boss",
         "choice:search_the_rejected_aid_letters",
+        "choice:stare_at_the_record_without_moving",
         "choice:compare_anger_to_copied_flow",
         "choice:inspect_bokho_lock_scars",
         "choice:read_hyeonakmun_empty_gate_record",
@@ -2282,6 +2287,7 @@ fn json_boundary_reaches_wuxia_seoharin_empty_place_through_preview_bundle() {
         "choice:show_the_hyeonakmun_trace_without_accusing",
         "choice:watch_mumyeong_answer_the_boss",
         "choice:search_the_rejected_aid_letters",
+        "choice:stare_at_the_record_without_moving",
         "choice:compare_anger_to_copied_flow",
         "choice:inspect_bokho_lock_scars",
         "choice:read_hyeonakmun_empty_gate_record",
@@ -2697,6 +2703,7 @@ fn json_boundary_reaches_wuxia_seoharin_left_meal_through_preview_bundle() {
         "choice:show_the_hyeonakmun_trace_without_accusing",
         "choice:watch_mumyeong_answer_the_boss",
         "choice:search_the_rejected_aid_letters",
+        "choice:stare_at_the_record_without_moving",
         "choice:compare_anger_to_copied_flow",
         "choice:inspect_bokho_lock_scars",
         "choice:read_hyeonakmun_empty_gate_record",
@@ -2783,6 +2790,7 @@ fn json_boundary_reaches_wuxia_sado_final_phase_1_price_tag_through_preview_bund
         "choice:show_the_hyeonakmun_trace_without_accusing",
         "choice:watch_mumyeong_answer_the_boss",
         "choice:search_the_rejected_aid_letters",
+        "choice:stare_at_the_record_without_moving",
         "choice:compare_anger_to_copied_flow",
         "choice:inspect_bokho_lock_scars",
         "choice:read_hyeonakmun_empty_gate_record",
@@ -2790,6 +2798,7 @@ fn json_boundary_reaches_wuxia_sado_final_phase_1_price_tag_through_preview_bund
         "choice:assemble_departure_truth_without_delivering",
         "choice:set_down_the_work_notebook_briefly",
         "choice:eat_the_left_meal_quietly",
+        "choice:choose_training_method_thread",
     ]);
 
     let battle_page_json = scene_page_json(&battle_state_json, WUXIA_PREVIEW_BUNDLE)
@@ -2951,6 +2960,7 @@ fn json_boundary_reaches_wuxia_sado_final_phase_2_weakpoint_control_through_prev
         "choice:show_the_hyeonakmun_trace_without_accusing",
         "choice:watch_mumyeong_answer_the_boss",
         "choice:search_the_rejected_aid_letters",
+        "choice:stare_at_the_record_without_moving",
         "choice:compare_anger_to_copied_flow",
         "choice:inspect_bokho_lock_scars",
         "choice:read_hyeonakmun_empty_gate_record",
@@ -2958,8 +2968,10 @@ fn json_boundary_reaches_wuxia_sado_final_phase_2_weakpoint_control_through_prev
         "choice:assemble_departure_truth_without_delivering",
         "choice:set_down_the_work_notebook_briefly",
         "choice:eat_the_left_meal_quietly",
+        "choice:choose_training_method_thread",
         "choice:affirm_priceless_heart_before_sado",
         "choice:secure_the_blackscale_ledger",
+        "choice:note_and_move_forward",
     ]);
 
     let weakpoint_page_json = scene_page_json(&weakpoint_state_json, WUXIA_PREVIEW_BUNDLE)
@@ -3059,6 +3071,7 @@ fn json_boundary_reaches_wuxia_sado_final_phase_3_outside_calculation_through_pr
         "choice:show_the_hyeonakmun_trace_without_accusing",
         "choice:watch_mumyeong_answer_the_boss",
         "choice:search_the_rejected_aid_letters",
+        "choice:stare_at_the_record_without_moving",
         "choice:compare_anger_to_copied_flow",
         "choice:inspect_bokho_lock_scars",
         "choice:read_hyeonakmun_empty_gate_record",
@@ -3066,8 +3079,10 @@ fn json_boundary_reaches_wuxia_sado_final_phase_3_outside_calculation_through_pr
         "choice:assemble_departure_truth_without_delivering",
         "choice:set_down_the_work_notebook_briefly",
         "choice:eat_the_left_meal_quietly",
+        "choice:choose_training_method_thread",
         "choice:affirm_priceless_heart_before_sado",
         "choice:secure_the_blackscale_ledger",
+        "choice:note_and_move_forward",
         "choice:return_flow_to_mumyeong",
     ]);
 
@@ -3170,6 +3185,7 @@ fn json_boundary_reaches_wuxia_boss_resolution_through_preview_bundle() {
         "choice:show_the_hyeonakmun_trace_without_accusing",
         "choice:watch_mumyeong_answer_the_boss",
         "choice:search_the_rejected_aid_letters",
+        "choice:stare_at_the_record_without_moving",
         "choice:compare_anger_to_copied_flow",
         "choice:inspect_bokho_lock_scars",
         "choice:read_hyeonakmun_empty_gate_record",
@@ -3177,8 +3193,10 @@ fn json_boundary_reaches_wuxia_boss_resolution_through_preview_bundle() {
         "choice:assemble_departure_truth_without_delivering",
         "choice:set_down_the_work_notebook_briefly",
         "choice:eat_the_left_meal_quietly",
+        "choice:choose_training_method_thread",
         "choice:affirm_priceless_heart_before_sado",
         "choice:secure_the_blackscale_ledger",
+        "choice:note_and_move_forward",
         "choice:return_flow_to_mumyeong",
     ]);
 
@@ -3280,6 +3298,7 @@ fn json_boundary_reaches_wuxia_mumyeong_resolution_after_boss_resolution() {
         "choice:show_the_hyeonakmun_trace_without_accusing",
         "choice:watch_mumyeong_answer_the_boss",
         "choice:search_the_rejected_aid_letters",
+        "choice:stare_at_the_record_without_moving",
         "choice:compare_anger_to_copied_flow",
         "choice:inspect_bokho_lock_scars",
         "choice:read_hyeonakmun_empty_gate_record",
@@ -3287,8 +3306,10 @@ fn json_boundary_reaches_wuxia_mumyeong_resolution_after_boss_resolution() {
         "choice:assemble_departure_truth_without_delivering",
         "choice:set_down_the_work_notebook_briefly",
         "choice:eat_the_left_meal_quietly",
+        "choice:choose_training_method_thread",
         "choice:affirm_priceless_heart_before_sado",
         "choice:secure_the_blackscale_ledger",
+        "choice:note_and_move_forward",
         "choice:return_flow_to_mumyeong",
     ]);
     let boss_result_json = apply_action_json(
@@ -3403,6 +3424,7 @@ fn json_boundary_reaches_wuxia_seoharin_qingliu_resolution_after_mumyeong_resolu
         "choice:show_the_hyeonakmun_trace_without_accusing",
         "choice:watch_mumyeong_answer_the_boss",
         "choice:search_the_rejected_aid_letters",
+        "choice:stare_at_the_record_without_moving",
         "choice:compare_anger_to_copied_flow",
         "choice:inspect_bokho_lock_scars",
         "choice:read_hyeonakmun_empty_gate_record",
@@ -3410,8 +3432,10 @@ fn json_boundary_reaches_wuxia_seoharin_qingliu_resolution_after_mumyeong_resolu
         "choice:assemble_departure_truth_without_delivering",
         "choice:set_down_the_work_notebook_briefly",
         "choice:eat_the_left_meal_quietly",
+        "choice:choose_training_method_thread",
         "choice:affirm_priceless_heart_before_sado",
         "choice:secure_the_blackscale_ledger",
+        "choice:note_and_move_forward",
         "choice:return_flow_to_mumyeong",
     ]);
     let phase_3_result_json = apply_action_json(

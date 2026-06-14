@@ -2342,7 +2342,7 @@ def test_wuxia_return_settlement_epilogue_contract_is_docs_synced():
     assert "epilogue_wuxia_empty_place_kept_open" in final_epilogue_rs
     assert "epilogue_wuxia_closed_gate_risk" in final_epilogue_rs
     assert "return_settlement_evasion" in final_epilogue_rs
-    assert "main_ending_type" not in final_epilogue_rs
+    assert "main_ending_type" in final_epilogue_rs  # S6: now implemented
     assert "told_seoharin_truth" not in final_epilogue_rs
 
 
@@ -2835,3 +2835,181 @@ def test_wuxia_cheonoe_pyeonrin_first_reward_runtime_slice_is_docs_synced():
     assert "two_unchosen_fragments_lost" in encounters_yaml
     assert "wuxia_cheonoe_pyeonrin_first_reward" in notion_sources
     assert "implemented_in_storypack_preview" in notion_sources
+
+
+def test_wuxia_cheonggi_record_writing_sense_is_docs_synced():
+    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
+    wuxia_pack = Path("docs/content/storypacks/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+    wuxia_cards = Path("docs/content/encounter_db/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+    notion_sources = Path("idea_box/notion_sources.yml").read_text(encoding="utf-8")
+    encounters_yaml = Path(
+        "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml"
+    ).read_text(encoding="utf-8")
+
+    assert "wuxia_cheonggi_record_writing_sense" in plan
+    assert "[DONE] S1" in plan
+    assert "0.2cs" in checklist
+    assert "S1" in checklist
+    assert "wuxia_cheonggi_record_writing_sense" in coverage
+    assert "cheonggi_recorder_presence_sensed" in coverage
+    assert "wuxia_cheonggi_record_writing_sense" in wuxia_pack
+    assert "47. `wuxia_cheonggi_record_writing_sense`" in wuxia_cards
+    assert "id: wuxia_cheonggi_record_writing_sense" in wuxia_cards
+    assert "stare_at_the_record_without_moving" in wuxia_cards
+    assert "look_away_and_steady_breath" in wuxia_cards
+    assert "write_a_line_of_your_own" in wuxia_cards
+    assert "id: wuxia_cheonggi_record_writing_sense" in encounters_yaml
+    assert "stare_at_the_record_without_moving" in encounters_yaml
+    assert "cheonggi_record_writing_sense_resolved" in encounters_yaml
+    assert "cheonggi_recorder_presence_sensed" in encounters_yaml
+    assert "wuxia_cheonggi_record_writing_sense" in notion_sources
+    assert "implemented_in_storypack_preview" in notion_sources
+
+
+def test_wuxia_cheonoe_pyeonrin_second_reward_is_docs_synced():
+    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
+    coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
+    wuxia_pack = Path("docs/content/storypacks/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+    wuxia_cards = Path("docs/content/encounter_db/wuxia_jianghu_pack.md").read_text(
+        encoding="utf-8"
+    )
+    notion_sources = Path("idea_box/notion_sources.yml").read_text(encoding="utf-8")
+    encounters_yaml = Path(
+        "src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml"
+    ).read_text(encoding="utf-8")
+
+    assert "wuxia_cheonoe_pyeonrin_second_reward" in plan
+    assert "[DONE] S2" in plan
+    assert "0.2cs" in checklist
+    assert "S2" in checklist
+    assert "wuxia_cheonoe_pyeonrin_second_reward" in coverage
+    assert "cheonoe_reward_training_method_thread" in coverage
+    assert "wuxia_cheonoe_pyeonrin_second_reward" in wuxia_pack
+    assert "48. `wuxia_cheonoe_pyeonrin_second_reward`" in wuxia_cards
+    assert "id: wuxia_cheonoe_pyeonrin_second_reward" in wuxia_cards
+    assert "choose_training_method_thread" in wuxia_cards
+    assert "choose_first_aid_thread" in wuxia_cards
+    assert "choose_return_clue_thread" in wuxia_cards
+    assert "id: wuxia_cheonoe_pyeonrin_second_reward" in encounters_yaml
+    assert "choose_training_method_thread" in encounters_yaml
+    assert "cheonoe_pyeonrin_second_reward_resolved" in encounters_yaml
+    assert "two_unchosen_fragments_lost_second" in encounters_yaml
+    assert "wuxia_cheonoe_pyeonrin_second_reward" in notion_sources
+    assert "implemented_in_storypack_preview" in notion_sources
+
+
+def test_wuxia_return_modern_commute_scene_is_docs_synced():
+    plan = Path('docs/dev/Development_Plan.md').read_text(encoding='utf-8')
+    checklist = Path('docs/dev/Checklist.md').read_text(encoding='utf-8')
+    coverage = Path('docs/dev/Notion_Design_Coverage.md').read_text(encoding='utf-8')
+    wuxia_pack = Path('docs/content/storypacks/wuxia_jianghu_pack.md').read_text(
+        encoding='utf-8'
+    )
+    wuxia_cards = Path('docs/content/encounter_db/wuxia_jianghu_pack.md').read_text(
+        encoding='utf-8'
+    )
+    notion_sources = Path('idea_box/notion_sources.yml').read_text(encoding='utf-8')
+    encounters_yaml = Path(
+        'src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml'
+    ).read_text(encoding='utf-8')
+
+    assert 'wuxia_return_modern_commute_scene' in plan
+    assert '[DONE] S4' in plan
+    assert '0.2cs2' in checklist
+    assert 'S4' in checklist
+    assert 'wuxia_return_modern_commute_scene' in coverage
+    assert 'epilogue_wuxia_returned_commute' in coverage
+    assert 'wuxia_return_modern_commute_scene' in wuxia_pack
+    assert 'wuxia_return_modern_commute_scene' in wuxia_cards
+    assert 'id: wuxia_return_modern_commute_scene' in wuxia_cards
+    assert 'carry_calluses_without_explaining' in wuxia_cards
+    assert 'id: wuxia_return_modern_commute_scene' in encounters_yaml
+    assert 'carry_calluses_without_explaining' in encounters_yaml
+    assert 'wuxia_return_modern_commute_scene_resolved' in encounters_yaml
+    assert 'epilogue_wuxia_returned_commute' in encounters_yaml
+    assert 'wuxia_return_modern_commute_scene' in notion_sources
+    assert 'implemented_in_storypack_preview' in notion_sources
+
+
+def test_wuxia_settlement_stay_scene_is_docs_synced():
+    plan = Path('docs/dev/Development_Plan.md').read_text(encoding='utf-8')
+    checklist = Path('docs/dev/Checklist.md').read_text(encoding='utf-8')
+    coverage = Path('docs/dev/Notion_Design_Coverage.md').read_text(encoding='utf-8')
+    wuxia_pack = Path('docs/content/storypacks/wuxia_jianghu_pack.md').read_text(
+        encoding='utf-8'
+    )
+    wuxia_cards = Path('docs/content/encounter_db/wuxia_jianghu_pack.md').read_text(
+        encoding='utf-8'
+    )
+    notion_sources = Path('idea_box/notion_sources.yml').read_text(encoding='utf-8')
+    encounters_yaml = Path(
+        'src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml'
+    ).read_text(encoding='utf-8')
+
+    assert 'wuxia_settlement_stay_scene' in plan
+    assert '[DONE] S5' in plan
+    assert '0.2cs2' in checklist
+    assert 'S5' in checklist
+    assert 'wuxia_settlement_stay_scene' in coverage
+    assert 'epilogue_wuxia_qingliu_settlement' in coverage
+    assert 'wuxia_settlement_stay_scene' in wuxia_pack
+    assert 'wuxia_settlement_stay_scene' in wuxia_cards
+    assert 'id: wuxia_settlement_stay_scene' in wuxia_cards
+    assert 'place_the_button_in_the_storage_box' in wuxia_cards
+    assert 'id: wuxia_settlement_stay_scene' in encounters_yaml
+    assert 'place_the_button_in_the_storage_box' in encounters_yaml
+    assert 'wuxia_settlement_stay_scene_resolved' in encounters_yaml
+    assert 'epilogue_wuxia_qingliu_settlement' in encounters_yaml
+    assert 'wuxia_settlement_stay_scene' in notion_sources
+    assert 'implemented_in_storypack_preview' in notion_sources
+
+
+def test_wuxia_s6_main_ending_type_labels_are_docs_synced():
+    plan = Path('docs/dev/Development_Plan.md').read_text(encoding='utf-8')
+    checklist = Path('docs/dev/Checklist.md').read_text(encoding='utf-8')
+    coverage = Path('docs/dev/Notion_Design_Coverage.md').read_text(encoding='utf-8')
+    final_routing = Path('docs/design/Wuxia_Final_State_Routing.md').read_text(
+        encoding='utf-8'
+    )
+    final_epilogue_rs = Path(
+        'crates/escape-core/src/final_epilogue.rs'
+    ).read_text(encoding='utf-8')
+
+    assert '[DONE] S6' in plan
+    assert '0.86' in plan
+    assert 'main_ending_type' in plan
+    assert 'S6' in checklist
+    assert '0.2cs3' in checklist
+    assert 'MainEndingType' in checklist
+    assert 'main_ending_type' in coverage
+    assert 'cheongryu_divine_sword' in coverage
+    assert 'white_path_prison' in coverage
+    assert 'black_night_gentleman' in coverage
+    assert 'debtor_of_all_under_heaven' in coverage
+    assert 'returnee' in coverage
+    assert 'murim_outsider' in coverage
+    assert 'S6 Main Ending Type Label' in final_routing
+    assert 'cheongryu_divine_sword' in final_routing
+    assert 'white_path_prison' in final_routing
+    assert 'black_night_gentleman' in final_routing
+    assert 'debtor_of_all_under_heaven' in final_routing
+    assert 'returnee' in final_routing
+    assert 'murim_outsider' in final_routing
+    assert 'main_ending_type' in final_epilogue_rs
+    assert 'MainEndingType' in final_epilogue_rs
+    assert 'main_ending_label' in final_epilogue_rs
+    assert 'cheongryu_divine_sword' in final_epilogue_rs
+    assert 'white_path_prison' in final_epilogue_rs
+    assert 'black_night_gentleman' in final_epilogue_rs
+    assert 'debtor_of_all_under_heaven' in final_epilogue_rs
+    assert 'returnee' in final_epilogue_rs
+    assert 'murim_outsider' in final_epilogue_rs

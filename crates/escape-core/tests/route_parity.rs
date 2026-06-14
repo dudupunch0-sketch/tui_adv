@@ -856,3 +856,177 @@ fn scripted_major_route_smokes_reach_expected_endings_through_current_actions() 
         .iter()
         .any(|block| block.kind == "clue" && block.text.contains("private_only")));
 }
+
+#[test]
+fn s6_main_ending_type_battle_loss_is_labeled_battle_loss() {
+    let content = wuxia_content();
+    let state = wuxia_final_state_with_flags(
+        &[
+            "boss_resolution_resolved",
+            "mumyeong_resolution_resolved",
+            "seoharin_qingliu_resolution_resolved",
+            "cheongirok_resolution_resolved",
+            "black_serpent_aftermath_resolved",
+            "final_result_priority_applied_seeded",
+            "final_combat_result_battle_loss_seeded",
+            "final_state_routing_seeded",
+        ],
+        &[],
+    );
+    let page = scene_page_from_content(&state, &content).expect("page should render");
+    let result_text = body_text_for_kind(&page, "epilogue_result");
+    assert!(result_text.contains("final_result_key: battle_loss"));
+    assert!(result_text.contains("main_ending_type: battle_loss"));
+    assert!(result_text.contains("main_ending_label: 패배 결산"));
+}
+
+#[test]
+fn s6_main_ending_type_returnee_wins_over_route_result() {
+    let content = wuxia_content();
+    let state = wuxia_final_state_with_flags(
+        &[
+            "boss_resolution_resolved",
+            "mumyeong_resolution_resolved",
+            "seoharin_qingliu_resolution_resolved",
+            "cheongirok_resolution_resolved",
+            "black_serpent_aftermath_resolved",
+            "final_result_priority_applied_seeded",
+            "final_combat_result_battle_victory_seeded",
+            "final_state_routing_seeded",
+            "final_boss_resolution_meaningful_victory_seeded",
+            "final_return_settlement_contract_seeded",
+            "final_return_intent_honest_seeded",
+        ],
+        &[],
+    );
+    let page = scene_page_from_content(&state, &content).expect("page should render");
+    let result_text = body_text_for_kind(&page, "epilogue_result");
+    assert!(result_text.contains("main_ending_type: returnee"));
+    assert!(result_text.contains("main_ending_label: 귀환자"));
+}
+
+#[test]
+fn s6_main_ending_type_murim_outsider_from_settlement_intent() {
+    let content = wuxia_content();
+    let state = wuxia_final_state_with_flags(
+        &[
+            "boss_resolution_resolved",
+            "mumyeong_resolution_resolved",
+            "seoharin_qingliu_resolution_resolved",
+            "cheongirok_resolution_resolved",
+            "black_serpent_aftermath_resolved",
+            "final_result_priority_applied_seeded",
+            "final_combat_result_battle_victory_seeded",
+            "final_state_routing_seeded",
+            "final_boss_resolution_meaningful_victory_seeded",
+            "final_return_settlement_contract_seeded",
+            "final_settlement_intent_honest_seeded",
+        ],
+        &[],
+    );
+    let page = scene_page_from_content(&state, &content).expect("page should render");
+    let result_text = body_text_for_kind(&page, "epilogue_result");
+    assert!(result_text.contains("main_ending_type: murim_outsider"));
+    assert!(result_text.contains("main_ending_label: 무림 외지인"));
+}
+
+#[test]
+fn s6_main_ending_type_cheongryu_divine_sword_from_true_route_victory() {
+    let content = wuxia_content();
+    let state = wuxia_final_state_with_flags(
+        &[
+            "boss_resolution_resolved",
+            "mumyeong_resolution_resolved",
+            "seoharin_qingliu_resolution_resolved",
+            "cheongirok_resolution_resolved",
+            "black_serpent_aftermath_resolved",
+            "final_result_priority_applied_seeded",
+            "final_combat_result_battle_victory_seeded",
+            "final_state_routing_seeded",
+            "final_boss_resolution_true_route_confirmed_seeded",
+            "final_epilogue_candidates_true_route_seeded",
+        ],
+        &[],
+    );
+    let page = scene_page_from_content(&state, &content).expect("page should render");
+    let result_text = body_text_for_kind(&page, "epilogue_result");
+    assert!(result_text.contains("final_result_key: true_route_victory"));
+    assert!(result_text.contains("main_ending_type: cheongryu_divine_sword"));
+    assert!(result_text.contains("main_ending_label: 청류 신검"));
+}
+
+#[test]
+fn s6_main_ending_type_debtor_from_corrupted_victory() {
+    let content = wuxia_content();
+    let state = wuxia_final_state_with_flags(
+        &[
+            "boss_resolution_resolved",
+            "mumyeong_resolution_resolved",
+            "seoharin_qingliu_resolution_resolved",
+            "cheongirok_resolution_resolved",
+            "black_serpent_aftermath_resolved",
+            "final_result_priority_applied_seeded",
+            "final_combat_result_battle_victory_seeded",
+            "final_state_routing_seeded",
+            "final_boss_resolution_corrupted_victory_seeded",
+            "final_epilogue_candidates_corrupted_seeded",
+            "final_cheongirok_state_corruption_high_seeded",
+            "final_player_method_sado_style_calculation_seeded",
+        ],
+        &[],
+    );
+    let page = scene_page_from_content(&state, &content).expect("page should render");
+    let result_text = body_text_for_kind(&page, "epilogue_result");
+    assert!(result_text.contains("final_result_key: corrupted_victory"));
+    assert!(result_text.contains("main_ending_type: debtor_of_all_under_heaven"));
+    assert!(result_text.contains("main_ending_label: 천하의 채무자"));
+}
+
+#[test]
+fn s6_main_ending_type_black_night_gentleman_from_sapa_seeds() {
+    let content = wuxia_content();
+    let state = wuxia_final_state_with_flags(
+        &[
+            "boss_resolution_resolved",
+            "mumyeong_resolution_resolved",
+            "seoharin_qingliu_resolution_resolved",
+            "cheongirok_resolution_resolved",
+            "black_serpent_aftermath_resolved",
+            "final_result_priority_applied_seeded",
+            "final_combat_result_battle_victory_seeded",
+            "final_state_routing_seeded",
+            "final_boss_resolution_meaningful_victory_seeded",
+            "final_mumyeong_resolution_black_serpent_successor_seeded",
+        ],
+        &[],
+    );
+    let page = scene_page_from_content(&state, &content).expect("page should render");
+    let result_text = body_text_for_kind(&page, "epilogue_result");
+    assert!(result_text.contains("main_ending_type: black_night_gentleman"));
+    assert!(result_text.contains("main_ending_label: 흑야의 협객"));
+}
+
+#[test]
+fn s6_main_ending_type_white_path_prison_as_default_righteous_non_true_route() {
+    let content = wuxia_content();
+    let state = wuxia_final_state_with_flags(
+        &[
+            "boss_resolution_resolved",
+            "mumyeong_resolution_resolved",
+            "seoharin_qingliu_resolution_resolved",
+            "cheongirok_resolution_resolved",
+            "black_serpent_aftermath_resolved",
+            "final_result_priority_applied_seeded",
+            "final_combat_result_battle_victory_seeded",
+            "final_state_routing_seeded",
+            "final_boss_resolution_meaningful_victory_seeded",
+            "final_cheongirok_resolution_safe_high_use_seeded",
+            "final_qingliu_rebuild_high_candidate_seeded",
+        ],
+        &[],
+    );
+    let page = scene_page_from_content(&state, &content).expect("page should render");
+    let result_text = body_text_for_kind(&page, "epilogue_result");
+    assert!(result_text.contains("main_ending_type: white_path_prison"));
+    assert!(result_text.contains("main_ending_label: 백도의 굴레"));
+}

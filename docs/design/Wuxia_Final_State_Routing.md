@@ -694,3 +694,28 @@ Still closed:
 - Cheonggi Record recorder identity reveal
 
 Next contract decision: `wuxia_sado_battle_loss_route_bridge_followup_handoff`.
+
+## S6 Main Ending Type Label
+
+Status: implemented in `crates/escape-core/src/final_epilogue.rs` as S6 (2026-06-14). Roadmap bundle A (S1–S6) complete.
+
+The `MainEndingType` enum (internal to `final_epilogue.rs`, not persisted to disk) maps existing `final_*_seeded` flag combinations to one of seven labels. The label appears in the `epilogue_result` body block as `main_ending_type` + `main_ending_label`.
+
+### Seed → main_ending_type Mapping (priority order)
+
+| priority | condition | main_ending_type | label |
+|---|---|---|---|
+| 1 | `final_combat_result_battle_loss_seeded` | `battle_loss` | 패배 결산 |
+| 2 | `final_return_intent_honest_seeded` | `returnee` | 귀환자 |
+| 3 | `final_settlement_intent_honest_seeded` | `murim_outsider` | 무림 외지인 |
+| 4 | `FinalResult::TrueRouteVictory` | `cheongryu_divine_sword` | 청류 신검 |
+| 5 | `FinalResult::CorruptedVictory` | `debtor_of_all_under_heaven` | 천하의 채무자 |
+| 6 | sapa epilogue seeds (`final_mumyeong_resolution_black_serpent_successor_seeded`, `final_epilogue_mumyeong_black_serpent_new_scale_candidate_seeded`, `final_black_serpent_new_scale_candidate_seeded`, `final_player_method_sado_style_calculation_seeded`, `final_player_method_sado_style_calculation_echo_seeded`) | `black_night_gentleman` | 흑야의 협객 |
+| 7 | default (righteous non-true-route) | `white_path_prison` | 백도의 굴레 |
+
+Notes:
+- `returnee` and `murim_outsider` take priority over route result (2/3 before 4-7) because return/settlement is the final choice axis.
+- `cheongryu_divine_sword` requires `TrueRouteVictory` and neither return/settlement seed.
+- `white_path_prison` is the fallback for any non-sapa, non-true-route, non-returnee/outsider victory.
+- `battle_loss` maps to the existing `패배 결산` result; it is not one of the six designed story endings but is included for completeness.
+- No new persistent schema, save/archive surface, ScenePage mode, or identity reveal was added.

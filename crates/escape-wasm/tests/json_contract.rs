@@ -2704,6 +2704,7 @@ fn json_boundary_reaches_wuxia_sado_final_phase_1_price_tag_through_preview_bund
             "choice:keep_uncertainty_out_of_the_ledger",
             "choice:name_qingliu_as_calculation_break",
             "choice:cut_words_and_enter_sado_battle",
+            "choice:throw_away_every_lever_against_sado",
         ]
     );
 

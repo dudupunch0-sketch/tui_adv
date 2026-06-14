@@ -211,12 +211,12 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&5));
     assert_eq!(bundle.manifest.counts.get("items"), Some(&4));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&36));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&37));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 5);
-    assert_eq!(index.encounters_len(), 36);
+    assert_eq!(index.encounters_len(), 37);
 
     let market = index
         .location("jianghu_market_street")
@@ -1633,7 +1633,7 @@ fn preview_fixture_indexes_wuxia_first_fight() {
         sado_battle_presentation.effect_cues[0].stable_terms,
         vec!["흑사방주", "장부고", "값", "전투"]
     );
-    assert_eq!(sado_battle.choices.len(), 4);
+    assert_eq!(sado_battle.choices.len(), 5);
     let affirm_priceless = sado_battle
         .choices
         .iter()
@@ -1691,7 +1691,7 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     );
     assert_eq!(
         price_tag.conditions.forbidden_flags,
-        vec!["sado_final_phase_1_price_tag_resolved"]
+        vec!["sado_final_phase_1_price_tag_resolved", "sado_battle_loss_route_chosen"]
     );
     let price_tag_presentation = price_tag
         .presentation

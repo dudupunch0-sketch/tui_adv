@@ -142,7 +142,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     assert bundle["manifest"]["counts"] == {
         "locations": 5,
         "items": 4,
-        "encounters": 36,
+        "encounters": 37,
         "endings": 2,
         "achievements": 2,
         "secrets": 0,
@@ -183,6 +183,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "wuxia_seoharin_empty_place",
         "wuxia_seoharin_left_meal",
         "wuxia_sado_final_battle",
+        "wuxia_sado_battle_loss_route_bridge",
         "wuxia_sado_final_phase_1_price_tag",
         "wuxia_sado_final_phase_2_weakpoint_control",
         "wuxia_sado_final_phase_3_outside_calculation",
@@ -193,7 +194,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "wuxia_cheongirok_resolution",
         "wuxia_black_serpent_aftermath",
     ]
-    cheongirok = bundle["content"]["encounters"][34]
+    cheongirok = bundle["content"]["encounters"][35]
     assert cheongirok["conditions"] == {
         "locations": ["black_serpent_ledger_vault"],
         "required_flags": [
@@ -237,7 +238,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     ]
     assert safe_last_page["outcome"]["destination_id"] == "black_serpent_ledger_vault"
     assert "add_items" not in safe_last_page["outcome"]
-    black_serpent_aftermath = bundle["content"]["encounters"][35]
+    black_serpent_aftermath = bundle["content"]["encounters"][36]
     assert black_serpent_aftermath["conditions"] == {
         "locations": ["black_serpent_ledger_vault"],
         "required_flags": [
@@ -1111,6 +1112,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "keep_uncertainty_out_of_the_ledger",
         "name_qingliu_as_calculation_break",
         "cut_words_and_enter_sado_battle",
+        "throw_away_every_lever_against_sado",
     ]
     affirm_priceless = sado_battle["choices"][0]
     assert affirm_priceless["outcome"]["add_flags"] == [
@@ -1121,7 +1123,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "final_player_stance_priceless_heart_seeded",
     ]
     assert affirm_priceless["outcome"]["destination_id"] == "black_serpent_ledger_vault"
-    price_tag = bundle["content"]["encounters"][27]
+    price_tag = bundle["content"]["encounters"][28]
     assert price_tag["conditions"] == {
         "locations": ["black_serpent_ledger_vault"],
         "required_flags": [
@@ -1141,7 +1143,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
             "sealed_departure_truth_summary_prepared",
             "midgame_continuity_started",
         ],
-        "forbidden_flags": ["sado_final_phase_1_price_tag_resolved"],
+        "forbidden_flags": ["sado_final_phase_1_price_tag_resolved", "sado_battle_loss_route_chosen"],
     }
     assert price_tag["presentation"]["layout"] == "final_phase_price_tag"
     assert price_tag["presentation"]["speaker"] == "흑사방주"
@@ -1172,7 +1174,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "alliance_silence_accountability_seeded",
     ]
     assert secure_ledger["outcome"]["destination_id"] == "black_serpent_ledger_vault"
-    weakpoint = bundle["content"]["encounters"][28]
+    weakpoint = bundle["content"]["encounters"][29]
     assert weakpoint["conditions"] == {
         "locations": ["black_serpent_ledger_vault"],
         "required_flags": [

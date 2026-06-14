@@ -1611,6 +1611,60 @@ encounters:
           add_clues: [words_end_before_sado_battle, sado_battle_required_not_weakened]
           destination_id: black_serpent_ledger_vault
           log: 더 말하지 않자 장부고의 줄이 팽팽해진다. 대화는 끝났고, 사도는 여전히 약해지지 않았다. 이제 가격표의 첫 장을 몸으로 넘겨야 한다.
+      - id: throw_away_every_lever_against_sado
+        label: 증거도 압박도 기회도 버리고 그저 사도에게 덤빈다
+        outcome:
+          resources:
+            health: -3
+            sanity: -2
+          danger: 3
+          add_flags: [sado_final_battle_started, sado_final_battle_container_resolved, sado_final_battle_required_confirmed, sado_dialogue_does_not_weaken_boss, final_player_stance_no_leverage_seeded, sado_battle_loss_route_chosen]
+          add_clues: [entered_sado_battle_without_leverage, sado_battle_required_not_weakened]
+          destination_id: black_serpent_ledger_vault
+          log: 장부도, 약점도, 인질의 줄도 보지 않고 사도에게 곧장 덤빈다. 사도는 웃지도 않는다. 계산을 버린 싸움은 용감해 보이지만, 그가 매겨 둔 값을 단 한 줄도 지우지 못한 채 너를 더 깊은 장부고 안쪽으로 끌고 들어간다.
+
+  - id: wuxia_sado_battle_loss_route_bridge
+    title: "사도 최종전: 패배의 길"
+    body: 지렛대를 버린 싸움은 오래가지 못한다. 검은 비늘 장부는 끊기지 않았고, 매달린 빚도 인질의 줄도 그대로다. 사도는 너를 쓰러뜨리되 죽이지는 않는다. 패배는 점수가 아니라 기록이다. 네가 무엇을 지키지 못했고 어떤 압박을 풀지 못했으며 어떤 기회를 흘려보냈는지, 천기록의 마지막 장이 패배의 결로 접힌다.
+    presentation:
+      visual_id: wuxia_sado_battle_loss_route_bridge
+      speaker: 천기록
+      layout: final_battle_loss_bridge
+      effect_cues:
+        - kind: glyph_anomaly
+          source: wuxia_sado_battle_loss_route_bridge
+          intensity: 0.92
+          stable_terms: [사도, 장부, 패배, 마지막 장]
+          distortion: lost_battle_collapses_into_loss_record
+          duration_hint_ms: 2300
+          fallback_text: 무너진 장부고 위로 '사도', '장부', '패배', '마지막 장'만 검게 번졌다가 가라앉는다.
+    conditions:
+      locations: [black_serpent_ledger_vault]
+      required_flags: [sado_final_battle_started, sado_final_battle_container_resolved, sado_final_battle_required_confirmed, sado_dialogue_does_not_weaken_boss, sado_battle_loss_route_chosen, seoharin_left_meal_resolved, seoharin_empty_place_resolved, seoharin_axis_opened, empty_place_remembered, truth_delivery_still_unopened, boss_recruits_mumyeong_resolved, boss_recruitment_thread_opened, boss_first_appearance_resolved, black_serpent_core_pressure_opened, sealed_departure_truth_summary_prepared, midgame_continuity_started]
+      forbidden_flags: [sado_battle_loss_route_bridge_resolved]
+    choices:
+      - id: let_the_unpriced_value_fall_unbought
+        label: 값 매겨지지 않은 것을 끝내 팔지 않은 채 쓰러진다
+        outcome:
+          resources:
+            health: -2
+            sanity: -2
+          danger: 1
+          add_flags: [sado_battle_loss_route_bridge_resolved, final_combat_result_battle_loss_seeded, final_state_routing_seeded, final_result_priority_applied_seeded, boss_resolution_resolved, mumyeong_resolution_resolved, seoharin_qingliu_resolution_resolved, cheongirok_resolution_resolved, black_serpent_aftermath_resolved, final_black_serpent_aftermath_banner_residue_seeded, final_southern_market_rumor_candidate_seeded, final_mumyeong_successor_route_active_seeded, final_seoharin_closed_gate_candidate_seeded, final_cheongirok_state_corruption_high_seeded]
+          add_clues: [defeat_did_not_sell_the_unpriced_heart, loss_is_recorded_not_scored, black_serpent_ledger_outlived_the_fight]
+          destination_id: black_serpent_ledger_vault
+          log: 너는 졌다. 그러나 값 매겨지지 않은 것 하나만은 끝내 사도의 장부에 넘기지 않았다. 천기록은 승패를 다시 계산하지 않고, 무엇이 풀리지 않은 채 남았는지를 패배의 결로 적는다.
+      - id: fall_while_naming_what_was_not_protected
+        label: 지키지 못한 것의 이름을 부르며 무너진다
+        outcome:
+          resources:
+            health: -3
+            sanity: -1
+          danger: 2
+          add_flags: [sado_battle_loss_route_bridge_resolved, final_combat_result_battle_loss_seeded, final_state_routing_seeded, final_result_priority_applied_seeded, boss_resolution_resolved, mumyeong_resolution_resolved, seoharin_qingliu_resolution_resolved, cheongirok_resolution_resolved, black_serpent_aftermath_resolved, final_black_serpent_aftermath_banner_residue_seeded, final_southern_market_rumor_candidate_seeded, final_mumyeong_successor_route_active_seeded, final_seoharin_closed_gate_candidate_seeded, final_cheongirok_state_corruption_high_seeded]
+          add_clues: [named_the_unprotected_before_falling, pressure_remained_unresolved_in_loss, successor_pressure_outlived_the_defeat]
+          destination_id: black_serpent_ledger_vault
+          log: 쓰러지면서도 너는 지키지 못한 것들의 이름을 하나씩 부른다. 사도의 계산은 그 이름들을 지우지 못한다. 패배 뒤에도 풀리지 않은 압박은 남고, 천기록은 그것을 변명 없이 기록한다.
 
   - id: wuxia_sado_final_phase_1_price_tag
     title: "사도 최종전 1페이즈: 가격표"
@@ -1630,7 +1684,7 @@ encounters:
     conditions:
       locations: [black_serpent_ledger_vault]
       required_flags: [sado_final_battle_started, sado_final_battle_container_resolved, sado_final_battle_required_confirmed, sado_dialogue_does_not_weaken_boss, seoharin_left_meal_resolved, seoharin_empty_place_resolved, seoharin_axis_opened, empty_place_remembered, truth_delivery_still_unopened, boss_recruits_mumyeong_resolved, boss_recruitment_thread_opened, boss_first_appearance_resolved, black_serpent_core_pressure_opened, sealed_departure_truth_summary_prepared, midgame_continuity_started]
-      forbidden_flags: [sado_final_phase_1_price_tag_resolved]
+      forbidden_flags: [sado_final_phase_1_price_tag_resolved, sado_battle_loss_route_chosen]
     choices:
       - id: approach_sado_before_the_ledger
         label: 장부보다 먼저 사도에게 접근한다

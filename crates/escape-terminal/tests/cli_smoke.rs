@@ -2605,6 +2605,94 @@ fn content_tui_smoke_reaches_wuxia_final_epilogue_contract() {
 }
 
 #[test]
+fn content_tui_smoke_reaches_wuxia_sado_battle_loss_route_bridge_and_loss_epilogue() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--storypack-preview",
+            "wuxia_jianghu_pack",
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:follow_roadside_dust",
+            "--action",
+            "move:jianghu_market_street",
+            "--action",
+            "choice:run_toward_open_street",
+            "--action",
+            "choice:choose_failure_log",
+            "--action",
+            "choice:tell_plain_truth",
+            "--action",
+            "choice:accept_three_month_trial",
+            "--action",
+            "choice:step_back_with_firewood",
+            "--action",
+            "choice:defend_cheongryu_with_white_path",
+            "--action",
+            "choice:accept_medicine_with_written_debt",
+            "--action",
+            "choice:watch_the_stolen_qingliu_flow",
+            "--action",
+            "choice:endure_until_copy_flow_breaks",
+            "--action",
+            "choice:listen_for_breath_mismatch",
+            "--action",
+            "choice:reconstruct_mumyeongs_sightline",
+            "--action",
+            "choice:show_the_hyeonakmun_trace_without_accusing",
+            "--action",
+            "choice:watch_mumyeong_answer_the_boss",
+            "--action",
+            "choice:search_the_rejected_aid_letters",
+            "--action",
+            "choice:compare_anger_to_copied_flow",
+            "--action",
+            "choice:inspect_bokho_lock_scars",
+            "--action",
+            "choice:read_hyeonakmun_empty_gate_record",
+            "--action",
+            "choice:trace_boss_offer_after_hyeonakmun",
+            "--action",
+            "choice:assemble_departure_truth_without_delivering",
+            "--action",
+            "choice:set_down_the_work_notebook_briefly",
+            "--action",
+            "choice:eat_the_left_meal_quietly",
+            "--action",
+            "choice:throw_away_every_lever_against_sado",
+            "--action",
+            "choice:let_the_unpriced_value_fall_unbought",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("이구학지 결산"));
+    assert!(stdout.contains("visual id: ending:wuxia_final_epilogue_renderer_contract"));
+    assert!(stdout.contains("layout: ending"));
+    assert!(stdout.contains("final_result_key: battle_loss"));
+    assert!(stdout.contains("result_title: 패배 결산"));
+    assert!(stdout.contains("owned_by: Rust GameCore"));
+    assert!(stdout.contains("audit_id: final_state_canonical_collapse"));
+    assert!(stdout.contains("card_id: epilogue_boss_black_serpent_banner"));
+    assert!(stdout.contains("card_id: epilogue_wuxia_southern_market_rumor"));
+    assert!(stdout.contains("card_id: epilogue_mumyeong_black_serpent_new_scale"));
+    assert!(stdout.contains("card_id: epilogue_seoharin_closed_gate"));
+    assert!(stdout.contains("card_id: epilogue_tianjilu_last_page"));
+    assert!(!stdout.contains("card_id: epilogue_boss_broken_black_serpent"));
+    assert!(!stdout.contains("told_seoharin_truth"));
+}
+
+#[test]
 fn content_tui_smoke_renders_final_movement_panel_after_scripted_actions() {
     let bundle_path = content_bundle_path();
     let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))

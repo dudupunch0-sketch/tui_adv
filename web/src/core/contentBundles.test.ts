@@ -43,6 +43,7 @@ describe('runtime content bundle registry', () => {
       'wuxia_cheonoe_pyeonrin_first_reward',
       'wuxia_mumyeong_reads_orthodox_style',
       'wuxia_mumyeong_midgame_reunion',
+      'wuxia_cheonggi_record_writing_sense',
       'wuxia_boss_first_appearance',
       'wuxia_mumyeong_request_for_aid',
       'wuxia_mumyeong_awakening',
@@ -52,9 +53,11 @@ describe('runtime content bundle registry', () => {
       'wuxia_mumyeong_departure_truth_summary',
       'wuxia_seoharin_empty_place',
       'wuxia_seoharin_left_meal',
+      'wuxia_cheonoe_pyeonrin_second_reward',
       'wuxia_sado_final_battle',
       'wuxia_sado_battle_loss_route_bridge',
       'wuxia_sado_final_phase_1_price_tag',
+      'wuxia_cheonoe_analysis_thread_phase1_bridge',
       'wuxia_sado_final_phase_2_weakpoint_control',
       'wuxia_sado_final_phase_3_outside_calculation',
       'wuxia_boss_resolution',
@@ -62,6 +65,8 @@ describe('runtime content bundle registry', () => {
       'wuxia_seoharin_qingliu_resolution',
       'wuxia_seoharin_unsaid_stay',
       'wuxia_cheongirok_resolution',
+      'wuxia_return_modern_commute_scene',
+      'wuxia_settlement_stay_scene',
       'wuxia_black_serpent_aftermath',
     ]);
     expect(encounterIds).not.toContain('ex_employee_messenger');

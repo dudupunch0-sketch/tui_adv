@@ -41,6 +41,45 @@ impl FinalResult {
     }
 }
 
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum MainEndingType {
+    BattleLoss,
+    Returnee,
+    MurimOutsider,
+    CheongryuDivineSword,
+    WhitePathPrison,
+    BlackNightGentleman,
+    DebtorOfAllUnderHeaven,
+}
+
+impl MainEndingType {
+    pub(crate) fn key(self) -> &'static str {
+        match self {
+            Self::BattleLoss => "battle_loss",
+            Self::Returnee => "returnee",
+            Self::MurimOutsider => "murim_outsider",
+            Self::CheongryuDivineSword => "cheongryu_divine_sword",
+            Self::WhitePathPrison => "white_path_prison",
+            Self::BlackNightGentleman => "black_night_gentleman",
+            Self::DebtorOfAllUnderHeaven => "debtor_of_all_under_heaven",
+        }
+    }
+
+    pub(crate) fn label(self) -> &'static str {
+        match self {
+            Self::BattleLoss => "패배 결산",
+            Self::Returnee => "귀환자",
+            Self::MurimOutsider => "무림 외지인",
+            Self::CheongryuDivineSword => "청류 신검",
+            Self::WhitePathPrison => "백도의 굴레",
+            Self::BlackNightGentleman => "흑야의 협객",
+            Self::DebtorOfAllUnderHeaven => "천하의 채무자",
+        }
+    }
+}
+
+
 #[derive(Clone, Debug)]
 struct CardCandidate {
     id: &'static str,
@@ -72,12 +111,13 @@ pub(crate) fn final_epilogue_body_blocks(state: &GameState, ending_id: &str) -> 
     }
 
     let final_result = facts.final_result();
+    let main_ending_type = facts.main_ending_type(final_result);
     let mut candidates = build_candidates(&facts, final_result);
     let suppressed = apply_suppress_rules(&facts, final_result, &mut candidates);
 
     let mut blocks = vec![BodyBlock {
         kind: "epilogue_result".to_string(),
-        text: final_result_text(final_result),
+        text: final_result_text(final_result, main_ending_type),
         source_id: Some(FINAL_EPILOGUE_ENDING_ID.to_string()),
     }];
     blocks.push(state_audit_block(&facts, final_result));
@@ -180,6 +220,42 @@ impl<'a> FinalFacts<'a> {
             return FinalResult::IncompleteVictory;
         }
         FinalResult::BasicVictory
+    }
+
+    fn main_ending_type(&self, final_result: FinalResult) -> MainEndingType {
+        // Priority:
+        // 1. battle_loss -> BattleLoss
+        // 2. final_return_intent_honest_seeded -> Returnee
+        // 3. final_settlement_intent_honest_seeded -> MurimOutsider
+        // 4. TrueRouteVictory -> CheongryuDivineSword
+        // 5. CorruptedVictory -> DebtorOfAllUnderHeaven
+        // 6. sapa epilogue seeds -> BlackNightGentleman
+        // 7. default -> WhitePathPrison
+        if matches!(final_result, FinalResult::BattleLoss) {
+            return MainEndingType::BattleLoss;
+        }
+        if self.has_flag("final_return_intent_honest_seeded") {
+            return MainEndingType::Returnee;
+        }
+        if self.has_flag("final_settlement_intent_honest_seeded") {
+            return MainEndingType::MurimOutsider;
+        }
+        if matches!(final_result, FinalResult::TrueRouteVictory) {
+            return MainEndingType::CheongryuDivineSword;
+        }
+        if matches!(final_result, FinalResult::CorruptedVictory) {
+            return MainEndingType::DebtorOfAllUnderHeaven;
+        }
+        if self.has_any_flag(&[
+            "final_mumyeong_resolution_black_serpent_successor_seeded",
+            "final_epilogue_mumyeong_black_serpent_new_scale_candidate_seeded",
+            "final_black_serpent_new_scale_candidate_seeded",
+            "final_player_method_sado_style_calculation_seeded",
+            "final_player_method_sado_style_calculation_echo_seeded",
+        ]) {
+            return MainEndingType::BlackNightGentleman;
+        }
+        MainEndingType::WhitePathPrison
     }
 }
 
@@ -1409,14 +1485,20 @@ fn suppress_cards(
     }
 }
 
-fn final_result_text(final_result: FinalResult) -> String {
+fn final_result_text(final_result: FinalResult, main_ending_type: MainEndingType) -> String {
     format!(
-        "final_result_key: {}\nresult_title: {}\nowned_by: Rust GameCore\nrouting_note: final_result_priority, seed consumption, suppress, and card ordering were resolved before renderer display.",
+        "final_result_key: {}
+result_title: {}
+main_ending_type: {}
+main_ending_label: {}
+owned_by: Rust GameCore
+routing_note: final_result_priority, seed consumption, suppress, and card ordering were resolved before renderer display.",
         final_result.key(),
-        final_result.title()
+        final_result.title(),
+        main_ending_type.key(),
+        main_ending_type.label()
     )
 }
-
 fn card_block(card: &CardCandidate) -> BodyBlock {
     BodyBlock {
         kind: "epilogue_card".to_string(),

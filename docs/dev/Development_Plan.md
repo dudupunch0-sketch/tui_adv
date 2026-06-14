@@ -1,4 +1,4 @@
-# tui_adv 전체 개발 계획
+﻿# tui_adv 전체 개발 계획
 
 > **Canonical main plan:** 이 repo의 현재 개발 우선순위, 다음 작업 순서, active direction은 이 파일이 기준이다. 다른 LLM/agent에게 작업을 맡길 때는 “`docs/dev/Development_Plan.md`를 메인 플랜으로 보고 다음 작업을 진행해”라고 지시한다.
 >
@@ -3574,6 +3574,97 @@ Still closed:
 - 실제 회사명/직원/사무실 위치/사내망/사적 메모 등 비공개 정보
 
 Next runtime implementation candidate: `yageunmong_late_night_desk_awake` 중심 야근몽 첫 preview slice.
+
+## 0.82 2026-06-14 작업 우선순위 결정: 이구학지 완성 최우선, 야근몽/기타 팩 보류
+
+사용자 지시(2026-06-14):
+
+1. **최우선 = 이구학지(`wuxia_jianghu_pack`) 완성.** 야근몽 등 다른 팩은 별도 트랙으로 따로 작업하므로 지금은 손대지 않는다. 0.81의 야근몽 첫 런타임 슬라이스 구현은 **보류**(plan만 남김).
+2. 이구학지가 완성되면 멈추고, 야근몽 등 나머지 팩을 개발할지 사용자에게 **물어본 뒤** 진행한다.
+3. 작업 방식: plan=Opus(main), 구현=Sonnet subagent. 슬라이스마다 아주 짧게 보고.
+
+"이구학지 완성"의 정의(설계 flow 기준):
+
+- Notion `99. 통합 체크포인트`는 설계 미결정 항목 0 = 설계는 확정 상태. 따라서 완성 = **남은 설계/Notion 콘텐츠 중 허용 항목의 런타임 구현**.
+- 영구 제외(완성 조건에서 빼는 항목): `told_seoharin_truth`(서하린 진실 전달), 천기록 기록자 **정체 reveal**, 숫자 combat resolver/HP 숫자전(Notion이 사도전 등에서 숫자전을 금지). 이들은 "완성"에 포함하지 않는다.
+- 천기록 기록자 **중간 암시 이벤트**(실시간으로 한 획씩 적히는 발견 / 글자 대화)는 정체 reveal이 아니므로 허용 = 구현 대상.
+
+남은 이구학지 슬라이스의 정밀 목록/순서는 read-only 갭분석으로 확정한 뒤 이 문서에 로드맵으로 승격한다.
+
+## 0.83 2026-06-14 이구학지 완성 로드맵 (갭분석 기반)
+
+read-only 갭분석 결과를 바탕으로 "이구학지 완성"을 다음 두 묶음으로 나눈다.
+
+### A. 완성 IN-SCOPE 콘텐츠 슬라이스 (지금 순서대로 구현)
+
+기존 seed→epilogue-card 경량 설계 철학을 유지하는 콘텐츠/내러티브 갭. 새 무거운 엔진 스키마 없이 기존 encounter/flag/clue/presentation/epilogue consumer로 구현한다.
+
+1. **[DONE] S1 — 천기록 기록자 중간 암시 이벤트** (`wuxia_cheonggi_record_writing_sense`). Notion 99/storypack 179-182 근거. 정체 reveal 아님. 가드: 기록자 정체/기원 설명 금지, 기록자 음성/응답 금지, 호명 금지, 감지(실시간 필사/시선/존재감)만, 초자연인지 불안인지 모호하게. flag/clue/presentation만. 크기 S.
+2. **[DONE] S2 — 추가 천외편린 3택 보상 offering(들)** (중반·후반 발현). storypack 221-222 발현 timing. 1차와 동일 grammar(3택 1선 2소실), 숫자 없음. 후반 offering에 귀환 단서 계열 후보 1개 허용 가능(정체 reveal 아님). 크기 M.
+3. **[DONE] S3 — 천외편린 선택 결과의 경량 소비** (chosen thread가 이후 encounter에서 clue/해석 hint를 여는 정도). 숫자 능력치/패시브 수치 없음. 크기 M.
+4. **[DONE] S4 — 귀환 엔딩 SCENE** (). 3택(굳은살/업무수첩/흙먼지). epilogue_wuxia_returned_commute 방출. 크기 M.
+5. **[DONE] S5 — 정착 엔딩 SCENE** (). 3택(단추/외곽길/조용히 남기). epilogue_wuxia_qingliu_settlement 방출. 크기 M.
+6. **[DONE] S6 — main ending 구분 라벨 + route 엔딩 식별** (divine_sword/white_path_prison/black_night_gentleman/debtor_of_all/returnee/murim_outsider를 epilogue 출력에서 명시적으로 구분). 무거운 archive/save UI 없이 라벨/route 식별 수준. 크기 M.
+
+### B. 경계 항목 — 이구학지 완성 직전 사용자에게 scope 확인 후 결정
+
+다음은 Notion에 설계는 있으나 무거운 신규 엔진 스키마/모호 범위라, 경량 설계 철학과 충돌한다. A 묶음을 끝낸 뒤 사용자에게 "이것까지 이구학지 완성에 포함할지" 묻는다.
+
+- 관계/부채/세력 영속 원장(ledger) 시스템 (L, 신규 persistent schema + UI)
+- 별도 corruption/distortion 엔딩 SCENE 심화 (현재 closed-gate/corruption은 epilogue card로 존재)
+- 최종전 외 추가 playable 패배 경로 (현재 사도전 5번째 선택으로 도달 가능 — 갭분석 권고는 현행 유지)
+- 영구 제외: `told_seoharin_truth`, 천기록 기록자 정체 reveal, 숫자 combat resolver/HP 숫자전
+
+진행: A를 S1→S6 순서로 Sonnet subagent 구현, 슬라이스마다 짧게 보고. A 완료 후 멈추고 B + 타 팩(야근몽 등) 진행 여부를 사용자에게 확인한다.
+
+## 0.84 2026-06-14 이구학지 S1-S3 구현 완료
+
+### 구현 내용
+
+- **S1 wuxia_cheonggi_record_writing_sense**: 천기록 기록자 중간 암시 이벤트. mumyeong_request_for_aid_resolved 포함 6-flag 게이팅. 3택(응시/외면/한 줄 적기). 기록자 목소리/정체/호명 없이 실시간 필사 감지만. cheonggi_recorder_presence_sensed, writing_sense_received_silently 등 방출.
+- **S2 wuxia_cheonoe_pyeonrin_second_reward**: 사도 최종전 전야 2차 천외편린 3택 보상. seoharin_left_meal_resolved + cheonoe_pyeonrin_reward_schema_opened 게이팅. 3택 1선 2소실 grammar 유지, 숫자 없음. 수련법/응급처치/귀환단서 방향 3후보.
+- **S3 wuxia_cheonoe_analysis_thread_phase1_bridge**: 복기 루프 경량 소비. cheonoe_reward_analysis_thread + sado_final_phase_1_price_tag_resolved 게이팅. 장부고 구조 분석 hint 오픈, optional non-blocking.
+- cli_smoke 4개 신규 추가, 기존 smoke 17개 + json_contract 13개 S1/S2/S3 삽입 재통과.
+- Rust fixture + Web bundle 재생성.
+## 0.85 2026-06-14 이구학지 S4-S5 구현 완료
+
+### 구현 내용
+
+- **S4 wuxia_return_modern_commute_scene**: 귀환 엔딩 playable 장면. final_return_intent_honest_seeded + cheongirok_resolution_resolved + final_combat_result_battle_victory_seeded 게이팅. 3택(굳은살/업무수첩/흙먼지). epilogue_wuxia_returned_commute 방출. 정착 장면과 forbidden_flags로 상호 배타.
+- **S5 wuxia_settlement_stay_scene**: 정착 엔딩 playable 장면. final_settlement_intent_honest_seeded + cheongirok_resolution_resolved 게이팅. 3택(단추/외곽길/조용히 남기). epilogue_wuxia_qingliu_settlement 방출. 귀환 장면과 상호 배타.
+- cli_smoke 4개 신규 추가 (S4/S5 도달+resolved 각 2개씩).
+- Rust fixture + Web preview bundle 재생성 (encounters: 41 to 43).
+- 새 ScenePage mode 없음, 숫자 없음, 기록자 정체 reveal 없음, persistent schema 미추가.
+
+
+## 0.86 2026-06-14 이구학지 S6 엔딩 타입 라벨 구현 완료 (로드맵 A묶음 완료)
+
+### 구현 내용
+
+S6: `MainEndingType` 내부 Rust enum을 `crates/escape-core/src/final_epilogue.rs`에 추가. 기존 `final_*_seeded` 시드 플래그 조합만으로 6개 메인 엔딩 + battle_loss를 구분하고, `epilogue_result` body block에 `main_ending_type` + `main_ending_label` 필드를 출력.
+
+시드 → main_ending_type 매핑 (우선순위 순):
+
+1. `final_combat_result_battle_loss_seeded` → `battle_loss` (패배 결산)
+2. `final_return_intent_honest_seeded` → `returnee` (귀환자)
+3. `final_settlement_intent_honest_seeded` → `murim_outsider` (무림 외지인)
+4. `FinalResult::TrueRouteVictory` → `cheongryu_divine_sword` (청류 신검)
+5. `FinalResult::CorruptedVictory` → `debtor_of_all_under_heaven` (천하의 채무자)
+6. sapa 시드(`final_mumyeong_resolution_black_serpent_successor_seeded` 등) → `black_night_gentleman` (흑야의 협객)
+7. 나머지(righteous route non-true-route) → `white_path_prison` (백도의 굴레)
+
+새 route_parity 7개 테스트 추가 (s6_main_ending_type_*). 기존 test_docs_contract `main_ending_type` not-in 가드 → in 가드로 전환. cargo test --workspace 0 failed, pytest 257 green, vitest 66 green.
+
+제약 유지: 새 persistent schema / save/archive surface / ScenePage mode 미추가. 기록자 정체 reveal 없음. told_seoharin_truth 없음.
+
+**로드맵 A묶음 (S1–S6) 완료.**
+
+## 0.87 2026-06-15 이구학지 콘텐츠 완성 선언 + B 보류 + PR 재정리
+
+- 로드맵 0.83 A묶음(S1–S6) 전부 구현·green. 경량 seed/카드 설계 철학 기준으로 이구학지는 **콘텐츠/내러티브 레이어 완성**.
+- **사용자 결정(2026-06-14):** B묶음(관계/부채/세력 영속 ledger, 별도 corruption/왜곡 엔딩 scene 심화)은 **보류 — 지금은 제외**. 필요 시 별도 트랙에서 재개.
+- **PR 상태:** PR #117은 2026-06-14 main에 squash-merge 완료(63ee0f5). 그 merge는 사도 엔드게임 + 천외편린 1차까지만 담았고, 이후 작업(S1–S6, AGENTS subagent-tier 지침, 로드맵/완성 문서)은 main에 없었다. 따라서 merged main 기준 새 브랜치 `wuxia-completion-postmerge`에 후속 작업분을 모아 **새 PR**로 올린다.
+- 야근몽 첫 런타임(0.81 plan)은 계속 보류. 타 팩은 사용자 확인 후 별도 진행.
 
 ## 0.79 2026-06-14 무협 `wuxia_sado_battle_loss_route_bridge_followup_handoff` docs-only handoff: 천외편린 3택 보상 스키마
 

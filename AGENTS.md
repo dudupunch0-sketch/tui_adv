@@ -10,6 +10,20 @@
 - 특수 효과는 Web Storybook의 Canvas/GlyphFX와 SuperLightTUI terminal cell/GlyphFX 쪽으로 흡수한다. 기존 browser fake-TUI는 legacy/parity fallback으로만 취급한다.
 - 실제 사용자의 메모/사적 노트는 공개 산출물로 옮기지 않는다.
 
+## Subagent 모델 tier (작업 위임 규칙)
+
+이 프로젝트는 작업을 모델 tier로 나눠 처리한다. (2026-06-14 사용자 지시)
+
+- **Opus = 메인 오케스트레이터.** 설계/플랜 판단, 슬라이스 분해, 우선순위·범위 결정, 충돌 해결, 위임 지시만 한다. 큰 문서 정독·대량 코드 탐색을 메인에서 직접 하지 말고 subagent에 위임해 메인 컨텍스트를 가볍게 유지한다.
+- **Sonnet subagent = 코드 구현.** 이미 계획된 슬라이스의 실제 구현(인카운터 YAML, Rust/TS 코드, 번들 재생성, 테스트 작성/수정, doc-sync).
+- **Haiku subagent = 가벼운 작업.** 분류, 추출, 빠른 요약, 테스트벤치/명령 실행, 단순 조회 등 실시간 응답이 필요하지만 가벼운 작업.
+
+적용:
+
+- subagent를 띄울 때 작업 성격에 맞는 model을 명시한다(가벼움→haiku, 코드 구현→sonnet).
+- read-only 조사/탐색은 subagent(haiku 또는 Explore)로 돌리고 결론만 받는다.
+- 한 슬라이스 완료마다 아주 짧게 보고한다. plan(Opus) ↔ 구현(subagent) 단계를 구분한다.
+
 ## 계획 문서 우선순위
 
 - `docs/dev/Development_Plan.md`가 이 저장소의 canonical main plan이다. 현재 방향, 다음 작업, 우선순위, phase 순서는 이 파일을 기준으로 판단한다.

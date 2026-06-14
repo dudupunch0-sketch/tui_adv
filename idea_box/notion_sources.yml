@@ -573,3 +573,105 @@ sources:
     last_edited_time: "2026-06-01T01:45:00.000Z"
     precedence_role: "authoritative_checkpoint"
     status: "live_checked_docs_synced"
+
+  - key: wuxia_cheonggi_record_writing_sense
+    title: "천기록 적히는 감각 (Cheonggi Record Writing Sense S1)"
+    object: encounter
+    notion_ref: "notion:07-cheonoe-pyeonrin-reward-grammar"
+    last_edited_time: "2026-06-14T00:00:00.000Z"
+    precedence_role: "ambient_midgame_cheonggi_record_bridge"
+    related_design_units:
+      - "encounter:wuxia_cheonggi_record_writing_sense"
+      - "choice:stare_at_the_record_without_moving"
+      - "choice:look_away_and_steady_breath"
+      - "choice:write_a_line_of_your_own"
+      - "flag:cheonggi_record_writing_sense_resolved"
+      - "flag:cheonggi_recorder_presence_sensed"
+    implementation_scope: "ambient_bridge_no_identity_reveal_no_numeric_stats"
+    runtime_status: "implemented_in_storypack_preview"
+    status: "live_checked_runtime_implemented"
+
+  - key: wuxia_cheonoe_pyeonrin_second_reward
+    title: "천외편린 두 번째 보상 (Cheonoe Pyeonrin Second Reward S2)"
+    object: encounter
+    notion_ref: "notion:07-cheonoe-pyeonrin-reward-grammar"
+    last_edited_time: "2026-06-14T00:00:00.000Z"
+    precedence_role: "second_fragment_choice_pre_final_battle"
+    related_design_units:
+      - "encounter:wuxia_cheonoe_pyeonrin_second_reward"
+      - "choice:choose_training_method_thread"
+      - "choice:choose_first_aid_thread"
+      - "choice:choose_return_clue_thread"
+      - "flag:cheonoe_pyeonrin_second_reward_resolved"
+      - "flag:two_unchosen_fragments_lost_second"
+    required_prior_runtime:
+      - "wuxia_seoharin_left_meal"
+      - "wuxia_cheonoe_pyeonrin_first_reward"
+    implementation_scope: "fragment_choice_three_candidates_no_numeric_stats_gated_by_seoharin_left_meal"
+    runtime_status: "implemented_in_storypack_preview"
+    status: "live_checked_runtime_implemented"
+
+  - key: wuxia_cheonoe_analysis_thread_phase1_bridge
+    title: "천외편린 복기 루프 1페이즈 연결 (Analysis Thread Phase1 Bridge S3)"
+    object: encounter
+    notion_ref: "notion:07-cheonoe-pyeonrin-reward-grammar"
+    last_edited_time: "2026-06-14T00:00:00.000Z"
+    precedence_role: "analysis_thread_bridge_in_final_battle"
+    related_design_units:
+      - "encounter:wuxia_cheonoe_analysis_thread_phase1_bridge"
+      - "choice:apply_review_loop_to_ledger_structure"
+      - "choice:note_and_move_forward"
+      - "flag:cheonoe_analysis_thread_phase1_bridge_resolved"
+      - "flag:analysis_thread_ledger_reading_applied"
+    required_prior_runtime:
+      - "wuxia_sado_final_phase_1_price_tag"
+      - "wuxia_cheonoe_pyeonrin_first_reward"
+    consumed_by:
+      - "flag:cheonoe_reward_analysis_thread"
+    implementation_scope: "analysis_bridge_gated_cheonoe_reward_analysis_thread_no_combat_resolver"
+    runtime_status: "implemented_in_storypack_preview"
+    status: "live_checked_runtime_implemented"
+
+  - key: wuxia_return_modern_commute_scene
+    title: 귀환 출근길 엔딩 장면 (Return Modern Commute Scene S4)
+    object: encounter
+    notion_ref: notion:08-ending-epilogue-connection
+    last_edited_time: 2026-06-14T00:00:00.000Z
+    precedence_role: playable_return_ending_scene
+    related_design_units:
+      - encounter:wuxia_return_modern_commute_scene
+      - choice:carry_calluses_without_explaining
+      - choice:note_the_empty_work_notebook_line
+      - choice:let_the_dirt_stay_on_the_sleeve
+      - flag:wuxia_return_modern_commute_scene_resolved
+      - flag:epilogue_wuxia_returned_commute
+    required_prior_runtime:
+      - wuxia_seoharin_unsaid_stay
+      - wuxia_black_serpent_aftermath
+    consumed_by:
+      - flag:final_return_intent_honest_seeded
+    implementation_scope: playable_return_scene_flag_clue_log_presentation_only_no_combat_resolver
+    runtime_status: implemented_in_storypack_preview
+    status: live_checked_runtime_implemented
+
+  - key: wuxia_settlement_stay_scene
+    title: 정착 선택 엔딩 장면 (Settlement Stay Scene S5)
+    object: encounter
+    notion_ref: notion:08-ending-epilogue-connection
+    last_edited_time: 2026-06-14T00:00:00.000Z
+    precedence_role: playable_settlement_ending_scene
+    related_design_units:
+      - encounter:wuxia_settlement_stay_scene
+      - choice:place_the_button_in_the_storage_box
+      - choice:walk_the_qingliu_outer_path_again
+      - choice:stay_without_announcing_it
+      - flag:wuxia_settlement_stay_scene_resolved
+      - flag:epilogue_wuxia_qingliu_settlement
+    required_prior_runtime:
+      - wuxia_seoharin_unsaid_stay
+      - wuxia_black_serpent_aftermath
+    consumed_by:
+      - flag:final_settlement_intent_honest_seeded
+    implementation_scope: playable_settlement_scene_flag_clue_log_presentation_only_no_combat_resolver
+    runtime_status: implemented_in_storypack_preview
+    status: live_checked_runtime_implemented

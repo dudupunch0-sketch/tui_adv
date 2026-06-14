@@ -1,4 +1,4 @@
-# escape from the office 개발 체크리스트
+﻿# escape from the office 개발 체크리스트
 
 이 문서는 전체 개발 진행 상황을 추적하기 위한 체크리스트다.
 체크박스는 실제 작업 완료 후 갱신한다.
@@ -1117,6 +1117,32 @@
 - [x] combat resolver, HP 숫자전, archive/save schema, relation/debt/faction ledger, reward/ability schema 미변경 유지
 - [x] 다음 작업을 `wuxia_sado_battle_loss_route_bridge_implementation` runtime slice로 갱신
 
+
+
+### 0.2cs3 2026-06-14 무협 S6 엔딩 타입 라벨 (이구학지 완성 로드맵 0.83 A묶음 완료)
+
+- [x] S6: `MainEndingType` enum 추가 — `final_epilogue.rs` 내부에 6개 메인 엔딩 타입 라벨 구현. `epilogue_result` body block에 `main_ending_type` + `main_ending_label` 필드 추가. 기존 `final_*_seeded` 시드 조합으로 battle_loss / returnee / murim_outsider / cheongryu_divine_sword / white_path_prison / black_night_gentleman / debtor_of_all_under_heaven 구분.
+- [x] route_parity 7개 테스트 추가 (6개 엔딩 + battle_loss). 기존 15개 유지.
+- [x] cargo test --workspace green (0 failed), pytest 257 green, vitest 66 green.
+- [x] new persistent schema, save/archive surface, ScenePage mode 미추가. 기록자 정체 reveal 없음. told_seoharin_truth 없음.
+- [x] 로드맵 A묶음(S1-S6) 완료.
+
+### 0.2cs2 2026-06-14 무협 S4-S5 runtime slices (이구학지 완성 로드맵 0.83 A묶음 4-5)
+
+- [x] S4: `wuxia_return_modern_commute_scene` 추가 — 귀환 엔딩 장면. `final_return_intent_honest_seeded + cheongirok_resolution_resolved` 게이팅. 3택(굳은살/업무수첩/흙먼지). `epilogue_wuxia_returned_commute` 방출. 정착 장면과 forbidden_flags로 상호 배타.
+- [x] S5: `wuxia_settlement_stay_scene` 추가 — 정착 엔딩 장면. `final_settlement_intent_honest_seeded + cheongirok_resolution_resolved` 게이팅. 3택(단추/외곽길/조용히 남기). `epilogue_wuxia_qingliu_settlement` 방출. 귀환 장면과 상호 배타.
+- [x] cli_smoke 4개 추가 (S4/S5 도달+resolved). 번들 재생성.
+- [x] combat resolver, HP 숫자전, 기록자 정체 reveal, 새 persistent schema 미추가.
+
+### 0.2cs 2026-06-14 무협 S1-S3 runtime slices (이구학지 완성 로드맵 0.83 A묶음 1-3)
+
+- [x] S1: `wuxia_cheonggi_record_writing_sense` 추가 — 천기록 기록자 중간 암시 이벤트. required_flags에 `mumyeong_request_for_aid_resolved` 포함 6개로 게이팅, 3택(응시/외면/한 줄 적기), cheonggi_recorder_presence_sensed 방출. 기록자 정체/음성/호명 없음.
+- [x] S2: `wuxia_cheonoe_pyeonrin_second_reward` 추가 — 사도 최종전 전야 2차 천외편린 3택 보상. `seoharin_left_meal_resolved + cheonoe_pyeonrin_reward_schema_opened` 게이팅, 3택 1선 2소실 grammar, 숫자 없음.
+- [x] S3: `wuxia_cheonoe_analysis_thread_phase1_bridge` 추가 — 복기 루프 경량 소비. `cheonoe_reward_analysis_thread + sado_final_phase_1_price_tag_resolved` 게이팅, optional non-blocking.
+- [x] cli_smoke 4개 추가(S1/S2 도달+resolved), 기존 smoke 17개·json_contract 13개에 S1/S2/S3 삽입 후 재통과.
+- [x] Rust fixture + Web generated preview bundle 재생성.
+- [x] cargo test --workspace green, pytest 253 green, vitest 66 green.
+- [x] combat resolver, HP 숫자전, 기록자 정체 reveal, 새 persistent schema 미추가.
 ### 0.2cr 2026-06-14 무협 `wuxia_cheonoe_pyeonrin_first_reward` runtime slice
 
 - [x] `wuxia_cheonoe_pyeonrin_first_reward` encounter를 `wuxia_mumyeong_copy_style_reveal`과 `wuxia_mumyeong_reads_orthodox_style` 사이에 추가 (bundle index 15)

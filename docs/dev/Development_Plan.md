@@ -3537,6 +3537,44 @@ Still closed:
 
 Next contract decision: `wuxia_cheonoe_pyeonrin_first_reward_followup_handoff`.
 
+## 0.81 2026-06-14 야근몽 storypack 첫 runtime slice 승격 handoff
+
+현재 상태: docs-only contract selection 완료. 무협 메인 체인(opener→midgame→boss→resolutions→Sado 최종전→epilogue→battle-loss→천외편린 보상)이 runtime evidence를 얻었으므로, 다음 최대 미구현 설계 덩어리인 **야근몽(yageunmong) storypack**의 첫 runtime preview를 연다. 야근몽은 `docs/content/storypacks/yageunmong_pack.md`와 `docs/content/encounter_db/yageunmong_pack.md`에 12개 후보 카드와 권장 승격 순서가 이미 설계돼 있다.
+
+대조:
+
+- `docs/content/storypacks/yageunmong_pack.md`의 `## Runtime promotion notes`는 첫 승격 원칙을 명시한다: 기본 office runtime을 자동 대체하지 않고, 별도 storypack preview 경로에서만 열며, 기존 encounter/choice/outcome schema를 우선 쓰고, 각성편린 3택을 새 reward/ability schema로 확장하지 않으며, 번아웃 소재를 조롱하지 않는다.
+- 권장 순서 1순위는 `yageunmong_late_night_desk_awake` (schema-less opening: `yageunmong_started`, `lucid_dream_hint_seen`, `clockout_not_approved_message`만 남김).
+- 런타임 배선은 `wuxia_jianghu_pack` preview와 동일 구조를 미러한다: `src/tui_adv/storypack-previews/yageunmong_pack/*.yaml`, `scripts/export_web_data.py`의 `STORYPACK_PREVIEWS` 등록, 양쪽 generated bundle, web launcher(start screen/contentBundles), 테스트.
+
+Selected next implementation:
+
+| field | value |
+|---|---|
+| runtime id | `yageunmong_pack` storypack preview (첫 slice) |
+| handoff id | `yageunmong_first_runtime_slice_implementation` |
+| design source | `docs/content/storypacks/yageunmong_pack.md`, `docs/content/encounter_db/yageunmong_pack.md` |
+| scaffold model | 기존 `wuxia_jianghu_pack` storypack preview 배선 |
+| purpose | 야근몽을 별도 storypack preview로 부팅 가능하게 열고, 설계된 카드를 runtime으로 옮긴다 |
+
+First implementation scope:
+
+- `src/tui_adv/storypack-previews/yageunmong_pack/`에 6개 YAML(locations, items, endings, achievements, secrets.example, encounters)을 만든다. encounter_db에 설계된 카드를 권장 순서 spine 기준으로 옮긴다(최소 opener + meeting-room loop; 가능하면 권장 순서대로 확장하되 first-eligible 순서/조건 결합이 테스트를 깨지 않는 범위까지).
+- `STORYPACK_PREVIEWS`에 `yageunmong_pack`을 등록한다(runtime_mode: storypack_preview, world_id, storypack_id, default_location).
+- 양쪽 generated bundle을 생성한다.
+- web launcher가 야근몽 preview를 선택지로 노출하되 기본 office/이구학지 기본값을 깨지 않게 한다.
+- exporter/Rust content fixture/WASM JSON boundary/SuperLightTUI smoke/web vitest 커버리지를 추가한다.
+
+Still closed:
+
+- 기본 office runtime 자동 대체, `escape-office` save key 변경
+- 각성편린을 새 reward/ability schema로 확장(3택 grammar는 flag/clue/log로만)
+- companion schema, 새 relation/debt/faction/route-graph schema, combat resolver/HP 숫자전
+- 야근몽 사건/후일담 Notion DB가 없으므로 카드는 parent concept 기반 design handoff임을 유지(없는 DB row를 runtime-complete로 표시하지 않음)
+- 실제 회사명/직원/사무실 위치/사내망/사적 메모 등 비공개 정보
+
+Next runtime implementation candidate: `yageunmong_late_night_desk_awake` 중심 야근몽 첫 preview slice.
+
 ## 0.79 2026-06-14 무협 `wuxia_sado_battle_loss_route_bridge_followup_handoff` docs-only handoff: 천외편린 3택 보상 스키마
 
 현재 상태: docs-only contract selection 완료. playable battle-loss route가 runtime evidence를 얻었으므로 Notion 원본과 repo canonical docs를 다시 대조했고, 다음 runtime 후보를 천외편린 3택 보상 스키마(`wuxia_cheonoe_pyeonrin_first_reward`)로 결정했다. 계약은 `docs/design/Wuxia_Cheonoe_Pyeonrin_Reward.md`로 승격했다.

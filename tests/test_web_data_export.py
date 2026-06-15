@@ -1300,9 +1300,9 @@ def test_export_web_data_builds_yageunmong_storypack_preview_bundle():
     }
     assert "storypack-previews/yageunmong_pack" in bundle["source"]
     assert bundle["manifest"]["counts"] == {
-        "locations": 3,
-        "items": 2,
-        "encounters": 2,
+        "locations": 6,
+        "items": 6,
+        "encounters": 7,
         "endings": 1,
         "achievements": 2,
         "secrets": 0,
@@ -1311,11 +1311,19 @@ def test_export_web_data_builds_yageunmong_storypack_preview_bundle():
         "yageunmong_late_night_desk",
         "yageunmong_corridor",
         "yageunmong_meeting_room",
+        "yageunmong_approval_desk",
+        "yageunmong_pantry",
+        "yageunmong_server_room",
     ]
     encounter_ids = [encounter["id"] for encounter in bundle["content"]["encounters"]]
     assert encounter_ids == [
         "yageunmong_late_night_desk_awake",
         "yageunmong_unapproved_meeting_room_loop",
+        "yageunmong_unread_mail_wall",
+        "yageunmong_manager_approval_trap",
+        "yageunmong_reality_anchor_pantry",
+        "yageunmong_dead_project_server_log",
+        "yageunmong_awakening_fragment_choice",
     ]
     opener = bundle["content"]["encounters"][0]
     assert opener["conditions"] == {

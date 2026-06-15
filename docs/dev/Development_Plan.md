@@ -4551,3 +4551,17 @@ Web 또는 terminal renderer가 게임 규칙을 다시 구현하면 Rust GameCo
 **검증(Opus 직접 재확인)**: export --check up-to-date, cargo test --workspace PASS, pytest 96 pass / 3 fail(known env), npm test 37 PASS, `escape-terminal --storypack-preview yageunmong_pack --tui-smoke` opener 렌더 확인.
 
 **다음**: 야근몽 후속 카드(3/4/7 anchor·approval·mail loop) 또는 route/ending 슬라이스. 사용자 지시 대기.
+
+## §0.91 야근몽 content 슬라이스 2 — 악몽 루프/현실 앵커/각성편린 (2026-06-15)
+
+§0.90에 이어 야근몽 content 카드 5장 추가(구현=Sonnet, 검증/수정=Opus). branch: rust-core-consolidation.
+
+**추가 encounter (총 7장)**: `yageunmong_unread_mail_wall`(corridor, req meeting_loop_seen), `yageunmong_manager_approval_trap`(approval_desk), `yageunmong_reality_anchor_pantry`(pantry, req approval_trap_seen), `yageunmong_dead_project_server_log`(server_room), `yageunmong_awakening_fragment_choice`(각성편린 3택, req reality_anchor_found). 신규 location 3개(approval_desk/pantry/server_room) + corridor hub 연결. 각성편린은 천외편린과 동일 3택 1선·2소실 grammar를 flag/clue/log로만 구현(새 reward schema 없음).
+
+**Opus 검증 중 수정 2건** (Sonnet이 세션 한도로 검증 미완): (1) `yageunmong_corridor.connections`에 신규 location 3개 누락 → 추가(허브에서 이동 불가 버그). (2) corridor 복귀 시 mail_wall 인카운터가 허브를 막아 도달 테스트 4개 실패 → 테스트 액션 경로에 mail_wall 해소 choice 삽입.
+
+**제약 유지**: route/ending 카드(6/10/11/12)·동료 구출(9) 미구현, combat/relation/route-graph schema 미개방, 기본 office/이구학지 불변.
+
+**검증(Opus 직접)**: export --check up-to-date, cargo test --workspace PASS(escape-terminal 69), pytest 96 pass/3 known, npm test 37 PASS.
+
+**다음**: 야근몽 동료 구출(9) + route split/ending(6/10/11/12) 슬라이스. 사용자 지시 대기.

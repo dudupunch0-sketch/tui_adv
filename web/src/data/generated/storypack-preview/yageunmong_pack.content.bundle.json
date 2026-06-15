@@ -192,6 +192,459 @@
           "visual_id": "yageunmong_unapproved_meeting_room_loop"
         },
         "title": "회의실은 끝나지 않는다"
+      },
+      {
+        "body": "복도 끝에 메일 제목들이 종이처럼 겹쳐 벽을 만든다. 긴급, 재송부, 확인 요청, 방금 보낸 메일이 같은 시간으로 찍혀 있고, 열지 않은 알림은 주인공의 이름을 점점 크게 부른다.",
+        "choices": [
+          {
+            "id": "turn_off_noncritical_notifications",
+            "label": "중요하지 않은 알림을 모두 끈다",
+            "outcome": {
+              "add_clues": [
+                "not_every_message_matters"
+              ],
+              "add_flags": [
+                "mail_wall_seen",
+                "notification_boundary_set"
+              ],
+              "log": "알림 소리가 잦아들었다. 모든 메일을 열지 않아도 복도가 조금 더 넓어졌다."
+            }
+          },
+          {
+            "id": "open_every_unread_mail",
+            "label": "읽지 않은 메일을 모두 열어 본다",
+            "outcome": {
+              "add_clues": [
+                "not_every_message_matters",
+                "noise_hides_anchor_message"
+              ],
+              "add_flags": [
+                "mail_wall_seen",
+                "mail_wall_rule_confirmed"
+              ],
+              "log": "메일을 모두 열었지만 벽은 더 두꺼워졌다. 알림을 처리할수록 새 알림이 쌓인다.",
+              "resources": {
+                "sanity": -3
+              }
+            }
+          },
+          {
+            "id": "search_for_one_real_message",
+            "label": "진짜 신호가 될 만한 메일 하나를 찾는다",
+            "outcome": {
+              "add_clues": [
+                "noise_hides_anchor_message"
+              ],
+              "add_flags": [
+                "mail_wall_seen"
+              ],
+              "add_items": [
+                "unread_mail_header_fragment"
+              ],
+              "log": "수백 개의 제목 사이에 한 줄이 낯설었다. '아직 여기 있니?' 발신자는 비어 있었다.",
+              "resources": {
+                "sanity": -1
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "mail_wall_seen"
+          ],
+          "locations": [
+            "yageunmong_corridor"
+          ],
+          "required_flags": [
+            "yageunmong_started",
+            "meeting_loop_seen"
+          ]
+        },
+        "id": "yageunmong_unread_mail_wall",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "notification_names_grow_louder",
+              "duration_hint_ms": 1200,
+              "fallback_text": "메일 제목들이 겹쳐 쌓이는 사이 '메일', '알림', '이름'만 반복해서 커진다.",
+              "intensity": 0.58,
+              "kind": "glyph_anomaly",
+              "source": "mail_wall_notification_loop",
+              "stable_terms": [
+                "메일",
+                "알림",
+                "이름"
+              ]
+            }
+          ],
+          "layout": "storypack_preview",
+          "speaker": "야근몽",
+          "visual_id": "yageunmong_unread_mail_wall"
+        },
+        "title": "읽지 않은 메일의 벽"
+      },
+      {
+        "body": "결재 화면은 `퇴근 요청: 반려`를 반복한다. 팀장은 일단 진행하라고 말하지만 책임은 주인공에게 남긴다. 조직도에서 주인공의 이름은 담당자 칸에 계속 복제된다.",
+        "choices": [
+          {
+            "id": "define_scope_of_responsibility",
+            "label": "내 업무 범위를 직접 정의한다",
+            "outcome": {
+              "add_clues": [
+                "responsibility_scope_boundary"
+              ],
+              "add_flags": [
+                "approval_trap_seen",
+                "permission_rule_resisted"
+              ],
+              "log": "결재 화면을 닫고 내가 할 수 있는 것과 할 수 없는 것을 적었다. 조직도의 복제가 멈췄다."
+            }
+          },
+          {
+            "id": "request_approval_again",
+            "label": "다시 한 번 승인을 요청한다",
+            "outcome": {
+              "add_clues": [
+                "clockout_is_not_approved_by_manager"
+              ],
+              "add_flags": [
+                "approval_trap_seen"
+              ],
+              "add_items": [
+                "rejected_clockout_request"
+              ],
+              "log": "같은 화면이 다시 `반려`를 찍었다. 승인을 기다리는 것은 해결이 아니었다.",
+              "resources": {
+                "sanity": -3
+              }
+            }
+          },
+          {
+            "id": "close_approval_window",
+            "label": "결재 창을 닫고 자리를 뜬다",
+            "outcome": {
+              "add_clues": [
+                "clockout_is_not_approved_by_manager",
+                "responsibility_scope_boundary"
+              ],
+              "add_flags": [
+                "approval_trap_seen",
+                "permission_rule_resisted"
+              ],
+              "log": "창을 닫자 팀장의 목소리가 멀어졌다. 퇴근은 승인받는 것이 아닐지도 모른다.",
+              "resources": {
+                "sanity": -1
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "approval_trap_seen"
+          ],
+          "locations": [
+            "yageunmong_approval_desk"
+          ],
+          "required_flags": [
+            "meeting_loop_seen"
+          ]
+        },
+        "id": "yageunmong_manager_approval_trap",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "name_duplicates_in_org_chart",
+              "duration_hint_ms": 1500,
+              "fallback_text": "결재 화면이 반복되는 사이 '결재', '반려', '담당자'가 점점 늘어난다.",
+              "intensity": 0.65,
+              "kind": "glyph_anomaly",
+              "source": "approval_rejection_loop",
+              "stable_terms": [
+                "결재",
+                "반려",
+                "담당자"
+              ]
+            }
+          ],
+          "layout": "storypack_preview",
+          "speaker": "야근몽",
+          "visual_id": "yageunmong_manager_approval_trap"
+        },
+        "title": "결재는 반려된다"
+      },
+      {
+        "body": "탕비실의 커피는 식었지만 향은 방금 전 같다. 프린터 위 문서에는 업무 지시 대신 `집에 가야 한다`는 문장이 한 줄만 찍혀 있고, 멀리서 현실 알람음 같은 소리가 난다.",
+        "choices": [
+          {
+            "id": "breathe_and_name_the_anchor",
+            "label": "커피 향을 천천히 들이마시며 지금 있는 곳을 확인한다",
+            "outcome": {
+              "add_clues": [
+                "cold_coffee_anchor"
+              ],
+              "add_flags": [
+                "reality_anchor_found"
+              ],
+              "log": "향이 꿈의 루프를 잠깐 끊었다. 나는 지금 탕비실에 있고, 어딘가에서 알람이 울리고 있다."
+            }
+          },
+          {
+            "id": "pocket_printed_sentence",
+            "label": "프린터의 한 줄짜리 문서를 챙긴다",
+            "outcome": {
+              "add_clues": [
+                "cold_coffee_anchor",
+                "homeward_intent_line"
+              ],
+              "add_flags": [
+                "reality_anchor_found"
+              ],
+              "add_items": [
+                "anchor_fragment"
+              ],
+              "log": "문서를 주머니에 넣었다. `집에 가야 한다`. 꿈이 허락한 문장인지 모르겠지만, 기억하겠다.",
+              "resources": {
+                "sanity": -1
+              }
+            }
+          },
+          {
+            "id": "follow_alarm_sound",
+            "label": "알람음이 나는 방향으로 걷는다",
+            "outcome": {
+              "add_clues": [
+                "homeward_intent_line"
+              ],
+              "add_flags": [
+                "reality_anchor_found",
+                "alarm_sound_heard"
+              ],
+              "destination_id": "yageunmong_corridor",
+              "log": "소리를 따라가다 복도에서 멈췄다. 알람은 꿈 바깥에서 오는 것 같았다."
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "reality_anchor_found"
+          ],
+          "locations": [
+            "yageunmong_pantry"
+          ],
+          "required_flags": [
+            "approval_trap_seen"
+          ]
+        },
+        "id": "yageunmong_reality_anchor_pantry",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "real_scent_breaks_loop",
+              "duration_hint_ms": 1100,
+              "fallback_text": "탕비실의 감각이 루프를 잠깐 끊는다. '커피', '향', '알람음'이 또렷해진다.",
+              "intensity": 0.4,
+              "kind": "glyph_anomaly",
+              "source": "pantry_anchor_sensory",
+              "stable_terms": [
+                "커피",
+                "향",
+                "알람음"
+              ]
+            }
+          ],
+          "layout": "storypack_preview",
+          "speaker": "야근몽",
+          "visual_id": "yageunmong_reality_anchor_pantry"
+        },
+        "title": "탕비실의 현실 앵커"
+      },
+      {
+        "body": "서버룸 콘솔에는 이미 닫힌 프로젝트의 빌드 로그가 반복된다. 실패 줄마다 주인공 이름이 붙지만, 중간에 한 줄만 낯설다. `저장하고 닫아도 된다`.",
+        "choices": [
+          {
+            "id": "copy_only_the_anchor_line",
+            "label": "낯선 한 줄만 별도로 복사한다",
+            "outcome": {
+              "add_clues": [
+                "save_and_close_anchor_line"
+              ],
+              "add_flags": [
+                "dead_project_log_seen"
+              ],
+              "add_items": [
+                "server_log_anchor_fragment"
+              ],
+              "log": "그 한 줄만 메모했다. `저장하고 닫아도 된다`. 나머지 로그는 내 이름을 부르는 것을 멈추지 않았다."
+            }
+          },
+          {
+            "id": "rerun_the_dead_build",
+            "label": "죽은 빌드를 다시 실행한다",
+            "outcome": {
+              "add_clues": [
+                "failure_is_record_not_sentence"
+              ],
+              "add_flags": [
+                "dead_project_log_seen",
+                "guilt_loop_confirmed"
+              ],
+              "log": "빌드는 같은 지점에서 실패했다. 다시 실행해도 결과는 바뀌지 않는다. 이건 기록이지 선고가 아니다.",
+              "resources": {
+                "sanity": -3
+              }
+            }
+          },
+          {
+            "id": "mark_failure_as_record_not_sentence",
+            "label": "실패 줄에 '이것은 기록이다'라고 덧붙인다",
+            "outcome": {
+              "add_clues": [
+                "failure_is_record_not_sentence",
+                "save_and_close_anchor_line"
+              ],
+              "add_flags": [
+                "dead_project_log_seen",
+                "failure_record_thread"
+              ],
+              "log": "실패 줄 옆에 한 줄을 더 적었다. 로그가 잠시 조용해졌다. 실패는 끝내야 할 것이 아니라 기록으로 닫을 수 있는 것이다.",
+              "resources": {
+                "sanity": -1
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "dead_project_log_seen"
+          ],
+          "locations": [
+            "yageunmong_server_room"
+          ],
+          "required_flags": [
+            "meeting_loop_seen"
+          ]
+        },
+        "id": "yageunmong_dead_project_server_log",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "name_repeats_in_build_log",
+              "duration_hint_ms": 1350,
+              "fallback_text": "빌드 로그가 반복되는 사이 '로그', '실패', '저장'이 화면에 박힌다.",
+              "intensity": 0.6,
+              "kind": "glyph_anomaly",
+              "source": "server_log_guilt_loop",
+              "stable_terms": [
+                "로그",
+                "실패",
+                "저장"
+              ]
+            }
+          ],
+          "layout": "storypack_preview",
+          "speaker": "야근몽",
+          "visual_id": "yageunmong_dead_project_server_log"
+        },
+        "title": "죽은 프로젝트의 서버 로그"
+      },
+      {
+        "body": "문서 편집창의 빈 줄에 세 문장이 떠오른다. `이건 꿈이다`, `이 일은 내 일이 아니다`, `문을 닫고 나간다`. 하나를 선택하면 나머지 두 줄은 삭제 기록 없이 사라진다.",
+        "choices": [
+          {
+            "id": "delay_fragment_choice",
+            "label": "세 문장을 모두 읽고 잠시 멈춘다",
+            "outcome": {
+              "add_clues": [
+                "fragment_is_growth_direction"
+              ],
+              "log": "세 문장을 천천히 읽었다. 아직 고르지 못했다. 기회가 남아 있을지 모른다."
+            }
+          },
+          {
+            "id": "choose_this_is_a_dream",
+            "label": "이건 꿈이다를 붙든다 — 나머지 둘은 사라진다",
+            "outcome": {
+              "add_clues": [
+                "fragment_is_growth_direction",
+                "not_all_work_can_be_done"
+              ],
+              "add_flags": [
+                "awakening_fragment_seen",
+                "first_awakened_fragment_chosen",
+                "lucidity_thread"
+              ],
+              "log": "이건 꿈이다를 선택하자 나머지 두 줄이 삭제 기록 없이 사라졌다. 자각이 깨어나는 첫 실마리가 되었다."
+            }
+          },
+          {
+            "id": "choose_not_my_work",
+            "label": "이 일은 내 일이 아니다를 붙든다 — 나머지 둘은 사라진다",
+            "outcome": {
+              "add_clues": [
+                "fragment_is_growth_direction",
+                "not_all_work_can_be_done"
+              ],
+              "add_flags": [
+                "awakening_fragment_seen",
+                "first_awakened_fragment_chosen",
+                "responsibility_boundary_thread"
+              ],
+              "log": "이 일은 내 일이 아니다를 선택하자 나머지 두 줄이 흔적 없이 지워졌다. 경계를 긋는 실마리가 남았다."
+            }
+          },
+          {
+            "id": "choose_close_the_door",
+            "label": "문을 닫고 나간다를 붙든다 — 나머지 둘은 사라진다",
+            "outcome": {
+              "add_clues": [
+                "fragment_is_growth_direction",
+                "not_all_work_can_be_done"
+              ],
+              "add_flags": [
+                "awakening_fragment_seen",
+                "first_awakened_fragment_chosen",
+                "clockout_gate_thread"
+              ],
+              "log": "문을 닫고 나간다를 선택하자 나머지 두 줄은 사라졌다. 퇴근 게이트로 향하는 실마리가 생겼다."
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "awakening_fragment_seen"
+          ],
+          "locations": [
+            "yageunmong_corridor",
+            "yageunmong_pantry",
+            "yageunmong_approval_desk",
+            "yageunmong_server_room"
+          ],
+          "required_flags": [
+            "reality_anchor_found"
+          ]
+        },
+        "id": "yageunmong_awakening_fragment_choice",
+        "presentation": {
+          "effect_cues": [
+            {
+              "distortion": "two_lines_vanish_after_choice",
+              "duration_hint_ms": 1600,
+              "fallback_text": "세 문장이 화면에 떠올랐다가 하나를 선택하는 순간 나머지 둘이 지워진다.",
+              "intensity": 0.7,
+              "kind": "glyph_anomaly",
+              "source": "awakening_fragment_three_lines",
+              "stable_terms": [
+                "꿈",
+                "내 일",
+                "문"
+              ]
+            }
+          ],
+          "layout": "fragment_choice",
+          "speaker": "야근몽",
+          "visual_id": "yageunmong_awakening_fragment_choice"
+        },
+        "title": "각성편린 — 하나를 선택한다"
       }
     ],
     "endings": [
@@ -230,6 +683,51 @@
           "loop_evidence"
         ],
         "type": "clue"
+      },
+      {
+        "description": "수백 개의 메일 제목 사이에서 건진 한 줄. 발신자는 비어 있지만 내용은 꿈 바깥을 가리킨다.",
+        "id": "unread_mail_header_fragment",
+        "name": "메일 제목 조각",
+        "tags": [
+          "yageunmong",
+          "mail_wall",
+          "reality_anchor"
+        ],
+        "type": "clue"
+      },
+      {
+        "description": "결재 화면이 반려를 반복한 기록. 승인을 기다리는 것이 해결이 아님을 보여 주는 단서.",
+        "id": "rejected_clockout_request",
+        "name": "반려된 퇴근 신청서",
+        "tags": [
+          "yageunmong",
+          "approval_trap",
+          "nightmare_rule"
+        ],
+        "type": "clue"
+      },
+      {
+        "description": "탕비실 프린터에서 나온 한 줄짜리 문서. `집에 가야 한다`. 꿈이 허락한 현실 신호.",
+        "id": "anchor_fragment",
+        "name": "현실 앵커 문서 조각",
+        "tags": [
+          "yageunmong",
+          "pantry",
+          "reality_anchor"
+        ],
+        "type": "clue"
+      },
+      {
+        "description": "실패 로그 사이에서 낯선 한 줄. `저장하고 닫아도 된다`. 실패는 기록으로 닫을 수 있음을 상기시킨다.",
+        "id": "server_log_anchor_fragment",
+        "name": "서버 로그 앵커 줄",
+        "tags": [
+          "yageunmong",
+          "server_room",
+          "reality_anchor",
+          "failure_record"
+        ],
+        "type": "clue"
       }
     ],
     "locations": [
@@ -251,7 +749,10 @@
       {
         "connections": [
           "yageunmong_late_night_desk",
-          "yageunmong_meeting_room"
+          "yageunmong_meeting_room",
+          "yageunmong_approval_desk",
+          "yageunmong_pantry",
+          "yageunmong_server_room"
         ],
         "danger": 1,
         "description": "불이 꺼진 복도 끝에 회의실 불빛만 새어 나온다. 복도를 걸으면 같은 자리로 돌아오는 느낌이 든다.",
@@ -277,6 +778,53 @@
           "loop",
           "nightmare"
         ]
+      },
+      {
+        "connections": [
+          "yageunmong_corridor",
+          "yageunmong_pantry"
+        ],
+        "danger": 2,
+        "description": "결재 화면이 꺼지지 않는 책상. 퇴근 요청은 반려를 반복하고, 조직도에는 주인공의 이름이 계속 복제된다.",
+        "id": "yageunmong_approval_desk",
+        "name": "결재 책상",
+        "tags": [
+          "yageunmong",
+          "approval",
+          "authority",
+          "nightmare"
+        ]
+      },
+      {
+        "connections": [
+          "yageunmong_corridor",
+          "yageunmong_approval_desk"
+        ],
+        "danger": 1,
+        "description": "식은 커피 향이 남아 있는 탕비실. 프린터 위 문서에는 한 줄만 찍혀 있고, 멀리서 알람음 같은 소리가 들린다.",
+        "id": "yageunmong_pantry",
+        "name": "탕비실",
+        "tags": [
+          "yageunmong",
+          "pantry",
+          "anchor",
+          "sensory"
+        ]
+      },
+      {
+        "connections": [
+          "yageunmong_corridor"
+        ],
+        "danger": 2,
+        "description": "닫힌 프로젝트의 빌드 로그가 반복되는 서버룸. 실패 줄마다 이름이 붙지만 한 줄만 다른 말을 한다.",
+        "id": "yageunmong_server_room",
+        "name": "서버룸",
+        "tags": [
+          "yageunmong",
+          "server_room",
+          "dead_project",
+          "guilt"
+        ]
       }
     ],
     "secrets": []
@@ -285,10 +833,10 @@
   "manifest": {
     "counts": {
       "achievements": 2,
-      "encounters": 2,
+      "encounters": 7,
       "endings": 1,
-      "items": 2,
-      "locations": 3,
+      "items": 6,
+      "locations": 6,
       "secrets": 0
     },
     "schema_version": 1,

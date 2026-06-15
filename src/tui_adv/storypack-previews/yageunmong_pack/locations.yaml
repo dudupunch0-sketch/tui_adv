@@ -9,7 +9,7 @@ locations:
   - id: yageunmong_corridor
     name: 야근 복도
     description: 불이 꺼진 복도 끝에 회의실 불빛만 새어 나온다. 복도를 걸으면 같은 자리로 돌아오는 느낌이 든다.
-    connections: [yageunmong_late_night_desk, yageunmong_meeting_room]
+    connections: [yageunmong_late_night_desk, yageunmong_meeting_room, yageunmong_approval_desk, yageunmong_pantry, yageunmong_server_room]
     tags: [yageunmong, transit, loop]
     danger: 1
 
@@ -18,4 +18,25 @@ locations:
     description: 불이 꺼지지 않는 회의실. 문을 닫고 나와도 다시 같은 회의실 앞이다. 회의록은 아직 말하지 않은 발언을 적고 있다.
     connections: [yageunmong_corridor]
     tags: [yageunmong, meeting_room, loop, nightmare]
+    danger: 2
+
+  - id: yageunmong_approval_desk
+    name: 결재 책상
+    description: 결재 화면이 꺼지지 않는 책상. 퇴근 요청은 반려를 반복하고, 조직도에는 주인공의 이름이 계속 복제된다.
+    connections: [yageunmong_corridor, yageunmong_pantry]
+    tags: [yageunmong, approval, authority, nightmare]
+    danger: 2
+
+  - id: yageunmong_pantry
+    name: 탕비실
+    description: 식은 커피 향이 남아 있는 탕비실. 프린터 위 문서에는 한 줄만 찍혀 있고, 멀리서 알람음 같은 소리가 들린다.
+    connections: [yageunmong_corridor, yageunmong_approval_desk]
+    tags: [yageunmong, pantry, anchor, sensory]
+    danger: 1
+
+  - id: yageunmong_server_room
+    name: 서버룸
+    description: 닫힌 프로젝트의 빌드 로그가 반복되는 서버룸. 실패 줄마다 이름이 붙지만 한 줄만 다른 말을 한다.
+    connections: [yageunmong_corridor]
+    tags: [yageunmong, server_room, dead_project, guilt]
     danger: 2

@@ -10,3 +10,27 @@ items:
     description: 아직 말하지 않은 발언과 이미 끝난 결론이 동시에 적혀 있다. 꿈의 루프를 보여 주는 단서.
     type: clue
     tags: [yageunmong, meeting_room, loop_evidence]
+
+  - id: unread_mail_header_fragment
+    name: 메일 제목 조각
+    description: 수백 개의 메일 제목 사이에서 건진 한 줄. 발신자는 비어 있지만 내용은 꿈 바깥을 가리킨다.
+    type: clue
+    tags: [yageunmong, mail_wall, reality_anchor]
+
+  - id: rejected_clockout_request
+    name: 반려된 퇴근 신청서
+    description: 결재 화면이 반려를 반복한 기록. 승인을 기다리는 것이 해결이 아님을 보여 주는 단서.
+    type: clue
+    tags: [yageunmong, approval_trap, nightmare_rule]
+
+  - id: anchor_fragment
+    name: 현실 앵커 문서 조각
+    description: 탕비실 프린터에서 나온 한 줄짜리 문서. `집에 가야 한다`. 꿈이 허락한 현실 신호.
+    type: clue
+    tags: [yageunmong, pantry, reality_anchor]
+
+  - id: server_log_anchor_fragment
+    name: 서버 로그 앵커 줄
+    description: 실패 로그 사이에서 낯선 한 줄. `저장하고 닫아도 된다`. 실패는 기록으로 닫을 수 있음을 상기시킨다.
+    type: clue
+    tags: [yageunmong, server_room, reality_anchor, failure_record]

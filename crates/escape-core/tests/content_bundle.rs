@@ -2404,14 +2404,14 @@ fn preview_fixture_indexes_yageunmong_opener() {
     assert_eq!(runtime.world_id, "office_dream");
     assert_eq!(runtime.storypack_id, "yageunmong_pack");
     assert_eq!(runtime.default_location, "yageunmong_late_night_desk");
-    assert_eq!(bundle.manifest.counts.get("locations"), Some(&3));
-    assert_eq!(bundle.manifest.counts.get("items"), Some(&2));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&2));
+    assert_eq!(bundle.manifest.counts.get("locations"), Some(&6));
+    assert_eq!(bundle.manifest.counts.get("items"), Some(&6));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&7));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("yageunmong preview bundle should index");
-    assert_eq!(index.locations_len(), 3);
-    assert_eq!(index.encounters_len(), 2);
+    assert_eq!(index.locations_len(), 6);
+    assert_eq!(index.encounters_len(), 7);
 
     let desk = index
         .location("yageunmong_late_night_desk")

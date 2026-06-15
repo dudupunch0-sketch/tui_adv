@@ -4565,3 +4565,19 @@ Web 또는 terminal renderer가 게임 규칙을 다시 구현하면 Rust GameCo
 **검증(Opus 직접)**: export --check up-to-date, cargo test --workspace PASS(escape-terminal 69), pytest 96 pass/3 known, npm test 37 PASS.
 
 **다음**: 야근몽 동료 구출(9) + route split/ending(6/10/11/12) 슬라이스. 사용자 지시 대기.
+
+## §0.92 야근몽 route split + 깨어남 ending — 첫 플레이 완주 (2026-06-15)
+
+§0.91에 이어 야근몽 마지막 content 슬라이스(구현=Sonnet, 검증=Opus). branch: rust-core-consolidation. 이로써 야근몽은 opener→깨어남 ending까지 한 바퀴 플레이 가능.
+
+**추가 encounter (총 12장)**: `yageunmong_coworker_meeting_room_rescue`(동료 구출 bridge), `yageunmong_elevator_unapproved_floor`(퇴근 전조), `yageunmong_clockout_gate_route_split`(route split: 혼자 깨어남/동료 구출/무한 야근/관찰), `yageunmong_clockout_gate_self`(최종 자기 대면), `yageunmong_wake_desk_aftermath`(후일담). 신규 location 2개(elevator, exit_gate), 아이템 2개.
+
+**ending (endings.yaml)**: `yageunmong_wake_up_ending`(req yageunmong_awakened), `yageunmong_overtime_loop_ending`(req loop_failure_route_marked). 새 epilogue/route-graph schema 없이 기존 endings 메커니즘만 사용. route 분기는 flag로만.
+
+**flag 체인**: yageunmong_started→meeting_loop_seen→(mail/approval/anchor/server)→reality_anchor_found→awakening_fragment_seen/first_awakened_fragment_chosen→elevator(unapproved_floor_seen)→clockout_gate_route_split→wake_up_route_started→clockout_gate_self→wake_route_flag→wake_desk_aftermath→yageunmong_awakened→wake_up_ending.
+
+**제약 유지**: combat/relation/route-graph schema 미개방, 분기 flag-only, 기본 office/이구학지 불변. spine="업무 완료가 아니라 퇴근 선언/깨어남" 유지.
+
+**검증(Opus 직접)**: export --check OK, cargo test --workspace 0 failed(terminal 75), pytest 96 pass/3 known, npm 37 PASS, 깨어남 ending 전체 체인 smoke 렌더 확인.
+
+**야근몽 첫 storypack preview 완성** (12 cards + 2 endings, 플레이 완주 가능). 다음: Notion 야근몽 전용 사건/후일담 DB가 생기면 정식 카드 확장. 사용자 지시 대기.

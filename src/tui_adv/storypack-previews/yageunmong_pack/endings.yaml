@@ -6,3 +6,20 @@ endings:
     conditions:
       required_flags: [lucid_dream_hint_seen]
     text: 시계가 같은 분을 반복하고 있다. 꿈인 것을 알고 있지만, 아는 것만으로 깨어날 수는 없다. 야근몽은 이제 시작되었다.
+
+  - id: yageunmong_wake_up_ending
+    name: 퇴근 선언 — 깨어남
+    kind: preview
+    priority: 100
+    conditions:
+      required_flags: [yageunmong_awakened]
+    text: 승인은 오지 않았다. 퇴근은 누군가에게 허락받는 것이 아니었다. 노트북을 닫고 자리에서 일어났다. 업무는 아직 남아 있지만, 오늘의 꿈은 끝났다. 야근몽은 깨어남으로 닫힌다.
+
+  - id: yageunmong_overtime_loop_ending
+    name: 야근 루프 — 미완의 밤
+    kind: preview
+    priority: 50
+    conditions:
+      required_flags: [loop_failure_route_marked]
+      forbidden_flags: [yageunmong_awakened]
+    text: 업무는 끝나지 않았다. 게이트는 닫혀 있고, 회의록은 새 항목을 만들어 냈다. 꿈은 아직 루프 안에 있다. 깨어나는 길은 승인이 아니라 거부에서 시작된다.

@@ -34,3 +34,15 @@ items:
     description: 실패 로그 사이에서 낯선 한 줄. `저장하고 닫아도 된다`. 실패는 기록으로 닫을 수 있음을 상기시킨다.
     type: clue
     tags: [yageunmong, server_room, reality_anchor, failure_record]
+
+  - id: shared_anchor_note
+    name: 함께 나눈 앵커 메모
+    description: 동료에게 공유한 현실 앵커의 흔적. `이건 꿈이다, 우리는 나갈 수 있다`. 홀로 깨는 것이 아님을 상기시킨다.
+    type: clue
+    tags: [yageunmong, coworker_rescue, reality_anchor]
+
+  - id: clockout_declaration_note
+    name: 퇴근 선언 메모
+    description: 승인 없이 퇴근을 선언한 순간의 기록. 게이트 화면 너머로 현실의 알람음이 점점 가까워졌다.
+    type: clue
+    tags: [yageunmong, exit_gate, wake_route, ending]

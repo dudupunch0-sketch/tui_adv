@@ -303,3 +303,233 @@ encounters:
           add_flags: [awakening_fragment_seen, first_awakened_fragment_chosen, clockout_gate_thread]
           add_clues: [fragment_is_growth_direction, not_all_work_can_be_done]
           log: "문을 닫고 나간다를 선택하자 나머지 두 줄은 사라졌다. 퇴근 게이트로 향하는 실마리가 생겼다."
+
+  - id: yageunmong_coworker_meeting_room_rescue
+    title: 회의실에 남은 동료
+    body: 불이 꺼지지 않는 회의실 안에서 한 사람이 같은 문장을 반복한다. "이거 끝나면 나갈 수 있겠지?" 회의록은 그의 이름을 참석자, 액션 아이템, 미완료 사유에 동시에 적고 있다.
+    presentation:
+      visual_id: yageunmong_coworker_meeting_room_rescue
+      speaker: 야근몽
+      layout: storypack_preview
+      effect_cues:
+        - kind: glyph_anomaly
+          source: coworker_loop_minutes
+          intensity: 0.55
+          stable_terms: [동료, 회의록, 미완료]
+          distortion: name_listed_in_every_column
+          duration_hint_ms: 1300
+          fallback_text: 회의록이 같은 이름을 반복해 쓰는 사이 '동료', '회의록', '미완료'가 겹쳐 보인다.
+    conditions:
+      locations: [yageunmong_meeting_room]
+      required_flags: [first_awakened_fragment_chosen]
+      forbidden_flags: [coworker_meeting_room_seen]
+    choices:
+      - id: tell_coworker_this_is_a_dream
+        label: 동료에게 이것이 꿈이라고 말한다
+        outcome:
+          resources:
+            sanity: -1
+          add_flags: [coworker_meeting_room_seen, coworker_lucidity_thread]
+          add_clues: [coworker_cannot_be_saved_by_work]
+          log: "이것은 꿈이라고 말했다. 동료는 잠시 멈추더니 회의록을 내려다봤다. 그의 이름이 더 이상 늘어나지 않았다."
+      - id: finish_coworkers_action_items
+        label: 동료의 액션 아이템을 대신 완료한다
+        outcome:
+          resources:
+            sanity: -3
+          add_flags: [coworker_meeting_room_seen, rescue_trap_confirmed]
+          add_clues: [coworker_cannot_be_saved_by_work]
+          log: 액션 아이템을 모두 처리했지만 회의록은 새 항목을 생성했다. 업무 대행은 구출이 아니었다.
+      - id: share_reality_anchor
+        label: 현실 앵커를 함께 나눈다
+        outcome:
+          add_items: [shared_anchor_note]
+          add_flags: [coworker_meeting_room_seen, anchor_shared_with_coworker]
+          add_clues: [open_door_matters_more_than_minutes]
+          log: 현실의 감각을 함께 나눴다. 동료의 표정이 조금 달라졌다. 회의록 반복이 느려지는 것 같았다.
+      - id: leave_door_open_without_solving_minutes
+        label: 회의록을 해결하지 않고 문을 열어 둔 채 나온다
+        outcome:
+          destination_id: yageunmong_corridor
+          add_flags: [coworker_meeting_room_seen, meeting_room_rescue_route]
+          add_clues: [open_door_matters_more_than_minutes]
+          log: 회의록을 덮지 않고 문만 열어 뒀다. 동료가 따라오는지는 알 수 없지만, 문은 닫히지 않았다.
+
+  - id: yageunmong_elevator_unapproved_floor
+    title: 엘리베이터 — 미승인층
+    body: 엘리베이터에는 B1, 13F, 0F, 미승인층, 퇴근층이 번갈아 뜬다. 닫힘 버튼은 작동하지 않고, 열림 버튼 옆에는 `상위 승인 필요`라는 라벨이 붙어 있다.
+    presentation:
+      visual_id: yageunmong_elevator_unapproved_floor
+      speaker: 야근몽
+      layout: storypack_preview
+      effect_cues:
+        - kind: glyph_anomaly
+          source: elevator_floor_loop
+          intensity: 0.65
+          stable_terms: [엘리베이터, 미승인층, 퇴근층]
+          distortion: floors_flicker_approval_label
+          duration_hint_ms: 1400
+          fallback_text: 층수 표시가 깜빡이는 사이 '엘리베이터', '미승인층', '퇴근층'만 또렷하게 남는다.
+    conditions:
+      locations: [yageunmong_elevator]
+      required_flags: [first_awakened_fragment_chosen]
+      forbidden_flags: [unapproved_floor_seen]
+    choices:
+      - id: step_out_before_floor_is_approved
+        label: 승인 없이 문이 열리는 즉시 내린다
+        outcome:
+          destination_id: yageunmong_exit_gate
+          add_flags: [unapproved_floor_seen, permission_rule_resisted]
+          add_clues: [elevator_permission_is_trap]
+          log: 승인 신호를 기다리지 않고 문이 열리자마자 내렸다. 퇴근 게이트의 불빛이 보인다.
+      - id: wait_for_approval_floor
+        label: 승인이 날 때까지 엘리베이터 안에서 기다린다
+        outcome:
+          resources:
+            sanity: -3
+          add_flags: [unapproved_floor_seen, approval_wait_loop_confirmed]
+          add_clues: [elevator_permission_is_trap]
+          log: 기다렸지만 승인층은 오지 않았다. 엘리베이터는 같은 층을 반복했다. 기다림이 함정이었다.
+      - id: press_clockout_floor_without_badge
+        label: 배지 없이 퇴근층 버튼을 누른다
+        outcome:
+          destination_id: yageunmong_exit_gate
+          add_flags: [unapproved_floor_seen, clockout_floor_glimpsed]
+          add_clues: [clockout_floor_exists, elevator_permission_is_trap]
+          log: 배지 인식 없이 퇴근층 버튼을 눌렀다. 화면이 잠깐 흔들리더니 게이트가 보이는 층에서 열렸다.
+
+  - id: yageunmong_clockout_gate_route_split
+    title: 퇴근 게이트 — 갈라지는 길
+    body: "퇴근 게이트는 열린 듯 보이지만, 뒤쪽 회의실에서는 아직 누군가 이름을 부른다. 게이트 화면에는 세 줄이 동시에 떠 있다. `혼자 퇴근`, `동료 확인`, `업무 계속`."
+    presentation:
+      visual_id: yageunmong_clockout_gate_route_split
+      speaker: 야근몽
+      layout: storypack_preview
+      effect_cues:
+        - kind: glyph_anomaly
+          source: gate_route_split
+          intensity: 0.72
+          stable_terms: [게이트, 퇴근, 동료]
+          distortion: three_lines_flicker_on_screen
+          duration_hint_ms: 1600
+          fallback_text: 게이트 화면의 세 줄이 깜빡이는 사이 '게이트', '퇴근', '동료'가 선명해진다.
+    conditions:
+      locations: [yageunmong_exit_gate]
+      required_flags: [unapproved_floor_seen]
+      forbidden_flags: [clockout_gate_route_split_seen]
+    choices:
+      - id: wake_alone_now
+        label: 지금 혼자 게이트를 통과한다
+        outcome:
+          add_flags: [clockout_gate_route_split_seen, wake_up_route_started]
+          add_clues: [permission_is_the_trap]
+          log: 혼자 게이트를 통과했다. 뒤쪽 목소리가 멀어졌다. 꿈의 규칙을 거부한 순간 출구가 선명해졌다.
+      - id: return_for_coworker_anchor
+        label: 동료를 확인하러 잠깐 돌아간다
+        outcome:
+          destination_id: yageunmong_meeting_room
+          add_flags: [clockout_gate_route_split_seen, coworker_rescue_route_started]
+          add_clues: [coworker_voice_behind_gate]
+          log: 게이트 앞에서 돌아섰다. 동료 목소리가 회의실에서 들렸다. 함께 나가는 route가 열렸다.
+      - id: continue_work_until_clear
+        label: 업무를 모두 정리한 뒤 나간다
+        outcome:
+          add_flags: [clockout_gate_route_split_seen, loop_failure_route_marked]
+          add_clues: [work_never_completes]
+          log: 업무를 정리하려 했지만 목록은 줄지 않았다. 게이트 화면이 다시 `퇴근 승인 대기`로 돌아갔다. 루프가 시작되는 느낌이다.
+      - id: breathe_and_check_gate_rule
+        label: 게이트 규칙을 천천히 확인한다
+        outcome:
+          add_flags: [clockout_gate_route_split_seen]
+          add_clues: [permission_is_the_trap]
+          log: 게이트 화면을 읽었다. 승인 버튼은 없었다. 퇴근은 누군가에게 허가받는 것이 아니었다.
+
+  - id: yageunmong_clockout_gate_self
+    title: 퇴근 게이트 — 나 자신과 마주하다
+    body: "출입 게이트 앞에는 주인공과 같은 얼굴을 한 사람이 서 있다. 그는 말한다. \"조금만 더 하면 돼.\" 게이트 화면에는 `퇴근 승인 대기`가 깜빡이고, 뒤쪽 회의실에서는 아직도 누군가 이름을 부른다."
+    presentation:
+      visual_id: yageunmong_clockout_gate_self
+      speaker: 야근몽
+      layout: storypack_preview
+      effect_cues:
+        - kind: glyph_anomaly
+          source: self_mirror_gate
+          intensity: 0.80
+          stable_terms: [게이트, 나 자신, 퇴근 선언]
+          distortion: mirror_face_blocks_exit
+          duration_hint_ms: 1800
+          fallback_text: 게이트 앞에서 같은 얼굴과 마주치는 순간 '게이트', '나 자신', '퇴근 선언'이 겹쳐 번진다.
+    conditions:
+      locations: [yageunmong_exit_gate]
+      required_flags: [wake_up_route_started]
+      forbidden_flags: [clockout_gate_seen]
+    choices:
+      - id: breathe_before_answering_self
+        label: 자신에게 대답하기 전에 숨을 고른다
+        outcome:
+          add_flags: [clockout_gate_seen, self_confronted]
+          add_clues: [permission_is_the_trap]
+          log: 숨을 고르자 같은 얼굴의 사람이 잠시 흔들렸다. 나는 꿈 안에 있고, 저 사람도 꿈의 일부다.
+      - id: promise_to_finish_one_more_task
+        label: 하나만 더 끝내고 나오겠다고 약속한다
+        outcome:
+          resources:
+            sanity: -3
+          add_flags: [clockout_gate_seen, loop_failure_hint_accepted]
+          add_clues: [work_never_completes]
+          log: 하나만 더 하겠다고 약속했다. 같은 얼굴이 미소를 지었다. 게이트가 다시 닫혔다. 다시 루프다.
+      - id: declare_clockout_without_approval
+        label: 승인 없이 퇴근을 선언한다
+        outcome:
+          add_items: [clockout_declaration_note]
+          add_flags: [clockout_gate_seen, self_confronted, wake_route_flag]
+          add_clues: [permission_is_the_trap]
+          log: "\"나는 지금 퇴근한다.\" 같은 얼굴의 사람이 사라졌다. 게이트 화면의 깜빡임이 멈추고 문이 열렸다."
+      - id: call_coworker_to_gate
+        label: 동료를 불러 함께 게이트를 통과한다
+        outcome:
+          add_items: [clockout_declaration_note]
+          add_flags: [clockout_gate_seen, self_confronted, wake_route_flag, coworker_rescue_thread]
+          add_clues: [permission_is_the_trap]
+          log: 동료와 함께 게이트 앞에 섰다. 같은 얼굴의 사람이 둘 앞에서 버티다 사라졌다. 문이 열렸다.
+
+  - id: yageunmong_wake_desk_aftermath
+    title: 깨어난 뒤 — 책상 앞
+    body: 눈을 뜨자 현실에서는 얼마 지나지 않았다. 모니터에는 아직 처리하지 않은 업무가 남아 있다. 메신저 알림은 켜져 있지만, 이번에는 노트북을 닫을 수 있다. 다음 날 동료는 꿈을 기억하지 못하는 듯하다가 회의실 문 이야기를 조용히 꺼낸다.
+    presentation:
+      visual_id: yageunmong_wake_desk_aftermath
+      speaker: 야근몽
+      layout: storypack_preview
+      effect_cues:
+        - kind: glyph_anomaly
+          source: wake_aftermath_desk
+          intensity: 0.25
+          stable_terms: [노트북, 알림, 동료]
+          distortion: dream_fades_real_remains
+          duration_hint_ms: 900
+          fallback_text: 꿈의 잔상이 옅어지는 사이 '노트북', '알림', '동료'가 현실 감각으로 돌아온다.
+    conditions:
+      locations: [yageunmong_exit_gate]
+      required_flags: [wake_route_flag]
+      forbidden_flags: [wake_aftermath_seen]
+    choices:
+      - id: close_laptop_and_leave
+        label: 노트북을 닫고 자리를 뜬다
+        outcome:
+          add_flags: [wake_aftermath_seen, laptop_closed_after_wake, yageunmong_awakened]
+          add_clues: [work_remains_but_can_be_left]
+          log: 노트북을 닫았다. 업무는 아직 남았지만, 오늘은 나갈 수 있다. 꿈은 끝났다.
+      - id: write_one_boundary_note
+        label: 경계 메모 하나를 남기고 나간다
+        outcome:
+          resources:
+            sanity: -1
+          add_flags: [wake_aftermath_seen, boundary_afterword, yageunmong_awakened]
+          add_clues: [work_remains_but_can_be_left]
+          log: 메모 한 장을 남겼다. 내일의 나에게 남기는 경계선. 노트북을 닫고 나갔다.
+      - id: ask_coworker_about_meeting_room_dream
+        label: 동료에게 회의실 꿈에 대해 조용히 묻는다
+        outcome:
+          add_flags: [wake_aftermath_seen, coworker_trace_afterword, yageunmong_awakened]
+          add_clues: [dream_trace_in_coworker_memory]
+          log: 동료는 잠시 멈추더니 회의실 문 이야기를 꺼냈다. 꿈의 흔적은 현실에도 남아 있었다.

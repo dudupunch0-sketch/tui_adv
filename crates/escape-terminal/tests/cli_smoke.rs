@@ -4035,3 +4035,365 @@ fn content_tui_smoke_yageunmong_awakening_fragment_sets_lucidity_thread() {
     assert!(stdout.contains("이건 꿈이다를 선택하자 나머지 두 줄이 삭제 기록 없이 사라졌다"));
     assert!(!stdout.contains("dev_desk"));
 }
+
+#[test]
+fn content_tui_smoke_reaches_yageunmong_coworker_meeting_room_rescue() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--storypack-preview",
+            "yageunmong_pack",
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:stand_up_from_desk",
+            "--action",
+            "move:yageunmong_meeting_room",
+            "--action",
+            "choice:leave_room_without_answering",
+            "--action",
+            "choice:turn_off_noncritical_notifications",
+            "--action",
+            "move:yageunmong_approval_desk",
+            "--action",
+            "choice:define_scope_of_responsibility",
+            "--action",
+            "move:yageunmong_pantry",
+            "--action",
+            "choice:breathe_and_name_the_anchor",
+            "--action",
+            "choice:choose_this_is_a_dream",
+            "--action",
+            "move:yageunmong_corridor",
+            "--action",
+            "move:yageunmong_meeting_room",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("위치: 회의실 (루프) (yageunmong_meeting_room)"));
+    assert!(stdout.contains("[현재 인카운터]"));
+    assert!(stdout.contains("회의실에 남은 동료"));
+    assert!(stdout.contains("visual id: yageunmong_coworker_meeting_room_rescue"));
+    assert!(stdout.contains("layout: storypack_preview"));
+    assert!(stdout.contains("stable terms: 동료 / 회의록 / 미완료"));
+    assert!(stdout.contains("choice:tell_coworker_this_is_a_dream / 동료에게 이것이 꿈이라고 말한다"));
+    assert!(stdout.contains("choice:share_reality_anchor / 현실 앵커를 함께 나눈다"));
+    assert!(stdout.contains("choice:leave_door_open_without_solving_minutes"));
+    assert!(!stdout.contains("dev_desk"));
+    assert!(!stdout.contains("wuxia_commute_rift"));
+}
+
+#[test]
+fn content_tui_smoke_reaches_yageunmong_elevator_unapproved_floor() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--storypack-preview",
+            "yageunmong_pack",
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:stand_up_from_desk",
+            "--action",
+            "move:yageunmong_meeting_room",
+            "--action",
+            "choice:leave_room_without_answering",
+            "--action",
+            "choice:turn_off_noncritical_notifications",
+            "--action",
+            "move:yageunmong_approval_desk",
+            "--action",
+            "choice:define_scope_of_responsibility",
+            "--action",
+            "move:yageunmong_pantry",
+            "--action",
+            "choice:breathe_and_name_the_anchor",
+            "--action",
+            "choice:choose_this_is_a_dream",
+            "--action",
+            "move:yageunmong_corridor",
+            "--action",
+            "move:yageunmong_elevator",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("위치: 엘리베이터 (미승인층) (yageunmong_elevator)"));
+    assert!(stdout.contains("[현재 인카운터]"));
+    assert!(stdout.contains("엘리베이터 — 미승인층"));
+    assert!(stdout.contains("visual id: yageunmong_elevator_unapproved_floor"));
+    assert!(stdout.contains("layout: storypack_preview"));
+    assert!(stdout.contains("stable terms: 엘리베이터 / 미승인층 / 퇴근층"));
+    assert!(stdout.contains("choice:step_out_before_floor_is_approved / 승인 없이 문이 열리는 즉시 내린다"));
+    assert!(stdout.contains("choice:wait_for_approval_floor / 승인이 날 때까지 엘리베이터 안에서 기다린다"));
+    assert!(stdout.contains("choice:press_clockout_floor_without_badge / 배지 없이 퇴근층 버튼을 누른다"));
+    assert!(!stdout.contains("dev_desk"));
+    assert!(!stdout.contains("wuxia_commute_rift"));
+}
+
+#[test]
+fn content_tui_smoke_reaches_yageunmong_clockout_gate_route_split() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--storypack-preview",
+            "yageunmong_pack",
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:stand_up_from_desk",
+            "--action",
+            "move:yageunmong_meeting_room",
+            "--action",
+            "choice:leave_room_without_answering",
+            "--action",
+            "choice:turn_off_noncritical_notifications",
+            "--action",
+            "move:yageunmong_approval_desk",
+            "--action",
+            "choice:define_scope_of_responsibility",
+            "--action",
+            "move:yageunmong_pantry",
+            "--action",
+            "choice:breathe_and_name_the_anchor",
+            "--action",
+            "choice:choose_this_is_a_dream",
+            "--action",
+            "move:yageunmong_corridor",
+            "--action",
+            "move:yageunmong_elevator",
+            "--action",
+            "choice:step_out_before_floor_is_approved",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("위치: 퇴근 게이트 (yageunmong_exit_gate)"));
+    assert!(stdout.contains("[현재 인카운터]"));
+    assert!(stdout.contains("퇴근 게이트 — 갈라지는 길"));
+    assert!(stdout.contains("visual id: yageunmong_clockout_gate_route_split"));
+    assert!(stdout.contains("layout: storypack_preview"));
+    assert!(stdout.contains("stable terms: 게이트 / 퇴근 / 동료"));
+    assert!(stdout.contains("choice:wake_alone_now / 지금 혼자 게이트를 통과한다"));
+    assert!(stdout.contains("choice:return_for_coworker_anchor / 동료를 확인하러 잠깐 돌아간다"));
+    assert!(stdout.contains("choice:continue_work_until_clear / 업무를 모두 정리한 뒤 나간다"));
+    assert!(stdout.contains("choice:breathe_and_check_gate_rule / 게이트 규칙을 천천히 확인한다"));
+    assert!(!stdout.contains("dev_desk"));
+    assert!(!stdout.contains("wuxia_commute_rift"));
+}
+
+#[test]
+fn content_tui_smoke_reaches_yageunmong_clockout_gate_self() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--storypack-preview",
+            "yageunmong_pack",
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:stand_up_from_desk",
+            "--action",
+            "move:yageunmong_meeting_room",
+            "--action",
+            "choice:leave_room_without_answering",
+            "--action",
+            "choice:turn_off_noncritical_notifications",
+            "--action",
+            "move:yageunmong_approval_desk",
+            "--action",
+            "choice:define_scope_of_responsibility",
+            "--action",
+            "move:yageunmong_pantry",
+            "--action",
+            "choice:breathe_and_name_the_anchor",
+            "--action",
+            "choice:choose_this_is_a_dream",
+            "--action",
+            "move:yageunmong_corridor",
+            "--action",
+            "move:yageunmong_elevator",
+            "--action",
+            "choice:step_out_before_floor_is_approved",
+            "--action",
+            "choice:wake_alone_now",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("위치: 퇴근 게이트 (yageunmong_exit_gate)"));
+    assert!(stdout.contains("[현재 인카운터]"));
+    assert!(stdout.contains("퇴근 게이트 — 나 자신과 마주하다"));
+    assert!(stdout.contains("visual id: yageunmong_clockout_gate_self"));
+    assert!(stdout.contains("layout: storypack_preview"));
+    assert!(stdout.contains("stable terms: 게이트 / 나 자신 / 퇴근 선언"));
+    assert!(stdout.contains("choice:breathe_before_answering_self / 자신에게 대답하기 전에 숨을 고른다"));
+    assert!(stdout.contains("choice:declare_clockout_without_approval / 승인 없이 퇴근을 선언한다"));
+    assert!(stdout.contains("choice:call_coworker_to_gate / 동료를 불러 함께 게이트를 통과한다"));
+    assert!(!stdout.contains("dev_desk"));
+    assert!(!stdout.contains("wuxia_commute_rift"));
+}
+
+#[test]
+fn content_tui_smoke_reaches_yageunmong_wake_desk_aftermath() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--storypack-preview",
+            "yageunmong_pack",
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:stand_up_from_desk",
+            "--action",
+            "move:yageunmong_meeting_room",
+            "--action",
+            "choice:leave_room_without_answering",
+            "--action",
+            "choice:turn_off_noncritical_notifications",
+            "--action",
+            "move:yageunmong_approval_desk",
+            "--action",
+            "choice:define_scope_of_responsibility",
+            "--action",
+            "move:yageunmong_pantry",
+            "--action",
+            "choice:breathe_and_name_the_anchor",
+            "--action",
+            "choice:choose_this_is_a_dream",
+            "--action",
+            "move:yageunmong_corridor",
+            "--action",
+            "move:yageunmong_elevator",
+            "--action",
+            "choice:step_out_before_floor_is_approved",
+            "--action",
+            "choice:wake_alone_now",
+            "--action",
+            "choice:declare_clockout_without_approval",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("위치: 퇴근 게이트 (yageunmong_exit_gate)"));
+    assert!(stdout.contains("[현재 인카운터]"));
+    assert!(stdout.contains("깨어난 뒤 — 책상 앞"));
+    assert!(stdout.contains("visual id: yageunmong_wake_desk_aftermath"));
+    assert!(stdout.contains("layout: storypack_preview"));
+    assert!(stdout.contains("stable terms: 노트북 / 알림 / 동료"));
+    assert!(stdout.contains("choice:close_laptop_and_leave / 노트북을 닫고 자리를 뜬다"));
+    assert!(stdout.contains("choice:write_one_boundary_note / 경계 메모 하나를 남기고 나간다"));
+    assert!(stdout.contains("choice:ask_coworker_about_meeting_room_dream / 동료에게 회의실 꿈에 대해 조용히 묻는다"));
+    assert!(!stdout.contains("dev_desk"));
+    assert!(!stdout.contains("wuxia_commute_rift"));
+}
+
+#[test]
+fn content_tui_smoke_reaches_yageunmong_wake_up_ending() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--storypack-preview",
+            "yageunmong_pack",
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:stand_up_from_desk",
+            "--action",
+            "move:yageunmong_meeting_room",
+            "--action",
+            "choice:leave_room_without_answering",
+            "--action",
+            "choice:turn_off_noncritical_notifications",
+            "--action",
+            "move:yageunmong_approval_desk",
+            "--action",
+            "choice:define_scope_of_responsibility",
+            "--action",
+            "move:yageunmong_pantry",
+            "--action",
+            "choice:breathe_and_name_the_anchor",
+            "--action",
+            "choice:choose_this_is_a_dream",
+            "--action",
+            "move:yageunmong_corridor",
+            "--action",
+            "move:yageunmong_elevator",
+            "--action",
+            "choice:step_out_before_floor_is_approved",
+            "--action",
+            "choice:wake_alone_now",
+            "--action",
+            "choice:declare_clockout_without_approval",
+            "--action",
+            "choice:close_laptop_and_leave",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    // yageunmong_awakened 플래그 설정 → yageunmong_wake_up_ending 트리거
+    assert!(stdout.contains("노트북을 닫았다. 업무는 아직 남았지만, 오늘은 나갈 수 있다. 꿈은 끝났다."));
+    // ending 레이블은 헤더(격리 N턴 · 엔딩)와 visual card, [현재 행동] 섹션으로 표시된다
+    assert!(stdout.contains("· 엔딩"));
+    assert!(stdout.contains("퇴근 선언 — 깨어남"));
+    assert!(stdout.contains("승인은 오지 않았다. 퇴근은 누군가에게 허락받는 것이 아니었다."));
+    assert!(stdout.contains("visual id: ending:yageunmong_wake_up_ending"));
+    assert!(stdout.contains("layout: ending"));
+    assert!(!stdout.contains("dev_desk"));
+    assert!(!stdout.contains("wuxia_commute_rift"));
+}

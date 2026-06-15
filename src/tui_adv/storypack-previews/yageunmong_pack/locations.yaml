@@ -9,7 +9,7 @@ locations:
   - id: yageunmong_corridor
     name: 야근 복도
     description: 불이 꺼진 복도 끝에 회의실 불빛만 새어 나온다. 복도를 걸으면 같은 자리로 돌아오는 느낌이 든다.
-    connections: [yageunmong_late_night_desk, yageunmong_meeting_room, yageunmong_approval_desk, yageunmong_pantry, yageunmong_server_room]
+    connections: [yageunmong_late_night_desk, yageunmong_meeting_room, yageunmong_approval_desk, yageunmong_pantry, yageunmong_server_room, yageunmong_elevator]
     tags: [yageunmong, transit, loop]
     danger: 1
 
@@ -40,3 +40,17 @@ locations:
     connections: [yageunmong_corridor]
     tags: [yageunmong, server_room, dead_project, guilt]
     danger: 2
+
+  - id: yageunmong_elevator
+    name: 엘리베이터 (미승인층)
+    description: 층수 표시가 B1, 13F, 0F, 미승인층, 퇴근층 사이를 번갈아 오간다. 닫힘 버튼은 작동하지 않는다.
+    connections: [yageunmong_corridor, yageunmong_exit_gate]
+    tags: [yageunmong, elevator, exit_hint, unapproved_floor]
+    danger: 2
+
+  - id: yageunmong_exit_gate
+    name: 퇴근 게이트
+    description: 출입 게이트 앞. 화면에는 `퇴근 승인 대기`가 깜빡인다. 뒤쪽 회의실에서는 아직도 이름을 부르는 소리가 들린다.
+    connections: [yageunmong_elevator, yageunmong_corridor]
+    tags: [yageunmong, exit_gate, route_split, ending]
+    danger: 3

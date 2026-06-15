@@ -22,16 +22,17 @@ def test_wasm_runtime_uses_import_meta_relative_module_url():
 def test_web_main_has_require_wasm_fatal_player_policy_without_legacy_fallback():
     main_ts = Path("web/src/main.ts").read_text(encoding="utf-8")
 
-    assert "import.meta.env.VITE_REQUIRE_WASM === 'true'" in main_ts
+    # WASM is now always required — no env flag, no TS legacy fallback
+    assert "VITE_REQUIRE_WASM" not in main_ts
+    assert "legacy mirror로 임시 실행 중" not in main_ts
     assert "renderFatalPlayerError" in main_ts
     assert "storybook-runtime-error" in main_ts
-    assert "게임 코어를 불러오지 못했습니다" in main_ts
+    assert "GameCore를 불러오지 못했습니다" in main_ts
     assert "fatalPlayerError" in main_ts
 
     catch_block = main_ts.split("} catch (error) {", 1)[1].split("}\n}", 1)[0]
-    assert "if (REQUIRE_WASM)" in catch_block
     assert "renderFatalPlayerError" in catch_block
-    assert "legacy mirror로 임시 실행 중" in catch_block
+    assert "if (REQUIRE_WASM)" not in catch_block
 
 
 def test_github_pages_workflow_installs_python_project_dependencies_before_export_check():

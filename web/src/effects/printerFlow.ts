@@ -1,4 +1,5 @@
-import { encounters, publicSecretsById } from '../game/content';
+import encountersData from '../data/generated/encounters.json';
+import secretsData from '../data/generated/secrets.example.json';
 
 export const PRETEXT_MODULE_URL = 'https://esm.sh/@chenglou/pretext@0.0.6';
 
@@ -11,19 +12,31 @@ export interface PrinterFlowScene {
   };
 }
 
+interface EncounterRecord {
+  id: string;
+  title?: string;
+  body?: string;
+}
+
+interface SecretRecord {
+  id: string;
+  public_hint_steps?: string[];
+  reward_text?: string;
+}
+
 export function buildPrinterFlowScene(): PrinterFlowScene {
-  const encounter = encounters.find((candidate) => candidate.id === 'printer_prints_alone');
-  const secret = publicSecretsById.get('real_note_001');
+  const encounter = (encountersData as EncounterRecord[]).find((candidate) => candidate.id === 'printer_prints_alone');
+  const secret = (secretsData as SecretRecord[]).find((s) => s.id === 'real_note_001');
   if (!encounter || !secret) {
     throw new Error('printer flow scene requires printer encounter and real_note_001');
   }
   return {
-    title: encounter.title,
+    title: encounter.title ?? '',
     obstacle: { kind: 'copier', label: 'OFFICE COPIER / OUTPUT TRAY' },
     corpus: [
-      encounter.title,
-      encounter.body,
-      ...secret.public_hint_steps,
+      encounter.title ?? '',
+      encounter.body ?? '',
+      ...(secret.public_hint_steps ?? []),
       secret.reward_text ?? '',
     ].join('\n'),
   };

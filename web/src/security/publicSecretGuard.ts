@@ -1,4 +1,10 @@
-import type { PublicSecret } from '../game/types';
+interface PublicSecret {
+  id: string;
+  title: string;
+  public_hint_steps?: string[];
+  puzzle_prompt?: string;
+  reward_text?: string;
+}
 
 const PRIVATE_SECRET_FIELDS = ['final_hint', 'actual_ip_address', 'office_location', 'treasure_location'];
 

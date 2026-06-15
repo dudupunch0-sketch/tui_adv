@@ -10,15 +10,10 @@ import {
   storypackPreviewLoadingPage,
   type StorypackPreviewOption,
 } from './core/contentBundles';
-import { scenePageFromLegacyTurn } from './core/scenePageFromTurn';
 import type { ScenePage } from './core/types';
 import { createEscapeWasmRuntime, type EscapeWasmRuntime } from './core/wasmRuntime';
 import { startPrinterFlowEffect } from './effects/printerFlow';
-import { buildTurn, executeAction } from './game/actions';
 import { audioCueForSceneTransition, createStorybookAudioEngine } from './ui/audio/audioEngine';
-import { loadSavedState, saveState } from './game/save';
-import { newGame } from './game/state';
-import type { GameState, GameTurn } from './game/types';
 import { actionIdForKey, NEW_GAME_ACTION_ID, type ActionListSource } from './ui/keyboard';
 import { createStorybookTransitionController } from './ui/motion/transitionController';
 import type { TransitionActionContext } from './ui/motion/transitionPlan';
@@ -40,7 +35,6 @@ import {
 import { renderStorybookPage } from './ui/storybook/render';
 
 const DEFAULT_SEED = 123;
-const REQUIRE_WASM = import.meta.env.VITE_REQUIRE_WASM === 'true';
 const STORYPACK_PREVIEW_ACTION_PREFIX = 'start-storypack-preview:';
 
 type PlayerScreen = 'start' | 'game';
@@ -51,8 +45,6 @@ const appRoot: HTMLDivElement = rootElement;
 
 let playerScreen: PlayerScreen = 'start';
 let wasmRuntime: EscapeWasmRuntime | null = null;
-let state: GameState = newGame({ seed: DEFAULT_SEED });
-let turn: GameTurn = buildTurn(state);
 let actionSource: ActionListSource = { actions: [] };
 let lastError: string | null = null;
 let fatalPlayerError = false;
@@ -80,19 +72,11 @@ async function bootstrapWasmRuntime(initialStateJson?: string): Promise<void> {
     render();
   } catch (error) {
     if (playerScreen !== 'game') return;
-    if (REQUIRE_WASM) {
-      lastError = `게임 코어를 불러오지 못했습니다. 새로고침 후에도 계속되면 배포된 WASM 파일 경로를 확인해주세요: ${errorMessage(error)}`;
-      renderFatalPlayerError(lastError, error);
-      return;
-    }
-    if (activeStorypackPreview) {
-      lastError = `게임 코어를 불러오지 못했습니다. storypack preview는 Rust/WASM GameCore를 필요로 합니다: ${errorMessage(error)}`;
-      renderFatalPlayerError(lastError, error);
-      return;
-    }
-    lastError = `Rust GameCore WASM을 불러오지 못해 legacy mirror로 임시 실행 중입니다: ${errorMessage(error)}`;
-    transitionController.cancel();
-    render();
+    const detail = activeStorypackPreview
+      ? 'storypack preview는 Rust/WASM GameCore를 필요로 합니다'
+      : 'Rust/WASM GameCore를 불러오지 못했습니다. 새로고침 후에도 계속되면 배포된 WASM 파일 경로를 확인해주세요.';
+    const msg = `${detail}: ${errorMessage(error)}`;
+    renderFatalPlayerError(msg, error);
   }
 }
 
@@ -201,8 +185,6 @@ async function runPlayerAction(action: string): Promise<void> {
     lastError = null;
     wasmRuntime = null;
     activeStorypackPreview = null;
-    state = newGame({ seed: activeSeed });
-    turn = buildTurn(state);
     render();
     return;
   }
@@ -296,26 +278,11 @@ function startGame(options: {
   wasmRuntime = null;
   activeSeed = options.seed;
   activeStorypackPreview = options.storypackPreview;
-  state = legacyInitialState(options.seed, options.continueExistingSave);
-  turn = buildTurn(state);
-  if (!activeStorypackPreview && (!options.continueExistingSave || options.initialStateJson === undefined)) {
-    saveLegacyState();
-  }
   void bootstrapWasmRuntime(options.initialStateJson);
   const initialPage = currentScenePage();
   const startAction = { id: 'player:start', kind: 'start' };
   audioEngine.playOneShot(audioCueForSceneTransition(null, initialPage, startAction));
   renderGameTransition(null, initialPage, startAction);
-}
-
-function legacyInitialState(seed: number, shouldContinue: boolean): GameState {
-  if (!shouldContinue) return newGame({ seed });
-  try {
-    return loadSavedState(window.localStorage) ?? newGame({ seed });
-  } catch (error) {
-    lastError = `저장 데이터를 읽을 수 없어 새 run으로 복구했습니다: ${errorMessage(error)}`;
-    return newGame({ seed });
-  }
 }
 
 function seedFromStartInput(): number {
@@ -359,11 +326,7 @@ function currentScenePage(): ScenePage {
   if (activeStorypackPreview) {
     return storypackPreviewLoadingPage(activeStorypackPreview);
   }
-  if (REQUIRE_WASM) {
-    return defaultStorypackLoadingPage();
-  }
-  turn = buildTurn(state);
-  return scenePageFromLegacyTurn(turn);
+  return defaultStorypackLoadingPage();
 }
 
 function runAction(actionId: string): void {
@@ -379,23 +342,19 @@ function runAction(actionId: string): void {
   const previousPage = currentScenePage();
   const action = transitionActionContext(previousPage, actionId);
   try {
-    if (wasmRuntime) {
-      wasmRuntime.applyAction(actionId);
-      saveWasmState();
-    } else {
-      const result = executeAction(state, actionId);
-      state = result.state;
-      saveLegacyState();
+    if (!wasmRuntime) {
+      lastError = '게임 코어가 아직 로드되지 않았습니다.';
+      render();
+      return;
     }
+    wasmRuntime.applyAction(actionId);
+    saveWasmState();
     lastError = null;
     const nextPage = currentScenePage();
     audioEngine.playOneShot(audioCueForSceneTransition(previousPage, nextPage, action));
     renderGameTransition(previousPage, nextPage, action);
   } catch (error) {
     lastError = `입력 오류: ${errorMessage(error)}`;
-    if (!wasmRuntime) {
-      state = { ...state, log: [...state.log, lastError] };
-    }
     render();
   }
 }
@@ -431,15 +390,6 @@ function saveWasmState(): void {
   if (activeStorypackPreview) return;
   window.localStorage.setItem(RUST_SAVE_KEY, wasmRuntime.stateJson);
   writeRunSummary(window.localStorage, wasmRuntime.stateJson);
-}
-
-function saveLegacyState(): void {
-  if (activeStorypackPreview) return;
-  saveState(window.localStorage, state);
-  writeRunSummary(
-    window.localStorage,
-    JSON.stringify({ seed: state.seed, turn: state.turn, locationId: state.locationId }),
-  );
 }
 
 function errorMessage(error: unknown): string {

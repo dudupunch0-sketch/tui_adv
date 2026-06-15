@@ -73,7 +73,28 @@ describe('runtime content bundle registry', () => {
   });
 
   it('does not expose 이구학지 as an opt-in preview now that it is the default', () => {
-    expect(STORYPACK_PREVIEW_OPTIONS).toHaveLength(0);
     expect(storypackPreviewById('wuxia_jianghu_pack')).toBeUndefined();
+  });
+
+  it('exposes 야근몽 as a separate storypack preview option without changing the default', () => {
+    const yageunmong = storypackPreviewById('yageunmong_pack');
+    expect(yageunmong).toBeDefined();
+    expect(yageunmong?.label).toBe('야근몽');
+    expect(STORYPACK_PREVIEW_OPTIONS).toHaveLength(1);
+    const bundle = JSON.parse(yageunmong!.contentBundleJson) as {
+      runtime?: { runtime_mode?: string; storypack_id?: string; default_location?: string; world_id?: string };
+      content: { encounters: Array<{ id: string }> };
+    };
+    expect(bundle.runtime).toEqual({
+      runtime_mode: 'storypack_preview',
+      world_id: 'office_dream',
+      storypack_id: 'yageunmong_pack',
+      default_location: 'yageunmong_late_night_desk',
+    });
+    const encounterIds = bundle.content.encounters.map((e) => e.id);
+    expect(encounterIds).toContain('yageunmong_late_night_desk_awake');
+    expect(encounterIds).toContain('yageunmong_unapproved_meeting_room_loop');
+    expect(encounterIds).not.toContain('ex_employee_messenger');
+    expect(encounterIds).not.toContain('wuxia_commute_rift_arrival');
   });
 });

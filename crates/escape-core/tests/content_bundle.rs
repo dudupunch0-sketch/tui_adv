@@ -7,6 +7,8 @@ use serde_json::json;
 const CONTENT_BUNDLE: &str = include_str!("../fixtures/content/content.bundle.json");
 const WUXIA_PREVIEW_BUNDLE: &str =
     include_str!("../fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json");
+const YAGEUNMONG_PREVIEW_BUNDLE: &str =
+    include_str!("../fixtures/content/storypack-preview/yageunmong_pack.content.bundle.json");
 
 #[test]
 fn fixture_content_bundle_loads_counts_and_public_sections() {
@@ -2390,5 +2392,80 @@ fn content_index_rejects_unknown_encounter_location_references() {
             encounter_id: "ex_employee_messenger".to_string(),
             location_id: "missing_floor".to_string(),
         }
+    );
+}
+
+#[test]
+fn preview_fixture_indexes_yageunmong_opener() {
+    let bundle =
+        load_content_bundle(YAGEUNMONG_PREVIEW_BUNDLE).expect("yageunmong preview bundle should load");
+    let runtime = bundle.runtime.as_ref().expect("yageunmong preview runtime metadata");
+    assert_eq!(runtime.runtime_mode, "storypack_preview");
+    assert_eq!(runtime.world_id, "office_dream");
+    assert_eq!(runtime.storypack_id, "yageunmong_pack");
+    assert_eq!(runtime.default_location, "yageunmong_late_night_desk");
+    assert_eq!(bundle.manifest.counts.get("locations"), Some(&3));
+    assert_eq!(bundle.manifest.counts.get("items"), Some(&2));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&2));
+    assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
+
+    let index = index_content_bundle(&bundle).expect("yageunmong preview bundle should index");
+    assert_eq!(index.locations_len(), 3);
+    assert_eq!(index.encounters_len(), 2);
+
+    let desk = index
+        .location("yageunmong_late_night_desk")
+        .expect("late night desk location");
+    assert_eq!(desk.name, "야근 중 책상");
+    assert_eq!(desk.connections, vec!["yageunmong_corridor"]);
+
+    let opener = index
+        .encounter("yageunmong_late_night_desk_awake")
+        .expect("late night desk awake opener encounter");
+    assert_eq!(opener.title, "야근 중 잠깐 눈을 붙였다");
+    assert_eq!(opener.conditions.locations, vec!["yageunmong_late_night_desk"]);
+    assert!(opener.conditions.required_flags.is_empty());
+    assert_eq!(opener.conditions.forbidden_flags, vec!["yageunmong_started"]);
+    assert_eq!(
+        opener
+            .presentation
+            .as_ref()
+            .expect("opener presentation")
+            .layout
+            .as_deref(),
+        Some("storypack_preview")
+    );
+    assert_eq!(opener.choices.len(), 3);
+    let fallback = opener
+        .choices
+        .iter()
+        .find(|choice| choice.id == "check_clock_and_body")
+        .expect("fallback check clock choice");
+    assert_eq!(
+        fallback.outcome.add_flags,
+        vec!["yageunmong_started", "lucid_dream_hint_seen"]
+    );
+    assert_eq!(fallback.outcome.add_clues, vec!["clock_repeats_same_minute"]);
+
+    let loop_encounter = index
+        .encounter("yageunmong_unapproved_meeting_room_loop")
+        .expect("unapproved meeting room loop encounter");
+    assert_eq!(loop_encounter.title, "회의실은 끝나지 않는다");
+    assert_eq!(loop_encounter.conditions.locations, vec!["yageunmong_meeting_room"]);
+    assert_eq!(loop_encounter.conditions.required_flags, vec!["yageunmong_started"]);
+    assert_eq!(loop_encounter.conditions.forbidden_flags, vec!["meeting_loop_seen"]);
+    assert_eq!(loop_encounter.choices.len(), 3);
+    let safe_leave = loop_encounter
+        .choices
+        .iter()
+        .find(|choice| choice.id == "leave_room_without_answering")
+        .expect("safe leave choice");
+    assert_eq!(
+        safe_leave.outcome.add_flags,
+        vec!["meeting_loop_seen"]
+    );
+    assert_eq!(
+        safe_leave.outcome.destination_id.as_deref(),
+        Some("yageunmong_corridor")
     );
 }

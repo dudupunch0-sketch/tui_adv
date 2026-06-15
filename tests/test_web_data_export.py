@@ -1285,6 +1285,107 @@ def test_checked_in_wuxia_storypack_preview_bundle_is_up_to_date():
     assert exporter.check_storypack_preview_bundle(ROOT, "wuxia_jianghu_pack", web_bundle_path) == []
 
 
+def test_export_web_data_builds_yageunmong_storypack_preview_bundle():
+    exporter = _load_export_module()
+
+    bundle = exporter.build_storypack_preview_bundle(ROOT, "yageunmong_pack")
+
+    assert bundle["schema_version"] == 1
+    assert bundle["kind"] == "tui_adv.content_bundle"
+    assert bundle["runtime"] == {
+        "runtime_mode": "storypack_preview",
+        "world_id": "office_dream",
+        "storypack_id": "yageunmong_pack",
+        "default_location": "yageunmong_late_night_desk",
+    }
+    assert "storypack-previews/yageunmong_pack" in bundle["source"]
+    assert bundle["manifest"]["counts"] == {
+        "locations": 3,
+        "items": 2,
+        "encounters": 2,
+        "endings": 1,
+        "achievements": 2,
+        "secrets": 0,
+    }
+    assert [location["id"] for location in bundle["content"]["locations"]] == [
+        "yageunmong_late_night_desk",
+        "yageunmong_corridor",
+        "yageunmong_meeting_room",
+    ]
+    encounter_ids = [encounter["id"] for encounter in bundle["content"]["encounters"]]
+    assert encounter_ids == [
+        "yageunmong_late_night_desk_awake",
+        "yageunmong_unapproved_meeting_room_loop",
+    ]
+    opener = bundle["content"]["encounters"][0]
+    assert opener["conditions"] == {
+        "locations": ["yageunmong_late_night_desk"],
+        "forbidden_flags": ["yageunmong_started"],
+    }
+    assert opener["presentation"]["layout"] == "storypack_preview"
+    assert opener["presentation"]["speaker"] == "야근몽"
+    assert opener["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "시계",
+        "모니터",
+        "퇴근 승인",
+    ]
+    assert [choice["id"] for choice in opener["choices"]] == [
+        "check_clock_and_body",
+        "answer_manager_message",
+        "stand_up_from_desk",
+    ]
+    fallback = opener["choices"][0]
+    assert fallback["outcome"]["add_flags"] == ["yageunmong_started", "lucid_dream_hint_seen"]
+    assert fallback["outcome"]["add_clues"] == ["clock_repeats_same_minute"]
+    loop_enc = bundle["content"]["encounters"][1]
+    assert loop_enc["conditions"] == {
+        "locations": ["yageunmong_meeting_room"],
+        "required_flags": ["yageunmong_started"],
+        "forbidden_flags": ["meeting_loop_seen"],
+    }
+    assert loop_enc["presentation"]["layout"] == "storypack_preview"
+    assert loop_enc["presentation"]["effect_cues"][0]["stable_terms"] == [
+        "회의실",
+        "회의록",
+        "다시 검토",
+    ]
+    assert [choice["id"] for choice in loop_enc["choices"]] == [
+        "leave_room_without_answering",
+        "read_repeated_action_items",
+        "add_note_that_meeting_is_dream",
+    ]
+    safe_leave = loop_enc["choices"][0]
+    assert safe_leave["outcome"]["add_flags"] == ["meeting_loop_seen"]
+    assert safe_leave["outcome"]["destination_id"] == "yageunmong_corridor"
+    assert "dev_desk" not in str(bundle)
+    assert _missing_private_secret_fields(bundle)
+
+
+def test_checked_in_yageunmong_storypack_preview_bundle_is_up_to_date():
+    exporter = _load_export_module()
+    bundle_path = (
+        ROOT
+        / "crates"
+        / "escape-core"
+        / "fixtures"
+        / "content"
+        / "storypack-preview"
+        / "yageunmong_pack.content.bundle.json"
+    )
+    web_bundle_path = (
+        ROOT
+        / "web"
+        / "src"
+        / "data"
+        / "generated"
+        / "storypack-preview"
+        / "yageunmong_pack.content.bundle.json"
+    )
+
+    assert exporter.check_storypack_preview_bundle(ROOT, "yageunmong_pack", bundle_path) == []
+    assert exporter.check_storypack_preview_bundle(ROOT, "yageunmong_pack", web_bundle_path) == []
+
+
 def test_export_web_data_writes_and_checks_content_bundle(tmp_path):
     exporter = _load_export_module()
     bundle_path = tmp_path / "content.bundle.json"

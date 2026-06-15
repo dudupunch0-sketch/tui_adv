@@ -1,0 +1,8 @@
+endings:
+  - id: yageunmong_preview_lucid_start
+    name: 자각몽의 시작
+    kind: preview
+    priority: 10
+    conditions:
+      required_flags: [lucid_dream_hint_seen]
+    text: 시계가 같은 분을 반복하고 있다. 꿈인 것을 알고 있지만, 아는 것만으로 깨어날 수는 없다. 야근몽은 이제 시작되었다.

@@ -12,6 +12,9 @@ use std::time::Duration;
 const DEFAULT_STORYPACK_ID: &str = "wuxia_jianghu_pack";
 const DEFAULT_STORYPACK_BUNDLE_REL: &str =
     "../escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json";
+const YAGEUNMONG_STORYPACK_ID: &str = "yageunmong_pack";
+const YAGEUNMONG_STORYPACK_BUNDLE_REL: &str =
+    "../escape-core/fixtures/content/storypack-preview/yageunmong_pack.content.bundle.json";
 
 #[derive(Debug, PartialEq, Eq)]
 struct CliOptions {
@@ -167,12 +170,15 @@ fn selected_content_bundle_path(options: &CliOptions) -> Result<PathBuf, String>
 }
 
 fn storypack_preview_bundle_path(storypack_id: &str) -> Result<PathBuf, String> {
-    if storypack_id != DEFAULT_STORYPACK_ID {
-        return Err(format!(
-            "unsupported --storypack-preview '{storypack_id}'; available: {DEFAULT_STORYPACK_ID}"
-        ));
+    if storypack_id == DEFAULT_STORYPACK_ID {
+        return Ok(default_storypack_bundle_path());
     }
-    Ok(default_storypack_bundle_path())
+    if storypack_id == YAGEUNMONG_STORYPACK_ID {
+        return Ok(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(YAGEUNMONG_STORYPACK_BUNDLE_REL));
+    }
+    Err(format!(
+        "unsupported --storypack-preview '{storypack_id}'; available: {DEFAULT_STORYPACK_ID}, {YAGEUNMONG_STORYPACK_ID}"
+    ))
 }
 
 fn default_storypack_bundle_path() -> PathBuf {

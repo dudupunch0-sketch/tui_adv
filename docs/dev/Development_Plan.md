@@ -4533,3 +4533,21 @@ Web 또는 terminal renderer가 게임 규칙을 다시 구현하면 Rust GameCo
 **검증**: pytest 94 pass / 3 fail(known env), cargo test --workspace PASS, npm test PASS.
 
 **다음**: 사용자 지시 대기 (B묶음/야근몽/기타 팩은 보류 유지).
+
+## §0.90 야근몽 첫 runtime preview slice (2026-06-15)
+
+사용자가 야근몽 보류를 해제(2026-06-15 `/goal 야근몽 구현`). §0.81 handoff대로 첫 runtime preview 슬라이스 구현. plan=Opus, 구현=Sonnet subagent. branch: rust-core-consolidation.
+
+**구현 (wuxia preview 배선 미러)**:
+- `src/tui_adv/storypack-previews/yageunmong_pack/` 6 YAML(locations 3 / items 2 / endings / achievements 2 / secrets.example / encounters) 생성.
+- encounter 2장: `yageunmong_late_night_desk_awake`(opener, forbidden `yageunmong_started`) + `yageunmong_unapproved_meeting_room_loop`(required `yageunmong_started`, forbidden `meeting_loop_seen`). 기존 encounter/choice/outcome schema만 사용, 각성편린은 flag/clue/log로만.
+- `scripts/export_web_data.py` `STORYPACK_PREVIEWS`에 `yageunmong_pack` 등록 (world_id=office_dream, default_location=`yageunmong_late_night_desk`).
+- generated bundle 2개(Rust fixture + web) 생성.
+- `web/src/core/contentBundles.ts` launcher에 야근몽 preview 추가(기본 office/이구학지 불변).
+- 테스트: test_web_data_export.py, content_bundle.rs, cli_smoke.rs(+main.rs preview 분기), contentBundles.test.ts.
+
+**제약 유지**: 기본 office runtime/save key 불변, companion/relation/route-graph/combat resolver 미개방, 실제 회사·개인 정보 없음, 카드 6/10/11/12(route/ending 계열)은 후속.
+
+**검증(Opus 직접 재확인)**: export --check up-to-date, cargo test --workspace PASS, pytest 96 pass / 3 fail(known env), npm test 37 PASS, `escape-terminal --storypack-preview yageunmong_pack --tui-smoke` opener 렌더 확인.
+
+**다음**: 야근몽 후속 카드(3/4/7 anchor·approval·mail loop) 또는 route/ending 슬라이스. 사용자 지시 대기.

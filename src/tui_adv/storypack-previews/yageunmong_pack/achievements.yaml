@@ -1,0 +1,12 @@
+achievements:
+  - id: yageunmong_first_lucid_moment
+    name: 첫 자각
+    description: 시계가 같은 분을 반복한다는 것을 알아챈 첫 순간을 붙든다.
+    conditions:
+      required_flags: [lucid_dream_hint_seen]
+
+  - id: yageunmong_loop_recognized
+    name: 루프 인식
+    description: 회의실 문을 닫고 나왔는데 다시 같은 회의실 앞이라는 사실을 받아들인다.
+    conditions:
+      required_flags: [meeting_loop_seen]

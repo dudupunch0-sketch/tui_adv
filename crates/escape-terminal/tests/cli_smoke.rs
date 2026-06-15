@@ -3771,3 +3771,77 @@ fn content_tui_smoke_wuxia_settlement_stay_scene_sets_resolved_flag() {
     assert!(stdout.contains("visual id: ending:wuxia_final_epilogue_renderer_contract"));
     assert!(!stdout.contains("card_id: epilogue_wuxia_returned_commute"));
 }
+
+#[test]
+fn content_tui_smoke_launches_yageunmong_storypack_preview_by_opt_in_flag() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--storypack-preview",
+            "yageunmong_pack",
+            "--seed",
+            "123",
+            "--tui-smoke",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("위치: 야근 중 책상 (yageunmong_late_night_desk)"));
+    assert!(stdout.contains("[현재 인카운터]"));
+    assert!(stdout.contains("야근 중 잠깐 눈을 붙였다"));
+    assert!(stdout.contains("visual id: yageunmong_late_night_desk_awake"));
+    assert!(stdout.contains("layout: storypack_preview"));
+    assert!(stdout.contains("stable terms: 시계 / 모니터 / 퇴근 승인"));
+    assert!(stdout.contains("choice:check_clock_and_body / 시계와 손목의 감각을 확인한다"));
+    assert!(stdout.contains("choice:answer_manager_message / 메신저 알림에 답장을 보낸다"));
+    assert!(stdout.contains("choice:stand_up_from_desk / 자리에서 일어나 복도를 확인한다"));
+    assert!(!stdout.contains("dev_desk"));
+    assert!(!stdout.contains("wuxia_commute_rift"));
+}
+
+#[test]
+fn content_tui_smoke_reaches_yageunmong_meeting_room_loop() {
+    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
+        .args([
+            "--scene",
+            "content",
+            "--storypack-preview",
+            "yageunmong_pack",
+            "--seed",
+            "123",
+            "--tui-smoke",
+            "--action",
+            "choice:stand_up_from_desk",
+            "--action",
+            "move:yageunmong_meeting_room",
+        ])
+        .output()
+        .expect("escape-terminal executable should run");
+
+    assert!(
+        output.status.success(),
+        "expected success, stderr was: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("위치: 회의실 (루프) (yageunmong_meeting_room)"));
+    assert!(stdout.contains("[현재 인카운터]"));
+    assert!(stdout.contains("회의실은 끝나지 않는다"));
+    assert!(stdout.contains("visual id: yageunmong_unapproved_meeting_room_loop"));
+    assert!(stdout.contains("layout: storypack_preview"));
+    assert!(stdout.contains("stable terms: 회의실 / 회의록 / 다시 검토"));
+    assert!(stdout.contains("choice:leave_room_without_answering / 아무것도 답하지 않고 회의실을 나온다"));
+    assert!(stdout.contains("choice:read_repeated_action_items / 반복되는 액션 아이템을 읽는다"));
+    assert!(stdout.contains("choice:add_note_that_meeting_is_dream / 회의록 여백에 '이것은 꿈이다'라고 적는다"));
+    assert!(!stdout.contains("dev_desk"));
+    assert!(!stdout.contains("wuxia_commute_rift"));
+}

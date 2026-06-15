@@ -1,0 +1,86 @@
+encounters:
+  - id: yageunmong_late_night_desk_awake
+    title: 야근 중 잠깐 눈을 붙였다
+    body: 잠깐 눈을 붙였을 뿐인데 모니터에는 아직 같은 업무 창이 열려 있다. 시계는 같은 분을 반복하고, 메신저에는 `아직 퇴근 승인되지 않았습니다`라는 시스템 알림이 떠 있다.
+    presentation:
+      visual_id: yageunmong_late_night_desk_awake
+      speaker: 야근몽
+      layout: storypack_preview
+      effect_cues:
+        - kind: glyph_anomaly
+          source: desk_clock_loop
+          intensity: 0.55
+          stable_terms: [시계, 모니터, 퇴근 승인]
+          distortion: clock_repeats_then_notification
+          duration_hint_ms: 1400
+          fallback_text: 시계의 초침이 같은 분을 반복하는 사이 '시계', '모니터', '퇴근 승인'만 또렷하게 남는다.
+    conditions:
+      locations: [yageunmong_late_night_desk]
+      forbidden_flags: [yageunmong_started]
+    choices:
+      - id: check_clock_and_body
+        label: 시계와 손목의 감각을 확인한다
+        outcome:
+          add_items: [cold_coffee_cup]
+          add_clues: [clock_repeats_same_minute]
+          add_flags: [yageunmong_started, lucid_dream_hint_seen]
+          log: 시계는 같은 분을 반복하고 있었다. 커피는 식었지만 향은 방금 전 같다. 이것은 꿈일지도 모른다.
+      - id: answer_manager_message
+        label: 메신저 알림에 답장을 보낸다
+        outcome:
+          resources:
+            sanity: -2
+          add_clues: [clockout_not_approved_message]
+          add_flags: [yageunmong_started, office_loop_started]
+          log: 답장을 보냈지만 같은 알림이 다시 떴다. 승인 요청은 끝나지 않는다.
+      - id: stand_up_from_desk
+        label: 자리에서 일어나 복도를 확인한다
+        outcome:
+          destination_id: yageunmong_corridor
+          add_flags: [yageunmong_started, office_loop_started]
+          log: 불이 꺼진 복도 끝에 회의실 불빛이 새어 나온다. 퇴근한 사람이 없는 것 같다.
+
+  - id: yageunmong_unapproved_meeting_room_loop
+    title: 회의실은 끝나지 않는다
+    body: 회의실 문을 닫고 나왔는데 다시 같은 회의실 앞이다. 회의록에는 아직 말하지 않은 발언과 이미 끝난 결론이 동시에 적혀 있고, 결론은 늘 `처음부터 다시 검토`다.
+    presentation:
+      visual_id: yageunmong_unapproved_meeting_room_loop
+      speaker: 야근몽
+      layout: storypack_preview
+      effect_cues:
+        - kind: glyph_anomaly
+          source: meeting_room_loop
+          intensity: 0.62
+          stable_terms: [회의실, 회의록, 다시 검토]
+          distortion: minutes_loop_then_review_stamp
+          duration_hint_ms: 1300
+          fallback_text: 회의실 문이 닫혔다 열리는 사이 '회의실', '회의록', '다시 검토'만 반복된다.
+    conditions:
+      locations: [yageunmong_meeting_room]
+      required_flags: [yageunmong_started]
+      forbidden_flags: [meeting_loop_seen]
+    choices:
+      - id: leave_room_without_answering
+        label: 아무것도 답하지 않고 회의실을 나온다
+        outcome:
+          destination_id: yageunmong_corridor
+          add_flags: [meeting_loop_seen]
+          add_clues: [repeated_action_items]
+          log: 문을 닫고 나왔다. 그런데 복도가 다시 같은 회의실로 이어진다. 루프를 인식했다.
+      - id: read_repeated_action_items
+        label: 반복되는 액션 아이템을 읽는다
+        outcome:
+          resources:
+            sanity: -2
+          add_items: [minutes_fragment]
+          add_flags: [meeting_loop_seen]
+          add_clues: [repeated_action_items, future_minutes_line]
+          log: 회의록에는 아직 논의하지 않은 안건이 이미 완료로 표시되어 있다. 꿈이 시간을 섞었다.
+      - id: add_note_that_meeting_is_dream
+        label: 회의록 여백에 '이것은 꿈이다'라고 적는다
+        outcome:
+          resources:
+            sanity: -1
+          add_flags: [meeting_loop_seen, lucid_note_added]
+          add_clues: [repeated_action_items]
+          log: 펜으로 적었지만 다음 줄에는 이미 지워진 흔적만 남는다. 꿈의 루프는 기록을 허용하지 않는다.

@@ -32,6 +32,16 @@ STORYPACK_PREVIEWS: dict[str, dict[str, Any]] = {
             "default_location": "wuxia_commute_rift",
         },
     },
+    "yageunmong_pack": {
+        "data_dir": "src/tui_adv/storypack-previews/yageunmong_pack",
+        "source": "src/tui_adv/storypack-previews/yageunmong_pack/*.yaml",
+        "runtime": {
+            "runtime_mode": "storypack_preview",
+            "world_id": "office_dream",
+            "storypack_id": "yageunmong_pack",
+            "default_location": "yageunmong_late_night_desk",
+        },
+    },
 }
 
 

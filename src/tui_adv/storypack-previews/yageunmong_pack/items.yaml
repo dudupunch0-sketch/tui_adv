@@ -1,0 +1,12 @@
+items:
+  - id: cold_coffee_cup
+    name: 식은 커피잔
+    description: 방금 내린 것처럼 향은 남았지만 완전히 식어 있다. 현실의 온도가 꿈과 다름을 알려 주는 첫 앵커.
+    type: clue
+    tags: [yageunmong, reality_anchor, office_object]
+
+  - id: minutes_fragment
+    name: 회의록 조각
+    description: 아직 말하지 않은 발언과 이미 끝난 결론이 동시에 적혀 있다. 꿈의 루프를 보여 주는 단서.
+    type: clue
+    tags: [yageunmong, meeting_room, loop_evidence]

@@ -1,5 +1,6 @@
 import type { ScenePage } from './types';
 import wuxiaJianghuBundle from '../data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json';
+import yageunmongBundle from '../data/generated/storypack-preview/yageunmong_pack.content.bundle.json';
 
 export const DEFAULT_STORYPACK_ID = 'wuxia_jianghu_pack';
 export const DEFAULT_STORYPACK_LABEL = '이구학지 — 천기록';
@@ -11,7 +12,7 @@ export const DEFAULT_CONTENT_BUNDLE_JSON = JSON.stringify({
   },
 });
 
-export type StorypackPreviewId = 'wuxia_jianghu_pack';
+export type StorypackPreviewId = 'wuxia_jianghu_pack' | 'yageunmong_pack';
 
 export interface StorypackPreviewOption {
   id: StorypackPreviewId;
@@ -20,7 +21,14 @@ export interface StorypackPreviewOption {
   contentBundleJson: string;
 }
 
-export const STORYPACK_PREVIEW_OPTIONS: StorypackPreviewOption[] = [];
+export const STORYPACK_PREVIEW_OPTIONS: StorypackPreviewOption[] = [
+  {
+    id: 'yageunmong_pack',
+    label: '야근몽',
+    description: '야근 중 책상에 엎드렸다가 회사 악몽에 갇힌다. 업무 완료가 아니라 꿈에서 깨어나는 것이 목표다.',
+    contentBundleJson: JSON.stringify(yageunmongBundle),
+  },
+];
 
 export function storypackPreviewById(id: string): StorypackPreviewOption | undefined {
   return STORYPACK_PREVIEW_OPTIONS.find((option) => option.id === id);

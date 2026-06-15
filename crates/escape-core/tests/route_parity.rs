@@ -713,7 +713,7 @@ fn wuxia_final_epilogue_strong_evidence_alliance_silence_is_responsibility_evasi
     assert!(card_text.contains("card_id: epilogue_boss_alliance_silence"));
     assert!(card_text.contains("variant: responsibility_evasion"));
     assert!(card_text.contains("final_alliance_silence_responsibility_evasion_seeded"));
-    assert!(card_text.contains("증거 부족 판정이 아니다"));
+    assert!(card_text.contains("공식 기록상 흑사방의 활동 범위는 확인되지 않았다"));
 }
 
 #[test]

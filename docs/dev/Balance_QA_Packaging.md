@@ -1,5 +1,7 @@
 # 밸런싱, QA, 패키징 기준
 
+> **§0.88 이후 현실**: 게임 로직/루트 재현 QA의 truth는 **Rust GameCore** `cargo test --workspace`(WSL)다. Python 쪽은 contract/docs/web 테스트만 남는다.
+
 이 문서는 Phase 10의 큰 덩어리인 밸런싱, QA, 패키징/릴리즈 전 검증을 현재 구현 기준으로 고정한다.
 목표는 “지금의 vertical slice가 README만 보고 실행 가능하고, 대표 정상/실패/히든 루트가 자동으로 재현되며, 공개 저장소에 비밀 정보가 섞이지 않는다”는 상태를 유지하는 것이다.
 
@@ -20,28 +22,31 @@
 
 ## 자동 QA smoke
 
-Phase 10 smoke는 `scripts/qa_smoke.py`가 담당한다.
+§0.88 이후 QA는 세 계층으로 나뉜다.
+
+**게임 로직/루트 재현 QA — Rust GameCore (WSL):**
 
 ```bash
-PYTHONPATH=src python scripts/qa_smoke.py --list
-PYTHONPATH=src python scripts/qa_smoke.py
-PYTHONPATH=src python scripts/qa_smoke.py --case escape-ending
+export PATH=$HOME/.cargo/bin:$PATH   # WSL 초기화 필요 시 (docs/dev/Troubleshooting.md §0 참조)
+cargo test --workspace
 ```
 
-현재 case:
+**콘텐츠/계약/docs/web QA — Python pytest:**
 
-| case | 확인 항목 |
-|---|---|
-| `escape-ending` | 비상계단 정상 탈출 엔딩 도달 |
-| `failure-ending` | 비상계단 실패 엔딩 도달 |
-| `hidden-hint` | 첫 번째 현실 연결 히든 힌트 도달 |
-| `invalid-input` | 잘못된 선택지 입력이 traceback 없이 오류 처리됨 |
-| `save-load` | 저장 후 로드해서 다음 행동을 이어감 |
-| `secret-scan` | `private/`/`.local.*` 추적 금지와 공개 JSON/bundle 최신성 확인 |
-| `new-game-10` | seed 100~109 새 게임 10회 시작 smoke |
-| `terminal-size` | 80x24, 100x32, 120x40 TUI snapshot 표시 smoke |
+```bash
+.venv/Scripts/python.exe -m pytest -q
+```
 
-Textual 설치 환경에서 실제 Textual widget tree를 확인하는 항목은 `scripts/textual_qa_smoke.py`와 `docs/dev/Final_QA_Log.md`에 둔다.
+알려진 환경 실패 3건(symlink WinError 1314 ×2, cloud_server help ×1)은 회귀가 아니다. 자세한 내용은 `docs/dev/Troubleshooting.md` §4를 참조한다.
+
+**Web QA:**
+
+```bash
+cd web && npm test
+npm run build
+```
+
+**secret-scan**: `private/`/`.local.*` 추적 금지와 공개 JSON/bundle 최신성은 `scripts/export_web_data.py --check`와 git tracked-path 검사로 확인한다.
 
 ## 패키징/README 기준
 
@@ -78,10 +83,8 @@ README는 다음을 즉시 제공해야 한다.
 
 GUI/터미널 환경 차이는 자동 snapshot만으로 충분하지 않으므로 별도 기록으로 관리한다.
 
-- 실제 Textual widget tree QA: `PYTHONPATH=src python scripts/textual_qa_smoke.py`
-- 터미널 크기별 표시 확인: `PYTHONPATH=src python scripts/qa_smoke.py --case terminal-size`
-- SuperLightTUI terminal renderer slice 이후: `cargo test -p escape-terminal`와 renderer snapshot smoke
+- Rust terminal renderer smoke: `cargo test -p escape-terminal`와 renderer snapshot smoke
 - Web Storybook slice 이후: `cd web && npm test && npm run build`와 브라우저 수동 smoke
-- 새 게임 10회 기록: `PYTHONPATH=src python scripts/qa_smoke.py --case new-game-10`
+- 과거 Textual widget tree QA 및 terminal-size/new-game-10 smoke 기록은 `docs/dev/Final_QA_Log.md`에 §0.88 이전 legacy 기록으로 보존한다.
 
 최종 결과와 확인 기준은 `docs/dev/Final_QA_Log.md`에 기록한다.

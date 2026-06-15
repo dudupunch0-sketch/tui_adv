@@ -4488,3 +4488,48 @@ Web 또는 terminal renderer가 게임 규칙을 다시 구현하면 Rust GameCo
    - route graph/faction reputation/debt ledger/relation schema, return system, 천기록 정체 reveal, 천외편린 3택 성장/reward/ability schema는 아직 열지 않고, 필요한 경우 `flags`/`clues`/`log`/`presentation` hook으로만 future work를 남긴다.
 2. 야근몽 runtime 후보는 `yageunmong_late_night_desk_awake` 또는 각성편린 3택 preview로만 열고, 기본 office bundle을 자동 rewrite하지 않는다.
 3. 실제 음악/SFX asset과 soundtrack은 저작권/라이선스 정책이 정리되기 전까지 열지 않는다.
+
+
+---
+
+## §0.88 Rust core 정본화 — gameplay 로직 단일화 (2026-06-15)
+
+**목표**: 3개 병렬 game impl(Rust/TS/Python)을 Rust 단일 정본으로 통합.
+
+**사용자 결정**:
+- Python → 툴 전용 유지 (game/*.py 제거, scripts 유지)
+- Web TS fallback → 완전 제거 (wasm-only)
+- 외부 사용자 없음
+
+**Phase B 완료** (branch: rust-core-consolidation):
+- `web/src/game/` 12 TS files 삭제 (actions, state, types, save, parity.test 등)
+- `web/src/main.ts` WASM-only 경로로 단순화 — `REQUIRE_WASM` 플래그 제거, TS fallback 분기 완전 제거
+- `scenePageFromTurn.ts`, `render.ts`, 관련 테스트 삭제
+- vitest 36 pass
+
+**Phase C 완료**:
+- `src/tui_adv/game/` 11 py files 전체 삭제
+- `src/tui_adv/tui/app.py`, `encounter.py`, `status.py` 삭제
+- `src/tui_adv/main.py` deprecation stub으로 교체
+- game logic 의존 pytest 16개 삭제
+- pytest 94 pass (3 fail = 기존 Windows 환경 문제)
+
+**commit**: 5decc4d — PR 대기 중 (rust-core-consolidation → main)
+
+**다음**: 사용자 지시 대기.
+
+## §0.89 후일담 본문 + 문서/방법론 최신화 + §0.88 후속 정리 (2026-06-15)
+
+이구학지 in-scope 완성 후 사용자 지시로 진행한 문서/정리 슬라이스. branch: rust-core-consolidation, PR #119.
+
+**후일담 카드 DB 18 본문**: `final_epilogue.rs` `build_candidates()`의 placeholder body를 Notion 후일담 카드 DB(`wuxia_10_epilogue_card_db`) 서사 텍스트로 교체. wasm 런타임 출력 경로(JSON 번들 아님)이므로 wasm 재빌드로 반영 확인. `route_parity` alliance_silence assertion을 새 본문에 맞게 갱신. commit fb2111b.
+
+**방법론/트러블슈팅 문서 신규**:
+- `docs/dev/Development_Methodology.md` — 재사용 가능한 plan→implement→verify→report 루프, 완성 판정(canonical 추적 문서 기준), 검증 신뢰 원칙(subagent 보고 직접 재검증), 산출물 경로 모델(wasm vs bundle), 충돌 해결.
+- `docs/dev/Troubleshooting.md` — 도구 위치(cargo/gh = WSL only, pytest = .venv), subagent 환각 사례, epilogue body=wasm 경로, 테스트 스냅샷 동기화, 알려진 pytest 환경 실패 3건.
+
+**§0.88 후속 정리**: §0.88이 Python game 로직을 지웠으나 죽은 QA 스크립트가 남아 있었다. `scripts/qa_smoke.py`, `scripts/textual_qa_smoke.py` 삭제. README/AGENTS/00_Index, `Balance_QA_Packaging.md`, `Data_Schema.md`, `Final_QA_Log.md`, `Save_Slot_UX.md`, `Checklist.md`의 죽은 명령 참조를 post-§0.88 현실(cargo test / pytest / npm test)로 동기화. `test_docs_contract.py`, `test_web_wasm_build_standardization.py`의 stale assertion 갱신.
+
+**검증**: pytest 94 pass / 3 fail(known env), cargo test --workspace PASS, npm test PASS.
+
+**다음**: 사용자 지시 대기 (B묶음/야근몽/기타 팩은 보류 유지).

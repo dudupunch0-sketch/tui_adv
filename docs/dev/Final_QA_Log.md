@@ -3,7 +3,9 @@
 이 문서는 Checklist에 남아 있던 실제 Textual 화면 QA, 새 게임 10회 플레이 기록, 터미널 크기별 화면 확인을 재현 가능한 명령과 결과로 보관한다.
 사람이 다시 확인할 수 있도록 모든 명령은 저장소 루트에서 실행한다.
 
-## 실행 명령
+> **§0.88 이전 legacy 기록**: 아래 명령과 결과는 Python 게임 로직(`scripts/qa_smoke.py`, `scripts/textual_qa_smoke.py`)이 존재하던 §0.88 이전 기준이다. §0.88 이후 게임 로직 QA truth는 `cargo test --workspace`(WSL)이며, 해당 스크립트는 삭제됐다.
+
+## 실행 명령 (§0.88 이전 legacy)
 
 기본 QA smoke:
 
@@ -17,7 +19,7 @@ Textual 설치 환경에서 실제 Textual widget tree를 띄우는 QA smoke:
 PYTHONPATH=src python scripts/textual_qa_smoke.py
 ```
 
-현재 확인 결과:
+확인 결과 (당시):
 
 ```text
 PASS new-game-10

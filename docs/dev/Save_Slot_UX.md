@@ -158,7 +158,7 @@
 - `src/tui_adv/main.py`
   - smoke 검증용 옵션은 필요할 때만 추가한다.
   - 예: `--rename-save-slot 1 --slot-name "정복 루트 직전"`
-- `tests/test_tui_app.py`, `tests/test_save.py`, `tests/test_qa_smoke_script.py`
+- `tests/test_tui_app.py`, `tests/test_save.py`, `tests/test_qa_smoke_script.py` (§0.88 이전 legacy — test_qa_smoke_script.py는 삭제됨)
   - 기존 저장 파일 호환
   - 이름 표시 fallback
   - 읽기 실패 슬롯 rename 차단

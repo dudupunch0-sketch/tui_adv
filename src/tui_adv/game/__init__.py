@@ -1,1 +1,0 @@
-"""Pure game-domain models."""

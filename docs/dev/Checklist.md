@@ -1206,7 +1206,7 @@
 
 ### 1.3 실행 검증
 
-- [x] 기본 실행 명령 정의: `PYTHONPATH=src python -m tui_adv --new --seed 123`
+- [x] 기본 실행 명령 정의: `PYTHONPATH=src python -m tui_adv --new --seed 123` (§0.88 이전 legacy — 현재 게임 로직 truth는 `cargo test --workspace`)
 - [x] 앱이 초기 상태 smoke 출력을 하며 실행된다.
 - [x] `pytest`가 실행된다.
 - [x] README에 초기 실행 방법을 기록한다.

@@ -126,7 +126,8 @@ def test_generated_wasm_package_is_ignored_but_documented():
     assert "npm run preview:wasm" in readme
     assert "web/dist/assets/wasm-pkg/" in readme
     assert "Rust/WASM-primary" in readme
-    assert "legacy TypeScript mirror" in readme
+    # §0.88 Rust core 정본화: TS mirror/Python game 로직은 삭제됨(과거 fallback/parity oracle).
+    assert "TypeScript mirror core" in readme
     assert "fallback/parity oracle" in readme
     assert "wasm-pack build ../crates/escape-wasm --target web --out-dir ../../web/src/core/wasm-pkg" in architecture
     assert "web/dist/assets/wasm-pkg/" in architecture

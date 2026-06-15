@@ -24,6 +24,13 @@
 - read-only 조사/탐색은 subagent(haiku 또는 Explore)로 돌리고 결론만 받는다.
 - 한 슬라이스 완료마다 아주 짧게 보고한다. plan(Opus) ↔ 구현(subagent) 단계를 구분한다.
 
+### 검증 신뢰 원칙 (필수)
+
+- **subagent의 PASS/FAIL 보고를 그대로 믿지 않는다.** 영향이 큰 검증(테스트/빌드/산출물 반영)은 main에서 직접 재실행한다. (사례: subagent가 cargo 없는 셸에서 "link.exe 실패"를 환각 보고함.)
+- "실패가 환경 탓"이라는 보고는 도구 존재 여부부터 확인(`which`/`Get-Command`). 이 머신에서 `cargo`/`wasm-pack`/`gh`는 **WSL에만** 있고, pytest는 repo `.venv`를 쓴다.
+- 콘텐츠 변경의 도달 경로를 먼저 파악한다. 런타임 Rust 생성 텍스트(epilogue body 등)는 **wasm 바이너리**에 들어가므로 `export_web_data.py`가 아니라 wasm 재빌드가 필요하다.
+- 상세 절차는 `docs/dev/Development_Methodology.md`, 환경/알려진 실패는 `docs/dev/Troubleshooting.md`를 따른다.
+
 ## 계획 문서 우선순위
 
 - `docs/dev/Development_Plan.md`가 이 저장소의 canonical main plan이다. 현재 방향, 다음 작업, 우선순위, phase 순서는 이 파일을 기준으로 판단한다.

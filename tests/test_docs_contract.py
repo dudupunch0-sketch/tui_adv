@@ -233,17 +233,16 @@ def test_phase9_story_route_design_docs_define_public_safe_runtime_hooks():
 
 def test_phase10_balance_qa_packaging_doc_script_and_checklist_are_synced():
     index = Path("docs/00_Index.md").read_text(encoding="utf-8")
-    readme = Path("README.md").read_text(encoding="utf-8")
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     qa_doc = Path("docs/dev/Balance_QA_Packaging.md")
-    qa_script = Path("scripts/qa_smoke.py")
+    qa_doc_text = qa_doc.read_text(encoding="utf-8")
 
     assert qa_doc.exists()
-    assert qa_script.exists()
     assert "docs/dev/Balance_QA_Packaging.md" in index
-    assert "docs/dev/Balance_QA_Packaging.md" in readme
-    assert "scripts/qa_smoke.py" in qa_doc.read_text(encoding="utf-8")
-    assert "PYTHONPATH=src python scripts/qa_smoke.py" in readme
+    assert "docs/dev/Balance_QA_Packaging.md" in Path("README.md").read_text(encoding="utf-8")
+    # §0.88 이후: 게임 로직 QA truth는 Rust GameCore
+    assert "cargo test --workspace" in qa_doc_text
+    assert "pytest" in qa_doc_text
     assert "- [x] 턴당 허기 증가량 조정" in checklist
     assert "- [x] 턴당 갈증 증가량 조정" in checklist
     assert "- [x] 엔딩 도달 난이도 조정" in checklist
@@ -260,13 +259,12 @@ def test_final_qa_leftover_checks_are_documented_and_completed():
     readme = Path("README.md").read_text(encoding="utf-8")
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     qa_doc = Path("docs/dev/Final_QA_Log.md")
-    textual_script = Path("scripts/textual_qa_smoke.py")
 
     assert qa_doc.exists()
-    assert textual_script.exists()
     assert "docs/dev/Final_QA_Log.md" in index
     assert "docs/dev/Final_QA_Log.md" in readme
-    assert "PYTHONPATH=src python scripts/textual_qa_smoke.py" in qa_doc.read_text(encoding="utf-8")
+    # §0.88 이전 legacy 기록이 문서에 보존되어 있는지만 확인
+    assert "textual_qa_smoke" in qa_doc.read_text(encoding="utf-8")
     assert "- [x] 실제 Textual 화면 수동 QA" in checklist
     assert "- [x] 새 게임 10회 수동 플레이 기록" in checklist
     assert "- [x] 터미널 크기별 화면 확인" in checklist

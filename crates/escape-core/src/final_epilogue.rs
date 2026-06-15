@@ -885,7 +885,7 @@ fn build_candidates(facts: &FinalFacts<'_>, final_result: FinalResult) -> Vec<Ca
                 "final_epilogue_boss_black_serpent_banner_conditional_seeded",
                 "final_black_serpent_aftermath_banner_residue_seeded",
             ],
-            "흑사방의 깃발은 승리 후 정리된 잔당이 아니라, 패배 뒤에도 같은 방식으로 사람을 재는 압박으로 남는다.",
+            "장터 입구에는 며칠 만에 다시 검은 깃발이 걸렸다.\n사람들은 놀라지 않았다.\n누가 이겼든,\n밤길에 값을 매기는 사람은 늘 필요하다는 듯이.\n표국의 말들은 그 깃발을 지나갈 때마다 걸음을 늦췄다.",
         );
         push_card(
             &mut cards,
@@ -900,7 +900,7 @@ fn build_candidates(facts: &FinalFacts<'_>, final_result: FinalResult) -> Vec<Ca
                 "final_epilogue_southern_market_rumor_conditional_seeded",
                 "final_black_serpent_aftermath_southern_market_rumor_seeded",
             ],
-            "남쪽 장터의 풍문은 책임을 한 사람에게 돌리지 않는다. 다만 갚히지 않은 압박이 다른 길목으로 옮겨 간다.",
+            "남쪽 장터에서는 흑사방 잔당이 다시 표국을 습격했다는 풍문이 돌았다.\n청류문 장로들은 그것을 작은 불씨라 불렀지만,\n장터 사람들은 안다.\n작은 불씨는 늘 누군가가 대수롭지 않게 넘긴 자리에서 살아난다는 것을.\n객잔의 취객들은 그 소문을 두고\n칼보다 빠른 것은 발이 아니라 방심이라고 웃었다.\n그러나 그 웃음은 오래 가지 않았다.",
         );
         push_card(
             &mut cards,
@@ -914,7 +914,7 @@ fn build_candidates(facts: &FinalFacts<'_>, final_result: FinalResult) -> Vec<Ca
                 "final_mumyeong_successor_route_active_seeded",
                 "final_epilogue_mumyeong_black_serpent_new_scale_candidate_seeded",
             ],
-            "검은 뱀의 새 비늘은 무명을 구하지 못한 패배가 사도식 후계 압박으로 이어지는 어두운 흔적이다.",
+            "흑사방의 옛 깃발은 찢어졌지만,\n장터의 밤길은 조용해지지 않았다.\n사람들은 방주의 이름이 사라졌다고 말했다.\n그러나 새로 걷히는 통행세의 손짓은\n어딘가 청류문을 닮아 있었다.\n누군가는 그것을 두고 검은 뱀의 새 비늘이라 불렀다.",
         );
         push_card(
             &mut cards,
@@ -927,7 +927,7 @@ fn build_candidates(facts: &FinalFacts<'_>, final_result: FinalResult) -> Vec<Ca
                 "final_seoharin_closed_gate_candidate_seeded",
                 "final_epilogue_seoharin_closed_gate_candidate_seeded",
             ],
-            "닫힌 산문은 패배를 벌주는 문장이 아니다. 지켜야 했던 곳이 더 좁은 보호 논리로 닫히는 후일담이다.",
+            "산문은 닫혀 있었다.\n안에 있는 사람들은 안전했다.\n서하린은 그렇게 믿었다.\n바깥에서 부르는 소리는 들리지 않았다.\n아니, 들리지 않아야 했다.\n밤이 깊어질수록 산문 안쪽의 등불은 더 밝아졌다.\n누군가 문을 열어야 하지 않느냐고 묻자,\n서하린은 문빗장을 한 번 더 확인했다.\n\"나가면, 다시 돌아오지 않을 거야.\"\n그 말이 누구를 향한 것인지는 아무도 묻지 않았다.",
         );
         push_card(
             &mut cards,
@@ -941,7 +941,7 @@ fn build_candidates(facts: &FinalFacts<'_>, final_result: FinalResult) -> Vec<Ca
                 "final_cheongirok_state_corruption_high_seeded",
                 "final_cheongirok_state_corruption_high_confirmed_seeded",
             ],
-            "천기록의 마지막 장은 패배를 점수로 매기지 않는다. 사람을 계산식 안에 넣으려 한 흔적만 오염 변주로 비춘다.",
+            "마지막 장은 거의 비어 있었다.\n다만 한 줄만은 지워지지 않았다.\n기록자는 대답하지 않는다.\n다만 다음 장을 넘긴다.\n그 문장이 누구를 향한 것인지는 알 수 없었다.\n주인공을 향한 것인지,\n이전에 기록된 누군가를 향한 것인지,\n아니면 아직 기록되지 않은 이름을 향한 것인지도.\n기록서는 조용히 덮였다.\n하지만 마지막 장은 끝내 완전히 닫히지 않았다.",
         );
     }
 
@@ -968,7 +968,7 @@ fn build_candidates(facts: &FinalFacts<'_>, final_result: FinalResult) -> Vec<Ca
                 "final_broken_black_serpent_epilogue_candidate_reinforced_seeded",
                 "final_epilogue_boss_broken_black_serpent_variant_ready_seeded",
             ],
-            "사도는 쓰러졌고 검은 뱀은 부러졌다. 그러나 이 카드는 상처와 장부의 잔향까지 함께 기록한다.",
+            "흑사방의 깃발은 한동안 장터 바닥에 끌렸다.\n사람들은 이제 밤길이 안전해졌다고 말하지 않았다.\n다만 예전보다 조금 늦게 문을 닫았다.\n표국 장부의 붉은 표식은 하나씩 지워졌지만,\n빚 문서가 사라진 자리에는 오래 접힌 자국이 남았다.",
         );
     }
 
@@ -984,7 +984,7 @@ fn build_candidates(facts: &FinalFacts<'_>, final_result: FinalResult) -> Vec<Ca
             "final_epilogue_boss_black_serpent_banner_conditional_seeded",
             "final_black_serpent_aftermath_banner_residue_seeded",
         ],
-        "깃발은 사라진 증거가 아니라 조직 원리가 남는 방식을 보여 주는 잔향으로 접힌다.",
+        "장터 입구에는 며칠 만에 다시 검은 깃발이 걸렸다.\n사람들은 놀라지 않았다.\n누가 이겼든,\n밤길에 값을 매기는 사람은 늘 필요하다는 듯이.\n표국의 말들은 그 깃발을 지나갈 때마다 걸음을 늦췄다.",
     );
     push_optional_card(
         &mut cards,
@@ -998,7 +998,7 @@ fn build_candidates(facts: &FinalFacts<'_>, final_result: FinalResult) -> Vec<Ca
             "final_epilogue_southern_market_rumor_conditional_seeded",
             "final_black_serpent_aftermath_southern_market_rumor_seeded",
         ],
-        "남쪽 장터의 풍문은 플레이어를 비난하지 않는다. 압박이 다른 길목으로 옮겨 간 흔적만 남긴다.",
+        "남쪽 장터에서는 흑사방 잔당이 다시 표국을 습격했다는 풍문이 돌았다.\n청류문 장로들은 그것을 작은 불씨라 불렀지만,\n장터 사람들은 안다.\n작은 불씨는 늘 누군가가 대수롭지 않게 넘긴 자리에서 살아난다는 것을.\n객잔의 취객들은 그 소문을 두고\n칼보다 빠른 것은 발이 아니라 방심이라고 웃었다.\n그러나 그 웃음은 오래 가지 않았다.",
     );
     if facts.has_any_flag(&[
         "final_alliance_silence_strong_evidence_variant_seeded",
@@ -1036,7 +1036,7 @@ fn build_candidates(facts: &FinalFacts<'_>, final_result: FinalResult) -> Vec<Ca
                 "final_evidence_strong_support_seeded",
                 "final_evidence_strong_confirmed_seeded",
             ],
-            "무림맹의 침묵은 증거 부족 판정이 아니다. 강한 증거가 있어도 책임을 회피하는 방식으로 출력된다.",
+            "무림맹은 공문을 보냈다.\n사건은 유감이나,\n공식 기록상 흑사방의 활동 범위는 확인되지 않았다고 했다.\n청류문 사람들은 그 문장을 세 번 읽고도 아무 말도 하지 않았다.\n서하린은 공문을 접어 장문인의 방 앞에 두었다.\n그날 청류문 수련장에는 아무도 구호를 외치지 않았다.",
         );
     }
 
@@ -1050,7 +1050,7 @@ fn build_candidates(facts: &FinalFacts<'_>, final_result: FinalResult) -> Vec<Ca
             "final_mumyeong_resolution_own_flow_salvation_seeded",
             "final_epilogue_mumyeong_stolen_forms_stopped_candidate_seeded",
         ],
-        "훔친 초식은 누군가를 이기기 위한 보상이 아니라, 무명이 자기 흐름을 고르며 멈춘 흔적으로 남는다.",
+        "강호 어딘가에서 낯선 무인이 비무를 벌였다는 소문이 돌았다.\n그는 어느 문파의 초식도 끝까지 흉내 내지 않았다.\n첫 세 수는 남의 것이었지만,\n네 번째 수부터는 아무도 알아보지 못했다.\n그날 이후 사람들은 그를 어느 문파 출신인지로 묻지 않았다.\n다만 이상하게도,\n그가 떠난 자리에는 늘 물길처럼 휘어진 발자국이 남았다.",
     );
     push_optional_card(
         &mut cards,
@@ -1063,7 +1063,7 @@ fn build_candidates(facts: &FinalFacts<'_>, final_result: FinalResult) -> Vec<Ca
             "final_epilogue_mumyeong_second_wooden_sword_candidate_seeded",
             "final_epilogue_mumyeong_second_wooden_sword_conditional_seeded",
         ],
-        "문밖의 두 번째 목검은 실제 아이템 지급이 아니라, 값이 매겨지지 않은 조건이 남았다는 후일담이다.",
+        "청류문 산문 밖에는 목검이 두 자루 놓였다.\n하나는 새 수습생의 것이었고,\n다른 하나는 오래전에 사라진 제자의 것이었다.\n서하린은 아무 말 없이 두 번째 목검에 묻은 흙을 털어냈다.\n문 안으로 들인 것은 아니었다.\n하지만 문밖에 그대로 두지도 않았다.",
     );
     push_optional_card(
         &mut cards,
@@ -1075,7 +1075,7 @@ fn build_candidates(facts: &FinalFacts<'_>, final_result: FinalResult) -> Vec<Ca
             "final_epilogue_mumyeong_unsent_apology_candidate_seeded",
             "final_epilogue_mumyeong_unsent_apology_conditional_seeded",
         ],
-        "전하지 못한 사과는 진실 전달 완료가 아니라, 강요하지 않은 이해의 자리로 남는다.",
+        "청류문 산문 앞에는 접히지 않은 편지 한 장이 놓여 있었다.\n서하린은 그 편지를 오래 들여다보았지만,\n끝내 펼치지 않았다.\n글자가 없다는 걸 알면서도,\n그녀는 한동안 그 종이를 버리지 못했다.\n누군가는 사과가 늦으면 아무 의미가 없다고 했다.\n서하린은 그 말을 부정하지 않았다.\n다만 편지를 불태우지도 않았다.",
     );
     push_optional_card(
         &mut cards,
@@ -1087,7 +1087,7 @@ fn build_candidates(facts: &FinalFacts<'_>, final_result: FinalResult) -> Vec<Ca
             "final_mumyeong_resolution_end_of_stolen_forms_seeded",
             "final_epilogue_mumyeong_end_of_stolen_forms_candidate_seeded",
         ],
-        "훔친 초식의 끝은 처형 보상이 아니라, 구원되지 못한 대가가 몸에 남는 결산이다.",
+        "그가 마지막으로 쓴 초식은 아무 문파의 것도 아니었다.\n검로는 검객의 것이었고,\n발은 보법가의 것이었고,\n호흡은 독공 수련자의 것이었다.\n몸은 그 모든 것을 견디지 못했다.\n쓰러진 자리에는 완성된 무공이 남지 않았다.\n다만 너무 많은 타인의 흔적이 한 몸에서 서로를 밀어내고 있었다.",
     );
     push_optional_card(
         &mut cards,
@@ -1100,7 +1100,7 @@ fn build_candidates(facts: &FinalFacts<'_>, final_result: FinalResult) -> Vec<Ca
             "final_mumyeong_successor_route_active_seeded",
             "final_epilogue_mumyeong_black_serpent_new_scale_candidate_seeded",
         ],
-        "검은 뱀의 새 비늘은 무명의 정체성이 아니라, 사도식 후계 구도가 남는 위험으로 출력된다.",
+        "흑사방의 옛 깃발은 찢어졌지만,\n장터의 밤길은 조용해지지 않았다.\n사람들은 방주의 이름이 사라졌다고 말했다.\n그러나 새로 걷히는 통행세의 손짓은\n어딘가 청류문을 닮아 있었다.\n누군가는 그것을 두고 검은 뱀의 새 비늘이라 불렀다.",
     );
     push_optional_card(
         &mut cards,
@@ -1109,7 +1109,7 @@ fn build_candidates(facts: &FinalFacts<'_>, final_result: FinalResult) -> Vec<Ca
         "secondary_rumor",
         "mumyeong",
         &["final_epilogue_mumyeong_new_shadow_variant_seeded"],
-        "흑사방의 새 그림자는 독립 결말보다 검은 뱀의 새 비늘을 보조하는 풍문 변주에 가깝다.",
+        "흑사방 깃발 아래에 새 그림자가 섰다는 소문이 돌았다.\n그는 이름을 쓰지 않았고,\n어느 문파의 초식이든 한 번은 따라 했다.\n두 번째부터는 더 이상 따라 하는 것처럼 보이지 않았다.\n장터 사람들은 그를 두고 이렇게 말했다.\n\"검은 뱀에게 새 비늘이 돋았다.\"",
     );
 
     if matches!(final_result, FinalResult::TrueRouteVictory)
@@ -1122,7 +1122,7 @@ fn build_candidates(facts: &FinalFacts<'_>, final_result: FinalResult) -> Vec<Ca
             "return_place_not_claim",
             "seoharin_qingliu",
             &["final_epilogue_seoharin_future_candidate_seeded"],
-            "서하린의 후일은 보상 관계가 아니라, 돌아올 자리를 남기는 방식으로 기록된다.",
+            "서하린은 여전히 청류문에 남아 있었다.\n떠난 사람들을 모두 붙잡지는 못했다.\n하지만 돌아오는 길을 없애지도 않았다.\n산문 옆에는 낡은 목검 하나가 더 걸렸다.\n누구의 것이냐고 묻는 수습생에게,\n서하린은 잠시 침묵하다가 말했다.\n\"비워둔 거야.\"\n그 말이 기다림인지,\n허락인지,\n아니면 오래된 습관인지는 아무도 묻지 않았다.",
         );
     }
     if matches!(final_result, FinalResult::TrueRouteVictory)
@@ -1144,7 +1144,7 @@ fn build_candidates(facts: &FinalFacts<'_>, final_result: FinalResult) -> Vec<Ca
                 "final_unpriced_wooden_sword_condition_raised_seeded",
                 "final_unpriced_wooden_sword_condition_preserved_seeded",
             ],
-            "비워둔 자리는 귀환과 부재 양쪽을 허락하는 자리다. 천기록은 이것을 소유나 값으로 바꾸지 않는다.",
+            "주인공은 돌아오지 않았다.\n그래도 서하린은 수련장 한쪽을 비워두었다.\n비가 오는 날이면 그 자리의 먼지는 다른 곳보다 늦게 말랐고,\n새 수습생들은 그곳에 물건을 두지 않았다.\n누군가 물었다.\n\"저 자리는 누구 겁니까?\"\n서하린은 목검 끈을 고쳐 매며 말했다.\n\"없는 사람 자리도, 자리야.\"\n그 뒤로 아무도 그 자리를 치우지 않았다.",
         );
     }
     if matches!(final_result, FinalResult::TrueRouteVictory)
@@ -1167,7 +1167,7 @@ fn build_candidates(facts: &FinalFacts<'_>, final_result: FinalResult) -> Vec<Ca
                 "final_epilogue_seoharin_open_gate_candidate_reinforced_seeded",
                 "final_epilogue_seoharin_open_gate_reinforced_seeded",
             ],
-            "닫히지 않은 산문은 용서 보상이 아니라, 다시 들어올 수 있는 길을 닫지 않는 선택이다.",
+            "무명은 돌아오지 않았다.\n적어도 그날은 그랬다.\n하지만 산문 앞의 흙은 쓸려 있지 않았다.\n비가 온 뒤에도 누군가 발자국이 남을 길을 고쳐 두었다.\n새 수습생이 물었다.\n\"저 길은 왜 막지 않습니까?\"\n서하린은 잠시 산 아래를 보았다.\n\"막아두면, 돌아오는 사람도 길을 잃어.\"\n그 말 뒤로 산문은 오래 열려 있었다.",
         );
     }
     push_optional_card(
@@ -1180,7 +1180,7 @@ fn build_candidates(facts: &FinalFacts<'_>, final_result: FinalResult) -> Vec<Ca
             "final_seoharin_closed_gate_candidate_seeded",
             "final_epilogue_seoharin_closed_gate_candidate_seeded",
         ],
-        "닫힌 산문은 보호가 소유와 통제로 뒤틀릴 때 남는 어두운 변주다.",
+        "산문은 닫혀 있었다.\n안에 있는 사람들은 안전했다.\n서하린은 그렇게 믿었다.\n바깥에서 부르는 소리는 들리지 않았다.\n아니, 들리지 않아야 했다.\n밤이 깊어질수록 산문 안쪽의 등불은 더 밝아졌다.\n누군가 문을 열어야 하지 않느냐고 묻자,\n서하린은 문빗장을 한 번 더 확인했다.\n\"나가면, 다시 돌아오지 않을 거야.\"\n그 말이 누구를 향한 것인지는 아무도 묻지 않았다.",
     );
     push_optional_card(
         &mut cards,
@@ -1192,7 +1192,7 @@ fn build_candidates(facts: &FinalFacts<'_>, final_result: FinalResult) -> Vec<Ca
             "last_bowl_epilogue_seeded",
             "final_epilogue_seoharin_last_bowl_conditional_seeded",
         ],
-        "마지막 밥그릇은 기다림이 이해받지 못했을 때 남는 체념의 카드다.",
+        "서하린은 더 이상 밥을 남기지 않았다.\n식탁 끝의 빈 그릇은 어느 날부터 찬장 안으로 들어갔다.\n남은 음식을 버리는 일은 줄었고,\n청류문 부엌은 조금 더 조용해졌다.\n누군가 그릇 하나가 비었다고 말했지만,\n서하린은 대답하지 않았다.\n그날 저녁,\n그녀는 평소보다 오래 식탁을 닦았다.",
     );
     if matches!(
         final_result,
@@ -1220,7 +1220,7 @@ fn build_candidates(facts: &FinalFacts<'_>, final_result: FinalResult) -> Vec<Ca
                 "final_epilogue_qingliu_future_high_candidate_seeded",
                 "final_epilogue_qingliu_future_weakened_variant_seeded",
             ],
-            "청류문의 후일은 강호 최강화가 아니라, 새는 지붕 아래에서도 끊긴 흐름을 다시 잇는 결산이다.",
+            "청류문 수련장에는 다시 사람 목소리가 들리기 시작했다.\n아직 가난했고,\n아직 지붕은 새고 있었다.\n하지만 더 이상 아무도 청류문이 끝났다고 말하지는 않았다.\n장문인의 방 앞에는 새 물동이가 놓였고,\n수련장 한쪽에는 이름 없는 목검이 몇 자루 늘어났다.\n강호는 여전히 거칠었지만,\n흐르던 물은 멈추지 않았다.",
         );
     }
     if matches!(final_result, FinalResult::TrueRouteVictory)
@@ -1239,7 +1239,7 @@ fn build_candidates(facts: &FinalFacts<'_>, final_result: FinalResult) -> Vec<Ca
                 "final_epilogue_qingliu_restored_martial_art_candidate_seeded",
                 "final_epilogue_qingliu_restored_martial_art_conditional_seeded",
             ],
-            "복구된 무공은 전투 보상이 아니라, 청류문이 끊긴 물길을 다시 잇는 흔적이다.",
+            "수련장 한쪽에는 새 비급이 아니라, 오래된 초식의 빈칸을 메운 종이들이 걸렸다.\n청류문 사람들은 그것을 복구라 부르지 않았다.\n잃어버린 흐름이 다시 물길을 찾았다고만 했다.\n장문인의 방 앞에는 여전히 물동이가 놓였고,\n지붕은 아직 비가 오면 샜다.\n하지만 새 수습생들은 더 이상 비어 있는 초식을 외우지 않았다.\n그들은 비어 있던 자리를 지나, 다음 흐름으로 발을 옮겼다.",
         );
     }
 
@@ -1255,7 +1255,7 @@ fn build_candidates(facts: &FinalFacts<'_>, final_result: FinalResult) -> Vec<Ca
                 "final_unpriced_wooden_sword_condition_preserved_seeded",
                 "final_unpriced_wooden_sword_condition_raised_seeded",
             ],
-            "천기록의 마지막 장은 정답지가 아니라, 값이 적히지 않은 빈칸을 남기는 장으로 닫힌다.",
+            "마지막 장은 거의 비어 있었다.\n다만 한 줄만은 지워지지 않았다.\n기록자는 대답하지 않는다.\n다만 다음 장을 넘긴다.\n그 문장이 누구를 향한 것인지는 알 수 없었다.\n주인공을 향한 것인지,\n이전에 기록된 누군가를 향한 것인지,\n아니면 아직 기록되지 않은 이름을 향한 것인지도.\n기록서는 조용히 덮였다.\n하지만 마지막 장은 끝내 완전히 닫히지 않았다.",
         );
     } else if matches!(final_result, FinalResult::CorruptedVictory)
         || facts.has_flag("final_epilogue_tianjilu_last_page_corruption_variant_seeded")
@@ -1271,7 +1271,7 @@ fn build_candidates(facts: &FinalFacts<'_>, final_result: FinalResult) -> Vec<Ca
                 "final_cheongirok_state_corruption_high_seeded",
                 "final_cheongirok_state_corruption_high_confirmed_seeded",
             ],
-            "천기록의 마지막 장은 사람을 줄 세우는 계산 도구처럼 사용된 흔적을 오염 변주로 비춘다.",
+            "마지막 장은 거의 비어 있었다.\n다만 한 줄만은 지워지지 않았다.\n기록자는 대답하지 않는다.\n다만 다음 장을 넘긴다.\n그 문장이 누구를 향한 것인지는 알 수 없었다.\n주인공을 향한 것인지,\n이전에 기록된 누군가를 향한 것인지,\n아니면 아직 기록되지 않은 이름을 향한 것인지도.\n기록서는 조용히 덮였다.\n하지만 마지막 장은 끝내 완전히 닫히지 않았다.",
         );
     } else if facts.has_any_flag(&[
         "final_epilogue_tianjilu_last_page_candidate_seeded",
@@ -1294,7 +1294,7 @@ fn build_candidates(facts: &FinalFacts<'_>, final_result: FinalResult) -> Vec<Ca
                 "final_epilogue_tianjilu_safe_high_use_variant_seeded",
                 "final_cheongirok_resolution_low_use_silence_seeded",
             ],
-            "천기록의 마지막 장은 기록자의 정체를 밝히지 않고, 사용 방식의 여운만 남긴다.",
+            "마지막 장은 거의 비어 있었다.\n다만 한 줄만은 지워지지 않았다.\n기록자는 대답하지 않는다.\n다만 다음 장을 넘긴다.\n그 문장이 누구를 향한 것인지는 알 수 없었다.\n주인공을 향한 것인지,\n이전에 기록된 누군가를 향한 것인지,\n아니면 아직 기록되지 않은 이름을 향한 것인지도.\n기록서는 조용히 덮였다.\n하지만 마지막 장은 끝내 완전히 닫히지 않았다.",
         );
     }
 

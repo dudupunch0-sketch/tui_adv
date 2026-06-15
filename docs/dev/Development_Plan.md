@@ -4488,3 +4488,32 @@ Web 또는 terminal renderer가 게임 규칙을 다시 구현하면 Rust GameCo
    - route graph/faction reputation/debt ledger/relation schema, return system, 천기록 정체 reveal, 천외편린 3택 성장/reward/ability schema는 아직 열지 않고, 필요한 경우 `flags`/`clues`/`log`/`presentation` hook으로만 future work를 남긴다.
 2. 야근몽 runtime 후보는 `yageunmong_late_night_desk_awake` 또는 각성편린 3택 preview로만 열고, 기본 office bundle을 자동 rewrite하지 않는다.
 3. 실제 음악/SFX asset과 soundtrack은 저작권/라이선스 정책이 정리되기 전까지 열지 않는다.
+
+
+---
+
+## §0.88 Rust core 정본화 — gameplay 로직 단일화 (2026-06-15)
+
+**목표**: 3개 병렬 game impl(Rust/TS/Python)을 Rust 단일 정본으로 통합.
+
+**사용자 결정**:
+- Python → 툴 전용 유지 (game/*.py 제거, scripts 유지)
+- Web TS fallback → 완전 제거 (wasm-only)
+- 외부 사용자 없음
+
+**Phase B 완료** (branch: rust-core-consolidation):
+- `web/src/game/` 12 TS files 삭제 (actions, state, types, save, parity.test 등)
+- `web/src/main.ts` WASM-only 경로로 단순화 — `REQUIRE_WASM` 플래그 제거, TS fallback 분기 완전 제거
+- `scenePageFromTurn.ts`, `render.ts`, 관련 테스트 삭제
+- vitest 36 pass
+
+**Phase C 완료**:
+- `src/tui_adv/game/` 11 py files 전체 삭제
+- `src/tui_adv/tui/app.py`, `encounter.py`, `status.py` 삭제
+- `src/tui_adv/main.py` deprecation stub으로 교체
+- game logic 의존 pytest 16개 삭제
+- pytest 94 pass (3 fail = 기존 Windows 환경 문제)
+
+**commit**: 5decc4d — PR 대기 중 (rust-core-consolidation → main)
+
+**다음**: 사용자 지시 대기.

@@ -26,6 +26,18 @@ pub struct ContentBundle {
     pub content: ContentSections,
 }
 
+impl ContentBundle {
+    /// Start location declared by the bundle's runtime metadata,
+    /// falling back to the engine default.
+    pub fn start_location_id(&self) -> &str {
+        self.runtime
+            .as_ref()
+            .map(|runtime| runtime.default_location.as_str())
+            .filter(|location_id| !location_id.is_empty())
+            .unwrap_or(crate::state::DEFAULT_START_LOCATION_ID)
+    }
+}
+
 #[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
 pub struct RuntimeMetadata {
     pub runtime_mode: String,

@@ -2,55 +2,45 @@
 
 Date: 2026-07-08
 
-## Completed work packages
+## Merge-recovery note
+
+During PR merge/replay recovery, the Step 2 code was present but `crates/escape-terminal/src/main.rs` still retained the pre-split implementations after the new WP-B2 module files had been added. This meant the split module files existed but were shadowed by duplicate local functions in `main.rs`.
+
+Recovery action in this pass:
+
+- Re-checked `fable_step1_2607080932.md` from WP-A4 onward.
+- Confirmed WP-A4 resource/action-prefix centralization is present in `crates/escape-core/src/resources.rs` and that the listed core call sites use those constants.
+- Removed the stale duplicated terminal implementations from `crates/escape-terminal/src/main.rs`, leaving `main.rs` with the intended WP-B2 responsibilities only: `main()`, `run()`, `run_printer_scene()`, and `run_content_scene()`.
+- Re-ran main verification directly after the cleanup.
+
+## Completed work packages present in the recovered tree
 
 1. WP-B1 — deduplicated content bundle start-location resolution into `ContentBundle::start_location_id()` and replaced terminal/wasm duplicate helpers.
 2. WP-A1 — split `crates/escape-core/src/final_epilogue.rs` into the requested directory module layout.
 3. WP-A2 — extracted duplicated final-epilogue card body strings into constants in `final_epilogue/cards.rs`.
 4. WP-A3 — replaced fragile final-epilogue audit positional/index access with key/first-based handling.
 5. WP-A4 — centralized `escape-core` resource ids and action-id prefixes.
-6. WP-B2 — split `escape-terminal/src/main.rs` into focused terminal modules.
+6. WP-B2 — split `escape-terminal/src/main.rs` into focused terminal modules; merge recovery removed stale duplicate implementations left behind in `main.rs`.
 7. WP-B3 — deduplicated terminal action range/line formatters.
 8. WP-C1 — centralized web localStorage keys and `StorageLike`.
 9. WP-C2 — deduplicated shared web helpers (`errorMessage`, `DEFAULT_SEED`, player action button wiring).
 10. WP-C3 — reshaped `main.ts` player-action dispatch into a command map.
 11. WP-D1 — deduplicated `export_web_data.py` bundle check/stale-report paths and added private-secret mirror comments.
+12. WP-C4 — split Web Storybook final-epilogue rendering helpers into `web/src/ui/storybook/renderEpilogue.ts`.
 
-## Skipped / not completed in this run
+## Skipped / not completed
 
-- WP-C4 was optional and was not completed.
+- No Fable Step 1 work packages remain open.
 
-## Verification performed
+## Verification performed in this recovery pass
 
-- `cargo test --workspace` passed after every Rust-affecting work package and in the final verification pass.
-- `cd web && npm install` completed with no dependency changes committed.
-- `cd web && npm test && npx tsc --noEmit` passed after every web-affecting work package and in the final verification pass.
-- `cd web && npm run build` passed after WP-C3 and in the final verification pass.
-- WP-A2 byte-diff smoke check passed for `cargo run -p escape-terminal -- --scene content --seed 123 --tui-smoke` against the pre-WP-A2 tree.
-- WP-B3 byte-diff smoke checks passed for `--tui-smoke`, `--app-smoke --tick 7`, and `--smoke` with `--scene content --seed 123` against the pre-WP-B3 tree.
-- `./.venv/bin/python -m pytest tests/test_web_data_export.py -q` passed after WP-D1.
-- `./.venv/bin/python scripts/export_web_data.py --check --bundle crates/escape-core/fixtures/content/content.bundle.json --bundle web/src/data/generated/content.bundle.json` exited 0 after WP-D1.
-- `./.venv/bin/python scripts/export_web_data.py --check --storypack-preview wuxia_jianghu_pack --preview-bundle crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json --preview-bundle web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json` exited 0 after WP-D1.
+- `cargo test --workspace` passed.
+- `cd web && npm test && npx tsc --noEmit` passed.
+- `cd web && npm run build` passed after WP-C4.
+- `./.venv/bin/python -m pytest tests/ -q` was run and still has the known docs-contract failures that read the old `crates/escape-core/src/final_epilogue.rs` path after the WP-A1 split; all other pytest tests passed.
 
 ## Known verification notes
 
-- `python3 -m pytest tests/ -q` fails in the non-venv Python because `yaml` is unavailable.
-- `./.venv/bin/python -m pytest tests/ -q` still has the known docs-contract failures that read the old `crates/escape-core/src/final_epilogue.rs` path after WP-A1 split; targeted web-data export tests pass under the repo venv.
-- `cargo fmt -p escape-core` and `cargo fmt -p escape-terminal` repeatedly formatted large test files; those unrelated formatting changes were reverted before commits.
-
-## Skipped / not completed in this run
-
-- WP-A4, WP-B2, WP-B3, WP-C1, WP-C2, WP-C3, WP-D1, and optional WP-C4 were not completed in this run due to time after completing and verifying the initial ordered packages.
-
-## Verification performed
-
-- `cargo test --workspace` passed after WP-B1.
-- `cargo test --workspace` passed after WP-A1.
-- `cargo test --workspace` passed after WP-A2.
-- WP-A2 byte-diff smoke check passed for `cargo run -p escape-terminal -- --scene content --seed 123 --tui-smoke` against the pre-WP-A2 tree.
-- `cargo test --workspace` passed after WP-A3.
-
-## Deviations
-
-- No behavior or content-data changes were intentionally made.
-- `cargo fmt -p escape-core` repeatedly formatted `crates/escape-core/tests/content_bundle.rs`; those unrelated formatting changes were reverted before commits.
+- `python3 -m pytest tests/ -q` may fail in the non-venv Python when `yaml` is unavailable; use the repo venv for pytest.
+- The remaining repo-venv pytest failures are docs-contract path-sync failures caused by tests still reading `crates/escape-core/src/final_epilogue.rs` after WP-A1 split.
+- `cargo fmt -p escape-terminal` can format large test files; unrelated test formatting was reverted during recovery.

@@ -37,3 +37,20 @@ Date: 2026-07-08
 - `python3 -m pytest tests/ -q` fails in the non-venv Python because `yaml` is unavailable.
 - `./.venv/bin/python -m pytest tests/ -q` still has the known docs-contract failures that read the old `crates/escape-core/src/final_epilogue.rs` path after WP-A1 split; targeted web-data export tests pass under the repo venv.
 - `cargo fmt -p escape-core` and `cargo fmt -p escape-terminal` repeatedly formatted large test files; those unrelated formatting changes were reverted before commits.
+
+## Skipped / not completed in this run
+
+- WP-A4, WP-B2, WP-B3, WP-C1, WP-C2, WP-C3, WP-D1, and optional WP-C4 were not completed in this run due to time after completing and verifying the initial ordered packages.
+
+## Verification performed
+
+- `cargo test --workspace` passed after WP-B1.
+- `cargo test --workspace` passed after WP-A1.
+- `cargo test --workspace` passed after WP-A2.
+- WP-A2 byte-diff smoke check passed for `cargo run -p escape-terminal -- --scene content --seed 123 --tui-smoke` against the pre-WP-A2 tree.
+- `cargo test --workspace` passed after WP-A3.
+
+## Deviations
+
+- No behavior or content-data changes were intentionally made.
+- `cargo fmt -p escape-core` repeatedly formatted `crates/escape-core/tests/content_bundle.rs`; those unrelated formatting changes were reverted before commits.

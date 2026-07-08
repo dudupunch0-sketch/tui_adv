@@ -3,6 +3,10 @@ use crate::content::{
     OutcomeDef, ResourceMap,
 };
 use crate::effects::{printer_glyph_anomaly_cue, EffectCue};
+use crate::resources::{
+    ACTION_PREFIX_CHOICE, ACTION_PREFIX_MOVE, ACTION_PREFIX_USE, RESOURCE_BATTERY, RESOURCE_HEALTH,
+    RESOURCE_HUNGER, RESOURCE_SANITY, RESOURCE_THIRST,
+};
 use crate::state::{GameState, PlayerState};
 use serde::Serialize;
 
@@ -173,14 +177,14 @@ pub fn apply_content_action(
         return Err(ContentActionError::UnknownAction(action_id.to_string()));
     }
 
-    if action_id.starts_with("use:") {
+    if action_id.starts_with(ACTION_PREFIX_USE) {
         return apply_item_action(state, content, action_id);
     }
 
     let Some(encounter) = current_content_encounter(content, state) else {
         return apply_movement_action(state, content, location, action_id);
     };
-    let Some(choice_id) = action_id.strip_prefix("choice:") else {
+    let Some(choice_id) = action_id.strip_prefix(ACTION_PREFIX_CHOICE) else {
         return Err(ContentActionError::UnknownAction(action_id.to_string()));
     };
     let Some(choice) = encounter
@@ -296,7 +300,7 @@ fn movement_action_views(location: &LocationDef, content: &ContentIndex) -> Vec<
         .connections
         .iter()
         .map(|destination_id| ActionView {
-            id: format!("move:{destination_id}"),
+            id: format!("{ACTION_PREFIX_MOVE}{destination_id}"),
             label: content
                 .location(destination_id)
                 .map(|destination| destination.name.clone())
@@ -321,7 +325,7 @@ fn item_action_views(state: &GameState, content: &ContentIndex) -> Vec<ActionVie
             continue;
         }
         actions.push(ActionView {
-            id: format!("use:{}", item.id),
+            id: format!("{ACTION_PREFIX_USE}{}", item.id),
             label: item.name.clone(),
             cost_summary: None,
         });
@@ -335,7 +339,7 @@ fn apply_movement_action(
     location: &LocationDef,
     action_id: &str,
 ) -> Result<ActionResult, ContentActionError> {
-    let Some(destination_id) = action_id.strip_prefix("move:") else {
+    let Some(destination_id) = action_id.strip_prefix(ACTION_PREFIX_MOVE) else {
         return Err(ContentActionError::UnknownAction(action_id.to_string()));
     };
     if !location
@@ -374,7 +378,7 @@ fn apply_item_action(
     content: &ContentIndex,
     action_id: &str,
 ) -> Result<ActionResult, ContentActionError> {
-    let Some(item_id) = action_id.strip_prefix("use:") else {
+    let Some(item_id) = action_id.strip_prefix(ACTION_PREFIX_USE) else {
         return Err(ContentActionError::UnknownAction(action_id.to_string()));
     };
     let Some(item) = content.item(item_id) else {
@@ -468,15 +472,15 @@ fn apply_outcome(state: &mut GameState, outcome: &OutcomeDef) -> Vec<String> {
 
 fn advance_turn(state: &mut GameState) -> Vec<String> {
     state.turn += 1;
-    apply_player_resource_delta(&mut state.player, "hunger", 1);
-    apply_player_resource_delta(&mut state.player, "thirst", 2);
+    apply_player_resource_delta(&mut state.player, RESOURCE_HUNGER, 1);
+    apply_player_resource_delta(&mut state.player, RESOURCE_THIRST, 2);
 
     if state.player.hunger >= 100 {
-        apply_player_resource_delta(&mut state.player, "health", -2);
+        apply_player_resource_delta(&mut state.player, RESOURCE_HEALTH, -2);
     }
     if state.player.thirst >= 100 {
-        apply_player_resource_delta(&mut state.player, "health", -4);
-        apply_player_resource_delta(&mut state.player, "sanity", -2);
+        apply_player_resource_delta(&mut state.player, RESOURCE_HEALTH, -4);
+        apply_player_resource_delta(&mut state.player, RESOURCE_SANITY, -2);
     }
 
     let mut logs = Vec::new();
@@ -542,7 +546,7 @@ fn fnv1a_32(value: &str) -> u32 {
 }
 
 fn cost_delta(resource: &str, amount: i32) -> i32 {
-    if matches!(resource, "hunger" | "thirst") {
+    if matches!(resource, RESOURCE_HUNGER | RESOURCE_THIRST) {
         amount
     } else {
         -amount
@@ -651,12 +655,15 @@ fn cost_unavailable_reasons(cost: &ResourceMap, player: &PlayerState) -> Vec<Str
 }
 
 fn is_spendable_resource(resource: &str) -> bool {
-    matches!(resource, "health" | "sanity" | "battery")
+    matches!(
+        resource,
+        RESOURCE_HEALTH | RESOURCE_SANITY | RESOURCE_BATTERY
+    )
 }
 
 fn choice_action_view(choice: &ChoiceDef) -> ActionView {
     ActionView {
-        id: format!("choice:{}", choice.id),
+        id: format!("{ACTION_PREFIX_CHOICE}{}", choice.id),
         label: choice.label.clone(),
         cost_summary: format_cost_summary(&choice.cost),
     }
@@ -664,7 +671,7 @@ fn choice_action_view(choice: &ChoiceDef) -> ActionView {
 
 fn blocked_choice_action_view(choice: &ChoiceDef, state: &GameState) -> BlockedActionView {
     BlockedActionView {
-        id: format!("choice:{}", choice.id),
+        id: format!("{ACTION_PREFIX_CHOICE}{}", choice.id),
         label: choice.label.clone(),
         cost_summary: format_cost_summary(&choice.cost),
         reasons: choice_unavailable_reasons(choice, state),
@@ -691,11 +698,11 @@ fn format_cost_summary(cost: &ResourceMap) -> Option<String> {
 
 fn apply_player_resource_delta(player: &mut PlayerState, resource: &str, amount: i32) {
     match resource {
-        "health" => player.health = clamp_resource(player.health + amount),
-        "sanity" => player.sanity = clamp_resource(player.sanity + amount),
-        "battery" => player.battery = clamp_resource(player.battery + amount),
-        "hunger" => player.hunger = clamp_resource(player.hunger + amount),
-        "thirst" => player.thirst = clamp_resource(player.thirst + amount),
+        RESOURCE_HEALTH => player.health = clamp_resource(player.health + amount),
+        RESOURCE_SANITY => player.sanity = clamp_resource(player.sanity + amount),
+        RESOURCE_BATTERY => player.battery = clamp_resource(player.battery + amount),
+        RESOURCE_HUNGER => player.hunger = clamp_resource(player.hunger + amount),
+        RESOURCE_THIRST => player.thirst = clamp_resource(player.thirst + amount),
         _ => {}
     }
 }
@@ -706,11 +713,11 @@ fn clamp_resource(value: i32) -> i32 {
 
 fn player_resource(player: &PlayerState, resource: &str) -> i32 {
     match resource {
-        "health" => player.health,
-        "sanity" => player.sanity,
-        "battery" => player.battery,
-        "hunger" => player.hunger,
-        "thirst" => player.thirst,
+        RESOURCE_HEALTH => player.health,
+        RESOURCE_SANITY => player.sanity,
+        RESOURCE_BATTERY => player.battery,
+        RESOURCE_HUNGER => player.hunger,
+        RESOURCE_THIRST => player.thirst,
         _ => 0,
     }
 }
@@ -721,11 +728,11 @@ fn player_ability(player: &PlayerState, ability: &str) -> i32 {
 
 fn resource_label(resource: &str) -> &str {
     match resource {
-        "health" => "체력",
-        "sanity" => "정신력",
-        "battery" => "배터리",
-        "hunger" => "허기",
-        "thirst" => "갈증",
+        RESOURCE_HEALTH => "체력",
+        RESOURCE_SANITY => "정신력",
+        RESOURCE_BATTERY => "배터리",
+        RESOURCE_HUNGER => "허기",
+        RESOURCE_THIRST => "갈증",
         other => other,
     }
 }

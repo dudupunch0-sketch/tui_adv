@@ -1,4 +1,6 @@
-export const PLAYER_SETTINGS_KEY = 'tui-adv.player-settings.v1';
+import { PLAYER_SETTINGS_KEY, type StorageLike } from '../../core/storage';
+
+export { PLAYER_SETTINGS_KEY, type StorageLike } from '../../core/storage';
 
 const SETTINGS_SCHEMA_VERSION = 1;
 
@@ -12,10 +14,6 @@ export interface PlayerSettings {
   motion: MotionPreference;
 }
 
-export interface StorageLike {
-  getItem(key: string): string | null;
-  setItem(key: string, value: string): unknown;
-}
 
 export const DEFAULT_PLAYER_SETTINGS: PlayerSettings = {
   schema_version: SETTINGS_SCHEMA_VERSION,

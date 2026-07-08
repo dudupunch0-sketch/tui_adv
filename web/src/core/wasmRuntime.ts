@@ -20,7 +20,7 @@ interface EscapeWasmModule extends Partial<EscapeWasmBindings> {
   default?: () => Promise<unknown>;
 }
 
-const DEFAULT_SEED = 123;
+export const DEFAULT_SEED = 123;
 const DEFAULT_WASM_MODULE_PATH = new URL(/* @vite-ignore */ './wasm-pkg/escape_wasm.js', import.meta.url).toString();
 
 export class EscapeWasmRuntime {

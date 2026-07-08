@@ -20,6 +20,7 @@ DATA_FILES: tuple[tuple[str, str, str], ...] = (
 )
 CONTENT_BUNDLE_SCHEMA_VERSION = 1
 CONTENT_BUNDLE_KIND = "tui_adv.content_bundle"
+# Mirrors: crates/escape-core/src/content.rs PRIVATE_SECRET_FIELDS, web/src/security/publicSecretGuard.ts
 PRIVATE_SECRET_FIELDS = {"final_hint", "actual_ip_address", "office_location", "treasure_location"}
 STORYPACK_PREVIEWS: dict[str, dict[str, Any]] = {
     "wuxia_jianghu_pack": {
@@ -146,17 +147,26 @@ def write_storypack_preview_bundle(
     return output_path
 
 
+def _check_bundle_paths(bundle_paths, build_payload, _source_label):
+    """Compare expected serialized text against each on-disk bundle path."""
+
+    expected_text = _json_text(build_payload())
+    errors: list[str] = []
+    for bundle_path in bundle_paths:
+        output_path = Path(bundle_path)
+        if not output_path.exists():
+            errors.append(f"missing generated file: {output_path}")
+            continue
+        actual_text = output_path.read_text(encoding="utf-8")
+        if actual_text != expected_text:
+            errors.append(f"stale generated file: {output_path}")
+    return errors
+
+
 def check_content_bundle(root: str | Path, bundle_path: str | Path) -> list[str]:
     """Return differences between source YAML and a generated content bundle."""
 
-    output_path = Path(bundle_path)
-    if not output_path.exists():
-        return [f"missing generated file: {output_path}"]
-    expected_text = _json_text(build_content_bundle(root))
-    actual_text = output_path.read_text(encoding="utf-8")
-    if actual_text != expected_text:
-        return [f"stale generated file: {output_path}"]
-    return []
+    return _check_bundle_paths([bundle_path], lambda: build_content_bundle(root), "content bundle")
 
 
 def check_storypack_preview_bundle(
@@ -164,14 +174,11 @@ def check_storypack_preview_bundle(
 ) -> list[str]:
     """Return differences between source preview YAML and a generated preview bundle."""
 
-    output_path = Path(bundle_path)
-    if not output_path.exists():
-        return [f"missing generated file: {output_path}"]
-    expected_text = _json_text(build_storypack_preview_bundle(root, storypack_id))
-    actual_text = output_path.read_text(encoding="utf-8")
-    if actual_text != expected_text:
-        return [f"stale generated file: {output_path}"]
-    return []
+    return _check_bundle_paths(
+        [bundle_path],
+        lambda: build_storypack_preview_bundle(root, storypack_id),
+        "storypack preview bundle",
+    )
 
 
 def check_web_data(root: str | Path, out_dir: str | Path) -> list[str]:
@@ -250,10 +257,7 @@ def main(argv: list[str] | None = None) -> int:
             )
         ]
         if bundle_errors:
-            print("storypack preview bundle is stale:")
-            for error in bundle_errors:
-                print(f"- {error}")
-            return 1
+            return _report_stale("storypack preview bundle is stale:", bundle_errors)
         for _bundle in args.preview_bundle:
             print("storypack preview bundle is up to date")
         return 0
@@ -276,19 +280,22 @@ def main(argv: list[str] | None = None) -> int:
         for error in check_content_bundle(args.root, bundle)
     ]
     if errors:
-        print("web data is stale:")
-        for error in errors:
-            print(f"- {error}")
+        _report_stale("web data is stale:", errors)
     if bundle_errors:
-        print("content bundle is stale:")
-        for error in bundle_errors:
-            print(f"- {error}")
+        _report_stale("content bundle is stale:", bundle_errors)
     if errors or bundle_errors:
         return 1
     print("web data is up to date")
     for _bundle in args.bundle:
         print("content bundle is up to date")
     return 0
+
+
+def _report_stale(label: str, errors: list[str]) -> int:
+    print(label)
+    for error in errors:
+        print(f"- {error}")
+    return 1
 
 
 def _read_yaml(path: Path) -> dict[str, Any]:

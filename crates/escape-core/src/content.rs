@@ -5,13 +5,16 @@ use std::collections::{BTreeMap, BTreeSet};
 pub const CONTENT_BUNDLE_SCHEMA_VERSION: u32 = 1;
 pub const CONTENT_BUNDLE_KIND: &str = "tui_adv.content_bundle";
 
+// Mirrors: scripts/export_web_data.py PRIVATE_SECRET_FIELDS, web/src/security/publicSecretGuard.ts
 const PRIVATE_SECRET_FIELDS: &[&str] = &[
     "final_hint",
     "actual_ip_address",
     "office_location",
     "treasure_location",
 ];
-const RESOURCE_KEYS: &[&str] = &["health", "sanity", "battery", "hunger", "thirst"];
+use crate::resources::RESOURCE_IDS;
+
+const RESOURCE_KEYS: &[&str] = &RESOURCE_IDS;
 
 pub type ResourceMap = BTreeMap<String, i32>;
 

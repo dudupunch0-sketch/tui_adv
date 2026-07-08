@@ -11,7 +11,8 @@ import {
   type StorypackPreviewOption,
 } from './core/contentBundles';
 import type { ScenePage } from './core/types';
-import { createEscapeWasmRuntime, type EscapeWasmRuntime } from './core/wasmRuntime';
+import { errorMessage } from './core/errors';
+import { createEscapeWasmRuntime, DEFAULT_SEED, type EscapeWasmRuntime } from './core/wasmRuntime';
 import { startPrinterFlowEffect } from './effects/printerFlow';
 import { audioCueForSceneTransition, createStorybookAudioEngine } from './ui/audio/audioEngine';
 import { actionIdForKey, NEW_GAME_ACTION_ID, type ActionListSource } from './ui/keyboard';
@@ -34,7 +35,6 @@ import {
 } from './ui/startScreen';
 import { renderStorybookPage } from './ui/storybook/render';
 
-const DEFAULT_SEED = 123;
 const STORYPACK_PREVIEW_ACTION_PREFIX = 'start-storypack-preview:';
 
 type PlayerScreen = 'start' | 'game';
@@ -105,11 +105,7 @@ function renderGamePage(page: ScenePage): void {
   appRoot.querySelectorAll<HTMLButtonElement>('[data-action-id]').forEach((button) => {
     button.addEventListener('click', () => runAction(button.dataset.actionId ?? ''));
   });
-  appRoot.querySelectorAll<HTMLButtonElement>('[data-player-action]').forEach((button) => {
-    button.addEventListener('click', () => {
-      void runPlayerAction(button.dataset.playerAction ?? '');
-    });
-  });
+  wirePlayerActionButtons(appRoot);
   const canvas = appRoot.querySelector<HTMLCanvasElement>('[data-anomaly-canvas="printer-flow"]');
   if (canvas) {
     void startPrinterFlowEffect(canvas);
@@ -131,53 +127,50 @@ function renderStart(): void {
     settings: playerSettings,
     storypackPreviews: STORYPACK_PREVIEW_OPTIONS,
   });
-  appRoot.querySelectorAll<HTMLButtonElement>('[data-player-action]').forEach((button) => {
+  wirePlayerActionButtons(appRoot);
+}
+
+function wirePlayerActionButtons(root: HTMLElement): void {
+  root.querySelectorAll<HTMLButtonElement>('[data-player-action]').forEach((button) => {
     button.addEventListener('click', () => {
       void runPlayerAction(button.dataset.playerAction ?? '');
     });
   });
 }
 
-async function runPlayerAction(action: string): Promise<void> {
-  if (action === 'open-start-menu') {
+const playerActionHandlers: Record<string, () => void | Promise<void>> = {
+  'open-start-menu': () => {
     const startDrawer = appRoot.querySelector<HTMLElement>('.start-menu-drawer');
     startDrawer?.setAttribute('data-start-menu-open', 'true');
-    return;
-  }
-  if (action === 'continue') {
+  },
+  continue: async () => {
     await unlockAudioFromGesture();
     startGameFromSave();
-    return;
-  }
-  if (action === 'new-game') {
+  },
+  'new-game': async () => {
     await unlockAudioFromGesture();
     requestNewGame();
-    return;
-  }
-  if (action === 'confirm-new-game') {
+  },
+  'confirm-new-game': async () => {
     await unlockAudioFromGesture();
     startNewGame({ clearExistingSave: true });
-    return;
-  }
-  if (action === 'cancel-new-game') {
+  },
+  'cancel-new-game': () => {
     confirmReset = false;
     render();
-    return;
-  }
-  if (action === 'reset-save') {
+  },
+  'reset-save': () => {
     clearPlayerSaves(window.localStorage);
     confirmReset = false;
     render();
-    return;
-  }
-  if (action === 'show-start') {
+  },
+  'show-start': () => {
     playerScreen = 'start';
     confirmReset = false;
     lastError = null;
     render();
-    return;
-  }
-  if (action === 'abandon-run') {
+  },
+  'abandon-run': () => {
     if (!activeStorypackPreview) clearPlayerSaves(window.localStorage);
     playerScreen = 'start';
     confirmReset = false;
@@ -186,23 +179,26 @@ async function runPlayerAction(action: string): Promise<void> {
     wasmRuntime = null;
     activeStorypackPreview = null;
     render();
-    return;
-  }
-  if (action === 'toggle-audio') {
+  },
+  'toggle-audio': async () => {
     playerSettings = updatePlayerSettings(window.localStorage, { audio: toggleAudioPreference(playerSettings) });
     await unlockAudioFromGesture();
     render();
-    return;
-  }
-  if (action === 'cycle-motion') {
+  },
+  'cycle-motion': () => {
     playerSettings = updatePlayerSettings(window.localStorage, { motion: nextMotionPreference(playerSettings) });
     render();
-    return;
-  }
+  },
+};
+
+async function runPlayerAction(action: string): Promise<void> {
   if (action.startsWith(STORYPACK_PREVIEW_ACTION_PREFIX)) {
     await unlockAudioFromGesture();
     startStorypackPreview(action.slice(STORYPACK_PREVIEW_ACTION_PREFIX.length));
+    return;
   }
+
+  await playerActionHandlers[action]?.();
 }
 
 async function unlockAudioFromGesture(): Promise<void> {
@@ -392,9 +388,6 @@ function saveWasmState(): void {
   writeRunSummary(window.localStorage, wasmRuntime.stateJson);
 }
 
-function errorMessage(error: unknown): string {
-  return error instanceof Error ? error.message : String(error);
-}
 
 document.addEventListener('keydown', (event) => {
   if (playerScreen === 'start') return;

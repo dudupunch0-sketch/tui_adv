@@ -3,6 +3,10 @@ use crate::content::{
 };
 use crate::effects::EffectCue;
 use crate::final_epilogue::final_epilogue_body_blocks;
+use crate::resources::{
+    ACTION_PREFIX_CHOICE, ACTION_PREFIX_MOVE, ACTION_PREFIX_USE, RESOURCE_BATTERY, RESOURCE_HEALTH,
+    RESOURCE_HUNGER, RESOURCE_SANITY, RESOURCE_THIRST,
+};
 use crate::state::{GameHistoryEntry, GameState, PlayerState};
 use crate::turn::{content_turn_view, ActionView, BlockedActionView, ContentTurnError, TurnView};
 use serde::{Deserialize, Serialize};
@@ -336,7 +340,7 @@ fn health_status(value: i32) -> ResourceStatus {
     } else {
         ("normal", "정상 범위")
     };
-    resource_status("health", "신체 반응", band, text, value)
+    resource_status(RESOURCE_HEALTH, "신체 반응", band, text, value)
 }
 
 fn sanity_status(value: i32) -> ResourceStatus {
@@ -347,7 +351,7 @@ fn sanity_status(value: i32) -> ResourceStatus {
     } else {
         ("normal", "안정")
     };
-    resource_status("sanity", "집중도", band, text, value)
+    resource_status(RESOURCE_SANITY, "집중도", band, text, value)
 }
 
 fn battery_status(value: i32) -> ResourceStatus {
@@ -358,7 +362,13 @@ fn battery_status(value: i32) -> ResourceStatus {
     } else {
         "normal"
     };
-    resource_status("battery", "단말기 전원", band, &format!("{value}%"), value)
+    resource_status(
+        RESOURCE_BATTERY,
+        "단말기 전원",
+        band,
+        &format!("{value}%"),
+        value,
+    )
 }
 
 fn hunger_status(value: i32) -> ResourceStatus {
@@ -369,7 +379,7 @@ fn hunger_status(value: i32) -> ResourceStatus {
     } else {
         ("normal", "버틸 만함")
     };
-    resource_status("hunger", "허기", band, text, value)
+    resource_status(RESOURCE_HUNGER, "허기", band, text, value)
 }
 
 fn thirst_status(value: i32) -> ResourceStatus {
@@ -380,7 +390,7 @@ fn thirst_status(value: i32) -> ResourceStatus {
     } else {
         ("normal", "버틸 만함")
     };
-    resource_status("thirst", "갈증", band, text, value)
+    resource_status(RESOURCE_THIRST, "갈증", band, text, value)
 }
 
 fn resource_status(id: &str, label: &str, band: &str, text: &str, value: i32) -> ResourceStatus {
@@ -400,7 +410,7 @@ fn pressure_cues(player: &PlayerState) -> Vec<PressureCue> {
             kind: "low_sanity".to_string(),
             severity: severity_for_low_resource(player.sanity, 20),
             message: "집중도가 흔들리고 있습니다. 일부 기록이 다르게 보일 수 있습니다.".to_string(),
-            resource_id: "sanity".to_string(),
+            resource_id: RESOURCE_SANITY.to_string(),
         });
     }
     if player.battery <= 20 {
@@ -408,7 +418,7 @@ fn pressure_cues(player: &PlayerState) -> Vec<PressureCue> {
             kind: "low_battery".to_string(),
             severity: severity_for_low_resource(player.battery, 10),
             message: "단말기 전원이 낮습니다. 전력 행동이 제한될 수 있습니다.".to_string(),
-            resource_id: "battery".to_string(),
+            resource_id: RESOURCE_BATTERY.to_string(),
         });
     }
     if player.hunger >= 80 {
@@ -416,7 +426,7 @@ fn pressure_cues(player: &PlayerState) -> Vec<PressureCue> {
             kind: "high_hunger".to_string(),
             severity: severity_for_high_pressure(player.hunger, 100),
             message: "허기가 한계에 가깝습니다. 몸이 먼저 비용을 청구할 수 있습니다.".to_string(),
-            resource_id: "hunger".to_string(),
+            resource_id: RESOURCE_HUNGER.to_string(),
         });
     }
     if player.thirst >= 60 {
@@ -424,7 +434,7 @@ fn pressure_cues(player: &PlayerState) -> Vec<PressureCue> {
             kind: "high_thirst".to_string(),
             severity: severity_for_high_pressure(player.thirst, 90),
             message: "갈증이 심해져 물소리와 선택지가 흔들리기 시작합니다.".to_string(),
-            resource_id: "thirst".to_string(),
+            resource_id: RESOURCE_THIRST.to_string(),
         });
     }
     cues
@@ -522,11 +532,11 @@ fn scene_effect_cue_from_turn(cue: &EffectCue) -> SceneEffectCue {
 }
 
 fn action_kind(action_id: &str) -> &str {
-    if action_id.starts_with("choice:") {
+    if action_id.starts_with(ACTION_PREFIX_CHOICE) {
         "choice"
-    } else if action_id.starts_with("move:") {
+    } else if action_id.starts_with(ACTION_PREFIX_MOVE) {
         "move"
-    } else if action_id.starts_with("use:") {
+    } else if action_id.starts_with(ACTION_PREFIX_USE) {
         "use"
     } else {
         "unknown"

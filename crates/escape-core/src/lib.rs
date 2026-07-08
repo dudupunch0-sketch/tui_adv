@@ -1,6 +1,7 @@
 mod content;
 mod effects;
 mod final_epilogue;
+mod resources;
 mod save;
 mod scene_page;
 mod state;

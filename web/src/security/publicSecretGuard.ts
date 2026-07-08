@@ -6,6 +6,7 @@ interface PublicSecret {
   reward_text?: string;
 }
 
+// Mirrors: scripts/export_web_data.py PRIVATE_SECRET_FIELDS, crates/escape-core/src/content.rs
 const PRIVATE_SECRET_FIELDS = ['final_hint', 'actual_ip_address', 'office_location', 'treasure_location'];
 
 export function assertPublicSecretsSafe(secrets: readonly unknown[]): void {

@@ -1,19 +1,24 @@
+import { errorMessage } from '../core/errors';
 import { escapeHtml } from './storybook/html';
-import { DEFAULT_PLAYER_SETTINGS, PLAYER_SETTINGS_KEY, type PlayerSettings } from './settings/playerSettings';
+import { DEFAULT_PLAYER_SETTINGS, type PlayerSettings } from './settings/playerSettings';
+import {
+  LAST_RUN_SUMMARY_KEY,
+  LEGACY_SAVE_KEY,
+  OFFICE_RUST_SAVE_KEY,
+  PLAYER_SETTINGS_KEY,
+  RUST_SAVE_KEY,
+  type StorageLike,
+} from '../core/storage';
 
-export const LEGACY_SAVE_KEY = 'escape-office.save.v1';
-export const OFFICE_RUST_SAVE_KEY = 'escape-office.rust.save.v1';
-export const RUST_SAVE_KEY = 'igu-hakji.rust.save.v1';
-export const SETTINGS_KEY = 'igu-hakji.settings.v1';
-export const LAST_RUN_SUMMARY_KEY = 'igu-hakji.last-run-summary.v1';
+export {
+  LAST_RUN_SUMMARY_KEY,
+  LEGACY_SAVE_KEY,
+  OFFICE_RUST_SAVE_KEY,
+  RUST_SAVE_KEY,
+  type StorageLike,
+} from '../core/storage';
 
 const SUMMARY_SCHEMA_VERSION = 1;
-
-export interface StorageLike {
-  getItem(key: string): string | null;
-  setItem(key: string, value: string): unknown;
-  removeItem(key: string): unknown;
-}
 
 export interface PlayerRunSummary {
   schema_version: 1;
@@ -240,6 +245,3 @@ function formatSavedAt(value: string): string {
   return value.slice(0, 16).replace('T', ' ');
 }
 
-function errorMessage(error: unknown): string {
-  return error instanceof Error ? error.message : String(error);
-}

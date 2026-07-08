@@ -8,24 +8,21 @@ use std::io::{self, Write};
 use std::path::PathBuf;
 use std::time::Duration;
 
-const DEFAULT_STORYPACK_ID: &str = "wuxia_jianghu_pack";
-const DEFAULT_STORYPACK_BUNDLE_REL: &str =
-    "../escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json";
+mod bundle;
+mod cli;
+mod format;
+mod glyphfx;
+mod headless;
+mod interactive;
+mod snapshot;
 
-#[derive(Debug, PartialEq, Eq)]
-struct CliOptions {
-    scene: String,
-    seed: u64,
-    smoke: bool,
-    tui_smoke: bool,
-    app_smoke: bool,
-    play: bool,
-    app: bool,
-    tick: u64,
-    content_bundle: Option<PathBuf>,
-    storypack_preview: Option<String>,
-    actions: Vec<String>,
-}
+pub(crate) use bundle::*;
+pub(crate) use cli::*;
+pub(crate) use format::*;
+pub(crate) use glyphfx::*;
+pub(crate) use headless::*;
+pub(crate) use interactive::*;
+pub(crate) use snapshot::*;
 
 fn main() {
     if let Err(error) = run(std::env::args().skip(1)) {

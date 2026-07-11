@@ -1,6 +1,7 @@
 import type { BodyBlock, SceneAction, SceneBlockedAction, ScenePage, PressureCue, ResourceStatus } from '../../core/types';
 import { escapeHtml } from './html';
 import { renderStoryHistory } from './history';
+import { achievementLabel, hasAchievementLabel } from './labels';
 import { renderEpilogueBodyBlock } from './renderEpilogue';
 import { renderVisualCard } from './visualCatalog';
 
@@ -226,12 +227,19 @@ function renderInlineResultLog(page: ScenePage): string {
   const achievements = page.achievement_summary.newly_unlocked.length
     ? page.achievement_summary.newly_unlocked
     : page.achievement_summary.unlocked;
-  if (achievements.length) rows.push(`+ 업적: ${achievements.map(escapeHtml).join(', ')}`);
+  if (achievements.length) {
+    rows.push(`+ 업적: ${achievements.map(renderAchievementLabel).join(', ')}`);
+  }
   if (!rows.length) return '';
 
   return `<section class="story-result-log" aria-label="최근 결과">${rows
     .map((row) => `<p class="storybook-summary">${row}</p>`)
     .join('')}</section>`;
+}
+
+function renderAchievementLabel(id: string): string {
+  const translationNote = hasAchievementLabel(id) ? '' : '<small class="storybook-translation-note">미번역</small>';
+  return `${escapeHtml(achievementLabel(id))}${translationNote}`;
 }
 
 function renderChoices(actions: SceneAction[], blockedActions: SceneBlockedAction[]): string {

@@ -632,12 +632,53 @@ display: grid;
 }
 
 .ink-scene svg {
-display: block;
+  display: block;
   width: 100%;
   height: auto;
   border-top: 3px double var(--line-hard);
   border-bottom: 1px solid var(--line-soft);
 }
+
+.ink-scene__wrapper {
+  position: relative;
+  display: grid;
+  width: 100%;
+}
+
+.ink-scene__art {
+  grid-column: 1;
+  grid-row: 1;
+  display: block;
+  width: 100%;
+  height: auto;
+  box-sizing: border-box;
+  border: 1px solid var(--line-hard);
+  padding: 5px;
+  background: var(--paper-lit);
+  filter: saturate(0.92) sepia(0.06);
+  z-index: 1;
+}
+
+.ink-scene__wrapper svg {
+  grid-column: 1;
+  grid-row: 1;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.ink-scene[data-art-status="loaded"] svg {
+  border: none !important;
+  background: transparent !important;
+}
+
+.ink-scene[data-art-status="loaded"] svg > *:not(.ink-scene__seal):not(defs) {
+  display: none;
+}
+
+.ink-scene[data-art-status="failed"] .ink-scene__art {
+  display: none;
+}
+
 
 .ink-scene canvas {
 display: block;

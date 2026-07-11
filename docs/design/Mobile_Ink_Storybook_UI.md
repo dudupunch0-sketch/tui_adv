@@ -1,0 +1,137 @@
+# Mobile Ink Storybook UI Contract (수묵 서책)
+
+Status: active Web Storybook visual contract. 2026-07-11부터
+`docs/design/Mobile_Pixel_Storybook_UI.md`(픽셀 게임북 board contract)를 대체한다.
+
+## Goal
+
+Web Storybook은 게임 HUD가 달린 앱처럼 보이면 안 된다. 기본 화면은
+**플레이어에 대해 쓰이고 있는 오래된 기록책(천기록)의 한 쪽**이며, 모든 그림은
+그 책에 그려진 수묵 삽화다. 화면 문법은 특정 상용 게임의 template을 따라 하지
+않는다 — 이 문서가 유일한 기준이다. 미감/토큰/삽화 규칙의 상세는
+`fable_ui_step1_2607111330.md` §2(수묵 천기록 디자인 언어)를 따른다.
+
+시각 정체성 한 줄: **모바일 세로형 수묵 서책 board**.
+
+## Core screen grammar — 서책 몰입형 + 정보 드로어
+
+기본 화면(책 쪽):
+
+```text
+[folio 헤더]                     — 쪽 표시(예: 天記錄 · 三) + 장면 인장. 장식 최소.
+[본문 흐름]                      — 장면 제목(h1) → 서사 텍스트 → 수묵 삽화(본문 사이 삽입)
+                                   → 결과/보상/단서는 본문 흐름 안의 강조 문장
+[선택지]                         — ✥ bullet + 번호 + 큰 문장형 row (책의 연속으로 보이게)
+[각주 스트립 (하단 고정)]         — 몸/마음 요약 먹점 + 위험 실(붉은 선) + 드로어 열기
+```
+
+정보 드로어(바텀시트, 각주 스트립 탭으로 개폐):
+
+```text
+[상태 상세]   core가 준 resource band text (숫자는 보조 표기)
+[소지품]      inventory_summary → 한국어 라벨
+[업적]        achievement_summary → 한국어 라벨, 신규는 금박 표식
+[기록]        history_entries (data-region="history")
+[메뉴]        처음 화면 / 포기하기(확인 단계 필수) / 소리 / 연출
+```
+
+핵심 원칙:
+
+- 기본 화면에는 게임 크롬을 두지 않는다. 고정 상단 HUD, 초상, 스탯 그리드,
+  아이콘 dock을 기본 화면에 노출하지 않는다.
+- 상태 정보는 (1) 항상 보이는 한 줄 각주 요약, (2) 원할 때 여는 드로어 상세의
+  2단계로 제공한다. 위험(danger)이 높으면 각주 스트립의 붉은 실이 굵어지고
+  경고 문구(core `pressure_cues`/`warnings`)가 본문에 붉은 각주로 삽입된다.
+- 세로쓰기(vertical writing-mode)는 장식 한자 1~2자를 제외하고 금지한다.
+  영어 등 다국어 본문에서도 성립해야 하는 layout이다.
+
+## Layout contract
+
+- 모바일 세로형/narrow browser가 1차 기준. desktop에서도 centered portrait
+  board(최대 폭 ~720px 내외의 한 쪽)를 유지하고 사이드바 레이아웃으로 바꾸지 않는다.
+- 본문 서체는 `@fontsource/noto-serif-kr` (400/700/900) — OS 폰트가 없어도
+  한국어가 tofu 없이 렌더되어야 한다.
+- 종이 배경 위에 텍스트가 직접 놓인다. dark card, 웹 대시보드 그리드 금지.
+- text readability 최우선. 삽화·장식·전환이 본문 가독성을 해치면 안 된다.
+
+## DOM region contract (QA 계약 — 클래스/데이터 속성은 형태가 바뀌어도 유지)
+
+기존 셀렉터는 의미 컨테이너로 유지하고 역할만 재배치한다:
+
+| 셀렉터 | 새 역할 |
+|---|---|
+| `.storybook-shell[data-renderer="web-storybook"]` | 책 쪽 전체 |
+| `.storybook-hud[data-region="status"]` | 하단 각주 스트립 (상태 요약 + 드로어 트리거) |
+| `.story-progress-rail` | 각주 스트립 안의 위험 실 (`data-danger-band` 유지) |
+| `[data-region="visual"]` | 본문 사이 수묵 삽화 `<figure>` |
+| `[data-region="body"]` | 서사 본문 |
+| `[data-region="choices"]` + `button.choice-row[data-action-id]` + `.choice-bullet` | 문장형 선택지 |
+| `.storybook-dock` | 정보 드로어(바텀시트) 컨테이너 |
+| `[data-region="history"]` | 드로어 안의 기록 목록 |
+
+- 선택지는 `<button>` semantics, `data-action-id`, `data-action-kind`, 숫자키
+  실행 계약을 유지한다. blocked action은 숨기지 않고 사유를 보여준다.
+- Renderer는 status를 계산하지 않는다. `ScenePage.status_summary`,
+  `pressure_cues`, `inventory_summary`, `achievement_summary`를 표시만 한다.
+- unknown visual id는 safe placeholder(수묵 generic 구도 + alt 각주)를 보여주고
+  action을 drop하지 않는다.
+- GlyphFX `stable_terms`/`fallback_text`는 reduced-motion/no-canvas에서도 읽힌다.
+
+## Renderer boundary
+
+- Rust GameCore가 action eligibility, outcome, ending, achievement의 truth다.
+- `ScenePage`에는 CSS class, pixel coordinate, DOM selector, Canvas command,
+  image path를 넣지 않는다.
+- 외부 이미지/타사 게임 asset을 참조하거나 도입하지 않는다. 삽화는 전부
+  코드(inline SVG)로 저작하며, 인물은 이목구비 없는 먹 실루엣으로 그린다.
+  변주는 visual id 해시 시드로만 만든다 (`Math.random()` 금지).
+- public UI/docs/generated data에는 실제 회사명/개인정보/private hint를 넣지 않는다.
+
+## Acceptance checklist
+
+- [ ] 기본 화면에 상단 HUD/스탯 그리드/아이콘 dock이 없다 — folio, 본문, 삽화,
+      선택지, 하단 각주 스트립만 보인다.
+- [ ] 각주 스트립 탭으로 드로어가 열리고 상태 상세/소지품/업적/기록/메뉴가 있다.
+- [ ] 몸/마음/위험 요약이 각주 스트립에 항상 보인다 (색+형태 이중 부호화).
+- [ ] 본문 세로쓰기가 없다 (장식 한자 제외) — 영어 본문으로 바꿔도 layout이 성립한다.
+- [ ] Korean text가 OS 폰트 유무와 무관하게 읽힌다.
+- [ ] choices가 문장형 row이고 `data-action-id`/`data-action-kind`/숫자키가 동작한다.
+- [ ] unknown visual id가 safe placeholder로 표시되고 action이 유지된다.
+- [ ] GlyphFX stable terms/fallback text가 reduced-motion에서 읽힌다.
+- [ ] renderer가 gameplay truth를 재계산하지 않는다.
+- [ ] 엔딩/막다른 페이지에 다음 행동(처음 화면 등)이 항상 있다.
+
+## Automated visual QA
+
+`web/scripts/storybook-reference-qa.mjs`가 실행 중인 preview URL을 Playwright
+Chromium으로 열고, viewport마다 DOM region contract, centered portrait layout,
+horizontal overflow, click/number-key interaction을 확인한다. pixel-perfect
+golden baseline이 아니라 structural/layout visual QA다.
+
+```bash
+source /home/dudupunch0/.config/tui_adv/tmp-installs.sh
+export PLAYWRIGHT_BROWSERS_PATH=/tmp/dudupunch0-tui-adv/ms-playwright
+cd web
+npm run qa:storybook:visual -- \
+  --base-url http://127.0.0.1:4173/ \
+  --out-dir /tmp/dudupunch0-tui-adv/storybook-visual-qa
+```
+
+Rust/WASM-primary preview 검증 시 `--require-wasm`을 추가한다.
+
+Output policy:
+
+- screenshots와 `visual-qa-report.json`은 `--out-dir` 아래 scratch artifact로만 남긴다.
+- 기본 예시 경로는 `/tmp/dudupunch0-tui-adv/storybook-visual-qa`.
+- golden screenshot/image baseline은 Git에 커밋하지 않는다.
+
+## Validation commands
+
+```bash
+cd web
+npm test
+npx tsc --noEmit
+npm run build
+```
+
+Manual visual QA sizes: 390x844, 414x896, 800x1440, wide desktop.

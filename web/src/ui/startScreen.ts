@@ -66,10 +66,9 @@ export function renderStartScreen(model: StartScreenModel): string {
   return `
 <main class="storybook-shell storybook-start" data-app="tui-adv" data-renderer="web-storybook" data-player-screen="start">
   <section class="start-hero" aria-label="게임 시작">
-    <img class="start-hero-image" src="/assets/intro-main.png" alt="" aria-hidden="true" />
     <div class="start-logo-lockup">
-      <h1>모험가 이야기</h1>
-      <p>LIFE IN ADVENTURE</p>
+      <h1>이구학지</h1>
+      <p>天記錄 — 천기록</p>
     </div>
     <section class="start-menu-drawer" data-start-menu-open="false">
       <button type="button" class="start-tap-button" data-player-action="open-start-menu">TAP TO START</button>

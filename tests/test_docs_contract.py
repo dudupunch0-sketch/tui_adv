@@ -107,21 +107,24 @@ def test_phase6_textual_style_slice_is_checklisted_and_documented():
     assert "office-panel--wide" in layout_doc
 
 
-def test_mobile_pixel_storybook_ui_doc_is_indexed_checklisted_and_current_plan():
+def test_mobile_ink_storybook_ui_doc_is_indexed_checklisted_and_current_plan():
     index = Path("docs/00_Index.md").read_text(encoding="utf-8")
     readme = Path("README.md").read_text(encoding="utf-8")
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
-    doc_path = Path("docs/design/Mobile_Pixel_Storybook_UI.md")
+    doc_path = Path("docs/design/Mobile_Ink_Storybook_UI.md")
+    superseded_path = Path("docs/design/Mobile_Pixel_Storybook_UI.md")
 
     assert doc_path.exists()
     doc = doc_path.read_text(encoding="utf-8")
+    superseded = superseded_path.read_text(encoding="utf-8")
     main_ts = Path("web/src/main.ts").read_text(encoding="utf-8")
     package_json = Path("web/package.json").read_text(encoding="utf-8")
-    assert "docs/design/Mobile_Pixel_Storybook_UI.md" in index
-    assert "docs/design/Mobile_Pixel_Storybook_UI.md" in readme
-    assert "모바일 세로형 픽셀 게임북 board" in doc
-    assert "idea_box/플레이화면0.bmp" in doc
+    assert "docs/design/Mobile_Ink_Storybook_UI.md" in index
+    assert "docs/design/Mobile_Ink_Storybook_UI.md" in readme
+    assert "모바일 세로형 수묵 서책 board" in doc
+    assert "플레이화면" not in doc
+    assert "Mobile_Ink_Storybook_UI.md" in superseded
     assert "story-progress-rail" in doc
     assert "choice-row" in doc
     assert "@fontsource/noto-serif-kr" in doc

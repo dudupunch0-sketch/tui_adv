@@ -10,6 +10,16 @@
 - 특수 효과는 Web Storybook의 Canvas/GlyphFX와 SuperLightTUI terminal cell/GlyphFX 쪽으로 흡수한다. 기존 browser fake-TUI는 legacy/parity fallback으로만 취급한다.
 - 실제 사용자의 메모/사적 노트는 공개 산출물로 옮기지 않는다.
 
+## 로컬 작업 위치와 실행 환경
+
+- 이 프로젝트의 장기 작업 기준은 **WSL 내부 ext4 경로의 clone**이다. 권장 기본 경로는 `~/work/tui-adv`다.
+- Windows 경로(`C:\Users\82105\Documents\tui-adv`)에 있는 repo는 전환 전 백업/참조용으로만 취급하고, 새 작업의 주 repo로 쓰지 않는다.
+- Claude와 Codex는 같은 WSL 내부 clone을 기준으로 각자 worktree/branch를 만들어 작업한다. Claude는 주로 가이드/계획을 작성하고, Codex는 그 가이드를 읽고 구현한다.
+- `git`, `cargo`, `wasm-pack`, `npm`, `pytest`, `gh` 등 개발 명령은 WSL에서 실행한다.
+- Windows는 Codex Desktop, 브라우저 preview, localhost 확인, 파일 확인 같은 UI/검토 용도로만 사용한다.
+- 기존 Windows repo에 남은 변경사항이 있으면 WSL 내부 clone으로 전환하기 전에 `git status`로 확인하고, 필요한 변경만 명시적으로 옮긴다.
+- `/mnt/c/...` 아래 Windows 파일시스템 repo에서 장기 빌드/테스트를 반복하지 않는다. CRLF/LF, 권한, 파일 감시, `node_modules`, Rust `target` 같은 차이 때문에 성능 저하와 불필요한 diff가 생기기 쉽다.
+
 ## Subagent 모델 tier (작업 위임 규칙)
 
 이 프로젝트는 작업을 모델 tier로 나눠 처리한다. (2026-06-14 사용자 지시)

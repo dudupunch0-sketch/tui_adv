@@ -16,7 +16,7 @@
 Rust GameCore
   -> renderer-neutral ScenePage / ActionResult
   -> Web Storybook + GlyphFX primary UX
-  -> SuperLightTUI terminal renderer / horror edition
+  -> Rust terminal play/smoke fallback
 ```
 
 따라서 전투 시스템도 renderer가 직접 시뮬레이션하거나, Web/terminal이 서로 다른 전투 규칙을 갖는 방식으로 만들지 않는다. 전투의 truth는 Rust GameCore가 소유하고, renderer는 core가 제공한 장면, 상태, 선택지, 효과 cue를 표시한다.
@@ -46,7 +46,7 @@ Rust GameCore
 이 설계가 맞는 이유:
 
 - Web Storybook은 읽기 중심 선택지와 짧은 장면 전환에 강하다.
-- SuperLightTUI는 실시간 조작보다 로그, 상태 문장, 선택지 입력에 강하다.
+- Rust terminal은 실시간 조작보다 로그, 상태 문장, 선택지 입력에 강하다.
 - Rust GameCore는 deterministic action/result를 제공해야 하므로, renderer-local physics나 타이머 기반 난투보다 “core가 해결한 자동 난투 결과 + 선택지”가 안전하다.
 - 회사 괴담 톤에서는 멋진 콤보보다 복합기에 밀려 넘어지고, 케이블에 발이 걸리고, 사내 방송 때문에 모두가 멈칫하는 장면이 더 고유하다.
 
@@ -55,7 +55,7 @@ Rust GameCore
 이번 설계는 다음을 열지 않는다.
 
 - Web renderer에서 별도 실시간 전투 시뮬레이션 구현.
-- SuperLightTUI와 Web이 서로 다른 전투 판정을 갖는 구조.
+- Rust terminal과 Web이 서로 다른 전투 판정을 갖는 구조.
 - 마우스/반응속도/연타/회피 타이밍 중심 액션 게임.
 - 복잡한 스킬 쿨타임, 레벨, 경험치, 장비 DPS 중심 RPG 전투.
 - `ScenePage`에 CSS class, pixel coordinate, terminal color object 같은 renderer-specific 정보를 넣는 것.
@@ -269,7 +269,7 @@ Web Storybook:
 - 선택지는 기존 `choice-row` 문법을 유지한다.
 - 움직임/전환은 renderer-local transition/audio readiness 구조 위에 얹을 수 있지만, 판정은 core에서 온다.
 
-SuperLightTUI:
+Rust terminal:
 
 - ASCII/Unicode card와 상태 로그로 전투 상황을 보여준다.
 - 숫자 선택, 저장, 종료, 도움말 입력 안정성을 전투에서도 유지한다.
@@ -299,14 +299,14 @@ SuperLightTUI:
 
 - 기존 YAML encounter/choice/action/result만 사용해 “자동 난투 + 1회 개입” 장면을 1개 만든다.
 - 예: 회의실 또는 복합기 구역에서 `distorted_manager_brawl` encounter.
-- Rust core, Web Storybook, SuperLightTUI 모두 기존 action id/display 경로로 표시되는지 검증한다.
+- Rust core, Web Storybook, Rust terminal 모두 기존 action id/display 경로로 표시되는지 검증한다.
 
 구현 기록:
 
 - 2026-05-29 첫 runtime slice로 `supply_closet_auto_brawl`을 추가했다.
 - `supply_closet_cache`의 `brace_for_supply_scuffle` 선택이 기존 flag outcome만으로 전투형 인카운터를 연다.
 - 전투 해결도 기존 choice/outcome의 resource, flag, clue, log만 사용한다.
-- Web Storybook과 SuperLightTUI는 Rust GameCore가 제공한 `ScenePage`/action id를 표시하며 renderer 쪽 gameplay 판정은 추가하지 않았다.
+- Web Storybook과 Rust terminal은 Rust GameCore가 제공한 `ScenePage`/action id를 표시하며 renderer 쪽 gameplay 판정은 추가하지 않았다.
 
 비목표:
 

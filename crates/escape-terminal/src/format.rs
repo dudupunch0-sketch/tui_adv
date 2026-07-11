@@ -6,9 +6,6 @@ pub(crate) fn find_available_action<'a>(
 ) -> Option<&'a ActionView> {
     view.actions.iter().find(|action| action.id == action_id)
 }
-pub(crate) fn scene_action_number_range(actions: &[SceneAction]) -> String {
-    action_count_range(actions.len())
-}
 pub(crate) fn action_number_range(actions: &[ActionView]) -> String {
     action_count_range(actions.len())
 }

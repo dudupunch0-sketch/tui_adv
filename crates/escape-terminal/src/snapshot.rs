@@ -1,170 +1,87 @@
 use super::*;
 
-pub(crate) fn render_scene_page_app_frame(page: &ScenePage, logs: &[String], tick: u64) -> String {
-    let mut backend = slt::TestBackend::new(120, 40);
-    backend.render(|ui| render_scene_page_app(ui, page, logs, tick));
-    backend.to_string_trimmed()
-}
-pub(crate) fn render_scene_page_app(
-    ui: &mut slt::Context,
-    page: &ScenePage,
-    logs: &[String],
-    tick: u64,
-) {
-    let _ = ui.col(|ui| {
-        ui.text(scene_page_terminal_title(page));
-        ui.text("app loop: full-screen SuperLightTUI frame");
-        ui.text(format!("tick: {tick}"));
-        ui.text(format!(
-            "{} · {} · {} ({})",
-            page.chapter_label,
-            scene_mode_label(&page.mode),
-            page.location.name,
-            page.location.id
-        ));
-        ui.text(format!(
-            "진단: 체력 {} · 정신력 {} · 배터리 {} · 허기 {} · 갈증 {} · 위험도 {}",
-            resource_value(page, "health"),
-            resource_value(page, "sanity"),
-            resource_value(page, "battery"),
-            resource_value(page, "hunger"),
-            resource_value(page, "thirst"),
-            page.status_summary.danger
-        ));
-
-        ui.text("[STORY PAGE]");
-        ui.text(format!("visual: {} / {}", page.visual.id, page.visual.kind));
-        ui.text(format!("alt: {}", page.visual.alt));
-        ui.container().w(110).h(7).draw_with(
-            RawGlyphFxFrame {
-                tick,
-                effect_cues: page.effect_cues.clone(),
-            },
-            draw_raw_glyphfx,
-        );
-
-        if matches!(page.mode, SceneMode::Encounter) {
-            ui.text("[현재 인카운터]");
-        } else {
-            ui.text("[현재 행동]");
-        }
-        ui.text(page.title.as_str());
-        render_scene_body(ui, page);
-
-        ui.text("[선택지]");
-        for (index, action) in page.actions.iter().enumerate() {
-            ui.text(scene_action_line(index + 1, action));
-        }
-        if !page.blocked_actions.is_empty() {
-            ui.text("[잠긴 선택지]");
-            for action in &page.blocked_actions {
-                ui.text(scene_blocked_action_line(action));
-                ui.text(format!("   이유: {}", action.reasons.join(", ")));
-            }
-        }
-        ui.text(app_input_hint_for_scene_actions(&page.actions));
-
-        ui.text("[최근 로그]");
-        if logs.is_empty() {
-            ui.text("- 아직 기록된 로그가 없다.");
-        } else {
-            for log in logs.iter().rev().take(5).rev() {
-                ui.text(format!("- {log}"));
-            }
-        }
-    });
-}
-pub(crate) fn app_input_hint_for_scene_actions(actions: &[SceneAction]) -> String {
-    format!(
-        "입력: 번호 {} · q 종료 · ? 도움말",
-        scene_action_number_range(actions)
-    )
-}
 pub(crate) fn render_scene_page_snapshot(page: &ScenePage, logs: &[String]) -> String {
-    let mut backend = slt::TestBackend::new(120, 36);
-    backend.render(|ui| render_scene_page(ui, page, logs));
-    backend.to_string_trimmed()
+    let mut lines = Vec::new();
+    lines.push(scene_page_terminal_title(page).to_string());
+    lines.push(format!(
+        "{} · {}",
+        page.chapter_label,
+        scene_mode_label(&page.mode)
+    ));
+    lines.push("[상태]".to_string());
+    lines.push(format!("턴: {}", page.status_summary.turn));
+    lines.push(format!(
+        "위치: {} ({})",
+        page.location.name, page.location.id
+    ));
+    lines.push(format!(
+        "체력: {}  정신력: {}  배터리: {}  허기: {}  갈증: {}  위험도: {}",
+        resource_value(page, "health"),
+        resource_value(page, "sanity"),
+        resource_value(page, "battery"),
+        resource_value(page, "hunger"),
+        resource_value(page, "thirst"),
+        page.status_summary.danger
+    ));
+    for warning in &page.status_summary.warnings {
+        lines.push(format!("! {warning}"));
+    }
+
+    lines.push("[비주얼]".to_string());
+    for line in scene_visual_card_lines(page) {
+        lines.push(line);
+    }
+
+    if matches!(page.mode, SceneMode::Encounter) {
+        lines.push("[현재 인카운터]".to_string());
+        lines.push(page.title.clone());
+        render_scene_body(&mut lines, page);
+    }
+
+    lines.push("[현재 행동]".to_string());
+    if !matches!(page.mode, SceneMode::Encounter) {
+        lines.push(page.title.clone());
+        render_scene_body(&mut lines, page);
+    }
+    for (index, action) in page.actions.iter().enumerate() {
+        lines.push(scene_action_line(index + 1, action));
+    }
+    if !page.blocked_actions.is_empty() {
+        lines.push("[잠긴 선택지]".to_string());
+        for action in &page.blocked_actions {
+            lines.push(scene_blocked_action_line(action));
+            lines.push(format!("   이유: {}", action.reasons.join(", ")));
+        }
+    }
+
+    lines.push("[최근 로그]".to_string());
+    if logs.is_empty() {
+        lines.push("- 아직 기록된 로그가 없다.".to_string());
+    } else {
+        for log in logs {
+            lines.push(format!("- {log}"));
+        }
+    }
+    lines.join("\n")
 }
-pub(crate) fn render_scene_page(ui: &mut slt::Context, page: &ScenePage, logs: &[String]) {
-    let _ = ui.col(|ui| {
-        ui.text(scene_page_terminal_title(page));
-        ui.text(format!(
-            "{} · {}",
-            page.chapter_label,
-            scene_mode_label(&page.mode)
-        ));
-        ui.text("[상태]");
-        ui.text(format!("턴: {}", page.status_summary.turn));
-        ui.text(format!(
-            "위치: {} ({})",
-            page.location.name, page.location.id
-        ));
-        ui.text(format!(
-            "체력: {}  정신력: {}  배터리: {}  허기: {}  갈증: {}  위험도: {}",
-            resource_value(page, "health"),
-            resource_value(page, "sanity"),
-            resource_value(page, "battery"),
-            resource_value(page, "hunger"),
-            resource_value(page, "thirst"),
-            page.status_summary.danger
-        ));
-        for warning in &page.status_summary.warnings {
-            ui.text(format!("! {warning}"));
-        }
 
-        ui.text("[비주얼]");
-        for line in scene_visual_card_lines(page) {
-            ui.text(line);
-        }
-
-        if matches!(page.mode, SceneMode::Encounter) {
-            ui.text("[현재 인카운터]");
-            ui.text(page.title.as_str());
-            render_scene_body(ui, page);
-        }
-
-        ui.text("[현재 행동]");
-        if !matches!(page.mode, SceneMode::Encounter) {
-            ui.text(page.title.as_str());
-            render_scene_body(ui, page);
-        }
-        for (index, action) in page.actions.iter().enumerate() {
-            ui.text(scene_action_line(index + 1, action));
-        }
-        if !page.blocked_actions.is_empty() {
-            ui.text("[잠긴 선택지]");
-            for action in &page.blocked_actions {
-                ui.text(scene_blocked_action_line(action));
-                ui.text(format!("   이유: {}", action.reasons.join(", ")));
-            }
-        }
-
-        ui.text("[최근 로그]");
-        if logs.is_empty() {
-            ui.text("- 아직 기록된 로그가 없다.");
-        } else {
-            for log in logs {
-                ui.text(format!("- {log}"));
-            }
-        }
-    });
-}
-pub(crate) fn render_scene_body(ui: &mut slt::Context, page: &ScenePage) {
+pub(crate) fn render_scene_body(lines_buf: &mut Vec<String>, page: &ScenePage) {
     for entry in &page.dialogue_entries {
-        ui.text(format!("{}: {}", entry.speaker, entry.text));
+        lines_buf.push(format!("{}: {}", entry.speaker, entry.text));
     }
     for block in &page.body_blocks {
         if let Some(heading) = scene_body_block_heading(block) {
-            ui.text(heading);
+            lines_buf.push(heading.to_string());
         }
         let lines = compact_terminal_body_block_lines(block);
         for line in lines {
             for wrapped in wrap_terminal_body_line(line, 76) {
-                ui.text(wrapped);
+                lines_buf.push(wrapped);
             }
         }
     }
 }
+
 pub(crate) fn compact_terminal_body_block_lines(block: &BodyBlock) -> Vec<&str> {
     match block.kind.as_str() {
         "epilogue_result" => block
@@ -200,6 +117,7 @@ pub(crate) fn compact_terminal_body_block_lines(block: &BodyBlock) -> Vec<&str> 
         _ => block.text.lines().collect(),
     }
 }
+
 pub(crate) fn scene_body_block_heading(block: &BodyBlock) -> Option<&'static str> {
     match block.kind.as_str() {
         "epilogue_result" => Some("[결산 판정]"),
@@ -209,6 +127,7 @@ pub(crate) fn scene_body_block_heading(block: &BodyBlock) -> Option<&'static str
         _ => None,
     }
 }
+
 pub(crate) fn wrap_terminal_body_line(line: &str, max_chars: usize) -> Vec<String> {
     let mut rows = Vec::new();
     let mut remaining = line.trim_end();
@@ -235,6 +154,7 @@ pub(crate) fn wrap_terminal_body_line(line: &str, max_chars: usize) -> Vec<Strin
     }
     rows
 }
+
 pub(crate) fn scene_visual_card_lines(page: &ScenePage) -> Vec<String> {
     let mut lines = vec![
         "╭─ VISUAL CARD ─────────────────────────╮".to_string(),
@@ -246,13 +166,15 @@ pub(crate) fn scene_visual_card_lines(page: &ScenePage) -> Vec<String> {
     lines.push("╰────────────────────────────────────────╯".to_string());
     lines
 }
+
 pub(crate) fn scene_page_terminal_title(page: &ScenePage) -> &'static str {
     if is_wuxia_scene_page(page) {
-        "이구학지 - 천기록 // SuperLightTUI STORYBOOK"
+        "이구학지 - 천기록 // TERMINAL STORYBOOK"
     } else {
-        "ESCAPE OFFICE // SuperLightTUI HORROR EDITION"
+        "ESCAPE OFFICE // TERMINAL EDITION"
     }
 }
+
 pub(crate) fn is_wuxia_scene_page(page: &ScenePage) -> bool {
     page.location.id.starts_with("wuxia_")
         || page.visual.id.contains("wuxia")
@@ -262,61 +184,59 @@ pub(crate) fn is_wuxia_scene_page(page: &ScenePage) -> bool {
             .as_deref()
             .is_some_and(|source_id| source_id.contains("wuxia"))
 }
+
 pub(crate) fn render_turn_view_snapshot(
     view: &TurnView,
     state: &GameState,
     location_name: &str,
     logs: &[String],
 ) -> String {
-    let mut backend = slt::TestBackend::new(120, 32);
-    backend.render(|ui| {
-        let _ = ui.col(|ui| {
-            ui.text("ESCAPE OFFICE // SuperLightTUI HORROR EDITION");
-            ui.text("legacy printer scene · TurnView bridge");
-            ui.text("[상태]");
-            ui.text(format!("턴: {}", state.turn));
-            ui.text(format!("위치: {location_name} ({})", state.location_id));
-            ui.text(format!(
-                "체력: {}  정신력: {}  배터리: {}  위험도: {}",
-                state.player.health, state.player.sanity, state.player.battery, state.danger
-            ));
-            ui.text("[비주얼]");
-            ui.text(glyphfx_turn_line(&view.effect_cues));
+    let mut lines = Vec::new();
+    lines.push("ESCAPE OFFICE // TERMINAL EDITION".to_string());
+    lines.push("legacy printer scene · TurnView bridge".to_string());
+    lines.push("[상태]".to_string());
+    lines.push(format!("턴: {}", state.turn));
+    lines.push(format!("위치: {location_name} ({})", state.location_id));
+    lines.push(format!(
+        "체력: {}  정신력: {}  배터리: {}  위험도: {}",
+        state.player.health, state.player.sanity, state.player.battery, state.danger
+    ));
+    lines.push("[비주얼]".to_string());
+    lines.push(glyphfx_turn_line(&view.effect_cues));
 
-            if view.encounter_id.is_some() {
-                ui.text("[현재 인카운터]");
-                ui.text(view.title.as_str());
-                ui.text(view.body.as_str());
-            }
+    if view.encounter_id.is_some() {
+        lines.push("[현재 인카운터]".to_string());
+        lines.push(view.title.clone());
+        lines.push(view.body.clone());
+    }
 
-            ui.text("[현재 행동]");
-            if view.encounter_id.is_none() {
-                ui.text(view.title.as_str());
-                ui.text(view.body.as_str());
-            }
-            for (index, action) in view.actions.iter().enumerate() {
-                ui.text(turn_action_line(index + 1, action));
-            }
-            if !view.blocked_actions.is_empty() {
-                ui.text("[잠긴 선택지]");
-                for action in &view.blocked_actions {
-                    ui.text(turn_blocked_action_line(action));
-                    ui.text(format!("   이유: {}", action.reasons.join(", ")));
-                }
-            }
+    lines.push("[현재 행동]".to_string());
+    if view.encounter_id.is_none() {
+        lines.push(view.title.clone());
+        lines.push(view.body.clone());
+    }
+    for (index, action) in view.actions.iter().enumerate() {
+        lines.push(turn_action_line(index + 1, action));
+    }
+    if !view.blocked_actions.is_empty() {
+        lines.push("[잠긴 선택지]".to_string());
+        for action in &view.blocked_actions {
+            lines.push(turn_blocked_action_line(action));
+            lines.push(format!("   이유: {}", action.reasons.join(", ")));
+        }
+    }
 
-            ui.text("[최근 로그]");
-            if logs.is_empty() {
-                ui.text("- 아직 기록된 로그가 없다.");
-            } else {
-                for log in logs {
-                    ui.text(format!("- {log}"));
-                }
-            }
-        });
-    });
-    backend.to_string_trimmed()
+    lines.push("[최근 로그]".to_string());
+    if logs.is_empty() {
+        lines.push("- 아직 기록된 로그가 없다.".to_string());
+    } else {
+        for log in logs {
+            lines.push(format!("- {log}"));
+        }
+    }
+    lines.join("\n")
 }
+
 pub(crate) fn scene_mode_label(mode: &SceneMode) -> &'static str {
     match mode {
         SceneMode::Encounter => "인카운터",
@@ -324,6 +244,7 @@ pub(crate) fn scene_mode_label(mode: &SceneMode) -> &'static str {
         SceneMode::Ending => "엔딩",
     }
 }
+
 pub(crate) fn resource_value(page: &ScenePage, id: &str) -> i32 {
     page.status_summary
         .resources

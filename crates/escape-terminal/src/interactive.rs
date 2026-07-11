@@ -56,67 +56,6 @@ pub(crate) fn run_content_play_loop(
 
     Ok(())
 }
-pub(crate) fn run_content_app_loop(
-    content: &ContentIndex,
-    mut state: GameState,
-) -> Result<(), String> {
-    let mut recent_logs = Vec::new();
-    let mut last_message: Option<String> = None;
-    let config = slt::RunConfig::default()
-        .tick_rate(Duration::from_millis(16))
-        .max_fps(60)
-        .title("escape-terminal".to_string());
-
-    slt::run_with(config, |ui| {
-        let page = match scene_page_from_content(&state, content) {
-            Ok(page) => page,
-            Err(error) => {
-                ui.text(format!("fatal renderer error: {error}"));
-                ui.quit();
-                return;
-            }
-        };
-
-        render_scene_page_app(ui, &page, &recent_logs, ui.tick());
-        if let Some(message) = &last_message {
-            ui.text(format!("! {message}"));
-        }
-
-        if ui.key('q') || ui.key('Q') {
-            ui.quit();
-            return;
-        }
-        if ui.key('?') {
-            last_message = Some(app_input_hint_for_scene_actions(&page.actions));
-            return;
-        }
-
-        for number in 1..=9 {
-            let key = char::from_digit(number, 10).expect("1..=9 should convert to char");
-            if ui.key(key) {
-                let Some(action) = page.actions.get(number as usize - 1) else {
-                    last_message = Some(format!(
-                        "사용 가능한 번호: {}",
-                        scene_action_number_range(&page.actions)
-                    ));
-                    return;
-                };
-                match apply_action_from_content(&state, content, &action.id) {
-                    Ok(result) => {
-                        recent_logs.extend(result.logs.iter().cloned());
-                        state = result.state;
-                        last_message = Some(format!("실행: {}", action.label));
-                    }
-                    Err(error) => {
-                        last_message = Some(error.to_string());
-                    }
-                }
-                return;
-            }
-        }
-    })
-    .map_err(|error| format!("failed to run SuperLightTUI app loop: {error}"))
-}
 pub(crate) fn resolve_play_action<'a>(view: &'a TurnView, input: &str) -> Option<&'a ActionView> {
     if let Ok(index) = input.parse::<usize>() {
         return index

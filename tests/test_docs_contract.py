@@ -1,6 +1,20 @@
 from pathlib import Path
 
 
+def _final_epilogue_source_text() -> str:
+    paths = (
+        "crates/escape-core/src/final_epilogue/mod.rs",
+        "crates/escape-core/src/final_epilogue/types.rs",
+        "crates/escape-core/src/final_epilogue/facts.rs",
+        "crates/escape-core/src/final_epilogue/render.rs",
+        "crates/escape-core/src/final_epilogue/cards.rs",
+        "crates/escape-core/src/final_epilogue/suppress.rs",
+        "crates/escape-core/src/final_epilogue/audit.rs",
+        "crates/escape-core/src/final_epilogue/audit_rules.rs",
+    )
+    return "\n".join(Path(path).read_text(encoding="utf-8") for path in paths)
+
+
 def test_checklist_tracks_completed_terminal_ux_slices():
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
 
@@ -2262,9 +2276,7 @@ def test_wuxia_final_epilogue_runtime_contract_is_docs_synced():
     endings_yaml = Path(
         "src/tui_adv/storypack-previews/wuxia_jianghu_pack/endings.yaml"
     ).read_text(encoding="utf-8")
-    final_epilogue_rs = Path("crates/escape-core/src/final_epilogue.rs").read_text(
-        encoding="utf-8"
-    )
+    final_epilogue_rs = _final_epilogue_source_text()
 
     assert "wuxia_final_epilogue_renderer_contract" in readme
     assert "## 0.66 2026-06-02 무협 `wuxia_final_epilogue_renderer_contract` runtime implementation slice" in plan
@@ -2318,9 +2330,7 @@ def test_wuxia_return_settlement_epilogue_contract_is_docs_synced():
     wuxia_cards = Path("docs/content/encounter_db/wuxia_jianghu_pack.md").read_text(
         encoding="utf-8"
     )
-    final_epilogue_rs = Path("crates/escape-core/src/final_epilogue.rs").read_text(
-        encoding="utf-8"
-    )
+    final_epilogue_rs = _final_epilogue_source_text()
 
     assert "## 0.70 2026-06-02 무협 `wuxia_return_settlement_epilogue_contract` runtime slice" in plan
     assert "### 0.2ci 2026-06-02 무협 `wuxia_return_settlement_epilogue_contract` runtime slice" in checklist
@@ -2367,9 +2377,7 @@ def test_wuxia_battle_loss_epilogue_contract_handoff_is_docs_synced():
     wuxia_cards = Path("docs/content/encounter_db/wuxia_jianghu_pack.md").read_text(
         encoding="utf-8"
     )
-    final_epilogue_rs = Path("crates/escape-core/src/final_epilogue.rs").read_text(
-        encoding="utf-8"
-    )
+    final_epilogue_rs = _final_epilogue_source_text()
 
     assert (
         "## 0.71 2026-06-02 무협 return_settlement_epilogue_followup_handoff docs-only handoff: battle-loss epilogue contract"
@@ -2428,9 +2436,7 @@ def test_wuxia_battle_loss_epilogue_contract_runtime_is_docs_synced():
     endings_yaml = Path(
         "src/tui_adv/storypack-previews/wuxia_jianghu_pack/endings.yaml"
     ).read_text(encoding="utf-8")
-    final_epilogue_rs = Path("crates/escape-core/src/final_epilogue.rs").read_text(
-        encoding="utf-8"
-    )
+    final_epilogue_rs = _final_epilogue_source_text()
     route_parity_rs = Path("crates/escape-core/tests/route_parity.rs").read_text(
         encoding="utf-8"
     )
@@ -2579,9 +2585,7 @@ def test_wuxia_final_state_canonical_collapse_contract_runtime_is_docs_synced():
     wuxia_cards = Path("docs/content/encounter_db/wuxia_jianghu_pack.md").read_text(
         encoding="utf-8"
     )
-    final_epilogue_rs = Path("crates/escape-core/src/final_epilogue.rs").read_text(
-        encoding="utf-8"
-    )
+    final_epilogue_rs = _final_epilogue_source_text()
     route_parity_rs = Path("crates/escape-core/tests/route_parity.rs").read_text(
         encoding="utf-8"
     )
@@ -2978,9 +2982,7 @@ def test_wuxia_s6_main_ending_type_labels_are_docs_synced():
     final_routing = Path('docs/design/Wuxia_Final_State_Routing.md').read_text(
         encoding='utf-8'
     )
-    final_epilogue_rs = Path(
-        'crates/escape-core/src/final_epilogue.rs'
-    ).read_text(encoding='utf-8')
+    final_epilogue_rs = _final_epilogue_source_text()
 
     assert '[DONE] S6' in plan
     assert '0.86' in plan

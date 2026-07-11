@@ -42,8 +42,10 @@ describe('player start/save UX', () => {
     const html = renderStartScreen({ defaultSeed: 123, summary: null, warning: null, confirmReset: false });
 
     expect(html).toContain('data-player-screen="start"');
-    expect(html).toContain('모험가 이야기');
-    expect(html).toContain('/assets/intro-main.png');
+    expect(html).toContain('이구학지');
+    expect(html).not.toContain('intro-main.png');
+    expect(html).not.toContain('모험가 이야기');
+    expect(html).not.toContain('LIFE IN ADVENTURE');
     expect(html).toContain('TAP TO START');
     expect(html).toContain('data-player-action="continue" disabled');
     expect(html).toContain('data-player-action="new-game"');

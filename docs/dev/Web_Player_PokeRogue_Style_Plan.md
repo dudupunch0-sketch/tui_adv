@@ -690,11 +690,12 @@ Unknown visual id 정책:
 
 ### 9.3 레퍼런스 이미지 정책
 
-`idea_box/플레이화면*.bmp`는 UI grammar reference로만 사용한다.
+(2026-07-11 갱신) 과거 참고하던 타사 게임 스크린샷들은 저작권 문제로 저장소에서
+제거되었다. 외부 게임 화면을 UI template으로 삼지 않으며, 현재 시각 계약은
+`docs/design/Mobile_Ink_Storybook_UI.md`다.
 
-- 그대로 production asset으로 import하지 않는다.
-- 출처/라이선스 확인 전 배포 asset으로 쓰지 않는다.
-- 필요한 경우 내부 스타일 문법만 CSS/DOM으로 재구현한다.
+- 외부 이미지를 production asset으로 import하지 않는다.
+- 필요한 시각 요소는 전부 코드(CSS/DOM/SVG)로 저작한다.
 
 ---
 

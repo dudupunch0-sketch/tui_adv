@@ -39,6 +39,7 @@ SuperLightTUI terminal renderer: terminal-native fallback / horror edition
 
 Web Storybook primary UX:
 
+- 시각 계약은 `docs/design/Mobile_Ink_Storybook_UI.md`(수묵 서책)를 따른다.
 - 모바일 세로형/narrow browser를 1차 기준으로 한다.
 - 화면 region은 최소 `status/location`, `visual`, `body/dialogue`, `choices`, `history/drawer`를 가진다.
 - 선택지는 버튼과 숫자키로 실행한다. `cd`, `ls`, `grep` 같은 shell command 입력을 요구하지 않는다.

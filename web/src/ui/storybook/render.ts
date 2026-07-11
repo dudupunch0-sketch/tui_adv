@@ -24,7 +24,7 @@ export function renderStorybookPage(page: ScenePage, options: StorybookRenderOpt
   ${renderProgressRail(page)}
   <section class="storybook-page" data-story-layout="${layout}" data-story-phase="${phase}">
     ${renderStoryFlow(page, layout)}
-    ${renderChoices(page.actions, page.blocked_actions)}
+    ${renderChoices(page)}
   </section>
   ${renderBottomDock(page)}
   ${renderStoryHistory(page.history_entries)}
@@ -242,12 +242,12 @@ function renderAchievementLabel(id: string): string {
   return `${escapeHtml(achievementLabel(id))}${translationNote}`;
 }
 
-function renderChoices(actions: SceneAction[], blockedActions: SceneBlockedAction[]): string {
-  const actionRows = actions.length
-    ? actions.map(renderActionButton).join('')
-    : '<li class="empty-choice">현재 실행할 수 있는 행동이 없다.</li>';
-  const blockedRows = blockedActions.length
-    ? `<ul class="blocked-actions">${blockedActions.map(renderBlockedAction).join('')}</ul>`
+function renderChoices(page: ScenePage): string {
+  const actionRows = page.actions.length
+    ? page.actions.map(renderActionButton).join('')
+    : renderEmptyChoiceRows(page.mode === 'ending');
+  const blockedRows = page.blocked_actions.length
+    ? `<ul class="blocked-actions">${page.blocked_actions.map(renderBlockedAction).join('')}</ul>`
     : '';
 
   return `<nav class="storybook-choices" data-region="choices" aria-label="현재 선택지">
@@ -255,6 +255,15 @@ function renderChoices(actions: SceneAction[], blockedActions: SceneBlockedActio
     <ol>${actionRows}</ol>
     ${blockedRows}
   </nav>`;
+}
+
+function renderEmptyChoiceRows(isEnding: boolean): string {
+  const message = isEnding ? '기록의 이 장은 여기서 끝났다.' : '현재 실행할 수 있는 행동이 없다.';
+  return `<li class="empty-choice">${message}</li>
+    <li><button type="button" class="choice-row" data-player-action="show-start">
+      <span class="choice-bullet" aria-hidden="true">✥</span>
+      <span class="choice-label">처음 화면으로 돌아간다</span>
+    </button></li>`;
 }
 
 function renderActionButton(action: SceneAction, index: number): string {

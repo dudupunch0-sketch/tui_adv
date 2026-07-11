@@ -234,7 +234,8 @@ describe('Web Storybook renderer', () => {
     expect(html).toContain('data-field-key="card_id"');
     expect(html).toContain('epilogue_boss_broken_black_serpent');
     expect(html).toContain('data-field-key="suppressed_by"');
-    expect(html).toContain('현재 실행할 수 있는 행동이 없다.');
+    expect(html).toContain('기록의 이 장은 여기서 끝났다.');
+    expect(html).toContain('data-player-action="show-start"');
     expect(html).not.toContain('<p class="storybook-summary">후일담 출력기는 아직 열리지 않는다.</p>');
     expect(html).not.toContain('final_epilogue_renderer_opened');
   });

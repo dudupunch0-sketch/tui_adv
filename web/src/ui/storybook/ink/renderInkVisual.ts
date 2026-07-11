@@ -8,7 +8,7 @@ import { fnv1a, jitter, type InkSceneSpec } from './inkSpec';
 export function renderInkVisual(visual: SceneVisual, effectCues: SceneEffectCue[], mode: string): string {
   const spec = sceneForVisual(visual.id, mode) ?? genericScene(mode);
   const known = sceneForVisual(visual.id, mode) !== undefined;
-  const kind = known ? (isCombat(visual) ? 'combat' : 'ink') : 'placeholder';
+  const kind = isCombat(visual) ? 'combat' : known ? 'ink' : 'placeholder';
   const seed = fnv1a(visual.id);
   const layer = (elements: InkSceneSpec['far'], opacity: number) => (elements ?? []).map((element, index) => `<g opacity="${opacity}">${renderInkElement(element, jitter(seed, index, 0.04))}</g>`).join('');
   const figures = (spec.figures ?? []).map((figure, index) => renderInkFigure(figure, jitter(seed, index + 32, 0.04))).join('');

@@ -379,7 +379,6 @@ button {
   background:
     linear-gradient(135deg, rgba(27, 32, 29, 0.6), rgba(104, 86, 64, 0.35)),
     repeating-linear-gradient(135deg, #314236 0 8px, #6f765d 8px 16px, #2b2624 16px 24px);
-  image-rendering: pixelated;
   box-shadow: inset 0 0 0 2px rgba(255, 244, 205, 0.16), 0 6px 0 rgba(62, 50, 38, 0.2);
 }
 
@@ -898,105 +897,16 @@ button {
   border-bottom: 1px solid var(--line-soft);
 }
 
-.ink-scene--night svg {
+.ink-scene canvas {
+  display: block;
+  width: 100%;
+  min-height: 120px;
+  border-bottom: 1px solid var(--line-soft);
   background: var(--paper-deep);
 }
 
-.pixel-illustration {
-  position: relative;
-  min-height: clamp(220px, 46vw, 430px);
-  overflow: hidden;
-  background: rgba(87, 87, 68, 0.12);
-  border: 0;
-  box-shadow: inset 0 -10px 0 rgba(46, 42, 35, 0.08);
-}
-
-.pixel-illustration::before,
-.pixel-illustration::after {
-  position: absolute;
-  pointer-events: none;
-  content: "";
-}
-
-.pixel-illustration::before {
-  inset: 0;
-  background: repeating-linear-gradient(90deg, transparent 0 10px, rgba(255, 255, 255, 0.05) 10px 12px);
-  mix-blend-mode: soft-light;
-}
-
-.pixel-illustration::after {
-  inset: auto 0 0;
-  height: 24px;
-  background: linear-gradient(180deg, transparent, rgba(200, 192, 173, 0.78));
-}
-
-.printer-card {
-  display: grid;
-  align-items: end;
-  padding: 18px;
-  background:
-    radial-gradient(circle at 50% 35%, rgba(102, 166, 124, 0.32), transparent 24%),
-    linear-gradient(180deg, rgba(44, 56, 50, 0.86), rgba(99, 91, 74, 0.78));
-}
-
-.printer-card canvas {
-  position: absolute;
-  inset: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
-  opacity: 0.62;
-}
-
-.printer-card pre {
-  position: relative;
-  z-index: 1;
-  margin: 0;
-  color: #f2e4b8;
-  font-family: "IBM Plex Mono", "JetBrains Mono", "D2Coding", "Noto Serif KR", monospace;
-  font-size: clamp(0.9rem, 2.5vw, 1.2rem);
-  white-space: pre-wrap;
-  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.32);
-}
-
-.message-card,
-.corridor-card,
-.placeholder-card {
-  display: grid;
-  place-items: center;
-  padding: 28px;
-  color: #efe3bc;
-  text-align: center;
-  background:
-    radial-gradient(circle at 50% 45%, rgba(68, 95, 79, 0.72), transparent 30%),
-    linear-gradient(180deg, #373733, #5f594d);
-}
-
-.message-card p,
-.placeholder-card p {
-  margin: 0;
-  color: inherit;
-  font-family: "IBM Plex Mono", "JetBrains Mono", "D2Coding", "Noto Serif KR", monospace;
-  font-size: clamp(1rem, 3vw, 1.5rem);
-}
-
-.message-card blockquote {
-  max-width: 24rem;
-  margin: 0;
-  color: #e6d292;
-  font-size: clamp(1.05rem, 3.4vw, 1.6rem);
-}
-
-.corridor-card {
-  grid-template-columns: 1fr;
-  gap: 16px;
-  color: #f0d783;
-  font-family: "IBM Plex Mono", "JetBrains Mono", "D2Coding", "Noto Serif KR", monospace;
-}
-
-.corridor-card span:nth-child(2) {
-  color: #bb524e;
-  font-size: clamp(2rem, 8vw, 4.4rem);
+.ink-scene--night svg {
+  background: var(--paper-deep);
 }
 
 .storybook-glyphfx {
@@ -1568,10 +1478,6 @@ button {
     width: 88%;
   }
 
-  .pixel-illustration {
-    min-height: 150px;
-  }
-
   .storybook-glyphfx {
     margin-top: 6px;
     font-size: 0.72rem;
@@ -1628,8 +1534,11 @@ button {
 }
 
 .storybook-hud {
-  position: sticky;
+  position: fixed;
+  left: 50%;
   bottom: 0;
+  width: min(774px, calc(100vw - 24px));
+  transform: translateX(-50%);
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) minmax(72px, 1.25fr) auto;
   grid-template-rows: auto;
@@ -1710,20 +1619,19 @@ button {
 }
 
 .storybook-dock {
+  display: block;
   position: fixed;
-  right: 0;
+  left: 50%;
   bottom: 0;
-  left: 0;
+  width: min(810px, 100vw);
+  transform: translateX(-50%);
   z-index: 8;
   margin: 0;
+  pointer-events: none;
 }
+.storybook-dock[open] { pointer-events: auto; }
 .storybook-dock > summary {
-  min-height: 44px;
-  padding: 10px 18px;
-  cursor: pointer;
-  color: var(--ink-faded);
-  background: var(--paper-deep);
-  list-style: none;
+  display: none;
 }
 .storybook-dock > summary::-webkit-details-marker { display: none; }
 .dock-sheet {
@@ -1801,7 +1709,6 @@ button {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  image-rendering: pixelated;
 }
 
 .start-logo-lockup {
@@ -1925,66 +1832,6 @@ button {
 .storybook-visual--combat {
   width: min(680px, 86%);
 }
-
-.wuxia-card {
-  min-height: clamp(230px, 47vw, 410px);
-  background:
-    linear-gradient(180deg, #9eb3ad 0 34%, #b7c5b5 35% 53%, #556b55 54% 100%);
-}
-
-.wuxia-sky,
-.wuxia-cliff,
-.wuxia-gate,
-.wuxia-traveler,
-.combat-hero,
-.combat-enemy,
-.combat-impact {
-  position: absolute;
-  display: block;
-}
-
-.wuxia-sky {
-  inset: 0;
-  background:
-    radial-gradient(circle at 58% 28%, rgba(235, 235, 207, 0.48), transparent 9rem),
-    linear-gradient(135deg, rgba(70, 91, 98, 0.34) 0 26%, transparent 27%),
-    linear-gradient(48deg, transparent 0 60%, rgba(65, 89, 82, 0.38) 61% 100%);
-}
-
-.wuxia-cliff {
-  right: 8%;
-  bottom: 0;
-  width: 58%;
-  height: 56%;
-  background:
-    linear-gradient(160deg, transparent 0 24%, #7ca369 25% 42%, #415d47 43% 100%),
-    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.1) 0 4px, transparent 4px 12px);
-  clip-path: polygon(18% 12%, 88% 0, 100% 100%, 0 100%);
-}
-
-.wuxia-gate {
-  right: 28%;
-  bottom: 45%;
-  width: 22%;
-  height: 26%;
-  border: 12px solid #6f765d;
-  border-bottom: 0;
-  border-radius: 50% 50% 0 0;
-  box-shadow: inset 0 0 0 6px rgba(36, 42, 34, 0.38);
-}
-
-.wuxia-traveler {
-  left: 18%;
-  bottom: 12%;
-  width: 8%;
-  height: 32%;
-  background:
-    linear-gradient(90deg, transparent 0 38%, #1d2019 39% 63%, transparent 64%),
-    linear-gradient(180deg, #263726 0 26%, #526954 27% 72%, #2e221c 73% 100%);
-  clip-path: polygon(42% 0, 58% 0, 72% 18%, 74% 68%, 60% 100%, 40% 100%, 26% 68%, 28% 18%);
-}
-
-
 
 @media (max-width: 560px) {
   .storybook-start {

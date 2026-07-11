@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import type { ScenePage } from '../../core/types';
+import { sceneForVisual } from './ink/inkScenes';
 import { renderStorybookPage } from './render';
 
 function samplePrinterPage(overrides: Partial<ScenePage> = {}): ScenePage {
@@ -289,5 +290,27 @@ describe('Web Storybook renderer', () => {
     expect(html).toContain('data-visual-kind="placeholder"');
     expect(html).toContain('아직 카탈로그에 없는 장면이다.');
     expect(html).toContain('data-action-id="choice:take_printout"');
+  });
+
+  it('authors the planned wuxia scenes and deterministic location variants as ink specs', () => {
+    const plannedVisuals = [
+      'wuxia_commute_rift',
+      'wuxia_cheongryu_raid_wounded_fallback',
+      'wuxia_heavenly_archive_previous_outsiders',
+      'wuxia_cheonoe_pyeonrin_second_reward',
+      'wuxia_mumyeong_request_for_aid',
+      'wuxia_qingliu_attack_after_war',
+      'wuxia_sado_final_phase_1_price_tag',
+      'wuxia_sado_final_phase_2_weakpoint_control',
+      'wuxia_sado_final_phase_3_outside_calculation',
+      'ending:wuxia_return_modern_commute_scene_resolved',
+      'ending:wuxia_settlement_stay_scene_resolved',
+      'ending:wuxia_preview_grounded',
+    ];
+
+    for (const visualId of plannedVisuals) {
+      expect(sceneForVisual(visualId, 'encounter')).toBeDefined();
+    }
+    expect(sceneForVisual('location:cheongryu_gate', 'movement')).toEqual(sceneForVisual('location:cheongryu_gate', 'movement'));
   });
 });

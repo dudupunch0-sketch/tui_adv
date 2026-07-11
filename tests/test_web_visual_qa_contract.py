@@ -68,7 +68,7 @@ def test_storybook_visual_qa_script_names_required_dom_and_interaction_contracts
 
 
 def test_storybook_visual_qa_documentation_tracks_tmp_cache_and_report_policy():
-    design_doc = Path("docs/design/Mobile_Pixel_Storybook_UI.md").read_text(encoding="utf-8")
+    design_doc = Path("docs/design/Mobile_Ink_Storybook_UI.md").read_text(encoding="utf-8")
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
 

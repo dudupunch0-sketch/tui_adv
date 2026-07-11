@@ -139,7 +139,12 @@ source ~/.config/tui_adv/tmp-installs.sh
 npm test
 ```
 
-## 0.3 2026-05-23 active main plan: 모바일 픽셀 스토리북 UI redesign
+## 0.3 2026-05-23 완료 기록 (superseded): 모바일 픽셀 스토리북 UI redesign
+
+> 2026-07-11 방향 전환: 이 섹션은 완료된 이력 기록으로만 남긴다. 아래의
+> 레퍼런스 이미지 기반 픽셀 게임북 문법은 더 이상 개발 방향을 강제하지 않으며,
+> 현재 활성 시각 계약은 `docs/design/Mobile_Ink_Storybook_UI.md`(수묵 서책)와
+> `fable_ui_step1_2607111330.md`다.
 
 이 섹션은 `.hermes/plans/2026-05-23_102222-mobile-pixel-storybook-redesign-plan.md`와 `.hermes/plans/2026-05-23_102222-mobile-pixel-storybook-reference-analysis.md`를 canonical main plan으로 승격해 흡수한 UI slice 기록이다.
 `.hermes/plans/` 파일은 세션 artifact이며, 실제 작업 순서와 우선순위는 이 섹션과 아래 “현재 최우선 남은 작업” / “다음 액션”을 기준으로 판단한다.
@@ -152,12 +157,9 @@ npm test
 
 레퍼런스 확인 결과:
 
-- `origin/main`의 `idea_box/`에는 다음 파일이 있다.
-  - `idea_box/플레이화면0.bmp`: 실제 포맷 PNG, 810 x 1440.
-  - `idea_box/플레이화면1.bmp`: 실제 포맷 PNG, 810 x 1644.
-  - `idea_box/플레이화면2.bmp`: 실제 포맷 PNG, 800 x 1644.
-- 파일 확장자는 `.bmp`지만 magic number 기준 실제 포맷은 PNG다.
-- 이 이미지들은 production asset이 아니라 UI grammar reference다. 그대로 asset으로 쓰기 전에는 출처/라이선스/저작권을 확인해야 한다.
+- 당시 참고한 `idea_box/플레이화면*.bmp` 3장(타사 게임 스크린샷)은 2026-07-11
+  저작권 문제로 저장소에서 제거되었다. 새 작업은 어떤 외부 게임 화면도
+  template으로 삼지 않는다.
 
 레퍼런스에서 추출한 화면 문법:
 
@@ -4338,6 +4340,10 @@ src/tui_adv/data/secrets.example.yaml
 96. 무협 `wuxia_sado_final_battle_container_followup_handoff` docs-only handoff 완료: Sado final battle container runtime evidence 이후 Notion `사도 최종전`, `사도 최종전 상태값 사전`, `최종장 결산 라우팅 마스터`, `08. 엔딩과 후일담 연결`, side-debt/reward/main-ending/archive sources를 재대조했고, playable defeat-route bridge, battle-loss route UX, broader corruption/closed-gate branch, combat resolver/HP numeric battle, reward/ability schema, relation/debt/faction ledger, main ending archive/save surface를 비교했다. 다음 runtime 후보는 `wuxia_sado_battle_loss_route_bridge`이며, 기존 encounter schema로 explicit `final_combat_result_battle_loss_seeded`를 플레이 경로에서 만들고 기존 final epilogue battle-loss consumer로 넘긴다. combat resolver, HP 숫자전, archive/save surface, relation/debt/faction ledger, reward/ability schema는 열지 않는다.
 
 현재 최우선 남은 작업:
+
+- (UI 트랙) Web Storybook UI/UX 개선 사이클 진행 중 — 방향은
+  `docs/design/Mobile_Ink_Storybook_UI.md`(수묵 서책 + 정보 드로어), 작업
+  지시서는 `fable_ui_step1_2607111330.md` (Rev 2).
 
 1. 무협 storypack preview/main의 다음 작업은 `wuxia_sado_battle_loss_route_bridge_implementation` runtime slice다. `wuxia_sado_final_battle_container_followup_handoff`가 playable defeat-route bridge / battle-loss route UX를 다음 runtime 후보로 선택했으므로, 기존 encounter schema로 `final_combat_result_battle_loss_seeded`를 실제 플레이 경로에서 만들고 기존 Rust final epilogue battle-loss consumer로 넘긴다. `docs/design/Wuxia_Final_State_Routing.md`가 canonical final inputs/result priority/alias policy/final epilogue seed-consumption contract와 return/settlement/battle-loss/final-state-collapse/final-battle-container/follow-up handoff를 소유한다.
    - 현재 Web/terminal default storypack은 `wuxia_jianghu_pack` / **이구학지 — 천기록**이다.

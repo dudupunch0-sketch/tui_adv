@@ -249,7 +249,7 @@ function renderAchievementLabel(id: string): string {
 
 function renderChoices(page: ScenePage): string {
   const actionRows = page.actions.length
-    ? page.actions.map(renderActionButton).join('')
+    ? renderActionRows(page.actions)
     : renderEmptyChoiceRows(page.mode === 'ending');
   const blockedRows = page.blocked_actions.length
     ? `<ul class="blocked-actions">${page.blocked_actions.map(renderBlockedAction).join('')}</ul>`
@@ -262,6 +262,23 @@ function renderChoices(page: ScenePage): string {
   </nav>`;
 }
 
+function renderActionRows(actions: SceneAction[]): string {
+  const showMoveGroupLabel =
+    actions.filter((action) => action.kind === 'move').length >= 2 && actions.some((action) => action.kind === 'choice');
+  let moveGroupLabelRendered = false;
+
+  return actions
+    .map((action, index) => {
+      const moveGroupLabel =
+        showMoveGroupLabel && action.kind === 'move' && !moveGroupLabelRendered
+          ? '<li class="choice-group-label" aria-hidden="true">이동</li>'
+          : '';
+      if (moveGroupLabel) moveGroupLabelRendered = true;
+      return `${moveGroupLabel}${renderActionButton(action, index)}`;
+    })
+    .join('');
+}
+
 function renderEmptyChoiceRows(isEnding: boolean): string {
   const message = isEnding ? '기록의 이 장은 여기서 끝났다.' : '현재 실행할 수 있는 행동이 없다.';
   return `<li class="empty-choice">${message}</li>
@@ -272,11 +289,12 @@ function renderEmptyChoiceRows(isEnding: boolean): string {
 }
 
 function renderActionButton(action: SceneAction, index: number): string {
+  const bullet = action.kind === 'move' ? '➤' : action.kind === 'use' ? '◈' : '✥';
   const cost = action.cost_text ? `<small class="choice-cost">${escapeHtml(action.cost_text)}</small>` : '';
   return `<li><button class="choice-row" data-action-id="${escapeHtml(action.id)}" data-action-kind="${escapeHtml(
     action.kind,
   )}">
-    <span class="choice-bullet" aria-hidden="true">✥</span><kbd class="choice-index">${index + 1}</kbd><span class="choice-label">${escapeHtml(
+    <span class="choice-bullet" data-bullet-kind="${escapeHtml(action.kind)}" aria-hidden="true">${bullet}</span><kbd class="choice-index">${index + 1}</kbd><span class="choice-label">${escapeHtml(
       action.label,
     )}</span>${cost}
   </button></li>`;

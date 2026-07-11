@@ -7,6 +7,7 @@
   --paper-light: #e5dcc4;
   --paper-shadow: #96886d;
   --ink: #2e2a23;
+  --ink-faded: #756e61;
   --muted-ink: #756e61;
   --faint-ink: rgba(46, 42, 35, 0.46);
   --stamp-red: #9e3c3f;
@@ -1078,6 +1079,19 @@ button {
   color: #6b5132;
   font-size: clamp(1.25rem, 4vw, 1.8rem);
   line-height: 1;
+}
+
+.choice-bullet[data-bullet-kind="move"] {
+  color: var(--ink-faded);
+}
+
+.choice-group-label {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  color: var(--ink-faded);
+  font-family: "IBM Plex Mono", "JetBrains Mono", "D2Coding", "Noto Serif KR", monospace;
+  font-size: 0.72rem;
 }
 
 .choice-index {

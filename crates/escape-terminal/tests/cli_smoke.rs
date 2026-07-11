@@ -168,8 +168,8 @@ fn content_tui_smoke_renders_start_encounter_panel() {
     );
 
     let stdout = String::from_utf8_lossy(&output.stdout);
-    assert!(stdout.contains("[SuperLightTUI Snapshot]"));
-    assert!(stdout.contains("ESCAPE OFFICE // SuperLightTUI HORROR EDITION"));
+    assert!(stdout.contains("[Terminal Snapshot]"));
+    assert!(stdout.contains("ESCAPE OFFICE // TERMINAL EDITION"));
     assert!(stdout.contains("[상태]"));
     assert!(stdout.contains("[비주얼]"));
     assert!(stdout.contains("glyphfx signal:"));
@@ -207,7 +207,7 @@ fn content_tui_smoke_renders_wuxia_storypack_preview_arrival() {
     );
 
     let stdout = String::from_utf8_lossy(&output.stdout);
-    assert!(stdout.contains("이구학지 - 천기록 // SuperLightTUI STORYBOOK"));
+    assert!(stdout.contains("이구학지 - 천기록 // TERMINAL STORYBOOK"));
     assert!(stdout.contains("위치: 출근길 균열 (wuxia_commute_rift)"));
     assert!(stdout.contains("[현재 인카운터]"));
     assert!(stdout.contains("출근길 균열"));
@@ -3094,8 +3094,8 @@ fn content_tui_smoke_renders_final_movement_panel_after_scripted_actions() {
     );
 
     let stdout = String::from_utf8_lossy(&output.stdout);
-    assert!(stdout.contains("[SuperLightTUI Snapshot]"));
-    assert!(stdout.contains("ESCAPE OFFICE // SuperLightTUI HORROR EDITION"));
+    assert!(stdout.contains("[Terminal Snapshot]"));
+    assert!(stdout.contains("ESCAPE OFFICE // TERMINAL EDITION"));
     assert!(stdout.contains("턴: 1"));
     assert!(stdout.contains("위치: 내 자리 (dev_desk)"));
     assert!(stdout.contains("체력: 100  정신력: 98  배터리: 97"));
@@ -3142,7 +3142,7 @@ fn content_tui_smoke_renders_escape_aftermath_ending_panel() {
     );
 
     let stdout = String::from_utf8_lossy(&output.stdout);
-    assert!(stdout.contains("[SuperLightTUI Snapshot]"));
+    assert!(stdout.contains("[Terminal Snapshot]"));
     assert!(stdout.contains("격리 6턴 · 엔딩"));
     assert!(stdout.contains("퇴근 성공"));
     assert!(stdout.contains("[POST-ESCAPE REPORT]"));
@@ -3236,93 +3236,7 @@ fn content_tui_smoke_renders_printer_visual_card_with_stable_glyphfx_terms() {
     assert!(stdout.contains("fallback: 출력물의 깨진 글자 사이로 '비상계단'이 선명하게 남는다."));
 }
 
-#[test]
-fn content_app_smoke_renders_full_screen_frame_with_tick_raw_draw_glyphfx() {
-    let bundle_path = content_bundle_path();
-    let output = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
-        .args([
-            "--scene",
-            "content",
-            "--content-bundle",
-            bundle_path.to_str().expect("bundle path should be UTF-8"),
-            "--seed",
-            "123",
-            "--app-smoke",
-            "--tick",
-            "7",
-            "--action",
-            "choice:check_message",
-            "--action",
-            "move:dev_office",
-            "--action",
-            "move:printer_area",
-        ])
-        .output()
-        .expect("escape-terminal executable should run");
 
-    assert!(
-        output.status.success(),
-        "expected success, stderr was: {}",
-        String::from_utf8_lossy(&output.stderr)
-    );
-
-    let stdout = String::from_utf8_lossy(&output.stdout);
-    assert!(stdout.contains("[SuperLightTUI App Smoke]"));
-    assert!(stdout.contains("app loop: full-screen SuperLightTUI frame"));
-    assert!(stdout.contains("tick: 7"));
-    assert!(stdout.contains("[RAW-DRAW GLYPHFX LAYER]"));
-    assert!(stdout.contains("raw-draw glyphfx tick=7"));
-    assert!(stdout.contains("stable terms: 비상계단 / 토너 / 접힌 방향"));
-    assert!(stdout.contains("fallback: 출력물의 깨진 글자 사이로 '비상계단'이 선명하게 남는다."));
-    assert!(stdout.contains("입력: 번호 1-3 · q 종료 · ? 도움말"));
-}
-
-#[test]
-fn content_app_smoke_tick_changes_glyphfx_frame_without_losing_stable_terms() {
-    let bundle_path = content_bundle_path();
-    let args = |tick: &str| {
-        vec![
-            "--scene".to_string(),
-            "content".to_string(),
-            "--content-bundle".to_string(),
-            bundle_path
-                .to_str()
-                .expect("bundle path should be UTF-8")
-                .to_string(),
-            "--seed".to_string(),
-            "123".to_string(),
-            "--app-smoke".to_string(),
-            "--tick".to_string(),
-            tick.to_string(),
-            "--action".to_string(),
-            "choice:check_message".to_string(),
-            "--action".to_string(),
-            "move:dev_office".to_string(),
-            "--action".to_string(),
-            "move:printer_area".to_string(),
-        ]
-    };
-    let frame_a = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
-        .args(args("1"))
-        .output()
-        .expect("escape-terminal executable should run");
-    let frame_b = Command::new(env!("CARGO_BIN_EXE_escape-terminal"))
-        .args(args("2"))
-        .output()
-        .expect("escape-terminal executable should run");
-
-    assert!(frame_a.status.success());
-    assert!(frame_b.status.success());
-    let stdout_a = String::from_utf8_lossy(&frame_a.stdout);
-    let stdout_b = String::from_utf8_lossy(&frame_b.stdout);
-    let wave_a = raw_glyphfx_wave(&stdout_a);
-    let wave_b = raw_glyphfx_wave(&stdout_b);
-    assert_ne!(wave_a, wave_b, "tick should alter raw-draw GlyphFX cells");
-    assert!(stdout_a.contains("stable terms: 비상계단 / 토너 / 접힌 방향"));
-    assert!(stdout_b.contains("stable terms: 비상계단 / 토너 / 접힌 방향"));
-    assert!(stdout_a.contains("fallback: 출력물의 깨진 글자 사이로 '비상계단'이 선명하게 남는다."));
-    assert!(stdout_b.contains("fallback: 출력물의 깨진 글자 사이로 '비상계단'이 선명하게 남는다."));
-}
 
 #[test]
 fn content_play_mode_prints_turn_input_hint_and_invalid_range() {

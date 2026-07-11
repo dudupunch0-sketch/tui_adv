@@ -2,19 +2,19 @@
 
 TUI 기반 랜덤 인카운터 선택지 생존 게임 엔진/콘텐츠 프로젝트.
 
-현재 메인/default storypack은 `wuxia_jianghu_pack` / **이구학지 — 천기록**이다. 플레이어는 현대 회사원인 본인 몸과 출근복장 그대로 무협 세계에 전이되어, 강호 생존과 천기록/천외편린 성장 구조를 경험한다. 회사 사무실 아포칼립스 `escape from the office`는 기존 기준팩/legacy content로 남기되, 새 Web player 기본 경로와 UI/UX 검증은 이구학지를 우선한다. 장기 개발 방향은 storypack/world를 바꿔 회사 자각몽 `yageunmong_pack` 같은 다른 세계관도 같은 Rust GameCore, Web Storybook, SuperLightTUI renderer 계약으로 플레이할 수 있는 구조다.
+현재 메인/default storypack은 `wuxia_jianghu_pack` / **이구학지 — 천기록**이다. 플레이어는 현대 회사원인 본인 몸과 출근복장 그대로 무협 세계에 전이되어, 강호 생존과 천기록/천외편린 성장 구조를 경험한다. 회사 사무실 아포칼립스 `escape from the office`는 기존 기준팩/legacy content로 남기되, 새 Web player 기본 경로와 UI/UX 검증은 이구학지를 우선한다. 장기 개발 방향은 storypack/world를 바꿔 회사 자각몽 `yageunmong_pack` 같은 다른 세계관도 같은 Rust GameCore, Web Storybook 계약으로 플레이할 수 있는 구조다.
 
 ## 현재 단계
 
 **Rust GameCore 정본화 완료** (2026-06, §0.88). 게임 규칙의 단일 truth는 이제 Rust GameCore(`crates/escape-core`) 하나다. 과거의 Python/Textual 게임 로직(`src/tui_adv/game/`, `src/tui_adv/tui/`)과 TypeScript mirror core(`web/src/game/`)는 **삭제**됐다. `python -m tui_adv`는 deprecation stub이며(`--version`만 유효), `web/src/main.ts`는 WASM-only다.
 
-현재 구조는 **Rust GameCore 공통 + Web Storybook/GlyphFX primary UX + SuperLightTUI terminal renderer/fallback**이다.
+현재 구조는 **Rust GameCore 공통 + Web Storybook/GlyphFX primary UX + Rust Terminal play/smoke fallback**이다.
 
 중요한 기준:
 
 - Web Storybook + GlyphFX가 플레이어용 메인 UX다. 이미지/장면 컷, 대화 내역, 읽기 중심 선택지, Canvas/GlyphFX는 이 경로에서 먼저 구현한다. Web player는 `escape-wasm` JSON boundary를 통해 Rust GameCore의 `ScenePage`/`ActionResult`를 소비한다.
 - Web Storybook의 현재 시각 기준은 `docs/design/Mobile_Ink_Storybook_UI.md`다. 웹에서 실행되더라도 generic web dashboard가 아니라 모바일 세로형 수묵 서책 board — 플레이어에 대해 쓰이고 있는 기록책(천기록)의 한 쪽 — 로 보이게 한다. (구 픽셀 게임북 계약 `docs/design/Mobile_Pixel_Storybook_UI.md`는 superseded.)
-- Rust terminal 경로는 버리지 않는다. `escape-terminal`의 content 경로는 SuperLightTUI snapshot/play renderer와 `--app` full-screen SuperLightTUI app loop를 제공하며, visual card/GlyphFX/input 안내 polish와 tick/raw-draw GlyphFX baseline으로 **terminal-native horror edition** 기준을 갖춘다. terminal은 fallback이지만 debug dump가 아니다.
+- Rust terminal 경로는 버리지 않는다. `escape-terminal`의 content 경로는 TUI snapshot/play renderer를 제공하며, visual card/GlyphFX/input 안내 polish로 terminal-native 기준을 갖춘다. terminal은 fallback이지만 debug dump가 아니다.
 - 남은 Python은 **게임 로직이 아니라** 콘텐츠 파이프라인/계약 검증용이다: `scripts/export_web_data.py`(YAML→content bundle export/check), 그리고 contract/docs/web 테스트(`tests/`).
 
 게임 구조와 안전한 현실 연결 원칙은 문서화돼 있고, 자원 임계치/실패 판정, 위치 이동/위험도 누적, 인카운터/선택지 조건·비용·결과, 능력치 기반 2d6 성공/실패 분기, 상태 기반 인카운터 선택, 엔딩 판정, 공개 YAML 콘텐츠 로더/검증, 현실 연결 히든 엔딩 등 office 기준팩 메커니즘이 Rust GameCore에 구현돼 있다. 현재 기본 storypack 이구학지(`wuxia_jianghu_pack`)는 arrival부터 사도 최종전 container, 보스/무명/서하린·청류문/천기록 결산, 후일담 epilogue 카드 출력까지 Rust GameCore + content bundle로 구현됐다(아래 "핵심 설정" 참고).
@@ -27,7 +27,6 @@ Rust content-backed 직접 플레이:
 
 ```bash
 cargo run -p escape-terminal -- --scene content --seed 123 --play
-cargo run -p escape-terminal -- --scene content --seed 123 --app
 ```
 
 `--content-bundle`을 생략하면 기본 storypack인 `wuxia_jianghu_pack` / **이구학지 — 천기록** built-in fixture를 사용한다. 기존 office isolation content는 legacy/parity 확인이 필요할 때만 명시적으로 override한다.
@@ -36,7 +35,7 @@ cargo run -p escape-terminal -- --scene content --seed 123 --app
 cargo run -p escape-terminal -- --scene content --content-bundle crates/escape-core/fixtures/content/content.bundle.json --seed 123 --play
 ```
 
-주의: `--play`는 scriptable/stdin-friendly 직접 플레이이고, `--app`은 full-screen SuperLightTUI app loop다. visual card는 `ScenePage.visual`의 id/layout/alt를 terminal card로 표시하고, GlyphFX fallback은 intensity meter와 stable terms/fallback text를 보존한다. `--app-smoke --tick`은 같은 app-frame renderer의 tick/raw-draw GlyphFX를 headless로 검증한다. 개인 서버/WSL에서 `cargo`가 없고 `/home` 용량이 부족하면 Rust/Cargo 경로를 `/tmp`로 돌려 구성한다.
+주의: `--play`는 scriptable/stdin-friendly 직접 플레이이다. visual card는 `ScenePage.visual`의 id/layout/alt를 terminal card로 표시하고, GlyphFX fallback은 intensity meter와 stable terms/fallback text를 보존한다. 개인 서버/WSL에서 `cargo`가 없고 `/home` 용량이 부족하면 Rust/Cargo 경로를 `/tmp`로 돌려 구성한다.
 
 ```bash
 export RUSTUP_HOME="/tmp/$USER-rustup"
@@ -136,7 +135,7 @@ npm run preview:player
 ## 핵심 설정
 
 - 기본 storypack: `wuxia_jianghu_pack` / **이구학지 — 천기록**
-- 프로젝트 방향: storypack/world 기반 TUI 선택지 생존 게임 + Web Storybook/GlyphFX primary UX + SuperLightTUI terminal renderer
+- 프로젝트 방향: storypack/world 기반 TUI 선택지 생존 게임 + Web Storybook/GlyphFX primary UX + Rust Terminal
 - 기본 톤: 출근복 현대인이 강호에 떨어지는 무협 생존/성장극. 기존 블랙코미디 회사 괴담 + 코스믹 호러 톤은 legacy office content에 남긴다.
 - office-family 후보팩: `yageunmong_pack` / **야근몽**. 전제는 “회사에서 잠깐 잠든 주인공이 자각몽 상태의 회사 악몽에서 업무 완료가 아니라 깨어나기를 목표로 한다”이며, 기본 office runtime을 대체하지 않는다.
 - 현재 기본 개발 기준팩: `wuxia_jianghu_pack` / **이구학지 — 천기록**. 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계 시장에 전이되고, 천기록/천외편린 성장 구조를 경험한다”. 현재 Web/terminal default storypack이며, runtime은 arrival/first fight/first fragment부터 `wuxia_sado_final_battle` container까지 구현됐다. 사도 최종전 container는 required battle opening/stance/phase-1 bridge만 열고, 1/2/3페이즈는 combat resolver 없이 장부/약점/계산식 밖 선택을 final-state seed로 남긴다. 보스/무명/서하린·청류문/천기록 결산과 흑사방 후일담은 route/후속 epilogue candidate seed를 남긴다. `wuxia_final_epilogue_renderer_contract`는 이 seed를 Rust GameCore-owned structured `ScenePage.body_blocks`로 소비해 후일담 결과/카드/억제 기록을 출력하고, `wuxia_return_settlement_epilogue_contract`는 서하린 late trigger seed를 귀환/정착/불확실성/닫힌 문 위험 branch cards로 소비한다. `wuxia_battle_loss_epilogue_contract`는 explicit battle-loss seed를 loss/corruption afterword bundle로 소비하고 optimistic victory cards를 suppress한다. `wuxia_final_state_canonical_collapse_contract`는 `epilogue_state_audit` body block으로 기존 `final_*_seeded` flags를 canonical final state labels로 collapse한다. Latest next handoff: `wuxia_sado_final_battle_container_followup_handoff`. full return/settlement schema, HP 숫자전, playable defeat route, relation/debt/faction ledger, reward/ability, `told_seoharin_truth`, 천기록 정체 reveal은 아직 열지 않았다.
@@ -146,7 +145,7 @@ npm run preview:player
 - 핵심 자원: 체력, 정신력, 배터리, 허기, 갈증
 - 판정 능력치: 논리, 공감, 의지, 침착, 인터페이스, 신체
 - 주요 루트: 탈출, 정복, 진실 발견, 히든 현실 연결
-- 렌더러 방향: Rust GameCore가 게임 규칙의 truth를 소유하고, Web Storybook/GlyphFX가 primary UX, SuperLightTUI 기반 Rust terminal이 terminal-native fallback/horror edition을 담당한다. 과거 TypeScript mirror core와 fake-TUI 패널은 전환기 parity 구현이었고 §0.88에서 삭제됐다.
+- 렌더러 방향: Rust GameCore가 게임 규칙의 truth를 소유하고, Web Storybook/GlyphFX가 primary UX, Rust terminal이 terminal-native fallback을 담당한다. 과거 TypeScript mirror core와 fake-TUI 패널은 전환기 parity 구현이었고 §0.88에서 삭제됐다.
 
 ## 문서
 
@@ -195,7 +194,7 @@ npm run preview:player
 - `docs/content/storypack_db/storypacks.json`: machine-readable storypack 후보 record DB
 - `docs/content/storypack_db/encounter_situations.json`: machine-readable encounter situation card DB
 - `docs/dev/Architecture.md`: 코드 구조와 모듈 경계
-- `docs/dev/Rust_Core_Dual_Renderer_Architecture.md`: Rust GameCore + Web Storybook + SuperLightTUI terminal 활성 방향
+- `docs/dev/Rust_Core_Dual_Renderer_Architecture.md`: Rust GameCore + Web Storybook + Rust Terminal 활성 방향
 - `docs/dev/Data_Schema.md`: YAML/JSON 데이터 스키마
 - `docs/dev/TUI_Layout.md`: TUI 화면 설계
 - `docs/dev/Save_Slot_UX.md`: 저장 슬롯 이름 변경 UX 후보

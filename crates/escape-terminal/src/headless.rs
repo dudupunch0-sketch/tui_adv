@@ -93,22 +93,15 @@ pub(crate) fn print_tui_snapshot(
     location_name: &str,
     logs: &[String],
 ) {
-    println!("[SuperLightTUI Snapshot]");
+    println!("[Terminal Snapshot]");
     let snapshot = render_turn_view_snapshot(view, state, location_name, logs);
     if !snapshot.is_empty() {
         println!("{snapshot}");
     }
 }
 pub(crate) fn print_scene_page_snapshot(page: &ScenePage, logs: &[String]) {
-    println!("[SuperLightTUI Snapshot]");
+    println!("[Terminal Snapshot]");
     let snapshot = render_scene_page_snapshot(page, logs);
-    if !snapshot.is_empty() {
-        println!("{snapshot}");
-    }
-}
-pub(crate) fn print_scene_page_app_smoke(page: &ScenePage, logs: &[String], tick: u64) {
-    println!("[SuperLightTUI App Smoke]");
-    let snapshot = render_scene_page_app_frame(page, logs, tick);
     if !snapshot.is_empty() {
         println!("{snapshot}");
     }

@@ -7,11 +7,11 @@
 
 - 장르: TUI 기반 랜덤 인카운터 선택지 생존 게임
 - 기본 배경: **이구학지 — 천기록**(`wuxia_jianghu_pack` / `wuxia_jianghu`)
-- 개발 방향: storypack/world 기반 선택지 생존 엔진. 기존 회사 사무실 아포칼립스(`office_apocalypse`)는 legacy/parity content로 유지하고, office-family 후보 `야근몽`(`office_dream`)과 첫 비-office 기준팩 **이구학지 — 천기록**을 같은 Rust GameCore/Web Storybook/SuperLightTUI 계약으로 관리한다.
+- 개발 방향: storypack/world 기반 선택지 생존 엔진. 기존 회사 사무실 아포칼립스(`office_apocalypse`)는 legacy/parity content로 유지하고, office-family 후보 `야근몽`(`office_dream`)과 첫 비-office 기준팩 **이구학지 — 천기록**을 같은 Rust GameCore/Web Storybook 계약으로 관리한다.
 - 핵심 자원: 체력, 정신력, 배터리, 허기, 갈증
 - 주요 목표: 탈출, 정복, 진실 발견, 히든 현실 연결 루트
 - 특별 요소: 게임 속 단서를 통해 실제 사무실에 숨겨진 메모/보물 위치를 자연스럽게 안내하는 ARG식 현실 연결
-- 활성 렌더러 방향: Rust GameCore 공통 + Web Storybook/GlyphFX primary UX + SuperLightTUI terminal renderer/fallback
+- 활성 렌더러 방향: Rust GameCore 공통 + Web Storybook/GlyphFX primary UX + Rust terminal play/smoke fallback
 - 주의: 기존 Python/Textual, TypeScript mirror core, browser fake-TUI는 전환기 legacy/parity surface이며 새 게임 규칙의 장기 소유자는 아니다.
 
 ## 현재 구현 지표
@@ -83,7 +83,7 @@ docs/
     Storypack_Runtime_Preview_Mode.md # non-office runtime prototype preview mode 결정
     Storypack_Preview_UX_QA.md      # storypack preview UX QA handoff와 다음 구현 전 수정 필요 항목
     Architecture.md                 # 코드 구조와 모듈 경계
-    Rust_Core_Dual_Renderer_Architecture.md # Rust GameCore + Web Storybook + SuperLightTUI terminal 활성 방향
+    Rust_Core_Dual_Renderer_Architecture.md # Rust GameCore + Web Storybook + Rust terminal 활성 방향
     Data_Schema.md                  # YAML/JSON 데이터 스키마 + renderer-neutral ScenePage/WASM contract
     TUI_Layout.md                   # 화면 배치, 입력, 위젯 설계
     Save_Slot_UX.md                 # 저장 슬롯 이름 변경 UX 후보

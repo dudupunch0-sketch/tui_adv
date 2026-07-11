@@ -6,7 +6,6 @@ use escape_core::{
 };
 use std::io::{self, Write};
 use std::path::PathBuf;
-use std::time::Duration;
 
 mod bundle;
 mod cli;
@@ -39,22 +38,13 @@ where
     if options.smoke && options.tui_smoke {
         return Err("--smoke and --tui-smoke cannot be combined".to_string());
     }
-    if options.app_smoke && (options.smoke || options.tui_smoke) {
-        return Err("--app-smoke cannot be combined with --smoke or --tui-smoke".to_string());
-    }
-    if options.play && (options.smoke || options.tui_smoke || options.app_smoke) {
+    if options.play && (options.smoke || options.tui_smoke) {
         return Err("--play cannot be combined with smoke modes".to_string());
     }
-    if options.app && (options.smoke || options.tui_smoke || options.app_smoke || options.play) {
-        return Err("--app cannot be combined with --play or smoke modes".to_string());
-    }
-    if (options.play || options.app) && !options.actions.is_empty() {
+    if options.play && !options.actions.is_empty() {
         return Err(
             "interactive modes cannot be combined with scripted --action values".to_string(),
         );
-    }
-    if options.tick != 0 && !options.app_smoke {
-        return Err("--tick is only supported with --app-smoke".to_string());
     }
     if options.content_bundle.is_some() && options.storypack_preview.is_some() {
         return Err("--content-bundle and --storypack-preview cannot be combined".to_string());
@@ -87,8 +77,6 @@ fn run_printer_scene(options: &CliOptions) -> Result<(), String> {
     let view = turn_view(&state);
     if options.tui_smoke {
         print_tui_snapshot(&view, &state, &view.location_id, &[]);
-    } else if options.app_smoke || options.app {
-        return Err("--app and --app-smoke are only supported with --scene content".to_string());
     } else {
         print_turn(&view, &state, &options.scene, options.smoke, false);
     }
@@ -112,12 +100,9 @@ fn run_content_scene(options: &CliOptions) -> Result<(), String> {
     if options.play {
         return run_content_play_loop(&content, state, view);
     }
-    if options.app {
-        return run_content_app_loop(&content, state);
-    }
 
     let mut recent_logs = Vec::new();
-    if !options.tui_smoke && !options.app_smoke {
+    if !options.tui_smoke {
         print_turn(&view, &state, &options.scene, options.smoke, true);
     }
 
@@ -126,13 +111,13 @@ fn run_content_scene(options: &CliOptions) -> Result<(), String> {
             .ok_or_else(|| format!("action '{action_id}' is not available in current turn"))?;
         let result = apply_action_from_content(&state, &content, action_id)
             .map_err(|error| error.to_string())?;
-        if !options.tui_smoke && !options.app_smoke {
+        if !options.tui_smoke {
             print_execution(&result.action_id, &action.label, &result.logs);
         }
         recent_logs.extend(result.logs.iter().cloned());
         state = result.state;
         view = turn_view_from_content(&state, &content).map_err(|error| error.to_string())?;
-        if !options.tui_smoke && !options.app_smoke {
+        if !options.tui_smoke {
             print_turn(&view, &state, &options.scene, options.smoke, true);
         }
     }
@@ -140,9 +125,6 @@ fn run_content_scene(options: &CliOptions) -> Result<(), String> {
     if options.tui_smoke {
         let page = scene_page_from_content(&state, &content).map_err(|error| error.to_string())?;
         print_scene_page_snapshot(&page, &recent_logs);
-    } else if options.app_smoke {
-        let page = scene_page_from_content(&state, &content).map_err(|error| error.to_string())?;
-        print_scene_page_app_smoke(&page, &recent_logs, options.tick);
     }
 
     Ok(())

@@ -12,7 +12,7 @@ Generic narrative engine
   -> Rust GameCore truth
   -> ScenePage / ActionResult
   -> Web Storybook + GlyphFX
-  -> SuperLightTUI terminal renderer
+  -> Rust terminal play/smoke fallback
 ```
 
 즉, “회사”는 엔진의 정체성이 아니라 첫 번째 legacy storypack이다. 신규 기능은 office 전용 단어, office 전용 surface, office 전용 resource 해석에 바로 묶지 않고, 최소 두 세계관에서 설명 가능한 형태로 설계한다.
@@ -28,7 +28,7 @@ Generic narrative engine
 - 이전의 짧은 generic 무협 placeholder(객잔 도착, 소림/무당/아미 저해상도 앵커)는 superseded로 본다.
 - 첫 목표는 런타임 다중 storypack 선택 UI가 아니라, 새 설계/콘텐츠가 office 없이도 성립하는지, 그리고 office 내부에서도 다른 story premise가 같은 공용 시스템을 공유할 수 있는지 검증하는 것이다.
 - Rust GameCore / `ScenePage` / WASM JSON boundary는 계속 renderer-neutral truth를 소유한다.
-- Web Storybook과 SuperLightTUI는 storypack-specific 문장과 semantic presentation hint를 표시하지만, storypack별 규칙을 renderer에서 재계산하지 않는다.
+- Web Storybook과 Rust terminal은 storypack-specific 문장과 semantic presentation hint를 표시하지만, storypack별 규칙을 renderer에서 재계산하지 않는다.
 
 ## 3. Storypack과 world의 관계
 
@@ -137,7 +137,7 @@ main_spine_link: office 출신 플레이어가 다른 world로 이동해도 같�
 - 소속, 평판, 관계, 성장, 전투, 상태, 자원, 선택, 사건, 엔딩을 storypack 언어만 바꿔 재사용하는 기준이 된다.
 - 최근 전투 시스템 문서의 “자동 난투 + 상황 개입” 설계를 흑사방 첫 전투로 자연스럽게 시험할 수 있다.
 - 천기록/천외편린은 새 성장 UI 후보지만, 첫 slice에서는 flag/clue/log/presentation text로만 다루고 schema 확장은 보류할 수 있다.
-- Web Storybook의 모바일 게임북 UI와 SuperLightTUI는 시장, 문파 수습생, 수련 잡일, 천기록 3택 같은 텍스트 surface를 표현하기 좋다.
+- Web Storybook의 모바일 게임북 UI와 Rust terminal은 시장, 문파 수습생, 수련 잡일, 천기록 3택 같은 텍스트 surface를 표현하기 좋다.
 
 ## 8.5 office-family 후보: 야근몽
 

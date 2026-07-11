@@ -1,4 +1,4 @@
-import type { BodyBlock, SceneAction, SceneBlockedAction, ScenePage, PressureCue, ResourceStatus } from '../../core/types';
+import type { BodyBlock, SceneAction, SceneBlockedAction, ScenePage, ResourceStatus } from '../../core/types';
 import { escapeHtml } from './html';
 import { renderStoryHistory } from './history';
 import {
@@ -25,14 +25,12 @@ export function renderStorybookPage(page: ScenePage, options: StorybookRenderOpt
 <main class="storybook-shell" data-app="tui-adv" data-renderer="web-storybook" data-mode="${escapeHtml(
     page.mode,
   )}" data-story-phase="${phase}">
-  ${renderHud(page, options)}
-  ${renderProgressRail(page)}
+  ${renderHud(page)}
   <section class="storybook-page" data-story-layout="${layout}" data-story-phase="${phase}">
     ${renderStoryFlow(page, layout)}
     ${renderChoices(page)}
   </section>
-  ${renderBottomDock(page)}
-  ${renderStoryHistory(page.history_entries)}
+  ${renderBottomDock(page, options)}
 </main>`.trim();
 }
 
@@ -59,33 +57,13 @@ function isCombatScene(page: ScenePage): boolean {
   );
 }
 
-function renderHud(page: ScenePage, options: StorybookRenderOptions): string {
+function renderHud(page: ScenePage): string {
   const resources = storyResources(page.status_summary.resources);
-  const warningRows = page.status_summary.warnings.length
-    ? `<ul class="hud-warnings">${page.status_summary.warnings
-        .map((warning) => `<li>${escapeHtml(warning)}</li>`)
-        .join('')}</ul>`
-    : '';
-  const pressure = page.pressure_cues.length
-    ? `<div class="storybook-pressure" data-region="pressure">${page.pressure_cues.map(renderPressureCue).join('')}</div>`
-    : '';
-
   return `<header class="storybook-hud" data-region="status" data-danger-band="${dangerBand(page.status_summary.danger)}">
-    <div class="hud-portrait" aria-label="격리 대상 초상" role="img">
-      <span class="hud-portrait-noise" aria-hidden="true"></span>
-      <span class="hud-portrait-badge" aria-hidden="true">ID</span>
-    </div>
-    <div class="hud-identity">
-      <p class="hud-nameplate">${escapeHtml(page.location.name)}</p>
-      <div class="hud-vital-slots" aria-label="핵심 상태">
-        ${renderVitalSlots(resources)}
-      </div>
-    </div>
-    <div class="hud-document" aria-label="현재 기록">${escapeHtml(documentLabel(page))}</div>
-    ${renderHudMenu(options)}
-    ${renderStatGrid(page)}
-    ${warningRows}
-    ${pressure}
+    <p class="hud-document" aria-label="현재 기록">${escapeHtml(documentLabel(page))} · ${page.status_summary.turn}쪽</p>
+    <div class="hud-vital-slots" aria-label="핵심 상태">${renderVitalSlots(resources)}</div>
+    ${renderProgressRail(page)}
+    <a class="hud-drawer-toggle" href="#storybook-info-drawer" aria-expanded="false" aria-controls="storybook-info-drawer">상세</a>
   </header>`;
 }
 
@@ -102,8 +80,8 @@ function renderSlotRow(resource: ResourceStatus | undefined, id: string, fallbac
   const label = resource?.label ?? fallbackLabel;
   const text = resource?.text ?? '측정 불가';
   const slots = Array.from({ length: 5 }, (_, index) => {
-    const filled = index < filledSlots ? 'true' : 'false';
-    return `<span class="hud-slot" data-filled="${filled}" aria-hidden="true"></span>`;
+    const glyph = index < filledSlots ? '●' : '○';
+    return `<span class="hud-slot" data-filled="${index < filledSlots}" aria-hidden="true">${glyph}</span>`;
   }).join('');
 
   return `<div class="hud-slot-row" data-resource-id="${escapeHtml(id)}" data-band="${escapeHtml(
@@ -112,48 +90,6 @@ function renderSlotRow(resource: ResourceStatus | undefined, id: string, fallbac
     <span class="hud-slot-label">${escapeHtml(label)}</span>
     <span class="hud-slot-track">${slots}</span>
   </div>`;
-}
-
-function renderStatGrid(page: ScenePage): string {
-  const resources = storyResources(page.status_summary.resources);
-  const cells = [
-    ...resources,
-    {
-      id: 'danger',
-      label: '위험',
-      band: dangerBand(page.status_summary.danger),
-      text: String(page.status_summary.danger),
-      value: page.status_summary.danger,
-    },
-  ]
-    .map(renderStatCell)
-    .join('');
-
-  return `<dl class="hud-stat-grid" aria-label="현재 상태">${cells}</dl>`;
-}
-
-function renderStatCell(resource: ResourceStatus): string {
-  return `<div data-resource-id="${escapeHtml(resource.id ?? 'unknown')}" data-band="${escapeHtml(
-    resource.band ?? 'unknown',
-  )}">
-    <dt>${escapeHtml(resource.label ?? '')}</dt>
-    <dd><span aria-hidden="true">${statGlyph(resource.id)}</span>${escapeHtml(String(resource.value))}</dd>
-  </div>`;
-}
-
-function renderHudMenu(options: StorybookRenderOptions): string {
-  const audioLabel = options.audioLabel ?? '소리';
-  const motionLabel = options.motionLabel ?? '연출';
-  return `<details class="hud-menu">
-    <summary aria-label="메뉴"><span aria-hidden="true">⚙</span></summary>
-    <div class="hud-menu-panel" role="menu" aria-label="게임 메뉴">
-      <button type="button" data-player-action="show-start" role="menuitem">처음 화면</button>
-      <button type="button" data-player-action="abandon-run" role="menuitem">포기하기</button>
-      <span class="hud-menu-rule" aria-hidden="true"></span>
-      <button type="button" data-player-action="toggle-audio" role="menuitem">${escapeHtml(audioLabel)}</button>
-      <button type="button" data-player-action="cycle-motion" role="menuitem">${escapeHtml(motionLabel)}</button>
-    </div>
-  </details>`;
 }
 
 function renderProgressRail(page: ScenePage): string {
@@ -199,8 +135,11 @@ function renderBody(page: ScenePage): string {
     .join('');
   const resultLog = renderInlineResultLog(page);
 
+  const pressureNotes = [...page.status_summary.warnings, ...page.pressure_cues.map((cue) => cue.message)];
   return `<section class="storybook-body" data-region="body">
+    <p class="storybook-location">${escapeHtml(page.location.name)}</p>
     ${title}
+    ${pressureNotes.length ? `<aside class="storybook-pressure" data-region="pressure">${pressureNotes.map((note) => `<p>${escapeHtml(note)}</p>`).join('')}</aside>` : ''}
     ${dialogue}
     ${bodyBlocks}
     ${resultLog}
@@ -306,12 +245,24 @@ function renderBlockedAction(action: SceneBlockedAction): string {
   )}</span><small>${action.reasons.map(escapeHtml).join(' · ')}</small></li>`;
 }
 
-function renderBottomDock(page: ScenePage): string {
-  return `<footer class="storybook-dock" aria-label="보조 메뉴">
-    <a class="dock-item" href="#story-history" data-dock="log" aria-label="기록"><span aria-hidden="true">▧</span><small>기록</small></a>
-    ${renderAchievementDrawer(page)}
-    ${renderInventoryDrawer(page)}
-  </footer>`;
+function renderBottomDock(page: ScenePage, options: StorybookRenderOptions): string {
+  const resources = [
+    ...storyResources(page.status_summary.resources),
+    { id: 'danger', label: '위험', text: dangerBand(page.status_summary.danger), value: page.status_summary.danger },
+  ];
+  const statusRows = resources
+    .map((resource) => `<li title="${escapeHtml(String(resource.value))}"><strong>${escapeHtml(resource.label)}</strong>${escapeHtml(resource.text)}</li>`)
+    .join('');
+  return `<details class="storybook-dock" id="storybook-info-drawer" aria-label="정보 드로어">
+    <summary aria-label="정보 열기"><span aria-hidden="true">✦</span><span>기록과 소지품</span></summary>
+    <div class="dock-sheet">
+      <section aria-label="현재 상태"><h2><span aria-hidden="true">狀</span>상태</h2><ul>${statusRows}</ul></section>
+      ${renderInventoryDrawer(page)}
+      ${renderAchievementDrawer(page)}
+      <section aria-label="기록"><h2><span aria-hidden="true">冊</span>기록</h2>${renderStoryHistory(page.history_entries)}</section>
+      ${renderDrawerMenu(options)}
+    </div>
+  </details>`;
 }
 
 function renderInventoryDrawer(page: ScenePage): string {
@@ -324,10 +275,7 @@ function renderInventoryDrawer(page: ScenePage): string {
           : ''
       }</ul>`
     : '<p>아직 지닌 것이 없다.</p>';
-  return `<details class="dock-drawer" data-dock="inventory">
-    <summary class="dock-item" aria-label="소지품"><span aria-hidden="true">◒</span><small>가방</small></summary>
-    <div class="dock-drawer-panel">${items}</div>
-  </details>`;
+  return `<section aria-label="소지품" data-dock="inventory"><h2><span aria-hidden="true">囊</span>소지품</h2>${items}</section>`;
 }
 
 function renderAchievementDrawer(page: ScenePage): string {
@@ -342,10 +290,18 @@ function renderAchievementDrawer(page: ScenePage): string {
         })
         .join('')}</ul>`
     : '<p>아직 새긴 업적이 없다.</p>';
-  return `<details class="dock-drawer" data-dock="achievements">
-    <summary class="dock-item" aria-label="업적"><span aria-hidden="true">◈</span><small>업적</small></summary>
-    <div class="dock-drawer-panel">${items}</div>
-  </details>`;
+  return `<section aria-label="업적" data-dock="achievements"><h2><span aria-hidden="true">勳</span>업적</h2>${items}</section>`;
+}
+
+function renderDrawerMenu(options: StorybookRenderOptions): string {
+  const audioLabel = options.audioLabel ?? '소리';
+  const motionLabel = options.motionLabel ?? '연출';
+  return `<section class="dock-menu" role="menu" aria-label="게임 메뉴"><h2><span aria-hidden="true">器</span>메뉴</h2>
+    <button type="button" data-player-action="show-start" role="menuitem">처음 화면</button>
+    <button type="button" data-player-action="abandon-run" role="menuitem">포기하기</button>
+    <button type="button" data-player-action="toggle-audio" role="menuitem">${escapeHtml(audioLabel)}</button>
+    <button type="button" data-player-action="cycle-motion" role="menuitem">${escapeHtml(motionLabel)}</button>
+  </section>`;
 }
 
 function renderDrawerLabel(
@@ -355,12 +311,6 @@ function renderDrawerLabel(
 ): string {
   const translationNote = hasLabel(id) ? '' : '<small class="storybook-translation-note">미번역</small>';
   return `${escapeHtml(labelForId(id))}${translationNote}`;
-}
-
-function renderPressureCue(cue: PressureCue): string {
-  return `<p data-pressure-kind="${escapeHtml(cue.kind)}" data-severity="${escapeHtml(cue.severity)}">${escapeHtml(
-    cue.message,
-  )}</p>`;
 }
 
 function resourceById(resources: ResourceStatus[], id: string): ResourceStatus | undefined {
@@ -388,16 +338,4 @@ function dangerBand(danger: number): string {
   if (danger >= 4) return 'critical';
   if (danger >= 2) return 'warning';
   return 'low';
-}
-
-function statGlyph(resourceId: string): string {
-  const glyphs: Record<string, string> = {
-    health: '◆',
-    sanity: '◇',
-    battery: '▣',
-    hunger: '▥',
-    thirst: '◉',
-    danger: '▲',
-  };
-  return glyphs[resourceId] ?? '◇';
 }

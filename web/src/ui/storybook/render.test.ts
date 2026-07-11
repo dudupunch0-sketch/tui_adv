@@ -91,10 +91,10 @@ describe('Web Storybook renderer', () => {
     expect(html).toContain('data-renderer="web-storybook"');
     expect(html).toContain('data-story-phase="result"');
     expect(html).toContain('class="storybook-hud"');
-    expect(html).toContain('class="hud-nameplate"');
-    expect(html).not.toContain('hud-subtitle');
-    expect(html).toContain('class="hud-menu"');
-    expect(html).toContain('class="hud-stat-grid"');
+    expect(html).toContain('class="hud-drawer-toggle"');
+    expect(html).not.toContain('hud-nameplate');
+    expect(html).not.toContain('hud-menu');
+    expect(html).not.toContain('hud-stat-grid');
     expect(html).toContain('class="story-progress-rail"');
     expect(html).toContain('class="storybook-dock"');
     expect(html).toContain('class="choice-row"');
@@ -138,8 +138,9 @@ describe('Web Storybook renderer', () => {
       }),
     );
 
-    expect(html).toContain('class="dock-drawer" data-dock="inventory"');
-    expect(html).toContain('class="dock-drawer" data-dock="achievements"');
+    expect(html).toContain('class="storybook-dock" id="storybook-info-drawer"');
+    expect(html).toContain('aria-label="소지품" data-dock="inventory"');
+    expect(html).toContain('aria-label="업적" data-dock="achievements"');
     expect(html).toContain('사원증');
     expect(html).toContain('강호 출근');
     expect(html).toContain('…외 1개');

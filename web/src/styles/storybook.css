@@ -1621,6 +1621,131 @@ button {
   }
 }
 
+/* Rev 2: the page is a record sheet; status and controls live in its footnotes. */
+.storybook-shell {
+  padding-bottom: 96px;
+}
+
+.storybook-hud {
+  position: sticky;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) minmax(72px, 1.25fr) auto;
+  grid-template-rows: auto;
+  min-height: 0;
+  padding: 8px 12px;
+  border-top: 3px double var(--line-hard);
+  background: var(--paper-lit);
+  box-shadow: 0 -8px 18px var(--ink-wash);
+  z-index: 5;
+}
+
+.hud-document {
+  min-width: 0;
+  max-width: none;
+  padding: 0;
+  background: none;
+  box-shadow: none;
+  color: var(--ink-faded);
+  font-family: inherit;
+}
+
+.hud-vital-slots {
+  display: flex;
+  gap: 10px;
+}
+
+.hud-slot-row {
+  grid-template-columns: auto auto;
+  gap: 4px;
+  color: var(--ink);
+  font-family: inherit;
+}
+
+.hud-slot-track { gap: 1px; }
+.hud-slot {
+  width: auto;
+  aspect-ratio: auto;
+  transform: none;
+  border: 0;
+  background: none;
+  color: var(--ink-faded);
+  font-size: 0.72rem;
+}
+.hud-slot[data-filled="true"] { color: var(--ink); }
+.hud-slot-row[data-resource-id] .hud-slot[data-filled="true"] { border: 0; background: none; }
+
+.story-progress-rail {
+  min-height: 18px;
+  margin: 0;
+  color: var(--seal-red);
+}
+.rail-track, .rail-fill { height: 2px; border-radius: 0; box-shadow: none; }
+.rail-track { background: var(--line-soft); }
+.rail-fill { background: var(--seal-red); }
+.rail-marker { display: none; }
+.rail-knot { color: var(--seal-red); font-size: 0.76rem; }
+
+.hud-drawer-toggle {
+  min-height: 44px;
+  display: grid;
+  place-items: center;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.storybook-location {
+  margin-bottom: 8px !important;
+  color: var(--ink-faded) !important;
+  font-size: 0.82rem !important;
+}
+
+.storybook-pressure {
+  margin: 0 0 16px;
+  padding: 8px 10px;
+  border-left: 3px solid var(--seal-red);
+  color: var(--seal-red);
+  background: var(--ink-wash);
+}
+
+.storybook-dock {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 8;
+  margin: 0;
+}
+.storybook-dock > summary {
+  min-height: 44px;
+  padding: 10px 18px;
+  cursor: pointer;
+  color: var(--ink-faded);
+  background: var(--paper-deep);
+  list-style: none;
+}
+.storybook-dock > summary::-webkit-details-marker { display: none; }
+.dock-sheet {
+  display: grid;
+  gap: 16px;
+  max-height: 72dvh;
+  overflow: auto;
+  padding: 18px;
+  border-top: 3px double var(--line-hard);
+  background: var(--paper-lit);
+  box-shadow: 0 -12px 30px rgba(32, 36, 43, 0.24);
+}
+.dock-sheet section { display: grid; gap: 8px; }
+.dock-sheet h2 { margin: 0; font-size: 1rem; color: var(--ink); }
+.dock-sheet h2 span { margin-right: 6px; color: var(--seal-red); }
+.dock-sheet ul { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.dock-sheet li { color: var(--ink-body); }
+.dock-sheet li strong { display: inline-block; min-width: 4.5rem; margin-right: 8px; color: var(--ink-faded); font-weight: 400; }
+.dock-menu { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.dock-menu h2 { grid-column: 1 / -1; }
+.dock-menu button { min-height: 44px; border: 1px solid var(--line-soft); background: var(--paper); color: var(--ink); text-align: left; }
+.dock-sheet .storybook-history { margin: 0; color: var(--ink-faded); }
+
 /* Reference-image pass: title screen, encounter pages, and combat panels. */
 .storybook-start {
   display: block;

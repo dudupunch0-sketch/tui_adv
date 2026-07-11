@@ -206,6 +206,10 @@ async function loadStorybookPage(page, wasmResourcePromises, checks, { recordWas
 async function maybeStartPlayer(page) {
   const startScreen = page.locator('[data-player-screen="start"]');
   if ((await startScreen.count()) === 0) return;
+  const startTap = page.locator('.start-tap-button');
+  if (await startTap.isVisible()) {
+    await startTap.click();
+  }
   await page.locator('[data-player-action="new-game"]').click();
   await page.waitForSelector('button.choice-row[data-action-id]', { timeout: 10_000 });
 }

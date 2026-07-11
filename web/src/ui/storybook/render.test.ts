@@ -92,6 +92,7 @@ describe('Web Storybook renderer', () => {
     expect(html).toContain('data-story-phase="result"');
     expect(html).toContain('class="storybook-hud"');
     expect(html).toContain('class="hud-drawer-toggle"');
+    expect(html).toContain('data-player-action="toggle-storybook-drawer"');
     expect(html).not.toContain('hud-nameplate');
     expect(html).not.toContain('hud-menu');
     expect(html).not.toContain('hud-stat-grid');

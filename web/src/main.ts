@@ -142,6 +142,12 @@ function wirePlayerActionButtons(root: HTMLElement): void {
       void runPlayerAction(button.dataset.playerAction ?? '');
     });
   });
+
+  const drawer = root.querySelector<HTMLDetailsElement>('#storybook-info-drawer');
+  const drawerToggle = root.querySelector<HTMLButtonElement>('[data-player-action="toggle-storybook-drawer"]');
+  if (drawer && drawerToggle) {
+    drawer.addEventListener('toggle', () => drawerToggle.setAttribute('aria-expanded', String(drawer.open)));
+  }
 }
 
 const playerActionHandlers: Record<string, () => void | Promise<void>> = {
@@ -201,6 +207,10 @@ const playerActionHandlers: Record<string, () => void | Promise<void>> = {
   'cycle-motion': () => {
     playerSettings = updatePlayerSettings(window.localStorage, { motion: nextMotionPreference(playerSettings) });
     render();
+  },
+  'toggle-storybook-drawer': () => {
+    const drawer = appRoot.querySelector<HTMLDetailsElement>('#storybook-info-drawer');
+    if (drawer) drawer.open = !drawer.open;
   },
 };
 

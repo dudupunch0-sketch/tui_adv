@@ -22,7 +22,6 @@ export interface InkFigure {
 }
 
 export interface InkSceneSpec {
-  horizon: number;
   mist: 0 | 1 | 2 | 3;
   far?: InkElement[];
   mid?: InkElement[];

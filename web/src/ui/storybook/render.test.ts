@@ -97,6 +97,7 @@ describe('Web Storybook renderer', () => {
     expect(html).not.toContain('hud-nameplate');
     expect(html).not.toContain('hud-menu');
     expect(html).not.toContain('hud-stat-grid');
+    expect(html).not.toContain('쪽 · ');
     expect(html).toContain('class="story-progress-rail"');
     expect(html).toContain('class="storybook-dock"');
     expect(html).toContain('class="choice-row"');

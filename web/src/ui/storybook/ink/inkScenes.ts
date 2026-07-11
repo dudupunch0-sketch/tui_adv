@@ -1,6 +1,6 @@
 import { fnv1a, type InkSceneSpec } from './inkSpec';
 
-const scene = (overrides: Partial<InkSceneSpec>): InkSceneSpec => ({ horizon: 0.68, mist: 1, ...overrides });
+const scene = (overrides: Partial<InkSceneSpec>): InkSceneSpec => ({ mist: 1, ...overrides });
 const duel = (mist: 0 | 1 | 2 | 3, accent: InkSceneSpec['accent'] = 'none'): InkSceneSpec => scene({
   mist,
   far: [{ kind: 'ridge', x: 0.3 }],
@@ -27,7 +27,7 @@ export const inkScenes: Record<string, InkSceneSpec> = {
   wuxia_baekdo_medicine_debt: scene({ mid: [{ kind: 'roofline', x: 0.55 }, { kind: 'lantern', x: 0.74 }], figures: [{ pose: 'kneel', x: 0.4 }, { pose: 'stand', x: 0.62 }], seal: '藥' }),
   wuxia_black_heaven_escape_price: scene({ night: true, mist: 2, mid: [{ kind: 'wall', x: 0.45 }, { kind: 'moon', x: 0.77 }], figures: [{ pose: 'walk', x: 0.42 }], seal: '逃' }),
   wuxia_heavenly_archive_previous_outsiders: scene({ mid: [{ kind: 'wall', x: 0.4 }, { kind: 'scroll', x: 0.54 }, { kind: 'scroll', x: 0.67 }, { kind: 'lantern', x: 0.8 }], figures: [{ pose: 'reach', x: 0.42 }], seal: '藏' }),
-  wuxia_wounded_shelter_dawn_offers: scene({ horizon: 0.6, far: [{ kind: 'ridge', x: 0.3 }], near: [{ kind: 'campfire', x: 0.5 }], figures: [{ pose: 'sit', x: 0.35 }, { pose: 'sit', x: 0.65 }], seal: '曉' }),
+  wuxia_wounded_shelter_dawn_offers: scene({ far: [{ kind: 'ridge', x: 0.3 }], near: [{ kind: 'campfire', x: 0.5 }], figures: [{ pose: 'sit', x: 0.35 }, { pose: 'sit', x: 0.65 }], seal: '曉' }),
   wuxia_mumyeong_first_sighting: scene({ far: [{ kind: 'ridge', x: 0.3 }, { kind: 'bamboo', x: 0.72 }], figures: [{ pose: 'stand', x: 0.73, scale: 0.62 }], seal: '影' }),
   wuxia_mumyeong_first_confrontation: scene({ mist: 2, near: [{ kind: 'road', x: 0.5 }], figures: [{ pose: 'confront', x: 0.35, weapon: 'sword' }, { pose: 'stand', x: 0.65 }], seal: '問' }),
   wuxia_mumyeong_copy_style_reveal: scene({ figures: [{ pose: 'duel-left', x: 0.35, weapon: 'sword' }, { pose: 'duel-right', x: 0.65, weapon: 'sword' }], seal: '倣' }),

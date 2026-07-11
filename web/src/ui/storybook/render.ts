@@ -256,7 +256,7 @@ function renderChoices(page: ScenePage): string {
     : '';
 
   return `<nav class="storybook-choices" data-region="choices" aria-label="현재 선택지">
-    <div class="choice-separator" aria-hidden="true"><span></span><i>✣</i><span></span></div>
+    <div class="choice-separator ink-rule" aria-hidden="true"><span></span><i>✣</i><span></span></div>
     <ol>${actionRows}</ol>
     ${blockedRows}
   </nav>`;

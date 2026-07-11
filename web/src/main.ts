@@ -1,5 +1,6 @@
 import '@fontsource/noto-serif-kr/korean-400.css';
 import '@fontsource/noto-serif-kr/korean-700.css';
+import '@fontsource/noto-serif-kr/korean-900.css';
 import './styles/storybook.css';
 
 import {

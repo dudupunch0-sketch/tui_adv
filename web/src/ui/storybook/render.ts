@@ -8,7 +8,7 @@ import {
   inventoryItemLabel,
 } from './labels';
 import { renderEpilogueBodyBlock } from './renderEpilogue';
-import { renderVisualCard } from './visualCatalog';
+import { renderInkVisual } from './ink/renderInkVisual';
 
 type StoryLayout = 'visual-first' | 'text-first' | 'ending';
 type StoryPhase = 'story' | 'combat' | 'result';
@@ -170,7 +170,7 @@ function renderProgressRail(page: ScenePage): string {
 }
 
 function renderStoryFlow(page: ScenePage, layout: StoryLayout): string {
-  const visual = renderVisualCard(page.visual, page.effect_cues);
+  const visual = renderInkVisual(page.visual, page.effect_cues, page.mode);
   const body = renderBody(page);
   if (layout === 'text-first') {
     return `<article class="story-flow story-flow--text-first">${body}${visual}</article>`;

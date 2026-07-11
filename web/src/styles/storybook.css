@@ -876,16 +876,30 @@ button {
 .storybook-visual {
   width: min(700px, 88%);
   margin: 0 auto;
-  image-rendering: pixelated;
 }
 
 .storybook-visual figcaption {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
+  color: var(--ink-faded);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.ink-scene {
+  display: grid;
+  gap: 8px;
+  color: var(--ink);
+}
+
+.ink-scene svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-top: 3px double var(--line-hard);
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.ink-scene--night svg {
+  background: var(--paper-deep);
 }
 
 .pixel-illustration {

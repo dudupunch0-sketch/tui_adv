@@ -167,7 +167,7 @@ describe('Web Storybook renderer', () => {
     expect(movementHtml).not.toContain('<h1>복합기 구역</h1>');
   });
 
-  it('renders combat intervention pages with a battle-style visual panel', () => {
+  it('renders combat intervention pages as an ink duel without fabricated battle state', () => {
     const html = renderStorybookPage(
       samplePrinterPage({
         title: '흑사방 첫 난투',
@@ -183,10 +183,10 @@ describe('Web Storybook renderer', () => {
 
     expect(html).toContain('data-story-phase="combat"');
     expect(html).toContain('data-visual-kind="combat"');
-    expect(html).toContain('combat-card');
-    expect(html).toContain('전투 발생');
-    expect(html).toContain('상황 개입');
-    expect(html).toContain('선택지로 거리, 균형, 도주로를 고른다');
+    expect(html).toContain('ink-scene--combat');
+    expect(html).toContain('흑사방 말단과 마주 선 첫 난투');
+    expect(html).not.toContain('전투 발생');
+    expect(html).not.toContain('상황 개입');
   });
 
   it('passes through core-owned final epilogue body blocks without route recomputation', () => {

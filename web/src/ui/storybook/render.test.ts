@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import type { ScenePage } from '../../core/types';
+import { sceneForVisual } from './ink/inkScenes';
 import { renderStorybookPage } from './render';
 
 function samplePrinterPage(overrides: Partial<ScenePage> = {}): ScenePage {
@@ -91,9 +92,11 @@ describe('Web Storybook renderer', () => {
     expect(html).toContain('data-renderer="web-storybook"');
     expect(html).toContain('data-story-phase="result"');
     expect(html).toContain('class="storybook-hud"');
-    expect(html).toContain('class="hud-nameplate"');
-    expect(html).toContain('class="hud-menu"');
-    expect(html).toContain('class="hud-stat-grid"');
+    expect(html).toContain('class="hud-drawer-toggle"');
+    expect(html).toContain('data-player-action="toggle-storybook-drawer"');
+    expect(html).not.toContain('hud-nameplate');
+    expect(html).not.toContain('hud-menu');
+    expect(html).not.toContain('hud-stat-grid');
     expect(html).toContain('class="story-progress-rail"');
     expect(html).toContain('class="storybook-dock"');
     expect(html).toContain('class="choice-row"');
@@ -126,7 +129,48 @@ describe('Web Storybook renderer', () => {
     expect(html).not.toContain('class="fake-tui"');
   });
 
-  it('renders combat intervention pages with a battle-style visual panel', () => {
+  it('renders inventory and achievements as labeled drawers without placeholder dock items', () => {
+    const html = renderStorybookPage(
+      samplePrinterPage({
+        inventory_summary: { items: ['commuter_badge'], overflow_count: 1 },
+        achievement_summary: {
+          unlocked: ['wuxia_first_arrival'],
+          newly_unlocked: ['wuxia_first_arrival'],
+        },
+      }),
+    );
+
+    expect(html).toContain('class="storybook-dock" id="storybook-info-drawer"');
+    expect(html).toContain('aria-label="소지품" data-dock="inventory"');
+    expect(html).toContain('aria-label="업적" data-dock="achievements"');
+    expect(html).toContain('사원증');
+    expect(html).toContain('강호 출근');
+    expect(html).toContain('…외 1개');
+    expect(html).toContain('새로 새김');
+    expect(html).not.toContain('data-dock="clues"');
+    expect(html).not.toContain('data-dock="actions"');
+  });
+
+  it('keeps the scene title in the body and omits a duplicate movement title', () => {
+    const encounterHtml = renderStorybookPage(samplePrinterPage());
+    const movementHtml = renderStorybookPage(
+      samplePrinterPage({
+        mode: 'movement',
+        title: '복합기 구역',
+        visual: {
+          id: 'printer_area',
+          kind: 'location',
+          alt: '복합기 구역으로 이어지는 복도',
+          source_id: 'printer_area',
+        },
+      }),
+    );
+
+    expect(encounterHtml).toContain('<h1>복합기가 혼자 출력한다</h1>');
+    expect(movementHtml).not.toContain('<h1>복합기 구역</h1>');
+  });
+
+  it('renders combat intervention pages as an ink duel without fabricated battle state', () => {
     const html = renderStorybookPage(
       samplePrinterPage({
         title: '흑사방 첫 난투',
@@ -142,10 +186,10 @@ describe('Web Storybook renderer', () => {
 
     expect(html).toContain('data-story-phase="combat"');
     expect(html).toContain('data-visual-kind="combat"');
-    expect(html).toContain('combat-card');
-    expect(html).toContain('전투 발생');
-    expect(html).toContain('상황 개입');
-    expect(html).toContain('선택지로 거리, 균형, 도주로를 고른다');
+    expect(html).toContain('ink-scene--combat');
+    expect(html).toContain('흑사방 말단과 마주 선 첫 난투');
+    expect(html).not.toContain('전투 발생');
+    expect(html).not.toContain('상황 개입');
   });
 
   it('passes through core-owned final epilogue body blocks without route recomputation', () => {
@@ -214,7 +258,8 @@ describe('Web Storybook renderer', () => {
     expect(html).toContain('data-field-key="card_id"');
     expect(html).toContain('epilogue_boss_broken_black_serpent');
     expect(html).toContain('data-field-key="suppressed_by"');
-    expect(html).toContain('현재 실행할 수 있는 행동이 없다.');
+    expect(html).toContain('기록의 이 장은 여기서 끝났다.');
+    expect(html).toContain('data-player-action="show-start"');
     expect(html).not.toContain('<p class="storybook-summary">후일담 출력기는 아직 열리지 않는다.</p>');
     expect(html).not.toContain('final_epilogue_renderer_opened');
   });
@@ -245,5 +290,27 @@ describe('Web Storybook renderer', () => {
     expect(html).toContain('data-visual-kind="placeholder"');
     expect(html).toContain('아직 카탈로그에 없는 장면이다.');
     expect(html).toContain('data-action-id="choice:take_printout"');
+  });
+
+  it('authors the planned wuxia scenes and deterministic location variants as ink specs', () => {
+    const plannedVisuals = [
+      'wuxia_commute_rift',
+      'wuxia_cheongryu_raid_wounded_fallback',
+      'wuxia_heavenly_archive_previous_outsiders',
+      'wuxia_cheonoe_pyeonrin_second_reward',
+      'wuxia_mumyeong_request_for_aid',
+      'wuxia_qingliu_attack_after_war',
+      'wuxia_sado_final_phase_1_price_tag',
+      'wuxia_sado_final_phase_2_weakpoint_control',
+      'wuxia_sado_final_phase_3_outside_calculation',
+      'ending:wuxia_return_modern_commute_scene_resolved',
+      'ending:wuxia_settlement_stay_scene_resolved',
+      'ending:wuxia_preview_grounded',
+    ];
+
+    for (const visualId of plannedVisuals) {
+      expect(sceneForVisual(visualId, 'encounter')).toBeDefined();
+    }
+    expect(sceneForVisual('location:cheongryu_gate', 'movement')).toEqual(sceneForVisual('location:cheongryu_gate', 'movement'));
   });
 });

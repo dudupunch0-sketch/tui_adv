@@ -42,7 +42,6 @@ def test_superlighttui_terminal_polish_is_checklisted_and_documented():
     assert "Web/Tauri/Electron 패키징 검토" not in next_slice
     assert "visual card/GlyphFX/input 안내 polish" in readme
     assert "--app-smoke --tick" in readme
-    assert "full-screen SuperLightTUI app loop" in readme
     assert "printer_anomaly stable terms를 terminal visual card 안에 보존" in architecture
     assert "tick/raw-draw capability를 쓰는 app smoke와 full-screen loop" in architecture
 

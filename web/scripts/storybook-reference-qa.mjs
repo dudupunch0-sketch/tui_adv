@@ -116,6 +116,7 @@ async function runViewportQa(browserInstance, viewport, screenshotsDirPath) {
     await page.screenshot({ path: screenshotPath, fullPage: true });
     screenshot = path.relative(options.outDir, screenshotPath);
 
+    await verifyDrawer(page, checks);
     await verifyInteractionChangesPage(browserInstance, viewport, 'click', checks);
     await verifyInteractionChangesPage(browserInstance, viewport, 'keyboard', checks);
   } catch (error) {
@@ -134,6 +135,26 @@ async function runViewportQa(browserInstance, viewport, screenshotsDirPath) {
     shellRect,
     scrollWidth,
   };
+}
+
+async function verifyDrawer(page, checks) {
+  try {
+    const toggle = page.locator('[data-player-action="toggle-storybook-drawer"]');
+    const drawer = page.locator('#storybook-info-drawer');
+    await toggle.click();
+    await drawer.waitFor({ state: 'attached' });
+    await page.waitForFunction(() => document.querySelector('#storybook-info-drawer')?.hasAttribute('open') ?? false);
+    record(checks, 'footnote toggle opens the information drawer', await drawer.evaluate((element) => element.hasAttribute('open')));
+    record(checks, 'drawer exposes status, inventory, achievements, history, and menu',
+      (await drawer.locator('[aria-label="현재 상태"]').count()) > 0 &&
+      (await drawer.locator('[aria-label="소지품"]').count()) > 0 &&
+      (await drawer.locator('[aria-label="업적"]').count()) > 0 &&
+      (await drawer.locator('[aria-label="기록"]').count()) > 0 &&
+      (await drawer.locator('[aria-label="게임 메뉴"]').count()) > 0,
+    );
+  } catch (error) {
+    record(checks, 'footnote toggle opens the information drawer', false, { error: errorMessage(error) });
+  }
 }
 
 async function verifyInteractionChangesPage(browserInstance, viewport, mode, parentChecks) {
@@ -206,6 +227,10 @@ async function loadStorybookPage(page, wasmResourcePromises, checks, { recordWas
 async function maybeStartPlayer(page) {
   const startScreen = page.locator('[data-player-screen="start"]');
   if ((await startScreen.count()) === 0) return;
+  const startTap = page.locator('.start-tap-button');
+  if (await startTap.isVisible()) {
+    await startTap.click();
+  }
   await page.locator('[data-player-action="new-game"]').click();
   await page.waitForSelector('button.choice-row[data-action-id]', { timeout: 10_000 });
 }

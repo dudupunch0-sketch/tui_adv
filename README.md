@@ -13,7 +13,7 @@ TUI 기반 랜덤 인카운터 선택지 생존 게임 엔진/콘텐츠 프로�
 중요한 기준:
 
 - Web Storybook + GlyphFX가 플레이어용 메인 UX다. 이미지/장면 컷, 대화 내역, 읽기 중심 선택지, Canvas/GlyphFX는 이 경로에서 먼저 구현한다. Web player는 `escape-wasm` JSON boundary를 통해 Rust GameCore의 `ScenePage`/`ActionResult`를 소비한다.
-- Web Storybook의 현재 시각 기준은 `docs/design/Mobile_Pixel_Storybook_UI.md`다. 웹에서 실행되더라도 generic web dashboard가 아니라 모바일 세로형 픽셀 게임북 board로 보이게 한다.
+- Web Storybook의 현재 시각 기준은 `docs/design/Mobile_Ink_Storybook_UI.md`다. 웹에서 실행되더라도 generic web dashboard가 아니라 모바일 세로형 수묵 서책 board — 플레이어에 대해 쓰이고 있는 기록책(천기록)의 한 쪽 — 로 보이게 한다. (구 픽셀 게임북 계약 `docs/design/Mobile_Pixel_Storybook_UI.md`는 superseded.)
 - Rust terminal 경로는 버리지 않는다. `escape-terminal`의 content 경로는 TUI snapshot/play renderer를 제공하며, visual card/GlyphFX/input 안내 polish로 terminal-native 기준을 갖춘다. terminal은 fallback이지만 debug dump가 아니다.
 - 남은 Python은 **게임 로직이 아니라** 콘텐츠 파이프라인/계약 검증용이다: `scripts/export_web_data.py`(YAML→content bundle export/check), 그리고 contract/docs/web 테스트(`tests/`).
 
@@ -168,7 +168,8 @@ npm run preview:player
 - `docs/design/Map.md`: 1차 맵 설계
 - `docs/design/UI_Rules.md`: 사내 시스템형 TUI, 글리치, 선택지 오염 규칙
 - `docs/design/TUI_Storybook_GlyphFX_Concept.md`: Web primary UX로 채택한 TUI풍 스토리북 + GlyphFX 방향
-- `docs/design/Mobile_Pixel_Storybook_UI.md`: Web Storybook의 모바일 세로형 픽셀 게임북 board 시각 contract
+- `docs/design/Mobile_Ink_Storybook_UI.md`: Web Storybook의 모바일 세로형 수묵 서책 board 시각 contract
+- `docs/design/Mobile_Pixel_Storybook_UI.md`: (superseded) 구 픽셀 게임북 board contract 포인터
 - `docs/dev/Development_Plan.md`: canonical main plan. 현재 방향, 다음 작업, 우선순위의 source of truth
 - `docs/dev/Checklist.md`: 단계별 완료 여부 추적용 체크리스트
 - `docs/dev/Development_Methodology.md`: 재사용 가능한 개발 방법론(plan→implement→verify→report 루프, 완성 판정, 검증 신뢰 원칙)

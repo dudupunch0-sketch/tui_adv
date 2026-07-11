@@ -66,13 +66,23 @@ export function renderStartScreen(model: StartScreenModel): string {
   return `
 <main class="storybook-shell storybook-start" data-app="tui-adv" data-renderer="web-storybook" data-player-screen="start">
   <section class="start-hero" aria-label="게임 시작">
-    <img class="start-hero-image" src="/assets/intro-main.png" alt="" aria-hidden="true" />
+    <svg class="start-ink-scene" viewBox="0 0 390 700" aria-hidden="true">
+      <defs><filter id="start-mist"><feGaussianBlur stdDeviation="10"/></filter></defs>
+      <rect width="390" height="700" fill="#e9dfc6"/>
+      <path d="M0 310 Q70 190 142 300 Q215 150 390 290 V700 H0Z" fill="#20242b" opacity=".34"/>
+      <path d="M0 410 Q100 320 196 400 Q285 305 390 385 V700 H0Z" fill="#3a352b" opacity=".56"/>
+      <g fill="#3a352b" opacity=".16" filter="url(#start-mist)"><ellipse cx="120" cy="355" rx="130" ry="34"/><ellipse cx="278" cy="430" rx="140" ry="38"/></g>
+      <path d="M145 555 L195 458 L245 555 M164 555 V505 H226 V555 M130 458 H260" fill="none" stroke="#20242b" stroke-width="9" stroke-linejoin="round"/>
+      <path d="M195 555 V635 M195 580 L171 604 M195 580 L220 602 M195 635 L178 665 M195 635 L212 665" fill="none" stroke="#20242b" stroke-width="7" stroke-linecap="round"/>
+      <circle cx="195" cy="548" r="12" fill="#20242b"/>
+      <g transform="rotate(3 318 592)"><rect x="290" y="564" width="56" height="56" fill="#9e3c3f"/><text x="318" y="605" fill="#f3ecd6" text-anchor="middle" font-size="31">記</text></g>
+    </svg>
     <div class="start-logo-lockup">
-      <h1>모험가 이야기</h1>
-      <p>LIFE IN ADVENTURE</p>
+      <h1>이구학지</h1>
+      <p>天記錄 — 천기록</p>
     </div>
     <section class="start-menu-drawer" data-start-menu-open="false">
-      <button type="button" class="start-tap-button" data-player-action="open-start-menu">TAP TO START</button>
+      <button type="button" class="start-tap-button" data-player-action="open-start-menu">천기록을 연다</button>
       <div class="start-menu-panel">
         <p class="start-kicker">WEB PLAYER · RUST/WASM GAMECORE</p>
         <p class="start-copy">출근복 그대로 강호에 떨어지는 이구학지 본편입니다. 저장은 이 기기에만 남습니다.</p>
@@ -244,4 +254,3 @@ function stringField(value: unknown, name: string): string {
 function formatSavedAt(value: string): string {
   return value.slice(0, 16).replace('T', ' ');
 }
-

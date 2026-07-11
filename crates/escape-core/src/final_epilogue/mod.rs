@@ -9,9 +9,6 @@ mod render;
 mod suppress;
 mod types;
 
-#[allow(unused_imports)]
-pub(crate) use types::MainEndingType;
-
 use audit::state_audit_block;
 use cards::build_candidates;
 use facts::FinalFacts;

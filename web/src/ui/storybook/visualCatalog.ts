@@ -53,7 +53,7 @@ function visualKindFromLayout(visual: SceneVisual): VisualKind {
 
 function renderPrinterVisual(visual: SceneVisual, effectCues: SceneEffectCue[]): string {
   return `
-    <figcaption>visual: ${escapeHtml(visual.id)}</figcaption>
+    ${renderVisualCaption(visual)}
     <div class="pixel-illustration printer-card" aria-label="${escapeHtml(visual.alt)}">
       <canvas data-anomaly-canvas="printer-flow" aria-label="복합기 GlyphFX 장면"></canvas>
       <pre aria-hidden="true">      ________
@@ -67,7 +67,7 @@ function renderPrinterVisual(visual: SceneVisual, effectCues: SceneEffectCue[]):
 
 function renderMessengerVisual(visual: SceneVisual): string {
   return `
-    <figcaption>visual: ${escapeHtml(visual.id)}</figcaption>
+    ${renderVisualCaption(visual)}
     <div class="pixel-illustration message-card" aria-label="${escapeHtml(visual.alt)}">
       <p>사내 메신저</p>
       <blockquote>아직 하지 않은 선택이 있습니다.</blockquote>
@@ -77,7 +77,7 @@ function renderMessengerVisual(visual: SceneVisual): string {
 
 function renderCorridorVisual(visual: SceneVisual): string {
   return `
-    <figcaption>visual: ${escapeHtml(visual.id)}</figcaption>
+    ${renderVisualCaption(visual)}
     <div class="pixel-illustration corridor-card" aria-label="${escapeHtml(visual.alt)}">
       <span>비상등</span><span>╱╲╱╲╱╲</span><span>EXIT?</span>
     </div>
@@ -86,7 +86,7 @@ function renderCorridorVisual(visual: SceneVisual): string {
 
 function renderWuxiaVisual(visual: SceneVisual, effectCues: SceneEffectCue[]): string {
   return `
-    <figcaption>visual: ${escapeHtml(visual.id)}</figcaption>
+    ${renderVisualCaption(visual)}
     <div class="pixel-illustration wuxia-card" aria-label="${escapeHtml(visual.alt)}">
       <span class="wuxia-sky" aria-hidden="true"></span>
       <span class="wuxia-cliff" aria-hidden="true"></span>
@@ -100,7 +100,7 @@ function renderWuxiaVisual(visual: SceneVisual, effectCues: SceneEffectCue[]): s
 function renderCombatVisual(visual: SceneVisual, effectCues: SceneEffectCue[]): string {
   const opponentName = visual.id.includes('wuxia') ? '흑사방 말단' : '상대';
   return `
-    <figcaption>visual: ${escapeHtml(visual.id)}</figcaption>
+    ${renderVisualCaption(visual)}
     <div class="pixel-illustration combat-card" aria-label="${escapeHtml(visual.alt)}">
       <div class="combat-versus" aria-hidden="true">
         <section class="combat-side combat-side--player">
@@ -128,11 +128,15 @@ function renderCombatVisual(visual: SceneVisual, effectCues: SceneEffectCue[]): 
 
 function renderPlaceholderVisual(visual: SceneVisual): string {
   return `
-    <figcaption>visual: ${escapeHtml(visual.id)}</figcaption>
+    ${renderVisualCaption(visual)}
     <div class="pixel-illustration placeholder-card" aria-label="${escapeHtml(visual.alt || '아직 카탈로그에 없는 장면이다.')}">
       <p>${escapeHtml(visual.alt || '아직 카탈로그에 없는 장면이다.')}</p>
     </div>
   `;
+}
+
+function renderVisualCaption(visual: SceneVisual): string {
+  return visual.alt ? `<figcaption>${escapeHtml(visual.alt)}</figcaption>` : '';
 }
 
 function renderGlyphFxCues(effectCues: SceneEffectCue[]): string {

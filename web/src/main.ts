@@ -51,6 +51,7 @@ let fatalPlayerError = false;
 let activeSeed = DEFAULT_SEED;
 let activeStorypackPreview: StorypackPreviewOption | null = null;
 let confirmReset = false;
+let confirmAbandon = false;
 let playerSettings: PlayerSettings = loadPlayerSettings(window.localStorage);
 const transitionController = createStorybookTransitionController(appRoot);
 const audioEngine = createStorybookAudioEngine({ preference: playerSettings.audio });
@@ -96,6 +97,10 @@ function renderGamePage(page: ScenePage): void {
     audioLabel: playerSettings.audio === 'on' ? '소리 켜짐' : '소리 꺼짐',
     motionLabel: `연출 ${playerSettings.motion}`,
   });
+  if (confirmAbandon) {
+    const gamePage = appRoot.querySelector<HTMLElement>('.storybook-page');
+    gamePage?.prepend(renderAbandonConfirmation());
+  }
   if (lastError) {
     const errorElement = document.createElement('p');
     errorElement.className = 'storybook-runtime-warning';
@@ -162,22 +167,29 @@ const playerActionHandlers: Record<string, () => void | Promise<void>> = {
   'reset-save': () => {
     clearPlayerSaves(window.localStorage);
     confirmReset = false;
+    confirmAbandon = false;
     render();
   },
   'show-start': () => {
     playerScreen = 'start';
     confirmReset = false;
+    confirmAbandon = false;
     lastError = null;
     render();
   },
   'abandon-run': () => {
-    if (!activeStorypackPreview) clearPlayerSaves(window.localStorage);
-    playerScreen = 'start';
-    confirmReset = false;
-    fatalPlayerError = false;
-    lastError = null;
-    wasmRuntime = null;
-    activeStorypackPreview = null;
+    if (activeStorypackPreview) {
+      abandonRun({ clearSave: false });
+      return;
+    }
+    confirmAbandon = true;
+    render();
+  },
+  'confirm-abandon-run': () => {
+    abandonRun({ clearSave: true });
+  },
+  'cancel-abandon-run': () => {
+    confirmAbandon = false;
     render();
   },
   'toggle-audio': async () => {
@@ -190,6 +202,31 @@ const playerActionHandlers: Record<string, () => void | Promise<void>> = {
     render();
   },
 };
+
+function abandonRun(options: { clearSave: boolean }): void {
+  if (options.clearSave) clearPlayerSaves(window.localStorage);
+  playerScreen = 'start';
+  confirmReset = false;
+  confirmAbandon = false;
+  fatalPlayerError = false;
+  lastError = null;
+  wasmRuntime = null;
+  activeStorypackPreview = null;
+  render();
+}
+
+function renderAbandonConfirmation(): HTMLElement {
+  const panel = document.createElement('section');
+  panel.className = 'storybook-confirm';
+  panel.setAttribute('role', 'alertdialog');
+  panel.setAttribute('aria-label', '모험 포기 확인');
+  panel.innerHTML = `<p>이 모험의 기록을 지우고 처음으로 돌아갈까요?</p>
+    <div>
+      <button type="button" data-player-action="confirm-abandon-run">기록을 지우고 돌아간다</button>
+      <button type="button" data-player-action="cancel-abandon-run">계속 모험한다</button>
+    </div>`;
+  return panel;
+}
 
 async function runPlayerAction(action: string): Promise<void> {
   if (action.startsWith(STORYPACK_PREVIEW_ACTION_PREFIX)) {
@@ -270,6 +307,7 @@ function startGame(options: {
   if (options.clearExistingSave) clearPlayerSaves(window.localStorage);
   playerScreen = 'game';
   confirmReset = false;
+  confirmAbandon = false;
   fatalPlayerError = false;
   wasmRuntime = null;
   activeSeed = options.seed;
@@ -331,6 +369,7 @@ function runAction(actionId: string): void {
   if (actionId === NEW_GAME_ACTION_ID) {
     playerScreen = 'start';
     confirmReset = readPlayerSaveSummary(window.localStorage).summary !== null;
+    confirmAbandon = false;
     lastError = null;
     render();
     return;

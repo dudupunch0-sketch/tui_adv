@@ -305,6 +305,38 @@ button {
   background: rgba(158, 60, 63, 0.09);
 }
 
+.storybook-confirm {
+  display: grid;
+  gap: 10px;
+  margin: 0 18px 12px;
+  padding: 12px;
+  border: 1px solid rgba(158, 60, 63, 0.48);
+  background: rgba(158, 60, 63, 0.09);
+}
+
+.storybook-confirm p {
+  margin: 0;
+}
+
+.storybook-confirm div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.storybook-confirm button {
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid rgba(63, 52, 35, 0.42);
+  background: rgba(46, 42, 35, 0.1);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.storybook-confirm button:hover {
+  background: rgba(46, 42, 35, 0.18);
+}
+
 .storybook-hud,
 .story-progress-rail,
 .storybook-page,

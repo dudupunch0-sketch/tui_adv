@@ -127,6 +127,27 @@ describe('Web Storybook renderer', () => {
     expect(html).not.toContain('class="fake-tui"');
   });
 
+  it('renders inventory and achievements as labeled drawers without placeholder dock items', () => {
+    const html = renderStorybookPage(
+      samplePrinterPage({
+        inventory_summary: { items: ['commuter_badge'], overflow_count: 1 },
+        achievement_summary: {
+          unlocked: ['wuxia_first_arrival'],
+          newly_unlocked: ['wuxia_first_arrival'],
+        },
+      }),
+    );
+
+    expect(html).toContain('class="dock-drawer" data-dock="inventory"');
+    expect(html).toContain('class="dock-drawer" data-dock="achievements"');
+    expect(html).toContain('사원증');
+    expect(html).toContain('강호 출근');
+    expect(html).toContain('…외 1개');
+    expect(html).toContain('새로 새김');
+    expect(html).not.toContain('data-dock="clues"');
+    expect(html).not.toContain('data-dock="actions"');
+  });
+
   it('keeps the scene title in the body and omits a duplicate movement title', () => {
     const encounterHtml = renderStorybookPage(samplePrinterPage());
     const movementHtml = renderStorybookPage(

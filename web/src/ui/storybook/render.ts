@@ -1,7 +1,12 @@
 import type { BodyBlock, SceneAction, SceneBlockedAction, ScenePage, PressureCue, ResourceStatus } from '../../core/types';
 import { escapeHtml } from './html';
 import { renderStoryHistory } from './history';
-import { achievementLabel, hasAchievementLabel } from './labels';
+import {
+  achievementLabel,
+  hasAchievementLabel,
+  hasInventoryItemLabel,
+  inventoryItemLabel,
+} from './labels';
 import { renderEpilogueBodyBlock } from './renderEpilogue';
 import { renderVisualCard } from './visualCatalog';
 
@@ -284,16 +289,54 @@ function renderBlockedAction(action: SceneBlockedAction): string {
 }
 
 function renderBottomDock(page: ScenePage): string {
-  const inventoryCount = page.inventory_summary.items.length + page.inventory_summary.overflow_count;
-  const achievementCount = page.achievement_summary.unlocked.length;
   return `<footer class="storybook-dock" aria-label="보조 메뉴">
     <a class="dock-item" href="#story-history" data-dock="log" aria-label="기록"><span aria-hidden="true">▧</span><small>기록</small></a>
-    <span class="dock-item" data-dock="clues" aria-label="단서" role="img"><span aria-hidden="true">▣</span><small>단서</small></span>
-    <span class="dock-item" data-dock="achievements" aria-label="업적 ${achievementCount}개" role="img"><span aria-hidden="true">◈</span><small>업적</small></span>
-    <span class="dock-spacer" aria-hidden="true"></span>
-    <span class="dock-item" data-dock="actions" aria-label="현재 목표" role="img"><span aria-hidden="true">✎</span><small>목표</small></span>
-    <span class="dock-item" data-dock="inventory" aria-label="소지품" title="소지품 ${inventoryCount}개" role="img"><span aria-hidden="true">◒</span><small>가방</small></span>
+    ${renderAchievementDrawer(page)}
+    ${renderInventoryDrawer(page)}
   </footer>`;
+}
+
+function renderInventoryDrawer(page: ScenePage): string {
+  const items = page.inventory_summary.items.length
+    ? `<ul>${page.inventory_summary.items
+        .map((id) => `<li>${renderDrawerLabel(id, inventoryItemLabel, hasInventoryItemLabel)}</li>`)
+        .join('')}${
+        page.inventory_summary.overflow_count > 0
+          ? `<li class="dock-drawer-overflow">…외 ${page.inventory_summary.overflow_count}개</li>`
+          : ''
+      }</ul>`
+    : '<p>아직 지닌 것이 없다.</p>';
+  return `<details class="dock-drawer" data-dock="inventory">
+    <summary class="dock-item" aria-label="소지품"><span aria-hidden="true">◒</span><small>가방</small></summary>
+    <div class="dock-drawer-panel">${items}</div>
+  </details>`;
+}
+
+function renderAchievementDrawer(page: ScenePage): string {
+  const newlyUnlocked = new Set(page.achievement_summary.newly_unlocked);
+  const items = page.achievement_summary.unlocked.length
+    ? `<ul>${page.achievement_summary.unlocked
+        .map((id) => {
+          const newlyMarked = newlyUnlocked.has(id)
+            ? '<span class="dock-new-mark" aria-hidden="true"></span><span class="sr-only">새로 새김</span>'
+            : '';
+          return `<li>${newlyMarked}${renderDrawerLabel(id, achievementLabel, hasAchievementLabel)}</li>`;
+        })
+        .join('')}</ul>`
+    : '<p>아직 새긴 업적이 없다.</p>';
+  return `<details class="dock-drawer" data-dock="achievements">
+    <summary class="dock-item" aria-label="업적"><span aria-hidden="true">◈</span><small>업적</small></summary>
+    <div class="dock-drawer-panel">${items}</div>
+  </details>`;
+}
+
+function renderDrawerLabel(
+  id: string,
+  labelForId: (id: string) => string,
+  hasLabel: (id: string) => boolean,
+): string {
+  const translationNote = hasLabel(id) ? '' : '<small class="storybook-translation-note">미번역</small>';
+  return `${escapeHtml(labelForId(id))}${translationNote}`;
 }
 
 function renderPressureCue(cue: PressureCue): string {

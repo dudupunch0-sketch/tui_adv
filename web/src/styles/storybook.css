@@ -44,6 +44,18 @@ button {
   color: inherit;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .storybook-runtime-warning {
   position: fixed;
   right: 10px;
@@ -1114,7 +1126,7 @@ button {
 
 .storybook-dock {
   display: grid;
-  grid-template-columns: repeat(3, auto) minmax(24px, 1fr) repeat(2, auto);
+  grid-template-columns: repeat(3, minmax(44px, 1fr));
   align-items: end;
   gap: clamp(12px, 4vw, 30px);
   padding: clamp(22px, 5vw, 46px) clamp(18px, 5vw, 50px) 0;
@@ -1128,6 +1140,72 @@ button {
   color: #6b5132;
   text-decoration: none;
   filter: drop-shadow(2px 4px 0 rgba(72, 56, 40, 0.18));
+}
+
+.dock-drawer {
+  position: relative;
+}
+
+.dock-drawer > summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.dock-drawer > summary::-webkit-details-marker {
+  display: none;
+}
+
+.dock-drawer-panel {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  z-index: 4;
+  width: min(260px, calc(100vw - 36px));
+  padding: 12px;
+  border: 1px solid rgba(94, 80, 58, 0.36);
+  background: var(--paper);
+  box-shadow: 3px 4px 0 rgba(72, 56, 40, 0.18);
+  color: var(--ink);
+  transform: translateX(-50%);
+}
+
+.dock-drawer[data-dock="inventory"] .dock-drawer-panel {
+  right: 0;
+  left: auto;
+  transform: none;
+}
+
+.dock-drawer-panel ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dock-drawer-panel li,
+.dock-drawer-panel p {
+  margin: 0;
+}
+
+.dock-drawer-overflow,
+.storybook-translation-note {
+  color: var(--muted-ink);
+  font-family: "IBM Plex Mono", "JetBrains Mono", "D2Coding", "Noto Serif KR", monospace;
+  font-size: 0.72rem;
+}
+
+.storybook-translation-note {
+  margin-left: 6px;
+}
+
+.dock-new-mark {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--gold-leaf, #b69247);
 }
 
 .dock-item > span {

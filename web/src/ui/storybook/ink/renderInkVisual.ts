@@ -6,8 +6,9 @@ import { sceneForVisual } from './inkScenes';
 import { fnv1a, jitter, type InkSceneSpec } from './inkSpec';
 
 export function renderInkVisual(visual: SceneVisual, effectCues: SceneEffectCue[], mode: string): string {
-  const spec = sceneForVisual(visual.id, mode) ?? genericScene(mode);
-  const known = sceneForVisual(visual.id, mode) !== undefined;
+  const resolved = sceneForVisual(visual.id, mode);
+  const known = resolved !== undefined;
+  const spec = resolved ?? genericScene(mode);
   const kind = isCombat(visual) ? 'combat' : known ? 'ink' : 'placeholder';
   const seed = fnv1a(visual.id);
   const layer = (elements: InkSceneSpec['far'], opacity: number) => (elements ?? []).map((element, index) => `<g opacity="${opacity}">${renderInkElement(element, jitter(seed, index, 0.04))}</g>`).join('');
@@ -22,9 +23,9 @@ export function renderInkVisual(visual: SceneVisual, effectCues: SceneEffectCue[
 }
 
 function genericScene(mode: string): InkSceneSpec {
-  if (mode === 'ending') return { horizon: 0.7, mist: 1, mid: [{ kind: 'desk', x: 0.45 }, { kind: 'scroll', x: 0.55 }], seal: '記' };
-  if (mode === 'movement') return { horizon: 0.68, mist: 1, near: [{ kind: 'road', x: 0.5 }], figures: [{ pose: 'walk', x: 0.5 }], seal: '行' };
-  return { horizon: 0.68, mist: 2, mid: [{ kind: 'road', x: 0.5 }], figures: [{ pose: 'confront', x: 0.45 }, { pose: 'stand', x: 0.65 }], seal: '問' };
+  if (mode === 'ending') return { mist: 1, mid: [{ kind: 'desk', x: 0.45 }, { kind: 'scroll', x: 0.55 }], seal: '記' };
+  if (mode === 'movement') return { mist: 1, near: [{ kind: 'road', x: 0.5 }], figures: [{ pose: 'walk', x: 0.5 }], seal: '行' };
+  return { mist: 2, mid: [{ kind: 'road', x: 0.5 }], figures: [{ pose: 'confront', x: 0.45 }, { pose: 'stand', x: 0.65 }], seal: '問' };
 }
 
 function isCombat(visual: SceneVisual): boolean {

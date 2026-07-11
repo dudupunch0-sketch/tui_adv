@@ -60,7 +60,7 @@ function isCombatScene(page: ScenePage): boolean {
 function renderHud(page: ScenePage): string {
   const resources = storyResources(page.status_summary.resources);
   return `<header class="storybook-hud" data-region="status" data-danger-band="${dangerBand(page.status_summary.danger)}">
-    <p class="hud-document" aria-label="현재 기록">${escapeHtml(documentLabel(page))} · ${page.status_summary.turn}쪽</p>
+    <p class="hud-document" aria-label="현재 기록 ${escapeHtml(documentLabel(page))} · ${page.status_summary.turn}턴" title="${page.status_summary.turn}턴">${escapeHtml(documentLabel(page))}</p>
     <div class="hud-vital-slots" aria-label="핵심 상태">${renderVitalSlots(resources)}</div>
     ${renderProgressRail(page)}
     <button type="button" class="hud-drawer-toggle" data-player-action="toggle-storybook-drawer" aria-expanded="false" aria-controls="storybook-info-drawer">상세</button>

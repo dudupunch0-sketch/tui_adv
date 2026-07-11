@@ -46,7 +46,7 @@ describe('player start/save UX', () => {
     expect(html).not.toContain('intro-main.png');
     expect(html).not.toContain('모험가 이야기');
     expect(html).not.toContain('LIFE IN ADVENTURE');
-    expect(html).toContain('TAP TO START');
+    expect(html).toContain('천기록을 연다');
     expect(html).toContain('data-player-action="continue" disabled');
     expect(html).toContain('data-player-action="new-game"');
     expect(html).toContain('name="seed"');

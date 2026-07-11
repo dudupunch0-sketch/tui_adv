@@ -1444,14 +1444,13 @@ button {
   }
 
   .choice-row {
-    grid-template-columns: auto minmax(0, 1fr);
-    min-height: 42px;
+    grid-template-columns: auto auto minmax(0, 1fr);
+    min-height: 44px;
     padding: 8px 0;
   }
 
-  .choice-index,
   .choice-cost {
-    display: none;
+    grid-column: 3;
   }
 
   .choice-bullet {

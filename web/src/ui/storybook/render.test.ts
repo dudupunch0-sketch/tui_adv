@@ -92,6 +92,7 @@ describe('Web Storybook renderer', () => {
     expect(html).toContain('data-story-phase="result"');
     expect(html).toContain('class="storybook-hud"');
     expect(html).toContain('class="hud-nameplate"');
+    expect(html).not.toContain('hud-subtitle');
     expect(html).toContain('class="hud-menu"');
     expect(html).toContain('class="hud-stat-grid"');
     expect(html).toContain('class="story-progress-rail"');
@@ -124,6 +125,25 @@ describe('Web Storybook renderer', () => {
     expect(html).not.toContain('CURRENT ENCOUNTER');
     expect(html).not.toContain('LOCAL STATUS');
     expect(html).not.toContain('class="fake-tui"');
+  });
+
+  it('keeps the scene title in the body and omits a duplicate movement title', () => {
+    const encounterHtml = renderStorybookPage(samplePrinterPage());
+    const movementHtml = renderStorybookPage(
+      samplePrinterPage({
+        mode: 'movement',
+        title: '복합기 구역',
+        visual: {
+          id: 'printer_area',
+          kind: 'location',
+          alt: '복합기 구역으로 이어지는 복도',
+          source_id: 'printer_area',
+        },
+      }),
+    );
+
+    expect(encounterHtml).toContain('<h1>복합기가 혼자 출력한다</h1>');
+    expect(movementHtml).not.toContain('<h1>복합기 구역</h1>');
   });
 
   it('renders combat intervention pages with a battle-style visual panel', () => {

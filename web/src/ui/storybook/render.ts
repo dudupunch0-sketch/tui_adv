@@ -71,7 +71,6 @@ function renderHud(page: ScenePage, options: StorybookRenderOptions): string {
     </div>
     <div class="hud-identity">
       <p class="hud-nameplate">${escapeHtml(page.location.name)}</p>
-      <p class="hud-subtitle">${escapeHtml(page.title)}</p>
       <div class="hud-vital-slots" aria-label="핵심 상태">
         ${renderVitalSlots(resources)}
       </div>
@@ -177,6 +176,7 @@ function renderStoryFlow(page: ScenePage, layout: StoryLayout): string {
 }
 
 function renderBody(page: ScenePage): string {
+  const title = page.title === page.location.name ? '' : `<h1>${escapeHtml(page.title)}</h1>`;
   const dialogueTexts = new Set(page.dialogue_entries.map((entry) => entry.text.trim()));
   const dialogue = page.dialogue_entries.length
     ? `<section class="dialogue-stack">${page.dialogue_entries
@@ -194,7 +194,7 @@ function renderBody(page: ScenePage): string {
   const resultLog = renderInlineResultLog(page);
 
   return `<section class="storybook-body" data-region="body">
-    <h1>${escapeHtml(page.title)}</h1>
+    ${title}
     ${dialogue}
     ${bodyBlocks}
     ${resultLog}

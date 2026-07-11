@@ -87,6 +87,21 @@ Web Storybook은 게임 HUD가 달린 앱처럼 보이면 안 된다. 기본 화
   변주는 visual id 해시 시드로만 만든다 (`Math.random()` 금지).
 - public UI/docs/generated data에는 실제 회사명/개인정보/private hint를 넣지 않는다.
 
+## 일러스트 에셋과 밀도 계약
+
+### 일러스트 에셋 (Illustration Assets)
+- **에셋 매니페스트**: `artManifest.ts`에 등록된 `visual_id`는 생성된 `.webp` 애니메이션풍 일러스트 에셋으로 표시되며, 등록되지 않은 `visual_id`는 generic SVG 또는 location-based SVG 폴백으로 렌더링된다.
+- **규격 및 포맷**: 규격은 5:3 비율(1120x672, `title_hero`만 3:5 세로 1120x1867)을 준수하며, WEBP 포맷으로 변환 및 최적화하여 각 파일은 150KB 이하여야 한다.
+- **삽지 프레임**: 일러스트는 한지 백그라운드 톤과 자연스럽게 결합되도록 얇은 먹 테두리(1px `--line-hard`), 한지 매트(5px 패딩, `--paper-lit`), 아주 약한 세피아 톤 필터 (`filter: saturate(0.92) sepia(0.06)`) 보정이 적용된다.
+- **인장 유지**: 일러스트가 활성화되어 있을 때도 우하단의 수묵 인장(seal)은 그림 위에 오버레이로 유지된다.
+- **에셋 라이선스**: 디렉터리의 모든 이미지는 프로젝트가 AI 생성으로 직접 제작한 자산이며, 타사 IP 및 외부 게임/작품의 아트를 침해하지 않는다.
+
+### 밀도 계약 (Density Agreement)
+- **한 화면 목표**: 390x844 모바일 뷰포트 해상도에서 "본문 제목 + 서사 4~6줄 + 삽화 + 선택지 2개 + 하단 스트립"이 스크롤 없이 또는 단 한 번의 짧은 스크롤로 한눈에 들어와야 한다.
+- **상한 제약**: 삽화 영역(`figure[data-region="visual"]`)은 최대 `36dvh` 높이 상한을 준수하며 `object-fit: cover` 및 `preserveAspectRatio="xMidYMid slice"`로 크롭된다.
+- **요약 로그 및 칩**: 결과 로그(`.story-result-log`)는 최근 1행 및 필수 업적/아이템 행만 노출하도록 압축하며, GlyphFX stable-terms 칩은 figcaption 옆 한 줄 인라인으로 축소한다.
+- **모바일 간격**: 560px 이하 해상도에서 본문 폰트 `1rem/1.7`, 문단 간격 `0.7em`, 선택지 `min-height: 48px` 및 padding 축소로 조밀한 밀도를 확보한다.
+
 ## Acceptance checklist
 
 - [ ] 기본 화면에 상단 HUD/스탯 그리드/아이콘 dock이 없다 — folio, 본문, 삽화,

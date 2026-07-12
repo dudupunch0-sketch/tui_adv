@@ -16,6 +16,7 @@ DATA_FILES: tuple[tuple[str, str, str], ...] = (
     ("encounters", "encounters", "encounters.json"),
     ("endings", "endings", "endings.json"),
     ("achievements", "achievements", "achievements.json"),
+    ("traits", "traits", "traits.json"),
     ("secrets.example", "secrets", "secrets.example.json"),
 )
 CONTENT_BUNDLE_SCHEMA_VERSION = 1

@@ -40,11 +40,18 @@ export interface SceneVisual {
   source_id: string | null;
 }
 
+export interface ActionCheckInfo {
+  ability_id: string;
+  ability_label: string;
+  success_percent: number;
+}
+
 export interface SceneAction {
   id: string;
   label: string;
   kind: string;
   cost_text: string | null;
+  check?: ActionCheckInfo;
 }
 
 export interface SceneBlockedAction extends SceneAction {
@@ -84,6 +91,24 @@ export interface SceneEffectCue {
   fallback_text: string | null;
 }
 
+export interface AbilityStatus {
+  id: string;
+  label: string;
+  value: number;
+}
+
+export interface CharacterSummary {
+  name: string;
+  title_label?: string;
+  abilities: AbilityStatus[];
+}
+
+export interface ProgressionStatus {
+  experience: number;
+  target: number;
+  label: string;
+}
+
 export interface ScenePage {
   mode: SceneMode;
   title: string;
@@ -100,4 +125,6 @@ export interface ScenePage {
   achievement_summary: AchievementSummary;
   pressure_cues: PressureCue[];
   effect_cues: SceneEffectCue[];
+  character_summary?: CharacterSummary;
+  progression?: ProgressionStatus;
 }

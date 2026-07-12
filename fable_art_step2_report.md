@@ -2,7 +2,7 @@
 
 ## 1. 개요 및 최종 상태
 - **브랜치**: `gemini/art-density-hud` (WSL worktree `/home/dudu/work/tui-adv-art`)
-- **수행 결과**: 완료 (일러스트 일부는 API 사용량 한도로 인해 다음 사이클 백로그로 위임 및 SVG 폴백 검증 완료)
+- **수행 결과**: 완료 (총 13장의 일러스트 에셋 생성 및 최적화 등록 완료)
 - **최종 검증**: 
   - `pytest` 97개 테스트 전체 통과 (WP-0 포함)
   - `vitest` 42개 테스트 전체 통과 (Web)
@@ -25,23 +25,24 @@
 - **조치**: `.ink-scene__art`에 얇은 먹 테두리(1px `--line-hard`), 한지 매트(5px 패딩, `--paper-lit`), 아주 연한 세피아 필터 (`filter: saturate(0.92) sepia(0.06)`)를 입혀 한지 UI 톤과 애니메이션 일러스트가 이질감 없이 어우러지도록 CSS를 설계했습니다.
 
 ### WP-A3: 일러스트 에셋 생성 및 시작 화면 결합
-- **현황**: 부분 완료 (4장 생성, 9장 백로그 위임)
-- **생성된 이미지 목록**:
-  1. `title_hero.webp` (세로 구도 3:5, 118.5 KB) - 시작 화면의 기존 수묵 SVG를 대체하고, 로드 실패 시 기존 SVG를 폴백으로 사용하도록 `startScreen.ts`를 확장했습니다.
+- **현황**: 완료 (총 13장 에셋 생성 완료 및 매니페스트 등록 완료)
+- **생성 및 최적화된 이미지 목록**:
+  1. `title_hero.webp` (세로 구도 3:5, 118.5 KB)
   2. `wuxia_commute_rift.webp` (가로 구도 5:3, 123.9 KB)
   3. `location_jianghu_roadside.webp` (가로 구도 5:3, 126.8 KB)
   4. `location_jianghu_market_street.webp` (가로 구도 5:3, 145.0 KB)
-- **미생성 및 폴백 위임 목록 (Gemini flash image API 할당량 초과로 인한 다음 사이클 위임)**:
-  - `wuxia_heuksa_bang_first_fight`
-  - `wuxia_cheonggi_record_first_fragment`
-  - `wuxia_seo_harin_rescue`
-  - `wuxia_cheongryu_apprentice_entry`
-  - `wuxia_mumyeong_first_confrontation`
-  - `wuxia_boss_first_appearance`
-  - `wuxia_sado_final_battle`
-  - `ending:wuxia_return_modern_commute_scene_resolved`
-  - `ending:wuxia_settlement_stay_scene_resolved`
-  *참고*: 미생성된 9개 장면에 대해서는 매니페스트에 등록하지 않아 HTTP 404 에러 시도 없이 즉시 정교한 SVG 폴백이 동작하므로 런타임에 아무런 문제가 없습니다.
+  5. `wuxia_heuksa_bang_first_fight.webp` (가로 구도 5:3, 148.4 KB)
+  6. `wuxia_cheonggi_record_first_fragment.webp` (가로 구도 5:3, 128.6 KB)
+  7. `wuxia_seo_harin_rescue.webp` (가로 구도 5:3, 134.4 KB)
+  8. `wuxia_cheongryu_apprentice_entry.webp` (가로 구도 5:3, 125.8 KB)
+  9. `wuxia_mumyeong_first_confrontation.webp` (가로 구도 5:3, 134.1 KB)
+  10. `wuxia_boss_first_appearance.webp` (가로 구도 5:3, 148.2 KB)
+  11. `wuxia_sado_final_battle.webp` (가로 구도 5:3, 134.0 KB)
+  12. `wuxia_return_modern_commute_scene_resolved.webp` (가로 구도 5:3, 124.1 KB)
+  13. `wuxia_settlement_stay_scene_resolved.webp` (가로 구도 5:3, 129.8 KB)
+- **결합**:
+  - 시작 화면 `startScreen.ts`에 `title_hero.webp`를 결합하고, 기존 로고 락업 및 로드 실패 시의 SVG 폴백 처리를 완료했습니다.
+  - `artManifest.ts`에 13개 비주얼 ID를 모두 등록하여, 게임 엔진이 이를 동적으로 감지하고 로드하도록 결합을 완료했습니다.
 
 ### WP-A4: 라이선스 기록
 - **현황**: 완료

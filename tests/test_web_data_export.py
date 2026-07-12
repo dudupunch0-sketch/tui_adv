@@ -42,6 +42,7 @@ def test_export_web_data_builds_public_manifest_with_expected_counts():
         "encounters": 21,
         "endings": 13,
         "achievements": 11,
+        "traits": 0,
         "secrets": 3,
     }
     assert bundle["locations"][0]["id"] == "dev_desk"
@@ -63,6 +64,7 @@ def test_export_web_data_writes_generated_json_files(tmp_path):
         "locations.json",
         "manifest.json",
         "secrets.example.json",
+        "traits.json",
     ]
     manifest = json.loads((out_dir / "manifest.json").read_text(encoding="utf-8"))
     assert manifest["counts"]["encounters"] == 21
@@ -79,8 +81,10 @@ def test_export_web_data_builds_renderer_neutral_content_bundle():
     assert bundle["kind"] == "tui_adv.content_bundle"
     assert "runtime" not in bundle
     assert bundle["manifest"]["counts"]["locations"] == 16
+    assert bundle["manifest"]["counts"]["traits"] == 0
     assert bundle["content"]["locations"][0]["id"] == "dev_desk"
     assert bundle["content"]["encounters"][0]["id"] == "ex_employee_messenger"
+    assert bundle["content"]["traits"] == []
     assert not any(
         encounter["id"]
         in {
@@ -140,6 +144,11 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "world_id": "wuxia_jianghu",
         "storypack_id": "wuxia_jianghu_pack",
         "default_location": "wuxia_commute_rift",
+        "protagonist_name": "당신",
+        "progression": {
+            "experience_target": 100,
+            "label": "천기",
+        },
     }
     assert "storypack-previews/wuxia_jianghu_pack" in bundle["source"]
     assert bundle["manifest"]["counts"] == {
@@ -148,6 +157,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "encounters": 43,
         "endings": 2,
         "achievements": 2,
+        "traits": 2,
         "secrets": 0,
     }
     assert [location["id"] for location in bundle["content"]["locations"]] == [
@@ -156,6 +166,10 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "jianghu_market_street",
         "cheongryu_outer_courtyard",
         "black_serpent_ledger_vault",
+    ]
+    assert [trait["id"] for trait in bundle["content"]["traits"]] == [
+        "wuxia_apprentice",
+        "wuxia_swordmaster",
     ]
     encounter_ids = [encounter["id"] for encounter in bundle["content"]["encounters"]]
     assert encounter_ids == [
@@ -1343,7 +1357,7 @@ def test_export_web_data_cli_write_and_check_roundtrip(tmp_path):
         capture_output=True,
     )
     assert write_result.returncode == 0, write_result.stderr
-    assert "wrote 7 web data files" in write_result.stdout
+    assert "wrote 8 web data files" in write_result.stdout
     assert f"wrote content bundle to {rust_bundle_path}" in write_result.stdout
     assert f"wrote content bundle to {web_bundle_path}" in write_result.stdout
     assert json.loads(rust_bundle_path.read_text(encoding="utf-8")) == json.loads(
@@ -1434,6 +1448,7 @@ def test_export_web_data_refuses_public_secret_final_hint(tmp_path):
         ("encounters", "encounters"),
         ("endings", "endings"),
         ("achievements", "achievements"),
+        ("traits", "traits"),
     ]:
         (data_dir / f"{name}.yaml").write_text(f"{key}: []\n", encoding="utf-8")
     (data_dir / "secrets.example.yaml").write_text(

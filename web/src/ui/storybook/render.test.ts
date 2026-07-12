@@ -431,4 +431,34 @@ describe('Web Storybook renderer', () => {
     expect(html).toContain('특별한 업적');
     expect(html).not.toContain('첫 신호 확인');
   });
+
+  it('renders check resolution banner when check_result is present', () => {
+    const html = renderStorybookPage(
+      samplePrinterPage({
+        check_result: {
+          ability_id: 'logic',
+          ability_label: '논리',
+          dice: [4, 2],
+          ability_value: 2,
+          difficulty: 7,
+          total: 8,
+          success: true,
+        },
+      }),
+    );
+
+    expect(html).toContain('class="check-resolution"');
+    expect(html).toContain('data-region="check-result"');
+    expect(html).toContain('data-check-outcome="success"');
+    expect(html).toContain('data-ability-id="logic"');
+    expect(html).toContain('aria-label="판정 결과: 성공"');
+    expect(html).toContain('⚃ ⚁');
+    expect(html).toContain('2d6 4+2 +논리 2 = 8 / 목표 7');
+    expect(html).toContain('class="check-resolution__verdict">성공</span>');
+  });
+
+  it('omits check resolution banner when check_result is absent', () => {
+    const html = renderStorybookPage(samplePrinterPage());
+    expect(html).not.toContain('class="check-resolution"');
+  });
 });

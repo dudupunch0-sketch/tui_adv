@@ -7,6 +7,7 @@ import type {
   SceneAction,
   SceneBlockedAction,
   ScenePage,
+  CheckResolution,
 } from '../../core/types';
 import { escapeHtml } from './html';
 import { renderStoryHistory } from './history';
@@ -164,14 +165,37 @@ function renderBody(page: ScenePage): string {
   const resultLog = renderInlineResultLog(page);
 
   const pressureNotes = [...page.status_summary.warnings, ...page.pressure_cues.map((cue) => cue.message)];
+  const checkResolution = renderCheckResolution(page);
   return `<section class="storybook-body" data-region="body">
     <p class="storybook-location">${escapeHtml(page.location.name)}</p>
     ${title}
     ${pressureNotes.length ? `<aside class="storybook-pressure" data-region="pressure">${pressureNotes.map((note) => `<p>${escapeHtml(note)}</p>`).join('')}</aside>` : ''}
     ${dialogue}
     ${bodyBlocks}
+    ${checkResolution}
     ${resultLog}
   </section>`;
+}
+
+function renderCheckResolution(page: ScenePage): string {
+  const check: CheckResolution | undefined = page.check_result;
+  if (!check) return '';
+
+  const verdict = check.success ? '성공' : '실패';
+  const outcome = check.success ? 'success' : 'failure';
+
+  const diceGlyphs = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+  const d1 = diceGlyphs[check.dice[0] - 1] ?? '⚀';
+  const d2 = diceGlyphs[check.dice[1] - 1] ?? '⚀';
+  const diceStr = `${d1} ${d2}`;
+
+  const mathText = `2d6 ${check.dice[0]}+${check.dice[1]} +${escapeHtml(check.ability_label)} ${check.ability_value} = ${check.total} / 목표 ${check.difficulty}`;
+
+  return `<aside class="check-resolution" data-region="check-result" data-check-outcome="${outcome}" data-ability-id="${escapeHtml(check.ability_id)}" aria-label="판정 결과: ${verdict}">
+  <span class="check-resolution__dice" aria-hidden="true">${diceStr}</span>
+  <span class="check-resolution__math">${mathText}</span>
+  <span class="check-resolution__verdict">${verdict}</span>
+</aside>`;
 }
 
 function renderBodyBlock(block: BodyBlock): string {

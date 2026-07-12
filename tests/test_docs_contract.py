@@ -1,4 +1,5 @@
 from pathlib import Path
+from plan_content import combined_development_plan
 
 
 def _final_epilogue_source_text() -> str:
@@ -24,7 +25,7 @@ def test_checklist_tracks_completed_terminal_ux_slices():
 
 def test_superlighttui_terminal_polish_is_checklisted_and_documented():
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     readme = Path("README.md").read_text(encoding="utf-8")
     architecture = Path("docs/dev/Rust_Core_Dual_Renderer_Architecture.md").read_text(
         encoding="utf-8"
@@ -48,7 +49,7 @@ def test_superlighttui_terminal_polish_is_checklisted_and_documented():
 
 def test_terminal_app_loop_slice_is_checklisted_and_documented():
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     layout_doc = Path("docs/dev/TUI_Layout.md").read_text(encoding="utf-8")
 
     assert "- [x] `escape-terminal --app` full-screen SuperLightTUI app loop 추가" in checklist
@@ -80,7 +81,7 @@ def test_notion_first_idea_design_workflow_is_documented():
     backlog_order = Path("idea_box/BACKLOG_ORDER.md").read_text(encoding="utf-8")
     intake = Path("idea_box/IDEA_INTAKE_GUIDE.md").read_text(encoding="utf-8")
     handoff = Path("idea_box/LLM_DESIGN_HANDOFF.md").read_text(encoding="utf-8")
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
 
     for doc in (agents, readme, idea_readme, backlog_order, intake, handoff, plan):
@@ -110,7 +111,7 @@ def test_mobile_ink_storybook_ui_doc_is_indexed_checklisted_and_current_plan():
     index = Path("docs/00_Index.md").read_text(encoding="utf-8")
     readme = Path("README.md").read_text(encoding="utf-8")
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     doc_path = Path("docs/design/Mobile_Ink_Storybook_UI.md")
     superseded_path = Path("docs/design/Mobile_Pixel_Storybook_UI.md")
 
@@ -153,7 +154,7 @@ def test_mobile_ink_storybook_ui_doc_is_indexed_checklisted_and_current_plan():
 
 def test_transition_audio_readiness_is_current_active_plan():
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     web_plan = Path("docs/dev/Web_Player_PokeRogue_Style_Plan.md").read_text(encoding="utf-8")
 
     assert "Web Storybook transition/audio readiness" in plan
@@ -339,7 +340,7 @@ def test_combat_system_auto_brawl_doc_is_indexed_and_backlog_done():
     index = Path("docs/00_Index.md").read_text(encoding="utf-8")
     readme = Path("README.md").read_text(encoding="utf-8")
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     idea = Path("idea_box/combat_system.md").read_text(encoding="utf-8")
     doc_path = Path("docs/design/Combat_System_Auto_Brawl.md")
     basic_doc_path = Path("docs/design/Basic_Combat_Action_Model.md")
@@ -379,7 +380,7 @@ def test_storypack_world_model_and_wuxia_pack_are_indexed_and_current():
     readme = Path("README.md").read_text(encoding="utf-8")
     agents = Path("AGENTS.md").read_text(encoding="utf-8")
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     storypack_readme = Path("docs/content/storypacks/README.md").read_text(encoding="utf-8")
     storypack_design = Path("docs/design/Storypack_Encounter_DB.md").read_text(encoding="utf-8")
     backlog_order = Path("idea_box/BACKLOG_ORDER.md").read_text(encoding="utf-8")
@@ -480,7 +481,7 @@ def test_wuxia_runtime_preview_mode_decision_is_documented_before_runtime_conten
     index = Path("docs/00_Index.md").read_text(encoding="utf-8")
     readme = Path("README.md").read_text(encoding="utf-8")
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     schema = Path("docs/dev/Data_Schema.md").read_text(encoding="utf-8")
     world_doc = Path("docs/design/Storypack_World_Model.md").read_text(encoding="utf-8")
     decision_path = Path("docs/dev/Storypack_Runtime_Preview_Mode.md")
@@ -523,7 +524,7 @@ def test_wuxia_commute_rift_arrival_preview_runtime_is_documented_and_indexed():
     index = Path("docs/00_Index.md").read_text(encoding="utf-8")
     readme = Path("README.md").read_text(encoding="utf-8")
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     schema = Path("docs/dev/Data_Schema.md").read_text(encoding="utf-8")
     decision = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(encoding="utf-8")
 
@@ -568,7 +569,7 @@ def test_wuxia_commute_rift_arrival_preview_runtime_is_documented_and_indexed():
 
 
 def test_wuxia_cheongryu_raid_wounded_fallback_runtime_slice_is_docs_synced():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     decision = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
@@ -594,7 +595,7 @@ def test_wuxia_cheongryu_raid_wounded_fallback_runtime_slice_is_docs_synced():
 
 
 def test_wuxia_baekdo_medicine_debt_runtime_slice_is_docs_synced():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     decision = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(encoding="utf-8")
     next_goal = Path("idea_box/next_goal/README.md").read_text(encoding="utf-8")
@@ -616,7 +617,7 @@ def test_wuxia_baekdo_medicine_debt_runtime_slice_is_docs_synced():
 
 
 def test_wuxia_black_heaven_escape_price_runtime_slice_is_docs_synced():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     decision = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
@@ -646,7 +647,7 @@ def test_wuxia_black_heaven_escape_price_runtime_slice_is_docs_synced():
 
 
 def test_wuxia_heavenly_archive_previous_outsiders_runtime_slice_is_docs_synced():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     decision = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
@@ -676,7 +677,7 @@ def test_wuxia_heavenly_archive_previous_outsiders_runtime_slice_is_docs_synced(
 
 
 def test_wuxia_wounded_shelter_dawn_offers_runtime_slice_is_docs_synced():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     decision = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
@@ -713,7 +714,7 @@ def test_wuxia_wounded_shelter_dawn_offers_runtime_slice_is_docs_synced():
 
 
 def test_wuxia_mumyeong_first_sighting_handoff_is_docs_synced():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     decision = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
@@ -744,7 +745,7 @@ def test_wuxia_mumyeong_first_sighting_handoff_is_docs_synced():
 
 
 def test_wuxia_mumyeong_first_sighting_runtime_slice_is_docs_synced():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     decision = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
@@ -780,7 +781,7 @@ def test_wuxia_mumyeong_first_sighting_runtime_slice_is_docs_synced():
 
 
 def test_wuxia_mumyeong_first_confrontation_runtime_slice_is_docs_synced():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     decision = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
@@ -845,7 +846,7 @@ def test_wuxia_mumyeong_first_confrontation_runtime_slice_is_docs_synced():
 
 
 def test_wuxia_mumyeong_copy_style_reveal_runtime_slice_is_docs_synced():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     decision = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
@@ -927,7 +928,7 @@ def test_wuxia_mumyeong_copy_style_reveal_runtime_slice_is_docs_synced():
 
 
 def test_wuxia_mumyeong_reads_orthodox_style_runtime_slice_is_docs_synced():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     decision = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
@@ -1002,7 +1003,7 @@ def test_wuxia_mumyeong_reads_orthodox_style_runtime_slice_is_docs_synced():
 
 
 def test_wuxia_mumyeong_midgame_reunion_runtime_slice_is_docs_synced():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
     next_goal = Path("idea_box/next_goal/README.md").read_text(encoding="utf-8")
@@ -1076,7 +1077,7 @@ def test_wuxia_mumyeong_midgame_reunion_runtime_slice_is_docs_synced():
 
 
 def test_wuxia_boss_first_appearance_runtime_slice_is_docs_synced():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
     next_goal = Path("idea_box/next_goal/README.md").read_text(encoding="utf-8")
@@ -1152,7 +1153,7 @@ def test_wuxia_boss_first_appearance_runtime_slice_is_docs_synced():
 
 
 def test_wuxia_mumyeong_request_for_aid_runtime_slice_is_docs_synced():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
     next_goal = Path("idea_box/next_goal/README.md").read_text(encoding="utf-8")
@@ -1232,7 +1233,7 @@ def test_wuxia_mumyeong_request_for_aid_runtime_slice_is_docs_synced():
 
 
 def test_wuxia_mumyeong_awakening_runtime_slice_is_docs_synced():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
     next_goal = Path("idea_box/next_goal/README.md").read_text(encoding="utf-8")
@@ -1298,7 +1299,7 @@ def test_wuxia_mumyeong_awakening_runtime_slice_is_docs_synced():
 
 
 def test_wuxia_qingliu_attack_after_war_handoff_is_docs_synced():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
     next_goal = Path("idea_box/next_goal/README.md").read_text(encoding="utf-8")
@@ -1364,7 +1365,7 @@ def test_wuxia_qingliu_attack_after_war_handoff_is_docs_synced():
 
 
 def test_wuxia_mumyeong_destroys_orthodox_sect_runtime_slice_is_docs_synced():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
     next_goal = Path("idea_box/next_goal/README.md").read_text(encoding="utf-8")
@@ -1433,7 +1434,7 @@ def test_wuxia_mumyeong_destroys_orthodox_sect_runtime_slice_is_docs_synced():
 
 
 def test_wuxia_boss_recruits_mumyeong_runtime_slice_is_docs_synced():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
     next_goal = Path("idea_box/next_goal/README.md").read_text(encoding="utf-8")
@@ -1499,7 +1500,7 @@ def test_wuxia_boss_recruits_mumyeong_runtime_slice_is_docs_synced():
 
 
 def test_wuxia_boss_recruits_followup_handoff_selects_departure_truth_summary():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
     next_goal = Path("idea_box/next_goal/README.md").read_text(encoding="utf-8")
@@ -1559,7 +1560,7 @@ def test_wuxia_boss_recruits_followup_handoff_selects_departure_truth_summary():
 
 
 def test_wuxia_mumyeong_departure_truth_summary_runtime_slice_is_docs_synced():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
     next_goal = Path("idea_box/next_goal/README.md").read_text(encoding="utf-8")
@@ -1608,7 +1609,7 @@ def test_wuxia_mumyeong_departure_truth_summary_runtime_slice_is_docs_synced():
 
 
 def test_wuxia_departure_truth_summary_followup_selects_seoharin_empty_place():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
     next_goal = Path("idea_box/next_goal/README.md").read_text(encoding="utf-8")
@@ -1682,7 +1683,7 @@ def test_wuxia_departure_truth_summary_followup_selects_seoharin_empty_place():
 
 
 def test_wuxia_seoharin_left_meal_runtime_slice_is_docs_synced():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
     next_goal = Path("idea_box/next_goal/README.md").read_text(encoding="utf-8")
@@ -1762,7 +1763,7 @@ def test_wuxia_seoharin_left_meal_runtime_slice_is_docs_synced():
 def test_wuxia_final_state_routing_contract_is_docs_synced():
     index = Path("docs/00_Index.md").read_text(encoding="utf-8")
     readme = Path("README.md").read_text(encoding="utf-8")
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
     runtime_preview = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(
@@ -1824,7 +1825,7 @@ def test_wuxia_final_state_routing_contract_is_docs_synced():
 
 
 def test_wuxia_sado_final_phase_1_price_tag_runtime_slice_is_docs_synced():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
     runtime_preview = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(
@@ -1893,7 +1894,7 @@ def test_wuxia_sado_final_phase_1_price_tag_runtime_slice_is_docs_synced():
 
 
 def test_wuxia_sado_final_phase_3_outside_calculation_runtime_slice_is_docs_synced():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
     runtime_preview = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(
@@ -2020,7 +2021,7 @@ def test_wuxia_sado_final_phase_3_outside_calculation_runtime_slice_is_docs_sync
 
 def test_wuxia_seoharin_qingliu_resolution_runtime_slice_is_docs_synced():
     readme = Path("README.md").read_text(encoding="utf-8")
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
     runtime_preview = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(
@@ -2098,7 +2099,7 @@ def test_wuxia_seoharin_qingliu_resolution_runtime_slice_is_docs_synced():
 
 def test_wuxia_cheongirok_resolution_runtime_slice_is_docs_synced():
     readme = Path("README.md").read_text(encoding="utf-8")
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
     runtime_preview = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(
@@ -2177,7 +2178,7 @@ def test_wuxia_cheongirok_resolution_runtime_slice_is_docs_synced():
 
 def test_wuxia_black_serpent_aftermath_runtime_slice_is_docs_synced():
     readme = Path("README.md").read_text(encoding="utf-8")
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
     runtime_preview = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(
@@ -2252,7 +2253,7 @@ def test_wuxia_black_serpent_aftermath_runtime_slice_is_docs_synced():
 
 def test_wuxia_final_epilogue_runtime_contract_is_docs_synced():
     readme = Path("README.md").read_text(encoding="utf-8")
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
     runtime_preview = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(
@@ -2310,7 +2311,7 @@ def test_wuxia_final_epilogue_runtime_contract_is_docs_synced():
 
 
 def test_wuxia_return_settlement_epilogue_contract_is_docs_synced():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
     runtime_preview = Path("docs/dev/Storypack_Runtime_Preview_Mode.md").read_text(
@@ -2357,7 +2358,7 @@ def test_wuxia_return_settlement_epilogue_contract_is_docs_synced():
 
 
 def test_wuxia_battle_loss_epilogue_contract_handoff_is_docs_synced():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(
         encoding="utf-8"
@@ -2413,7 +2414,7 @@ def test_wuxia_battle_loss_epilogue_contract_handoff_is_docs_synced():
 
 
 def test_wuxia_battle_loss_epilogue_contract_runtime_is_docs_synced():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(
         encoding="utf-8"
@@ -2492,7 +2493,7 @@ def test_wuxia_battle_loss_epilogue_contract_runtime_is_docs_synced():
 
 
 def test_wuxia_battle_loss_epilogue_followup_handoff_is_docs_synced():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(
         encoding="utf-8"
@@ -2565,7 +2566,7 @@ def test_wuxia_battle_loss_epilogue_followup_handoff_is_docs_synced():
 
 
 def test_wuxia_final_state_canonical_collapse_contract_runtime_is_docs_synced():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(
         encoding="utf-8"
@@ -2668,7 +2669,7 @@ def test_wuxia_final_state_canonical_collapse_contract_runtime_is_docs_synced():
 
 
 def test_wuxia_sado_final_battle_container_runtime_is_docs_synced():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(
         encoding="utf-8"
@@ -2747,7 +2748,7 @@ def test_wuxia_sado_final_battle_container_runtime_is_docs_synced():
 
 
 def test_wuxia_sado_battle_loss_route_bridge_runtime_slice_is_docs_synced():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(
         encoding="utf-8"
@@ -2795,7 +2796,7 @@ def test_wuxia_sado_battle_loss_route_bridge_runtime_slice_is_docs_synced():
 
 
 def test_wuxia_cheonoe_pyeonrin_first_reward_runtime_slice_is_docs_synced():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(
         encoding="utf-8"
@@ -2842,7 +2843,7 @@ def test_wuxia_cheonoe_pyeonrin_first_reward_runtime_slice_is_docs_synced():
 
 
 def test_wuxia_cheonggi_record_writing_sense_is_docs_synced():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
     wuxia_pack = Path("docs/content/storypacks/wuxia_jianghu_pack.md").read_text(
@@ -2877,7 +2878,7 @@ def test_wuxia_cheonggi_record_writing_sense_is_docs_synced():
 
 
 def test_wuxia_cheonoe_pyeonrin_second_reward_is_docs_synced():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     coverage = Path("docs/dev/Notion_Design_Coverage.md").read_text(encoding="utf-8")
     wuxia_pack = Path("docs/content/storypacks/wuxia_jianghu_pack.md").read_text(
@@ -2912,7 +2913,7 @@ def test_wuxia_cheonoe_pyeonrin_second_reward_is_docs_synced():
 
 
 def test_wuxia_return_modern_commute_scene_is_docs_synced():
-    plan = Path('docs/dev/Development_Plan.md').read_text(encoding='utf-8')
+    plan = combined_development_plan()
     checklist = Path('docs/dev/Checklist.md').read_text(encoding='utf-8')
     coverage = Path('docs/dev/Notion_Design_Coverage.md').read_text(encoding='utf-8')
     wuxia_pack = Path('docs/content/storypacks/wuxia_jianghu_pack.md').read_text(
@@ -2945,7 +2946,7 @@ def test_wuxia_return_modern_commute_scene_is_docs_synced():
 
 
 def test_wuxia_settlement_stay_scene_is_docs_synced():
-    plan = Path('docs/dev/Development_Plan.md').read_text(encoding='utf-8')
+    plan = combined_development_plan()
     checklist = Path('docs/dev/Checklist.md').read_text(encoding='utf-8')
     coverage = Path('docs/dev/Notion_Design_Coverage.md').read_text(encoding='utf-8')
     wuxia_pack = Path('docs/content/storypacks/wuxia_jianghu_pack.md').read_text(
@@ -2978,7 +2979,7 @@ def test_wuxia_settlement_stay_scene_is_docs_synced():
 
 
 def test_wuxia_s6_main_ending_type_labels_are_docs_synced():
-    plan = Path('docs/dev/Development_Plan.md').read_text(encoding='utf-8')
+    plan = combined_development_plan()
     checklist = Path('docs/dev/Checklist.md').read_text(encoding='utf-8')
     coverage = Path('docs/dev/Notion_Design_Coverage.md').read_text(encoding='utf-8')
     final_routing = Path('docs/design/Wuxia_Final_State_Routing.md').read_text(

@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+from plan_content import combined_development_plan
 
 
 REQUIRED_VIEWPORTS = ["390x844", "414x896", "800x1440", "810x1644", "1440x1000"]
@@ -70,7 +71,7 @@ def test_storybook_visual_qa_script_names_required_dom_and_interaction_contracts
 def test_storybook_visual_qa_documentation_tracks_tmp_cache_and_report_policy():
     design_doc = Path("docs/design/Mobile_Ink_Storybook_UI.md").read_text(encoding="utf-8")
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
 
     for text in (design_doc, plan):
         assert "qa:storybook:visual" in text

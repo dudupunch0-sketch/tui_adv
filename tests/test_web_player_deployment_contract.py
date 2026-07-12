@@ -1,4 +1,5 @@
 from pathlib import Path
+from plan_content import combined_development_plan
 
 
 def test_vite_config_supports_pages_base_path_env():
@@ -85,7 +86,7 @@ def test_github_pages_workflow_builds_wasm_required_player_and_runs_visual_qa():
 
 
 def test_docs_and_checklist_track_web_player_deployment_readiness_slice():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
     web_plan = Path("docs/dev/Web_Player_PokeRogue_Style_Plan.md").read_text(encoding="utf-8")
 

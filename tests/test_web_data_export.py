@@ -144,7 +144,6 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "world_id": "wuxia_jianghu",
         "storypack_id": "wuxia_jianghu_pack",
         "default_location": "wuxia_commute_rift",
-        "protagonist_name": "당신",
         "progression": {
             "experience_target": 100,
             "label": "천기",

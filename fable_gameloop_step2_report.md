@@ -10,7 +10,7 @@ Date: 2026-07-12
 | F2 | complete | Experience is reachable on every canonical ending route; preview bundles regenerated. |
 | F3 | complete | This report records the post-merge fix cycle. |
 | F4 | pending | Replace the global Path.read_text monkeypatch with explicit active-plan/archive reads. |
-| F5 | pending (optional) | Review the protagonist label and remove the unreachable probability match arm if safe. |
+| F5 | complete | Removed the redundant protagonist override and unreachable probability arm. |
 
 ## Deviations from the parent plan
 

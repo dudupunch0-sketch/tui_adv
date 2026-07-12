@@ -498,6 +498,10 @@ impl ContentIndex {
         self.achievements.values()
     }
 
+    pub fn achievement(&self, id: &str) -> Option<&AchievementDef> {
+        self.achievements.get(id)
+    }
+
     pub fn traits_len(&self) -> usize {
         self.traits.len()
     }

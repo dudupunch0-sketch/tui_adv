@@ -41,6 +41,8 @@ pub struct ScenePage {
     pub character_summary: Option<CharacterSummary>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub progression: Option<ProgressionStatus>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub content_labels: Option<ContentLabels>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -257,6 +259,42 @@ fn scene_page_from_turn_view(
             label: pm.label.clone(),
         });
 
+    let mut labeled_items = Vec::new();
+    for item_id in &state.inventory {
+        if let Some(item_def) = content.item(item_id) {
+            labeled_items.push(LabeledId {
+                id: item_id.clone(),
+                label: item_def.name.clone(),
+            });
+        }
+    }
+
+    let mut labeled_achievements = Vec::new();
+    let newly_unlocked: Vec<String> = Vec::new();
+    let mut ach_set = state.unlocked_achievements.clone();
+    for ach in newly_unlocked {
+        if !ach_set.contains(&ach) {
+            ach_set.push(ach);
+        }
+    }
+    for ach_id in &ach_set {
+        if let Some(ach_def) = content.achievement(ach_id) {
+            labeled_achievements.push(LabeledId {
+                id: ach_id.clone(),
+                label: ach_def.name.clone(),
+            });
+        }
+    }
+
+    let content_labels = if labeled_items.is_empty() && labeled_achievements.is_empty() {
+        None
+    } else {
+        Some(ContentLabels {
+            items: labeled_items,
+            achievements: labeled_achievements,
+        })
+    };
+
     ScenePage {
         mode: mode.clone(),
         title: view.title.clone(),
@@ -298,6 +336,7 @@ fn scene_page_from_turn_view(
         effect_cues: presentation_effect_cues(presentation, view),
         character_summary,
         progression,
+        content_labels,
     }
 }
 
@@ -665,5 +704,17 @@ pub struct ActionCheckInfo {
 pub struct ProgressionStatus {
     pub experience: u32,
     pub target: u32,
+    pub label: String,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ContentLabels {
+    pub items: Vec<LabeledId>,
+    pub achievements: Vec<LabeledId>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct LabeledId {
+    pub id: String,
     pub label: String,
 }

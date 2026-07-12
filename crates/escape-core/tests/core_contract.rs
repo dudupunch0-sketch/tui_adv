@@ -994,3 +994,81 @@ fn test_progression_metadata_visibility() {
     let serialized = serde_json::to_string(&page).unwrap();
     assert!(serialized.contains("\"progression\":{\"experience\":0,\"target\":100,\"label\":\"단계\"}"));
 }
+
+#[test]
+fn content_backed_scene_page_carries_content_labels() {
+    let test_bundle_json = r#"{
+        "schema_version": 1,
+        "kind": "tui_adv.content_bundle",
+        "source": "test",
+        "runtime": {
+            "runtime_mode": "content",
+            "world_id": "test_world",
+            "storypack_id": "test_pack",
+            "default_location": "dev_desk"
+        },
+        "manifest": {
+            "schema_version": 1,
+            "source": "test",
+            "counts": {}
+        },
+        "content": {
+            "locations": [
+                {
+                    "id": "dev_desk",
+                    "name": "내 자리",
+                    "description": "내 개발 자리.",
+                    "connections": []
+                }
+            ],
+            "items": [
+                {
+                    "id": "iron_sword",
+                    "name": "철검",
+                    "description": "평범한 철검이다."
+                }
+            ],
+            "encounters": [],
+            "endings": [],
+            "achievements": [
+                {
+                    "id": "first_kill",
+                    "name": "첫 번째 승리",
+                    "description": "첫 전투에서 이겼다."
+                }
+            ],
+            "secrets": [],
+            "traits": []
+        }
+    }"#;
+
+    let bundle = load_content_bundle(test_bundle_json).expect("test bundle should load");
+    let index = index_content_bundle(&bundle).expect("test bundle should index");
+    let mut state = new_game_from_content(123, &index).expect("test game should start");
+    
+    // empty case
+    let page_empty = scene_page_from_content(&state, &index).expect("build scene page should succeed");
+    assert!(page_empty.content_labels.is_none());
+
+    // inventory & achievement populated
+    state.inventory.push("iron_sword".to_string());
+    state.unlocked_achievements.push("first_kill".to_string());
+    state.inventory.push("missing_item".to_string());
+
+    let page = scene_page_from_content(&state, &index).expect("build scene page should succeed");
+    assert!(page.content_labels.is_some());
+    let labels = page.content_labels.as_ref().unwrap();
+
+    assert_eq!(labels.items.len(), 1);
+    assert_eq!(labels.items[0].id, "iron_sword");
+    assert_eq!(labels.items[0].label, "철검");
+
+    assert_eq!(labels.achievements.len(), 1);
+    assert_eq!(labels.achievements[0].id, "first_kill");
+    assert_eq!(labels.achievements[0].label, "첫 번째 승리");
+
+    let serialized = serde_json::to_string(&page).unwrap();
+    assert!(serialized.contains("\"content_labels\":{"));
+    assert!(serialized.contains("\"id\":\"iron_sword\",\"label\":\"철검\""));
+}
+

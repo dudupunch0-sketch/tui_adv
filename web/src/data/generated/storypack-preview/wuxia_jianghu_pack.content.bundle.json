@@ -39,7 +39,9 @@
               "add_items": [
                 "commuter_badge"
               ],
-              "log": "사원증의 플라스틱 모서리가 손바닥에 남아, 이 몸이 아직 현대의 나임을 붙든다."
+              "experience": 15,
+              "log": "사원증의 플라스틱 모서리가 손바닥에 남아, 이 몸이 아직 현대의 나임을 붙든다.",
+              "set_trait": "wuxia_apprentice"
             }
           },
           {
@@ -50,7 +52,9 @@
                 "wuxia_arrival_hidden"
               ],
               "destination_id": "jianghu_roadside",
-              "log": "출근복 자락을 여미고 흙먼지의 흐름을 따라 관도 가장자리로 물러섰다."
+              "experience": 15,
+              "log": "출근복 자락을 여미고 흙먼지의 흐름을 따라 관도 가장자리로 물러섰다.",
+              "set_trait": "wuxia_apprentice"
             }
           }
         ],
@@ -98,6 +102,7 @@
                 "heuksa_bang_first_fight_resolved",
                 "first_brawl_survived"
               ],
+              "experience": 15,
               "log": "도망은 영웅적이지 않았지만 큰 부상을 피했다. 흑사방이 길목을 어떻게 막는지도 보였다.",
               "resources": {
                 "health": -3
@@ -118,6 +123,7 @@
                 "seo_harin_rescue_interest"
               ],
               "danger": 1,
+              "experience": 15,
               "log": "말은 통했지만 세계관이 달랐다. 설득은 완전한 성공이 아니라 누군가 끼어들 시간을 버는 정도였다.",
               "resources": {
                 "sanity": -2
@@ -237,6 +243,7 @@
               "add_items": [
                 "cheonggi_record_notebook"
               ],
+              "experience": 15,
               "log": "천기록은 방패를 주지 않았다. 대신 맞기 전에 팔과 턱을 어디에 둬야 하는지 복기할 숙제를 남겼다.",
               "resources": {
                 "sanity": -2
@@ -260,6 +267,7 @@
               "add_items": [
                 "cheonggi_record_notebook"
               ],
+              "experience": 15,
               "log": "천기록은 무공 구결이 아니라 도망치며 넘어지지 않는 법을 남겼다. 자세보다 먼저 발이 멈추지 않아야 한다.",
               "resources": {
                 "sanity": -2
@@ -283,6 +291,7 @@
               "add_items": [
                 "cheonggi_record_notebook"
               ],
+              "experience": 15,
               "log": "수첩은 승리담을 요구하지 않았다. 어디서 맞았고 왜 늦었는지 적는 순간, 실패가 다음 수련의 첫 줄이 되었다.",
               "resources": {
                 "sanity": -3
@@ -305,6 +314,7 @@
               "add_items": [
                 "cheonggi_record_notebook"
               ],
+              "experience": 15,
               "log": "글자는 아직 사라지지 않았다. 답을 고르기 전에, 이것이 검색창도 즉시 성장도 아니라는 사실부터 받아들였다.",
               "resources": {
                 "sanity": -1
@@ -4687,7 +4697,8 @@
               "log": "너는 무명에게 누구의 초식이 더 강한지 묻지 않는다. 자기 흐름을 묻자, 훔친 형식의 틈 사이로 처음 듣는 호흡이 남는다. 천기록은 이것을 귀환이 아니라 후계 구도 억제와 두 번째 목검 후보로 적는다.",
               "resources": {
                 "sanity": -2
-              }
+              },
+              "set_trait": "wuxia_swordmaster"
             }
           },
           {
@@ -5851,7 +5862,19 @@
         ]
       }
     ],
-    "secrets": []
+    "secrets": [],
+    "traits": [
+      {
+        "description": "청류문에서 기초 무예를 닦기 시작한 초학자.",
+        "id": "wuxia_apprentice",
+        "name": "청류문 초학자"
+      },
+      {
+        "description": "무명과의 비무를 통해 진정한 청류의 검의 흐름을 터득한 검호.",
+        "id": "wuxia_swordmaster",
+        "name": "청류검호"
+      }
+    ]
   },
   "kind": "tui_adv.content_bundle",
   "manifest": {
@@ -5861,13 +5884,19 @@
       "endings": 2,
       "items": 4,
       "locations": 5,
-      "secrets": 0
+      "secrets": 0,
+      "traits": 2
     },
     "schema_version": 1,
     "source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/*.yaml"
   },
   "runtime": {
     "default_location": "wuxia_commute_rift",
+    "progression": {
+      "experience_target": 100,
+      "label": "천기"
+    },
+    "protagonist_name": "당신",
     "runtime_mode": "storypack_preview",
     "storypack_id": "wuxia_jianghu_pack",
     "world_id": "wuxia_jianghu"

@@ -12,7 +12,7 @@ pub use content::{
     AchievementDef, ChoiceDef, ContentBundle, ContentBundleError, ContentConditions, ContentIndex,
     ContentIndexError, ContentManifest, ContentSections, EncounterDef, EndingDef, ItemDef,
     LocationDef, OutcomeDef, PresentationDef, PresentationEffectCue, PublicSecretDef, ResourceMap,
-    RuntimeMetadata, CONTENT_BUNDLE_KIND, CONTENT_BUNDLE_SCHEMA_VERSION,
+    RuntimeMetadata, TraitDef, CONTENT_BUNDLE_KIND, CONTENT_BUNDLE_SCHEMA_VERSION,
 };
 pub use effects::{printer_glyph_anomaly_cue, EffectCue, GlyphAnomalyCue};
 pub use save::{load_state, save_state, SaveEnvelope, SaveError, SAVE_SCHEMA_VERSION};
@@ -24,7 +24,7 @@ pub use scene_page::{
 pub use state::{GameState, NewGameError, PlayerState, DEFAULT_START_LOCATION_ID};
 pub use turn::{
     ActionError, ActionResult, ActionView, BlockedActionView, ContentActionError, ContentTurnError,
-    TurnView,
+    TurnView, ability_label, ability_check_success_percent,
 };
 
 pub fn new_game(seed: u64) -> GameState {

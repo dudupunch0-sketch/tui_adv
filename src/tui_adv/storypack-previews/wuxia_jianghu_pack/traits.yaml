@@ -1,0 +1,7 @@
+traits:
+  - id: wuxia_apprentice
+    name: 청류문 초학자
+    description: 청류문에서 기초 무예를 닦기 시작한 초학자.
+  - id: wuxia_swordmaster
+    name: 청류검호
+    description: 무명과의 비무를 통해 진정한 청류의 검의 흐름을 터득한 검호.

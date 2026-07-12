@@ -47,6 +47,16 @@ pub struct RuntimeMetadata {
     pub world_id: String,
     pub storypack_id: String,
     pub default_location: String,
+    #[serde(default)]
+    pub protagonist_name: Option<String>,
+    #[serde(default)]
+    pub progression: Option<ProgressionMetadata>,
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
+pub struct ProgressionMetadata {
+    pub experience_target: u32,
+    pub label: String,
 }
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
@@ -64,7 +74,10 @@ pub struct ContentSections {
     pub endings: Vec<Value>,
     pub achievements: Vec<Value>,
     pub secrets: Vec<Value>,
+    #[serde(default)]
+    pub traits: Vec<Value>,
 }
+
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum ContentBundleError {
@@ -97,6 +110,18 @@ pub enum ContentIndexError {
         ending_id: String,
         location_id: String,
     },
+    UnknownTrait {
+        encounter_id: String,
+        trait_id: String,
+    },
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
+pub struct TraitDef {
+    pub id: String,
+    pub name: String,
+    #[serde(default)]
+    pub description: String,
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -107,7 +132,10 @@ pub struct ContentIndex {
     endings: BTreeMap<String, EndingDef>,
     achievements: BTreeMap<String, AchievementDef>,
     secrets: BTreeMap<String, PublicSecretDef>,
+    traits: BTreeMap<String, TraitDef>,
+    pub runtime: Option<RuntimeMetadata>,
 }
+
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
 pub struct LocationDef {
@@ -143,6 +171,8 @@ pub struct ContentConditions {
     pub max_resources: ResourceMap,
     #[serde(default)]
     pub min_abilities: ResourceMap,
+    #[serde(default)]
+    pub min_experience: Option<u32>,
 }
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
@@ -243,6 +273,10 @@ pub struct OutcomeDef {
     pub danger: i32,
     #[serde(default)]
     pub resources: ResourceMap,
+    #[serde(default)]
+    pub set_trait: Option<String>,
+    #[serde(default)]
+    pub experience: Option<i32>,
 }
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
@@ -394,6 +428,13 @@ impl std::fmt::Display for ContentIndexError {
                 formatter,
                 "ending {ending_id} references unknown location: {location_id}"
             ),
+            ContentIndexError::UnknownTrait {
+                encounter_id,
+                trait_id,
+            } => write!(
+                formatter,
+                "encounter {encounter_id} references unknown trait: {trait_id}"
+            ),
         }
     }
 }
@@ -456,6 +497,18 @@ impl ContentIndex {
     pub fn achievements(&self) -> impl Iterator<Item = &AchievementDef> {
         self.achievements.values()
     }
+
+    pub fn traits_len(&self) -> usize {
+        self.traits.len()
+    }
+
+    pub fn trait_def(&self, id: &str) -> Option<&TraitDef> {
+        self.traits.get(id)
+    }
+
+    pub fn traits(&self) -> impl Iterator<Item = &TraitDef> {
+        self.traits.values()
+    }
 }
 
 pub fn load_content_bundle(json_text: &str) -> Result<ContentBundle, ContentBundleError> {
@@ -493,10 +546,18 @@ pub fn index_content_bundle(bundle: &ContentBundle) -> Result<ContentIndex, Cont
         insert_unique("items", &mut items, item.id.clone(), item)?;
     }
 
+    let mut traits = BTreeMap::new();
+    for trait_value in &bundle.content.traits {
+        let trait_def: TraitDef = parse_section_value("traits", trait_value)?;
+        insert_unique("traits", &mut traits, trait_def.id.clone(), trait_def)?;
+    }
+    let trait_ids: BTreeSet<&str> = traits.keys().map(String::as_str).collect();
+
     let mut encounters = BTreeMap::new();
     for encounter_value in &bundle.content.encounters {
         let encounter = parse_encounter(encounter_value)?;
         validate_encounter_locations(&encounter, &location_ids)?;
+        validate_encounter_traits(&encounter, &trait_ids)?;
         insert_unique(
             "encounters",
             &mut encounters,
@@ -536,6 +597,8 @@ pub fn index_content_bundle(bundle: &ContentBundle) -> Result<ContentIndex, Cont
         endings,
         achievements,
         secrets,
+        traits,
+        runtime: bundle.runtime.clone(),
     })
 }
 
@@ -694,6 +757,36 @@ fn validate_ending_locations(
             return Err(ContentIndexError::UnknownEndingLocation {
                 ending_id: ending.id.clone(),
                 location_id: location_id.clone(),
+            });
+        }
+    }
+    Ok(())
+}
+
+fn validate_encounter_traits(
+    encounter: &EncounterDef,
+    trait_ids: &BTreeSet<&str>,
+) -> Result<(), ContentIndexError> {
+    for choice in &encounter.choices {
+        validate_outcome_traits(&encounter.id, &choice.outcome, trait_ids)?;
+        if let Some(check) = &choice.check {
+            validate_outcome_traits(&encounter.id, &check.success, trait_ids)?;
+            validate_outcome_traits(&encounter.id, &check.failure, trait_ids)?;
+        }
+    }
+    Ok(())
+}
+
+fn validate_outcome_traits(
+    encounter_id: &str,
+    outcome: &OutcomeDef,
+    trait_ids: &BTreeSet<&str>,
+) -> Result<(), ContentIndexError> {
+    if let Some(ref trait_id) = outcome.set_trait {
+        if !trait_ids.contains(trait_id.as_str()) {
+            return Err(ContentIndexError::UnknownTrait {
+                encounter_id: encounter_id.to_string(),
+                trait_id: trait_id.clone(),
             });
         }
     }

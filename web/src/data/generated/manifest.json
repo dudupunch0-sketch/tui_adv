@@ -5,7 +5,8 @@
     "endings": 13,
     "items": 13,
     "locations": 16,
-    "secrets": 3
+    "secrets": 3,
+    "traits": 0
   },
   "schema_version": 1,
   "source": "src/tui_adv/data/*.yaml"

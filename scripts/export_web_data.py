@@ -16,6 +16,7 @@ DATA_FILES: tuple[tuple[str, str, str], ...] = (
     ("encounters", "encounters", "encounters.json"),
     ("endings", "endings", "endings.json"),
     ("achievements", "achievements", "achievements.json"),
+    ("traits", "traits", "traits.json"),
     ("secrets.example", "secrets", "secrets.example.json"),
 )
 CONTENT_BUNDLE_SCHEMA_VERSION = 1
@@ -31,6 +32,11 @@ STORYPACK_PREVIEWS: dict[str, dict[str, Any]] = {
             "world_id": "wuxia_jianghu",
             "storypack_id": "wuxia_jianghu_pack",
             "default_location": "wuxia_commute_rift",
+            "protagonist_name": "당신",
+            "progression": {
+                "experience_target": 100,
+                "label": "천기"
+            }
         },
     },
 }

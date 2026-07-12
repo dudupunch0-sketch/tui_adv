@@ -7,6 +7,7 @@ import {
   OFFICE_RUST_SAVE_KEY,
   PLAYER_SETTINGS_KEY,
   RUST_SAVE_KEY,
+  readRunMetadata,
   type StorageLike,
 } from '../core/storage';
 
@@ -63,6 +64,12 @@ export function renderStartScreen(model: StartScreenModel): string {
   const confirmation = model.confirmReset ? renderResetConfirmation() : '';
   const previewPanel = renderStorypackPreviewPanel(model.storypackPreviews ?? []);
 
+  const storage = typeof window !== 'undefined' ? window.localStorage : { getItem: () => null, setItem: () => {}, removeItem: () => {} };
+  const meta = readRunMetadata(storage);
+  const runCountText = meta.run_count > 0 ? `${meta.run_count + 1}번째 기록` : '첫 번째 기록';
+  const endingsCount = meta.endings_seen.length;
+  const endingsText = endingsCount > 0 ? ` · 지금까지 본 결말 ${endingsCount}편` : '';
+
   return `
 <main class="storybook-shell storybook-start" data-app="tui-adv" data-renderer="web-storybook" data-player-screen="start">
   <section class="start-hero" aria-label="게임 시작">
@@ -81,6 +88,7 @@ export function renderStartScreen(model: StartScreenModel): string {
     <div class="start-logo-lockup">
       <h1>이구학지</h1>
       <p>天記錄 — 천기록</p>
+      <div class="start-meta-indicator">${escapeHtml(runCountText)}${escapeHtml(endingsText)}</div>
     </div>
     <section class="start-menu-drawer" data-start-menu-open="false">
       <button type="button" class="start-tap-button" data-player-action="open-start-menu">천기록을 연다</button>

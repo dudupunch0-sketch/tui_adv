@@ -9,6 +9,7 @@ use crate::resources::{
 };
 use crate::state::{GameHistoryEntry, GameState, PlayerState};
 use crate::turn::{content_turn_view, ActionView, BlockedActionView, ContentTurnError, TurnView};
+use crate::ability_label;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -36,6 +37,10 @@ pub struct ScenePage {
     pub achievement_summary: AchievementSummary,
     pub pressure_cues: Vec<PressureCue>,
     pub effect_cues: Vec<SceneEffectCue>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub character_summary: Option<CharacterSummary>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub progression: Option<ProgressionStatus>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -84,21 +89,25 @@ pub struct SceneVisual {
     pub source_id: Option<String>,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SceneAction {
     pub id: String,
     pub label: String,
     pub kind: String,
     pub cost_text: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub check: Option<ActionCheckInfo>,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SceneBlockedAction {
     pub id: String,
     pub label: String,
     pub kind: String,
     pub cost_text: Option<String>,
     pub reasons: Vec<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub check: Option<ActionCheckInfo>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -208,6 +217,46 @@ fn scene_page_from_turn_view(
         })
         .unwrap_or_default();
 
+    let character_summary = if location.id == "printer_area" {
+        None
+    } else {
+        let name = content
+            .runtime
+            .as_ref()
+            .and_then(|r| r.protagonist_name.as_ref())
+            .cloned()
+            .unwrap_or_else(|| "당신".to_string());
+        let title_label = state
+            .trait_id
+            .as_ref()
+            .and_then(|tid| content.trait_def(tid))
+            .map(|t| t.name.clone());
+        let ability_ids = ["logic", "empathy", "volition", "composure", "interface", "physical"];
+        let abilities = ability_ids
+            .iter()
+            .map(|&id| AbilityStatus {
+                id: id.to_string(),
+                label: ability_label(id).to_string(),
+                value: state.player.abilities.get(id).copied().unwrap_or(0),
+            })
+            .collect();
+        Some(CharacterSummary {
+            name,
+            title_label,
+            abilities,
+        })
+    };
+
+    let progression = content
+        .runtime
+        .as_ref()
+        .and_then(|r| r.progression.as_ref())
+        .map(|pm| ProgressionStatus {
+            experience: state.experience,
+            target: pm.experience_target,
+            label: pm.label.clone(),
+        });
+
     ScenePage {
         mode: mode.clone(),
         title: view.title.clone(),
@@ -226,11 +275,15 @@ fn scene_page_from_turn_view(
             alt: view.title.clone(),
             source_id: Some(source_id),
         },
-        actions: view.actions.iter().map(scene_action).collect(),
+        actions: view
+            .actions
+            .iter()
+            .map(|a| scene_action(a, encounter, &state.player))
+            .collect(),
         blocked_actions: view
             .blocked_actions
             .iter()
-            .map(scene_blocked_action)
+            .map(|a| scene_blocked_action(a, encounter, &state.player))
             .collect(),
         history_entries: state.history.iter().map(history_entry).collect(),
         inventory_summary: InventorySummary {
@@ -243,6 +296,8 @@ fn scene_page_from_turn_view(
         },
         pressure_cues: pressure_cues(&state.player),
         effect_cues: presentation_effect_cues(presentation, view),
+        character_summary,
+        progression,
     }
 }
 
@@ -458,22 +513,63 @@ fn severity_for_high_pressure(value: i32, critical_at: i32) -> String {
     .to_string()
 }
 
-fn scene_action(action: &ActionView) -> SceneAction {
+fn build_action_check_info(
+    check: &crate::content::AbilityCheckDef,
+    player: &PlayerState,
+) -> ActionCheckInfo {
+    let ability_value = player.abilities.get(&check.ability).copied().unwrap_or(0);
+    let success_percent = crate::turn::ability_check_success_percent(ability_value, check.difficulty);
+    ActionCheckInfo {
+        ability_id: check.ability.clone(),
+        ability_label: ability_label(&check.ability).to_string(),
+        success_percent,
+    }
+}
+
+fn scene_action(
+    action: &ActionView,
+    encounter: Option<&EncounterDef>,
+    player: &PlayerState,
+) -> SceneAction {
+    let check = encounter.and_then(|enc| {
+        if action.id.starts_with(ACTION_PREFIX_CHOICE) {
+            let choice_id = &action.id[ACTION_PREFIX_CHOICE.len()..];
+            enc.choices.iter().find(|c| c.id == choice_id).and_then(|c| c.check.as_ref())
+        } else {
+            None
+        }
+    }).map(|c| build_action_check_info(c, player));
+
     SceneAction {
         id: action.id.clone(),
         label: action.label.clone(),
         kind: action_kind(&action.id).to_string(),
         cost_text: action.cost_summary.clone(),
+        check,
     }
 }
 
-fn scene_blocked_action(action: &BlockedActionView) -> SceneBlockedAction {
+fn scene_blocked_action(
+    action: &BlockedActionView,
+    encounter: Option<&EncounterDef>,
+    player: &PlayerState,
+) -> SceneBlockedAction {
+    let check = encounter.and_then(|enc| {
+        if action.id.starts_with(ACTION_PREFIX_CHOICE) {
+            let choice_id = &action.id[ACTION_PREFIX_CHOICE.len()..];
+            enc.choices.iter().find(|c| c.id == choice_id).and_then(|c| c.check.as_ref())
+        } else {
+            None
+        }
+    }).map(|c| build_action_check_info(c, player));
+
     SceneBlockedAction {
         id: action.id.clone(),
         label: action.label.clone(),
         kind: action_kind(&action.id).to_string(),
         cost_text: action.cost_summary.clone(),
         reasons: action.reasons.clone(),
+        check,
     }
 }
 
@@ -541,4 +637,33 @@ fn action_kind(action_id: &str) -> &str {
     } else {
         "unknown"
     }
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct CharacterSummary {
+    pub name: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub title_label: Option<String>,
+    pub abilities: Vec<AbilityStatus>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct AbilityStatus {
+    pub id: String,
+    pub label: String,
+    pub value: i32,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct ActionCheckInfo {
+    pub ability_id: String,
+    pub ability_label: String,
+    pub success_percent: f32,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ProgressionStatus {
+    pub experience: u32,
+    pub target: u32,
+    pub label: String,
 }

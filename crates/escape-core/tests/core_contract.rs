@@ -2,6 +2,7 @@ use escape_core::{
     apply_action, apply_action_from_content, index_content_bundle, load_content_bundle, load_state,
     new_game, new_game_from_content, new_game_from_content_at, save_state, scene_page_from_content,
     turn_view, turn_view_from_content, ContentTurnError, EffectCue, NewGameError, SceneMode,
+    SaveEnvelope, ability_check_success_percent,
 };
 
 use serde_json::json;
@@ -550,4 +551,446 @@ fn content_backed_action_applies_destination_and_flags() {
         result.logs,
         vec!["서버실 문은 열리지 않았지만, 당신은 이미 문 안쪽에 서 있었다.".to_string()]
     );
+}
+
+#[test]
+fn test_character_summary_serialization_shape() {
+    let bundle = load_content_bundle(CONTENT_BUNDLE).expect("content bundle should load");
+    let index = index_content_bundle(&bundle).expect("content bundle should index");
+    let state = new_game_from_content(123, &index).expect("content-backed game should start");
+    let page = scene_page_from_content(&state, &index).expect("build scene page should succeed");
+    
+    assert!(page.character_summary.is_some());
+    let summary = page.character_summary.as_ref().unwrap();
+    assert_eq!(summary.name, "당신");
+    assert_eq!(summary.title_label, None);
+    assert_eq!(summary.abilities.len(), 6);
+    assert_eq!(summary.abilities[0].id, "logic");
+    assert_eq!(summary.abilities[1].id, "empathy");
+
+    let serialized = serde_json::to_string(&page).unwrap();
+    assert!(!serialized.contains("\"title_label\""));
+    assert!(!serialized.contains("\"progression\""));
+}
+
+#[test]
+fn test_character_summary_with_trait() {
+    let test_bundle_json = r#"{
+        "schema_version": 1,
+        "kind": "tui_adv.content_bundle",
+        "source": "test",
+        "runtime": {
+            "runtime_mode": "content",
+            "world_id": "test_world",
+            "storypack_id": "test_pack",
+            "default_location": "dev_desk",
+            "protagonist_name": "당가인"
+        },
+        "manifest": {
+            "schema_version": 1,
+            "source": "test",
+            "counts": {}
+        },
+        "content": {
+            "locations": [
+                {
+                    "id": "dev_desk",
+                    "name": "내 자리",
+                    "description": "내 개발 자리.",
+                    "connections": []
+                }
+            ],
+            "items": [],
+            "encounters": [],
+            "endings": [],
+            "achievements": [],
+            "secrets": [],
+            "traits": [
+                {
+                    "id": "sword_master",
+                    "name": "검호",
+                    "description": "검의 달인"
+                }
+            ]
+        }
+    }"#;
+    let bundle = load_content_bundle(test_bundle_json).expect("test bundle should load");
+    let index = index_content_bundle(&bundle).expect("test bundle should index");
+    let mut state = new_game_from_content(123, &index).expect("test game should start");
+    state.trait_id = Some("sword_master".to_string());
+
+    let page = scene_page_from_content(&state, &index).expect("build scene page should succeed");
+    assert!(page.character_summary.is_some());
+    let summary = page.character_summary.as_ref().unwrap();
+    assert_eq!(summary.name, "당가인");
+    assert_eq!(summary.title_label, Some("검호".to_string()));
+
+    let serialized = serde_json::to_string(&page).unwrap();
+    assert!(serialized.contains("\"title_label\":\"검호\""));
+}
+
+#[test]
+fn test_old_save_compat() {
+    let old_save_json = r#"{
+        "schema_version": 1,
+        "state": {
+            "seed": 123,
+            "turn": 4,
+            "location_id": "dev_desk",
+            "disaster_type": "fire",
+            "danger": 2,
+            "player": {
+                "health": 85,
+                "sanity": 90,
+                "battery": 75,
+                "hunger": 10,
+                "thirst": 5,
+                "abilities": {
+                    "logic": 3,
+                    "empathy": 2,
+                    "volition": 2,
+                    "composure": 2,
+                    "interface": 2,
+                    "physical": 3
+                }
+            },
+            "inventory": ["clue_item"],
+            "flags": ["server_room_entered"],
+            "clues": [],
+            "seen_encounters": [],
+            "unlocked_achievements": [],
+            "history": []
+        }
+    }"#;
+
+    let envelope: SaveEnvelope = serde_json::from_str(old_save_json).expect("should deserialize old save envelope");
+    let state = load_state(&envelope).expect("should load old save state successfully");
+
+    assert_eq!(state.seed, 123);
+    assert_eq!(state.trait_id, None);
+    assert_eq!(state.experience, 0);
+}
+
+#[test]
+fn test_ability_check_success_percent() {
+    // need <= 2
+    assert_eq!(ability_check_success_percent(0, 2), 100.0);
+    assert_eq!(ability_check_success_percent(10, 5), 100.0);
+
+    // need > 12
+    assert_eq!(ability_check_success_percent(0, 13), 0.0);
+
+    // need = 7
+    // P(2d6 >= 7) = 21 / 36 = 58.333... -> 58.3%
+    assert_eq!(ability_check_success_percent(0, 7), 58.3);
+
+    // need = 12
+    // P(2d6 >= 12) = 1 / 36 = 2.777... -> 2.8%
+    assert_eq!(ability_check_success_percent(0, 12), 2.8);
+
+    // need = 3
+    // P(2d6 >= 3) = 35 / 36 = 97.222... -> 97.2%
+    assert_eq!(ability_check_success_percent(0, 3), 97.2);
+}
+
+#[test]
+fn test_delta_logs_and_trait_change() {
+    let test_bundle_json = r#"{
+        "schema_version": 1,
+        "kind": "tui_adv.content_bundle",
+        "source": "test",
+        "runtime": {
+            "runtime_mode": "content",
+            "world_id": "test_world",
+            "storypack_id": "test_pack",
+            "default_location": "dev_desk"
+        },
+        "manifest": {
+            "schema_version": 1,
+            "source": "test",
+            "counts": {}
+        },
+        "content": {
+            "locations": [
+                {
+                    "id": "dev_desk",
+                    "name": "내 자리",
+                    "description": "내 개발 자리.",
+                    "connections": []
+                }
+            ],
+            "items": [
+                {
+                    "id": "wood_sword",
+                    "name": "목검",
+                    "usable": false,
+                    "use_effects": {}
+                }
+            ],
+            "encounters": [
+                {
+                    "id": "test_encounter",
+                    "weight": 1,
+                    "conditions": {
+                        "locations": ["dev_desk"]
+                    },
+                    "title": "테스트",
+                    "body": "테스트 바디",
+                    "choices": [
+                        {
+                            "id": "test_choice",
+                            "label": "선택",
+                            "cost": {},
+                            "outcome": {
+                                "log": "기본 서사 로그.",
+                                "resources": {
+                                    "health": 10,
+                                    "sanity": -5
+                                },
+                                "add_items": ["wood_sword"],
+                                "set_trait": "sword_master",
+                                "experience": 15
+                            }
+                        }
+                    ]
+                }
+            ],
+            "endings": [],
+            "achievements": [],
+            "secrets": [],
+            "traits": [
+                {
+                    "id": "sword_master",
+                    "name": "검호",
+                    "description": "검의 달인"
+                },
+                {
+                    "id": "beginner",
+                    "name": "초심자",
+                    "description": "초심자"
+                }
+            ]
+        }
+    }"#;
+
+    let bundle = load_content_bundle(test_bundle_json).expect("test bundle should load");
+    let index = index_content_bundle(&bundle).expect("test bundle should index");
+    let mut state = new_game_from_content(123, &index).expect("test game should start");
+    
+    // Set initial values
+    state.trait_id = Some("beginner".to_string());
+    state.player.health = 80;
+    state.player.sanity = 80;
+
+    let result = apply_action_from_content(&state, &index, "choice:test_choice")
+        .expect("action should resolve");
+
+    assert_eq!(
+        result.logs,
+        vec![
+            "기본 서사 로그.".to_string(),
+            "+ 체력 10".to_string(),
+            "- 정신력 5".to_string(),
+            "+ 목검".to_string(),
+            "- 특성: 초심자".to_string(),
+            "+ 특성: 검호".to_string(),
+            "+ 경험 15".to_string(),
+        ]
+    );
+
+    assert_eq!(result.state.player.health, 90);
+    assert_eq!(result.state.player.sanity, 75);
+    assert_eq!(result.state.trait_id, Some("sword_master".to_string()));
+    assert_eq!(result.state.experience, 15);
+}
+
+#[test]
+fn test_min_experience_condition_matching() {
+    let test_bundle_json = r#"{
+        "schema_version": 1,
+        "kind": "tui_adv.content_bundle",
+        "source": "test",
+        "runtime": {
+            "runtime_mode": "content",
+            "world_id": "test_world",
+            "storypack_id": "test_pack",
+            "default_location": "dev_desk"
+        },
+        "manifest": {
+            "schema_version": 1,
+            "source": "test",
+            "counts": {}
+        },
+        "content": {
+            "locations": [
+                {
+                    "id": "dev_desk",
+                    "name": "내 자리",
+                    "description": "내 개발 자리.",
+                    "connections": []
+                }
+            ],
+            "items": [],
+            "encounters": [
+                {
+                    "id": "test_encounter",
+                    "weight": 1,
+                    "conditions": {
+                        "locations": ["dev_desk"],
+                        "min_experience": 10
+                    },
+                    "title": "테스트",
+                    "body": "테스트 바디",
+                    "choices": [
+                        {
+                            "id": "test_choice",
+                            "label": "선택",
+                            "cost": {},
+                            "outcome": {
+                                "log": "완료"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "endings": [],
+            "achievements": [],
+            "secrets": [],
+            "traits": []
+        }
+    }"#;
+
+    let bundle = load_content_bundle(test_bundle_json).expect("test bundle should load");
+    let index = index_content_bundle(&bundle).expect("content bundle should index");
+    let mut state = new_game_from_content(123, &index).expect("test game should start");
+    
+    state.experience = 0;
+    let view = turn_view_from_content(&state, &index).expect("should render turn view");
+    assert_eq!(view.encounter_id, None);
+
+    state.experience = 10;
+    let view = turn_view_from_content(&state, &index).expect("should render turn view");
+    assert_eq!(view.encounter_id, Some("test_encounter".to_string()));
+}
+
+#[test]
+fn test_experience_delta_negative_cap() {
+    let test_bundle_json = r#"{
+        "schema_version": 1,
+        "kind": "tui_adv.content_bundle",
+        "source": "test",
+        "runtime": {
+            "runtime_mode": "content",
+            "world_id": "test_world",
+            "storypack_id": "test_pack",
+            "default_location": "dev_desk"
+        },
+        "manifest": {
+            "schema_version": 1,
+            "source": "test",
+            "counts": {}
+        },
+        "content": {
+            "locations": [
+                {
+                    "id": "dev_desk",
+                    "name": "내 자리",
+                    "description": "내 개발 자리.",
+                    "connections": []
+                }
+            ],
+            "items": [],
+            "encounters": [
+                {
+                    "id": "test_encounter",
+                    "weight": 1,
+                    "conditions": {
+                        "locations": ["dev_desk"]
+                    },
+                    "title": "테스트",
+                    "body": "테스트 바디",
+                    "choices": [
+                        {
+                            "id": "test_choice",
+                            "label": "선택",
+                            "cost": {},
+                            "outcome": {
+                                "log": "완료",
+                                "experience": -50
+                            }
+                        }
+                    ]
+                }
+            ],
+            "endings": [],
+            "achievements": [],
+            "secrets": [],
+            "traits": []
+        }
+    }"#;
+
+    let bundle = load_content_bundle(test_bundle_json).expect("test bundle should load");
+    let index = index_content_bundle(&bundle).expect("test bundle should index");
+    let mut state = new_game_from_content(123, &index).expect("test game should start");
+    state.experience = 10;
+
+    let result = apply_action_from_content(&state, &index, "choice:test_choice")
+        .expect("action should resolve");
+
+    assert_eq!(result.state.experience, 0);
+    assert_eq!(result.logs[1], "- 경험 50");
+}
+
+#[test]
+fn test_progression_metadata_visibility() {
+    let test_bundle_json_with_prog = r#"{
+        "schema_version": 1,
+        "kind": "tui_adv.content_bundle",
+        "source": "test",
+        "runtime": {
+            "runtime_mode": "content",
+            "world_id": "test_world",
+            "storypack_id": "test_pack",
+            "default_location": "dev_desk",
+            "progression": {
+                "experience_target": 100,
+                "label": "단계"
+            }
+        },
+        "manifest": {
+            "schema_version": 1,
+            "source": "test",
+            "counts": {}
+        },
+        "content": {
+            "locations": [
+                {
+                    "id": "dev_desk",
+                    "name": "내 자리",
+                    "description": "내 개발 자리.",
+                    "connections": []
+                }
+            ],
+            "items": [],
+            "encounters": [],
+            "endings": [],
+            "achievements": [],
+            "secrets": [],
+            "traits": []
+        }
+    }"#;
+
+    let bundle = load_content_bundle(test_bundle_json_with_prog).expect("test bundle should load");
+    let index = index_content_bundle(&bundle).expect("test bundle should index");
+    let state = new_game_from_content(123, &index).expect("test game should start");
+    let page = scene_page_from_content(&state, &index).expect("build scene page should succeed");
+
+    assert!(page.progression.is_some());
+    let prog = page.progression.as_ref().unwrap();
+    assert_eq!(prog.experience, 0);
+    assert_eq!(prog.target, 100);
+    assert_eq!(prog.label, "단계");
+
+    let serialized = serde_json::to_string(&page).unwrap();
+    assert!(serialized.contains("\"progression\":{\"experience\":0,\"target\":100,\"label\":\"단계\"}"));
 }

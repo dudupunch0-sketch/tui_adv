@@ -1072,3 +1072,130 @@ fn content_backed_scene_page_carries_content_labels() {
     assert!(serialized.contains("\"id\":\"iron_sword\",\"label\":\"철검\""));
 }
 
+#[test]
+fn test_check_resolution_lifecycle_and_regression() {
+    let test_bundle_json = r#"{
+        "schema_version": 1,
+        "kind": "tui_adv.content_bundle",
+        "source": "test",
+        "runtime": {
+            "runtime_mode": "content",
+            "world_id": "test_world",
+            "storypack_id": "test_pack",
+            "default_location": "dev_desk"
+        },
+        "manifest": {
+            "schema_version": 1,
+            "source": "test",
+            "counts": {}
+        },
+        "content": {
+            "locations": [
+                {
+                    "id": "dev_desk",
+                    "name": "내 자리",
+                    "description": "내 개발 자리.",
+                    "connections": ["other_desk"]
+                },
+                {
+                    "id": "other_desk",
+                    "name": "다른 자리",
+                    "description": "다른 개발 자리.",
+                    "connections": []
+                }
+            ],
+            "items": [],
+            "encounters": [
+                {
+                    "id": "test_encounter",
+                    "title": "테스트 인카운터",
+                    "body": "테스트 바디",
+                    "choices": [
+                        {
+                            "id": "checked_choice",
+                            "label": "체크 선택지",
+                            "check": {
+                                "ability": "logic",
+                                "difficulty": 9,
+                                "success": { "log": "성공!" },
+                                "failure": { "log": "실패!" }
+                            }
+                        },
+                        {
+                            "id": "normal_choice",
+                            "label": "일반 선택지",
+                            "outcome": { "log": "일반 선택" }
+                        }
+                    ]
+                }
+            ],
+            "endings": [],
+            "achievements": [],
+            "secrets": [],
+            "traits": []
+        }
+    }"#;
+
+    let bundle = load_content_bundle(test_bundle_json).expect("test bundle should load");
+    let index = index_content_bundle(&bundle).expect("test bundle should index");
+    let state = new_game_from_content(123, &index).expect("test game should start");
+
+    // 1. Regression test for hashing (same seed/turn/ability/difficulty => same dice)
+    let res = escape_core::resolve_ability_check(&state, "logic", 9);
+    assert_eq!(res.dice, (1, 1));
+    assert_eq!(res.ability_value, 2);
+    assert_eq!(res.total, 4);
+    assert_eq!(res.success, false);
+
+    // 2. Lifecycle: not set at start
+    assert!(state.last_check.is_none());
+
+    // 3. Set on check resolution
+    let action_res = apply_action_from_content(&state, &index, "choice:checked_choice").unwrap();
+    let next_state = action_res.state;
+    
+    assert!(next_state.last_check.is_some());
+    let last_check = next_state.last_check.as_ref().unwrap();
+    assert_eq!(last_check.dice, (1, 1));
+    assert_eq!(last_check.ability_id, "logic");
+    assert_eq!(last_check.success, false);
+
+    // ScenePage check_result mapping check
+    let page = scene_page_from_content(&next_state, &index).unwrap();
+    assert!(page.check_result.is_some());
+    assert_eq!(page.check_result.unwrap().dice, (1, 1));
+
+    // 4. Cleared on next action (movement)
+    let move_res = apply_action_from_content(&next_state, &index, "move:other_desk").unwrap();
+    assert!(move_res.state.last_check.is_none());
+
+    // 5. absent-field save loads
+    let save_json_no_check = r#"{
+        "schema_version": 1,
+        "state": {
+            "seed": 123,
+            "turn": 0,
+            "location_id": "dev_desk",
+            "disaster_type": "unknown_isolation",
+            "danger": 0,
+            "player": {
+                "health": 100,
+                "sanity": 100,
+                "battery": 100,
+                "hunger": 0,
+                "thirst": 0,
+                "abilities": {}
+            },
+            "inventory": [],
+            "flags": [],
+            "clues": [],
+            "seen_encounters": [],
+            "unlocked_achievements": [],
+            "history": []
+        }
+    }"#;
+    let envelope: escape_core::SaveEnvelope = serde_json::from_str(save_json_no_check).unwrap();
+    assert!(envelope.state.last_check.is_none());
+}
+
+

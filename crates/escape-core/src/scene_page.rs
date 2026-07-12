@@ -7,7 +7,7 @@ use crate::resources::{
     ACTION_PREFIX_CHOICE, ACTION_PREFIX_MOVE, ACTION_PREFIX_USE, RESOURCE_BATTERY, RESOURCE_HEALTH,
     RESOURCE_HUNGER, RESOURCE_SANITY, RESOURCE_THIRST,
 };
-use crate::state::{GameHistoryEntry, GameState, PlayerState};
+use crate::state::{CheckResolution, GameHistoryEntry, GameState, PlayerState};
 use crate::turn::{content_turn_view, ActionView, BlockedActionView, ContentTurnError, TurnView};
 use crate::ability_label;
 use serde::{Deserialize, Serialize};
@@ -43,6 +43,8 @@ pub struct ScenePage {
     pub progression: Option<ProgressionStatus>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub content_labels: Option<ContentLabels>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub check_result: Option<CheckResolution>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -337,6 +339,7 @@ fn scene_page_from_turn_view(
         character_summary,
         progression,
         content_labels,
+        check_result: state.last_check.clone(),
     }
 }
 

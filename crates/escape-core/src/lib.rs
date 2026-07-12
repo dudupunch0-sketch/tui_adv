@@ -24,7 +24,7 @@ pub use scene_page::{
 pub use state::{GameState, NewGameError, PlayerState, DEFAULT_START_LOCATION_ID};
 pub use turn::{
     ActionError, ActionResult, ActionView, BlockedActionView, ContentActionError, ContentTurnError,
-    TurnView, ability_label, ability_check_success_percent,
+    TurnView, ability_label, ability_check_success_percent, resolve_ability_check,
 };
 
 pub fn new_game(seed: u64) -> GameState {

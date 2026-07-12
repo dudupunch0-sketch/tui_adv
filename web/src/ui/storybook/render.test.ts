@@ -462,7 +462,7 @@ describe('Web Storybook renderer', () => {
     expect(html).not.toContain('class="check-resolution"');
   });
 
-  it('forces data-story-phase="combat" when page visual is collapse_gate', () => {
+  it('forces data-story-phase="collapse" when page visual is collapse_gate', () => {
     const html = renderStorybookPage(
       samplePrinterPage({
         visual: {
@@ -474,6 +474,38 @@ describe('Web Storybook renderer', () => {
       }),
     );
 
-    expect(html).toContain('data-story-phase="combat"');
+    expect(html).toContain('data-story-phase="collapse"');
+  });
+
+  it('renders bundle label with no 미번역 note when id is present in content_labels', () => {
+    const html = renderStorybookPage(
+      samplePrinterPage({
+        achievement_summary: { unlocked: ['first_signal'], newly_unlocked: [] },
+        content_labels: {
+          items: [],
+          achievements: [{ id: 'first_signal', label: '특별한 업적' }],
+        },
+      }),
+    );
+
+    expect(html).toContain('특별한 업적');
+    expect(html).not.toContain('storybook-translation-note');
+    expect(html).not.toContain('(미번역)');
+  });
+
+  it('renders humanized id plus exactly one 미번역 note when id is absent from content_labels and dictionary', () => {
+    const html = renderStorybookPage(
+      samplePrinterPage({
+        achievement_summary: { unlocked: ['totally_unknown_achievement'], newly_unlocked: [] },
+      }),
+    );
+
+    const resultLogMatch = html.match(/<section class="story-result-log"[\s\S]*?<\/section>/);
+    expect(resultLogMatch).toBeTruthy();
+    const resultLogHtml = resultLogMatch![0];
+    expect(resultLogHtml).toContain('totally unknown achievement');
+    expect(resultLogHtml).not.toContain('(미번역)');
+    const noteCount = (resultLogHtml.match(/storybook-translation-note/g) ?? []).length;
+    expect(noteCount).toBe(1);
   });
 });

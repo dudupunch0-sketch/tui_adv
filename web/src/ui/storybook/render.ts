@@ -32,14 +32,17 @@ export function renderStorybookPage(page: ScenePage, options: StorybookRenderOpt
   const layout = storyLayout(page);
   const phase = storyPhase(page);
   return `
-<main class="storybook-shell" data-app="tui-adv" data-renderer="web-storybook" data-mode="${escapeHtml(
+<main class="storybook-shell" data-app="tui-adv" data-renderer="web-storybook" data-game-frame="true" data-mode="${escapeHtml(
     page.mode,
   )}" data-story-phase="${phase}">
+  ${renderTopBar(page)}
+  <div class="game-viewport" data-region="viewport">
+    <section class="storybook-page" data-story-layout="${layout}" data-story-phase="${phase}">
+      ${renderStoryFlow(page, layout)}
+      ${renderChoices(page)}
+    </section>
+  </div>
   ${renderHud(page)}
-  <section class="storybook-page" data-story-layout="${layout}" data-story-phase="${phase}">
-    ${renderStoryFlow(page, layout)}
-    ${renderChoices(page)}
-  </section>
   ${renderBottomDock(page, options)}
 </main>`.trim();
 }
@@ -68,12 +71,18 @@ function isCombatScene(page: ScenePage): boolean {
   );
 }
 
+function renderTopBar(page: ScenePage): string {
+  return `<header class="game-topbar" data-region="topbar">
+    <span class="game-topbar__location" aria-label="현재 장소 ${escapeHtml(page.location.name)}"><span class="game-topbar__location-glyph" aria-hidden="true">地</span>${escapeHtml(page.location.name)}</span>
+    <p class="hud-document" aria-label="현재 기록 ${escapeHtml(documentLabel(page))} · ${page.status_summary.turn}턴">${escapeHtml(documentLabel(page))}<span class="game-topbar__turn"> · ${page.status_summary.turn}턴</span></p>
+  </header>`;
+}
+
 function renderHud(page: ScenePage): string {
   const resources = storyResources(page.status_summary.resources);
   return `<header class="storybook-hud" data-region="status" data-danger-band="${dangerBand(page.status_summary.danger)}">
     <div class="hud-vital-slots" aria-label="핵심 상태">${renderVitalSlots(resources)}</div>
     <div class="hud-center">
-      <p class="hud-document" aria-label="현재 기록 ${escapeHtml(documentLabel(page))} · ${page.status_summary.turn}턴" title="${page.status_summary.turn}턴">${escapeHtml(documentLabel(page))}</p>
       ${renderProgressionGauge(page.progression, 'hud')}
     </div>
     ${renderProgressRail(page)}
@@ -113,7 +122,9 @@ function renderProgressionGauge(progression: ProgressionStatus | undefined, vari
   if (variant === 'hud') {
     return `<span class="hud-progression" role="img" aria-label="${escapeHtml(readout)}" title="${escapeHtml(
       readout,
-    )}" style="--fill: ${percent}%"><span class="hud-progression__fill" aria-hidden="true"></span></span>`;
+    )}" style="--fill: ${percent}%"><span class="hud-progression__label" aria-hidden="true">${escapeHtml(
+      progression.label,
+    )}</span><span class="hud-progression__track" aria-hidden="true"><span class="hud-progression__fill"></span></span></span>`;
   }
   return `<div class="drawer-progression" role="img" aria-label="${escapeHtml(readout)}" style="--fill: ${percent}%">
     <span class="drawer-progression__label">${escapeHtml(progression.label)}</span>
@@ -168,7 +179,6 @@ function renderBody(page: ScenePage): string {
   const pressureNotes = [...page.status_summary.warnings, ...page.pressure_cues.map((cue) => cue.message)];
   const checkResolution = renderCheckResolution(page);
   return `<section class="storybook-body" data-region="body">
-    <p class="storybook-location">${escapeHtml(page.location.name)}</p>
     ${title}
     ${pressureNotes.length ? `<aside class="storybook-pressure" data-region="pressure">${pressureNotes.map((note) => `<p>${escapeHtml(note)}</p>`).join('')}</aside>` : ''}
     ${dialogue}
@@ -188,14 +198,14 @@ function renderCheckResolution(page: ScenePage): string {
   const diceGlyphs = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
   const d1 = diceGlyphs[check.dice[0] - 1] ?? '⚀';
   const d2 = diceGlyphs[check.dice[1] - 1] ?? '⚀';
-  const diceStr = `${d1} ${d2}`;
 
   const mathText = `2d6 ${check.dice[0]}+${check.dice[1]} +${escapeHtml(check.ability_label)} ${check.ability_value} = ${check.total} / 목표 ${check.difficulty}`;
 
+  const sealGlyph = check.success ? '成' : '敗';
   return `<aside class="check-resolution" data-region="check-result" data-check-outcome="${outcome}" data-ability-id="${escapeHtml(check.ability_id)}" aria-label="판정 결과: ${verdict}">
-  <span class="check-resolution__dice" aria-hidden="true">${diceStr}</span>
+  <span class="check-resolution__dice" aria-hidden="true"><i class="check-die">${d1}</i><i class="check-die">${d2}</i></span>
   <span class="check-resolution__math">${mathText}</span>
-  <span class="check-resolution__verdict">${verdict}</span>
+  <span class="check-resolution__verdict"><span class="check-resolution__seal" aria-hidden="true">${sealGlyph}</span>${verdict}</span>
 </aside>`;
 }
 

@@ -98,7 +98,9 @@ describe('Web Storybook renderer', () => {
     expect(html).not.toContain('hud-menu');
     expect(html).not.toContain('hud-stat-grid');
     expect(html).not.toContain('쪽 · ');
-    expect(html).toMatch(/<p class="hud-document"[^>]*>기록<\/p>/);
+    expect(html).toContain('class="game-topbar" data-region="topbar"');
+    expect(html).toContain('class="game-viewport" data-region="viewport"');
+    expect(html).toMatch(/<p class="hud-document"[^>]*>기록<span/);
     expect(html).toContain('class="story-progress-rail"');
     expect(html).toContain('class="storybook-dock"');
     expect(html).toContain('class="choice-row"');
@@ -452,9 +454,11 @@ describe('Web Storybook renderer', () => {
     expect(html).toContain('data-check-outcome="success"');
     expect(html).toContain('data-ability-id="logic"');
     expect(html).toContain('aria-label="판정 결과: 성공"');
-    expect(html).toContain('⚃ ⚁');
+    expect(html).toContain('<i class="check-die">⚃</i>');
+    expect(html).toContain('<i class="check-die">⚁</i>');
     expect(html).toContain('2d6 4+2 +논리 2 = 8 / 목표 7');
-    expect(html).toContain('class="check-resolution__verdict">성공</span>');
+    expect(html).toContain('class="check-resolution__seal" aria-hidden="true">成</span>');
+    expect(html).toContain('성공</span>');
   });
 
   it('omits check resolution banner when check_result is absent', () => {

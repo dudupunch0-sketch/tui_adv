@@ -342,14 +342,38 @@ describe('Web Storybook renderer', () => {
 
     expect(html).toContain('class="character-summary-section"');
     expect(html).toContain('class="character-name-line" data-region="character"');
-    expect(html).toContain('검호 주인공');
+    expect(html).toContain('<span class="character-title-seal">검호</span>');
+    expect(html).toContain('<span class="character-name">주인공</span>');
     expect(html).toContain('class="ability-row" data-ability-id="logic"');
-    expect(html).toContain('<strong>논리</strong> 3');
+    expect(html).toContain('<strong>논리</strong> <span class="ability-value">3</span>');
     expect(html).toContain('class="ability-row" data-ability-id="empathy"');
-    expect(html).toContain('<strong>공감</strong> 2');
+    expect(html).toContain('<strong>공감</strong> <span class="ability-value">2</span>');
 
-    expect(html).toContain('class="choice-check" data-ability-id="logic"');
-    expect(html).toContain('논리 판정 · 성공 58.3%');
+    expect(html).toContain('class="choice-check" data-ability-id="logic" data-check-band="uncertain"');
+    expect(html).toContain('논리 판정');
+    expect(html).toContain('--odds: 58.3%');
+    expect(html).toContain('성공 58.3%');
+  });
+
+  it('renders the progression gauge in the HUD and drawer when progression is present', () => {
+    const html = renderStorybookPage(
+      samplePrinterPage({
+        progression: { experience: 32, target: 100, label: '천기' },
+      }),
+    );
+
+    expect(html).toContain('class="hud-progression"');
+    expect(html).toContain('class="drawer-progression"');
+    expect(html).toContain('aria-label="천기 32 / 100"');
+    expect(html).toContain('--fill: 32%');
+    expect(html).toContain('32 / 100');
+  });
+
+  it('omits the progression gauge when the page has no progression data', () => {
+    const html = renderStorybookPage(samplePrinterPage());
+
+    expect(html).not.toContain('hud-progression');
+    expect(html).not.toContain('drawer-progression');
   });
 
   it('renders inline result log lines with color coding classes', () => {

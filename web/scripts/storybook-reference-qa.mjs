@@ -139,7 +139,7 @@ async function runViewportQa(browserInstance, viewport, screenshotsDirPath) {
 
 async function verifyDrawer(page, checks) {
   try {
-    const toggle = page.locator('[data-player-action="toggle-storybook-drawer"]');
+    const toggle = page.locator('.hud-drawer-toggle[data-player-action="toggle-storybook-drawer"]');
     const drawer = page.locator('#storybook-info-drawer');
     await toggle.click();
     await drawer.waitFor({ state: 'attached' });

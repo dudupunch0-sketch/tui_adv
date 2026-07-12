@@ -1458,6 +1458,179 @@ background:
 
 }
 
+/* --- 판정 확률 표기 (choice-check) --- */
+
+.choice-check {
+  --check-accent: var(--ink-faded);
+  grid-column: 3 / -1;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  margin-top: 2px;
+  color: var(--ink-faded);
+  font-family: "IBM Plex Mono", "JetBrains Mono", "D2Coding", "Noto Serif KR", monospace;
+  font-size: 0.74rem;
+  line-height: 1.3;
+}
+
+.choice-check[data-check-band="favorable"] {
+  --check-accent: var(--jade);
+}
+
+.choice-check[data-check-band="uncertain"] {
+  --check-accent: #8a6a24;
+}
+
+.choice-check[data-check-band="risky"] {
+  --check-accent: var(--seal-red);
+}
+
+.choice-check__ability {
+  white-space: nowrap;
+}
+
+.choice-check__gauge {
+  position: relative;
+  flex: 0 1 72px;
+  min-width: 34px;
+  height: 4px;
+  background: var(--ink-wash);
+  overflow: hidden;
+}
+
+.choice-check__gauge::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: var(--odds, 0%);
+  background: linear-gradient(90deg, var(--check-accent) 0 78%, transparent);
+}
+
+.choice-check__odds {
+  color: var(--check-accent);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.blocked-actions .choice-check {
+  grid-column: 2;
+  opacity: 0.78;
+}
+
+/* --- 드로어 인물 섹션 --- */
+
+.character-name-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.character-title-seal {
+  flex: none;
+  padding: 3px 7px;
+  border: 1px solid rgba(158, 60, 63, 0.5);
+  background: rgba(158, 60, 63, 0.08);
+  color: var(--seal-red);
+  font-size: 0.74rem;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: inset 0 0 0 1px rgba(255, 249, 221, 0.35);
+}
+
+.character-name {
+  color: var(--ink);
+  font-size: 1.08rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.character-summary-section .ability-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px 12px;
+}
+
+.ability-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 5px 9px;
+  border: 1px solid var(--line-soft);
+  background: rgba(255, 247, 205, 0.22);
+}
+
+.dock-sheet .ability-row strong {
+  min-width: 0;
+  margin-right: 0;
+  color: var(--ink-faded);
+  font-size: 0.8rem;
+  font-weight: 400;
+}
+
+.ability-value {
+  color: var(--ink);
+  font-family: "IBM Plex Mono", "JetBrains Mono", "D2Coding", "Noto Serif KR", monospace;
+  font-weight: 700;
+}
+
+/* --- 진행(경험) 게이지 --- */
+
+.hud-center {
+  justify-self: center;
+  display: grid;
+  justify-items: center;
+  row-gap: 4px;
+  min-width: 0;
+}
+
+.hud-progression {
+  position: relative;
+  display: block;
+  width: min(120px, 100%);
+  height: 3px;
+  background: var(--ink-wash);
+}
+
+.hud-progression__fill,
+.drawer-progression__fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: var(--fill, 0%);
+  background: linear-gradient(90deg, var(--gold-leaf) 0 72%, #8a6a24);
+}
+
+.drawer-progression {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.drawer-progression__label {
+  color: var(--ink-faded);
+  font-size: 0.8rem;
+}
+
+.drawer-progression__track {
+  position: relative;
+  display: block;
+  height: 5px;
+  background: var(--ink-wash);
+}
+
+.drawer-progression__value {
+  color: #8a6a24;
+  font-family: "IBM Plex Mono", "JetBrains Mono", "D2Coding", "Noto Serif KR", monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
 @media (max-width: 560px) {
   .storybook-shell {
   min-height: 100dvh;
@@ -1529,6 +1702,24 @@ background:
 
   .choice-cost {
   grid-column: 3;
+  }
+
+  .choice-check {
+    grid-column: 3;
+    font-size: 0.68rem;
+    gap: 6px;
+  }
+
+  .choice-check__gauge {
+    flex-basis: 52px;
+  }
+
+  .hud-progression {
+    width: min(84px, 100%);
+  }
+
+  .character-summary-section .ability-grid {
+    gap: 5px 8px;
   }
 
   .choice-bullet {

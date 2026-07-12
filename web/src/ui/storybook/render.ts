@@ -1,4 +1,13 @@
-import type { BodyBlock, SceneAction, SceneBlockedAction, ScenePage, ResourceStatus, CharacterSummary } from '../../core/types';
+import type {
+  ActionCheckInfo,
+  BodyBlock,
+  CharacterSummary,
+  ProgressionStatus,
+  ResourceStatus,
+  SceneAction,
+  SceneBlockedAction,
+  ScenePage,
+} from '../../core/types';
 import { escapeHtml } from './html';
 import { renderStoryHistory } from './history';
 import {
@@ -61,7 +70,10 @@ function renderHud(page: ScenePage): string {
   const resources = storyResources(page.status_summary.resources);
   return `<header class="storybook-hud" data-region="status" data-danger-band="${dangerBand(page.status_summary.danger)}">
     <div class="hud-vital-slots" aria-label="핵심 상태">${renderVitalSlots(resources)}</div>
-    <p class="hud-document" aria-label="현재 기록 ${escapeHtml(documentLabel(page))} · ${page.status_summary.turn}턴" title="${page.status_summary.turn}턴">${escapeHtml(documentLabel(page))}</p>
+    <div class="hud-center">
+      <p class="hud-document" aria-label="현재 기록 ${escapeHtml(documentLabel(page))} · ${page.status_summary.turn}턴" title="${page.status_summary.turn}턴">${escapeHtml(documentLabel(page))}</p>
+      ${renderProgressionGauge(page.progression, 'hud')}
+    </div>
     ${renderProgressRail(page)}
     <button type="button" class="hud-drawer-toggle" data-player-action="toggle-storybook-drawer" aria-expanded="false" aria-controls="storybook-info-drawer"><span class="hud-drawer-toggle__glyph" aria-hidden="true">詳</span><span class="hud-drawer-toggle__label">상세</span></button>
   </header>`;
@@ -89,6 +101,22 @@ function renderSlotRow(resource: ResourceStatus | undefined, id: string, fallbac
   )}" aria-label="${escapeHtml(`${label} ${text} ${value}`)}">
     <span class="hud-slot-label">${escapeHtml(label)}</span>
     <span class="hud-slot-track">${slots}</span>
+  </div>`;
+}
+
+function renderProgressionGauge(progression: ProgressionStatus | undefined, variant: 'hud' | 'drawer'): string {
+  if (!progression || progression.target <= 0) return '';
+  const percent = Math.max(0, Math.min(100, (progression.experience / progression.target) * 100));
+  const readout = `${progression.label} ${progression.experience} / ${progression.target}`;
+  if (variant === 'hud') {
+    return `<span class="hud-progression" role="img" aria-label="${escapeHtml(readout)}" title="${escapeHtml(
+      readout,
+    )}" style="--fill: ${percent}%"><span class="hud-progression__fill" aria-hidden="true"></span></span>`;
+  }
+  return `<div class="drawer-progression" role="img" aria-label="${escapeHtml(readout)}" style="--fill: ${percent}%">
+    <span class="drawer-progression__label">${escapeHtml(progression.label)}</span>
+    <span class="drawer-progression__track" aria-hidden="true"><span class="drawer-progression__fill"></span></span>
+    <span class="drawer-progression__value">${progression.experience} / ${progression.target}</span>
   </div>`;
 }
 
@@ -239,14 +267,26 @@ function renderEmptyChoiceRows(isEnding: boolean): string {
     </button></li>`;
 }
 
+function checkBand(percent: number): string {
+  if (percent >= 70) return 'favorable';
+  if (percent >= 40) return 'uncertain';
+  return 'risky';
+}
+
+function renderCheckBadge(check: ActionCheckInfo | undefined): string {
+  if (!check) return '';
+  const percent = Math.max(0, Math.min(100, check.success_percent));
+  return `<span class="choice-check" data-ability-id="${escapeHtml(check.ability_id)}" data-check-band="${checkBand(
+    check.success_percent,
+  )}"><span class="choice-check__ability">${escapeHtml(
+    check.ability_label,
+  )} 판정</span><span class="choice-check__gauge" style="--odds: ${percent}%" aria-hidden="true"></span><span class="choice-check__odds">성공 ${check.success_percent.toFixed(1)}%</span></span>`;
+}
+
 function renderActionButton(action: SceneAction, index: number): string {
   const bullet = action.kind === 'move' ? '➤' : action.kind === 'use' ? '◈' : '✥';
   const cost = action.cost_text ? `<small class="choice-cost">${escapeHtml(action.cost_text)}</small>` : '';
-  const check = action.check
-    ? `<span class="choice-check" data-ability-id="${escapeHtml(action.check.ability_id)}">${escapeHtml(
-        action.check.ability_label,
-      )} 판정 · 성공 ${action.check.success_percent.toFixed(1)}%</span>`
-    : '';
+  const check = renderCheckBadge(action.check);
   return `<li><button class="choice-row" data-action-id="${escapeHtml(action.id)}" data-action-kind="${escapeHtml(
     action.kind,
   )}">
@@ -258,11 +298,7 @@ function renderActionButton(action: SceneAction, index: number): string {
 
 function renderBlockedAction(action: SceneBlockedAction): string {
   const cost = action.cost_text ? `<small class="choice-cost">${escapeHtml(action.cost_text)}</small>` : '';
-  const check = action.check
-    ? `<span class="choice-check" data-ability-id="${escapeHtml(action.check.ability_id)}">${escapeHtml(
-        action.check.ability_label,
-      )} 판정 · 성공 ${action.check.success_percent.toFixed(1)}%</span>`
-    : '';
+  const check = renderCheckBadge(action.check);
   return `<li data-blocked-action-id="${escapeHtml(action.id)}"><span class="choice-bullet" aria-hidden="true">✧</span><span>${escapeHtml(
     action.label,
   )}</span>${cost}${check}<small>${action.reasons.map(escapeHtml).join(' · ')}</small></li>`;
@@ -272,18 +308,22 @@ function renderCharacterSummary(summary: CharacterSummary | undefined): string {
   if (!summary) {
     return '';
   }
-  const titlePart = summary.title_label ? `${escapeHtml(summary.title_label)} ` : '';
-  const nameLine = `<div class="character-name-line" data-region="character">${titlePart}${escapeHtml(summary.name)}</div>`;
+  const titlePart = summary.title_label
+    ? `<span class="character-title-seal">${escapeHtml(summary.title_label)}</span> `
+    : '';
+  const nameLine = `<div class="character-name-line" data-region="character">${titlePart}<span class="character-name">${escapeHtml(
+    summary.name,
+  )}</span></div>`;
   const abilitiesRows = summary.abilities
     .map(
       (ability) =>
-        `<li class="ability-row" data-ability-id="${escapeHtml(ability.id)}"><strong>${escapeHtml(ability.label)}</strong> ${ability.value}</li>`
+        `<li class="ability-row" data-ability-id="${escapeHtml(ability.id)}"><strong>${escapeHtml(ability.label)}</strong> <span class="ability-value">${ability.value}</span></li>`
     )
     .join('');
   return `<section aria-label="인물" class="character-summary-section">
     <h2><span aria-hidden="true">人</span>인물</h2>
     ${nameLine}
-    <ul>${abilitiesRows}</ul>
+    <ul class="ability-grid">${abilitiesRows}</ul>
   </section>`;
 }
 
@@ -302,7 +342,10 @@ function renderBottomDock(page: ScenePage, options: StorybookRenderOptions): str
         <span class="dock-sheet__title"><span aria-hidden="true">記</span>천기록 상세</span>
         <button type="button" class="dock-sheet__close" data-player-action="toggle-storybook-drawer" aria-label="상세 닫기"><span aria-hidden="true">✕</span></button>
       </header>
-      <section aria-label="현재 상태"><h2><span aria-hidden="true">狀</span>상태</h2><ul>${statusRows}</ul></section>
+      <section aria-label="현재 상태"><h2><span aria-hidden="true">狀</span>상태</h2><ul>${statusRows}</ul>${renderProgressionGauge(
+        page.progression,
+        'drawer',
+      )}</section>
       ${renderCharacterSummary(page.character_summary)}
       ${renderInventoryDrawer(page)}
       ${renderAchievementDrawer(page)}

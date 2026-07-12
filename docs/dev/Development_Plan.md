@@ -64,7 +64,7 @@ Rust GameCore
 ---
 현재 최우선 남은 작업:
 
-- ~~(게임루프 트랙)~~ **완료** — 이구학지 게임 루프 1차 확장 (P1 스탯 노출, P2 판정 확률, P3 특성/칭호, P4 경험치/회차 메타) 엔진·웹·콘텐츠 전 계층 구현 완료.
+- (게임루프 트랙) **진행 중** — 이구학지 게임 루프 2차 확장 (Slice 2) 진행 중 (Content-owned labels, Check resolution reveal, Collapse gate & second wind).
 - (UI 트랙) Web Storybook UI/UX 개선 사이클 진행 중 — 방향은
   `docs/design/Mobile_Ink_Storybook_UI.md`(수묵 서책 + 정보 드로어), 작업
   지시서는 `fable_ui_step1_2607111330.md` (Rev 2).

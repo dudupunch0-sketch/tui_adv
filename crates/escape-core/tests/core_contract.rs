@@ -1391,5 +1391,56 @@ fn test_collapse_gate_lifecycle_and_validation() {
     assert_eq!(ending_view.ending_id.as_deref(), Some("death_ending"));
 }
 
+#[test]
+fn test_check_ability_id_validation_rejects_unknown_ability() {
+    let invalid_ability_json = r#"{
+        "schema_version": 1,
+        "kind": "tui_adv.content_bundle",
+        "source": "test",
+        "runtime": {
+            "runtime_mode": "content",
+            "world_id": "test_world",
+            "storypack_id": "test_pack",
+            "default_location": "dev_desk"
+        },
+        "manifest": { "schema_version": 1, "source": "test", "counts": {} },
+        "content": {
+            "locations": [{"id": "dev_desk", "name": "내 자리", "description": "내 개발 자리.", "connections": []}],
+            "items": [],
+            "encounters": [
+                {
+                    "id": "bad_check_encounter",
+                    "title": "잘못된 판정",
+                    "body": "잘못된 능력치 판정.",
+                    "choices": [
+                        {
+                            "id": "bad_check_choice",
+                            "label": "잘못된 판정 선택",
+                            "outcome": {},
+                            "check": {
+                                "ability": "dexterity",
+                                "difficulty": 8,
+                                "success": {},
+                                "failure": {}
+                            }
+                        }
+                    ]
+                }
+            ],
+            "endings": [], "achievements": [], "secrets": [], "traits": []
+        }
+    }"#;
+    let bundle = load_content_bundle(invalid_ability_json).unwrap();
+    let err = index_content_bundle(&bundle).unwrap_err();
+    let message = format!("{err:?}");
+    assert!(message.contains("unknown check ability id: 'dexterity'"));
+    assert!(message.contains("logic"));
+    assert!(message.contains("empathy"));
+    assert!(message.contains("volition"));
+    assert!(message.contains("composure"));
+    assert!(message.contains("interface"));
+    assert!(message.contains("physical"));
+}
+
 
 

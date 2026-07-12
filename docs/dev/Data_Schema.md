@@ -323,6 +323,23 @@ Save/load 규칙:
     { "id": "choice:check_message", "label": "메시지를 확인한다", "kind": "choice", "cost_text": "단말기 전원 소모" }
   ],
   "blocked_actions": [],
+  "character_summary": {
+    "name": "당신",
+    "trait_name": "청류문 초학자",
+    "abilities": [
+      { "id": "logic", "label": "논리", "value": 3 },
+      { "id": "empathy", "label": "공감", "value": 2 },
+      { "id": "volition", "label": "의지", "value": 4 },
+      { "id": "composure", "label": "평정", "value": 1 },
+      { "id": "interface", "label": "인터페이스", "value": 0 },
+      { "id": "physical", "label": "신체", "value": 2 }
+    ]
+  },
+  "progression": {
+    "experience": 30,
+    "target": 100,
+    "label": "천기"
+  },
   "history_entries": [],
   "inventory_summary": { "items": [], "overflow_count": 0 },
   "achievement_summary": { "unlocked": [], "newly_unlocked": [] },
@@ -343,8 +360,10 @@ Save/load 규칙:
 | `body_blocks` | narrative/document/system text block |
 | `dialogue_entries` | speaker가 있는 대화/메신저/시스템 발화 |
 | `visual` | semantic visual id와 alt text |
-| `actions` | 현재 실행 가능한 action list |
-| `blocked_actions` | 보여줄 가치가 있는 비활성 action과 reason |
+| `character_summary` | 칭호(`trait_name`), 이름(`name`), 6스탯(`abilities[]`) 요약. printer_area 위치에서는 null |
+| `progression` | 경험치 진행 상태 (`experience`, `target`, `label`). 번들에 progression meta 없으면 null |
+| `actions` | 현재 실행 가능한 action list. `check` 필드 포함 가능 |
+| `blocked_actions` | 보여줄 가치가 있는 비활성 action과 reason. `check` 필드 포함 가능 |
 | `history_entries` | GameState log/action result에서 파생한 최근 기록 |
 | `inventory_summary` | renderer가 짧게 표시할 inventory 요약 |
 | `achievement_summary` | 기존/신규 업적 요약 |

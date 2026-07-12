@@ -157,6 +157,7 @@ legacy Python/Textual + TypeScript mirror remain temporary parity/oracle surface
 책임:
 
 - 체력, 정신력, 배터리, 허기, 갈증 보관
+- 능력치 6종 (`abilities: BTreeMap<String, i32>`) — logic/empathy/volition/composure/interface/physical
 - 0-100 clamp
 - 임계치 상태 계산
 
@@ -174,6 +175,8 @@ legacy Python/Textual + TypeScript mirror remain temporary parity/oracle surface
 - 최근 로그
 - 현재 재난 타입
 - 랜덤 시드 상태
+- 현재 칭호/특성 (`trait_id: Option<String>`)
+- 누적 경험치 (`experience: u32`)
 
 ### Location
 
@@ -200,9 +203,10 @@ legacy Python/Textual + TypeScript mirror remain temporary parity/oracle surface
 책임:
 
 - 표시 텍스트
-- 필요 조건
+- 필요 조건 (플래그, 아이템, 능력치, `min_experience` 포함)
 - 비용
 - 성공/실패/확정 결과
+- 능력치 판정 (`check: { ability, difficulty }`) — 사전 성공 확률 계산 및 노출
 - 선택 후 로그
 
 ### Effect
@@ -216,6 +220,8 @@ legacy Python/Textual + TypeScript mirror remain temporary parity/oracle surface
 - 플래그 추가/제거
 - 위험도 변경
 - 엔딩 트리거
+- 칭호 교체 (`set_trait`)
+- 경험치 증감 (`experience`, 0 미만 방지)
 
 ## 엔진 흐름
 

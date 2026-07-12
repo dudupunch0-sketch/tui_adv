@@ -23,6 +23,11 @@ describe('runtime content bundle registry', () => {
       world_id: 'wuxia_jianghu',
       storypack_id: 'wuxia_jianghu_pack',
       default_location: 'wuxia_commute_rift',
+      protagonist_name: '당신',
+      progression: {
+        experience_target: 100,
+        label: '천기',
+      },
     });
     expect(encounterIds).toEqual([
       'wuxia_commute_rift_arrival',

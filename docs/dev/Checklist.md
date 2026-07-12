@@ -1,4 +1,4 @@
-﻿# escape from the office 개발 체크리스트
+# escape from the office 개발 체크리스트
 
 이 문서는 전체 개발 진행 상황을 추적하기 위한 체크리스트다.
 체크박스는 실제 작업 완료 후 갱신한다.
@@ -1629,3 +1629,40 @@
 - [x] 최소 하나의 정상 엔딩에 도달할 수 있다.
 - [x] 최소 하나의 실패 엔딩에 도달할 수 있다.
 - [x] 히든 힌트 루트가 안전한 위치만 안내한다.
+
+## Phase 11: 이구학지 게임 루프 1차 확장
+
+### 11.1 Rust GameCore (P1–P4)
+
+- [x] `CharacterSummary` 구조체 정의 및 `ScenePage`에 연결 (칭호, 이름, 6스탯)
+- [x] `ProgressionStatus` 구조체 정의 및 `ScenePage`에 연결 (experience, target, label)
+- [x] `ActionCheckInfo` 구조체 정의 및 `SceneAction`/`SceneBlockedAction`에 연결
+- [x] `ability_check_success_percent()` 판정 확률 계산 함수
+- [x] `TraitDef { id, name, description }` 모델 및 `ContentBundle.traits`
+- [x] `OutcomeDef.set_trait` / `OutcomeDef.experience` 필드 추가
+- [x] `ContentConditions.min_experience` 조건 검사
+- [x] `GameState.trait_id` / `GameState.experience` 저장 필드 (`#[serde(default)]`)
+- [x] `apply_outcome`에서 experience 증감 (0 미만 방지) 및 set_trait 칭호 교체
+- [x] 결과 델타 로그 포맷 통일 (`+ {라벨} {n}` / `- {라벨} {n}`)
+- [x] `validate_content_bundle`에서 trait ID 중복/유효성 검사
+
+### 11.2 Web Player 타입/렌더링
+
+- [x] `types.ts`: `CharacterSummary`, `ProgressionStatus`, `ActionCheckInfo` TS 인터페이스 미러
+- [x] `render.ts`: 드로어 상태 섹션에 칭호·스탯·진행도 렌더링
+- [x] `render.ts`: 선택지 버튼에 `[능력] 판정 · 성공 [확률]%` 사전 노출
+- [x] `render.ts`: 결과 델타 로그 `+ ` → `.result-gain`, `- ` → `.result-loss` 색 코딩
+
+### 11.3 회차 메타 (P4 메타부)
+
+- [x] `storage.ts`: `igu-hakji.meta.v1` 로컬 메타데이터 키 및 헬퍼 (read/write/reset)
+- [x] `startScreen.ts`: 시작 화면에 `{n}번째 기록` 및 `지금까지 본 결말 {n}편` 표시
+- [x] `storage.test.ts` / `startScreen.test.ts`: 유닛 테스트
+
+### 11.4 콘텐츠 Opt-in
+
+- [x] `traits.yaml`: `wuxia_apprentice`, `wuxia_swordmaster` 칭호 정의
+- [x] `encounters.yaml`: 주요 인카운터에 `experience` 획득, 시작에 `set_trait: wuxia_apprentice`
+- [x] `export_web_data.py`: `protagonist_name`, `progression` 런타임 메타 추가
+- [x] preview bundle 및 content bundle 재생성·검증
+

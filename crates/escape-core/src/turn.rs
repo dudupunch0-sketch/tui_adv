@@ -431,6 +431,24 @@ fn current_content_ending<'a>(
     content: &'a ContentIndex,
     state: &GameState,
 ) -> Option<&'a crate::content::EndingDef> {
+    if let Some(runtime) = &content.runtime {
+        if let Some(collapse) = &runtime.collapse {
+            if state.player.health <= 0
+                && !state.flags.iter().any(|f| f == &collapse.used_flag)
+                && !state.flags.iter().any(|f| f == "accept_final_rest")
+            {
+                let base_encounter = content
+                    .encounters()
+                    .find(|encounter| encounter_is_available(encounter, state));
+                
+                let is_already_collapse = base_encounter.map(|enc| enc.id == collapse.encounter_id).unwrap_or(false);
+                if !is_already_collapse {
+                    return None;
+                }
+            }
+        }
+    }
+
     content
         .endings()
         .filter(|ending| conditions_match(&ending.conditions, state))
@@ -441,6 +459,27 @@ fn current_content_encounter<'a>(
     content: &'a ContentIndex,
     state: &GameState,
 ) -> Option<&'a EncounterDef> {
+    if let Some(runtime) = &content.runtime {
+        if let Some(collapse) = &runtime.collapse {
+            if state.player.health <= 0
+                && !state.flags.iter().any(|f| f == &collapse.used_flag)
+                && !state.flags.iter().any(|f| f == "accept_final_rest")
+            {
+                let base_encounter = content
+                    .encounters()
+                    .find(|encounter| encounter_is_available(encounter, state));
+                
+                if let Some(enc) = base_encounter {
+                    if enc.id == collapse.encounter_id {
+                        return Some(enc);
+                    }
+                }
+                
+                return content.encounter(&collapse.encounter_id);
+            }
+        }
+    }
+
     content
         .encounters()
         .find(|encounter| encounter_is_available(encounter, state))

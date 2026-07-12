@@ -51,6 +51,15 @@ pub struct RuntimeMetadata {
     pub protagonist_name: Option<String>,
     #[serde(default)]
     pub progression: Option<ProgressionMetadata>,
+    #[serde(default)]
+    pub collapse: Option<CollapseMetadata>,
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
+pub struct CollapseMetadata {
+    pub encounter_id: String,
+    pub resource_id: String,
+    pub used_flag: String,
 }
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
@@ -592,6 +601,32 @@ pub fn index_content_bundle(bundle: &ContentBundle) -> Result<ContentIndex, Cont
     for secret_value in &bundle.content.secrets {
         let secret: PublicSecretDef = parse_section_value("secrets", secret_value)?;
         insert_unique("secrets", &mut secrets, secret.id.clone(), secret)?;
+    }
+
+    if let Some(runtime) = &bundle.runtime {
+        if let Some(collapse) = &runtime.collapse {
+            if collapse.resource_id != "health" {
+                return Err(ContentIndexError::InvalidSectionItem {
+                    section: "runtime.collapse".to_string(),
+                    id: None,
+                    message: format!("unsupported collapse resource_id: '{}', only 'health' is supported", collapse.resource_id),
+                });
+            }
+            if collapse.used_flag.is_empty() {
+                return Err(ContentIndexError::InvalidSectionItem {
+                    section: "runtime.collapse".to_string(),
+                    id: None,
+                    message: "collapse used_flag cannot be empty".to_string(),
+                });
+            }
+            if !encounters.contains_key(&collapse.encounter_id) {
+                return Err(ContentIndexError::InvalidSectionItem {
+                    section: "runtime.collapse".to_string(),
+                    id: None,
+                    message: format!("collapse encounter_id '{}' not found in encounters", collapse.encounter_id),
+                });
+            }
+        }
     }
 
     Ok(ContentIndex {

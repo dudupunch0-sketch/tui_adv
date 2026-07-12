@@ -461,4 +461,19 @@ describe('Web Storybook renderer', () => {
     const html = renderStorybookPage(samplePrinterPage());
     expect(html).not.toContain('class="check-resolution"');
   });
+
+  it('forces data-story-phase="combat" when page visual is collapse_gate', () => {
+    const html = renderStorybookPage(
+      samplePrinterPage({
+        visual: {
+          id: 'wuxia_collapse_gate',
+          kind: 'collapse_gate',
+          alt: '붕괴 게이트',
+          source_id: 'collapse',
+        },
+      }),
+    );
+
+    expect(html).toContain('data-story-phase="combat"');
+  });
 });

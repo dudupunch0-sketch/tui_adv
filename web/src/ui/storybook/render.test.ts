@@ -98,6 +98,7 @@ describe('Web Storybook renderer', () => {
     expect(html).not.toContain('hud-menu');
     expect(html).not.toContain('hud-stat-grid');
     expect(html).not.toContain('쪽 · ');
+    expect(html).toMatch(/<p class="hud-document"[^>]*>기록<\/p>/);
     expect(html).toContain('class="story-progress-rail"');
     expect(html).toContain('class="storybook-dock"');
     expect(html).toContain('class="choice-row"');
@@ -176,7 +177,7 @@ describe('Web Storybook renderer', () => {
       samplePrinterPage({
         title: '흑사방 첫 난투',
         visual: {
-          id: 'wuxia_heuksa_bang_first_fight',
+          id: 'wuxia_heuksa_bang_first_fight_mock',
           kind: 'combat_intervention',
           alt: '흑사방 말단과 마주 선 첫 난투',
           source_id: 'wuxia_heuksa_bang_first_fight',
@@ -291,6 +292,25 @@ describe('Web Storybook renderer', () => {
     expect(html).toContain('data-visual-kind="placeholder"');
     expect(html).toContain('아직 카탈로그에 없는 장면이다.');
     expect(html).toContain('data-action-id="choice:take_printout"');
+  });
+
+  it('renders registered art manifest visual IDs as image assets with SVG fallbacks', () => {
+    const html = renderStorybookPage(
+      samplePrinterPage({
+        visual: {
+          id: 'wuxia_commute_rift',
+          kind: 'anomaly_object',
+          alt: '균열에서 떨어진 주인공',
+          source_id: 'commute_rift',
+        },
+        effect_cues: [],
+      }),
+    );
+
+    expect(html).toContain('data-visual-kind="art"');
+    expect(html).toContain('class="ink-scene__art"');
+    expect(html).toContain('src="/assets/art/wuxia_commute_rift.webp"');
+    expect(html).toContain('<svg viewBox="0 0 280 168"');
   });
 
   it('authors the planned wuxia scenes and deterministic location variants as ink specs', () => {

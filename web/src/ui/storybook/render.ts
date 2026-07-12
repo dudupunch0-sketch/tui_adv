@@ -60,10 +60,10 @@ function isCombatScene(page: ScenePage): boolean {
 function renderHud(page: ScenePage): string {
   const resources = storyResources(page.status_summary.resources);
   return `<header class="storybook-hud" data-region="status" data-danger-band="${dangerBand(page.status_summary.danger)}">
-    <p class="hud-document" aria-label="현재 기록 ${escapeHtml(documentLabel(page))} · ${page.status_summary.turn}턴" title="${page.status_summary.turn}턴">${escapeHtml(documentLabel(page))}</p>
     <div class="hud-vital-slots" aria-label="핵심 상태">${renderVitalSlots(resources)}</div>
+    <p class="hud-document" aria-label="현재 기록 ${escapeHtml(documentLabel(page))} · ${page.status_summary.turn}턴" title="${page.status_summary.turn}턴">${escapeHtml(documentLabel(page))}</p>
     ${renderProgressRail(page)}
-    <button type="button" class="hud-drawer-toggle" data-player-action="toggle-storybook-drawer" aria-expanded="false" aria-controls="storybook-info-drawer">상세</button>
+    <button type="button" class="hud-drawer-toggle" data-player-action="toggle-storybook-drawer" aria-expanded="false" aria-controls="storybook-info-drawer"><span class="hud-drawer-toggle__glyph" aria-hidden="true">詳</span><span class="hud-drawer-toggle__label">상세</span></button>
   </header>`;
 }
 
@@ -248,7 +248,7 @@ function renderBlockedAction(action: SceneBlockedAction): string {
 function renderBottomDock(page: ScenePage, options: StorybookRenderOptions): string {
   const resources = [
     ...storyResources(page.status_summary.resources),
-    { id: 'danger', label: '위험', text: dangerBand(page.status_summary.danger), value: page.status_summary.danger },
+    { id: 'danger', label: '위험', text: dangerBandLabel(page.status_summary.danger), value: page.status_summary.danger },
   ];
   const statusRows = resources
     .map((resource) => `<li title="${escapeHtml(String(resource.value))}"><strong>${escapeHtml(resource.label)}</strong>${escapeHtml(resource.text)}</li>`)
@@ -256,6 +256,10 @@ function renderBottomDock(page: ScenePage, options: StorybookRenderOptions): str
   return `<details class="storybook-dock" id="storybook-info-drawer" aria-label="정보 드로어">
     <summary aria-label="정보 열기"><span aria-hidden="true">✦</span><span>기록과 소지품</span></summary>
     <div class="dock-sheet">
+      <header class="dock-sheet__head">
+        <span class="dock-sheet__title"><span aria-hidden="true">記</span>천기록 상세</span>
+        <button type="button" class="dock-sheet__close" data-player-action="toggle-storybook-drawer" aria-label="상세 닫기"><span aria-hidden="true">✕</span></button>
+      </header>
       <section aria-label="현재 상태"><h2><span aria-hidden="true">狀</span>상태</h2><ul>${statusRows}</ul></section>
       ${renderInventoryDrawer(page)}
       ${renderAchievementDrawer(page)}
@@ -332,6 +336,11 @@ function documentLabel(page: ScenePage): string {
   if (rawLabel.toLowerCase().includes('storypack')) return '천기록';
   if (/격리\s*\d+\s*턴/.test(rawLabel)) return page.mode === 'ending' ? '결말' : '기록';
   return rawLabel || '기록';
+}
+
+function dangerBandLabel(danger: number): string {
+  const band = dangerBand(danger);
+  return band === 'critical' ? '위급' : band === 'warning' ? '주의' : '낮음';
 }
 
 function dangerBand(danger: number): string {

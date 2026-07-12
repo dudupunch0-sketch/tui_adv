@@ -59,6 +59,10 @@ pub struct GameState {
     #[serde(default)]
     pub unlocked_achievements: Vec<String>,
     pub history: Vec<GameHistoryEntry>,
+    #[serde(default)]
+    pub trait_id: Option<String>,
+    #[serde(default)]
+    pub experience: u32,
 }
 
 impl GameState {
@@ -83,6 +87,8 @@ impl GameState {
             seen_encounters: Vec::new(),
             unlocked_achievements: Vec::new(),
             history: Vec::new(),
+            trait_id: None,
+            experience: 0,
         }
     }
 
@@ -121,8 +127,11 @@ impl GameState {
             seen_encounters: Vec::new(),
             unlocked_achievements: Vec::new(),
             history: Vec::new(),
+            trait_id: None,
+            experience: 0,
         })
     }
+
 
     pub(crate) fn add_flag_once(&mut self, flag: &str) {
         if !self.flags.iter().any(|existing| existing == flag) {

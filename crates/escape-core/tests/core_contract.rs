@@ -2,6 +2,7 @@ use escape_core::{
     apply_action, apply_action_from_content, index_content_bundle, load_content_bundle, load_state,
     new_game, new_game_from_content, new_game_from_content_at, save_state, scene_page_from_content,
     turn_view, turn_view_from_content, ContentTurnError, EffectCue, NewGameError, SceneMode,
+    SaveEnvelope,
 };
 
 use serde_json::json;
@@ -550,4 +551,122 @@ fn content_backed_action_applies_destination_and_flags() {
         result.logs,
         vec!["서버실 문은 열리지 않았지만, 당신은 이미 문 안쪽에 서 있었다.".to_string()]
     );
+}
+
+#[test]
+fn test_character_summary_serialization_shape() {
+    let bundle = load_content_bundle(CONTENT_BUNDLE).expect("content bundle should load");
+    let index = index_content_bundle(&bundle).expect("content bundle should index");
+    let state = new_game_from_content(123, &index).expect("content-backed game should start");
+    let page = scene_page_from_content(&state, &index).expect("build scene page should succeed");
+    
+    assert!(page.character_summary.is_some());
+    let summary = page.character_summary.as_ref().unwrap();
+    assert_eq!(summary.name, "당신");
+    assert_eq!(summary.title_label, None);
+    assert_eq!(summary.abilities.len(), 6);
+    assert_eq!(summary.abilities[0].id, "logic");
+    assert_eq!(summary.abilities[1].id, "empathy");
+
+    let serialized = serde_json::to_string(&page).unwrap();
+    assert!(!serialized.contains("\"title_label\""));
+    assert!(!serialized.contains("\"progression\""));
+}
+
+#[test]
+fn test_character_summary_with_trait() {
+    let test_bundle_json = r#"{
+        "schema_version": 1,
+        "kind": "tui_adv.content_bundle",
+        "source": "test",
+        "runtime": {
+            "runtime_mode": "content",
+            "world_id": "test_world",
+            "storypack_id": "test_pack",
+            "default_location": "dev_desk",
+            "protagonist_name": "당가인"
+        },
+        "manifest": {
+            "schema_version": 1,
+            "source": "test",
+            "counts": {}
+        },
+        "content": {
+            "locations": [
+                {
+                    "id": "dev_desk",
+                    "name": "내 자리",
+                    "description": "내 개발 자리.",
+                    "connections": []
+                }
+            ],
+            "items": [],
+            "encounters": [],
+            "endings": [],
+            "achievements": [],
+            "secrets": [],
+            "traits": [
+                {
+                    "id": "sword_master",
+                    "name": "검호",
+                    "description": "검의 달인"
+                }
+            ]
+        }
+    }"#;
+    let bundle = load_content_bundle(test_bundle_json).expect("test bundle should load");
+    let index = index_content_bundle(&bundle).expect("test bundle should index");
+    let mut state = new_game_from_content(123, &index).expect("test game should start");
+    state.trait_id = Some("sword_master".to_string());
+
+    let page = scene_page_from_content(&state, &index).expect("build scene page should succeed");
+    assert!(page.character_summary.is_some());
+    let summary = page.character_summary.as_ref().unwrap();
+    assert_eq!(summary.name, "당가인");
+    assert_eq!(summary.title_label, Some("검호".to_string()));
+
+    let serialized = serde_json::to_string(&page).unwrap();
+    assert!(serialized.contains("\"title_label\":\"검호\""));
+}
+
+#[test]
+fn test_old_save_compat() {
+    let old_save_json = r#"{
+        "schema_version": 1,
+        "state": {
+            "seed": 123,
+            "turn": 4,
+            "location_id": "dev_desk",
+            "disaster_type": "fire",
+            "danger": 2,
+            "player": {
+                "health": 85,
+                "sanity": 90,
+                "battery": 75,
+                "hunger": 10,
+                "thirst": 5,
+                "abilities": {
+                    "logic": 3,
+                    "empathy": 2,
+                    "volition": 2,
+                    "composure": 2,
+                    "interface": 2,
+                    "physical": 3
+                }
+            },
+            "inventory": ["clue_item"],
+            "flags": ["server_room_entered"],
+            "clues": [],
+            "seen_encounters": [],
+            "unlocked_achievements": [],
+            "history": []
+        }
+    }"#;
+
+    let envelope: SaveEnvelope = serde_json::from_str(old_save_json).expect("should deserialize old save envelope");
+    let state = load_state(&envelope).expect("should load old save state successfully");
+
+    assert_eq!(state.seed, 123);
+    assert_eq!(state.trait_id, None);
+    assert_eq!(state.experience, 0);
 }

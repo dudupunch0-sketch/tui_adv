@@ -736,3 +736,45 @@ fn resource_label(resource: &str) -> &str {
         other => other,
     }
 }
+
+pub fn ability_label(ability: &str) -> &str {
+    match ability {
+        "logic" => "논리",
+        "empathy" => "공감",
+        "volition" => "의지",
+        "composure" => "평정",
+        "interface" => "인터페이스",
+        "physical" => "신체",
+        other => other,
+    }
+}
+
+/// P(2d6 + ability >= difficulty)를 백분율로 계산한다.
+/// 2d6의 분포는 고정 표를 따른다.
+/// 실제 굴림 `roll_2d6`는 seed/turn 기반 결정론 해시이지만,
+/// 표기 확률은 시드 전체에 대한 사전 확률(prior probability)이며,
+/// 이는 레퍼런스의 사전 공개 문법과 부합한다.
+pub fn ability_check_success_percent(ability: i32, difficulty: i32) -> f32 {
+    let need = difficulty - ability;
+    if need <= 2 {
+        return 100.0;
+    }
+    if need > 12 {
+        return 0.0;
+    }
+    let count = match need {
+        2 => 36,
+        3 => 35,
+        4 => 33,
+        5 => 30,
+        6 => 26,
+        7 => 21,
+        8 => 15,
+        9 => 10,
+        10 => 6,
+        11 => 3,
+        12 => 1,
+        _ => unreachable!(),
+    };
+    ((count as f32 / 36.0 * 100.0 * 10.0).round()) / 10.0
+}

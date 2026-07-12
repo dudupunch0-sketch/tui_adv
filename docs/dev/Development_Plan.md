@@ -1,4 +1,4 @@
-﻿# tui_adv 전체 개발 계획
+# tui_adv 전체 개발 계획
 
 > **Canonical main plan:** 이 repo의 현재 개발 우선순위, 다음 작업 순서, active direction은 이 파일이 기준이다. 다른 LLM/agent에게 작업을 맡길 때는 “`docs/dev/Development_Plan.md`를 메인 플랜으로 보고 다음 작업을 진행해”라고 지시한다.
 >
@@ -64,6 +64,7 @@ Rust GameCore
 ---
 현재 최우선 남은 작업:
 
+- (게임루프 트랙) 이구학지 게임 루프 1차 확장 진행 중 — 스탯 노출(P1), 판정 확률 공개(P2), 특성/칭호(P3), 경험치 및 회차 메타(P4) 도입. 작업 지시서는 `fable_gameloop_step1_2607121314.md`.
 - (UI 트랙) Web Storybook UI/UX 개선 사이클 진행 중 — 방향은
   `docs/design/Mobile_Ink_Storybook_UI.md`(수묵 서책 + 정보 드로어), 작업
   지시서는 `fable_ui_step1_2607111330.md` (Rev 2).

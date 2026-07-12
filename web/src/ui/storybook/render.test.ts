@@ -413,4 +413,22 @@ describe('Web Storybook renderer', () => {
     }
     expect(sceneForVisual('location:cheongryu_gate', 'movement')).toEqual(sceneForVisual('location:cheongryu_gate', 'movement'));
   });
+
+  it('prefers content_labels over dictionary labels in rendering', () => {
+    const html = renderStorybookPage(
+      samplePrinterPage({
+        inventory_summary: { items: ['commuter_badge'], overflow_count: 0 },
+        achievement_summary: { unlocked: ['first_signal'], newly_unlocked: [] },
+        content_labels: {
+          items: [{ id: 'commuter_badge', label: '특별한 패스' }],
+          achievements: [{ id: 'first_signal', label: '특별한 업적' }]
+        }
+      })
+    );
+
+    expect(html).toContain('특별한 패스');
+    expect(html).not.toContain('사원증');
+    expect(html).toContain('특별한 업적');
+    expect(html).not.toContain('첫 신호 확인');
+  });
 });

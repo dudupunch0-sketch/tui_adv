@@ -202,7 +202,7 @@ function renderInlineResultLog(page: ScenePage): string {
     ? page.achievement_summary.newly_unlocked
     : page.achievement_summary.unlocked;
   if (achievements.length) {
-    rows.push(`+ 업적: ${achievements.map(renderAchievementLabel).join(', ')}`);
+    rows.push(`+ 업적: ${achievements.map(id => renderAchievementLabel(id, page)).join(', ')}`);
   }
   if (!rows.length) return '';
 
@@ -221,9 +221,9 @@ function renderResultLogLine(line: string): string {
   return `<p class="storybook-summary">${line}</p>`;
 }
 
-function renderAchievementLabel(id: string): string {
-  const translationNote = hasAchievementLabel(id) ? '' : '<small class="storybook-translation-note">미번역</small>';
-  return `${escapeHtml(achievementLabel(id))}${translationNote}`;
+function renderAchievementLabel(id: string, page: ScenePage): string {
+  const translationNote = hasAchievementLabel(id, page) ? '' : '<small class="storybook-translation-note">미번역</small>';
+  return `${escapeHtml(achievementLabel(id, page))}${translationNote}`;
 }
 
 function renderChoices(page: ScenePage): string {
@@ -358,7 +358,7 @@ function renderBottomDock(page: ScenePage, options: StorybookRenderOptions): str
 function renderInventoryDrawer(page: ScenePage): string {
   const items = page.inventory_summary.items.length
     ? `<ul>${page.inventory_summary.items
-        .map((id) => `<li>${renderDrawerLabel(id, inventoryItemLabel, hasInventoryItemLabel)}</li>`)
+        .map((id) => `<li>${renderDrawerLabel(id, inventoryItemLabel, hasInventoryItemLabel, page)}</li>`)
         .join('')}${
         page.inventory_summary.overflow_count > 0
           ? `<li class="dock-drawer-overflow">…외 ${page.inventory_summary.overflow_count}개</li>`
@@ -376,7 +376,7 @@ function renderAchievementDrawer(page: ScenePage): string {
           const newlyMarked = newlyUnlocked.has(id)
             ? '<span class="dock-new-mark" aria-hidden="true"></span><span class="sr-only">새로 새김</span>'
             : '';
-          return `<li>${newlyMarked}${renderDrawerLabel(id, achievementLabel, hasAchievementLabel)}</li>`;
+          return `<li>${newlyMarked}${renderDrawerLabel(id, achievementLabel, hasAchievementLabel, page)}</li>`;
         })
         .join('')}</ul>`
     : '<p>아직 새긴 업적이 없다.</p>';
@@ -396,11 +396,12 @@ function renderDrawerMenu(options: StorybookRenderOptions): string {
 
 function renderDrawerLabel(
   id: string,
-  labelForId: (id: string) => string,
-  hasLabel: (id: string) => boolean,
+  labelForId: (id: string, page?: ScenePage) => string,
+  hasLabel: (id: string, page?: ScenePage) => boolean,
+  page: ScenePage,
 ): string {
-  const translationNote = hasLabel(id) ? '' : '<small class="storybook-translation-note">미번역</small>';
-  return `${escapeHtml(labelForId(id))}${translationNote}`;
+  const translationNote = hasLabel(id, page) ? '' : '<small class="storybook-translation-note">미번역</small>';
+  return `${escapeHtml(labelForId(id, page))}${translationNote}`;
 }
 
 function resourceById(resources: ResourceStatus[], id: string): ResourceStatus | undefined {

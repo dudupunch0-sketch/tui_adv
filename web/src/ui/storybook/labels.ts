@@ -34,19 +34,43 @@ const inventoryItemLabels: Record<string, string> = {
   visitor_badge: '임시 방문증',
 };
 
-export function achievementLabel(id: string): string {
-  return achievementLabels[id] ?? fallbackLabel(id);
+import { ScenePage } from '../../core/types';
+
+export function achievementLabel(id: string, page?: ScenePage): string {
+  if (page?.content_labels?.achievements) {
+    const found = page.content_labels.achievements.find(item => item.id === id);
+    if (found) {
+      return found.label;
+    }
+  }
+  return achievementLabels[id] ?? (fallbackLabel(id) + ' (미번역)');
 }
 
-export function inventoryItemLabel(id: string): string {
-  return inventoryItemLabels[id] ?? fallbackLabel(id);
+export function inventoryItemLabel(id: string, page?: ScenePage): string {
+  if (page?.content_labels?.items) {
+    const found = page.content_labels.items.find(item => item.id === id);
+    if (found) {
+      return found.label;
+    }
+  }
+  return inventoryItemLabels[id] ?? (fallbackLabel(id) + ' (미번역)');
 }
 
-export function hasAchievementLabel(id: string): boolean {
+export function hasAchievementLabel(id: string, page?: ScenePage): boolean {
+  if (page?.content_labels?.achievements) {
+    if (page.content_labels.achievements.some(item => item.id === id)) {
+      return true;
+    }
+  }
   return id in achievementLabels;
 }
 
-export function hasInventoryItemLabel(id: string): boolean {
+export function hasInventoryItemLabel(id: string, page?: ScenePage): boolean {
+  if (page?.content_labels?.items) {
+    if (page.content_labels.items.some(item => item.id === id)) {
+      return true;
+    }
+  }
   return id in inventoryItemLabels;
 }
 

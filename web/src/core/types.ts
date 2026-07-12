@@ -127,4 +127,26 @@ export interface ScenePage {
   effect_cues: SceneEffectCue[];
   character_summary?: CharacterSummary;
   progression?: ProgressionStatus;
+  content_labels?: ContentLabels;
+  check_result?: CheckResolution;
+}
+
+export interface LabeledId {
+  id: string;
+  label: string;
+}
+
+export interface ContentLabels {
+  items: LabeledId[];
+  achievements: LabeledId[];
+}
+
+export interface CheckResolution {
+  ability_id: string;
+  ability_label: string;
+  dice: [number, number];
+  ability_value: number;
+  difficulty: number;
+  total: number;
+  success: boolean;
 }

@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+from plan_content import combined_development_plan
 
 
 def test_player_distribution_surface_is_web_only_and_documented():
@@ -9,7 +10,7 @@ def test_player_distribution_surface_is_web_only_and_documented():
     decision = decision_path.read_text(encoding="utf-8")
     index = Path("docs/00_Index.md").read_text(encoding="utf-8")
     readme = Path("README.md").read_text(encoding="utf-8")
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
 
     assert "현재 배포 표면: Web-only" in decision

@@ -818,7 +818,6 @@ pub fn ability_check_success_percent(ability: i32, difficulty: i32) -> f32 {
         return 0.0;
     }
     let count = match need {
-        2 => 36,
         3 => 35,
         4 => 33,
         5 => 30,

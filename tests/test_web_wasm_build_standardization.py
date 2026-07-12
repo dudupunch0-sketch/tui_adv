@@ -2,6 +2,7 @@ import json
 import shutil
 import subprocess
 from pathlib import Path
+from plan_content import combined_development_plan
 
 import pytest
 
@@ -134,7 +135,7 @@ def test_generated_wasm_package_is_ignored_but_documented():
 
 
 def test_main_plan_marks_wasm_standardization_complete_and_names_next_slice():
-    plan = Path("docs/dev/Development_Plan.md").read_text(encoding="utf-8")
+    plan = combined_development_plan()
     checklist = Path("docs/dev/Checklist.md").read_text(encoding="utf-8")
 
     assert "Web WASM build/preview 표준화 완료" in plan

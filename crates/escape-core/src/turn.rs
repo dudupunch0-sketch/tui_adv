@@ -198,14 +198,14 @@ pub fn apply_content_action(
     let mut next_state = state.clone();
     let mut logs = Vec::new();
     apply_cost(&mut next_state.player, &choice.cost);
-    logs.extend(apply_outcome(&mut next_state, &choice.outcome));
+    logs.extend(apply_outcome(&mut next_state, content, &choice.outcome));
     if let Some(check) = &choice.check {
         let branch = if ability_check_succeeds(state, check.ability.as_str(), check.difficulty) {
             &check.success
         } else {
             &check.failure
         };
-        logs.extend(apply_outcome(&mut next_state, branch));
+        logs.extend(apply_outcome(&mut next_state, content, branch));
     }
     next_state.add_seen_encounter_once(&encounter.id);
     logs.extend(advance_turn(&mut next_state));
@@ -444,17 +444,39 @@ fn apply_cost(player: &mut PlayerState, cost: &ResourceMap) {
     }
 }
 
-fn apply_outcome(state: &mut GameState, outcome: &OutcomeDef) -> Vec<String> {
+fn apply_outcome(
+    state: &mut GameState,
+    content: &ContentIndex,
+    outcome: &OutcomeDef,
+) -> Vec<String> {
     for (resource, amount) in &outcome.resources {
         apply_player_resource_delta(&mut state.player, resource, *amount);
     }
     state.danger = (state.danger + outcome.danger).max(0);
-    for item in &outcome.remove_items {
-        state.remove_inventory_item(item);
+
+    let mut delta_logs = Vec::new();
+
+    // Resource deltas
+    for (resource, amount) in &outcome.resources {
+        if *amount > 0 {
+            delta_logs.push(format!("+ {} {}", resource_label(resource), amount));
+        } else if *amount < 0 {
+            delta_logs.push(format!("- {} {}", resource_label(resource), -amount));
+        }
     }
-    for item in &outcome.add_items {
-        state.add_inventory_once(item);
+
+    // Item deltas
+    for item_id in &outcome.remove_items {
+        state.remove_inventory_item(item_id);
+        let name = content.item(item_id).map(|item| item.name.as_str()).unwrap_or(item_id);
+        delta_logs.push(format!("- {}", name));
     }
+    for item_id in &outcome.add_items {
+        state.add_inventory_once(item_id);
+        let name = content.item(item_id).map(|item| item.name.as_str()).unwrap_or(item_id);
+        delta_logs.push(format!("+ {}", name));
+    }
+
     for flag in &outcome.remove_flags {
         state.remove_flag(flag);
     }
@@ -467,7 +489,32 @@ fn apply_outcome(state: &mut GameState, outcome: &OutcomeDef) -> Vec<String> {
     if let Some(destination_id) = &outcome.destination_id {
         state.location_id = destination_id.clone();
     }
-    outcome.log.iter().cloned().collect()
+
+    // Trait deltas
+    if let Some(new_trait_id) = &outcome.set_trait {
+        if let Some(prev_trait_id) = &state.trait_id {
+            let prev_name = content.trait_def(prev_trait_id).map(|t| t.name.as_str()).unwrap_or(prev_trait_id);
+            delta_logs.push(format!("- 특성: {}", prev_name));
+        }
+        state.trait_id = Some(new_trait_id.clone());
+        let new_name = content.trait_def(new_trait_id).map(|t| t.name.as_str()).unwrap_or(new_trait_id);
+        delta_logs.push(format!("+ 특성: {}", new_name));
+    }
+
+    // Experience deltas
+    if let Some(exp_delta) = outcome.experience {
+        let new_exp = (state.experience as i32 + exp_delta).max(0) as u32;
+        state.experience = new_exp;
+        if exp_delta > 0 {
+            delta_logs.push(format!("+ 경험 {}", exp_delta));
+        } else if exp_delta < 0 {
+            delta_logs.push(format!("- 경험 {}", -exp_delta));
+        }
+    }
+
+    let mut logs: Vec<String> = outcome.log.iter().cloned().collect();
+    logs.extend(delta_logs);
+    logs
 }
 
 fn advance_turn(state: &mut GameState) -> Vec<String> {

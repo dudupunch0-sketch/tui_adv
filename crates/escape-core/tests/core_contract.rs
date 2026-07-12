@@ -692,3 +692,114 @@ fn test_ability_check_success_percent() {
     // P(2d6 >= 3) = 35 / 36 = 97.222... -> 97.2%
     assert_eq!(ability_check_success_percent(0, 3), 97.2);
 }
+
+#[test]
+fn test_delta_logs_and_trait_change() {
+    let test_bundle_json = r#"{
+        "schema_version": 1,
+        "kind": "tui_adv.content_bundle",
+        "source": "test",
+        "runtime": {
+            "runtime_mode": "content",
+            "world_id": "test_world",
+            "storypack_id": "test_pack",
+            "default_location": "dev_desk"
+        },
+        "manifest": {
+            "schema_version": 1,
+            "source": "test",
+            "counts": {}
+        },
+        "content": {
+            "locations": [
+                {
+                    "id": "dev_desk",
+                    "name": "내 자리",
+                    "description": "내 개발 자리.",
+                    "connections": []
+                }
+            ],
+            "items": [
+                {
+                    "id": "wood_sword",
+                    "name": "목검",
+                    "usable": false,
+                    "use_effects": {}
+                }
+            ],
+            "encounters": [
+                {
+                    "id": "test_encounter",
+                    "weight": 1,
+                    "conditions": {
+                        "locations": ["dev_desk"]
+                    },
+                    "title": "테스트",
+                    "body": "테스트 바디",
+                    "choices": [
+                        {
+                            "id": "test_choice",
+                            "label": "선택",
+                            "cost": {},
+                            "outcome": {
+                                "log": "기본 서사 로그.",
+                                "resources": {
+                                    "health": 10,
+                                    "sanity": -5
+                                },
+                                "add_items": ["wood_sword"],
+                                "set_trait": "sword_master",
+                                "experience": 15
+                            }
+                        }
+                    ]
+                }
+            ],
+            "endings": [],
+            "achievements": [],
+            "secrets": [],
+            "traits": [
+                {
+                    "id": "sword_master",
+                    "name": "검호",
+                    "description": "검의 달인"
+                },
+                {
+                    "id": "beginner",
+                    "name": "초심자",
+                    "description": "초심자"
+                }
+            ]
+        }
+    }"#;
+
+    let bundle = load_content_bundle(test_bundle_json).expect("test bundle should load");
+    let index = index_content_bundle(&bundle).expect("test bundle should index");
+    let mut state = new_game_from_content(123, &index).expect("test game should start");
+    
+    // Set initial values
+    state.trait_id = Some("beginner".to_string());
+    state.player.health = 80;
+    state.player.sanity = 80;
+
+    let result = apply_action_from_content(&state, &index, "choice:test_choice")
+        .expect("action should resolve");
+
+    assert_eq!(
+        result.logs,
+        vec![
+            "기본 서사 로그.".to_string(),
+            "+ 체력 10".to_string(),
+            "- 정신력 5".to_string(),
+            "+ 목검".to_string(),
+            "- 특성: 초심자".to_string(),
+            "+ 특성: 검호".to_string(),
+            "+ 경험 15".to_string(),
+        ]
+    );
+
+    assert_eq!(result.state.player.health, 90);
+    assert_eq!(result.state.player.sanity, 75);
+    assert_eq!(result.state.trait_id, Some("sword_master".to_string()));
+    assert_eq!(result.state.experience, 15);
+}

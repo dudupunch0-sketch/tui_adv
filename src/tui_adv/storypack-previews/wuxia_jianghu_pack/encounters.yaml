@@ -58,12 +58,20 @@ encounters:
       - id: run_toward_open_street
         label: 큰길 쪽으로 비틀거리며 물러난다
         outcome:
-          resources:
-            health: -3
           add_flags: [first_brawl_started, heuksa_bang_first_fight_resolved, first_brawl_survived]
           add_clues: [violence_is_real, open_street_escape_route]
           experience: 15
-          log: 도망은 영웅적이지 않았지만 큰 부상을 피했다. 흑사방이 길목을 어떻게 막는지도 보였다.
+        check:
+          ability: dexterity
+          difficulty: 7
+          success:
+            resources:
+              health: -1
+            log: 민첩하게 큰길로 물러섰다. 큰 부상을 피하고 흑사방의 포위를 벗어났다.
+          failure:
+            resources:
+              health: -5
+            log: 비틀거리다 몽둥이에 쓸리며 꼴사납게 도망쳤다. 무공에 익숙지 않은 탓이다.
       - id: deescalate_with_words
         label: 말로 시간을 벌며 사원증을 감춘다
         outcome:
@@ -2586,3 +2594,27 @@ encounters:
           add_clues: [true_route_can_suppress_banner_and_rumor, pressure_eased_does_not_rewrite_scars, future_epilogue_renderer_still_unopened]
           destination_id: black_serpent_ledger_vault
           log: 핵심 줄이 끊어진 길에서는 깃발과 장터 풍문이 함께 낮아질 수 있다. 그렇다고 상처가 없던 일이 되는 것은 아니다. 천기록은 억제 후보만 남기고, 후일담 출력은 아직 열지 않는다.
+
+  - id: wuxia_collapse_gate
+    title: 천기록 붕괴
+    body: 천기록의 획이 사방으로 번지며 시야가 붉게 물든다. 이대로 한 자락 바람이 되어 흩어질 것인가, 아니면 천기의 편린을 태워 다시 일어설 것인가?
+    presentation:
+      visual_id: wuxia_collapse_gate
+      layout: collapse_gate
+      effect_cues: []
+    conditions:
+      required_flags: [never_set_flag_this_is_only_accessible_via_collapse_override]
+    choices:
+      - id: wuxia_collapse_revive
+        label: "기사회생: 천기의 편린을 태워 다시 일어선다"
+        outcome:
+          resources:
+            health: 40
+          add_flags: [second_wind_used]
+          experience: -10
+          log: "뜨거운 기운이 전신을 감돌며, 멈췄던 심장이 다시 뛰기 시작한다. 하지만 몸에 각인된 천기의 흐름 일부가 타들어 갔다."
+      - id: wuxia_collapse_rest
+        label: "안식: 붉은 글씨 너머의 평온으로 흘러간다"
+        outcome:
+          add_flags: [accept_final_rest]
+          log: "무거운 눈꺼풀을 닫고, 더 이상 고통이 없는 침묵 속으로 서서히 가라앉는다."

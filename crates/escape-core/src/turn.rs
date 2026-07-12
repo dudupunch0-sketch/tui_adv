@@ -684,6 +684,11 @@ fn conditions_unavailable_reasons(
             reasons.push(format!("능력 조건 미충족: {ability} >= {minimum}"));
         }
     }
+    if let Some(min_exp) = conditions.min_experience {
+        if state.experience < min_exp {
+            reasons.push(format!("경험 부족: {}/{}", state.experience, min_exp));
+        }
+    }
     reasons
 }
 

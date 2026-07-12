@@ -803,3 +803,194 @@ fn test_delta_logs_and_trait_change() {
     assert_eq!(result.state.trait_id, Some("sword_master".to_string()));
     assert_eq!(result.state.experience, 15);
 }
+
+#[test]
+fn test_min_experience_condition_matching() {
+    let test_bundle_json = r#"{
+        "schema_version": 1,
+        "kind": "tui_adv.content_bundle",
+        "source": "test",
+        "runtime": {
+            "runtime_mode": "content",
+            "world_id": "test_world",
+            "storypack_id": "test_pack",
+            "default_location": "dev_desk"
+        },
+        "manifest": {
+            "schema_version": 1,
+            "source": "test",
+            "counts": {}
+        },
+        "content": {
+            "locations": [
+                {
+                    "id": "dev_desk",
+                    "name": "내 자리",
+                    "description": "내 개발 자리.",
+                    "connections": []
+                }
+            ],
+            "items": [],
+            "encounters": [
+                {
+                    "id": "test_encounter",
+                    "weight": 1,
+                    "conditions": {
+                        "locations": ["dev_desk"],
+                        "min_experience": 10
+                    },
+                    "title": "테스트",
+                    "body": "테스트 바디",
+                    "choices": [
+                        {
+                            "id": "test_choice",
+                            "label": "선택",
+                            "cost": {},
+                            "outcome": {
+                                "log": "완료"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "endings": [],
+            "achievements": [],
+            "secrets": [],
+            "traits": []
+        }
+    }"#;
+
+    let bundle = load_content_bundle(test_bundle_json).expect("test bundle should load");
+    let index = index_content_bundle(&bundle).expect("content bundle should index");
+    let mut state = new_game_from_content(123, &index).expect("test game should start");
+    
+    state.experience = 0;
+    let view = turn_view_from_content(&state, &index).expect("should render turn view");
+    assert_eq!(view.encounter_id, None);
+
+    state.experience = 10;
+    let view = turn_view_from_content(&state, &index).expect("should render turn view");
+    assert_eq!(view.encounter_id, Some("test_encounter".to_string()));
+}
+
+#[test]
+fn test_experience_delta_negative_cap() {
+    let test_bundle_json = r#"{
+        "schema_version": 1,
+        "kind": "tui_adv.content_bundle",
+        "source": "test",
+        "runtime": {
+            "runtime_mode": "content",
+            "world_id": "test_world",
+            "storypack_id": "test_pack",
+            "default_location": "dev_desk"
+        },
+        "manifest": {
+            "schema_version": 1,
+            "source": "test",
+            "counts": {}
+        },
+        "content": {
+            "locations": [
+                {
+                    "id": "dev_desk",
+                    "name": "내 자리",
+                    "description": "내 개발 자리.",
+                    "connections": []
+                }
+            ],
+            "items": [],
+            "encounters": [
+                {
+                    "id": "test_encounter",
+                    "weight": 1,
+                    "conditions": {
+                        "locations": ["dev_desk"]
+                    },
+                    "title": "테스트",
+                    "body": "테스트 바디",
+                    "choices": [
+                        {
+                            "id": "test_choice",
+                            "label": "선택",
+                            "cost": {},
+                            "outcome": {
+                                "log": "완료",
+                                "experience": -50
+                            }
+                        }
+                    ]
+                }
+            ],
+            "endings": [],
+            "achievements": [],
+            "secrets": [],
+            "traits": []
+        }
+    }"#;
+
+    let bundle = load_content_bundle(test_bundle_json).expect("test bundle should load");
+    let index = index_content_bundle(&bundle).expect("test bundle should index");
+    let mut state = new_game_from_content(123, &index).expect("test game should start");
+    state.experience = 10;
+
+    let result = apply_action_from_content(&state, &index, "choice:test_choice")
+        .expect("action should resolve");
+
+    assert_eq!(result.state.experience, 0);
+    assert_eq!(result.logs[1], "- 경험 50");
+}
+
+#[test]
+fn test_progression_metadata_visibility() {
+    let test_bundle_json_with_prog = r#"{
+        "schema_version": 1,
+        "kind": "tui_adv.content_bundle",
+        "source": "test",
+        "runtime": {
+            "runtime_mode": "content",
+            "world_id": "test_world",
+            "storypack_id": "test_pack",
+            "default_location": "dev_desk",
+            "progression": {
+                "experience_target": 100,
+                "label": "단계"
+            }
+        },
+        "manifest": {
+            "schema_version": 1,
+            "source": "test",
+            "counts": {}
+        },
+        "content": {
+            "locations": [
+                {
+                    "id": "dev_desk",
+                    "name": "내 자리",
+                    "description": "내 개발 자리.",
+                    "connections": []
+                }
+            ],
+            "items": [],
+            "encounters": [],
+            "endings": [],
+            "achievements": [],
+            "secrets": [],
+            "traits": []
+        }
+    }"#;
+
+    let bundle = load_content_bundle(test_bundle_json_with_prog).expect("test bundle should load");
+    let index = index_content_bundle(&bundle).expect("test bundle should index");
+    let state = new_game_from_content(123, &index).expect("test game should start");
+    let page = scene_page_from_content(&state, &index).expect("build scene page should succeed");
+
+    assert!(page.progression.is_some());
+    let prog = page.progression.as_ref().unwrap();
+    assert_eq!(prog.experience, 0);
+    assert_eq!(prog.target, 100);
+    assert_eq!(prog.label, "단계");
+
+    let serialized = serde_json::to_string(&page).unwrap();
+    assert!(serialized.contains("\"progression\":{\"experience\":0,\"target\":100,\"label\":\"단계\"}"));
+}

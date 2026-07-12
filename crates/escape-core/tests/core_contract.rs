@@ -2,7 +2,7 @@ use escape_core::{
     apply_action, apply_action_from_content, index_content_bundle, load_content_bundle, load_state,
     new_game, new_game_from_content, new_game_from_content_at, save_state, scene_page_from_content,
     turn_view, turn_view_from_content, ContentTurnError, EffectCue, NewGameError, SceneMode,
-    SaveEnvelope,
+    SaveEnvelope, ability_check_success_percent,
 };
 
 use serde_json::json;
@@ -669,4 +669,26 @@ fn test_old_save_compat() {
     assert_eq!(state.seed, 123);
     assert_eq!(state.trait_id, None);
     assert_eq!(state.experience, 0);
+}
+
+#[test]
+fn test_ability_check_success_percent() {
+    // need <= 2
+    assert_eq!(ability_check_success_percent(0, 2), 100.0);
+    assert_eq!(ability_check_success_percent(10, 5), 100.0);
+
+    // need > 12
+    assert_eq!(ability_check_success_percent(0, 13), 0.0);
+
+    // need = 7
+    // P(2d6 >= 7) = 21 / 36 = 58.333... -> 58.3%
+    assert_eq!(ability_check_success_percent(0, 7), 58.3);
+
+    // need = 12
+    // P(2d6 >= 12) = 1 / 36 = 2.777... -> 2.8%
+    assert_eq!(ability_check_success_percent(0, 12), 2.8);
+
+    // need = 3
+    // P(2d6 >= 3) = 35 / 36 = 97.222... -> 97.2%
+    assert_eq!(ability_check_success_percent(0, 3), 97.2);
 }

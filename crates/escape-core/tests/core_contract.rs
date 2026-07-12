@@ -1322,7 +1322,7 @@ fn test_collapse_gate_lifecycle_and_validation() {
                             "id": "accept_death",
                             "label": "안식",
                             "outcome": {
-                                "add_flags": ["accept_final_rest"]
+                                "add_flags": ["accept_final_rest", "second_wind_used"]
                             }
                         }
                     ]

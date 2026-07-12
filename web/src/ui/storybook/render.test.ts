@@ -413,4 +413,67 @@ describe('Web Storybook renderer', () => {
     }
     expect(sceneForVisual('location:cheongryu_gate', 'movement')).toEqual(sceneForVisual('location:cheongryu_gate', 'movement'));
   });
+
+  it('prefers content_labels over dictionary labels in rendering', () => {
+    const html = renderStorybookPage(
+      samplePrinterPage({
+        inventory_summary: { items: ['commuter_badge'], overflow_count: 0 },
+        achievement_summary: { unlocked: ['first_signal'], newly_unlocked: [] },
+        content_labels: {
+          items: [{ id: 'commuter_badge', label: '특별한 패스' }],
+          achievements: [{ id: 'first_signal', label: '특별한 업적' }]
+        }
+      })
+    );
+
+    expect(html).toContain('특별한 패스');
+    expect(html).not.toContain('사원증');
+    expect(html).toContain('특별한 업적');
+    expect(html).not.toContain('첫 신호 확인');
+  });
+
+  it('renders check resolution banner when check_result is present', () => {
+    const html = renderStorybookPage(
+      samplePrinterPage({
+        check_result: {
+          ability_id: 'logic',
+          ability_label: '논리',
+          dice: [4, 2],
+          ability_value: 2,
+          difficulty: 7,
+          total: 8,
+          success: true,
+        },
+      }),
+    );
+
+    expect(html).toContain('class="check-resolution"');
+    expect(html).toContain('data-region="check-result"');
+    expect(html).toContain('data-check-outcome="success"');
+    expect(html).toContain('data-ability-id="logic"');
+    expect(html).toContain('aria-label="판정 결과: 성공"');
+    expect(html).toContain('⚃ ⚁');
+    expect(html).toContain('2d6 4+2 +논리 2 = 8 / 목표 7');
+    expect(html).toContain('class="check-resolution__verdict">성공</span>');
+  });
+
+  it('omits check resolution banner when check_result is absent', () => {
+    const html = renderStorybookPage(samplePrinterPage());
+    expect(html).not.toContain('class="check-resolution"');
+  });
+
+  it('forces data-story-phase="combat" when page visual is collapse_gate', () => {
+    const html = renderStorybookPage(
+      samplePrinterPage({
+        visual: {
+          id: 'wuxia_collapse_gate',
+          kind: 'collapse_gate',
+          alt: '붕괴 게이트',
+          source_id: 'collapse',
+        },
+      }),
+    );
+
+    expect(html).toContain('data-story-phase="combat"');
+  });
 });

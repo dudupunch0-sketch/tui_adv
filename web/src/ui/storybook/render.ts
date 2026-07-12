@@ -7,6 +7,7 @@ import type {
   SceneAction,
   SceneBlockedAction,
   ScenePage,
+  CheckResolution,
 } from '../../core/types';
 import { escapeHtml } from './html';
 import { renderStoryHistory } from './history';
@@ -52,6 +53,7 @@ function storyLayout(page: ScenePage): StoryLayout {
 }
 
 function storyPhase(page: ScenePage): StoryPhase {
+  if (page.visual.kind === 'collapse_gate') return 'combat';
   if (isCombatScene(page)) return 'combat';
   if (page.history_entries.length || page.achievement_summary.newly_unlocked.length) return 'result';
   return 'story';
@@ -164,14 +166,37 @@ function renderBody(page: ScenePage): string {
   const resultLog = renderInlineResultLog(page);
 
   const pressureNotes = [...page.status_summary.warnings, ...page.pressure_cues.map((cue) => cue.message)];
+  const checkResolution = renderCheckResolution(page);
   return `<section class="storybook-body" data-region="body">
     <p class="storybook-location">${escapeHtml(page.location.name)}</p>
     ${title}
     ${pressureNotes.length ? `<aside class="storybook-pressure" data-region="pressure">${pressureNotes.map((note) => `<p>${escapeHtml(note)}</p>`).join('')}</aside>` : ''}
     ${dialogue}
     ${bodyBlocks}
+    ${checkResolution}
     ${resultLog}
   </section>`;
+}
+
+function renderCheckResolution(page: ScenePage): string {
+  const check: CheckResolution | undefined = page.check_result;
+  if (!check) return '';
+
+  const verdict = check.success ? '성공' : '실패';
+  const outcome = check.success ? 'success' : 'failure';
+
+  const diceGlyphs = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+  const d1 = diceGlyphs[check.dice[0] - 1] ?? '⚀';
+  const d2 = diceGlyphs[check.dice[1] - 1] ?? '⚀';
+  const diceStr = `${d1} ${d2}`;
+
+  const mathText = `2d6 ${check.dice[0]}+${check.dice[1]} +${escapeHtml(check.ability_label)} ${check.ability_value} = ${check.total} / 목표 ${check.difficulty}`;
+
+  return `<aside class="check-resolution" data-region="check-result" data-check-outcome="${outcome}" data-ability-id="${escapeHtml(check.ability_id)}" aria-label="판정 결과: ${verdict}">
+  <span class="check-resolution__dice" aria-hidden="true">${diceStr}</span>
+  <span class="check-resolution__math">${mathText}</span>
+  <span class="check-resolution__verdict">${verdict}</span>
+</aside>`;
 }
 
 function renderBodyBlock(block: BodyBlock): string {
@@ -202,7 +227,7 @@ function renderInlineResultLog(page: ScenePage): string {
     ? page.achievement_summary.newly_unlocked
     : page.achievement_summary.unlocked;
   if (achievements.length) {
-    rows.push(`+ 업적: ${achievements.map(renderAchievementLabel).join(', ')}`);
+    rows.push(`+ 업적: ${achievements.map(id => renderAchievementLabel(id, page)).join(', ')}`);
   }
   if (!rows.length) return '';
 
@@ -221,9 +246,9 @@ function renderResultLogLine(line: string): string {
   return `<p class="storybook-summary">${line}</p>`;
 }
 
-function renderAchievementLabel(id: string): string {
-  const translationNote = hasAchievementLabel(id) ? '' : '<small class="storybook-translation-note">미번역</small>';
-  return `${escapeHtml(achievementLabel(id))}${translationNote}`;
+function renderAchievementLabel(id: string, page: ScenePage): string {
+  const translationNote = hasAchievementLabel(id, page) ? '' : '<small class="storybook-translation-note">미번역</small>';
+  return `${escapeHtml(achievementLabel(id, page))}${translationNote}`;
 }
 
 function renderChoices(page: ScenePage): string {
@@ -358,7 +383,7 @@ function renderBottomDock(page: ScenePage, options: StorybookRenderOptions): str
 function renderInventoryDrawer(page: ScenePage): string {
   const items = page.inventory_summary.items.length
     ? `<ul>${page.inventory_summary.items
-        .map((id) => `<li>${renderDrawerLabel(id, inventoryItemLabel, hasInventoryItemLabel)}</li>`)
+        .map((id) => `<li>${renderDrawerLabel(id, inventoryItemLabel, hasInventoryItemLabel, page)}</li>`)
         .join('')}${
         page.inventory_summary.overflow_count > 0
           ? `<li class="dock-drawer-overflow">…외 ${page.inventory_summary.overflow_count}개</li>`
@@ -376,7 +401,7 @@ function renderAchievementDrawer(page: ScenePage): string {
           const newlyMarked = newlyUnlocked.has(id)
             ? '<span class="dock-new-mark" aria-hidden="true"></span><span class="sr-only">새로 새김</span>'
             : '';
-          return `<li>${newlyMarked}${renderDrawerLabel(id, achievementLabel, hasAchievementLabel)}</li>`;
+          return `<li>${newlyMarked}${renderDrawerLabel(id, achievementLabel, hasAchievementLabel, page)}</li>`;
         })
         .join('')}</ul>`
     : '<p>아직 새긴 업적이 없다.</p>';
@@ -396,11 +421,12 @@ function renderDrawerMenu(options: StorybookRenderOptions): string {
 
 function renderDrawerLabel(
   id: string,
-  labelForId: (id: string) => string,
-  hasLabel: (id: string) => boolean,
+  labelForId: (id: string, page?: ScenePage) => string,
+  hasLabel: (id: string, page?: ScenePage) => boolean,
+  page: ScenePage,
 ): string {
-  const translationNote = hasLabel(id) ? '' : '<small class="storybook-translation-note">미번역</small>';
-  return `${escapeHtml(labelForId(id))}${translationNote}`;
+  const translationNote = hasLabel(id, page) ? '' : '<small class="storybook-translation-note">미번역</small>';
+  return `${escapeHtml(labelForId(id, page))}${translationNote}`;
 }
 
 function resourceById(resources: ResourceStatus[], id: string): ResourceStatus | undefined {

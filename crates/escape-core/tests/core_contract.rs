@@ -994,3 +994,402 @@ fn test_progression_metadata_visibility() {
     let serialized = serde_json::to_string(&page).unwrap();
     assert!(serialized.contains("\"progression\":{\"experience\":0,\"target\":100,\"label\":\"단계\"}"));
 }
+
+#[test]
+fn content_backed_scene_page_carries_content_labels() {
+    let test_bundle_json = r#"{
+        "schema_version": 1,
+        "kind": "tui_adv.content_bundle",
+        "source": "test",
+        "runtime": {
+            "runtime_mode": "content",
+            "world_id": "test_world",
+            "storypack_id": "test_pack",
+            "default_location": "dev_desk"
+        },
+        "manifest": {
+            "schema_version": 1,
+            "source": "test",
+            "counts": {}
+        },
+        "content": {
+            "locations": [
+                {
+                    "id": "dev_desk",
+                    "name": "내 자리",
+                    "description": "내 개발 자리.",
+                    "connections": []
+                }
+            ],
+            "items": [
+                {
+                    "id": "iron_sword",
+                    "name": "철검",
+                    "description": "평범한 철검이다."
+                }
+            ],
+            "encounters": [],
+            "endings": [],
+            "achievements": [
+                {
+                    "id": "first_kill",
+                    "name": "첫 번째 승리",
+                    "description": "첫 전투에서 이겼다."
+                }
+            ],
+            "secrets": [],
+            "traits": []
+        }
+    }"#;
+
+    let bundle = load_content_bundle(test_bundle_json).expect("test bundle should load");
+    let index = index_content_bundle(&bundle).expect("test bundle should index");
+    let mut state = new_game_from_content(123, &index).expect("test game should start");
+    
+    // empty case
+    let page_empty = scene_page_from_content(&state, &index).expect("build scene page should succeed");
+    assert!(page_empty.content_labels.is_none());
+
+    // inventory & achievement populated
+    state.inventory.push("iron_sword".to_string());
+    state.unlocked_achievements.push("first_kill".to_string());
+    state.inventory.push("missing_item".to_string());
+
+    let page = scene_page_from_content(&state, &index).expect("build scene page should succeed");
+    assert!(page.content_labels.is_some());
+    let labels = page.content_labels.as_ref().unwrap();
+
+    assert_eq!(labels.items.len(), 1);
+    assert_eq!(labels.items[0].id, "iron_sword");
+    assert_eq!(labels.items[0].label, "철검");
+
+    assert_eq!(labels.achievements.len(), 1);
+    assert_eq!(labels.achievements[0].id, "first_kill");
+    assert_eq!(labels.achievements[0].label, "첫 번째 승리");
+
+    let serialized = serde_json::to_string(&page).unwrap();
+    assert!(serialized.contains("\"content_labels\":{"));
+    assert!(serialized.contains("\"id\":\"iron_sword\",\"label\":\"철검\""));
+}
+
+#[test]
+fn test_check_resolution_lifecycle_and_regression() {
+    let test_bundle_json = r#"{
+        "schema_version": 1,
+        "kind": "tui_adv.content_bundle",
+        "source": "test",
+        "runtime": {
+            "runtime_mode": "content",
+            "world_id": "test_world",
+            "storypack_id": "test_pack",
+            "default_location": "dev_desk"
+        },
+        "manifest": {
+            "schema_version": 1,
+            "source": "test",
+            "counts": {}
+        },
+        "content": {
+            "locations": [
+                {
+                    "id": "dev_desk",
+                    "name": "내 자리",
+                    "description": "내 개발 자리.",
+                    "connections": ["other_desk"]
+                },
+                {
+                    "id": "other_desk",
+                    "name": "다른 자리",
+                    "description": "다른 개발 자리.",
+                    "connections": []
+                }
+            ],
+            "items": [],
+            "encounters": [
+                {
+                    "id": "test_encounter",
+                    "title": "테스트 인카운터",
+                    "body": "테스트 바디",
+                    "choices": [
+                        {
+                            "id": "checked_choice",
+                            "label": "체크 선택지",
+                            "check": {
+                                "ability": "logic",
+                                "difficulty": 9,
+                                "success": { "log": "성공!" },
+                                "failure": { "log": "실패!" }
+                            }
+                        },
+                        {
+                            "id": "normal_choice",
+                            "label": "일반 선택지",
+                            "outcome": { "log": "일반 선택" }
+                        }
+                    ]
+                }
+            ],
+            "endings": [],
+            "achievements": [],
+            "secrets": [],
+            "traits": []
+        }
+    }"#;
+
+    let bundle = load_content_bundle(test_bundle_json).expect("test bundle should load");
+    let index = index_content_bundle(&bundle).expect("test bundle should index");
+    let state = new_game_from_content(123, &index).expect("test game should start");
+
+    // 1. Regression test for hashing (same seed/turn/ability/difficulty => same dice)
+    let res = escape_core::resolve_ability_check(&state, "logic", 9);
+    assert_eq!(res.dice, (1, 1));
+    assert_eq!(res.ability_value, 2);
+    assert_eq!(res.total, 4);
+    assert_eq!(res.success, false);
+
+    // 2. Lifecycle: not set at start
+    assert!(state.last_check.is_none());
+
+    // 3. Set on check resolution
+    let action_res = apply_action_from_content(&state, &index, "choice:checked_choice").unwrap();
+    let next_state = action_res.state;
+    
+    assert!(next_state.last_check.is_some());
+    let last_check = next_state.last_check.as_ref().unwrap();
+    assert_eq!(last_check.dice, (1, 1));
+    assert_eq!(last_check.ability_id, "logic");
+    assert_eq!(last_check.success, false);
+
+    // ScenePage check_result mapping check
+    let page = scene_page_from_content(&next_state, &index).unwrap();
+    assert!(page.check_result.is_some());
+    assert_eq!(page.check_result.unwrap().dice, (1, 1));
+
+    // 4. Cleared on next action (movement)
+    let move_res = apply_action_from_content(&next_state, &index, "move:other_desk").unwrap();
+    assert!(move_res.state.last_check.is_none());
+
+    // 5. absent-field save loads
+    let save_json_no_check = r#"{
+        "schema_version": 1,
+        "state": {
+            "seed": 123,
+            "turn": 0,
+            "location_id": "dev_desk",
+            "disaster_type": "unknown_isolation",
+            "danger": 0,
+            "player": {
+                "health": 100,
+                "sanity": 100,
+                "battery": 100,
+                "hunger": 0,
+                "thirst": 0,
+                "abilities": {}
+            },
+            "inventory": [],
+            "flags": [],
+            "clues": [],
+            "seen_encounters": [],
+            "unlocked_achievements": [],
+            "history": []
+        }
+    }"#;
+    let envelope: escape_core::SaveEnvelope = serde_json::from_str(save_json_no_check).unwrap();
+    assert!(envelope.state.last_check.is_none());
+}
+
+#[test]
+fn test_collapse_gate_lifecycle_and_validation() {
+    // 1. validation test: invalid resource_id
+    let invalid_res_json = r#"{
+        "schema_version": 1,
+        "kind": "tui_adv.content_bundle",
+        "source": "test",
+        "runtime": {
+            "runtime_mode": "content",
+            "world_id": "test_world",
+            "storypack_id": "test_pack",
+            "default_location": "dev_desk",
+            "collapse": {
+                "encounter_id": "wuxia_collapse_gate",
+                "resource_id": "sanity",
+                "used_flag": "second_wind_used"
+            }
+        },
+        "manifest": { "schema_version": 1, "source": "test", "counts": {} },
+        "content": {
+            "locations": [{"id": "dev_desk", "name": "내 자리", "description": "내 개발 자리.", "connections": []}],
+            "items": [],
+            "encounters": [{"id": "wuxia_collapse_gate", "title": "붕괴", "body": "붕괴", "choices": []}],
+            "endings": [], "achievements": [], "secrets": [], "traits": []
+        }
+    }"#;
+    let bundle = load_content_bundle(invalid_res_json).unwrap();
+    let err = index_content_bundle(&bundle).unwrap_err();
+    assert!(format!("{err:?}").contains("unsupported collapse resource_id"));
+
+    // 2. validation test: empty used_flag
+    let empty_flag_json = r#"{
+        "schema_version": 1,
+        "kind": "tui_adv.content_bundle",
+        "source": "test",
+        "runtime": {
+            "runtime_mode": "content",
+            "world_id": "test_world",
+            "storypack_id": "test_pack",
+            "default_location": "dev_desk",
+            "collapse": {
+                "encounter_id": "wuxia_collapse_gate",
+                "resource_id": "health",
+                "used_flag": ""
+            }
+        },
+        "manifest": { "schema_version": 1, "source": "test", "counts": {} },
+        "content": {
+            "locations": [{"id": "dev_desk", "name": "내 자리", "description": "내 개발 자리.", "connections": []}],
+            "items": [],
+            "encounters": [{"id": "wuxia_collapse_gate", "title": "붕괴", "body": "붕괴", "choices": []}],
+            "endings": [], "achievements": [], "secrets": [], "traits": []
+        }
+    }"#;
+    let bundle = load_content_bundle(empty_flag_json).unwrap();
+    let err = index_content_bundle(&bundle).unwrap_err();
+    assert!(format!("{err:?}").contains("collapse used_flag cannot be empty"));
+
+    // 3. validation test: missing collapse encounter_id
+    let missing_enc_json = r#"{
+        "schema_version": 1,
+        "kind": "tui_adv.content_bundle",
+        "source": "test",
+        "runtime": {
+            "runtime_mode": "content",
+            "world_id": "test_world",
+            "storypack_id": "test_pack",
+            "default_location": "dev_desk",
+            "collapse": {
+                "encounter_id": "missing_collapse_gate",
+                "resource_id": "health",
+                "used_flag": "second_wind_used"
+            }
+        },
+        "manifest": { "schema_version": 1, "source": "test", "counts": {} },
+        "content": {
+            "locations": [{"id": "dev_desk", "name": "내 자리", "description": "내 개발 자리.", "connections": []}],
+            "items": [],
+            "encounters": [{"id": "wuxia_collapse_gate", "title": "붕괴", "body": "붕괴", "choices": []}],
+            "endings": [], "achievements": [], "secrets": [], "traits": []
+        }
+    }"#;
+    let bundle = load_content_bundle(missing_enc_json).unwrap();
+    let err = index_content_bundle(&bundle).unwrap_err();
+    assert!(format!("{err:?}").contains("missing_collapse_gate' not found in encounters"));
+
+    // 4. normal behavior: collapse trigger
+    let valid_json = r#"{
+        "schema_version": 1,
+        "kind": "tui_adv.content_bundle",
+        "source": "test",
+        "runtime": {
+            "runtime_mode": "content",
+            "world_id": "test_world",
+            "storypack_id": "test_pack",
+            "default_location": "dev_desk",
+            "collapse": {
+                "encounter_id": "wuxia_collapse_gate",
+                "resource_id": "health",
+                "used_flag": "second_wind_used"
+            }
+        },
+        "manifest": { "schema_version": 1, "source": "test", "counts": {} },
+        "content": {
+            "locations": [{"id": "dev_desk", "name": "내 자리", "description": "내 개발 자리.", "connections": []}],
+            "items": [],
+            "encounters": [
+                {
+                    "id": "wuxia_collapse_gate",
+                    "title": "붕괴 게이트",
+                    "body": "안식을 취할 것인가?",
+                    "choices": [
+                        {
+                            "id": "revive",
+                            "label": "기사회생",
+                            "outcome": {
+                                "resources": { "health": 40 },
+                                "add_flags": ["second_wind_used"]
+                            }
+                        },
+                        {
+                            "id": "accept_death",
+                            "label": "안식",
+                            "outcome": {
+                                "add_flags": ["accept_final_rest"]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id": "normal_enc",
+                    "title": "일반 인카운터",
+                    "body": "일반 바디",
+                    "choices": [
+                        {
+                            "id": "lose_health",
+                            "label": "체력 감소",
+                            "outcome": {
+                                "resources": { "health": -120 }
+                            }
+                        }
+                    ]
+                }
+            ],
+            "endings": [
+                {
+                    "id": "death_ending",
+                    "kind": "death",
+                    "name": "사망 엔딩",
+                    "text": "당신은 죽었습니다.",
+                    "priority": 100,
+                    "conditions": {
+                        "required_flags": ["accept_final_rest"]
+                    }
+                }
+            ],
+            "achievements": [], "secrets": [], "traits": []
+        }
+    }"#;
+
+    let bundle = load_content_bundle(valid_json).expect("test bundle should load");
+    let index = index_content_bundle(&bundle).expect("test bundle should index");
+    let state = new_game_from_content(123, &index).expect("test game should start");
+
+    assert_eq!(state.player.health, 100);
+
+    let action_res = apply_action_from_content(&state, &index, "choice:lose_health").unwrap();
+    let next_state = action_res.state;
+
+    assert!(next_state.player.health <= 0);
+
+    let turn_view = escape_core::turn_view_from_content(&next_state, &index).unwrap();
+    assert_eq!(turn_view.encounter_id.as_deref(), Some("wuxia_collapse_gate"));
+    assert!(turn_view.ending_id.is_none());
+
+    let revive_res = apply_action_from_content(&next_state, &index, "choice:revive").unwrap();
+    let revived_state = revive_res.state;
+    assert_eq!(revived_state.player.health, 40);
+    assert!(revived_state.flags.iter().any(|f| f == "second_wind_used"));
+
+    let mut recollapse_state = revived_state.clone();
+    recollapse_state.player.health = -10;
+    let recollapse_view = escape_core::turn_view_from_content(&recollapse_state, &index).unwrap();
+    assert_ne!(recollapse_view.encounter_id.as_deref(), Some("wuxia_collapse_gate"));
+
+    let accept_res = apply_action_from_content(&next_state, &index, "choice:accept_death").unwrap();
+    let accepted_state = accept_res.state;
+    assert!(accepted_state.flags.iter().any(|f| f == "accept_final_rest"));
+
+    let ending_view = escape_core::turn_view_from_content(&accepted_state, &index).unwrap();
+    assert_eq!(ending_view.ending_id.as_deref(), Some("death_ending"));
+}
+
+
+

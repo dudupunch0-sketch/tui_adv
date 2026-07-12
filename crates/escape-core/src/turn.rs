@@ -7,7 +7,7 @@ use crate::resources::{
     ACTION_PREFIX_CHOICE, ACTION_PREFIX_MOVE, ACTION_PREFIX_USE, RESOURCE_BATTERY, RESOURCE_HEALTH,
     RESOURCE_HUNGER, RESOURCE_SANITY, RESOURCE_THIRST,
 };
-use crate::state::{GameState, PlayerState};
+use crate::state::{CheckResolution, GameState, PlayerState};
 use serde::Serialize;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -196,15 +196,18 @@ pub fn apply_content_action(
     };
 
     let mut next_state = state.clone();
+    next_state.last_check = None;
     let mut logs = Vec::new();
     apply_cost(&mut next_state.player, &choice.cost);
     logs.extend(apply_outcome(&mut next_state, content, &choice.outcome));
     if let Some(check) = &choice.check {
-        let branch = if ability_check_succeeds(state, check.ability.as_str(), check.difficulty) {
+        let res = resolve_ability_check(state, check.ability.as_str(), check.difficulty);
+        let branch = if res.success {
             &check.success
         } else {
             &check.failure
         };
+        next_state.last_check = Some(res);
         logs.extend(apply_outcome(&mut next_state, content, branch));
     }
     next_state.add_seen_encounter_once(&encounter.id);
@@ -355,6 +358,7 @@ fn apply_movement_action(
     };
 
     let mut next_state = state.clone();
+    next_state.last_check = None;
     next_state.location_id = destination_id.to_string();
     next_state.danger = (next_state.danger + destination.danger).max(0);
     let mut logs = vec![format!("{}로 이동했다.", destination.name)];
@@ -394,6 +398,7 @@ fn apply_item_action(
     }
 
     let mut next_state = state.clone();
+    next_state.last_check = None;
     for (resource, amount) in &item.use_effects {
         apply_player_resource_delta(&mut next_state.player, resource, *amount);
     }
@@ -426,6 +431,24 @@ fn current_content_ending<'a>(
     content: &'a ContentIndex,
     state: &GameState,
 ) -> Option<&'a crate::content::EndingDef> {
+    if let Some(runtime) = &content.runtime {
+        if let Some(collapse) = &runtime.collapse {
+            if state.player.health <= 0
+                && !state.flags.iter().any(|f| f == &collapse.used_flag)
+                && !state.flags.iter().any(|f| f == "accept_final_rest")
+            {
+                let base_encounter = content
+                    .encounters()
+                    .find(|encounter| encounter_is_available(encounter, state));
+                
+                let is_already_collapse = base_encounter.map(|enc| enc.id == collapse.encounter_id).unwrap_or(false);
+                if !is_already_collapse {
+                    return None;
+                }
+            }
+        }
+    }
+
     content
         .endings()
         .filter(|ending| conditions_match(&ending.conditions, state))
@@ -436,6 +459,27 @@ fn current_content_encounter<'a>(
     content: &'a ContentIndex,
     state: &GameState,
 ) -> Option<&'a EncounterDef> {
+    if let Some(runtime) = &content.runtime {
+        if let Some(collapse) = &runtime.collapse {
+            if state.player.health <= 0
+                && !state.flags.iter().any(|f| f == &collapse.used_flag)
+                && !state.flags.iter().any(|f| f == "accept_final_rest")
+            {
+                let base_encounter = content
+                    .encounters()
+                    .find(|encounter| encounter_is_available(encounter, state));
+                
+                if let Some(enc) = base_encounter {
+                    if enc.id == collapse.encounter_id {
+                        return Some(enc);
+                    }
+                }
+                
+                return content.encounter(&collapse.encounter_id);
+            }
+        }
+    }
+
     content
         .encounters()
         .find(|encounter| encounter_is_available(encounter, state))
@@ -573,13 +617,30 @@ fn achievement_unlocked(achievement: &AchievementDef, state: &GameState) -> bool
     conditions_match(&achievement.conditions, state)
 }
 
-fn ability_check_succeeds(state: &GameState, ability: &str, difficulty: i32) -> bool {
+pub fn resolve_ability_check(
+    state: &GameState,
+    ability_id: &str,
+    difficulty: i32,
+) -> CheckResolution {
     let (first, second) = roll_2d6(&format!(
         "{}:{}:{}:{}",
-        state.seed, state.turn, ability, difficulty
+        state.seed, state.turn, ability_id, difficulty
     ));
-    first + second + player_ability(&state.player, ability) >= difficulty
+    let ability_value = player_ability(&state.player, ability_id);
+    let total = first + second + ability_value;
+    let success = total >= difficulty;
+    CheckResolution {
+        ability_id: ability_id.to_string(),
+        ability_label: crate::ability_label(ability_id).to_string(),
+        dice: (first, second),
+        ability_value,
+        difficulty,
+        total,
+        success,
+    }
 }
+
+
 
 fn roll_2d6(seed: &str) -> (i32, i32) {
     let hash = fnv1a_32(seed);

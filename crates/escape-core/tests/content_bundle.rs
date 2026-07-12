@@ -211,12 +211,12 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&5));
     assert_eq!(bundle.manifest.counts.get("items"), Some(&4));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&43));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&44));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 5);
-    assert_eq!(index.encounters_len(), 43);
+    assert_eq!(index.encounters_len(), 44);
 
     let market = index
         .location("jianghu_market_street")
@@ -251,7 +251,11 @@ fn preview_fixture_indexes_wuxia_first_fight() {
         .iter()
         .find(|choice| choice.id == "run_toward_open_street")
         .expect("fallback retreat choice");
-    assert_eq!(fallback.outcome.resources.get("health"), Some(&-3));
+    let check = fallback.check.as_ref().expect("should have ability check");
+    assert_eq!(check.ability, "dexterity");
+    assert_eq!(check.difficulty, 7);
+    assert_eq!(check.success.resources.get("health"), Some(&-1));
+    assert_eq!(check.failure.resources.get("health"), Some(&-5));
     assert_eq!(
         fallback.outcome.add_clues,
         vec!["violence_is_real", "open_street_escape_route"]

@@ -102,10 +102,22 @@
                 "heuksa_bang_first_fight_resolved",
                 "first_brawl_survived"
               ],
-              "experience": 15,
-              "log": "도망은 영웅적이지 않았지만 큰 부상을 피했다. 흑사방이 길목을 어떻게 막는지도 보였다.",
-              "resources": {
-                "health": -3
+              "experience": 15
+            },
+            "check": {
+              "ability": "dexterity",
+              "difficulty": 7,
+              "success": {
+                "log": "민첩하게 큰길로 물러섰다. 큰 부상을 피하고 흑사방의 포위를 벗어났다.",
+                "resources": {
+                  "health": -1
+                }
+              },
+              "failure": {
+                "log": "비틀거리다 몽둥이에 쓸리며 꼴사납게 도망쳤다. 무공에 익숙지 않은 탓이다.",
+                "resources": {
+                  "health": -5
+                }
               }
             }
           },
@@ -5722,6 +5734,47 @@
           "visual_id": "wuxia_black_serpent_aftermath"
         },
         "title": "흑사방 후일담 씨앗"
+      },
+      {
+        "body": "천기록의 획이 사방으로 번지며 시야가 붉게 물든다. 이대로 한 자락 바람이 되어 흩어질 것인가, 아니면 천기의 편린을 태워 다시 일어설 것인가?",
+        "choices": [
+          {
+            "id": "wuxia_collapse_revive",
+            "label": "기사회생: 천기의 편린을 태워 다시 일어선다",
+            "outcome": {
+              "resources": {
+                "health": 40
+              },
+              "add_flags": [
+                "second_wind_used"
+              ],
+              "experience": -10,
+              "log": "뜨거운 기운이 전신을 감돌며, 멈췄던 심장이 다시 뛰기 시작한다. 하지만 몸에 각인된 천기의 흐름 일부가 타들어 갔다."
+            }
+          },
+          {
+            "id": "wuxia_collapse_rest",
+            "label": "안식: 붉은 글씨 너머의 평온으로 흘러간다",
+            "outcome": {
+              "add_flags": [
+                "accept_final_rest"
+              ],
+              "log": "무거운 눈꺼풀을 닫고, 더 이상 고통이 없는 침묵 속으로 서서히 가라앉는다."
+            }
+          }
+        ],
+        "conditions": {
+          "required_flags": [
+            "never_set_flag_this_is_only_accessible_via_collapse_override"
+          ]
+        },
+        "id": "wuxia_collapse_gate",
+        "presentation": {
+          "effect_cues": [],
+          "layout": "collapse_gate",
+          "visual_id": "wuxia_collapse_gate"
+        },
+        "title": "천기록 붕괴"
       }
     ],
     "endings": [
@@ -5757,6 +5810,18 @@
         "name": "이구학지 결산",
         "priority": 900,
         "text": "사도의 장부고가 조용해지자 천기록은 마지막 장을 다시 펼친다. 이제 선택지는 없다. 지금까지 남긴 씨앗을 Rust GameCore가 읽고, 후일담 카드는 계산이 아니라 기록으로만 출력된다."
+      },
+      {
+        "conditions": {
+          "required_flags": [
+            "accept_final_rest"
+          ]
+        },
+        "id": "wuxia_death_rest",
+        "kind": "death",
+        "name": "천기록 안식",
+        "priority": 999,
+        "text": "당신은 깊은 안식에 도달했습니다. 천기록의 붉은 획들은 완전히 흩어지고, 낯선 세계에서의 힘겨웠던 출근길도 마침내 끝이 납니다."
       }
     ],
     "items": [
@@ -5900,8 +5965,8 @@
   "manifest": {
     "counts": {
       "achievements": 2,
-      "encounters": 43,
-      "endings": 2,
+      "encounters": 44,
+      "endings": 3,
       "items": 4,
       "locations": 5,
       "secrets": 0,
@@ -5918,7 +5983,12 @@
     },
     "runtime_mode": "storypack_preview",
     "storypack_id": "wuxia_jianghu_pack",
-    "world_id": "wuxia_jianghu"
+    "world_id": "wuxia_jianghu",
+    "collapse": {
+      "encounter_id": "wuxia_collapse_gate",
+      "resource_id": "health",
+      "used_flag": "second_wind_used"
+    }
   },
   "schema_version": 1,
   "source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/*.yaml"

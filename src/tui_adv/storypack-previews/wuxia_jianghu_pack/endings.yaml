@@ -15,3 +15,11 @@ endings:
       locations: [black_serpent_ledger_vault]
       required_flags: [boss_resolution_resolved, mumyeong_resolution_resolved, seoharin_qingliu_resolution_resolved, cheongirok_resolution_resolved, black_serpent_aftermath_resolved, final_result_priority_applied_seeded, final_state_routing_seeded]
     text: 사도의 장부고가 조용해지자 천기록은 마지막 장을 다시 펼친다. 이제 선택지는 없다. 지금까지 남긴 씨앗을 Rust GameCore가 읽고, 후일담 카드는 계산이 아니라 기록으로만 출력된다.
+
+  - id: wuxia_death_rest
+    name: 천기록 안식
+    kind: death
+    priority: 999
+    conditions:
+      required_flags: [accept_final_rest]
+    text: 당신은 깊은 안식에 도달했습니다. 천기록의 붉은 획들은 완전히 흩어지고, 낯선 세계에서의 힘겨웠던 출근길도 마침내 끝이 납니다.

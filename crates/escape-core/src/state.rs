@@ -63,6 +63,19 @@ pub struct GameState {
     pub trait_id: Option<String>,
     #[serde(default)]
     pub experience: u32,
+    #[serde(default)]
+    pub last_check: Option<CheckResolution>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct CheckResolution {
+    pub ability_id: String,
+    pub ability_label: String,
+    pub dice: (i32, i32),
+    pub ability_value: i32,
+    pub difficulty: i32,
+    pub total: i32,
+    pub success: bool,
 }
 
 impl GameState {
@@ -89,6 +102,7 @@ impl GameState {
             history: Vec::new(),
             trait_id: None,
             experience: 0,
+            last_check: None,
         }
     }
 
@@ -129,6 +143,7 @@ impl GameState {
             history: Vec::new(),
             trait_id: None,
             experience: 0,
+            last_check: None,
         })
     }
 

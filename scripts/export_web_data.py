@@ -35,6 +35,11 @@ STORYPACK_PREVIEWS: dict[str, dict[str, Any]] = {
             "progression": {
                 "experience_target": 100,
                 "label": "천기"
+            },
+            "collapse": {
+                "encounter_id": "wuxia_collapse_gate",
+                "resource_id": "health",
+                "used_flag": "second_wind_used"
             }
         },
     },

@@ -1,4 +1,4 @@
-import type { BodyBlock, SceneAction, SceneBlockedAction, ScenePage, ResourceStatus } from '../../core/types';
+import type { BodyBlock, SceneAction, SceneBlockedAction, ScenePage, ResourceStatus, CharacterSummary } from '../../core/types';
 import { escapeHtml } from './html';
 import { renderStoryHistory } from './history';
 import {
@@ -230,19 +230,49 @@ function renderEmptyChoiceRows(isEnding: boolean): string {
 function renderActionButton(action: SceneAction, index: number): string {
   const bullet = action.kind === 'move' ? '➤' : action.kind === 'use' ? '◈' : '✥';
   const cost = action.cost_text ? `<small class="choice-cost">${escapeHtml(action.cost_text)}</small>` : '';
+  const check = action.check
+    ? `<span class="choice-check" data-ability-id="${escapeHtml(action.check.ability_id)}">${escapeHtml(
+        action.check.ability_label,
+      )} 판정 · 성공 ${action.check.success_percent.toFixed(1)}%</span>`
+    : '';
   return `<li><button class="choice-row" data-action-id="${escapeHtml(action.id)}" data-action-kind="${escapeHtml(
     action.kind,
   )}">
     <span class="choice-bullet" data-bullet-kind="${escapeHtml(action.kind)}" aria-hidden="true">${bullet}</span><kbd class="choice-index">${index + 1}</kbd><span class="choice-label">${escapeHtml(
       action.label,
-    )}</span>${cost}
+    )}</span>${cost}${check}
   </button></li>`;
 }
 
 function renderBlockedAction(action: SceneBlockedAction): string {
+  const cost = action.cost_text ? `<small class="choice-cost">${escapeHtml(action.cost_text)}</small>` : '';
+  const check = action.check
+    ? `<span class="choice-check" data-ability-id="${escapeHtml(action.check.ability_id)}">${escapeHtml(
+        action.check.ability_label,
+      )} 판정 · 성공 ${action.check.success_percent.toFixed(1)}%</span>`
+    : '';
   return `<li data-blocked-action-id="${escapeHtml(action.id)}"><span class="choice-bullet" aria-hidden="true">✧</span><span>${escapeHtml(
     action.label,
-  )}</span><small>${action.reasons.map(escapeHtml).join(' · ')}</small></li>`;
+  )}</span>${cost}${check}<small>${action.reasons.map(escapeHtml).join(' · ')}</small></li>`;
+}
+
+function renderCharacterSummary(summary: CharacterSummary | undefined): string {
+  if (!summary) {
+    return '';
+  }
+  const titlePart = summary.title_label ? `${escapeHtml(summary.title_label)} ` : '';
+  const nameLine = `<div class="character-name-line" data-region="character">${titlePart}${escapeHtml(summary.name)}</div>`;
+  const abilitiesRows = summary.abilities
+    .map(
+      (ability) =>
+        `<li class="ability-row" data-ability-id="${escapeHtml(ability.id)}"><strong>${escapeHtml(ability.label)}</strong> ${ability.value}</li>`
+    )
+    .join('');
+  return `<section aria-label="인물" class="character-summary-section">
+    <h2><span aria-hidden="true">人</span>인물</h2>
+    ${nameLine}
+    <ul>${abilitiesRows}</ul>
+  </section>`;
 }
 
 function renderBottomDock(page: ScenePage, options: StorybookRenderOptions): string {
@@ -261,6 +291,7 @@ function renderBottomDock(page: ScenePage, options: StorybookRenderOptions): str
         <button type="button" class="dock-sheet__close" data-player-action="toggle-storybook-drawer" aria-label="상세 닫기"><span aria-hidden="true">✕</span></button>
       </header>
       <section aria-label="현재 상태"><h2><span aria-hidden="true">狀</span>상태</h2><ul>${statusRows}</ul></section>
+      ${renderCharacterSummary(page.character_summary)}
       ${renderInventoryDrawer(page)}
       ${renderAchievementDrawer(page)}
       <section aria-label="기록"><h2><span aria-hidden="true">冊</span>기록</h2>${renderStoryHistory(page.history_entries)}</section>

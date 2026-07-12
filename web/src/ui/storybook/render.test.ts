@@ -313,6 +313,45 @@ describe('Web Storybook renderer', () => {
     expect(html).toContain('<svg viewBox="0 0 280 168"');
   });
 
+  it('renders character_summary and action check info when present', () => {
+    const html = renderStorybookPage(
+      samplePrinterPage({
+        actions: [
+          {
+            id: 'choice:take_printout',
+            label: '출력물을 챙긴다',
+            kind: 'choice',
+            cost_text: '허기 -10',
+            check: {
+              ability_id: 'logic',
+              ability_label: '논리',
+              success_percent: 58.3,
+            },
+          },
+        ],
+        character_summary: {
+          name: '주인공',
+          title_label: '검호',
+          abilities: [
+            { id: 'logic', label: '논리', value: 3 },
+            { id: 'empathy', label: '공감', value: 2 },
+          ],
+        },
+      }),
+    );
+
+    expect(html).toContain('class="character-summary-section"');
+    expect(html).toContain('class="character-name-line" data-region="character"');
+    expect(html).toContain('검호 주인공');
+    expect(html).toContain('class="ability-row" data-ability-id="logic"');
+    expect(html).toContain('<strong>논리</strong> 3');
+    expect(html).toContain('class="ability-row" data-ability-id="empathy"');
+    expect(html).toContain('<strong>공감</strong> 2');
+
+    expect(html).toContain('class="choice-check" data-ability-id="logic"');
+    expect(html).toContain('논리 판정 · 성공 58.3%');
+  });
+
   it('authors the planned wuxia scenes and deterministic location variants as ink specs', () => {
     const plannedVisuals = [
       'wuxia_commute_rift',

@@ -35,6 +35,7 @@ import {
   writeRunSummary,
 } from './ui/startScreen';
 import { renderStorybookPage } from './ui/storybook/render';
+import { readRunMetadata, writeRunMetadata, mergeRunMetadata } from './core/storage';
 
 const STORYPACK_PREVIEW_ACTION_PREFIX = 'start-storypack-preview:';
 
@@ -93,6 +94,14 @@ function render(): void {
 }
 
 function renderGamePage(page: ScenePage): void {
+  if (page.mode === 'ending') {
+    const endingId = page.visual.source_id;
+    if (endingId) {
+      const meta = readRunMetadata(window.localStorage);
+      const updated = mergeRunMetadata(meta, [endingId], page.achievement_summary.unlocked);
+      writeRunMetadata(window.localStorage, updated);
+    }
+  }
   actionSource = page;
   appRoot.innerHTML = renderStorybookPage(page, {
     audioLabel: playerSettings.audio === 'on' ? '소리 켜짐' : '소리 꺼짐',
@@ -316,6 +325,11 @@ function startGame(options: {
   storypackPreview: StorypackPreviewOption | null;
 }): void {
   if (options.clearExistingSave) clearPlayerSaves(window.localStorage);
+  if (!options.continueExistingSave) {
+    const meta = readRunMetadata(window.localStorage);
+    meta.run_count += 1;
+    writeRunMetadata(window.localStorage, meta);
+  }
   playerScreen = 'game';
   confirmReset = false;
   confirmAbandon = false;

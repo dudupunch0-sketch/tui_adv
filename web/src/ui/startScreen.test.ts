@@ -148,6 +148,29 @@ describe('player start/save UX', () => {
     expect(result.warning).toContain('지원하지 않는 저장 정보 버전');
   });
 
+  it('renders metadata run count and seen endings count on the start screen', () => {
+    const mockStorage = new MemoryStorage();
+    (globalThis as any).window = { localStorage: mockStorage };
+
+    const html1 = renderStartScreen({ defaultSeed: 123, summary: null, warning: null, confirmReset: false });
+    expect(html1).toContain('첫 번째 기록');
+    expect(html1).not.toContain('결말');
+
+    const mockMeta = {
+      schema_version: 1,
+      run_count: 4,
+      endings_seen: ['ending_1', 'ending_2'],
+      achievements_seen: [],
+    };
+    mockStorage.setItem('igu-hakji.meta.v1', JSON.stringify(mockMeta));
+
+    const html2 = renderStartScreen({ defaultSeed: 123, summary: null, warning: null, confirmReset: false });
+    expect(html2).toContain('5번째 기록');
+    expect(html2).toContain('지금까지 본 결말 2편');
+
+    delete (globalThis as any).window;
+  });
+
   it('clears Rust, legacy, and summary save keys together', () => {
     const storage = new MemoryStorage();
     storage.setItem(RUST_SAVE_KEY, '{}');

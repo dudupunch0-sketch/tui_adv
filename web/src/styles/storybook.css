@@ -1264,7 +1264,15 @@ margin: 0; font-size: clamp(2.6rem, 13vw, 5rem); font-weight: 900;
 }
 
 .start-logo-lockup p {
-margin: 6px 0 0; color: var(--seal-red);
+  margin: 6px 0 0; color: var(--seal-red);
+}
+
+.start-meta-indicator {
+  margin-top: 8px;
+  font-family: "IBM Plex Mono", "JetBrains Mono", "D2Coding", "Noto Serif KR", monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--jade);
 }
 
 .start-ink-scene {

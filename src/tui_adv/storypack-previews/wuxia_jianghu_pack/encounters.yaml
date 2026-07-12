@@ -62,8 +62,8 @@ encounters:
           add_clues: [violence_is_real, open_street_escape_route]
           experience: 15
         check:
-          ability: dexterity
-          difficulty: 7
+          ability: physical
+          difficulty: 8
           success:
             resources:
               health: -1
@@ -213,6 +213,18 @@ encounters:
           destination_id: cheongryu_outer_courtyard
           experience: 15
           log: 상처는 임시로 묶이지만 목숨값과 치료비라는 단어가 따라붙는다.
+        check:
+          ability: empathy
+          difficulty: 8
+          success:
+            resources:
+              sanity: 2
+            experience: 3
+            log: 목소리를 낮추고 아픈 곳부터 짚자 서하린의 경계가 한풀 누그러진다.
+          failure:
+            resources:
+              health: -3
+            log: 다급함이 앞서 말이 꼬이고, 서하린은 응급처치를 서두르다 상처를 더 건드린다.
       - id: explain_company_and_commute
         label: 회사와 출근길을 최대한 논리적으로 설명한다
         outcome:
@@ -223,6 +235,18 @@ encounters:
           destination_id: cheongryu_outer_courtyard
           experience: 15
           log: 회사, 출근, 엘리베이터라는 말은 강호의 문법으로 번역되지 않는다. 기록할 말과 숨길 말이 갈라진다.
+        check:
+          ability: logic
+          difficulty: 9
+          success:
+            resources:
+              sanity: 2
+            experience: 3
+            log: 순서를 짚어가며 말하자 몇몇 단어는 그럴듯한 무언가로 들린 모양이다.
+          failure:
+            resources:
+              sanity: -5
+            log: 설명은 끝까지 헛돌고, 서하린의 얼굴에는 의심만 짙게 남는다.
       - id: show_cheonggi_record_page
         label: 방금 떠오른 천기록의 글자를 조심스럽게 보여준다
         outcome:
@@ -289,6 +313,18 @@ encounters:
           destination_id: cheongryu_outer_courtyard
           experience: 15
           log: 청류심법은 동정으로 던져 주는 비급이 아니다. 장문인은 먼저 물 긷기와 호흡, 서 있는 법을 배우라고 못박는다.
+        check:
+          ability: volition
+          difficulty: 10
+          success:
+            resources:
+              sanity: 3
+            experience: 4
+            log: 물러서지 않고 눈을 맞추자 장문인은 그 고집만큼은 눈여겨본다.
+          failure:
+            resources:
+              sanity: -6
+            log: 고집은 오기로만 비쳐지고, 장문인은 한마디 말도 없이 등을 돌린다.
       - id: organize_chores_like_workflow
         label: 회사식 업무 분해로 잡일 동선을 정리한다
         outcome:
@@ -300,6 +336,18 @@ encounters:
           destination_id: cheongryu_outer_courtyard
           experience: 15
           log: 업무 분해와 동선 정리는 무공 치트가 아니다. 대신 청류문 사람들은 네가 흐름을 보는 방식에 처음으로 고개를 돌린다.
+        check:
+          ability: composure
+          difficulty: 9
+          success:
+            resources:
+              sanity: 2
+            experience: 3
+            log: 흔들림 없이 동선표를 짚어가자 잡일이 조금 더 수월하게 풀린다.
+          failure:
+            resources:
+              sanity: -4
+            log: 손이 급해 순서가 엉키고, 정리는커녕 잡일만 두 배로 늘어난다.
       - id: inspect_archive_during_chore
         label: 서고 정리 중 잠긴 낡은 장부를 살핀다
         outcome:
@@ -2616,5 +2664,5 @@ encounters:
       - id: wuxia_collapse_rest
         label: "안식: 붉은 글씨 너머의 평온으로 흘러간다"
         outcome:
-          add_flags: [accept_final_rest]
+          add_flags: [accept_final_rest, second_wind_used]
           log: "무거운 눈꺼풀을 닫고, 더 이상 고통이 없는 침묵 속으로 서서히 가라앉는다."

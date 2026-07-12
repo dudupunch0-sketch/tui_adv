@@ -705,7 +705,29 @@ fn parse_choice(raw: RawChoiceDef) -> Result<ChoiceDef, ContentIndexError> {
     })
 }
 
+/// The fixed set of valid ability ids. Any `check.ability` outside this set
+/// is a content authoring error caught at bundle-indexing time.
+const VALID_ABILITY_IDS: [&str; 6] = [
+    "logic",
+    "empathy",
+    "volition",
+    "composure",
+    "interface",
+    "physical",
+];
+
 fn parse_check(raw: RawAbilityCheckDef) -> Result<AbilityCheckDef, ContentIndexError> {
+    if !VALID_ABILITY_IDS.contains(&raw.ability.as_str()) {
+        return Err(ContentIndexError::InvalidSectionItem {
+            section: "encounter choices".to_string(),
+            id: None,
+            message: format!(
+                "unknown check ability id: '{}', valid ability ids are: {}",
+                raw.ability,
+                VALID_ABILITY_IDS.join(", ")
+            ),
+        });
+    }
     Ok(AbilityCheckDef {
         ability: raw.ability,
         difficulty: raw.difficulty,

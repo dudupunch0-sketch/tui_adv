@@ -21,5 +21,5 @@ endings:
     kind: death
     priority: 999
     conditions:
-      required_flags: [accept_final_rest]
+      max_resources: { health: 0 }
     text: 당신은 깊은 안식에 도달했습니다. 천기록의 붉은 획들은 완전히 흩어지고, 낯선 세계에서의 힘겨웠던 출근길도 마침내 끝이 납니다.

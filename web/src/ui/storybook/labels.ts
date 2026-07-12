@@ -1,3 +1,5 @@
+import { ScenePage } from '../../core/types';
+
 const achievementLabels: Record<string, string> = {
   wuxia_first_arrival: '강호 출근',
   wuxia_first_fragment_seen: '천기록 첫 편린',
@@ -34,8 +36,6 @@ const inventoryItemLabels: Record<string, string> = {
   visitor_badge: '임시 방문증',
 };
 
-import { ScenePage } from '../../core/types';
-
 export function achievementLabel(id: string, page?: ScenePage): string {
   if (page?.content_labels?.achievements) {
     const found = page.content_labels.achievements.find(item => item.id === id);
@@ -43,7 +43,7 @@ export function achievementLabel(id: string, page?: ScenePage): string {
       return found.label;
     }
   }
-  return achievementLabels[id] ?? (fallbackLabel(id) + ' (미번역)');
+  return achievementLabels[id] ?? fallbackLabel(id);
 }
 
 export function inventoryItemLabel(id: string, page?: ScenePage): string {
@@ -53,7 +53,7 @@ export function inventoryItemLabel(id: string, page?: ScenePage): string {
       return found.label;
     }
   }
-  return inventoryItemLabels[id] ?? (fallbackLabel(id) + ' (미번역)');
+  return inventoryItemLabels[id] ?? fallbackLabel(id);
 }
 
 export function hasAchievementLabel(id: string, page?: ScenePage): boolean {

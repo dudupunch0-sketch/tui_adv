@@ -271,15 +271,12 @@ fn scene_page_from_turn_view(
         }
     }
 
+    // Uses the same id source as achievement_summary.unlocked below: since an
+    // achievement, once unlocked, stays in state.unlocked_achievements for
+    // good, this set already equals unlocked ∪ newly_unlocked for the
+    // achievement that unlocked on this very turn.
     let mut labeled_achievements = Vec::new();
-    let newly_unlocked: Vec<String> = Vec::new();
-    let mut ach_set = state.unlocked_achievements.clone();
-    for ach in newly_unlocked {
-        if !ach_set.contains(&ach) {
-            ach_set.push(ach);
-        }
-    }
-    for ach_id in &ach_set {
+    for ach_id in &state.unlocked_achievements {
         if let Some(ach_def) = content.achievement(ach_id) {
             labeled_achievements.push(LabeledId {
                 id: ach_id.clone(),

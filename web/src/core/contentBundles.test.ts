@@ -27,6 +27,11 @@ describe('runtime content bundle registry', () => {
         experience_target: 100,
         label: '천기',
       },
+      collapse: {
+        encounter_id: 'wuxia_collapse_gate',
+        resource_id: 'health',
+        used_flag: 'second_wind_used',
+      },
     });
     expect(encounterIds).toEqual([
       'wuxia_commute_rift_arrival',
@@ -72,6 +77,7 @@ describe('runtime content bundle registry', () => {
       'wuxia_return_modern_commute_scene',
       'wuxia_settlement_stay_scene',
       'wuxia_black_serpent_aftermath',
+      'wuxia_collapse_gate',
     ]);
     expect(encounterIds).not.toContain('ex_employee_messenger');
   });

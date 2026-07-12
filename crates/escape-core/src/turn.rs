@@ -427,26 +427,30 @@ fn item_use_log(item: &ItemDef) -> String {
         .unwrap_or_else(|| format!("{}을 사용했다.", item.name))
 }
 
+/// Returns the collapse encounter iff the bundle declares collapse runtime meta,
+/// the player's health has hit 0 or below, and the gate's `used_flag` has not
+/// yet been set on this state. Nothing else influences this decision — no
+/// content-flag coupling beyond `used_flag` itself.
+fn collapse_gate_pending<'a>(
+    content: &'a ContentIndex,
+    state: &GameState,
+) -> Option<&'a crate::content::EncounterDef> {
+    let collapse = content.runtime.as_ref()?.collapse.as_ref()?;
+    if state.player.health > 0 {
+        return None;
+    }
+    if state.flags.iter().any(|f| f == &collapse.used_flag) {
+        return None;
+    }
+    content.encounter(&collapse.encounter_id)
+}
+
 fn current_content_ending<'a>(
     content: &'a ContentIndex,
     state: &GameState,
 ) -> Option<&'a crate::content::EndingDef> {
-    if let Some(runtime) = &content.runtime {
-        if let Some(collapse) = &runtime.collapse {
-            if state.player.health <= 0
-                && !state.flags.iter().any(|f| f == &collapse.used_flag)
-                && !state.flags.iter().any(|f| f == "accept_final_rest")
-            {
-                let base_encounter = content
-                    .encounters()
-                    .find(|encounter| encounter_is_available(encounter, state));
-                
-                let is_already_collapse = base_encounter.map(|enc| enc.id == collapse.encounter_id).unwrap_or(false);
-                if !is_already_collapse {
-                    return None;
-                }
-            }
-        }
+    if collapse_gate_pending(content, state).is_some() {
+        return None;
     }
 
     content
@@ -459,25 +463,8 @@ fn current_content_encounter<'a>(
     content: &'a ContentIndex,
     state: &GameState,
 ) -> Option<&'a EncounterDef> {
-    if let Some(runtime) = &content.runtime {
-        if let Some(collapse) = &runtime.collapse {
-            if state.player.health <= 0
-                && !state.flags.iter().any(|f| f == &collapse.used_flag)
-                && !state.flags.iter().any(|f| f == "accept_final_rest")
-            {
-                let base_encounter = content
-                    .encounters()
-                    .find(|encounter| encounter_is_available(encounter, state));
-                
-                if let Some(enc) = base_encounter {
-                    if enc.id == collapse.encounter_id {
-                        return Some(enc);
-                    }
-                }
-                
-                return content.encounter(&collapse.encounter_id);
-            }
-        }
+    if let Some(enc) = collapse_gate_pending(content, state) {
+        return Some(enc);
     }
 
     content

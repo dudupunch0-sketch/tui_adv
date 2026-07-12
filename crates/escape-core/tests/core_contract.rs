@@ -1073,6 +1073,87 @@ fn content_backed_scene_page_carries_content_labels() {
 }
 
 #[test]
+fn content_backed_scene_page_content_labels_includes_achievement_unlocked_this_turn() {
+    let test_bundle_json = r#"{
+        "schema_version": 1,
+        "kind": "tui_adv.content_bundle",
+        "source": "test",
+        "runtime": {
+            "runtime_mode": "content",
+            "world_id": "test_world",
+            "storypack_id": "test_pack",
+            "default_location": "dev_desk"
+        },
+        "manifest": {
+            "schema_version": 1,
+            "source": "test",
+            "counts": {}
+        },
+        "content": {
+            "locations": [
+                {
+                    "id": "dev_desk",
+                    "name": "내 자리",
+                    "description": "내 개발 자리.",
+                    "connections": []
+                }
+            ],
+            "items": [],
+            "encounters": [
+                {
+                    "id": "trigger_encounter",
+                    "title": "발동 인카운터",
+                    "body": "발동 바디",
+                    "choices": [
+                        {
+                            "id": "earn_flag",
+                            "label": "플래그를 얻는다",
+                            "outcome": { "add_flags": ["earned_it"] }
+                        }
+                    ]
+                }
+            ],
+            "endings": [],
+            "achievements": [
+                {
+                    "id": "first_kill",
+                    "name": "첫 번째 승리",
+                    "description": "첫 전투에서 이겼다.",
+                    "conditions": { "required_flags": ["earned_it"] }
+                }
+            ],
+            "secrets": [],
+            "traits": []
+        }
+    }"#;
+
+    let bundle = load_content_bundle(test_bundle_json).expect("test bundle should load");
+    let index = index_content_bundle(&bundle).expect("test bundle should index");
+    let state = new_game_from_content(123, &index).expect("test game should start");
+
+    let before_page =
+        scene_page_from_content(&state, &index).expect("build scene page should succeed");
+    assert!(before_page.content_labels.is_none());
+
+    let action_result = apply_action_from_content(&state, &index, "choice:earn_flag")
+        .expect("action should apply");
+    assert_eq!(
+        action_result.newly_unlocked_achievements,
+        vec!["first_kill".to_string()]
+    );
+
+    let after_page = scene_page_from_content(&action_result.state, &index)
+        .expect("build scene page should succeed");
+    let labels = after_page
+        .content_labels
+        .as_ref()
+        .expect("content_labels should be populated once an achievement unlocks");
+    assert_eq!(labels.achievements.len(), 1);
+    assert_eq!(labels.achievements[0].id, "first_kill");
+    assert_eq!(labels.achievements[0].label, "첫 번째 승리");
+}
+
+#[test]
 fn test_check_resolution_lifecycle_and_regression() {
     let test_bundle_json = r#"{
         "schema_version": 1,
@@ -1322,7 +1403,7 @@ fn test_collapse_gate_lifecycle_and_validation() {
                             "id": "accept_death",
                             "label": "안식",
                             "outcome": {
-                                "add_flags": ["accept_final_rest"]
+                                "add_flags": ["accept_final_rest", "second_wind_used"]
                             }
                         }
                     ]
@@ -1389,6 +1470,57 @@ fn test_collapse_gate_lifecycle_and_validation() {
 
     let ending_view = escape_core::turn_view_from_content(&accepted_state, &index).unwrap();
     assert_eq!(ending_view.ending_id.as_deref(), Some("death_ending"));
+}
+
+#[test]
+fn test_check_ability_id_validation_rejects_unknown_ability() {
+    let invalid_ability_json = r#"{
+        "schema_version": 1,
+        "kind": "tui_adv.content_bundle",
+        "source": "test",
+        "runtime": {
+            "runtime_mode": "content",
+            "world_id": "test_world",
+            "storypack_id": "test_pack",
+            "default_location": "dev_desk"
+        },
+        "manifest": { "schema_version": 1, "source": "test", "counts": {} },
+        "content": {
+            "locations": [{"id": "dev_desk", "name": "내 자리", "description": "내 개발 자리.", "connections": []}],
+            "items": [],
+            "encounters": [
+                {
+                    "id": "bad_check_encounter",
+                    "title": "잘못된 판정",
+                    "body": "잘못된 능력치 판정.",
+                    "choices": [
+                        {
+                            "id": "bad_check_choice",
+                            "label": "잘못된 판정 선택",
+                            "outcome": {},
+                            "check": {
+                                "ability": "dexterity",
+                                "difficulty": 8,
+                                "success": {},
+                                "failure": {}
+                            }
+                        }
+                    ]
+                }
+            ],
+            "endings": [], "achievements": [], "secrets": [], "traits": []
+        }
+    }"#;
+    let bundle = load_content_bundle(invalid_ability_json).unwrap();
+    let err = index_content_bundle(&bundle).unwrap_err();
+    let message = format!("{err:?}");
+    assert!(message.contains("unknown check ability id: 'dexterity'"));
+    assert!(message.contains("logic"));
+    assert!(message.contains("empathy"));
+    assert!(message.contains("volition"));
+    assert!(message.contains("composure"));
+    assert!(message.contains("interface"));
+    assert!(message.contains("physical"));
 }
 
 

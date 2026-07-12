@@ -40,6 +40,9 @@ docs/
     Real_Escape_Ending_Branching.md # 현실 탈출 후 결과 정산/후일담 설계 + active first slice contract
     Reality_Link.md                 # 현실세계 연결 원칙. 실제 위치는 넣지 않음
 
+  reference/
+    Life_in_Adventure_Play_Reference.md # 지향 플레이 경험 기준점(외부 게임 분석, 텍스트 기술만)
+
   design/
     Game_Loop.md                    # 턴 진행, 인카운터, 선택지 처리 루프
     Combat_System_Auto_Brawl.md     # 자동 난투 + 상황 개입 전투 설계 후보
@@ -123,6 +126,7 @@ private/
 
 - `docs/00_Index.md`
 - `docs/01_Game_Overview.md`
+- `docs/reference/Life_in_Adventure_Play_Reference.md`
 - `docs/story/Story.md`
 - `docs/story/Disaster_Cause.md`
 - `docs/story/Disaster_Type_Extension.md`

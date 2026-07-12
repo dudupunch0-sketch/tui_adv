@@ -1356,6 +1356,44 @@ background:
     linear-gradient(90deg, transparent 0, rgba(255, 247, 205, 0.16) 5%, rgba(255, 247, 205, 0.1) 95%, transparent 100%);
 }
 
+.storybook-page[data-story-phase="collapse"] {
+  background: linear-gradient(180deg, rgba(158, 60, 63, 0.1), rgba(255, 247, 205, 0.08) 22%, rgba(158, 60, 63, 0.1));
+  border-top: 1px solid rgba(158, 60, 63, 0.35);
+  border-bottom: 1px solid rgba(158, 60, 63, 0.35);
+}
+
+/* Structural check-resolution banner (§2.3). Minimal styling only —
+   visual polish is a later step; keep class names stable for it. */
+.check-resolution {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 0 0 1em;
+  padding: 8px 12px;
+  border-left: 4px double var(--line-soft);
+  font-family: "IBM Plex Mono", "JetBrains Mono", "D2Coding", "Noto Serif KR", monospace;
+  font-size: 0.82rem;
+  color: var(--ink-faded);
+}
+
+.check-resolution__dice {
+  font-size: 1.3rem;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.check-resolution__verdict {
+  font-weight: 700;
+}
+
+.check-resolution[data-check-outcome="success"] .check-resolution__verdict {
+  color: var(--jade);
+}
+
+.check-resolution[data-check-outcome="failure"] .check-resolution__verdict {
+  color: var(--seal-red);
+}
+
 .story-result-log::before {
   display: block;
   margin-bottom: 0.15rem;

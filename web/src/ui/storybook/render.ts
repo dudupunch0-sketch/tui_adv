@@ -21,7 +21,7 @@ import { renderEpilogueBodyBlock } from './renderEpilogue';
 import { renderInkVisual } from './ink/renderInkVisual';
 
 type StoryLayout = 'visual-first' | 'text-first' | 'ending';
-type StoryPhase = 'story' | 'combat' | 'result';
+type StoryPhase = 'story' | 'combat' | 'result' | 'collapse';
 
 export interface StorybookRenderOptions {
   audioLabel?: string;
@@ -53,7 +53,7 @@ function storyLayout(page: ScenePage): StoryLayout {
 }
 
 function storyPhase(page: ScenePage): StoryPhase {
-  if (page.visual.kind === 'collapse_gate') return 'combat';
+  if (page.visual.kind === 'collapse_gate') return 'collapse';
   if (isCombatScene(page)) return 'combat';
   if (page.history_entries.length || page.achievement_summary.newly_unlocked.length) return 'result';
   return 'story';

@@ -90,6 +90,22 @@
         "body": "시장 입구에서 흑사방 말단들이 길을 막는다. “길을 막았으면 통행세를 내야지.” 목에 건 사원증을 값나가는 패처럼 바라보는 시선이 따라붙고, 몽둥이가 팔을 스치는 순간 이 세계의 폭력이 진짜라는 감각이 온몸에 박힌다.",
         "choices": [
           {
+            "check": {
+              "ability": "physical",
+              "difficulty": 8,
+              "failure": {
+                "log": "비틀거리다 몽둥이에 쓸리며 꼴사납게 도망쳤다. 무공에 익숙지 않은 탓이다.",
+                "resources": {
+                  "health": -5
+                }
+              },
+              "success": {
+                "log": "민첩하게 큰길로 물러섰다. 큰 부상을 피하고 흑사방의 포위를 벗어났다.",
+                "resources": {
+                  "health": -1
+                }
+              }
+            },
             "id": "run_toward_open_street",
             "label": "큰길 쪽으로 비틀거리며 물러난다",
             "outcome": {
@@ -103,22 +119,6 @@
                 "first_brawl_survived"
               ],
               "experience": 15
-            },
-            "check": {
-              "ability": "dexterity",
-              "difficulty": 7,
-              "success": {
-                "log": "민첩하게 큰길로 물러섰다. 큰 부상을 피하고 흑사방의 포위를 벗어났다.",
-                "resources": {
-                  "health": -1
-                }
-              },
-              "failure": {
-                "log": "비틀거리다 몽둥이에 쓸리며 꼴사납게 도망쳤다. 무공에 익숙지 않은 탓이다.",
-                "resources": {
-                  "health": -5
-                }
-              }
             }
           },
           {
@@ -398,6 +398,23 @@
             }
           },
           {
+            "check": {
+              "ability": "empathy",
+              "difficulty": 8,
+              "failure": {
+                "log": "다급함이 앞서 말이 꼬이고, 서하린은 응급처치를 서두르다 상처를 더 건드린다.",
+                "resources": {
+                  "health": -3
+                }
+              },
+              "success": {
+                "experience": 3,
+                "log": "목소리를 낮추고 아픈 곳부터 짚자 서하린의 경계가 한풀 누그러진다.",
+                "resources": {
+                  "sanity": 2
+                }
+              }
+            },
             "id": "ask_for_medical_help_first",
             "label": "설명보다 치료와 안전한 곳을 먼저 부탁한다",
             "outcome": {
@@ -423,6 +440,23 @@
             }
           },
           {
+            "check": {
+              "ability": "logic",
+              "difficulty": 9,
+              "failure": {
+                "log": "설명은 끝까지 헛돌고, 서하린의 얼굴에는 의심만 짙게 남는다.",
+                "resources": {
+                  "sanity": -5
+                }
+              },
+              "success": {
+                "experience": 3,
+                "log": "순서를 짚어가며 말하자 몇몇 단어는 그럴듯한 무언가로 들린 모양이다.",
+                "resources": {
+                  "sanity": 2
+                }
+              }
+            },
             "id": "explain_company_and_commute",
             "label": "회사와 출근길을 최대한 논리적으로 설명한다",
             "outcome": {
@@ -563,6 +597,23 @@
             }
           },
           {
+            "check": {
+              "ability": "volition",
+              "difficulty": 10,
+              "failure": {
+                "log": "고집은 오기로만 비쳐지고, 장문인은 한마디 말도 없이 등을 돌린다.",
+                "resources": {
+                  "sanity": -6
+                }
+              },
+              "success": {
+                "experience": 4,
+                "log": "물러서지 않고 눈을 맞추자 장문인은 그 고집만큼은 눈여겨본다.",
+                "resources": {
+                  "sanity": 3
+                }
+              }
+            },
             "id": "request_martial_training_immediately",
             "label": "지금 당장 무공을 가르쳐 달라고 요구한다",
             "outcome": {
@@ -588,6 +639,23 @@
             }
           },
           {
+            "check": {
+              "ability": "composure",
+              "difficulty": 9,
+              "failure": {
+                "log": "손이 급해 순서가 엉키고, 정리는커녕 잡일만 두 배로 늘어난다.",
+                "resources": {
+                  "sanity": -4
+                }
+              },
+              "success": {
+                "experience": 3,
+                "log": "흔들림 없이 동선표를 짚어가자 잡일이 조금 더 수월하게 풀린다.",
+                "resources": {
+                  "sanity": 2
+                }
+              }
+            },
             "id": "organize_chores_like_workflow",
             "label": "회사식 업무 분해로 잡일 동선을 정리한다",
             "outcome": {
@@ -5742,14 +5810,14 @@
             "id": "wuxia_collapse_revive",
             "label": "기사회생: 천기의 편린을 태워 다시 일어선다",
             "outcome": {
-              "resources": {
-                "health": 40
-              },
               "add_flags": [
                 "second_wind_used"
               ],
               "experience": -10,
-              "log": "뜨거운 기운이 전신을 감돌며, 멈췄던 심장이 다시 뛰기 시작한다. 하지만 몸에 각인된 천기의 흐름 일부가 타들어 갔다."
+              "log": "뜨거운 기운이 전신을 감돌며, 멈췄던 심장이 다시 뛰기 시작한다. 하지만 몸에 각인된 천기의 흐름 일부가 타들어 갔다.",
+              "resources": {
+                "health": 40
+              }
             }
           },
           {
@@ -5757,7 +5825,8 @@
             "label": "안식: 붉은 글씨 너머의 평온으로 흘러간다",
             "outcome": {
               "add_flags": [
-                "accept_final_rest"
+                "accept_final_rest",
+                "second_wind_used"
               ],
               "log": "무거운 눈꺼풀을 닫고, 더 이상 고통이 없는 침묵 속으로 서서히 가라앉는다."
             }
@@ -5813,9 +5882,9 @@
       },
       {
         "conditions": {
-          "required_flags": [
-            "accept_final_rest"
-          ]
+          "max_resources": {
+            "health": 0
+          }
         },
         "id": "wuxia_death_rest",
         "kind": "death",
@@ -5976,6 +6045,11 @@
     "source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/*.yaml"
   },
   "runtime": {
+    "collapse": {
+      "encounter_id": "wuxia_collapse_gate",
+      "resource_id": "health",
+      "used_flag": "second_wind_used"
+    },
     "default_location": "wuxia_commute_rift",
     "progression": {
       "experience_target": 100,
@@ -5983,12 +6057,7 @@
     },
     "runtime_mode": "storypack_preview",
     "storypack_id": "wuxia_jianghu_pack",
-    "world_id": "wuxia_jianghu",
-    "collapse": {
-      "encounter_id": "wuxia_collapse_gate",
-      "resource_id": "health",
-      "used_flag": "second_wind_used"
-    }
+    "world_id": "wuxia_jianghu"
   },
   "schema_version": 1,
   "source": "src/tui_adv/storypack-previews/wuxia_jianghu_pack/*.yaml"

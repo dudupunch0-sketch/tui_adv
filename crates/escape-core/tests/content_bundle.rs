@@ -252,8 +252,8 @@ fn preview_fixture_indexes_wuxia_first_fight() {
         .find(|choice| choice.id == "run_toward_open_street")
         .expect("fallback retreat choice");
     let check = fallback.check.as_ref().expect("should have ability check");
-    assert_eq!(check.ability, "dexterity");
-    assert_eq!(check.difficulty, 7);
+    assert_eq!(check.ability, "physical");
+    assert_eq!(check.difficulty, 8);
     assert_eq!(check.success.resources.get("health"), Some(&-1));
     assert_eq!(check.failure.resources.get("health"), Some(&-5));
     assert_eq!(

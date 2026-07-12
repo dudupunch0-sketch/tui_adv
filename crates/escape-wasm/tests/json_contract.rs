@@ -182,7 +182,7 @@ fn json_boundary_reaches_wuxia_first_fight_through_preview_bundle() {
         fight_result["encounter_id"],
         "wuxia_heuksa_bang_first_fight"
     );
-    assert_eq!(fight_result["state"]["player"]["health"], 97);
+    assert_eq!(fight_result["state"]["player"]["health"], 95);
     assert!(fight_result["state"]["flags"]
         .as_array()
         .expect("flags should be an array")

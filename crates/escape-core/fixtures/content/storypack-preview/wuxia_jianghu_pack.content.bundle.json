@@ -102,10 +102,22 @@
                 "heuksa_bang_first_fight_resolved",
                 "first_brawl_survived"
               ],
-              "experience": 15,
-              "log": "도망은 영웅적이지 않았지만 큰 부상을 피했다. 흑사방이 길목을 어떻게 막는지도 보였다.",
-              "resources": {
-                "health": -3
+              "experience": 15
+            },
+            "check": {
+              "ability": "dexterity",
+              "difficulty": 7,
+              "success": {
+                "log": "민첩하게 큰길로 물러섰다. 큰 부상을 피하고 흑사방의 포위를 벗어났다.",
+                "resources": {
+                  "health": -1
+                }
+              },
+              "failure": {
+                "log": "비틀거리다 몽둥이에 쓸리며 꼴사납게 도망쳤다. 무공에 익숙지 않은 탓이다.",
+                "resources": {
+                  "health": -5
+                }
               }
             }
           },

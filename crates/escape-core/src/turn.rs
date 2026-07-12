@@ -209,8 +209,9 @@ pub fn apply_content_action(
     }
     next_state.add_seen_encounter_once(&encounter.id);
     logs.extend(advance_turn(&mut next_state));
-    for log in &logs {
-        next_state.add_history_entry("action", log, Some(&encounter.id));
+    if !logs.is_empty() {
+        let combined_log = logs.join("\n");
+        next_state.add_history_entry("action", &combined_log, Some(&encounter.id));
     }
     let newly_unlocked_achievements = unlock_achievements(&mut next_state, content);
 
@@ -358,8 +359,9 @@ fn apply_movement_action(
     next_state.danger = (next_state.danger + destination.danger).max(0);
     let mut logs = vec![format!("{}로 이동했다.", destination.name)];
     logs.extend(advance_turn(&mut next_state));
-    for log in &logs {
-        next_state.add_history_entry("action", log, Some("movement"));
+    if !logs.is_empty() {
+        let combined_log = logs.join("\n");
+        next_state.add_history_entry("action", &combined_log, Some("movement"));
     }
     let newly_unlocked_achievements = unlock_achievements(&mut next_state, content);
 
@@ -398,8 +400,9 @@ fn apply_item_action(
     next_state.remove_inventory_item(item_id);
     let mut logs = vec![item_use_log(item)];
     logs.extend(advance_turn(&mut next_state));
-    for log in &logs {
-        next_state.add_history_entry("action", log, Some("item"));
+    if !logs.is_empty() {
+        let combined_log = logs.join("\n");
+        next_state.add_history_entry("action", &combined_log, Some("item"));
     }
     let newly_unlocked_achievements = unlock_achievements(&mut next_state, content);
 

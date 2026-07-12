@@ -582,11 +582,19 @@ display: block;
 
 .storybook-summary {
   margin: 0;
-  color: var(--jade) !important;
+  color: var(--jade);
   font-family: "IBM Plex Mono", "JetBrains Mono", "D2Coding", "Noto Serif KR", monospace;
   font-weight: 700;
   font-size: 0.85rem;
   line-height: 1.35;
+}
+
+.storybook-summary.result-gain {
+  color: var(--jade) !important;
+}
+
+.storybook-summary.result-loss {
+  color: var(--seal-red) !important;
 }
 
 .storybook-visual {

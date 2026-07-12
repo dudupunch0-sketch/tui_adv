@@ -352,6 +352,22 @@ describe('Web Storybook renderer', () => {
     expect(html).toContain('논리 판정 · 성공 58.3%');
   });
 
+  it('renders inline result log lines with color coding classes', () => {
+    const html = renderStorybookPage(
+      samplePrinterPage({
+        history_entries: [
+          { kind: 'action', text: '기본 서사 로그.\n+ 체력 10\n- 정신력 5', source_id: 'printer_prints_alone' },
+        ],
+        inventory_summary: { items: [], overflow_count: 0 },
+        achievement_summary: { unlocked: [], newly_unlocked: [] },
+      }),
+    );
+
+    expect(html).toContain('<p class="storybook-summary">기본 서사 로그.</p>');
+    expect(html).toContain('<p class="storybook-summary result-gain">+ 체력 10</p>');
+    expect(html).toContain('<p class="storybook-summary result-loss">- 정신력 5</p>');
+  });
+
   it('authors the planned wuxia scenes and deterministic location variants as ink specs', () => {
     const plannedVisuals = [
       'wuxia_commute_rift',

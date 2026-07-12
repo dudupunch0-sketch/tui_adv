@@ -164,7 +164,9 @@ function renderInlineResultLog(page: ScenePage): string {
   const rows: string[] = [];
   const latestResult = page.history_entries[page.history_entries.length - 1];
   const hasFinalEpilogueBlocks = page.body_blocks.some((block) => block.kind.startsWith('epilogue_'));
-  if (latestResult && !hasFinalEpilogueBlocks) rows.push(latestResult.text);
+  if (latestResult && !hasFinalEpilogueBlocks) {
+    rows.push(...latestResult.text.split('\n'));
+  }
   if (page.inventory_summary.items.length) {
     rows.push(`+ 소지품 ${page.inventory_summary.items.length + page.inventory_summary.overflow_count}개`);
   }
@@ -177,8 +179,18 @@ function renderInlineResultLog(page: ScenePage): string {
   if (!rows.length) return '';
 
   return `<section class="story-result-log" aria-label="최근 결과">${rows
-    .map((row) => `<p class="storybook-summary">${row}</p>`)
+    .map(renderResultLogLine)
     .join('')}</section>`;
+}
+
+function renderResultLogLine(line: string): string {
+  if (line.startsWith('+ ')) {
+    return `<p class="storybook-summary result-gain">${line}</p>`;
+  }
+  if (line.startsWith('- ')) {
+    return `<p class="storybook-summary result-loss">${line}</p>`;
+  }
+  return `<p class="storybook-summary">${line}</p>`;
 }
 
 function renderAchievementLabel(id: string): string {

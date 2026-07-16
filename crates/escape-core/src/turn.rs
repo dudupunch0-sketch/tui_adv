@@ -663,6 +663,7 @@ fn advance_event(
         })
         .unwrap_or(index + 1);
     let mut next_state = state.clone();
+    next_state.last_check = None;
     next_state.active_event_id = Some(encounter.id.clone());
     next_state.event_stage_index = next_index;
     if stage.kind == "result" {

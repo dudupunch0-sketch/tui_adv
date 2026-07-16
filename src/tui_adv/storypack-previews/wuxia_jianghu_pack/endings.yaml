@@ -1,11 +1,11 @@
 endings:
   - id: wuxia_preview_grounded
-    name: 강호의 사원증
-    kind: preview
+    name: 출근 완료 — 강호의 사원증
+    kind: game_over
     priority: 10
     conditions:
       required_flags: [wuxia_arrival_grounded]
-    text: 사원증은 부적처럼 남았다. 아직 돌아갈 길은 없지만, 천기록은 당신을 이방인으로 기억하기 시작한다.
+    text: 사원증을 움켜쥔 순간, 당신은 끝내 낯선 강호의 사람이 되지 못했다. 천기록은 회사와 이름이 찍힌 작은 패찰만을 한 장의 부적으로 남기고 붓을 거둔다. 돌아갈 출근길도, 이어질 강호행도 없다. 이번 기록은 여기서 끝이다.
 
   - id: wuxia_final_epilogue_renderer_contract
     name: 이구학지 결산

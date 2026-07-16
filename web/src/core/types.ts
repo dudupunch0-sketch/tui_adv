@@ -194,3 +194,9 @@ export interface CheckResolution {
   total: number;
   success: boolean;
 }
+
+/** Per-action presentation data returned by the Rust/WASM boundary. */
+export interface ActionResultDelta {
+  logs: string[];
+  newly_unlocked_achievements: string[];
+}

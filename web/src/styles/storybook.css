@@ -966,6 +966,23 @@ background: var(--paper-deep);
   padding: 8px clamp(16px, 4.5vw, 44px) 0;
 }
 
+.ending-actions {
+  display: grid;
+  gap: 10px;
+  padding: 18px clamp(16px, 4.5vw, 44px) 28px;
+}
+
+.ending-actions p {
+  margin: 0;
+  color: var(--ink-faded);
+  text-align: center;
+}
+
+.ending-actions__restart {
+  max-width: 34rem;
+  margin-inline: auto;
+}
+
 .storybook-choices ol, .blocked-actions, .storybook-history ol {
 margin: 0;
   padding: 0;

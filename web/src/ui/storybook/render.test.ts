@@ -405,6 +405,9 @@ describe('Web Storybook renderer', () => {
     expect(html).toContain('data-field-key="suppressed_by"');
     expect(html).toContain('기록의 이 장은 여기서 끝났다.');
     expect(html).toContain('data-player-action="show-start"');
+    expect(html).toContain('data-region="ending-actions"');
+    expect(html).toContain('data-action-id="system:new-game"');
+    expect(html).toContain('새 기록 시작');
     expect(html).not.toContain('<p class="storybook-summary">후일담 출력기는 아직 열리지 않는다.</p>');
     expect(html).not.toContain('final_epilogue_renderer_opened');
   });
@@ -519,16 +522,11 @@ describe('Web Storybook renderer', () => {
     expect(html).not.toContain('drawer-progression');
   });
 
-  it('renders inline result log lines with color coding classes', () => {
-    const html = renderStorybookPage(
-      samplePrinterPage({
-        history_entries: [
-          { kind: 'action', text: '기본 서사 로그.\n+ 체력 10\n- 정신력 5', source_id: 'printer_prints_alone' },
-        ],
-        inventory_summary: { items: [], overflow_count: 0 },
-        achievement_summary: { unlocked: [], newly_unlocked: [] },
-      }),
-    );
+  it('renders action-result delta lines with color coding classes', () => {
+    const html = renderActionResultBeat(samplePrinterPage(), {
+      logs: ['기본 서사 로그.\n+ 체력 10\n- 정신력 5'],
+      newly_unlocked_achievements: [],
+    });
 
     expect(html).toContain('<p class="storybook-summary">기본 서사 로그.</p>');
     expect(html).toContain('<p class="storybook-summary result-gain">+ 체력 10</p>');
@@ -622,6 +620,10 @@ describe('Web Storybook renderer', () => {
           success: true,
         },
       }),
+      {
+        logs: ['따뜻한 출력물을 접어 주머니에 넣었다.'],
+        newly_unlocked_achievements: [],
+      },
     );
 
     expect(html).toContain('class="action-result-beat"');
@@ -648,17 +650,48 @@ describe('Web Storybook renderer', () => {
           { kind: 'result_summary', stage_id: 's', text: '결과 서사.', speaker: null, visual_id: null, alt: null, placeholder: false, actions: [] },
         ],
       }),
+      { logs: ['반복되면 안 되는 로그'], newly_unlocked_achievements: [] },
     );
 
     expect(html).toContain('class="check-resolution"');
     expect(html).not.toContain('class="story-result-log"');
   });
 
-  it('returns an empty beat when there is nothing to show', () => {
+  it('returns an empty beat for event:continue after core clears the previous check', () => {
     const html = renderActionResultBeat(
       samplePrinterPage({ history_entries: [], inventory_summary: { items: [], overflow_count: 0 }, achievement_summary: { unlocked: [], newly_unlocked: [] } }),
+      { logs: [], newly_unlocked_achievements: [] },
     );
     expect(html).toBe('');
+  });
+
+  it('does not repeat action A when action B returns no presentation delta', () => {
+    const cumulativePage = samplePrinterPage({
+      history_entries: [
+        { kind: 'action', text: '행동 A의 결과', source_id: 'action_a' },
+        { kind: 'action', text: '행동 B 완료', source_id: 'action_b' },
+      ],
+      inventory_summary: { items: ['item_from_a'], overflow_count: 0 },
+      achievement_summary: { unlocked: ['achievement_from_a'], newly_unlocked: [] },
+    });
+
+    const actionABeat = renderActionResultBeat(cumulativePage, {
+      logs: ['행동 A의 결과'],
+      newly_unlocked_achievements: ['achievement_from_a'],
+    });
+    const actionBBeat = renderActionResultBeat(cumulativePage, {
+      logs: [],
+      newly_unlocked_achievements: [],
+    });
+
+    expect(actionABeat).toContain('행동 A의 결과');
+    expect(actionBBeat).toBe('');
+    expect(
+      renderStorybookPage(cumulativePage, {
+        actionResult: { logs: ['행동 A의 결과'], newly_unlocked_achievements: [] },
+      }),
+    ).toContain('행동 A의 결과');
+    expect(renderStorybookPage(cumulativePage)).not.toContain('class="story-result-log"');
   });
 
   it('suppresses the inline result log and check banner when the beat already showed them', () => {
@@ -712,11 +745,14 @@ describe('Web Storybook renderer', () => {
   });
 
   it('renders humanized id plus exactly one 미번역 note when id is absent from content_labels and dictionary', () => {
-    const html = renderStorybookPage(
+    const page =
       samplePrinterPage({
         achievement_summary: { unlocked: ['totally_unknown_achievement'], newly_unlocked: [] },
-      }),
-    );
+      });
+    const html = renderActionResultBeat(page, {
+      logs: [],
+      newly_unlocked_achievements: ['totally_unknown_achievement'],
+    });
 
     const resultLogMatch = html.match(/<section class="story-result-log"[\s\S]*?<\/section>/);
     expect(resultLogMatch).toBeTruthy();

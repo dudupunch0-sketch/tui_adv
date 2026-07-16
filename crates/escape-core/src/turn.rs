@@ -264,7 +264,12 @@ pub fn apply_content_action(
     apply_cost(&mut next_state.player, &choice.cost);
     logs.extend(apply_outcome(&mut next_state, content, &choice.outcome));
     if let Some(check) = &choice.check {
-        let res = resolve_ability_check(state, check.ability.as_str(), check.difficulty);
+        let res = resolve_ability_check_with_content(
+            state,
+            content,
+            check.ability.as_str(),
+            check.difficulty,
+        );
         let branch = if res.success {
             &check.success
         } else {
@@ -734,6 +739,17 @@ fn apply_outcome(
     for clue in &outcome.add_clues {
         state.add_clue_once(clue);
     }
+    for insight_id in &outcome.add_insights {
+        if state.insights.iter().any(|owned| owned == insight_id) {
+            continue;
+        }
+        state.insights.push(insight_id.clone());
+        let name = content
+            .insight(insight_id)
+            .map(|insight| insight.name.as_str())
+            .unwrap_or(insight_id);
+        delta_logs.push(format!("+ 기연: {name}"));
+    }
     if let Some(destination_id) = &outcome.destination_id {
         state.location_id = destination_id.clone();
     }
@@ -853,23 +869,57 @@ pub fn resolve_ability_check(
     ability_id: &str,
     difficulty: i32,
 ) -> CheckResolution {
+    resolve_ability_check_with_bonus(state, ability_id, difficulty, 0)
+}
+
+pub fn resolve_ability_check_with_content(
+    state: &GameState,
+    content: &ContentIndex,
+    ability_id: &str,
+    difficulty: i32,
+) -> CheckResolution {
+    resolve_ability_check_with_bonus(
+        state,
+        ability_id,
+        difficulty,
+        insight_bonus(state, content, ability_id),
+    )
+}
+
+fn resolve_ability_check_with_bonus(
+    state: &GameState,
+    ability_id: &str,
+    difficulty: i32,
+    insight_bonus: i32,
+) -> CheckResolution {
     let (first, second) = roll_2d6(&format!(
         "{}:{}:{}:{}",
         state.seed, state.turn, ability_id, difficulty
     ));
     let ability_value = player_ability(&state.player, ability_id);
-    let total = first + second + ability_value;
+    let total = first + second + ability_value + insight_bonus;
     let success = total >= difficulty;
     CheckResolution {
         ability_id: ability_id.to_string(),
         ability_label: crate::ability_label(ability_id).to_string(),
         dice: (first, second),
         ability_value,
-        insight_bonus: 0,
+        insight_bonus,
         difficulty,
         total,
         success,
     }
+}
+
+pub fn insight_bonus(state: &GameState, content: &ContentIndex, ability_id: &str) -> i32 {
+    state
+        .insights
+        .iter()
+        .filter_map(|id| content.insight(id))
+        .filter_map(|insight| insight.check_bonus.as_ref())
+        .filter(|bonus| bonus.ability == ability_id)
+        .map(|bonus| bonus.bonus)
+        .sum()
 }
 
 fn roll_2d6(seed: &str) -> (i32, i32) {

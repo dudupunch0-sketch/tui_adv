@@ -709,6 +709,45 @@ fn leveling_points_train_without_advancing_turn_and_respect_cap() {
 }
 
 #[test]
+fn insights_add_once_and_raise_check_total_without_changing_dice() {
+    let mut value: serde_json::Value =
+        serde_json::from_str(CONTENT_BUNDLE).expect("fixture bundle should parse");
+    value["content"]["insights"] = json!([{
+        "id": "steady_breath",
+        "name": "고른 호흡",
+        "description": "흔들릴수록 호흡을 세어 판정의 바닥을 붙든다.",
+        "check_bonus": {"ability": "logic", "bonus": 1}
+    }]);
+    let encounters = value["content"]["encounters"]
+        .as_array_mut()
+        .expect("encounters should be an array");
+    let messenger = encounters
+        .iter_mut()
+        .find(|encounter| encounter["id"] == "ex_employee_messenger")
+        .expect("messenger encounter should exist");
+    messenger["choices"][0]["outcome"]["add_insights"] = json!(["steady_breath"]);
+
+    let bundle_json = serde_json::to_string(&value).expect("bundle should serialize");
+    let bundle = load_content_bundle(&bundle_json).expect("insight bundle should load");
+    let index = index_content_bundle(&bundle).expect("insight bundle should index");
+    let state = new_game_from_content(123, &index).expect("game should start");
+    let baseline = escape_core::resolve_ability_check(&state, "logic", 9);
+    let mut gifted = state.clone();
+    gifted.insights.push("steady_breath".to_string());
+    let boosted = escape_core::resolve_ability_check_with_content(&gifted, &index, "logic", 9);
+    assert_eq!(baseline.dice, boosted.dice);
+    assert_eq!(boosted.insight_bonus, 1);
+    assert_eq!(boosted.total, baseline.total + 1);
+
+    let result = apply_action_from_content(&state, &index, "choice:check_message")
+        .expect("insight outcome should resolve");
+    assert_eq!(result.state.insights, vec!["steady_breath"]);
+    assert!(result.logs.iter().any(|line| line == "+ 기연: 고른 호흡"));
+    let page = scene_page_from_content(&result.state, &index).expect("page should render");
+    assert_eq!(page.insights[0].effect_text, "논리 판정 +1");
+}
+
+#[test]
 fn test_ability_check_success_percent() {
     // need <= 2
     assert_eq!(ability_check_success_percent(0, 2), 100.0);

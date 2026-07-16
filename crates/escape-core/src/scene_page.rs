@@ -10,8 +10,8 @@ use crate::resources::{
 };
 use crate::state::{CheckResolution, GameHistoryEntry, GameState, PlayerState};
 use crate::turn::{
-    available_stat_points, content_turn_view, ActionView, BlockedActionView, ContentTurnError,
-    TurnView,
+    ability_check_success_percent, available_stat_points, content_turn_view, insight_bonus,
+    ActionView, BlockedActionView, ContentTurnError, TurnView,
 };
 use serde::{Deserialize, Serialize};
 
@@ -52,6 +52,8 @@ pub struct ScenePage {
     pub content_labels: Option<ContentLabels>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub check_result: Option<CheckResolution>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub insights: Vec<InsightStatus>,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -353,7 +355,7 @@ fn scene_page_from_turn_view(
     let actions: Vec<_> = view
         .actions
         .iter()
-        .map(|a| scene_action(a, encounter, &state.player))
+        .map(|a| scene_action(a, encounter, state, content))
         .collect();
     let content_stream = scene_content_stream(
         encounter,
@@ -381,7 +383,7 @@ fn scene_page_from_turn_view(
         blocked_actions: view
             .blocked_actions
             .iter()
-            .map(|a| scene_blocked_action(a, encounter, &state.player))
+            .map(|a| scene_blocked_action(a, encounter, state, content))
             .collect(),
         history_entries: state.history.iter().map(history_entry).collect(),
         inventory_summary: InventorySummary {
@@ -399,6 +401,24 @@ fn scene_page_from_turn_view(
         progression,
         content_labels,
         check_result: state.last_check.clone(),
+        insights: state
+            .insights
+            .iter()
+            .filter_map(|id| content.insight(id))
+            .map(|insight| {
+                let effect_text = insight
+                    .check_bonus
+                    .as_ref()
+                    .map(|bonus| format!("{} 판정 +{}", ability_label(&bonus.ability), bonus.bonus))
+                    .unwrap_or_default();
+                InsightStatus {
+                    id: insight.id.clone(),
+                    name: insight.name.clone(),
+                    description: insight.description.clone(),
+                    effect_text,
+                }
+            })
+            .collect(),
     }
 }
 
@@ -723,11 +743,17 @@ fn severity_for_high_pressure(value: i32, critical_at: i32) -> String {
 
 fn build_action_check_info(
     check: &crate::content::AbilityCheckDef,
-    player: &PlayerState,
+    state: &GameState,
+    content: &ContentIndex,
 ) -> ActionCheckInfo {
-    let ability_value = player.abilities.get(&check.ability).copied().unwrap_or(0);
-    let success_percent =
-        crate::turn::ability_check_success_percent(ability_value, check.difficulty);
+    let ability_value = state
+        .player
+        .abilities
+        .get(&check.ability)
+        .copied()
+        .unwrap_or(0);
+    let bonus = insight_bonus(state, content, &check.ability);
+    let success_percent = ability_check_success_percent(ability_value + bonus, check.difficulty);
     ActionCheckInfo {
         ability_id: check.ability.clone(),
         ability_label: ability_label(&check.ability).to_string(),
@@ -738,7 +764,8 @@ fn build_action_check_info(
 fn scene_action(
     action: &ActionView,
     encounter: Option<&EncounterDef>,
-    player: &PlayerState,
+    state: &GameState,
+    content: &ContentIndex,
 ) -> SceneAction {
     let check = encounter
         .and_then(|enc| {
@@ -752,7 +779,7 @@ fn scene_action(
                 None
             }
         })
-        .map(|c| build_action_check_info(c, player));
+        .map(|c| build_action_check_info(c, state, content));
 
     SceneAction {
         id: action.id.clone(),
@@ -766,7 +793,8 @@ fn scene_action(
 fn scene_blocked_action(
     action: &BlockedActionView,
     encounter: Option<&EncounterDef>,
-    player: &PlayerState,
+    state: &GameState,
+    content: &ContentIndex,
 ) -> SceneBlockedAction {
     let check = encounter
         .and_then(|enc| {
@@ -780,7 +808,7 @@ fn scene_blocked_action(
                 None
             }
         })
-        .map(|c| build_action_check_info(c, player));
+        .map(|c| build_action_check_info(c, state, content));
 
     SceneBlockedAction {
         id: action.id.clone(),
@@ -876,6 +904,14 @@ pub struct ItemDetail {
     pub description: String,
     pub item_type: String,
     pub usable: bool,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct InsightStatus {
+    pub id: String,
+    pub name: String,
+    pub description: String,
+    pub effect_text: String,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]

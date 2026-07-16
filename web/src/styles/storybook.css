@@ -205,9 +205,15 @@ position: absolute;
     radial-gradient(ellipse at 7% 16%, rgba(158, 60, 63, 0.16), transparent 28%),
     radial-gradient(ellipse at 94% 78%, rgba(32, 20, 22, 0.18), transparent 30%),
     radial-gradient(ellipse at 16% 94%, rgba(158, 60, 63, 0.11), transparent 24%);
-  animation:
-    collapse-vignette-in 600ms ease-out both,
-    collapse-vignette-pulse 3s 600ms ease-in-out infinite alternate;
+  animation: collapse-vignette-in 600ms ease-out both;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .storybook-shell[data-story-phase="collapse"]::after {
+    animation:
+      collapse-vignette-in 600ms ease-out both,
+      collapse-vignette-pulse 3s 600ms ease-in-out infinite alternate;
+  }
 }
 
 .storybook-shell[data-story-phase="collapse"] .game-viewport {
@@ -222,11 +228,11 @@ position: absolute;
   z-index: 4;
 }
 
-.storybook-page[data-story-phase="collapse"] .choice-row:first-of-type {
+.storybook-page[data-story-phase="collapse"] .storybook-choices ol li:first-child .choice-row {
   border-color: var(--gold-leaf);
 }
 
-.storybook-page[data-story-phase="collapse"] .choice-row:last-of-type {
+.storybook-page[data-story-phase="collapse"] .storybook-choices ol li:last-child .choice-row {
   border-color: var(--line-soft);
   background: rgba(46, 42, 35, 0.06);
   opacity: 0.88;

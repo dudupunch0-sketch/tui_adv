@@ -237,6 +237,52 @@ describe('Web Storybook renderer', () => {
     expect(html).not.toContain('토너 카트리지를 확인한다');
   });
 
+  it('renders stat training affordances, trait disclosure, and insight drawer details', () => {
+    const html = renderStorybookPage(
+      samplePrinterPage({
+        character_summary: {
+          name: '당신',
+          title_label: '청류문 초학자',
+          title_description: '검을 늦추고 숨을 고르는 첫 문턱.',
+          stat_points: 1,
+          abilities: [
+            { id: 'composure', label: '평정', value: 2 },
+            { id: 'logic', label: '논리', value: 5 },
+          ],
+        },
+        insights: [{ id: 'steady_breath', name: '고른 호흡', description: '판정의 바닥을 받친다.', effect_text: '평정 판정 +1' }],
+      }),
+    );
+
+    expect(html).toContain('수련 가능 1');
+    expect(html).toContain('data-action-id="train:composure"');
+    expect(html).not.toContain('data-action-id="train:logic"');
+    expect(html).toContain('data-disclosure-target="trait-description"');
+    expect(html).toContain('효과: 아직 새겨지지 않음');
+    expect(html).toContain('aria-label="기연" data-dock="insights"');
+    expect(html).toContain('고른 호흡');
+    expect(html).toContain('평정 판정 +1');
+  });
+
+  it('renders item disclosure details with enabled and disabled use states without drop controls', () => {
+    const html = renderStorybookPage(
+      samplePrinterPage({
+        actions: [{ id: 'use:water', label: '물병', kind: 'use', cost_text: null }],
+        inventory_summary: { items: ['water', 'notebook'], overflow_count: 0 },
+        inventory_details: [
+          { id: 'water', name: '물병', description: '갈증을 잠시 누그러뜨린다.', item_type: 'consumable', usable: true },
+          { id: 'notebook', name: '업무수첩', description: '빈 줄에 먹물이 번진다.', item_type: 'key', usable: true },
+        ],
+      }),
+    );
+
+    expect(html).toContain('data-item-icon="water"');
+    expect(html).toContain('data-action-id="use:water"');
+    expect(html).toContain('지금은 쓸 수 없다');
+    expect(html).not.toContain('버리기');
+    expect(html).not.toContain('폐기');
+  });
+
   it('renders combat intervention pages as an ink duel without fabricated battle state', () => {
     const html = renderStorybookPage(
       samplePrinterPage({
@@ -505,6 +551,7 @@ describe('Web Storybook renderer', () => {
           ability_label: '논리',
           dice: [4, 2],
           ability_value: 2,
+          insight_bonus: 1,
           difficulty: 7,
           total: 8,
           success: true,
@@ -519,7 +566,8 @@ describe('Web Storybook renderer', () => {
     expect(html).toContain('aria-label="판정 결과: 성공"');
     expect(html).toContain('<i class="check-die">⚃</i>');
     expect(html).toContain('<i class="check-die">⚁</i>');
-    expect(html).toContain('2d6 4+2 +논리 2 = 8 / 목표 7');
+    expect(html).toContain('2d6 4+2 +논리 2 +기연 1 = 8 / 목표 7');
+    expect(html).toContain('+기연 1');
     expect(html).toContain('class="check-resolution__seal" aria-hidden="true">成</span>');
     expect(html).toContain('성공</span>');
   });

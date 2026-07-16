@@ -100,7 +100,24 @@ export interface AbilityStatus {
 export interface CharacterSummary {
   name: string;
   title_label?: string;
+  title_description?: string;
+  stat_points?: number;
   abilities: AbilityStatus[];
+}
+
+export interface InventoryDetail {
+  id: string;
+  name: string;
+  description: string;
+  item_type: string;
+  usable: boolean;
+}
+
+export interface InsightStatus {
+  id: string;
+  name: string;
+  description: string;
+  effect_text: string;
 }
 
 export interface ProgressionStatus {
@@ -122,6 +139,7 @@ export interface ScenePage {
   blocked_actions: SceneBlockedAction[];
   history_entries: HistoryEntry[];
   inventory_summary: InventorySummary;
+  inventory_details?: InventoryDetail[];
   achievement_summary: AchievementSummary;
   pressure_cues: PressureCue[];
   effect_cues: SceneEffectCue[];
@@ -129,6 +147,7 @@ export interface ScenePage {
   progression?: ProgressionStatus;
   content_labels?: ContentLabels;
   check_result?: CheckResolution;
+  insights?: InsightStatus[];
   /** Ordered event presentation. Older bundles may omit this and use the legacy fields above. */
   content_stream?: SceneContentItem[];
 }
@@ -170,6 +189,7 @@ export interface CheckResolution {
   ability_label: string;
   dice: [number, number];
   ability_value: number;
+  insight_bonus?: number;
   difficulty: number;
   total: number;
   success: boolean;

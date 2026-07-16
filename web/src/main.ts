@@ -127,6 +127,7 @@ function renderGamePage(page: ScenePage, renderOptions: { suppressActionResult?:
     button.addEventListener('click', () => runAction(button.dataset.actionId ?? ''));
   });
   wirePlayerActionButtons(appRoot);
+  wireDisclosureToggles(appRoot);
   const canvas = appRoot.querySelector<HTMLCanvasElement>('[data-anomaly-canvas="printer-flow"]');
   if (canvas) {
     void startPrinterFlowEffect(canvas);
@@ -207,6 +208,20 @@ function wirePlayerActionButtons(root: HTMLElement): void {
   if (drawer && drawerToggle) {
     drawer.addEventListener('toggle', () => drawerToggle.setAttribute('aria-expanded', String(drawer.open)));
   }
+}
+
+function wireDisclosureToggles(root: HTMLElement): void {
+  root.querySelectorAll<HTMLButtonElement>('[data-disclosure-toggle]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const targetId = button.dataset.disclosureTarget;
+      if (!targetId) return;
+      const target = root.querySelector<HTMLElement>(`#${targetId}`);
+      if (!target) return;
+      const expanded = button.getAttribute('aria-expanded') === 'true';
+      button.setAttribute('aria-expanded', String(!expanded));
+      target.hidden = expanded;
+    });
+  });
 }
 
 const playerActionHandlers: Record<string, () => void | Promise<void>> = {

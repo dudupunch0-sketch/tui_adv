@@ -2,6 +2,7 @@ import type {
   ActionCheckInfo,
   BodyBlock,
   CharacterSummary,
+  InventoryDetail,
   ProgressionStatus,
   ResourceStatus,
   SceneContentItem,
@@ -15,7 +16,6 @@ import { renderStoryHistory } from './history';
 import {
   achievementLabel,
   hasAchievementLabel,
-  hasInventoryItemLabel,
   inventoryItemLabel,
 } from './labels';
 import { renderEpilogueBodyBlock } from './renderEpilogue';
@@ -282,7 +282,9 @@ function renderCheckResolution(page: ScenePage): string {
   const d1 = diceGlyphs[check.dice[0] - 1] ?? '⚀';
   const d2 = diceGlyphs[check.dice[1] - 1] ?? '⚀';
 
-  const mathText = `2d6 ${check.dice[0]}+${check.dice[1]} +${escapeHtml(check.ability_label)} ${check.ability_value} = ${check.total} / 목표 ${check.difficulty}`;
+  const insightBonus = check.insight_bonus ?? 0;
+  const insightText = insightBonus > 0 ? ` +기연 ${insightBonus}` : '';
+  const mathText = `2d6 ${check.dice[0]}+${check.dice[1]} +${escapeHtml(check.ability_label)} ${check.ability_value}${insightText} = ${check.total} / 목표 ${check.difficulty}`;
 
   const sealGlyph = check.success ? '成' : '敗';
   return `<aside class="check-resolution" data-region="check-result" data-check-outcome="${outcome}" data-ability-id="${escapeHtml(check.ability_id)}" aria-label="판정 결과: ${verdict}">
@@ -432,20 +434,32 @@ function renderCharacterSummary(summary: CharacterSummary | undefined): string {
     return '';
   }
   const titlePart = summary.title_label
-    ? `<span class="character-title-seal">${escapeHtml(summary.title_label)}</span> `
+    ? summary.title_description
+      ? `<button type="button" class="character-title-seal" data-disclosure-toggle data-disclosure-target="trait-description" aria-expanded="false">${escapeHtml(summary.title_label)}</button> `
+      : `<span class="character-title-seal">${escapeHtml(summary.title_label)}</span> `
     : '';
   const nameLine = `<div class="character-name-line" data-region="character">${titlePart}<span class="character-name">${escapeHtml(
     summary.name,
   )}</span></div>`;
+  const statPoints = summary.stat_points ?? 0;
   const abilitiesRows = summary.abilities
-    .map(
-      (ability) =>
-        `<li class="ability-row" data-ability-id="${escapeHtml(ability.id)}"><strong>${escapeHtml(ability.label)}</strong> <span class="ability-value">${ability.value}</span></li>`
-    )
+    .map((ability) => {
+      const train = statPoints > 0 && ability.value < 5
+        ? `<button type="button" class="ability-train" data-action-id="train:${escapeHtml(ability.id)}" aria-label="${escapeHtml(ability.label)} 수련">+</button>`
+        : '';
+      return `<li class="ability-row" data-ability-id="${escapeHtml(ability.id)}"><strong>${escapeHtml(ability.label)}</strong> <span class="ability-value">${ability.value}</span>${train}</li>`;
+    })
     .join('');
+  const pointsBadge = statPoints > 0
+    ? `<span class="ability-points" data-region="ability-points">수련 가능 ${statPoints}</span>`
+    : '';
+  const traitDescription = summary.title_description
+    ? `<div id="trait-description" class="disclosure-panel trait-description" hidden><p>${escapeHtml(summary.title_description)}</p><small>효과: 아직 새겨지지 않음</small></div>`
+    : '';
   return `<section aria-label="인물" class="character-summary-section">
-    <h2><span aria-hidden="true">人</span>인물</h2>
+    <h2><span aria-hidden="true">人</span>인물${pointsBadge}</h2>
     ${nameLine}
+    ${traitDescription}
     <ul class="ability-grid">${abilitiesRows}</ul>
   </section>`;
 }
@@ -470,6 +484,7 @@ function renderBottomDock(page: ScenePage, options: StorybookRenderOptions): str
         'drawer',
       )}</section>
       ${renderCharacterSummary(page.character_summary)}
+      ${renderInsightDrawer(page)}
       ${renderInventoryDrawer(page)}
       ${renderAchievementDrawer(page)}
       <section aria-label="기록"><h2><span aria-hidden="true">冊</span>기록</h2>${renderStoryHistory(page.history_entries)}</section>
@@ -479,9 +494,10 @@ function renderBottomDock(page: ScenePage, options: StorybookRenderOptions): str
 }
 
 function renderInventoryDrawer(page: ScenePage): string {
+  const detailsById = new Map((page.inventory_details ?? []).map((detail) => [detail.id, detail]));
   const items = page.inventory_summary.items.length
     ? `<ul>${page.inventory_summary.items
-        .map((id) => `<li>${renderDrawerLabel(id, inventoryItemLabel, hasInventoryItemLabel, page)}</li>`)
+        .map((id, index) => renderInventoryItem(id, detailsById.get(id), page, index))
         .join('')}${
         page.inventory_summary.overflow_count > 0
           ? `<li class="dock-drawer-overflow">…외 ${page.inventory_summary.overflow_count}개</li>`
@@ -489,6 +505,35 @@ function renderInventoryDrawer(page: ScenePage): string {
       }</ul>`
     : '<p>아직 지닌 것이 없다.</p>';
   return `<section aria-label="소지품" data-dock="inventory"><h2><span aria-hidden="true">囊</span>소지품</h2>${items}</section>`;
+}
+
+function renderInventoryItem(id: string, detail: InventoryDetail | undefined, page: ScenePage, index: number): string {
+  const itemId = escapeHtml(id);
+  const targetId = `item-detail-${index}`;
+  const label = detail?.name ?? inventoryItemLabel(id, page);
+  const useAction = page.actions.find((action) => action.id === `use:${id}`);
+  const detailMarkup = detail
+    ? `<div id="${targetId}" class="disclosure-panel item-detail" hidden><p>${escapeHtml(detail.description)}</p><small>${escapeHtml(detail.item_type || '아이템')}</small>${detail.usable ? useAction ? `<button type="button" class="item-use" data-action-id="${escapeHtml(useAction.id)}">사용</button>` : '<button type="button" class="item-use" disabled>지금은 쓸 수 없다</button>' : ''}</div>`
+    : '';
+  return `<li><button type="button" class="item-row" data-item-id="${itemId}" data-disclosure-toggle data-disclosure-target="${targetId}" aria-expanded="false"><span class="item-icon" data-item-icon="${itemId}" style="--icon-hue: ${itemIconHue(id)}" aria-hidden="true"></span><span>${escapeHtml(label)}</span></button>${detailMarkup}</li>`;
+}
+
+function itemIconHue(id: string): number {
+  let hash = 0;
+  for (const char of id) hash = (hash * 31 + char.charCodeAt(0)) % 360;
+  return hash;
+}
+
+function renderInsightDrawer(page: ScenePage): string {
+  const insights = page.insights ?? [];
+  const items = insights.length
+    ? `<ul>${insights.map((insight, index) => {
+        const targetId = `insight-detail-${index}`;
+        const effect = insight.effect_text ? `<small class="insight-effect">${escapeHtml(insight.effect_text)}</small>` : '';
+        return `<li><button type="button" class="insight-row" data-disclosure-toggle data-disclosure-target="${targetId}" aria-expanded="false"><span>${escapeHtml(insight.name)}</span>${effect}</button><div id="${targetId}" class="disclosure-panel insight-detail" hidden><p>${escapeHtml(insight.description)}</p></div></li>`;
+      }).join('')}</ul>`
+    : '<p>아직 맺은 기연이 없다.</p>';
+  return `<section aria-label="기연" data-dock="insights"><h2><span aria-hidden="true">緣</span>기연</h2>${items}</section>`;
 }
 
 function renderAchievementDrawer(page: ScenePage): string {

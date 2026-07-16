@@ -339,7 +339,22 @@ fn preview_fixture_indexes_wuxia_first_fight() {
             .as_deref(),
         Some("rescue_and_investigation")
     );
-    assert_eq!(rescue.choices.len(), 5);
+    assert_eq!(rescue.choices.len(), 7);
+    let rescue_event = rescue.event.as_ref().expect("rescue event stages");
+    let account_choice = rescue_event
+        .stages
+        .iter()
+        .find(|stage| stage.id == "rescue_account_choice")
+        .expect("rescue account choice stage");
+    assert_eq!(account_choice.choices.len(), 5);
+    let watch_choice = rescue_event
+        .stages
+        .iter()
+        .find(|stage| stage.id == "rescue_watch_choice")
+        .expect("rescue watch choice stage");
+    assert_eq!(watch_choice.choices.len(), 2);
+    assert_eq!(watch_choice.choices[0].id, "accept_harin_watch");
+    assert_eq!(watch_choice.choices[1].id, "ask_harin_to_walk_ahead");
     let plain_truth = rescue
         .choices
         .iter()
@@ -1049,10 +1064,13 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     );
     assert_eq!(
         analysis.outcome.add_clues,
-        vec!["two_unchosen_fragments_lost", "analysis_review_loop_direction"]
+        vec![
+            "two_unchosen_fragments_lost",
+            "analysis_review_loop_direction"
+        ]
     );
 
-        let orthodox_style = index
+    let orthodox_style = index
         .encounter("wuxia_mumyeong_reads_orthodox_style")
         .expect("mumyeong orthodox style trace encounter");
     assert_eq!(orthodox_style.title, "무명의 정파 무공 간파");
@@ -1648,7 +1666,6 @@ fn preview_fixture_indexes_wuxia_first_fight() {
         Some("cheongryu_outer_courtyard")
     );
 
-
     let second_reward = index
         .encounter("wuxia_cheonoe_pyeonrin_second_reward")
         .expect("cheonoe pyeonrin second reward encounter");
@@ -1669,12 +1686,32 @@ fn preview_fixture_indexes_wuxia_first_fight() {
         .presentation
         .as_ref()
         .expect("cheonoe pyeonrin second reward presentation");
-    assert_eq!(second_reward_presentation.layout.as_deref(), Some("fragment_choice"));
-    assert_eq!(second_reward_presentation.speaker.as_deref(), Some("천기록"));
+    assert_eq!(
+        second_reward_presentation.layout.as_deref(),
+        Some("fragment_choice")
+    );
+    assert_eq!(
+        second_reward_presentation.speaker.as_deref(),
+        Some("천기록")
+    );
     assert_eq!(second_reward.choices.len(), 3);
-    let return_clue = second_reward.choices.iter().find(|c| c.id == "choose_return_clue_thread").expect("return clue choice");
-    assert_eq!(return_clue.outcome.add_flags, vec!["cheonoe_reward_return_clue_thread", "cheonoe_pyeonrin_second_reward_resolved", "two_unchosen_fragments_lost_second"]);
-    assert_eq!(return_clue.outcome.add_clues, vec!["two_unchosen_fragments_lost", "return_clue_faint_direction"]);
+    let return_clue = second_reward
+        .choices
+        .iter()
+        .find(|c| c.id == "choose_return_clue_thread")
+        .expect("return clue choice");
+    assert_eq!(
+        return_clue.outcome.add_flags,
+        vec![
+            "cheonoe_reward_return_clue_thread",
+            "cheonoe_pyeonrin_second_reward_resolved",
+            "two_unchosen_fragments_lost_second"
+        ]
+    );
+    assert_eq!(
+        return_clue.outcome.add_clues,
+        vec!["two_unchosen_fragments_lost", "return_clue_faint_direction"]
+    );
 
     let sado_battle = index
         .encounter("wuxia_sado_final_battle")
@@ -1778,7 +1815,10 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     );
     assert_eq!(
         price_tag.conditions.forbidden_flags,
-        vec!["sado_final_phase_1_price_tag_resolved", "sado_battle_loss_route_chosen"]
+        vec![
+            "sado_final_phase_1_price_tag_resolved",
+            "sado_battle_loss_route_chosen"
+        ]
     );
     let price_tag_presentation = price_tag
         .presentation
@@ -1824,19 +1864,42 @@ fn preview_fixture_indexes_wuxia_first_fight() {
         Some("black_serpent_ledger_vault")
     );
 
-
     let analysis_bridge = index
         .encounter("wuxia_cheonoe_analysis_thread_phase1_bridge")
         .expect("cheonoe analysis thread phase1 bridge encounter");
     assert_eq!(analysis_bridge.title, "복기 루프 — 장부고의 틈");
-    assert_eq!(analysis_bridge.conditions.required_flags, vec!["sado_final_phase_1_price_tag_resolved", "final_state_routing_seeded", "cheonoe_reward_analysis_thread"]);
-    assert_eq!(analysis_bridge.conditions.forbidden_flags, vec!["cheonoe_analysis_thread_phase1_bridge_resolved"]);
-    let bridge_presentation = analysis_bridge.presentation.as_ref().expect("analysis bridge presentation");
-    assert_eq!(bridge_presentation.layout.as_deref(), Some("cheonggi_record"));
+    assert_eq!(
+        analysis_bridge.conditions.required_flags,
+        vec![
+            "sado_final_phase_1_price_tag_resolved",
+            "final_state_routing_seeded",
+            "cheonoe_reward_analysis_thread"
+        ]
+    );
+    assert_eq!(
+        analysis_bridge.conditions.forbidden_flags,
+        vec!["cheonoe_analysis_thread_phase1_bridge_resolved"]
+    );
+    let bridge_presentation = analysis_bridge
+        .presentation
+        .as_ref()
+        .expect("analysis bridge presentation");
+    assert_eq!(
+        bridge_presentation.layout.as_deref(),
+        Some("cheonggi_record")
+    );
     assert_eq!(bridge_presentation.speaker.as_deref(), Some("천기록"));
     assert_eq!(analysis_bridge.choices.len(), 2);
-    let apply_loop = analysis_bridge.choices.iter().find(|c| c.id == "apply_review_loop_to_ledger_structure").expect("apply review loop choice");
-    assert!(apply_loop.outcome.add_clues.iter().any(|c| c == "analysis_thread_reveals_extra_weakpoint_reading"));
+    let apply_loop = analysis_bridge
+        .choices
+        .iter()
+        .find(|c| c.id == "apply_review_loop_to_ledger_structure")
+        .expect("apply review loop choice");
+    assert!(apply_loop
+        .outcome
+        .add_clues
+        .iter()
+        .any(|c| c == "analysis_thread_reveals_extra_weakpoint_reading"));
 
     let weakpoint = index
         .encounter("wuxia_sado_final_phase_2_weakpoint_control")

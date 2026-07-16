@@ -27,6 +27,16 @@ pub(crate) fn render_scene_page_snapshot(page: &ScenePage, logs: &[String]) -> S
         lines.push(format!("! {warning}"));
     }
 
+    if page
+        .content_stream
+        .iter()
+        .any(|item| item.stage_id.is_some())
+    {
+        render_ordered_content_stream(&mut lines, page);
+        render_snapshot_tail(&mut lines, page, logs);
+        return lines.join("\n");
+    }
+
     lines.push("[비주얼]".to_string());
     for line in scene_visual_card_lines(page) {
         lines.push(line);
@@ -54,6 +64,22 @@ pub(crate) fn render_scene_page_snapshot(page: &ScenePage, logs: &[String]) -> S
         }
     }
 
+    render_snapshot_logs(&mut lines, logs);
+    lines.join("\n")
+}
+
+fn render_snapshot_tail(lines: &mut Vec<String>, page: &ScenePage, logs: &[String]) {
+    if !page.blocked_actions.is_empty() {
+        lines.push("[잠긴 선택지]".to_string());
+        for action in &page.blocked_actions {
+            lines.push(scene_blocked_action_line(action));
+            lines.push(format!("   이유: {}", action.reasons.join(", ")));
+        }
+    }
+    render_snapshot_logs(lines, logs);
+}
+
+fn render_snapshot_logs(lines: &mut Vec<String>, logs: &[String]) {
     lines.push("[최근 로그]".to_string());
     if logs.is_empty() {
         lines.push("- 아직 기록된 로그가 없다.".to_string());
@@ -62,7 +88,60 @@ pub(crate) fn render_scene_page_snapshot(page: &ScenePage, logs: &[String]) -> S
             lines.push(format!("- {log}"));
         }
     }
-    lines.join("\n")
+}
+
+fn render_ordered_content_stream(lines: &mut Vec<String>, page: &ScenePage) {
+    lines.push(page.title.clone());
+    for item in &page.content_stream {
+        render_content_item(lines, item, page);
+    }
+}
+
+fn render_content_item(lines: &mut Vec<String>, item: &SceneContentItem, page: &ScenePage) {
+    match item.kind.as_str() {
+        "illustration" => {
+            lines.push("[일러스트]".to_string());
+            if item.placeholder || item.visual_id.is_none() {
+                lines.push(format!(
+                    "[NO IMAGE] {}",
+                    item.alt.as_deref().unwrap_or("no image")
+                ));
+            } else {
+                lines.push(format!(
+                    "visual id: {}",
+                    item.visual_id.as_deref().unwrap_or_default()
+                ));
+                lines.push(format!("alt: {}", item.alt.as_deref().unwrap_or_default()));
+                lines.extend(glyphfx_card_lines(&page.effect_cues));
+            }
+        }
+        "choice" | "continue" => {
+            lines.push("[선택]".to_string());
+            for (index, action) in item.actions.iter().enumerate() {
+                lines.push(scene_action_line(index + 1, action));
+            }
+        }
+        "dialogue" => {
+            if let Some(text) = item.text.as_deref() {
+                if let Some(speaker) = item.speaker.as_deref() {
+                    lines.push(format!("{speaker}: {text}"));
+                } else {
+                    lines.push(text.to_string());
+                }
+            }
+        }
+        "result_summary" => push_wrapped_content(lines, "[결과]", item.text.as_deref()),
+        "document" | "cheongirok" => push_wrapped_content(lines, "[기록]", item.text.as_deref()),
+        "system" => push_wrapped_content(lines, "[시스템]", item.text.as_deref()),
+        _ => push_wrapped_content(lines, "[이야기]", item.text.as_deref()),
+    }
+}
+
+fn push_wrapped_content(lines: &mut Vec<String>, heading: &str, text: Option<&str>) {
+    lines.push(heading.to_string());
+    for source_line in text.unwrap_or_default().lines() {
+        lines.extend(wrap_terminal_body_line(source_line, 76));
+    }
 }
 
 pub(crate) fn render_scene_body(lines_buf: &mut Vec<String>, page: &ScenePage) {

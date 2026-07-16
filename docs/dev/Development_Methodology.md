@@ -40,6 +40,19 @@
 - YAML encounter/choice/outcome 데이터는 content bundle을 통해 도달한다 → `export_web_data.py`로 재생성한다.
 - `web/src/core/wasm-pkg/`는 gitignore이며 CI(`.github/workflows/pages.yml`)가 배포 시 재빌드한다. 로컬 재빌드는 검증용이다.
 
+Event/Stage 콘텐츠를 추가하거나 바꿀 때는 `docs/design/Event_Stage_Content_Model.md`의
+authoring 계약부터 확인하고 다음 경로를 함께 추적한다.
+
+- authoring schema와 validation
+- Encounter에서 Event를 여는 runtime 경로와 save stage cursor/migration
+- `ScenePage`/WASM의 ordered block 전달
+- Web Storybook과 terminal의 순서 보존 및 placeholder 표시
+- generated bundle/wasm 산출물, fixture, cross-renderer test
+- schema/UI/storypack 문서 동기화
+
+한 surface만 고치고 완료 처리하지 않는다. 특히 고정 body/visual/choices DOM이 새
+ordered model을 다시 종류별로 나누지 않는지 확인한다.
+
 경로를 모르면 "반영했다"가 거짓이 될 수 있다.
 
 ## 5. 테스트 스냅샷 동기화

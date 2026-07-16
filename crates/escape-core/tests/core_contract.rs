@@ -1,8 +1,8 @@
 use escape_core::{
-    apply_action, apply_action_from_content, index_content_bundle, load_content_bundle, load_state,
-    new_game, new_game_from_content, new_game_from_content_at, save_state, scene_page_from_content,
-    turn_view, turn_view_from_content, ContentTurnError, EffectCue, NewGameError, SceneMode,
-    SaveEnvelope, ability_check_success_percent,
+    ability_check_success_percent, apply_action, apply_action_from_content, index_content_bundle,
+    load_content_bundle, load_state, new_game, new_game_from_content, new_game_from_content_at,
+    save_state, scene_page_from_content, turn_view, turn_view_from_content, ContentTurnError,
+    EffectCue, NewGameError, SaveEnvelope, SceneMode,
 };
 
 use serde_json::json;
@@ -559,7 +559,7 @@ fn test_character_summary_serialization_shape() {
     let index = index_content_bundle(&bundle).expect("content bundle should index");
     let state = new_game_from_content(123, &index).expect("content-backed game should start");
     let page = scene_page_from_content(&state, &index).expect("build scene page should succeed");
-    
+
     assert!(page.character_summary.is_some());
     let summary = page.character_summary.as_ref().unwrap();
     assert_eq!(summary.name, "당신");
@@ -663,7 +663,8 @@ fn test_old_save_compat() {
         }
     }"#;
 
-    let envelope: SaveEnvelope = serde_json::from_str(old_save_json).expect("should deserialize old save envelope");
+    let envelope: SaveEnvelope =
+        serde_json::from_str(old_save_json).expect("should deserialize old save envelope");
     let state = load_state(&envelope).expect("should load old save state successfully");
 
     assert_eq!(state.seed, 123);
@@ -776,7 +777,7 @@ fn test_delta_logs_and_trait_change() {
     let bundle = load_content_bundle(test_bundle_json).expect("test bundle should load");
     let index = index_content_bundle(&bundle).expect("test bundle should index");
     let mut state = new_game_from_content(123, &index).expect("test game should start");
-    
+
     // Set initial values
     state.trait_id = Some("beginner".to_string());
     state.player.health = 80;
@@ -863,7 +864,7 @@ fn test_min_experience_condition_matching() {
     let bundle = load_content_bundle(test_bundle_json).expect("test bundle should load");
     let index = index_content_bundle(&bundle).expect("content bundle should index");
     let mut state = new_game_from_content(123, &index).expect("test game should start");
-    
+
     state.experience = 0;
     let view = turn_view_from_content(&state, &index).expect("should render turn view");
     assert_eq!(view.encounter_id, None);
@@ -992,7 +993,9 @@ fn test_progression_metadata_visibility() {
     assert_eq!(prog.label, "단계");
 
     let serialized = serde_json::to_string(&page).unwrap();
-    assert!(serialized.contains("\"progression\":{\"experience\":0,\"target\":100,\"label\":\"단계\"}"));
+    assert!(
+        serialized.contains("\"progression\":{\"experience\":0,\"target\":100,\"label\":\"단계\"}")
+    );
 }
 
 #[test]
@@ -1045,9 +1048,10 @@ fn content_backed_scene_page_carries_content_labels() {
     let bundle = load_content_bundle(test_bundle_json).expect("test bundle should load");
     let index = index_content_bundle(&bundle).expect("test bundle should index");
     let mut state = new_game_from_content(123, &index).expect("test game should start");
-    
+
     // empty case
-    let page_empty = scene_page_from_content(&state, &index).expect("build scene page should succeed");
+    let page_empty =
+        scene_page_from_content(&state, &index).expect("build scene page should succeed");
     assert!(page_empty.content_labels.is_none());
 
     // inventory & achievement populated
@@ -1135,8 +1139,8 @@ fn content_backed_scene_page_content_labels_includes_achievement_unlocked_this_t
         scene_page_from_content(&state, &index).expect("build scene page should succeed");
     assert!(before_page.content_labels.is_none());
 
-    let action_result = apply_action_from_content(&state, &index, "choice:earn_flag")
-        .expect("action should apply");
+    let action_result =
+        apply_action_from_content(&state, &index, "choice:earn_flag").expect("action should apply");
     assert_eq!(
         action_result.newly_unlocked_achievements,
         vec!["first_kill".to_string()]
@@ -1234,7 +1238,7 @@ fn test_check_resolution_lifecycle_and_regression() {
     // 3. Set on check resolution
     let action_res = apply_action_from_content(&state, &index, "choice:checked_choice").unwrap();
     let next_state = action_res.state;
-    
+
     assert!(next_state.last_check.is_some());
     let last_check = next_state.last_check.as_ref().unwrap();
     assert_eq!(last_check.dice, (1, 1));
@@ -1451,7 +1455,10 @@ fn test_collapse_gate_lifecycle_and_validation() {
     assert!(next_state.player.health <= 0);
 
     let turn_view = escape_core::turn_view_from_content(&next_state, &index).unwrap();
-    assert_eq!(turn_view.encounter_id.as_deref(), Some("wuxia_collapse_gate"));
+    assert_eq!(
+        turn_view.encounter_id.as_deref(),
+        Some("wuxia_collapse_gate")
+    );
     assert!(turn_view.ending_id.is_none());
 
     let revive_res = apply_action_from_content(&next_state, &index, "choice:revive").unwrap();
@@ -1462,11 +1469,17 @@ fn test_collapse_gate_lifecycle_and_validation() {
     let mut recollapse_state = revived_state.clone();
     recollapse_state.player.health = -10;
     let recollapse_view = escape_core::turn_view_from_content(&recollapse_state, &index).unwrap();
-    assert_ne!(recollapse_view.encounter_id.as_deref(), Some("wuxia_collapse_gate"));
+    assert_ne!(
+        recollapse_view.encounter_id.as_deref(),
+        Some("wuxia_collapse_gate")
+    );
 
     let accept_res = apply_action_from_content(&next_state, &index, "choice:accept_death").unwrap();
     let accepted_state = accept_res.state;
-    assert!(accepted_state.flags.iter().any(|f| f == "accept_final_rest"));
+    assert!(accepted_state
+        .flags
+        .iter()
+        .any(|f| f == "accept_final_rest"));
 
     let ending_view = escape_core::turn_view_from_content(&accepted_state, &index).unwrap();
     assert_eq!(ending_view.ending_id.as_deref(), Some("death_ending"));
@@ -1522,6 +1535,3 @@ fn test_check_ability_id_validation_rejects_unknown_ability() {
     assert!(message.contains("interface"));
     assert!(message.contains("physical"));
 }
-
-
-

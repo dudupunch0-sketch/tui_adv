@@ -129,6 +129,29 @@ export interface ScenePage {
   progression?: ProgressionStatus;
   content_labels?: ContentLabels;
   check_result?: CheckResolution;
+  /** Ordered event presentation. Older bundles may omit this and use the legacy fields above. */
+  content_stream?: SceneContentItem[];
+}
+
+export type SceneContentKind =
+  | 'narration'
+  | 'dialogue'
+  | 'illustration'
+  | 'document'
+  | 'system'
+  | 'cheongirok'
+  | 'result_summary'
+  | 'choice';
+
+export interface SceneContentItem {
+  kind: SceneContentKind | string;
+  stage_id?: string | null;
+  text?: string | null;
+  speaker?: string | null;
+  visual_id?: string | null;
+  alt?: string | null;
+  placeholder: boolean;
+  actions?: SceneAction[];
 }
 
 export interface LabeledId {

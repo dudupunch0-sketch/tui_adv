@@ -4,6 +4,7 @@ import type {
   CharacterSummary,
   ProgressionStatus,
   ResourceStatus,
+  SceneContentItem,
   SceneAction,
   SceneBlockedAction,
   ScenePage,
@@ -38,7 +39,7 @@ export function renderStorybookPage(page: ScenePage, options: StorybookRenderOpt
   ${renderHud(page)}
   <section class="storybook-page" data-story-layout="${layout}" data-story-phase="${phase}">
     ${renderStoryFlow(page, layout)}
-    ${renderChoices(page)}
+    ${page.content_stream?.length ? '' : renderChoices(page)}
   </section>
   ${renderBottomDock(page, options)}
 </main>`.trim();
@@ -55,6 +56,9 @@ function storyLayout(page: ScenePage): StoryLayout {
 function storyPhase(page: ScenePage): StoryPhase {
   if (page.visual.kind === 'collapse_gate') return 'collapse';
   if (isCombatScene(page)) return 'combat';
+  if (page.content_stream?.length) {
+    return page.content_stream.some((item) => item.kind === 'result_summary') ? 'result' : 'story';
+  }
   if (page.history_entries.length || page.achievement_summary.newly_unlocked.length) return 'result';
   return 'story';
 }
@@ -136,6 +140,7 @@ function renderProgressRail(page: ScenePage): string {
 }
 
 function renderStoryFlow(page: ScenePage, layout: StoryLayout): string {
+  if (page.content_stream?.length) return renderOrderedStoryFlow(page);
   const visual = renderInkVisual(page.visual, page.effect_cues, page.mode);
   const body = renderBody(page);
   if (layout === 'text-first') {
@@ -145,6 +150,61 @@ function renderStoryFlow(page: ScenePage, layout: StoryLayout): string {
     return `<article class="story-flow story-flow--ending">${visual}${body}</article>`;
   }
   return `<article class="story-flow story-flow--visual-first">${visual}${body}</article>`;
+}
+
+function renderOrderedStoryFlow(page: ScenePage): string {
+  const title = page.title === page.location.name ? '' : `<h1>${escapeHtml(page.title)}</h1>`;
+  const pressureNotes = [...page.status_summary.warnings, ...page.pressure_cues.map((cue) => cue.message)];
+  const items = page.content_stream!.map((item) => renderContentItem(item, page)).join('');
+  const hasResultItem = page.content_stream!.some((item) => item.kind === 'result_summary');
+
+  return `<article class="story-flow story-flow--ordered" data-region="story-flow">
+    <header class="story-flow__heading">
+      <p class="storybook-location">${escapeHtml(page.location.name)}</p>
+      ${title}
+      ${pressureNotes.length ? `<aside class="storybook-pressure" data-region="pressure">${pressureNotes.map((note) => `<p>${escapeHtml(note)}</p>`).join('')}</aside>` : ''}
+    </header>
+    ${items}
+    ${renderCheckResolution(page)}
+    ${hasResultItem ? '' : renderInlineResultLog(page)}
+  </article>`;
+}
+
+function renderContentItem(item: SceneContentItem, page: ScenePage): string {
+  const stageId = escapeHtml(item.stage_id ?? '');
+  const attrs = `data-content-kind="${escapeHtml(item.kind)}" data-stage-id="${stageId}"`;
+  if (item.kind === 'illustration') {
+    if (item.placeholder || !item.visual_id) {
+      const label = item.alt?.trim() || (item.visual_id ? `${item.visual_id}.png` : 'no image');
+      return `<figure class="story-illustration story-illustration--placeholder" ${attrs} data-region="visual" data-placeholder="true"><div aria-label="${escapeHtml(label)}"><span>NO IMAGE</span><small>${escapeHtml(label)}</small></div></figure>`;
+    }
+    return `<div class="story-illustration" ${attrs}>${renderInkVisual(
+      { id: item.visual_id, kind: 'illustration', alt: item.alt ?? item.visual_id, source_id: item.stage_id ?? null },
+      page.effect_cues,
+      page.mode,
+    )}</div>`;
+  }
+  if (item.kind === 'choice' || item.kind === 'continue') {
+    return renderChoices(page, item.actions ?? [], item.stage_id ?? undefined);
+  }
+  if (item.kind === 'dialogue') {
+    const speaker = item.speaker?.trim();
+    return `<section class="story-content-block dialogue-stack" ${attrs}>${item.text ? `<p${speaker ? ` data-speaker="${escapeHtml(speaker)}"` : ''}>${speaker ? `<strong>${escapeHtml(speaker)}</strong>` : ''}${escapeHtml(item.text)}</p>` : ''}</section>`;
+  }
+  const text = item.text ?? '';
+  if (item.kind.startsWith('epilogue_')) {
+    return `<div class="story-content-block" ${attrs}>${renderEpilogueBodyBlock({
+      kind: item.kind,
+      text,
+      source_id: item.stage_id ?? null,
+    })}</div>`;
+  }
+  const tag = item.kind === 'document' || item.kind === 'cheongirok' ? 'blockquote' : 'section';
+  return `<${tag} class="story-content-block story-content-block--${escapeHtml(item.kind)}" ${attrs}>${text
+    .split('\n')
+    .filter(Boolean)
+    .map((line) => `<p>${escapeHtml(line)}</p>`)
+    .join('')}</${tag}>`;
 }
 
 function renderBody(page: ScenePage): string {
@@ -251,15 +311,15 @@ function renderAchievementLabel(id: string, page: ScenePage): string {
   return `${escapeHtml(achievementLabel(id, page))}${translationNote}`;
 }
 
-function renderChoices(page: ScenePage): string {
-  const actionRows = page.actions.length
-    ? renderActionRows(page.actions)
+function renderChoices(page: ScenePage, actions: SceneAction[] = page.actions, stageId?: string): string {
+  const actionRows = actions.length
+    ? renderActionRows(actions)
     : renderEmptyChoiceRows(page.mode === 'ending');
   const blockedRows = page.blocked_actions.length
     ? `<ul class="blocked-actions">${page.blocked_actions.map(renderBlockedAction).join('')}</ul>`
     : '';
 
-  return `<nav class="storybook-choices" data-region="choices" aria-label="현재 선택지">
+  return `<nav class="storybook-choices" data-region="choices"${stageId ? ` data-stage-id="${escapeHtml(stageId)}"` : ''} aria-label="현재 선택지">
     <div class="choice-separator ink-rule" aria-hidden="true"><span></span><i>✣</i><span></span></div>
     <ol>${actionRows}</ol>
     ${blockedRows}
@@ -364,7 +424,7 @@ function renderBottomDock(page: ScenePage, options: StorybookRenderOptions): str
     <summary aria-label="정보 열기"><span aria-hidden="true">✦</span><span>기록과 소지품</span></summary>
     <div class="dock-sheet">
       <header class="dock-sheet__head">
-        <span class="dock-sheet__title"><span aria-hidden="true">記</span>천기록 상세</span>
+        <span class="dock-sheet__title"><span aria-hidden="true">記</span>상세 기록</span>
         <button type="button" class="dock-sheet__close" data-player-action="toggle-storybook-drawer" aria-label="상세 닫기"><span aria-hidden="true">✕</span></button>
       </header>
       <section aria-label="현재 상태"><h2><span aria-hidden="true">狀</span>상태</h2><ul>${statusRows}</ul>${renderProgressionGauge(
@@ -445,7 +505,7 @@ function storyResources(resources: ResourceStatus[]): ResourceStatus[] {
 
 function documentLabel(page: ScenePage): string {
   const rawLabel = page.chapter_label.trim();
-  if (rawLabel.toLowerCase().includes('storypack')) return '천기록';
+  if (rawLabel.toLowerCase().includes('storypack')) return '기록';
   if (/격리\s*\d+\s*턴/.test(rawLabel)) return page.mode === 'ending' ? '결말' : '기록';
   return rawLabel || '기록';
 }

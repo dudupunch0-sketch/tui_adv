@@ -1,5 +1,6 @@
 use escape_wasm::{
-    apply_action_json, load_state_json, new_game_json, save_state_json, scene_page_json,
+    apply_action_json as raw_apply_action_json, load_state_json, new_game_json, save_state_json,
+    scene_page_json as raw_scene_page_json,
 };
 use serde_json::{json, Value};
 
@@ -8,6 +9,87 @@ const CONTENT_BUNDLE: &str = include_str!("../../escape-core/fixtures/content/co
 const WUXIA_PREVIEW_BUNDLE: &str = include_str!(
     "../../escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json"
 );
+
+fn apply_action_json(state_json: &str, bundle: &str, action_id: &str) -> Result<String, String> {
+    let mut state = state_json.to_string();
+    loop {
+        let page: Value = serde_json::from_str(&raw_scene_page_json(&state, bundle)?)
+            .map_err(|error| error.to_string())?;
+        let available = page["actions"]
+            .as_array()
+            .into_iter()
+            .flatten()
+            .any(|action| action["id"] == action_id);
+        if available {
+            return raw_apply_action_json(&state, bundle, action_id);
+        }
+        let can_continue = page["actions"]
+            .as_array()
+            .into_iter()
+            .flatten()
+            .any(|action| action["id"] == "event:continue");
+        if !can_continue {
+            let state_value: Value =
+                serde_json::from_str(&state).map_err(|error| error.to_string())?;
+            if state_value["active_event_id"] == "wuxia_seo_harin_rescue"
+                && state_value["event_stage_index"] == 3
+            {
+                let followup = page["actions"][0]["id"]
+                    .as_str()
+                    .ok_or("missing rescue follow-up action")?;
+                let resolved: Value =
+                    serde_json::from_str(&raw_apply_action_json(&state, bundle, followup)?)
+                        .map_err(|error| error.to_string())?;
+                state =
+                    serde_json::to_string(&resolved["state"]).map_err(|error| error.to_string())?;
+                continue;
+            }
+            return raw_apply_action_json(&state, bundle, action_id);
+        }
+        let continued: Value =
+            serde_json::from_str(&raw_apply_action_json(&state, bundle, "event:continue")?)
+                .map_err(|error| error.to_string())?;
+        state = serde_json::to_string(&continued["state"]).map_err(|error| error.to_string())?;
+    }
+}
+
+fn scene_page_json(state_json: &str, bundle: &str) -> Result<String, String> {
+    let mut state = state_json.to_string();
+    loop {
+        let page_json = raw_scene_page_json(&state, bundle)?;
+        let page: Value = serde_json::from_str(&page_json).map_err(|error| error.to_string())?;
+        let state_value: Value = serde_json::from_str(&state).map_err(|error| error.to_string())?;
+        let continue_action = page["actions"]
+            .as_array()
+            .into_iter()
+            .flatten()
+            .find(|action| action["id"] == "event:continue");
+        if let Some(action) = continue_action {
+            let continued: Value = serde_json::from_str(&raw_apply_action_json(
+                &state,
+                bundle,
+                action["id"].as_str().unwrap(),
+            )?)
+            .map_err(|error| error.to_string())?;
+            state =
+                serde_json::to_string(&continued["state"]).map_err(|error| error.to_string())?;
+            continue;
+        }
+        if state_value["active_event_id"] == "wuxia_seo_harin_rescue"
+            && state_value["event_stage_index"] == 3
+        {
+            let followup = page["actions"][0]["id"]
+                .as_str()
+                .ok_or("missing rescue follow-up action")?;
+            let resolved: Value =
+                serde_json::from_str(&raw_apply_action_json(&state, bundle, followup)?)
+                    .map_err(|error| error.to_string())?;
+            state = serde_json::to_string(&resolved["state"]).map_err(|error| error.to_string())?;
+            continue;
+        }
+        return Ok(page_json);
+    }
+}
 
 fn wuxia_state_after_actions(actions: &[&str]) -> String {
     let mut state_json =
@@ -90,14 +172,16 @@ fn json_boundary_uses_storypack_preview_default_location() {
     let state: Value = serde_json::from_str(&state_json).expect("state JSON should parse");
     assert_eq!(state["location_id"], "wuxia_commute_rift");
 
-    let page_json = scene_page_json(&state_json, WUXIA_PREVIEW_BUNDLE)
+    let page_json = raw_scene_page_json(&state_json, WUXIA_PREVIEW_BUNDLE)
         .expect("preview scene page should serialize");
     let page: Value = serde_json::from_str(&page_json).expect("page JSON should parse");
     assert_eq!(page["mode"], "encounter");
     assert_eq!(page["title"], "출근길 균열");
     assert_eq!(page["location"]["id"], "wuxia_commute_rift");
     assert_eq!(page["visual"]["kind"], "storypack_preview");
-    assert_eq!(page["actions"][0]["id"], "choice:grip_employee_badge");
+    assert_eq!(page["actions"][0]["id"], "event:continue");
+    assert_eq!(page["content_stream"][0]["kind"], "narration");
+    assert_eq!(page["content_stream"][1]["kind"], "illustration");
 
     let result_json = apply_action_json(
         &state_json,
@@ -113,6 +197,18 @@ fn json_boundary_uses_storypack_preview_default_location() {
         result["newly_unlocked_achievements"][0],
         "wuxia_first_arrival"
     );
+}
+
+#[test]
+fn json_boundary_rejects_event_choice_before_its_choice_stage() {
+    let state_json = new_game_json(123, WUXIA_PREVIEW_BUNDLE).unwrap();
+    let error = raw_apply_action_json(
+        &state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:grip_employee_badge",
+    )
+    .expect_err("story stage must not authorize a later choice");
+    assert!(error.contains("unknown action id"));
 }
 
 #[test]
@@ -3685,12 +3781,12 @@ fn json_boundary_reaches_wuxia_seoharin_qingliu_resolution_after_mumyeong_resolu
 
     // After cheongirok_resolution with return intent, S4 (wuxia_return_modern_commute_scene)
     // fires before wuxia_black_serpent_aftermath (gated by wuxia_ending_scene_resolved).
-    let s4_state_json = serde_json::to_string(&last_page_result["state"])
-        .expect("s4 state should stringify");
+    let s4_state_json =
+        serde_json::to_string(&last_page_result["state"]).expect("s4 state should stringify");
     let s4_page_json = scene_page_json(&s4_state_json, WUXIA_PREVIEW_BUNDLE)
         .expect("return commute scene page should serialize");
-    let s4_page: Value = serde_json::from_str(&s4_page_json)
-        .expect("return commute scene page JSON should parse");
+    let s4_page: Value =
+        serde_json::from_str(&s4_page_json).expect("return commute scene page JSON should parse");
     assert_eq!(s4_page["mode"], "encounter");
     assert_eq!(s4_page["title"], "귀환 출근길");
     assert_eq!(s4_page["visual"]["id"], "wuxia_return_modern_commute_scene");
@@ -3710,16 +3806,25 @@ fn json_boundary_reaches_wuxia_seoharin_qingliu_resolution_after_mumyeong_resolu
     .expect("return commute scene action should serialize");
     let s4_result: Value = serde_json::from_str(&s4_result_json)
         .expect("return commute scene action JSON should parse");
-    assert_eq!(s4_result["encounter_id"], "wuxia_return_modern_commute_scene");
+    assert_eq!(
+        s4_result["encounter_id"],
+        "wuxia_return_modern_commute_scene"
+    );
     let s4_flags = s4_result["state"]["flags"]
         .as_array()
         .expect("flags should be an array");
-    assert!(s4_flags.iter().any(|flag| flag == "wuxia_return_modern_commute_scene_resolved"));
-    assert!(s4_flags.iter().any(|flag| flag == "epilogue_wuxia_returned_commute"));
-    assert!(s4_flags.iter().any(|flag| flag == "wuxia_ending_scene_resolved"));
+    assert!(s4_flags
+        .iter()
+        .any(|flag| flag == "wuxia_return_modern_commute_scene_resolved"));
+    assert!(s4_flags
+        .iter()
+        .any(|flag| flag == "epilogue_wuxia_returned_commute"));
+    assert!(s4_flags
+        .iter()
+        .any(|flag| flag == "wuxia_ending_scene_resolved"));
 
-    let aftermath_state_json = serde_json::to_string(&s4_result["state"])
-        .expect("aftermath state should stringify");
+    let aftermath_state_json =
+        serde_json::to_string(&s4_result["state"]).expect("aftermath state should stringify");
     let aftermath_page_json = scene_page_json(&aftermath_state_json, WUXIA_PREVIEW_BUNDLE)
         .expect("black serpent aftermath scene page should serialize");
     let aftermath_page: Value = serde_json::from_str(&aftermath_page_json)

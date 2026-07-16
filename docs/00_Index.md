@@ -44,6 +44,7 @@ docs/
     Life_in_Adventure_Play_Reference.md # 지향 플레이 경험 기준점(외부 게임 분석, 텍스트 기술만)
 
   design/
+    Event_Stage_Content_Model.md     # Event/Encounter 구분, Stage와 ordered ContentBlock canonical 문법
     Game_Loop.md                    # 턴 진행, 인카운터, 선택지 처리 루프
     Combat_System_Auto_Brawl.md     # 자동 난투 + 상황 개입 전투 설계 후보
     Basic_Combat_Action_Model.md     # 이구학지/office 공용 기본 전투 액션 taxonomy
@@ -139,6 +140,7 @@ private/
 - `docs/design/Character_Stats_and_Generator.md`
 - `docs/design/Storypack_World_Model.md`
 - `docs/design/Storypack_Encounter_DB.md`
+- `docs/design/Event_Stage_Content_Model.md`
 - `docs/design/Wuxia_Final_State_Routing.md`
 - `docs/design/Game_Loop.md`
 - `docs/design/Combat_System_Auto_Brawl.md`

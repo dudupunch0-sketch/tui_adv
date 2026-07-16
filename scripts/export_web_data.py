@@ -67,6 +67,8 @@ def _build_data_from_dir(data_dir: Path, source_label: str) -> dict[str, Any]:
             raise ValueError(f"{source_path} root key {root_key} must be a list")
         if root_key == "secrets":
             _validate_public_secrets(entries)
+        if root_key == "encounters":
+            _validate_event_stages(entries, source_path)
         bundle[root_key] = entries
         counts[root_key] = len(entries)
     bundle["manifest"] = {
@@ -325,6 +327,54 @@ def _validate_public_secrets(secrets: list[Any]) -> None:
         for field_name in PRIVATE_SECRET_FIELDS:
             if field_name in secret:
                 raise ValueError(f"public secret {secret_id} has private-only field: {field_name}")
+
+
+def _validate_event_stages(encounters: list[Any], source_path: Path) -> None:
+    """Reject malformed optional Event/Stage authoring before bundle generation."""
+    block_kinds = {"narration", "dialogue", "illustration", "document", "system", "cheongirok", "result_summary"}
+    for encounter in encounters:
+        if not isinstance(encounter, dict) or "event" not in encounter:
+            continue
+        encounter_id = str(encounter.get("id", "<missing>"))
+        event = encounter["event"]
+        stages = event.get("stages") if isinstance(event, dict) else None
+        if not isinstance(stages, list) or not stages:
+            raise ValueError(f"{source_path}: encounter {encounter_id} event.stages must be a non-empty list")
+        stage_ids = [stage.get("id") for stage in stages if isinstance(stage, dict)]
+        if len(stage_ids) != len(stages) or any(not value for value in stage_ids) or len(set(stage_ids)) != len(stage_ids):
+            raise ValueError(f"{source_path}: encounter {encounter_id} stage ids must be non-empty and unique")
+        kinds = [stage.get("kind") for stage in stages]
+        if "story" not in kinds or "choice" not in kinds:
+            raise ValueError(f"{source_path}: encounter {encounter_id} requires story and choice stages")
+        illustrations = 0
+        choice_ids = {choice.get("id") for choice in encounter.get("choices", []) if isinstance(choice, dict)}
+        for index, stage in enumerate(stages):
+            stage_id, kind = stage["id"], stage.get("kind")
+            if kind not in {"story", "choice", "result"}:
+                raise ValueError(f"{source_path}: encounter {encounter_id} stage {stage_id} has invalid kind {kind!r}")
+            choices = stage.get("choices", [])
+            if kind == "choice":
+                if not choices or index + 1 >= len(stages) or stages[index + 1].get("kind") != "result":
+                    raise ValueError(f"{source_path}: encounter {encounter_id} choice stage {stage_id} requires choices and an immediate result stage")
+                unknown = [ref.get("id") for ref in choices if ref.get("id") not in choice_ids]
+                if unknown:
+                    raise ValueError(f"{source_path}: encounter {encounter_id} stage {stage_id} references unknown choices: {unknown}")
+            elif choices:
+                raise ValueError(f"{source_path}: encounter {encounter_id} non-choice stage {stage_id} cannot define choices")
+            for block in stage.get("blocks", []):
+                block_kind = block.get("kind")
+                if block_kind not in block_kinds:
+                    raise ValueError(f"{source_path}: encounter {encounter_id} stage {stage_id} has invalid block kind {block_kind!r}")
+                if block_kind == "illustration":
+                    illustrations += 1
+                    if not block.get("visual_id") or not block.get("alt"):
+                        raise ValueError(f"{source_path}: encounter {encounter_id} illustration requires visual_id and alt")
+        if illustrations == 0:
+            raise ValueError(
+                f"{source_path}: encounter {encounter_id} requires at least one illustration block; use a placeholder until art exists"
+            )
+        if illustrations > 3:
+            raise ValueError(f"{source_path}: encounter {encounter_id} supports at most three illustrations")
 
 
 def _write_json(path: Path, payload: Any) -> None:

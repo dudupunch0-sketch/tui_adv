@@ -139,12 +139,36 @@ pub fn content_turn_view(
         });
     };
 
-    let mut actions = encounter
-        .choices
-        .iter()
-        .filter(|choice| choice_is_available(choice, state))
-        .map(choice_action_view)
-        .collect::<Vec<_>>();
+    let stage = current_event_stage(encounter, state);
+    let mut actions = if let Some(stage) = stage {
+        if stage.kind == "choice" {
+            stage
+                .choices
+                .iter()
+                .filter_map(|choice_ref| {
+                    encounter
+                        .choices
+                        .iter()
+                        .find(|choice| choice.id == choice_ref.id)
+                })
+                .filter(|choice| choice_is_available(choice, state))
+                .map(choice_action_view)
+                .collect()
+        } else {
+            vec![ActionView {
+                id: "event:continue".to_string(),
+                label: "계속".to_string(),
+                cost_summary: None,
+            }]
+        }
+    } else {
+        encounter
+            .choices
+            .iter()
+            .filter(|choice| choice_is_available(choice, state))
+            .map(choice_action_view)
+            .collect()
+    };
     actions.extend(item_actions);
 
     Ok(TurnView {
@@ -152,11 +176,24 @@ pub fn content_turn_view(
         encounter_id: Some(encounter.id.clone()),
         ending_id: None,
         title: encounter.title.clone(),
-        body: encounter.body.clone(),
+        body: stage
+            .map(event_stage_text)
+            .filter(|body| !body.is_empty())
+            .unwrap_or_else(|| encounter.body.clone()),
         actions,
         blocked_actions: encounter
             .choices
             .iter()
+            .filter(|choice| {
+                stage
+                    .map(|stage| {
+                        stage
+                            .choices
+                            .iter()
+                            .any(|choice_ref| choice_ref.id == choice.id)
+                    })
+                    .unwrap_or(true)
+            })
             .filter(|choice| !choice_is_available(choice, state))
             .map(|choice| blocked_choice_action_view(choice, state))
             .collect(),
@@ -184,6 +221,9 @@ pub fn apply_content_action(
     let Some(encounter) = current_content_encounter(content, state) else {
         return apply_movement_action(state, content, location, action_id);
     };
+    if encounter.event.is_some() && action_id == "event:continue" {
+        return advance_event(state, encounter, action_id);
+    }
     let Some(choice_id) = action_id.strip_prefix(ACTION_PREFIX_CHOICE) else {
         return Err(ContentActionError::UnknownAction(action_id.to_string()));
     };
@@ -194,6 +234,16 @@ pub fn apply_content_action(
     else {
         return Err(ContentActionError::UnknownAction(action_id.to_string()));
     };
+    if let Some(stage) = current_event_stage(encounter, state) {
+        if stage.kind != "choice"
+            || !stage
+                .choices
+                .iter()
+                .any(|choice_ref| choice_ref.id == choice.id)
+        {
+            return Err(ContentActionError::UnknownAction(action_id.to_string()));
+        }
+    }
 
     let mut next_state = state.clone();
     next_state.last_check = None;
@@ -209,6 +259,21 @@ pub fn apply_content_action(
         };
         next_state.last_check = Some(res);
         logs.extend(apply_outcome(&mut next_state, content, branch));
+    }
+    if let Some(event) = &encounter.event {
+        let stage_index = effective_event_stage_index(encounter, state);
+        next_state.active_event_id = Some(encounter.id.clone());
+        next_state.event_stage_index = stage_index + 1;
+        next_state.event_next_stage_id = event
+            .stages
+            .get(stage_index)
+            .and_then(|stage| {
+                stage
+                    .choices
+                    .iter()
+                    .find(|choice_ref| choice_ref.id == choice.id)
+            })
+            .and_then(|choice_ref| choice_ref.next_stage_id.clone());
     }
     next_state.add_seen_encounter_once(&encounter.id);
     logs.extend(advance_turn(&mut next_state));
@@ -463,6 +528,13 @@ fn current_content_encounter<'a>(
     content: &'a ContentIndex,
     state: &GameState,
 ) -> Option<&'a EncounterDef> {
+    if let Some(active_event_id) = &state.active_event_id {
+        if let Some(encounter) = content.encounter(active_event_id) {
+            if encounter.event.is_some() {
+                return Some(encounter);
+            }
+        }
+    }
     if let Some(enc) = collapse_gate_pending(content, state) {
         return Some(enc);
     }
@@ -470,6 +542,86 @@ fn current_content_encounter<'a>(
     content
         .encounters()
         .find(|encounter| encounter_is_available(encounter, state))
+}
+
+fn effective_event_stage_index(encounter: &EncounterDef, state: &GameState) -> usize {
+    if state.active_event_id.as_deref() == Some(encounter.id.as_str()) {
+        state.event_stage_index
+    } else {
+        0
+    }
+}
+
+fn current_event_stage<'a>(
+    encounter: &'a EncounterDef,
+    state: &GameState,
+) -> Option<&'a crate::content::EventStageDef> {
+    encounter
+        .event
+        .as_ref()?
+        .stages
+        .get(effective_event_stage_index(encounter, state))
+}
+
+fn event_stage_text(stage: &crate::content::EventStageDef) -> String {
+    stage
+        .blocks
+        .iter()
+        .filter_map(|block| block.text.as_deref())
+        .collect::<Vec<_>>()
+        .join("\n\n")
+}
+
+fn advance_event(
+    state: &GameState,
+    encounter: &EncounterDef,
+    action_id: &str,
+) -> Result<ActionResult, ContentActionError> {
+    let event = encounter.event.as_ref().expect("event checked by caller");
+    let index = effective_event_stage_index(encounter, state);
+    let stage = event
+        .stages
+        .get(index)
+        .ok_or_else(|| ContentActionError::UnknownAction(action_id.to_string()))?;
+    if stage.kind == "choice" {
+        return Err(ContentActionError::UnknownAction(action_id.to_string()));
+    }
+    let target = if stage.kind == "result" {
+        state
+            .event_next_stage_id
+            .as_ref()
+            .or(stage.next_stage_id.as_ref())
+    } else {
+        stage.next_stage_id.as_ref()
+    };
+    let next_index = target
+        .and_then(|id| {
+            event
+                .stages
+                .iter()
+                .position(|candidate| &candidate.id == id)
+        })
+        .unwrap_or(index + 1);
+    let mut next_state = state.clone();
+    next_state.active_event_id = Some(encounter.id.clone());
+    next_state.event_stage_index = next_index;
+    if stage.kind == "result" {
+        next_state.event_next_stage_id = None;
+    }
+    if next_index >= event.stages.len() {
+        next_state.active_event_id = None;
+        next_state.event_stage_index = 0;
+        next_state.event_next_stage_id = None;
+        next_state.add_seen_encounter_once(&encounter.id);
+    }
+    Ok(ActionResult {
+        encounter_id: encounter.id.clone(),
+        action_id: action_id.to_string(),
+        state: next_state,
+        logs: Vec::new(),
+        effect_cues: Vec::new(),
+        newly_unlocked_achievements: Vec::new(),
+    })
 }
 
 fn apply_cost(player: &mut PlayerState, cost: &ResourceMap) {
@@ -502,12 +654,18 @@ fn apply_outcome(
     // Item deltas
     for item_id in &outcome.remove_items {
         state.remove_inventory_item(item_id);
-        let name = content.item(item_id).map(|item| item.name.as_str()).unwrap_or(item_id);
+        let name = content
+            .item(item_id)
+            .map(|item| item.name.as_str())
+            .unwrap_or(item_id);
         delta_logs.push(format!("- {}", name));
     }
     for item_id in &outcome.add_items {
         state.add_inventory_once(item_id);
-        let name = content.item(item_id).map(|item| item.name.as_str()).unwrap_or(item_id);
+        let name = content
+            .item(item_id)
+            .map(|item| item.name.as_str())
+            .unwrap_or(item_id);
         delta_logs.push(format!("+ {}", name));
     }
 
@@ -527,11 +685,17 @@ fn apply_outcome(
     // Trait deltas
     if let Some(new_trait_id) = &outcome.set_trait {
         if let Some(prev_trait_id) = &state.trait_id {
-            let prev_name = content.trait_def(prev_trait_id).map(|t| t.name.as_str()).unwrap_or(prev_trait_id);
+            let prev_name = content
+                .trait_def(prev_trait_id)
+                .map(|t| t.name.as_str())
+                .unwrap_or(prev_trait_id);
             delta_logs.push(format!("- 특성: {}", prev_name));
         }
         state.trait_id = Some(new_trait_id.clone());
-        let new_name = content.trait_def(new_trait_id).map(|t| t.name.as_str()).unwrap_or(new_trait_id);
+        let new_name = content
+            .trait_def(new_trait_id)
+            .map(|t| t.name.as_str())
+            .unwrap_or(new_trait_id);
         delta_logs.push(format!("+ 특성: {}", new_name));
     }
 
@@ -626,8 +790,6 @@ pub fn resolve_ability_check(
         success,
     }
 }
-
-
 
 fn roll_2d6(seed: &str) -> (i32, i32) {
     let hash = fnv1a_32(seed);

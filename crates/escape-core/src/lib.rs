@@ -9,22 +9,24 @@ mod turn;
 
 pub use content::{
     index_content_bundle, load_content_bundle, validate_content_bundle, AbilityCheckDef,
-    AchievementDef, ChoiceDef, ContentBundle, ContentBundleError, ContentConditions, ContentIndex,
-    ContentIndexError, ContentManifest, ContentSections, EncounterDef, EndingDef, ItemDef,
-    LocationDef, OutcomeDef, PresentationDef, PresentationEffectCue, PublicSecretDef, ResourceMap,
+    AchievementDef, ChoiceDef, ContentBlockDef, ContentBundle, ContentBundleError,
+    ContentConditions, ContentIndex, ContentIndexError, ContentManifest, ContentSections,
+    EncounterDef, EndingDef, EventChoiceRef, EventDef, EventStageDef, ItemDef, LocationDef,
+    OutcomeDef, PresentationDef, PresentationEffectCue, PublicSecretDef, ResourceMap,
     RuntimeMetadata, TraitDef, CONTENT_BUNDLE_KIND, CONTENT_BUNDLE_SCHEMA_VERSION,
 };
 pub use effects::{printer_glyph_anomaly_cue, EffectCue, GlyphAnomalyCue};
 pub use save::{load_state, save_state, SaveEnvelope, SaveError, SAVE_SCHEMA_VERSION};
 pub use scene_page::{
     scene_page_from_content, AchievementSummary, BodyBlock, DialogueEntry, HistoryEntry,
-    InventorySummary, PressureCue, ResourceStatus, SceneAction, SceneBlockedAction, SceneEffectCue,
-    SceneLocation, SceneMode, ScenePage, SceneVisual, StatusSummary,
+    InventorySummary, PressureCue, ResourceStatus, SceneAction, SceneBlockedAction,
+    SceneContentItem, SceneEffectCue, SceneLocation, SceneMode, ScenePage, SceneVisual,
+    StatusSummary,
 };
 pub use state::{GameState, NewGameError, PlayerState, DEFAULT_START_LOCATION_ID};
 pub use turn::{
-    ActionError, ActionResult, ActionView, BlockedActionView, ContentActionError, ContentTurnError,
-    TurnView, ability_label, ability_check_success_percent, resolve_ability_check,
+    ability_check_success_percent, ability_label, resolve_ability_check, ActionError, ActionResult,
+    ActionView, BlockedActionView, ContentActionError, ContentTurnError, TurnView,
 };
 
 pub fn new_game(seed: u64) -> GameState {

@@ -63,6 +63,48 @@
             "wuxia_commute_rift"
           ]
         },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "눈을 뜨자 출근복 차림 그대로 낯선 관도 한복판에 서 있다. 손에는 아직 사원증이 걸려 있고, 멀리서 청류문 수련생들의 발소리가 다가온다."
+                },
+                {
+                  "alt": "출근길 균열 너머 낯선 관도에 떨어진 회사원",
+                  "kind": "illustration",
+                  "placeholder": true,
+                  "visual_id": "placeholder:wuxia_commute_rift_arrival"
+                }
+              ],
+              "id": "arrival_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "grip_employee_badge"
+                },
+                {
+                  "id": "follow_roadside_dust"
+                }
+              ],
+              "id": "arrival_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "낯선 세계에서 처음 붙든 행동이 이후의 길을 정한다."
+                }
+              ],
+              "id": "arrival_result",
+              "kind": "result"
+            }
+          ]
+        },
         "id": "wuxia_commute_rift_arrival",
         "presentation": {
           "effect_cues": [
@@ -348,6 +390,71 @@
             "heuksa_bang_first_fight_resolved"
           ]
         },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "난투가 지나간 시장 담벼락 아래에서 숨을 고른다. 손끝의 떨림은 아직 멎지 않았고, 업무수첩은 재킷 안쪽에서 저절로 미끄러져 나온다."
+                },
+                {
+                  "alt": "시장 담벼락 아래에서 저절로 펼쳐지는 업무수첩",
+                  "kind": "illustration",
+                  "visual_id": "wuxia_cheonggi_record_first_fragment"
+                }
+              ],
+              "id": "fragment_aftermath_story",
+              "kind": "story"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "빈 장 위로 먹물 같은 선이 번지더니 세 문장이 차례로 모습을 드러낸다."
+                },
+                {
+                  "kind": "cheongirok",
+                  "text": "호신 자세의 기본. 발을 멈추지 않는 법. 실패 기록."
+                },
+                {
+                  "kind": "narration",
+                  "text": "검색창도 보상창도 아니다. 지금은 하나의 방향만 붙들 수 있고, 나머지는 흐려진다."
+                }
+              ],
+              "id": "fragment_record_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "choose_guard_basics"
+                },
+                {
+                  "id": "choose_keep_feet_moving"
+                },
+                {
+                  "id": "choose_failure_log"
+                },
+                {
+                  "id": "close_notebook_without_choice"
+                }
+              ],
+              "id": "fragment_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "붙든 한 줄만 수첩에 남고, 고르지 않은 문장들은 먹물 자국 속으로 흐려진다."
+                }
+              ],
+              "id": "fragment_result",
+              "kind": "result"
+            }
+          ]
+        },
         "id": "wuxia_cheonggi_record_first_fragment",
         "presentation": {
           "effect_cues": [
@@ -528,6 +635,20 @@
                 "sanity": -1
               }
             }
+          },
+          {
+            "id": "accept_harin_watch",
+            "label": "감시를 받아들이고 서하린과 나란히 걷는다",
+            "outcome": {
+              "log": "보호와 감시를 구분할 수 없는 거리에서 서하린과 나란히 청류문으로 향한다."
+            }
+          },
+          {
+            "id": "ask_harin_to_walk_ahead",
+            "label": "길을 모르니 앞장서 달라고 부탁한다",
+            "outcome": {
+              "log": "서하린은 한 걸음 앞에서 길을 잡고, 뒤를 확인할 만큼의 경계는 끝내 거두지 않는다."
+            }
           }
         ],
         "conditions": {
@@ -540,6 +661,88 @@
           "required_flags": [
             "heuksa_bang_first_fight_resolved",
             "cheonggi_record_first_fragment_resolved"
+          ]
+        },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "흑사방 말단들이 다시 다가오는 순간, 청류문 외문 제자 서하린이 군중을 가르며 끼어든다."
+                },
+                {
+                  "alt": "시장 군중 사이를 가르며 흑사방 앞을 막아선 서하린",
+                  "kind": "illustration",
+                  "visual_id": "wuxia_seo_harin_rescue"
+                },
+                {
+                  "kind": "dialogue",
+                  "speaker": "서하린",
+                  "text": "무공도 모르는 자가 흑사방을 건드렸다고? 그 옷차림과 수첩은 어느 세력의 표식이지?"
+                }
+              ],
+              "id": "rescue_intervention_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "tell_plain_truth",
+                  "next_stage_id": "rescue_watch_choice"
+                },
+                {
+                  "id": "ask_for_medical_help_first",
+                  "next_stage_id": "rescue_watch_choice"
+                },
+                {
+                  "id": "explain_company_and_commute",
+                  "next_stage_id": "rescue_watch_choice"
+                },
+                {
+                  "id": "show_cheonggi_record_page",
+                  "next_stage_id": "rescue_watch_choice"
+                },
+                {
+                  "id": "hide_employee_badge",
+                  "next_stage_id": "rescue_watch_choice"
+                }
+              ],
+              "id": "rescue_account_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "대답은 서하린의 판단에 흔적을 남긴다. 그러나 구조는 아직 구원이 아니라 보호와 감시의 시작이다."
+                }
+              ],
+              "id": "rescue_account_result",
+              "kind": "result"
+            },
+            {
+              "choices": [
+                {
+                  "id": "accept_harin_watch"
+                },
+                {
+                  "id": "ask_harin_to_walk_ahead"
+                }
+              ],
+              "id": "rescue_watch_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "서하린은 완전히 믿지 않은 채 청류문까지 동행하기로 한다."
+                }
+              ],
+              "id": "rescue_watch_result",
+              "kind": "result"
+            }
           ]
         },
         "id": "wuxia_seo_harin_rescue",
@@ -3910,6 +4113,75 @@
             "black_serpent_core_pressure_opened",
             "sealed_departure_truth_summary_prepared",
             "midgame_continuity_started"
+          ]
+        },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "alt": "검은 비늘 장부와 빚의 먹줄이 매달린 흑사방 장부고 입구",
+                  "kind": "illustration",
+                  "visual_id": "wuxia_sado_ledger_vault_threshold"
+                },
+                {
+                  "kind": "narration",
+                  "text": "남겨둔 밥의 온기가 식기도 전에, 천기록의 여백은 흑사방 장부고로 접힌다. 통행세 기록과 약점 문서, 청류문 후원서 조각이 줄처럼 매달려 있다."
+                },
+                {
+                  "alt": "장부고 한복판에서 칼을 뽑기 전 주인공을 바라보는 흑사방주",
+                  "kind": "illustration",
+                  "visual_id": "wuxia_sado_final_battle"
+                },
+                {
+                  "kind": "dialogue",
+                  "speaker": "흑사방주",
+                  "text": "사람에게 값이 없다면, 너는 무엇으로 그 값을 증명할 거지?"
+                },
+                {
+                  "kind": "narration",
+                  "text": "이 대화는 사도를 약하게 만들지 않는다. 다만 어떤 마음으로 피할 수 없는 전투에 들어가는지를 기록한다."
+                },
+                {
+                  "alt": "칼날 아래 펼쳐진 가격표와 검은 비늘 장부",
+                  "kind": "illustration",
+                  "visual_id": "wuxia_sado_blade_and_ledger"
+                }
+              ],
+              "id": "sado_ledger_vault_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "affirm_priceless_heart_before_sado"
+                },
+                {
+                  "id": "keep_uncertainty_out_of_the_ledger"
+                },
+                {
+                  "id": "name_qingliu_as_calculation_break"
+                },
+                {
+                  "id": "cut_words_and_enter_sado_battle"
+                },
+                {
+                  "id": "throw_away_every_lever_against_sado"
+                }
+              ],
+              "id": "sado_stance_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "선택한 대답이 전투의 첫 줄에 남는다. 사도는 약해지지 않았고, 장부고의 먹줄은 팽팽해진다."
+                }
+              ],
+              "id": "sado_stance_result",
+              "kind": "result"
+            }
           ]
         },
         "id": "wuxia_sado_final_battle",

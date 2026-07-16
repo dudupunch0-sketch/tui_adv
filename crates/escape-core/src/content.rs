@@ -87,7 +87,6 @@ pub struct ContentSections {
     pub traits: Vec<Value>,
 }
 
-
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum ContentBundleError {
     Json(String),
@@ -123,6 +122,10 @@ pub enum ContentIndexError {
         encounter_id: String,
         trait_id: String,
     },
+    InvalidEvent {
+        encounter_id: String,
+        message: String,
+    },
 }
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
@@ -144,7 +147,6 @@ pub struct ContentIndex {
     traits: BTreeMap<String, TraitDef>,
     pub runtime: Option<RuntimeMetadata>,
 }
-
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
 pub struct LocationDef {
@@ -208,10 +210,50 @@ pub struct EncounterDef {
     pub title: String,
     pub body: String,
     pub presentation: Option<PresentationDef>,
+    pub event: Option<EventDef>,
     pub conditions: ContentConditions,
     pub choices: Vec<ChoiceDef>,
     pub repeatable: bool,
     pub weight: u32,
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
+pub struct EventDef {
+    pub stages: Vec<EventStageDef>,
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
+pub struct EventStageDef {
+    pub id: String,
+    pub kind: String,
+    #[serde(default)]
+    pub blocks: Vec<ContentBlockDef>,
+    #[serde(default)]
+    pub choices: Vec<EventChoiceRef>,
+    #[serde(default)]
+    pub next_stage_id: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
+pub struct ContentBlockDef {
+    pub kind: String,
+    #[serde(default)]
+    pub text: Option<String>,
+    #[serde(default)]
+    pub speaker: Option<String>,
+    #[serde(default)]
+    pub visual_id: Option<String>,
+    #[serde(default)]
+    pub alt: Option<String>,
+    #[serde(default)]
+    pub placeholder: bool,
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
+pub struct EventChoiceRef {
+    pub id: String,
+    #[serde(default)]
+    pub next_stage_id: Option<String>,
 }
 
 #[derive(Clone, Debug, Deserialize, Default, PartialEq)]
@@ -342,6 +384,8 @@ struct RawEncounterDef {
     #[serde(default)]
     presentation: Option<PresentationDef>,
     #[serde(default)]
+    event: Option<EventDef>,
+    #[serde(default)]
     conditions: ContentConditions,
     #[serde(default)]
     choices: Vec<RawChoiceDef>,
@@ -444,6 +488,15 @@ impl std::fmt::Display for ContentIndexError {
                 formatter,
                 "encounter {encounter_id} references unknown trait: {trait_id}"
             ),
+            ContentIndexError::InvalidEvent {
+                encounter_id,
+                message,
+            } => {
+                write!(
+                    formatter,
+                    "invalid event in encounter {encounter_id}: {message}"
+                )
+            }
         }
     }
 }
@@ -569,6 +622,7 @@ pub fn index_content_bundle(bundle: &ContentBundle) -> Result<ContentIndex, Cont
     let mut encounters = BTreeMap::new();
     for encounter_value in &bundle.content.encounters {
         let encounter = parse_encounter(encounter_value)?;
+        validate_event(&encounter)?;
         validate_encounter_locations(&encounter, &location_ids)?;
         validate_encounter_traits(&encounter, &trait_ids)?;
         insert_unique(
@@ -609,7 +663,10 @@ pub fn index_content_bundle(bundle: &ContentBundle) -> Result<ContentIndex, Cont
                 return Err(ContentIndexError::InvalidSectionItem {
                     section: "runtime.collapse".to_string(),
                     id: None,
-                    message: format!("unsupported collapse resource_id: '{}', only 'health' is supported", collapse.resource_id),
+                    message: format!(
+                        "unsupported collapse resource_id: '{}', only 'health' is supported",
+                        collapse.resource_id
+                    ),
                 });
             }
             if collapse.used_flag.is_empty() {
@@ -623,7 +680,10 @@ pub fn index_content_bundle(bundle: &ContentBundle) -> Result<ContentIndex, Cont
                 return Err(ContentIndexError::InvalidSectionItem {
                     section: "runtime.collapse".to_string(),
                     id: None,
-                    message: format!("collapse encounter_id '{}' not found in encounters", collapse.encounter_id),
+                    message: format!(
+                        "collapse encounter_id '{}' not found in encounters",
+                        collapse.encounter_id
+                    ),
                 });
             }
         }
@@ -687,11 +747,146 @@ fn parse_encounter(value: &Value) -> Result<EncounterDef, ContentIndexError> {
         title: raw.title,
         body: raw.body,
         presentation: raw.presentation,
+        event: raw.event,
         conditions: raw.conditions,
         choices,
         repeatable: raw.repeatable,
         weight: raw.weight,
     })
+}
+
+fn validate_event(encounter: &EncounterDef) -> Result<(), ContentIndexError> {
+    let Some(event) = &encounter.event else {
+        return Ok(());
+    };
+    let fail = |message| ContentIndexError::InvalidEvent {
+        encounter_id: encounter.id.clone(),
+        message,
+    };
+    if event.stages.is_empty() {
+        return Err(fail("stages cannot be empty".into()));
+    }
+    let ids: BTreeSet<&str> = event.stages.iter().map(|s| s.id.as_str()).collect();
+    if ids.len() != event.stages.len() || ids.contains("") {
+        return Err(fail("stage ids must be non-empty and unique".into()));
+    }
+    if !event.stages.iter().any(|s| s.kind == "story")
+        || !event.stages.iter().any(|s| s.kind == "choice")
+    {
+        return Err(fail(
+            "requires at least one story stage and one choice stage".into(),
+        ));
+    }
+    let illustrations = event
+        .stages
+        .iter()
+        .flat_map(|s| &s.blocks)
+        .filter(|b| b.kind == "illustration")
+        .count();
+    if illustrations == 0 {
+        return Err(fail(
+            "requires at least one illustration block (use a placeholder until art exists)".into(),
+        ));
+    }
+    if illustrations > 3 {
+        return Err(fail("supports at most three illustration blocks".into()));
+    }
+    const BLOCK_KINDS: [&str; 7] = [
+        "narration",
+        "dialogue",
+        "illustration",
+        "document",
+        "system",
+        "cheongirok",
+        "result_summary",
+    ];
+    for (index, stage) in event.stages.iter().enumerate() {
+        if !matches!(stage.kind.as_str(), "story" | "choice" | "result") {
+            return Err(fail(format!(
+                "stage {} has unknown kind '{}'",
+                stage.id, stage.kind
+            )));
+        }
+        if stage.kind == "choice" {
+            if stage.choices.is_empty() {
+                return Err(fail(format!("choice stage {} has no choices", stage.id)));
+            }
+            if event.stages.get(index + 1).map(|s| s.kind.as_str()) != Some("result") {
+                return Err(fail(format!(
+                    "choice stage {} must be immediately followed by a result stage",
+                    stage.id
+                )));
+            }
+            for choice_ref in &stage.choices {
+                if !encounter.choices.iter().any(|c| c.id == choice_ref.id) {
+                    return Err(fail(format!(
+                        "choice stage {} references unknown encounter choice {}",
+                        stage.id, choice_ref.id
+                    )));
+                }
+                if let Some(target) = &choice_ref.next_stage_id {
+                    if !ids.contains(target.as_str()) {
+                        return Err(fail(format!(
+                            "choice {} references unknown next stage {}",
+                            choice_ref.id, target
+                        )));
+                    }
+                }
+            }
+        } else if !stage.choices.is_empty() {
+            return Err(fail(format!(
+                "non-choice stage {} cannot define choices",
+                stage.id
+            )));
+        }
+        if let Some(target) = &stage.next_stage_id {
+            if !ids.contains(target.as_str()) {
+                return Err(fail(format!(
+                    "stage {} references unknown next stage {}",
+                    stage.id, target
+                )));
+            }
+        }
+        for block in &stage.blocks {
+            if !BLOCK_KINDS.contains(&block.kind.as_str()) {
+                return Err(fail(format!(
+                    "stage {} has unknown block kind '{}'",
+                    stage.id, block.kind
+                )));
+            }
+            if block.kind == "illustration"
+                && (block.visual_id.as_deref().is_none_or(str::is_empty)
+                    || block.alt.as_deref().is_none_or(str::is_empty))
+            {
+                return Err(fail(format!(
+                    "illustration block in stage {} requires non-empty visual_id and alt",
+                    stage.id
+                )));
+            }
+            if block.kind == "illustration" {
+                if block.visual_id.as_deref().unwrap_or("").is_empty()
+                    || block.alt.as_deref().unwrap_or("").is_empty()
+                {
+                    return Err(fail(format!(
+                        "illustration in stage {} requires visual_id and alt",
+                        stage.id
+                    )));
+                }
+            } else if block.text.as_deref().unwrap_or("").is_empty() {
+                return Err(fail(format!(
+                    "{} block in stage {} requires text",
+                    block.kind, stage.id
+                )));
+            }
+            if block.kind == "dialogue" && block.speaker.as_deref().unwrap_or("").is_empty() {
+                return Err(fail(format!(
+                    "dialogue in stage {} requires speaker",
+                    stage.id
+                )));
+            }
+        }
+    }
+    Ok(())
 }
 
 fn parse_choice(raw: RawChoiceDef) -> Result<ChoiceDef, ContentIndexError> {

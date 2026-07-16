@@ -71,6 +71,7 @@
 3. 다음에 실제로 설계할 항목은 설계 아이디어 문서 중 하나를 `docs/dev/Development_Plan.md`의 active main plan / “현재 최우선 남은 작업”으로 격상시킨 뒤 진행한다.
 4. 설계가 끝나면 원본 Notion reference와 결과 설계 문서를 다시 비교해 방향, 핵심 제약, non-goals가 어긋나지 않았는지 확인한다.
 5. 이 Notion reference 대조까지 끝난 뒤에만 해당 idea entry를 `done` 처리한다. 단순 import, 단순 요약, 또는 설계 아이디어 문서 작성만으로는 `done`이 아니다.
+6. (2026-07-16 재개) 역방향 동기화도 상시 의무다: 구현 사이클(슬라이스 플랜)의 마감 WP는 `idea_box/notion_sources.yml`의 기준 커밋과 Notion의 "13. 런타임 시스템 현황 (repo 동기화)" 페이지를 갱신한다. 아이템은 Notion "14. 아이템 DB", 기연은 "15. 기연 DB"가 설계 원본이며, 행의 `런타임 상태`(설계/구현됨) 전환은 구현을 완료한 에이전트가 수행한다.
 
 ### 아이디어 처리
 

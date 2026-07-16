@@ -35,6 +35,7 @@ import {
   writeRunSummary,
 } from './ui/startScreen';
 import { renderStorybookPage } from './ui/storybook/render';
+import { startTypewriter, type TypewriterHandle } from './ui/storybook/typewriter';
 import { readRunMetadata, writeRunMetadata, mergeRunMetadata } from './core/storage';
 
 const STORYPACK_PREVIEW_ACTION_PREFIX = 'start-storypack-preview:';
@@ -55,6 +56,8 @@ let activeStorypackPreview: StorypackPreviewOption | null = null;
 let confirmReset = false;
 let confirmAbandon = false;
 let playerSettings: PlayerSettings = loadPlayerSettings(window.localStorage);
+let activeTypewriter: TypewriterHandle | null = null;
+let lastHistoryLength = Number.MAX_SAFE_INTEGER;
 const transitionController = createStorybookTransitionController(appRoot);
 const audioEngine = createStorybookAudioEngine({ preference: playerSettings.audio });
 
@@ -125,11 +128,52 @@ function renderGamePage(page: ScenePage): void {
   if (canvas) {
     void startPrinterFlowEffect(canvas);
   }
+  playGamePresentation(page);
   audioEngine.syncAmbience(page);
+}
+
+function playGamePresentation(page: ScenePage): void {
+  activeTypewriter?.cancel();
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const motionOn = resolveMotionMode(playerSettings, { prefersReducedMotion }) === 'normal';
+
+  const isFreshResult = page.history_entries.length > lastHistoryLength;
+  lastHistoryLength = page.history_entries.length;
+  if (motionOn && isFreshResult) {
+    playImpactEffects(page);
+  }
+
+  activeTypewriter = startTypewriter(appRoot, { enabled: motionOn });
+}
+
+function playImpactEffects(page: ScenePage): void {
+  const latest = page.history_entries[page.history_entries.length - 1];
+  if (!latest) return;
+  const deltaLines = latest.text.split('\n').filter((line) => /^[+-] /.test(line)).slice(0, 4);
+  if (!deltaLines.length) return;
+
+  if (deltaLines.some((line) => line.startsWith('- 체력'))) {
+    appRoot.querySelector<HTMLElement>('.game-viewport')?.setAttribute('data-impact', 'hit');
+  }
+
+  const hud = appRoot.querySelector<HTMLElement>('.storybook-hud');
+  if (!hud) return;
+  deltaLines.forEach((line, index) => {
+    const chip = document.createElement('span');
+    chip.className = 'hud-float';
+    chip.dataset.delta = line.startsWith('+') ? 'gain' : 'loss';
+    chip.textContent = line;
+    chip.style.left = `${12 + index * 24}%`;
+    chip.style.animationDelay = `${index * 150}ms`;
+    chip.addEventListener('animationend', () => chip.remove());
+    hud.appendChild(chip);
+  });
 }
 
 function renderStart(): void {
   transitionController.cancel();
+  activeTypewriter?.cancel();
+  lastHistoryLength = Number.MAX_SAFE_INTEGER;
   audioEngine.stopAmbience();
   actionSource = { actions: [] };
   const saveSummary = readPlayerSaveSummary(window.localStorage);

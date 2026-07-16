@@ -31,12 +31,20 @@ background: var(--void-black);
 }
 
 body {
-min-width: 0;
-  min-height: 100vh;
+  min-width: 0;
+  height: 100dvh;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
   background:
     radial-gradient(circle at 50% -8%, rgba(221, 210, 170, 0.18), transparent 28rem),
     linear-gradient(180deg, #161319 0%, #211f22 100%);
+}
+
+#app {
+  display: contents;
 }
 
 button, a {
@@ -80,16 +88,83 @@ position: fixed;
 .storybook-shell {
   position: relative;
   width: min(810px, 100vw);
-  min-height: 100dvh;
+  height: 100dvh;
   margin: 0 auto;
-  padding: clamp(10px, 2vw, 16px) clamp(12px, 2.5vw, 18px) 18px;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
   overflow: hidden;
   background: radial-gradient(circle at 50% 5%, var(--paper-lit), transparent 18rem),
     radial-gradient(circle at 18% 34%, var(--ink-wash), transparent 18rem),
     radial-gradient(circle at 76% 74%, var(--ink-wash), transparent 20rem),
     linear-gradient(180deg, var(--paper-lit) 0%, var(--paper) 48%, var(--paper-deep) 100%);
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 24px 80px rgba(0, 0, 0, 0.45);
-  padding-bottom: 96px;
+}
+
+@media (min-width: 860px) and (min-height: 700px) {
+  .storybook-shell {
+    height: calc(100dvh - 24px);
+    margin: 12px auto;
+    border-radius: 12px;
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.1),
+      0 0 0 6px rgba(24, 21, 26, 0.9),
+      0 0 0 7px rgba(120, 100, 62, 0.35),
+      0 30px 90px rgba(0, 0, 0, 0.55);
+  }
+}
+
+.game-viewport {
+  position: relative;
+  z-index: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  padding: 0 clamp(12px, 2.5vw, 18px) 22px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-hard) transparent;
+}
+
+.game-topbar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+  padding: 10px clamp(14px, 3vw, 20px) 9px;
+  border-bottom: 3px double var(--line-hard);
+  background: linear-gradient(180deg, var(--paper-lit), var(--paper));
+  box-shadow: 0 6px 14px var(--ink-wash);
+}
+
+.game-topbar__location {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--ink);
+  font-size: 0.94rem;
+  font-weight: 700;
+}
+
+.game-topbar__location-glyph {
+  margin-right: 7px;
+  color: var(--seal-red);
+}
+
+.game-topbar .hud-document {
+  margin: 0;
+  white-space: nowrap;
+  color: var(--ink-faded);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.game-topbar__turn {
+  color: var(--ink-faded);
+  font-family: "IBM Plex Mono", "JetBrains Mono", "D2Coding", "Noto Serif KR", monospace;
+  font-size: 0.72rem;
+  font-weight: 400;
 }
 
 .storybook-shell::before {
@@ -324,14 +399,11 @@ position: relative;
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
-  position: fixed;
-  left: 50%;
-  bottom: 0;
-  width: min(774px, calc(100vw - 24px));
-  transform: translateX(-50%);
-  padding: 8px 12px;
+  position: relative;
+  gap: 10px;
+  padding: 9px clamp(12px, 2.5vw, 16px);
   border-top: 3px double var(--line-hard);
-  background: var(--paper-lit);
+  background: linear-gradient(180deg, var(--paper-lit), var(--paper));
   box-shadow: 0 -8px 18px var(--ink-wash);
   z-index: 5;
 }
@@ -809,7 +881,7 @@ background: var(--paper-deep);
 }
 
 .storybook-choices {
-padding: 8px clamp(28px, 7vw, 64px) 0;
+  padding: 8px clamp(16px, 4.5vw, 44px) 0;
 }
 
 .storybook-choices ol, .blocked-actions, .storybook-history ol {
@@ -845,18 +917,39 @@ color: var(--seal-red);
 .choice-row {
   display: grid;
   grid-template-columns: auto auto minmax(0, 1fr) auto;
-  align-items: baseline;
+  align-items: center;
   width: 100%;
-  gap: 10px;
-  min-height: 58px;
-  padding: 14px 0;
-  border: 0;
-  background: transparent;
+  gap: 8px 12px;
+  min-height: 56px;
+  padding: 12px 16px;
+  border: 1px solid rgba(90, 74, 50, 0.5);
+  background: linear-gradient(180deg, rgba(255, 250, 232, 0.92), rgba(240, 231, 205, 0.92));
+  box-shadow:
+    0 2px 0 rgba(95, 77, 52, 0.3),
+    inset 0 1px 0 rgba(255, 252, 230, 0.7);
   color: var(--ink);
   text-align: left;
   cursor: pointer;
   position: relative;
   text-shadow: none;
+  transition: transform 90ms ease, box-shadow 90ms ease, border-color 90ms ease, background 90ms ease;
+}
+
+.storybook-choices ol li + li .choice-row,
+.storybook-choices ol li + li.choice-group-label {
+  margin-top: 10px;
+}
+
+.choice-row:hover {
+  border-color: rgba(158, 60, 63, 0.6);
+  background: linear-gradient(180deg, rgba(255, 252, 238, 0.98), rgba(244, 235, 210, 0.98));
+}
+
+.choice-row:active {
+  transform: translateY(2px);
+  box-shadow:
+    0 0 0 rgba(95, 77, 52, 0.3),
+    inset 0 2px 4px rgba(95, 77, 52, 0.22);
 }
 
 .choice-row:hover, .choice-row:focus-visible {
@@ -871,8 +964,8 @@ color: var(--seal-red);
 }
 
 .choice-bullet {
-color: #6b5132;
-  font-size: clamp(1.25rem, 4vw, 1.8rem);
+  color: #6b5132;
+  font-size: clamp(1.1rem, 3.4vw, 1.4rem);
   line-height: 1;
 }
 
@@ -890,15 +983,24 @@ margin-top: 10px;
 }
 
 .choice-index {
-  min-width: 1.7rem;
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  padding: 0 4px;
+  border: 1px solid var(--line-soft);
+  border-radius: 5px;
+  background: rgba(255, 252, 230, 0.7);
+  box-shadow: inset 0 -2px 0 rgba(95, 77, 52, 0.18);
   color: var(--ink-faded);
   font-family: "IBM Plex Mono", "JetBrains Mono", "D2Coding", "Noto Serif KR", monospace;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
 }
 
 .choice-label {
-font-size: clamp(1.14rem, 3.8vw, 1.55rem);
-  line-height: 1.35;
+  font-size: clamp(1.02rem, 3.2vw, 1.2rem);
+  font-weight: 700;
+  line-height: 1.4;
   word-break: keep-all;
 }
 
@@ -1286,20 +1388,7 @@ margin: 0; color: var(--ink-faded);
 }
 
 .choice-row::after {
-position: absolute;
-  right: 0;
-  bottom: 6px;
-  left: 0;
-  height: 2px;
-  content: "";
-  background: var(--ink-wash);
-  opacity: 0;
-  transform: scaleX(0.86);
-  transition: opacity 120ms ease, transform 120ms ease;
-}
-
-.choice-row:hover::after, .choice-row:focus-visible::after {
-opacity: 1; transform: scaleX(1);
+  display: none;
 }
 
 .choice-row:hover .choice-bullet, .choice-row:focus-visible .choice-bullet {
@@ -1436,15 +1525,18 @@ background:
   border-bottom: 1px solid rgba(158, 60, 63, 0.35);
 }
 
-/* Structural check-resolution banner (§2.3). Minimal styling only —
-   visual polish is a later step; keep class names stable for it. */
+/* 판정 결과 배너 — 주사위 굴림 + 성패 도장 연출 */
 .check-resolution {
   display: flex;
-  align-items: baseline;
-  gap: 10px;
-  margin: 0 0 1em;
-  padding: 8px 12px;
-  border-left: 4px double var(--line-soft);
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  margin: 0 0 1.1em;
+  padding: 10px 14px;
+  border: 1px solid var(--line-soft);
+  background: rgba(255, 247, 205, 0.4);
+  box-shadow: inset 0 1px 0 rgba(255, 252, 230, 0.6);
+  border-left: 4px double var(--line-hard);
   font-family: "IBM Plex Mono", "JetBrains Mono", "D2Coding", "Noto Serif KR", monospace;
   font-size: 0.82rem;
   color: var(--ink-faded);
@@ -1466,6 +1558,112 @@ background:
 
 .check-resolution[data-check-outcome="failure"] .check-resolution__verdict {
   color: var(--seal-red);
+}
+
+.check-die {
+  display: inline-block;
+  font-style: normal;
+  animation: check-die-roll 460ms cubic-bezier(0.3, 1.4, 0.4, 1) both;
+}
+
+.check-die + .check-die {
+  margin-left: 4px;
+  animation-delay: 80ms;
+}
+
+@keyframes check-die-roll {
+  0% { transform: rotate(-160deg) translateY(-8px); opacity: 0; }
+  40% { transform: rotate(24deg) translateY(2px); opacity: 1; }
+  70% { transform: rotate(-10deg); }
+  100% { transform: rotate(0); }
+}
+
+.check-resolution__verdict {
+  display: inline-flex;
+  align-items: center;
+}
+
+.check-resolution__seal {
+  display: inline-grid;
+  place-items: center;
+  width: 1.6em;
+  height: 1.6em;
+  margin-right: 7px;
+  border: 2px solid currentColor;
+  border-radius: 4px;
+  font-size: 0.95em;
+  line-height: 1;
+  animation: check-seal-stamp 380ms 300ms cubic-bezier(0.2, 0.8, 0.24, 1) both;
+}
+
+@keyframes check-seal-stamp {
+  0% { transform: scale(2.1) rotate(-14deg); opacity: 0; }
+  55% { transform: scale(0.9) rotate(2deg); opacity: 1; }
+  100% { transform: scale(1) rotate(-3deg); opacity: 1; }
+}
+
+/* 피격 셰이크 — main.ts가 체력 감소 시 data-impact를 부여 */
+.game-viewport[data-impact="hit"] {
+  animation: game-hit-shake 340ms ease both;
+}
+
+@keyframes game-hit-shake {
+  0%, 100% { transform: none; }
+  20% { transform: translate(-7px, 1px); }
+  40% { transform: translate(6px, -1px); }
+  60% { transform: translate(-4px, 0); }
+  80% { transform: translate(2px, 0); }
+}
+
+/* 자원 증감 플로팅 텍스트 — 하단바 위로 떠오름 */
+.hud-float {
+  position: absolute;
+  top: -12px;
+  z-index: 7;
+  pointer-events: none;
+  white-space: nowrap;
+  font-family: "IBM Plex Mono", "JetBrains Mono", "D2Coding", "Noto Serif KR", monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-shadow: 0 1px 0 rgba(255, 250, 230, 0.8);
+  animation: hud-float-rise 1100ms ease-out both;
+}
+
+.hud-float[data-delta="gain"] { color: var(--jade); }
+.hud-float[data-delta="loss"] { color: var(--seal-red); }
+
+@keyframes hud-float-rise {
+  0% { opacity: 0; transform: translateY(8px); }
+  18% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-30px); }
+}
+
+/* 타자기 출력 */
+.type-caret {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: -0.12em;
+  background: var(--seal-red);
+  animation: type-caret-blink 700ms steps(1) infinite;
+}
+
+@keyframes type-caret-blink {
+  50% { opacity: 0; }
+}
+
+.storybook-choices[data-reveal="pending"] {
+  opacity: 0;
+}
+
+.storybook-choices[data-reveal="done"] {
+  animation: choices-rise 260ms ease both;
+}
+
+@keyframes choices-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
 }
 
 .story-result-log::before {
@@ -1700,10 +1898,24 @@ background:
 }
 
 .hud-progression {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  width: min(220px, 42vw);
+}
+
+.hud-progression__label {
+  color: #8a6a24;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.hud-progression__track {
   position: relative;
-  display: block;
-  width: min(120px, 100%);
-  height: 3px;
+  flex: 1;
+  height: 4px;
+  overflow: hidden;
   background: var(--ink-wash);
 }
 
@@ -1744,9 +1956,16 @@ background:
 }
 
 @media (max-width: 560px) {
-  .storybook-shell {
-  min-height: 100dvh;
-      padding: 8px 10px 12px;
+  .game-viewport {
+    padding: 0 10px 14px;
+  }
+
+  .game-topbar {
+    padding: 8px 12px 7px;
+  }
+
+  .game-topbar__location {
+    font-size: 0.84rem;
   }
 
   .storybook-hud {
@@ -1819,7 +2038,11 @@ background:
   .choice-row {
     grid-template-columns: auto auto minmax(0, 1fr);
     min-height: 48px;
-    padding: 4px 0;
+    padding: 9px 11px;
+  }
+
+  .storybook-choices ol li + li .choice-row {
+    margin-top: 7px;
   }
 
   .choice-cost {
@@ -1837,7 +2060,7 @@ background:
   }
 
   .hud-progression {
-    width: min(84px, 100%);
+    width: min(150px, 38vw);
   }
 
   .character-summary-section .ability-grid {
@@ -1879,8 +2102,10 @@ background:
 
 @media (prefers-reduced-motion: reduce) {
   .storybook-shell *, .storybook-shell *::before, .storybook-shell *::after {
-  transition-duration: 0.001ms !important;
+      transition-duration: 0.001ms !important;
+      transition-delay: 0.001ms !important;
       animation-duration: 0.001ms !important;
+      animation-delay: 0.001ms !important;
   }
 
 }

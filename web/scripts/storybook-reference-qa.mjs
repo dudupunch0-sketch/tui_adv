@@ -27,7 +27,7 @@ const REQUIRED_SELECTORS = [
 
 const FORBIDDEN_SELECTORS = ['.fake-tui', '.storybook-topline'];
 const FORBIDDEN_VISIBLE_TEXT = ['CURRENT ENCOUNTER', 'LOCAL STATUS'];
-const REQUIRED_WASM_RESOURCES = ['src/core/wasm-pkg/escape_wasm.js', 'src/core/wasm-pkg/escape_wasm_bg.wasm'];
+const REQUIRED_WASM_RESOURCES = ['wasm-pkg/escape_wasm.js', 'wasm-pkg/escape_wasm_bg.wasm'];
 
 const options = parseArgs(process.argv.slice(2));
 const report = {

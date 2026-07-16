@@ -19,7 +19,7 @@ pub use effects::{printer_glyph_anomaly_cue, EffectCue, GlyphAnomalyCue};
 pub use save::{load_state, save_state, SaveEnvelope, SaveError, SAVE_SCHEMA_VERSION};
 pub use scene_page::{
     scene_page_from_content, AchievementSummary, BodyBlock, DialogueEntry, HistoryEntry,
-    InventorySummary, PressureCue, ResourceStatus, SceneAction, SceneBlockedAction,
+    InventorySummary, ItemDetail, PressureCue, ResourceStatus, SceneAction, SceneBlockedAction,
     SceneContentItem, SceneEffectCue, SceneLocation, SceneMode, ScenePage, SceneVisual,
     StatusSummary,
 };

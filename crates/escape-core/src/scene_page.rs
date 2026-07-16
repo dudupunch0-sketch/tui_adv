@@ -36,6 +36,8 @@ pub struct ScenePage {
     pub blocked_actions: Vec<SceneBlockedAction>,
     pub history_entries: Vec<HistoryEntry>,
     pub inventory_summary: InventorySummary,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub inventory_details: Vec<ItemDetail>,
     pub achievement_summary: AchievementSummary,
     pub pressure_cues: Vec<PressureCue>,
     pub effect_cues: Vec<SceneEffectCue>,
@@ -251,11 +253,12 @@ fn scene_page_from_turn_view(
             .and_then(|r| r.protagonist_name.as_ref())
             .cloned()
             .unwrap_or_else(|| "당신".to_string());
-        let title_label = state
+        let trait_def = state
             .trait_id
             .as_ref()
-            .and_then(|tid| content.trait_def(tid))
-            .map(|t| t.name.clone());
+            .and_then(|tid| content.trait_def(tid));
+        let title_label = trait_def.map(|trait_def| trait_def.name.clone());
+        let title_description = trait_def.map(|trait_def| trait_def.description.clone());
         let ability_ids = [
             "logic",
             "empathy",
@@ -275,6 +278,7 @@ fn scene_page_from_turn_view(
         Some(CharacterSummary {
             name,
             title_label,
+            title_description,
             abilities,
         })
     };
@@ -322,6 +326,19 @@ fn scene_page_from_turn_view(
         })
     };
 
+    let inventory_details = state
+        .inventory
+        .iter()
+        .filter_map(|item_id| content.item(item_id))
+        .map(|item_def| ItemDetail {
+            id: item_def.id.clone(),
+            name: item_def.name.clone(),
+            description: item_def.description.clone(),
+            item_type: item_def.item_type.clone(),
+            usable: item_def.usable && !item_def.use_effects.is_empty(),
+        })
+        .collect();
+
     let body_blocks = body_blocks(content, ending, &mode, &view.body, &source_id, state);
     let visual = SceneVisual {
         id: visual_id,
@@ -367,6 +384,7 @@ fn scene_page_from_turn_view(
             items: state.inventory.clone(),
             overflow_count: 0,
         },
+        inventory_details,
         achievement_summary: AchievementSummary {
             unlocked: state.unlocked_achievements.clone(),
             newly_unlocked: Vec::new(),
@@ -841,7 +859,18 @@ pub struct CharacterSummary {
     pub name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title_label: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub title_description: Option<String>,
     pub abilities: Vec<AbilityStatus>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ItemDetail {
+    pub id: String,
+    pub name: String,
+    pub description: String,
+    pub item_type: String,
+    pub usable: bool,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]

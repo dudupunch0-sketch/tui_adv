@@ -564,6 +564,7 @@ fn test_character_summary_serialization_shape() {
     let summary = page.character_summary.as_ref().unwrap();
     assert_eq!(summary.name, "당신");
     assert_eq!(summary.title_label, None);
+    assert_eq!(summary.title_description, None);
     assert_eq!(summary.abilities.len(), 6);
     assert_eq!(summary.abilities[0].id, "logic");
     assert_eq!(summary.abilities[1].id, "empathy");
@@ -624,9 +625,11 @@ fn test_character_summary_with_trait() {
     let summary = page.character_summary.as_ref().unwrap();
     assert_eq!(summary.name, "당가인");
     assert_eq!(summary.title_label, Some("검호".to_string()));
+    assert_eq!(summary.title_description, Some("검의 달인".to_string()));
 
     let serialized = serde_json::to_string(&page).unwrap();
     assert!(serialized.contains("\"title_label\":\"검호\""));
+    assert!(serialized.contains("\"title_description\":\"검의 달인\""));
 }
 
 #[test]

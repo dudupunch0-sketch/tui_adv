@@ -95,12 +95,15 @@ Web Storybook은 게임 HUD가 달린 앱처럼 보이면 안 된다. 기본 화
 ## 일러스트 에셋과 밀도 계약
 
 ### 일러스트 에셋 (Illustration Assets)
-- **배치**: IllustrationBlock은 StoryStage/ResultStage의 위·중간·끝 어디에도
-  배치할 수 있다. 일반 Event는 1개가 기본이며 특별/보스 Event는 최대 3개를
-  권장한다. 고정 visual slot 하나를 전제로 하지 않는다.
-- **미완성 에셋**: stable `visual_id`와 Event 이름 기반 alt를 유지하고 safe
-  placeholder를 표시한다. `이벤트 이름.png`를 실제 경로처럼 만들지 않는다.
+- **배치**: IllustrationBlock은 StoryStage/ResultStage의 위·중간·끝 어디에도 배치할 수 있다. 일반 Event는 1개가 기본이며 특별/보스 Event는 최대 3개를 권장한다. 고정 visual slot 하나를 전제로 하지 않는다.
+- **미완성 에셋**: stable `visual_id`와 Event 이름 기반 alt를 유지하고 safe placeholder를 표시한다. `이벤트 이름.png`를 실제 경로처럼 만들지 않는다.
 - **에셋 매니페스트**: `artManifest.ts`에 등록된 `visual_id`는 생성된 `.webp` 애니메이션풍 일러스트 에셋으로 표시되며, 등록되지 않은 `visual_id`는 generic SVG 또는 location-based SVG 폴백으로 렌더링된다.
+- **주인공 묘사 최소화 정책 (No Protagonist Appearance)**: 주인공(현대 회사원)의 구체적인 모습(셔츠, 넥타이, 사원증, 얼굴 등)이 무협 세계관 내 일러스트에서 직접적으로 노출되는 것을 철저히 배제한다. 주인공이 관여된 장면은 주로 1인칭 시점(First-person POV)으로 표현하거나, 인물이 원경에 꼭 필요할 경우 세부 묘사가 없는 미세한 형태의 먹색 실루엣(삿갓/도포 차림 등)으로만 묘사한다.
+- **스타일 레퍼런스 (Style References)**: 화풍 및 인물 묘사 축소 기준에 대해 다음 레퍼런스 이미지를 참조한다.
+  - [수묵 용 일러스트 레퍼런스](file:///C:/Users/82105/.gemini/antigravity/worktrees/tui-adv/enable-wsl-worktree-support/docs/design/style_ref_dragon.png)
+  - [수묵 영물 일러스트 레퍼런스](file:///C:/Users/82105/.gemini/antigravity/worktrees/tui-adv/enable-wsl-worktree-support/docs/design/style_ref_beasts.png)
+  - [회사원 펜선 뒷모습 레퍼런스](file:///C:/Users/82105/.gemini/antigravity/worktrees/tui-adv/enable-wsl-worktree-support/docs/design/style_ref_sketch_back.png)
+  - [회사원 펜선 독서 옆모습 레퍼런스](file:///C:/Users/82105/.gemini/antigravity/worktrees/tui-adv/enable-wsl-worktree-support/docs/design/style_ref_sketch_read.png)
 - **규격 및 포맷**: 규격은 5:3 비율(1120x672, `title_hero`만 3:5 세로 1120x1867)을 준수하며, WEBP 포맷으로 변환 및 최적화하여 각 파일은 150KB 이하여야 한다.
 - **삽지 프레임**: 일러스트는 한지 백그라운드 톤과 자연스럽게 결합되도록 얇은 먹 테두리(1px `--line-hard`), 한지 매트(5px 패딩, `--paper-lit`), 아주 약한 세피아 톤 필터 (`filter: saturate(0.92) sepia(0.06)`) 보정이 적용된다.
 - **인장 유지**: 일러스트가 활성화되어 있을 때도 우하단의 수묵 인장(seal)은 그림 위에 오버레이로 유지된다.

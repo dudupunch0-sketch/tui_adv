@@ -479,7 +479,7 @@ function runAction(actionId: string): void {
 
 /**
  * 행동 결과 비트: 다음 화면으로 넘어가기 전에, 방금 선택한 화면 위에서
- * 판정 배너와 결과 로그를 먼저 보여준다. 탭(또는 제한 시간)으로 진행.
+ * 판정 배너와 결과 로그를 먼저 보여준다. 탭(또는 키 입력)으로 진행.
  * 보여줄 결과가 없으면 즉시 false로 완료된다.
  */
 function presentActionResultBeat(nextPage: ScenePage, actionId: string): Promise<boolean> {
@@ -506,7 +506,6 @@ function presentActionResultBeat(nextPage: ScenePage, actionId: string): Promise
     const finish = () => {
       if (settled) return;
       settled = true;
-      window.clearTimeout(timer);
       window.removeEventListener('pointerdown', onAdvance, true);
       window.removeEventListener('keydown', onAdvance, true);
       resolve(true);
@@ -516,7 +515,6 @@ function presentActionResultBeat(nextPage: ScenePage, actionId: string): Promise
       event.stopPropagation();
       finish();
     };
-    const timer = window.setTimeout(finish, 2600);
     window.addEventListener('pointerdown', onAdvance, true);
     window.addEventListener('keydown', onAdvance, true);
   });
@@ -533,8 +531,34 @@ function renderGameTransition(
     nextPage,
     action,
     motionMode: currentMotionMode(),
-    renderNextPage: () => renderGamePage(nextPage, renderOptions),
+    renderNextPage: () => {
+      renderGamePage(nextPage, renderOptions);
+      pulseChangedVitals(previousPage, nextPage);
+    },
   });
+}
+
+function pulseChangedVitals(previousPage: ScenePage | null, nextPage: ScenePage): void {
+  if (!previousPage) return;
+  const previousResources = previousPage.status_summary.resources;
+  const nextResources = nextPage.status_summary.resources;
+  for (const resourceId of ['health', 'sanity']) {
+    const previous = previousResources.find((resource) => resource.id === resourceId);
+    const next = nextResources.find((resource) => resource.id === resourceId);
+    if (!previous || !next || previous.value === next.value) continue;
+
+    const vital = appRoot.querySelector<HTMLElement>(`.hud-vital[data-resource-id="${resourceId}"]`);
+    const fill = vital?.querySelector<HTMLElement>('.hud-vital__fill');
+    if (!vital || !fill) continue;
+    vital.dataset.pulse = next.value > previous.value ? 'gain' : 'loss';
+    fill.addEventListener(
+      'animationend',
+      () => {
+        delete vital.dataset.pulse;
+      },
+      { once: true },
+    );
+  }
 }
 
 function transitionActionContext(page: ScenePage, actionId: string): TransitionActionContext | null {

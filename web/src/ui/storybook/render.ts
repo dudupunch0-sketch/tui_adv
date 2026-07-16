@@ -99,25 +99,22 @@ function renderHud(page: ScenePage): string {
 function renderVitalSlots(resources: ResourceStatus[]): string {
   const health = resourceById(resources, 'health');
   const sanity = resourceById(resources, 'sanity');
-  return [renderSlotRow(health, 'health', '몸'), renderSlotRow(sanity, 'sanity', '마음')].join('');
+  return [renderVitalRow(health, 'health', '체력'), renderVitalRow(sanity, 'sanity', '정신력')].join('');
 }
 
-function renderSlotRow(resource: ResourceStatus | undefined, id: string, fallbackLabel: string): string {
+function renderVitalRow(resource: ResourceStatus | undefined, id: string, fallbackLabel: string): string {
   const value = resource?.value ?? 0;
-  const filledSlots = Math.max(0, Math.min(5, Math.ceil(value / 20)));
+  const fill = Math.max(0, Math.min(100, value));
   const band = resource?.band ?? 'unknown';
   const label = resource?.label ?? fallbackLabel;
   const text = resource?.text ?? '측정 불가';
-  const slots = Array.from({ length: 5 }, (_, index) => {
-    const glyph = index < filledSlots ? '●' : '○';
-    return `<span class="hud-slot" data-filled="${index < filledSlots}" aria-hidden="true">${glyph}</span>`;
-  }).join('');
 
-  return `<div class="hud-slot-row" data-resource-id="${escapeHtml(id)}" data-band="${escapeHtml(
+  return `<div class="hud-vital" data-resource-id="${escapeHtml(id)}" data-band="${escapeHtml(
     band,
   )}" aria-label="${escapeHtml(`${label} ${text} ${value}`)}">
-    <span class="hud-slot-label">${escapeHtml(label)}</span>
-    <span class="hud-slot-track">${slots}</span>
+    <span class="hud-vital__label">${escapeHtml(label)}</span>
+    <span class="hud-vital__track" aria-hidden="true"><span class="hud-vital__fill" style="--fill: ${fill}%"></span></span>
+    <span class="hud-vital__value">${escapeHtml(String(value))}</span>
   </div>`;
 }
 
@@ -540,7 +537,7 @@ function storyResources(resources: ResourceStatus[]): ResourceStatus[] {
     .filter((resource): resource is ResourceStatus => resource !== undefined)
     .map((resource) => ({
       ...resource,
-      label: resource.id === 'health' ? '몸' : resource.id === 'sanity' ? '마음' : resource.label,
+      label: resource.id === 'health' ? '체력' : resource.id === 'sanity' ? '정신력' : resource.label,
     }));
 }
 

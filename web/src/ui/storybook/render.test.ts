@@ -91,6 +91,13 @@ describe('Web Storybook renderer', () => {
 
     expect(html).toContain('data-renderer="web-storybook"');
     expect(html).toContain('data-story-phase="result"');
+    expect(html).toContain('class="hud-vital" data-resource-id="health"');
+    expect(html).toContain('class="hud-vital__label">체력</span>');
+    expect(html).toContain('class="hud-vital__label">정신력</span>');
+    expect(html).toContain('class="hud-vital__value">92</span>');
+    expect(html).toContain('class="hud-vital__value">28</span>');
+    expect(html).toContain('style="--fill: 92%"');
+    expect(html).toContain('style="--fill: 28%"');
     expect(html).toContain('class="storybook-hud"');
     expect(html).toContain('class="hud-drawer-toggle"');
     expect(html).toContain('data-player-action="toggle-storybook-drawer"');

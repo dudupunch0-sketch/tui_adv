@@ -9,11 +9,12 @@ export const artManifest: Record<string, string> = {
   'wuxia_cheonggi_record_first_fragment': 'wuxia_cheonggi_record_first_fragment.webp',
   'wuxia_seo_harin_rescue': 'wuxia_seo_harin_rescue.webp',
   'wuxia_cheongryu_apprentice_entry': 'wuxia_cheongryu_apprentice_entry.webp',
-  'wuxia_mumyeong_first_confrontation': 'wuxia_mumyeong_first_confrontation.webp',
-  'wuxia_boss_first_appearance': 'wuxia_boss_first_appearance.webp',
-  'wuxia_sado_final_battle': 'wuxia_sado_final_battle.webp',
-  'wuxia_return_modern_commute_scene_resolved': 'wuxia_return_modern_commute_scene_resolved.webp',
-  'wuxia_settlement_stay_scene_resolved': 'wuxia_settlement_stay_scene_resolved.webp',
+  // Below IDs are disabled to trigger safe ink-wash SVG fallback to prevent exposing the modern protagonist
+  // 'wuxia_mumyeong_first_confrontation': 'wuxia_mumyeong_first_confrontation.webp',
+  // 'wuxia_boss_first_appearance': 'wuxia_boss_first_appearance.webp',
+  // 'wuxia_sado_final_battle': 'wuxia_sado_final_battle.webp',
+  // 'wuxia_return_modern_commute_scene_resolved': 'wuxia_return_modern_commute_scene_resolved.webp',
+  // 'wuxia_settlement_stay_scene_resolved': 'wuxia_settlement_stay_scene_resolved.webp',
 };
 
 export function artAssetFor(visualId: string): string | undefined {

@@ -51,7 +51,9 @@ describe('player start/save UX', () => {
     expect(html).toContain('data-player-action="new-game"');
     expect(html).toContain('name="seed"');
     expect(html).toContain('value="123"');
-    expect(html).toContain('저장된 모험 없음');
+    expect(html).toContain('저장된 기록 없음');
+    expect(html).toContain('data-player-action="reset-save" disabled');
+    expect(html).toContain('기록 태우기');
   });
 
   it('renders renderer-local audio and motion controls without enabling autoplay', () => {
@@ -108,14 +110,28 @@ describe('player start/save UX', () => {
 
     expect(html).toContain('data-player-action="continue"');
     expect(html).not.toContain('data-player-action="continue" disabled');
-    expect(html).toContain('Seed 777');
-    expect(html).toContain('Turn 4');
-    expect(html).toContain('printer_area');
+    expect(html).toContain('씨앗 777');
+    expect(html).toContain('4턴까지 기록됨');
+    expect(html).not.toContain('printer_area');
     expect(html).toContain('2026-05-26 05:00');
     expect(html).toContain('data-player-action="confirm-new-game"');
     expect(html).toContain('data-player-action="cancel-new-game"');
-    expect(html).toContain('기존 저장을 지우고 새 모험을 시작할까요?');
+    expect(html).toContain('이전 기록이 남아 있다. 태우고 새 장을 펼칠까?');
     expect(html).not.toContain('새 격리 run');
+  });
+
+  it('keeps the start menu open state and shows the burn notice when provided', () => {
+    const html = renderStartScreen({
+      defaultSeed: 123,
+      summary: null,
+      warning: null,
+      confirmReset: false,
+      menuOpen: true,
+      notice: '기록을 태웠다. 재는 남지 않는다.',
+    });
+
+    expect(html).toContain('data-start-menu-open="true"');
+    expect(html).toContain('기록을 태웠다. 재는 남지 않는다.');
   });
 
   it('writes and reads public run summary metadata without changing Rust save JSON', () => {

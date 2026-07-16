@@ -45,6 +45,8 @@ export interface StartScreenModel extends PlayerSaveSummaryResult {
   confirmReset: boolean;
   settings?: PlayerSettings;
   storypackPreviews?: StorypackPreviewStartOption[];
+  menuOpen?: boolean;
+  notice?: string | null;
 }
 
 interface RawStatePreview {
@@ -57,12 +59,15 @@ interface RawStatePreview {
 export function renderStartScreen(model: StartScreenModel): string {
   const settings = model.settings ?? DEFAULT_PLAYER_SETTINGS;
   const continueDisabled = model.summary ? '' : ' disabled';
-  const saveText = model.summary ? renderSummary(model.summary) : '<p class="start-save-empty">저장된 모험 없음</p>';
   const warning = model.warning
     ? `<p class="start-save-warning" role="status">${escapeHtml(model.warning)}</p>`
     : '';
+  const notice = model.notice
+    ? `<p class="start-menu-notice" role="status"><span aria-hidden="true">焚</span>${escapeHtml(model.notice)}</p>`
+    : '';
   const confirmation = model.confirmReset ? renderResetConfirmation() : '';
   const previewPanel = renderStorypackPreviewPanel(model.storypackPreviews ?? []);
+  const menuOpen = model.menuOpen ? 'true' : 'false';
 
   const storage = typeof window !== 'undefined' ? window.localStorage : { getItem: () => null, setItem: () => {}, removeItem: () => {} };
   const meta = readRunMetadata(storage);
@@ -90,28 +95,44 @@ export function renderStartScreen(model: StartScreenModel): string {
       <p>天記錄 — 천기록</p>
       <div class="start-meta-indicator">${escapeHtml(runCountText)}${escapeHtml(endingsText)}</div>
     </div>
-    <section class="start-menu-drawer" data-start-menu-open="false">
+    <section class="start-menu-drawer" data-start-menu-open="${menuOpen}">
       <button type="button" class="start-tap-button" data-player-action="open-start-menu">천기록을 연다</button>
-      <div class="start-menu-panel">
-        <p class="start-kicker">WEB PLAYER · RUST/WASM GAMECORE</p>
-        <p class="start-copy">출근복 그대로 강호에 떨어지는 이구학지 본편입니다. 저장은 이 기기에만 남습니다.</p>
+      <div class="start-menu-panel" data-save-key="${RUST_SAVE_KEY}" data-summary-key="${LAST_RUN_SUMMARY_KEY}">
+        <header class="start-menu-head">
+          <span class="start-menu-head__title"><i aria-hidden="true">記</i>천기록</span>
+          <span class="start-menu-head__meta">${escapeHtml(runCountText)}${escapeHtml(endingsText)}</span>
+        </header>
         ${warning}
-        <div class="start-save-panel" data-save-key="${RUST_SAVE_KEY}" data-summary-key="${LAST_RUN_SUMMARY_KEY}">
-          <h2>모험 기록</h2>
-          ${saveText}
-        </div>
-        <label class="start-seed-label">
-          <span>Seed</span>
-          <input name="seed" type="number" inputmode="numeric" value="${escapeHtml(String(model.defaultSeed))}" />
-        </label>
-        <div class="start-actions">
-          <button type="button" class="start-primary" data-player-action="continue"${continueDisabled}>이어하기</button>
-          <button type="button" data-player-action="new-game">새 모험</button>
-          <button type="button" data-player-action="reset-save"${continueDisabled}>기록 삭제</button>
-        </div>
-        ${previewPanel}
-        ${renderSettingsPanel(settings)}
+        ${notice}
         ${confirmation}
+        <nav class="start-menu-actions" aria-label="시작 메뉴">
+          <button type="button" class="start-menu-item start-menu-item--primary" data-player-action="continue"${continueDisabled}>
+            <span class="start-menu-item__glyph" aria-hidden="true">續</span>
+            <span class="start-menu-item__label">이어하기</span>
+            <span class="start-menu-item__meta">${model.summary ? escapeHtml(summaryLine(model.summary)) : '저장된 기록 없음'}</span>
+          </button>
+          <button type="button" class="start-menu-item" data-player-action="new-game">
+            <span class="start-menu-item__glyph" aria-hidden="true">新</span>
+            <span class="start-menu-item__label">새 모험</span>
+            <span class="start-menu-item__meta">낯선 관도에서 다시 눈을 뜬다</span>
+          </button>
+          <button type="button" class="start-menu-item start-menu-item--danger" data-player-action="reset-save"${continueDisabled}>
+            <span class="start-menu-item__glyph" aria-hidden="true">焚</span>
+            <span class="start-menu-item__label">기록 태우기</span>
+            <span class="start-menu-item__meta">저장된 기록을 지운다</span>
+          </button>
+        </nav>
+        ${previewPanel}
+        <footer class="start-menu-footer">
+          ${renderSettingsPanel(settings)}
+          <details class="start-seed-detail">
+            <summary><span aria-hidden="true">因</span>인연의 씨앗</summary>
+            <label class="start-seed-label">
+              <span>같은 씨앗은 같은 운명을 부른다</span>
+              <input name="seed" type="number" inputmode="numeric" value="${escapeHtml(String(model.defaultSeed))}" />
+            </label>
+          </details>
+        </footer>
       </div>
     </section>
   </section>
@@ -145,14 +166,10 @@ function renderSettingsPanel(settings: PlayerSettings): string {
   const motionPressed = settings.motion === 'auto' ? 'false' : 'true';
   const motionLabel = `연출 ${settings.motion}`;
 
-  return `<section class="start-settings-panel" aria-label="플레이어 설정" data-settings-key="${PLAYER_SETTINGS_KEY}">
-      <h2>연출 설정</h2>
-      <p class="start-settings-copy">소리와 움직임은 이 브라우저에만 저장됩니다.</p>
-      <div class="start-settings-actions">
+  return `<div class="start-settings-actions" role="group" aria-label="플레이어 설정" data-settings-key="${PLAYER_SETTINGS_KEY}">
         <button type="button" data-player-action="toggle-audio" aria-pressed="${audioPressed}">${audioLabel}</button>
         <button type="button" data-player-action="cycle-motion" aria-pressed="${motionPressed}">${motionLabel}</button>
-      </div>
-    </section>`;
+      </div>`;
 }
 
 export function readPlayerSaveSummary(storage: StorageLike): PlayerSaveSummaryResult {
@@ -216,22 +233,17 @@ export function summaryFromStateJson(stateJson: string, savedAt: string | null):
   };
 }
 
-function renderSummary(summary: PlayerRunSummary): string {
+function summaryLine(summary: PlayerRunSummary): string {
   const savedAt = summary.saved_at ? formatSavedAt(summary.saved_at) : '저장 시간 미기록';
-  return `<dl class="start-save-summary">
-    <div><dt>Seed</dt><dd>Seed ${summary.seed}</dd></div>
-    <div><dt>Turn</dt><dd>Turn ${summary.turn}</dd></div>
-    <div><dt>Location</dt><dd>${escapeHtml(summary.location_id)}</dd></div>
-    <div><dt>Saved</dt><dd>${escapeHtml(savedAt)}</dd></div>
-  </dl>`;
+  return `${summary.turn}턴까지 기록됨 · 씨앗 ${summary.seed} · ${savedAt}`;
 }
 
 function renderResetConfirmation(): string {
-  return `<section class="start-reset-confirmation" role="alert" aria-label="새 게임 확인">
-    <p>기존 저장을 지우고 새 모험을 시작할까요?</p>
+  return `<section class="start-reset-confirmation" role="alert" aria-label="새 모험 확인">
+    <p>이전 기록이 남아 있다. 태우고 새 장을 펼칠까?</p>
     <div>
-      <button type="button" data-player-action="confirm-new-game">기존 저장 삭제 후 시작</button>
-      <button type="button" data-player-action="cancel-new-game">돌아가기</button>
+      <button type="button" class="start-reset-confirmation__burn" data-player-action="confirm-new-game">태우고 시작한다</button>
+      <button type="button" data-player-action="cancel-new-game">돌아간다</button>
     </div>
   </section>`;
 }

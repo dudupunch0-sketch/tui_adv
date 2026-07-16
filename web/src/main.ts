@@ -55,6 +55,8 @@ let activeSeed = DEFAULT_SEED;
 let activeStorypackPreview: StorypackPreviewOption | null = null;
 let confirmReset = false;
 let confirmAbandon = false;
+let startMenuOpen = false;
+let startNotice: string | null = null;
 let playerSettings: PlayerSettings = loadPlayerSettings(window.localStorage);
 let activeTypewriter: TypewriterHandle | null = null;
 let lastHistoryLength = Number.MAX_SAFE_INTEGER;
@@ -185,7 +187,10 @@ function renderStart(): void {
     confirmReset,
     settings: playerSettings,
     storypackPreviews: STORYPACK_PREVIEW_OPTIONS,
+    menuOpen: startMenuOpen,
+    notice: startNotice,
   });
+  startNotice = null;
   wirePlayerActionButtons(appRoot);
 }
 
@@ -205,6 +210,7 @@ function wirePlayerActionButtons(root: HTMLElement): void {
 
 const playerActionHandlers: Record<string, () => void | Promise<void>> = {
   'open-start-menu': () => {
+    startMenuOpen = true;
     const startDrawer = appRoot.querySelector<HTMLElement>('.start-menu-drawer');
     startDrawer?.setAttribute('data-start-menu-open', 'true');
   },
@@ -228,6 +234,7 @@ const playerActionHandlers: Record<string, () => void | Promise<void>> = {
     clearPlayerSaves(window.localStorage);
     confirmReset = false;
     confirmAbandon = false;
+    startNotice = '기록을 태웠다. 재는 남지 않는다.';
     render();
   },
   'show-start': () => {

@@ -192,6 +192,63 @@ position: absolute;
     inset 0 0 42px rgba(82, 61, 36, 0.12);
 }
 
+/* Collapse gate: the record itself is bleeding inward, not merely changing page tint. */
+.storybook-shell[data-story-phase="collapse"]::after {
+  inset: 0;
+  z-index: 3;
+  border: 0;
+  box-shadow:
+    inset 0 0 0 1px rgba(158, 60, 63, 0.28),
+    inset 0 0 42px rgba(32, 20, 22, 0.36);
+  background:
+    radial-gradient(ellipse at 50% 45%, transparent 52%, rgba(158, 60, 63, 0.26) 80%, rgba(32, 20, 22, 0.5) 100%),
+    radial-gradient(ellipse at 7% 16%, rgba(158, 60, 63, 0.16), transparent 28%),
+    radial-gradient(ellipse at 94% 78%, rgba(32, 20, 22, 0.18), transparent 30%),
+    radial-gradient(ellipse at 16% 94%, rgba(158, 60, 63, 0.11), transparent 24%);
+  animation:
+    collapse-vignette-in 600ms ease-out both,
+    collapse-vignette-pulse 3s 600ms ease-in-out infinite alternate;
+}
+
+.storybook-shell[data-story-phase="collapse"] .game-viewport {
+  filter: saturate(0.8);
+}
+
+.storybook-shell[data-story-phase="collapse"] .game-topbar {
+  border-bottom-color: rgba(158, 60, 63, 0.55);
+}
+
+.storybook-shell[data-story-phase="collapse"] .storybook-page {
+  z-index: 4;
+}
+
+.storybook-page[data-story-phase="collapse"] .choice-row:first-of-type {
+  border-color: var(--gold-leaf);
+}
+
+.storybook-page[data-story-phase="collapse"] .choice-row:last-of-type {
+  border-color: var(--line-soft);
+  background: rgba(46, 42, 35, 0.06);
+  opacity: 0.88;
+}
+
+@keyframes collapse-vignette-in {
+  from {
+    opacity: 0;
+    transform: scale(1.06);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes collapse-vignette-pulse {
+  from { opacity: 0.85; }
+  to { opacity: 1; }
+}
+
 .storybook-start {
   display: block;
   place-items: center;

@@ -167,3 +167,127 @@ runtime:
   4. 현재 플레이 중인 인카운터 자체가 `collapse.encounter_id`가 아님 (무한 루프 방지).
 - 조건을 만족하여 강제 우회가 발동하면, 일반적인 엔딩 분기 조건(체력 0으로 인한 일반 사망 등) 검사는 스킵한다.
 - `used_flag`가 세팅된 두 번째 0 이하 체력 도달 시에는 우회가 발동하지 않고 일반적인 데스 엔딩 판정(accept_final_rest 플래그를 통한 사망 엔딩 분기)을 거치게 된다.
+
+---
+
+## 6. 게임 루프 3차 확장 (Slice 3) — 레벨링·기연·아이템 상세
+
+이 절은 `fable_gameloop3_step1_2607161330.md`의 D1 설계 계약이다. 목표는 플레이어가
+판정에 영향을 주는 성장(레벨링)과 기연을 이해하고, 드로어에서 아이템과 칭호의 의미를
+확인할 수 있게 하는 것이다. 수치 계산과 소유권은 Rust GameCore가 담당하고 Web
+Storybook/terminal은 `ScenePage`를 표시한다.
+
+### 6.1 레벨링과 수련 포인트 (Leveling)
+
+번들 `runtime` 메타에 선택적으로 `leveling.thresholds: [u32, ...]`를 둔다. 배열은 비어
+있지 않고 엄격히 오름차순이어야 하며, 각 값은 현재 경험치에서 수련 포인트 1점을
+얻는 문턱이다.
+
+```yaml
+runtime:
+  leveling:
+    thresholds: [30, 80]
+```
+
+- `GameState.spent_stat_points: u32`는 `#[serde(default)]`로 저장한다. 획득 포인트는
+  현재 경험치가 넘은 문턱의 개수로 매번 계산하고, 사용 가능 포인트는
+  `earned.saturating_sub(spent)`로 계산한다. 별도의 earned 카운터를 저장하지 않는다.
+- 수련 액션은 `train:{ability_id}`이며 고정 6능력치(logic, empathy, volition,
+  composure, interface, physical)만 허용한다. 메타가 없거나 포인트가 없거나 현재
+  능력치가 **5 cap**이면 무효다.
+- 유효한 수련은 능력치를 1 올리고 `spent_stat_points`를 1 증가시키며
+  `+ {능력치 라벨} 수련 1` 델타 로그를 남긴다. 수련은 같은 턴에 처리하고 턴을
+  진행하거나 인카운터/위험도/엔딩을 다시 판정하지 않는다.
+- 결과의 경험치 획득으로 하나 이상의 문턱을 처음 넘으면
+  `+ 수련 기회 {n}` 로그를 추가한다. 이 로그는 기존 결과 비트/플로트가 표시한다.
+- `CharacterSummary.stat_points`는 항상 직렬화하며 사용 가능한 포인트만 담는다.
+  포인트가 0이면 Web 드로어에 배지나 `+` 버튼을 렌더링하지 않는다. 기존 번들에
+  leveling 메타가 없을 때는 액션과 필드가 기존 동작을 바꾸지 않아야 한다.
+
+### 6.2 기연 (Insights)
+
+번들 상위 레벨의 선택적 `insights` 배열은 사건의 결과로 얻는 영구 판정 보정을
+정의한다. 각 항목은 고유한 `id`를 가져야 한다.
+
+```yaml
+insights:
+  - id: cheongryu_heart_method
+    name: 청류심법 입문
+    description: 숨을 고르는 법이 판정의 바닥을 받친다.
+    check_bonus:
+      ability: composure
+      bonus: 1
+```
+
+- `InsightDef { id, name, description, check_bonus }`의 `check_bonus.ability`는 6능력치
+  중 하나이고 `bonus`는 1..=2다. 잘못된 참조나 중복 id는 번들 검증에서 거부한다.
+- `OutcomeDef.add_insights: Vec<String>`가 기존 id를 가리키면 결과 처리 시
+  `GameState.insights: Vec<String>`에 한 번만 추가한다. 중복 보상은 무시한다.
+  획득 시 `+ 기연: {name}` 델타 로그를 남긴다.
+- `insight_bonus(state, content, ability)`는 보유한 기연 중 해당 능력치의 보정치를
+  합산하는 순수 조회 함수다. 판정의 최종 합은 `2d6 + ability_value + insight_bonus`이고,
+  사전 표시 확률도 같은 유효 능력치로 계산한다. 주사위 굴림 해시는 보정치를
+  포함하지 않아 동일 seed/turn의 주사위가 바뀌지 않는다.
+- `CheckResolution.insight_bonus: i32`는 실제 적용된 합산값을 전달한다.
+  `ScenePage.insights: Vec<InsightStatus>`는 id/name/description/effect_text를 담고,
+  보정이 없으면 `effect_text`를 빈 문자열로 둔다. 두 필드는 빈 경우 optional/생략해
+  office 등 기존 JSON의 바이트 동일성을 보존한다.
+- Web 드로어에는 인물과 소지품 사이에 `기연` 섹션을 둔다. 각 행은 이름과
+  `effect_text`를 보여 주고 탭하면 설명을 펼친다. 목록이 비어 있으면
+  `아직 맺은 기연이 없다.`를 표시한다. 판정 배너와 결과 비트의 수학 줄에는
+  ` +기연 {n}`을 덧붙여 보정의 출처를 숨기지 않는다.
+
+### 6.3 아이템 상세 (Item Details)
+
+`ScenePage.inventory_details: Vec<ItemDetail>`은 현재 `inventory_summary.items`에
+있는 id만, 동일한 순서로 제공한다. 각 상세는 `id`, `name`, `description`, `item_type`,
+`usable`을 포함하며 빈 목록은 직렬화하지 않는다. 설명은 ContentIndex에서 가져오고,
+Web이 번들을 직접 읽어 재판정하지 않는다.
+
+- 드로어의 소지품 행은 disclosure 버튼이다. 각 행에는 결정적 색조를 가진
+  `data-item-icon="{id}"` 픽셀 아이콘 placeholder가 있어 이후 CSS/asset만으로 실제
+  스프라이트를 교체할 수 있다.
+- 펼친 상세에는 설명을 표시한다. 해당 페이지에 `use:{id}` 액션이 있으면 `[사용]`
+  버튼을 같은 action-id wiring으로 제공한다. 아이템이 usable이어도 이번 턴에 액션이
+  없으면 `지금은 쓸 수 없다` disabled 상태를 표시한다.
+- 펼침은 DOM disclosure만으로 처리하며 core 턴을 진행하지 않는다. 사용을 누르면
+  기존 `use:{id}` 경로로 페이지가 다시 렌더링되고 결과 비트를 재생한다.
+- 버리기/폐기/드롭 버튼은 이 모델에 포함하지 않는다. 아이템의 효과 적용과 소비
+  여부는 기존 Rust `ItemDef.use_effects`/`usable` 규칙을 그대로 따른다.
+
+### 6.4 판정 결과와 성장 보정의 표시 계약
+
+기존 §5.2의 `CheckResolution` 예시에 `insight_bonus`를 추가한다. `ability_value`는
+보정 전 캐릭터 스탯이며, `total`은 다음 식으로 계산한 실제 합이다.
+
+```json
+{
+  "ability_id": "composure",
+  "ability_label": "평정",
+  "dice": [4, 2],
+  "ability_value": 2,
+  "insight_bonus": 1,
+  "difficulty": 9,
+  "total": 9,
+  "success": true
+}
+```
+
+Web 수학 줄은 `2d6 (4+2) +평정 2 +기연 1 = 9 / 목표 9`처럼 원시 스탯과
+기연 보정을 분리해서 표시한다. `insight_bonus == 0`이면 `+기연` 조각을 생략한다.
+이 계약은 판정 확률/결과를 renderer가 다시 계산하지 않도록 하며, Rust가 제공한
+`success_percent`, `total`, `insight_bonus`를 그대로 노출한다.
+
+### 6.5 저장·호환성·검증
+
+- 새 `GameState` 필드(`spent_stat_points`, `insights`)와 새 `ScenePage` 필드는
+  `serde(default)`/optional로 정의한다. `SAVE_SCHEMA_VERSION`과
+  `CONTENT_BUNDLE_SCHEMA_VERSION`은 1을 유지하고, 옛 저장 파일은 누락 필드를
+  기본값으로 읽는다.
+- leveling/insights 메타가 없는 office 번들의 ScenePage JSON은 새 빈 필드를
+  생략하여 기존 바이트와 동일해야 한다. item 상세도 inventory가 비어 있으면
+  생략한다.
+- D1 이후 구현 순서는 `W1 → S1 → S2 → S3 → W2 → W3 → W4 → C1 → D2`이며,
+  각 WP마다 `cargo test --workspace`, 필요한 exporter `--check`, 그리고 Web의
+  `vitest`, `tsc --noEmit`, `build`를 실행한다. 최종에는 WASM을 재빌드하고
+  `qa:storybook:visual --require-wasm` 5개 뷰포트를 통과시킨다.

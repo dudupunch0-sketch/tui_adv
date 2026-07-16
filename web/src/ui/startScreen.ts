@@ -78,7 +78,7 @@ export function renderStartScreen(model: StartScreenModel): string {
   return `
 <main class="storybook-shell storybook-start" data-app="tui-adv" data-renderer="web-storybook" data-player-screen="start">
   <section class="start-hero" aria-label="게임 시작">
-    <img class="start-hero-art" src="${import.meta.env.BASE_URL}assets/art/title_hero.webp" alt="" onload="this.classList.add('loaded'); this.closest('.start-hero').setAttribute('data-art-status', 'loaded')" onerror="this.style.display='none'; this.closest('.start-hero').setAttribute('data-art-status', 'failed')" />
+    <img class="start-hero-art" src="${import.meta.env.BASE_URL}assets/art/title_hero.webp" width="1120" height="1867" alt="" decoding="async" fetchpriority="high" onload="this.classList.add('loaded'); this.closest('.start-hero').setAttribute('data-art-status', 'loaded')" onerror="this.style.display='none'; this.closest('.start-hero').setAttribute('data-art-status', 'failed')" />
     <svg class="start-ink-scene" viewBox="0 0 390 700" aria-hidden="true">
       <defs><filter id="start-mist"><feGaussianBlur stdDeviation="10"/></filter></defs>
       <rect width="390" height="700" fill="#e9dfc6"/>

@@ -27,6 +27,8 @@ type StoryPhase = 'story' | 'combat' | 'result' | 'collapse';
 export interface StorybookRenderOptions {
   audioLabel?: string;
   motionLabel?: string;
+  /** true면 판정 배너와 인라인 결과 로그를 생략한다 (행동 결과 비트가 이전 화면에서 이미 보여준 경우). */
+  suppressActionResult?: boolean;
 }
 
 export function renderStorybookPage(page: ScenePage, options: StorybookRenderOptions = {}): string {
@@ -39,7 +41,7 @@ export function renderStorybookPage(page: ScenePage, options: StorybookRenderOpt
   ${renderTopBar(page)}
   <div class="game-viewport" data-region="viewport">
     <section class="storybook-page" data-story-layout="${layout}" data-story-phase="${phase}">
-      ${renderStoryFlow(page, layout)}
+      ${renderStoryFlow(page, layout, options)}
       ${page.content_stream?.length ? '' : renderChoices(page)}
     </section>
   </div>
@@ -150,10 +152,10 @@ function renderProgressRail(page: ScenePage): string {
   </div>`;
 }
 
-function renderStoryFlow(page: ScenePage, layout: StoryLayout): string {
-  if (page.content_stream?.length) return renderOrderedStoryFlow(page);
+function renderStoryFlow(page: ScenePage, layout: StoryLayout, options: StorybookRenderOptions = {}): string {
+  if (page.content_stream?.length) return renderOrderedStoryFlow(page, options);
   const visual = renderInkVisual(page.visual, page.effect_cues, page.mode);
-  const body = renderBody(page);
+  const body = renderBody(page, options);
   if (layout === 'text-first') {
     return `<article class="story-flow story-flow--text-first">${body}${visual}</article>`;
   }
@@ -163,7 +165,7 @@ function renderStoryFlow(page: ScenePage, layout: StoryLayout): string {
   return `<article class="story-flow story-flow--visual-first">${visual}${body}</article>`;
 }
 
-function renderOrderedStoryFlow(page: ScenePage): string {
+function renderOrderedStoryFlow(page: ScenePage, options: StorybookRenderOptions = {}): string {
   const title = page.title === page.location.name ? '' : `<h1>${escapeHtml(page.title)}</h1>`;
   const pressureNotes = [...page.status_summary.warnings, ...page.pressure_cues.map((cue) => cue.message)];
   const items = page.content_stream!.map((item) => renderContentItem(item, page)).join('');
@@ -176,8 +178,8 @@ function renderOrderedStoryFlow(page: ScenePage): string {
       ${pressureNotes.length ? `<aside class="storybook-pressure" data-region="pressure">${pressureNotes.map((note) => `<p>${escapeHtml(note)}</p>`).join('')}</aside>` : ''}
     </header>
     ${items}
-    ${renderCheckResolution(page)}
-    ${hasResultItem ? '' : renderInlineResultLog(page)}
+    ${options.suppressActionResult ? '' : renderCheckResolution(page)}
+    ${hasResultItem || options.suppressActionResult ? '' : renderInlineResultLog(page)}
   </article>`;
 }
 
@@ -225,7 +227,7 @@ function renderContentItem(item: SceneContentItem, page: ScenePage): string {
     .join('')}</${tag}>`;
 }
 
-function renderBody(page: ScenePage): string {
+function renderBody(page: ScenePage, options: StorybookRenderOptions = {}): string {
   const title = page.title === page.location.name ? '' : `<h1>${escapeHtml(page.title)}</h1>`;
   const dialogueTexts = new Set(page.dialogue_entries.map((entry) => entry.text.trim()));
   const dialogue = page.dialogue_entries.length
@@ -241,10 +243,10 @@ function renderBody(page: ScenePage): string {
     .filter((block) => !dialogueTexts.has(block.text.trim()))
     .map(renderBodyBlock)
     .join('');
-  const resultLog = renderInlineResultLog(page);
+  const resultLog = options.suppressActionResult ? '' : renderInlineResultLog(page);
 
   const pressureNotes = [...page.status_summary.warnings, ...page.pressure_cues.map((cue) => cue.message)];
-  const checkResolution = renderCheckResolution(page);
+  const checkResolution = options.suppressActionResult ? '' : renderCheckResolution(page);
   return `<section class="storybook-body" data-region="body">
     ${title}
     ${pressureNotes.length ? `<aside class="storybook-pressure" data-region="pressure">${pressureNotes.map((note) => `<p>${escapeHtml(note)}</p>`).join('')}</aside>` : ''}
@@ -252,6 +254,23 @@ function renderBody(page: ScenePage): string {
     ${bodyBlocks}
     ${checkResolution}
     ${resultLog}
+  </section>`;
+}
+
+/**
+ * 행동 결과 비트: 선택지를 누른 "이전 화면"에서 판정 배너와 결과 로그를 먼저 보여주기 위한 조각.
+ * content_stream에 작가가 배치한 result_summary 스테이지가 있으면 (그건 다음 화면의 서사이므로)
+ * 판정 배너만 포함한다. 보여줄 것이 없으면 빈 문자열.
+ */
+export function renderActionResultBeat(page: ScenePage): string {
+  const check = renderCheckResolution(page);
+  const hasStreamResult = page.content_stream?.some((item) => item.kind === 'result_summary') ?? false;
+  const log = hasStreamResult ? '' : renderInlineResultLog(page);
+  if (!check && !log) return '';
+  return `<section class="action-result-beat" data-region="action-result" aria-live="polite">
+    ${check}
+    ${log}
+    <p class="action-result-beat__continue"><span aria-hidden="true">✥</span>화면을 누르면 계속</p>
   </section>`;
 }
 

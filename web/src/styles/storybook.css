@@ -1936,6 +1936,53 @@ background:
   opacity: 0;
 }
 
+/* 행동 결과 비트 — 선택한 화면에서 결과가 먼저 뜬다 */
+.storybook-choices[data-beat="active"] .choice-row {
+  opacity: 0.32;
+}
+
+.storybook-choices[data-beat="active"] .choice-row[data-chosen="true"] {
+  opacity: 1;
+  border-color: var(--seal-red);
+}
+
+.action-result-beat {
+  margin: 12px clamp(16px, 4.5vw, 44px) 0;
+  padding: 12px 14px 10px;
+  border: 1px solid var(--line-soft);
+  border-top: 3px double var(--line-hard);
+  background: rgba(255, 247, 205, 0.5);
+  box-shadow: 0 4px 14px var(--ink-wash);
+  animation: choices-rise 220ms ease both;
+}
+
+.action-result-beat .check-resolution {
+  margin-bottom: 0.7em;
+}
+
+.action-result-beat .story-result-log {
+  margin: 0;
+}
+
+.action-result-beat__continue {
+  margin: 0.7rem 0 0;
+  color: var(--ink-faded);
+  font-family: "IBM Plex Mono", "JetBrains Mono", "D2Coding", "Noto Serif KR", monospace;
+  font-size: 0.72rem;
+  text-align: right;
+  animation: beat-continue-pulse 1.3s ease-in-out infinite;
+}
+
+.action-result-beat__continue span {
+  margin-right: 6px;
+  color: var(--seal-red);
+}
+
+@keyframes beat-continue-pulse {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 1; }
+}
+
 .storybook-choices[data-reveal="done"] {
   animation: choices-rise 260ms ease both;
 }

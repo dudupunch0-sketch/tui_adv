@@ -34,7 +34,7 @@ import {
   renderStartScreen,
   writeRunSummary,
 } from './ui/startScreen';
-import { renderStorybookPage } from './ui/storybook/render';
+import { renderActionResultBeat, renderStorybookPage } from './ui/storybook/render';
 import { startTypewriter, type TypewriterHandle } from './ui/storybook/typewriter';
 import { readRunMetadata, writeRunMetadata, mergeRunMetadata } from './core/storage';
 
@@ -98,7 +98,7 @@ function render(): void {
   renderGamePage(page);
 }
 
-function renderGamePage(page: ScenePage): void {
+function renderGamePage(page: ScenePage, renderOptions: { suppressActionResult?: boolean } = {}): void {
   if (page.mode === 'ending') {
     const endingId = page.visual.source_id;
     if (endingId) {
@@ -111,6 +111,7 @@ function renderGamePage(page: ScenePage): void {
   appRoot.innerHTML = renderStorybookPage(page, {
     audioLabel: playerSettings.audio === 'on' ? '소리 켜짐' : '소리 꺼짐',
     motionLabel: `연출 ${playerSettings.motion}`,
+    suppressActionResult: renderOptions.suppressActionResult,
   });
   if (confirmAbandon) {
     const gamePage = appRoot.querySelector<HTMLElement>('.storybook-page');
@@ -463,6 +464,12 @@ function runAction(actionId: string): void {
     lastError = null;
     const nextPage = currentScenePage();
     audioEngine.playOneShot(audioCueForSceneTransition(previousPage, nextPage, action));
+    if (currentMotionMode() === 'normal') {
+      void presentActionResultBeat(nextPage, actionId).then((beatShown) => {
+        renderGameTransition(previousPage, nextPage, action, { suppressActionResult: beatShown });
+      });
+      return;
+    }
     renderGameTransition(previousPage, nextPage, action);
   } catch (error) {
     lastError = `입력 오류: ${errorMessage(error)}`;
@@ -470,17 +477,63 @@ function runAction(actionId: string): void {
   }
 }
 
+/**
+ * 행동 결과 비트: 다음 화면으로 넘어가기 전에, 방금 선택한 화면 위에서
+ * 판정 배너와 결과 로그를 먼저 보여준다. 탭(또는 제한 시간)으로 진행.
+ * 보여줄 결과가 없으면 즉시 false로 완료된다.
+ */
+function presentActionResultBeat(nextPage: ScenePage, actionId: string): Promise<boolean> {
+  return new Promise((resolve) => {
+    const beatHtml = renderActionResultBeat(nextPage);
+    const anchor = appRoot.querySelector<HTMLElement>('.storybook-choices');
+    if (!beatHtml || !anchor) {
+      resolve(false);
+      return;
+    }
+    activeTypewriter?.finish();
+    actionSource = { actions: [] };
+    anchor.setAttribute('data-beat', 'active');
+    appRoot.querySelectorAll<HTMLButtonElement>('button.choice-row').forEach((button) => {
+      button.disabled = true;
+      if (button.dataset.actionId === actionId) button.setAttribute('data-chosen', 'true');
+    });
+    anchor.insertAdjacentHTML('afterend', beatHtml);
+    appRoot
+      .querySelector<HTMLElement>('.action-result-beat')
+      ?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      window.clearTimeout(timer);
+      window.removeEventListener('pointerdown', onAdvance, true);
+      window.removeEventListener('keydown', onAdvance, true);
+      resolve(true);
+    };
+    const onAdvance = (event: Event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      finish();
+    };
+    const timer = window.setTimeout(finish, 2600);
+    window.addEventListener('pointerdown', onAdvance, true);
+    window.addEventListener('keydown', onAdvance, true);
+  });
+}
+
 function renderGameTransition(
   previousPage: ScenePage | null,
   nextPage: ScenePage,
   action: TransitionActionContext | null,
+  renderOptions: { suppressActionResult?: boolean } = {},
 ): void {
   transitionController.transitionTo({
     previousPage,
     nextPage,
     action,
     motionMode: currentMotionMode(),
-    renderNextPage: () => renderGamePage(nextPage),
+    renderNextPage: () => renderGamePage(nextPage, renderOptions),
   });
 }
 

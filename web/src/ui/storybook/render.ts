@@ -509,13 +509,16 @@ function renderInventoryDrawer(page: ScenePage): string {
 
 function renderInventoryItem(id: string, detail: InventoryDetail | undefined, page: ScenePage, index: number): string {
   const itemId = escapeHtml(id);
-  const targetId = `item-detail-${index}`;
   const label = detail?.name ?? inventoryItemLabel(id, page);
+  const icon = `<span class="item-icon" data-item-icon="${itemId}" style="--icon-hue: ${itemIconHue(id)}" aria-hidden="true"></span>`;
+  if (!detail) {
+    return `<li><div class="item-row item-row--static" data-item-id="${itemId}">${icon}<span>${escapeHtml(label)}</span></div></li>`;
+  }
+
+  const targetId = `item-detail-${index}`;
   const useAction = page.actions.find((action) => action.id === `use:${id}`);
-  const detailMarkup = detail
-    ? `<div id="${targetId}" class="disclosure-panel item-detail" hidden><p>${escapeHtml(detail.description)}</p><small>${escapeHtml(detail.item_type || '아이템')}</small>${detail.usable ? useAction ? `<button type="button" class="item-use" data-action-id="${escapeHtml(useAction.id)}">사용</button>` : '<button type="button" class="item-use" disabled>지금은 쓸 수 없다</button>' : ''}</div>`
-    : '';
-  return `<li><button type="button" class="item-row" data-item-id="${itemId}" data-disclosure-toggle data-disclosure-target="${targetId}" aria-expanded="false"><span class="item-icon" data-item-icon="${itemId}" style="--icon-hue: ${itemIconHue(id)}" aria-hidden="true"></span><span>${escapeHtml(label)}</span></button>${detailMarkup}</li>`;
+  const detailMarkup = `<div id="${targetId}" class="disclosure-panel item-detail" hidden><p>${escapeHtml(detail.description)}</p><small>${escapeHtml(detail.item_type || '아이템')}</small>${detail.usable ? useAction ? `<button type="button" class="item-use" data-action-id="${escapeHtml(useAction.id)}">사용</button>` : '<button type="button" class="item-use" disabled>지금은 쓸 수 없다</button>' : ''}</div>`;
+  return `<li><button type="button" class="item-row" data-item-id="${itemId}" data-disclosure-toggle data-disclosure-target="${targetId}" aria-expanded="false">${icon}<span>${escapeHtml(label)}</span></button>${detailMarkup}</li>`;
 }
 
 function itemIconHue(id: string): number {

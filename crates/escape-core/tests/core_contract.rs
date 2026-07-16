@@ -686,18 +686,93 @@ fn leveling_points_train_without_advancing_turn_and_respect_cap() {
         "default_location": "dev_desk",
         "leveling": {"thresholds": [10, 20]}
     });
+    value["content"]["endings"] = json!([{
+        "id": "training_ended",
+        "kind": "normal",
+        "name": "훈련 종료",
+        "text": "훈련은 끝났다.",
+        "priority": 100,
+        "conditions": {"required_flags": ["terminal_state"]}
+    }]);
+    let leveling_encounters = value["content"]["encounters"]
+        .as_array_mut()
+        .expect("encounters should be an array");
+    let leveling_messenger = leveling_encounters
+        .iter_mut()
+        .find(|encounter| encounter["id"] == "ex_employee_messenger")
+        .expect("messenger encounter should exist");
+    leveling_messenger["choices"][0]["outcome"]["experience"] = json!(20);
     let bundle_json = serde_json::to_string(&value).expect("bundle should serialize");
     let bundle = load_content_bundle(&bundle_json).expect("leveling bundle should load");
     let index = index_content_bundle(&bundle).expect("leveling bundle should index");
     let mut state = new_game_from_content(123, &index).expect("game should start");
+    let no_leveling_bundle = load_content_bundle(CONTENT_BUNDLE).expect("base bundle should load");
+    let no_leveling_index =
+        index_content_bundle(&no_leveling_bundle).expect("base bundle should index");
+    let no_leveling_state =
+        new_game_from_content(123, &no_leveling_index).expect("base game should start");
+    assert!(
+        apply_action_from_content(&no_leveling_state, &no_leveling_index, "train:logic").is_err()
+    );
+    assert!(apply_action_from_content(&state, &index, "train:logic").is_err());
+
     state.experience = 10;
+    let crossing = apply_action_from_content(&state, &index, "choice:check_message")
+        .expect("experience outcome should resolve");
+    assert_eq!(crossing.state.experience, 30);
+    assert!(crossing.logs.iter().any(|line| line == "+ 수련 기회 1"));
+    let multi_cross = new_game_from_content(123, &index).expect("multi-cross game should start");
+    let multi_cross_result =
+        apply_action_from_content(&multi_cross, &index, "choice:check_message")
+            .expect("multi-threshold outcome should resolve");
+    assert_eq!(multi_cross_result.state.experience, 20);
+    assert!(multi_cross_result
+        .logs
+        .iter()
+        .any(|line| line == "+ 수련 기회 2"));
+
     let page = scene_page_from_content(&state, &index).expect("page should render");
     assert_eq!(page.character_summary.unwrap().stat_points, 1);
+    assert!(apply_action_from_content(&state, &index, "train:not_an_ability").is_err());
+
+    let mut multi_threshold = state.clone();
+    multi_threshold.experience = 20;
+    assert_eq!(
+        scene_page_from_content(&multi_threshold, &index)
+            .expect("multi-threshold page should render")
+            .character_summary
+            .unwrap()
+            .stat_points,
+        2
+    );
+    multi_threshold.spent_stat_points = 1;
+    assert_eq!(
+        scene_page_from_content(&multi_threshold, &index)
+            .expect("spent-point page should render")
+            .character_summary
+            .unwrap()
+            .stat_points,
+        1
+    );
+    multi_threshold.spent_stat_points = 99;
+    assert_eq!(
+        scene_page_from_content(&multi_threshold, &index)
+            .expect("saturated-point page should render")
+            .character_summary
+            .unwrap()
+            .stat_points,
+        0
+    );
 
     let result = apply_action_from_content(&state, &index, "train:composure")
         .expect("training should resolve");
     assert_eq!(result.state.turn, state.turn);
+    assert_eq!(result.state.location_id, state.location_id);
     assert_eq!(result.state.danger, state.danger);
+    assert_eq!(result.state.active_event_id, state.active_event_id);
+    assert_eq!(result.state.event_stage_index, state.event_stage_index);
+    assert_eq!(result.state.event_next_stage_id, state.event_next_stage_id);
+    assert_eq!(result.state.seen_encounters, state.seen_encounters);
     assert_eq!(result.state.player.abilities["composure"], 3);
     assert_eq!(result.state.spent_stat_points, 1);
     assert_eq!(result.logs, vec!["+ 평정 수련 1"]);
@@ -706,18 +781,36 @@ fn leveling_points_train_without_advancing_turn_and_respect_cap() {
     capped.experience = 20;
     capped.player.abilities.insert("logic".to_string(), 5);
     assert!(apply_action_from_content(&capped, &index, "train:logic").is_err());
+
+    let mut ending_state = state.clone();
+    ending_state.experience = 20;
+    ending_state.flags.push("terminal_state".to_string());
+    let ending_page =
+        scene_page_from_content(&ending_state, &index).expect("ending page should render");
+    assert_eq!(ending_page.mode, SceneMode::Ending);
+    assert!(ending_page.actions.is_empty());
+    assert_eq!(ending_page.character_summary.unwrap().stat_points, 0);
+    assert!(apply_action_from_content(&ending_state, &index, "train:composure").is_err());
 }
 
 #[test]
 fn insights_add_once_and_raise_check_total_without_changing_dice() {
     let mut value: serde_json::Value =
         serde_json::from_str(CONTENT_BUNDLE).expect("fixture bundle should parse");
-    value["content"]["insights"] = json!([{
-        "id": "steady_breath",
-        "name": "고른 호흡",
-        "description": "흔들릴수록 호흡을 세어 판정의 바닥을 붙든다.",
-        "check_bonus": {"ability": "logic", "bonus": 1}
-    }]);
+    value["content"]["insights"] = json!([
+        {
+            "id": "steady_breath",
+            "name": "고른 호흡",
+            "description": "흔들릴수록 호흡을 세어 판정의 바닥을 붙든다.",
+            "check_bonus": {"ability": "logic", "bonus": 1}
+        },
+        {
+            "id": "steady_focus",
+            "name": "고른 시선",
+            "description": "시선을 고정해 흐릿한 글자 사이의 길을 붙든다.",
+            "check_bonus": {"ability": "logic", "bonus": 1}
+        }
+    ]);
     let encounters = value["content"]["encounters"]
         .as_array_mut()
         .expect("encounters should be an array");
@@ -725,7 +818,8 @@ fn insights_add_once_and_raise_check_total_without_changing_dice() {
         .iter_mut()
         .find(|encounter| encounter["id"] == "ex_employee_messenger")
         .expect("messenger encounter should exist");
-    messenger["choices"][0]["outcome"]["add_insights"] = json!(["steady_breath"]);
+    messenger["repeatable"] = json!(true);
+    messenger["choices"][0]["outcome"]["add_insights"] = json!(["steady_breath", "steady_breath"]);
 
     let bundle_json = serde_json::to_string(&value).expect("bundle should serialize");
     let bundle = load_content_bundle(&bundle_json).expect("insight bundle should load");
@@ -733,17 +827,40 @@ fn insights_add_once_and_raise_check_total_without_changing_dice() {
     let state = new_game_from_content(123, &index).expect("game should start");
     let baseline = escape_core::resolve_ability_check(&state, "logic", 9);
     let mut gifted = state.clone();
-    gifted.insights.push("steady_breath".to_string());
+    gifted.insights = vec![
+        "steady_breath".to_string(),
+        "steady_breath".to_string(),
+        "steady_focus".to_string(),
+        "steady_focus".to_string(),
+    ];
     let boosted = escape_core::resolve_ability_check_with_content(&gifted, &index, "logic", 9);
     assert_eq!(baseline.dice, boosted.dice);
-    assert_eq!(boosted.insight_bonus, 1);
-    assert_eq!(boosted.total, baseline.total + 1);
+    assert_eq!(boosted.insight_bonus, 2);
+    assert_eq!(boosted.total, baseline.total + 2);
 
     let result = apply_action_from_content(&state, &index, "choice:check_message")
         .expect("insight outcome should resolve");
     assert_eq!(result.state.insights, vec!["steady_breath"]);
     assert!(result.logs.iter().any(|line| line == "+ 기연: 고른 호흡"));
+    assert_eq!(
+        result
+            .logs
+            .iter()
+            .filter(|line| *line == "+ 기연: 고른 호흡")
+            .count(),
+        1
+    );
+    let mut replay = result.state.clone();
+    replay.seen_encounters.clear();
+    let replay_result = apply_action_from_content(&replay, &index, "choice:check_message")
+        .expect("repeatable insight outcome should resolve");
+    assert_eq!(replay_result.state.insights, vec!["steady_breath"]);
+    assert!(!replay_result
+        .logs
+        .iter()
+        .any(|line| line == "+ 기연: 고른 호흡"));
     let page = scene_page_from_content(&result.state, &index).expect("page should render");
+    assert_eq!(page.insights.len(), 1);
     assert_eq!(page.insights[0].effect_text, "논리 판정 +1");
 }
 

@@ -112,6 +112,19 @@ async function runViewportQa(browserInstance, viewport, screenshotsDirPath) {
       });
     }
 
+    if (viewport.width <= 414) {
+      const hud = await collectNarrowHudMetrics(page);
+      const prefix = `narrow HUD ${viewport.name}`;
+      record(checks, `${prefix}: last vital and progress rail do not overlap`, hud.present && !hud.overlaps.vitalProgress, hud);
+      record(checks, `${prefix}: last vital and drawer button do not overlap`, hud.present && !hud.overlaps.vitalDrawer, hud);
+      record(checks, `${prefix}: HUD controls stay inside the viewport horizontally`, hud.present && hud.insideViewport, hud);
+      record(checks, `${prefix}: labels, values, gauge, and drawer button remain visible`, hud.present && hud.contentVisible, hud);
+      record(checks, `${prefix}: document and body scroll widths stay bounded`, metrics.scrollWidth.documentElement <= viewport.width && metrics.scrollWidth.body <= viewport.width, {
+        documentElement: metrics.scrollWidth.documentElement,
+        body: metrics.scrollWidth.body,
+        viewport: viewport.width,
+      });
+    }
     const screenshotPath = path.join(screenshotsDirPath, `${viewport.name}.png`);
     await page.screenshot({ path: screenshotPath, fullPage: true });
     screenshot = path.relative(options.outDir, screenshotPath);
@@ -252,6 +265,52 @@ function waitForWasmResources(page) {
   );
 }
 
+async function collectNarrowHudMetrics(page) {
+  return page.evaluate(() => {
+    const rectFor = (element) => {
+      if (!element) return null;
+      const rect = element.getBoundingClientRect();
+      return {
+        left: rect.left,
+        right: rect.right,
+        top: rect.top,
+        bottom: rect.bottom,
+        width: rect.width,
+        height: rect.height,
+      };
+    };
+    const overlaps = (a, b) => Boolean(a && b && a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top);
+    const visible = (element) => {
+      if (!element) return false;
+      const rect = element.getBoundingClientRect();
+      const style = getComputedStyle(element);
+      return rect.width > 0 && rect.height > 0 && style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0';
+    };
+    const vitalRows = Array.from(document.querySelectorAll('.storybook-hud .hud-vital'));
+    const lastVital = vitalRows[vitalRows.length - 1] ?? null;
+    const rail = document.querySelector('.storybook-hud .story-progress-rail');
+    const drawer = document.querySelector('.storybook-hud .hud-drawer-toggle');
+    const rects = {
+      lastVital: rectFor(lastVital),
+      progressRail: rectFor(rail),
+      drawer: rectFor(drawer),
+    };
+    const contentSelectors = ['.hud-vital__label', '.hud-vital__value', '.hud-vital__track', '.hud-drawer-toggle'];
+    return {
+      present: Object.values(rects).every(Boolean),
+      rects,
+      overlaps: {
+        vitalProgress: overlaps(rects.lastVital, rects.progressRail),
+        vitalDrawer: overlaps(rects.lastVital, rects.drawer),
+      },
+      insideViewport: Object.values(rects).every((rect) => rect && rect.left >= -1 && rect.right <= window.innerWidth + 1),
+      contentVisible: contentSelectors.every((selector) => {
+        const elements = Array.from(document.querySelectorAll(selector));
+        return elements.length > 0 && elements.every(visible);
+      }),
+    };
+  });
+}
 async function collectLayoutMetrics(page) {
   return page.evaluate(() => {
     const shell = document.querySelector('.storybook-shell');

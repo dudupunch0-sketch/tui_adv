@@ -1666,3 +1666,26 @@
 - [x] `export_web_data.py`: `protagonist_name`, `progression` 런타임 메타 추가
 - [x] preview bundle 및 content bundle 재생성·검증
 
+## Phase 12: 이구학지 게임 루프 3차 확장 및 review closeout
+
+### 12.1 Gameloop 3 구현 계약
+
+- [x] 레벨링 thresholds/수련 포인트와 `train:{ability_id}` non-turn action 구현
+- [x] 기연 획득·판정 보정·중복 ID ordered-set projection 구현
+- [x] 아이템 상세/칭호 상세 optional ScenePage 및 Web disclosure 구현
+- [x] 체력·정신력 숫자 HUD gauge와 결과 beat pulse 구현
+- [x] 무협 preview leveling/insight content와 generated fixture parity 검증
+
+### 12.2 Post-merge review fixes (RF1–RF3)
+
+- [x] RF1: ending-state training guard와 insight dedupe/bonus regression coverage
+- [x] RF2: `inventory_details` 부재 시 비대화형 fallback item row
+- [x] RF3: 390/414 HUD sibling non-overlap assertion과 narrow grid allocation
+- [x] five-viewport Storybook visual QA 및 rebuilt WASM runtime warning gate
+
+### 12.3 RF4 문서 closeout
+
+- [x] Development Plan이 Slice 3 구현·review-fixed 상태를 canonical하게 반영
+- [x] stale Slice 2 `in progress` 표기를 완료 상태로 정정
+- [x] `fable_gameloop3_refactor_step2_report.md`에 명령·수치·QA 산출물·deviation 기록
+- [ ] RF5 Notion/idea ledger reverse sync (별도 WP)

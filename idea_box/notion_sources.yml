@@ -6,7 +6,7 @@
 # Standing rule: every implementation cycle's closeout WP updates this ledger and
 # the "13. 런타임 시스템 현황" Notion page (sync base commit + divergence table).
 
-last_checked_at: "2026-07-16T15:10:00+09:00"
+last_checked_at: "2026-07-16T16:05:00+09:00"
 source_policy:
   repo_canonical_docs_gate_implementation: true
   raw_notion_to_runtime_allowed: false
@@ -576,13 +576,16 @@ sources:
     object: page
     notion_ref: "notion:39f37e69-695e-810e-b30b-f59795bede57"
     url: "https://www.notion.so/39f37e69695e810eb30bf59795bede57"
-    last_checked_at: "2026-07-16T15:10:00+09:00"
+    last_checked_at: "2026-07-16T16:05:00+09:00"
     precedence_role: "runtime_status_snapshot_repo_to_notion"
-    sync_base_commit: "f426193"
+    sync_base_commit: "7e7b401"
+    rf5_sync_base_commit: "7e7b401"
+    rf5_notion_page_reread: true
+    rf5_divergence: "Notion 15 insight rows remain design because runtime IDs, names, and acquisition encounters differ."
     notes:
       - "repo -> Notion 방향 스냅샷. 구현 사이클 마감 WP마다 기준 커밋과 어긋남 표를 갱신한다."
       - "슬라이스 3(레벨업/기연/아이템 상세, fable_gameloop3_step1_2607161330.md) 구현 예정 항목 포함."
-    status: "live_synced_2026_07_16"
+    status: "live_synced_2026_07_16_refactor_rf5"
 
   - key: wuxia_14_item_db
     title: "14. 이구학지 아이템 DB"
@@ -604,17 +607,20 @@ sources:
     object: data_source
     notion_ref: "notion-data-source:55eec40d-72ba-474f-8494-8b48275603f3"
     url: "https://www.notion.so/9f599836e4344b9cbff9319f62d54dc6"
-    last_checked_at: "2026-07-16T15:10:00+09:00"
+    last_checked_at: "2026-07-16T16:05:00+09:00"
     precedence_role: "authoritative_insight_db"
     row_count: 3
     schema_mapping: "이름=name / 기연 ID=id / 설명=description / 보너스 능력치+보너스=check_bonus / 획득 사건 ID=add_insights 위치"
     related_design_units:
       - "system:insights_check_bonus"
+    rf5_runtime_status: "design"
+    rf5_reconcile_required: true
+    rf5_sync_base_commit: "7e7b401"
     related_canonical_docs:
       - "fable_gameloop3_step1_2607161330.md"
     notes:
       - "3행은 슬라이스 3 WP-C1의 콘텐츠 원본(런타임 상태=설계). 구현 완료 시 에이전트가 구현됨으로 전환한다."
-    status: "design_source_for_slice3"
+    status: "design_source_for_slice3_runtime_reconcile_pending"
 
   - key: wuxia_99_checkpoint
     title: "99. 통합 체크포인트"

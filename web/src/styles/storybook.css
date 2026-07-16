@@ -536,46 +536,6 @@ position: relative;
 .hud-vital[data-pulse="loss"] .hud-vital__fill {
   animation: hud-vital-pulse-loss 360ms ease-out both;
 }
-.hud-slot-row {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  color: var(--ink);
-  font-family: inherit;
-  font-size: 0.76rem;
-}
-
-.hud-slot-row[data-band="warning"],
-.hud-slot-row[data-band="critical"] {
-  border-bottom: 1.5px solid var(--seal-red);
-  padding-bottom: 1px;
-}
-
-.hud-slot-track {
-  display: flex;
-  gap: 1px;
-  min-width: 0;
-}
-
-.hud-slot {
-  width: auto;
-  aspect-ratio: auto;
-  transform: none;
-  border: 0;
-  background: none;
-  color: var(--ink-faded);
-  font-size: 0.72rem;
-}
-
-.hud-slot-row[data-resource-id="health"] .hud-slot[data-filled="true"] {
-border-color: #b05058;
-  background: linear-gradient(135deg, #e27d7b, #9e3c3f);
-}
-
-.hud-slot-row[data-resource-id="sanity"] .hud-slot[data-filled="true"] {
-border-color: #419a8b;
-  background: linear-gradient(135deg, #76d8c1, #2f8f80);
-}
 
 .hud-document {
   justify-self: center;
@@ -1296,13 +1256,6 @@ position: absolute;
   animation: storybook-danger-seal-flash 320ms ease-out both;
 }
 
-.hud-slot[data-filled="true"] {
-color: var(--ink);
-}
-
-.hud-slot-row[data-resource-id] .hud-slot[data-filled="true"] {
-border: 0; background: none;
-}
 
 .hud-drawer-toggle {
   display: grid;
@@ -2498,12 +2451,33 @@ button.character-title-seal {
   }
 
   .storybook-hud {
+      grid-template-columns: minmax(150px, 2fr) minmax(48px, 1fr) 44px;
       padding: 6px 10px;
-      gap: 8px;
+      gap: 6px;
   }
 
   .hud-vital-slots {
-      gap: 8px;
+      grid-column: 1;
+      gap: 6px;
+      min-width: 0;
+  }
+
+  .hud-center {
+      grid-column: 2;
+      min-width: 0;
+      justify-self: stretch;
+  }
+
+  .hud-center .hud-progression {
+      width: 100%;
+      min-width: 0;
+  }
+
+
+  .hud-drawer-toggle {
+      grid-column: 3;
+      width: 44px;
+      min-width: 44px;
   }
 
   .hud-vital {
@@ -2519,10 +2493,6 @@ button.character-title-seal {
 
   .hud-vital__value {
       font-size: 0.66rem;
-  }
-  .hud-slot-row {
-      gap: 3px;
-      font-size: 0.68rem;
   }
 
   .hud-document {

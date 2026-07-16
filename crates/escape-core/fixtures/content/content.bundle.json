@@ -1602,6 +1602,7 @@
         "text": "대표 승인란에 입력된 이름이 회사의 생존 규칙 위로 번졌다. 이제 모든 결재선은 당신의 퇴근 여부를 묻기 전에 먼저 당신에게 승인받아야 한다.\n"
       }
     ],
+    "insights": [],
     "items": [
       {
         "description": "아직 밀봉된 생수병. 지금은 복지보다 생존에 가깝다.",
@@ -2085,6 +2086,7 @@
       "achievements": 11,
       "encounters": 21,
       "endings": 13,
+      "insights": 0,
       "items": 13,
       "locations": 16,
       "secrets": 3,

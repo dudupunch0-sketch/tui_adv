@@ -209,14 +209,33 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     assert_eq!(runtime.world_id, "wuxia_jianghu");
     assert_eq!(runtime.storypack_id, "wuxia_jianghu_pack");
     assert_eq!(runtime.default_location, "wuxia_commute_rift");
+    assert_eq!(
+        runtime
+            .leveling
+            .as_ref()
+            .expect("wuxia leveling metadata")
+            .thresholds,
+        vec![30, 75, 120]
+    );
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&5));
     assert_eq!(bundle.manifest.counts.get("items"), Some(&4));
     assert_eq!(bundle.manifest.counts.get("encounters"), Some(&44));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
+    assert_eq!(bundle.manifest.counts.get("insights"), Some(&3));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 5);
     assert_eq!(index.encounters_len(), 44);
+    assert_eq!(
+        index
+            .insight("insight_read_the_flow")
+            .expect("physical insight")
+            .check_bonus
+            .as_ref()
+            .expect("physical insight check bonus")
+            .bonus,
+        1
+    );
 
     let market = index
         .location("jianghu_market_street")

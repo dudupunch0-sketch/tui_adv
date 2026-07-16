@@ -43,6 +43,7 @@ def test_export_web_data_builds_public_manifest_with_expected_counts():
         "endings": 13,
         "achievements": 11,
         "traits": 0,
+        "insights": 0,
         "secrets": 3,
     }
     assert bundle["locations"][0]["id"] == "dev_desk"
@@ -60,6 +61,7 @@ def test_export_web_data_writes_generated_json_files(tmp_path):
         "achievements.json",
         "encounters.json",
         "endings.json",
+        "insights.json",
         "items.json",
         "locations.json",
         "manifest.json",
@@ -148,6 +150,9 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
             "experience_target": 100,
             "label": "천기",
         },
+        "leveling": {
+            "thresholds": [30, 75, 120],
+        },
         "collapse": {
             "encounter_id": "wuxia_collapse_gate",
             "resource_id": "health",
@@ -162,6 +167,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "endings": 3,
         "achievements": 2,
         "traits": 2,
+        "insights": 3,
         "secrets": 0,
     }
     assert [location["id"] for location in bundle["content"]["locations"]] == [
@@ -1364,7 +1370,7 @@ def test_export_web_data_cli_write_and_check_roundtrip(tmp_path):
         capture_output=True,
     )
     assert write_result.returncode == 0, write_result.stderr
-    assert "wrote 8 web data files" in write_result.stdout
+    assert "wrote 9 web data files" in write_result.stdout
     assert f"wrote content bundle to {rust_bundle_path}" in write_result.stdout
     assert f"wrote content bundle to {web_bundle_path}" in write_result.stdout
     assert json.loads(rust_bundle_path.read_text(encoding="utf-8")) == json.loads(

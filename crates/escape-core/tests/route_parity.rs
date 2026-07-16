@@ -86,6 +86,16 @@ fn movement_pages_expose_inventory_use_actions_and_full_pressure_resources() {
         vec!["first_aid_kit".to_string()]
     );
     assert_eq!(
+        page.inventory_details,
+        vec![escape_core::ItemDetail {
+            id: "first_aid_kit".to_string(),
+            name: "구급상자".to_string(),
+            description: "비상용 구급상자. 누군가 한 번 열어본 흔적이 있다.".to_string(),
+            item_type: "consumable".to_string(),
+            usable: true,
+        }]
+    );
+    assert_eq!(
         page.status_summary
             .resources
             .iter()
@@ -97,6 +107,49 @@ fn movement_pages_expose_inventory_use_actions_and_full_pressure_resources() {
         .pressure_cues
         .iter()
         .any(|cue| cue.kind == "high_thirst" && cue.resource_id == "thirst"));
+}
+
+#[test]
+fn inventory_details_preserve_inventory_order_and_item_metadata() {
+    let content = content();
+    let mut state = new_game_from_content_at(123, &content, "dev_office")
+        .expect("content-backed game should start at office");
+    seen_all_encounters(&mut state, &content);
+    state.inventory = vec!["power_bank".to_string(), "first_aid_kit".to_string()];
+
+    let page = scene_page_from_content(&state, &content).expect("scene page should render");
+
+    assert_eq!(
+        page.inventory_summary.items,
+        vec!["power_bank".to_string(), "first_aid_kit".to_string()]
+    );
+    assert_eq!(
+        page.inventory_details
+            .iter()
+            .map(|item| item.id.as_str())
+            .collect::<Vec<_>>(),
+        vec!["power_bank", "first_aid_kit"]
+    );
+    assert_eq!(page.inventory_details[0].name, "보조배터리");
+    assert_eq!(
+        page.inventory_details[0].description,
+        "충전량이 애매하게 남은 보조배터리. 그래도 어둠 속에서는 애매한 희망도 희망이다."
+    );
+    assert_eq!(page.inventory_details[0].item_type, "tool");
+    assert!(page.inventory_details[0].usable);
+    assert_eq!(page.inventory_details[1].name, "구급상자");
+    assert_eq!(page.inventory_details[1].item_type, "consumable");
+    assert!(page.inventory_details[1].usable);
+
+    let serialized = serde_json::to_value(&page).expect("ScenePage should serialize");
+    assert_eq!(
+        serialized["inventory_details"][0]["item_type"],
+        serde_json::json!("tool")
+    );
+    assert_eq!(
+        serialized["inventory_details"][1]["usable"],
+        serde_json::json!(true)
+    );
 }
 
 #[test]

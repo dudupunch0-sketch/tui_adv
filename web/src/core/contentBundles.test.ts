@@ -11,7 +11,12 @@ import {
 describe('runtime content bundle registry', () => {
   it('uses 이구학지 as the default Web runtime storypack', () => {
     const bundle = JSON.parse(DEFAULT_CONTENT_BUNDLE_JSON) as {
-      runtime?: { runtime_mode?: string; storypack_id?: string; default_location?: string };
+      runtime?: {
+        runtime_mode?: string;
+        storypack_id?: string;
+        default_location?: string;
+        leveling?: { thresholds?: number[] };
+      };
       content: { encounters: Array<{ id: string }> };
     };
     const encounterIds = bundle.content.encounters.map((encounter) => encounter.id);
@@ -26,6 +31,9 @@ describe('runtime content bundle registry', () => {
       progression: {
         experience_target: 100,
         label: '천기',
+      },
+      leveling: {
+        thresholds: [30, 75, 120],
       },
       collapse: {
         encounter_id: 'wuxia_collapse_gate',

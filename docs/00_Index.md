@@ -58,7 +58,7 @@ docs/
     TUI_Storybook_GlyphFX_Concept.md # Web primary UX로 채택한 TUI풍 스토리북 + GlyphFX 방향
     Mobile_Ink_Storybook_UI.md       # 모바일 세로형 수묵 서책 board UI contract (활성)
     Mobile_Pixel_Storybook_UI.md     # (superseded) 구 픽셀 게임북 board contract 포인터
-    Progression_and_Title_Model.md   # 경험치(진행 게이지) 및 캐릭터 특성(칭호) 모델 설계
+    Progression_and_Title_Model.md   # 경험치·레벨링·기연·아이템 상세 및 캐릭터 특성(칭호) 모델 설계
 
 
   content/
@@ -150,7 +150,7 @@ private/
 - `docs/design/TUI_Storybook_GlyphFX_Concept.md`
 - `docs/design/Mobile_Ink_Storybook_UI.md`
 - `docs/design/Mobile_Pixel_Storybook_UI.md`
-- `docs/design/Progression_and_Title_Model.md`
+- `docs/design/Progression_and_Title_Model.md` — 경험치/레벨링, 기연(판정 보정), 아이템 상세, 칭호 및 CheckResolution 확장 계약
 
 - `docs/content/Location_List.md`
 - `docs/content/Item_List.md`

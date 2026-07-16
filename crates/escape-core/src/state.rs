@@ -64,6 +64,10 @@ pub struct GameState {
     #[serde(default)]
     pub experience: u32,
     #[serde(default)]
+    pub spent_stat_points: u32,
+    #[serde(default)]
+    pub insights: Vec<String>,
+    #[serde(default)]
     pub last_check: Option<CheckResolution>,
     #[serde(default)]
     pub active_event_id: Option<String>,
@@ -79,6 +83,8 @@ pub struct CheckResolution {
     pub ability_label: String,
     pub dice: (i32, i32),
     pub ability_value: i32,
+    #[serde(default)]
+    pub insight_bonus: i32,
     pub difficulty: i32,
     pub total: i32,
     pub success: bool,
@@ -108,6 +114,8 @@ impl GameState {
             history: Vec::new(),
             trait_id: None,
             experience: 0,
+            spent_stat_points: 0,
+            insights: Vec::new(),
             last_check: None,
             active_event_id: None,
             event_stage_index: 0,
@@ -152,6 +160,8 @@ impl GameState {
             history: Vec::new(),
             trait_id: None,
             experience: 0,
+            spent_stat_points: 0,
+            insights: Vec::new(),
             last_check: None,
             active_event_id: None,
             event_stage_index: 0,

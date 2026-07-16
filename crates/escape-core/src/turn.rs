@@ -4,11 +4,20 @@ use crate::content::{
 };
 use crate::effects::{printer_glyph_anomaly_cue, EffectCue};
 use crate::resources::{
-    ACTION_PREFIX_CHOICE, ACTION_PREFIX_MOVE, ACTION_PREFIX_USE, RESOURCE_BATTERY, RESOURCE_HEALTH,
-    RESOURCE_HUNGER, RESOURCE_SANITY, RESOURCE_THIRST,
+    ACTION_PREFIX_CHOICE, ACTION_PREFIX_MOVE, ACTION_PREFIX_TRAIN, ACTION_PREFIX_USE,
+    RESOURCE_BATTERY, RESOURCE_HEALTH, RESOURCE_HUNGER, RESOURCE_SANITY, RESOURCE_THIRST,
 };
 use crate::state::{CheckResolution, GameState, PlayerState};
 use serde::Serialize;
+
+const VALID_ABILITY_IDS: [&str; 6] = [
+    "logic",
+    "empathy",
+    "volition",
+    "composure",
+    "interface",
+    "physical",
+];
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ActionView {
@@ -210,6 +219,10 @@ pub fn apply_content_action(
         .location(&state.location_id)
         .ok_or_else(|| ContentActionError::UnknownStateLocation(state.location_id.clone()))?;
 
+    if action_id.starts_with(ACTION_PREFIX_TRAIN) {
+        return apply_train_action(state, content, action_id);
+    }
+
     if current_content_ending(content, state).is_some() {
         return Err(ContentActionError::UnknownAction(action_id.to_string()));
     }
@@ -251,7 +264,12 @@ pub fn apply_content_action(
     apply_cost(&mut next_state.player, &choice.cost);
     logs.extend(apply_outcome(&mut next_state, content, &choice.outcome));
     if let Some(check) = &choice.check {
-        let res = resolve_ability_check(state, check.ability.as_str(), check.difficulty);
+        let res = resolve_ability_check_with_content(
+            state,
+            content,
+            check.ability.as_str(),
+            check.difficulty,
+        );
         let branch = if res.success {
             &check.success
         } else {
@@ -486,6 +504,48 @@ fn apply_item_action(
     })
 }
 
+fn apply_train_action(
+    state: &GameState,
+    content: &ContentIndex,
+    action_id: &str,
+) -> Result<ActionResult, ContentActionError> {
+    let Some(ability_id) = action_id.strip_prefix(ACTION_PREFIX_TRAIN) else {
+        return Err(ContentActionError::UnknownAction(action_id.to_string()));
+    };
+    let Some(leveling) = content
+        .runtime
+        .as_ref()
+        .and_then(|runtime| runtime.leveling.as_ref())
+    else {
+        return Err(ContentActionError::UnknownAction(action_id.to_string()));
+    };
+    if available_stat_points(state, content) == 0 || !VALID_ABILITY_IDS.contains(&ability_id) {
+        return Err(ContentActionError::UnknownAction(action_id.to_string()));
+    }
+    let current = state.player.abilities.get(ability_id).copied().unwrap_or(0);
+    if current >= 5 || leveling.thresholds.is_empty() {
+        return Err(ContentActionError::UnknownAction(action_id.to_string()));
+    }
+
+    let mut next_state = state.clone();
+    next_state.last_check = None;
+    next_state
+        .player
+        .abilities
+        .insert(ability_id.to_string(), current + 1);
+    next_state.spent_stat_points += 1;
+    let log = format!("+ {} 수련 1", ability_label(ability_id));
+    next_state.add_history_entry("action", &log, Some("training"));
+    Ok(ActionResult {
+        encounter_id: "training".to_string(),
+        action_id: action_id.to_string(),
+        state: next_state,
+        logs: vec![log],
+        effect_cues: Vec::new(),
+        newly_unlocked_achievements: Vec::new(),
+    })
+}
+
 fn item_use_log(item: &ItemDef) -> String {
     item.use_log
         .clone()
@@ -635,6 +695,7 @@ fn apply_outcome(
     content: &ContentIndex,
     outcome: &OutcomeDef,
 ) -> Vec<String> {
+    let points_before = earned_stat_points(state.experience, content);
     for (resource, amount) in &outcome.resources {
         apply_player_resource_delta(&mut state.player, resource, *amount);
     }
@@ -678,6 +739,17 @@ fn apply_outcome(
     for clue in &outcome.add_clues {
         state.add_clue_once(clue);
     }
+    for insight_id in &outcome.add_insights {
+        if state.insights.iter().any(|owned| owned == insight_id) {
+            continue;
+        }
+        state.insights.push(insight_id.clone());
+        let name = content
+            .insight(insight_id)
+            .map(|insight| insight.name.as_str())
+            .unwrap_or(insight_id);
+        delta_logs.push(format!("+ 기연: {name}"));
+    }
     if let Some(destination_id) = &outcome.destination_id {
         state.location_id = destination_id.clone();
     }
@@ -710,9 +782,33 @@ fn apply_outcome(
         }
     }
 
+    let points_after = earned_stat_points(state.experience, content);
+    if points_after > points_before {
+        delta_logs.push(format!("+ 수련 기회 {}", points_after - points_before));
+    }
+
     let mut logs: Vec<String> = outcome.log.iter().cloned().collect();
     logs.extend(delta_logs);
     logs
+}
+
+fn earned_stat_points(experience: u32, content: &ContentIndex) -> u32 {
+    content
+        .runtime
+        .as_ref()
+        .and_then(|runtime| runtime.leveling.as_ref())
+        .map(|leveling| {
+            leveling
+                .thresholds
+                .iter()
+                .filter(|threshold| **threshold <= experience)
+                .count() as u32
+        })
+        .unwrap_or(0)
+}
+
+pub fn available_stat_points(state: &GameState, content: &ContentIndex) -> u32 {
+    earned_stat_points(state.experience, content).saturating_sub(state.spent_stat_points)
 }
 
 fn advance_turn(state: &mut GameState) -> Vec<String> {
@@ -773,22 +869,57 @@ pub fn resolve_ability_check(
     ability_id: &str,
     difficulty: i32,
 ) -> CheckResolution {
+    resolve_ability_check_with_bonus(state, ability_id, difficulty, 0)
+}
+
+pub fn resolve_ability_check_with_content(
+    state: &GameState,
+    content: &ContentIndex,
+    ability_id: &str,
+    difficulty: i32,
+) -> CheckResolution {
+    resolve_ability_check_with_bonus(
+        state,
+        ability_id,
+        difficulty,
+        insight_bonus(state, content, ability_id),
+    )
+}
+
+fn resolve_ability_check_with_bonus(
+    state: &GameState,
+    ability_id: &str,
+    difficulty: i32,
+    insight_bonus: i32,
+) -> CheckResolution {
     let (first, second) = roll_2d6(&format!(
         "{}:{}:{}:{}",
         state.seed, state.turn, ability_id, difficulty
     ));
     let ability_value = player_ability(&state.player, ability_id);
-    let total = first + second + ability_value;
+    let total = first + second + ability_value + insight_bonus;
     let success = total >= difficulty;
     CheckResolution {
         ability_id: ability_id.to_string(),
         ability_label: crate::ability_label(ability_id).to_string(),
         dice: (first, second),
         ability_value,
+        insight_bonus,
         difficulty,
         total,
         success,
     }
+}
+
+pub fn insight_bonus(state: &GameState, content: &ContentIndex, ability_id: &str) -> i32 {
+    state
+        .insights
+        .iter()
+        .filter_map(|id| content.insight(id))
+        .filter_map(|insight| insight.check_bonus.as_ref())
+        .filter(|bonus| bonus.ability == ability_id)
+        .map(|bonus| bonus.bonus)
+        .sum()
 }
 
 fn roll_2d6(seed: &str) -> (i32, i32) {

@@ -64,6 +64,7 @@ Rust GameCore
 ---
 현재 최우선 남은 작업:
 
+- (게임루프 트랙) **Game Loop Expansion, Slice 3 — Leveling·Insights·Item Details** 준비 중. `fable_gameloop3_step1_2607161330.md`의 WP 순서를 따르며, **WP-D1 문서 설계**는 `docs/design/Progression_and_Title_Model.md`를 canonical 계약으로 삼는다. 레벨링 수련 포인트/`train:{ability_id}`, 기연 `insight_bonus`, `ScenePage.inventory_details`, CheckResolution 표시 규칙과 저장 호환성/renderer-neutral 경계를 먼저 확정한 뒤 W1 → S1 → S2 → S3 → W2 → W3 → W4 → C1 → D2 순서로 구현한다.
 - (게임루프 트랙) **진행 중** — 이구학지 게임 루프 2차 확장 (Slice 2) 진행 중 (Content-owned labels, Check resolution reveal, Collapse gate & second wind).
 - (UI 트랙) Web Storybook UI/UX 개선 사이클 진행 중 — 방향은
   `docs/design/Mobile_Ink_Storybook_UI.md`(수묵 서책 + 정보 드로어), 작업

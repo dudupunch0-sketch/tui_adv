@@ -46,6 +46,7 @@ encounters:
           add_flags: [wuxia_arrival_grounded]
           set_trait: wuxia_apprentice
           experience: 15
+          add_insights: [insight_name_the_rule]
           log: 사원증의 플라스틱 모서리가 손바닥에 남아, 이 몸이 아직 현대의 나임을 붙든다.
       - id: follow_roadside_dust
         label: 흙먼지가 흐르는 쪽으로 몸을 숨긴다
@@ -82,6 +83,7 @@ encounters:
           add_flags: [first_brawl_started, heuksa_bang_first_fight_resolved, first_brawl_survived]
           add_clues: [violence_is_real, open_street_escape_route]
           experience: 15
+          add_insights: [insight_read_the_flow]
         check:
           ability: physical
           difficulty: 8
@@ -294,6 +296,7 @@ encounters:
           add_clues: [cheongryu_name_heard, sect_identity_matters]
           destination_id: cheongryu_outer_courtyard
           experience: 15
+          add_insights: [insight_breathe_before_bargain]
           log: 진실은 설득력이 낮지만 일관성은 있다. 서하린은 믿기보다 감시하기로 결정한다.
       - id: ask_for_medical_help_first
         label: 설명보다 치료와 안전한 곳을 먼저 부탁한다

@@ -211,6 +211,25 @@ describe('Web Storybook renderer', () => {
     expect(html).not.toContain('data-content-kind="cheongirok"');
   });
 
+  it('renders a continue stream item as one action and keeps blocked choices off its nav', () => {
+    const continueItem: import('../../core/types').SceneContentItem = {
+      kind: 'continue',
+      stage_id: 'opening',
+      text: null,
+      speaker: null,
+      visual_id: null,
+      alt: null,
+      placeholder: false,
+      actions: [{ id: 'event:continue', label: '계속', kind: 'continue', cost_text: null }],
+    };
+    const html = renderStorybookPage(samplePrinterPage({ content_stream: [continueItem] }));
+
+    expect((html.match(/class="choice-row"/g) ?? []).length).toBe(1);
+    expect(html).toContain('data-action-id="event:continue"');
+    expect(html).not.toContain('현재 실행할 수 있는 행동이 없다');
+    expect(html).not.toContain('토너 카트리지를 확인한다');
+  });
+
   it('renders combat intervention pages as an ink duel without fabricated battle state', () => {
     const html = renderStorybookPage(
       samplePrinterPage({

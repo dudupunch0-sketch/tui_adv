@@ -141,7 +141,8 @@ export type SceneContentKind =
   | 'system'
   | 'cheongirok'
   | 'result_summary'
-  | 'choice';
+  | 'choice'
+  | 'continue';
 
 export interface SceneContentItem {
   kind: SceneContentKind | string;

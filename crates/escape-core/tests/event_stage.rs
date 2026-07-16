@@ -14,6 +14,17 @@ fn event_bundle() -> escape_core::ContentBundle {
         .iter_mut()
         .find(|value| value["id"] == "printer_prints_alone")
         .unwrap();
+    encounter["choices"]
+        .as_array_mut()
+        .unwrap()
+        .iter_mut()
+        .find(|choice| choice["id"] == "read_printout")
+        .unwrap()["check"] = json!({
+        "ability": "logic",
+        "difficulty": 7,
+        "success": {"log": "인쇄 순서를 읽었다."},
+        "failure": {"log": "인쇄 순서를 놓쳤다."}
+    });
     encounter["event"] = json!({"stages": [
         {"id":"opening","kind":"story","blocks":[
             {"kind":"narration","text":"첫 문단"},
@@ -66,6 +77,7 @@ fn ordered_event_stages_progress_and_serialize_as_content_stream() {
     let result_state = apply_action_from_content(&decision_state, &index, "choice:read_printout")
         .unwrap()
         .state;
+    assert!(result_state.last_check.is_some());
     assert_eq!(result_state.event_stage_index, 2);
     assert_eq!(result_state.event_next_stage_id.as_deref(), Some("closing"));
     assert_eq!(
@@ -79,14 +91,14 @@ fn ordered_event_stages_progress_and_serialize_as_content_stream() {
     let closing_state = apply_action_from_content(&result_state, &index, "event:continue")
         .unwrap()
         .state;
-    assert_eq!(closing_state.event_stage_index, 3);
-    assert_eq!(
-        scene_page_from_content(&closing_state, &index)
-            .unwrap()
-            .content_stream[0]
-            .kind,
-        "document"
+    assert!(
+        closing_state.last_check.is_none(),
+        "event:continue must clear the checked choice result"
     );
+    assert_eq!(closing_state.event_stage_index, 3);
+    let closing_page = scene_page_from_content(&closing_state, &index).unwrap();
+    assert_eq!(closing_page.content_stream[0].kind, "document");
+    assert!(closing_page.check_result.is_none());
     let done = apply_action_from_content(&closing_state, &index, "event:continue")
         .unwrap()
         .state;

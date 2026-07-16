@@ -11,7 +11,7 @@ import {
   storypackPreviewLoadingPage,
   type StorypackPreviewOption,
 } from './core/contentBundles';
-import type { ScenePage } from './core/types';
+import type { ActionResultDelta, ScenePage } from './core/types';
 import { errorMessage } from './core/errors';
 import { createEscapeWasmRuntime, DEFAULT_SEED, type EscapeWasmRuntime } from './core/wasmRuntime';
 import { startPrinterFlowEffect } from './effects/printerFlow';
@@ -98,7 +98,10 @@ function render(): void {
   renderGamePage(page);
 }
 
-function renderGamePage(page: ScenePage, renderOptions: { suppressActionResult?: boolean } = {}): void {
+function renderGamePage(
+  page: ScenePage,
+  renderOptions: { suppressActionResult?: boolean; actionResult?: ActionResultDelta } = {},
+): void {
   if (page.mode === 'ending') {
     const endingId = page.visual.source_id;
     if (endingId) {
@@ -112,6 +115,7 @@ function renderGamePage(page: ScenePage, renderOptions: { suppressActionResult?:
     audioLabel: playerSettings.audio === 'on' ? '소리 켜짐' : '소리 꺼짐',
     motionLabel: `연출 ${playerSettings.motion}`,
     suppressActionResult: renderOptions.suppressActionResult,
+    actionResult: renderOptions.actionResult,
   });
   if (confirmAbandon) {
     const gamePage = appRoot.querySelector<HTMLElement>('.storybook-page');
@@ -474,18 +478,18 @@ function runAction(actionId: string): void {
       render();
       return;
     }
-    wasmRuntime.applyAction(actionId);
+    const actionResult = wasmRuntime.applyAction(actionId);
     saveWasmState();
     lastError = null;
     const nextPage = currentScenePage();
     audioEngine.playOneShot(audioCueForSceneTransition(previousPage, nextPage, action));
     if (currentMotionMode() === 'normal') {
-      void presentActionResultBeat(nextPage, actionId).then((beatShown) => {
+      void presentActionResultBeat(nextPage, actionResult, actionId).then((beatShown) => {
         renderGameTransition(previousPage, nextPage, action, { suppressActionResult: beatShown });
       });
       return;
     }
-    renderGameTransition(previousPage, nextPage, action);
+    renderGameTransition(previousPage, nextPage, action, { actionResult });
   } catch (error) {
     lastError = `입력 오류: ${errorMessage(error)}`;
     render();
@@ -497,9 +501,13 @@ function runAction(actionId: string): void {
  * 판정 배너와 결과 로그를 먼저 보여준다. 탭(또는 키 입력)으로 진행.
  * 보여줄 결과가 없으면 즉시 false로 완료된다.
  */
-function presentActionResultBeat(nextPage: ScenePage, actionId: string): Promise<boolean> {
+function presentActionResultBeat(
+  nextPage: ScenePage,
+  actionResult: ReturnType<EscapeWasmRuntime['applyAction']>,
+  actionId: string,
+): Promise<boolean> {
   return new Promise((resolve) => {
-    const beatHtml = renderActionResultBeat(nextPage);
+    const beatHtml = renderActionResultBeat(nextPage, actionResult);
     const anchor = appRoot.querySelector<HTMLElement>('.storybook-choices');
     if (!beatHtml || !anchor) {
       resolve(false);
@@ -539,7 +547,7 @@ function renderGameTransition(
   previousPage: ScenePage | null,
   nextPage: ScenePage,
   action: TransitionActionContext | null,
-  renderOptions: { suppressActionResult?: boolean } = {},
+  renderOptions: { suppressActionResult?: boolean; actionResult?: ActionResultDelta } = {},
 ): void {
   transitionController.transitionTo({
     previousPage,

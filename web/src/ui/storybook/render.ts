@@ -10,7 +10,9 @@ import type {
   SceneBlockedAction,
   ScenePage,
   CheckResolution,
+  ActionResultDelta,
 } from '../../core/types';
+import { NEW_GAME_ACTION_ID } from '../keyboard';
 import { escapeHtml } from './html';
 import { renderStoryHistory } from './history';
 import {
@@ -29,6 +31,8 @@ export interface StorybookRenderOptions {
   motionLabel?: string;
   /** true면 판정 배너와 인라인 결과 로그를 생략한다 (행동 결과 비트가 이전 화면에서 이미 보여준 경우). */
   suppressActionResult?: boolean;
+  /** Current transition delta, used for the reduced-motion resting frame. */
+  actionResult?: ActionResultDelta;
 }
 
 export function renderStorybookPage(page: ScenePage, options: StorybookRenderOptions = {}): string {
@@ -43,6 +47,7 @@ export function renderStorybookPage(page: ScenePage, options: StorybookRenderOpt
     <section class="storybook-page" data-story-layout="${layout}" data-story-phase="${phase}">
       ${renderStoryFlow(page, layout, options)}
       ${page.content_stream?.length ? '' : renderChoices(page)}
+      ${page.mode === 'ending' ? renderEndingRestart() : ''}
     </section>
   </div>
   ${renderHud(page)}
@@ -166,7 +171,6 @@ function renderOrderedStoryFlow(page: ScenePage, options: StorybookRenderOptions
   const title = page.title === page.location.name ? '' : `<h1>${escapeHtml(page.title)}</h1>`;
   const pressureNotes = [...page.status_summary.warnings, ...page.pressure_cues.map((cue) => cue.message)];
   const items = page.content_stream!.map((item) => renderContentItem(item, page)).join('');
-  const hasResultItem = page.content_stream!.some((item) => item.kind === 'result_summary');
 
   return `<article class="story-flow story-flow--ordered" data-region="story-flow">
     <header class="story-flow__heading">
@@ -176,7 +180,11 @@ function renderOrderedStoryFlow(page: ScenePage, options: StorybookRenderOptions
     </header>
     <section class="storybook-body storybook-body--ordered" data-region="body">${items}</section>
     ${options.suppressActionResult ? '' : renderCheckResolution(page)}
-    ${hasResultItem || options.suppressActionResult ? '' : renderInlineResultLog(page)}
+    ${
+      options.suppressActionResult || hasAuthoredResult(page)
+        ? ''
+        : renderActionResultLog(page, options.actionResult)
+    }
   </article>`;
 }
 
@@ -240,10 +248,12 @@ function renderBody(page: ScenePage, options: StorybookRenderOptions = {}): stri
     .filter((block) => !dialogueTexts.has(block.text.trim()))
     .map(renderBodyBlock)
     .join('');
-  const resultLog = options.suppressActionResult ? '' : renderInlineResultLog(page);
 
   const pressureNotes = [...page.status_summary.warnings, ...page.pressure_cues.map((cue) => cue.message)];
   const checkResolution = options.suppressActionResult ? '' : renderCheckResolution(page);
+  const resultLog = options.suppressActionResult
+    ? ''
+    : renderActionResultLog(page, options.actionResult);
   return `<section class="storybook-body" data-region="body">
     ${title}
     ${pressureNotes.length ? `<aside class="storybook-pressure" data-region="pressure">${pressureNotes.map((note) => `<p>${escapeHtml(note)}</p>`).join('')}</aside>` : ''}
@@ -259,16 +269,47 @@ function renderBody(page: ScenePage, options: StorybookRenderOptions = {}): stri
  * content_stream에 작가가 배치한 result_summary 스테이지가 있으면 (그건 다음 화면의 서사이므로)
  * 판정 배너만 포함한다. 보여줄 것이 없으면 빈 문자열.
  */
-export function renderActionResultBeat(page: ScenePage): string {
+export function renderActionResultBeat(page: ScenePage, result: ActionResultDelta): string {
   const check = renderCheckResolution(page);
-  const hasStreamResult = page.content_stream?.some((item) => item.kind === 'result_summary') ?? false;
-  const log = hasStreamResult ? '' : renderInlineResultLog(page);
+  const hasStreamResult = hasAuthoredResult(page);
+  const log = hasStreamResult ? '' : renderActionResultLog(page, result);
   if (!check && !log) return '';
   return `<section class="action-result-beat" data-region="action-result" aria-live="polite">
     ${check}
     ${log}
     <p class="action-result-beat__continue"><span aria-hidden="true">✥</span>화면을 누르면 계속</p>
   </section>`;
+}
+
+function renderEndingRestart(): string {
+  return `<nav class="ending-actions" data-region="ending-actions" aria-label="기록 종료">
+    <p>이 기록은 여기서 끝났다.</p>
+    <button type="button" class="choice-row ending-actions__restart" data-action-id="${NEW_GAME_ACTION_ID}">
+      <span class="choice-bullet" aria-hidden="true">新</span>
+      <span class="choice-label">새 기록 시작</span>
+    </button>
+  </nav>`;
+}
+
+function hasAuthoredResult(page: ScenePage): boolean {
+  return page.content_stream?.some((item) => item.kind === 'result_summary') ?? false;
+}
+
+function renderActionResultLog(page: ScenePage, result: ActionResultDelta | undefined): string {
+  if (!result) return '';
+  const rows = [...result.logs];
+  if (result.newly_unlocked_achievements.length) {
+    rows.push(
+      `+ 업적: ${result.newly_unlocked_achievements
+        .map((id) => renderAchievementLabel(id, page))
+        .join(', ')}`,
+    );
+  }
+  if (!rows.length) return '';
+  return `<section class="story-result-log" aria-label="최근 결과">${rows
+    .flatMap((entry) => entry.split('\n'))
+    .map(renderResultLogLine)
+    .join('')}</section>`;
 }
 
 function renderCheckResolution(page: ScenePage): string {
@@ -306,29 +347,6 @@ function renderBodyBlock(block: BodyBlock): string {
   return `<p data-body-kind="${escapeHtml(block.kind)}" data-source-id="${escapeHtml(
     block.source_id ?? '',
   )}">${escapeHtml(block.text)}</p>`;
-}
-
-function renderInlineResultLog(page: ScenePage): string {
-  const rows: string[] = [];
-  const latestResult = page.history_entries[page.history_entries.length - 1];
-  const hasFinalEpilogueBlocks = page.body_blocks.some((block) => block.kind.startsWith('epilogue_'));
-  if (latestResult && !hasFinalEpilogueBlocks) {
-    rows.push(...latestResult.text.split('\n'));
-  }
-  if (page.inventory_summary.items.length) {
-    rows.push(`+ 소지품 ${page.inventory_summary.items.length + page.inventory_summary.overflow_count}개`);
-  }
-  const achievements = page.achievement_summary.newly_unlocked.length
-    ? page.achievement_summary.newly_unlocked
-    : page.achievement_summary.unlocked;
-  if (achievements.length) {
-    rows.push(`+ 업적: ${achievements.map(id => renderAchievementLabel(id, page)).join(', ')}`);
-  }
-  if (!rows.length) return '';
-
-  return `<section class="story-result-log" aria-label="최근 결과">${rows
-    .map(renderResultLogLine)
-    .join('')}</section>`;
 }
 
 function renderResultLogLine(line: string): string {

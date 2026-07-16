@@ -197,6 +197,27 @@ fn json_boundary_uses_storypack_preview_default_location() {
         result["newly_unlocked_achievements"][0],
         "wuxia_first_arrival"
     );
+
+    let ending_state_json =
+        serde_json::to_string(&result["state"]).expect("badge ending state should serialize");
+    let ending_page_json = raw_scene_page_json(&ending_state_json, WUXIA_PREVIEW_BUNDLE)
+        .expect("badge ending page should serialize");
+    let ending_page: Value =
+        serde_json::from_str(&ending_page_json).expect("badge ending page JSON should parse");
+    assert_eq!(ending_page["mode"], "ending");
+    assert_eq!(ending_page["visual"]["source_id"], "wuxia_preview_grounded");
+    assert_eq!(ending_page["title"], "출근 완료 — 강호의 사원증");
+    assert!(ending_page["body_blocks"][0]["text"]
+        .as_str()
+        .expect("ending body should be text")
+        .contains("이번 기록은 여기서 끝이다"));
+    assert_eq!(
+        ending_page["actions"]
+            .as_array()
+            .expect("ending actions should be an array")
+            .len(),
+        0
+    );
 }
 
 #[test]
@@ -209,6 +230,66 @@ fn json_boundary_rejects_event_choice_before_its_choice_stage() {
     )
     .expect_err("story stage must not authorize a later choice");
     assert!(error.contains("unknown action id"));
+}
+
+#[test]
+fn json_boundary_event_continue_clears_previous_check_result() {
+    let mut bundle: Value =
+        serde_json::from_str(CONTENT_BUNDLE).expect("fixture bundle JSON should parse");
+    let encounter = bundle["content"]["encounters"]
+        .as_array_mut()
+        .unwrap()
+        .iter_mut()
+        .find(|value| value["id"] == "printer_prints_alone")
+        .unwrap();
+    encounter["choices"]
+        .as_array_mut()
+        .unwrap()
+        .iter_mut()
+        .find(|choice| choice["id"] == "read_printout")
+        .unwrap()["check"] = json!({
+        "ability": "logic",
+        "difficulty": 7,
+        "success": {"log": "인쇄 순서를 읽었다."},
+        "failure": {"log": "인쇄 순서를 놓쳤다."}
+    });
+    encounter["event"] = json!({"stages": [
+        {"id":"opening","kind":"story","blocks":[
+            {"kind":"narration","text":"첫 문단"},
+            {"kind":"illustration","visual_id":"printer-event.png","alt":"출력 중인 복합기","placeholder":true}
+        ]},
+        {"id":"decision","kind":"choice","choices":[{"id":"read_printout","next_stage_id":"closing"}]},
+        {"id":"result","kind":"result","blocks":[{"kind":"result_summary","text":"종이가 멈췄다."}]},
+        {"id":"closing","kind":"story","blocks":[{"kind":"document","text":"출력 시각: 내일"}]}
+    ]});
+    let bundle_json = serde_json::to_string(&bundle).unwrap();
+
+    let initial_json = new_game_json(7, &bundle_json).unwrap();
+    let mut initial: Value = serde_json::from_str(&initial_json).unwrap();
+    initial["location_id"] = json!("printer_area");
+    let initial_json = serde_json::to_string(&initial).unwrap();
+    let opening: Value = serde_json::from_str(
+        &raw_apply_action_json(&initial_json, &bundle_json, "event:continue").unwrap(),
+    )
+    .unwrap();
+    let decision_json = serde_json::to_string(&opening["state"]).unwrap();
+    let checked: Value = serde_json::from_str(
+        &raw_apply_action_json(&decision_json, &bundle_json, "choice:read_printout").unwrap(),
+    )
+    .unwrap();
+    assert!(checked["state"]["last_check"].is_object());
+
+    let result_json = serde_json::to_string(&checked["state"]).unwrap();
+    let continued: Value = serde_json::from_str(
+        &raw_apply_action_json(&result_json, &bundle_json, "event:continue").unwrap(),
+    )
+    .unwrap();
+    assert_eq!(continued["logs"], json!([]));
+    assert!(continued["state"]["last_check"].is_null());
+    let closing_json = serde_json::to_string(&continued["state"]).unwrap();
+    let closing_page: Value =
+        serde_json::from_str(&raw_scene_page_json(&closing_json, &bundle_json).unwrap()).unwrap();
+    assert!(closing_page["check_result"].is_null());
 }
 
 #[test]

@@ -1,5 +1,5 @@
 import { DEFAULT_CONTENT_BUNDLE_JSON } from './contentBundles';
-import type { ScenePage } from './types';
+import type { ActionResultDelta, ScenePage } from './types';
 
 export interface EscapeWasmBindings {
   new_game_json(seed: bigint, contentBundleJson: string): string;
@@ -7,7 +7,7 @@ export interface EscapeWasmBindings {
   apply_action_json(stateJson: string, contentBundleJson: string, actionId: string): string;
 }
 
-export interface EscapeWasmActionResult {
+export interface EscapeWasmActionResult extends ActionResultDelta {
   encounter_id: string;
   action_id: string;
   state: unknown;

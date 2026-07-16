@@ -219,12 +219,12 @@ pub fn apply_content_action(
         .location(&state.location_id)
         .ok_or_else(|| ContentActionError::UnknownStateLocation(state.location_id.clone()))?;
 
-    if action_id.starts_with(ACTION_PREFIX_TRAIN) {
-        return apply_train_action(state, content, action_id);
-    }
-
     if current_content_ending(content, state).is_some() {
         return Err(ContentActionError::UnknownAction(action_id.to_string()));
+    }
+
+    if action_id.starts_with(ACTION_PREFIX_TRAIN) {
+        return apply_train_action(state, content, action_id);
     }
 
     if action_id.starts_with(ACTION_PREFIX_USE) {
@@ -912,14 +912,25 @@ fn resolve_ability_check_with_bonus(
 }
 
 pub fn insight_bonus(state: &GameState, content: &ContentIndex, ability_id: &str) -> i32 {
-    state
-        .insights
-        .iter()
-        .filter_map(|id| content.insight(id))
+    ordered_unique_insights(state, content)
+        .into_iter()
         .filter_map(|insight| insight.check_bonus.as_ref())
         .filter(|bonus| bonus.ability == ability_id)
         .map(|bonus| bonus.bonus)
         .sum()
+}
+
+pub(crate) fn ordered_unique_insights<'a>(
+    state: &'a GameState,
+    content: &'a ContentIndex,
+) -> Vec<&'a crate::content::InsightDef> {
+    let mut seen = std::collections::BTreeSet::new();
+    state
+        .insights
+        .iter()
+        .filter(|id| seen.insert(id.as_str()))
+        .filter_map(|id| content.insight(id))
+        .collect()
 }
 
 fn roll_2d6(seed: &str) -> (i32, i32) {

@@ -11,7 +11,7 @@ use crate::resources::{
 use crate::state::{CheckResolution, GameHistoryEntry, GameState, PlayerState};
 use crate::turn::{
     ability_check_success_percent, available_stat_points, content_turn_view, insight_bonus,
-    ActionView, BlockedActionView, ContentTurnError, TurnView,
+    ordered_unique_insights, ActionView, BlockedActionView, ContentTurnError, TurnView,
 };
 use serde::{Deserialize, Serialize};
 
@@ -284,7 +284,11 @@ fn scene_page_from_turn_view(
             name,
             title_label,
             title_description,
-            stat_points: available_stat_points(state, content),
+            stat_points: if matches!(mode, SceneMode::Ending) {
+                0
+            } else {
+                available_stat_points(state, content)
+            },
             abilities,
         })
     };
@@ -401,10 +405,8 @@ fn scene_page_from_turn_view(
         progression,
         content_labels,
         check_result: state.last_check.clone(),
-        insights: state
-            .insights
-            .iter()
-            .filter_map(|id| content.insight(id))
+        insights: ordered_unique_insights(state, content)
+            .into_iter()
             .map(|insight| {
                 let effect_text = insight
                     .check_bonus

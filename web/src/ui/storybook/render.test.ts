@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import type { ScenePage } from '../../core/types';
 import { sceneForVisual } from './ink/inkScenes';
-import { renderStorybookPage } from './render';
+import { renderActionResultBeat, renderStorybookPage } from './render';
 
 function samplePrinterPage(overrides: Partial<ScenePage> = {}): ScenePage {
   return {
@@ -520,6 +520,77 @@ describe('Web Storybook renderer', () => {
   it('omits check resolution banner when check_result is absent', () => {
     const html = renderStorybookPage(samplePrinterPage());
     expect(html).not.toContain('class="check-resolution"');
+  });
+
+  it('renders the action result beat with check banner and result log', () => {
+    const html = renderActionResultBeat(
+      samplePrinterPage({
+        check_result: {
+          ability_id: 'physical',
+          ability_label: '신체',
+          dice: [5, 2],
+          ability_value: 2,
+          difficulty: 8,
+          total: 9,
+          success: true,
+        },
+      }),
+    );
+
+    expect(html).toContain('class="action-result-beat"');
+    expect(html).toContain('data-region="action-result"');
+    expect(html).toContain('class="check-resolution"');
+    expect(html).toContain('class="story-result-log"');
+    expect(html).toContain('따뜻한 출력물을 접어 주머니에 넣었다.');
+    expect(html).toContain('화면을 누르면 계속');
+  });
+
+  it('keeps only the check banner in the beat when the stream carries an authored result stage', () => {
+    const html = renderActionResultBeat(
+      samplePrinterPage({
+        check_result: {
+          ability_id: 'logic',
+          ability_label: '논리',
+          dice: [3, 3],
+          ability_value: 2,
+          difficulty: 9,
+          total: 8,
+          success: false,
+        },
+        content_stream: [
+          { kind: 'result_summary', stage_id: 's', text: '결과 서사.', speaker: null, visual_id: null, alt: null, placeholder: false, actions: [] },
+        ],
+      }),
+    );
+
+    expect(html).toContain('class="check-resolution"');
+    expect(html).not.toContain('class="story-result-log"');
+  });
+
+  it('returns an empty beat when there is nothing to show', () => {
+    const html = renderActionResultBeat(
+      samplePrinterPage({ history_entries: [], inventory_summary: { items: [], overflow_count: 0 }, achievement_summary: { unlocked: [], newly_unlocked: [] } }),
+    );
+    expect(html).toBe('');
+  });
+
+  it('suppresses the inline result log and check banner when the beat already showed them', () => {
+    const page = samplePrinterPage({
+      check_result: {
+        ability_id: 'physical',
+        ability_label: '신체',
+        dice: [5, 2],
+        ability_value: 2,
+        difficulty: 8,
+        total: 9,
+        success: true,
+      },
+    });
+
+    const html = renderStorybookPage(page, { suppressActionResult: true });
+    expect(html).not.toContain('class="check-resolution"');
+    expect(html).not.toContain('class="story-result-log"');
+    expect(html).toContain('data-region="choices"');
   });
 
   it('forces data-story-phase="collapse" when page visual is collapse_gate', () => {

@@ -1,3 +1,4 @@
+use crate::ability_label;
 use crate::content::{
     ContentIndex, EncounterDef, EndingDef, LocationDef, PresentationEffectCue, PublicSecretDef,
 };
@@ -9,7 +10,6 @@ use crate::resources::{
 };
 use crate::state::{CheckResolution, GameHistoryEntry, GameState, PlayerState};
 use crate::turn::{content_turn_view, ActionView, BlockedActionView, ContentTurnError, TurnView};
-use crate::ability_label;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -28,6 +28,8 @@ pub struct ScenePage {
     pub chapter_label: String,
     pub status_summary: StatusSummary,
     pub body_blocks: Vec<BodyBlock>,
+    #[serde(default)]
+    pub content_stream: Vec<SceneContentItem>,
     pub dialogue_entries: Vec<DialogueEntry>,
     pub visual: SceneVisual,
     pub actions: Vec<SceneAction>,
@@ -45,6 +47,25 @@ pub struct ScenePage {
     pub content_labels: Option<ContentLabels>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub check_result: Option<CheckResolution>,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct SceneContentItem {
+    pub kind: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub stage_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub text: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub speaker: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub visual_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub alt: Option<String>,
+    #[serde(default)]
+    pub placeholder: bool,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub actions: Vec<SceneAction>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -235,7 +256,14 @@ fn scene_page_from_turn_view(
             .as_ref()
             .and_then(|tid| content.trait_def(tid))
             .map(|t| t.name.clone());
-        let ability_ids = ["logic", "empathy", "volition", "composure", "interface", "physical"];
+        let ability_ids = [
+            "logic",
+            "empathy",
+            "volition",
+            "composure",
+            "interface",
+            "physical",
+        ];
         let abilities = ability_ids
             .iter()
             .map(|&id| AbilityStatus {
@@ -294,6 +322,26 @@ fn scene_page_from_turn_view(
         })
     };
 
+    let body_blocks = body_blocks(content, ending, &mode, &view.body, &source_id, state);
+    let visual = SceneVisual {
+        id: visual_id,
+        kind: visual_kind,
+        alt: view.title.clone(),
+        source_id: Some(source_id.clone()),
+    };
+    let actions: Vec<_> = view
+        .actions
+        .iter()
+        .map(|a| scene_action(a, encounter, &state.player))
+        .collect();
+    let content_stream = scene_content_stream(
+        encounter,
+        state,
+        &body_blocks,
+        &dialogue_entries,
+        &visual,
+        &actions,
+    );
     ScenePage {
         mode: mode.clone(),
         title: view.title.clone(),
@@ -304,19 +352,11 @@ fn scene_page_from_turn_view(
         },
         chapter_label: chapter_label_for_scene(state, location, &source_id),
         status_summary: status_summary(state),
-        body_blocks: body_blocks(content, ending, &mode, &view.body, &source_id, state),
+        body_blocks,
+        content_stream,
         dialogue_entries,
-        visual: SceneVisual {
-            id: visual_id,
-            kind: visual_kind,
-            alt: view.title.clone(),
-            source_id: Some(source_id),
-        },
-        actions: view
-            .actions
-            .iter()
-            .map(|a| scene_action(a, encounter, &state.player))
-            .collect(),
+        visual,
+        actions,
         blocked_actions: view
             .blocked_actions
             .iter()
@@ -338,6 +378,113 @@ fn scene_page_from_turn_view(
         content_labels,
         check_result: state.last_check.clone(),
     }
+}
+
+fn scene_content_stream(
+    encounter: Option<&EncounterDef>,
+    state: &GameState,
+    body_blocks: &[BodyBlock],
+    dialogue_entries: &[DialogueEntry],
+    visual: &SceneVisual,
+    actions: &[SceneAction],
+) -> Vec<SceneContentItem> {
+    if let Some(stage) = encounter
+        .and_then(|encounter| encounter.event.as_ref().map(|event| (encounter, event)))
+        .and_then(|(encounter, event)| {
+            let index = if state.active_event_id.as_deref() == Some(encounter.id.as_str()) {
+                state.event_stage_index
+            } else {
+                0
+            };
+            event.stages.get(index)
+        })
+    {
+        let mut stream: Vec<_> = stage
+            .blocks
+            .iter()
+            .map(|block| SceneContentItem {
+                kind: block.kind.clone(),
+                stage_id: Some(stage.id.clone()),
+                text: block.text.clone(),
+                speaker: block.speaker.clone(),
+                visual_id: block.visual_id.clone(),
+                alt: block.alt.clone(),
+                placeholder: block.placeholder,
+                actions: Vec::new(),
+            })
+            .collect();
+        if stage.kind == "choice" {
+            stream.push(SceneContentItem {
+                kind: "choice".into(),
+                stage_id: Some(stage.id.clone()),
+                text: None,
+                speaker: None,
+                visual_id: None,
+                alt: None,
+                placeholder: false,
+                actions: actions.to_vec(),
+            });
+        } else if !actions.is_empty() {
+            stream.push(SceneContentItem {
+                kind: "continue".into(),
+                stage_id: Some(stage.id.clone()),
+                text: None,
+                speaker: None,
+                visual_id: None,
+                alt: None,
+                placeholder: false,
+                actions: actions.to_vec(),
+            });
+        }
+        return stream;
+    }
+
+    let mut stream: Vec<_> = body_blocks
+        .iter()
+        .map(|block| SceneContentItem {
+            kind: block.kind.clone(),
+            stage_id: None,
+            text: Some(block.text.clone()),
+            speaker: None,
+            visual_id: None,
+            alt: None,
+            placeholder: false,
+            actions: Vec::new(),
+        })
+        .collect();
+    stream.extend(dialogue_entries.iter().map(|entry| SceneContentItem {
+        kind: "dialogue".into(),
+        stage_id: None,
+        text: Some(entry.text.clone()),
+        speaker: Some(entry.speaker.clone()),
+        visual_id: None,
+        alt: None,
+        placeholder: false,
+        actions: Vec::new(),
+    }));
+    stream.push(SceneContentItem {
+        kind: "illustration".into(),
+        stage_id: None,
+        text: None,
+        speaker: None,
+        visual_id: Some(visual.id.clone()),
+        alt: Some(visual.alt.clone()),
+        placeholder: visual.id.contains(':'),
+        actions: Vec::new(),
+    });
+    if !actions.is_empty() {
+        stream.push(SceneContentItem {
+            kind: "choice".into(),
+            stage_id: None,
+            text: None,
+            speaker: None,
+            visual_id: None,
+            alt: None,
+            placeholder: false,
+            actions: actions.to_vec(),
+        });
+    }
+    stream
 }
 
 fn body_blocks(
@@ -557,7 +704,8 @@ fn build_action_check_info(
     player: &PlayerState,
 ) -> ActionCheckInfo {
     let ability_value = player.abilities.get(&check.ability).copied().unwrap_or(0);
-    let success_percent = crate::turn::ability_check_success_percent(ability_value, check.difficulty);
+    let success_percent =
+        crate::turn::ability_check_success_percent(ability_value, check.difficulty);
     ActionCheckInfo {
         ability_id: check.ability.clone(),
         ability_label: ability_label(&check.ability).to_string(),
@@ -570,14 +718,19 @@ fn scene_action(
     encounter: Option<&EncounterDef>,
     player: &PlayerState,
 ) -> SceneAction {
-    let check = encounter.and_then(|enc| {
-        if action.id.starts_with(ACTION_PREFIX_CHOICE) {
-            let choice_id = &action.id[ACTION_PREFIX_CHOICE.len()..];
-            enc.choices.iter().find(|c| c.id == choice_id).and_then(|c| c.check.as_ref())
-        } else {
-            None
-        }
-    }).map(|c| build_action_check_info(c, player));
+    let check = encounter
+        .and_then(|enc| {
+            if action.id.starts_with(ACTION_PREFIX_CHOICE) {
+                let choice_id = &action.id[ACTION_PREFIX_CHOICE.len()..];
+                enc.choices
+                    .iter()
+                    .find(|c| c.id == choice_id)
+                    .and_then(|c| c.check.as_ref())
+            } else {
+                None
+            }
+        })
+        .map(|c| build_action_check_info(c, player));
 
     SceneAction {
         id: action.id.clone(),
@@ -593,14 +746,19 @@ fn scene_blocked_action(
     encounter: Option<&EncounterDef>,
     player: &PlayerState,
 ) -> SceneBlockedAction {
-    let check = encounter.and_then(|enc| {
-        if action.id.starts_with(ACTION_PREFIX_CHOICE) {
-            let choice_id = &action.id[ACTION_PREFIX_CHOICE.len()..];
-            enc.choices.iter().find(|c| c.id == choice_id).and_then(|c| c.check.as_ref())
-        } else {
-            None
-        }
-    }).map(|c| build_action_check_info(c, player));
+    let check = encounter
+        .and_then(|enc| {
+            if action.id.starts_with(ACTION_PREFIX_CHOICE) {
+                let choice_id = &action.id[ACTION_PREFIX_CHOICE.len()..];
+                enc.choices
+                    .iter()
+                    .find(|c| c.id == choice_id)
+                    .and_then(|c| c.check.as_ref())
+            } else {
+                None
+            }
+        })
+        .map(|c| build_action_check_info(c, player));
 
     SceneBlockedAction {
         id: action.id.clone(),

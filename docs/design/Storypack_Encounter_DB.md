@@ -26,6 +26,10 @@ Status: 설계 문서
 
 ## 1. 목적
 
+후보 카드의 `Encounter`는 runtime의 조건·가중치·seen container이고, 플레이어가
+읽고 선택하는 사건은 `Event`다. Event/Stage/ContentBlock 용어와 구조는
+`docs/design/Event_Stage_Content_Model.md`를 canonical로 따른다.
+
 스토리팩과 인카운터 DB의 목적은 다음이다.
 
 1. 기존 idea_box의 큰 스토리팩 아이디어를 작은 인카운터 상황 카드로 쪼갠다.
@@ -338,6 +342,12 @@ encounter_uses:
   - 낮은 `self`: 문서/기록 오염 리스크 후보
 
 ## 8. Promotion workflow
+
+상황 카드를 runtime으로 승격할 때는 encounter selection metadata와 Event
+content를 분리해 검토한다. Event에는 StoryStage/ChoiceStage가 각각 하나 이상,
+각 Choice 뒤의 ResultStage, ordered block, illustration slot(기본 1개, 특별/보스
+최대 3개 권장)을 설계한다. 미완성 그림도 stable visual id의 placeholder로 남기며,
+`천기록`은 실제 기록 장치가 개입하는 block에만 사용한다.
 
 ```text
 raw idea

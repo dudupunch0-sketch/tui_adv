@@ -148,13 +148,18 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
             "experience_target": 100,
             "label": "천기",
         },
+        "collapse": {
+            "encounter_id": "wuxia_collapse_gate",
+            "resource_id": "health",
+            "used_flag": "second_wind_used",
+        },
     }
     assert "storypack-previews/wuxia_jianghu_pack" in bundle["source"]
     assert bundle["manifest"]["counts"] == {
         "locations": 5,
         "items": 4,
-        "encounters": 43,
-        "endings": 2,
+        "encounters": 44,
+        "endings": 3,
         "achievements": 2,
         "traits": 2,
         "secrets": 0,
@@ -214,8 +219,9 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "wuxia_cheongirok_resolution",
         "wuxia_return_modern_commute_scene",
         "wuxia_settlement_stay_scene",
-        "wuxia_black_serpent_aftermath",
-    ]
+            "wuxia_black_serpent_aftermath",
+            "wuxia_collapse_gate",
+        ]
     cheongirok = bundle["content"]["encounters"][39]
     assert cheongirok["conditions"] == {
         "locations": ["black_serpent_ledger_vault"],
@@ -383,9 +389,11 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
         "tell_plain_truth",
         "ask_for_medical_help_first",
         "explain_company_and_commute",
-        "show_cheonggi_record_page",
-        "hide_employee_badge",
-    ]
+            "show_cheonggi_record_page",
+            "hide_employee_badge",
+            "accept_harin_watch",
+            "ask_harin_to_walk_ahead",
+        ]
     fallback_rescue = rescue["choices"][0]
     assert fallback_rescue["outcome"]["add_flags"] == [
         "seo_harin_rescue_resolved",
@@ -1468,3 +1476,27 @@ secrets:
         assert "public secret unsafe has private-only field: final_hint" in str(exc)
     else:
         raise AssertionError("expected public final_hint to be rejected")
+
+
+def test_event_stage_export_validation_requires_illustration_placeholder(tmp_path):
+    exporter = _load_export_module()
+    encounters = [
+        {
+            "id": "missing_art_slot",
+            "choices": [{"id": "wait"}],
+            "event": {
+                "stages": [
+                    {"id": "story", "kind": "story", "blocks": [{"kind": "narration", "text": "기다린다."}]},
+                    {"id": "choice", "kind": "choice", "choices": [{"id": "wait"}]},
+                    {"id": "result", "kind": "result", "blocks": [{"kind": "result_summary", "text": "시간이 흘렀다."}]},
+                ]
+            },
+        }
+    ]
+
+    try:
+        exporter._validate_event_stages(encounters, tmp_path / "encounters.yaml")
+    except ValueError as exc:
+        assert "requires at least one illustration block" in str(exc)
+    else:
+        raise AssertionError("expected an Event without an illustration slot to be rejected")

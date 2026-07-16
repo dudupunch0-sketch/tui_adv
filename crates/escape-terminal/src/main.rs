@@ -2,7 +2,7 @@ use escape_core::{
     apply_action_from_content, index_content_bundle, load_content_bundle, new_game,
     new_game_from_content_at, scene_page_from_content, turn_view, turn_view_from_content,
     ActionView, BlockedActionView, BodyBlock, ContentIndex, EffectCue, GameState, SceneAction,
-    SceneBlockedAction, SceneEffectCue, SceneMode, ScenePage, TurnView,
+    SceneBlockedAction, SceneContentItem, SceneEffectCue, SceneMode, ScenePage, TurnView,
 };
 use std::io::{self, Write};
 use std::path::PathBuf;
@@ -107,6 +107,33 @@ fn run_content_scene(options: &CliOptions) -> Result<(), String> {
     }
 
     for action_id in &options.actions {
+        if options.tui_smoke {
+            // Scripted smoke routes predate multi-stage Events. Advance through
+            // presentation-only stages (and deterministic intermediate choices)
+            // until the requested legacy action becomes available. Interactive
+            // play never uses this compatibility path.
+            for _ in 0..64 {
+                if find_available_action(&view, action_id).is_some() {
+                    break;
+                }
+                let bridge_action_id = if find_available_action(&view, "event:continue").is_some() {
+                    Some("event:continue")
+                } else if state.active_event_id.is_some() {
+                    view.actions.first().map(|action| action.id.as_str())
+                } else {
+                    None
+                };
+                let Some(bridge_action_id) = bridge_action_id else {
+                    break;
+                };
+                let result = apply_action_from_content(&state, &content, bridge_action_id)
+                    .map_err(|error| error.to_string())?;
+                recent_logs.extend(result.logs.iter().cloned());
+                state = result.state;
+                view =
+                    turn_view_from_content(&state, &content).map_err(|error| error.to_string())?;
+            }
+        }
         let action = find_available_action(&view, action_id)
             .ok_or_else(|| format!("action '{action_id}' is not available in current turn"))?;
         let result = apply_action_from_content(&state, &content, action_id)

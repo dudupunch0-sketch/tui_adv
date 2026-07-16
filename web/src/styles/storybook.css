@@ -531,6 +531,80 @@ display: grid;
   gap: clamp(14px, 3.5vw, 26px);
 }
 
+.story-flow--ordered {
+  gap: clamp(18px, 4vw, 34px);
+}
+
+.story-flow__heading,
+.story-content-block {
+  padding-inline: clamp(28px, 7vw, 58px);
+}
+
+.story-flow__heading h1 {
+  margin: 0 0 14px;
+  color: var(--ink);
+  font-size: clamp(1.5rem, 5vw, 2.2rem);
+  line-height: 1.2;
+}
+
+.story-content-block {
+  margin: 0;
+}
+
+.story-content-block p {
+  margin: 0 0 1.2em;
+  color: var(--ink-body);
+  font-size: clamp(1.05rem, 3.2vw, 1.15rem);
+  line-height: 1.85;
+  word-break: keep-all;
+}
+
+.story-content-block--result_summary {
+  border-inline-start: 4px double var(--jade);
+  background: rgba(39, 92, 72, 0.05);
+  padding-block: 10px;
+}
+
+.story-content-block--system {
+  color: var(--ink-faded);
+  font-family: "IBM Plex Mono", "JetBrains Mono", "D2Coding", "Noto Serif KR", monospace;
+}
+
+.story-content-block--document,
+.story-content-block--cheongirok {
+  margin-inline: clamp(28px, 7vw, 58px);
+  padding-block: 14px;
+  border-inline: 0;
+  border-block: 1px solid var(--line-soft);
+}
+
+.story-illustration {
+  width: 100%;
+}
+
+.story-illustration--placeholder {
+  width: min(700px, 88%);
+  min-height: 180px;
+  margin: 0 auto;
+  border: 1px dashed var(--line-hard);
+  background: rgba(94, 80, 58, 0.05);
+}
+
+.story-illustration--placeholder > div {
+  display: grid;
+  place-content: center;
+  gap: 8px;
+  min-height: 180px;
+  color: var(--ink-faded);
+  text-align: center;
+  font-family: "IBM Plex Mono", "JetBrains Mono", "D2Coding", "Noto Serif KR", monospace;
+}
+
+.story-illustration--placeholder span {
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
 .storybook-body {
 padding: 0 clamp(28px, 7vw, 58px);
 }
@@ -1926,6 +2000,16 @@ background:
 
   .storybook-body {
     padding: 0 18px;
+  }
+
+  .story-flow__heading,
+  .story-content-block {
+    padding-inline: 18px;
+  }
+
+  .story-content-block--document,
+  .story-content-block--cheongirok {
+    margin-inline: 18px;
   }
 
   .storybook-body h1 {

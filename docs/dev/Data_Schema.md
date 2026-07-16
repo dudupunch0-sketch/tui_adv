@@ -2,6 +2,10 @@
 
 ## 목적
 
+Event/Encounter 용어와 Stage/ContentBlock의 의미는
+`docs/design/Event_Stage_Content_Model.md`가 canonical이다. 이 문서는 그 모델의
+YAML/JSON/Rust 표현, validation, migration과 renderer-neutral boundary만 소유한다.
+
 `escape from the office`의 공개 런타임 콘텐츠는 `src/tui_adv/data/*.yaml`에서 관리한다.
 이 문서는 현재 Python/Textual·legacy TypeScript mirror가 읽는 YAML schema와, 전환 목표인 Rust GameCore/Web Storybook/SuperLightTUI가 공유할 renderer-neutral wire contract를 함께 기록한다.
 
@@ -29,6 +33,13 @@
 - `health`, `sanity`, `battery`는 높을수록 좋고, `hunger`, `thirst`는 낮을수록 좋다.
 
 ## 2026-05-22 Rust renderer-neutral schema direction
+
+향후 Event schema는 ordered `stages`와 각 Story/Result stage의 ordered `blocks`를
+순서 그대로 보존해야 한다. 기존 encounter의 단일 presentation/body/choices는
+호환 adapter로 `StoryStage → ChoiceStage → ResultStage`에 투영하며, encounter가
+소유한 eligibility/weight/seen 의미는 유지한다. 구체 필드와 save cursor는 구현
+slice에서 이 문서에 확정하고, renderer가 block을 종류별 고정 영역으로 재정렬하지
+않는다는 원칙은 지금부터 적용한다.
 
 이 문서는 이제 두 층을 함께 기록한다.
 

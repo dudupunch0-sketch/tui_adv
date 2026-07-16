@@ -65,6 +65,12 @@ pub struct GameState {
     pub experience: u32,
     #[serde(default)]
     pub last_check: Option<CheckResolution>,
+    #[serde(default)]
+    pub active_event_id: Option<String>,
+    #[serde(default)]
+    pub event_stage_index: usize,
+    #[serde(default)]
+    pub event_next_stage_id: Option<String>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -103,6 +109,9 @@ impl GameState {
             trait_id: None,
             experience: 0,
             last_check: None,
+            active_event_id: None,
+            event_stage_index: 0,
+            event_next_stage_id: None,
         }
     }
 
@@ -144,9 +153,11 @@ impl GameState {
             trait_id: None,
             experience: 0,
             last_check: None,
+            active_event_id: None,
+            event_stage_index: 0,
+            event_next_stage_id: None,
         })
     }
-
 
     pub(crate) fn add_flag_once(&mut self, flag: &str) {
         if !self.flags.iter().any(|existing| existing == flag) {

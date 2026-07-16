@@ -6,8 +6,9 @@ Status: active Web Storybook visual contract. 2026-07-11부터
 ## Goal
 
 Web Storybook은 게임 HUD가 달린 앱처럼 보이면 안 된다. 기본 화면은
-**플레이어에 대해 쓰이고 있는 오래된 기록책(천기록)의 한 쪽**이며, 모든 그림은
-그 책에 그려진 수묵 삽화다. 화면 문법은 특정 상용 게임의 template을 따라 하지
+**ordered story flow가 놓이는 오래된 수묵 서책의 한 쪽**이며, `천기록`은 실제
+세계관 장치가 개입하는 특수 block/surface에서만 표시한다. 모든 그림은
+본문 흐름에 놓이는 수묵 삽화다. 화면 문법은 특정 상용 게임의 template을 따라 하지
 않는다 — 이 문서가 유일한 기준이다. 미감/토큰/삽화 규칙의 상세는
 `fable_ui_step1_2607111330.md` §2(수묵 천기록 디자인 언어)를 따른다.
 
@@ -44,6 +45,10 @@ Web Storybook은 게임 HUD가 달린 앱처럼 보이면 안 된다. 기본 화
   경고 문구(core `pressure_cues`/`warnings`)가 본문에 붉은 각주로 삽입된다.
 - 세로쓰기(vertical writing-mode)는 장식 한자 1~2자를 제외하고 금지한다.
   영어 등 다국어 본문에서도 성립해야 하는 layout이다.
+- `docs/design/Event_Stage_Content_Model.md`의 Stage/ContentBlock 순서가 화면
+  순서다. 제목/천기록/결과/일러스트/선택지의 고정 5영역으로 재배치하지 않는다.
+- StoryStage와 ResultStage의 block을 연속해서 읽다가 ChoiceStage에서만 입력을
+  기다린다. 한 Event 안에 여러 ChoiceStage가 올 수 있다.
 
 ## Layout contract
 
@@ -63,9 +68,9 @@ Web Storybook은 게임 HUD가 달린 앱처럼 보이면 안 된다. 기본 화
 | `.storybook-shell[data-renderer="web-storybook"]` | 책 쪽 전체 |
 | `.storybook-hud[data-region="status"]` | 하단 각주 스트립 (상태 요약 + 드로어 트리거) |
 | `.story-progress-rail` | 각주 스트립 안의 위험 실 (`data-danger-band` 유지) |
-| `[data-region="visual"]` | 본문 사이 수묵 삽화 `<figure>` |
-| `[data-region="body"]` | 서사 본문 |
-| `[data-region="choices"]` + `button.choice-row[data-action-id]` + `.choice-bullet` | 문장형 선택지 |
+| `[data-region="visual"]` | ordered content 안의 각 수묵 삽화 `<figure>` (복수 가능) |
+| `[data-region="body"]` | Stage/ContentBlock 순서를 보존하는 서사 흐름 |
+| `[data-region="choices"]` + `button.choice-row[data-action-id]` + `.choice-bullet` | 현재 ChoiceStage의 문장형 선택지 |
 | `.storybook-dock` | 정보 드로어(바텀시트) 컨테이너 |
 | `[data-region="history"]` | 드로어 안의 기록 목록 |
 
@@ -90,6 +95,11 @@ Web Storybook은 게임 HUD가 달린 앱처럼 보이면 안 된다. 기본 화
 ## 일러스트 에셋과 밀도 계약
 
 ### 일러스트 에셋 (Illustration Assets)
+- **배치**: IllustrationBlock은 StoryStage/ResultStage의 위·중간·끝 어디에도
+  배치할 수 있다. 일반 Event는 1개가 기본이며 특별/보스 Event는 최대 3개를
+  권장한다. 고정 visual slot 하나를 전제로 하지 않는다.
+- **미완성 에셋**: stable `visual_id`와 Event 이름 기반 alt를 유지하고 safe
+  placeholder를 표시한다. `이벤트 이름.png`를 실제 경로처럼 만들지 않는다.
 - **에셋 매니페스트**: `artManifest.ts`에 등록된 `visual_id`는 생성된 `.webp` 애니메이션풍 일러스트 에셋으로 표시되며, 등록되지 않은 `visual_id`는 generic SVG 또는 location-based SVG 폴백으로 렌더링된다.
 - **규격 및 포맷**: 규격은 5:3 비율(1120x672, `title_hero`만 3:5 세로 1120x1867)을 준수하며, WEBP 포맷으로 변환 및 최적화하여 각 파일은 150KB 이하여야 한다.
 - **삽지 프레임**: 일러스트는 한지 백그라운드 톤과 자연스럽게 결합되도록 얇은 먹 테두리(1px `--line-hard`), 한지 매트(5px 패딩, `--paper-lit`), 아주 약한 세피아 톤 필터 (`filter: saturate(0.92) sepia(0.06)`) 보정이 적용된다.
@@ -112,6 +122,8 @@ Web Storybook은 게임 HUD가 달린 앱처럼 보이면 안 된다. 기본 화
 - [ ] Korean text가 OS 폰트 유무와 무관하게 읽힌다.
 - [ ] choices가 문장형 row이고 `data-action-id`/`data-action-kind`/숫자키가 동작한다.
 - [ ] unknown visual id가 safe placeholder로 표시되고 action이 유지된다.
+- [ ] 복수 Stage/illustration/choice가 source 순서대로 나타나고 고정 5영역으로 재정렬되지 않는다.
+- [ ] `천기록` 라벨은 실제 천기록 특수 block에서만 나타난다.
 - [ ] GlyphFX stable terms/fallback text가 reduced-motion에서 읽힌다.
 - [ ] renderer가 gameplay truth를 재계산하지 않는다.
 - [ ] 엔딩/막다른 페이지에 다음 행동(처음 화면 등)이 항상 있다.

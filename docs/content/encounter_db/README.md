@@ -4,7 +4,7 @@ Status: 후보 콘텐츠 DB
 
 이 폴더는 storypack 아이디어를 runtime encounter로 바로 넣기 전에 “상황 카드” 형태로 정리한다.
 
-상황 카드는 아직 `src/tui_adv/data/encounters.yaml`의 확정 인카운터가 아니다. 카드의 목적은 좋은 랜덤 인카운터 후보를 축적하고, 안전/톤/구조 검토 후 일부만 승격하는 것이다.
+상황 카드는 아직 `src/tui_adv/data/encounters.yaml`의 확정 인카운터가 아니다. 카드의 목적은 좋은 랜덤 인카운터 후보를 축적하고, 안전/톤/구조 검토 후 일부만 승격하는 것이다. 승격 뒤 `Encounter`는 조건·가중치·seen 처리를 맡고, 플레이어가 경험하는 사건 `Event`는 `docs/design/Event_Stage_Content_Model.md`의 Stage 문법을 따른다.
 
 ## 왜 runtime encounter와 분리하는가
 
@@ -45,6 +45,9 @@ promotion_notes:
 5. 실제 회사/개인/내부 정보처럼 보이는 세부사항을 넣지 않는다.
 6. hub 위치에서 이동을 막을 수 있으면 반드시 `randomization_notes`에 적는다.
 7. runtime 승격 전에는 문장보다 구조와 기능을 먼저 검토한다.
+8. 승격 Event에는 StoryStage/ChoiceStage를 각각 1개 이상 두고 각 Choice에 대응하는 ResultStage를 설계한다.
+9. Story/Result의 ContentBlock 순서에 이야기·대화·그림을 배치한다. 일반 Event는 illustration slot 1개, 특별/보스 Event는 최대 3개를 권장하며 미완성 asset도 placeholder id로 남긴다.
+10. `천기록`은 기본 화자/본문 칸이 아니라 실제 기록 장치가 개입하는 특수 block에서만 쓴다.
 
 ## 현재 문서
 
@@ -68,6 +71,7 @@ runtime 승격 우선순위는 다음 순서로 본다.
 ## 관련 문서
 
 - `docs/design/Storypack_Encounter_DB.md`
+- `docs/design/Event_Stage_Content_Model.md`
 - `docs/content/storypacks/README.md`
 - `docs/content/characters/README.md`
 - `docs/design/Game_Loop.md`

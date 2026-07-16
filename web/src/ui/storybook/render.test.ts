@@ -174,6 +174,43 @@ describe('Web Storybook renderer', () => {
     expect(movementHtml).not.toContain('<h1>복합기 구역</h1>');
   });
 
+  it('renders ordered story content with illustrations and choices at their authored positions', () => {
+    const page = samplePrinterPage({
+      content_stream: [
+        { kind: 'illustration', stage_id: 'opening', text: null, speaker: null, visual_id: null, alt: '복합기 사건.png', placeholder: true, actions: [] },
+        { kind: 'narration', stage_id: 'opening', text: '복합기가 먼저 깨어났다.', speaker: null, visual_id: null, alt: null, placeholder: false, actions: [] },
+        { kind: 'choice', stage_id: 'first_choice', text: null, speaker: null, visual_id: null, alt: null, placeholder: false, actions: [{ id: 'choice:listen', label: '기계음을 듣는다', kind: 'choice', cost_text: null }] },
+        { kind: 'result_summary', stage_id: 'first_result', text: '종이 안쪽에서 발소리가 들렸다.', speaker: null, visual_id: null, alt: null, placeholder: false, actions: [] },
+        { kind: 'dialogue', stage_id: 'aftermath', text: '아직 끝나지 않았습니다.', speaker: '시스템 복합기', visual_id: null, alt: null, placeholder: false, actions: [] },
+      ],
+    });
+    const html = renderStorybookPage(page);
+
+    expect(html).toContain('class="story-flow story-flow--ordered"');
+    expect(html).toContain('data-story-phase="result"');
+    expect(html).toContain('data-placeholder="true"');
+    expect(html).toContain('복합기 사건.png');
+    expect(html).toContain('data-stage-id="first_choice"');
+    expect(html).toContain('data-action-id="choice:listen"');
+    expect(html.indexOf('복합기 사건.png')).toBeLessThan(html.indexOf('복합기가 먼저 깨어났다.'));
+    expect(html.indexOf('기계음을 듣는다')).toBeLessThan(html.indexOf('종이 안쪽에서 발소리가 들렸다.'));
+    expect(html).not.toContain('data-action-id="choice:take_printout"');
+  });
+
+  it('does not label ordinary narration as cheongirok', () => {
+    const html = renderStorybookPage(
+      samplePrinterPage({
+        content_stream: [
+          { kind: 'narration', stage_id: 'story', text: '평범한 장면 서술.', speaker: null, visual_id: null, alt: null, placeholder: false, actions: [] },
+        ],
+      }),
+    );
+
+    expect(html).toContain('data-content-kind="narration"');
+    expect(html).toContain('data-story-phase="story"');
+    expect(html).not.toContain('data-content-kind="cheongirok"');
+  });
+
   it('renders combat intervention pages as an ink duel without fabricated battle state', () => {
     const html = renderStorybookPage(
       samplePrinterPage({

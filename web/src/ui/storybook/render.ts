@@ -196,7 +196,14 @@ function renderContentItem(item: SceneContentItem, page: ScenePage): string {
     )}</div>`;
   }
   if (item.kind === 'choice' || item.kind === 'continue') {
-    return renderChoices(page, item.actions ?? [], item.stage_id ?? undefined);
+    const actions = item.actions?.length ? item.actions : page.actions.slice(0, 1);
+    const isEmptyChoice = item.kind === 'choice' && !item.actions?.length && page.mode !== 'ending';
+    return renderChoices(
+      page,
+      actions,
+      item.stage_id ?? undefined,
+      item.kind === 'choice' || isEmptyChoice,
+    );
   }
   if (item.kind === 'dialogue') {
     const speaker = item.speaker?.trim();
@@ -321,11 +328,16 @@ function renderAchievementLabel(id: string, page: ScenePage): string {
   return `${escapeHtml(achievementLabel(id, page))}${translationNote}`;
 }
 
-function renderChoices(page: ScenePage, actions: SceneAction[] = page.actions, stageId?: string): string {
+function renderChoices(
+  page: ScenePage,
+  actions: SceneAction[] = page.actions,
+  stageId?: string,
+  includeBlockedActions = true,
+): string {
   const actionRows = actions.length
     ? renderActionRows(actions)
     : renderEmptyChoiceRows(page.mode === 'ending');
-  const blockedRows = page.blocked_actions.length
+  const blockedRows = includeBlockedActions && page.blocked_actions.length > 0
     ? `<ul class="blocked-actions">${page.blocked_actions.map(renderBlockedAction).join('')}</ul>`
     : '';
 

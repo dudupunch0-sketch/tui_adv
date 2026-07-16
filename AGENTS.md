@@ -41,6 +41,41 @@
 - 콘텐츠 변경의 도달 경로를 먼저 파악한다. 런타임 Rust 생성 텍스트(epilogue body 등)는 **wasm 바이너리**에 들어가므로 `export_web_data.py`가 아니라 wasm 재빌드가 필요하다.
 - 상세 절차는 `docs/dev/Development_Methodology.md`, 환경/알려진 실패는 `docs/dev/Troubleshooting.md`를 따른다.
 
+## 협업 루프: 플랜/리뷰 ↔ 구현 (역할 이관 가능해야 함)
+
+기본 분업은 **Fable(Claude) = 플랜 작성·구현 리뷰·시각 폴리시 직접 작업, codex/gemini = 플랜 구현**이다. 단, Fable의 토큰이 부족하면 codex가 이 섹션을 따라 플랜/리뷰 역할까지 이어받을 수 있어야 한다. 아래 컨벤션은 역할과 무관하게 지킨다.
+
+### 플랜 문서 컨벤션
+
+- 플랜 파일: repo 루트 `fable_<주제>_step1_<YYMMDDHHMM>.md` (선례: `fable_gameloop3_step1_2607161330.md` 등). 구현 보고서: `fable_<주제>_step2_report.md`.
+- 플랜 필수 구성: Baseline 커밋 명시 → Scope(P-트랙) → **Hard invariants**(이전 슬라이스에서 상속: additive-optional 직렬화, renderer boundary, 액션 prefix/저장 키 동결, 신규 의존성 금지, route graph 불변, reduced-motion resting state) → 검증 명령 → WP 목록(순서 고정, WP당 커밋 1개) → 명시적 범위 밖 → 최종 체크리스트.
+- 구현자는 WP를 순서대로 하나씩: 검증 → 커밋 → 다음. 위험해 보이는 WP는 스킵하고 사유를 커밋+보고서에 남긴다.
+
+### 리뷰 사이클
+
+- 구현이 머지되면 플랜 작성자가 diff를 리뷰한다. 리뷰는 보고서를 믿지 않고 코드/실화면으로 검증한다 (선례: 존재하지 않는 능력치 id, 죽은 코드, CSS 0줄, 셀렉터 오매치 등은 전부 리뷰에서만 잡혔다).
+- 발견 결함은 심각도 표로 정리 → 수정은 sonnet subagent에 구체적 지시서로 위임 → 수정 diff를 다시 검수 → `fix:` PR. 수정 지시서에는 파일 경로·정확한 원인·기대 결과·검증 명령을 명시한다.
+- 시각 폴리시는 플랜 범위에서 명시적으로 제외하고 별도 step으로 진행한다. 그 대신 신규 마크업의 클래스/데이터 속성을 플랜에서 계약으로 고정한다.
+
+### PR 운영 규칙
+
+- 스택 PR은 **base 쪽을 먼저 머지하고, 위 PR의 base가 main으로 재타게팅된 것을 확인한 뒤** 머지한다 (2026-07-12 사고: 11초 차이로 게임 프레임 커밋이 main에 못 들어감).
+- main이 스쿼시 머지라 브랜치가 CONFLICTING이 되면 원 브랜치를 고치지 말고 **최신 main 위에 해당 커밋만 체리픽한 새 브랜치로 재착지**한다.
+- PR 본문은 문제→수정→검증 순서로, 검증 수치(테스트 수, QA 뷰포트)를 포함한다.
+
+### 시각/게임필 방향 (확정 결정, 임의 변경 금지)
+
+- **수묵 천기록**: 픽셀아트 흉내 폐기, SVG 먹 실루엣 + 한지 토큰(`--ink`, `--paper*`, `--seal-red`, `--jade`, `--gold-leaf`, `--line-*`)만 사용. 신규 색상 리터럴 금지.
+- **게임필 (2026-07-12 사용자 인터뷰 확정)**: 모바일 텍스트RPG 게임 프레임. 엄격한 3분할(상단바 장소·장/턴 / 스크롤 뷰포트 / 하단바 체력·정신력·천기 게이지) — 본문이 바 영역을 침범하면 회귀다. 카드형 선택지, 판정은 주사위+成/敗 도장 연출, 타자기식 본문 출력(탭으로 완성), 행동 결과는 선택한 화면에서 결과 비트로 먼저 표시 후 전환(시간 자동넘김 없음).
+- 용어: 자원은 **체력/정신력**으로 통일 (몸/마음 표기는 폐기됨).
+- 모든 애니메이션은 reduced-motion에서 최종 프레임이 올바른 정지 상태여야 한다 (fill-mode both, 지속 루프는 `prefers-reduced-motion: no-preference` 블록으로 분리).
+
+### 실화면 QA (웹 변경 시 필수)
+
+- 공식 게이트: `cd web && npm run qa:storybook:visual -- --base-url <dev-url> --out-dir <scratch>` — 5개 뷰포트 전 항목 통과. 라이브 게임 플로우 검증에는 wasm 재빌드가 선행되어야 한다 (`wasm-pack build crates/escape-wasm --target web --out-dir web/src/core/wasm-pkg`, WSL).
+- 연출(타자기/비트/플로팅)은 QA 스크립트가 reduced-motion이라 꺼진다 — 별도 Playwright 컨텍스트(`reducedMotion: 'no-preference'`)로 동작 증빙을 남긴다.
+- 픽스처 시각 검증 요령: vite dev의 TS 서빙으로 `page.evaluate(() => import('/src/ui/storybook/render.ts'))` 후 임의 ScenePage를 렌더하면 실제 CSS로 스크린샷을 뜰 수 있다.
+
 ## 계획 문서 우선순위
 
 - `docs/dev/Development_Plan.md`가 이 저장소의 canonical main plan이다. 현재 방향, 다음 작업, 우선순위, phase 순서는 이 파일을 기준으로 판단한다.

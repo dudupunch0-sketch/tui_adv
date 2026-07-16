@@ -283,6 +283,38 @@ describe('Web Storybook renderer', () => {
     expect(html).not.toContain('폐기');
   });
 
+  it('renders inventory rows as non-interactive when optional details are absent', () => {
+    const html = renderStorybookPage(
+      samplePrinterPage({
+        inventory_summary: { items: ['water', 'unknown_item'], overflow_count: 0 },
+        inventory_details: undefined,
+      }),
+    );
+    const inventorySection = html.match(/<section aria-label="소지품"[\s\S]*?<\/section>/)?.[0] ?? '';
+
+    expect(inventorySection).toContain('class="item-row item-row--static"');
+    expect(inventorySection).toContain('data-item-icon="water"');
+    expect(inventorySection).toContain('data-item-icon="unknown_item"');
+    expect(inventorySection).not.toContain('aria-expanded');
+    expect(inventorySection).not.toContain('data-disclosure-toggle');
+    expect(inventorySection).not.toContain('data-disclosure-target');
+  });
+
+  it('keeps inventory disclosure target ids unique for duplicate item ids', () => {
+    const html = renderStorybookPage(
+      samplePrinterPage({
+        inventory_summary: { items: ['water', 'water'], overflow_count: 0 },
+        inventory_details: [
+          { id: 'water', name: '물병', description: '갈증을 누그러뜨린다.', item_type: 'consumable', usable: true },
+        ],
+      }),
+    );
+    const targets = Array.from(html.matchAll(/data-disclosure-target="(item-detail-[^"]+)"/g), (match) => match[1]);
+
+    expect(targets).toEqual(['item-detail-0', 'item-detail-1']);
+    expect(new Set(targets).size).toBe(targets.length);
+  });
+
   it('renders combat intervention pages as an ink duel without fabricated battle state', () => {
     const html = renderStorybookPage(
       samplePrinterPage({

@@ -174,7 +174,7 @@ function renderOrderedStoryFlow(page: ScenePage, options: StorybookRenderOptions
       ${title}
       ${pressureNotes.length ? `<aside class="storybook-pressure" data-region="pressure">${pressureNotes.map((note) => `<p>${escapeHtml(note)}</p>`).join('')}</aside>` : ''}
     </header>
-    ${items}
+    <section class="storybook-body storybook-body--ordered" data-region="body">${items}</section>
     ${options.suppressActionResult ? '' : renderCheckResolution(page)}
     ${hasResultItem || options.suppressActionResult ? '' : renderInlineResultLog(page)}
   </article>`;

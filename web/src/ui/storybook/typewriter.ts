@@ -20,12 +20,15 @@ interface TypingNode {
  * enabled=false(reduced motion 등)면 아무것도 하지 않고 선택지만 즉시 노출한다.
  */
 export function startTypewriter(shell: HTMLElement, options: { enabled: boolean }): TypewriterHandle {
-  const choices = shell.querySelector<HTMLElement>('.storybook-choices');
+  const choices = Array.from(shell.querySelectorAll<HTMLElement>('.storybook-choices'));
   const revealChoices = (animated: boolean) => {
-    if (choices) choices.setAttribute('data-reveal', animated ? 'done' : 'settled');
+    for (const choiceNav of choices) {
+      choiceNav.setAttribute('data-reveal', animated ? 'done' : 'settled');
+    }
   };
 
-  const body = shell.querySelector<HTMLElement>('.storybook-body');
+  const body = shell.querySelector<HTMLElement>('.storybook-body')
+    ?? shell.querySelector<HTMLElement>('.story-flow--ordered');
   if (!options.enabled || !body) {
     revealChoices(false);
     return NOOP_HANDLE;
@@ -38,7 +41,7 @@ export function startTypewriter(shell: HTMLElement, options: { enabled: boolean 
     return NOOP_HANDLE;
   }
 
-  if (choices) choices.setAttribute('data-reveal', 'pending');
+  for (const choiceNav of choices) choiceNav.setAttribute('data-reveal', 'pending');
   for (const entry of nodes) entry.node.textContent = '';
 
   const caret = document.createElement('span');
@@ -110,7 +113,9 @@ function collectTextNodes(body: HTMLElement): TypingNode[] {
       if (!text.trim()) return NodeFilter.FILTER_REJECT;
       const parent = node.parentElement;
       if (!parent) return NodeFilter.FILTER_REJECT;
-      if (parent.closest('.check-resolution')) return NodeFilter.FILTER_REJECT;
+      if (parent.closest('.check-resolution, .storybook-choices, .story-illustration')) {
+        return NodeFilter.FILTER_REJECT;
+      }
       return NodeFilter.FILTER_ACCEPT;
     },
   });

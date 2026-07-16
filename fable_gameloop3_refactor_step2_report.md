@@ -106,5 +106,33 @@ same gate passed at 414px.
 - The plan names `.story-progress-mini`, but the existing renderer, tests, CSS, and QA contract
   use `.story-progress-rail`. This is a naming deviation from the refactor plan, intentionally
   preserved to avoid breaking the established selector contract; no rename was introduced.
-- RF5 (Notion runtime page and `idea_box/notion_sources.yml` reverse sync) remains a separate
-  pending WP and is intentionally not included in this RF4 commit.
+- RF5 (Notion runtime page and `idea_box/notion_sources.yml` reverse sync) completed after RF4.
+
+## RF5 Notion reverse-sync evidence
+
+- Page `13. 런타임 시스템 현황 (repo 동기화)` (`39f37e69-695e-810e-b30b-f59795bede57`) was
+  updated with base commit `7e7b401`, the RF1-RF4 status, the `.story-progress-rail` naming
+  deviation, and the remaining insight-row divergence. A follow-up fetch re-read the page and
+  confirmed the new closeout section and commit.
+- Data source `15. 이구학지 기연 DB` (`55eec40d-72ba-474f-8494-8b48275603f3`) was queried
+  before the update. Its three rows (`insight_breakfall_basics`, `insight_cheongryu_breathing`,
+  `insight_review_habit`) do not match the committed runtime IDs/names/acquisition encounters,
+  so all three remain `런타임 상태=설계`; no unsafe status transition was made.
+- `idea_box/notion_sources.yml` records the `7e7b401` sync base, the page re-read, and the
+  pending runtime reconciliation under the RF5 metadata fields.
+
+## Final gate rerun after RF5
+
+- `cargo test --workspace`: 164 passed, 0 failed (one pre-existing `raw_glyphfx_wave`
+  dead-code warning).
+- `.venv/bin/pytest -q tests/test_web_data_export.py tests/test_docs_contract.py`: 72 passed.
+- Default and wuxia preview exporter `--check`: both up to date.
+- `cd web && npx vitest run`: 13 files / 71 tests passed; `npx tsc --noEmit` and `npm run build`
+  passed.
+- `wasm-pack build crates/escape-wasm --target web --out-dir ../../web/src/core/wasm-pkg`:
+  passed.
+- WASM-required five-viewport QA passed at `390x844`, `414x896`, `800x1440`, `810x1644`,
+  `1440x1000`; report `/tmp/tui-adv-gameloop3-refactor-qa-final/visual-qa-report.json`.
+  The 390/414 reports explicitly show no vital/rail or vital/drawer overlap, bounded scroll
+  width, and visible labels/values/gauge/button.
+- `git diff --check`: passed before RF5 commit.

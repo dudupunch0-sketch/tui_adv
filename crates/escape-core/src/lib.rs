@@ -9,11 +9,12 @@ mod turn;
 
 pub use content::{
     index_content_bundle, load_content_bundle, validate_content_bundle, AbilityCheckDef,
-    AchievementDef, ChoiceDef, ContentBlockDef, ContentBundle, ContentBundleError,
+    AchievementDef, CheckBonusDef, ChoiceDef, ContentBlockDef, ContentBundle, ContentBundleError,
     ContentConditions, ContentIndex, ContentIndexError, ContentManifest, ContentSections,
-    EncounterDef, EndingDef, EventChoiceRef, EventDef, EventStageDef, ItemDef, LocationDef,
-    OutcomeDef, PresentationDef, PresentationEffectCue, PublicSecretDef, ResourceMap,
-    RuntimeMetadata, TraitDef, CONTENT_BUNDLE_KIND, CONTENT_BUNDLE_SCHEMA_VERSION,
+    EncounterDef, EndingDef, EventChoiceRef, EventDef, EventStageDef, InsightDef, ItemDef,
+    LevelingMetadata, LocationDef, OutcomeDef, PresentationDef, PresentationEffectCue,
+    PublicSecretDef, ResourceMap, RuntimeMetadata, TraitDef, CONTENT_BUNDLE_KIND,
+    CONTENT_BUNDLE_SCHEMA_VERSION,
 };
 pub use effects::{printer_glyph_anomaly_cue, EffectCue, GlyphAnomalyCue};
 pub use save::{load_state, save_state, SaveEnvelope, SaveError, SAVE_SCHEMA_VERSION};

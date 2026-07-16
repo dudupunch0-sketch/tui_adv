@@ -53,6 +53,8 @@ pub struct RuntimeMetadata {
     pub progression: Option<ProgressionMetadata>,
     #[serde(default)]
     pub collapse: Option<CollapseMetadata>,
+    #[serde(default)]
+    pub leveling: Option<LevelingMetadata>,
 }
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
@@ -66,6 +68,11 @@ pub struct CollapseMetadata {
 pub struct ProgressionMetadata {
     pub experience_target: u32,
     pub label: String,
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
+pub struct LevelingMetadata {
+    pub thresholds: Vec<u32>,
 }
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
@@ -85,6 +92,8 @@ pub struct ContentSections {
     pub secrets: Vec<Value>,
     #[serde(default)]
     pub traits: Vec<Value>,
+    #[serde(default)]
+    pub insights: Vec<Value>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -136,6 +145,22 @@ pub struct TraitDef {
     pub description: String,
 }
 
+#[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
+pub struct InsightDef {
+    pub id: String,
+    pub name: String,
+    #[serde(default)]
+    pub description: String,
+    #[serde(default)]
+    pub check_bonus: Option<CheckBonusDef>,
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
+pub struct CheckBonusDef {
+    pub ability: String,
+    pub bonus: i32,
+}
+
 #[derive(Clone, Debug, PartialEq)]
 pub struct ContentIndex {
     locations: BTreeMap<String, LocationDef>,
@@ -145,6 +170,7 @@ pub struct ContentIndex {
     achievements: BTreeMap<String, AchievementDef>,
     secrets: BTreeMap<String, PublicSecretDef>,
     traits: BTreeMap<String, TraitDef>,
+    insights: BTreeMap<String, InsightDef>,
     pub runtime: Option<RuntimeMetadata>,
 }
 
@@ -328,6 +354,8 @@ pub struct OutcomeDef {
     pub set_trait: Option<String>,
     #[serde(default)]
     pub experience: Option<i32>,
+    #[serde(default)]
+    pub add_insights: Vec<String>,
 }
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
@@ -575,6 +603,14 @@ impl ContentIndex {
     pub fn traits(&self) -> impl Iterator<Item = &TraitDef> {
         self.traits.values()
     }
+
+    pub fn insight(&self, id: &str) -> Option<&InsightDef> {
+        self.insights.get(id)
+    }
+
+    pub fn insights(&self) -> impl Iterator<Item = &InsightDef> {
+        self.insights.values()
+    }
 }
 
 pub fn load_content_bundle(json_text: &str) -> Result<ContentBundle, ContentBundleError> {
@@ -619,12 +655,36 @@ pub fn index_content_bundle(bundle: &ContentBundle) -> Result<ContentIndex, Cont
     }
     let trait_ids: BTreeSet<&str> = traits.keys().map(String::as_str).collect();
 
+    let mut insights = BTreeMap::new();
+    for insight_value in &bundle.content.insights {
+        let insight: InsightDef = parse_section_value("insights", insight_value)?;
+        if let Some(check_bonus) = &insight.check_bonus {
+            if !VALID_ABILITY_IDS.contains(&check_bonus.ability.as_str()) {
+                return Err(ContentIndexError::InvalidSectionItem {
+                    section: "insights".to_string(),
+                    id: Some(insight.id.clone()),
+                    message: format!("unknown check bonus ability id: {}", check_bonus.ability),
+                });
+            }
+            if !(1..=2).contains(&check_bonus.bonus) {
+                return Err(ContentIndexError::InvalidSectionItem {
+                    section: "insights".to_string(),
+                    id: Some(insight.id.clone()),
+                    message: "check bonus must be between 1 and 2".to_string(),
+                });
+            }
+        }
+        insert_unique("insights", &mut insights, insight.id.clone(), insight)?;
+    }
+    let insight_ids: BTreeSet<&str> = insights.keys().map(String::as_str).collect();
+
     let mut encounters = BTreeMap::new();
     for encounter_value in &bundle.content.encounters {
         let encounter = parse_encounter(encounter_value)?;
         validate_event(&encounter)?;
         validate_encounter_locations(&encounter, &location_ids)?;
         validate_encounter_traits(&encounter, &trait_ids)?;
+        validate_encounter_insights(&encounter, &insight_ids)?;
         insert_unique(
             "encounters",
             &mut encounters,
@@ -658,6 +718,20 @@ pub fn index_content_bundle(bundle: &ContentBundle) -> Result<ContentIndex, Cont
     }
 
     if let Some(runtime) = &bundle.runtime {
+        if let Some(leveling) = &runtime.leveling {
+            if leveling.thresholds.is_empty()
+                || leveling
+                    .thresholds
+                    .windows(2)
+                    .any(|window| window[0] >= window[1])
+            {
+                return Err(ContentIndexError::InvalidSectionItem {
+                    section: "runtime.leveling".to_string(),
+                    id: None,
+                    message: "thresholds must be non-empty and strictly increasing".to_string(),
+                });
+            }
+        }
         if let Some(collapse) = &runtime.collapse {
             if collapse.resource_id != "health" {
                 return Err(ContentIndexError::InvalidSectionItem {
@@ -697,6 +771,7 @@ pub fn index_content_bundle(bundle: &ContentBundle) -> Result<ContentIndex, Cont
         achievements,
         secrets,
         traits,
+        insights,
         runtime: bundle.runtime.clone(),
     })
 }
@@ -1029,6 +1104,39 @@ fn validate_encounter_traits(
             validate_outcome_traits(&encounter.id, &check.success, trait_ids)?;
             validate_outcome_traits(&encounter.id, &check.failure, trait_ids)?;
         }
+    }
+    Ok(())
+}
+
+fn validate_encounter_insights(
+    encounter: &EncounterDef,
+    insight_ids: &BTreeSet<&str>,
+) -> Result<(), ContentIndexError> {
+    for choice in &encounter.choices {
+        validate_outcome_insights(&encounter.id, &choice.outcome, insight_ids)?;
+        if let Some(check) = &choice.check {
+            validate_outcome_insights(&encounter.id, &check.success, insight_ids)?;
+            validate_outcome_insights(&encounter.id, &check.failure, insight_ids)?;
+        }
+    }
+    Ok(())
+}
+
+fn validate_outcome_insights(
+    encounter_id: &str,
+    outcome: &OutcomeDef,
+    insight_ids: &BTreeSet<&str>,
+) -> Result<(), ContentIndexError> {
+    if let Some(insight_id) = outcome
+        .add_insights
+        .iter()
+        .find(|insight_id| !insight_ids.contains(insight_id.as_str()))
+    {
+        return Err(ContentIndexError::InvalidSectionItem {
+            section: "encounter outcomes".to_string(),
+            id: Some(encounter_id.to_string()),
+            message: format!("unknown insight id: {insight_id}"),
+        });
     }
     Ok(())
 }

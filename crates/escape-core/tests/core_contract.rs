@@ -676,6 +676,39 @@ fn test_old_save_compat() {
 }
 
 #[test]
+fn leveling_points_train_without_advancing_turn_and_respect_cap() {
+    let mut value: serde_json::Value =
+        serde_json::from_str(CONTENT_BUNDLE).expect("fixture bundle should parse");
+    value["runtime"] = json!({
+        "runtime_mode": "content",
+        "world_id": "office",
+        "storypack_id": "office",
+        "default_location": "dev_desk",
+        "leveling": {"thresholds": [10, 20]}
+    });
+    let bundle_json = serde_json::to_string(&value).expect("bundle should serialize");
+    let bundle = load_content_bundle(&bundle_json).expect("leveling bundle should load");
+    let index = index_content_bundle(&bundle).expect("leveling bundle should index");
+    let mut state = new_game_from_content(123, &index).expect("game should start");
+    state.experience = 10;
+    let page = scene_page_from_content(&state, &index).expect("page should render");
+    assert_eq!(page.character_summary.unwrap().stat_points, 1);
+
+    let result = apply_action_from_content(&state, &index, "train:composure")
+        .expect("training should resolve");
+    assert_eq!(result.state.turn, state.turn);
+    assert_eq!(result.state.danger, state.danger);
+    assert_eq!(result.state.player.abilities["composure"], 3);
+    assert_eq!(result.state.spent_stat_points, 1);
+    assert_eq!(result.logs, vec!["+ 평정 수련 1"]);
+
+    let mut capped = result.state.clone();
+    capped.experience = 20;
+    capped.player.abilities.insert("logic".to_string(), 5);
+    assert!(apply_action_from_content(&capped, &index, "train:logic").is_err());
+}
+
+#[test]
 fn test_ability_check_success_percent() {
     // need <= 2
     assert_eq!(ability_check_success_percent(0, 2), 100.0);

@@ -9,7 +9,10 @@ use crate::resources::{
     RESOURCE_HUNGER, RESOURCE_SANITY, RESOURCE_THIRST,
 };
 use crate::state::{CheckResolution, GameHistoryEntry, GameState, PlayerState};
-use crate::turn::{content_turn_view, ActionView, BlockedActionView, ContentTurnError, TurnView};
+use crate::turn::{
+    available_stat_points, content_turn_view, ActionView, BlockedActionView, ContentTurnError,
+    TurnView,
+};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -279,6 +282,7 @@ fn scene_page_from_turn_view(
             name,
             title_label,
             title_description,
+            stat_points: available_stat_points(state, content),
             abilities,
         })
     };
@@ -861,6 +865,7 @@ pub struct CharacterSummary {
     pub title_label: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title_description: Option<String>,
+    pub stat_points: u32,
     pub abilities: Vec<AbilityStatus>,
 }
 

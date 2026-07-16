@@ -15,3 +15,4 @@ pub(crate) const RESOURCE_IDS: [&str; 5] = [
 pub(crate) const ACTION_PREFIX_CHOICE: &str = "choice:";
 pub(crate) const ACTION_PREFIX_MOVE: &str = "move:";
 pub(crate) const ACTION_PREFIX_USE: &str = "use:";
+pub(crate) const ACTION_PREFIX_TRAIN: &str = "train:";

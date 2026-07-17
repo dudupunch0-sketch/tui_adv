@@ -576,9 +576,9 @@ sources:
     object: page
     notion_ref: "notion:39f37e69-695e-810e-b30b-f59795bede57"
     url: "https://www.notion.so/39f37e69695e810eb30bf59795bede57"
-    last_checked_at: "2026-07-17T16:05:00+09:00"
+    last_checked_at: "2026-07-17T19:20:00+09:00"
     precedence_role: "runtime_status_snapshot_repo_to_notion"
-    sync_base_commit: "73c7c76"
+    sync_base_commit: "bddeeaf"
     rf5_sync_base_commit: "7e7b401"
     rf5_notion_page_reread: true
     rf5_divergence: "resolved_2026_07_16: Notion 15 insight rows reconciled to runtime IDs/names/acquisition encounters by fable."
@@ -592,7 +592,8 @@ sources:
       - "2026-07-17 fable Wave 2 리뷰 closeout: 13번 페이지 라이브 갱신(기준 b8e0236, 스테이지 30/44). codex 보류 수동 QA 4항목(스테이지 타자기/ResultStage 저장복원/document 구분/편린 스레드) 실화면 완료. 결함 1건(일러스트 alt 9건 잘림·영어 placeholder)은 sonnet 서브에이전트 수정으로 이 브랜치에 포함."
       - "2026-07-17 fable_eventstage Wave 3 구현: baseline ca5c960 기준 최종전·결산·귀환/정착·붕괴 게이트 14개를 staged authoring해 이구학지 coverage 44/44를 달성했다. collapse active-event precedence, revive/no-retrigger, rest/death ending supersede, final epilogue ending supersede를 Rust 회귀 테스트로 고정했다. WP-W1 자동 Web/WASM/5 viewport QA는 통과했다."
       - "2026-07-17 Wave 3 D2 pending: Notion 원격 runtime ledger 연결이 현재 불가해 baseline·44/44·precedence·수동 QA 보류를 repo ledger에만 기록했다. 연결 복구 후 13번 페이지를 live sync하고 이 pending 상태를 closeout한다."
-    status: "pending_notion_sync_2026_07_17_eventstage_wave3"
+      - "2026-07-17 fable Wave 3 리뷰 closeout: 13번 페이지 라이브 갱신(기준 bddeeaf, 44/44) — D2 pending 해소. 보류 수동 QA 실화면 8/8 완료(collapse 비네트/카드 구분/기사회생/안식 사망 엔딩/ResultStage 저장복원/최종 결산 supersede). 결함 1건(alt 14건 제목·보일러플레이트)은 sonnet 서브에이전트 수정으로 이 브랜치에 포함."
+    status: "live_synced_2026_07_17_eventstage_wave3_review_closeout"
 
   - key: wuxia_14_item_db
     title: "14. 이구학지 아이템 DB"

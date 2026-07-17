@@ -163,12 +163,12 @@ ResultStage 대신 기존 `wuxia_final_epilogue_renderer_contract` ending이 되
 
 1. preview bundle을 index하고, 마지막 결산 Encounter인
    `wuxia_black_serpent_aftermath`의 choice stage로 cursor를 진입시킨다.
-2. 상태에 기존 final precondition flags
-   (`boss_resolution_resolved`, `mumyeong_resolution_resolved`,
-   `seoharin_qingliu_resolution_resolved`, `black_serpent_aftermath_resolved`,
-   `final_result_priority_applied_seeded`, `final_state_routing_seeded`)를
-   설정하고 현재 Encounter가 방출하는 `*_resolution_resolved`만 선택 outcome으로
-   추가한다.
+2. 상태를 ending 조건의 location인 `black_serpent_ledger_vault`에 두고, 테스트할
+   Encounter 자신이 방출하는 flag(`black_serpent_aftermath_resolved`)를 **제외한**
+   나머지 required flags를 모두 preset한다: `boss_resolution_resolved`,
+   `mumyeong_resolution_resolved`, `seoharin_qingliu_resolution_resolved`,
+   `cheongirok_resolution_resolved`, `final_result_priority_applied_seeded`,
+   `final_state_routing_seeded`. 마지막 flag는 선택 outcome이 방출한다.
 3. 선택 직후 `turn_view_from_content`가 `ending_id ==
    wuxia_final_epilogue_renderer_contract`를 반환하는지 확인한다. 선택 action이
    unknown으로 거부되지 않고, 다음 view가 ending으로 안정적으로 수렴하는 것이

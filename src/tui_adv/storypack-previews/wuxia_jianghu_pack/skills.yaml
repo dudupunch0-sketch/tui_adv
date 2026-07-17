@@ -1,0 +1,43 @@
+skills:
+  - id: match_the_pulse
+    name: 맥을 맞추다
+    concept: 상대의 호흡과 움직임이 겹치는 순간을 읽는다.
+    rarity: 보통
+    category: 메인
+    reveal_immediate: true
+  - id: fallen_leaf_flow_step
+    name: 낙엽 흐름걸음
+    concept: 힘을 겨루지 않고 흐름의 빈 곳으로 발을 옮긴다.
+    rarity: 보통
+    category: 메인
+    reveal_immediate: true
+  - id: record_the_gap
+    name: 틈을 기록하다
+    concept: 실패 직전의 간격을 다음 판단의 기록으로 남긴다.
+    rarity: 희귀
+    category: 메인
+    reveal_immediate: true
+  - id: turning_blade
+    name: 돌아오는 칼끝
+    concept: 공격의 방향을 받아 다음 선택의 여지로 돌린다.
+    rarity: 희귀
+    category: 메인
+    reveal_immediate: true
+  - id: guard_the_threshold
+    name: 문턱 지키기
+    concept: 지켜야 할 선을 먼저 정하고 움직임을 줄인다.
+    rarity: 희귀
+    category: 메인
+    reveal_immediate: true
+  - id: two_steps_back
+    name: 두 걸음 물러서기
+    concept: 후퇴를 패배가 아닌 다음 장면을 여는 거리로 읽는다.
+    rarity: 보통
+    category: 메인
+    reveal_immediate: true
+  - id: cut_the_presence
+    name: 기척 끊기
+    concept: 시선을 끌지 않고 필요한 순간에만 존재를 드러낸다.
+    rarity: 전설
+    category: 히든
+    reveal_immediate: true

@@ -218,14 +218,16 @@ fn preview_fixture_indexes_wuxia_first_fight() {
         vec![30, 75, 120]
     );
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&5));
-    assert_eq!(bundle.manifest.counts.get("items"), Some(&4));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&44));
+    assert_eq!(bundle.manifest.counts.get("items"), Some(&11));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&51));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
-    assert_eq!(bundle.manifest.counts.get("insights"), Some(&3));
+    assert_eq!(bundle.manifest.counts.get("insights"), Some(&8));
+    assert_eq!(bundle.manifest.counts.get("skills"), Some(&7));
+    assert_eq!(bundle.manifest.counts.get("titles"), Some(&5));
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 5);
-    assert_eq!(index.encounters_len(), 44);
+    assert_eq!(index.encounters_len(), 51);
     assert_eq!(
         index
             .insight("insight_read_the_flow")

@@ -1750,3 +1750,20 @@
 - [x] WP-D1: fable_eventstage_wave3_step2_report.md 및 Development Plan/Checklist 갱신
 - [ ] WP-D2: Notion runtime ledger reverse sync — 원격 연결 불가로 idea_box/notion_sources.yml pending 기록
 - [ ] 수동 collapse revive/rest, ResultStage save/reload, final ending supersede acceptance — Fable review에서 수행
+
+## Phase 16: Reward Pipeline Wave 1 (`fable_rewardpipeline_wave1_step1_2607171903.md`)
+
+### 16.1 코어·콘텐츠
+
+- [x] WP-R1: `skills`, `titles`, `relationships` additive state와 OutcomeDef 지급/관계 델타 구현
+- [x] WP-R2: 매핑 등장분 skills 7종·titles 5종·insights 5종·items 7종 정의 및 bundle indexing
+- [x] WP-R3: 청류문 수련기 신규 7개 사건을 Story → Choice → ResultStage로 authoring, 51/51 coverage
+- [x] 즉시 지급·지연 pending flag·결정론 판정 성공/실패·관계 내부 기록 규칙 적용
+
+### 16.2 Web·검증
+
+- [x] WP-R4: Web Storybook 도감 스킬/칭호 섹션, 등급 위계, 지연 공개 마스킹, 획득 비트 연결
+- [x] WP-R5: reward pipeline guard(중복 무시·관계 누적·판정 배타성·7개 카드·30 mapping marker) 추가
+- [x] Rust workspace/content bundle, Python export, Web test/build, WASM 및 5 viewport QA 재실행
+- [ ] Notion DB 30행 원문 대조 및 reverse sync — 원문 snapshot 부재로 후속 처리
+- [ ] 수동 7개 수련기 실화면 플레이·save/reload acceptance — Fable review에서 수행

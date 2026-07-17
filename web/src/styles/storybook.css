@@ -2639,3 +2639,18 @@ button.character-title-seal {
   }
 
 }
+
+/* 보상 도감: 획득 비트와 동일한 수묵 토큰, 공개 전 보상은 정체를 숨긴다. */
+.reward-row { display: flex; align-items: center; gap: 8px; min-height: 36px; padding: 5px 0; }
+.reward-glyph { display: grid; place-items: center; width: 22px; height: 22px; border: 1px solid var(--gold-leaf); color: var(--gold-leaf); font-size: .75rem; }
+.reward-copy { display: grid; gap: 2px; min-width: 0; }
+.reward-copy strong { color: var(--ink); }
+.reward-copy small { color: var(--ink-faded); }
+.reward-rarity { margin-left: 6px; color: var(--seal-red) !important; }
+.reward-rarity--보통, .reward-rarity--common { color: var(--ink-faded) !important; }
+.reward-rarity--희귀, .reward-rarity--rare { color: var(--gold-leaf) !important; }
+.reward-rarity--전설, .reward-rarity--legendary { color: var(--seal-red) !important; text-shadow: 0 0 8px color-mix(in srgb, var(--seal-red) 35%, transparent); }
+.reward-row[data-reward-masked="true"] { opacity: .7; filter: saturate(.35); }
+.reward-row:not([data-reward-masked="true"]) { animation: reward-acquired .55s ease-out both; }
+@keyframes reward-acquired { from { opacity: .35; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .reward-row:not([data-reward-masked="true"]) { animation: none; } }

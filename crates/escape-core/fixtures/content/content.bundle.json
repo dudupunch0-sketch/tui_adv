@@ -2078,6 +2078,8 @@
         ]
       }
     ],
+    "skills": [],
+    "titles": [],
     "traits": []
   },
   "kind": "tui_adv.content_bundle",
@@ -2090,6 +2092,8 @@
       "items": 13,
       "locations": 16,
       "secrets": 3,
+      "skills": 0,
+      "titles": 0,
       "traits": 0
     },
     "schema_version": 1,

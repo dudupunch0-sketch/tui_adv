@@ -742,3 +742,23 @@ sources:
     implementation_scope: playable_settlement_scene_flag_clue_log_presentation_only_no_combat_resolver
     runtime_status: implemented_in_storypack_preview
     status: live_checked_runtime_implemented
+
+  - key: wuxia_reward_pipeline_wave1
+    title: "보상 파이프라인 웨이브 1 — 획득·도감"
+    object: implementation
+    notion_ref: "notion-data-source:19-reward-acquisition-mapping"
+    last_checked_at: "2026-07-17T20:00:00+09:00"
+    precedence_role: "reward_pipeline_wave1_runtime_handoff"
+    related_design_units:
+      - "system:reward_pipeline"
+      - "system:run_codex_drawer"
+      - "system:relationship_internal_state"
+    related_canonical_docs:
+      - "fable_rewardpipeline_wave1_step1_2607171903.md"
+      - "fable_rewardpipeline_wave1_step2_report.md"
+      - "docs/dev/Development_Plan.md"
+      - "docs/dev/Checklist.md"
+    implementation_scope: "acquisition_codex_presentation_only_7_encounters_30_mapping_markers"
+    runtime_status: "implemented_in_storypack_preview"
+    status: "pending_notion_reverse_sync"
+    pending_reason: "Notion DB 19/09/17/18/14 원문 snapshot이 repo에 없어 ID·획득 시점 플랜 기준으로 authoring; Fable 대조 필요"

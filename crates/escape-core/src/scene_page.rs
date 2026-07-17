@@ -15,6 +15,10 @@ use crate::turn::{
 };
 use serde::{Deserialize, Serialize};
 
+fn default_true() -> bool {
+    true
+}
+
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum SceneMode {
@@ -54,6 +58,10 @@ pub struct ScenePage {
     pub check_result: Option<CheckResolution>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub insights: Vec<InsightStatus>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub skills: Vec<RewardStatus>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub titles: Vec<RewardStatus>,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -348,6 +356,7 @@ fn scene_page_from_turn_view(
             description: item_def.description.clone(),
             item_type: item_def.item_type.clone(),
             usable: item_def.usable && !item_def.use_effects.is_empty(),
+            reveal_immediate: item_def.reveal_immediate,
         })
         .collect();
 
@@ -420,9 +429,33 @@ fn scene_page_from_turn_view(
                     name: insight.name.clone(),
                     description: insight.description.clone(),
                     effect_text,
+                    reveal_immediate: insight.reveal_immediate,
                 }
             })
             .collect(),
+        skills: state
+            .skills
+            .iter()
+            .filter_map(|id| content.skill(id))
+            .map(reward_status)
+            .collect(),
+        titles: state
+            .titles
+            .iter()
+            .filter_map(|id| content.title(id))
+            .map(reward_status)
+            .collect(),
+    }
+}
+
+fn reward_status(def: &crate::content::RewardDef) -> RewardStatus {
+    RewardStatus {
+        id: def.id.clone(),
+        name: def.name.clone(),
+        concept: def.concept.clone(),
+        rarity: def.rarity.clone(),
+        category: def.category.clone(),
+        reveal_immediate: def.reveal_immediate,
     }
 }
 
@@ -928,6 +961,8 @@ pub struct ItemDetail {
     pub description: String,
     pub item_type: String,
     pub usable: bool,
+    #[serde(default = "default_true")]
+    pub reveal_immediate: bool,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -936,6 +971,22 @@ pub struct InsightStatus {
     pub name: String,
     pub description: String,
     pub effect_text: String,
+    #[serde(default = "default_true")]
+    pub reveal_immediate: bool,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct RewardStatus {
+    pub id: String,
+    pub name: String,
+    #[serde(default)]
+    pub concept: String,
+    #[serde(default)]
+    pub rarity: String,
+    #[serde(default)]
+    pub category: String,
+    #[serde(default = "default_true")]
+    pub reveal_immediate: bool,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]

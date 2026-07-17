@@ -23,6 +23,12 @@ pub(crate) use headless::*;
 pub(crate) use interactive::*;
 pub(crate) use snapshot::*;
 
+fn is_compatibility_bridge_event(event_id: Option<&str>) -> bool {
+    // Do not consume the player's explicit raid-route branch while bridging
+    // legacy smoke actions to the next encounter.
+    event_id != Some("wuxia_cheongryu_raid_route_split")
+}
+
 fn main() {
     if let Err(error) = run(std::env::args().skip(1)) {
         eprintln!("error: {error}");
@@ -118,7 +124,9 @@ fn run_content_scene(options: &CliOptions) -> Result<(), String> {
                 }
                 let bridge_action_id = if find_available_action(&view, "event:continue").is_some() {
                     Some("event:continue")
-                } else if state.active_event_id.is_some() {
+                } else if view.encounter_id.is_some()
+                    && is_compatibility_bridge_event(view.encounter_id.as_deref())
+                {
                     view.actions.first().map(|action| action.id.as_str())
                 } else {
                     None

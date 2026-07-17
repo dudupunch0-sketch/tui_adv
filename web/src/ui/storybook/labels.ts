@@ -34,6 +34,13 @@ const inventoryItemLabels: Record<string, string> = {
   ex_employee_memo: '퇴사자의 메모',
   parking_key_fob: '지하주차장 키태그',
   visitor_badge: '임시 방문증',
+  modern_first_aid_pouch: '현대식 응급 파우치',
+  empty_medicine_ledger: '빈 약장부',
+  cracked_whistle: '금 간 호각',
+  red_thread_fragment: '붉은 실 조각',
+  wet_gate_register: '젖은 문지기 장부',
+  life_talisman: '목숨 부적',
+  seoharin_handkerchief: '서하린의 손수건',
 };
 
 export function achievementLabel(id: string, page?: ScenePage): string {

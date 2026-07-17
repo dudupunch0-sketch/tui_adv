@@ -1204,6 +1204,1166 @@
         "title": "청류문 임시 수습생 등록"
       },
       {
+        "body": "첫날 밤, 천기록은 답 대신 다음 행동의 간격을 남겼다.",
+        "choices": [
+          {
+            "id": "listen_to_the_roof_rain",
+            "label": "처마의 빗소리를 들으며 숨을 고른다",
+            "outcome": {
+              "add_flags": [
+                "wuxia_cheongryu_first_night_shelter_resolved"
+              ],
+              "add_skills": [
+                "match_the_pulse"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "빗소리와 호흡의 맥을 맞추는 방향이 열렸다."
+            }
+          },
+          {
+            "id": "accept_the_borrowed_blanket",
+            "label": "빌린 이불을 받고 아직 제자가 아님을 인정한다",
+            "outcome": {
+              "add_flags": [
+                "wuxia_cheongryu_first_night_shelter_resolved"
+              ],
+              "add_titles": [
+                "not_yet_disciple"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "소속보다 먼저 배워야 할 시간이 칭호로 남았다."
+            }
+          },
+          {
+            "id": "write_the_first_breath",
+            "label": "첫 호흡을 수첩에 적는다",
+            "outcome": {
+              "add_flags": [
+                "wuxia_cheongryu_first_night_shelter_resolved",
+                "reward_pending_first_current_breath"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "첫 물결의 호흡은 후속 회수를 기다리는 빈칸으로 남았다."
+            }
+          },
+          {
+            "id": "check_the_first_aid_pouch",
+            "label": "가방 속 응급 파우치를 확인한다",
+            "outcome": {
+              "add_flags": [
+                "wuxia_cheongryu_first_night_shelter_resolved"
+              ],
+              "add_items": [
+                "modern_first_aid_pouch"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "현대식 응급 파우치가 소지품 기록에 추가되었다."
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "wuxia_cheongryu_first_night_shelter_resolved"
+          ],
+          "locations": [
+            "cheongryu_outer_courtyard"
+          ],
+          "required_flags": [
+            "cheongryu_apprentice_entry_resolved"
+          ]
+        },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "첫날 밤의 공기가 가라앉았다. 실패도 수련도 다음 기록으로 이어진다."
+                },
+                {
+                  "alt": "첫날 밤 청류문 처소에서 숨을 고르는 외지인",
+                  "kind": "illustration",
+                  "placeholder": true,
+                  "visual_id": "placeholder:wuxia_cheongryu_first_night_shelter"
+                }
+              ],
+              "id": "cheongryu_first_night_shelter_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "listen_to_the_roof_rain",
+                  "next_stage_id": "listen_to_the_roof_rain_result"
+                },
+                {
+                  "id": "accept_the_borrowed_blanket",
+                  "next_stage_id": "accept_the_borrowed_blanket_result"
+                },
+                {
+                  "id": "write_the_first_breath",
+                  "next_stage_id": "write_the_first_breath_result"
+                },
+                {
+                  "id": "check_the_first_aid_pouch",
+                  "next_stage_id": "check_the_first_aid_pouch_result"
+                }
+              ],
+              "id": "cheongryu_first_night_shelter_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "처마의 빗소리를 들으며 숨을 고른 결과 맥의 흐름이 기록되었다."
+                }
+              ],
+              "id": "listen_to_the_roof_rain_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "빌린 이불을 받은 선택이 아직 제자가 아닌 시간을 남겼다."
+                }
+              ],
+              "id": "accept_the_borrowed_blanket_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "첫 호흡은 공개되지 않은 기록의 빈칸으로 남았다."
+                }
+              ],
+              "id": "write_the_first_breath_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "응급 파우치가 낯선 세계에서 첫 물건이 되었다."
+                }
+              ],
+              "id": "check_the_first_aid_pouch_result",
+              "kind": "result"
+            }
+          ]
+        },
+        "id": "wuxia_cheongryu_first_night_shelter",
+        "presentation": {
+          "layout": "reward_pipeline_wave1",
+          "visual_id": "wuxia_cheongryu_first_night_shelter"
+        },
+        "title": "첫날 밤의 처소"
+      },
+      {
+        "body": "청류문의 호흡 수를 따라가며 실패를 다음 기록으로 바꾸는 수련이다.",
+        "choices": [
+          {
+            "id": "follow_the_breathing_count",
+            "label": "청류문의 호흡 수를 그대로 따라간다",
+            "outcome": {
+              "add_flags": [
+                "wuxia_cheongryu_first_breathing_lesson_resolved"
+              ],
+              "add_skills": [
+                "fallen_leaf_flow_step"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "낙엽 흐름걸음이 다음 수련의 방향으로 열렸다."
+            }
+          },
+          {
+            "id": "bow_as_a_guest",
+            "label": "객의 예를 갖추고 한 걸음 물러선다",
+            "outcome": {
+              "add_flags": [
+                "wuxia_cheongryu_first_breathing_lesson_resolved"
+              ],
+              "add_titles": [
+                "guest_of_cheongryu"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "청류문의 객이라는 칭호가 기록되었다."
+            }
+          },
+          {
+            "id": "record_the_teacher_palm",
+            "label": "교관의 손바닥이 멈춘 순간을 기록한다",
+            "outcome": {
+              "add_flags": [
+                "wuxia_cheongryu_first_breathing_lesson_resolved"
+              ],
+              "add_insights": [
+                "recording_defeat"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "패배를 기록하는 법이 기연으로 남았다."
+            }
+          },
+          {
+            "id": "receive_the_empty_ledger",
+            "label": "비어 있는 약장부를 맡아 둔다",
+            "outcome": {
+              "add_flags": [
+                "wuxia_cheongryu_first_breathing_lesson_resolved",
+                "reward_pending_empty_medicine_ledger"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "빈 약장부는 후속 회수 대기 상태가 되었다."
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "wuxia_cheongryu_first_breathing_lesson_resolved"
+          ],
+          "locations": [
+            "cheongryu_outer_courtyard"
+          ],
+          "required_flags": [
+            "wuxia_cheongryu_first_night_shelter_resolved"
+          ]
+        },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "호흡은 힘을 주는 일이 아니라 힘이 빠지는 순간을 기록하는 일이다."
+                },
+                {
+                  "alt": "청류문 연무장에서 첫 호흡을 배우는 외지인",
+                  "kind": "illustration",
+                  "placeholder": true,
+                  "visual_id": "placeholder:wuxia_cheongryu_first_breathing_lesson"
+                }
+              ],
+              "id": "cheongryu_first_breathing_lesson_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "follow_the_breathing_count",
+                  "next_stage_id": "follow_the_breathing_count_result"
+                },
+                {
+                  "id": "bow_as_a_guest",
+                  "next_stage_id": "bow_as_a_guest_result"
+                },
+                {
+                  "id": "record_the_teacher_palm",
+                  "next_stage_id": "record_the_teacher_palm_result"
+                },
+                {
+                  "id": "receive_the_empty_ledger",
+                  "next_stage_id": "receive_the_empty_ledger_result"
+                }
+              ],
+              "id": "cheongryu_first_breathing_lesson_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "낙엽처럼 흐름을 따르는 걸음이 열렸다."
+                }
+              ],
+              "id": "follow_the_breathing_count_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "청류문의 객이라는 이름이 문턱에 남았다."
+                }
+              ],
+              "id": "bow_as_a_guest_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "패배를 지우지 않는 기록법을 배웠다."
+                }
+              ],
+              "id": "record_the_teacher_palm_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "빈 약장부는 후속 회수 전까지 모습을 감춘다."
+                }
+              ],
+              "id": "receive_the_empty_ledger_result",
+              "kind": "result"
+            }
+          ]
+        },
+        "id": "wuxia_cheongryu_first_breathing_lesson",
+        "presentation": {
+          "layout": "reward_pipeline_wave1",
+          "visual_id": "wuxia_cheongryu_first_breathing_lesson"
+        },
+        "title": "첫 호흡 수련"
+      },
+      {
+        "body": "놓친 틈을 실패로 끝내지 않고 기록의 단위로 다시 세는 밤이다.",
+        "choices": [
+          {
+            "id": "name_the_missed_gap",
+            "label": "놓친 틈을 말로 다시 짚는다",
+            "outcome": {
+              "add_flags": [
+                "wuxia_cheongryu_training_first_failure_resolved"
+              ],
+              "add_skills": [
+                "record_the_gap"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "틈을 기록하는 방향이 보상으로 열렸다."
+            }
+          },
+          {
+            "id": "keep_the_returning_name",
+            "label": "돌아올 이름을 장부 가장자리에 남긴다",
+            "outcome": {
+              "add_flags": [
+                "wuxia_cheongryu_training_first_failure_resolved"
+              ],
+              "add_titles": [
+                "keeper_of_returning_name"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "돌아올 이름을 지키는 자라는 칭호가 새겨졌다."
+            }
+          },
+          {
+            "id": "measure_the_promise",
+            "label": "약속과 몸의 반응을 나란히 잰다",
+            "outcome": {
+              "add_flags": [
+                "wuxia_cheongryu_training_first_failure_resolved"
+              ],
+              "add_insights": [
+                "measure_fidelity"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "충실도를 재는 기연이 기록되었다."
+            }
+          },
+          {
+            "id": "take_the_cracked_whistle",
+            "label": "금 간 호각을 순찰 도구로 받는다",
+            "outcome": {
+              "add_flags": [
+                "wuxia_cheongryu_training_first_failure_resolved"
+              ],
+              "add_items": [
+                "cracked_whistle"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "금 간 호각이 소지품 기록에 추가되었다."
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "wuxia_cheongryu_training_first_failure_resolved"
+          ],
+          "locations": [
+            "cheongryu_outer_courtyard"
+          ],
+          "required_flags": [
+            "wuxia_cheongryu_first_breathing_lesson_resolved",
+            "cheongryu_chore_sparring_resolved"
+          ]
+        },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "첫 수련의 실패가 연무장 바닥에 남았다. 틈은 다음 선택의 문장이 된다."
+                },
+                {
+                  "alt": "첫 수련에 실패한 뒤 연무장 바닥을 바라보는 외지인",
+                  "kind": "illustration",
+                  "placeholder": true,
+                  "visual_id": "placeholder:wuxia_cheongryu_training_first_failure"
+                }
+              ],
+              "id": "cheongryu_training_first_failure_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "name_the_missed_gap",
+                  "next_stage_id": "name_the_missed_gap_result"
+                },
+                {
+                  "id": "keep_the_returning_name",
+                  "next_stage_id": "keep_the_returning_name_result"
+                },
+                {
+                  "id": "measure_the_promise",
+                  "next_stage_id": "measure_the_promise_result"
+                },
+                {
+                  "id": "take_the_cracked_whistle",
+                  "next_stage_id": "take_the_cracked_whistle_result"
+                }
+              ],
+              "id": "cheongryu_training_first_failure_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "놓친 틈을 기록하는 기술이 남았다."
+                }
+              ],
+              "id": "name_the_missed_gap_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "돌아올 이름을 지키는 칭호가 남았다."
+                }
+              ],
+              "id": "keep_the_returning_name_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "약속과 행동 사이를 재는 기연이 남았다."
+                }
+              ],
+              "id": "measure_the_promise_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "금 간 호각이 순찰의 기록이 되었다."
+                }
+              ],
+              "id": "take_the_cracked_whistle_result",
+              "kind": "result"
+            }
+          ]
+        },
+        "id": "wuxia_cheongryu_training_first_failure",
+        "presentation": {
+          "layout": "reward_pipeline_wave1",
+          "visual_id": "wuxia_cheongryu_training_first_failure"
+        },
+        "title": "첫 수련의 실패"
+      },
+      {
+        "body": "약첩을 나르는 짧은 길에서 수련의 방향이 보상으로 남는다.",
+        "choices": [
+          {
+            "check": {
+              "ability": "physical",
+              "difficulty": 9,
+              "failure": {
+                "add_flags": [
+                  "carry_the_medicine_without_turning_check_failure"
+                ],
+                "log": "판정 실패가 후속 회수의 단서가 되었다."
+              },
+              "success": {
+                "add_flags": [
+                  "carry_the_medicine_without_turning_check_success"
+                ],
+                "log": "판정 성공이 약방 심부름의 흐름을 선명하게 했다."
+              }
+            },
+            "id": "carry_the_medicine_without_turning",
+            "label": "약을 쏟지 않고 끝까지 운반한다",
+            "outcome": {
+              "add_flags": [
+                "wuxia_cheongryu_medicine_errand_resolved"
+              ],
+              "add_skills": [
+                "turning_blade"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "돌아오는 칼끝의 방향이 보상으로 기록되었다."
+            }
+          },
+          {
+            "id": "wear_the_sect_badge_for_a_day",
+            "label": "하루 동안 청류문의 패를 빌려 찬다",
+            "outcome": {
+              "add_flags": [
+                "wuxia_cheongryu_medicine_errand_resolved"
+              ],
+              "add_titles": [
+                "badge_bearer"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "패를 지닌 외지인이라는 칭호가 기록되었다."
+            }
+          },
+          {
+            "id": "sort_the_medicine_slips",
+            "label": "약첩을 문서처럼 분류한다",
+            "outcome": {
+              "add_flags": [
+                "wuxia_cheongryu_medicine_errand_resolved",
+                "reward_pending_sort_like_documents"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "문서처럼 분류하는 기연이 후속 공개 대기 상태가 되었다."
+            }
+          },
+          {
+            "id": "tie_the_red_thread",
+            "label": "약탕기 손잡이에 붉은 실을 묶는다",
+            "outcome": {
+              "add_flags": [
+                "wuxia_cheongryu_medicine_errand_resolved",
+                "reward_pending_red_thread_fragment"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "붉은 실 조각은 후속 회수 대기 상태가 되었다."
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "wuxia_cheongryu_medicine_errand_resolved"
+          ],
+          "locations": [
+            "cheongryu_outer_courtyard"
+          ],
+          "required_flags": [
+            "wuxia_cheongryu_training_first_failure_resolved"
+          ]
+        },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "약방으로 가는 길은 짧았지만 손목과 발끝의 순서를 모두 시험했다."
+                },
+                {
+                  "alt": "약첩을 들고 청류문 약방으로 향하는 외지인",
+                  "kind": "illustration",
+                  "placeholder": true,
+                  "visual_id": "placeholder:wuxia_cheongryu_medicine_errand"
+                }
+              ],
+              "id": "cheongryu_medicine_errand_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "carry_the_medicine_without_turning",
+                  "next_stage_id": "carry_the_medicine_without_turning_result"
+                },
+                {
+                  "id": "wear_the_sect_badge_for_a_day",
+                  "next_stage_id": "wear_the_sect_badge_for_a_day_result"
+                },
+                {
+                  "id": "sort_the_medicine_slips",
+                  "next_stage_id": "sort_the_medicine_slips_result"
+                },
+                {
+                  "id": "tie_the_red_thread",
+                  "next_stage_id": "tie_the_red_thread_result"
+                }
+              ],
+              "id": "cheongryu_medicine_errand_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "약을 돌려 세운 손끝에 돌아오는 칼끝의 방향이 남았다."
+                },
+                {
+                  "branch": "success",
+                  "kind": "narration",
+                  "text": "판정 성공, 약첩의 흐름이 한 번에 이어졌다."
+                },
+                {
+                  "branch": "failure",
+                  "kind": "narration",
+                  "text": "판정 실패, 흘린 약가루도 다음 기록이 되었다."
+                }
+              ],
+              "id": "carry_the_medicine_without_turning_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "하루 동안 빌린 패가 외지인의 이름을 지켰다."
+                }
+              ],
+              "id": "wear_the_sect_badge_for_a_day_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "약첩의 분류는 아직 공개되지 않은 기연으로 남았다."
+                }
+              ],
+              "id": "sort_the_medicine_slips_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "붉은 실 조각은 후속 회수를 기다린다."
+                }
+              ],
+              "id": "tie_the_red_thread_result",
+              "kind": "result"
+            }
+          ]
+        },
+        "id": "wuxia_cheongryu_medicine_errand",
+        "presentation": {
+          "layout": "reward_pipeline_wave1",
+          "visual_id": "wuxia_cheongryu_medicine_errand"
+        },
+        "title": "약방 심부름"
+      },
+      {
+        "body": "먼 발소리와 젖은 발자국이 청류문의 문턱을 가리킨다.",
+        "choices": [
+          {
+            "check": {
+              "ability": "composure",
+              "difficulty": 10,
+              "failure": {
+                "add_flags": [
+                  "guard_the_inner_threshold_check_failure"
+                ],
+                "log": "판정 실패가 다음 습격 기록의 단서가 되었다."
+              },
+              "success": {
+                "add_flags": [
+                  "guard_the_inner_threshold_check_success"
+                ],
+                "log": "판정 성공이 문턱의 기록을 선명하게 했다."
+              }
+            },
+            "id": "guard_the_inner_threshold",
+            "label": "안쪽 문턱을 지키며 발을 멈춘다",
+            "outcome": {
+              "add_flags": [
+                "wuxia_cheongryu_raid_omen_resolved"
+              ],
+              "add_skills": [
+                "guard_the_threshold"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "문턱 지키기 방향이 보상으로 기록되었다."
+            }
+          },
+          {
+            "id": "follow_two_sets_of_footprints",
+            "label": "두 갈래 발자국을 함께 기억한다",
+            "outcome": {
+              "add_flags": [
+                "wuxia_cheongryu_raid_omen_resolved",
+                "raid_omen_two_paths_seen"
+              ],
+              "add_titles": [
+                "footprints_of_two_paths"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "두 갈래 발자국이라는 숨은 칭호가 기록되었다."
+            }
+          },
+          {
+            "id": "read_the_scout_wrist",
+            "label": "정찰자의 손목이 먼저 향한 곳을 읽는다",
+            "outcome": {
+              "add_flags": [
+                "wuxia_cheongryu_raid_omen_resolved",
+                "reward_pending_read_the_wrist"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "손목을 읽는 기연이 후속 공개 대기 상태가 되었다."
+            }
+          },
+          {
+            "id": "copy_the_wet_register",
+            "label": "젖은 문지기 장부의 흔적을 옮겨 적는다",
+            "outcome": {
+              "add_flags": [
+                "wuxia_cheongryu_raid_omen_resolved",
+                "reward_pending_wet_gate_register"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "젖은 문지기 장부가 후속 회수 대기 상태가 되었다."
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "wuxia_cheongryu_raid_omen_resolved"
+          ],
+          "locations": [
+            "cheongryu_outer_courtyard"
+          ],
+          "required_flags": [
+            "wuxia_cheongryu_medicine_errand_resolved"
+          ]
+        },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "습격은 아직 오지 않았지만, 발자국은 이미 두 갈래로 갈라져 있었다."
+                },
+                {
+                  "alt": "비에 젖은 청류문 문턱에서 습격의 흔적을 살피는 수련생",
+                  "kind": "illustration",
+                  "placeholder": true,
+                  "visual_id": "placeholder:wuxia_cheongryu_raid_omen"
+                }
+              ],
+              "id": "cheongryu_raid_omen_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "guard_the_inner_threshold",
+                  "next_stage_id": "guard_the_inner_threshold_result"
+                },
+                {
+                  "id": "follow_two_sets_of_footprints",
+                  "next_stage_id": "follow_two_sets_of_footprints_result"
+                },
+                {
+                  "id": "read_the_scout_wrist",
+                  "next_stage_id": "read_the_scout_wrist_result"
+                },
+                {
+                  "id": "copy_the_wet_register",
+                  "next_stage_id": "copy_the_wet_register_result"
+                }
+              ],
+              "id": "cheongryu_raid_omen_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "문턱을 지키는 방향이 습격 전조의 기록이 되었다."
+                },
+                {
+                  "branch": "success",
+                  "kind": "narration",
+                  "text": "판정 성공, 안쪽 문이 한 호흡 더 버텼다."
+                },
+                {
+                  "branch": "failure",
+                  "kind": "narration",
+                  "text": "판정 실패, 밀려난 발자국도 잊지 않기로 했다."
+                }
+              ],
+              "id": "guard_the_inner_threshold_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "두 갈래 발자국이 하나의 숨은 칭호로 겹쳐졌다."
+                }
+              ],
+              "id": "follow_two_sets_of_footprints_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "손목을 읽는 기연은 후속 공개를 기다린다."
+                }
+              ],
+              "id": "read_the_scout_wrist_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "젖은 장부는 아직 정체를 드러내지 않았다."
+                }
+              ],
+              "id": "copy_the_wet_register_result",
+              "kind": "result"
+            }
+          ]
+        },
+        "id": "wuxia_cheongryu_raid_omen",
+        "presentation": {
+          "layout": "reward_pipeline_wave1",
+          "visual_id": "wuxia_cheongryu_raid_omen"
+        },
+        "title": "습격의 전조"
+      },
+      {
+        "body": "낮은 확률의 소동은 이번 웨이브에서 결정론적인 수습생 사건으로 기록된다.",
+        "choices": [
+          {
+            "id": "step_back_from_the_gate",
+            "label": "문 앞에서 두 걸음 물러서 상황을 본다",
+            "outcome": {
+              "add_flags": [
+                "wuxia_cheongryu_gate_patrol_first_trouble_resolved"
+              ],
+              "add_skills": [
+                "two_steps_back"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "두 걸음 물러서기가 다음 선택의 거리가 되었다."
+            }
+          },
+          {
+            "id": "hold_the_life_talisman",
+            "label": "목숨 부적을 쥐고 사람부터 세어 본다",
+            "outcome": {
+              "add_flags": [
+                "wuxia_cheongryu_gate_patrol_first_trouble_resolved"
+              ],
+              "add_items": [
+                "life_talisman"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "목숨 부적이 소지품 기록에 추가되었다."
+            }
+          },
+          {
+            "id": "call_for_seoharin",
+            "label": "서하린에게 조용히 도움을 청한다",
+            "outcome": {
+              "add_flags": [
+                "wuxia_cheongryu_gate_patrol_first_trouble_resolved"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "관계의 방향은 숫자 없이 내부 기록으로 누적되었다.",
+              "relationship_deltas": {
+                "relationship_person_seoharin_affection": 1
+              }
+            }
+          },
+          {
+            "id": "stand_for_cheongryu",
+            "label": "청류문의 문턱을 대신 지킨다",
+            "outcome": {
+              "add_flags": [
+                "wuxia_cheongryu_gate_patrol_first_trouble_resolved"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "청류문과의 관계 방향이 내부 기록으로 누적되었다.",
+              "relationship_deltas": {
+                "relationship_faction_cheongryu_affection": 1
+              }
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "wuxia_cheongryu_gate_patrol_first_trouble_resolved"
+          ],
+          "locations": [
+            "cheongryu_outer_courtyard"
+          ],
+          "required_flags": [
+            "wuxia_cheongryu_raid_omen_resolved"
+          ]
+        },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "문지기 첫 소동은 아직 전투가 아니다. 누가 문턱을 지키는지 확인하는 작은 사건이다."
+                },
+                {
+                  "alt": "청류문 문지기와 마주 선 수습생",
+                  "kind": "illustration",
+                  "placeholder": true,
+                  "visual_id": "placeholder:wuxia_cheongryu_gate_patrol_first_trouble"
+                }
+              ],
+              "id": "cheongryu_gate_patrol_first_trouble_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "step_back_from_the_gate",
+                  "next_stage_id": "step_back_from_the_gate_result"
+                },
+                {
+                  "id": "hold_the_life_talisman",
+                  "next_stage_id": "hold_the_life_talisman_result"
+                },
+                {
+                  "id": "call_for_seoharin",
+                  "next_stage_id": "call_for_seoharin_result"
+                },
+                {
+                  "id": "stand_for_cheongryu",
+                  "next_stage_id": "stand_for_cheongryu_result"
+                }
+              ],
+              "id": "cheongryu_gate_patrol_first_trouble_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "두 걸음 물러서서 다음 장면을 열었다."
+                }
+              ],
+              "id": "step_back_from_the_gate_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "목숨 부적은 숫자 대신 망설임을 붙잡았다."
+                }
+              ],
+              "id": "hold_the_life_talisman_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "서하린에게 보낸 신호가 관계의 온도로 남았다."
+                }
+              ],
+              "id": "call_for_seoharin_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "청류문의 문턱을 대신 선 선택이 내부 기록이 되었다."
+                }
+              ],
+              "id": "stand_for_cheongryu_result",
+              "kind": "result"
+            }
+          ]
+        },
+        "id": "wuxia_cheongryu_gate_patrol_first_trouble",
+        "presentation": {
+          "layout": "reward_pipeline_wave1",
+          "visual_id": "wuxia_cheongryu_gate_patrol_first_trouble"
+        },
+        "title": "문지기 첫 소동"
+      },
+      {
+        "body": "상처를 캐묻지 않는 선택도 하나의 수련과 관계 기록이 된다.",
+        "choices": [
+          {
+            "id": "cut_the_presence_before_she_asks",
+            "label": "그녀가 묻기 전에 기척을 거둔다",
+            "outcome": {
+              "add_flags": [
+                "wuxia_seoharin_hides_training_injury_resolved"
+              ],
+              "add_skills": [
+                "cut_the_presence"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "기척 끊기 방향이 전설 등급의 기록으로 남았다."
+            }
+          },
+          {
+            "id": "offer_the_hidden_handkerchief",
+            "label": "감춘 상처를 싼 손수건을 맡는다",
+            "outcome": {
+              "add_flags": [
+                "wuxia_seoharin_hides_training_injury_resolved",
+                "reward_pending_seoharin_handkerchief"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "서하린의 손수건은 후속 회수 대기 상태가 되었다."
+            }
+          },
+          {
+            "id": "ask_without_pressing",
+            "label": "묻되 대답을 강요하지 않는다",
+            "outcome": {
+              "add_flags": [
+                "wuxia_seoharin_hides_training_injury_resolved"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "관계의 방향이 숫자 없이 내부 기록으로 누적되었다.",
+              "relationship_deltas": {
+                "relationship_person_seoharin_affection": 1
+              }
+            }
+          },
+          {
+            "id": "leave_a_note_for_later",
+            "label": "나중에 회수할 기록을 남긴다",
+            "outcome": {
+              "add_flags": [
+                "wuxia_seoharin_hides_training_injury_resolved",
+                "reward_pending_life_talisman",
+                "reward_pending_recording_defeat",
+                "reward_pending_modern_first_aid_pouch"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "log": "후속 회수를 위한 숨은 보상 플래그가 남았다."
+            }
+          }
+        ],
+        "conditions": {
+          "forbidden_flags": [
+            "wuxia_seoharin_hides_training_injury_resolved"
+          ],
+          "locations": [
+            "cheongryu_outer_courtyard"
+          ],
+          "required_flags": [
+            "wuxia_cheongryu_training_first_failure_resolved"
+          ]
+        },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "서하린은 손목을 감추고 웃었다. 묻지 않는 것도 다음 선택을 남기는 방법이다."
+                },
+                {
+                  "alt": "청류문 연무장 한쪽에서 손목을 감춘 서하린",
+                  "kind": "illustration",
+                  "placeholder": true,
+                  "visual_id": "placeholder:wuxia_seoharin_hides_training_injury"
+                }
+              ],
+              "id": "seoharin_hides_training_injury_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "cut_the_presence_before_she_asks",
+                  "next_stage_id": "cut_the_presence_before_she_asks_result"
+                },
+                {
+                  "id": "offer_the_hidden_handkerchief",
+                  "next_stage_id": "offer_the_hidden_handkerchief_result"
+                },
+                {
+                  "id": "ask_without_pressing",
+                  "next_stage_id": "ask_without_pressing_result"
+                },
+                {
+                  "id": "leave_a_note_for_later",
+                  "next_stage_id": "leave_a_note_for_later_result"
+                }
+              ],
+              "id": "seoharin_hides_training_injury_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "기척을 끊은 선택이 전설의 방향으로 남았다."
+                }
+              ],
+              "id": "cut_the_presence_before_she_asks_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "손수건의 정체는 후속 회수 전까지 공개되지 않는다."
+                }
+              ],
+              "id": "offer_the_hidden_handkerchief_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "묻되 강요하지 않은 선택이 관계의 기록이 되었다."
+                }
+              ],
+              "id": "ask_without_pressing_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "나중에 회수할 기록이 다음 사건으로 이어진다."
+                }
+              ],
+              "id": "leave_a_note_for_later_result",
+              "kind": "result"
+            }
+          ]
+        },
+        "id": "wuxia_seoharin_hides_training_injury",
+        "presentation": {
+          "layout": "reward_pipeline_wave1",
+          "visual_id": "wuxia_seoharin_hides_training_injury"
+        },
+        "title": "서하린이 숨긴 수련 상처"
+      },
+      {
         "body": "장작을 옮기던 중 외문 제자가 장난처럼 어깨를 밀어 온다. 정식 대련도, 무공 수업도 아니다. 그러나 장작 더미와 흙먼지 사이에서 몸이 밀리는 순간, 흑사방 난투와 물품창고에서 배운 거리와 균형이 같은 문법으로 겹친다.",
         "choices": [
           {
@@ -10198,6 +11358,36 @@
         "description": "낯선 문파의 규칙을 문장으로 정리해 다음 판단의 발판으로 삼았다.",
         "id": "insight_name_the_rule",
         "name": "규칙을 이름 붙인 기록"
+      },
+      {
+        "description": "청류문의 첫 호흡을 몸에 남겼지만, 기록은 아직 빈칸으로 남아 있다.",
+        "id": "first_current_breath",
+        "name": "첫 물결의 호흡",
+        "reveal_immediate": false
+      },
+      {
+        "description": "실패를 지우지 않고 다음 선택의 재료로 보관한다.",
+        "id": "recording_defeat",
+        "name": "패배를 기록하는 법",
+        "reveal_immediate": true
+      },
+      {
+        "description": "약속과 실제 행동 사이의 간격을 감정 대신 기록으로 살핀다.",
+        "id": "measure_fidelity",
+        "name": "충실도를 재다",
+        "reveal_immediate": true
+      },
+      {
+        "description": "흩어진 단서를 같은 서랍에 넣기 전, 무엇이 다른지 먼저 구분한다.",
+        "id": "sort_like_documents",
+        "name": "문서처럼 분류하기",
+        "reveal_immediate": false
+      },
+      {
+        "description": "짧은 움직임에 남은 긴장과 망설임을 읽는다.",
+        "id": "read_the_wrist",
+        "name": "손목을 읽다",
+        "reveal_immediate": false
       }
     ],
     "items": [
@@ -10245,6 +11435,101 @@
           "wuxia_preview"
         ],
         "type": "clue"
+      },
+      {
+        "description": "익숙한 포장과 낯선 약초 냄새가 함께 남은 작은 응급 파우치.",
+        "id": "modern_first_aid_pouch",
+        "name": "현대식 응급 파우치",
+        "reveal_immediate": true,
+        "tags": [
+          "reward",
+          "medicine",
+          "wuxia_preview"
+        ],
+        "type": "quest",
+        "usable": false
+      },
+      {
+        "description": "이름과 용량이 모두 지워진 약재 기록장. 후속 회수 전까지 정체를 공개하지 않는다.",
+        "id": "empty_medicine_ledger",
+        "name": "빈 약장부",
+        "reveal_immediate": false,
+        "tags": [
+          "reward",
+          "medicine",
+          "pending",
+          "wuxia_preview"
+        ],
+        "type": "quest",
+        "usable": false
+      },
+      {
+        "description": "한 번 불면 낮은 음만 남는 순찰용 호각.",
+        "id": "cracked_whistle",
+        "name": "금 간 호각",
+        "reveal_immediate": true,
+        "tags": [
+          "reward",
+          "patrol",
+          "wuxia_preview"
+        ],
+        "type": "quest",
+        "usable": false
+      },
+      {
+        "description": "약탕기 손잡이에 묶였던 붉은 실의 일부. 후속 회수 전까지 정체를 공개하지 않는다.",
+        "id": "red_thread_fragment",
+        "name": "붉은 실 조각",
+        "reveal_immediate": false,
+        "tags": [
+          "reward",
+          "clue",
+          "pending",
+          "wuxia_preview"
+        ],
+        "type": "quest",
+        "usable": false
+      },
+      {
+        "description": "비에 번진 순찰 명부. 후속 회수 전까지 정체를 공개하지 않는다.",
+        "id": "wet_gate_register",
+        "name": "젖은 문지기 장부",
+        "reveal_immediate": false,
+        "tags": [
+          "reward",
+          "gate",
+          "pending",
+          "wuxia_preview"
+        ],
+        "type": "quest",
+        "usable": false
+      },
+      {
+        "description": "생명을 대신하지는 않지만, 한 번의 망설임을 붙잡아 두는 낡은 부적.",
+        "id": "life_talisman",
+        "name": "목숨 부적",
+        "reveal_immediate": true,
+        "tags": [
+          "reward",
+          "survival",
+          "wuxia_preview"
+        ],
+        "type": "quest",
+        "usable": false
+      },
+      {
+        "description": "훈련 중 감춘 상처를 싸맨 손수건. 후속 회수 전까지 정체를 공개하지 않는다.",
+        "id": "seoharin_handkerchief",
+        "name": "서하린의 손수건",
+        "reveal_immediate": false,
+        "tags": [
+          "reward",
+          "seoharin",
+          "pending",
+          "wuxia_preview"
+        ],
+        "type": "quest",
+        "usable": false
       }
     ],
     "locations": [
@@ -10324,6 +11609,106 @@
       }
     ],
     "secrets": [],
+    "skills": [
+      {
+        "category": "메인",
+        "concept": "상대의 호흡과 움직임이 겹치는 순간을 읽는다.",
+        "id": "match_the_pulse",
+        "name": "맥을 맞추다",
+        "rarity": "보통",
+        "reveal_immediate": true
+      },
+      {
+        "category": "메인",
+        "concept": "힘을 겨루지 않고 흐름의 빈 곳으로 발을 옮긴다.",
+        "id": "fallen_leaf_flow_step",
+        "name": "낙엽 흐름걸음",
+        "rarity": "보통",
+        "reveal_immediate": true
+      },
+      {
+        "category": "메인",
+        "concept": "실패 직전의 간격을 다음 판단의 기록으로 남긴다.",
+        "id": "record_the_gap",
+        "name": "틈을 기록하다",
+        "rarity": "희귀",
+        "reveal_immediate": true
+      },
+      {
+        "category": "메인",
+        "concept": "공격의 방향을 받아 다음 선택의 여지로 돌린다.",
+        "id": "turning_blade",
+        "name": "돌아오는 칼끝",
+        "rarity": "희귀",
+        "reveal_immediate": true
+      },
+      {
+        "category": "메인",
+        "concept": "지켜야 할 선을 먼저 정하고 움직임을 줄인다.",
+        "id": "guard_the_threshold",
+        "name": "문턱 지키기",
+        "rarity": "희귀",
+        "reveal_immediate": true
+      },
+      {
+        "category": "메인",
+        "concept": "후퇴를 패배가 아닌 다음 장면을 여는 거리로 읽는다.",
+        "id": "two_steps_back",
+        "name": "두 걸음 물러서기",
+        "rarity": "보통",
+        "reveal_immediate": true
+      },
+      {
+        "category": "히든",
+        "concept": "시선을 끌지 않고 필요한 순간에만 존재를 드러낸다.",
+        "id": "cut_the_presence",
+        "name": "기척 끊기",
+        "rarity": "전설",
+        "reveal_immediate": true
+      }
+    ],
+    "titles": [
+      {
+        "category": "메인",
+        "concept": "소속보다 먼저 배워야 할 시간을 받아들였다.",
+        "id": "not_yet_disciple",
+        "name": "아직 제자는 아니다",
+        "rarity": "보통",
+        "reveal_immediate": true
+      },
+      {
+        "category": "메인",
+        "concept": "문파의 문턱을 넘었지만 이름은 아직 빌려 쓰고 있다.",
+        "id": "guest_of_cheongryu",
+        "name": "청류문의 객",
+        "rarity": "보통",
+        "reveal_immediate": true
+      },
+      {
+        "category": "메인",
+        "concept": "사라진 사람의 자리를 소유하지 않고 기억했다.",
+        "id": "keeper_of_returning_name",
+        "name": "돌아올 이름을 지키는 자",
+        "rarity": "희귀",
+        "reveal_immediate": true
+      },
+      {
+        "category": "메인",
+        "concept": "낯선 세계에서도 자신이 누구였는지 놓치지 않았다.",
+        "id": "badge_bearer",
+        "name": "패를 지닌 외지인",
+        "rarity": "보통",
+        "reveal_immediate": true
+      },
+      {
+        "category": "히든",
+        "concept": "하나를 택하면서도 사라진 다른 길의 흔적을 기억한다.",
+        "id": "footprints_of_two_paths",
+        "name": "두 갈래 발자국",
+        "rarity": "전설",
+        "reveal_immediate": true
+      }
+    ],
     "traits": [
       {
         "description": "청류문에서 기초 무예를 닦기 시작한 초학자.",
@@ -10341,12 +11726,14 @@
   "manifest": {
     "counts": {
       "achievements": 2,
-      "encounters": 44,
+      "encounters": 51,
       "endings": 3,
-      "insights": 3,
-      "items": 4,
+      "insights": 8,
+      "items": 11,
       "locations": 5,
       "secrets": 0,
+      "skills": 7,
+      "titles": 5,
       "traits": 2
     },
     "schema_version": 1,

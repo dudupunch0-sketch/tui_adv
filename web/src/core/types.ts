@@ -111,6 +111,18 @@ export interface InventoryDetail {
   description: string;
   item_type: string;
   usable: boolean;
+  reveal_immediate?: boolean;
+}
+
+export interface RewardEntry {
+  id: string;
+  name: string;
+  concept?: string;
+  description?: string;
+  effect_text?: string;
+  rarity?: string;
+  category?: string;
+  reveal_immediate?: boolean;
 }
 
 export interface InsightStatus {
@@ -118,6 +130,7 @@ export interface InsightStatus {
   name: string;
   description: string;
   effect_text: string;
+  reveal_immediate?: boolean;
 }
 
 export interface ProgressionStatus {
@@ -148,6 +161,8 @@ export interface ScenePage {
   content_labels?: ContentLabels;
   check_result?: CheckResolution;
   insights?: InsightStatus[];
+  skills?: RewardEntry[];
+  titles?: RewardEntry[];
   /** Ordered event presentation. Older bundles may omit this and use the legacy fields above. */
   content_stream?: SceneContentItem[];
 }

@@ -13,16 +13,16 @@ pub use content::{
     ContentConditions, ContentIndex, ContentIndexError, ContentManifest, ContentSections,
     EncounterDef, EndingDef, EventChoiceRef, EventDef, EventStageDef, InsightDef, ItemDef,
     LevelingMetadata, LocationDef, OutcomeDef, PresentationDef, PresentationEffectCue,
-    PublicSecretDef, ResourceMap, RuntimeMetadata, TraitDef, CONTENT_BUNDLE_KIND,
+    PublicSecretDef, ResourceMap, RewardDef, RuntimeMetadata, TraitDef, CONTENT_BUNDLE_KIND,
     CONTENT_BUNDLE_SCHEMA_VERSION,
 };
 pub use effects::{printer_glyph_anomaly_cue, EffectCue, GlyphAnomalyCue};
 pub use save::{load_state, save_state, SaveEnvelope, SaveError, SAVE_SCHEMA_VERSION};
 pub use scene_page::{
     scene_page_from_content, AchievementSummary, BodyBlock, DialogueEntry, HistoryEntry,
-    InsightStatus, InventorySummary, ItemDetail, PressureCue, ResourceStatus, SceneAction,
-    SceneBlockedAction, SceneContentItem, SceneEffectCue, SceneLocation, SceneMode, ScenePage,
-    SceneVisual, StatusSummary,
+    InsightStatus, InventorySummary, ItemDetail, PressureCue, ResourceStatus, RewardStatus,
+    SceneAction, SceneBlockedAction, SceneContentItem, SceneEffectCue, SceneLocation, SceneMode,
+    ScenePage, SceneVisual, StatusSummary,
 };
 pub use state::{GameState, NewGameError, PlayerState, DEFAULT_START_LOCATION_ID};
 pub use turn::{

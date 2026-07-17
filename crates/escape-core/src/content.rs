@@ -94,6 +94,10 @@ pub struct ContentSections {
     pub traits: Vec<Value>,
     #[serde(default)]
     pub insights: Vec<Value>,
+    #[serde(default)]
+    pub skills: Vec<Value>,
+    #[serde(default)]
+    pub titles: Vec<Value>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -153,6 +157,25 @@ pub struct InsightDef {
     pub description: String,
     #[serde(default)]
     pub check_bonus: Option<CheckBonusDef>,
+    #[serde(default = "default_true")]
+    pub reveal_immediate: bool,
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
+pub struct RewardDef {
+    pub id: String,
+    pub name: String,
+    #[serde(default)]
+    pub concept: String,
+    #[serde(default)]
+    pub rarity: String,
+    #[serde(default)]
+    pub category: String,
+    #[serde(default = "default_true")]
+    pub reveal_immediate: bool,
+}
+fn default_true() -> bool {
+    true
 }
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
@@ -171,6 +194,8 @@ pub struct ContentIndex {
     secrets: BTreeMap<String, PublicSecretDef>,
     traits: BTreeMap<String, TraitDef>,
     insights: BTreeMap<String, InsightDef>,
+    skills: BTreeMap<String, RewardDef>,
+    titles: BTreeMap<String, RewardDef>,
     pub runtime: Option<RuntimeMetadata>,
 }
 
@@ -228,6 +253,8 @@ pub struct ItemDef {
     pub use_effects: ResourceMap,
     #[serde(default)]
     pub use_log: Option<String>,
+    #[serde(default = "default_true")]
+    pub reveal_immediate: bool,
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -358,6 +385,12 @@ pub struct OutcomeDef {
     pub experience: Option<i32>,
     #[serde(default)]
     pub add_insights: Vec<String>,
+    #[serde(default)]
+    pub add_skills: Vec<String>,
+    #[serde(default)]
+    pub add_titles: Vec<String>,
+    #[serde(default)]
+    pub relationship_deltas: BTreeMap<String, i32>,
 }
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
@@ -613,6 +646,29 @@ impl ContentIndex {
     pub fn insights(&self) -> impl Iterator<Item = &InsightDef> {
         self.insights.values()
     }
+    pub fn skills_len(&self) -> usize {
+        self.skills.len()
+    }
+
+    pub fn titles_len(&self) -> usize {
+        self.titles.len()
+    }
+
+    pub fn skills(&self) -> impl Iterator<Item = &RewardDef> {
+        self.skills.values()
+    }
+
+    pub fn titles(&self) -> impl Iterator<Item = &RewardDef> {
+        self.titles.values()
+    }
+
+    pub fn skill(&self, id: &str) -> Option<&RewardDef> {
+        self.skills.get(id)
+    }
+
+    pub fn title(&self, id: &str) -> Option<&RewardDef> {
+        self.titles.get(id)
+    }
 }
 
 pub fn load_content_bundle(json_text: &str) -> Result<ContentBundle, ContentBundleError> {
@@ -679,6 +735,16 @@ pub fn index_content_bundle(bundle: &ContentBundle) -> Result<ContentIndex, Cont
         insert_unique("insights", &mut insights, insight.id.clone(), insight)?;
     }
     let insight_ids: BTreeSet<&str> = insights.keys().map(String::as_str).collect();
+    let mut skills = BTreeMap::new();
+    for value in &bundle.content.skills {
+        let reward: RewardDef = parse_section_value("skills", value)?;
+        insert_unique("skills", &mut skills, reward.id.clone(), reward)?;
+    }
+    let mut titles = BTreeMap::new();
+    for value in &bundle.content.titles {
+        let reward: RewardDef = parse_section_value("titles", value)?;
+        insert_unique("titles", &mut titles, reward.id.clone(), reward)?;
+    }
 
     let mut encounters = BTreeMap::new();
     for encounter_value in &bundle.content.encounters {
@@ -774,6 +840,8 @@ pub fn index_content_bundle(bundle: &ContentBundle) -> Result<ContentIndex, Cont
         secrets,
         traits,
         insights,
+        skills,
+        titles,
         runtime: bundle.runtime.clone(),
     })
 }

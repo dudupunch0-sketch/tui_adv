@@ -624,6 +624,27 @@ fn current_content_encounter<'a>(
         return Some(enc);
     }
 
+    // The reward-pipeline cards are authored as a chronological early-game
+    // sequence. ContentIndex intentionally keeps encounters in a BTreeMap for
+    // stable lookup, so apply an explicit local priority before the generic
+    // lexical scan to keep the story order independent of map ordering.
+    const REWARD_PIPELINE_ORDER: [&str; 7] = [
+        "wuxia_cheongryu_first_night_shelter",
+        "wuxia_cheongryu_first_breathing_lesson",
+        "wuxia_cheongryu_training_first_failure",
+        "wuxia_cheongryu_medicine_errand",
+        "wuxia_cheongryu_raid_omen",
+        "wuxia_cheongryu_gate_patrol_first_trouble",
+        "wuxia_seoharin_hides_training_injury",
+    ];
+    if let Some(encounter) = REWARD_PIPELINE_ORDER
+        .iter()
+        .filter_map(|id| content.encounter(id))
+        .find(|encounter| encounter_is_available(encounter, state))
+    {
+        return Some(encounter);
+    }
+
     content
         .encounters()
         .find(|encounter| encounter_is_available(encounter, state))
@@ -785,6 +806,32 @@ fn apply_outcome(
             .map(|insight| insight.name.as_str())
             .unwrap_or(insight_id);
         delta_logs.push(format!("+ 기연: {name}"));
+    }
+    for skill_id in &outcome.add_skills {
+        if state.skills.iter().any(|owned| owned == skill_id) {
+            continue;
+        }
+        state.skills.push(skill_id.clone());
+        let name = content
+            .skill(skill_id)
+            .map(|skill| skill.name.as_str())
+            .unwrap_or(skill_id);
+        delta_logs.push(format!("+ 스킬: {name}"));
+    }
+    for title_id in &outcome.add_titles {
+        if state.titles.iter().any(|owned| owned == title_id) {
+            continue;
+        }
+        state.titles.push(title_id.clone());
+        let name = content
+            .title(title_id)
+            .map(|title| title.name.as_str())
+            .unwrap_or(title_id);
+        delta_logs.push(format!("+ 칭호: {name}"));
+    }
+    for (key, delta) in &outcome.relationship_deltas {
+        *state.relationships.entry(key.clone()).or_default() += delta;
+        delta_logs.push(format!("관계 방향 기록: {key}"));
     }
     if let Some(destination_id) = &outcome.destination_id {
         state.location_id = destination_id.clone();

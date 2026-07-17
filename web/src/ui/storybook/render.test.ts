@@ -762,4 +762,18 @@ describe('Web Storybook renderer', () => {
     const noteCount = (resultLogHtml.match(/storybook-translation-note/g) ?? []).length;
     expect(noteCount).toBe(1);
   });
+
+  it('renders skill/title codex entries and masks delayed rewards', () => {
+    const html = renderStorybookPage(samplePrinterPage({
+      skills: [{ id: 'match_the_pulse', name: '맥을 맞추다', concept: '흐름을 읽는다', rarity: '희귀' }],
+      titles: [{ id: 'hidden_title', name: '숨은 칭호', reveal_immediate: false }],
+      inventory_summary: { items: ['sealed_item'], overflow_count: 0 },
+      inventory_details: [{ id: 'sealed_item', name: '봉인된 물건', description: '비밀', item_type: 'quest', usable: false, reveal_immediate: false }],
+    }));
+    expect(html).toContain('aria-label="보상 도감"');
+    expect(html).toContain('맥을 맞추다');
+    expect(html).toContain('data-reward-masked="true"');
+    expect(html).toContain('정체를 알 수 없는 물건');
+    expect(html).not.toContain('봉인된 물건');
+  });
 });

@@ -132,6 +132,14 @@ Rust GameCore
 12. 천외편린/각성편린 3택 reward/ability schema는 schema-less bridge가 충분히 검증된 뒤 별도 slice로 검토한다.
 13. 야근몽 storypack preview 후속: `yageunmong_late_night_desk_awake` 또는 각성편린 3택 preview를 별도 storypack preview로 열지 결정한다.
 
+## Phase 16: Reward Pipeline Wave 1 구현 (2026-07-17)
+
+`fable_rewardpipeline_wave1_step1_2607171903.md`의 WP-R1~R5를 구현했다. GameCore는 스킬·칭호·관계 상태와 보상 지급을 additive로 소유하고, preview에는 매핑 등장분 7개 스킬·5개 칭호·5개 기연·7개 아이템을 정의했다. 청류문 수련기 신규 사건 7개를 Story → Choice → ResultStage로 authoring해 이구학지 coverage를 44/44에서 51/51로 확장했다.
+
+Web Storybook은 기존 드로어 계약 안에서 스킬·칭호 섹션, 등급 위계, `reveal_immediate: false` 마스킹, 보상 획득 로그/비트를 표시한다. 관계 수치는 `ScenePage`나 Web에 노출하지 않는다. 효과 수치·전투 resolver·웨이브 B 확률 스케줄러·계정 도감은 범위 밖으로 유지한다.
+
+검증 가드는 중복 지급 무시, 관계 델타 누적, 판정 성공/실패 배타성, 신규 카드·매핑 coverage를 고정한다. Notion DB 30행 원문은 repo snapshot에 없으므로 ID·획득 시점 규칙을 플랜 기준으로 authoring했으며, 원문 대조와 수동 7개 사건 acceptance는 후속 Fable review에서 수행한다. 상세 내용은 `fable_rewardpipeline_wave1_step2_report.md`에 기록했다.
+
 ## 9. 주요 리스크
 
 ### 범위 과대

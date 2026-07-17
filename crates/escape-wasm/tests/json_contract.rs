@@ -10,6 +10,52 @@ const WUXIA_PREVIEW_BUNDLE: &str = include_str!(
     "../../escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json"
 );
 
+fn reward_pipeline_default_choice_for_page(page: &Value) -> Option<&'static str> {
+    [
+        "choice:listen_to_the_roof_rain",
+        "choice:follow_the_breathing_count",
+        "choice:name_the_missed_gap",
+        "choice:carry_the_medicine_without_turning",
+        "choice:guard_the_inner_threshold",
+        "choice:step_back_from_the_gate",
+        "choice:cut_the_presence_before_she_asks",
+    ]
+    .into_iter()
+    .find(|id| {
+        page["actions"]
+            .as_array()
+            .into_iter()
+            .flatten()
+            .any(|action| action["id"] == *id)
+    })
+}
+
+fn advance_reward_pipeline(state_json: &str, bundle: &str) -> String {
+    let mut state = state_json.to_string();
+    for _ in 0..64 {
+        let page_json = raw_scene_page_json(&state, bundle).expect("reward pipeline page");
+        let page: Value =
+            serde_json::from_str(&page_json).expect("reward pipeline page should parse");
+        let action_id = reward_pipeline_default_choice_for_page(&page).or_else(|| {
+            page["actions"]
+                .as_array()
+                .into_iter()
+                .flatten()
+                .find(|action| action["id"] == "event:continue")
+                .map(|_| "event:continue")
+        });
+        let Some(action_id) = action_id else {
+            return state;
+        };
+        let result: Value = serde_json::from_str(
+            &raw_apply_action_json(&state, bundle, action_id).expect("reward pipeline action"),
+        )
+        .expect("reward pipeline result should parse");
+        state = serde_json::to_string(&result["state"]).expect("state should stringify");
+    }
+    state
+}
+
 fn apply_action_json(state_json: &str, bundle: &str, action_id: &str) -> Result<String, String> {
     let mut state = state_json.to_string();
     loop {
@@ -23,14 +69,20 @@ fn apply_action_json(state_json: &str, bundle: &str, action_id: &str) -> Result<
         if available {
             return raw_apply_action_json(&state, bundle, action_id);
         }
+        let state_value: Value = serde_json::from_str(&state).map_err(|error| error.to_string())?;
+        if let Some(default_choice) = reward_pipeline_default_choice_for_page(&page) {
+            let resolved: Value =
+                serde_json::from_str(&raw_apply_action_json(&state, bundle, default_choice)?)
+                    .map_err(|error| error.to_string())?;
+            state = serde_json::to_string(&resolved["state"]).map_err(|error| error.to_string())?;
+            continue;
+        }
         let can_continue = page["actions"]
             .as_array()
             .into_iter()
             .flatten()
             .any(|action| action["id"] == "event:continue");
         if !can_continue {
-            let state_value: Value =
-                serde_json::from_str(&state).map_err(|error| error.to_string())?;
             if state_value["active_event_id"] == "wuxia_seo_harin_rescue"
                 && state_value["event_stage_index"] == 3
             {
@@ -650,7 +702,28 @@ fn json_boundary_reaches_wuxia_cheongryu_raid_route_split_through_preview_bundle
     let post_apprentice_state_json =
         serde_json::to_string(&apprentice_result["state"]).expect("state should stringify");
 
-    let sparring_page_json = scene_page_json(&post_apprentice_state_json, WUXIA_PREVIEW_BUNDLE)
+    let shelter_result_json = apply_action_json(
+        &post_apprentice_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:listen_to_the_roof_rain",
+    )
+    .expect("first night shelter action should serialize");
+    let shelter_result: Value =
+        serde_json::from_str(&shelter_result_json).expect("shelter action result should parse");
+    let post_shelter_state_json =
+        serde_json::to_string(&shelter_result["state"]).expect("state should stringify");
+    let breathing_result_json = apply_action_json(
+        &post_shelter_state_json,
+        WUXIA_PREVIEW_BUNDLE,
+        "choice:follow_the_breathing_count",
+    )
+    .expect("first breathing action should serialize");
+    let breathing_result: Value =
+        serde_json::from_str(&breathing_result_json).expect("breathing action result should parse");
+    let post_breathing_state_json =
+        serde_json::to_string(&breathing_result["state"]).expect("state should stringify");
+
+    let sparring_page_json = scene_page_json(&post_breathing_state_json, WUXIA_PREVIEW_BUNDLE)
         .expect("chore sparring scene page should serialize");
     let sparring_page: Value =
         serde_json::from_str(&sparring_page_json).expect("sparring page JSON should parse");
@@ -680,7 +753,7 @@ fn json_boundary_reaches_wuxia_cheongryu_raid_route_split_through_preview_bundle
     );
 
     let sparring_result_json = apply_action_json(
-        &post_apprentice_state_json,
+        &post_breathing_state_json,
         WUXIA_PREVIEW_BUNDLE,
         "choice:step_back_with_firewood",
     )
@@ -703,8 +776,10 @@ fn json_boundary_reaches_wuxia_cheongryu_raid_route_split_through_preview_bundle
         .any(|clue| clue == "balance_matters_more_than_force"));
     let post_sparring_state_json =
         serde_json::to_string(&sparring_result["state"]).expect("state should stringify");
+    let pre_raid_state_json =
+        advance_reward_pipeline(&post_sparring_state_json, WUXIA_PREVIEW_BUNDLE);
 
-    let raid_page_json = scene_page_json(&post_sparring_state_json, WUXIA_PREVIEW_BUNDLE)
+    let raid_page_json = scene_page_json(&pre_raid_state_json, WUXIA_PREVIEW_BUNDLE)
         .expect("raid route split scene page should serialize");
     let raid_page: Value =
         serde_json::from_str(&raid_page_json).expect("raid page JSON should parse");

@@ -18,6 +18,8 @@ DATA_FILES: tuple[tuple[str, str, str], ...] = (
     ("achievements", "achievements", "achievements.json"),
     ("traits", "traits", "traits.json"),
     ("insights", "insights", "insights.json"),
+    ("skills", "skills", "skills.json"),
+    ("titles", "titles", "titles.json"),
     ("secrets.example", "secrets", "secrets.example.json"),
 )
 CONTENT_BUNDLE_SCHEMA_VERSION = 1
@@ -65,7 +67,7 @@ def _build_data_from_dir(data_dir: Path, source_label: str) -> dict[str, Any]:
     counts: dict[str, int] = {}
     for source_name, root_key, _output_name in DATA_FILES:
         source_path = data_dir / f"{source_name}.yaml"
-        data = {} if root_key == "insights" and not source_path.exists() else _read_yaml(source_path)
+        data = {} if root_key in {"insights", "skills", "titles"} and not source_path.exists() else _read_yaml(source_path)
         entries = data.get(root_key, [])
         if not isinstance(entries, list):
             raise ValueError(f"{source_path} root key {root_key} must be a list")

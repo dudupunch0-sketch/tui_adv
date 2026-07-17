@@ -4,6 +4,7 @@ import type {
   CharacterSummary,
   InventoryDetail,
   ProgressionStatus,
+  RewardEntry,
   ResourceStatus,
   SceneContentItem,
   SceneAction,
@@ -502,6 +503,7 @@ function renderBottomDock(page: ScenePage, options: StorybookRenderOptions): str
         'drawer',
       )}</section>
       ${renderCharacterSummary(page.character_summary)}
+      ${renderRewardDrawer(page)}
       ${renderInsightDrawer(page)}
       ${renderInventoryDrawer(page)}
       ${renderAchievementDrawer(page)}
@@ -527,7 +529,8 @@ function renderInventoryDrawer(page: ScenePage): string {
 
 function renderInventoryItem(id: string, detail: InventoryDetail | undefined, page: ScenePage, index: number): string {
   const itemId = escapeHtml(id);
-  const label = detail?.name ?? inventoryItemLabel(id, page);
+  const revealed = detail?.reveal_immediate !== false;
+  const label = detail && !revealed ? '정체를 알 수 없는 물건' : detail?.name ?? inventoryItemLabel(id, page);
   const icon = `<span class="item-icon" data-item-icon="${itemId}" style="--icon-hue: ${itemIconHue(id)}" aria-hidden="true"></span>`;
   if (!detail) {
     return `<li><div class="item-row item-row--static" data-item-id="${itemId}">${icon}<span>${escapeHtml(label)}</span></div></li>`;
@@ -535,7 +538,8 @@ function renderInventoryItem(id: string, detail: InventoryDetail | undefined, pa
 
   const targetId = `item-detail-${index}`;
   const useAction = page.actions.find((action) => action.id === `use:${id}`);
-  const detailMarkup = `<div id="${targetId}" class="disclosure-panel item-detail" hidden><p>${escapeHtml(detail.description)}</p><small>${escapeHtml(detail.item_type || '아이템')}</small>${detail.usable ? useAction ? `<button type="button" class="item-use" data-action-id="${escapeHtml(useAction.id)}">사용</button>` : '<button type="button" class="item-use" disabled>지금은 쓸 수 없다</button>' : ''}</div>`;
+  const description = revealed ? detail.description : '아직 공개되지 않은 기록이다.';
+  const detailMarkup = `<div id="${targetId}" class="disclosure-panel item-detail" hidden><p>${escapeHtml(description)}</p><small>${escapeHtml(detail.item_type || '아이템')}</small>${revealed && detail.usable ? useAction ? `<button type="button" class="item-use" data-action-id="${escapeHtml(useAction.id)}">사용</button>` : '<button type="button" class="item-use" disabled>지금은 쓸 수 없다</button>' : ''}</div>`;
   return `<li><button type="button" class="item-row" data-item-id="${itemId}" data-disclosure-toggle data-disclosure-target="${targetId}" aria-expanded="false">${icon}<span>${escapeHtml(label)}</span></button>${detailMarkup}</li>`;
 }
 
@@ -545,13 +549,29 @@ function itemIconHue(id: string): number {
   return hash;
 }
 
+function renderRewardDrawer(page: ScenePage): string {
+  const renderEntry = (entry: RewardEntry, kind: string) => {
+    const revealed = entry.reveal_immediate !== false;
+    const label = revealed ? entry.name : '정체를 알 수 없는 보상';
+    const detail = revealed ? (entry.effect_text ?? entry.concept ?? entry.description ?? '') : '아직 공개되지 않은 기록이다.';
+    const rarity = entry.rarity ? '<small class="reward-rarity reward-rarity--' + escapeHtml(entry.rarity) + '">' + escapeHtml(entry.rarity) + '</small>' : '';
+    return '<li class="reward-row reward-row--' + kind + '" data-reward-id="' + escapeHtml(entry.id) + '"' + (revealed ? '' : ' data-reward-masked="true"') + '><span class="reward-glyph" aria-hidden="true">' + (kind === 'skill' ? '術' : '印') + '</span><span class="reward-copy"><strong>' + escapeHtml(label) + '</strong>' + rarity + '<small>' + escapeHtml(detail) + '</small></span></li>';
+  };
+  const skills = page.skills ?? [];
+  const titles = page.titles ?? [];
+  return '<section aria-label="보상 도감" data-dock="rewards"><h2><span aria-hidden="true">賞</span>보상</h2><section aria-label="스킬"><h3>스킬</h3>' + (skills.length ? '<ul>' + skills.map((entry) => renderEntry(entry, 'skill')).join('') + '</ul>' : '<p>아직 익힌 스킬이 없다.</p>') + '</section><section aria-label="칭호"><h3>칭호</h3>' + (titles.length ? '<ul>' + titles.map((entry) => renderEntry(entry, 'title')).join('') + '</ul>' : '<p>아직 새겨진 칭호가 없다.</p>') + '</section></section>';
+}
+
 function renderInsightDrawer(page: ScenePage): string {
   const insights = page.insights ?? [];
   const items = insights.length
     ? `<ul>${insights.map((insight, index) => {
         const targetId = `insight-detail-${index}`;
-        const effect = insight.effect_text ? `<small class="insight-effect">${escapeHtml(insight.effect_text)}</small>` : '';
-        return `<li><button type="button" class="insight-row" data-disclosure-toggle data-disclosure-target="${targetId}" aria-expanded="false"><span>${escapeHtml(insight.name)}</span>${effect}</button><div id="${targetId}" class="disclosure-panel insight-detail" hidden><p>${escapeHtml(insight.description)}</p></div></li>`;
+        const revealed = insight.reveal_immediate !== false;
+        const label = revealed ? insight.name : '정체를 알 수 없는 기연';
+        const description = revealed ? insight.description : '아직 공개되지 않은 기록이다.';
+        const effect = revealed && insight.effect_text ? `<small class="insight-effect">${escapeHtml(insight.effect_text)}</small>` : '';
+        return `<li${revealed ? '' : ' data-insight-masked="true"'}><button type="button" class="insight-row" data-disclosure-toggle data-disclosure-target="${targetId}" aria-expanded="false"><span>${escapeHtml(label)}</span>${effect}</button><div id="${targetId}" class="disclosure-panel insight-detail" hidden><p>${escapeHtml(description)}</p></div></li>`;
       }).join('')}</ul>`
     : '<p>아직 맺은 기연이 없다.</p>';
   return `<section aria-label="기연" data-dock="insights"><h2><span aria-hidden="true">緣</span>기연</h2>${items}</section>`;

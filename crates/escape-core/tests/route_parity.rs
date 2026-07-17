@@ -93,6 +93,7 @@ fn movement_pages_expose_inventory_use_actions_and_full_pressure_resources() {
             description: "비상용 구급상자. 누군가 한 번 열어본 흔적이 있다.".to_string(),
             item_type: "consumable".to_string(),
             usable: true,
+            reveal_immediate: true,
         }]
     );
     assert_eq!(

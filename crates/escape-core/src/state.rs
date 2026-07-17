@@ -68,6 +68,12 @@ pub struct GameState {
     #[serde(default)]
     pub insights: Vec<String>,
     #[serde(default)]
+    pub skills: Vec<String>,
+    #[serde(default)]
+    pub titles: Vec<String>,
+    #[serde(default)]
+    pub relationships: BTreeMap<String, i32>,
+    #[serde(default)]
     pub last_check: Option<CheckResolution>,
     #[serde(default)]
     pub active_event_id: Option<String>,
@@ -116,6 +122,9 @@ impl GameState {
             experience: 0,
             spent_stat_points: 0,
             insights: Vec::new(),
+            skills: Vec::new(),
+            titles: Vec::new(),
+            relationships: BTreeMap::new(),
             last_check: None,
             active_event_id: None,
             event_stage_index: 0,
@@ -162,6 +171,9 @@ impl GameState {
             experience: 0,
             spent_stat_points: 0,
             insights: Vec::new(),
+            skills: Vec::new(),
+            titles: Vec::new(),
+            relationships: BTreeMap::new(),
             last_check: None,
             active_event_id: None,
             event_stage_index: 0,

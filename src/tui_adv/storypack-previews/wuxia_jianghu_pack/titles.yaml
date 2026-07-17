@@ -1,0 +1,31 @@
+titles:
+  - id: not_yet_disciple
+    name: 아직 제자는 아니다
+    concept: 소속보다 먼저 배워야 할 시간을 받아들였다.
+    rarity: 보통
+    category: 메인
+    reveal_immediate: true
+  - id: guest_of_cheongryu
+    name: 청류문의 객
+    concept: 문파의 문턱을 넘었지만 이름은 아직 빌려 쓰고 있다.
+    rarity: 보통
+    category: 메인
+    reveal_immediate: true
+  - id: keeper_of_returning_name
+    name: 돌아올 이름을 지키는 자
+    concept: 사라진 사람의 자리를 소유하지 않고 기억했다.
+    rarity: 희귀
+    category: 메인
+    reveal_immediate: true
+  - id: badge_bearer
+    name: 패를 지닌 외지인
+    concept: 낯선 세계에서도 자신이 누구였는지 놓치지 않았다.
+    rarity: 보통
+    category: 메인
+    reveal_immediate: true
+  - id: footprints_of_two_paths
+    name: 두 갈래 발자국
+    concept: 하나를 택하면서도 사라진 다른 길의 흔적을 기억한다.
+    rarity: 전설
+    category: 히든
+    reveal_immediate: true

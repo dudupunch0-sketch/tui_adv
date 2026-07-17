@@ -150,6 +150,22 @@ fn run_content_scene(options: &CliOptions) -> Result<(), String> {
     }
 
     if options.tui_smoke {
+        if !options.actions.is_empty() {
+            // Keep legacy scripted smoke routes readable after staged conversions:
+            // presentation-only story/result stages advance until the next choice
+            // or encounter, while interactive play still waits for event:continue.
+            for _ in 0..64 {
+                if find_available_action(&view, "event:continue").is_none() {
+                    break;
+                }
+                let result = apply_action_from_content(&state, &content, "event:continue")
+                    .map_err(|error| error.to_string())?;
+                recent_logs.extend(result.logs.iter().cloned());
+                state = result.state;
+                view =
+                    turn_view_from_content(&state, &content).map_err(|error| error.to_string())?;
+            }
+        }
         let page = scene_page_from_content(&state, &content).map_err(|error| error.to_string())?;
         print_scene_page_snapshot(&page, &recent_logs);
     }

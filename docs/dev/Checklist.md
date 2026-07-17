@@ -1688,4 +1688,24 @@
 - [x] Development Plan이 Slice 3 구현·review-fixed 상태를 canonical하게 반영
 - [x] stale Slice 2 `in progress` 표기를 완료 상태로 정정
 - [x] `fable_gameloop3_refactor_step2_report.md`에 명령·수치·QA 산출물·deviation 기록
-- [ ] RF5 Notion/idea ledger reverse sync (별도 WP)
+- [x] RF5 Notion/idea ledger reverse sync (2026-07-16 closeout)
+
+## Phase 13: Event Stage Wave 1 (`fable_eventstage_step1_2607171255.md`)
+
+### 13.1 계약과 코어
+
+- [x] WP-D1: Event/Stage/ContentBlock authoring·wire 계약과 branch 규칙 문서화
+- [x] WP-S1: optional `branch` 필드, success/failure 검증·ResultStage 필터, 직접 ResultStage cursor 호환
+
+### 13.2 이구학지 콘텐츠
+
+- [x] WP-C1: 1차 5개 사건을 Story → Choice → ResultStage로 전환
+- [x] WP-C2: 2차 5개 사건을 Story → Choice → ResultStage로 전환
+- [x] 기존 action ID·로그·visual ID 보존 및 placeholder 일러스트 표기
+
+### 13.3 검증과 문서
+
+- [x] WP-W1: terminal scripted smoke presentation-stage 호환 보정(Web 기능 추가 없음)
+- [x] WP-D2: `fable_eventstage_step2_report.md`와 개발 문서/체크리스트 갱신
+- [x] WP-D3: Notion 런타임 현황 페이지와 `idea_box/notion_sources.yml` reverse sync
+- [ ] 수동 motion/screenshot QA: 브라우저 설치 문제로 다음 QA에서 수행

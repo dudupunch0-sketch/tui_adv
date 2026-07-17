@@ -63,6 +63,33 @@ YAML authoring data
 
 Renderer는 action eligibility, outcome, ending, achievement를 다시 계산하지 않는다. Renderer는 core가 제공한 action id와 semantic cue만 표시하고, 선택된 action id를 다시 core에 전달한다.
 
+## Event/Stage/ContentBlock wire contract
+
+Event의 `stages[*].blocks[*]`는 authoring YAML과 `content.bundle.json`에서 같은
+ordered block 배열로 보존한다. Rust의 `ContentBlockDef`는 다음 optional field를
+renderer-neutral하게 표현한다.
+
+| 필드 | 타입 | 설명 |
+|---|---|---|
+| `kind` | `String` | block taxonomy. `narration`, `dialogue`, `illustration`, `document`, `system`, `result_summary` 등을 사용한다. |
+| `text` | `Option<String>` | narration/dialogue/document/system/result summary 본문 |
+| `speaker` | `Option<String>` | 실제 화자 또는 문서/시스템 표면 이름 |
+| `visual_id` | `Option<String>` | illustration의 stable semantic visual id |
+| `alt` | `Option<String>` | illustration 대체 설명 |
+| `placeholder` | `bool` | 연결되지 않은 illustration asset의 placeholder 여부. 기본값은 `false`. |
+| `branch` | `Option<String>` | checked choice의 결과 분기. 허용값은 `success` 또는 `failure`이며 생략하면 공통 block이다. |
+
+`branch`는 `#[serde(default, skip_serializing_if = "Option::is_none")]`인 additive
+필드로 취급한다. 따라서 `branch`가 없는 기존 bundle과 save는 계속 읽히며 schema
+version을 올리지 않는다. Bundle index 단계에서 `success`·`failure` 이외의 값은
+validation error로 거부한다.
+
+ResultStage의 branch block은 core가 `content_stream`을 만들 때만 해석한다. 직전
+check resolution이 `Some(success)` 또는 `Some(failure)`이면 `branch`가 없는 block과
+일치하는 branch만 원래 순서대로 남긴다. 직전 check가 없거나 resolution이 `None`이면
+`branch`가 없는 block만 남긴다. 이 필터링 이후 renderer에는 하나의 ordered stream만
+전달하며 Web/terminal renderer는 판정이나 branch 선택을 재계산하지 않는다.
+
 ## Authoring schema vs runtime contract
 
 | 층 | 소유 | 용도 | renderer-specific 데이터 허용 |

@@ -280,9 +280,7 @@ pub fn apply_content_action(
     }
     if let Some(event) = &encounter.event {
         let stage_index = effective_event_stage_index(encounter, state);
-        next_state.active_event_id = Some(encounter.id.clone());
-        next_state.event_stage_index = stage_index + 1;
-        next_state.event_next_stage_id = event
+        let next_stage_id = event
             .stages
             .get(stage_index)
             .and_then(|stage| {
@@ -292,6 +290,33 @@ pub fn apply_content_action(
                     .find(|choice_ref| choice_ref.id == choice.id)
             })
             .and_then(|choice_ref| choice_ref.next_stage_id.clone());
+        next_state.active_event_id = Some(encounter.id.clone());
+        if let Some(next_stage_id) = next_stage_id {
+            if let Some((next_index, next_stage)) = event
+                .stages
+                .iter()
+                .enumerate()
+                .find(|(_, stage)| stage.id == next_stage_id)
+            {
+                if next_stage.kind == "result" {
+                    // A direct ResultStage target gets its own cursor and a self-sentinel.
+                    // advance_event uses that sentinel to avoid falling through to the
+                    // next physical stage when this result has no explicit continuation.
+                    next_state.event_stage_index = next_index;
+                    next_state.event_next_stage_id = Some(next_stage.id.clone());
+                } else {
+                    // Legacy refs target the stage after the shared ResultStage.
+                    next_state.event_stage_index = stage_index + 1;
+                    next_state.event_next_stage_id = Some(next_stage_id);
+                }
+            } else {
+                next_state.event_stage_index = stage_index + 1;
+                next_state.event_next_stage_id = Some(next_stage_id);
+            }
+        } else {
+            next_state.event_stage_index = stage_index + 1;
+            next_state.event_next_stage_id = None;
+        }
     }
     next_state.add_seen_encounter_once(&encounter.id);
     logs.extend(advance_turn(&mut next_state));
@@ -646,22 +671,32 @@ fn advance_event(
     if stage.kind == "choice" {
         return Err(ContentActionError::UnknownAction(action_id.to_string()));
     }
+    let direct_result_target =
+        stage.kind == "result" && state.event_next_stage_id.as_deref() == Some(stage.id.as_str());
     let target = if stage.kind == "result" {
-        state
-            .event_next_stage_id
-            .as_ref()
-            .or(stage.next_stage_id.as_ref())
+        if direct_result_target {
+            stage.next_stage_id.as_ref()
+        } else {
+            state
+                .event_next_stage_id
+                .as_ref()
+                .or(stage.next_stage_id.as_ref())
+        }
     } else {
         stage.next_stage_id.as_ref()
     };
-    let next_index = target
-        .and_then(|id| {
-            event
-                .stages
-                .iter()
-                .position(|candidate| &candidate.id == id)
-        })
-        .unwrap_or(index + 1);
+    let next_index = if direct_result_target && target.is_none() {
+        event.stages.len()
+    } else {
+        target
+            .and_then(|id| {
+                event
+                    .stages
+                    .iter()
+                    .position(|candidate| &candidate.id == id)
+            })
+            .unwrap_or(index + 1)
+    };
     let mut next_state = state.clone();
     next_state.last_check = None;
     next_state.active_event_id = Some(encounter.id.clone());

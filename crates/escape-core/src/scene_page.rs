@@ -69,6 +69,8 @@ pub struct SceneContentItem {
     pub visual_id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub alt: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub branch: Option<String>,
     #[serde(default)]
     pub placeholder: bool,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -446,6 +448,19 @@ fn scene_content_stream(
         let mut stream: Vec<_> = stage
             .blocks
             .iter()
+            .filter(|block| {
+                if stage.kind != "result" {
+                    return true;
+                }
+                let Some(branch) = block.branch.as_deref() else {
+                    return true;
+                };
+                state
+                    .last_check
+                    .as_ref()
+                    .map(|check| branch == if check.success { "success" } else { "failure" })
+                    .unwrap_or(false)
+            })
             .map(|block| SceneContentItem {
                 kind: block.kind.clone(),
                 stage_id: Some(stage.id.clone()),
@@ -453,6 +468,7 @@ fn scene_content_stream(
                 speaker: block.speaker.clone(),
                 visual_id: block.visual_id.clone(),
                 alt: block.alt.clone(),
+                branch: block.branch.clone(),
                 placeholder: block.placeholder,
                 actions: Vec::new(),
             })
@@ -465,6 +481,7 @@ fn scene_content_stream(
                 speaker: None,
                 visual_id: None,
                 alt: None,
+                branch: None,
                 placeholder: false,
                 actions: actions.to_vec(),
             });
@@ -476,6 +493,7 @@ fn scene_content_stream(
                 speaker: None,
                 visual_id: None,
                 alt: None,
+                branch: None,
                 placeholder: false,
                 actions: actions.to_vec(),
             });
@@ -492,6 +510,7 @@ fn scene_content_stream(
             speaker: None,
             visual_id: None,
             alt: None,
+            branch: None,
             placeholder: false,
             actions: Vec::new(),
         })
@@ -503,6 +522,7 @@ fn scene_content_stream(
         speaker: Some(entry.speaker.clone()),
         visual_id: None,
         alt: None,
+        branch: None,
         placeholder: false,
         actions: Vec::new(),
     }));
@@ -513,6 +533,7 @@ fn scene_content_stream(
         speaker: None,
         visual_id: Some(visual.id.clone()),
         alt: Some(visual.alt.clone()),
+        branch: None,
         placeholder: visual.id.contains(':'),
         actions: Vec::new(),
     });
@@ -524,6 +545,7 @@ fn scene_content_stream(
             speaker: None,
             visual_id: None,
             alt: None,
+            branch: None,
             placeholder: false,
             actions: actions.to_vec(),
         });

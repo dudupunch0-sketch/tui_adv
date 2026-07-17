@@ -1547,7 +1547,7 @@ encounters:
               text: 외원 담장 밑에서 다시 그 흐름이 나타난다. 무명은 청류문이 또 외부자를 주워 왔느냐고 묻지만, 말끝에는 조롱보다 피로가 먼저 묻어난다. 서하린은 칼집에 손을 얹고도 이름을 부르지 않는다. 무명의 발끝이 반 보 앞으로 밀려오고, 훔친 청류문식 초식이 비어 있는 중심 위에 번쩍인다.
             - kind: illustration
               visual_id: wuxia_mumyeong_first_confrontation
-              alt: 외원 담장 밑에서 다시 그 흐름이 나타난다. 무명은 청류문이 또
+              alt: 청류문 외원 담장 밑에서 훔친 초식을 겨누며 서하린과 대치하는 무명
               placeholder: true
         - id: wuxia_mumyeong_first_confrontation_choice
           kind: choice
@@ -1874,7 +1874,7 @@ encounters:
               text: 무명의 카피는 완전한 복사가 아니었다. 겉흐름 사이로 손목을 잠그는 각도, 기혈을 누르는 순서, 물러나는 보폭이 삐져나온다. 천기록의 빈 줄은 그 흔적을 현악문과 복호금쇄수라는 이름 옆에 잠시 멈춰 세운다.
             - kind: illustration
               visual_id: wuxia_mumyeong_reads_orthodox_style
-              alt: 무명의 카피는 완전한 복사가 아니었다. 겉흐름 사이로 손목을 잠
+              alt: 무명이 훔친 초식 속에 남은 현악문 복호금쇄수의 흔적을 짚어내는 천기록
               placeholder: true
         - id: wuxia_mumyeong_reads_orthodox_style_choice
           kind: choice
@@ -1982,7 +1982,7 @@ encounters:
               text: 청류문 마당의 해가 기울자 무명이 다시 나타난다. 그는 싸움을 걸 듯 서 있지만, 시선은 서하린이 서 있던 빈 자리와 천기록의 접힌 모서리를 번갈아 스친다. 현악문과 복호금쇄수라는 이름은 아직 답이 아니라, 서로 모른 척할 수 없게 만든 흠집처럼 남아 있다.
             - kind: illustration
               visual_id: wuxia_mumyeong_midgame_reunion
-              alt: 청류문 마당의 해가 기울자 무명이 다시 나타난다. 그는 싸움을
+              alt: 해 저무는 청류문 마당에서 싸움을 걸 듯 다시 나타난 무명
               placeholder: true
         - id: wuxia_mumyeong_midgame_reunion_choice
           kind: choice
@@ -2181,7 +2181,7 @@ encounters:
               text: 청류문 마당의 소란이 가라앉기도 전에 검은 깃발의 그림자가 문턱에 걸린다. 흑사방주가 한 걸음 들어서자, 천기록의 빈 줄은 이상하게도 아무 해법도 쓰지 않는다. 움직임은 보인다. 사람의 약점을 재는 순서도 보인다. 하지만 몸이 먼저 굳는다.
             - kind: illustration
               visual_id: wuxia_boss_first_appearance
-              alt: 청류문 마당의 소란이 가라앉기도 전에 검은 깃발의 그림자가 문턱
+              alt: 청류문 마당 문턱에 검은 깃발을 드리우며 나타난 흑사방주
               placeholder: true
         - id: wuxia_boss_first_appearance_choice
           kind: choice
@@ -2400,7 +2400,7 @@ encounters:
               text: 접어 둔 서찰과 복호금쇄수의 흔적이 청류문 마당 위에서 겹친다. 천기록은 무명의 재능을 칭찬하지 않는다. 대신 분노가 남의 초식을 훔쳐 덧씌운 순간, 카피가 성장처럼 보였지만 사실 상처의 모양을 따라 번졌다고 적는다.
             - kind: illustration
               visual_id: wuxia_mumyeong_awakening
-              alt: story illustration
+              alt: 훔친 초식으로 분노를 덧씌우며 각성하는 무명을 기록하는 천기록
               placeholder: true
         - id: wuxia_mumyeong_awakening_choice
           kind: choice
@@ -2510,7 +2510,7 @@ encounters:
               text: 무명의 분노가 지나간 뒤, 청류문 외원의 오래된 상처가 새삼 선명해진다. 천기록은 그 밤을 재생하지 않는다. 대신 부러진 자물쇠, 뒤틀린 문틀, 벽에 스친 손자국 사이에서 현악문이라는 이름과 복호금쇄수의 결만 조용히 골라 적는다.
             - kind: illustration
               visual_id: wuxia_qingliu_attack_after_war
-              alt: story illustration
+              alt: 부러진 자물쇠와 뒤틀린 문틀에서 현악문의 흔적을 골라 적는 천기록
               placeholder: true
         - id: wuxia_qingliu_attack_after_war_choice
           kind: choice
@@ -2620,7 +2620,7 @@ encounters:
               text: 현악문이라는 이름은 청류문 외원의 흉터에서 끝나지 않았다. 며칠 뒤 천기록의 여백에는 닫힌 산문, 부러진 현판, 이름이 긁혀 나간 장부 조각이 떠오른다. 기록은 멸문 장면을 재생하지 않는다. 다만 복호금쇄수의 이름이 사라진 자리와 무명의 분노가 지나간 방향만 조용히 맞춘다.
             - kind: illustration
               visual_id: wuxia_mumyeong_destroys_orthodox_sect
-              alt: story illustration
+              alt: 부러진 현판과 지워진 장부만 남은 현악문의 빈 산문
               placeholder: true
         - id: wuxia_mumyeong_destroys_orthodox_sect_choice
           kind: choice
@@ -2730,7 +2730,7 @@ encounters:
               text: 빈 현악문 산문에서 돌아온 뒤에도 천기록의 여백은 닫히지 않는다. 부러진 현판의 먹자국 끝에 흑사방의 검은 비늘 문양이 겹치고, 무명이 청류문에도 현악문에도 남을 수 없게 된 순간을 누군가 계산했다는 문장이 떠오른다. 그것은 구원이 아니라, 상처를 힘으로 바꾸는 제안이었다.
             - kind: illustration
               visual_id: wuxia_boss_recruits_mumyeong
-              alt: story illustration
+              alt: 부러진 현판 위에 검은 비늘 문양을 겹치며 무명을 포섭하는 흑사방주
               placeholder: true
         - id: wuxia_boss_recruits_mumyeong_choice
           kind: choice
@@ -2840,7 +2840,7 @@ encounters:
               text: 흑사방의 검은 비늘 문양이 사라진 뒤, 천기록은 흩어진 조각들을 한 장으로 접는다. 거절당한 도움 요청, 현악문과 복호금쇄수, 비어 버린 산문, 보스가 먼저 본 상처. 기록은 무명이 왜 떠났는지 이해할 만큼은 이어지지만, 아직 그 문장을 서하린 앞에 내려놓지는 않는다.
             - kind: illustration
               visual_id: wuxia_mumyeong_departure_truth_summary
-              alt: story illustration
+              alt: 흩어진 조각들을 한 장으로 접어 무명의 이탈 진실을 정리하는 천기록
               placeholder: true
         - id: wuxia_mumyeong_departure_truth_summary_choice
           kind: choice

@@ -23,58 +23,72 @@ items:
     type: clue
     tags: [mumyeong, orthodox_refusal, failed_aid, wuxia_preview]
 
-  - id: modern_first_aid_pouch
+  - id: wuxia_item_modern_first_aid_pouch
     name: 현대식 응급 파우치
-    description: 익숙한 포장과 낯선 약초 냄새가 함께 남은 작은 응급 파우치.
-    type: quest
+    description: 무림에서 낯설지만 상처를 씻고 묶는 순서만큼은 분명한 파우치.
+    type: consumable
+    category: 소모품
+    rarity: 희귀
     tags: [reward, medicine, wuxia_preview]
     usable: false
     reveal_immediate: true
 
-  - id: empty_medicine_ledger
-    name: 빈 약장부
-    description: 이름과 용량이 모두 지워진 약재 기록장. 후속 회수 전까지 정체를 공개하지 않는다.
+  - id: wuxia_item_empty_medicine_ledger
+    name: 약재 창고의 빈 장부
+    description: 약재가 없다는 사실보다 누가 언제 비워 갔는지를 말하는 장부.
     type: quest
+    category: 퀘스트 아이템
+    rarity: 희귀
     tags: [reward, medicine, pending, wuxia_preview]
     usable: false
     reveal_immediate: false
 
-  - id: cracked_whistle
-    name: 금 간 호각
-    description: 한 번 불면 낮은 음만 남는 순찰용 호각.
-    type: quest
+  - id: wuxia_item_cracked_whistle
+    name: 금 간 호루라기
+    description: 불면 맑은 소리 대신 끊긴 숨 같은 음이 나는 호루라기.
+    type: tool
+    category: 도구
+    rarity: 보통
     tags: [reward, patrol, wuxia_preview]
     usable: false
     reveal_immediate: true
 
-  - id: red_thread_fragment
-    name: 붉은 실 조각
-    description: 약탕기 손잡이에 묶였던 붉은 실의 일부. 후속 회수 전까지 정체를 공개하지 않는다.
+  - id: wuxia_item_red_thread_fragment
+    name: 붉은 실 한 토막
+    description: 누군가 풀숲과 나뭇가지 사이에 묶어 둔 붉은 실.
     type: quest
+    category: 퀘스트 아이템
+    rarity: 보통
     tags: [reward, clue, pending, wuxia_preview]
     usable: false
     reveal_immediate: false
 
-  - id: wet_gate_register
-    name: 젖은 문지기 장부
-    description: 비에 번진 순찰 명부. 후속 회수 전까지 정체를 공개하지 않는다.
-    type: quest
+  - id: wuxia_item_wet_gate_register
+    name: 젖은 출입명부
+    description: 비에 젖은 이름 몇 개가 산문을 드나든 사람들의 순서를 드러낸다.
+    type: clue
+    category: 퀘스트 아이템
+    rarity: 희귀
     tags: [reward, gate, pending, wuxia_preview]
     usable: false
     reveal_immediate: false
 
-  - id: life_talisman
-    name: 목숨 부적
-    description: 생명을 대신하지는 않지만, 한 번의 망설임을 붙잡아 두는 낡은 부적.
-    type: quest
+  - id: wuxia_pendant_life_talisman
+    name: 생명의 부적
+    description: 누군가 살아 돌아오기를 바라며 문 안쪽에 걸어 둔 낡은 부적.
+    type: tool
+    category: 패물
+    rarity: 희귀
     tags: [reward, survival, wuxia_preview]
     usable: false
     reveal_immediate: true
 
-  - id: seoharin_handkerchief
+  - id: wuxia_pendant_seoharin_handkerchief
     name: 서하린의 손수건
-    description: 훈련 중 감춘 상처를 싸맨 손수건. 후속 회수 전까지 정체를 공개하지 않는다.
-    type: quest
+    description: 서하린이 말없이 건넨 손수건. 약 냄새와 오래된 비 냄새가 함께 남아 있다.
+    type: tool
+    category: 패물
+    rarity: 전설
     tags: [reward, seoharin, pending, wuxia_preview]
     usable: false
-    reveal_immediate: false
+    reveal_immediate: true

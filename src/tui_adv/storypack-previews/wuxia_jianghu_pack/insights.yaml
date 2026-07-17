@@ -20,27 +20,27 @@ insights:
       ability: logic
       bonus: 1
 
-  - id: first_current_breath
-    name: 첫 물결의 호흡
-    description: 청류문의 첫 호흡을 몸에 남겼지만, 기록은 아직 빈칸으로 남아 있다.
-    reveal_immediate: false
-
-  - id: recording_defeat
-    name: 패배를 기록하는 법
-    description: 실패를 지우지 않고 다음 선택의 재료로 보관한다.
+  - id: wuxia_insight_first_current_breath
+    name: 청류심법의 첫 숨
+    description: 힘을 고정하는 대신 흐르게 해야 한다는 청류심법의 첫 이해.
     reveal_immediate: true
 
-  - id: measure_fidelity
-    name: 충실도를 재다
-    description: 약속과 실제 행동 사이의 간격을 감정 대신 기록으로 살핀다.
+  - id: wuxia_insight_recording_defeat
+    name: 패배를 받아 적는 습관
+    description: 패배를 손실이 아니라 다음 시도의 자료로 바꾸는 기연.
     reveal_immediate: true
 
-  - id: sort_like_documents
-    name: 문서처럼 분류하기
-    description: 흩어진 단서를 같은 서랍에 넣기 전, 무엇이 다른지 먼저 구분한다.
-    reveal_immediate: false
+  - id: wuxia_insight_measure_fidelity
+    name: 신의를 저울질하는 마음
+    description: 신의가 언제나 이익이 되는 것은 아니지만, 무엇을 잃는지는 스스로 재는 마음.
+    reveal_immediate: true
 
-  - id: read_the_wrist
-    name: 손목을 읽다
-    description: 짧은 움직임에 남은 긴장과 망설임을 읽는다.
-    reveal_immediate: false
+  - id: wuxia_insight_sort_like_documents
+    name: 서류처럼 정리하는 머리
+    description: 현대의 기록 습관이 약재 장부와 문파의 결핍을 연결하는 방식으로 재해석된 기연.
+    reveal_immediate: true
+
+  - id: wuxia_insight_read_the_wrist
+    name: 손목의 맥을 읽는 눈
+    description: 서하린이 숨긴 손목의 미세한 움직임에서 말하지 않은 상태를 읽는 이해.
+    reveal_immediate: true

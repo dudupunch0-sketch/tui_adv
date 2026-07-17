@@ -12,13 +12,15 @@ const WUXIA_PREVIEW_BUNDLE: &str = include_str!(
 
 fn reward_pipeline_default_choice_for_page(page: &Value) -> Option<&'static str> {
     [
-        "choice:listen_to_the_roof_rain",
-        "choice:follow_the_breathing_count",
-        "choice:name_the_missed_gap",
-        "choice:carry_the_medicine_without_turning",
-        "choice:guard_the_inner_threshold",
-        "choice:step_back_from_the_gate",
-        "choice:cut_the_presence_before_she_asks",
+        // Resolve Wave 1 events in canonical first-match order before legacy
+        // chore-sparring and raid scenarios.
+        "choice:first_night_stay_guest",
+        "choice:breath_copy_first_current",
+        "choice:medicine_alone_pouch",
+        "choice:patrol_ignore_retreat",
+        "choice:failure_explain_gap",
+        "choice:omen_rest_threshold",
+        "choice:wrist_look_away_presence",
     ]
     .into_iter()
     .find(|id| {
@@ -705,7 +707,7 @@ fn json_boundary_reaches_wuxia_cheongryu_raid_route_split_through_preview_bundle
     let shelter_result_json = apply_action_json(
         &post_apprentice_state_json,
         WUXIA_PREVIEW_BUNDLE,
-        "choice:listen_to_the_roof_rain",
+        "choice:first_night_stay_guest",
     )
     .expect("first night shelter action should serialize");
     let shelter_result: Value =
@@ -715,7 +717,7 @@ fn json_boundary_reaches_wuxia_cheongryu_raid_route_split_through_preview_bundle
     let breathing_result_json = apply_action_json(
         &post_shelter_state_json,
         WUXIA_PREVIEW_BUNDLE,
-        "choice:follow_the_breathing_count",
+        "choice:breath_copy_first_current",
     )
     .expect("first breathing action should serialize");
     let breathing_result: Value =
@@ -723,7 +725,9 @@ fn json_boundary_reaches_wuxia_cheongryu_raid_route_split_through_preview_bundle
     let post_breathing_state_json =
         serde_json::to_string(&breathing_result["state"]).expect("state should stringify");
 
-    let sparring_page_json = scene_page_json(&post_breathing_state_json, WUXIA_PREVIEW_BUNDLE)
+    let pre_sparring_state_json =
+        advance_reward_pipeline(&post_breathing_state_json, WUXIA_PREVIEW_BUNDLE);
+    let sparring_page_json = scene_page_json(&pre_sparring_state_json, WUXIA_PREVIEW_BUNDLE)
         .expect("chore sparring scene page should serialize");
     let sparring_page: Value =
         serde_json::from_str(&sparring_page_json).expect("sparring page JSON should parse");
@@ -753,7 +757,7 @@ fn json_boundary_reaches_wuxia_cheongryu_raid_route_split_through_preview_bundle
     );
 
     let sparring_result_json = apply_action_json(
-        &post_breathing_state_json,
+        &pre_sparring_state_json,
         WUXIA_PREVIEW_BUNDLE,
         "choice:step_back_with_firewood",
     )

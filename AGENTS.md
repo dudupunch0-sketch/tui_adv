@@ -73,6 +73,7 @@
 ### 실화면 QA (웹 변경 시 필수)
 
 - 공식 게이트: `cd web && npm run qa:storybook:visual -- --base-url <dev-url> --out-dir <scratch>` — 5개 뷰포트 전 항목 통과. 라이브 게임 플로우 검증에는 wasm 재빌드가 선행되어야 한다 (`wasm-pack build crates/escape-wasm --target web --out-dir web/src/core/wasm-pkg`, WSL).
+- artManifest에 WebP 일러스트 자산을 추가·변경할 때는 `cd web && npm run qa:art-assets`를 실행해 파일 존재, WebP 형식, 150KB 이하, 5:3 비율을 검증한다.
 - 연출(타자기/비트/플로팅)은 QA 스크립트가 reduced-motion이라 꺼진다 — 별도 Playwright 컨텍스트(`reducedMotion: 'no-preference'`)로 동작 증빙을 남긴다.
 - 픽스처 시각 검증 요령: vite dev의 TS 서빙으로 `page.evaluate(() => import('/src/ui/storybook/render.ts'))` 후 임의 ScenePage를 렌더하면 실제 CSS로 스크린샷을 뜰 수 있다.
 

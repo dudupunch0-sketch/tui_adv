@@ -17,31 +17,239 @@ const NEW_ENCOUNTERS: [&str; 7] = [
     "wuxia_seoharin_hides_training_injury",
 ];
 
-const REWARD_IDS: [&str; 24] = [
-    "match_the_pulse",
-    "fallen_leaf_flow_step",
-    "record_the_gap",
-    "turning_blade",
-    "guard_the_threshold",
-    "two_steps_back",
-    "cut_the_presence",
-    "not_yet_disciple",
-    "guest_of_cheongryu",
-    "keeper_of_returning_name",
-    "badge_bearer",
-    "footprints_of_two_paths",
-    "first_current_breath",
-    "recording_defeat",
-    "measure_fidelity",
-    "sort_like_documents",
-    "read_the_wrist",
-    "modern_first_aid_pouch",
-    "empty_medicine_ledger",
-    "cracked_whistle",
-    "red_thread_fragment",
-    "wet_gate_register",
-    "life_talisman",
-    "seoharin_handkerchief",
+const CANONICAL_ROWS: [(&str, &str, &str, &str, &str, &str); 29] = [
+    (
+        "wuxia_cheongryu_first_night_shelter",
+        "first_night_stay_guest",
+        "title",
+        "wuxia_title_guest_of_cheongryu",
+        "immediate",
+        "서하린이 정한 자리에 머물기",
+    ),
+    (
+        "wuxia_cheongryu_first_night_shelter",
+        "first_night_separate_boundary",
+        "title",
+        "wuxia_title_not_yet_disciple",
+        "immediate",
+        "방을 따로 달라고 하기",
+    ),
+    (
+        "wuxia_cheongryu_first_night_shelter",
+        "first_night_why_fidelity",
+        "insight",
+        "wuxia_insight_measure_fidelity",
+        "immediate",
+        "왜 자신을 받았는지 묻기",
+    ),
+    (
+        "wuxia_cheongryu_first_night_shelter",
+        "first_night_leave_name",
+        "title",
+        "wuxia_title_keeper_of_returning_name",
+        "immediate",
+        "내일 바로 나가겠다고 말하기",
+    ),
+    (
+        "wuxia_cheongryu_first_breathing_lesson",
+        "breath_copy_first_current",
+        "insight",
+        "wuxia_insight_first_current_breath",
+        "check-success",
+        "서하린의 호흡을 그대로 따라 하기",
+    ),
+    (
+        "wuxia_cheongryu_first_breathing_lesson",
+        "breath_own_pulse",
+        "skill",
+        "wuxia_skill_match_the_pulse",
+        "check-success",
+        "자신의 방식으로 관찰해 따라 하기",
+    ),
+    (
+        "wuxia_cheongryu_first_breathing_lesson",
+        "breath_ask_trust",
+        "relationship",
+        "relationship_person_seoharin_affection",
+        "immediate",
+        "왜 힘을 빼야 하는지 묻기",
+    ),
+    (
+        "wuxia_cheongryu_first_breathing_lesson",
+        "breath_stop_flow",
+        "skill",
+        "wuxia_skill_fallen_leaf_flow_step",
+        "immediate",
+        "아픈 척하지 않고 중단하기",
+    ),
+    (
+        "wuxia_cheongryu_training_first_failure",
+        "failure_no_excuse",
+        "insight",
+        "wuxia_insight_recording_defeat",
+        "immediate",
+        "변명하지 않고 복기하기",
+    ),
+    (
+        "wuxia_cheongryu_training_first_failure",
+        "failure_explain_gap",
+        "skill",
+        "wuxia_skill_record_the_gap",
+        "immediate",
+        "방금 본 동작을 설명하기",
+    ),
+    (
+        "wuxia_cheongryu_training_first_failure",
+        "failure_rematch_blade",
+        "skill",
+        "wuxia_skill_turning_blade",
+        "check-success",
+        "서하린에게 재대련 요청하기",
+    ),
+    (
+        "wuxia_cheongryu_training_first_failure",
+        "failure_escape_chore",
+        "title",
+        "wuxia_title_not_yet_disciple",
+        "immediate",
+        "다음 잡일로 도망가기",
+    ),
+    (
+        "wuxia_cheongryu_medicine_errand",
+        "medicine_alone_pouch",
+        "item",
+        "wuxia_item_modern_first_aid_pouch",
+        "pending",
+        "시장까지 혼자 다녀오기",
+    ),
+    (
+        "wuxia_cheongryu_medicine_errand",
+        "medicine_together_affection",
+        "relationship",
+        "relationship_person_seoharin_affection",
+        "immediate",
+        "서하린과 함께 가기",
+    ),
+    (
+        "wuxia_cheongryu_medicine_errand",
+        "medicine_badge_title",
+        "title",
+        "wuxia_title_badge_bearer",
+        "immediate",
+        "사원증·출근 물건을 교환 제안하기",
+    ),
+    (
+        "wuxia_cheongryu_medicine_errand",
+        "medicine_empty_ledger",
+        "item",
+        "wuxia_item_empty_medicine_ledger",
+        "pending",
+        "빈손으로 돌아와 부족을 알리기",
+    ),
+    (
+        "wuxia_cheongryu_raid_omen",
+        "omen_gate_register",
+        "item",
+        "wuxia_item_wet_gate_register",
+        "pending",
+        "산문을 직접 확인하기",
+    ),
+    (
+        "wuxia_cheongryu_raid_omen",
+        "omen_injured_talisman",
+        "pendant",
+        "wuxia_pendant_life_talisman",
+        "immediate",
+        "부상자와 약재를 점검하기",
+    ),
+    (
+        "wuxia_cheongryu_raid_omen",
+        "omen_archive_documents",
+        "insight",
+        "wuxia_insight_sort_like_documents",
+        "immediate",
+        "폐서고 기록을 찾기",
+    ),
+    (
+        "wuxia_cheongryu_raid_omen",
+        "omen_rest_threshold",
+        "skill",
+        "wuxia_skill_guard_the_threshold",
+        "immediate",
+        "서하린의 지시에 따라 휴식하기",
+    ),
+    (
+        "wuxia_cheongryu_raid_omen",
+        "omen_hidden_two_paths",
+        "title",
+        "wuxia_title_footprints_of_two_paths",
+        "dormant",
+        "산문 조사와 기록 조사 조건을 모두 충족",
+    ),
+    (
+        "wuxia_cheongryu_gate_patrol_first_trouble",
+        "patrol_follow_thread",
+        "item",
+        "wuxia_item_red_thread_fragment",
+        "check-success",
+        "소리를 따라가기",
+    ),
+    (
+        "wuxia_cheongryu_gate_patrol_first_trouble",
+        "patrol_report_faction",
+        "relationship",
+        "relationship_faction_cheongryu_affection",
+        "immediate",
+        "서하린에게 알리기",
+    ),
+    (
+        "wuxia_cheongryu_gate_patrol_first_trouble",
+        "patrol_ignore_retreat",
+        "skill",
+        "wuxia_skill_two_steps_back",
+        "immediate",
+        "아무 일 없는 척 순찰 계속하기",
+    ),
+    (
+        "wuxia_cheongryu_gate_patrol_first_trouble",
+        "patrol_fake_whistle",
+        "item",
+        "wuxia_item_cracked_whistle",
+        "immediate",
+        "가짜 순찰 신호를 남기기",
+    ),
+    (
+        "wuxia_seoharin_hides_training_injury",
+        "wrist_ask_read",
+        "insight",
+        "wuxia_insight_read_the_wrist",
+        "immediate",
+        "손목을 직접 묻기",
+    ),
+    (
+        "wuxia_seoharin_hides_training_injury",
+        "wrist_ointment_handkerchief",
+        "pendant",
+        "wuxia_pendant_seoharin_handkerchief",
+        "pending",
+        "약초 연고를 가져오기",
+    ),
+    (
+        "wuxia_seoharin_hides_training_injury",
+        "wrist_report_faction",
+        "relationship",
+        "relationship_faction_cheongryu_affection",
+        "immediate",
+        "장문인에게 알리기",
+    ),
+    (
+        "wuxia_seoharin_hides_training_injury",
+        "wrist_look_away_presence",
+        "skill",
+        "wuxia_skill_cut_the_presence",
+        "immediate",
+        "못 본 척하기",
+    ),
 ];
 
 fn index() -> escape_core::ContentIndex {
@@ -60,7 +268,7 @@ fn active_state(
 }
 
 #[test]
-fn wave1_adds_seven_staged_cards_and_all_30_mapping_rows() {
+fn wave1_adds_seven_staged_cards_and_all_29_mapping_rows() {
     let value: Value = serde_json::from_str(BUNDLE).unwrap();
     let index = index();
     assert_eq!(index.encounters_len(), 51);
@@ -75,19 +283,76 @@ fn wave1_adds_seven_staged_cards_and_all_30_mapping_rows() {
     }
     assert_eq!(value["content"]["skills"].as_array().unwrap().len(), 7);
     assert_eq!(value["content"]["titles"].as_array().unwrap().len(), 5);
-    for id in REWARD_IDS {
-        assert!(value.to_string().contains(id), "missing reward {id}");
+    let mut checks = 0;
+    let mut pending = 0;
+    let mut relationships = 0;
+    for (encounter_id, choice_id, kind, reward_id, timing, label) in CANONICAL_ROWS {
+        let event = index
+            .encounter(encounter_id)
+            .unwrap()
+            .event
+            .as_ref()
+            .unwrap();
+        let choice = index
+            .encounters()
+            .flat_map(|encounter| encounter.choices.iter())
+            .find(|choice| choice.id == choice_id)
+            .unwrap();
+        assert_eq!(choice.label, label, "label for {choice_id}");
+        assert!(event
+            .stages
+            .iter()
+            .any(|stage| stage.choices.iter().any(|r| r.id == choice_id)));
+        let outcome = match timing {
+            "check-success" => {
+                checks += 1;
+                choice.check.as_ref().unwrap().success.clone()
+            }
+            _ => choice.outcome.clone(),
+        };
+        if timing == "pending" {
+            pending += 1;
+        }
+        if kind == "relationship" {
+            relationships += 1;
+        }
+        let has = match kind {
+            "skill" => outcome.add_skills.contains(&reward_id.to_string()),
+            "title" => outcome.add_titles.contains(&reward_id.to_string()),
+            "insight" => outcome.add_insights.contains(&reward_id.to_string()),
+            "item" | "pendant" => outcome.add_items.contains(&reward_id.to_string()),
+            "relationship" => outcome.relationship_deltas.contains_key(reward_id),
+            _ => false,
+        };
+        if timing == "pending" || timing == "dormant" {
+            assert!(!has, "deferred reward must not be granted in {choice_id}");
+        } else {
+            assert!(has, "missing {kind} {reward_id} in {choice_id}");
+        }
+        if timing == "pending" {
+            assert!(outcome
+                .add_flags
+                .iter()
+                .any(|flag| flag == &format!("reward_pending_{reward_id}")));
+        }
+        if timing == "dormant" {
+            assert!(!choice.outcome.add_titles.contains(&reward_id.to_string()));
+            assert!(choice.check.is_none());
+            assert!(!choice
+                .outcome
+                .add_flags
+                .iter()
+                .any(|flag| flag.starts_with("reward_pending_")));
+        }
     }
-    let mapping_markers = value.to_string().matches("reward_pending_").count()
-        + value.to_string().matches("add_skills").count()
-        + value.to_string().matches("add_titles").count()
-        + value.to_string().matches("add_insights").count()
-        + value.to_string().matches("add_items").count()
-        + value.to_string().matches("relationship_deltas").count();
-    assert!(
-        mapping_markers >= 30,
-        "expected 30 mapping markers, got {mapping_markers}"
-    );
+    assert_eq!(checks, 4);
+    assert_eq!(pending, 4);
+    assert_eq!(relationships, 4);
+    assert!(value["content"]["titles"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .any(|title| title["id"] == "wuxia_title_footprints_of_two_paths"));
 }
 
 #[test]
@@ -98,19 +363,19 @@ fn duplicate_skill_and_title_rewards_are_ignored() {
         "wuxia_cheongryu_first_night_shelter",
         &["cheongryu_apprentice_entry_resolved"],
     );
-    state.skills.push("match_the_pulse".into());
-    state.titles.push("not_yet_disciple".into());
+    state.skills.push("wuxia_skill_match_the_pulse".into());
+    state.titles.push("wuxia_title_not_yet_disciple".into());
     let choice = apply_action_from_content(&state, &index, "event:continue")
         .unwrap()
         .state;
     let result =
-        apply_action_from_content(&choice, &index, "choice:listen_to_the_roof_rain").unwrap();
+        apply_action_from_content(&choice, &index, "choice:first_night_stay_guest").unwrap();
     assert_eq!(
         result
             .state
             .skills
             .iter()
-            .filter(|id| id.as_str() == "match_the_pulse")
+            .filter(|id| id.as_str() == "wuxia_skill_match_the_pulse")
             .count(),
         1
     );
@@ -123,14 +388,15 @@ fn relationship_deltas_accumulate_without_exposing_values_in_logs() {
     let state = active_state(
         &index,
         "wuxia_cheongryu_gate_patrol_first_trouble",
-        &["wuxia_cheongryu_raid_omen_resolved"],
+        &["cheongryu_apprentice_entry_resolved"],
     );
     let choice = apply_action_from_content(&state, &index, "event:continue")
         .unwrap()
         .state;
-    let result = apply_action_from_content(&choice, &index, "choice:call_for_seoharin").unwrap();
+    let result =
+        apply_action_from_content(&choice, &index, "choice:patrol_report_faction").unwrap();
     assert_eq!(
-        result.state.relationships["relationship_person_seoharin_affection"],
+        result.state.relationships["relationship_faction_cheongryu_affection"],
         1
     );
     assert!(result
@@ -149,8 +415,8 @@ fn check_success_and_failure_mapping_remain_exclusive() {
         let state = {
             let mut s = active_state(
                 &index,
-                "wuxia_cheongryu_medicine_errand",
-                &["wuxia_cheongryu_training_first_failure_resolved"],
+                "wuxia_cheongryu_gate_patrol_first_trouble",
+                &["cheongryu_apprentice_entry_resolved"],
             );
             s.seed = seed;
             s
@@ -159,18 +425,17 @@ fn check_success_and_failure_mapping_remain_exclusive() {
             .unwrap()
             .state;
         let result =
-            apply_action_from_content(&choice, &index, "choice:carry_the_medicine_without_turning")
-                .unwrap();
+            apply_action_from_content(&choice, &index, "choice:patrol_follow_thread").unwrap();
         let success = result
             .state
-            .flags
+            .inventory
             .iter()
-            .any(|flag| flag == "carry_the_medicine_without_turning_check_success");
+            .any(|id| id == "wuxia_item_red_thread_fragment");
         let failure = result
             .state
             .flags
             .iter()
-            .any(|flag| flag == "carry_the_medicine_without_turning_check_failure");
+            .any(|flag| flag == "patrol_follow_thread_check_failed");
         assert_ne!(success, failure);
         saw_success |= success;
         saw_failure |= failure;

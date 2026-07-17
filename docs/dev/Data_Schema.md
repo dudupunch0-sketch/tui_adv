@@ -90,6 +90,10 @@ check resolution이 `Some(success)` 또는 `Some(failure)`이면 `branch`가 없
 `branch`가 없는 block만 남긴다. 이 필터링 이후 renderer에는 하나의 ordered stream만
 전달하며 Web/terminal renderer는 판정이나 branch 선택을 재계산하지 않는다.
 
+`branch`는 `result` stage의 block에서만 허용한다. 각 stage와 ChoiceStage choice의
+`next_stage_id`는 같은 Event의 실제 stage id를 가리켜야 하며, 누락·오타 ref는 runtime
+cursor에서 추측하지 않고 bundle index 단계에서 validation error로 거부한다.
+
 ## Authoring schema vs runtime contract
 
 | 층 | 소유 | 용도 | renderer-specific 데이터 허용 |

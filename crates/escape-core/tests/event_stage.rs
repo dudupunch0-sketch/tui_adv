@@ -234,6 +234,51 @@ fn event_validation_rejects_unknown_result_branch() {
 }
 
 #[test]
+fn event_validation_rejects_branches_outside_result_stages() {
+    let mut bundle = event_bundle();
+    let encounter = bundle
+        .content
+        .encounters
+        .iter_mut()
+        .find(|value| value["id"] == "printer_prints_alone")
+        .unwrap();
+    encounter["event"]["stages"][0]["blocks"][0]["branch"] = json!("success");
+
+    let error = index_content_bundle(&bundle).unwrap_err();
+    assert!(matches!(error, ContentIndexError::InvalidEvent { .. }));
+    assert!(error.to_string().contains("only valid in result stages"));
+}
+
+#[test]
+fn event_validation_rejects_unknown_stage_and_choice_targets() {
+    let mut bundle = event_bundle();
+    let encounter = bundle
+        .content
+        .encounters
+        .iter_mut()
+        .find(|value| value["id"] == "printer_prints_alone")
+        .unwrap();
+    encounter["event"]["stages"][0]["next_stage_id"] = json!("missing_stage");
+    let error = index_content_bundle(&bundle).unwrap_err();
+    assert!(error
+        .to_string()
+        .contains("stage opening references unknown next stage"));
+
+    let mut bundle = event_bundle();
+    let encounter = bundle
+        .content
+        .encounters
+        .iter_mut()
+        .find(|value| value["id"] == "printer_prints_alone")
+        .unwrap();
+    encounter["event"]["stages"][1]["choices"][0]["next_stage_id"] = json!("missing_stage");
+    let error = index_content_bundle(&bundle).unwrap_err();
+    assert!(error
+        .to_string()
+        .contains("choice read_printout references unknown next stage"));
+}
+
+#[test]
 fn legacy_bundle_without_branch_field_still_loads_and_indexes() {
     let bundle = load_content_bundle(BUNDLE).unwrap();
     let index = index_content_bundle(&bundle).unwrap();

@@ -1,12 +1,16 @@
 # Event/Stage Wave 3 설계 — 최종장과 붕괴 게이트
 
-상태: 구현 승인 대기 중인 실행 설계
+상태: 구현 완료 — WP-S1→D2 closeout 진행
 
 원본 계획: `fable_eventstage_wave3_step1_2607171715.md`
 
-설계 기준: `origin/main` `341aab0` (Wave 3 계획 커밋까지 포함한 최신 main)
+설계 기준: `origin/main` `ca5c960` (Wave 3 설계 fixture 보정까지 포함한 최신 main)
 
 선행 계약: `docs/design/Event_Stage_Content_Model.md`, `docs/dev/Data_Schema.md`
+
+구현 기록: WP-S1~WP-C3, WP-W1은 `codex/eventstage-wave3-implementation`에서 완료했다.
+WP-D1 보고서와 개발 문서/체크리스트를 갱신했으며, Notion 원격 ledger는
+현재 연결되지 않아 `idea_box/notion_sources.yml`에 pending reverse-sync로 기록한다.
 
 ## 1. 설계 목표
 

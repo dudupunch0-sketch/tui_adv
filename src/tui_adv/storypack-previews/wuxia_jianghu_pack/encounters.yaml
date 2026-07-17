@@ -3357,6 +3357,39 @@ encounters:
       locations: [black_serpent_ledger_vault]
       required_flags: [sado_final_battle_started, sado_final_battle_container_resolved, sado_final_battle_required_confirmed, sado_dialogue_does_not_weaken_boss, sado_battle_loss_route_chosen, seoharin_left_meal_resolved, seoharin_empty_place_resolved, seoharin_axis_opened, empty_place_remembered, truth_delivery_still_unopened, boss_recruits_mumyeong_resolved, boss_recruitment_thread_opened, boss_first_appearance_resolved, black_serpent_core_pressure_opened, sealed_departure_truth_summary_prepared, midgame_continuity_started]
       forbidden_flags: [sado_battle_loss_route_bridge_resolved]
+    event:
+      stages:
+        - id: wuxia_sado_battle_loss_route_bridge_story
+          kind: story
+          blocks:
+            - kind: narration
+              text: 지렛대를 버린 싸움은 오래가지 못한다. 검은 비늘 장부는 끊기지 않았고, 매달린 빚도 인질의 줄도 그대로다. 사도는 너를 쓰러뜨리되 죽이지는 않는다. 패배는 점수가 아니라 기록이다. 네가 무엇을 지키지 못했고 어떤 압박을 풀지 못했으며 어떤 기회를 흘려보냈는지, 천기록의 마지막 장이 패배의 결로 접힌다.
+            - kind: illustration
+              visual_id: wuxia_sado_battle_loss_route_bridge
+              alt: "사도 최종전: 패배의 길"
+              placeholder: true
+        - id: wuxia_sado_battle_loss_route_bridge_choice
+          kind: choice
+          choices:
+            - id: let_the_unpriced_value_fall_unbought
+              next_stage_id: let_the_unpriced_value_fall_unbought_result
+            - id: fall_while_naming_what_was_not_protected
+              next_stage_id: fall_while_naming_what_was_not_protected_result
+        - id: let_the_unpriced_value_fall_unbought_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 값 매겨지지 않은 것을 끝내 팔지 않은 채 쓰러진다 결과가 기록된다.
+            - kind: narration
+              text: 너는 졌다. 그러나 값 매겨지지 않은 것 하나만은 끝내 사도의 장부에 넘기지 않았다. 천기록은 승패를 다시 계산하지 않고, 무엇이 풀리지 않은 채 남았는지를 패배의 결로 적는다.
+        - id: fall_while_naming_what_was_not_protected_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 지키지 못한 것의 이름을 부르며 무너진다 결과가 기록된다.
+            - kind: narration
+              text: 쓰러지면서도 너는 지키지 못한 것들의 이름을 하나씩 부른다. 사도의 계산은 그 이름들을 지우지 못한다. 패배 뒤에도 풀리지 않은 압박은 남고, 천기록은 그것을 변명 없이 기록한다.
+
     choices:
       - id: let_the_unpriced_value_fall_unbought
         label: 값 매겨지지 않은 것을 끝내 팔지 않은 채 쓰러진다
@@ -3400,6 +3433,57 @@ encounters:
       locations: [black_serpent_ledger_vault]
       required_flags: [sado_final_battle_started, sado_final_battle_container_resolved, sado_final_battle_required_confirmed, sado_dialogue_does_not_weaken_boss, seoharin_left_meal_resolved, seoharin_empty_place_resolved, seoharin_axis_opened, empty_place_remembered, truth_delivery_still_unopened, boss_recruits_mumyeong_resolved, boss_recruitment_thread_opened, boss_first_appearance_resolved, black_serpent_core_pressure_opened, sealed_departure_truth_summary_prepared, midgame_continuity_started]
       forbidden_flags: [sado_final_phase_1_price_tag_resolved, sado_battle_loss_route_chosen]
+    event:
+      stages:
+        - id: wuxia_sado_final_phase_1_price_tag_story
+          kind: story
+          blocks:
+            - kind: narration
+              text: 남겨둔 밥의 온기가 식기도 전에, 천기록의 여백은 흑사방 장부고로 접힌다. 검은 비늘 장부와 표국 통행세 기록, 약점 장부와 청류문 후원서 조각이 줄처럼 매달려 있고, 흑사방주는 칼보다 먼저 빚이 움직인다는 듯 웃는다. 이곳의 첫 싸움은 사도를 약하게 만드는 일이 아니라, 네가 무엇을 지키고 무엇을 포기했는지 가격표에 남기는 일이다.
+            - kind: illustration
+              visual_id: wuxia_sado_final_phase_1_price_tag
+              alt: "사도 최종전 1페이즈: 가격표"
+              placeholder: true
+        - id: wuxia_sado_final_phase_1_price_tag_choice
+          kind: choice
+          choices:
+            - id: approach_sado_before_the_ledger
+              next_stage_id: approach_sado_before_the_ledger_result
+            - id: burn_the_blackscale_ledger
+              next_stage_id: burn_the_blackscale_ledger_result
+            - id: secure_the_blackscale_ledger
+              next_stage_id: secure_the_blackscale_ledger_result
+            - id: ease_hostage_pressure_first
+              next_stage_id: ease_hostage_pressure_first_result
+        - id: approach_sado_before_the_ledger_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 장부보다 먼저 사도에게 접근한다 결과가 기록된다.
+            - kind: narration
+              text: 칼끝은 빠르게 사도에게 닿지만, 장부의 줄은 끊어지지 않는다. 네가 몸으로 벌어낸 시간만큼 흑사방의 이름 없는 빚은 다른 손으로 옮겨 적힌다.
+        - id: burn_the_blackscale_ledger_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 검은 비늘 장부를 불태운다 결과가 기록된다.
+            - kind: narration
+              text: 장부는 탄다. 하지만 타는 냄새 사이로 사도는 종이가 사라져도 질투와 빚은 더 오래 남는다고 말한다. 일부 압박은 풀리지만, 증거도 함께 재가 된다.
+        - id: secure_the_blackscale_ledger_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 장부를 확보한다 결과가 기록된다.
+            - kind: narration
+              text: 검은 비늘 장부는 무겁다. 들고 나가면 네가 본 것도 함께 들고 나가야 한다는 사도의 말처럼, 당장의 칼 한 수를 포기한 대신 조직의 구조가 손안에 남는다.
+        - id: ease_hostage_pressure_first_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 인질성 압박을 먼저 해소한다 결과가 기록된다.
+            - kind: narration
+              text: 먼저 지키는 것을 보면 나중에 무엇을 누르면 되는지도 보인다는 사도의 목소리가 낮게 깔린다. 그래도 매달린 이름 몇 개가 내려오고, 청류문과 시장의 숨통은 조금 트인다.
+
     choices:
       - id: approach_sado_before_the_ledger
         label: 장부보다 먼저 사도에게 접근한다
@@ -3463,6 +3547,39 @@ encounters:
       locations: [black_serpent_ledger_vault]
       required_flags: [sado_final_phase_1_price_tag_resolved, final_state_routing_seeded, cheonoe_reward_analysis_thread]
       forbidden_flags: [cheonoe_analysis_thread_phase1_bridge_resolved]
+    event:
+      stages:
+        - id: wuxia_cheonoe_analysis_thread_phase1_bridge_story
+          kind: story
+          blocks:
+            - kind: narration
+              text: 사도의 첫 가격표가 쌓인 직후, 업무수첩의 분석 흔적이 장부고의 구조 위에 겹친다. 이것은 싸움을 쉽게 만들지 않는다. 다만 어느 줄이 어떤 약점에서 시작됐는지, 장부고의 논리가 어디서 어긋날 수 있는지를 아주 좁게 읽어내는 시선이 열린다.
+            - kind: illustration
+              visual_id: wuxia_cheonoe_analysis_thread_phase1_bridge
+              alt: 복기 루프 — 장부고의 틈
+              placeholder: true
+        - id: wuxia_cheonoe_analysis_thread_phase1_bridge_choice
+          kind: choice
+          choices:
+            - id: apply_review_loop_to_ledger_structure
+              next_stage_id: apply_review_loop_to_ledger_structure_result
+            - id: note_and_move_forward
+              next_stage_id: note_and_move_forward_result
+        - id: apply_review_loop_to_ledger_structure_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 장부고의 논리 구조에 복기 루프를 적용한다 결과가 기록된다.
+            - kind: narration
+              text: 복기 루프는 이긴 방법을 찾는 것이 아니라 어디서 틀렸는지를 거슬러 올라간다. 그 시선이 장부고의 숨은 연결 한 줄을 조금 더 선명하게 비춘다.
+        - id: note_and_move_forward_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 메모만 하고 다음 페이즈로 넘어간다 결과가 기록된다.
+            - kind: narration
+              text: 복기 루프를 지금 당장 쓸 수 없다. 하지만 수첩 귀퉁이에 짧게 메모했다는 사실은 이후 순간에도 남는다.
+
     choices:
       - id: apply_review_loop_to_ledger_structure
         label: 장부고의 논리 구조에 복기 루프를 적용한다
@@ -3498,6 +3615,57 @@ encounters:
       locations: [black_serpent_ledger_vault]
       required_flags: [sado_final_phase_1_price_tag_resolved, final_state_routing_seeded]
       forbidden_flags: [sado_final_phase_2_weakpoint_control_resolved]
+    event:
+      stages:
+        - id: wuxia_sado_final_phase_2_weakpoint_control_story
+          kind: story
+          blocks:
+            - kind: narration
+              text: 장부고의 줄들이 한 번에 팽팽해진다. 사도는 칼을 먼저 겨누지 않는다. 그는 서하린이 비워 둔 자리와 무명이 훔친 흐름, 청류문이 팔지 않으려 한 뜻과 천기록의 위험한 문장까지 차례로 가격표에 올린다. 네가 지키는 것이 약점이 되는 순간, 너는 그것을 약점으로만 남길지 계산식 밖의 방식으로 돌려놓을지 선택해야 한다.
+            - kind: illustration
+              visual_id: wuxia_sado_final_phase_2_weakpoint_control
+              alt: "사도 최종전 2페이즈: 약점 장악"
+              placeholder: true
+        - id: wuxia_sado_final_phase_2_weakpoint_control_choice
+          kind: choice
+          choices:
+            - id: respond_to_seoharin_pressure
+              next_stage_id: respond_to_seoharin_pressure_result
+            - id: return_flow_to_mumyeong
+              next_stage_id: return_flow_to_mumyeong_result
+            - id: read_dangerous_cheongirok_sentence
+              next_stage_id: read_dangerous_cheongirok_sentence_result
+            - id: focus_on_sado
+              next_stage_id: focus_on_sado_result
+        - id: respond_to_seoharin_pressure_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 서하린 관련 압박에 대응한다 결과가 기록된다.
+            - kind: narration
+              text: 사도는 기다림도 결국 빚이라고 말하지만, 너는 그 자리가 팔려고 비워 둔 것이 아니었음을 붙든다. 청류문과 서하린의 이름은 약점으로만 남지 않는다.
+        - id: return_flow_to_mumyeong_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 무명에게 흐름을 돌려준다 결과가 기록된다.
+            - kind: narration
+              text: 무명을 사도에게 맞설 도구로 밀어 넣지 않는다. 네가 한 걸음 물러난 틈에, 훔친 초식이 아닌 자기 흐름을 고를 수 있는 아주 좁은 틈이 열린다.
+        - id: read_dangerous_cheongirok_sentence_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 천기록의 위험한 문장을 읽는다 결과가 기록된다.
+            - kind: narration
+              text: 천기록의 문장은 장부고의 숨은 연결을 한 번에 비춘다. 이해는 빨라지지만, 사람과 관계를 계산하는 방식이 사도의 붓끝과 닮아갈 위험도 함께 번진다.
+        - id: focus_on_sado_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 사도에게 집중한다 결과가 기록된다.
+            - kind: narration
+              text: 사람보다 사도의 목을 먼저 본다. 틀린 선택은 아니지만, 장부고의 줄 몇 개는 그대로 남아 네가 돌보지 못한 이름들을 계속 당긴다.
+
     choices:
       - id: respond_to_seoharin_pressure
         label: 서하린 관련 압박에 대응한다
@@ -3561,6 +3729,66 @@ encounters:
       locations: [black_serpent_ledger_vault]
       required_flags: [sado_final_phase_2_weakpoint_control_resolved, final_phase_2_weakpoint_control_resolved, final_state_routing_seeded]
       forbidden_flags: [sado_final_phase_3_outside_calculation_resolved]
+    event:
+      stages:
+        - id: wuxia_sado_final_phase_3_outside_calculation_story
+          kind: story
+          blocks:
+            - kind: narration
+              text: 장부고의 먹줄이 잠깐 멈춘다. 사도는 흔들리지 않았고, 그의 칼끝도 느려지지 않았다. 달라진 것은 네가 지금까지 남긴 자리와 흐름, 장부의 빈칸과 천기록의 사용 방식이다. 사도를 쓰러뜨리는 것과 사도의 계산법을 무력화하는 것은 다르다. 이제 남는 것은 사도의 계산식 밖에서 무엇이 실제로 작동하는지 보여 주는 선택뿐이다.
+            - kind: illustration
+              visual_id: wuxia_sado_final_phase_3_outside_calculation
+              alt: "사도 최종전 3페이즈: 계산식 밖"
+              placeholder: true
+        - id: wuxia_sado_final_phase_3_outside_calculation_choice
+          kind: choice
+          choices:
+            - id: remember_the_empty_place
+              next_stage_id: remember_the_empty_place_result
+            - id: let_mumyeong_choose_own_flow
+              next_stage_id: let_mumyeong_choose_own_flow_result
+            - id: endure_with_qingliu_will
+              next_stage_id: endure_with_qingliu_will_result
+            - id: point_to_blank_in_ledger
+              next_stage_id: point_to_blank_in_ledger_result
+            - id: answer_with_sado_calculation
+              next_stage_id: answer_with_sado_calculation_result
+        - id: remember_the_empty_place_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 비워둔 자리를 떠올린다 결과가 기록된다.
+            - kind: narration
+              text: 사도는 기다림에도 값이 붙는다고 말한다. 하지만 그 자리는 팔려고 비워 둔 것이 아니었다. 비어 있는 칸은 결핍이 아니라, 장부가 끝내 적지 못한 소속의 방식으로 남는다.
+        - id: let_mumyeong_choose_own_flow_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 무명에게 자기 흐름을 선택하게 한다 결과가 기록된다.
+            - kind: narration
+              text: 무명은 네가 던진 답을 따라 움직이지 않는다. 그는 한 박자 늦게, 훔친 흐름이 아닌 자기 흐름으로 사도의 줄을 끊는다. 그 느림 때문에 칼 한 수를 잃지만, 후계 구도는 더는 같은 모양으로 이어지지 못한다.
+        - id: endure_with_qingliu_will_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 청류문의 뜻으로 버틴다 결과가 기록된다.
+            - kind: narration
+              text: 뜻도 굶으면 팔린다는 사도의 말이 장부고를 울린다. 너는 굶어도 팔지 않으려고 뜻이라 부르는 것이라고 답하고, 청류문의 이름 몇 개가 줄에서 내려온다. 승리는 빠르지 않지만, 압박은 더 이상 같은 값으로 작동하지 않는다.
+        - id: point_to_blank_in_ledger_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 장부의 빈칸을 지적한다 결과가 기록된다.
+            - kind: narration
+              text: 네 장부에도 비어 있는 칸이 있었다고 말하자, 사도는 아직 계산이 끝나지 않았을 뿐이라고 답한다. 그러나 빈칸은 그의 과거를 폭로하지 않는다. 다만 흑사방의 계산법이 세상 전부를 쓰지 못했다는 증거로 남는다.
+        - id: answer_with_sado_calculation_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 사도식 계산으로 맞선다 결과가 기록된다.
+            - kind: narration
+              text: 계산은 정확하다. 천기록의 문장과 사도의 장부가 잠깐 같은 방향을 가리키고, 너는 가장 빠른 길을 본다. 사도는 좋은 계산이었다고 말한다. 이길 수는 있지만, 그 승리의 제목은 아직 네 장부에 적히지 않았다.
+
     choices:
       - id: remember_the_empty_place
         label: 비워둔 자리를 떠올린다
@@ -3634,6 +3862,66 @@ encounters:
       locations: [black_serpent_ledger_vault]
       required_flags: [sado_final_phase_3_outside_calculation_resolved, final_phase_3_outside_calculation_resolved, final_combat_result_battle_victory_seeded, final_state_routing_seeded]
       forbidden_flags: [boss_resolution_resolved]
+    event:
+      stages:
+        - id: wuxia_boss_resolution_story
+          kind: story
+          blocks:
+            - kind: narration
+              text: 사도는 쓰러졌지만, 흑사방의 장부는 아직 닫히지 않았다. 마지막 장은 사도의 목숨값을 묻지 않는다. 네가 남긴 증거와 사람의 흐름, 무명의 선택 가능성, 천기록의 사용 방식이 사도의 계산법을 어디까지 무너뜨렸는지를 묻는다. 이 결산은 결말이 아니라, 후속 결산들이 어떤 후보를 받을지 정하는 기록이다.
+            - kind: illustration
+              visual_id: wuxia_boss_resolution
+              alt: 보스 결산
+              placeholder: true
+        - id: wuxia_boss_resolution_choice
+          kind: choice
+          choices:
+            - id: confirm_true_route_outside_calculation
+              next_stage_id: confirm_true_route_outside_calculation_result
+            - id: confirm_meaningful_victory_with_evidence
+              next_stage_id: confirm_meaningful_victory_with_evidence_result
+            - id: confirm_incomplete_victory_residue
+              next_stage_id: confirm_incomplete_victory_residue_result
+            - id: confirm_mumyeong_unsaved_successor_risk
+              next_stage_id: confirm_mumyeong_unsaved_successor_risk_result
+            - id: confirm_corrupted_victory
+              next_stage_id: confirm_corrupted_victory_result
+        - id: confirm_true_route_outside_calculation_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 계산식 밖의 승리를 결산한다 결과가 기록된다.
+            - kind: narration
+              text: 사도는 패배했고, 그의 장부는 비어 있는 칸을 끝내 값으로 바꾸지 못한다. 결산은 흑사방 붕괴와 열린 문 후보를 남기지만, 아직 서하린과 무명의 후속 결산을 대신하지는 않는다.
+        - id: confirm_meaningful_victory_with_evidence_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 증거와 조직망 처리를 결산한다 결과가 기록된다.
+            - kind: narration
+              text: 장부와 증거는 사도의 방식이 혼자 선 괴물이 아니었음을 드러낸다. 흑사방은 꺾일 수 있지만, 무림맹의 침묵과 남은 조직망은 책임 회피의 형태로 다음 결산에 넘어간다.
+        - id: confirm_incomplete_victory_residue_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 남은 장부와 잔향을 결산한다 결과가 기록된다.
+            - kind: narration
+              text: 이겼지만 모든 장부가 닫힌 것은 아니다. 불완전한 증거와 남은 소문은 흑사방의 깃발이 다른 시장에서 다시 보일 수 있다는 후보로 기록된다.
+        - id: confirm_mumyeong_unsaved_successor_risk_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 무명 후계 구도의 위험을 결산한다 결과가 기록된다.
+            - kind: narration
+              text: 사도의 패배가 곧 무명의 구원을 뜻하지는 않는다. 후계 구도가 끊기지 않았다면, 흑사방은 새 저울을 얻은 채 다음 무명 결산을 기다린다.
+        - id: confirm_corrupted_victory_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 사도식 계산으로 남은 승리를 결산한다 결과가 기록된다.
+            - kind: narration
+              text: 승리는 남았지만 결산의 필체가 사도와 닮아 있다. 천기록은 이 결과를 패배로 쓰지 않는다. 다만 열린 문 후보보다 닫힌 문 후보가 먼저 읽히는 오염된 승리로 남긴다.
+
     choices:
       - id: confirm_true_route_outside_calculation
         label: 계산식 밖의 승리를 결산한다
@@ -3706,6 +3994,75 @@ encounters:
       locations: [black_serpent_ledger_vault]
       required_flags: [boss_resolution_resolved, final_result_priority_applied_seeded, final_combat_result_battle_victory_seeded, final_state_routing_seeded]
       forbidden_flags: [mumyeong_resolution_resolved]
+    event:
+      stages:
+        - id: wuxia_mumyeong_resolution_story
+          kind: story
+          blocks:
+            - kind: narration
+              text: 보스 결산은 사도의 장부를 닫았지만, 무명의 이름 없는 장은 아직 남아 있다. 이 결산은 무명이 청류문으로 돌아오는지를 먼저 묻지 않는다. 훔친 초식이 어디서 멈추는지, 흑사방 후계 구도가 끊기는지, 서하린과 청류문으로 다시 이어질 여지가 남는지를 기록한다. 결말 카드를 바로 지급하지 않고, 후속 후일담 후보만 씨앗으로 남긴다.
+            - kind: illustration
+              visual_id: wuxia_mumyeong_resolution
+              alt: 무명 결산
+              placeholder: true
+        - id: wuxia_mumyeong_resolution_choice
+          kind: choice
+          choices:
+            - id: ask_mumyeong_for_own_flow
+              next_stage_id: ask_mumyeong_for_own_flow_result
+            - id: reveal_boss_used_mumyeongs_wound
+              next_stage_id: reveal_boss_used_mumyeongs_wound_result
+            - id: leave_room_for_unsent_apology
+              next_stage_id: leave_room_for_unsent_apology_result
+            - id: let_stolen_forms_end
+              next_stage_id: let_stolen_forms_end_result
+            - id: confirm_black_serpent_successor_risk
+              next_stage_id: confirm_black_serpent_successor_risk_result
+            - id: judge_with_sado_style_calculation
+              next_stage_id: judge_with_sado_style_calculation_result
+        - id: ask_mumyeong_for_own_flow_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 무명에게 자기 흐름을 묻는다 결과가 기록된다.
+            - kind: narration
+              text: 너는 무명에게 누구의 초식이 더 강한지 묻지 않는다. 자기 흐름을 묻자, 훔친 형식의 틈 사이로 처음 듣는 호흡이 남는다. 천기록은 이것을 귀환이 아니라 후계 구도 억제와 두 번째 목검 후보로 적는다.
+        - id: reveal_boss_used_mumyeongs_wound_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 보스가 무명의 상처를 이용했음을 드러낸다 결과가 기록된다.
+            - kind: narration
+              text: 사도가 본 것은 무명의 재능이 아니라 상처를 권력으로 바꾸는 자리였다. 그 사실은 무명을 대신 구원하지 않는다. 다만 사과와 두 번째 목검 후보가 강요 없는 진실의 자리로 열린다.
+        - id: leave_room_for_unsent_apology_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 전하지 못한 사과가 남을 자리를 둔다 결과가 기록된다.
+            - kind: narration
+              text: 모든 말을 전하지 않았기 때문에 남는 말도 있다. 무명의 결산은 완전한 구원이 아니라 미완의 사과 후보를 남기고, 두 번째 목검은 조건부 흔적으로만 적힌다.
+        - id: let_stolen_forms_end_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 훔친 초식의 끝을 받아들인다 결과가 기록된다.
+            - kind: narration
+              text: 훔친 초식은 멈춘다. 그러나 멈춤이 곧 구원은 아니다. 몸에 남은 대가와 끝난 형식만 장부에 남고, 사과는 조건부 잔향으로 밀려난다.
+        - id: confirm_black_serpent_successor_risk_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 검은 뱀의 새 비늘을 결산한다 결과가 기록된다.
+            - kind: narration
+              text: 사도가 쓰러져도 흑사방의 저울은 새 비늘을 찾는다. 무명은 이름이 아니라 후계 구도 위험으로 기록되고, 서하린의 마지막 밥상은 관계축이 낮을 때만 따라붙는 조건부 후보가 된다.
+        - id: judge_with_sado_style_calculation_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 사도식 계산으로 무명을 판정한다 결과가 기록된다.
+            - kind: narration
+              text: 너는 무명을 사람으로 보지 않고 계산의 잔여값으로 본다. 결산은 빠르게 끝나지만, 천기록의 마지막 장은 사도와 닮은 필체로 닫힌 문과 검은 뱀의 새 비늘 후보를 먼저 적는다.
+
     choices:
       - id: ask_mumyeong_for_own_flow
         label: 무명에게 자기 흐름을 묻는다
@@ -3789,6 +4146,66 @@ encounters:
       locations: [black_serpent_ledger_vault]
       required_flags: [mumyeong_resolution_resolved, boss_resolution_resolved, final_result_priority_applied_seeded, final_combat_result_battle_victory_seeded, final_state_routing_seeded]
       forbidden_flags: [seoharin_qingliu_resolution_resolved]
+    event:
+      stages:
+        - id: wuxia_seoharin_qingliu_resolution_story
+          kind: story
+          blocks:
+            - kind: narration
+              text: 무명의 이름 없는 장이 잠시 덮이고, 천기록은 청류문 산문으로 돌아온다. 서하린은 닫을 수 있는 문 앞에 서 있고, 청류문의 수련장에는 아직 새는 지붕과 다시 걸린 목검이 함께 남아 있다. 이 결산은 후일담을 출력하지 않는다. 서하린의 기다림이 돌아올 자리로 남는지, 청류문의 흐름이 다시 이어질 조건을 얻었는지만 다음 장의 후보로 남긴다.
+            - kind: illustration
+              visual_id: wuxia_seoharin_qingliu_resolution
+              alt: 서하린·청류문 결산 장면의 흐름과 선택을 보여주는 기록
+              placeholder: true
+        - id: wuxia_seoharin_qingliu_resolution_choice
+          kind: choice
+          choices:
+            - id: leave_the_gate_unclosed
+              next_stage_id: leave_the_gate_unclosed_result
+            - id: record_qingliu_rebuild_without_glory
+              next_stage_id: record_qingliu_rebuild_without_glory_result
+            - id: keep_empty_place_for_return_or_absence
+              next_stage_id: keep_empty_place_for_return_or_absence_result
+            - id: mark_qingliu_pressure_still_unresolved
+              next_stage_id: mark_qingliu_pressure_still_unresolved_result
+            - id: close_the_gate_with_sado_logic
+              next_stage_id: close_the_gate_with_sado_logic_result
+        - id: leave_the_gate_unclosed_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 산문을 닫지 않는 결산을 남긴다 선택의 결과가 다음 장면에 남는다.
+            - kind: narration
+              text: 서하린은 산문을 열어 둔다. 그것은 용서나 보상 연애가 아니라, 돌아오는 사람이 길을 잃지 않게 하는 방식이다. 청류문은 가난하지만 다시 흐르는 후보로 기록된다.
+        - id: record_qingliu_rebuild_without_glory_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 청류문 재건을 강호 최강이 아닌 흐름으로 적는다 선택의 결과가 다음 장면에 남는다.
+            - kind: narration
+              text: 청류문은 강호 최강이 되지 않는다. 새는 지붕과 다시 놓인 물동이, 복구된 초식의 흐름이 함께 남는다. 재건은 명예가 아니라 끊긴 물길을 다시 잇는 후보로 적힌다.
+        - id: keep_empty_place_for_return_or_absence_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 비워둔 자리를 귀환과 부재 양쪽으로 남긴다 선택의 결과가 다음 장면에 남는다.
+            - kind: narration
+              text: 빈 자리는 돌아오는 사람의 자리일 수도, 오래 비어 있을 자리일 수도 있다. 천기록은 목검을 지급하지 않는다. 다만 값이 매겨지지 않은 조건이 아직 사도의 장부 밖에 남았다고 적는다.
+        - id: mark_qingliu_pressure_still_unresolved_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 남은 압박을 청류문의 약화 변주로 표시한다 선택의 결과가 다음 장면에 남는다.
+            - kind: narration
+              text: 청류문은 살아남았지만, 표국 길목의 소문과 후원자의 침묵이 모두 사라진 것은 아니다. 결산은 실패 판정이 아니라 약화 변주와 미해결 풍문 후보를 남긴다.
+        - id: close_the_gate_with_sado_logic_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 사도식 보호 논리로 산문을 닫는다 선택의 결과가 다음 장면에 남는다.
+            - kind: narration
+              text: 산문은 닫힌다. 안쪽은 더 안전해 보이지만, 돌아오는 길은 더 좁아진다. 천기록은 이것을 서하린의 단순 비극이 아니라 소속감이 사도식 소유와 닮아가는 침식 후보로 남긴다.
+
     choices:
       - id: leave_the_gate_unclosed
         label: 산문을 닫지 않는 결산을 남긴다
@@ -3861,6 +4278,57 @@ encounters:
       locations: [black_serpent_ledger_vault]
       required_flags: [seoharin_qingliu_resolution_resolved, final_state_routing_seeded, final_result_priority_applied_seeded, final_combat_result_battle_victory_seeded]
       forbidden_flags: [seoharin_unsaid_stay_resolved]
+    event:
+      stages:
+        - id: wuxia_seoharin_unsaid_stay_story
+          kind: story
+          blocks:
+            - kind: narration
+              text: 청류문 산문이 닫히지 않은 채 저녁빛을 받는다. 서하린은 네가 언젠가 돌아갈 수 있다는 사실을 알고도 붙잡는 말을 꺼내지 않는다. 다만 사람이 빠지면 자리가 빈다는 말만 남기고, 그 빈자리를 귀환과 정착, 불확실성과 회피가 갈라지는 후일담 후보로 넘긴다.
+            - kind: illustration
+              visual_id: wuxia_seoharin_unsaid_stay
+              alt: 가지 말라는 말 장면의 흐름과 선택을 보여주는 기록
+              placeholder: true
+        - id: wuxia_seoharin_unsaid_stay_choice
+          kind: choice
+          choices:
+            - id: say_return_home_honestly
+              next_stage_id: say_return_home_honestly_result
+            - id: say_you_will_stay_with_qingliu
+              next_stage_id: say_you_will_stay_with_qingliu_result
+            - id: share_uncertainty_without_running
+              next_stage_id: share_uncertainty_without_running_result
+            - id: turn_away_from_the_empty_place
+              next_stage_id: turn_away_from_the_empty_place_result
+        - id: say_return_home_honestly_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 귀환하고 싶다고 솔직히 말한다 선택의 결과가 다음 장면에 남는다.
+            - kind: narration
+              text: 너는 돌아가고 싶다는 말을 숨기지 않는다. 서하린은 붙잡지 않고, 대신 비어 있을 수 있는 자리를 지운 척하지 않는다. 귀환 후보는 이별이 아니라 돌아올 수 있는 자리와 함께 남는다.
+        - id: say_you_will_stay_with_qingliu_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 청류문에 남겠다고 말한다 선택의 결과가 다음 장면에 남는다.
+            - kind: narration
+              text: 너는 청류문에 남겠다고 말한다. 그것은 목숨값을 갚는 선언도, 서하린에게 주는 보상도 아니다. 정착 후보는 빚이 아니라 선택한 소속의 언어로 남는다.
+        - id: share_uncertainty_without_running_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 아직 모르겠다고 말한다 선택의 결과가 다음 장면에 남는다.
+            - kind: narration
+              text: 아직 모른다는 말은 답이 아니지만 도망도 아니다. 서하린은 그 불확실성을 들은 채 산문을 닫지 않고, 빈자리는 귀환과 정착 양쪽으로 열려 있는 후보가 된다.
+        - id: turn_away_from_the_empty_place_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 말을 돌린다 선택의 결과가 다음 장면에 남는다.
+            - kind: narration
+              text: 너는 빈자리에 대한 말을 돌린다. 대답하지 않은 말도 장부처럼 남고, 서하린의 기다림은 닫힌 산문 위험 후보로 기울기 시작한다.
+
     choices:
       - id: say_return_home_honestly
         label: 귀환하고 싶다고 솔직히 말한다
@@ -3922,6 +4390,68 @@ encounters:
       locations: [black_serpent_ledger_vault]
       required_flags: [seoharin_unsaid_stay_resolved, seoharin_qingliu_resolution_resolved, mumyeong_resolution_resolved, boss_resolution_resolved, final_result_priority_applied_seeded, final_combat_result_battle_victory_seeded, final_state_routing_seeded]
       forbidden_flags: [cheongirok_resolution_resolved]
+    event:
+      stages:
+        - id: wuxia_cheongirok_resolution_story
+          kind: story
+          blocks:
+            - kind: narration
+              text: 서하린과 청류문의 장이 잠시 멎자, 천기록의 마지막 장이 거의 빈 종이처럼 펼쳐진다. 그곳에는 정답도, 기록자의 이름도 없다. 다만 네가 기록을 이해의 보조로 썼는지, 사람을 줄 세우는 계산 도구로 썼는지에 따라 먹빛의 결이 달라진다. 이 결산은 후일담을 출력하지 않고, 마지막 장의 안전한 여운과 오염 변주 후보만 남긴다.
+            - kind: illustration
+              visual_id: wuxia_cheongirok_resolution
+              alt: 천기록 결산 장면의 흐름과 선택을 보여주는 기록
+              placeholder: true
+            - kind: document
+              text: 서하린과 청류문의 장이 잠시 멎자, 천기록의 마지막 장이 거의 빈 종이처럼 펼쳐진다. 그곳에는 정답도, 기록자의 이름도 없다. 다만 네가 기록을 이해의 보조로 썼는지, 사람을 줄 세우는 계산 도구로 썼는지에 따라 먹빛의 결이 달라진다. 이 결산은 후일담을 출력하지 않고, 마지막 장의 안전한 여운과 오염 변주 후보만 남긴다.
+        - id: wuxia_cheongirok_resolution_choice
+          kind: choice
+          choices:
+            - id: turn_the_last_page_without_question
+              next_stage_id: turn_the_last_page_without_question_result
+            - id: leave_blank_as_unpriced_place
+              next_stage_id: leave_blank_as_unpriced_place_result
+            - id: read_the_lines_that_align_like_ledger
+              next_stage_id: read_the_lines_that_align_like_ledger_result
+            - id: close_record_before_it_becomes_answer
+              next_stage_id: close_record_before_it_becomes_answer_result
+            - id: let_record_reflect_the_method
+              next_stage_id: let_record_reflect_the_method_result
+        - id: turn_the_last_page_without_question_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 질문하지 않고 마지막 장을 넘긴다 선택의 결과가 다음 장면에 남는다.
+            - kind: narration
+              text: 천기록은 대답하지 않는다. 너는 마지막 장을 정답지처럼 붙잡지 않고 넘긴다. 많은 것을 보았다는 사실은 남지만, 그것이 곧 침식이라는 결론은 기록되지 않는다.
+        - id: leave_blank_as_unpriced_place_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 빈칸을 값이 아닌 자리로 남긴다 선택의 결과가 다음 장면에 남는다.
+            - kind: narration
+              text: 마지막 장의 빈칸은 실패한 답안지가 아니다. 값이 매겨지지 않은 목검과 닫히지 않은 산문처럼, 누군가가 돌아오거나 돌아오지 않을 자리를 남기는 방식이다. 천기록은 아이템을 지급하지 않는다.
+        - id: read_the_lines_that_align_like_ledger_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 장부처럼 줄 맞는 글자를 읽는다 선택의 결과가 다음 장면에 남는다.
+            - kind: narration
+              text: 천기록의 글자는 어느 순간 장부처럼 줄을 맞춘다. 그것은 기록자의 판결이 아니다. 네가 사람과 관계를 값으로 정렬하려 했던 방식이 마지막 장에 되비친 흔적이다.
+        - id: close_record_before_it_becomes_answer_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 답이 되기 전에 기록을 덮는다 선택의 결과가 다음 장면에 남는다.
+            - kind: narration
+              text: 너는 마지막 장을 더 파고들지 않는다. 기록은 조용히 덮이고, 기록자의 정체는 끝내 이름이 되지 않는다. 그래도 빈 장의 여운은 다음 후일담 후보로 남는다.
+        - id: let_record_reflect_the_method_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 결과보다 사용 방식을 비추게 둔다 선택의 결과가 다음 장면에 남는다.
+            - kind: narration
+              text: 마지막 장은 승패를 다시 계산하지 않는다. 그 장은 네가 어떤 방식으로 사람, 기록, 증거, 관계를 다루었는지만 조용히 비춘다. 출력기는 아직 열리지 않고, 후보만 남는다.
+
     choices:
       - id: turn_the_last_page_without_question
         label: 질문하지 않고 마지막 장을 넘긴다
@@ -3993,6 +4523,48 @@ encounters:
       locations: [black_serpent_ledger_vault]
       required_flags: [seoharin_unsaid_stay_resolved, final_return_settlement_contract_seeded, final_return_intent_honest_seeded, cheongirok_resolution_resolved, final_combat_result_battle_victory_seeded, final_result_priority_applied_seeded]
       forbidden_flags: [wuxia_return_modern_commute_scene_resolved]
+    event:
+      stages:
+        - id: wuxia_return_modern_commute_scene_story
+          kind: story
+          blocks:
+            - kind: narration
+              text: 흑사방 장부고의 소음이 사라지고, 눈을 뜨자 현대의 책상이 있다. 소매 안쪽에 흙먼지가 남아 있고, 업무수첩 한 줄이 비어 있다. 강호에 두고 온 자리는 이곳에서 지워지지 않는다. 귀환은 보상이 아니고, 청류문의 빈자리는 사라진 것이 아니다.
+            - kind: illustration
+              visual_id: wuxia_return_modern_commute_scene
+              alt: 귀환 출근길 장면의 흐름과 선택을 보여주는 기록
+              placeholder: true
+        - id: wuxia_return_modern_commute_scene_choice
+          kind: choice
+          choices:
+            - id: carry_calluses_without_explaining
+              next_stage_id: carry_calluses_without_explaining_result
+            - id: note_the_empty_work_notebook_line
+              next_stage_id: note_the_empty_work_notebook_line_result
+            - id: let_the_dirt_stay_on_the_sleeve
+              next_stage_id: let_the_dirt_stay_on_the_sleeve_result
+        - id: carry_calluses_without_explaining_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 굳은살을 설명하지 않고 자리로 돌아간다 선택의 결과가 다음 장면에 남는다.
+            - kind: narration
+              text: 너는 굳은살이 생긴 손을 내려다보지만 설명하지 않는다. 출근길은 달라지지 않았지만, 소매 끝의 흙먼지는 청류문에 두고 온 자리를 기억한다. 귀환은 탈출이 아니었다.
+        - id: note_the_empty_work_notebook_line_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 비어 있는 업무수첩 한 줄을 본다 선택의 결과가 다음 장면에 남는다.
+            - kind: narration
+              text: 업무수첩 한 줄이 비어 있다. 그것은 강호에서 쓰지 못한 말이다. 너는 그 빈 줄을 채우지 않는다. 귀환 후보는 이별이 아니라 비어 있는 자리와 함께 남는다.
+        - id: let_the_dirt_stay_on_the_sleeve_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 소매 끝의 흙먼지를 털지 않는다 선택의 결과가 다음 장면에 남는다.
+            - kind: narration
+              text: 너는 소매 끝의 흙먼지를 털지 않는다. 그것은 증거가 아니지만 증인이다. 현대의 출근길은 계속되고, 청류문의 자리는 이쪽에서도 지워지지 않는다.
+
     choices:
       - id: carry_calluses_without_explaining
         label: 굳은살을 설명하지 않고 자리로 돌아간다
@@ -4038,6 +4610,48 @@ encounters:
       locations: [black_serpent_ledger_vault]
       required_flags: [seoharin_unsaid_stay_resolved, final_return_settlement_contract_seeded, final_settlement_intent_honest_seeded, cheongirok_resolution_resolved, final_combat_result_battle_victory_seeded, final_result_priority_applied_seeded]
       forbidden_flags: [wuxia_settlement_stay_scene_resolved]
+    event:
+      stages:
+        - id: wuxia_settlement_stay_scene_story
+          kind: story
+          blocks:
+            - kind: narration
+              text: 흑사방 장부고가 조용해지고, 청류문의 단추 하나가 손안에 남는다. 사원증은 없어도 된다. 이곳에 남는다는 것은 빚을 갚는 일도, 영웅이 되는 일도 아니다. 낯선 창고 상자 한 곳에 사원증 없이 단추 하나가 남고, 아무도 그것에 가격을 붙이지 않는다.
+            - kind: illustration
+              visual_id: wuxia_settlement_stay_scene
+              alt: 정착 선택 장면의 흐름과 선택을 보여주는 기록
+              placeholder: true
+        - id: wuxia_settlement_stay_scene_choice
+          kind: choice
+          choices:
+            - id: place_the_button_in_the_storage_box
+              next_stage_id: place_the_button_in_the_storage_box_result
+            - id: walk_the_qingliu_outer_path_again
+              next_stage_id: walk_the_qingliu_outer_path_again_result
+            - id: stay_without_announcing_it
+              next_stage_id: stay_without_announcing_it_result
+        - id: place_the_button_in_the_storage_box_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 단추를 창고 상자에 조용히 넣는다 선택의 결과가 다음 장면에 남는다.
+            - kind: narration
+              text: 너는 단추를 창고 상자에 넣는다. 그것은 대가가 아니다. 청류문에 남는다는 것은 목숨값을 치르는 것도, 서하린에게 보상하는 것도 아니다. 소속감은 빚의 언어로 쓰이지 않는다.
+        - id: walk_the_qingliu_outer_path_again_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 청류문 외곽 길을 다시 걷는다 선택의 결과가 다음 장면에 남는다.
+            - kind: narration
+              text: 너는 청류문 외곽 길을 다시 걷는다. 영웅이 되지 않아도 이 길은 낯설지 않다. 정착은 소유가 아니라 매일 선택하는 소속감이다.
+        - id: stay_without_announcing_it_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 남겠다고 선언하지 않고 그냥 남는다 선택의 결과가 다음 장면에 남는다.
+            - kind: narration
+              text: 너는 남겠다는 말을 하지 않는다. 그냥 남는다. 청류문의 자리는 선언이 없어도 매일 조금씩 자기 것이 된다. 그것은 소유가 아니라 소속이다.
+
     choices:
       - id: place_the_button_in_the_storage_box
         label: 단추를 창고 상자에 조용히 넣는다
@@ -4083,6 +4697,66 @@ encounters:
       locations: [black_serpent_ledger_vault]
       required_flags: [cheongirok_resolution_resolved, seoharin_qingliu_resolution_resolved, mumyeong_resolution_resolved, boss_resolution_resolved, final_result_priority_applied_seeded, final_combat_result_battle_victory_seeded, final_state_routing_seeded, wuxia_ending_scene_resolved]
       forbidden_flags: [black_serpent_aftermath_resolved]
+    event:
+      stages:
+        - id: wuxia_black_serpent_aftermath_story
+          kind: story
+          blocks:
+            - kind: narration
+              text: 천기록의 마지막 장을 덮어도, 흑사방의 장부고에는 아직 끊어진 줄과 남은 매듭이 걸려 있다. 보스가 쓰러졌다는 사실, 깃발이 접혔다는 소문, 남쪽 장터의 빚 이야기, 무림맹의 침묵이 서로 다른 종이 위에 남는다. 이 장면은 후일담을 출력하지 않는다. 다만 부러진 검은 뱀, 접히지 않은 깃발, 장터 풍문, 책임 회피의 침묵을 future renderer가 읽을 수 있는 씨앗으로 정리한다.
+            - kind: illustration
+              visual_id: wuxia_black_serpent_aftermath
+              alt: 흑사방 후일담 씨앗 장면의 흐름과 선택을 보여주는 기록
+              placeholder: true
+        - id: wuxia_black_serpent_aftermath_choice
+          kind: choice
+          choices:
+            - id: mark_broken_serpent_without_erasing_scars
+              next_stage_id: mark_broken_serpent_without_erasing_scars_result
+            - id: fold_the_banner_without_calling_it_gone
+              next_stage_id: fold_the_banner_without_calling_it_gone_result
+            - id: send_ledger_to_alliance_and_watch_silence
+              next_stage_id: send_ledger_to_alliance_and_watch_silence_result
+            - id: listen_for_southern_market_debt_rumor
+              next_stage_id: listen_for_southern_market_debt_rumor_result
+            - id: let_true_route_suppress_the_banner
+              next_stage_id: let_true_route_suppress_the_banner_result
+        - id: mark_broken_serpent_without_erasing_scars_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 부러진 검은 뱀을 상처째 기록한다 선택의 결과가 다음 장면에 남는다.
+            - kind: narration
+              text: 검은 뱀은 부러졌지만, 비늘 자국은 장부와 길목에 남아 있다. 천기록은 승리를 지우지 않되, 그것을 완전한 청소로 바꾸지도 않는다. 후일담 출력기는 아직 열리지 않는다.
+        - id: fold_the_banner_without_calling_it_gone_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 깃발을 접되 사라졌다고 쓰지 않는다 선택의 결과가 다음 장면에 남는다.
+            - kind: narration
+              text: 깃발은 접힌다. 하지만 조직의 방식은 천 조각 하나보다 오래 남는다. 남쪽 장터의 빚 이야기와 잔당의 이름은 아직 같은 페이지에서 서로를 부를 수 있다.
+        - id: send_ledger_to_alliance_and_watch_silence_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 장부를 무림맹에 보내고 침묵을 본다 선택의 결과가 다음 장면에 남는다.
+            - kind: narration
+              text: 장부가 무림맹으로 향한다. 답장이 오지 않는다고 해서 증거가 사라지는 것은 아니다. 침묵은 무죄 판결이 아니라 책임을 미루는 변주 후보로 남는다.
+        - id: listen_for_southern_market_debt_rumor_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 남쪽 장터의 빚 풍문을 듣는다 선택의 결과가 다음 장면에 남는다.
+            - kind: narration
+              text: 남쪽 장터에서는 아직 빚 이야기가 돈다. 그것은 네 책임을 새로 씌우는 말이 아니라, 압박이 다른 길목으로 옮겨 갔다는 풍문이다. 천기록은 장터의 목소리를 후보로만 남긴다.
+        - id: let_true_route_suppress_the_banner_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 진로의 결과로 깃발과 풍문을 눌러 둔다 선택의 결과가 다음 장면에 남는다.
+            - kind: narration
+              text: 핵심 줄이 끊어진 길에서는 깃발과 장터 풍문이 함께 낮아질 수 있다. 그렇다고 상처가 없던 일이 되는 것은 아니다. 천기록은 억제 후보만 남기고, 후일담 출력은 아직 열지 않는다.
+
     choices:
       - id: mark_broken_serpent_without_erasing_scars
         label: 부러진 검은 뱀을 상처째 기록한다
@@ -4145,6 +4819,39 @@ encounters:
       effect_cues: []
     conditions:
       required_flags: [never_set_flag_this_is_only_accessible_via_collapse_override]
+    event:
+      stages:
+        - id: wuxia_collapse_gate_story
+          kind: story
+          blocks:
+            - kind: narration
+              text: 천기록의 획이 사방으로 번지며 시야가 붉게 물든다. 이대로 한 자락 바람이 되어 흩어질 것인가, 아니면 천기의 편린을 태워 다시 일어설 것인가?
+            - kind: illustration
+              visual_id: wuxia_collapse_gate
+              alt: 천기록 붕괴 장면의 흐름과 선택을 보여주는 기록
+              placeholder: true
+        - id: wuxia_collapse_gate_choice
+          kind: choice
+          choices:
+            - id: wuxia_collapse_revive
+              next_stage_id: wuxia_collapse_revive_result
+            - id: wuxia_collapse_rest
+              next_stage_id: wuxia_collapse_rest_result
+        - id: wuxia_collapse_revive_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: "기사회생: 천기의 편린을 태워 다시 일어선다 선택의 결과가 다음 장면에 남는다."
+            - kind: narration
+              text: 뜨거운 기운이 전신을 감돌며, 멈췄던 심장이 다시 뛰기 시작한다. 하지만 몸에 각인된 천기의 흐름 일부가 타들어 갔다.
+        - id: wuxia_collapse_rest_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: "안식: 붉은 글씨 너머의 평온으로 흘러간다 선택의 결과가 다음 장면에 남는다."
+            - kind: narration
+              text: 무거운 눈꺼풀을 닫고, 더 이상 고통이 없는 침묵 속으로 서서히 가라앉는다.
+
     choices:
       - id: wuxia_collapse_revive
         label: "기사회생: 천기의 편린을 태워 다시 일어선다"

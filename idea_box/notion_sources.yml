@@ -576,9 +576,9 @@ sources:
     object: page
     notion_ref: "notion:39f37e69-695e-810e-b30b-f59795bede57"
     url: "https://www.notion.so/39f37e69695e810eb30bf59795bede57"
-    last_checked_at: "2026-07-17T14:05:00+09:00"
+    last_checked_at: "2026-07-17T15:20:00+09:00"
     precedence_role: "runtime_status_snapshot_repo_to_notion"
-    sync_base_commit: "381480a"
+    sync_base_commit: "ef85f51"
     rf5_sync_base_commit: "7e7b401"
     rf5_notion_page_reread: true
     rf5_divergence: "resolved_2026_07_16: Notion 15 insight rows reconciled to runtime IDs/names/acquisition encounters by fable."
@@ -587,7 +587,8 @@ sources:
       - "슬라이스 3(레벨업/기연/아이템 상세, fable_gameloop3_step1_2607161330.md) 구현 예정 항목 포함."
       - "2026-07-16 fable: 기준 커밋 9a91861(#158)로 갱신, 15번 기연 DB reconcile closeout 섹션 추가."
       - "2026-07-17 fable_eventstage Wave 1: 기준 baseline 381480a, 10개 사건을 Story → Choice → per-choice ResultStage로 전환. branch success/failure 필터와 직접 ResultStage cursor 호환을 추가했으며, Notion 설계 DB 행은 신규 ID/내용을 만들지 않아 변경하지 않았다."
-    status: "live_synced_2026_07_17_eventstage_wave1"
+      - "2026-07-17 fable 리뷰 closeout: 13번 페이지 라이브 갱신(기준 ef85f51, 스테이지 14/44). codex 보류 수동 QA 4항목(타자기/판정 양분기/저장복원/사원증 엔딩)을 실화면으로 완료 확인."
+    status: "live_synced_2026_07_17_eventstage_wave1_review_closeout"
 
   - key: wuxia_14_item_db
     title: "14. 이구학지 아이템 DB"

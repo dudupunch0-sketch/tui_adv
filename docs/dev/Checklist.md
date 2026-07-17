@@ -1731,3 +1731,22 @@
 - [x] WP-D1: `fable_eventstage_wave2_step2_report.md` 및 Development Plan/Checklist 갱신
 - [x] WP-D2: Notion 런타임 현황 페이지와 `idea_box/notion_sources.yml` Wave 2 reverse sync
 - [ ] 수동 390px midgame flow·fragment re-entry·document visual·ResultStage save/reload QA
+
+
+## Phase 15: Event Stage Wave 3 (fable_eventstage_wave3_step1_2607171715.md)
+
+### 15.1 코어 계약과 콘텐츠
+
+- [x] WP-S1: Wave 3 고정 목록·44/44 coverage guard와 collapse/ending precedence 회귀 테스트 추가
+- [x] WP-C1: 최종전/복기/약점/계산식 밖/패배 bridge/보스·무명 결산 7개 staged authoring
+- [x] WP-C2: 서하린·청류문·천기록·흑사방 후일담·귀환/정착 6개 staged authoring
+- [x] WP-C3: collapse gate staged authoring 및 revive first/rest last 순서 고정
+- [x] legacy choice ID·action ID·outcome log·flags·clues·destination·visual ID 보존
+- [x] cheongirok document surface와 narration speaker 규칙, placeholder illustration 규칙 적용
+
+### 15.2 검증과 closeout
+
+- [x] WP-W1: generated preview bundle, Rust/WASM, Web tests/build, art gate, five-viewport Storybook QA
+- [x] WP-D1: fable_eventstage_wave3_step2_report.md 및 Development Plan/Checklist 갱신
+- [ ] WP-D2: Notion runtime ledger reverse sync — 원격 연결 불가로 idea_box/notion_sources.yml pending 기록
+- [ ] 수동 collapse revive/rest, ResultStage save/reload, final ending supersede acceptance — Fable review에서 수행

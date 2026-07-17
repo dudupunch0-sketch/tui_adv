@@ -3233,6 +3233,122 @@
             "first_fragment_seen"
           ]
         },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "외원 담장 밑에서 다시 그 흐름이 나타난다. 무명은 청류문이 또 외부자를 주워 왔느냐고 묻지만, 말끝에는 조롱보다 피로가 먼저 묻어난다. 서하린은 칼집에 손을 얹고도 이름을 부르지 않는다. 무명의 발끝이 반 보 앞으로 밀려오고, 훔친 청류문식 초식이 비어 있는 중심 위에 번쩍인다."
+                },
+                {
+                  "alt": "외원 담장 밑에서 다시 그 흐름이 나타난다. 무명은 청류문이 또",
+                  "kind": "illustration",
+                  "placeholder": true,
+                  "visual_id": "wuxia_mumyeong_first_confrontation"
+                }
+              ],
+              "id": "wuxia_mumyeong_first_confrontation_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "meet_mumyeong_head_on",
+                  "next_stage_id": "meet_mumyeong_head_on_result"
+                },
+                {
+                  "id": "endure_until_copy_flow_breaks",
+                  "next_stage_id": "endure_until_copy_flow_breaks_result"
+                },
+                {
+                  "id": "watch_seo_harin_hold_back",
+                  "next_stage_id": "watch_seo_harin_hold_back_result"
+                },
+                {
+                  "id": "read_mumyeongs_copied_form",
+                  "next_stage_id": "read_mumyeongs_copied_form_result"
+                },
+                {
+                  "id": "do_not_provoke_mumyeong",
+                  "next_stage_id": "do_not_provoke_mumyeong_result"
+                }
+              ],
+              "id": "wuxia_mumyeong_first_confrontation_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "무명과 정면으로 맞선다 결과가 기록으로 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "정면으로 부딪혔지만 이긴 것은 아니다. 다만 물러서지 않았다는 사실만은 남고, 무명은 그 사실을 기억한다."
+                }
+              ],
+              "id": "meet_mumyeong_head_on_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "버티며 카피한 흐름이 끊기는 순간을 기다린다 결과가 기록으로 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "훔친 흐름은 빠르지만 오래 가지 않는다. 중심이 돌아오는 순간, 청류문식 모양 아래 비어 있던 틈이 드러난다."
+                }
+              ],
+              "id": "endure_until_copy_flow_breaks_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "서하린이 왜 끼어들지 않는지 살핀다 결과가 기록으로 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "서하린은 끼어들 수 있는데도 한 박자 늦춘다. 그 침묵은 망설임이 아니라, 아직 끊어내지 못한 기억에 가깝다."
+                }
+              ],
+              "id": "watch_seo_harin_hold_back_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "무명의 초식이 어디서 어긋나는지 읽는다 결과가 기록으로 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "같은 선을 그어도 같은 뜻이 되지는 않는다. 훔친 초식과 이해한 흐름은 손끝에서 갈라지고, 천기록의 빈 줄은 그 차이를 조용히 적어 둔다."
+                }
+              ],
+              "id": "read_mumyeongs_copied_form_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "도발하지 않고 물러설 거리를 만든다 결과가 기록으로 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "싸움을 키우지 않는다고 대치가 사라지지는 않는다. 오늘 피한 말은 다음에 더 날카롭게 돌아오고, 무명은 네가 물러선 거리를 기억한다."
+                }
+              ],
+              "id": "do_not_provoke_mumyeong_result",
+              "kind": "result"
+            }
+          ]
+        },
         "id": "wuxia_mumyeong_first_confrontation",
         "presentation": {
           "effect_cues": [
@@ -3356,6 +3472,104 @@
             "midgame_continuity_started"
           ]
         },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "첫 대치가 끝난 뒤에도 무명의 움직임은 눈꺼풀 안쪽에 남아 있다. 같은 청류문식처럼 보였던 선은 어느 순간 검로처럼 꺾이고, 어느 순간 보법처럼 미끄러지며, 호흡이 어긋나는 짧은 틈마다 몸에 맞지 않는 초식의 반동을 드러낸다."
+                },
+                {
+                  "alt": "첫 대치가 끝난 뒤에도 무명의 움직임은 눈꺼풀 안쪽에 남아 있다",
+                  "kind": "illustration",
+                  "placeholder": true,
+                  "visual_id": "wuxia_mumyeong_copy_style_reveal"
+                }
+              ],
+              "id": "wuxia_mumyeong_copy_style_reveal_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "read_the_stolen_blade_path",
+                  "next_stage_id": "read_the_stolen_blade_path_result"
+                },
+                {
+                  "id": "watch_mumyeongs_footwork",
+                  "next_stage_id": "watch_mumyeongs_footwork_result"
+                },
+                {
+                  "id": "listen_for_breath_mismatch",
+                  "next_stage_id": "listen_for_breath_mismatch_result"
+                },
+                {
+                  "id": "wait_for_body_to_shudder",
+                  "next_stage_id": "wait_for_body_to_shudder_result"
+                }
+              ],
+              "id": "wuxia_mumyeong_copy_style_reveal_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "훔쳐 쓴 검로가 어디서 꺾이는지 읽는다 결과가 기록으로 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "검로처럼 보이지만 칼끝의 뜻이 이어지지 않는다. 훔친 것은 선이지 중심이 아니며, 무명의 손목은 늦게 반동을 받는다."
+                }
+              ],
+              "id": "read_the_stolen_blade_path_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "무명의 보법이 땅을 밀어내는 방식을 본다 결과가 기록으로 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "발은 빠르지만 땅을 믿지 않는다. 남의 보법을 얹은 몸은 한 박자 늦게 흔들리고, 그 흔들림이 카피의 경계를 그린다."
+                }
+              ],
+              "id": "watch_mumyeongs_footwork_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "거리를 두고 호흡이 어긋나는 박자를 듣는다 결과가 기록으로 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "초식은 따라왔지만 숨은 따라오지 못한다. 그 박자가 청류안에 먼저 걸리고, 천기록은 이해와 복사가 다르다는 문장만 남긴다."
+                }
+              ],
+              "id": "listen_for_breath_mismatch_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "몸에 맞지 않는 초식이 반동을 내는 순간까지 기다린다 결과가 기록으로 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "무명의 어깨가 아주 짧게 떨린다. 천기록의 빈 줄은 아직 보상을 주지 않지만, 다음 편린의 모양을 기억한다."
+                }
+              ],
+              "id": "wait_for_body_to_shudder_result",
+              "kind": "result"
+            }
+          ]
+        },
         "id": "wuxia_mumyeong_copy_style_reveal",
         "presentation": {
           "effect_cues": [
@@ -3454,6 +3668,86 @@
             "cheongryu_raid_survived",
             "cheonggi_record_awakened",
             "first_fragment_seen"
+          ]
+        },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "카피 무공의 흔적을 복기하던 밤, 업무수첩의 빈 장이 다시 펼쳐진다. 이번에는 세 문장이 동시에 떠오른다. 검색창이 아니다. 즉시 강해지는 보상도 아니다. 세 후보 중 하나의 방향만 붙들 수 있고, 나머지 둘은 이 순간 사라진다."
+                },
+                {
+                  "alt": "업무수첩 위에 세 가지 천외편린 방향이 떠오르는 밤",
+                  "kind": "illustration",
+                  "placeholder": true,
+                  "visual_id": "wuxia_cheonoe_pyeonrin_first_reward"
+                }
+              ],
+              "id": "cheonoe_pyeonrin_first_reward_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "choose_modern_martial_thread",
+                  "next_stage_id": "choose_modern_martial_thread_result"
+                },
+                {
+                  "id": "choose_analysis_thread",
+                  "next_stage_id": "choose_analysis_thread_result"
+                },
+                {
+                  "id": "choose_survival_tactics_thread",
+                  "next_stage_id": "choose_survival_tactics_thread_result"
+                }
+              ],
+              "id": "cheonoe_pyeonrin_first_reward_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "거리와 방어 자세를 읽는 방향을 붙든다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "천기록은 무공 구결이 아니라 상대와의 거리, 팔꿈치와 턱의 각도, 방어 자세가 어긋나는 순간을 읽는 과제를 남겼다. 나머지 두 방향은 이 순간 수첩에서 흘러 사라졌다."
+                }
+              ],
+              "id": "choose_modern_martial_thread_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "복기와 원인 분석의 방향을 붙든다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "천기록은 결과보다 원인을 먼저 쓰는 방식을 남겼다. 무엇이 틀렸는지 거슬러 올라가 적는 복기 루프가 오늘 밤의 숙제다. 나머지 두 방향은 이 순간 수첩에서 흘러 사라졌다."
+                }
+              ],
+              "id": "choose_analysis_thread_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "다수전 회피와 지형 활용의 방향을 붙든다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "천기록은 이기는 법이 아니라 지형을 등지고 수를 줄이는 회피 전술을 남겼다. 싸우지 않고 살아남는 동선이 오늘 밤의 숙제다. 나머지 두 방향은 이 순간 수첩에서 흘러 사라졌다."
+                }
+              ],
+              "id": "choose_survival_tactics_thread_result",
+              "kind": "result"
+            }
           ]
         },
         "id": "wuxia_cheonoe_pyeonrin_first_reward",
@@ -3576,6 +3870,104 @@
             "copy_style_hint_recorded",
             "midgame_continuity_started",
             "first_fragment_seen"
+          ]
+        },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "무명의 카피는 완전한 복사가 아니었다. 겉흐름 사이로 손목을 잠그는 각도, 기혈을 누르는 순서, 물러나는 보폭이 삐져나온다. 천기록의 빈 줄은 그 흔적을 현악문과 복호금쇄수라는 이름 옆에 잠시 멈춰 세운다."
+                },
+                {
+                  "alt": "무명의 카피는 완전한 복사가 아니었다. 겉흐름 사이로 손목을 잠",
+                  "kind": "illustration",
+                  "placeholder": true,
+                  "visual_id": "wuxia_mumyeong_reads_orthodox_style"
+                }
+              ],
+              "id": "wuxia_mumyeong_reads_orthodox_style_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "compare_copied_form_to_old_wound",
+                  "next_stage_id": "compare_copied_form_to_old_wound_result"
+                },
+                {
+                  "id": "trace_qingliu_eye_variation",
+                  "next_stage_id": "trace_qingliu_eye_variation_result"
+                },
+                {
+                  "id": "reconstruct_mumyeongs_sightline",
+                  "next_stage_id": "reconstruct_mumyeongs_sightline_result"
+                },
+                {
+                  "id": "stop_before_truth_becomes_accusation",
+                  "next_stage_id": "stop_before_truth_becomes_accusation_result"
+                }
+              ],
+              "id": "wuxia_mumyeong_reads_orthodox_style_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "카피된 초식과 오래된 상처의 각도를 맞춰 본다 결과가 기록으로 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "손목을 잠그는 각도는 살수의 버릇이 아니라 정파식 통제의 흔적에 가깝다. 현악문이라는 이름이 천기록의 여백에 얇게 걸린다."
+                }
+              ],
+              "id": "compare_copied_form_to_old_wound_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "청류안 계열의 시선이 어디서 비틀렸는지 추적한다 결과가 기록으로 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "무명은 흐름을 본 뒤 훔쳤고, 너는 흐름을 본 뒤 맞춰 보려 한다. 같은 눈에서 다른 결론이 갈라진다."
+                }
+              ],
+              "id": "trace_qingliu_eye_variation_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "무명이 그날 보았을 시선을 따라 재구성한다 결과가 기록으로 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "복호금쇄수라는 이름은 떠오르지만, 그 이름이 왜 무명을 청류문 밖으로 밀어냈는지는 아직 한 줄이 비어 있다."
+                }
+              ],
+              "id": "reconstruct_mumyeongs_sightline_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "진실이 추궁이 되기 전에 기록을 덮는다 결과가 기록으로 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "지금 필요한 것은 판결이 아니라 흔적이다. 천기록은 닫혔지만 이름 몇 개는 손끝에 남았다."
+                }
+              ],
+              "id": "stop_before_truth_becomes_accusation_result",
+              "kind": "result"
+            }
           ]
         },
         "id": "wuxia_mumyeong_reads_orthodox_style",
@@ -3702,6 +4094,104 @@
             "mumyeong_rival_thread_opened"
           ]
         },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "청류문 마당의 해가 기울자 무명이 다시 나타난다. 그는 싸움을 걸 듯 서 있지만, 시선은 서하린이 서 있던 빈 자리와 천기록의 접힌 모서리를 번갈아 스친다. 현악문과 복호금쇄수라는 이름은 아직 답이 아니라, 서로 모른 척할 수 없게 만든 흠집처럼 남아 있다."
+                },
+                {
+                  "alt": "청류문 마당의 해가 기울자 무명이 다시 나타난다. 그는 싸움을",
+                  "kind": "illustration",
+                  "placeholder": true,
+                  "visual_id": "wuxia_mumyeong_midgame_reunion"
+                }
+              ],
+              "id": "wuxia_mumyeong_midgame_reunion_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "ask_why_seoharin_never_called_him_traitor",
+                  "next_stage_id": "ask_why_seoharin_never_called_him_traitor_result"
+                },
+                {
+                  "id": "show_the_hyeonakmun_trace_without_accusing",
+                  "next_stage_id": "show_the_hyeonakmun_trace_without_accusing_result"
+                },
+                {
+                  "id": "point_out_the_copied_form_gap",
+                  "next_stage_id": "point_out_the_copied_form_gap_result"
+                },
+                {
+                  "id": "keep_blades_low_and_watch_his_answer",
+                  "next_stage_id": "keep_blades_low_and_watch_his_answer_result"
+                }
+              ],
+              "id": "wuxia_mumyeong_midgame_reunion_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "서하린이 왜 그를 배신자라 부르지 않았는지 묻는다 결과가 기록으로 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "무명은 바로 대답하지 않는다. 다만 배신자라는 단어가 나오자 손끝이 먼저 굳고, 서하린이 그 말을 삼킨 이유가 아직 끝난 과거가 아님을 남긴다."
+                }
+              ],
+              "id": "ask_why_seoharin_never_called_him_traitor_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "현악문 흔적을 추궁이 아니라 기록으로 보여 준다 결과가 기록으로 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "천기록의 접힌 모서리에 현악문이라는 이름을 남기자 무명의 호흡이 한 번 끊긴다. 그는 부정하지 않지만, 그 이름을 누가 이용했는지는 아직 말하지 않는다."
+                }
+              ],
+              "id": "show_the_hyeonakmun_trace_without_accusing_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "훔친 초식과 이해한 흐름이 갈라지는 틈을 짚는다 결과가 기록으로 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "네가 틈을 짚는 순간 무명의 칼끝도 흔들린다. 서로 다른 방식으로 훔치고 배운 두 사람이 같은 빈틈을 보고 있다는 사실만 선명해진다."
+                }
+              ],
+              "id": "point_out_the_copied_form_gap_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "칼끝을 낮추고 대답 대신 반응을 본다 결과가 기록으로 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "물음은 미뤄졌지만 대치도 끝나지 않는다. 낮춘 칼끝 너머로 무명은 잠시 서하린이 있던 자리를 보고, 네가 그 시선을 보았다는 사실을 알아챈다."
+                }
+              ],
+              "id": "keep_blades_low_and_watch_his_answer_result",
+              "kind": "result"
+            }
+          ]
+        },
         "id": "wuxia_mumyeong_midgame_reunion",
         "presentation": {
           "effect_cues": [
@@ -3800,6 +4290,90 @@
             "cheonggi_record_awakened",
             "first_fragment_seen",
             "mumyeong_request_for_aid_resolved"
+          ]
+        },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "무명과의 재회가 끝난 밤, 마당 한켠에 앉아 호흡을 고르는데 손끝이 이상하게 당긴다. 천기록이 열리지도 않았다. 그런데 수첩 위 어딘가에서—아니, 머릿속 어딘가에서—획 하나가 그어지는 느낌이 난다."
+                },
+                {
+                  "kind": "document",
+                  "text": "지금 이 생각이 적히고 있는 것인가. 아니면 피로가 쌓여 착각이 드는 것인가."
+                },
+                {
+                  "alt": "생각이 적히는 감각을 느끼며 업무수첩을 바라보는 사람",
+                  "kind": "illustration",
+                  "placeholder": true,
+                  "visual_id": "wuxia_cheonggi_record_writing_sense"
+                }
+              ],
+              "id": "cheonggi_record_writing_sense_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "stare_at_the_record_without_moving",
+                  "next_stage_id": "stare_at_the_record_without_moving_result"
+                },
+                {
+                  "id": "look_away_and_steady_breath",
+                  "next_stage_id": "look_away_and_steady_breath_result"
+                },
+                {
+                  "id": "write_a_line_of_your_own",
+                  "next_stage_id": "write_a_line_of_your_own_result"
+                }
+              ],
+              "id": "cheonggi_record_writing_sense_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "기록을 응시한 결과가 마르지 않은 획의 감각으로 남는다."
+                },
+                {
+                  "kind": "document",
+                  "text": "수첩은 아무것도 대답하지 않았다. 하지만 시선을 고정한 순간, 획 하나가 아직도 마르지 않은 듯한 느낌이 남아 있었다."
+                }
+              ],
+              "id": "stare_at_the_record_without_moving_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "시선을 돌린 뒤에도 기록의 한 줄은 끝나지 않는다."
+                },
+                {
+                  "kind": "document",
+                  "text": "눈을 돌렸다. 그래도 등 뒤에서 무언가가 한 줄을 마저 완성하는 느낌은 가시지 않았다."
+                }
+              ],
+              "id": "look_away_and_steady_breath_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "먼저 적은 한 줄이 기록의 빈 곳에 되비친다."
+                },
+                {
+                  "kind": "document",
+                  "text": "손이 먼저 움직였다. 한 줄을 다 적고 나자 종이 위 다른 줄이 아주 잠깐, 이미 채워진 것처럼 보였다. 착각인지 사실인지 확인할 방법이 없었다."
+                }
+              ],
+              "id": "write_a_line_of_your_own_result",
+              "kind": "result"
+            }
           ]
         },
         "id": "wuxia_cheonggi_record_writing_sense",
@@ -3927,6 +4501,104 @@
             "mumyeong_mirror_thread_deepened",
             "cheongryu_raid_survived",
             "midgame_continuity_started"
+          ]
+        },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "청류문 마당의 소란이 가라앉기도 전에 검은 깃발의 그림자가 문턱에 걸린다. 흑사방주가 한 걸음 들어서자, 천기록의 빈 줄은 이상하게도 아무 해법도 쓰지 않는다. 움직임은 보인다. 사람의 약점을 재는 순서도 보인다. 하지만 몸이 먼저 굳는다."
+                },
+                {
+                  "alt": "청류문 마당의 소란이 가라앉기도 전에 검은 깃발의 그림자가 문턱",
+                  "kind": "illustration",
+                  "placeholder": true,
+                  "visual_id": "wuxia_boss_first_appearance"
+                }
+              ],
+              "id": "wuxia_boss_first_appearance_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "read_the_boss_flow_and_fail_to_move",
+                  "next_stage_id": "read_the_boss_flow_and_fail_to_move_result"
+                },
+                {
+                  "id": "pull_seo_harin_behind_broken_gate",
+                  "next_stage_id": "pull_seo_harin_behind_broken_gate_result"
+                },
+                {
+                  "id": "watch_mumyeong_answer_the_boss",
+                  "next_stage_id": "watch_mumyeong_answer_the_boss_result"
+                },
+                {
+                  "id": "retreat_before_the_second_step",
+                  "next_stage_id": "retreat_before_the_second_step_result"
+                }
+              ],
+              "id": "wuxia_boss_first_appearance_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "보스의 흐름을 읽지만 몸이 늦는 것을 인정한다 결과가 기록으로 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "흐름은 보인다. 하지만 흑사방주는 초식보다 먼저 사람의 멈칫함을 베어 낸다."
+                }
+              ],
+              "id": "read_the_boss_flow_and_fail_to_move_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "서하린을 부서진 산문 뒤로 물린다 결과가 기록으로 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "서하린은 물러서지만 눈을 피하지 않는다. 보스는 그 작은 움직임까지 이미 계산한 듯 웃는다."
+                }
+              ],
+              "id": "pull_seo_harin_behind_broken_gate_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "무명이 보스의 말에 어떻게 반응하는지 본다 결과가 기록으로 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "무명은 명령보다 먼저 침묵한다. 그 침묵은 복종이면서, 아직 끊지 못한 상처처럼 보인다."
+                }
+              ],
+              "id": "watch_mumyeong_answer_the_boss_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "두 번째 걸음 전에 물러나 살아남는다 결과가 기록으로 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "오늘 넘을 벽이 아니라는 사실을 인정하는 것도 선택이다. 천기록은 그 후퇴를 비겁함이라 적지 않는다."
+                }
+              ],
+              "id": "retreat_before_the_second_step_result",
+              "kind": "result"
+            }
           ]
         },
         "id": "wuxia_boss_first_appearance",
@@ -4061,6 +4733,104 @@
             "midgame_continuity_started"
           ]
         },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "흑사방주의 그림자가 물러난 뒤에도 청류문 마당의 공기는 무겁다. 천기록의 빈 줄 옆에 오래된 객잔 이름과 반쯤 찢긴 서찰 봉인이 겹쳐 보인다. 무명은 배신자가 되기 전에 살릴 방법을 찾았고, 정파의 문턱은 그를 여러 번 돌려보낸 듯하다."
+                },
+                {
+                  "alt": "흑사방주의 그림자가 물러난 뒤에도 청류문 마당의 공기는 무겁다.",
+                  "kind": "illustration",
+                  "placeholder": true,
+                  "visual_id": "wuxia_mumyeong_request_for_aid"
+                }
+              ],
+              "id": "wuxia_mumyeong_request_for_aid_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "search_the_rejected_aid_letters",
+                  "next_stage_id": "search_the_rejected_aid_letters_result"
+                },
+                {
+                  "id": "follow_old_inn_rumors_about_mumyeong",
+                  "next_stage_id": "follow_old_inn_rumors_about_mumyeong_result"
+                },
+                {
+                  "id": "ask_seo_harin_what_help_never_came",
+                  "next_stage_id": "ask_seo_harin_what_help_never_came_result"
+                },
+                {
+                  "id": "keep_the_failed_aid_record_unshown",
+                  "next_stage_id": "keep_the_failed_aid_record_unshown_result"
+                }
+              ],
+              "id": "wuxia_mumyeong_request_for_aid_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "거절당한 도움 요청 서찰을 찾아 읽는다 결과가 기록으로 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "서찰에는 도움을 청한 말보다 거절의 예법이 더 길게 남아 있다. 무명은 청류문을 버리기 전에 먼저 붙잡으려 했다."
+                }
+              ],
+              "id": "search_the_rejected_aid_letters_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "객잔에 남은 무명 소문을 좇는다 결과가 기록으로 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "사람들은 그가 떠난 날보다 문전박대당한 밤을 더 작게 말한다. 보스는 그 작게 말해진 상처를 먼저 알아본 쪽이었다."
+                }
+              ],
+              "id": "follow_old_inn_rumors_about_mumyeong_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "서하린에게 오지 않았던 도움을 묻는다 결과가 기록으로 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "서하린은 그 서찰을 본 적이 없다고 말한다. 그 무지가 오히려 오래된 상처의 모양을 만든다."
+                }
+              ],
+              "id": "ask_seo_harin_what_help_never_came_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "실패한 도움 요청 기록을 아직 보여주지 않는다 결과가 기록으로 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "기록은 접어 둔다. 오늘 밝히지 않는 진실도, 언젠가 누군가를 살릴 수 있다."
+                }
+              ],
+              "id": "keep_the_failed_aid_record_unshown_result",
+              "kind": "result"
+            }
+          ]
+        },
         "id": "wuxia_mumyeong_request_for_aid",
         "presentation": {
           "effect_cues": [
@@ -4186,6 +4956,104 @@
             "mumyeong_copy_style_reveal_resolved",
             "copy_style_hint_recorded",
             "midgame_continuity_started"
+          ]
+        },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "접어 둔 서찰과 복호금쇄수의 흔적이 청류문 마당 위에서 겹친다. 천기록은 무명의 재능을 칭찬하지 않는다. 대신 분노가 남의 초식을 훔쳐 덧씌운 순간, 카피가 성장처럼 보였지만 사실 상처의 모양을 따라 번졌다고 적는다."
+                },
+                {
+                  "alt": "story illustration",
+                  "kind": "illustration",
+                  "placeholder": true,
+                  "visual_id": "wuxia_mumyeong_awakening"
+                }
+              ],
+              "id": "wuxia_mumyeong_awakening_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "compare_anger_to_copied_flow",
+                  "next_stage_id": "compare_anger_to_copied_flow_result"
+                },
+                {
+                  "id": "trace_awakening_from_failed_aid",
+                  "next_stage_id": "trace_awakening_from_failed_aid_result"
+                },
+                {
+                  "id": "ask_what_the_copy_cost_him",
+                  "next_stage_id": "ask_what_the_copy_cost_him_result"
+                },
+                {
+                  "id": "stop_before_calling_it_salvation",
+                  "next_stage_id": "stop_before_calling_it_salvation_result"
+                }
+              ],
+              "id": "wuxia_mumyeong_awakening_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "result"
+                },
+                {
+                  "kind": "narration",
+                  "text": "천기록은 무명의 초식이 자란 것이 아니라 상처 위에 덧씌워졌다고 적는다. 카피는 재능의 이름을 빌렸지만, 처음에는 분노의 모양을 하고 있었다."
+                }
+              ],
+              "id": "compare_anger_to_copied_flow_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "result"
+                },
+                {
+                  "kind": "narration",
+                  "text": "거절당한 서찰과 정파식 손자국 사이에서 무명의 분노가 처음 형태를 얻는다. 현악문의 이름은 보이지만, 아직 모든 진실을 설명하지는 않는다."
+                }
+              ],
+              "id": "trace_awakening_from_failed_aid_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "result"
+                },
+                {
+                  "kind": "narration",
+                  "text": "묻는 말은 닿지만 답은 오지 않는다. 침묵이 오히려 카피의 대가를 설명한다. 너는 이해해 재구성하고, 무명은 상처 위에 훔친 흐름을 덧씌운다."
+                }
+              ],
+              "id": "ask_what_the_copy_cost_him_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "result"
+                },
+                {
+                  "kind": "narration",
+                  "text": "구원은 아직 이름 붙일 수 없다. 오늘은 상처가 어떻게 힘의 모양을 흉내 냈는지만 기록한다."
+                }
+              ],
+              "id": "stop_before_calling_it_salvation_result",
+              "kind": "result"
+            }
           ]
         },
         "id": "wuxia_mumyeong_awakening",
@@ -4316,6 +5184,104 @@
             "midgame_continuity_started"
           ]
         },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "무명의 분노가 지나간 뒤, 청류문 외원의 오래된 상처가 새삼 선명해진다. 천기록은 그 밤을 재생하지 않는다. 대신 부러진 자물쇠, 뒤틀린 문틀, 벽에 스친 손자국 사이에서 현악문이라는 이름과 복호금쇄수의 결만 조용히 골라 적는다."
+                },
+                {
+                  "alt": "story illustration",
+                  "kind": "illustration",
+                  "placeholder": true,
+                  "visual_id": "wuxia_qingliu_attack_after_war"
+                }
+              ],
+              "id": "wuxia_qingliu_attack_after_war_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "inspect_bokho_lock_scars",
+                  "next_stage_id": "inspect_bokho_lock_scars_result"
+                },
+                {
+                  "id": "compare_hyeonakmun_trace_to_qingliu_wounds",
+                  "next_stage_id": "compare_hyeonakmun_trace_to_qingliu_wounds_result"
+                },
+                {
+                  "id": "ask_seo_harin_what_she_saw_afterward",
+                  "next_stage_id": "ask_seo_harin_what_she_saw_afterward_result"
+                },
+                {
+                  "id": "stop_before_replaying_the_attack",
+                  "next_stage_id": "stop_before_replaying_the_attack_result"
+                }
+              ],
+              "id": "wuxia_qingliu_attack_after_war_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "result"
+                },
+                {
+                  "kind": "narration",
+                  "text": "천기록은 자물쇠의 상처가 무너진 힘이 아니라 잠그고 부러뜨린 손길이라고 적는다. 복호금쇄수는 여기서도 무언가를 끊어 놓았다."
+                }
+              ],
+              "id": "inspect_bokho_lock_scars_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "result"
+                },
+                {
+                  "kind": "narration",
+                  "text": "이름은 현악문 쪽을 향하지만, 천기록은 아직 한 문파 전체를 죄인으로 쓰지 않는다. 기록은 흔적을 좁히되 판결을 서두르지 않는다."
+                }
+              ],
+              "id": "compare_hyeonakmun_trace_to_qingliu_wounds_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "result"
+                },
+                {
+                  "kind": "narration",
+                  "text": "서하린의 기억은 피와 빈방에 멈춰 있다. 그녀도 습격의 중심을 보지는 못했다. 그래서 질문은 답보다 조심스러워진다."
+                }
+              ],
+              "id": "ask_seo_harin_what_she_saw_afterward_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "result"
+                },
+                {
+                  "kind": "narration",
+                  "text": "오늘은 회상이 아니라 흔적만 읽는다. 공격의 밤은 아직 장면으로 열리지 않는다."
+                }
+              ],
+              "id": "stop_before_replaying_the_attack_result",
+              "kind": "result"
+            }
+          ]
+        },
         "id": "wuxia_qingliu_attack_after_war",
         "presentation": {
           "effect_cues": [
@@ -4438,6 +5404,104 @@
             "hyeonakmun_attack_thread_opened",
             "mumyeong_awakening_resolved",
             "midgame_continuity_started"
+          ]
+        },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "현악문이라는 이름은 청류문 외원의 흉터에서 끝나지 않았다. 며칠 뒤 천기록의 여백에는 닫힌 산문, 부러진 현판, 이름이 긁혀 나간 장부 조각이 떠오른다. 기록은 멸문 장면을 재생하지 않는다. 다만 복호금쇄수의 이름이 사라진 자리와 무명의 분노가 지나간 방향만 조용히 맞춘다."
+                },
+                {
+                  "alt": "story illustration",
+                  "kind": "illustration",
+                  "placeholder": true,
+                  "visual_id": "wuxia_mumyeong_destroys_orthodox_sect"
+                }
+              ],
+              "id": "wuxia_mumyeong_destroys_orthodox_sect_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "read_hyeonakmun_empty_gate_record",
+                  "next_stage_id": "read_hyeonakmun_empty_gate_record_result"
+                },
+                {
+                  "id": "trace_bokho_lock_to_mumyeong",
+                  "next_stage_id": "trace_bokho_lock_to_mumyeong_result"
+                },
+                {
+                  "id": "ask_why_seoharin_never_heard_full_story",
+                  "next_stage_id": "ask_why_seoharin_never_heard_full_story_result"
+                },
+                {
+                  "id": "stop_before_counting_the_dead",
+                  "next_stage_id": "stop_before_counting_the_dead_result"
+                }
+              ],
+              "id": "wuxia_mumyeong_destroys_orthodox_sect_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "result"
+                },
+                {
+                  "kind": "narration",
+                  "text": "천기록은 멸문을 장면으로 보지 않는다. 비어 버린 산문과 끊긴 명패만이, 청류문 뒤에 현악문도 무너졌다는 결과를 말한다."
+                }
+              ],
+              "id": "read_hyeonakmun_empty_gate_record_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "result"
+                },
+                {
+                  "kind": "narration",
+                  "text": "복호금쇄수의 이름은 무명의 분노를 지나 현악문의 빈 문턱으로 돌아온다. 누구도 영웅담처럼 말하지 않는 길이다."
+                }
+              ],
+              "id": "trace_bokho_lock_to_mumyeong_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "result"
+                },
+                {
+                  "kind": "narration",
+                  "text": "서하린에게 닿지 못한 진실은 아직 말이 되지 않는다. 오늘은 왜 침묵이 남았는지만 적고, 그 침묵을 구원이라 부르지 않는다."
+                }
+              ],
+              "id": "ask_why_seoharin_never_heard_full_story_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "result"
+                },
+                {
+                  "kind": "narration",
+                  "text": "죽은 사람의 수를 세기 시작하면 장면이 열린다. 천기록은 아직 그 문을 열지 않고, 다음에 누가 이 결과를 이용했는지만 빈칸으로 남긴다."
+                }
+              ],
+              "id": "stop_before_counting_the_dead_result",
+              "kind": "result"
+            }
           ]
         },
         "id": "wuxia_mumyeong_destroys_orthodox_sect",
@@ -4564,6 +5628,104 @@
             "boss_wall_thread_opened",
             "black_serpent_core_pressure_opened",
             "midgame_continuity_started"
+          ]
+        },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "빈 현악문 산문에서 돌아온 뒤에도 천기록의 여백은 닫히지 않는다. 부러진 현판의 먹자국 끝에 흑사방의 검은 비늘 문양이 겹치고, 무명이 청류문에도 현악문에도 남을 수 없게 된 순간을 누군가 계산했다는 문장이 떠오른다. 그것은 구원이 아니라, 상처를 힘으로 바꾸는 제안이었다."
+                },
+                {
+                  "alt": "story illustration",
+                  "kind": "illustration",
+                  "placeholder": true,
+                  "visual_id": "wuxia_boss_recruits_mumyeong"
+                }
+              ],
+              "id": "wuxia_boss_recruits_mumyeong_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "trace_boss_offer_after_hyeonakmun",
+                  "next_stage_id": "trace_boss_offer_after_hyeonakmun_result"
+                },
+                {
+                  "id": "read_mumyeong_choice_without_excusing_it",
+                  "next_stage_id": "read_mumyeong_choice_without_excusing_it_result"
+                },
+                {
+                  "id": "search_black_serpent_recruitment_record",
+                  "next_stage_id": "search_black_serpent_recruitment_record_result"
+                },
+                {
+                  "id": "stop_before_following_him_into_black_serpent",
+                  "next_stage_id": "stop_before_following_him_into_black_serpent_result"
+                }
+              ],
+              "id": "wuxia_boss_recruits_mumyeong_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "result"
+                },
+                {
+                  "kind": "narration",
+                  "text": "보스는 무명을 건져 올린 것이 아니다. 그가 설 곳을 잃은 순간을 보고, 그 상처가 조직 안에서 얼마나 큰 힘이 될지 먼저 셈했다."
+                }
+              ],
+              "id": "trace_boss_offer_after_hyeonakmun_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "result"
+                },
+                {
+                  "kind": "narration",
+                  "text": "무명이 어디에도 돌아갈 수 없었다는 사실은 그의 선택을 지워 주지 않는다. 다만 누가 그 빈틈을 가장 먼저 이용했는지는 선명해진다."
+                }
+              ],
+              "id": "read_mumyeong_choice_without_excusing_it_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "result"
+                },
+                {
+                  "kind": "narration",
+                  "text": "흑사방 기록은 이름보다 결핍을 먼저 적는다. 보스가 읽은 것은 무명의 초식이 아니라, 그가 더는 돌아갈 이름을 믿지 못하게 된 자리였다."
+                }
+              ],
+              "id": "search_black_serpent_recruitment_record_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "result"
+                },
+                {
+                  "kind": "narration",
+                  "text": "지금 본 것은 입구뿐이다. 무명이 왜 따랐는지와 서하린에게 무엇을 전해야 하는지는 남았지만, 보스의 최종 장부를 펼치기에는 아직 이르다."
+                }
+              ],
+              "id": "stop_before_following_him_into_black_serpent_result",
+              "kind": "result"
+            }
           ]
         },
         "id": "wuxia_boss_recruits_mumyeong",
@@ -4695,6 +5857,104 @@
             "midgame_continuity_started"
           ]
         },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "흑사방의 검은 비늘 문양이 사라진 뒤, 천기록은 흩어진 조각들을 한 장으로 접는다. 거절당한 도움 요청, 현악문과 복호금쇄수, 비어 버린 산문, 보스가 먼저 본 상처. 기록은 무명이 왜 떠났는지 이해할 만큼은 이어지지만, 아직 그 문장을 서하린 앞에 내려놓지는 않는다."
+                },
+                {
+                  "alt": "story illustration",
+                  "kind": "illustration",
+                  "placeholder": true,
+                  "visual_id": "wuxia_mumyeong_departure_truth_summary"
+                }
+              ],
+              "id": "wuxia_mumyeong_departure_truth_summary_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "assemble_departure_truth_without_delivering",
+                  "next_stage_id": "assemble_departure_truth_without_delivering_result"
+                },
+                {
+                  "id": "compare_failed_aid_to_recruitment_offer",
+                  "next_stage_id": "compare_failed_aid_to_recruitment_offer_result"
+                },
+                {
+                  "id": "ask_seoharin_what_she_is_ready_to_hear",
+                  "next_stage_id": "ask_seoharin_what_she_is_ready_to_hear_result"
+                },
+                {
+                  "id": "seal_truth_until_mumyeong_faces_it",
+                  "next_stage_id": "seal_truth_until_mumyeong_faces_it_result"
+                }
+              ],
+              "id": "wuxia_mumyeong_departure_truth_summary_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "result"
+                },
+                {
+                  "kind": "narration",
+                  "text": "진실은 한 문장으로 묶이기 시작한다. 하지만 그 문장은 아직 서하린에게 건넬 말이 아니라, 봉인해 둔 기록으로 남는다."
+                }
+              ],
+              "id": "assemble_departure_truth_without_delivering_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "result"
+                },
+                {
+                  "kind": "narration",
+                  "text": "정파가 문을 닫은 자리에서 보스는 손을 내밀었다. 그것은 구원이 아니라, 버려진 상처를 자기 힘으로 계산한 제안이었다."
+                }
+              ],
+              "id": "compare_failed_aid_to_recruitment_offer_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "result"
+                },
+                {
+                  "kind": "narration",
+                  "text": "서하린은 무명을 배신자로 부르지 않는다. 그래서 더더욱, 진실은 폭로가 아니라 그녀가 감당할 수 있는 순간을 기다려야 한다."
+                }
+              ],
+              "id": "ask_seoharin_what_she_is_ready_to_hear_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "result"
+                },
+                {
+                  "kind": "narration",
+                  "text": "구원 조건처럼 보이는 문장이 떠오르지만, 아직 조건을 만족한 것은 아니다. 천기록은 진실을 접어 두고 다음 대면을 기다린다."
+                }
+              ],
+              "id": "seal_truth_until_mumyeong_faces_it_result",
+              "kind": "result"
+            }
+          ]
+        },
         "id": "wuxia_mumyeong_departure_truth_summary",
         "presentation": {
           "effect_cues": [
@@ -4820,6 +6080,104 @@
             "sealed_departure_truth_summary_prepared",
             "truth_delivery_still_unopened",
             "midgame_continuity_started"
+          ]
+        },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "봉해 둔 진실을 품은 채 청류문 외곽 마당으로 돌아오자, 서하린은 연무장 가장자리의 빈 자리를 쓸고 있었다. 낡은 목검 하나가 벽에 기대어 있지만, 그녀는 그것을 누구의 것이라고 부르지 않는다. 기다림은 소유가 아니라, 돌아올 수 있는 자리를 지우지 않는 일처럼 보인다."
+                },
+                {
+                  "alt": "청류문 연무장 가장자리의 비워 둔 자리와 낡은 목검",
+                  "kind": "illustration",
+                  "placeholder": true,
+                  "visual_id": "wuxia_seoharin_empty_place"
+                }
+              ],
+              "id": "seoharin_empty_place_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "ask_who_kept_the_empty_place",
+                  "next_stage_id": "ask_who_kept_the_empty_place_result"
+                },
+                {
+                  "id": "leave_the_place_unclaimed",
+                  "next_stage_id": "leave_the_place_unclaimed_result"
+                },
+                {
+                  "id": "set_down_the_work_notebook_briefly",
+                  "next_stage_id": "set_down_the_work_notebook_briefly_result"
+                },
+                {
+                  "id": "step_back_without_naming_mumyeong",
+                  "next_stage_id": "step_back_without_naming_mumyeong_result"
+                }
+              ],
+              "id": "seoharin_empty_place_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "빈 자리를 지켜 온 사람을 묻자 기다림의 뜻이 드러난다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "서하린은 대답 대신 먼지를 쓸어낸다. 그 빈 자리는 무명을 변명하기 위한 자리가 아니라, 그가 돌아와도 이름을 빼앗기지 않게 남겨 둔 자리였다."
+                }
+              ],
+              "id": "ask_who_kept_the_empty_place_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "그 자리에 이름을 붙이지 않은 채 기다림을 남긴다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "이름을 붙이지 않자, 자리는 더 선명해진다. 기다림은 무명을 소유하는 방식이 아니라, 그가 돌아올 수 있는 길을 막지 않는 방식이었다."
+                }
+              ],
+              "id": "leave_the_place_unclaimed_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "업무수첩을 내려놓고 값 매겨지지 않은 목검을 바라본다."
+                },
+                {
+                  "kind": "document",
+                  "text": "천기록은 목검의 값을 쓰지 않는다. 아직 보상도 아이템도 아니지만, 값이 매겨지지 않은 물건이 언젠가 조건이 될 수 있다는 여백만 남긴다."
+                }
+              ],
+              "id": "set_down_the_work_notebook_briefly_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "이름을 꺼내지 않고 한 걸음 물러나 진실을 미룬다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "오늘은 진실을 전하는 날이 아니다. 서하린의 빈 자리는 대답을 강요하지 않고, 무명이 스스로 마주해야 할 순간까지 조용히 남아 있다."
+                }
+              ],
+              "id": "step_back_without_naming_mumyeong_result",
+              "kind": "result"
+            }
           ]
         },
         "id": "wuxia_seoharin_empty_place",
@@ -4949,6 +6307,118 @@
             "midgame_continuity_started"
           ]
         },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "늦게 돌아온 청류문 부엌 근처에는 식은 밥 한 그릇이 덮여 있다. 서하린은 설명 대신 짧게 말한다."
+                },
+                {
+                  "kind": "dialogue",
+                  "speaker": "서하린",
+                  "text": "네 몫도 있다. 먹."
+                },
+                {
+                  "kind": "narration",
+                  "text": "밥은 남은 것이 아니라 남겨 둔 것이고, 청류문은 선언보다 먼저 누군가의 몫을 지우지 않는 곳처럼 느껴진다."
+                },
+                {
+                  "alt": "늦게 돌아온 사람을 위해 덮어 둔 청류문 밥그릇",
+                  "kind": "illustration",
+                  "placeholder": true,
+                  "visual_id": "wuxia_seoharin_left_meal"
+                }
+              ],
+              "id": "seoharin_left_meal_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "eat_the_left_meal_quietly",
+                  "next_stage_id": "eat_the_left_meal_quietly_result"
+                },
+                {
+                  "id": "thank_seoharin_for_the_bowl",
+                  "next_stage_id": "thank_seoharin_for_the_bowl_result"
+                },
+                {
+                  "id": "joke_about_who_ordered_extra_rice",
+                  "next_stage_id": "joke_about_who_ordered_extra_rice_result"
+                },
+                {
+                  "id": "pass_without_eating_the_meal",
+                  "next_stage_id": "pass_without_eating_the_meal_result"
+                }
+              ],
+              "id": "seoharin_left_meal_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "남겨 둔 밥을 먹으며 돌아올 자리가 따뜻해진다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "밥은 식었지만, 누군가의 몫이 지워지지 않았다는 사실은 따뜻하다. 청류문은 돌아왔을 때 한 그릇이 남아 있는 곳으로 조금 더 선명해진다."
+                }
+              ],
+              "id": "eat_the_left_meal_quietly_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "고맙다는 말이 남겨 둔 밥의 방향을 조금 바꾼다."
+                },
+                {
+                  "kind": "dialogue",
+                  "speaker": "서하린",
+                  "text": "남았을 뿐이야"
+                },
+                {
+                  "kind": "narration",
+                  "text": "서하린은 \"남았을 뿐이야\"라고 말하지만, 밥그릇은 처음부터 덮여 있었다. 고마움은 대답을 얻지 못해도 관계의 방향을 조금 바꾼다."
+                }
+              ],
+              "id": "thank_seoharin_for_the_bowl_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "농담이 부엌의 어색함을 잠깐 덜어낸다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "농담은 잠깐 부엌의 어색함을 덜어낸다. 서하린은 대꾸하지 않지만, 빈 그릇을 치우는 손길이 네가 이곳에 돌아온 사실을 이미 받아들였다고 말한다."
+                }
+              ],
+              "id": "joke_about_who_ordered_extra_rice_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "먹지 않은 한 그릇이 아직 남은 여백이 된다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "밥그릇은 그대로 남는다. 아무도 붙잡지 않지만, 먹지 않은 한 그릇은 언젠가 마지막 밥그릇으로 기억될 수 있다는 식은 여백을 남긴다."
+                }
+              ],
+              "id": "pass_without_eating_the_meal_result",
+              "kind": "result"
+            }
+          ]
+        },
         "id": "wuxia_seoharin_left_meal",
         "presentation": {
           "effect_cues": [
@@ -5045,6 +6515,86 @@
             "cheonoe_pyeonrin_reward_schema_opened",
             "seoharin_left_meal_resolved",
             "midgame_continuity_started"
+          ]
+        },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "사도 최종전 전야, 업무수첩의 빈 장이 다시 조용히 펼쳐진다. 이번에는 세 문장이 다른 결을 가지고 떠오른다. 검색창이 아니다. 즉시 강해지는 보상도 아니다. 세 후보 중 하나의 방향만 붙들 수 있고, 나머지 둘은 이 순간 사라진다."
+                },
+                {
+                  "alt": "사도 최종전 전야에 다시 떠오른 세 가지 천외편린 방향",
+                  "kind": "illustration",
+                  "placeholder": true,
+                  "visual_id": "wuxia_cheonoe_pyeonrin_second_reward"
+                }
+              ],
+              "id": "cheonoe_pyeonrin_second_reward_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "choose_training_method_thread",
+                  "next_stage_id": "choose_training_method_thread_result"
+                },
+                {
+                  "id": "choose_first_aid_thread",
+                  "next_stage_id": "choose_first_aid_thread_result"
+                },
+                {
+                  "id": "choose_return_clue_thread",
+                  "next_stage_id": "choose_return_clue_thread_result"
+                }
+              ],
+              "id": "cheonoe_pyeonrin_second_reward_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "체계적 수련법의 방향을 붙든다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "천기록은 반복 가능한 패턴을 먼저 짓는 방식을 남겼다. 매번 다른 상황에서도 재현할 수 있는 수련 구조가 오늘 밤의 숙제다. 나머지 두 방향은 이 순간 수첩에서 흘러 사라졌다."
+                }
+              ],
+              "id": "choose_training_method_thread_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "응급 처치와 부상 대응의 방향을 붙든다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "천기록은 전투 중 부상을 버티는 임시 처치와 몸의 한계를 읽는 법을 남겼다. 기절하지 않고 이 밤을 넘기는 신체 대응법이 오늘 밤의 숙제다. 나머지 두 방향은 이 순간 수첩에서 흘러 사라졌다."
+                }
+              ],
+              "id": "choose_first_aid_thread_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "귀환의 실마리 방향을 붙든다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "천기록은 여기가 어디이고 거기는 어디인지, 그 경계가 어떻게 열렸는지에 대한 아주 희미한 실마리를 남겼다. 확실한 답이 아니라 방향의 감각이다. 나머지 두 방향은 이 순간 수첩에서 흘러 사라졌다."
+                }
+              ],
+              "id": "choose_return_clue_thread_result",
+              "kind": "result"
+            }
           ]
         },
         "id": "wuxia_cheonoe_pyeonrin_second_reward",

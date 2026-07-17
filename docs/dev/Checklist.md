@@ -1709,3 +1709,25 @@
 - [x] WP-D2: `fable_eventstage_step2_report.md`와 개발 문서/체크리스트 갱신
 - [x] WP-D3: Notion 런타임 현황 페이지와 `idea_box/notion_sources.yml` reverse sync
 - [ ] 수동 motion/screenshot QA: 브라우저 설치 문제로 다음 QA에서 수행
+
+## Phase 14: Event Stage Wave 2 (`fable_eventstage_wave2_step1_2607171454.md`)
+
+### 14.1 코어 계약
+
+- [x] WP-S1: ResultStage 외 `branch` 거부 및 stage/choice `next_stage_id` dangling ref index-time 검증
+- [x] 기존 legacy bundle/index와 Wave 1 branch/cursor 회귀 테스트 유지
+
+### 14.2 이구학지 midgame 콘텐츠
+
+- [x] WP-C1: 무명/보스 초중반 6개 사건 staged 전환
+- [x] WP-C2: 각성부터 이탈 진실 요약까지 5개 사건 staged 전환
+- [x] WP-C3: 천기록 document surface·천외편린 보상·서하린 3개 사건 staged 전환
+- [x] 기존 choice ID·outcome log·flags/checks/destination·visual ID 보존, placeholder 일러스트 표기
+- [x] staged coverage 14/44 → 30/44
+
+### 14.3 검증과 closeout
+
+- [x] WP-W1: document block 기존 ink/ruled styling과 5 viewport Web/WASM QA 확인
+- [x] WP-D1: `fable_eventstage_wave2_step2_report.md` 및 Development Plan/Checklist 갱신
+- [x] WP-D2: Notion 런타임 현황 페이지와 `idea_box/notion_sources.yml` Wave 2 reverse sync
+- [ ] 수동 390px midgame flow·fragment re-entry·document visual·ResultStage save/reload QA

@@ -932,6 +932,9 @@ fn validate_event(encounter: &EncounterDef) -> Result<(), ContentIndexError> {
                 )));
             }
             if let Some(branch) = &block.branch {
+                if stage.kind != "result" {
+                    return Err(fail("branches are only valid in result stages".into()));
+                }
                 if !matches!(branch.as_str(), "success" | "failure") {
                     return Err(fail(format!(
                         "block in stage {} has unknown branch '{}'; expected success or failure",

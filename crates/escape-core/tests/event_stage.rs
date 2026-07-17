@@ -33,7 +33,11 @@ fn event_bundle() -> escape_core::ContentBundle {
         ]},
         {"id":"decision","kind":"choice","blocks":[{"kind":"system","text":"무엇을 할까?"}],
          "choices":[{"id":"read_printout","next_stage_id":"closing"}]},
-        {"id":"result","kind":"result","blocks":[{"kind":"result_summary","text":"종이가 멈췄다."}]},
+        {"id":"result","kind":"result","blocks":[
+            {"kind":"result_summary","text":"종이가 멈췄다."},
+            {"kind":"narration","text":"성공 분기 결과","branch":"success"},
+            {"kind":"narration","text":"실패 분기 결과","branch":"failure"}
+        ]},
         {"id":"closing","kind":"story","blocks":[{"kind":"document","text":"출력 시각: 내일"}]}
     ]});
     bundle
@@ -170,4 +174,125 @@ fn old_save_json_defaults_event_cursor_fields() {
     let loaded: SaveEnvelope = serde_json::from_value(value).unwrap();
     assert_eq!(loaded.state.active_event_id, None);
     assert_eq!(loaded.state.event_stage_index, 0);
+}
+
+#[test]
+fn result_stage_blocks_follow_success_and_failure_check_branches() {
+    let index = index_content_bundle(&event_bundle()).unwrap();
+    let mut seen_success = false;
+    let mut seen_failure = false;
+
+    for seed in 1..=512 {
+        let state = new_game_from_content_at(seed, &index, "printer_area").unwrap();
+        let decision_state = apply_action_from_content(&state, &index, "event:continue")
+            .unwrap()
+            .state;
+        let result_state =
+            apply_action_from_content(&decision_state, &index, "choice:read_printout")
+                .unwrap()
+                .state;
+        let success = result_state.last_check.as_ref().unwrap().success;
+        let page = scene_page_from_content(&result_state, &index).unwrap();
+        let texts = page
+            .content_stream
+            .iter()
+            .filter_map(|item| item.text.as_deref())
+            .collect::<Vec<_>>();
+        assert!(texts.contains(&"종이가 멈췄다."));
+        if success {
+            assert!(texts.contains(&"성공 분기 결과"));
+            assert!(!texts.contains(&"실패 분기 결과"));
+            seen_success = true;
+        } else {
+            assert!(texts.contains(&"실패 분기 결과"));
+            assert!(!texts.contains(&"성공 분기 결과"));
+            seen_failure = true;
+        }
+        if seen_success && seen_failure {
+            break;
+        }
+    }
+
+    assert!(seen_success, "test seeds should cover a successful check");
+    assert!(seen_failure, "test seeds should cover a failed check");
+}
+
+#[test]
+fn event_validation_rejects_unknown_result_branch() {
+    let mut bundle = event_bundle();
+    let encounter = bundle
+        .content
+        .encounters
+        .iter_mut()
+        .find(|value| value["id"] == "printer_prints_alone")
+        .unwrap();
+    encounter["event"]["stages"][2]["blocks"][1]["branch"] = json!("sucess");
+
+    let error = index_content_bundle(&bundle).unwrap_err();
+    assert!(matches!(error, ContentIndexError::InvalidEvent { .. }));
+    assert!(error.to_string().contains("unknown branch"));
+}
+
+#[test]
+fn legacy_bundle_without_branch_field_still_loads_and_indexes() {
+    let bundle = load_content_bundle(BUNDLE).unwrap();
+    let index = index_content_bundle(&bundle).unwrap();
+    assert!(index.encounters_len() > 0);
+}
+
+#[test]
+fn direct_result_target_uses_result_cursor_and_ends_without_fallthrough() {
+    let mut bundle = event_bundle();
+    let encounter = bundle
+        .content
+        .encounters
+        .iter_mut()
+        .find(|value| value["id"] == "printer_prints_alone")
+        .unwrap();
+    encounter["event"]["stages"][1]["choices"][0]["next_stage_id"] = json!("result");
+
+    let index = index_content_bundle(&bundle).unwrap();
+    let state = new_game_from_content_at(7, &index, "printer_area").unwrap();
+    let decision_state = apply_action_from_content(&state, &index, "event:continue")
+        .unwrap()
+        .state;
+    let result_state = apply_action_from_content(&decision_state, &index, "choice:read_printout")
+        .unwrap()
+        .state;
+    assert_eq!(result_state.event_stage_index, 2);
+    assert_eq!(result_state.event_next_stage_id.as_deref(), Some("result"));
+    let done = apply_action_from_content(&result_state, &index, "event:continue")
+        .unwrap()
+        .state;
+    assert_eq!(done.active_event_id, None);
+}
+
+#[test]
+fn direct_result_target_honors_result_next_stage_id() {
+    let mut bundle = event_bundle();
+    let encounter = bundle
+        .content
+        .encounters
+        .iter_mut()
+        .find(|value| value["id"] == "printer_prints_alone")
+        .unwrap();
+    encounter["event"]["stages"][1]["choices"][0]["next_stage_id"] = json!("result");
+    encounter["event"]["stages"][2]["next_stage_id"] = json!("closing");
+
+    let index = index_content_bundle(&bundle).unwrap();
+    let state = new_game_from_content_at(7, &index, "printer_area").unwrap();
+    let decision_state = apply_action_from_content(&state, &index, "event:continue")
+        .unwrap()
+        .state;
+    let result_state = apply_action_from_content(&decision_state, &index, "choice:read_printout")
+        .unwrap()
+        .state;
+    let closing_state = apply_action_from_content(&result_state, &index, "event:continue")
+        .unwrap()
+        .state;
+    assert_eq!(
+        closing_state.active_event_id.as_deref(),
+        Some("printer_prints_alone")
+    );
+    assert_eq!(closing_state.event_stage_index, 3);
 }

@@ -263,6 +263,136 @@
             "wuxia_arrival_hidden"
           ]
         },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "시장 입구에서 흑사방 말단들이 길을 막는다."
+                },
+                {
+                  "alt": "시장 입구에서 몽둥이를 든 흑사방 말단들과 대치하는 외지인",
+                  "kind": "illustration",
+                  "visual_id": "wuxia_heuksa_bang_first_fight"
+                },
+                {
+                  "kind": "dialogue",
+                  "speaker": "흑사방 말단",
+                  "text": "“길을 막았으면 통행세를 내야지.”"
+                },
+                {
+                  "kind": "narration",
+                  "text": "목에 건 사원증을 값나가는 패처럼 바라보는 시선이 따라붙고, 몽둥이가 팔을 스치는 순간 이 세계의 폭력이 진짜라는 감각이 온몸에 박힌다."
+                }
+              ],
+              "id": "heuksa_fight_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "run_toward_open_street",
+                  "next_stage_id": "run_toward_open_street_result"
+                },
+                {
+                  "id": "deescalate_with_words",
+                  "next_stage_id": "deescalate_with_words_result"
+                },
+                {
+                  "id": "swing_commute_bag",
+                  "next_stage_id": "swing_commute_bag_result"
+                },
+                {
+                  "id": "loosen_tie_and_drop_shoes",
+                  "next_stage_id": "loosen_tie_and_drop_shoes_result"
+                },
+                {
+                  "id": "crash_in_with_body",
+                  "next_stage_id": "crash_in_with_body_result"
+                }
+              ],
+              "id": "heuksa_fight_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "큰길 쪽으로 물러난 결과가 몸에 남는다."
+                },
+                {
+                  "branch": "success",
+                  "kind": "narration",
+                  "text": "민첩하게 큰길로 물러섰다. 큰 부상을 피하고 흑사방의 포위를 벗어났다."
+                },
+                {
+                  "branch": "failure",
+                  "kind": "narration",
+                  "text": "비틀거리다 몽둥이에 쓸리며 꼴사납게 도망쳤다. 무공에 익숙지 않은 탓이다."
+                }
+              ],
+              "id": "run_toward_open_street_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "말을 고른 결과가 잠깐의 틈으로 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "말은 통했지만 세계관이 달랐다. 설득은 완전한 성공이 아니라 누군가 끼어들 시간을 버는 정도였다."
+                }
+              ],
+              "id": "deescalate_with_words_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "출근 가방으로 만든 틈이 몸과 물건에 흔적을 남긴다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "가방은 무기가 아니라 한 번의 완충재였다. 틈은 만들었지만 손잡이가 찢어지고 팔에는 통증이 남았다."
+                }
+              ],
+              "id": "swing_commute_bag_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "몸을 가볍게 만든 선택이 발밑의 감각을 되돌린다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "체면은 무너졌지만 발이 땅을 잡았다. 무공이 아니라 몸을 살리는 준비가 먼저였다."
+                }
+              ],
+              "id": "loosen_tie_and_drop_shoes_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "정면으로 버틴 대가가 더 큰 시선으로 돌아온다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "잠깐 버티기는 했지만 무쌍은 아니었다. 손은 떨리고 셔츠는 찢어졌으며 더 큰 시선이 붙었다."
+                }
+              ],
+              "id": "crash_in_with_body_result",
+              "kind": "result"
+            }
+          ]
+        },
         "id": "wuxia_heuksa_bang_first_fight",
         "presentation": {
           "effect_cues": [
@@ -928,6 +1058,128 @@
             "taken_under_watch"
           ]
         },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "청류문 외곽 마당은 낡았지만 적대적이지 않다. 빈 연무장, 금 간 약탕기, 반쯤 무너진 서고 문이 이 문파의 적은 배신자가 아니라 결핍임을 말한다."
+                },
+                {
+                  "alt": "낡은 청류문 외곽 마당에서 수습생 등록을 기다리는 외지인",
+                  "kind": "illustration",
+                  "visual_id": "wuxia_cheongryu_apprentice_entry"
+                },
+                {
+                  "kind": "dialogue",
+                  "speaker": "청류문 장문인",
+                  "text": "“보호는 하겠다. 다만 보호는 공짜가 아니고, 제자도 공짜로 받지 않는다. 석 달은 잡일과 수습으로 갚아라.”"
+                }
+              ],
+              "id": "apprentice_entry_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "accept_three_month_trial",
+                  "next_stage_id": "accept_three_month_trial_result"
+                },
+                {
+                  "id": "request_martial_training_immediately",
+                  "next_stage_id": "request_martial_training_immediately_result"
+                },
+                {
+                  "id": "organize_chores_like_workflow",
+                  "next_stage_id": "organize_chores_like_workflow_result"
+                },
+                {
+                  "id": "inspect_archive_during_chore",
+                  "next_stage_id": "inspect_archive_during_chore_result"
+                }
+              ],
+              "id": "apprentice_entry_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "석 달의 조건을 받아들인 결과가 청류문의 첫 수련으로 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "보호는 소속의 문을 열지만 공짜가 아니다. 잡일은 벌이 아니라 청류문의 흐름을 배우는 첫 수련이 된다."
+                }
+              ],
+              "id": "accept_three_month_trial_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "당장 무공을 요구한 선택이 문파의 규칙과 부딪힌다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "청류심법은 동정으로 던져 주는 비급이 아니다. 장문인은 먼저 물 긷기와 호흡, 서 있는 법을 배우라고 못박는다."
+                },
+                {
+                  "branch": "success",
+                  "kind": "narration",
+                  "text": "물러서지 않고 눈을 맞추자 장문인은 그 고집만큼은 눈여겨본다."
+                },
+                {
+                  "branch": "failure",
+                  "kind": "narration",
+                  "text": "고집은 오기로만 비쳐지고, 장문인은 한마디 말도 없이 등을 돌린다."
+                }
+              ],
+              "id": "request_martial_training_immediately_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "회사식 동선 정리가 잡일과 수련의 경계를 건드린다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "업무 분해와 동선 정리는 무공 치트가 아니다. 대신 청류문 사람들은 네가 흐름을 보는 방식에 처음으로 고개를 돌린다."
+                },
+                {
+                  "branch": "success",
+                  "kind": "narration",
+                  "text": "흔들림 없이 동선표를 짚어가자 잡일이 조금 더 수월하게 풀린다."
+                },
+                {
+                  "branch": "failure",
+                  "kind": "narration",
+                  "text": "손이 급해 순서가 엉키고, 정리는커녕 잡일만 두 배로 늘어난다."
+                }
+              ],
+              "id": "organize_chores_like_workflow_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "잠긴 장부를 살핀 호기심이 서고의 시선으로 이어진다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "잠긴 장부 앞에서 업무수첩의 빈 장이 아주 잠깐 떨린다. 천기록은 답하지 않고, 누군가 지켜보는 듯한 시선만 남긴다."
+                }
+              ],
+              "id": "inspect_archive_during_chore_result",
+              "kind": "result"
+            }
+          ]
+        },
         "id": "wuxia_cheongryu_apprentice_entry",
         "presentation": {
           "effect_cues": [
@@ -1055,6 +1307,108 @@
             "cheongryu_trial_started",
             "cheonggi_record_awakened",
             "first_fragment_seen"
+          ]
+        },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "장작을 옮기던 중 외문 제자가 장난처럼 어깨를 밀어 온다. 정식 대련도, 무공 수업도 아니다."
+                },
+                {
+                  "alt": "장작 마당 흙먼지 사이에서 어깨를 맞대고 겨루는 청류문 수습생들",
+                  "kind": "illustration",
+                  "placeholder": true,
+                  "visual_id": "wuxia_cheongryu_chore_sparring"
+                },
+                {
+                  "kind": "narration",
+                  "text": "그러나 장작 더미와 흙먼지 사이에서 몸이 밀리는 순간, 흑사방 난투와 물품창고에서 배운 거리와 균형이 같은 문법으로 겹친다."
+                }
+              ],
+              "id": "chore_sparring_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "step_back_with_firewood",
+                  "next_stage_id": "step_back_with_firewood_result"
+                },
+                {
+                  "id": "let_shoulder_turn_with_push",
+                  "next_stage_id": "let_shoulder_turn_with_push_result"
+                },
+                {
+                  "id": "plant_bare_foot_in_dust",
+                  "next_stage_id": "plant_bare_foot_in_dust_result"
+                },
+                {
+                  "id": "ask_harin_what_changed",
+                  "next_stage_id": "ask_harin_what_changed_result"
+                }
+              ],
+              "id": "chore_sparring_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "장작을 지킨 반걸음이 다음 호흡을 남긴다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "장작은 검이 아니지만 균형을 무너뜨리는 무게가 된다. 반걸음 물러나는 선택은 도망이 아니라 다음 호흡을 남기는 개입이었다."
+                }
+              ],
+              "id": "step_back_with_firewood_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "밀림을 돌림으로 바꾼 어깨가 첫 흐름을 읽는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "정면으로 버티지 않자 밀림이 회전으로 바뀌었다. 서하린은 그것을 초식이라 부르지 않고, 먼저 숨과 어깨의 방향이라고 설명했다."
+                }
+              ],
+              "id": "let_shoulder_turn_with_push_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "흙먼지에 박은 발이 미끄러짐을 멈춘다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "구두를 버렸던 첫 난투의 기억이 흙바닥에서 다시 쓰인다. 발이 멈추지 않되, 미끄러지지 않는 자리를 찾는 것이 첫 수련이 된다."
+                }
+              ],
+              "id": "plant_bare_foot_in_dust_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "서하린의 설명이 몸싸움의 축을 수련으로 바꾼다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "서하린은 내공보다 먼저 균형, 호흡, 시야를 짚는다. 천기록의 빈 장은 그것이 office 난투와 같은 몸싸움의 축이라는 듯 조용히 떨린다."
+                }
+              ],
+              "id": "ask_harin_what_changed_result",
+              "kind": "result"
+            }
           ]
         },
         "id": "wuxia_cheongryu_chore_sparring",
@@ -1203,6 +1557,108 @@
             "cheongryu_chore_sparring_resolved"
           ]
         },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "밤 종이 세 번 울리기 전에 혈월교의 불화살이 청류문 외곽 마당을 가른다. 백도맹의 깃발은 늦게 보이고, 흑천련 도월은 탈출로의 값을 묻고, 천기각 기록관은 천기록이 표적이 됐다고 낮게 말한다."
+                },
+                {
+                  "alt": "불화살과 깃발 사이에서 갈라지는 청류문 습격의 탈출로",
+                  "kind": "illustration",
+                  "placeholder": true,
+                  "visual_id": "wuxia_cheongryu_raid_route_split"
+                },
+                {
+                  "kind": "narration",
+                  "text": "서하린은 피 묻은 소매로 부상자를 막아 세운다. 어느 편도 완전히 선하거나 안전하지 않고, 선택하지 않는 것도 대가가 된다."
+                }
+              ],
+              "id": "raid_route_split_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "evacuate_the_wounded_first",
+                  "next_stage_id": "evacuate_the_wounded_first_result"
+                },
+                {
+                  "id": "defend_cheongryu_with_white_path",
+                  "next_stage_id": "defend_cheongryu_with_white_path_result"
+                },
+                {
+                  "id": "trade_with_black_heaven",
+                  "next_stage_id": "trade_with_black_heaven_result"
+                },
+                {
+                  "id": "follow_heavenly_archive",
+                  "next_stage_id": "follow_heavenly_archive_result"
+                }
+              ],
+              "id": "raid_route_split_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "부상자를 먼저 빼낸 선택이 route 결정을 늦춘다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "부상자를 업고 외곽 마당을 빠져나오자 route 선택은 늦춰졌다. 하지만 사람을 구한 선택도 하나의 선택이며, 천기록을 노린 칼끝은 사라지지 않았다."
+                }
+              ],
+              "id": "evacuate_the_wounded_first_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "백도맹의 도움으로 지킨 마당에 정치적 빚이 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "백도맹의 검진은 마당을 지켰지만, 깃발 아래의 도움은 정치적 빚이 된다. 청류문은 살아남고, 천기록은 정파의 명분 안에 묶이기 시작한다."
+                }
+              ],
+              "id": "defend_cheongryu_with_white_path_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "탈출로를 산 거래가 흑천련의 이름과 빚을 묶는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "도월의 거래는 빠르고 실용적이었다. 살아남을 길은 열렸지만, 그 길의 매듭마다 흑천련의 이름과 갚아야 할 빚이 묶였다."
+                }
+              ],
+              "id": "trade_with_black_heaven_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "기록관을 따른 선택이 이전 이방인과 표적의 흔적을 남긴다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "기록관은 정답을 말하지 않았다. 다만 이전에도 이곳에 떨어진 외지인이 있었다는 시선과, 천기록을 노리는 자들이 이제 너를 보았다는 사실만 남겼다."
+                }
+              ],
+              "id": "follow_heavenly_archive_result",
+              "kind": "result"
+            }
+          ]
+        },
         "id": "wuxia_cheongryu_raid_route_split",
         "presentation": {
           "effect_cues": [
@@ -1336,6 +1792,108 @@
             "route_commitment_deferred",
             "wounded_saved_flag",
             "cheongryu_raid_survived"
+          ]
+        },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "날이 밝기 전, 청류문 외곽 마당에는 임시 피난처가 꾸려지고 숨을 고르는 사람들의 이름이 하나씩 불린다."
+                },
+                {
+                  "alt": "청류문 외곽 임시 피난처에서 부상자를 돌보는 새벽의 장면",
+                  "kind": "illustration",
+                  "placeholder": true,
+                  "visual_id": "wuxia_cheongryu_raid_wounded_fallback"
+                },
+                {
+                  "kind": "narration",
+                  "text": "서하린은 피 묻은 소매를 감추지 못하고, 백도맹의 약상자는 문장 깃발 아래 놓여 있으며, 흑천련의 붕대는 값표가 붙은 듯하다. 천기록의 빈 장에는 부상자 동선이 지도처럼 번진다. 선택을 미뤘지만, 세계는 그 결정을 잊지 않았다."
+                }
+              ],
+              "id": "wounded_fallback_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "stabilize_wounded_until_dawn",
+                  "next_stage_id": "stabilize_wounded_until_dawn_result"
+                },
+                {
+                  "id": "ask_baekdo_for_medicine_not_command",
+                  "next_stage_id": "ask_baekdo_for_medicine_not_command_result"
+                },
+                {
+                  "id": "trade_black_heaven_bandages_for_exit",
+                  "next_stage_id": "trade_black_heaven_bandages_for_exit_result"
+                },
+                {
+                  "id": "follow_archive_triage_map",
+                  "next_stage_id": "follow_archive_triage_map_result"
+                }
+              ],
+              "id": "wounded_fallback_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "새벽까지 부상자를 안정시킨 선택이 신뢰와 다음 대가를 남긴다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "사람을 먼저 구한 선택은 신뢰를 만들었다. 그러나 route pressure는 사라지지 않고, 더 구체적인 대가와 다음 선택지로 돌아왔다."
+                }
+              ],
+              "id": "stabilize_wounded_until_dawn_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "약과 호위를 요청한 늦은 선택이 정파 route의 이름을 얻는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "백도맹의 약상자는 사람을 살리지만, 깃발 아래 놓인 도움은 정치적 빚을 남긴다. 늦은 선택도 정파 route의 이름을 갖기 시작했다."
+                }
+              ],
+              "id": "ask_baekdo_for_medicine_not_command_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "붕대와 탈출로를 바꾼 거래가 갚아야 할 이름을 묶는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "사파의 도움은 빠르고 실용적이다. 붕대 매듭마다 갚아야 할 이름이 묶이고, 미뤄 둔 route 선택은 거래의 형태로 다시 열린다."
+                }
+              ],
+              "id": "trade_black_heaven_bandages_for_exit_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "부상자 동선 지도가 균열로 돌아갈 길과 이어진다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "천기각의 지도는 산 사람의 동선을 세지만, 그 선은 주인공이 돌아갈 수 있는 균열과도 이어진다. 기록자는 정체를 드러내지 않고 시선만 남긴다."
+                }
+              ],
+              "id": "follow_archive_triage_map_result",
+              "kind": "result"
+            }
           ]
         },
         "id": "wuxia_cheongryu_raid_wounded_fallback",
@@ -1474,6 +2032,112 @@
             "cheongryu_rebuild_thread"
           ]
         },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "새벽빛이 청류문 외곽 마당에 내려앉을 때, 백도맹 깃발을 단 약상자가 산문 앞에 놓인다."
+                },
+                {
+                  "alt": "산문 앞에 놓인 백도맹 약상자와 채무 문서",
+                  "kind": "illustration",
+                  "placeholder": true,
+                  "visual_id": "wuxia_baekdo_medicine_debt"
+                },
+                {
+                  "kind": "narration",
+                  "text": "남궁서윤은 사람을 살릴 수 있는 약과 호위를 내밀지만, 그 뒤에는 지원 명부와 채무 문서가 함께 접혀 있다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "도움은 분명 사람을 살린다. 다만 그 도움은 누구의 이름으로 기록되는지 묻는다."
+                }
+              ],
+              "id": "baekdo_medicine_debt_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "accept_medicine_with_written_debt",
+                  "next_stage_id": "accept_medicine_with_written_debt_result"
+                },
+                {
+                  "id": "ask_terms_before_opening_gate",
+                  "next_stage_id": "ask_terms_before_opening_gate_result"
+                },
+                {
+                  "id": "send_supplies_to_wounded_first",
+                  "next_stage_id": "send_supplies_to_wounded_first_result"
+                },
+                {
+                  "id": "compare_banner_to_record_margin",
+                  "next_stage_id": "compare_banner_to_record_margin_result"
+                }
+              ],
+              "id": "baekdo_medicine_debt_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "약상자와 채무 문서를 함께 받은 결과가 청류문에 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "약상자는 사람을 살리고, 문서는 청류문의 이름 옆에 백도맹의 채무를 남긴다. 도움은 따뜻하지만 기록은 차갑다."
+                }
+              ],
+              "id": "accept_medicine_with_written_debt_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "조건을 묻고 도움의 값을 살펴본 결과가 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "조건을 묻자 남궁서윤의 눈빛이 잠깐 굳는다. 정의는 사람을 살릴 수 있지만, 질서는 누가 누구에게 빚졌는지도 함께 적는다."
+                }
+              ],
+              "id": "ask_terms_before_opening_gate_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "명부보다 부상자에게 약과 식량을 먼저 돌린 결과가 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "명부보다 먼저 부상자의 손에 약이 닿는다. 서하린은 아무 말 없이 고개를 끄덕이고, 백도맹 사자는 그 순서를 오래 바라본다."
+                }
+              ],
+              "id": "send_supplies_to_wounded_first_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "깃발과 천기록의 문장을 비교한 결과가 여백에 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "천기록의 여백은 답하지 않는다. 다만 깃발의 의와 문서의 채무가 같은 먹으로 기록될 수 있다는 사실만 남긴다."
+                }
+              ],
+              "id": "compare_banner_to_record_margin_result",
+              "kind": "result"
+            }
+          ]
+        },
         "id": "wuxia_baekdo_medicine_debt",
         "presentation": {
           "effect_cues": [
@@ -1604,6 +2268,113 @@
             "dowol_debt"
           ]
         },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "청류문 바깥 담장 너머 시장 골목에서 도월이 낡은 흑천련 표식을 굴린다."
+                },
+                {
+                  "alt": "어두운 시장 골목에서 흑천련 표식을 굴리는 도월",
+                  "kind": "illustration",
+                  "placeholder": true,
+                  "visual_id": "wuxia_black_heaven_escape_price"
+                },
+                {
+                  "kind": "dialogue",
+                  "speaker": "도월",
+                  "text": "“흑천련 길은 빠르다. 공짜가 아닐 뿐이지.”"
+                },
+                {
+                  "kind": "narration",
+                  "text": "붕대와 탈출로는 사람을 살릴 수 있지만, 누가 값을 받을지와 누구의 이름이 장부에 남을지는 아직 정해지지 않았다."
+                }
+              ],
+              "id": "black_heaven_escape_price_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "accept_dowol_marker_for_safehouse",
+                  "next_stage_id": "accept_dowol_marker_for_safehouse_result"
+                },
+                {
+                  "id": "ask_who_collects_the_price",
+                  "next_stage_id": "ask_who_collects_the_price_result"
+                },
+                {
+                  "id": "keep_cheongryu_names_off_ledger",
+                  "next_stage_id": "keep_cheongryu_names_off_ledger_result"
+                },
+                {
+                  "id": "map_exit_before_following_dowol",
+                  "next_stage_id": "map_exit_before_following_dowol_result"
+                }
+              ],
+              "id": "black_heaven_escape_price_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "도월의 표식으로 은신처와 탈출로를 얻은 결과가 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "흑천련의 길은 빠르고 실제적이다. 표식 하나가 임시 은신처를 열지만, 그 표식은 나중에 값을 받을 증거로도 남는다."
+                }
+              ],
+              "id": "accept_dowol_marker_for_safehouse_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "값을 받을 손을 먼저 물은 결과가 거래의 장부에 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "조건을 묻자 도월은 웃는다. 사파의 도움은 자비가 아니라 거래이고, 거래는 늘 받아 갈 손을 함께 데려온다."
+                }
+              ],
+              "id": "ask_who_collects_the_price_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "청류문 사람들의 이름을 장부에서 지킨 결과가 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "청류문의 이름을 지우는 대신, 당신의 이름이 더 굵은 획으로 남는다. 도월은 그 고집을 어리석음이 아니라 쓸 만한 값으로 본다."
+                }
+              ],
+              "id": "keep_cheongryu_names_off_ledger_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "따라가기 전 탈출로와 추적선을 기록한 결과가 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "흑천련의 길은 사람을 살릴 수 있다. 다만 살아남은 사람이 어디로 빚을 갚으러 갈지도 함께 보여준다."
+                }
+              ],
+              "id": "map_exit_before_following_dowol_result",
+              "kind": "result"
+            }
+          ]
+        },
         "id": "wuxia_black_heaven_escape_price",
         "presentation": {
           "effect_cues": [
@@ -1728,6 +2499,112 @@
           "required_flags": [
             "cheonggi_return_route_started",
             "cheonggi_record_targeted"
+          ]
+        },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "청류문 마당의 먼지가 가라앉자 연소하가 낡은 서책 한 권을 펼친다."
+                },
+                {
+                  "alt": "낡은 서책과 천기각 인장이 놓인 청류문 서고",
+                  "kind": "illustration",
+                  "placeholder": true,
+                  "visual_id": "wuxia_heavenly_archive_previous_outsiders"
+                },
+                {
+                  "kind": "narration",
+                  "text": "표지에는 천기각의 인장이 있고, 여백에는 낯선 옷차림과 끊긴 길을 묘사한 문장이 남아 있다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "답은 없지만, 당신만 처음 온 사람은 아니라는 사실은 분명하다."
+                }
+              ],
+              "id": "heavenly_archive_previous_outsiders_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "read_previous_outsider_margins",
+                  "next_stage_id": "read_previous_outsider_margins_result"
+                },
+                {
+                  "id": "ask_yeon_soha_what_not_to_read",
+                  "next_stage_id": "ask_yeon_soha_what_not_to_read_result"
+                },
+                {
+                  "id": "mark_current_worldline_without_answer",
+                  "next_stage_id": "mark_current_worldline_without_answer_result"
+                },
+                {
+                  "id": "compare_rift_terms_to_commute_memory",
+                  "next_stage_id": "compare_rift_terms_to_commute_memory_result"
+                }
+              ],
+              "id": "heavenly_archive_previous_outsiders_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "이전 이방인의 여백을 읽은 흔적이 서고에 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "서고의 여백에는 돌아간 사람보다 사라진 길을 붙잡은 사람의 흔적이 더 많다. 천기각은 방법이 아니라 흔적부터 보여준다."
+                }
+              ],
+              "id": "read_previous_outsider_margins_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "읽지 말아야 할 것을 먼저 물은 결과가 경고로 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "연소하는 답을 숨기지 않는다. 다만 답으로 변하는 질문을 먼저 막는다. 기록자는 이름 대신 시선만 남긴다."
+                }
+              ],
+              "id": "ask_yeon_soha_what_not_to_read_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "정답 대신 현재 세계선의 흔적만 표시한 결과가 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "천기록은 세계의 이름을 쓰지 않는다. 대신 이 세계선의 접힌 자국 하나를 여백에 남긴다."
+                }
+              ],
+              "id": "mark_current_worldline_without_answer_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "서고의 균열 용어를 출근길 기억과 비교한 결과가 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "출근길의 문틈과 서고의 균열이라는 말이 같은 모양으로 접힌다. 하지만 접힌 모양은 문이 아니다."
+                }
+              ],
+              "id": "compare_rift_terms_to_commute_memory_result",
+              "kind": "result"
+            }
           ]
         },
         "id": "wuxia_heavenly_archive_previous_outsiders",
@@ -1868,6 +2745,112 @@
             "wounded_shelter_stabilized"
           ]
         },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "새벽이 오자 임시 피난처의 숨소리가 하나씩 안정된다. 서하린은 젖은 천을 갈아 묶으며 부상자 명단을 접는다."
+                },
+                {
+                  "alt": "새벽 임시 피난처에서 부상자 명단을 접는 서하린",
+                  "kind": "illustration",
+                  "placeholder": true,
+                  "visual_id": "wuxia_wounded_shelter_dawn_offers"
+                },
+                {
+                  "kind": "narration",
+                  "text": "문밖에는 남궁서윤의 약상자, 도월이 남긴 짧은 전서, 연소하의 접힌 지도 조각이 서로 다른 그림자처럼 도착해 있다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "사람을 살리느라 선택을 미뤘지만, 그 덕분에 다시 물을 수 있는 이름들이 남았다."
+                }
+              ],
+              "id": "wounded_shelter_dawn_offers_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "keep_wounded_shelter_until_noon",
+                  "next_stage_id": "keep_wounded_shelter_until_noon_result"
+                },
+                {
+                  "id": "accept_baekdo_medicine_after_roll_call",
+                  "next_stage_id": "accept_baekdo_medicine_after_roll_call_result"
+                },
+                {
+                  "id": "send_word_to_dowol_for_quiet_exit",
+                  "next_stage_id": "send_word_to_dowol_for_quiet_exit_result"
+                },
+                {
+                  "id": "show_archive_map_to_yeon_soha",
+                  "next_stage_id": "show_archive_map_to_yeon_soha_result"
+                }
+              ],
+              "id": "wounded_shelter_dawn_offers_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "정오까지 피난처를 지킨 결과가 살아남은 이름에 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "route를 고르지 않는 대신 살아남은 이름들이 더 또렷해진다. 피난처는 도망이 아니지만, 사람을 살린 증거는 다음 선택의 무게가 된다."
+                }
+              ],
+              "id": "keep_wounded_shelter_until_noon_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "생존자 점호 뒤 백도맹 약상자를 받은 결과가 문을 다시 연다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "약상자는 명령서가 아니라 명단 위에 놓인다. 빚은 생겼지만 문은 다시 열리고, 정파의 제안은 살아남은 사람들의 숨 위에 놓인다."
+                }
+              ],
+              "id": "accept_baekdo_medicine_after_roll_call_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "도월에게 조용한 퇴로를 부탁한 결과가 짧은 답장으로 돌아온다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "도월의 답장은 짧다. 사람을 살린 일에도 값은 붙지만, 값이 붙는다고 모두 거래가 되는 것은 아니다."
+                }
+              ],
+              "id": "send_word_to_dowol_for_quiet_exit_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "피난처 지도의 접힌 부분을 보인 결과가 이름의 순서를 남긴다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "지도는 길보다 먼저 이름을 기억한다. 연소하는 그 순서가 중요하다고 말하고, 천기록은 여전히 정답 대신 접힌 선만 남긴다."
+                }
+              ],
+              "id": "show_archive_map_to_yeon_soha_result",
+              "kind": "result"
+            }
+          ]
+        },
         "id": "wuxia_wounded_shelter_dawn_offers",
         "presentation": {
           "effect_cues": [
@@ -1994,6 +2977,112 @@
             "cheongryu_raid_survived",
             "cheongryu_trial_started",
             "first_fragment_seen"
+          ]
+        },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "청류문 외원 담장 너머로 흑사방 심부름꾼 하나가 지나간다. 걸음은 거칠지만 팔꿈치가 꺾이는 순간, 장작 마당에서 배운 청류문식 흐름과 너무 닮은 선이 스친다."
+                },
+                {
+                  "alt": "청류문 담장 너머에서 낯익은 흐름을 보이는 흑사방 심부름꾼",
+                  "kind": "illustration",
+                  "placeholder": true,
+                  "visual_id": "wuxia_mumyeong_first_sighting"
+                },
+                {
+                  "kind": "narration",
+                  "text": "그러나 그 흐름은 맑지 않고, 다른 문파의 초식이 덧씌워진 듯 비어 있다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "서하린은 이름을 부르려다 멈추고, 그자는 뒤돌아보지 않은 채 어둠 속으로 사라진다."
+                }
+              ],
+              "id": "mumyeong_first_sighting_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "watch_the_stolen_qingliu_flow",
+                  "next_stage_id": "watch_the_stolen_qingliu_flow_result"
+                },
+                {
+                  "id": "check_seo_harin_silence",
+                  "next_stage_id": "check_seo_harin_silence_result"
+                },
+                {
+                  "id": "follow_black_serpent_runner",
+                  "next_stage_id": "follow_black_serpent_runner_result"
+                },
+                {
+                  "id": "pretend_not_to_see_the_form",
+                  "next_stage_id": "pretend_not_to_see_the_form_result"
+                }
+              ],
+              "id": "mumyeong_first_sighting_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "훔쳐 쓴 청류문식 흐름을 관찰한 결과가 첫 목격으로 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "닮았지만 중심이 다르다. 청류문식의 모양은 있으나 흐름을 이해한 흔적은 없고, 훔친 초식이 몸 위에 덧칠처럼 남아 있다."
+                }
+              ],
+              "id": "watch_the_stolen_qingliu_flow_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "서하린이 이름을 삼킨 순간을 본 결과가 상처의 흔적으로 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "서하린은 배신자라는 말을 쓰지 않는다. 그 침묵이 이름보다 먼저 상처를 드러내고, 아직 묻지 못한 과거를 남긴다."
+                }
+              ],
+              "id": "check_seo_harin_silence_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "흑사방 심부름꾼을 뒤쫓은 결과가 추적선으로 돌아온다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "뒤를 밟는 데는 성공하지만, 흑사방은 일부러 발자국을 남기는 법도 안다. 쫓는 순간부터 이쪽도 관찰당한다."
+                }
+              ],
+              "id": "follow_black_serpent_runner_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "못 본 척한 결과가 늦게 알아볼 대가로 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "모른 척한 일도 사라지지 않는다. 다음에 같은 흐름을 보면 더 늦게 알아볼 뿐이고, 늦게 알아본 대가는 언젠가 돌아온다."
+                }
+              ],
+              "id": "pretend_not_to_see_the_form_result",
+              "kind": "result"
+            }
           ]
         },
         "id": "wuxia_mumyeong_first_sighting",

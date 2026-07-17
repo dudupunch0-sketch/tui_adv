@@ -44,6 +44,24 @@ Event
 - 한 Event 안에서 이야기와 선택은 여러 번 교차할 수 있다. ChoiceStage에서만 입력을 기다리고, 그 전후의 ordered content는 연속해서 읽힌다.
 - 기존 단일 본문/선택지 encounter는 migration 기간에 adapter로 `StoryStage → ChoiceStage → ResultStage` Event로 해석할 수 있다. Encounter selection 의미는 유지한다.
 
+## ResultStage branch blocks
+
+checked choice의 성공·실패에 따라 결과 서술이 달라질 때는 ResultStage의 ordered
+ContentBlock에 optional `branch`를 붙인다.
+
+```text
+ResultStage
+├─ ResultSummaryBlock          (branch 없음: 항상 표시)
+├─ NarrationBlock              (branch: success)
+└─ NarrationBlock              (branch: failure)
+```
+
+- `branch: success`와 `branch: failure`는 바로 앞 ChoiceStage의 check resolution을 뜻한다.
+- `branch`가 없는 block은 항상 표시하고, 분기 block은 일치하는 resolution일 때만 표시한다.
+- check가 없는 선택이거나 resolution을 확인할 수 없으면 공통 block만 표시한다.
+- 필터링 뒤에도 남은 block의 원래 순서를 유지한다. renderer는 `content_stream`을 받은 뒤 branch를 다시 판정하지 않는다.
+- ResultStage 안에서 branch block을 사용하더라도 작은 StoryStage를 중첩하지 않는다. 결과의 공통 요약과 성공·실패별 narration/dialogue를 같은 ResultStage의 block 배열에 직접 둔다.
+
 ## 일러스트 계약
 
 - Event는 하나 이상의 illustration slot을 갖는 것을 기본 콘텐츠 계약으로 한다. 일반 Event는 대부분 1개, 보스전·특별 Event는 최대 3개를 권장한다.

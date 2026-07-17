@@ -273,6 +273,8 @@ pub struct ContentBlockDef {
     pub alt: Option<String>,
     #[serde(default)]
     pub placeholder: bool,
+    #[serde(default)]
+    pub branch: Option<String>,
 }
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
@@ -928,6 +930,14 @@ fn validate_event(encounter: &EncounterDef) -> Result<(), ContentIndexError> {
                     "stage {} has unknown block kind '{}'",
                     stage.id, block.kind
                 )));
+            }
+            if let Some(branch) = &block.branch {
+                if !matches!(branch.as_str(), "success" | "failure") {
+                    return Err(fail(format!(
+                        "block in stage {} has unknown branch '{}'; expected success or failure",
+                        stage.id, branch
+                    )));
+                }
             }
             if block.kind == "illustration"
                 && (block.visual_id.as_deref().is_none_or(str::is_empty)

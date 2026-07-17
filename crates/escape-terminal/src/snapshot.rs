@@ -91,7 +91,21 @@ fn render_snapshot_logs(lines: &mut Vec<String>, logs: &[String]) {
 }
 
 fn render_ordered_content_stream(lines: &mut Vec<String>, page: &ScenePage) {
+    if matches!(page.mode, SceneMode::Encounter) {
+        lines.push("[현재 인카운터]".to_string());
+    }
     lines.push(page.title.clone());
+    if !page
+        .content_stream
+        .iter()
+        .any(|item| item.kind == "illustration")
+    {
+        // Terminal snapshots retain the legacy encounter visual anchor while a
+        // staged cursor is waiting for input; Web still renders content_stream
+        // strictly in authored order.
+        lines.push("[일러스트]".to_string());
+        lines.extend(scene_visual_card_lines(page));
+    }
     for item in &page.content_stream {
         render_content_item(lines, item, page);
     }

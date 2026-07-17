@@ -170,6 +170,7 @@ export interface SceneContentItem {
   speaker?: string | null;
   visual_id?: string | null;
   alt?: string | null;
+  branch?: 'success' | 'failure' | null;
   placeholder: boolean;
   actions?: SceneAction[];
 }

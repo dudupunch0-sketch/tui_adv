@@ -1,3 +1,9 @@
+mod combat_contract;
+mod combat_execution;
+mod combat_opportunity;
+mod combat_resolution;
+mod combat_simulation;
+mod combat_state;
 mod content;
 mod effects;
 mod final_epilogue;
@@ -7,6 +13,39 @@ mod scene_page;
 mod state;
 mod turn;
 
+pub use combat_contract::{
+    CombatContractError, CombatEffectRef, CombatManifest, CombatRngNamespace,
+    CombatSimulationVersion, SuppressedCombatEffect,
+};
+pub use combat_execution::{
+    execute as execute_combat, CombatExecutionError, CombatExecutionRequest, CombatExecutionResult,
+    CombatLogEvent, CombatLogImportance, CombatLogTag, CombatPresentationSpeed, CombatRunMode,
+};
+pub use combat_opportunity::{
+    CombatDetectionLevel, CombatDetectionThresholds, CombatInterventionBudget, CombatObserver,
+    CombatOpportunityCandidate, CombatOpportunityCatalog, CombatOpportunityContext,
+    CombatOpportunityDefinition, CombatOpportunityError, CombatOpportunityEvaluation,
+    CombatOpportunityInstance, CombatResponseDefinition, CombatResponseOption,
+};
+pub use combat_resolution::{
+    resolve as resolve_combat, CombatAttackDefinition, CombatAttackEffect, CombatAttackOutcome,
+    CombatDefenseProfile, CombatResolutionCombatant, CombatResolutionError, CombatResolutionFrame,
+    CombatResolutionLogEvent, CombatResolutionLogTag, CombatResolutionRequest,
+    CombatResolutionResult, CombatResolutionState,
+};
+pub use combat_simulation::{
+    CombatFacing, CombatMoveIntent, CombatMoveMode, CombatPosition, CombatRolePreset,
+    CombatRoleWeights, CombatSide, CombatSimulation, CombatSimulationConfig, CombatSimulationError,
+    CombatSimulationInput, CombatSimulationParticipant, CombatTargetFallback, CombatTargetPolicy,
+    CombatTargetPreference, CombatTickFrame,
+};
+pub use combat_state::{
+    CombatConclusion, CombatEffectCatalog, CombatEffectCategory, CombatEffectDecision,
+    CombatEffectDefinition, CombatEffectInstance, CombatInitialStateProjection,
+    CombatPreCombatInput, CombatState, CombatStateError, CombatantState, EffectLifetime,
+    EffectPhase, EffectStacking, EffectVisibility, EnvironmentState, PersistentCombatStatus,
+    Posture, RelationshipState, TeamFormationState, WeaponControl,
+};
 pub use content::{
     index_content_bundle, load_content_bundle, validate_content_bundle, AbilityCheckDef,
     AchievementDef, CheckBonusDef, ChoiceDef, ContentBlockDef, ContentBundle, ContentBundleError,

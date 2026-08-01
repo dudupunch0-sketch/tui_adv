@@ -47,7 +47,7 @@ Wave 3 Step 1b는 정본 13이 금지하는 전략 수행 평가·핵심 전환�
 | (플랜 미작성) — Wave 3 Step 2 | 시스템형 1개 + 혼합형 1개 + 각본형 1개 authoring slice | 대규모 콘텐츠·보스 밸런스 |
 
 Wave 2 Step 4 구현 위치: `crates/escape-core/src/combat_conclusion.rs`, `crates/escape-core/tests/combat_conclusion_wave2.rs`.
-Wave 3 Step 1a 구현 위치: `crates/escape-core/src/combat_spectator.rs`, `crates/escape-core/tests/combat_spectator_wave3.rs` (12 테스트).
+Wave 3 Step 1a 구현 위치: `crates/escape-core/src/combat_spectator.rs`, `crates/escape-core/tests/combat_spectator_wave3.rs` (Step 1a 완료 당시 12 테스트, Wave 2 Step 5에서 19로 늘었다 — 현재 수치는 아래 Step 5 줄을 본다).
 Wave 2 Step 5 구현 위치: `crates/escape-core/src/combat_resolution.rs`, `crates/escape-core/src/combat_spectator.rs`, `crates/escape-core/tests/combat_resolution_wave2.rs` (16 테스트), `crates/escape-core/tests/combat_spectator_wave3.rs` (19 테스트).
 Wave 3 Step 1b 구현 위치: `crates/escape-core/src/combat_conclusion.rs`, `crates/escape-core/tests/combat_conclusion_wave2.rs` (14 테스트).
 

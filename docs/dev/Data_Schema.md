@@ -84,8 +84,10 @@ renderer-neutral하게 표현한다.
 version을 올리지 않는다. Bundle index 단계에서 `success`·`failure` 이외의 값은
 validation error로 거부한다.
 
-ResultStage의 branch block은 core가 `content_stream`을 만들 때만 해석한다. 직전
-check resolution이 `Some(success)` 또는 `Some(failure)`이면 `branch`가 없는 block과
+ResultStage의 branch block은 core가 해당 stage의 텍스트 표면(`content_stream`,
+`TurnView.body`, 그리고 그로부터 파생되는 `ScenePage.body_blocks`·`dialogue_entries`)을
+만들 때 **동일하게** 해석한다. 해석 지점은 `EventStageDef::visible_blocks` 한 곳뿐이다.
+직전 check resolution이 `Some(success)` 또는 `Some(failure)`이면 `branch`가 없는 block과
 일치하는 branch만 원래 순서대로 남긴다. 직전 check가 없거나 resolution이 `None`이면
 `branch`가 없는 block만 남긴다. 이 필터링 이후 renderer에는 하나의 ordered stream만
 전달하며 Web/terminal renderer는 판정이나 branch 선택을 재계산하지 않는다.

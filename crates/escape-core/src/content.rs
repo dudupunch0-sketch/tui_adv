@@ -304,6 +304,31 @@ pub struct ContentBlockDef {
     pub branch: Option<String>,
 }
 
+impl EventStageDef {
+    /// ResultStage branch 해석 후 이 stage에서 보여줄 block만 원래 순서대로 돌려준다.
+    ///
+    /// `check_success`는 직전 ChoiceStage의 ability check resolution이다.
+    /// `Some(true)`/`Some(false)`면 branch 없는 block과 일치하는 branch block을,
+    /// `None`이면 branch 없는 block만 남긴다. result stage가 아니면 전부 통과한다.
+    pub fn visible_blocks(
+        &self,
+        check_success: Option<bool>,
+    ) -> impl Iterator<Item = &ContentBlockDef> {
+        let is_result = self.kind == "result";
+        self.blocks.iter().filter(move |block| {
+            if !is_result {
+                return true;
+            }
+            match block.branch.as_deref() {
+                None => true,
+                Some(branch) => check_success
+                    .map(|success| branch == if success { "success" } else { "failure" })
+                    .unwrap_or(false),
+            }
+        })
+    }
+}
+
 #[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
 pub struct EventChoiceRef {
     pub id: String,

@@ -479,21 +479,7 @@ fn scene_content_stream(
         })
     {
         let mut stream: Vec<_> = stage
-            .blocks
-            .iter()
-            .filter(|block| {
-                if stage.kind != "result" {
-                    return true;
-                }
-                let Some(branch) = block.branch.as_deref() else {
-                    return true;
-                };
-                state
-                    .last_check
-                    .as_ref()
-                    .map(|check| branch == if check.success { "success" } else { "failure" })
-                    .unwrap_or(false)
-            })
+            .visible_blocks(state.last_check.as_ref().map(|check| check.success))
             .map(|block| SceneContentItem {
                 kind: block.kind.clone(),
                 stage_id: Some(stage.id.clone()),

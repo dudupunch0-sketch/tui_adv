@@ -485,3 +485,127 @@ fn zero_tick_millis_is_rejected() {
         Err(CombatSpectatorError::InvalidTickMillis(0))
     );
 }
+
+/// "a" one-shots "e" for lethal damage but with zero balance impact, so only the
+/// health snapshot reaches 0 and `Incapacitated` (not `BalanceBroken`) applies.
+fn incapacitated_only_request() -> CombatResolutionRequest {
+    let mut request = resolution_request();
+    request.attacks[0].power_hundredths = 48_000;
+    request.attacks[0].accuracy_percent = 100;
+    request.attacks[0].balance_power_hundredths = 0;
+    request.attacks[0].collision_balance_hundredths = 0;
+    request
+}
+
+/// "a" guarantees a miss against "e" (accuracy 0) but still collides, and the
+/// collision-balance penalty alone is large enough to zero "e"'s balance snapshot,
+/// so only `BalanceBroken` (not `Incapacitated`, since a miss deals no damage) applies.
+fn balance_broken_only_request() -> CombatResolutionRequest {
+    let mut request = resolution_request();
+    request.attacks[0].accuracy_percent = 0;
+    request.attacks[0].collision_balance_hundredths = 20_000;
+    request.attacks[0].balance_power_hundredths = 0;
+    request
+}
+
+/// Stacks all five cue rules onto "e" in a single tick:
+/// - `counter` (actor_id "e") gives "e" the `Attack` cue.
+/// - `lethal` (actor_id "a", guaranteed hit, lethal damage, huge collision-balance)
+///   gives "e" `Hit`, `Incapacitated`, and `BalanceBroken` all at once.
+/// - `miss` (actor_id "a", guaranteed miss, still in range) gives "e" `Evade`.
+fn all_cues_request() -> CombatResolutionRequest {
+    let mut request = resolution_request();
+    request.attacks[0].id = "lethal".into();
+    request.attacks[0].power_hundredths = 48_000;
+    request.attacks[0].accuracy_percent = 100;
+    request.attacks[0].balance_power_hundredths = 0;
+    request.attacks[0].collision_balance_hundredths = 20_000;
+
+    let mut miss = request.attacks[0].clone();
+    miss.id = "miss".into();
+    miss.accuracy_percent = 0;
+    miss.power_hundredths = 0;
+    miss.collision_balance_hundredths = 0;
+    miss.balance_power_hundredths = 0;
+    request.attacks.push(miss);
+
+    request.attacks.push(CombatAttackDefinition {
+        id: "counter".into(),
+        actor_id: "e".into(),
+        power_hundredths: 100,
+        ability_multiplier_hundredths: 100,
+        accuracy_percent: 100,
+        attack_range: 2,
+        penetration_hundredths: 0,
+        collision_balance_hundredths: 0,
+        balance_power_hundredths: 0,
+        effects: vec![],
+    });
+    request
+}
+
+fn spectator_request_for(resolution: CombatResolutionResult) -> CombatSpectatorRequest {
+    CombatSpectatorRequest {
+        resolution,
+        participants: participants(),
+        catalog: CombatEffectCatalog { effects: vec![] },
+        tick_millis: SIM_TICK_MILLIS,
+    }
+}
+
+#[test]
+fn incapacitated_cue_marks_a_combatant_whose_health_snapshot_hit_zero() {
+    let resolution = resolve_combat(incapacitated_only_request()).unwrap();
+    let view = spectate_combat(&spectator_request_for(resolution)).unwrap();
+    let piece = view.frames[0].pieces.iter().find(|p| p.id == "e").unwrap();
+    assert!(piece.cues.contains(&CombatSpectatorCue::Incapacitated));
+    assert!(!piece.cues.contains(&CombatSpectatorCue::BalanceBroken));
+}
+
+#[test]
+fn balance_broken_cue_marks_a_combatant_whose_balance_snapshot_hit_zero() {
+    let resolution = resolve_combat(balance_broken_only_request()).unwrap();
+    let view = spectate_combat(&spectator_request_for(resolution)).unwrap();
+    let piece = view.frames[0].pieces.iter().find(|p| p.id == "e").unwrap();
+    assert!(piece.cues.contains(&CombatSpectatorCue::BalanceBroken));
+    assert!(!piece.cues.contains(&CombatSpectatorCue::Incapacitated));
+}
+
+#[test]
+fn neither_state_cue_applies_when_health_and_balance_stay_above_zero() {
+    let view = spectate_combat(&spectator_request()).unwrap();
+    for piece in &view.frames[0].pieces {
+        assert!(!piece.cues.contains(&CombatSpectatorCue::Incapacitated));
+        assert!(!piece.cues.contains(&CombatSpectatorCue::BalanceBroken));
+    }
+}
+
+#[test]
+fn cue_ordering_is_fixed_attack_hit_evade_balance_broken_incapacitated() {
+    let resolution = resolve_combat(all_cues_request()).unwrap();
+    let view = spectate_combat(&spectator_request_for(resolution)).unwrap();
+    let piece = view.frames[0].pieces.iter().find(|p| p.id == "e").unwrap();
+    assert_eq!(
+        piece.cues,
+        vec![
+            CombatSpectatorCue::Attack,
+            CombatSpectatorCue::Hit,
+            CombatSpectatorCue::Evade,
+            CombatSpectatorCue::BalanceBroken,
+            CombatSpectatorCue::Incapacitated,
+        ]
+    );
+}
+
+#[test]
+fn empty_combatant_snapshot_yields_no_state_cues_and_no_error() {
+    let mut resolution = resolve_combat(all_cues_request()).unwrap();
+    for frame in &mut resolution.frames {
+        frame.combatants = Vec::new();
+    }
+    let view = spectate_combat(&spectator_request_for(resolution)).unwrap();
+    for piece in &view.frames[0].pieces {
+        assert!(!piece.cues.contains(&CombatSpectatorCue::Incapacitated));
+        assert!(!piece.cues.contains(&CombatSpectatorCue::BalanceBroken));
+    }
+}

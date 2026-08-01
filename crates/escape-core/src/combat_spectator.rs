@@ -1,8 +1,8 @@
 use crate::{
     CombatAttackOutcome, CombatEffectCatalog, CombatEffectDefinition, CombatFacing, CombatLogEvent,
-    CombatLogImportance, CombatLogTag, CombatPosition, CombatResolutionLogEvent,
-    CombatResolutionLogTag, CombatResolutionResult, CombatSide, CombatSimulationParticipant,
-    EffectVisibility,
+    CombatLogImportance, CombatLogTag, CombatPosition, CombatResolutionCombatant,
+    CombatResolutionLogEvent, CombatResolutionLogTag, CombatResolutionResult, CombatSide,
+    CombatSimulationParticipant, EffectVisibility,
 };
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
@@ -22,6 +22,8 @@ pub enum CombatSpectatorCue {
     Attack,
     Hit,
     Evade,
+    BalanceBroken,
+    Incapacitated,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -114,10 +116,17 @@ pub fn spectate(
         .iter()
         .map(|frame| (frame.tick, &frame.outcomes))
         .collect();
+    let combatants_by_tick: BTreeMap<u32, &Vec<CombatResolutionCombatant>> = request
+        .resolution
+        .frames
+        .iter()
+        .map(|frame| (frame.tick, &frame.combatants))
+        .collect();
 
     let mut frames = Vec::with_capacity(request.resolution.execution.frames.len());
     for tick_frame in &request.resolution.execution.frames {
         let outcomes = outcomes_by_tick.get(&tick_frame.tick).copied();
+        let combatants_snapshot = combatants_by_tick.get(&tick_frame.tick).copied();
         let mut pieces = Vec::with_capacity(tick_frame.positions.len());
         for (id, position) in &tick_frame.positions {
             let participant = participants
@@ -129,7 +138,7 @@ pub fn spectate(
                 position: *position,
                 facing: participant.facing,
                 active: participant.active,
-                cues: cues_for(id, outcomes),
+                cues: cues_for(id, outcomes, combatants_snapshot),
             });
         }
         frames.push(CombatSpectatorFrame {
@@ -247,23 +256,41 @@ fn build_log(request: &CombatSpectatorRequest) -> Vec<CombatSpectatorLogEntry> {
         .collect()
 }
 
-/// 정본 13의 공용 연출 문법 3규칙만 적용한다: Attack/Hit/Evade 외 cue는 만들지 않는다.
+/// 정본 13의 공용 연출 문법 5규칙을 적용한다: Attack/Hit/Evade(outcome 기반) +
+/// BalanceBroken/Incapacitated(같은 tick의 전투원 스냅샷 기반) 외 cue는 만들지 않는다.
 /// 규칙 밖 조합(예: hit && damage == 0)은 어떤 cue도 만들지 않는다.
-fn cues_for(id: &str, outcomes: Option<&Vec<CombatAttackOutcome>>) -> Vec<CombatSpectatorCue> {
+///
+/// BalanceBroken/Incapacitated는 이전 tick과 비교하지 않는다 — "지금 그 상태인가"만
+/// 본다. 스냅샷이 없거나(구 JSON의 additive-optional 빈 Vec 포함) 그 tick에 해당 id가
+/// 없으면 두 cue를 붙이지 않는다. 에러가 아니다.
+fn cues_for(
+    id: &str,
+    outcomes: Option<&Vec<CombatAttackOutcome>>,
+    combatants_snapshot: Option<&Vec<CombatResolutionCombatant>>,
+) -> Vec<CombatSpectatorCue> {
     let mut cues: BTreeSet<CombatSpectatorCue> = BTreeSet::new();
-    let Some(outcomes) = outcomes else {
-        return Vec::new();
-    };
-    for outcome in outcomes {
-        if outcome.actor_id == id {
-            cues.insert(CombatSpectatorCue::Attack);
-        }
-        if outcome.target_id == id {
-            if outcome.hit && outcome.damage_hundredths > 0 {
-                cues.insert(CombatSpectatorCue::Hit);
+    if let Some(outcomes) = outcomes {
+        for outcome in outcomes {
+            if outcome.actor_id == id {
+                cues.insert(CombatSpectatorCue::Attack);
             }
-            if outcome.in_range && !outcome.hit {
-                cues.insert(CombatSpectatorCue::Evade);
+            if outcome.target_id == id {
+                if outcome.hit && outcome.damage_hundredths > 0 {
+                    cues.insert(CombatSpectatorCue::Hit);
+                }
+                if outcome.in_range && !outcome.hit {
+                    cues.insert(CombatSpectatorCue::Evade);
+                }
+            }
+        }
+    }
+    if let Some(snapshot) = combatants_snapshot {
+        if let Some(combatant) = snapshot.iter().find(|c| c.id == id) {
+            if combatant.balance_hundredths <= 0 {
+                cues.insert(CombatSpectatorCue::BalanceBroken);
+            }
+            if combatant.current_health_hundredths <= 0 {
+                cues.insert(CombatSpectatorCue::Incapacitated);
             }
         }
     }

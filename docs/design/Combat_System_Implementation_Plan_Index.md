@@ -34,6 +34,8 @@ Wave 1 Step 1~3과 Wave 2 Step 1~4가 `escape-core`에 구현·검증되어 init
 | `fable_combat_wave3_step1_2607261845.md` | ScenePage/WASM/terminal/Web 관전 어댑터 | renderer가 판정 재계산하는 구조 |
 | `fable_combat_wave3_step2_2607261845.md` | 시스템형 1개 + 혼합형 1개 + 각본형 1개 authoring slice | 대규모 콘텐츠·보스 밸런스 |
 
+Wave 2 Step 4 구현 위치: `crates/escape-core/src/combat_conclusion.rs`, `crates/escape-core/tests/combat_conclusion_wave2.rs`.
+
 각 단계는 선행 단계의 public contract와 테스트만 사용한다. 단계 사이에 새 필드가 필요하면 먼저 해당 단계 plan을 갱신하고, 기존 저장/JSON backward compatibility를 검토한다.
 
 ## 구현 운영 규칙

@@ -42,7 +42,7 @@ Event
 - StoryStage 수가 ChoiceStage 수보다 많거나 같은 구성을 기본 authoring pattern으로 권장하지만 validation 오류로 강제하지 않는다.
 - Stage와 ContentBlock 배열 순서가 곧 표현 순서다. renderer가 종류별 고정 영역으로 재정렬해서는 안 된다.
 - 한 Event 안에서 이야기와 선택은 여러 번 교차할 수 있다. ChoiceStage에서만 입력을 기다리고, 그 전후의 ordered content는 연속해서 읽힌다.
-- 기존 단일 본문/선택지 encounter는 migration 기간에 adapter로 `StoryStage → ChoiceStage → ResultStage` Event로 해석할 수 있다. Encounter selection 의미는 유지한다.
+- 기존 단일 본문/선택지 encounter는 migration 기간에 adapter로 `StoryStage → ChoiceStage → ResultStage` Event로 해석할 수 있다. Encounter selection 의미는 유지한다. 현재 구현은 별도 adapter 모듈이 아니라 core의 ordered stream fallback(`scene_page.rs`의 flat encounter 경로)이며, 이 fallback으로도 Encounter selection 의미는 그대로 유지된다.
 
 ## ResultStage branch blocks
 
@@ -59,7 +59,7 @@ ResultStage
 - `branch: success`와 `branch: failure`는 바로 앞 ChoiceStage의 check resolution을 뜻한다.
 - `branch`가 없는 block은 항상 표시하고, 분기 block은 일치하는 resolution일 때만 표시한다.
 - check가 없는 선택이거나 resolution을 확인할 수 없으면 공통 block만 표시한다.
-- 필터링 뒤에도 남은 block의 원래 순서를 유지한다. renderer는 `content_stream`을 받은 뒤 branch를 다시 판정하지 않는다.
+- 필터링 뒤에도 남은 block의 원래 순서를 유지한다. renderer는 `content_stream`을 받은 뒤 branch를 다시 판정하지 않는다. core의 모든 텍스트 표면(`content_stream`, `TurnView.body`, `ScenePage.body_blocks`/`dialogue_entries`)이 같은 필터를 쓴다.
 - ResultStage 안에서 branch block을 사용하더라도 작은 StoryStage를 중첩하지 않는다. 결과의 공통 요약과 성공·실패별 narration/dialogue를 같은 ResultStage의 block 배열에 직접 둔다.
 
 ## 일러스트 계약

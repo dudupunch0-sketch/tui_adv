@@ -392,3 +392,69 @@ fn combatants_report_sums_damage_and_marks_incapacitated() {
     assert_eq!(by_id["e"].kills, 0);
     assert!(!by_id["e"].incapacitated);
 }
+
+#[test]
+fn kills_are_attributed_to_last_valid_lethal_outcome_in_the_ko_tick() {
+    // "d" starts already at 0 with no lethal outcome in that tick: nobody is credited.
+    // "e" first reaches <= 0 at tick 1, where two hits land; the LAST one ("a") gets the kill,
+    // not "c" even though c also damaged e in the same tick.
+    let frames = vec![
+        frame(
+            0,
+            vec![attack_outcome("a", "e", true, 30)],
+            vec![
+                health_snapshot("a", 100),
+                health_snapshot("c", 100),
+                health_snapshot("d", 0),
+                health_snapshot("e", 70),
+            ],
+        ),
+        frame(
+            1,
+            vec![
+                attack_outcome("c", "e", true, 40),
+                attack_outcome("a", "e", true, 35),
+            ],
+            vec![
+                health_snapshot("a", 100),
+                health_snapshot("c", 100),
+                health_snapshot("d", 0),
+                health_snapshot("e", -5),
+            ],
+        ),
+    ];
+    let final_state = vec![
+        health_snapshot("a", 100),
+        health_snapshot("c", 100),
+        health_snapshot("d", 0),
+        health_snapshot("e", -5),
+    ];
+    let request = CombatConclusionRequest {
+        resolution: multi_resolution(frames, final_state),
+        participants: vec![
+            participant("a", CombatSide::Ally, true),
+            participant("c", CombatSide::Ally, true),
+            participant("d", CombatSide::Ally, true),
+            participant("e", CombatSide::Enemy, true),
+        ],
+        policy: CombatTerminationPolicy {
+            max_ticks: 5,
+            conclude_on_max_ticks: false,
+        },
+        tick_millis: 50,
+    };
+    let report = conclude_combat(request).unwrap();
+    let by_id: BTreeMap<_, _> = report
+        .combatants
+        .iter()
+        .map(|c| (c.id.clone(), c))
+        .collect();
+    assert_eq!(by_id["a"].kills, 1);
+    assert_eq!(by_id["c"].kills, 0);
+    assert_eq!(by_id["d"].kills, 0);
+    assert_eq!(by_id["e"].kills, 0);
+    assert!(by_id["d"].incapacitated);
+    assert!(by_id["e"].incapacitated);
+    assert!(!by_id["a"].incapacitated);
+    assert!(!by_id["c"].incapacitated);
+}

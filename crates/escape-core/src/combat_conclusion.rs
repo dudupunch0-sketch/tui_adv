@@ -195,6 +195,27 @@ pub fn conclude(
             }
         }
     }
+    let mut first_defeated_at: BTreeMap<String, usize> = BTreeMap::new();
+    for (idx, f) in request.resolution.frames.iter().enumerate() {
+        for c in &f.combatants {
+            if c.current_health_hundredths <= 0 && !first_defeated_at.contains_key(&c.id) {
+                first_defeated_at.insert(c.id.clone(), idx);
+            }
+        }
+    }
+    let mut kills: BTreeMap<String, u32> = BTreeMap::new();
+    for (target_id, idx) in &first_defeated_at {
+        if let Some(f) = request.resolution.frames.get(*idx) {
+            if let Some(o) = f
+                .outcomes
+                .iter()
+                .rev()
+                .find(|o| o.target_id == *target_id && o.hit && o.damage_hundredths > 0)
+            {
+                *kills.entry(o.actor_id.clone()).or_insert(0) += 1;
+            }
+        }
+    }
     let last_frame_snapshot = request
         .resolution
         .frames
@@ -218,7 +239,7 @@ pub fn conclude(
             id: id.clone(),
             damage_dealt_hundredths: damage_dealt.get(id).copied().unwrap_or(0),
             damage_taken_hundredths: damage_taken.get(id).copied().unwrap_or(0),
-            kills: 0,
+            kills: kills.get(id).copied().unwrap_or(0),
             incapacitated: health_of(id) <= 0,
         })
         .collect();

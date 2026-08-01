@@ -38,6 +38,17 @@ pub enum CombatConclusionReason {
     MaxTicksReached,
 }
 
+/// 캐릭터 한 명의 전투 기록. 정본 13의 "캐릭터별 상세 기록".
+/// 치유량은 파이프라인에 회복 개념이 없어 아직 필드를 두지 않는다.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct CombatCombatantReport {
+    pub id: String,
+    pub damage_dealt_hundredths: i64,
+    pub damage_taken_hundredths: i64,
+    pub kills: u32,
+    pub incapacitated: bool,
+}
+
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct CombatConclusionReport {
     pub resolution_fingerprint: String,
@@ -53,6 +64,9 @@ pub struct CombatConclusionReport {
     /// 결착까지의 전투 시간. tick 수 × tick_millis.
     #[serde(default)]
     pub duration_millis: u64,
+    /// id 오름차순.
+    #[serde(default)]
+    pub combatants: Vec<CombatCombatantReport>,
     pub fingerprint: String,
 }
 
@@ -171,6 +185,43 @@ pub fn conclude(
         Some(t) => (u64::from(t) + 1) * u64::from(request.tick_millis),
         None => (request.resolution.frames.len() as u64) * u64::from(request.tick_millis),
     };
+    let mut damage_dealt: BTreeMap<String, i64> = BTreeMap::new();
+    let mut damage_taken: BTreeMap<String, i64> = BTreeMap::new();
+    for f in &request.resolution.frames {
+        for o in &f.outcomes {
+            if o.hit && o.damage_hundredths > 0 {
+                *damage_dealt.entry(o.actor_id.clone()).or_insert(0) += o.damage_hundredths;
+                *damage_taken.entry(o.target_id.clone()).or_insert(0) += o.damage_hundredths;
+            }
+        }
+    }
+    let last_frame_snapshot = request
+        .resolution
+        .frames
+        .last()
+        .map(|f| &f.combatants)
+        .filter(|c| !c.is_empty());
+    let health_of = |id: &str| -> i64 {
+        if let Some(snapshot) = last_frame_snapshot {
+            if let Some(c) = snapshot.iter().find(|c| c.id.as_str() == id) {
+                return c.current_health_hundredths;
+            }
+        }
+        state
+            .get(id)
+            .map(|c| c.current_health_hundredths)
+            .unwrap_or(0)
+    };
+    let combatants: Vec<CombatCombatantReport> = participants
+        .keys()
+        .map(|id| CombatCombatantReport {
+            id: id.clone(),
+            damage_dealt_hundredths: damage_dealt.get(id).copied().unwrap_or(0),
+            damage_taken_hundredths: damage_taken.get(id).copied().unwrap_or(0),
+            kills: 0,
+            incapacitated: health_of(id) <= 0,
+        })
+        .collect();
     let mut report = CombatConclusionReport {
         resolution_fingerprint: request.resolution.fingerprint.clone(),
         outcome,
@@ -183,6 +234,7 @@ pub fn conclude(
         removed_combat_effect_ids: removed.into_iter().collect(),
         retained_effect_ids: retained.into_iter().collect(),
         duration_millis,
+        combatants,
         fingerprint: String::new(),
     };
     report.fingerprint = fingerprint(&report);

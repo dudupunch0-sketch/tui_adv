@@ -61,6 +61,69 @@ fn resolution(ally: i64, enemy: i64, tick: u32) -> CombatResolutionResult {
         fingerprint: "res".into(),
     }
 }
+fn attack_outcome(actor: &str, target: &str, hit: bool, damage: i64) -> CombatAttackOutcome {
+    CombatAttackOutcome {
+        attack_id: format!("{actor}->{target}"),
+        actor_id: actor.into(),
+        target_id: target.into(),
+        collision: true,
+        in_range: true,
+        roll_percent: 1,
+        hit,
+        damage_hundredths: damage,
+        balance_delta_hundredths: 0,
+        applied_effect_ids: vec![],
+        suppressed_effect_ids: vec![],
+    }
+}
+fn health_snapshot(id: &str, hp: i64) -> CombatResolutionCombatant {
+    CombatResolutionCombatant {
+        id: id.into(),
+        current_health_hundredths: hp,
+        maximum_health_hundredths: 100,
+        balance_hundredths: 0,
+        maximum_balance_hundredths: 100,
+    }
+}
+fn frame(
+    tick: u32,
+    outcomes: Vec<CombatAttackOutcome>,
+    combatants: Vec<CombatResolutionCombatant>,
+) -> CombatResolutionFrame {
+    CombatResolutionFrame {
+        tick,
+        outcomes,
+        combatants,
+        fingerprint: format!("f{tick}"),
+    }
+}
+fn multi_resolution(
+    frames: Vec<CombatResolutionFrame>,
+    final_state: Vec<CombatResolutionCombatant>,
+) -> CombatResolutionResult {
+    CombatResolutionResult {
+        execution: CombatExecutionResult {
+            mode: CombatRunMode::Actual,
+            presentation: CombatPresentationSpeed::OneX,
+            effective_seed: 1,
+            namespace: CombatRngNamespace::ActualCombat,
+            frames: vec![],
+            full_log: vec![],
+            core_log: vec![],
+            fingerprint: "res".into(),
+        },
+        frames,
+        state: CombatResolutionState {
+            combatants: final_state,
+            active_effects: vec![],
+            applied_effect_ids: vec![],
+            suppressed_effect_ids: vec![],
+        },
+        full_log: vec![],
+        core_log: vec![],
+        fingerprint: "res".into(),
+    }
+}
 fn eval(a: i64, e: i64, tick: u32, close: bool) -> CombatConclusionReport {
     conclude_combat(CombatConclusionRequest {
         resolution: resolution(a, e, tick),
@@ -253,4 +316,79 @@ fn duration_millis_uses_frame_count_when_not_terminal() {
     let report = eval(10, 10, 1, false);
     assert_eq!(report.decisive_tick, None);
     assert_eq!(report.duration_millis, 1 * 100);
+}
+
+#[test]
+fn combatants_report_sums_damage_and_marks_incapacitated() {
+    let frames = vec![
+        frame(
+            0,
+            vec![
+                attack_outcome("a", "e", true, 20),
+                attack_outcome("e", "a", true, 15),
+                attack_outcome("c", "e", false, 0),
+            ],
+            vec![
+                health_snapshot("a", 85),
+                health_snapshot("c", 100),
+                health_snapshot("e", 80),
+            ],
+        ),
+        frame(
+            1,
+            vec![
+                attack_outcome("e", "c", true, 10),
+                attack_outcome("a", "e", true, 5),
+            ],
+            vec![
+                health_snapshot("a", 85),
+                health_snapshot("c", 90),
+                health_snapshot("e", 75),
+            ],
+        ),
+    ];
+    let final_state = vec![
+        health_snapshot("a", 85),
+        health_snapshot("c", 90),
+        health_snapshot("e", 75),
+    ];
+    let request = CombatConclusionRequest {
+        resolution: multi_resolution(frames, final_state),
+        participants: vec![
+            participant("a", CombatSide::Ally, true),
+            participant("c", CombatSide::Ally, true),
+            participant("e", CombatSide::Enemy, true),
+        ],
+        policy: CombatTerminationPolicy {
+            max_ticks: 5,
+            conclude_on_max_ticks: false,
+        },
+        tick_millis: 50,
+    };
+    let report = conclude_combat(request).unwrap();
+    assert_eq!(
+        report
+            .combatants
+            .iter()
+            .map(|c| c.id.clone())
+            .collect::<Vec<_>>(),
+        vec!["a".to_string(), "c".to_string(), "e".to_string()]
+    );
+    let by_id: BTreeMap<_, _> = report
+        .combatants
+        .iter()
+        .map(|c| (c.id.clone(), c))
+        .collect();
+    assert_eq!(by_id["a"].damage_dealt_hundredths, 25);
+    assert_eq!(by_id["a"].damage_taken_hundredths, 15);
+    assert_eq!(by_id["a"].kills, 0);
+    assert!(!by_id["a"].incapacitated);
+    assert_eq!(by_id["c"].damage_dealt_hundredths, 0);
+    assert_eq!(by_id["c"].damage_taken_hundredths, 10);
+    assert_eq!(by_id["c"].kills, 0);
+    assert!(!by_id["c"].incapacitated);
+    assert_eq!(by_id["e"].damage_dealt_hundredths, 25);
+    assert_eq!(by_id["e"].damage_taken_hundredths, 25);
+    assert_eq!(by_id["e"].kills, 0);
+    assert!(!by_id["e"].incapacitated);
 }

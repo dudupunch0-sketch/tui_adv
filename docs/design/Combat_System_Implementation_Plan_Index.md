@@ -1,7 +1,7 @@
 # 전투 시스템 구현 계획 인덱스
 
-status: wave2-step4-complete
-기준일: 2026-07-26
+status: wave3-step1a-complete
+기준일: 2026-08-02
 
 이 문서는 Notion `전투 시스템` 허브와 canonical 문서 00~13을 Rust GameCore 구현 순서로 쪼갠 인덱스다. 각 단계 문서는 한 번의 coding subagent 작업으로 완료할 수 있는 크기를 목표로 한다.
 
@@ -14,11 +14,17 @@ status: wave2-step4-complete
 
 ## 현재 코드와 정본의 경계
 
-Wave 1 Step 1~3과 Wave 2 Step 1~4가 `escape-core`에 구현·검증되어 initial manifest/RNG 분리, 전투원 상태/effect catalog, opportunity 후보, 고정 정수 좌표·role/target·동시 tick frame, 실행 mode parity·dual log, 실제 collision/attack/damage/effect resolution sidecar, 다수전 결착/종료 조건 sidecar 계약을 제공한다. 다음 계약은 아직 없다.
+Wave 1 Step 1~3과 Wave 2 Step 1~4가 `escape-core`에 구현·검증되어 initial manifest/RNG 분리, 전투원 상태/effect catalog, opportunity 후보, 고정 정수 좌표·role/target·동시 tick frame, 실행 mode parity·dual log, 실제 collision/attack/damage/effect resolution sidecar, 다수전 결착/종료 조건 sidecar 계약을 제공한다. Wave 3 Step 1a가 여기에 `escape-core` 전용 관전 view 어댑터(`combat_spectator.rs`)를 더해 tick별 체스말 프레임, 공용 연출 cue(Attack/Hit/Evade), 템플릿 id 기반 이중 로그, 누설 차단(숨은 판정·억제 사유·Hidden/Conditional 효과 id 마스킹)을 제공한다 (`crates/escape-core/tests/combat_spectator_wave3.rs`, 12개 테스트: `spectate_is_deterministic_for_identical_input`, `attack_roll_and_effect_suppressed_never_leak_into_any_log`, `hidden_conditional_and_unregistered_effect_ids_are_masked` 등). 다음 계약은 아직 없다.
 
 - 고급 다수전 AI 행동·조기 결착/전투 tick 중단 resolver
 - 대형·결속·배경 전투·증원과 전투 종료 조건
-- 전투 종료 narrative/report consumer
+- 전투 종료 narrative/report consumer (전투 시간·캐릭터별 피해/치유/처치 수 확장) → Wave 3 Step 1b
+- `CombatResolutionFrame`의 tick별 전투원 상태 스냅샷 (현재는 `CombatResolutionState` 최종 상태 1개뿐이라 `BalanceBroken`/`Incapacitated` cue를 파생할 수 없다 — Wave 3 Step 1a에서 의도적으로 제외, 스냅샷 추가 후속 slice 선행 필요)
+- `ScenePage` 필드 추가·WASM 노출 → Wave 3 Step 1c
+- terminal/Web 렌더러, 상단/하단 레이아웃, 색·아이콘 동기화 → Wave 3 Step 1d
+- 프리셋 저장/재도전 유지, 우선 목표 규칙
+- 치유(healing)·명줄(life thread) 파이프라인
+- 시스템형/혼합형/각본형 authoring 구분 → Wave 3 Step 2
 
 ## 단계 순서
 
@@ -31,10 +37,14 @@ Wave 1 Step 1~3과 Wave 2 Step 1~4가 `escape-core`에 구현·검증되어 init
 | `fable_combat_wave2_step2_2607261845.md` | actual/forecast/retry/auto/fast 결과 parity와 이중 로그 | 전략 조언·자동 원인 분석 |
 | `fable_combat_wave2_step3_2607261845.md` | 실제 collision/attack/damage/effect resolver와 fixed-point sidecar 상태 | renderer adapter·결착·밸런스 확정값 |
 | `fable_combat_wave2_step4_2607261845.md` | 다수전 결착·전투 종료 조건 sidecar와 cleanup report | 고급 AI·증원·패주·renderer adapter |
-| `fable_combat_wave3_step1_2607261845.md` | ScenePage/WASM/terminal/Web 관전 어댑터 | renderer가 판정 재계산하는 구조 |
-| `fable_combat_wave3_step2_2607261845.md` | 시스템형 1개 + 혼합형 1개 + 각본형 1개 authoring slice | 대규모 콘텐츠·보스 밸런스 |
+| `fable_combat_wave3_step1a_2608020020.md` | 관전 view 어댑터 (core 전용): tick별 프레임·공용 cue·이중 로그·누설 차단 | ScenePage/WASM/renderer 노출, 밸런스 확정값, BalanceBroken/Incapacitated cue |
+| (플랜 미작성) — Wave 3 Step 1b | 전투 종료 보고서 확장 (전투 시간, 캐릭터별 피해/치유/처치 수) | renderer 노출 |
+| (플랜 미작성) — Wave 3 Step 1c | `ScenePage` 필드 추가, WASM 노출 | terminal/Web 렌더러 |
+| (플랜 미작성) — Wave 3 Step 1d | terminal/Web 렌더러, 상단/하단 레이아웃, 색·아이콘 동기화 | seed·판정·AI·로그 순서 재구현 |
+| (플랜 미작성) — Wave 3 Step 2 | 시스템형 1개 + 혼합형 1개 + 각본형 1개 authoring slice | 대규모 콘텐츠·보스 밸런스 |
 
 Wave 2 Step 4 구현 위치: `crates/escape-core/src/combat_conclusion.rs`, `crates/escape-core/tests/combat_conclusion_wave2.rs`.
+Wave 3 Step 1a 구현 위치: `crates/escape-core/src/combat_spectator.rs`, `crates/escape-core/tests/combat_spectator_wave3.rs` (12 테스트).
 
 각 단계는 선행 단계의 public contract와 테스트만 사용한다. 단계 사이에 새 필드가 필요하면 먼저 해당 단계 plan을 갱신하고, 기존 저장/JSON backward compatibility를 검토한다.
 

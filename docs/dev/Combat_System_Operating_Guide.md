@@ -1,7 +1,7 @@
 # 전투 시스템 운영 기준
 
 상태: active
-기준일: 2026-07-26
+기준일: 2026-08-02
 목적: context window가 압축되거나 새 세션으로 이어져도 전투 시스템 구현을 같은 방식으로 재개하기 위한 짧은 운영 정본.
 
 ## 1. 역할과 책임
@@ -52,10 +52,15 @@
 - `crates/escape-core/tests/combat_resolution_wave2.rs` 11개 테스트
 - Wave 2 Step 3은 execution frame sidecar resolver, collision/range/accuracy, fixed-point damage/defense, health/balance clamp, effect catalog stacking, Actual/Forecast namespace, resolution full/core log를 구현·검증했다.
 - Wave 2 Step 4는 resolution sidecar를 소비하는 다수전 결착/종료 조건 evaluator, mutual-defeat precedence, max-tick stalemate, stable survivor/defeated report, combat-only cleanup sidecar를 구현·검증했다. 고급 AI utility·조기 tick 중단·renderer adapter는 아직 별도 plan이다.
+- `fable_combat_wave3_step1a_2608020020.md`
+- `crates/escape-core/src/combat_spectator.rs`
+- `crates/escape-core/tests/combat_spectator_wave3.rs` 12개 테스트 (`spectate_is_deterministic_for_identical_input`, `frame_positions_facing_side_and_active_match_input`, `unknown_participant_is_rejected`, `attack_hit_and_evade_cues_follow_the_three_rules_only`, `cues_are_sorted_attack_then_hit_then_evade_with_no_duplicates`, `log_entries_use_registered_template_ids_not_free_sentences`, `full_log_is_ordered_by_tick_then_sequence`, `core_log_is_a_subset_of_full_log_filtered_by_importance_and_keeps_order`, `attack_roll_and_effect_suppressed_never_leak_into_any_log`, `hidden_conditional_and_unregistered_effect_ids_are_masked`, `fingerprint_chains_the_resolution_fingerprint`, `participant_input_order_does_not_affect_view`)
+- Wave 3 Step 1a는 `CombatResolutionResult`를 입력으로 받아 새 판정 없이 tick별 체스말 프레임(좌표·facing·활성 여부), 공용 연출 cue(Attack/Hit/Evade, 판정 파생·정렬 고정), 템플릿 id 기반 이중 로그, 누설 차단(AttackRoll/EffectSuppressed 제외, Hidden/Conditional/미등록 효과 id 마스킹)까지 구현·검증했다. `BalanceBroken`/`Incapacitated` cue는 `CombatResolutionFrame`에 tick별 상태 스냅샷이 없어 의도적으로 제외했다(후속 slice 선행 필요). ScenePage/WASM/renderer 노출은 아직 별도 plan(Step 1b/1c/1d)이다.
 
 아직 열지 않음:
 
 - 다수전 AI 행동·결착·전투 종료 조건 resolver
+- 전투 종료 보고서 확장(전투 시간·캐릭터별 피해/치유/처치 수), `CombatResolutionFrame` tick별 상태 스냅샷
 - ScenePage/WASM/Web/terminal 전투 화면
 - 기술 비용·호흡 회복률·피해·방어·쿨타임 등 밸런스 상수
 

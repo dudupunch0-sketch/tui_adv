@@ -67,6 +67,11 @@ pub struct CombatConclusionReport {
     /// id 오름차순.
     #[serde(default)]
     pub combatants: Vec<CombatCombatantReport>,
+    /// 피해가 하나도 없으면 `None` (발생하지 않은 항목은 숨긴다).
+    #[serde(default)]
+    pub top_damage_dealt_id: Option<String>,
+    #[serde(default)]
+    pub top_damage_taken_id: Option<String>,
     pub fingerprint: String,
 }
 
@@ -243,6 +248,8 @@ pub fn conclude(
             incapacitated: health_of(id) <= 0,
         })
         .collect();
+    let top_damage_dealt_id = top_id_by(&combatants, |c| c.damage_dealt_hundredths);
+    let top_damage_taken_id = top_id_by(&combatants, |c| c.damage_taken_hundredths);
     let mut report = CombatConclusionReport {
         resolution_fingerprint: request.resolution.fingerprint.clone(),
         outcome,
@@ -256,10 +263,28 @@ pub fn conclude(
         retained_effect_ids: retained.into_iter().collect(),
         duration_millis,
         combatants,
+        top_damage_dealt_id,
+        top_damage_taken_id,
         fingerprint: String::new(),
     };
     report.fingerprint = fingerprint(&report);
     Ok(report)
+}
+
+/// 최대값을 가진 id를 반환한다 (id 오름차순 입력 가정, 동점은 최초 등장 = 최소 id).
+/// 최대값이 0 이하이면 발생하지 않은 항목이므로 `None`.
+fn top_id_by(
+    combatants: &[CombatCombatantReport],
+    value: impl Fn(&CombatCombatantReport) -> i64,
+) -> Option<String> {
+    let mut best: Option<(&str, i64)> = None;
+    for c in combatants {
+        let v = value(c);
+        if best.map_or(true, |(_, b)| v > b) {
+            best = Some((c.id.as_str(), v));
+        }
+    }
+    best.filter(|(_, v)| *v > 0).map(|(id, _)| id.to_string())
 }
 
 fn fingerprint<T: Serialize>(value: &T) -> String {

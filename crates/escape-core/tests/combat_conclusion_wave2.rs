@@ -458,3 +458,82 @@ fn kills_are_attributed_to_last_valid_lethal_outcome_in_the_ko_tick() {
     assert!(!by_id["a"].incapacitated);
     assert!(!by_id["c"].incapacitated);
 }
+
+#[test]
+fn top_damage_highlights_hidden_when_no_damage_occurs() {
+    let frames = vec![frame(
+        0,
+        vec![attack_outcome("a", "e", false, 0)],
+        vec![health_snapshot("a", 100), health_snapshot("e", 100)],
+    )];
+    let final_state = vec![health_snapshot("a", 100), health_snapshot("e", 100)];
+    let request = CombatConclusionRequest {
+        resolution: multi_resolution(frames, final_state),
+        participants: vec![
+            participant("a", CombatSide::Ally, true),
+            participant("e", CombatSide::Enemy, true),
+        ],
+        policy: CombatTerminationPolicy {
+            max_ticks: 5,
+            conclude_on_max_ticks: false,
+        },
+        tick_millis: 50,
+    };
+    let report = conclude_combat(request).unwrap();
+    assert_eq!(report.top_damage_dealt_id, None);
+    assert_eq!(report.top_damage_taken_id, None);
+}
+
+#[test]
+fn top_damage_highlights_pick_max_with_lowest_id_tie_break() {
+    let frames = vec![
+        frame(
+            0,
+            vec![
+                attack_outcome("a", "e", true, 20),
+                attack_outcome("e", "a", true, 15),
+                attack_outcome("c", "e", false, 0),
+            ],
+            vec![
+                health_snapshot("a", 85),
+                health_snapshot("c", 100),
+                health_snapshot("e", 80),
+            ],
+        ),
+        frame(
+            1,
+            vec![
+                attack_outcome("e", "c", true, 10),
+                attack_outcome("a", "e", true, 5),
+            ],
+            vec![
+                health_snapshot("a", 85),
+                health_snapshot("c", 90),
+                health_snapshot("e", 75),
+            ],
+        ),
+    ];
+    let final_state = vec![
+        health_snapshot("a", 85),
+        health_snapshot("c", 90),
+        health_snapshot("e", 75),
+    ];
+    let request = CombatConclusionRequest {
+        resolution: multi_resolution(frames, final_state),
+        participants: vec![
+            participant("a", CombatSide::Ally, true),
+            participant("c", CombatSide::Ally, true),
+            participant("e", CombatSide::Enemy, true),
+        ],
+        policy: CombatTerminationPolicy {
+            max_ticks: 5,
+            conclude_on_max_ticks: false,
+        },
+        tick_millis: 50,
+    };
+    let report = conclude_combat(request).unwrap();
+    // damage_dealt: a=25, c=0, e=25 -> tie, lowest id "a" wins.
+    assert_eq!(report.top_damage_dealt_id, Some("a".to_string()));
+    // damage_taken: a=15, c=10, e=25 -> unique max "e".
+    assert_eq!(report.top_damage_taken_id, Some("e".to_string()));
+}

@@ -186,7 +186,7 @@ pub fn content_turn_view(
         ending_id: None,
         title: encounter.title.clone(),
         body: stage
-            .map(event_stage_text)
+            .map(|stage| event_stage_text(stage, state))
             .filter(|body| !body.is_empty())
             .unwrap_or_else(|| encounter.body.clone()),
         actions,
@@ -669,10 +669,9 @@ fn current_event_stage<'a>(
         .get(effective_event_stage_index(encounter, state))
 }
 
-fn event_stage_text(stage: &crate::content::EventStageDef) -> String {
+fn event_stage_text(stage: &crate::content::EventStageDef, state: &GameState) -> String {
     stage
-        .blocks
-        .iter()
+        .visible_blocks(state.last_check.as_ref().map(|check| check.success))
         .filter_map(|block| block.text.as_deref())
         .collect::<Vec<_>>()
         .join("\n\n")

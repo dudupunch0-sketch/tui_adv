@@ -316,28 +316,33 @@ subagent 보고를 WSL에서 직접 재검증한 뒤 결함 1건을 고쳤다.
 
 ### 검증한 것 (전부 직접 실행)
 
--  통과
--  통과
-- 에 기존 combat 7모듈·기존 테스트 7파일 **없음** 확인
--  → 매치 0건 (판정 재계산·RNG·해시 순회 없음)
--  mtime  — 이 세션 미변경
-- **누설 차단 독립 red 재현**: 로 WP-5 소스만 되돌린 뒤 실행 → ,  2건 FAIL (). 복원 후 green. 즉 테스트가 실제로 결함을 잡는다.
-- 유령 플랜 파일 참조(, ) 제거 확인
+- `cargo fmt --all -- --check` 통과
+- `git diff --check` 통과
+- `git diff --name-only HEAD~7..HEAD`에 기존 combat 7모듈·기존 테스트 7파일 **없음** 확인
+- `grep -nE "derive_seed|rand|roll|Rng|thread_rng|HashMap" crates/escape-core/src/combat_spectator.rs` → 매치 0건. 판정 재계산·RNG 호출·해시 순회 의존이 없다.
+- `crates/escape-terminal/tests/cli_smoke.rs` mtime `2026-07-26 20:08` — 이 세션 미변경
+- **누설 차단 독립 red 재현**: `git checkout 9036aa6~1 -- crates/escape-core/src/combat_spectator.rs`로 WP-5 소스만 되돌린 뒤 실행 → `attack_roll_and_effect_suppressed_never_leak_into_any_log`와 `hidden_conditional_and_unregistered_effect_ids_are_masked` 2건 FAIL (`left: 0, right: 3`). 복원 후 green. 즉 테스트가 실제로 결함을 잡는다.
+- 유령 플랜 파일 참조(`fable_combat_wave3_step1_2607261845.md`, `fable_combat_wave3_step2_2607261845.md`) 제거 확인
 
-### 고친 결함: 가 공개 API에서 거짓값
+### 고친 결함: `tick_millis`가 공개 API에서 거짓값
 
-subagent가 를  고정으로 두고 "유도 불가"라고 보고했다. 유도 불가 진단은 맞다 (/가 를 보관하지 않음). 그러나 테스트 입력은 인데 view는 을 내보내고 **아무 테스트도 그 값을 검증하지 않았다.** 렌더러가 이 값을 믿으면 정본 13의 "시뮬레이션 시간과 화면 시간은 항상 일치한다"가 깨진다.
+subagent가 `CombatSpectatorView.tick_millis`를 `0` 고정으로 두고 "유도 불가"라고 보고했다. 유도 불가 진단 자체는 맞다 — `CombatResolutionResult`도 `CombatExecutionResult`도 입력 `CombatSimulationConfig`를 보관하지 않는다. 그러나 `0`을 내보내는 것은 거짓값이다. 테스트 입력은 `tick_millis: 100`이었는데 view는 `0`을 보고했고, **아무 테스트도 그 값을 검증하지 않았다.** 렌더러가 이 값을 믿으면 정본 13의 "시뮬레이션 시간과 화면 시간은 항상 일치한다"가 깨진다.
 
-수정:
+수정 내용:
 
-- 에  추가 — 호출자가 시뮬레이션에 쓴 값을 전달한다.
--  추가 — 을 거부한다.
-- 가 request 값을 view에 그대로 옮긴다. 고정 상수 제거.
-- 테스트 2건 추가: , . 테스트 파일의  리터럴을  상수로 묶어 시뮬레이션 config와 관전 request가 같은 값을 쓰도록 고정했다.
+- `CombatSpectatorRequest`에 `tick_millis: u32`를 추가했다. 호출자가 시뮬레이션에 쓴 값을 그대로 전달한다.
+- `CombatSpectatorError::InvalidTickMillis(u32)`를 추가해 `0`을 거부한다.
+- `spectate()`가 request 값을 view로 옮긴다. 고정 상수와 그 사유 주석을 제거했다.
+- 테스트 2건 추가: `view_reports_the_requested_tick_millis`, `zero_tick_millis_is_rejected`.
+- 테스트 파일의 `tick_millis: 100` 리터럴을 `SIM_TICK_MILLIS` 상수로 묶어, 시뮬레이션 config와 관전 request가 항상 같은 값을 쓰도록 고정했다.
 
 ### 수정 후 최종 검증
 
--  통과
--  → **14 passed / 0 failed**
--  → **263 passed / 0 failed**, exit 0 (249 baseline + 14)
--  통과
+- `cargo fmt --all -- --check` 통과
+- `cargo test -p escape-core --test combat_spectator_wave3` → **14 passed / 0 failed**
+- `cargo test --workspace --no-fail-fast` → **263 passed / 0 failed**, exit 0 (249 baseline + 신규 14)
+- `git diff --check` 통과
+
+### 작업 노하우 기록
+
+이 slice에서 셸 heredoc에 backtick이 들어간 마크다운을 넣다가 내용이 명령 치환으로 유실되는 사고가 두 번 났다 (PR #178 본문, 이 보고서 append). **backtick·마크다운이 포함된 파일 내용은 셸 heredoc으로 쓰지 말고 파일 쓰기 도구로 직접 쓰고, `gh pr edit --body-file` / `git commit -F <file>`로 넘긴다.**

@@ -38,6 +38,7 @@ Notion 전투 시스템 허브와 canonical 00~13을 기준으로, Rust GameCore
 - `fable_combat_wave2_step4_2607261845.md`가 구현·검증 완료다. resolution fingerprint/state를 소비하는 pure 결착 evaluator가 mutual-defeat precedence, max-tick stalemate, stable survivor/defeated report, combat-only cleanup sidecar를 제공한다.
 - `crates/escape-core/src/combat_conclusion.rs`와 `crates/escape-core/tests/combat_conclusion_wave2.rs` 결착 회귀 테스트 4개가 있다.
 - `fable_combat_wave3_step1a_2608020020.md`가 구현·검증 완료다. `CombatResolutionResult`를 입력으로 받는 `escape-core` 전용 관전 view 어댑터가 새 판정 없이 tick별 체스말 프레임, 공용 연출 cue(Attack/Hit/Evade), 템플릿 id 기반 이중 로그, 누설 차단(AttackRoll/EffectSuppressed 제외, Hidden/Conditional/미등록 효과 id 마스킹)을 제공한다. `crates/escape-core/src/combat_spectator.rs`와 `crates/escape-core/tests/combat_spectator_wave3.rs` 12개 테스트가 있다. `BalanceBroken`/`Incapacitated` cue는 tick별 상태 스냅샷이 아직 없어 의도적으로 제외했다(후속 slice 선행 필요).
+- `fable_combat_wave2_step5_2608020117.md`가 구현·검증 완료다. `CombatResolutionFrame.combatants`(tick 종료 시점 전투원 스냅샷, additive-optional)를 추가하고 `combat_spectator.rs`가 이를 소비해 `BalanceBroken`·`Incapacitated` cue 2개를 파생한다. 정본 13의 공용 연출 문법 5개가 모두 확보됐다. `crates/escape-core/tests/combat_resolution_wave2.rs` 16개 테스트, `crates/escape-core/tests/combat_spectator_wave3.rs` 19개 테스트가 있다.
 - 고급 다수전 AI 행동·조기 tick 중단, 전투 종료 보고서 확장, `ScenePage`/WASM/Web/terminal 전투 UI, 기술 비용·호흡 회복률·밸런스 수치는 아직 미구현이다.
 
 Notion 불변식:

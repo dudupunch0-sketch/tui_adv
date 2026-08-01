@@ -56,11 +56,13 @@
 - `crates/escape-core/src/combat_spectator.rs`
 - `crates/escape-core/tests/combat_spectator_wave3.rs` 12개 테스트 (`spectate_is_deterministic_for_identical_input`, `frame_positions_facing_side_and_active_match_input`, `unknown_participant_is_rejected`, `attack_hit_and_evade_cues_follow_the_three_rules_only`, `cues_are_sorted_attack_then_hit_then_evade_with_no_duplicates`, `log_entries_use_registered_template_ids_not_free_sentences`, `full_log_is_ordered_by_tick_then_sequence`, `core_log_is_a_subset_of_full_log_filtered_by_importance_and_keeps_order`, `attack_roll_and_effect_suppressed_never_leak_into_any_log`, `hidden_conditional_and_unregistered_effect_ids_are_masked`, `fingerprint_chains_the_resolution_fingerprint`, `participant_input_order_does_not_affect_view`)
 - Wave 3 Step 1a는 `CombatResolutionResult`를 입력으로 받아 새 판정 없이 tick별 체스말 프레임(좌표·facing·활성 여부), 공용 연출 cue(Attack/Hit/Evade, 판정 파생·정렬 고정), 템플릿 id 기반 이중 로그, 누설 차단(AttackRoll/EffectSuppressed 제외, Hidden/Conditional/미등록 효과 id 마스킹)까지 구현·검증했다. `BalanceBroken`/`Incapacitated` cue는 `CombatResolutionFrame`에 tick별 상태 스냅샷이 없어 의도적으로 제외했다(후속 slice 선행 필요). ScenePage/WASM/renderer 노출은 아직 별도 plan(Step 1b/1c/1d)이다.
+- `fable_combat_wave2_step5_2608020117.md`
+- Wave 2 Step 5는 `CombatResolutionFrame.combatants`(tick 종료 시점 전투원 스냅샷, `#[serde(default)]` additive-optional, id 오름차순)를 추가하고 `combat_spectator.rs`가 이를 소비해 `BalanceBroken`(균형 붕괴, `balance_hundredths <= 0`)·`Incapacitated`(전투불능, `current_health_hundredths <= 0`) cue 2개를 파생하도록 구현·검증했다. `crates/escape-core/tests/combat_resolution_wave2.rs`에 5개 테스트 추가(총 16개: `frame_snapshot_is_id_sorted_and_covers_every_combatant`, `frame_snapshot_reflects_the_tick_damage_from_its_own_outcomes`, `last_frame_snapshot_matches_final_state_combatants`, `combatants_field_is_additive_optional_for_deserialization`, `frame_snapshots_are_deterministic_across_identical_runs`), `crates/escape-core/tests/combat_spectator_wave3.rs`에 5개 테스트 추가(총 19개: `incapacitated_cue_marks_a_combatant_whose_health_snapshot_hit_zero`, `balance_broken_cue_marks_a_combatant_whose_balance_snapshot_hit_zero`, `neither_state_cue_applies_when_health_and_balance_stay_above_zero`, `cue_ordering_is_fixed_attack_hit_evade_balance_broken_incapacitated`, `empty_combatant_snapshot_yields_no_state_cues_and_no_error`). fingerprint 공식은 변경하지 않았다(`CombatResolutionFrame.fingerprint`는 여전히 `tick`+`outcomes`만 입력). 이로써 정본 13의 공용 연출 문법 5개(공격/피격/회피/균형 붕괴/전투불능)가 모두 확보됐다. renderer 노출·보고서 확장·밸런스 확정값은 여전히 별도 plan(Step 1b/1c/1d)이다.
 
 아직 열지 않음:
 
 - 다수전 AI 행동·결착·전투 종료 조건 resolver
-- 전투 종료 보고서 확장(전투 시간·캐릭터별 피해/치유/처치 수), `CombatResolutionFrame` tick별 상태 스냅샷
+- 전투 종료 보고서 확장(전투 시간·캐릭터별 피해/치유/처치 수)
 - ScenePage/WASM/Web/terminal 전투 화면
 - 기술 비용·호흡 회복률·피해·방어·쿨타임 등 밸런스 상수
 

@@ -240,3 +240,57 @@ fn cues_are_sorted_attack_then_hit_then_evade_with_no_duplicates() {
         assert_eq!(piece.cues, sorted, "cues must already be sorted+deduped");
     }
 }
+
+#[test]
+fn log_entries_use_registered_template_ids_not_free_sentences() {
+    let request = two_way_spectator_request();
+    let view = spectate_combat(&request).unwrap();
+    assert!(view
+        .full_log
+        .iter()
+        .any(|e| e.template_id == "combat.log.move_intent"));
+    assert!(view
+        .full_log
+        .iter()
+        .any(|e| e.template_id == "combat.log.target_selection"));
+    assert!(view
+        .full_log
+        .iter()
+        .any(|e| e.template_id == "combat.log.collision"));
+    let damage = view
+        .full_log
+        .iter()
+        .find(|e| e.template_id == "combat.log.damage_applied")
+        .expect("damage_applied entry expected");
+    assert!(damage.value_hundredths.unwrap() > 0);
+    assert_eq!(damage.target_id.as_deref(), Some("e"));
+}
+
+#[test]
+fn full_log_is_ordered_by_tick_then_sequence() {
+    let request = two_way_spectator_request();
+    let view = spectate_combat(&request).unwrap();
+    assert!(view
+        .full_log
+        .windows(2)
+        .all(|pair| (pair[0].tick, pair[0].sequence) <= (pair[1].tick, pair[1].sequence)));
+}
+
+#[test]
+fn core_log_is_a_subset_of_full_log_filtered_by_importance_and_keeps_order() {
+    let request = two_way_spectator_request();
+    let view = spectate_combat(&request).unwrap();
+    assert!(view
+        .core_log
+        .iter()
+        .all(|entry| entry.importance >= CombatLogImportance::Important));
+    // core_log preserves the relative order it had inside full_log.
+    let mut cursor = 0usize;
+    for entry in &view.core_log {
+        let found = view.full_log[cursor..]
+            .iter()
+            .position(|candidate| candidate == entry)
+            .expect("core_log entry must appear in full_log at or after the cursor");
+        cursor += found + 1;
+    }
+}

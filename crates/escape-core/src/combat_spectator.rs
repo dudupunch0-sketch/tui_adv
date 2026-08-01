@@ -1,9 +1,18 @@
 use crate::{
-    CombatAttackOutcome, CombatEffectCatalog, CombatFacing, CombatLogImportance, CombatPosition,
+    CombatAttackOutcome, CombatEffectCatalog, CombatFacing, CombatLogEvent, CombatLogImportance,
+    CombatLogTag, CombatPosition, CombatResolutionLogEvent, CombatResolutionLogTag,
     CombatResolutionResult, CombatSide, CombatSimulationParticipant,
 };
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
+
+const TEMPLATE_MOVE_INTENT: &str = "combat.log.move_intent";
+const TEMPLATE_TARGET_SELECTION: &str = "combat.log.target_selection";
+const TEMPLATE_COLLISION: &str = "combat.log.collision";
+const TEMPLATE_DAMAGE_APPLIED: &str = "combat.log.damage_applied";
+const TEMPLATE_EFFECT_APPLIED: &str = "combat.log.effect_applied";
+const TEMPLATE_ATTACK_ROLL: &str = "combat.log.attack_roll";
+const TEMPLATE_EFFECT_SUPPRESSED: &str = "combat.log.effect_suppressed";
 
 /// 정본 13의 "공용 연출 문법". renderer가 이 종류만 보고 표현을 고른다.
 /// 값은 판정 결과에서 파생되며, 이 enum이 애니메이션·CSS·색을 지정하지 않는다.
@@ -120,6 +129,13 @@ pub fn spectate(
         });
     }
 
+    let full_log = build_log(request);
+    let core_log = full_log
+        .iter()
+        .filter(|entry| entry.importance >= CombatLogImportance::Important)
+        .cloned()
+        .collect();
+
     let mut view = CombatSpectatorView {
         resolution_fingerprint: request.resolution.fingerprint.clone(),
         // NOTE(wave3-step1a WP-1): `CombatResolutionResult`/`CombatExecutionResult`에는
@@ -127,12 +143,75 @@ pub fn spectate(
         // 렌더러 소비는 Step 1c/1d 소관이라 이 slice에서는 0으로 둔다 (보고서 참고).
         tick_millis: 0,
         frames,
-        core_log: Vec::new(),
-        full_log: Vec::new(),
+        core_log,
+        full_log,
         fingerprint: String::new(),
     };
     view.fingerprint = fingerprint(&view);
     Ok(view)
+}
+
+enum LogSource<'a> {
+    Execution(&'a CombatLogEvent),
+    Resolution(&'a CombatResolutionLogEvent),
+}
+
+/// `execution.full_log`(`CombatLogEvent`)와 `resolution.full_log`(`CombatResolutionLogEvent`)를
+/// tick -> sequence -> 실행로그 우선 순서로 합병하고, 등록된 태그 -> 템플릿 id 표로 옮긴다.
+fn build_log(request: &CombatSpectatorRequest) -> Vec<CombatSpectatorLogEntry> {
+    let mut merged: Vec<(u32, u32, u8, LogSource)> = Vec::new();
+    for event in &request.resolution.execution.full_log {
+        merged.push((event.tick, event.sequence, 0, LogSource::Execution(event)));
+    }
+    for event in &request.resolution.full_log {
+        merged.push((event.tick, event.sequence, 1, LogSource::Resolution(event)));
+    }
+    merged.sort_by(|a, b| (a.0, a.1, a.2).cmp(&(b.0, b.1, b.2)));
+
+    merged
+        .into_iter()
+        .map(|(tick, sequence, _, source)| match source {
+            LogSource::Execution(event) => CombatSpectatorLogEntry {
+                tick,
+                sequence,
+                template_id: match event.tag {
+                    CombatLogTag::MoveIntent => TEMPLATE_MOVE_INTENT,
+                    CombatLogTag::TargetSelection => TEMPLATE_TARGET_SELECTION,
+                }
+                .to_string(),
+                importance: event.importance,
+                actor_id: event.actor_id.clone(),
+                target_id: event.target_id.clone(),
+                value_hundredths: None,
+                effect_id: None,
+            },
+            LogSource::Resolution(event) => {
+                let (template_id, value_hundredths, effect_id) = match event.tag {
+                    CombatResolutionLogTag::Collision => (TEMPLATE_COLLISION, None, None),
+                    CombatResolutionLogTag::AttackRoll => (TEMPLATE_ATTACK_ROLL, None, None),
+                    CombatResolutionLogTag::DamageApplied => {
+                        (TEMPLATE_DAMAGE_APPLIED, Some(event.value_hundredths), None)
+                    }
+                    CombatResolutionLogTag::EffectApplied => {
+                        (TEMPLATE_EFFECT_APPLIED, None, event.effect_id.clone())
+                    }
+                    CombatResolutionLogTag::EffectSuppressed => {
+                        (TEMPLATE_EFFECT_SUPPRESSED, None, event.effect_id.clone())
+                    }
+                };
+                CombatSpectatorLogEntry {
+                    tick,
+                    sequence,
+                    template_id: template_id.to_string(),
+                    importance: event.importance,
+                    actor_id: event.actor_id.clone(),
+                    target_id: Some(event.target_id.clone()),
+                    value_hundredths,
+                    effect_id,
+                }
+            }
+        })
+        .collect()
 }
 
 /// 정본 13의 공용 연출 문법 3규칙만 적용한다: Attack/Hit/Evade 외 cue는 만들지 않는다.

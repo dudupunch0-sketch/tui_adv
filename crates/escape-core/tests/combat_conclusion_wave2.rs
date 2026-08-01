@@ -47,6 +47,7 @@ fn resolution(ally: i64, enemy: i64, tick: u32) -> CombatResolutionResult {
             frames: vec![],
             full_log: vec![],
             core_log: vec![],
+            provenance: None,
             fingerprint: "res".into(),
         },
         frames: vec![CombatResolutionFrame {
@@ -110,6 +111,7 @@ fn multi_resolution(
             frames: vec![],
             full_log: vec![],
             core_log: vec![],
+            provenance: None,
             fingerprint: "res".into(),
         },
         frames,

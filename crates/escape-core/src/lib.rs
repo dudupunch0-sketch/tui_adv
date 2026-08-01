@@ -26,7 +26,8 @@ pub use combat_contract::{
 };
 pub use combat_execution::{
     execute as execute_combat, CombatExecutionError, CombatExecutionRequest, CombatExecutionResult,
-    CombatLogEvent, CombatLogImportance, CombatLogTag, CombatPresentationSpeed, CombatRunMode,
+    CombatLogEvent, CombatLogImportance, CombatLogTag, CombatPresentationSpeed, CombatProvenance,
+    CombatRunMode,
 };
 pub use combat_opportunity::{
     CombatDetectionLevel, CombatDetectionThresholds, CombatInterventionBudget, CombatObserver,

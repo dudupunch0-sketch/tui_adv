@@ -169,6 +169,90 @@ fn two_way_spectator_request() -> CombatSpectatorRequest {
     }
 }
 
+fn effect_def(id: &str, group: &str, visibility: EffectVisibility) -> CombatEffectDefinition {
+    CombatEffectDefinition {
+        id: id.into(),
+        source: "skill".into(),
+        category: CombatEffectCategory::State,
+        target_selector: "target".into(),
+        parameters: Default::default(),
+        conditions: vec![],
+        phase: EffectPhase::DuringCombat,
+        lifetime: EffectLifetime::UntilCombatSettlement,
+        stacking: EffectStacking::Unique,
+        stacking_group: group.into(),
+        stacking_cap: None,
+        priority: 1,
+        visibility,
+        tags: vec![],
+    }
+}
+
+/// "a" hits "e" (accuracy 100, guaranteed) applying four effects at once:
+/// - `buff_public` (Public) should pass through unmasked.
+/// - `buff_hidden` (Hidden) should be masked.
+/// - `buff_conditional` (Conditional) should be masked.
+/// - `buff_unregistered` exists in the *resolution's* catalog (so `resolve_combat`
+///   accepts it) but is deliberately left out of the *spectator's* catalog, to
+///   exercise the "unknown to spectator catalog -> masked" safe default.
+fn leak_resolution_request() -> CombatResolutionRequest {
+    let mut request = resolution_request();
+    request.catalog.effects = vec![
+        effect_def("buff_public", "public", EffectVisibility::Public),
+        effect_def("buff_hidden", "hidden", EffectVisibility::Hidden),
+        effect_def(
+            "buff_conditional",
+            "conditional",
+            EffectVisibility::Conditional,
+        ),
+        effect_def(
+            "buff_unregistered",
+            "unregistered",
+            EffectVisibility::Public,
+        ),
+    ];
+    request.attacks[0].effects = vec![
+        CombatAttackEffect {
+            effect_id: "buff_public".into(),
+            chance_percent: 100,
+        },
+        CombatAttackEffect {
+            effect_id: "buff_hidden".into(),
+            chance_percent: 100,
+        },
+        CombatAttackEffect {
+            effect_id: "buff_conditional".into(),
+            chance_percent: 100,
+        },
+        CombatAttackEffect {
+            effect_id: "buff_unregistered".into(),
+            chance_percent: 100,
+        },
+    ];
+    request
+}
+
+fn leak_spectator_request() -> CombatSpectatorRequest {
+    let resolution = resolve_combat(leak_resolution_request()).unwrap();
+    CombatSpectatorRequest {
+        resolution,
+        participants: participants(),
+        // Deliberately omits `buff_unregistered` to simulate an id the spectator's
+        // catalog does not recognize.
+        catalog: CombatEffectCatalog {
+            effects: vec![
+                effect_def("buff_public", "public", EffectVisibility::Public),
+                effect_def("buff_hidden", "hidden", EffectVisibility::Hidden),
+                effect_def(
+                    "buff_conditional",
+                    "conditional",
+                    EffectVisibility::Conditional,
+                ),
+            ],
+        },
+    }
+}
+
 #[test]
 fn frame_positions_facing_side_and_active_match_input() {
     let request = spectator_request();
@@ -293,4 +377,44 @@ fn core_log_is_a_subset_of_full_log_filtered_by_importance_and_keeps_order() {
             .expect("core_log entry must appear in full_log at or after the cursor");
         cursor += found + 1;
     }
+}
+
+#[test]
+fn attack_roll_and_effect_suppressed_never_leak_into_any_log() {
+    let request = two_way_spectator_request();
+    let view = spectate_combat(&request).unwrap();
+    for entry in view.full_log.iter().chain(view.core_log.iter()) {
+        assert_ne!(entry.template_id, "combat.log.attack_roll");
+        assert_ne!(entry.template_id, "combat.log.effect_suppressed");
+    }
+}
+
+#[test]
+fn hidden_conditional_and_unregistered_effect_ids_are_masked() {
+    let request = leak_spectator_request();
+    let view = spectate_combat(&request).unwrap();
+    let effect_entries: Vec<_> = view
+        .full_log
+        .iter()
+        .filter(|e| {
+            e.template_id == "combat.log.effect_applied"
+                || e.template_id == "combat.log.effect_applied_hidden"
+        })
+        .collect();
+    assert_eq!(effect_entries.len(), 4);
+
+    let public = effect_entries
+        .iter()
+        .find(|e| e.effect_id.as_deref() == Some("buff_public"))
+        .expect("public effect id must remain visible");
+    assert_eq!(public.template_id, "combat.log.effect_applied");
+
+    let masked_count = effect_entries
+        .iter()
+        .filter(|e| e.template_id == "combat.log.effect_applied_hidden" && e.effect_id.is_none())
+        .count();
+    assert_eq!(
+        masked_count, 3,
+        "buff_hidden, buff_conditional, and buff_unregistered must all be masked"
+    );
 }

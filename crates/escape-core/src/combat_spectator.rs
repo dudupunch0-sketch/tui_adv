@@ -1,7 +1,8 @@
 use crate::{
-    CombatAttackOutcome, CombatEffectCatalog, CombatFacing, CombatLogEvent, CombatLogImportance,
-    CombatLogTag, CombatPosition, CombatResolutionLogEvent, CombatResolutionLogTag,
-    CombatResolutionResult, CombatSide, CombatSimulationParticipant,
+    CombatAttackOutcome, CombatEffectCatalog, CombatEffectDefinition, CombatFacing, CombatLogEvent,
+    CombatLogImportance, CombatLogTag, CombatPosition, CombatResolutionLogEvent,
+    CombatResolutionLogTag, CombatResolutionResult, CombatSide, CombatSimulationParticipant,
+    EffectVisibility,
 };
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
@@ -11,8 +12,7 @@ const TEMPLATE_TARGET_SELECTION: &str = "combat.log.target_selection";
 const TEMPLATE_COLLISION: &str = "combat.log.collision";
 const TEMPLATE_DAMAGE_APPLIED: &str = "combat.log.damage_applied";
 const TEMPLATE_EFFECT_APPLIED: &str = "combat.log.effect_applied";
-const TEMPLATE_ATTACK_ROLL: &str = "combat.log.attack_roll";
-const TEMPLATE_EFFECT_SUPPRESSED: &str = "combat.log.effect_suppressed";
+const TEMPLATE_EFFECT_APPLIED_HIDDEN: &str = "combat.log.effect_applied_hidden";
 
 /// 정본 13의 "공용 연출 문법". renderer가 이 종류만 보고 표현을 고른다.
 /// 값은 판정 결과에서 파생되며, 이 enum이 애니메이션·CSS·색을 지정하지 않는다.
@@ -158,12 +158,30 @@ enum LogSource<'a> {
 
 /// `execution.full_log`(`CombatLogEvent`)와 `resolution.full_log`(`CombatResolutionLogEvent`)를
 /// tick -> sequence -> 실행로그 우선 순서로 합병하고, 등록된 태그 -> 템플릿 id 표로 옮긴다.
+///
+/// 누설 차단 (정본 5번 문장):
+/// - `AttackRoll`/`EffectSuppressed`는 숨은 판정·억제 사유를 담고 있어 아예 제외한다.
+/// - `EffectApplied`의 `effect_id`가 `catalog`에서 `Hidden`/`Conditional`이거나
+///   `catalog`에 아예 없으면 `effect_id`를 마스킹하고 템플릿을 `_hidden` 변형으로 바꾼다.
 fn build_log(request: &CombatSpectatorRequest) -> Vec<CombatSpectatorLogEntry> {
+    let catalog: BTreeMap<&str, &CombatEffectDefinition> = request
+        .catalog
+        .effects
+        .iter()
+        .map(|effect| (effect.id.as_str(), effect))
+        .collect();
+
     let mut merged: Vec<(u32, u32, u8, LogSource)> = Vec::new();
     for event in &request.resolution.execution.full_log {
         merged.push((event.tick, event.sequence, 0, LogSource::Execution(event)));
     }
     for event in &request.resolution.full_log {
+        if matches!(
+            event.tag,
+            CombatResolutionLogTag::AttackRoll | CombatResolutionLogTag::EffectSuppressed
+        ) {
+            continue;
+        }
         merged.push((event.tick, event.sequence, 1, LogSource::Resolution(event)));
     }
     merged.sort_by(|a, b| (a.0, a.1, a.2).cmp(&(b.0, b.1, b.2)));
@@ -188,15 +206,24 @@ fn build_log(request: &CombatSpectatorRequest) -> Vec<CombatSpectatorLogEntry> {
             LogSource::Resolution(event) => {
                 let (template_id, value_hundredths, effect_id) = match event.tag {
                     CombatResolutionLogTag::Collision => (TEMPLATE_COLLISION, None, None),
-                    CombatResolutionLogTag::AttackRoll => (TEMPLATE_ATTACK_ROLL, None, None),
                     CombatResolutionLogTag::DamageApplied => {
                         (TEMPLATE_DAMAGE_APPLIED, Some(event.value_hundredths), None)
                     }
                     CombatResolutionLogTag::EffectApplied => {
-                        (TEMPLATE_EFFECT_APPLIED, None, event.effect_id.clone())
+                        let visible = event
+                            .effect_id
+                            .as_deref()
+                            .and_then(|id| catalog.get(id))
+                            .is_some_and(|def| matches!(def.visibility, EffectVisibility::Public));
+                        if visible {
+                            (TEMPLATE_EFFECT_APPLIED, None, event.effect_id.clone())
+                        } else {
+                            (TEMPLATE_EFFECT_APPLIED_HIDDEN, None, None)
+                        }
                     }
-                    CombatResolutionLogTag::EffectSuppressed => {
-                        (TEMPLATE_EFFECT_SUPPRESSED, None, event.effect_id.clone())
+                    CombatResolutionLogTag::AttackRoll
+                    | CombatResolutionLogTag::EffectSuppressed => {
+                        unreachable!("filtered out above before merge/sort")
                     }
                 };
                 CombatSpectatorLogEntry {

@@ -3,6 +3,7 @@ use crate::{
     CombatSide, CombatSimulationParticipant,
 };
 use serde::{Deserialize, Serialize};
+use std::collections::BTreeMap;
 
 /// 정본 13의 "공용 연출 문법". renderer가 이 종류만 보고 표현을 고른다.
 /// 값은 판정 결과에서 파생되며, 이 enum이 애니메이션·CSS·색을 지정하지 않는다.
@@ -83,13 +84,42 @@ impl std::error::Error for CombatSpectatorError {}
 pub fn spectate(
     request: &CombatSpectatorRequest,
 ) -> Result<CombatSpectatorView, CombatSpectatorError> {
+    let participants: BTreeMap<&str, &CombatSimulationParticipant> = request
+        .participants
+        .iter()
+        .map(|p| (p.id.as_str(), p))
+        .collect();
+
+    let mut frames = Vec::with_capacity(request.resolution.execution.frames.len());
+    for tick_frame in &request.resolution.execution.frames {
+        let mut pieces = Vec::with_capacity(tick_frame.positions.len());
+        for (id, position) in &tick_frame.positions {
+            let participant = participants
+                .get(id.as_str())
+                .ok_or_else(|| CombatSpectatorError::UnknownParticipant(id.clone()))?;
+            pieces.push(CombatSpectatorPiece {
+                id: id.clone(),
+                side: participant.side,
+                position: *position,
+                facing: participant.facing,
+                active: participant.active,
+                // cue 파생은 WP-3에서 채운다.
+                cues: Vec::new(),
+            });
+        }
+        frames.push(CombatSpectatorFrame {
+            tick: tick_frame.tick,
+            pieces,
+        });
+    }
+
     let mut view = CombatSpectatorView {
         resolution_fingerprint: request.resolution.fingerprint.clone(),
         // NOTE(wave3-step1a WP-1): `CombatResolutionResult`/`CombatExecutionResult`에는
         // tick 길이(ms)를 담는 필드가 없다. 플랜의 파생 규칙에도 명시되어 있지 않다.
         // 렌더러 소비는 Step 1c/1d 소관이라 이 slice에서는 0으로 둔다 (보고서 참고).
         tick_millis: 0,
-        frames: Vec::new(),
+        frames,
         core_log: Vec::new(),
         full_log: Vec::new(),
         fingerprint: String::new(),

@@ -1,7 +1,8 @@
 use escape_core::*;
 
-/// tick 한 칸의 길이(ms). 시뮬레이션 config와 관전 request가 같은 값을 써야
-/// "시뮬레이션 시간 = 화면 시간" 계약이 성립한다.
+/// tick 한 칸의 길이(ms). 시뮬레이션 config에 설정하면 `execute()`가 provenance에
+/// 옮기고, `spectate()`는 그 provenance에서 이 값을 읽는다. "시뮬레이션 시간 = 화면
+/// 시간" 계약은 이제 request가 아니라 provenance를 통해 성립한다.
 const SIM_TICK_MILLIS: u32 = 100;
 
 fn manifest() -> CombatManifest {
@@ -140,7 +141,6 @@ fn spectator_request() -> CombatSpectatorRequest {
         resolution,
         participants: participants(),
         catalog: CombatEffectCatalog { effects: vec![] },
-        tick_millis: SIM_TICK_MILLIS,
     }
 }
 
@@ -171,7 +171,6 @@ fn two_way_spectator_request() -> CombatSpectatorRequest {
         resolution,
         participants: participants(),
         catalog: CombatEffectCatalog { effects: vec![] },
-        tick_millis: SIM_TICK_MILLIS,
     }
 }
 
@@ -256,7 +255,6 @@ fn leak_spectator_request() -> CombatSpectatorRequest {
                 ),
             ],
         },
-        tick_millis: SIM_TICK_MILLIS,
     }
 }
 
@@ -451,14 +449,12 @@ fn fingerprint_chains_the_resolution_fingerprint() {
         resolution: res_a.clone(),
         participants: participants(),
         catalog: CombatEffectCatalog { effects: vec![] },
-        tick_millis: SIM_TICK_MILLIS,
     })
     .unwrap();
     let view_b = spectate_combat(&CombatSpectatorRequest {
         resolution: res_b.clone(),
         participants: participants(),
         catalog: CombatEffectCatalog { effects: vec![] },
-        tick_millis: SIM_TICK_MILLIS,
     })
     .unwrap();
 
@@ -468,21 +464,21 @@ fn fingerprint_chains_the_resolution_fingerprint() {
 }
 
 #[test]
-fn view_reports_the_requested_tick_millis() {
+fn view_reports_the_tick_millis_from_provenance() {
     let view = spectate_combat(&spectator_request()).unwrap();
     assert_eq!(
         view.tick_millis, SIM_TICK_MILLIS,
-        "the view must report the simulation tick length, not a placeholder"
+        "the view must report the simulation tick length carried by execution provenance, not a placeholder"
     );
 }
 
 #[test]
-fn zero_tick_millis_is_rejected() {
+fn missing_provenance_is_rejected() {
     let mut request = spectator_request();
-    request.tick_millis = 0;
+    request.resolution.execution.provenance = None;
     assert_eq!(
         spectate_combat(&request),
-        Err(CombatSpectatorError::InvalidTickMillis(0))
+        Err(CombatSpectatorError::MissingProvenance)
     );
 }
 
@@ -549,7 +545,6 @@ fn spectator_request_for(resolution: CombatResolutionResult) -> CombatSpectatorR
         resolution,
         participants: participants(),
         catalog: CombatEffectCatalog { effects: vec![] },
-        tick_millis: SIM_TICK_MILLIS,
     }
 }
 

@@ -79,17 +79,14 @@ pub struct CombatSpectatorRequest {
     #[serde(default)]
     pub participants: Vec<CombatSimulationParticipant>,
     pub catalog: CombatEffectCatalog,
-    /// tick 한 칸의 길이(ms). `CombatResolutionResult`는 입력 `CombatSimulationConfig`를
-    /// 보관하지 않으므로 호출자가 시뮬레이션에 쓴 값을 그대로 전달한다. 정본 13의
-    /// "시뮬레이션 시간과 화면 시간은 항상 일치한다"를 renderer가 지킬 수 있게 하는 값이다.
-    pub tick_millis: u32,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum CombatSpectatorError {
     UnknownParticipant(String),
-    /// `tick_millis`가 0이면 화면 시간을 시뮬레이션 시간에 맞출 수 없다.
-    InvalidTickMillis(u32),
+    /// `resolution.execution.provenance`가 없거나(구 JSON) `tick_millis`가 0이면
+    /// 화면 시간을 시뮬레이션 시간에 맞출 수 없다. 값을 지어내지 않고 에러를 낸다.
+    MissingProvenance,
 }
 impl std::fmt::Display for CombatSpectatorError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -101,9 +98,14 @@ impl std::error::Error for CombatSpectatorError {}
 pub fn spectate(
     request: &CombatSpectatorRequest,
 ) -> Result<CombatSpectatorView, CombatSpectatorError> {
-    if request.tick_millis == 0 {
-        return Err(CombatSpectatorError::InvalidTickMillis(request.tick_millis));
-    }
+    let tick_millis = request
+        .resolution
+        .execution
+        .provenance
+        .as_ref()
+        .map(|p| p.tick_millis)
+        .filter(|millis| *millis > 0)
+        .ok_or(CombatSpectatorError::MissingProvenance)?;
     let participants: BTreeMap<&str, &CombatSimulationParticipant> = request
         .participants
         .iter()
@@ -156,7 +158,7 @@ pub fn spectate(
 
     let mut view = CombatSpectatorView {
         resolution_fingerprint: request.resolution.fingerprint.clone(),
-        tick_millis: request.tick_millis,
+        tick_millis,
         frames,
         core_log,
         full_log,

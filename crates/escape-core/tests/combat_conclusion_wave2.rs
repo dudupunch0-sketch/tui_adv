@@ -47,7 +47,11 @@ fn resolution(ally: i64, enemy: i64, tick: u32) -> CombatResolutionResult {
             frames: vec![],
             full_log: vec![],
             core_log: vec![],
-            provenance: None,
+            provenance: Some(CombatProvenance {
+                simulation_version: CombatSimulationVersion::new("v1").unwrap(),
+                tick_millis: 100,
+                manifest_fingerprint: "mf".into(),
+            }),
             fingerprint: "res".into(),
         },
         frames: vec![CombatResolutionFrame {
@@ -111,7 +115,11 @@ fn multi_resolution(
             frames: vec![],
             full_log: vec![],
             core_log: vec![],
-            provenance: None,
+            provenance: Some(CombatProvenance {
+                simulation_version: CombatSimulationVersion::new("v1").unwrap(),
+                tick_millis: 50,
+                manifest_fingerprint: "mf".into(),
+            }),
             fingerprint: "res".into(),
         },
         frames,
@@ -137,7 +145,6 @@ fn eval(a: i64, e: i64, tick: u32, close: bool) -> CombatConclusionReport {
             max_ticks: 3,
             conclude_on_max_ticks: close,
         },
-        tick_millis: 100,
     })
     .unwrap()
 }
@@ -178,7 +185,6 @@ fn permutation_and_invalid_inputs_are_deterministic() {
             max_ticks: 3,
             conclude_on_max_ticks: false,
         },
-        tick_millis: 100,
     };
     let a = conclude_combat(r.clone()).unwrap();
     r.participants.reverse();
@@ -193,7 +199,6 @@ fn permutation_and_invalid_inputs_are_deterministic() {
             max_ticks: 3,
             conclude_on_max_ticks: false,
         },
-        tick_millis: 100,
     };
     assert!(matches!(
         conclude_combat(bad),
@@ -213,7 +218,6 @@ fn cleanup_is_split_without_persistent_promotion() {
             max_ticks: 3,
             conclude_on_max_ticks: false,
         },
-        tick_millis: 100,
     };
     r.resolution.state.active_effects = vec![
         CombatEffectInstance {
@@ -254,7 +258,6 @@ fn policy_and_active_side_validation_are_explicit() {
             max_ticks: 0,
             conclude_on_max_ticks: true,
         },
-        tick_millis: 100,
     };
     assert!(matches!(
         conclude_combat(r.clone()),
@@ -276,7 +279,6 @@ fn policy_and_active_side_validation_are_explicit() {
             max_ticks: 1,
             conclude_on_max_ticks: false,
         },
-        tick_millis: 100,
     };
     assert!(matches!(
         conclude_combat(empty_enemy),
@@ -285,8 +287,8 @@ fn policy_and_active_side_validation_are_explicit() {
 }
 
 #[test]
-fn zero_tick_millis_is_rejected() {
-    let r = CombatConclusionRequest {
+fn missing_provenance_is_rejected() {
+    let mut r = CombatConclusionRequest {
         resolution: resolution(10, 0, 1),
         participants: vec![
             participant("a", CombatSide::Ally, true),
@@ -296,11 +298,11 @@ fn zero_tick_millis_is_rejected() {
             max_ticks: 3,
             conclude_on_max_ticks: false,
         },
-        tick_millis: 0,
     };
+    r.resolution.execution.provenance = None;
     assert!(matches!(
         conclude_combat(r),
-        Err(CombatConclusionError::InvalidTickMillis(0))
+        Err(CombatConclusionError::MissingProvenance)
     ));
 }
 
@@ -365,7 +367,6 @@ fn combatants_report_sums_damage_and_marks_incapacitated() {
             max_ticks: 5,
             conclude_on_max_ticks: false,
         },
-        tick_millis: 50,
     };
     let report = conclude_combat(request).unwrap();
     assert_eq!(
@@ -443,7 +444,6 @@ fn kills_are_attributed_to_last_valid_lethal_outcome_in_the_ko_tick() {
             max_ticks: 5,
             conclude_on_max_ticks: false,
         },
-        tick_millis: 50,
     };
     let report = conclude_combat(request).unwrap();
     let by_id: BTreeMap<_, _> = report
@@ -479,7 +479,6 @@ fn top_damage_highlights_hidden_when_no_damage_occurs() {
             max_ticks: 5,
             conclude_on_max_ticks: false,
         },
-        tick_millis: 50,
     };
     let report = conclude_combat(request).unwrap();
     assert_eq!(report.top_damage_dealt_id, None);
@@ -531,7 +530,6 @@ fn top_damage_highlights_pick_max_with_lowest_id_tie_break() {
             max_ticks: 5,
             conclude_on_max_ticks: false,
         },
-        tick_millis: 50,
     };
     let report = conclude_combat(request).unwrap();
     // damage_dealt: a=25, c=0, e=25 -> tie, lowest id "a" wins.
@@ -590,7 +588,6 @@ fn sample_multi_request(participants: Vec<CombatSimulationParticipant>) -> Comba
             max_ticks: 5,
             conclude_on_max_ticks: false,
         },
-        tick_millis: 50,
     }
 }
 

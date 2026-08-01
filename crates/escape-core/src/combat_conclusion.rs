@@ -13,9 +13,6 @@ pub struct CombatConclusionRequest {
     pub resolution: CombatResolutionResult,
     pub participants: Vec<CombatSimulationParticipant>,
     pub policy: CombatTerminationPolicy,
-    /// tick 한 칸의 길이(ms). `CombatResolutionResult`가 입력 `CombatSimulationConfig`를
-    /// 보관하지 않으므로 호출자가 전달한다. 0은 `InvalidTickMillis`로 거부한다.
-    pub tick_millis: u32,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -78,11 +75,14 @@ pub struct CombatConclusionReport {
 pub fn conclude(
     request: CombatConclusionRequest,
 ) -> Result<CombatConclusionReport, CombatConclusionError> {
-    if request.tick_millis == 0 {
-        return Err(CombatConclusionError::InvalidTickMillis(
-            request.tick_millis,
-        ));
-    }
+    let tick_millis = request
+        .resolution
+        .execution
+        .provenance
+        .as_ref()
+        .map(|p| p.tick_millis)
+        .filter(|millis| *millis > 0)
+        .ok_or(CombatConclusionError::MissingProvenance)?;
     if request.policy.max_ticks == 0 {
         return Err(CombatConclusionError::InvalidPolicy);
     }
@@ -187,8 +187,8 @@ pub fn conclude(
     }
     let decisive_tick = terminal.then_some(last_tick).flatten();
     let duration_millis = match decisive_tick {
-        Some(t) => (u64::from(t) + 1) * u64::from(request.tick_millis),
-        None => (request.resolution.frames.len() as u64) * u64::from(request.tick_millis),
+        Some(t) => (u64::from(t) + 1) * u64::from(tick_millis),
+        None => (request.resolution.frames.len() as u64) * u64::from(tick_millis),
     };
     let mut damage_dealt: BTreeMap<String, i64> = BTreeMap::new();
     let mut damage_taken: BTreeMap<String, i64> = BTreeMap::new();
@@ -305,7 +305,9 @@ pub enum CombatConclusionError {
     ParticipantStateMismatch,
     EmptyActiveSide,
     FrameExceedsPolicy,
-    InvalidTickMillis(u32),
+    /// `resolution.execution.provenance`가 없거나(구 JSON) `tick_millis`가 0이면
+    /// `duration_millis`를 지어내지 않고 이 에러를 낸다.
+    MissingProvenance,
 }
 impl std::fmt::Display for CombatConclusionError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {

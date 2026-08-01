@@ -4,6 +4,7 @@ mod combat_execution;
 mod combat_opportunity;
 mod combat_resolution;
 mod combat_simulation;
+mod combat_spectator;
 mod combat_state;
 mod content;
 mod effects;
@@ -44,6 +45,10 @@ pub use combat_simulation::{
     CombatRoleWeights, CombatSide, CombatSimulation, CombatSimulationConfig, CombatSimulationError,
     CombatSimulationInput, CombatSimulationParticipant, CombatTargetFallback, CombatTargetPolicy,
     CombatTargetPreference, CombatTickFrame,
+};
+pub use combat_spectator::{
+    spectate as spectate_combat, CombatSpectatorCue, CombatSpectatorError, CombatSpectatorFrame,
+    CombatSpectatorLogEntry, CombatSpectatorPiece, CombatSpectatorRequest, CombatSpectatorView,
 };
 pub use combat_state::{
     CombatConclusion, CombatEffectCatalog, CombatEffectCategory, CombatEffectDecision,

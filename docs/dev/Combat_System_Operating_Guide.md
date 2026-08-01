@@ -51,6 +51,7 @@
 - `crates/escape-core/src/combat_resolution.rs`
 - `crates/escape-core/tests/combat_resolution_wave2.rs` 11개 테스트
 - Wave 2 Step 3은 execution frame sidecar resolver, collision/range/accuracy, fixed-point damage/defense, health/balance clamp, effect catalog stacking, Actual/Forecast namespace, resolution full/core log를 구현·검증했다.
+- Wave 2 Step 4는 resolution sidecar를 소비하는 다수전 결착/종료 조건 evaluator, mutual-defeat precedence, max-tick stalemate, stable survivor/defeated report, combat-only cleanup sidecar를 구현·검증했다. 고급 AI utility·조기 tick 중단·renderer adapter는 아직 별도 plan이다.
 
 아직 열지 않음:
 

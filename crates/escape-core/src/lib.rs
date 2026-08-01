@@ -1,3 +1,4 @@
+mod combat_conclusion;
 mod combat_contract;
 mod combat_execution;
 mod combat_opportunity;
@@ -13,6 +14,11 @@ mod scene_page;
 mod state;
 mod turn;
 
+pub use combat_conclusion::{
+    conclude as conclude_combat, CombatConclusionError, CombatConclusionOutcome,
+    CombatConclusionReason, CombatConclusionReport, CombatConclusionRequest,
+    CombatTerminationPolicy,
+};
 pub use combat_contract::{
     CombatContractError, CombatEffectRef, CombatManifest, CombatRngNamespace,
     CombatSimulationVersion, SuppressedCombatEffect,

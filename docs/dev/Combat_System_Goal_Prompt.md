@@ -35,7 +35,9 @@ Notion 전투 시스템 허브와 canonical 00~13을 기준으로, Rust GameCore
 - `crates/escape-core/src/combat_execution.rs`와 `crates/escape-core/tests/combat_execution_wave2.rs` 6개 테스트가 있다.
 - `fable_combat_wave2_step3_2607261845.md`가 구현·검증 완료다. sidecar resolution request가 기존 execution frame을 재사용하고 collision/range/accuracy, fixed-point damage/defense, health/balance clamp, effect catalog stacking, resolution full/core log를 제공한다.
 - `crates/escape-core/src/combat_resolution.rs`와 `crates/escape-core/tests/combat_resolution_wave2.rs` 11개 테스트가 있다.
-- 다수전 AI 행동·결착·전투 종료 조건, ScenePage/WASM/Web/terminal 전투 UI, 기술 비용·호흡 회복률·밸런스 수치는 아직 미구현이다.
+- `fable_combat_wave2_step4_2607261845.md`가 구현·검증 완료다. resolution fingerprint/state를 소비하는 pure 결착 evaluator가 mutual-defeat precedence, max-tick stalemate, stable survivor/defeated report, combat-only cleanup sidecar를 제공한다.
+- `crates/escape-core/src/combat_conclusion.rs`와 `crates/escape-core/tests/combat_conclusion_wave2.rs` 결착 회귀 테스트 4개가 있다.
+- 고급 다수전 AI 행동·조기 tick 중단, ScenePage/WASM/Web/terminal 전투 UI, 기술 비용·호흡 회복률·밸런스 수치는 아직 미구현이다.
 
 Notion 불변식:
 - 같은 manifest·seed·선택 이력·simulation version은 같은 결과와 로그를 만든다.
@@ -73,5 +75,5 @@ Notion 불변식:
 권장 다음 goal 문장:
 
 ```text
-Wave 2 Step 4의 다수전 AI 행동·결착·전투 종료 조건 계약을 별도 작은 plan으로 설계하고, 승인 후 WSL 회귀 검증까지 수행한다.
+Wave 3 Step 1의 ScenePage/WASM/terminal/Web 관전 adapter 계약을 별도 작은 plan으로 설계하고, 승인 후 WSL 회귀 검증까지 수행한다.
 ```

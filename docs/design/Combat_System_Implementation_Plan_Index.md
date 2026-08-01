@@ -1,6 +1,6 @@
 # 전투 시스템 구현 계획 인덱스
 
-status: wave2-step3-complete
+status: wave2-step4-complete
 기준일: 2026-07-26
 
 이 문서는 Notion `전투 시스템` 허브와 canonical 문서 00~13을 Rust GameCore 구현 순서로 쪼갠 인덱스다. 각 단계 문서는 한 번의 coding subagent 작업으로 완료할 수 있는 크기를 목표로 한다.
@@ -14,11 +14,11 @@ status: wave2-step3-complete
 
 ## 현재 코드와 정본의 경계
 
-Wave 1 Step 1~3과 Wave 2 Step 1~3이 `escape-core`에 구현·검증되어 initial manifest/RNG 분리, 전투원 상태/effect catalog, opportunity 후보, 고정 정수 좌표·role/target·동시 tick frame, 실행 mode parity·dual log, 실제 collision/attack/damage/effect resolution sidecar 계약을 제공한다. 다음 계약은 아직 없다.
+Wave 1 Step 1~3과 Wave 2 Step 1~4가 `escape-core`에 구현·검증되어 initial manifest/RNG 분리, 전투원 상태/effect catalog, opportunity 후보, 고정 정수 좌표·role/target·동시 tick frame, 실행 mode parity·dual log, 실제 collision/attack/damage/effect resolution sidecar, 다수전 결착/종료 조건 sidecar 계약을 제공한다. 다음 계약은 아직 없다.
 
-- 다수전 AI 행동·결착·전투 종료 조건 resolver
+- 고급 다수전 AI 행동·조기 결착/전투 tick 중단 resolver
 - 대형·결속·배경 전투·증원과 전투 종료 조건
-- 전투 종료 보고서
+- 전투 종료 narrative/report consumer
 
 ## 단계 순서
 
@@ -30,6 +30,7 @@ Wave 1 Step 1~3과 Wave 2 Step 1~3이 `escape-core`에 구현·검증되어 init
 | `fable_combat_wave2_step1_2607261845.md` | 고정 tick·AI 역할·목표·연속 위치 resolver | Web 연출·밸런스 확정값 |
 | `fable_combat_wave2_step2_2607261845.md` | actual/forecast/retry/auto/fast 결과 parity와 이중 로그 | 전략 조언·자동 원인 분석 |
 | `fable_combat_wave2_step3_2607261845.md` | 실제 collision/attack/damage/effect resolver와 fixed-point sidecar 상태 | renderer adapter·결착·밸런스 확정값 |
+| `fable_combat_wave2_step4_2607261845.md` | 다수전 결착·전투 종료 조건 sidecar와 cleanup report | 고급 AI·증원·패주·renderer adapter |
 | `fable_combat_wave3_step1_2607261845.md` | ScenePage/WASM/terminal/Web 관전 어댑터 | renderer가 판정 재계산하는 구조 |
 | `fable_combat_wave3_step2_2607261845.md` | 시스템형 1개 + 혼합형 1개 + 각본형 1개 authoring slice | 대규모 콘텐츠·보스 밸런스 |
 

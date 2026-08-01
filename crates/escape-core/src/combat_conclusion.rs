@@ -13,6 +13,9 @@ pub struct CombatConclusionRequest {
     pub resolution: CombatResolutionResult,
     pub participants: Vec<CombatSimulationParticipant>,
     pub policy: CombatTerminationPolicy,
+    /// tick 한 칸의 길이(ms). `CombatResolutionResult`가 입력 `CombatSimulationConfig`를
+    /// 보관하지 않으므로 호출자가 전달한다. 0은 `InvalidTickMillis`로 거부한다.
+    pub tick_millis: u32,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -47,12 +50,20 @@ pub struct CombatConclusionReport {
     pub defeated_ids: Vec<String>,
     pub removed_combat_effect_ids: Vec<String>,
     pub retained_effect_ids: Vec<String>,
+    /// 결착까지의 전투 시간. tick 수 × tick_millis.
+    #[serde(default)]
+    pub duration_millis: u64,
     pub fingerprint: String,
 }
 
 pub fn conclude(
     request: CombatConclusionRequest,
 ) -> Result<CombatConclusionReport, CombatConclusionError> {
+    if request.tick_millis == 0 {
+        return Err(CombatConclusionError::InvalidTickMillis(
+            request.tick_millis,
+        ));
+    }
     if request.policy.max_ticks == 0 {
         return Err(CombatConclusionError::InvalidPolicy);
     }
@@ -155,17 +166,23 @@ pub fn conclude(
             retained.insert(effect.definition_id.clone());
         }
     }
+    let decisive_tick = terminal.then_some(last_tick).flatten();
+    let duration_millis = match decisive_tick {
+        Some(t) => (u64::from(t) + 1) * u64::from(request.tick_millis),
+        None => (request.resolution.frames.len() as u64) * u64::from(request.tick_millis),
+    };
     let mut report = CombatConclusionReport {
         resolution_fingerprint: request.resolution.fingerprint.clone(),
         outcome,
         reason,
-        decisive_tick: terminal.then_some(last_tick).flatten(),
+        decisive_tick,
         active_allies: allies.len() as u32,
         active_enemies: enemies.len() as u32,
         survivor_ids,
         defeated_ids,
         removed_combat_effect_ids: removed.into_iter().collect(),
         retained_effect_ids: retained.into_iter().collect(),
+        duration_millis,
         fingerprint: String::new(),
     };
     report.fingerprint = fingerprint(&report);
@@ -190,6 +207,7 @@ pub enum CombatConclusionError {
     ParticipantStateMismatch,
     EmptyActiveSide,
     FrameExceedsPolicy,
+    InvalidTickMillis(u32),
 }
 impl std::fmt::Display for CombatConclusionError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {

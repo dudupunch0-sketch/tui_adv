@@ -72,6 +72,7 @@ fn eval(a: i64, e: i64, tick: u32, close: bool) -> CombatConclusionReport {
             max_ticks: 3,
             conclude_on_max_ticks: close,
         },
+        tick_millis: 100,
     })
     .unwrap()
 }
@@ -112,6 +113,7 @@ fn permutation_and_invalid_inputs_are_deterministic() {
             max_ticks: 3,
             conclude_on_max_ticks: false,
         },
+        tick_millis: 100,
     };
     let a = conclude_combat(r.clone()).unwrap();
     r.participants.reverse();
@@ -126,6 +128,7 @@ fn permutation_and_invalid_inputs_are_deterministic() {
             max_ticks: 3,
             conclude_on_max_ticks: false,
         },
+        tick_millis: 100,
     };
     assert!(matches!(
         conclude_combat(bad),
@@ -145,6 +148,7 @@ fn cleanup_is_split_without_persistent_promotion() {
             max_ticks: 3,
             conclude_on_max_ticks: false,
         },
+        tick_millis: 100,
     };
     r.resolution.state.active_effects = vec![
         CombatEffectInstance {
@@ -185,6 +189,7 @@ fn policy_and_active_side_validation_are_explicit() {
             max_ticks: 0,
             conclude_on_max_ticks: true,
         },
+        tick_millis: 100,
     };
     assert!(matches!(
         conclude_combat(r.clone()),
@@ -206,9 +211,46 @@ fn policy_and_active_side_validation_are_explicit() {
             max_ticks: 1,
             conclude_on_max_ticks: false,
         },
+        tick_millis: 100,
     };
     assert!(matches!(
         conclude_combat(empty_enemy),
         Err(CombatConclusionError::EmptyActiveSide)
     ));
+}
+
+#[test]
+fn zero_tick_millis_is_rejected() {
+    let r = CombatConclusionRequest {
+        resolution: resolution(10, 0, 1),
+        participants: vec![
+            participant("a", CombatSide::Ally, true),
+            participant("e", CombatSide::Enemy, true),
+        ],
+        policy: CombatTerminationPolicy {
+            max_ticks: 3,
+            conclude_on_max_ticks: false,
+        },
+        tick_millis: 0,
+    };
+    assert!(matches!(
+        conclude_combat(r),
+        Err(CombatConclusionError::InvalidTickMillis(0))
+    ));
+}
+
+#[test]
+fn duration_millis_uses_decisive_tick_plus_one_when_terminal() {
+    // eval(10, 0, 1, false) reaches AllyVictory at tick 1 with tick_millis = 100.
+    let report = eval(10, 0, 1, false);
+    assert_eq!(report.decisive_tick, Some(1));
+    assert_eq!(report.duration_millis, (1 + 1) * 100);
+}
+
+#[test]
+fn duration_millis_uses_frame_count_when_not_terminal() {
+    // eval(10, 10, 1, false) stays InProgress: no decisive tick, one frame recorded.
+    let report = eval(10, 10, 1, false);
+    assert_eq!(report.decisive_tick, None);
+    assert_eq!(report.duration_millis, 1 * 100);
 }

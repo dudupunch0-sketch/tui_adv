@@ -1,5 +1,9 @@
 use escape_core::*;
 
+/// tick 한 칸의 길이(ms). 시뮬레이션 config와 관전 request가 같은 값을 써야
+/// "시뮬레이션 시간 = 화면 시간" 계약이 성립한다.
+const SIM_TICK_MILLIS: u32 = 100;
+
 fn manifest() -> CombatManifest {
     CombatManifest {
         simulation_version: CombatSimulationVersion::new("v1").unwrap(),
@@ -79,7 +83,7 @@ fn resolution_request() -> CombatResolutionRequest {
                 },
                 seed: 7,
                 config: CombatSimulationConfig {
-                    tick_millis: 100,
+                    tick_millis: SIM_TICK_MILLIS,
                     max_ticks: 1,
                 },
                 participants: participants(),
@@ -136,6 +140,7 @@ fn spectator_request() -> CombatSpectatorRequest {
         resolution,
         participants: participants(),
         catalog: CombatEffectCatalog { effects: vec![] },
+        tick_millis: SIM_TICK_MILLIS,
     }
 }
 
@@ -166,6 +171,7 @@ fn two_way_spectator_request() -> CombatSpectatorRequest {
         resolution,
         participants: participants(),
         catalog: CombatEffectCatalog { effects: vec![] },
+        tick_millis: SIM_TICK_MILLIS,
     }
 }
 
@@ -250,6 +256,7 @@ fn leak_spectator_request() -> CombatSpectatorRequest {
                 ),
             ],
         },
+        tick_millis: SIM_TICK_MILLIS,
     }
 }
 
@@ -444,16 +451,37 @@ fn fingerprint_chains_the_resolution_fingerprint() {
         resolution: res_a.clone(),
         participants: participants(),
         catalog: CombatEffectCatalog { effects: vec![] },
+        tick_millis: SIM_TICK_MILLIS,
     })
     .unwrap();
     let view_b = spectate_combat(&CombatSpectatorRequest {
         resolution: res_b.clone(),
         participants: participants(),
         catalog: CombatEffectCatalog { effects: vec![] },
+        tick_millis: SIM_TICK_MILLIS,
     })
     .unwrap();
 
     assert_eq!(view_a.resolution_fingerprint, res_a.fingerprint);
     assert_eq!(view_b.resolution_fingerprint, res_b.fingerprint);
     assert_ne!(view_a.fingerprint, view_b.fingerprint);
+}
+
+#[test]
+fn view_reports_the_requested_tick_millis() {
+    let view = spectate_combat(&spectator_request()).unwrap();
+    assert_eq!(
+        view.tick_millis, SIM_TICK_MILLIS,
+        "the view must report the simulation tick length, not a placeholder"
+    );
+}
+
+#[test]
+fn zero_tick_millis_is_rejected() {
+    let mut request = spectator_request();
+    request.tick_millis = 0;
+    assert_eq!(
+        spectate_combat(&request),
+        Err(CombatSpectatorError::InvalidTickMillis(0))
+    );
 }

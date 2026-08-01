@@ -78,6 +78,12 @@ pub struct CombatAttackOutcome {
 pub struct CombatResolutionFrame {
     pub tick: u32,
     pub outcomes: Vec<CombatAttackOutcome>,
+    /// 이 tick의 모든 outcome을 적용한 뒤의 전투원 상태. id 오름차순.
+    /// `CombatResolutionState`(전투 종료 후 최종 상태)와 달리 tick 단위 기록이며,
+    /// 관전 연출이 균형 붕괴·전투불능 시점을 알 수 있게 한다.
+    /// `fingerprint`는 이 필드를 포함하지 않는다 — outcomes에서 결정론적으로 파생되기 때문이다.
+    #[serde(default)]
+    pub combatants: Vec<CombatResolutionCombatant>,
     pub fingerprint: String,
 }
 
@@ -379,6 +385,7 @@ pub fn resolve(
         frames.push(CombatResolutionFrame {
             tick: frame.tick,
             outcomes,
+            combatants: Vec::new(),
             fingerprint: fp,
         });
     }

@@ -52,6 +52,7 @@ fn resolution(ally: i64, enemy: i64, tick: u32) -> CombatResolutionResult {
         frames: vec![CombatResolutionFrame {
             tick,
             outcomes: vec![],
+            combatants: vec![],
             fingerprint: "f".into(),
         }],
         state,

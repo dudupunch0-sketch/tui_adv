@@ -1,9 +1,9 @@
 use crate::{
-    CombatEffectCatalog, CombatFacing, CombatLogImportance, CombatPosition, CombatResolutionResult,
-    CombatSide, CombatSimulationParticipant,
+    CombatAttackOutcome, CombatEffectCatalog, CombatFacing, CombatLogImportance, CombatPosition,
+    CombatResolutionResult, CombatSide, CombatSimulationParticipant,
 };
 use serde::{Deserialize, Serialize};
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 /// 정본 13의 "공용 연출 문법". renderer가 이 종류만 보고 표현을 고른다.
 /// 값은 판정 결과에서 파생되며, 이 enum이 애니메이션·CSS·색을 지정하지 않는다.
@@ -90,8 +90,16 @@ pub fn spectate(
         .map(|p| (p.id.as_str(), p))
         .collect();
 
+    let outcomes_by_tick: BTreeMap<u32, &Vec<CombatAttackOutcome>> = request
+        .resolution
+        .frames
+        .iter()
+        .map(|frame| (frame.tick, &frame.outcomes))
+        .collect();
+
     let mut frames = Vec::with_capacity(request.resolution.execution.frames.len());
     for tick_frame in &request.resolution.execution.frames {
+        let outcomes = outcomes_by_tick.get(&tick_frame.tick).copied();
         let mut pieces = Vec::with_capacity(tick_frame.positions.len());
         for (id, position) in &tick_frame.positions {
             let participant = participants
@@ -103,8 +111,7 @@ pub fn spectate(
                 position: *position,
                 facing: participant.facing,
                 active: participant.active,
-                // cue 파생은 WP-3에서 채운다.
-                cues: Vec::new(),
+                cues: cues_for(id, outcomes),
             });
         }
         frames.push(CombatSpectatorFrame {
@@ -126,6 +133,29 @@ pub fn spectate(
     };
     view.fingerprint = fingerprint(&view);
     Ok(view)
+}
+
+/// 정본 13의 공용 연출 문법 3규칙만 적용한다: Attack/Hit/Evade 외 cue는 만들지 않는다.
+/// 규칙 밖 조합(예: hit && damage == 0)은 어떤 cue도 만들지 않는다.
+fn cues_for(id: &str, outcomes: Option<&Vec<CombatAttackOutcome>>) -> Vec<CombatSpectatorCue> {
+    let mut cues: BTreeSet<CombatSpectatorCue> = BTreeSet::new();
+    let Some(outcomes) = outcomes else {
+        return Vec::new();
+    };
+    for outcome in outcomes {
+        if outcome.actor_id == id {
+            cues.insert(CombatSpectatorCue::Attack);
+        }
+        if outcome.target_id == id {
+            if outcome.hit && outcome.damage_hundredths > 0 {
+                cues.insert(CombatSpectatorCue::Hit);
+            }
+            if outcome.in_range && !outcome.hit {
+                cues.insert(CombatSpectatorCue::Evade);
+            }
+        }
+    }
+    cues.into_iter().collect()
 }
 
 fn fingerprint<T: Serialize>(value: &T) -> String {

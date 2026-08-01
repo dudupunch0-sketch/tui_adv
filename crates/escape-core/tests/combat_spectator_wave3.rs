@@ -139,6 +139,36 @@ fn spectator_request() -> CombatSpectatorRequest {
     }
 }
 
+/// "a" attacks "e" with a guaranteed hit (accuracy 100) and "e" counters "a" with a
+/// guaranteed miss (accuracy 0) while still colliding/in range, so a single tick
+/// exercises all three cue rules at once: Attack (both actors), Hit (e is struck by
+/// a's hit), Evade (a is missed by e's in-range attack).
+fn two_way_resolution_request() -> CombatResolutionRequest {
+    let mut request = resolution_request();
+    request.attacks.push(CombatAttackDefinition {
+        id: "counter".into(),
+        actor_id: "e".into(),
+        power_hundredths: 1200,
+        ability_multiplier_hundredths: 100,
+        accuracy_percent: 0,
+        attack_range: 2,
+        penetration_hundredths: 0,
+        collision_balance_hundredths: 100,
+        balance_power_hundredths: 500,
+        effects: vec![],
+    });
+    request
+}
+
+fn two_way_spectator_request() -> CombatSpectatorRequest {
+    let resolution = resolve_combat(two_way_resolution_request()).unwrap();
+    CombatSpectatorRequest {
+        resolution,
+        participants: participants(),
+        catalog: CombatEffectCatalog { effects: vec![] },
+    }
+}
+
 #[test]
 fn frame_positions_facing_side_and_active_match_input() {
     let request = spectator_request();
@@ -181,4 +211,32 @@ fn participant_input_order_does_not_affect_view() {
         spectate_combat(&spectator_request()).unwrap(),
         spectate_combat(&reordered).unwrap()
     );
+}
+
+#[test]
+fn attack_hit_and_evade_cues_follow_the_three_rules_only() {
+    let request = two_way_spectator_request();
+    let view = spectate_combat(&request).unwrap();
+    let frame = &view.frames[0];
+    let piece = |id: &str| frame.pieces.iter().find(|p| p.id == id).unwrap();
+    assert_eq!(
+        piece("a").cues,
+        vec![CombatSpectatorCue::Attack, CombatSpectatorCue::Evade]
+    );
+    assert_eq!(
+        piece("e").cues,
+        vec![CombatSpectatorCue::Attack, CombatSpectatorCue::Hit]
+    );
+}
+
+#[test]
+fn cues_are_sorted_attack_then_hit_then_evade_with_no_duplicates() {
+    let request = two_way_spectator_request();
+    let view = spectate_combat(&request).unwrap();
+    for piece in &view.frames[0].pieces {
+        let mut sorted = piece.cues.clone();
+        sorted.sort();
+        sorted.dedup();
+        assert_eq!(piece.cues, sorted, "cues must already be sorted+deduped");
+    }
 }

@@ -1,6 +1,6 @@
 # 전투 시스템 구현 계획 인덱스
 
-status: wave2-step5-complete
+status: wave3-step1b-complete
 기준일: 2026-08-02
 
 이 문서는 Notion `전투 시스템` 허브와 canonical 문서 00~13을 Rust GameCore 구현 순서로 쪼갠 인덱스다. 각 단계 문서는 한 번의 coding subagent 작업으로 완료할 수 있는 크기를 목표로 한다.
@@ -14,17 +14,19 @@ status: wave2-step5-complete
 
 ## 현재 코드와 정본의 경계
 
-Wave 1 Step 1~3과 Wave 2 Step 1~4가 `escape-core`에 구현·검증되어 initial manifest/RNG 분리, 전투원 상태/effect catalog, opportunity 후보, 고정 정수 좌표·role/target·동시 tick frame, 실행 mode parity·dual log, 실제 collision/attack/damage/effect resolution sidecar, 다수전 결착/종료 조건 sidecar 계약을 제공한다. Wave 3 Step 1a가 여기에 `escape-core` 전용 관전 view 어댑터(`combat_spectator.rs`)를 더해 tick별 체스말 프레임, 공용 연출 cue(Attack/Hit/Evade), 템플릿 id 기반 이중 로그, 누설 차단(숨은 판정·억제 사유·Hidden/Conditional 효과 id 마스킹)을 제공한다 (`crates/escape-core/tests/combat_spectator_wave3.rs`, 현재 19개 테스트: `spectate_is_deterministic_for_identical_input`, `attack_roll_and_effect_suppressed_never_leak_into_any_log`, `hidden_conditional_and_unregistered_effect_ids_are_masked` 등). Wave 2 Step 5가 여기에 `CombatResolutionFrame.combatants`(tick 종료 시점 전투원 스냅샷, additive-optional)를 더하고 이를 소비해 `BalanceBroken`(균형 붕괴)·`Incapacitated`(전투불능) cue 2개를 파생한다 (`crates/escape-core/tests/combat_resolution_wave2.rs`의 `frame_snapshot_is_id_sorted_and_covers_every_combatant`·`last_frame_snapshot_matches_final_state_combatants`, `crates/escape-core/tests/combat_spectator_wave3.rs`의 `cue_ordering_is_fixed_attack_hit_evade_balance_broken_incapacitated` 등). 이로써 정본 13의 공용 연출 문법 5개(공격/피격/회피/균형 붕괴/전투불능)가 모두 확보됐다. 다음 계약은 아직 없다.
+Wave 1 Step 1~3과 Wave 2 Step 1~4가 `escape-core`에 구현·검증되어 initial manifest/RNG 분리, 전투원 상태/effect catalog, opportunity 후보, 고정 정수 좌표·role/target·동시 tick frame, 실행 mode parity·dual log, 실제 collision/attack/damage/effect resolution sidecar, 다수전 결착/종료 조건 sidecar 계약을 제공한다. Wave 3 Step 1a가 여기에 `escape-core` 전용 관전 view 어댑터(`combat_spectator.rs`)를 더해 tick별 체스말 프레임, 공용 연출 cue(Attack/Hit/Evade), 템플릿 id 기반 이중 로그, 누설 차단(숨은 판정·억제 사유·Hidden/Conditional 효과 id 마스킹)을 제공한다 (`crates/escape-core/tests/combat_spectator_wave3.rs`, 현재 19개 테스트: `spectate_is_deterministic_for_identical_input`, `attack_roll_and_effect_suppressed_never_leak_into_any_log`, `hidden_conditional_and_unregistered_effect_ids_are_masked` 등). Wave 2 Step 5가 여기에 `CombatResolutionFrame.combatants`(tick 종료 시점 전투원 스냅샷, additive-optional)를 더하고 이를 소비해 `BalanceBroken`(균형 붕괴)·`Incapacitated`(전투불능) cue 2개를 파생한다 (`crates/escape-core/tests/combat_resolution_wave2.rs`의 `frame_snapshot_is_id_sorted_and_covers_every_combatant`·`last_frame_snapshot_matches_final_state_combatants`, `crates/escape-core/tests/combat_spectator_wave3.rs`의 `cue_ordering_is_fixed_attack_hit_evade_balance_broken_incapacitated` 등). 이로써 정본 13의 공용 연출 문법 5개(공격/피격/회피/균형 붕괴/전투불능)가 모두 확보됐다. Wave 3 Step 1b가 여기에 `combat_conclusion.rs`의 `CombatConclusionReport`를 확장해 `tick_millis` 입력 기반 `duration_millis`(전투 시간), 캐릭터별 `damage_dealt_hundredths`·`damage_taken_hundredths`·`kills`·`incapacitated` 집계(`combatants`, id 오름차순), 최대 피해 가한/받은 캐릭터 하이라이트(`top_damage_dealt_id`/`top_damage_taken_id`, 발생하지 않으면 `None`)를 더한다. 판정은 `request.resolution.frames[].outcomes`·`combatants` 스냅샷만 집계하며 재계산하지 않는다 (`crates/escape-core/tests/combat_conclusion_wave2.rs`, 현재 14개 테스트: `combatants_report_sums_damage_and_marks_incapacitated`, `kills_are_attributed_to_last_valid_lethal_outcome_in_the_ko_tick`, `top_damage_highlights_pick_max_with_lowest_id_tie_break`, `same_input_conclude_twice_yields_identical_report_and_fingerprint` 등). 다음 계약은 아직 없다.
 
 - 고급 다수전 AI 행동·조기 결착/전투 tick 중단 resolver
 - 대형·결속·배경 전투·증원과 전투 종료 조건
-- 전투 종료 narrative/report consumer (전투 시간·캐릭터별 피해/치유/처치 수 확장) → Wave 3 Step 1b
 - `ScenePage` 필드 추가·WASM 노출 → Wave 3 Step 1c
   - **선결 과제(2026-08-02 실측)**: `CombatResolutionResult.fingerprint`는 `frames`를 `serde_json`으로 직렬화해 해싱하므로 frame에 필드를 추가하면 값이 바뀐다 (Wave 2 Step 5에서 실제로 바뀌었다). `CombatConclusionReport`·`CombatSpectatorView` fingerprint도 이를 체이닝한다. 아직 save·JSON boundary에 노출된 적이 없어 호환 문제는 없지만, Step 1c에서 밖으로 내보내기 전에 fingerprint 안정성 계약(schema 추가 시 값을 고정할지 여부)을 확정해야 한다.
 - terminal/Web 렌더러, 상단/하단 레이아웃, 색·아이콘 동기화 → Wave 3 Step 1d
 - 프리셋 저장/재도전 유지, 우선 목표 규칙
-- 치유(healing)·명줄(life thread) 파이프라인
+- 치유량·최대 치유량 캐릭터 — combat 파이프라인에 회복 개념이 없어 보류 (healing slice 선행 필요; `combat_resolution.rs`의 체력 갱신은 감소 전용이고 `CombatAttackDefinition`/`CombatEffectDefinition`에 회복 필드가 없다)
+- 명줄 소모·패배 결과 — 정본 10 기준 런 단위 메타 자원이며 인카운터 패배 결과 정의가 소유한다. 패배 결과 스키마 slice 선행 필요
 - 시스템형/혼합형/각본형 authoring 구분 → Wave 3 Step 2
+
+Wave 3 Step 1b는 정본 13이 금지하는 전략 수행 평가·핵심 전환점·자동 원인 분석·전략 조언·종합 MVP·이전 전투 결과 자동 비교를 의도적으로 구현하지 않았다.
 
 ## 단계 순서
 
@@ -39,7 +41,7 @@ Wave 1 Step 1~3과 Wave 2 Step 1~4가 `escape-core`에 구현·검증되어 init
 | `fable_combat_wave2_step4_2607261845.md` | 다수전 결착·전투 종료 조건 sidecar와 cleanup report | 고급 AI·증원·패주·renderer adapter |
 | `fable_combat_wave3_step1a_2608020020.md` | 관전 view 어댑터 (core 전용): tick별 프레임·공용 cue·이중 로그·누설 차단 | ScenePage/WASM/renderer 노출, 밸런스 확정값, BalanceBroken/Incapacitated cue |
 | `fable_combat_wave2_step5_2608020117.md` | resolution frame per-tick 전투원 스냅샷과 균형 붕괴·전투불능 cue | renderer 노출·보고서 확장·밸런스 확정값 |
-| (플랜 미작성) — Wave 3 Step 1b | 전투 종료 보고서 확장 (전투 시간, 캐릭터별 피해/치유/처치 수) | renderer 노출 |
+| `fable_combat_wave3_step1b_2608020437.md` | 전투 종료 보고서 확장 (전투 시간, 캐릭터별 입힌/받은 피해·처치 수·전투불능, 최대 피해 가한/받은 하이라이트) | 치유량·명줄, renderer 노출 |
 | (플랜 미작성) — Wave 3 Step 1c | `ScenePage` 필드 추가, WASM 노출 | terminal/Web 렌더러 |
 | (플랜 미작성) — Wave 3 Step 1d | terminal/Web 렌더러, 상단/하단 레이아웃, 색·아이콘 동기화 | seed·판정·AI·로그 순서 재구현 |
 | (플랜 미작성) — Wave 3 Step 2 | 시스템형 1개 + 혼합형 1개 + 각본형 1개 authoring slice | 대규모 콘텐츠·보스 밸런스 |
@@ -47,6 +49,7 @@ Wave 1 Step 1~3과 Wave 2 Step 1~4가 `escape-core`에 구현·검증되어 init
 Wave 2 Step 4 구현 위치: `crates/escape-core/src/combat_conclusion.rs`, `crates/escape-core/tests/combat_conclusion_wave2.rs`.
 Wave 3 Step 1a 구현 위치: `crates/escape-core/src/combat_spectator.rs`, `crates/escape-core/tests/combat_spectator_wave3.rs` (12 테스트).
 Wave 2 Step 5 구현 위치: `crates/escape-core/src/combat_resolution.rs`, `crates/escape-core/src/combat_spectator.rs`, `crates/escape-core/tests/combat_resolution_wave2.rs` (16 테스트), `crates/escape-core/tests/combat_spectator_wave3.rs` (19 테스트).
+Wave 3 Step 1b 구현 위치: `crates/escape-core/src/combat_conclusion.rs`, `crates/escape-core/tests/combat_conclusion_wave2.rs` (14 테스트).
 
 각 단계는 선행 단계의 public contract와 테스트만 사용한다. 단계 사이에 새 필드가 필요하면 먼저 해당 단계 plan을 갱신하고, 기존 저장/JSON backward compatibility를 검토한다.
 

@@ -537,3 +537,97 @@ fn top_damage_highlights_pick_max_with_lowest_id_tie_break() {
     // damage_taken: a=15, c=10, e=25 -> unique max "e".
     assert_eq!(report.top_damage_taken_id, Some("e".to_string()));
 }
+
+fn sample_multi_participants() -> Vec<CombatSimulationParticipant> {
+    vec![
+        participant("a", CombatSide::Ally, true),
+        participant("c", CombatSide::Ally, true),
+        participant("e", CombatSide::Enemy, true),
+    ]
+}
+fn sample_multi_resolution() -> CombatResolutionResult {
+    let frames = vec![
+        frame(
+            0,
+            vec![
+                attack_outcome("a", "e", true, 20),
+                attack_outcome("e", "a", true, 15),
+                attack_outcome("c", "e", false, 0),
+            ],
+            vec![
+                health_snapshot("a", 85),
+                health_snapshot("c", 100),
+                health_snapshot("e", 80),
+            ],
+        ),
+        frame(
+            1,
+            vec![
+                attack_outcome("e", "c", true, 10),
+                attack_outcome("a", "e", true, 5),
+            ],
+            vec![
+                health_snapshot("a", 85),
+                health_snapshot("c", 90),
+                health_snapshot("e", 75),
+            ],
+        ),
+    ];
+    let final_state = vec![
+        health_snapshot("a", 85),
+        health_snapshot("c", 90),
+        health_snapshot("e", 75),
+    ];
+    multi_resolution(frames, final_state)
+}
+fn sample_multi_request(participants: Vec<CombatSimulationParticipant>) -> CombatConclusionRequest {
+    CombatConclusionRequest {
+        resolution: sample_multi_resolution(),
+        participants,
+        policy: CombatTerminationPolicy {
+            max_ticks: 5,
+            conclude_on_max_ticks: false,
+        },
+        tick_millis: 50,
+    }
+}
+
+#[test]
+fn same_input_conclude_twice_yields_identical_report_and_fingerprint() {
+    let request = sample_multi_request(sample_multi_participants());
+    let a = conclude_combat(request.clone()).unwrap();
+    let b = conclude_combat(request).unwrap();
+    assert_eq!(a, b);
+    assert_eq!(a.fingerprint, b.fingerprint);
+}
+
+#[test]
+fn shuffled_participant_order_yields_identical_report() {
+    let baseline = conclude_combat(sample_multi_request(sample_multi_participants())).unwrap();
+    let mut shuffled_participants = sample_multi_participants();
+    shuffled_participants.reverse();
+    let shuffled = conclude_combat(sample_multi_request(shuffled_participants)).unwrap();
+    assert_eq!(baseline, shuffled);
+}
+
+#[test]
+fn deserializing_report_json_without_new_fields_uses_defaults() {
+    let json = r#"{
+        "resolution_fingerprint": "r",
+        "outcome": "ally_victory",
+        "reason": "all_enemies_defeated",
+        "decisive_tick": 1,
+        "active_allies": 1,
+        "active_enemies": 1,
+        "survivor_ids": ["a"],
+        "defeated_ids": ["e"],
+        "removed_combat_effect_ids": [],
+        "retained_effect_ids": [],
+        "fingerprint": "fp"
+    }"#;
+    let report: CombatConclusionReport = serde_json::from_str(json).unwrap();
+    assert_eq!(report.duration_millis, 0);
+    assert!(report.combatants.is_empty());
+    assert_eq!(report.top_damage_dealt_id, None);
+    assert_eq!(report.top_damage_taken_id, None);
+}

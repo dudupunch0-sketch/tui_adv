@@ -382,10 +382,13 @@ pub fn resolve(
             outcomes.push(outcome);
         }
         let fp = fingerprint(&(frame.tick, &outcomes));
+        // `combatants` is a `BTreeMap`, so this iterates id ascending already;
+        // clone (not `into_values()`) because the map keeps accumulating across ticks.
+        let tick_combatants = combatants.values().cloned().collect();
         frames.push(CombatResolutionFrame {
             tick: frame.tick,
             outcomes,
-            combatants: Vec::new(),
+            combatants: tick_combatants,
             fingerprint: fp,
         });
     }

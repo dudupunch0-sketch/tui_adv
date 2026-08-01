@@ -16,9 +16,9 @@ mod state;
 mod turn;
 
 pub use combat_conclusion::{
-    conclude as conclude_combat, CombatConclusionError, CombatConclusionOutcome,
-    CombatConclusionReason, CombatConclusionReport, CombatConclusionRequest,
-    CombatTerminationPolicy,
+    conclude as conclude_combat, CombatCombatantReport, CombatConclusionError,
+    CombatConclusionOutcome, CombatConclusionReason, CombatConclusionReport,
+    CombatConclusionRequest, CombatTerminationPolicy,
 };
 pub use combat_contract::{
     CombatContractError, CombatEffectRef, CombatManifest, CombatRngNamespace,

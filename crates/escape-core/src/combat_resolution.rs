@@ -81,7 +81,13 @@ pub struct CombatResolutionFrame {
     /// 이 tick의 모든 outcome을 적용한 뒤의 전투원 상태. id 오름차순.
     /// `CombatResolutionState`(전투 종료 후 최종 상태)와 달리 tick 단위 기록이며,
     /// 관전 연출이 균형 붕괴·전투불능 시점을 알 수 있게 한다.
-    /// `fingerprint`는 이 필드를 포함하지 않는다 — outcomes에서 결정론적으로 파생되기 때문이다.
+    ///
+    /// fingerprint 범위 주의 (2026-08-02 실측):
+    /// - 이 struct의 `fingerprint`는 `(tick, outcomes)`만 해싱하므로 이 필드를 포함하지 않는다.
+    /// - 반면 `CombatResolutionResult.fingerprint`는 `frames`를 직렬화해 해싱하므로
+    ///   이 필드가 값에 섞인다. 즉 frame에 필드를 추가하면 result/conclusion/spectator
+    ///   fingerprint 값이 바뀐다. 아직 save·JSON boundary에 노출된 적이 없어 호환 문제는
+    ///   없지만, Wave 3 Step 1c에서 WASM/ScenePage로 내보내기 전에 이 안정성 계약을 확정해야 한다.
     #[serde(default)]
     pub combatants: Vec<CombatResolutionCombatant>,
     pub fingerprint: String,

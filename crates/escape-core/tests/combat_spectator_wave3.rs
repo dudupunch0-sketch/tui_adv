@@ -418,3 +418,42 @@ fn hidden_conditional_and_unregistered_effect_ids_are_masked() {
         "buff_hidden, buff_conditional, and buff_unregistered must all be masked"
     );
 }
+
+#[test]
+fn spectate_is_deterministic_for_identical_input() {
+    let request = two_way_spectator_request();
+    let a = spectate_combat(&request).unwrap();
+    let b = spectate_combat(&request).unwrap();
+    assert_eq!(a, b);
+    assert_eq!(a.fingerprint, b.fingerprint);
+    assert!(!a.fingerprint.is_empty());
+}
+
+#[test]
+fn fingerprint_chains_the_resolution_fingerprint() {
+    let mut low_seed = resolution_request();
+    low_seed.execution.input.seed = 7;
+    let mut high_seed = resolution_request();
+    high_seed.execution.input.seed = 99;
+
+    let res_a = resolve_combat(low_seed).unwrap();
+    let res_b = resolve_combat(high_seed).unwrap();
+    assert_ne!(res_a.fingerprint, res_b.fingerprint);
+
+    let view_a = spectate_combat(&CombatSpectatorRequest {
+        resolution: res_a.clone(),
+        participants: participants(),
+        catalog: CombatEffectCatalog { effects: vec![] },
+    })
+    .unwrap();
+    let view_b = spectate_combat(&CombatSpectatorRequest {
+        resolution: res_b.clone(),
+        participants: participants(),
+        catalog: CombatEffectCatalog { effects: vec![] },
+    })
+    .unwrap();
+
+    assert_eq!(view_a.resolution_fingerprint, res_a.fingerprint);
+    assert_eq!(view_b.resolution_fingerprint, res_b.fingerprint);
+    assert_ne!(view_a.fingerprint, view_b.fingerprint);
+}

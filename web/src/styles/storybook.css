@@ -2654,3 +2654,199 @@ button.character-title-seal {
 .reward-row:not([data-reward-masked="true"]) { animation: reward-acquired .55s ease-out both; }
 @keyframes reward-acquired { from { opacity: .35; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
 @media (prefers-reduced-motion: reduce) { .reward-row:not([data-reward-masked="true"]) { animation: none; } }
+
+/* ---------------------------------------------------------------------- */
+/* Wave 3 Step 1d-2 — 전투 관전 표면 (정지 프레임).                          */
+/*                                                                          */
+/* 이 슬라이스에서는 transition/animation을 추가하지 않는다 (1d-3 소관).     */
+/* 말 위치는 --piece-x/--piece-y 커스텀 속성으로 표현한다 — 1d-3이 이 값을   */
+/* 시간축으로 움직인다. cue 5종 표식은 terminal의 `>`/`<`/`~`/`!`/`x` 표식과 */
+/* 짝을 이룬다(`crates/escape-terminal/src/snapshot.rs::combat_cue_symbol`). */
+/* ---------------------------------------------------------------------- */
+
+.combat-stage {
+  display: grid;
+  grid-template-rows: minmax(0, 70fr) minmax(0, 30fr);
+  gap: clamp(0.5rem, 2vw, 1rem);
+  container-type: inline-size;
+  aspect-ratio: 3 / 4;
+  max-height: min(70dvh, 44rem);
+  margin-block: 1em;
+  overflow: hidden;
+}
+
+.combat-stage__board {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid var(--line-soft);
+  background: color-mix(in oklab, var(--paper-lit) 88%, var(--ink) 4%);
+}
+
+.combat-board__empty {
+  margin: 0;
+  padding: 1em;
+  color: var(--ink-faded);
+  font-size: 0.95rem;
+}
+
+.combat-board__piece {
+  position: absolute;
+  left: var(--piece-x);
+  top: var(--piece-y);
+  translate: -50% -50%;
+  display: grid;
+  place-items: center;
+  inline-size: clamp(1.6rem, 12cqi, 2.6rem);
+  block-size: clamp(2rem, 15cqi, 3.2rem);
+  border: 1px solid var(--line-hard);
+  border-radius: 50% 50% 22% 22% / 60% 60% 40% 40%;
+  font-size: clamp(0.85rem, 5cqi, 1.1rem);
+}
+
+.combat-board__piece[data-side="ally"] {
+  background: var(--ink);
+  color: var(--paper-lit);
+}
+
+.combat-board__piece[data-side="enemy"] {
+  background: var(--paper);
+  color: var(--ink);
+  border-style: dashed;
+}
+
+.combat-board__piece[data-active="false"] {
+  opacity: 0.55;
+  filter: saturate(0.4);
+}
+
+.combat-board__glyph {
+  line-height: 1;
+}
+
+.combat-board__cue {
+  position: absolute;
+  inset-block-start: -0.3em;
+  inset-inline-end: -0.35em;
+  font-size: 0.75em;
+  line-height: 1;
+  background: color-mix(in oklab, var(--paper-lit) 82%, var(--ink) 6%);
+  border: 1px solid var(--line-hard);
+  border-radius: 50%;
+  padding: 0.05em;
+}
+
+.combat-board__cue[data-cue="attack"] { color: var(--seal-red); }
+.combat-board__cue[data-cue="hit"] { color: var(--seal-red-lit); }
+.combat-board__cue[data-cue="evade"] { color: var(--jade); }
+.combat-board__cue[data-cue="balance_broken"] { color: var(--gold-leaf); }
+.combat-board__cue[data-cue="incapacitated"] { color: var(--ink-faded); }
+
+.combat-stage__log {
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-inline: 0.25em;
+}
+
+.combat-log__meta {
+  margin: 0 0 0.4em;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--ink-faded);
+}
+
+.combat-log__list {
+  margin: 0;
+  padding-inline-start: 1.1em;
+  display: grid;
+  gap: 0.25em;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.combat-log__row[data-cue="hit"] {
+  color: var(--seal-red-lit);
+}
+
+.combat-log__cue-glyph {
+  margin-inline-end: 0.3em;
+}
+
+.combat-log__row[data-log-unknown="true"] {
+  border-inline-start: 2px solid var(--line-hard);
+  padding-inline-start: 0.4em;
+  font-style: italic;
+}
+
+.combat-log__omitted,
+.combat-log__empty {
+  color: var(--ink-faded);
+  font-style: italic;
+}
+
+.combat-report {
+  margin-block-start: 1em;
+  padding: 0.75em 1em;
+  border: 1px solid var(--line-soft);
+  background: color-mix(in oklab, var(--paper-lit) 92%, var(--ink) 3%);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.combat-report__row,
+.combat-report__fingerprint {
+  margin: 0.25em 0;
+}
+
+.combat-report__combatants {
+  margin: 0.5em 0 0;
+  padding-inline-start: 1.2em;
+}
+
+.combat-report__empty {
+  color: var(--ink-faded);
+  font-style: italic;
+}
+
+/* forced-colors(고대비 모드): 배경 채움/box-shadow만으로 표현한 경계는
+   시스템이 지워버릴 수 있으므로, 진영·cue 구분을 시스템 색 키워드로도
+   보존한다 (I9). */
+@media (forced-colors: active) {
+  .combat-board__piece {
+    forced-color-adjust: none;
+    border-color: CanvasText;
+  }
+
+  .combat-board__piece[data-side="ally"] {
+    background: CanvasText;
+    color: Canvas;
+    border-style: solid;
+  }
+
+  .combat-board__piece[data-side="enemy"] {
+    background: Canvas;
+    color: CanvasText;
+    border-style: dashed;
+  }
+
+  .combat-board__piece[data-active="false"] {
+    color: GrayText;
+    border-color: GrayText;
+  }
+
+  .combat-board__cue {
+    forced-color-adjust: none;
+    background: Canvas;
+    border-color: CanvasText;
+    color: Highlight;
+  }
+
+  .combat-log__row[data-cue="hit"] {
+    color: Highlight;
+  }
+
+  .combat-log__row[data-log-unknown="true"] {
+    border-inline-start-color: GrayText;
+  }
+}

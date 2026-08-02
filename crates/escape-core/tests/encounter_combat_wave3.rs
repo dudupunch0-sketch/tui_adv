@@ -10,7 +10,7 @@
 
 use escape_core::{
     index_content_bundle, load_content_bundle, new_game_from_content_at, scene_page_from_content,
-    ContentBundle, ContentIndexError,
+    ContentBundle, ContentIndexError, ContentTurnError,
 };
 use serde_json::{json, Value};
 
@@ -403,4 +403,24 @@ fn systemic_combat_scene_page_round_trips_through_serde() {
     let restored: escape_core::ScenePage =
         serde_json::from_str(&json).expect("ScenePage should deserialize");
     assert_eq!(restored, page);
+}
+
+#[test]
+fn combat_producer_failures_report_as_their_own_error_variant() {
+    // The producer path is defensive (index-time validation rejects the kinds
+    // that would reach it), but the variant is user-visible through Display on
+    // the terminal, so pin the shape and the message here.
+    let error = ContentTurnError::CombatProducer {
+        encounter_id: "printer_prints_alone".to_string(),
+        reason: "seed derivation failed".to_string(),
+    };
+    assert_eq!(
+        error.to_string(),
+        "combat producer failed for encounter 'printer_prints_alone': seed derivation failed"
+    );
+    assert_ne!(
+        error,
+        ContentTurnError::UnknownStateLocation("printer_prints_alone".to_string()),
+        "a combat failure must not masquerade as an unknown location"
+    );
 }

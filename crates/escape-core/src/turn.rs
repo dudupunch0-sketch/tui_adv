@@ -64,6 +64,12 @@ pub enum ActionError {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum ContentTurnError {
     UnknownStateLocation(String),
+    /// 인카운터가 여는 전투 파이프라인이 실패했다. 조용히 `combat: None`으로
+    /// 내려가지 않고 이 오류로 전파한다.
+    CombatProducer {
+        encounter_id: String,
+        reason: String,
+    },
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -89,6 +95,15 @@ impl std::fmt::Display for ContentTurnError {
         match self {
             ContentTurnError::UnknownStateLocation(location_id) => {
                 write!(formatter, "unknown state location: {location_id}")
+            }
+            ContentTurnError::CombatProducer {
+                encounter_id,
+                reason,
+            } => {
+                write!(
+                    formatter,
+                    "combat producer failed for encounter '{encounter_id}': {reason}"
+                )
             }
         }
     }

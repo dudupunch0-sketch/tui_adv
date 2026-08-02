@@ -1,12 +1,15 @@
 import { describe, expect, it } from 'vitest';
 
 import type {
+  CombatConclusionReport,
   CombatSpectatorCue,
   CombatSpectatorFrame,
+  CombatSpectatorLogEntry,
+  CombatSpectatorPage,
   CombatSpectatorPiece,
   CombatSpectatorView,
 } from '../../../core/types';
-import { renderCombatBoard } from './renderCombatStage';
+import { renderCombatBoard, renderCombatLog, renderCombatReport, renderCombatStage } from './renderCombatStage';
 
 function piece(overrides: Partial<CombatSpectatorPiece> = {}): CombatSpectatorPiece {
   return {
@@ -125,5 +128,176 @@ describe('renderCombatBoard', () => {
     );
     expect(html).not.toContain('<script>alert(1)</script>');
     expect(html).toContain('&lt;script&gt;');
+  });
+});
+
+function logEntry(overrides: Partial<CombatSpectatorLogEntry> = {}): CombatSpectatorLogEntry {
+  return {
+    tick: 1,
+    sequence: 0,
+    template_id: 'combat.log.move_intent',
+    importance: 'important',
+    actor_id: 'ally_1',
+    target_id: null,
+    value_hundredths: null,
+    effect_id: null,
+    ...overrides,
+  };
+}
+
+describe('renderCombatLog', () => {
+  it('sentences only core_log entries; full_log-only entries never get a sentence', () => {
+    const html = renderCombatLog(
+      view({
+        core_log: [logEntry({ actor_id: 'ally_1' })],
+        full_log: [logEntry({ actor_id: 'ally_1' }), logEntry({ actor_id: 'ghost_only_in_full_log' })],
+      }),
+    );
+    expect(html).toContain('ally_1 이동 의도');
+    expect(html).not.toContain('ghost_only_in_full_log');
+  });
+
+  it('shows the full_log count', () => {
+    const html = renderCombatLog(
+      view({ core_log: [], full_log: [logEntry(), logEntry(), logEntry()] }),
+    );
+    expect(html).toContain('전체 로그 3건');
+  });
+
+  it('truncates core_log at 40 rows and states the omitted count explicitly', () => {
+    const coreLog = Array.from({ length: 41 }, (_, i) => logEntry({ actor_id: `ally_${i}` }));
+    const html = renderCombatLog(view({ core_log: coreLog, full_log: [] }));
+    const rows = html.match(/class="combat-log__row"/g) ?? [];
+    expect(rows.length).toBe(40);
+    expect(html).toContain('…(생략 1줄)');
+  });
+
+  it('marks the damage_applied row with data-cue="hit"; the other 5 template ids carry no data-cue', () => {
+    const knownIds = [
+      'combat.log.move_intent',
+      'combat.log.target_selection',
+      'combat.log.collision',
+      'combat.log.effect_applied',
+      'combat.log.effect_applied_hidden',
+    ];
+    const html = renderCombatLog(
+      view({
+        core_log: [
+          logEntry({ template_id: 'combat.log.damage_applied', value_hundredths: 100 }),
+          ...knownIds.map((template_id) => logEntry({ template_id })),
+        ],
+      }),
+    );
+    expect(html).toContain('data-template-id="combat.log.damage_applied" data-cue="hit"');
+    for (const id of knownIds) {
+      const rowMatch = new RegExp(`data-template-id="${id.replace(/\./g, '\\.')}"[^>]*>`).exec(html);
+      expect(rowMatch).not.toBeNull();
+      expect(rowMatch![0]).not.toContain('data-cue');
+    }
+  });
+
+  it('surfaces an unknown template_id instead of dropping it, with a visible marker', () => {
+    const html = renderCombatLog(
+      view({ core_log: [logEntry({ template_id: 'combat.log.made_up_event' })] }),
+    );
+    expect(html).toContain('data-log-unknown="true"');
+    expect(html).toContain('combat.log.made_up_event');
+  });
+});
+
+function baseReport(overrides: Partial<CombatConclusionReport> = {}): CombatConclusionReport {
+  return {
+    resolution_fingerprint: 'res-fp',
+    outcome: 'ally_victory',
+    reason: 'all_enemies_defeated',
+    decisive_tick: 3,
+    active_allies: 1,
+    active_enemies: 0,
+    survivor_ids: ['ally_1'],
+    defeated_ids: ['enemy_1'],
+    removed_combat_effect_ids: [],
+    retained_effect_ids: [],
+    duration_millis: 300,
+    combatants: [
+      {
+        id: 'ally_1',
+        damage_dealt_hundredths: 1050,
+        damage_taken_hundredths: 200,
+        kills: 1,
+        incapacitated: false,
+      },
+    ],
+    top_damage_dealt_id: 'ally_1',
+    top_damage_taken_id: 'enemy_1',
+    fingerprint: 'report-fp',
+    ...overrides,
+  };
+}
+
+describe('renderCombatReport', () => {
+  it('hides top_damage_dealt_id / top_damage_taken_id lines entirely when null (no "없음" substitute)', () => {
+    const html = renderCombatReport(
+      view(),
+      baseReport({ top_damage_dealt_id: null, top_damage_taken_id: null }),
+    );
+    expect(html).not.toContain('최대 피해를 가한');
+    expect(html).not.toContain('최대 피해를 받은');
+  });
+
+  it('shows the highlight lines when the ids are present', () => {
+    const html = renderCombatReport(view(), baseReport());
+    expect(html).toContain('ally_1');
+    expect(html).toContain('enemy_1');
+  });
+
+  it('hides the decisive_tick line when null, per I8', () => {
+    const withTick = renderCombatReport(view(), baseReport({ decisive_tick: 3 }));
+    const withoutTick = renderCombatReport(view(), baseReport({ decisive_tick: null }));
+    expect(withTick).toContain('3');
+    expect(withoutTick).not.toMatch(/tick[^"]*:\s*null/);
+    // No numeral leaks in from a null decisive_tick.
+    const tickLineRegex = /결착[^<]*tick[^<]*/;
+    expect(withoutTick).not.toMatch(tickLineRegex);
+  });
+
+  it('puts the fingerprint and simulation_version in the same element (정본 03 비교 계약)', () => {
+    const html = renderCombatReport(
+      view({ simulation_version: 'v-42' }),
+      baseReport({ fingerprint: 'fp-abc' }),
+    );
+    const match = /<p[^>]*>[^<]*fp-abc[^<]*<\/p>/.exec(html);
+    expect(match).not.toBeNull();
+    expect(match![0]).toContain('v-42');
+  });
+
+  it('never contains forbidden strategic-analysis phrases', () => {
+    const html = renderCombatReport(view(), baseReport());
+    for (const forbidden of ['MVP', '전략', '전환점', '조언', '원인']) {
+      expect(html).not.toContain(forbidden);
+    }
+  });
+});
+
+describe('renderCombatStage', () => {
+  it('returns an empty string when combat is undefined', () => {
+    expect(renderCombatStage(undefined)).toBe('');
+  });
+
+  it('omits the combat-report section entirely when report is absent (combat in progress)', () => {
+    const page: CombatSpectatorPage = {
+      view: view({ frames: [frame(1, [piece()])] }),
+    };
+    const html = renderCombatStage(page);
+    expect(html).toContain('data-region="combat"');
+    expect(html).not.toContain('data-region="combat-report"');
+  });
+
+  it('includes the combat-report section when report is present', () => {
+    const page: CombatSpectatorPage = {
+      view: view({ frames: [frame(1, [piece()])] }),
+      report: baseReport(),
+    };
+    const html = renderCombatStage(page);
+    expect(html).toContain('data-region="combat-report"');
   });
 });

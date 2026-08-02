@@ -16,7 +16,7 @@ mod state;
 mod turn;
 
 pub use combat_conclusion::{
-    conclude as conclude_combat, CombatCombatantReport, CombatConclusionError,
+    conclude as conclude_combat, side_all_defeated, CombatCombatantReport, CombatConclusionError,
     CombatConclusionOutcome, CombatConclusionReason, CombatConclusionReport,
     CombatConclusionRequest, CombatTerminationPolicy,
 };

@@ -602,6 +602,57 @@ fn cue_ordering_is_fixed_attack_hit_evade_balance_broken_incapacitated() {
     );
 }
 
+/// 조기 결착(`fable_combat_early_conclusion_step1_2608022130.md` I2) 뒤에는
+/// `execution.frames`가 tick 상한까지 남아 있지만 `resolution.frames`는 결착
+/// tick에서 끊긴다. 관전 화면은 판정된 범위만 보여야 한다 — 그러지 않으면
+/// 결착 뒤에도 말이 계속 움직이고 보고서의 `decisive_tick`과 어긋난다.
+#[test]
+fn spectator_view_never_extends_past_the_last_resolved_tick() {
+    // 여러 tick을 돌려야 이 규칙이 드러난다 — 1 tick 픽스처에서는 어떤 구현이든
+    // 통과한다.
+    let mut request = two_way_resolution_request();
+    request.execution.ticks = 5;
+    request.execution.input.config.max_ticks = 5;
+    let resolution = resolve_combat(request).unwrap();
+    assert_eq!(
+        resolution.frames.len(),
+        5,
+        "fixture sanity: no terminal condition here, so all 5 ticks resolve"
+    );
+
+    // execution 쪽 프레임은 5개로 남겨 둔 채 resolution만 첫 tick으로 줄인다 —
+    // 관전 화면이 어느 쪽을 시간 범위의 기준으로 삼는지 드러낸다.
+    let first_tick = resolution.frames[0].tick;
+    let mut truncated = resolution.clone();
+    truncated.frames.retain(|frame| frame.tick == first_tick);
+    assert_eq!(
+        truncated.execution.frames.len(),
+        5,
+        "the execution pass must still carry every tick, or the test proves nothing"
+    );
+
+    let view = spectate_combat(&CombatSpectatorRequest {
+        resolution: truncated,
+        participants: participants(),
+        catalog: CombatEffectCatalog { effects: vec![] },
+    })
+    .unwrap();
+
+    assert_eq!(
+        view.frames.len(),
+        1,
+        "the view must stop at the last resolved tick, not follow the execution pass"
+    );
+    assert!(
+        view.frames.iter().all(|f| f.tick <= first_tick),
+        "no spectator frame may exist after the last resolved tick"
+    );
+    assert!(
+        view.full_log.iter().all(|e| e.tick <= first_tick),
+        "no spectator log entry may exist after the last resolved tick"
+    );
+}
+
 #[test]
 fn empty_combatant_snapshot_yields_no_state_cues_and_no_error() {
     let mut resolution = resolve_combat(all_cues_request()).unwrap();

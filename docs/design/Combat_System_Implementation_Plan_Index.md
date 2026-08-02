@@ -50,26 +50,49 @@ Wave 3 Step 1d-2가 여기에 **Web Storybook 관전 표면(정지 프레임)**�
   `renderCombatStage.test.ts`의 `never calls an active piece "생존" — active is
   participation, not liveness`가 고정한다. 생존·전투불능은 보고서의
   `survivor_ids`/`defeated_ids`가 소유한다.
-- **조기 결착이 없다.** 두 전투원의 체력이 tick 8에 0이 되지만 전투가
-  `max_ticks`(10)까지 계속되고 tick 9·10에도 공격·피해 로그가 계속 쌓인다.
-  결과는 `MutualDefeat`/`BothSidesDefeated`, `decisive_tick: 10`,
-  `duration_millis: 1100`이다. → 인덱스의 "조기 결착/전투 tick 중단 resolver"
-  항목이 이 현상의 소관이다.
+- ~~**조기 결착이 없다.**~~ **해결됨** (`fable_combat_early_conclusion_step1_2608022130.md`).
+  전투불능(체력 0) 전투원이 더 이상 공격하지 않고, 한쪽이 전멸한 tick에서
+  시뮬레이션이 멈춘다. 관전 화면의 시간 범위도 판정된 tick까지로 묶었다 —
+  `spectate`가 `execution.frames`(이동·AI 패스, 항상 tick 상한까지 생성)를
+  그대로 돌아서 결착 뒤에도 말이 움직이고 있었다.
+  실측 변화: 프레임 10→**8**, 마지막 tick 10→**8**, `core_log` 40→**32**,
+  `decisive_tick` 10→**8**, `duration_millis` 1100→**900**.
+  고정 테스트: `simulation_stops_at_the_tick_that_concludes_the_fight`,
+  `the_concluding_tick_frame_is_included_with_its_outcomes`,
+  `a_fight_with_no_conclusion_runs_every_tick`,
+  `simultaneous_mutual_defeat_stops_at_that_tick`,
+  `a_side_with_no_active_participant_does_not_read_as_wiped_on_tick_one`,
+  `incapacitated_actor_and_incapacitated_target_are_both_skipped`,
+  `simultaneous_mutual_defeat_is_independent_of_attack_definition_order`,
+  `spectator_view_never_extends_past_the_last_resolved_tick`.
 - **두 전투원이 서로를 통과해 좌우가 뒤바뀐다.** 아군 x는 1,2,3,2,3,…,
   도전자 x는 4,3,2,3,2,… 로 진동하며 tick 3부터 아군이 도전자보다 오른쪽에
   놓인다. 정본 09의 **"화면 왼쪽: 아군 영역 / 화면 오른쪽: 적 영역"** 계약을
   재생 중에 위반한다. 역할 가중치 `preferred_distance: 0`이 관통을 만든다.
   → 렌더러가 좌표를 왜곡해 맞추면 거리 읽기가 망가지므로 고칠 곳은 AI·충돌
   규칙이다. 저작 시점 좌표만 검사하는 테스트로는 잡히지 않는다.
-- **로그 도배.** `core_log` 40건이 `move_intent`/`damage_applied` 반복이다.
-  정본 13의 **"원시 사건은 연관 전투 상황으로 묶어 로그 도배를 막는다"**가
-  아직 구현되지 않았다. 렌더러의 표시 상한(40줄)과 정확히 맞물려 생략 줄조차
-  나오지 않는다.
+- **로그 도배 (일부 완화).** 조기 결착으로 `core_log`가 40→32건이 됐지만
+  여전히 `move_intent`/`damage_applied` 반복이다. 정본 13의 **"원시 사건은
+  연관 전투 상황으로 묶어 로그 도배를 막는다"**는 아직 구현되지 않았다.
 - **표준 대련이 양측 전멸로 끝난다.** 정본 11의 표준 전투원끼리 대칭 교전이라
-  구조적으로 그렇게 되지만, "관전용 표준 대련" 서사와 어긋난다. 밸런스 확정과
-  조기 결착이 선행돼야 한다.
+  구조적으로 그렇게 되지만, "관전용 표준 대련" 서사와 어긋난다. 조기 결착이
+  들어간 뒤에도 결과는 `MutualDefeat`이다 — 남은 것은 밸런스·AI(방어 행동)
+  쪽이다.
+- **전투불능 전투원이 결착 전 tick에서 여전히 이동한다.** 조기 결착은 결착
+  *이후*를 없앴지만, 한쪽이 먼저 쓰러지고 다른 쪽이 나중에 쓰러지는 전투에서는
+  그 사이 tick에 쓰러진 말이 계속 움직인다. `execute_combat`(이동·AI)이
+  `resolve`(피해)보다 먼저 통째로 돌기 때문이며, 고치려면 두 패스를 tick 단위로
+  인터리빙해야 한다.
+- **코드가 `simulation_version`을 검증하지 않는다.** 저작이 선언한 값을 그대로
+  기록에 실어 보내므로, 코드가 실제로 구현하지 않는 version을 적어도 아무도
+  잡지 못한다. 정본 03은 "결정성은 같은 version 내부에서만 보장한다"고 정했고
+  이 계약이 코드로 강제되지 않는다. 강제하려면 기존 픽스처 전체를 `v1`에서
+  옮겨야 하므로 별도 슬라이스다.
+- **나머지 결착 유형이 없다.** 정본 03은 "승리·패배·도주·항복·포획·목표 달성·
+  강제 중단"을 결착으로 열거하지만 판정 규칙은 정본 어디에도 없다. 구현된 것은
+  코드가 이미 소유한 두 조건(한쪽 전멸 / 양쪽 전멸)뿐이다.
 
-- 고급 다수전 AI 행동·조기 결착/전투 tick 중단 resolver
+- 고급 다수전 AI 행동 (조기 결착/전투 tick 중단은 `fable_combat_early_conclusion_step1_2608022130.md`에서 완료)
 - 대형·결속·배경 전투·증원과 전투 종료 조건
 - **혼합형·각본형의 개입 일시정지 흐름** — `EncounterCombatKind::Mixed`/`Scripted`는 스키마로 받되 index-time에서 명시적 오류로 거부한다(정본 12 하드 오류 원칙). 개입 기회/대응 제시(`combat_opportunity.rs`와 encounter의 연결), 행동 선택지 최대 4개 + "개입하지 않는다" 선택지 → Wave 3 Step 2c.
 - **전투 결과 저장(캐싱)** — 현재는 매 렌더 재실행 중이다. save schema 결정이 선행돼야 한다.

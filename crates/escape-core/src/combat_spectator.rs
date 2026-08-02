@@ -140,8 +140,19 @@ pub fn spectate(
         .map(|frame| (frame.tick, &frame.combatants))
         .collect();
 
-    let mut frames = Vec::with_capacity(request.resolution.execution.frames.len());
+    // 관전 화면의 시간 범위는 **resolution이 실제로 판정한 tick**까지다.
+    // `execution.frames`(이동·AI 패스)는 언제나 tick 상한까지 만들어지지만,
+    // resolver는 결착 tick에서 멈춘다
+    // (`fable_combat_early_conclusion_step1_2608022130.md` I2). 여기서
+    // `execution.frames`를 그대로 돌면 결착 뒤에도 말이 계속 움직이는 화면이
+    // 되고, 보고서의 `decisive_tick`과도 어긋난다.
+    let last_resolved_tick = request.resolution.frames.last().map(|frame| frame.tick);
+
+    let mut frames = Vec::with_capacity(request.resolution.frames.len());
     for tick_frame in &request.resolution.execution.frames {
+        if last_resolved_tick.is_some_and(|last| tick_frame.tick > last) {
+            break;
+        }
         let outcomes = outcomes_by_tick.get(&tick_frame.tick).copied();
         let combatants_snapshot = combatants_by_tick.get(&tick_frame.tick).copied();
         let mut pieces = Vec::with_capacity(tick_frame.positions.len());
@@ -164,7 +175,12 @@ pub fn spectate(
         });
     }
 
-    let full_log = build_log(request);
+    // 로그도 같은 범위를 쓴다. `execution.full_log`는 결착 뒤 tick의 이동
+    // 의도까지 담고 있으므로 걸러내지 않으면 보드에 없는 tick의 로그가 남는다.
+    let full_log: Vec<CombatSpectatorLogEntry> = build_log(request)
+        .into_iter()
+        .filter(|entry| last_resolved_tick.is_none_or(|last| entry.tick <= last))
+        .collect();
     let core_log = full_log
         .iter()
         .filter(|entry| entry.importance >= CombatLogImportance::Important)

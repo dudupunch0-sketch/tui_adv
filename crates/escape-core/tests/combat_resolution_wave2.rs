@@ -490,3 +490,250 @@ fn frame_snapshots_are_deterministic_across_identical_runs() {
     assert_eq!(a.frames, b.frames);
     assert_eq!(a.fingerprint, b.fingerprint);
 }
+
+// ---------------------------------------------------------------------
+// WP2 (fable_combat_early_conclusion_step1_2608022130.md, I1): an
+// incapacitated combatant (tick-start health <= 0) neither attacks nor is
+// attacked. Both attacks below reuse `request()`'s co-located a/e pair so
+// collision + range are trivially satisfied; only health and attack ids
+// change per test.
+// ---------------------------------------------------------------------
+
+/// A mirror of `request()`'s "slash" attack, but authored for the opposite
+/// actor so both sides can strike each other within a single tick.
+fn mirrored_attack(id: &str, actor_id: &str) -> CombatAttackDefinition {
+    CombatAttackDefinition {
+        id: id.into(),
+        actor_id: actor_id.into(),
+        power_hundredths: 1200,
+        ability_multiplier_hundredths: 100,
+        accuracy_percent: 100,
+        attack_range: 2,
+        penetration_hundredths: 0,
+        collision_balance_hundredths: 100,
+        balance_power_hundredths: 500,
+        effects: vec![],
+    }
+}
+
+/// 여러 tick을 돌리는 픽스처. `request()`는 1 tick만 돌도록 되어 있다.
+fn set_ticks(r: &mut CombatResolutionRequest, ticks: u32) {
+    r.execution.ticks = ticks;
+    r.execution.input.config.max_ticks = ticks;
+}
+
+fn set_current_health(r: &mut CombatResolutionRequest, id: &str, current_health: i32) {
+    let combatant = r
+        .execution
+        .input
+        .state
+        .combatants
+        .iter_mut()
+        .find(|c| c.id == id)
+        .expect("combatant must exist in the fixture");
+    combatant.current_health = current_health;
+}
+
+#[test]
+fn incapacitated_actor_and_incapacitated_target_are_both_skipped() {
+    // "e" starts already at 0 health (tick-start snapshot). Both attacks
+    // reference it: "a"'s attack has an incapacitated *target*, and "e"'s own
+    // attack has an incapacitated *actor*. Neither may create an outcome,
+    // roll, or log entry (I1).
+    let mut r = request();
+    r.attacks[0].id = "ally_strike".into();
+    r.attacks.push(mirrored_attack("challenger_strike", "e"));
+    set_current_health(&mut r, "e", 0);
+
+    let result = resolve_combat(r).unwrap();
+    assert!(
+        result.frames[0].outcomes.is_empty(),
+        "an already-incapacitated actor/target must not produce any attack outcome"
+    );
+    assert!(
+        result.full_log.is_empty(),
+        "a skipped attack must not create any log entry"
+    );
+    assert_eq!(
+        result
+            .state
+            .combatants
+            .iter()
+            .find(|c| c.id == "a")
+            .unwrap()
+            .current_health_hundredths,
+        10_000,
+        "the untouched ally must keep full health since the only attack against it never ran"
+    );
+}
+
+#[test]
+fn simultaneous_mutual_defeat_is_independent_of_attack_definition_order() {
+    // Both combatants start alive with just enough health that a single hit
+    // (500 hundredths) is lethal. Both attack each other in the same tick.
+    // The attack_map is a BTreeMap keyed by attack id, so whichever attack
+    // sorts first is *processed* first -- but I1 requires the incapacitation
+    // check to use the tick's *starting* health snapshot, not the
+    // partially-mutated live map. So both orderings below must still produce
+    // a mutual knockout (both combatants at 0, both attacks landed), proving
+    // the result does not depend on attack processing order.
+    let build = |ally_attack_id: &str, enemy_attack_id: &str| {
+        let mut r = request();
+        r.attacks[0].id = ally_attack_id.into();
+        r.attacks.push(mirrored_attack(enemy_attack_id, "e"));
+        set_current_health(&mut r, "a", 1);
+        set_current_health(&mut r, "e", 1);
+        r
+    };
+
+    // Ally's attack id sorts first alphabetically.
+    let ally_first = resolve_combat(build("a_ally_strike", "z_challenger_strike")).unwrap();
+    // Enemy's attack id now sorts first -- processing order is flipped.
+    let enemy_first = resolve_combat(build("z_ally_strike", "a_challenger_strike")).unwrap();
+
+    for result in [&ally_first, &enemy_first] {
+        assert_eq!(
+            result.frames[0].outcomes.len(),
+            2,
+            "both attacks must land in the same tick even though one actor is knocked out \
+             mid-tick by the other's attack"
+        );
+        assert!(result.frames[0].outcomes.iter().all(|o| o.hit));
+        for id in ["a", "e"] {
+            assert_eq!(
+                result
+                    .state
+                    .combatants
+                    .iter()
+                    .find(|c| c.id == id)
+                    .unwrap()
+                    .current_health_hundredths,
+                0,
+                "mutual knockout: both combatants must end the tick at 0 health"
+            );
+        }
+    }
+    assert_eq!(
+        ally_first.state, enemy_first.state,
+        "final state must be identical regardless of attack definition order"
+    );
+}
+
+// ---------------------------------------------------------------------
+// WP3 (같은 플랜, I2): 결착 tick 이후를 시뮬레이션하지 않는다. 결착 조건은
+// `conclude`와 공유하는 `side_all_defeated` 하나뿐이다. 한 명중은 500
+// hundredths(= 체력 5)이므로 체력 15는 정확히 3타에 쓰러진다.
+// ---------------------------------------------------------------------
+
+#[test]
+fn simulation_stops_at_the_tick_that_concludes_the_fight() {
+    let mut r = request();
+    set_ticks(&mut r, 6);
+    set_current_health(&mut r, "e", 15);
+
+    let result = resolve_combat(r).unwrap();
+    assert_eq!(
+        result.frames.len(),
+        3,
+        "enemy dies on the third hit, so tick 3 must be the last simulated tick"
+    );
+    let last_tick = result.frames.last().unwrap().tick;
+    assert!(
+        result.frames.iter().all(|f| f.tick <= last_tick),
+        "no frame may exist after the concluding tick"
+    );
+    assert!(
+        result.full_log.iter().all(|e| e.tick <= last_tick),
+        "no log entry may exist after the concluding tick"
+    );
+}
+
+#[test]
+fn the_concluding_tick_frame_is_included_with_its_outcomes() {
+    let mut r = request();
+    set_ticks(&mut r, 6);
+    set_current_health(&mut r, "e", 15);
+
+    let result = resolve_combat(r).unwrap();
+    let last = result.frames.last().unwrap();
+    assert!(
+        !last.outcomes.is_empty(),
+        "the tick where the fight concluded must still show what happened in it"
+    );
+    assert_eq!(
+        last.combatants
+            .iter()
+            .find(|c| c.id == "e")
+            .unwrap()
+            .current_health_hundredths,
+        0,
+        "the concluding tick's snapshot must show the knockout that ended it"
+    );
+}
+
+#[test]
+fn a_fight_with_no_conclusion_runs_every_tick() {
+    let mut r = request();
+    set_ticks(&mut r, 6);
+    // 체력 100은 6타(30)로 죽지 않는다 -> 결착 없음.
+    let result = resolve_combat(r).unwrap();
+    assert_eq!(
+        result.frames.len(),
+        6,
+        "without a terminal condition the resolver must keep going to the tick limit"
+    );
+}
+
+#[test]
+fn a_side_with_no_active_participant_does_not_read_as_wiped_on_tick_one() {
+    // `all()`은 빈 집합에서 true다. 활성 전투원이 없는 진영을 그대로 판정하면
+    // 첫 tick에 곧바로 "전멸"로 읽혀 시뮬레이션이 1 tick에서 멈춘다. 그 입력을
+    // 거부하는 것은 `conclude`의 몫(`EmptyActiveSide`)이며 resolver가 조용히
+    // 다르게 처리하지 않는다.
+    let mut r = request();
+    set_ticks(&mut r, 4);
+    let enemy = r
+        .execution
+        .input
+        .participants
+        .iter_mut()
+        .find(|p| p.id == "e")
+        .expect("fixture has an enemy");
+    enemy.active = false;
+
+    let result = resolve_combat(r).unwrap();
+    assert_eq!(
+        result.frames.len(),
+        4,
+        "an empty active side must not be treated as a wiped side"
+    );
+}
+
+#[test]
+fn simultaneous_mutual_defeat_stops_at_that_tick() {
+    let mut r = request();
+    set_ticks(&mut r, 6);
+    r.attacks[0].id = "a_ally_strike".into();
+    r.attacks.push(mirrored_attack("z_challenger_strike", "e"));
+    set_current_health(&mut r, "a", 15);
+    set_current_health(&mut r, "e", 15);
+
+    let result = resolve_combat(r).unwrap();
+    assert_eq!(
+        result.frames.len(),
+        3,
+        "both sides wiped on the same tick must stop the simulation on that tick"
+    );
+    for id in ["a", "e"] {
+        assert_eq!(
+            result
+                .state
+                .combatants
+                .iter()
+                .find(|c| c.id == id)
+                .unwrap()
+                .current_health_hundredths,
+            0
+        );
+    }
+}

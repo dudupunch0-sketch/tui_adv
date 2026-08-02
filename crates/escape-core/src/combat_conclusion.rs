@@ -72,6 +72,20 @@ pub struct CombatConclusionReport {
     pub fingerprint: String,
 }
 
+/// 진영 전멸 조건: 그 진영의 활성 전투원 전원의 체력이 0이면 전멸이다.
+///
+/// `conclude`의 최종 결착 판정과 `combat_resolution::resolve`의 tick 단위 조기
+/// 종료 판정(WP2/WP3, `fable_combat_early_conclusion_step1_2608022130.md`)이
+/// 함께 쓰는 유일한 정의다. 규칙은 이 함수 하나에만 있다 — 두 곳에 같은
+/// 조건을 베끼면 갈라진다.
+pub fn side_all_defeated<'a>(
+    side: impl IntoIterator<Item = &'a CombatSimulationParticipant>,
+    current_health_hundredths: impl Fn(&str) -> i64,
+) -> bool {
+    side.into_iter()
+        .all(|p| current_health_hundredths(p.id.as_str()) == 0)
+}
+
 pub fn conclude(
     request: CombatConclusionRequest,
 ) -> Result<CombatConclusionReport, CombatConclusionError> {
@@ -134,12 +148,9 @@ pub fn conclude(
     {
         return Err(CombatConclusionError::FrameExceedsPolicy);
     }
-    let defeated = |side: &[&CombatSimulationParticipant]| {
-        side.iter()
-            .all(|p| state[p.id.as_str()].current_health_hundredths == 0)
-    };
-    let allies_defeated = defeated(&allies);
-    let enemies_defeated = defeated(&enemies);
+    let health_of = |id: &str| state[id].current_health_hundredths;
+    let allies_defeated = side_all_defeated(allies.iter().copied(), health_of);
+    let enemies_defeated = side_all_defeated(enemies.iter().copied(), health_of);
     let (outcome, reason) = if allies_defeated && enemies_defeated {
         (
             CombatConclusionOutcome::MutualDefeat,

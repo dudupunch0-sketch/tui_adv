@@ -11409,7 +11409,7 @@
             "rule_ids": [
               "wuxia_standard_combatant_wave3_step2b"
             ],
-            "simulation_version": "v1",
+            "simulation_version": "v2",
             "suppressed_effects": [],
             "team_ids": [],
             "world_state_fingerprint": "wuxia_combat_spectator_preview_bout_wsf_v1"

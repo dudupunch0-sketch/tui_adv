@@ -777,6 +777,16 @@
         "source_path": "ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤ ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv"
       },
       {
+        "record": "local_afterthought_mumyeong_named_place",
+        "source_export_id": null,
+        "source_path": ""
+      },
+      {
+        "record": "local_afterthought_qingliu_empty_medicine_shelf",
+        "source_export_id": null,
+        "source_path": ""
+      },
+      {
         "record": "notion_0001",
         "source_export_id": "bd93ddd8de224c7da50abdd309bc2880",
         "source_path": "ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/10 ьЭ┤ъ╡мэХЩьзА эЫДьЭ╝ыЛ┤ ь╣┤ыУЬ DB bd93ddd8de224c7da50abdd309bc2880.csv"
@@ -1351,16 +1361,8 @@
       "wuxia_boss_first_appearance",
       "wuxia_boss_recruits_mumyeong",
       "wuxia_boss_resolution",
-      "wuxia_cheongryu_empty_guest_room",
-      "wuxia_cheongryu_first_departure_cost",
       "wuxia_cheongryu_first_night_shelter",
-      "wuxia_cheongryu_first_route_message",
-      "wuxia_cheongryu_medicine_errand",
-      "wuxia_cheongryu_raid_aftermath_roll_call",
-      "wuxia_cheongryu_recovery_rain_patrol",
       "wuxia_cheongryu_wrong_delivery",
-      "wuxia_final_prep_last_meal",
-      "wuxia_final_prep_small_interruption",
       "wuxia_heuksa_bang_inn_key",
       "wuxia_mumyeong_awakening",
       "wuxia_mumyeong_copy_style_reveal",
@@ -1410,16 +1412,8 @@
       "wuxia_boss_first_appearance",
       "wuxia_boss_recruits_mumyeong",
       "wuxia_boss_resolution",
-      "wuxia_cheongryu_empty_guest_room",
-      "wuxia_cheongryu_first_departure_cost",
       "wuxia_cheongryu_first_night_shelter",
-      "wuxia_cheongryu_first_route_message",
-      "wuxia_cheongryu_medicine_errand",
-      "wuxia_cheongryu_raid_aftermath_roll_call",
-      "wuxia_cheongryu_recovery_rain_patrol",
       "wuxia_cheongryu_wrong_delivery",
-      "wuxia_final_prep_last_meal",
-      "wuxia_final_prep_small_interruption",
       "wuxia_heuksa_bang_inn_key",
       "wuxia_mumyeong_awakening",
       "wuxia_mumyeong_copy_style_reveal",
@@ -1454,13 +1448,13 @@
       "wuxia_seoharin_shared_meal_after_raid",
       "wuxia_seoharin_unsaid_stay"
     ],
-    "pending_review_count": 50,
+    "pending_review_count": 42,
     "approved_condition_count": 77
   },
   "afterthought_overlays": {
     "condition_overlay_path": "graphs/afterthought_conditions.yml",
     "link_overlay_path": "graphs/event_afterthought_links.yml",
-    "approved_link_count": 15,
+    "approved_link_count": 31,
     "unresolved_runtime_links": [],
     "unresolved_external_conditions": [
       {
@@ -1526,9 +1520,177 @@
         ],
         "token": "condition_ref:wuxia_seoharin_unsaid_stay:choice:말을 돌린다",
         "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_cheongryu_empty_guest_room",
+          "notion_0012"
+        ],
+        "token": "condition_ref:wuxia_cheongryu_empty_guest_room:choice:방을 정리한다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_cheongryu_empty_guest_room",
+          "notion_0014"
+        ],
+        "token": "condition_ref:wuxia_cheongryu_empty_guest_room:choice:서하린에게 방의 주인을 묻는다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_cheongryu_first_departure_cost",
+          "notion_0012"
+        ],
+        "token": "condition_ref:wuxia_cheongryu_first_departure_cost:choice:부상자들이 안정될 때까지 남는다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_cheongryu_first_departure_cost",
+          "notion_0014"
+        ],
+        "token": "condition_ref:wuxia_cheongryu_first_departure_cost:choice:서하린과 습격 흔적을 조사한다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_cheongryu_first_departure_cost",
+          "notion_0017"
+        ],
+        "token": "condition_ref:wuxia_cheongryu_first_departure_cost:choice:외부로 나갈 사람을 따라 떠난다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_cheongryu_medicine_errand",
+          "local_afterthought_qingliu_empty_medicine_shelf"
+        ],
+        "token": "condition_ref:wuxia_cheongryu_medicine_errand:choice:시장까지 혼자 다녀오기",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_cheongryu_medicine_errand",
+          "local_afterthought_qingliu_empty_medicine_shelf"
+        ],
+        "token": "condition_ref:wuxia_cheongryu_medicine_errand:choice:서하린과 함께 가기",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_cheongryu_medicine_errand",
+          "local_afterthought_qingliu_empty_medicine_shelf"
+        ],
+        "token": "condition_ref:wuxia_cheongryu_medicine_errand:choice:사원증·출근 물건을 교환 제안하기",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_cheongryu_medicine_errand",
+          "local_afterthought_qingliu_empty_medicine_shelf"
+        ],
+        "token": "condition_ref:wuxia_cheongryu_medicine_errand:choice:빈손으로 돌아와 부족을 알리기",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_cheongryu_raid_aftermath_roll_call",
+          "notion_0012"
+        ],
+        "token": "condition_ref:wuxia_cheongryu_raid_aftermath_roll_call:choice:부상자부터 확인한다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_cheongryu_raid_aftermath_roll_call",
+          "notion_0013"
+        ],
+        "token": "condition_ref:wuxia_cheongryu_raid_aftermath_roll_call:choice:실종자 명단을 맡는다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_cheongryu_raid_aftermath_roll_call",
+          "local_afterthought_mumyeong_named_place"
+        ],
+        "token": "condition_ref:wuxia_cheongryu_raid_aftermath_roll_call:choice:무너진 서고에서 기록을 찾는다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_cheongryu_recovery_rain_patrol",
+          "notion_0012"
+        ],
+        "token": "condition_ref:wuxia_cheongryu_recovery_rain_patrol:choice:산문 지붕을 고친다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_cheongryu_recovery_rain_patrol",
+          "notion_0017"
+        ],
+        "token": "condition_ref:wuxia_cheongryu_recovery_rain_patrol:choice:빗물에 지워진 발자국을 살핀다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_cheongryu_recovery_rain_patrol",
+          "notion_0017"
+        ],
+        "token": "condition_ref:wuxia_cheongryu_recovery_rain_patrol:choice:순찰자에게 우산을 건넨다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_final_prep_last_meal",
+          "notion_0012"
+        ],
+        "token": "condition_ref:wuxia_final_prep_last_meal:choice:남은 사람의 몫을 확인한다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_final_prep_last_meal",
+          "notion_0014"
+        ],
+        "token": "condition_ref:wuxia_final_prep_last_meal:choice:귀환 이야기를 꺼낸다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_final_prep_last_meal",
+          "notion_0013"
+        ],
+        "token": "condition_ref:wuxia_final_prep_last_meal:choice:아무 말 없이 함께 있는다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_final_prep_small_interruption",
+          "notion_0012"
+        ],
+        "token": "condition_ref:wuxia_final_prep_small_interruption:choice:산문을 지킨다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_final_prep_small_interruption",
+          "notion_0017"
+        ],
+        "token": "condition_ref:wuxia_final_prep_small_interruption:choice:소리를 따라간다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_final_prep_small_interruption",
+          "notion_0017"
+        ],
+        "token": "condition_ref:wuxia_final_prep_small_interruption:choice:서하린에게 알리고 준비로 돌아간다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
       }
     ],
-    "choice_condition_count": 8,
+    "choice_condition_count": 36,
     "fallback_count": 5,
     "runtime_contract": false
   },
@@ -1803,15 +1965,15 @@
   },
   "counts": {
     "events": 154,
-    "afterthoughts": 18,
+    "afterthoughts": 20,
     "formal_rewards": 51,
     "legacy_reward_records": 1,
     "reward_mappings": 29,
-    "records": 253,
-    "source_refs": 253,
+    "records": 255,
+    "source_refs": 255,
     "source_refs_with_page_id_url": 0,
     "source_refs_with_export_id": 253,
-    "page_provenance_records": 253,
+    "page_provenance_records": 255,
     "afterthought_text_unverifiable": 127,
     "afterthought_original_total": 134
   },

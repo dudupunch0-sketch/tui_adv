@@ -1,0 +1,26 @@
+id: local_afterthought_qingliu_empty_medicine_shelf
+status: approved
+runtime_status: design
+source_refs:
+- source: user-approved-local-design
+  reference: WP-L16
+notion_properties:
+  카드명: 비어 있는 약장
+  검수 상태: 사용자 승인
+  검수 필요: 'No'
+  관련 사건: wuxia_cheongryu_medicine_errand
+  관련 엔딩: 정착, 청류문
+  대상: 청류문
+  메모: 약재 조달·치료비·공동체 대가를 결산하는 청류문 조직 후일담. 상세 runtime 효과는 미정.
+  본문 초안: 약장은 아직 비어 있었다. 다만 누구도 그것을 모른 척하지 않았다. 누군가는 약재를 구했고, 누군가는 값을 치렀고, 누군가는 다음
+    사람의 몫을 남겼다.
+  상호 배타 그룹: qingliu_future
+  연계 그룹: qingliu_aftermath
+  카드 ID: epilogue_qingliu_empty_medicine_shelf
+  카테고리: 세력
+  풍문 여부: 'No'
+  해금 조건: 청류문 약재 부족 사건의 조달·대가 결산.
+kind: afterthought
+storypack_id: null
+arc_id: null
+stages: []

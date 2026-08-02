@@ -1,0 +1,26 @@
+id: local_afterthought_mumyeong_named_place
+status: approved
+runtime_status: design
+source_refs:
+- source: user-approved-local-design
+  reference: WP-L16
+notion_properties:
+  카드명: 이름이 남은 자리
+  검수 상태: 사용자 승인
+  검수 필요: 'No'
+  관련 사건: wuxia_cheongryu_raid_aftermath_roll_call
+  관련 엔딩: 청류문
+  대상: 무명, 청류문
+  메모: 무명의 결말과 실종자·생존자 기록을 연결하는 후일담. 상세 runtime 효과는 미정.
+  본문 초안: 이름을 적는 일은 사람을 붙잡는 일과 같지 않았다. 그래도 그날 이후 청류문 장부에는 지워지지 않는 자리가 하나 남았다. 돌아오지
+    않은 사람의 이름이었다.
+  상호 배타 그룹: mumyeong_future
+  연계 그룹: qingliu_aftermath
+  카드 ID: epilogue_mumyeong_named_place
+  카테고리: 동료 / 세력
+  풍문 여부: 'No'
+  해금 조건: 청류문 습격 후 생존자·실종자 기록 결산. 무명 결말 조건은 별도 설계.
+kind: afterthought
+storypack_id: null
+arc_id: null
+stages: []

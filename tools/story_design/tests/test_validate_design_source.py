@@ -316,3 +316,16 @@ def test_choice_condition_reference_is_unresolved_external(tmp_path):
     report = json.loads(result.stdout)
     assert report["afterthought_overlays"]["choice_condition_count"] == 1
     assert len(report["afterthought_overlays"]["unresolved_external_conditions"]) == 1
+
+
+def test_cross_group_coexistence_is_allowed(tmp_path):
+    root = write_fixture(tmp_path)
+    write_links(
+        root,
+        [
+            approved_link(card="notion_0012", exclusive_group="qingliu_future", priority=10),
+            approved_link(card="notion_0013", exclusive_group="seoharin_future", priority=10),
+        ],
+    )
+    result = run(root)
+    assert result.returncode == 0, result.stdout

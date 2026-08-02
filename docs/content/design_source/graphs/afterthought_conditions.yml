@@ -622,3 +622,171 @@ choice_conditions:
   raw_choice: 말을 돌린다
   condition_type: choice_text
   status: unresolved_external_condition
+- condition_id: wuxia_cheongryu_empty_guest_room_choice_01
+  event_id: wuxia_cheongryu_empty_guest_room
+  source_path: events/imported/wuxia_cheongryu_empty_guest_room.yml
+  raw_choice: 방을 정리한다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_cheongryu_empty_guest_room_choice_02
+  event_id: wuxia_cheongryu_empty_guest_room
+  source_path: events/imported/wuxia_cheongryu_empty_guest_room.yml
+  raw_choice: 남은 물건을 숨긴다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_cheongryu_empty_guest_room_choice_03
+  event_id: wuxia_cheongryu_empty_guest_room
+  source_path: events/imported/wuxia_cheongryu_empty_guest_room.yml
+  raw_choice: 서하린에게 방의 주인을 묻는다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_cheongryu_first_departure_cost_choice_01
+  event_id: wuxia_cheongryu_first_departure_cost
+  source_path: events/imported/wuxia_cheongryu_first_departure_cost.yml
+  raw_choice: 부상자들이 안정될 때까지 남는다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_cheongryu_first_departure_cost_choice_02
+  event_id: wuxia_cheongryu_first_departure_cost
+  source_path: events/imported/wuxia_cheongryu_first_departure_cost.yml
+  raw_choice: 외부로 나갈 사람을 따라 떠난다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_cheongryu_first_departure_cost_choice_03
+  event_id: wuxia_cheongryu_first_departure_cost
+  source_path: events/imported/wuxia_cheongryu_first_departure_cost.yml
+  raw_choice: 서하린과 습격 흔적을 조사한다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_cheongryu_first_departure_cost_choice_04
+  event_id: wuxia_cheongryu_first_departure_cost
+  source_path: events/imported/wuxia_cheongryu_first_departure_cost.yml
+  raw_choice: 아무 약속 없이 답을 요구한다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_cheongryu_first_route_message_choice_01
+  event_id: wuxia_cheongryu_first_route_message
+  source_path: events/imported/wuxia_cheongryu_first_route_message.yml
+  raw_choice: 귀환 소식을 확인한다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_cheongryu_first_route_message_choice_02
+  event_id: wuxia_cheongryu_first_route_message
+  source_path: events/imported/wuxia_cheongryu_first_route_message.yml
+  raw_choice: 청류문에 도움을 청한 세력을 본다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_cheongryu_first_route_message_choice_03
+  event_id: wuxia_cheongryu_first_route_message
+  source_path: events/imported/wuxia_cheongryu_first_route_message.yml
+  raw_choice: 서하린에게 먼저 알린다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_cheongryu_medicine_errand_choice_01
+  event_id: wuxia_cheongryu_medicine_errand
+  source_path: events/imported/wuxia_cheongryu_medicine_errand.yml
+  raw_choice: 시장까지 혼자 다녀오기
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_cheongryu_medicine_errand_choice_02
+  event_id: wuxia_cheongryu_medicine_errand
+  source_path: events/imported/wuxia_cheongryu_medicine_errand.yml
+  raw_choice: 서하린과 함께 가기
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_cheongryu_medicine_errand_choice_03
+  event_id: wuxia_cheongryu_medicine_errand
+  source_path: events/imported/wuxia_cheongryu_medicine_errand.yml
+  raw_choice: 사원증·출근 물건을 교환 제안하기
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_cheongryu_medicine_errand_choice_04
+  event_id: wuxia_cheongryu_medicine_errand
+  source_path: events/imported/wuxia_cheongryu_medicine_errand.yml
+  raw_choice: 빈손으로 돌아와 부족을 알리기
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_cheongryu_raid_aftermath_roll_call_choice_01
+  event_id: wuxia_cheongryu_raid_aftermath_roll_call
+  source_path: events/imported/wuxia_cheongryu_raid_aftermath_roll_call.yml
+  raw_choice: 부상자부터 확인한다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_cheongryu_raid_aftermath_roll_call_choice_02
+  event_id: wuxia_cheongryu_raid_aftermath_roll_call
+  source_path: events/imported/wuxia_cheongryu_raid_aftermath_roll_call.yml
+  raw_choice: 무너진 서고에서 기록을 찾는다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_cheongryu_raid_aftermath_roll_call_choice_03
+  event_id: wuxia_cheongryu_raid_aftermath_roll_call
+  source_path: events/imported/wuxia_cheongryu_raid_aftermath_roll_call.yml
+  raw_choice: 실종자 명단을 맡는다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_cheongryu_raid_aftermath_roll_call_choice_04
+  event_id: wuxia_cheongryu_raid_aftermath_roll_call
+  source_path: events/imported/wuxia_cheongryu_raid_aftermath_roll_call.yml
+  raw_choice: 지시를 기다리며 체력을 보존한다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_cheongryu_recovery_rain_patrol_choice_01
+  event_id: wuxia_cheongryu_recovery_rain_patrol
+  source_path: events/imported/wuxia_cheongryu_recovery_rain_patrol.yml
+  raw_choice: 빗물에 지워진 발자국을 살핀다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_cheongryu_recovery_rain_patrol_choice_02
+  event_id: wuxia_cheongryu_recovery_rain_patrol
+  source_path: events/imported/wuxia_cheongryu_recovery_rain_patrol.yml
+  raw_choice: 산문 지붕을 고친다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_cheongryu_recovery_rain_patrol_choice_03
+  event_id: wuxia_cheongryu_recovery_rain_patrol
+  source_path: events/imported/wuxia_cheongryu_recovery_rain_patrol.yml
+  raw_choice: 순찰자에게 우산을 건넨다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_final_prep_last_meal_choice_01
+  event_id: wuxia_final_prep_last_meal
+  source_path: events/imported/wuxia_final_prep_last_meal.yml
+  raw_choice: 평소처럼 먹는다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_final_prep_last_meal_choice_02
+  event_id: wuxia_final_prep_last_meal
+  source_path: events/imported/wuxia_final_prep_last_meal.yml
+  raw_choice: 남은 사람의 몫을 확인한다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_final_prep_last_meal_choice_03
+  event_id: wuxia_final_prep_last_meal
+  source_path: events/imported/wuxia_final_prep_last_meal.yml
+  raw_choice: 귀환 이야기를 꺼낸다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_final_prep_last_meal_choice_04
+  event_id: wuxia_final_prep_last_meal
+  source_path: events/imported/wuxia_final_prep_last_meal.yml
+  raw_choice: 아무 말 없이 함께 있는다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_final_prep_small_interruption_choice_01
+  event_id: wuxia_final_prep_small_interruption
+  source_path: events/imported/wuxia_final_prep_small_interruption.yml
+  raw_choice: 소리를 따라간다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_final_prep_small_interruption_choice_02
+  event_id: wuxia_final_prep_small_interruption
+  source_path: events/imported/wuxia_final_prep_small_interruption.yml
+  raw_choice: 산문을 지킨다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_final_prep_small_interruption_choice_03
+  event_id: wuxia_final_prep_small_interruption
+  source_path: events/imported/wuxia_final_prep_small_interruption.yml
+  raw_choice: 서하린에게 알리고 준비로 돌아간다
+  condition_type: choice_text
+  status: unresolved_external_condition

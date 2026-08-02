@@ -144,6 +144,12 @@ pub enum ContentIndexError {
         encounter_id: String,
         message: String,
     },
+    /// Wave 3 Step 2a: `EncounterDef.combat` 하드 오류 (정본 12). 알 수 없는 kind,
+    /// 예산 초과, 참조 누락은 모두 여기로 모인다 — 조용히 무시하지 않는다.
+    InvalidEncounterCombat {
+        encounter_id: String,
+        message: String,
+    },
 }
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
@@ -636,6 +642,15 @@ impl std::fmt::Display for ContentIndexError {
                     "invalid event in encounter {encounter_id}: {message}"
                 )
             }
+            ContentIndexError::InvalidEncounterCombat {
+                encounter_id,
+                message,
+            } => {
+                write!(
+                    formatter,
+                    "invalid combat in encounter {encounter_id}: {message}"
+                )
+            }
         }
     }
 }
@@ -829,6 +844,7 @@ pub fn index_content_bundle(bundle: &ContentBundle) -> Result<ContentIndex, Cont
         validate_encounter_locations(&encounter, &location_ids)?;
         validate_encounter_traits(&encounter, &trait_ids)?;
         validate_encounter_insights(&encounter, &insight_ids)?;
+        validate_encounter_combat(&encounter)?;
         insert_unique(
             "encounters",
             &mut encounters,
@@ -1277,6 +1293,146 @@ fn validate_encounter_insights(
             validate_outcome_insights(&encounter.id, &check.failure, insight_ids)?;
         }
     }
+    Ok(())
+}
+
+/// Wave 3 Step 2a index-time 검증 (정본 12 하드 오류 원칙). `encounter.combat`이
+/// `None`이면 통과한다. 11개 규칙은 모두 오류로 거부하며 기본값으로 때우지 않는다.
+/// 규칙을 고정하는 테스트: `crates/escape-core/tests/encounter_combat_wave3.rs`.
+fn validate_encounter_combat(encounter: &EncounterDef) -> Result<(), ContentIndexError> {
+    let Some(combat) = &encounter.combat else {
+        return Ok(());
+    };
+    let fail = |message: String| ContentIndexError::InvalidEncounterCombat {
+        encounter_id: encounter.id.clone(),
+        message,
+    };
+
+    // Rule 1: intervention_budget must be 0..=3 (정본 01 상한).
+    if combat.intervention_budget > 3 {
+        return Err(fail(format!(
+            "intervention_budget must be between 0 and 3, got {}",
+            combat.intervention_budget
+        )));
+    }
+
+    // Rule 2: only `systemic` is supported yet; `mixed`/`scripted` need the
+    // intervention-pause flow this slice does not build.
+    match combat.kind {
+        EncounterCombatKind::Systemic => {}
+        EncounterCombatKind::Mixed => {
+            return Err(fail(
+                "kind 'mixed' is not supported yet (Wave 3 Step 2b/2c 소관)".to_string(),
+            ));
+        }
+        EncounterCombatKind::Scripted => {
+            return Err(fail(
+                "kind 'scripted' is not supported yet (Wave 3 Step 2b/2c 소관)".to_string(),
+            ));
+        }
+    }
+
+    // Rule 3 & 4: tick config sanity.
+    if combat.config.tick_millis == 0 {
+        return Err(fail(
+            "config.tick_millis must be greater than 0".to_string(),
+        ));
+    }
+    if combat.ticks == 0 {
+        return Err(fail("ticks must be greater than 0".to_string()));
+    }
+    if combat.ticks > combat.config.max_ticks {
+        return Err(fail(format!(
+            "ticks ({}) must not exceed config.max_ticks ({})",
+            combat.ticks, combat.config.max_ticks
+        )));
+    }
+
+    let combatant_ids: BTreeSet<&str> = combat
+        .state
+        .combatants
+        .iter()
+        .map(|combatant| combatant.id.as_str())
+        .collect();
+
+    // Rule 5: every attack.actor_id must be a known combatant.
+    for attack in &combat.attacks {
+        if !combatant_ids.contains(attack.actor_id.as_str()) {
+            return Err(fail(format!(
+                "attack '{}' references unknown actor_id: {}",
+                attack.id, attack.actor_id
+            )));
+        }
+    }
+
+    // Rule 6: every defense.combatant_id must be a known combatant.
+    let defense_ids: BTreeSet<&str> = combat
+        .defenses
+        .iter()
+        .map(|defense| defense.combatant_id.as_str())
+        .collect();
+    for defense in &combat.defenses {
+        if !combatant_ids.contains(defense.combatant_id.as_str()) {
+            return Err(fail(format!(
+                "defense references unknown combatant_id: {}",
+                defense.combatant_id
+            )));
+        }
+    }
+
+    // Rule 7: every combatant needs a matching defense profile (same rule as
+    // combat_resolution.rs's own runtime check, enforced earlier at index time).
+    for combatant_id in &combatant_ids {
+        if !defense_ids.contains(combatant_id) {
+            return Err(fail(format!(
+                "combatant '{combatant_id}' has no matching defense profile"
+            )));
+        }
+    }
+
+    // Rule 8: participants id set must equal state.combatants id set.
+    let participant_ids: BTreeSet<&str> = combat
+        .participants
+        .iter()
+        .map(|participant| participant.id.as_str())
+        .collect();
+    if participant_ids != combatant_ids {
+        return Err(fail(
+            "participants id set must exactly match state.combatants id set".to_string(),
+        ));
+    }
+
+    // Rule 9: effect catalog must be internally valid.
+    combat
+        .effect_catalog
+        .validate()
+        .map_err(|error| fail(format!("effect_catalog is invalid: {error}")))?;
+
+    // Rule 10: manifest must be internally valid.
+    combat
+        .manifest
+        .validate()
+        .map_err(|error| fail(format!("manifest is invalid: {error}")))?;
+
+    // Rule 11: attack effects must reference known effect catalog ids (정본 12
+    // "없는 태그 또는 effect 참조").
+    let effect_ids: BTreeSet<&str> = combat
+        .effect_catalog
+        .effects
+        .iter()
+        .map(|effect| effect.id.as_str())
+        .collect();
+    for attack in &combat.attacks {
+        for attack_effect in &attack.effects {
+            if !effect_ids.contains(attack_effect.effect_id.as_str()) {
+                return Err(fail(format!(
+                    "attack '{}' references unknown effect id: {}",
+                    attack.id, attack_effect.effect_id
+                )));
+            }
+        }
+    }
+
     Ok(())
 }
 

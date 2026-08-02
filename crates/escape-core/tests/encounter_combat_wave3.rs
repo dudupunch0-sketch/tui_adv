@@ -1,0 +1,382 @@
+//! Wave 3 Step 2a: `EncounterCombatDef` schema, index-time validation (WP-2),
+//! and the systemic combat producer (WP-3), plus the additive-optional /
+//! determinism regression suite (WP-4).
+//!
+//! Fixture policy: `crates/escape-core/fixtures/content/content.bundle.json`
+//! is never modified. Every test loads it fresh with `load_content_bundle`
+//! and injects a minimal combat definition into one existing encounter's
+//! `serde_json::Value` before re-indexing, the same technique
+//! `tests/event_stage.rs` already uses for event stages.
+
+use escape_core::{
+    index_content_bundle, load_content_bundle, new_game_from_content_at, scene_page_from_content,
+    ContentBundle, ContentIndexError,
+};
+use serde_json::{json, Value};
+
+const BUNDLE: &str = include_str!("../fixtures/content/content.bundle.json");
+const ENCOUNTER_ID: &str = "printer_prints_alone";
+const LOCATION_ID: &str = "printer_area";
+
+/// A minimal, internally-consistent systemic combat definition: two
+/// combatants (one per side), one attack each, matching defenses, and a
+/// one-effect catalog. `manifest.actual_seed` is intentionally an arbitrary
+/// authoring placeholder -- the producer must never use it directly
+/// (invariant 1 / WP-4 test 6).
+fn valid_combat_json() -> Value {
+    json!({
+        "kind": "systemic",
+        "intervention_budget": 1,
+        "manifest": {
+            "simulation_version": "v1",
+            "actual_seed": 999,
+            "world_state_fingerprint": "wsf-1",
+            "applied_effects": [],
+            "suppressed_effects": [],
+            "combatant_ids": ["ally_1", "enemy_1"],
+            "placement_ids": [],
+            "environment_ids": [],
+            "team_ids": [],
+            "rule_ids": [],
+            "public_info_ids": []
+        },
+        "state": {
+            "battle_id": "battle_1",
+            "combatants": [
+                {
+                    "id": "ally_1", "current_health": 100, "maximum_health": 100,
+                    "current_breath": 50, "maximum_breath": 50,
+                    "balance": 100, "maximum_balance": 100,
+                    "fear": 0, "anger": 0,
+                    "posture": "neutral", "weapon_control": "stable"
+                },
+                {
+                    "id": "enemy_1", "current_health": 100, "maximum_health": 100,
+                    "current_breath": 50, "maximum_breath": 50,
+                    "balance": 100, "maximum_balance": 100,
+                    "fear": 0, "anger": 0,
+                    "posture": "neutral", "weapon_control": "stable"
+                }
+            ],
+            "manifest_fingerprint": "state-fp-1"
+        },
+        "config": {"tick_millis": 100, "max_ticks": 5},
+        "participants": [
+            {
+                "id": "ally_1", "side": "ally",
+                "position": {"x": 0, "y": 0}, "facing": {"x": 1, "y": 0},
+                "speed_per_tick": 1, "collision_radius": 5,
+                "attack_range": 10, "support_range": 10,
+                "role_id": "role_ally", "target_policy_id": null, "active": true
+            },
+            {
+                "id": "enemy_1", "side": "enemy",
+                "position": {"x": 5, "y": 0}, "facing": {"x": -1, "y": 0},
+                "speed_per_tick": 1, "collision_radius": 5,
+                "attack_range": 10, "support_range": 10,
+                "role_id": "role_enemy", "target_policy_id": null, "active": true
+            }
+        ],
+        "roles": [
+            {
+                "id": "role_ally",
+                "weights": {
+                    "preferred_distance": 0, "aggression": 1, "formation_maintenance": 0,
+                    "pursuit_range": 10, "protect_priority": 0, "target_priority": 0,
+                    "risk_tolerance": 0, "ability_priority": 0
+                }
+            },
+            {
+                "id": "role_enemy",
+                "weights": {
+                    "preferred_distance": 0, "aggression": 1, "formation_maintenance": 0,
+                    "pursuit_range": 10, "protect_priority": 0, "target_priority": 0,
+                    "risk_tolerance": 0, "ability_priority": 0
+                }
+            }
+        ],
+        "policies": [],
+        "attacks": [
+            {
+                "id": "atk_ally", "actor_id": "ally_1",
+                "power_hundredths": 1000, "ability_multiplier_hundredths": 100,
+                "accuracy_percent": 100, "attack_range": 10,
+                "penetration_hundredths": 0, "collision_balance_hundredths": 0,
+                "balance_power_hundredths": 0,
+                "effects": [{"effect_id": "burn", "chance_percent": 100}]
+            },
+            {
+                "id": "atk_enemy", "actor_id": "enemy_1",
+                "power_hundredths": 800, "ability_multiplier_hundredths": 100,
+                "accuracy_percent": 100, "attack_range": 10,
+                "penetration_hundredths": 0, "collision_balance_hundredths": 0,
+                "balance_power_hundredths": 0,
+                "effects": []
+            }
+        ],
+        "defenses": [
+            {"combatant_id": "ally_1", "defense_hundredths": 0, "balance_resistance_hundredths": 0},
+            {"combatant_id": "enemy_1", "defense_hundredths": 0, "balance_resistance_hundredths": 0}
+        ],
+        "effect_catalog": {
+            "effects": [
+                {
+                    "id": "burn", "source": "atk_ally", "category": "state",
+                    "target_selector": "target", "parameters": {}, "conditions": [],
+                    "phase": "during_combat", "lifetime": "Persistent",
+                    "stacking": "unique", "stacking_group": "burn_group",
+                    "stacking_cap": null, "priority": 0, "visibility": "public", "tags": []
+                }
+            ]
+        },
+        "ticks": 3,
+        "termination": {"max_ticks": 3, "conclude_on_max_ticks": true}
+    })
+}
+
+/// Loads the shared fixture fresh and injects a combat definition (built from
+/// `valid_combat_json()` and then `mutate`d) into `ENCOUNTER_ID`. The fixture
+/// file on disk is never written to.
+fn bundle_with_combat(mutate: impl FnOnce(&mut Value)) -> ContentBundle {
+    let mut bundle = load_content_bundle(BUNDLE).expect("fixture bundle should load");
+    let mut combat = valid_combat_json();
+    mutate(&mut combat);
+    let encounter = bundle
+        .content
+        .encounters
+        .iter_mut()
+        .find(|value| value["id"] == ENCOUNTER_ID)
+        .expect("fixture must contain the target encounter");
+    encounter["combat"] = combat;
+    bundle
+}
+
+fn expect_combat_error(bundle: &ContentBundle) -> ContentIndexError {
+    match index_content_bundle(bundle) {
+        Ok(_) => panic!("expected combat validation to reject this bundle"),
+        Err(error) => error,
+    }
+}
+
+// ---------------------------------------------------------------------
+// WP-2: index-time validation (11 hard-error rules, 정본 12).
+// ---------------------------------------------------------------------
+
+#[test]
+fn valid_systemic_combat_indexes_without_error() {
+    let bundle = bundle_with_combat(|_| {});
+    index_content_bundle(&bundle).expect("a well-formed systemic combat should index cleanly");
+}
+
+#[test]
+fn rule1_intervention_budget_over_three_is_rejected() {
+    let bundle = bundle_with_combat(|combat| combat["intervention_budget"] = json!(4));
+    let error = expect_combat_error(&bundle);
+    assert!(matches!(
+        error,
+        ContentIndexError::InvalidEncounterCombat { .. }
+    ));
+    assert!(error.to_string().contains(ENCOUNTER_ID));
+}
+
+#[test]
+fn rule2_mixed_kind_is_rejected_and_names_the_encounter() {
+    let bundle = bundle_with_combat(|combat| combat["kind"] = json!("mixed"));
+    let error = expect_combat_error(&bundle);
+    let message = error.to_string();
+    assert!(message.contains(ENCOUNTER_ID));
+    assert!(message.contains("2b/2c"));
+}
+
+#[test]
+fn rule2_scripted_kind_is_rejected_and_names_the_encounter() {
+    let bundle = bundle_with_combat(|combat| combat["kind"] = json!("scripted"));
+    let error = expect_combat_error(&bundle);
+    let message = error.to_string();
+    assert!(message.contains(ENCOUNTER_ID));
+    assert!(message.contains("2b/2c"));
+}
+
+#[test]
+fn rule3_zero_tick_millis_is_rejected() {
+    let bundle = bundle_with_combat(|combat| combat["config"]["tick_millis"] = json!(0));
+    expect_combat_error(&bundle);
+}
+
+#[test]
+fn rule4_zero_ticks_is_rejected() {
+    let bundle = bundle_with_combat(|combat| combat["ticks"] = json!(0));
+    expect_combat_error(&bundle);
+}
+
+#[test]
+fn rule4_ticks_exceeding_max_ticks_is_rejected() {
+    let bundle = bundle_with_combat(|combat| combat["ticks"] = json!(999));
+    expect_combat_error(&bundle);
+}
+
+#[test]
+fn rule5_attack_actor_id_not_in_combatants_is_rejected() {
+    let bundle = bundle_with_combat(|combat| combat["attacks"][0]["actor_id"] = json!("ghost"));
+    expect_combat_error(&bundle);
+}
+
+#[test]
+fn rule6_defense_combatant_id_not_in_combatants_is_rejected() {
+    let bundle =
+        bundle_with_combat(|combat| combat["defenses"][0]["combatant_id"] = json!("ghost"));
+    expect_combat_error(&bundle);
+}
+
+#[test]
+fn rule7_combatant_missing_a_defense_profile_is_rejected() {
+    let bundle = bundle_with_combat(|combat| {
+        combat["defenses"] = json!([
+            {"combatant_id": "ally_1", "defense_hundredths": 0, "balance_resistance_hundredths": 0}
+        ]);
+    });
+    expect_combat_error(&bundle);
+}
+
+#[test]
+fn rule8_participant_id_set_mismatch_is_rejected() {
+    let bundle = bundle_with_combat(|combat| {
+        combat["participants"][0]["id"] = json!("someone_else");
+    });
+    expect_combat_error(&bundle);
+}
+
+#[test]
+fn rule9_invalid_effect_catalog_is_rejected() {
+    let bundle = bundle_with_combat(|combat| {
+        // Empty effect id fails `CombatEffectCatalog::validate`'s `ensure_id`.
+        combat["effect_catalog"]["effects"][0]["id"] = json!("");
+    });
+    expect_combat_error(&bundle);
+}
+
+#[test]
+fn rule10_invalid_manifest_is_rejected() {
+    let bundle = bundle_with_combat(|combat| {
+        combat["manifest"]["world_state_fingerprint"] = json!("");
+    });
+    expect_combat_error(&bundle);
+}
+
+#[test]
+fn rule11_attack_references_unknown_effect_id_is_rejected() {
+    let bundle = bundle_with_combat(|combat| {
+        combat["attacks"][0]["effects"] =
+            json!([{"effect_id": "nonexistent", "chance_percent": 100}]);
+    });
+    expect_combat_error(&bundle);
+}
+
+// ---------------------------------------------------------------------
+// Additive-optional proof (also WP-4 minimal case 13).
+// ---------------------------------------------------------------------
+
+#[test]
+fn bundle_without_any_combat_field_still_indexes() {
+    let bundle = load_content_bundle(BUNDLE).expect("fixture bundle should load");
+    index_content_bundle(&bundle).expect("bundles with no combat authoring must still index");
+}
+
+// ---------------------------------------------------------------------
+// WP-3/WP-4: systemic combat producer.
+// ---------------------------------------------------------------------
+
+/// WP-4 case 2 & 3: a systemic combat producer fills `ScenePage.combat` with a
+/// non-empty spectator view and a conclusion report.
+#[test]
+fn systemic_combat_producer_fills_scene_page_combat() {
+    let bundle = bundle_with_combat(|_| {});
+    let index = index_content_bundle(&bundle).expect("bundle should index");
+    let state =
+        new_game_from_content_at(7, &index, LOCATION_ID).expect("content-backed game should start");
+    let page = scene_page_from_content(&state, &index).expect("scene page should render");
+
+    let combat = page
+        .combat
+        .expect("systemic combat should fill ScenePage.combat");
+    assert!(
+        !combat.view.frames.is_empty(),
+        "spectator view should have at least one tick frame"
+    );
+    let report = combat
+        .report
+        .expect("concluded combat should carry a report");
+    assert!(report.duration_millis > 0);
+    assert_eq!(report.combatants.len(), 2);
+}
+
+/// WP-4 case 4: determinism -- same state + same bundle -> identical
+/// `ScenePage.combat` on repeated calls.
+#[test]
+fn systemic_combat_producer_is_deterministic_for_the_same_state() {
+    let bundle = bundle_with_combat(|_| {});
+    let index = index_content_bundle(&bundle).expect("bundle should index");
+    let state = new_game_from_content_at(42, &index, LOCATION_ID).expect("game should start");
+
+    let first = scene_page_from_content(&state, &index).expect("first render should succeed");
+    let second = scene_page_from_content(&state, &index).expect("second render should succeed");
+    assert_eq!(first.combat, second.combat);
+}
+
+/// WP-4 case 5: a different run seed produces a different combat fingerprint.
+#[test]
+fn systemic_combat_producer_seed_changes_with_run_seed() {
+    let bundle = bundle_with_combat(|_| {});
+    let index = index_content_bundle(&bundle).expect("bundle should index");
+
+    let state_a = new_game_from_content_at(1, &index, LOCATION_ID).expect("game should start");
+    let state_b = new_game_from_content_at(2, &index, LOCATION_ID).expect("game should start");
+
+    let page_a = scene_page_from_content(&state_a, &index).expect("render should succeed");
+    let page_b = scene_page_from_content(&state_b, &index).expect("render should succeed");
+
+    let fingerprint_a = page_a.combat.unwrap().view.fingerprint;
+    let fingerprint_b = page_b.combat.unwrap().view.fingerprint;
+    assert_ne!(
+        fingerprint_a, fingerprint_b,
+        "different run seeds must produce different combat fingerprints"
+    );
+}
+
+/// WP-4 case 6 (invariant 1 proof): changing the *authoring* manifest's
+/// `actual_seed` must not change the actual combat outcome, because the
+/// producer always overwrites it with a run-derived value.
+#[test]
+fn systemic_combat_producer_result_is_independent_of_authoring_actual_seed() {
+    let bundle_a = bundle_with_combat(|combat| combat["manifest"]["actual_seed"] = json!(1));
+    let bundle_b = bundle_with_combat(|combat| combat["manifest"]["actual_seed"] = json!(999_999));
+
+    let index_a = index_content_bundle(&bundle_a).expect("bundle should index");
+    let index_b = index_content_bundle(&bundle_b).expect("bundle should index");
+
+    let state_a = new_game_from_content_at(123, &index_a, LOCATION_ID).expect("game should start");
+    let state_b = new_game_from_content_at(123, &index_b, LOCATION_ID).expect("game should start");
+
+    let page_a = scene_page_from_content(&state_a, &index_a).expect("render should succeed");
+    let page_b = scene_page_from_content(&state_b, &index_b).expect("render should succeed");
+
+    assert_eq!(
+        page_a.combat.unwrap().view.fingerprint,
+        page_b.combat.unwrap().view.fingerprint,
+        "authoring actual_seed must not influence the real combat seed"
+    );
+}
+
+/// A combat-less encounter must still round-trip to `combat: None` with no
+/// `"combat"` JSON key (Step 1c boundary contract; also WP-4 case 1).
+#[test]
+fn encounter_without_combat_still_yields_no_combat_key_in_json() {
+    let bundle = load_content_bundle(BUNDLE).expect("fixture bundle should load");
+    let index = index_content_bundle(&bundle).expect("bundle should index");
+    let state = new_game_from_content_at(5, &index, LOCATION_ID).expect("game should start");
+    let page = scene_page_from_content(&state, &index).expect("scene page should render");
+    assert!(page.combat.is_none());
+
+    let value = serde_json::to_value(&page).expect("ScenePage should serialize");
+    assert!(value.as_object().unwrap().get("combat").is_none());
+}

@@ -269,9 +269,16 @@ export function renderCombatLog(view: CombatSpectatorView): string {
   const metaText = `전체 로그 ${view.full_log.length}건 (일시정지 또는 전투 종료 후 별도 열람, 이 화면은 개수만 표시)`;
   const total = view.core_log.length;
   const shown = Math.min(total, WEB_CORE_LOG_LIMIT);
+  // 로그 노출 시각의 원점은 **보드 재생의 원점과 같아야** 한다. 보드는
+  // 프레임 인덱스 k를 `k × tick_millis`에 놓으므로 첫 프레임(= tick
+  // `frames[0].tick`)이 0ms다. 실측 데이터의 첫 프레임 tick은 0이 아니라 1이라,
+  // 로그를 `entry.tick × tick_millis`로 놓으면 같은 사건이 보드보다 한 tick
+  // 늦게 나타난다(100ms 어긋남). 정본 13의 "상단 연출과 하단 로그 동기화"를
+  // 깨뜨리므로 원점을 빼서 맞춘다.
+  const originTick = view.frames.length ? view.frames[0].tick : 0;
   const rows = view.core_log
     .slice(0, shown)
-    .map((entry) => renderLogRow(entry, view.tick_millis))
+    .map((entry) => renderLogRow(entry, view.tick_millis, originTick))
     .join('');
   const emptyLine = total === 0 ? '<li class="combat-log__empty">핵심 로그가 없다.</li>' : '';
   const omittedLine =
@@ -289,7 +296,11 @@ export function renderCombatLog(view: CombatSpectatorView): string {
  * `damage_applied`는 같은 `DamageApplied` 사건에서 나오기 때문에 대응이
  * 증명 가능하다. 나머지 5개 template id는 대응하는 cue가 core에 없으므로
  * `data-cue`를 붙이지 않고 중립 잉크색으로 둔다 — 대응을 발명하지 않는다. */
-function renderLogRow(entry: CombatSpectatorLogEntry, tickMillis: number): string {
+function renderLogRow(
+  entry: CombatSpectatorLogEntry,
+  tickMillis: number,
+  originTick: number,
+): string {
   const line = combatLogTemplateLine(entry);
   const isDamageApplied = entry.template_id === 'combat.log.damage_applied';
   const cueAttr = isDamageApplied ? ' data-cue="hit"' : '';
@@ -304,7 +315,8 @@ function renderLogRow(entry: CombatSpectatorLogEntry, tickMillis: number): strin
   // 외부 shorthand보다 그 속성 하나만 우선하는 표준 캐스케이드를 그대로
   // 쓴다(WP1 keyframe 이름과 달리 매 행마다 다른 CSS 텍스트를 만들 필요가
   // 없다).
-  const revealDelay = ` style="animation-delay: ${String(entry.tick * tickMillis)}ms"`;
+  const revealMillis = Math.max(0, entry.tick - originTick) * tickMillis;
+  const revealDelay = ` style="animation-delay: ${String(revealMillis)}ms"`;
   return `<li class="combat-log__row"${revealDelay} data-template-id="${escapeHtml(
     entry.template_id,
   )}"${cueAttr}${unknownAttr}>${cueGlyph}${escapeHtml(line)}</li>`;

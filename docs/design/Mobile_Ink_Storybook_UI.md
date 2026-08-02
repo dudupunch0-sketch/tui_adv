@@ -252,15 +252,27 @@ DOM은 **마지막 `view.frames` 항목**(정지 프레임)이다 — Wave 3 Ste
   이미 쓰는 `[data-active="false"]`의 dimming 값(`opacity: 0.55`,
   `filter: saturate(0.4)`)을 그대로 재사용해 그 tick 자신의 `cues` 배열에
   있을 때만 적용한다(다른 tick으로 지속을 추론하지 않는다).
-  - **알려진 계획 이탈**: §4-3의 cue 표는 `balance_broken`("흔들림/기울어짐")
-    구현으로 `rotate`를 제안하지만, "Hard invariants"로 명시된 I9는 애니메이션
-    속성을 `translate`/`opacity`/`filter`로만 제한하며 예외를 두지 않는다.
-    Hard invariant가 우선한다고 판단해 `balance_broken`을 `translate` 기반
-    좌우 흔들림으로 구현했다(둘 중 "흔들림"만 재현, "기울어짐"은 CSS에
-    rotate 없이 표현할 방법이 없어 재현하지 않았다).
-- 핵심 로그 각 줄은 `entry.tick × view.tick_millis`ms에 opacity로 나타난다
+  - `balance_broken`은 `translate` 좌우 흔들림 **+ `rotate` 기울어짐**이다
+    (정본 13이 "흔들림/기울어짐" 둘 다 요구한다). 흔들림만 쓰면 `hit`의 진동과
+    구별되지 않아 공용 문법이 무너진다. `rotate`는 `translate`와 같은 개별
+    transform 속성이라 컴포지터 스레드에서 처리되고 레이아웃을 만들지 않는다.
+    기울지 않은 stop에도 `rotate: 0deg`를 명시한다 — 빼면 보간 대상에서 빠져
+    한쪽으로 기운 채 남는다.
+- 전투불능 감광(`opacity: 0.55` / `filter: saturate(0.4)`)은 **정적 층**에도
+  둔다(`[data-cue-incapacitated="true"]`). 애니메이션 안에만 두면 `reduce`에서
+  마지막 프레임이 전투불능인데도 말이 멀쩡하게 보여 재생 경로와 정지 경로의
+  그림이 달라진다. 반대로 감광 속성을 **모든** keyframe stop에 내보내면
+  `opacity: 1`이 재생 내내 `[data-active="false"]`의 정적 감광을 덮어쓰므로,
+  `incapacitated` cue가 한 번이라도 있는 트랙에서만 내보낸다.
+- 핵심 로그 각 줄은 `(entry.tick − frames[0].tick) × view.tick_millis`ms에
+  opacity로 나타난다
   (`animation-delay` 인라인 + `storybook.css`의 정적 `.combat-log__row`
-  규칙). `core_log` 배열 순서(`sequence`)는 그대로 유지하며, 노출 전에도
+  규칙). **원점은 `frames[0].tick`이다** — 보드가 프레임 인덱스 k를
+  `k × tick_millis`에 놓고 실측 데이터의 첫 tick이 0이 아니라 1이므로, 원점을
+  빼지 않으면 같은 사건이 보드보다 한 tick 늦게 나타나 정본 13의 색·아이콘
+  동기화가 깨진다. `.combat-log__row`에 `opacity: 0` 기본값을 두지 않는다 —
+  `animation-fill-mode: both`가 delay 구간에 이미 `from` 상태를 적용하고,
+  기본값으로 두면 애니메이션이 돌지 않을 때 로그가 영구히 보이지 않는다. `core_log` 배열 순서(`sequence`)는 그대로 유지하며, 노출 전에도
   DOM에서 제거하지 않는다.
 - 모든 `animation`/`transition`/`@keyframes` 선언(생성된 `<style>` 포함)은
   `@media (prefers-reduced-motion: no-preference)` 안에만 있다. `reduce`

@@ -2714,7 +2714,12 @@ button.character-title-seal {
   content: "";
   background:
     linear-gradient(90deg, transparent calc(50% - 1px), var(--line-soft) 50%, transparent calc(50% + 1px)),
-    radial-gradient(ellipse 58% 40% at 50% 50%, var(--ink-wash), transparent 72%);
+    radial-gradient(
+      ellipse 56% 34% at 50% 50%,
+      color-mix(in oklab, var(--ink) 9%, transparent),
+      color-mix(in oklab, var(--ink) 3%, transparent) 62%,
+      transparent 78%
+    );
 }
 
 .combat-board__empty {
@@ -2753,7 +2758,12 @@ button.character-title-seal {
   border-style: dashed;
 }
 
-.combat-board__piece[data-active="false"] {
+/* 전투불능 감광은 정적 층에 둔다. 애니메이션 안에만 두면
+   `prefers-reduced-motion: reduce`에서 마지막 프레임이 전투불능인데도 말이
+   멀쩡하게 보여, 재생 경로와 정지 경로의 그림이 달라진다(I3). 같은 값이므로
+   재생 중에는 애니메이션이 이 값을 그대로 이어받는다. */
+.combat-board__piece[data-active="false"],
+.combat-board__piece[data-cue-incapacitated="true"] {
   opacity: 0.55;
   filter: saturate(0.4);
 }
@@ -2822,7 +2832,10 @@ button.character-title-seal {
    보인다(I3), 1d-2와 동일하다. */
 @media (prefers-reduced-motion: no-preference) {
   .combat-log__row {
-    opacity: 0;
+    /* `opacity: 0`을 기본값으로 두지 않는다. `animation-fill-mode: both`가
+       delay 구간 동안 `from` 상태(opacity 0)를 이미 적용하므로 불필요하고,
+       기본값으로 두면 어떤 이유로든 애니메이션이 돌지 않을 때 로그가 영구히
+       보이지 않는 실패 모드가 된다. 실패 방향은 "보인다"여야 한다. */
     animation: combat-log-reveal 0.3s ease-out both;
   }
 

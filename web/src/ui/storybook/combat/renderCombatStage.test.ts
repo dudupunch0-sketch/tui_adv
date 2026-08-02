@@ -360,6 +360,35 @@ describe('renderCombatLog', () => {
     expect(html).toContain('style="animation-delay: 1750ms"');
   });
 
+  it('anchors log reveal to the first frame tick so the board and the log share one origin', () => {
+    // 실측 데이터의 첫 프레임 tick은 0이 아니라 1이다. 보드는 프레임 인덱스
+    // k를 k × tick_millis에 놓으므로 tick 1이 0ms다. 로그를 entry.tick ×
+    // tick_millis로 놓으면 같은 사건이 보드보다 한 tick 늦게 나타난다.
+    const html = renderCombatLog(
+      view({
+        tick_millis: 100,
+        frames: [frame(1, [piece()]), frame(2, [piece()]), frame(3, [piece()])],
+        core_log: [logEntry({ tick: 1 }), logEntry({ tick: 3 })],
+      }),
+    );
+    expect(html).toContain('style="animation-delay: 0ms"');
+    expect(html).toContain('style="animation-delay: 200ms"');
+    expect(html).not.toContain('style="animation-delay: 100ms"');
+    expect(html).not.toContain('style="animation-delay: 300ms"');
+  });
+
+  it('never produces a negative reveal delay when a log tick precedes the first frame', () => {
+    const html = renderCombatLog(
+      view({
+        tick_millis: 100,
+        frames: [frame(5, [piece()]), frame(6, [piece()])],
+        core_log: [logEntry({ tick: 2 })],
+      }),
+    );
+    expect(html).toContain('style="animation-delay: 0ms"');
+    expect(html).not.toMatch(/animation-delay: -/);
+  });
+
   it('keeps core_log array order (sequence order) even when reveal delays are computed per row', () => {
     const html = renderCombatLog(
       view({

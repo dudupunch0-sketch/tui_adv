@@ -128,9 +128,44 @@ Wave 3 Step 2b 구현 위치: `src/tui_adv/storypack-previews/wuxia_jianghu_pack
 
 Wave 3 Step 1d-1 구현 위치: `crates/escape-terminal/src/snapshot.rs`(로그 템플릿 표·체스말 보드·핵심 로그·전투 종료 보고서 렌더 + `#[cfg(test)] mod tests`, 24 테스트: `template_move_intent_renders`~`template_unknown_id_falls_back_and_exposes_id`(템플릿 6종+fallback), `round_hundredths_rounds_half_up_both_signs`, `board_renders_last_frame_with_tick_and_elapsed_time`·`board_exceeding_caps_falls_back_to_coordinate_list`·`board_shows_all_five_cue_symbols`·`board_handles_empty_pieces_without_panic`·`board_handles_no_frames_without_panic`, `core_log_shows_full_log_count_only`·`core_log_truncates_and_states_omitted_count`, `report_hides_highlight_lines_when_none`·`report_shows_highlight_lines_when_some`·`report_lists_one_row_per_combatant`·`report_contains_no_forbidden_phrases`·`report_fingerprint_shares_line_with_simulation_version`, `combat_section_adds_nothing_when_combat_is_none`·`scene_snapshot_unchanged_bytes_when_combat_is_none`·`scene_snapshot_includes_combat_sections_in_order_when_present`·`scene_snapshot_omits_report_section_when_combat_in_progress`), `docs/dev/TUI_Layout.md`(terminal 관전 표시 계약 절 추가). `crates/escape-terminal/tests/cli_smoke.rs`는 수정하지 않았고 기존 61개 테스트가 그대로 통과한다. `cargo test --workspace --no-fail-fast`: 346 테스트(322 + 24), 0 failed.
 Wave 3 Step 1d-2 구현 위치: `web/src/core/types.ts`(`CombatSpectatorPage`/`CombatSpectatorView`/`CombatSpectatorFrame`/`CombatSpectatorPiece`/`CombatSpectatorLogEntry`/`CombatCombatantReport`/`CombatConclusionReport`, `ScenePage.combat?`), `web/src/ui/storybook/combat/combatLogTemplates.ts`(+`combatLogTemplates.test.ts`, 11 테스트: 6개 template id 문장 + fallback + null 값 마커 + 반올림), `web/src/ui/storybook/combat/renderCombatStage.ts`(+`renderCombatStage.test.ts`, 22 테스트: 보드 9 - `renders only the last frame`·`centers pieces at 50% when the coordinate span is zero`·`shows all 5 cue symbols`·`handles an empty frames array`·`handles a frame with zero pieces`·`includes every piece id...in the semantic alternative table`·`escapes a piece id containing markup`, 로그/보고서/통합 13 - `sentences only core_log entries`·`truncates core_log at 40 rows and states the omitted count`·`marks the damage_applied row with data-cue="hit"`·`hides top_damage_dealt_id / top_damage_taken_id lines`·`hides the decisive_tick line when null`·`puts the fingerprint and simulation_version in the same element`·`never contains forbidden strategic-analysis phrases`·`omits the combat-report section entirely when report is absent` 등), `web/src/ui/storybook/render.ts`(`renderStorybookPage`에 `renderCombatStage(page.combat)` 삽입), `web/src/ui/storybook/render.test.ts`(통합 2건: `mounts the combat spectator surface only when page.combat is present`·`I5: emits no combat markup at all when page.combat is absent`), `web/src/styles/storybook.css`(`.combat-stage` 70:30 그리드·체스 폰 실루엣·cue 색 토큰·forced-colors 대체, 신규 색상 리터럴 0개·`transition`/`animation` 0개). `cd web && npm test`: 15 파일 108 테스트(이 슬라이스 이전 73 + 신규 35), 0 failed. `cargo test --workspace --no-fail-fast`: Rust 무변경이므로 346 테스트 그대로(WP1~WP7 전부 `web/`·`docs/`만 수정, `crates/` 무변경 확인용으로 재실행함).
-Wave 3 Step 1d-3 구현 위치: `web/src/ui/storybook/combat/combatMotion.ts`(신규, `buildCombatMotionCss`/`keyframeNameForPiece`, +`combatMotion.test.ts` 25 테스트: I1 총 길이·오프셋·frames<=1 5건, I5 결정론 1건, I3 media wrap 1건, I9 translate/opacity/filter만 1건, `<style>` breakout 안전장치 2건, keyframe 이름 안전성 3건, WP3 cue 문법 12건), `web/src/ui/storybook/combat/renderCombatStage.ts`(투영 범위를 마지막 프레임에서 전체 프레임으로 확장, `<style>` 방출, 로그 `animation-delay`, +`renderCombatStage.test.ts` 22→31 테스트: WP2 5건·WP3 e2e 1건·WP4 3건 추가), `web/src/styles/storybook.css`(`.combat-stage__board`에 `container-type: size`, `.combat-log__row` tick 동기 reveal `@keyframes`, 신규 색상 리터럴 0개). `cd web && npm test`: 16 파일 142 테스트(이 슬라이스 이전 108 + 신규 34), 0 failed. `cargo test --workspace --no-fail-fast`: `crates/` 무변경이므로 그대로.
+Wave 3 Step 1d-3 구현 위치: `web/src/ui/storybook/combat/combatMotion.ts`(신규, `buildCombatMotionCss`/`keyframeNameForPiece`, +`combatMotion.test.ts` 29 테스트: I1 총 길이·오프셋·frames<=1 5건, I5 결정론 1건, I3 media wrap 1건, I9 translate/opacity/filter만 1건, `<style>` breakout 안전장치 2건, keyframe 이름 안전성 3건, WP3 cue 문법 12건), `web/src/ui/storybook/combat/renderCombatStage.ts`(투영 범위를 마지막 프레임에서 전체 프레임으로 확장, `<style>` 방출, 로그 `animation-delay`, +`renderCombatStage.test.ts` 22→33 테스트: WP2 5건·WP3 e2e 1건·WP4 3건 추가), `web/src/styles/storybook.css`(`.combat-stage__board`에 `container-type: size`, `.combat-log__row` tick 동기 reveal `@keyframes`, 신규 색상 리터럴 0개). `cd web && npm test`: 16 파일 148 테스트(이 슬라이스 이전 108 + 신규 40), 0 failed. `cargo test --workspace --no-fail-fast`: `crates/` 무변경이므로 그대로.
 
-계획 문서 대비 알려진 이탈(모두 보고 완료): (1) §4-3의 cue 표는 `balance_broken`에 `rotate`를 제안하지만 §3 I9(Hard invariant)가 애니메이션 속성을 translate/opacity/filter로만 제한해 `translate` 기반 좌우 흔들림으로 대체 구현했다(`combatMotion.ts` 모듈 주석·`combatMotion.test.ts`의 "never emits a rotate declaration" 테스트). (2) §4-2가 예시로 든 `--dx`/`--dy` CSS 커스텀 프로퍼티 + `var()` 간접 참조 대신, 매 keyframe에 절대 `translate` 값을 직접 굽는 방식을 썼다 — 애니메이션되는 커스텀 프로퍼티를 부드럽게 보간하려면 `@property` 등록이 필요한데(계획에 언급 없음) 실제 `translate` 애니메이션은 모든 브라우저가 네이티브로 보간하므로 더 안전한 선택이다; `cqw`/`cqh` 단위 요구사항(rule 7)과 모든 Hard invariant는 그대로 만족한다. (3) I11은 "`crates/` 예외: WP5의 authoring 테스트 1개"라고 적었지만 §WP5 본문은 "`crates/` 무변경"·"테스트를 추가하지 않는다"라고 명시한다 — 더 상세하고 구체적인 §WP5 본문과 "Allowed/forbidden edits"의 무예외 forbidden 목록을 따라 `crates/`를 전혀 건드리지 않았다(축 계약 위반은 문서에만 기록, 위 참고).
+계획 문서 대비 알려진 이탈(모두 보고 완료): (1) §3 I9의 허용 속성 목록에 `rotate`가 빠져 있었다 — 정본 13은 균형 붕괴를 "흔들림/기울어짐"으로 정의하고 `rotate`도 `translate`와 같은 개별 transform 속성이라 컴포지터에서 처리되므로, 오케스트레이터가 I9를 정본에 맞춰 `rotate` 허용으로 바로잡고 기울어짐을 구현했다(`combatMotion.test.ts`의 `tilts by alternating degrees while the cue is present`·`emits no rotate at all when no frame carries balance_broken`). subagent는 원래 I9를 문자대로 따라 흔들림만 구현했고 그 판단 자체는 절차상 옳았다. (2) §4-2가 예시로 든 `--dx`/`--dy` CSS 커스텀 프로퍼티 + `var()` 간접 참조 대신, 매 keyframe에 절대 `translate` 값을 직접 굽는 방식을 썼다 — 애니메이션되는 커스텀 프로퍼티를 부드럽게 보간하려면 `@property` 등록이 필요한데(계획에 언급 없음) 실제 `translate` 애니메이션은 모든 브라우저가 네이티브로 보간하므로 더 안전한 선택이다; `cqw`/`cqh` 단위 요구사항(rule 7)과 모든 Hard invariant는 그대로 만족한다. (3) I11은 "`crates/` 예외: WP5의 authoring 테스트 1개"라고 적었지만 §WP5 본문은 "`crates/` 무변경"·"테스트를 추가하지 않는다"라고 명시한다 — 더 상세하고 구체적인 §WP5 본문과 "Allowed/forbidden edits"의 무예외 forbidden 목록을 따라 `crates/`를 전혀 건드리지 않았다(축 계약 위반은 문서에만 기록, 위 참고).
+
+Wave 3 Step 1d-3 오케스트레이터 리뷰에서 고친 것(모두 실화면 계측에서 나왔다):
+
+- **보드와 로그의 시간 원점이 한 tick 어긋나 있었다.** 보드는 프레임 인덱스 k를
+  `k × tick_millis`에 놓으므로 첫 프레임(실측 데이터의 첫 tick은 0이 아니라 1)이
+  0ms인데, 로그는 `entry.tick × tick_millis`를 써서 같은 사건이 보드보다 100ms
+  늦게 나타났다. 정본 13의 "상단 연출과 하단 로그 동기화" 위반이다. 원점을 빼서
+  맞췄다(`renderCombatStage.test.ts`의 `anchors log reveal to the first frame tick
+  so the board and the log share one origin`·`never produces a negative reveal
+  delay when a log tick precedes the first frame`). 계측 확인: 재생 900ms, 로그
+  지연 0~900ms 100ms 간격.
+- **전투불능 감광이 애니메이션 안에만 있었다.** `prefers-reduced-motion: reduce`
+  에서 마지막 프레임이 전투불능인데도 말이 멀쩡하게 보여 재생 경로와 정지 경로의
+  그림이 달라졌다. `[data-cue-incapacitated="true"]` 정적 규칙으로 올려 두 경로를
+  일치시켰다.
+- **감광 속성을 매 stop에 내보내 정적 감광을 덮어썼다.** `opacity: 1`이 재생
+  내내 `[data-active="false"]`의 감광을 지웠다. `incapacitated` cue가 한 번이라도
+  있는 트랙에서만 감광 속성을 내보낸다(`omits opacity/filter entirely when no
+  frame carries incapacitated`).
+- **`.combat-log__row { opacity: 0 }` 기본값을 제거했다.** `animation-fill-mode:
+  both`가 delay 구간에 이미 `from` 상태를 적용하므로 불필요하고, 기본값으로 두면
+  애니메이션이 돌지 않을 때 로그가 영구히 보이지 않는 실패 모드가 된다.
+- **속성 선택자 값의 개행 이스케이프.** CSS 문자열에 raw 개행이 들어가면 그 규칙과
+  뒤따르는 규칙까지 파싱이 깨진다. `\A ` 코드포인트 이스케이프로 바꿨다.
+
+실화면 계측(Playwright, `reducedMotion` 컨텍스트 옵션, 320/390/1280):
+`no-preference`에서 애니메이션 42개(말 2개 × 900ms linear both + 로그 40행),
+`reduce`에서 **애니메이션 0개**이고 로그 40행이 전부 즉시 보이며 말은 마지막
+프레임 위치(38%/62%)에 있다. 보드:로그 = 0.700, 가로 스크롤 0, 재생 전 구간에서
+말이 보드 경계에서 잘리지 않는다(최소 여백 32px). 재생 종료 상태와 `reduce`
+정지 상태의 말 위치가 일치한다.
+
+재생에서 정본 09 위반이 눈으로 보인다: 두 말이 중간 시점에 거의 겹쳐 지나가며
+아군이 도전자 오른쪽으로 넘어간다. 렌더러 결함이 아니라 AI·충돌 규칙 쪽 결함이며
+위 core 결함 블록에 기록했다.
 
 각 단계는 선행 단계의 public contract와 테스트만 사용한다. 단계 사이에 새 필드가 필요하면 먼저 해당 단계 plan을 갱신하고, 기존 저장/JSON backward compatibility를 검토한다.
 

@@ -292,7 +292,7 @@ describe('buildCombatMotionCss — WP3 cue grammar: hit is a damped two-beat jud
   });
 });
 
-describe('buildCombatMotionCss — WP3 cue grammar: balance_broken is a translate wobble, never rotate', () => {
+describe('buildCombatMotionCss — WP3 cue grammar: balance_broken is a wobble plus a tilt', () => {
   it('alternates a small translate offset by tick parity while the cue is present, at the real tick stops (not a lunge-return)', () => {
     const input: CombatMotionInput = {
       tickMillis: 100,
@@ -310,18 +310,54 @@ describe('buildCombatMotionCss — WP3 cue grammar: balance_broken is a translat
     expect(css).toMatch(/100% \{ translate: calc\(-50% \+ 0cqw\)/);
   });
 
-  it('never emits a `rotate` declaration anywhere (I9 — Hard invariant overrides §4-3\'s suggested table)', () => {
+  it('tilts by alternating degrees while the cue is present (정본 13: 흔들림/기울어짐)', () => {
     const input: CombatMotionInput = {
       tickMillis: 100,
       tracks: [
         cueTrack('ally_1', [
           { x: 20, y: 50, cues: ['balance_broken'] },
           { x: 20, y: 50, cues: ['balance_broken'] },
+          { x: 20, y: 50 },
         ]),
       ],
     };
     const { css } = buildCombatMotionCss(input);
-    expect(css).not.toMatch(/rotate/);
+    expect(css).toMatch(/0% \{[^}]*rotate: 7deg;/);
+    expect(css).toMatch(/50% \{[^}]*rotate: -7deg;/);
+    // 기울지 않은 stop도 0deg를 명시해야 한쪽으로 기운 채 남지 않는다.
+    expect(css).toMatch(/100% \{[^}]*rotate: 0deg;/);
+  });
+
+  it('emits no rotate at all when no frame carries balance_broken', () => {
+    const input: CombatMotionInput = {
+      tickMillis: 100,
+      tracks: [
+        cueTrack('ally_1', [
+          { x: 20, y: 50, cues: ['hit'] },
+          { x: 30, y: 50 },
+        ]),
+      ],
+    };
+    expect(buildCombatMotionCss(input).css).not.toMatch(/rotate/);
+  });
+});
+
+describe('buildCombatMotionCss — dimming must not override the static [data-active=false] dim', () => {
+  it('omits opacity/filter entirely when no frame carries incapacitated', () => {
+    const input: CombatMotionInput = {
+      tickMillis: 100,
+      tracks: [
+        cueTrack('ally_1', [
+          { x: 20, y: 50, cues: ['attack'], facing: { x: 1, y: 0 } },
+          { x: 30, y: 50 },
+        ]),
+      ],
+    };
+    const { css } = buildCombatMotionCss(input);
+    // `opacity: 1`을 매 stop에 내보내면 재생 내내 정적 감광을 덮어써서
+    // 비참전 말이 멀쩡하게 보인다.
+    expect(css).not.toMatch(/opacity:/);
+    expect(css).not.toMatch(/filter:/);
   });
 });
 
@@ -352,8 +388,8 @@ describe('buildCombatMotionCss — WP3 cue grammar: incapacitated dims opacity/f
   });
 });
 
-describe('buildCombatMotionCss — WP3: still only translate/opacity/filter (I9)', () => {
-  it('never emits left/top/rotate/scale for a fully cue-laden fixture', () => {
+describe('buildCombatMotionCss — WP3: only compositor-thread properties (I9)', () => {
+  it('never emits a layout property (left/top/width/height/margin) or scale, even for a fully cue-laden fixture', () => {
     const input: CombatMotionInput = {
       tickMillis: 100,
       tracks: [
@@ -366,7 +402,26 @@ describe('buildCombatMotionCss — WP3: still only translate/opacity/filter (I9)
     const { css } = buildCombatMotionCss(input);
     expect(css).not.toMatch(/[^-]\bleft:/);
     expect(css).not.toMatch(/[^-]\btop:/);
-    expect(css).not.toMatch(/\brotate\b/);
+    expect(css).not.toMatch(/\bwidth:/);
+    expect(css).not.toMatch(/\bheight:/);
+    expect(css).not.toMatch(/\bmargin/);
     expect(css).not.toMatch(/\bscale\b/);
+  });
+
+  it('escapes a newline in a piece id so the attribute selector cannot break the stylesheet', () => {
+    const input: CombatMotionInput = {
+      tickMillis: 100,
+      tracks: [
+        cueTrack('ally\n_1', [
+          { x: 20, y: 50 },
+          { x: 30, y: 50 },
+        ]),
+      ],
+    };
+    const { css } = buildCombatMotionCss(input);
+    const selectorLine = css.split('\n').find((line) => line.includes('data-piece-id'));
+    expect(selectorLine).toBeDefined();
+    expect(selectorLine).toContain('\\A ');
+    expect(selectorLine).not.toContain('ally\n');
   });
 });

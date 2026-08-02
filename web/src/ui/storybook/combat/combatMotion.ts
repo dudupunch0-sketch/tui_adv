@@ -207,11 +207,16 @@ export function buildCombatMotionCss(input: CombatMotionInput): CombatMotionResu
 // Units are `cqw`/`cqh` points (numeric, unitless here; the unit suffix is
 // added where the value is written into the CSS text).
 
-/** `balance_broken`: alternating side-to-side translate wobble (I9 note
- * above — stands in for "흔들림", not "기울어짐"). Applied on every tick
- * where the cue is present, alternating sign by tick parity so it reads as
- * a shake rather than a one-way drift. */
+/** `balance_broken`: alternating side-to-side translate wobble plus an
+ * alternating tilt. 정본 13은 이 cue를 "흔들림/기울어짐"으로 정의하므로 둘 다
+ * 필요하다 — 흔들림만 쓰면 `hit`의 진동과 구별되지 않아 공용 문법이 무너진다.
+ * 기울어짐은 `rotate`로 표현한다: `translate`와 같은 개별 transform 속성이라
+ * 컴포지터 스레드에서 처리되고 레이아웃을 만들지 않는다(플랜 I9의 허용
+ * 목록에서 빠져 있었던 것은 누락이며, 오케스트레이터가 정본에 맞춰 허용으로
+ * 바로잡았다). 부호를 tick 짝수/홀수로 번갈아 주어 한쪽으로 흐르지 않고
+ * 휘청이는 것으로 읽히게 한다. */
 const BALANCE_WOBBLE_MAGNITUDE = 1.5;
+const BALANCE_TILT_DEGREES = 7;
 
 /** `attack`/`evade`: a single lunge-then-return point at the midpoint of the
  * tick interval where the cue occurs. */
@@ -294,18 +299,37 @@ function buildPieceKeyframesBlock(name: string, frames: PieceMotionFrame[]): str
     baseDy.push(frames[k].y - last.y);
   }
 
-  type Stop = { percent: number; dx: number; dy: number; opacity: number; filter: string };
+  // 감광 속성은 이 트랙에 `incapacitated` cue가 한 번이라도 있을 때만
+  // 내보낸다. 항상 내보내면 애니메이션이 `[data-active="false"]`의 정적 감광
+  // (opacity .55 / saturate(.4))을 재생 내내 `opacity: 1`로 덮어써서 비참전
+  // 말이 멀쩡하게 보인다.
+  const trackHasIncapacitated = frames.some((f) => (f.cues ?? []).includes('incapacitated'));
+
+  type Stop = {
+    percent: number;
+    dx: number;
+    dy: number;
+    tilt: number;
+    opacity: number | null;
+    filter: string | null;
+  };
   const stops: Stop[] = [];
 
   for (let k = 0; k < frameCount; k += 1) {
     const cues = frames[k].cues ?? [];
     const incapacitated = cues.includes('incapacitated');
+    const tilt = cues.includes('balance_broken')
+      ? k % 2 === 0
+        ? BALANCE_TILT_DEGREES
+        : -BALANCE_TILT_DEGREES
+      : 0;
     stops.push({
       percent: (k / (frameCount - 1)) * 100,
       dx: baseDx[k],
       dy: baseDy[k],
-      opacity: incapacitated ? INCAPACITATED_OPACITY : 1,
-      filter: incapacitated ? INCAPACITATED_FILTER : 'none',
+      tilt,
+      opacity: trackHasIncapacitated ? (incapacitated ? INCAPACITATED_OPACITY : 1) : null,
+      filter: trackHasIncapacitated ? (incapacitated ? INCAPACITATED_FILTER : 'none') : null,
     });
 
     if (k < frameCount - 1) {
@@ -320,19 +344,28 @@ function buildPieceKeyframesBlock(name: string, frames: PieceMotionFrame[]): str
           percent: ((k + fraction) / (frameCount - 1)) * 100,
           dx: natural.dx + contribution.dx,
           dy: natural.dy + contribution.dy,
-          opacity: incapacitated ? INCAPACITATED_OPACITY : 1,
-          filter: incapacitated ? INCAPACITATED_FILTER : 'none',
+          tilt,
+          opacity: trackHasIncapacitated ? (incapacitated ? INCAPACITATED_OPACITY : 1) : null,
+          filter: trackHasIncapacitated ? (incapacitated ? INCAPACITATED_FILTER : 'none') : null,
         });
       }
     }
   }
 
-  const stopLines = stops.map(
-    (s) =>
-      `  ${formatPercentStop(s.percent)}% { translate: calc(-50% + ${formatNumber(s.dx)}cqw) calc(-50% + ${formatNumber(
-        s.dy,
-      )}cqh); opacity: ${s.opacity}; filter: ${s.filter}; }`,
-  );
+  const stopLines = stops.map((s) => {
+    const declarations = [
+      `translate: calc(-50% + ${formatNumber(s.dx)}cqw) calc(-50% + ${formatNumber(s.dy)}cqh)`,
+    ];
+    // `rotate`는 균형 붕괴 cue에만 쓴다. 0도일 때도 명시해야 기울어진 stop에서
+    // 기울지 않은 stop으로 되돌아온다 (누락하면 브라우저가 기존 값을 유지하지
+    // 않고 보간 대상에서 빠져 흔들림이 한 방향으로 남는다).
+    if (stops.some((other) => other.tilt !== 0)) {
+      declarations.push(`rotate: ${formatNumber(s.tilt)}deg`);
+    }
+    if (s.opacity !== null) declarations.push(`opacity: ${s.opacity}`);
+    if (s.filter !== null) declarations.push(`filter: ${s.filter}`);
+    return `  ${formatPercentStop(s.percent)}% { ${declarations.join('; ')}; }`;
+  });
   return `  @keyframes ${name} {\n${stopLines.join('\n')}\n  }`;
 }
 
@@ -356,5 +389,14 @@ function buildPieceAnimationRule(pieceId: string, keyframeName: string, duration
  * double-quoted attribute selector must be escaped, backslashes must be
  * escaped first so they are not read as introducing a new escape). */
 function escapeAttributeSelectorValue(value: string): string {
-  return value.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+  return (
+    value
+      .replace(/\\/g, '\\\\')
+      .replace(/"/g, '\\"')
+      // CSS 문자열에는 raw 개행을 넣을 수 없다 — 넣으면 그 규칙과 뒤따르는
+      // 규칙까지 파싱이 깨진다. `\A` 코드포인트 이스케이프로 바꾸고, 뒤에
+      // 오는 문자가 16진수로 이어 읽히지 않도록 공백 종결자를 붙인다.
+      .replace(/\r\n?|\n/g, '\\A ')
+      .replace(/\f/g, '\\C ')
+  );
 }

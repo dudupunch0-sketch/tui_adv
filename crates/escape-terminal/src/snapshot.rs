@@ -540,6 +540,34 @@ fn render_combat_board(lines: &mut Vec<String>, view: &CombatSpectatorView) {
     lines.push(COMBAT_LEGEND_LINE.to_string());
 }
 
+// -- P3: 핵심 로그 -------------------------------------------------------------
+
+/// terminal 화면에 노출하는 핵심 로그 줄 수 상한. 넘으면 생략 개수를 명시한다
+/// (조용한 truncation 금지).
+const COMBAT_CORE_LOG_LIMIT: usize = 20;
+
+/// `core_log`만 문장화한다. `full_log`는 개수만 표시한다 (정본 07: 전체 로그는
+/// 일시정지/전투 종료 뒤 별도 열람 — 이 slice는 전체 로그 열람 UI를 만들지 않는다).
+fn render_combat_core_log(lines: &mut Vec<String>, view: &CombatSpectatorView) {
+    lines.push("[전투 로그]".to_string());
+    lines.push(format!(
+        "전체 로그 {}건 (일시정지 또는 전투 종료 후 별도 열람, 이 화면은 개수만 표시)",
+        view.full_log.len()
+    ));
+    if view.core_log.is_empty() {
+        lines.push("- 핵심 로그가 없다.".to_string());
+        return;
+    }
+    let total = view.core_log.len();
+    let shown = total.min(COMBAT_CORE_LOG_LIMIT);
+    for entry in &view.core_log[..shown] {
+        lines.push(format!("- {}", combat_log_template_line(entry)));
+    }
+    if total > shown {
+        lines.push(format!("- …(생략 {}줄)", total - shown));
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -785,5 +813,45 @@ mod tests {
         render_combat_board(&mut lines, &view);
         let text = lines.join("\n");
         assert!(text.contains("프레임이 없다"));
+    }
+
+    // -- P3: 핵심 로그 --------------------------------------------------------
+
+    fn test_log_entry_seq(sequence: u32) -> CombatSpectatorLogEntry {
+        CombatSpectatorLogEntry {
+            tick: 1,
+            sequence,
+            template_id: "combat.log.move_intent".to_string(),
+            importance: CombatLogImportance::Important,
+            actor_id: "ally_1".to_string(),
+            target_id: None,
+            value_hundredths: None,
+            effect_id: None,
+        }
+    }
+
+    #[test]
+    fn core_log_shows_full_log_count_only() {
+        let full_log: Vec<_> = (0..7).map(test_log_entry_seq).collect();
+        let view = test_view(Vec::new(), Vec::new(), full_log);
+        let mut lines = Vec::new();
+        render_combat_core_log(&mut lines, &view);
+        let text = lines.join("\n");
+        assert!(text.contains("전체 로그 7건"));
+        assert!(text.contains("핵심 로그가 없다"));
+    }
+
+    #[test]
+    fn core_log_truncates_and_states_omitted_count() {
+        let core_log: Vec<_> = (0..25).map(test_log_entry_seq).collect();
+        let view = test_view(Vec::new(), core_log, Vec::new());
+        let mut lines = Vec::new();
+        render_combat_core_log(&mut lines, &view);
+        let shown = lines
+            .iter()
+            .filter(|line| line.starts_with("- ally_1"))
+            .count();
+        assert_eq!(shown, COMBAT_CORE_LOG_LIMIT);
+        assert!(lines.iter().any(|line| line.contains("생략 5줄")));
     }
 }

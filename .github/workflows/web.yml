@@ -1,0 +1,35 @@
+name: Web
+
+on:
+  pull_request:
+    paths:
+      - "web/**"
+      - ".github/workflows/web.yml"
+  push:
+    paths:
+      - "web/**"
+      - ".github/workflows/web.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      # The vitest suite runs in the node environment and never drives a browser;
+      # the Storybook visual QA that needs Chromium lives in pages.yml.
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Install web dependencies
+        working-directory: web
+        run: npm ci
+      - name: Type check
+        working-directory: web
+        run: npx tsc --noEmit
+      - name: Test web
+        working-directory: web
+        run: npm test

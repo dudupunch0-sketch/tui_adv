@@ -573,3 +573,52 @@ conditions:
   condition_summary: wuxia_epilogue_return_object_left_behind
   related_keywords: []
   status: approved_as_condition
+choice_conditions:
+- condition_id: wuxia_seoharin_hides_training_injury_choice_01
+  event_id: wuxia_seoharin_hides_training_injury
+  source_path: events/imported/wuxia_seoharin_hides_training_injury.yml
+  raw_choice: 손목을 직접 묻기
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_seoharin_hides_training_injury_choice_02
+  event_id: wuxia_seoharin_hides_training_injury
+  source_path: events/imported/wuxia_seoharin_hides_training_injury.yml
+  raw_choice: 약초 연고를 가져오기
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_seoharin_hides_training_injury_choice_03
+  event_id: wuxia_seoharin_hides_training_injury
+  source_path: events/imported/wuxia_seoharin_hides_training_injury.yml
+  raw_choice: 장문인에게 알리기
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_seoharin_night_watch_after_raid_choice_01
+  event_id: wuxia_seoharin_night_watch_after_raid
+  source_path: events/imported/wuxia_seoharin_night_watch_after_raid.yml
+  raw_choice: 돌아갈 목표를 솔직히 말한다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_seoharin_recovery_bandage_change_choice_01
+  event_id: wuxia_seoharin_recovery_bandage_change
+  source_path: events/imported/wuxia_seoharin_recovery_bandage_change.yml
+  raw_choice: 서하린에게 붕대를 맡긴다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_seoharin_shared_meal_after_raid_choice_01
+  event_id: wuxia_seoharin_shared_meal_after_raid
+  source_path: events/imported/wuxia_seoharin_shared_meal_after_raid.yml
+  raw_choice: 부상자에게 가져간다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_seoharin_unsaid_stay_choice_01
+  event_id: wuxia_seoharin_unsaid_stay
+  source_path: events/imported/wuxia_seoharin_unsaid_stay.yml
+  raw_choice: 귀환하고 싶다고 솔직히 말한다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_seoharin_unsaid_stay_choice_02
+  event_id: wuxia_seoharin_unsaid_stay
+  source_path: events/imported/wuxia_seoharin_unsaid_stay.yml
+  raw_choice: 말을 돌린다
+  condition_type: choice_text
+  status: unresolved_external_condition

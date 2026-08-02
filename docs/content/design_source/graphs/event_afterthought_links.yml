@@ -4,4 +4,170 @@ policy:
   reveal_default: ending_resolution
   exclusive_group_rule: at_most_one
   runtime_contract: false
-links: []
+links:
+- event_id: wuxia_seoharin_empty_place
+  afterthought_id: notion_0014
+  relation: primary
+  eligibility:
+    all_of:
+    - event:wuxia_seoharin_empty_place
+  reveal_policy: ending_resolution
+  exclusive_group: seoharin_future
+  priority: 10
+  fallback: false
+  status: approved
+- event_id: wuxia_seoharin_hides_training_injury
+  afterthought_id: notion_0014
+  relation: conditional
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_seoharin_hides_training_injury:choice:손목을 직접 묻기
+    - condition_ref:wuxia_seoharin_hides_training_injury:choice:약초 연고를 가져오기
+  reveal_policy: ending_resolution
+  exclusive_group: seoharin_future
+  priority: 10
+  fallback: false
+  status: approved
+- event_id: wuxia_seoharin_hides_training_injury
+  afterthought_id: notion_0015
+  relation: conditional
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_seoharin_hides_training_injury:choice:장문인에게 알리기
+  reveal_policy: ending_resolution
+  exclusive_group: seoharin_future
+  priority: 20
+  fallback: false
+  status: approved
+- event_id: wuxia_seoharin_hides_training_injury
+  afterthought_id: notion_0013
+  relation: primary
+  eligibility:
+    all_of:
+    - event:wuxia_seoharin_hides_training_injury
+  reveal_policy: ending_resolution
+  exclusive_group: seoharin_future
+  priority: 100
+  fallback: true
+  status: approved
+- event_id: wuxia_seoharin_left_meal
+  afterthought_id: notion_0016
+  relation: primary
+  eligibility:
+    all_of:
+    - event:wuxia_seoharin_left_meal
+  reveal_policy: ending_resolution
+  exclusive_group: seoharin_future
+  priority: 10
+  fallback: false
+  status: approved
+- event_id: wuxia_seoharin_night_watch_after_raid
+  afterthought_id: notion_0017
+  relation: conditional
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_seoharin_night_watch_after_raid:choice:돌아갈 목표를 솔직히 말한다
+  reveal_policy: ending_resolution
+  exclusive_group: seoharin_future
+  priority: 10
+  fallback: false
+  status: approved
+- event_id: wuxia_seoharin_night_watch_after_raid
+  afterthought_id: notion_0013
+  relation: primary
+  eligibility:
+    all_of:
+    - event:wuxia_seoharin_night_watch_after_raid
+  reveal_policy: ending_resolution
+  exclusive_group: seoharin_future
+  priority: 100
+  fallback: true
+  status: approved
+- event_id: wuxia_seoharin_old_song
+  afterthought_id: notion_0014
+  relation: primary
+  eligibility:
+    all_of:
+    - event:wuxia_seoharin_old_song
+  reveal_policy: ending_resolution
+  exclusive_group: seoharin_future
+  priority: 10
+  fallback: false
+  status: approved
+- event_id: wuxia_seoharin_recovery_bandage_change
+  afterthought_id: notion_0014
+  relation: conditional
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_seoharin_recovery_bandage_change:choice:서하린에게 붕대를 맡긴다
+  reveal_policy: ending_resolution
+  exclusive_group: seoharin_future
+  priority: 10
+  fallback: false
+  status: approved
+- event_id: wuxia_seoharin_recovery_bandage_change
+  afterthought_id: notion_0013
+  relation: primary
+  eligibility:
+    all_of:
+    - event:wuxia_seoharin_recovery_bandage_change
+  reveal_policy: ending_resolution
+  exclusive_group: seoharin_future
+  priority: 100
+  fallback: true
+  status: approved
+- event_id: wuxia_seoharin_shared_meal_after_raid
+  afterthought_id: notion_0017
+  relation: conditional
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_seoharin_shared_meal_after_raid:choice:부상자에게 가져간다
+  reveal_policy: ending_resolution
+  exclusive_group: seoharin_future
+  priority: 10
+  fallback: false
+  status: approved
+- event_id: wuxia_seoharin_shared_meal_after_raid
+  afterthought_id: notion_0013
+  relation: primary
+  eligibility:
+    all_of:
+    - event:wuxia_seoharin_shared_meal_after_raid
+  reveal_policy: ending_resolution
+  exclusive_group: seoharin_future
+  priority: 100
+  fallback: true
+  status: approved
+- event_id: wuxia_seoharin_unsaid_stay
+  afterthought_id: notion_0014
+  relation: conditional
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_seoharin_unsaid_stay:choice:귀환하고 싶다고 솔직히 말한다
+  reveal_policy: ending_resolution
+  exclusive_group: seoharin_future
+  priority: 10
+  fallback: false
+  status: approved
+- event_id: wuxia_seoharin_unsaid_stay
+  afterthought_id: notion_0015
+  relation: conditional
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_seoharin_unsaid_stay:choice:말을 돌린다
+  reveal_policy: ending_resolution
+  exclusive_group: seoharin_future
+  priority: 20
+  fallback: false
+  status: approved
+- event_id: wuxia_seoharin_unsaid_stay
+  afterthought_id: notion_0013
+  relation: primary
+  eligibility:
+    all_of:
+    - event:wuxia_seoharin_unsaid_stay
+  reveal_policy: ending_resolution
+  exclusive_group: seoharin_future
+  priority: 100
+  fallback: true
+  status: approved

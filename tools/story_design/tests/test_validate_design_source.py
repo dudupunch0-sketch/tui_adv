@@ -255,3 +255,64 @@ def test_pending_link_is_excluded_from_runtime_approved_count(tmp_path):
     report = json.loads(result.stdout)
     assert report["afterthought_overlays"]["approved_link_count"] == 0
     assert report["afterthought_overlays"]["unresolved_runtime_links"] == [["event_fixture", "notion_0012"]]
+
+
+def test_fallback_uniqueness_and_priority(tmp_path):
+    root = write_fixture(tmp_path)
+    specialized = approved_link(priority=10, fallback=False)
+    fallback = approved_link(card="notion_0013", priority=100, fallback=True)
+    write_links(root, [specialized, fallback])
+    result = run(root)
+    assert result.returncode == 0, result.stdout
+    report = json.loads(result.stdout)
+    assert report["afterthought_overlays"]["fallback_count"] == 1
+
+    write_links(root, [specialized, fallback, dict(fallback)])
+    result = run(root)
+    assert result.returncode != 0
+    assert "fallback uniqueness violation" in result.stdout
+
+
+def test_fallback_priority_must_be_last(tmp_path):
+    root = write_fixture(tmp_path)
+    write_links(
+        root,
+        [
+            approved_link(priority=100, fallback=False),
+            approved_link(card="notion_0013", priority=10, fallback=True),
+        ],
+    )
+    result = run(root)
+    assert result.returncode != 0
+    assert "fallback priority is not last" in result.stdout
+
+
+def test_choice_condition_reference_is_unresolved_external(tmp_path):
+    root = write_fixture(tmp_path)
+    overlay = yaml.safe_load((root / "graphs" / "afterthought_conditions.yml").read_text())
+    overlay["choice_conditions"] = [
+        {
+            "condition_id": "fixture_choice_01",
+            "event_id": "event_fixture",
+            "source_path": "events/event_fixture.yml",
+            "raw_choice": "choice one",
+            "condition_type": "choice_text",
+            "status": "unresolved_external_condition",
+        }
+    ]
+    (root / "graphs" / "afterthought_conditions.yml").write_text(
+        yaml.safe_dump(overlay, allow_unicode=True), encoding="utf-8"
+    )
+    write_links(
+        root,
+        [
+            approved_link(
+                eligibility={"any_of": ["condition_ref:event_fixture:choice:choice one"]}
+            )
+        ],
+    )
+    result = run(root)
+    assert result.returncode == 0, result.stdout
+    report = json.loads(result.stdout)
+    assert report["afterthought_overlays"]["choice_condition_count"] == 1
+    assert len(report["afterthought_overlays"]["unresolved_external_conditions"]) == 1

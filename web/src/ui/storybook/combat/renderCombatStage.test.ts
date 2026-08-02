@@ -343,6 +343,42 @@ describe('renderCombatLog', () => {
     expect(html).toContain('data-log-unknown="true"');
     expect(html).toContain('combat.log.made_up_event');
   });
+
+  // -------------------------------------------------------------------------
+  // Wave 3 Step 1d-3 — WP4: each row's reveal timing is entry.tick *
+  // tick_millis (I6). No aria-live, no reordering, DOM never pruned.
+  // -------------------------------------------------------------------------
+  it('sets animation-delay to entry.tick * tick_millis for each row', () => {
+    const html = renderCombatLog(
+      view({
+        tick_millis: 250,
+        core_log: [logEntry({ tick: 0 }), logEntry({ tick: 3 }), logEntry({ tick: 7 })],
+      }),
+    );
+    expect(html).toContain('style="animation-delay: 0ms"');
+    expect(html).toContain('style="animation-delay: 750ms"');
+    expect(html).toContain('style="animation-delay: 1750ms"');
+  });
+
+  it('keeps core_log array order (sequence order) even when reveal delays are computed per row', () => {
+    const html = renderCombatLog(
+      view({
+        tick_millis: 100,
+        core_log: [
+          logEntry({ tick: 2, sequence: 0, actor_id: 'first_in_sequence' }),
+          logEntry({ tick: 2, sequence: 1, actor_id: 'second_in_sequence' }),
+        ],
+      }),
+    );
+    expect(html.indexOf('first_in_sequence')).toBeLessThan(html.indexOf('second_in_sequence'));
+  });
+
+  it('never adds aria-live anywhere in the log region', () => {
+    const html = renderCombatLog(
+      view({ core_log: [logEntry(), logEntry({ tick: 5 })] }),
+    );
+    expect(html).not.toContain('aria-live');
+  });
 });
 
 function baseReport(overrides: Partial<CombatConclusionReport> = {}): CombatConclusionReport {

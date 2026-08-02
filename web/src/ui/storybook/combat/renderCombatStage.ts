@@ -254,12 +254,25 @@ function formatPercent(value: number): string {
  * 명시한다 (I7, 조용한 truncation 금지). */
 const WEB_CORE_LOG_LIMIT = 40;
 
-/** `core_log`만 문장화한다. `full_log`는 개수만 표시한다. */
+/** `core_log`만 문장화한다. `full_log`는 개수만 표시한다.
+ *
+ * Step 1d-3 (WP4): 각 줄의 노출 시각은 `entry.tick × view.tick_millis`다
+ * (I6). `sequence` 순서는 core가 만든 `core_log` 배열 순서 그대로 유지한다
+ * (`.slice`/`.map`은 재정렬하지 않는다) — 같은 tick의 여러 줄이 뒤섞이지
+ * 않는다. 노출 전에도 DOM에서 제거하지 않는다: `animation-delay`로 opacity만
+ * 늦추므로(storybook.css의 `.combat-log__row` 규칙), 스크린리더는 처음부터
+ * 전체 로그를 읽을 수 있고 `full_log` 개수 표시와도 어긋나지 않는다.
+ * `aria-live`는 쓰지 않는다 — 초당 여러 줄이 붙으면 로그 도배가 된다(정본
+ * 13의 "로그 도배를 막는다"와 같은 취지). `reduce`에서는 `no-preference`
+ * 안에만 있는 이 애니메이션 자체가 적용되지 않으므로 전부 즉시 보인다(I3). */
 export function renderCombatLog(view: CombatSpectatorView): string {
   const metaText = `전체 로그 ${view.full_log.length}건 (일시정지 또는 전투 종료 후 별도 열람, 이 화면은 개수만 표시)`;
   const total = view.core_log.length;
   const shown = Math.min(total, WEB_CORE_LOG_LIMIT);
-  const rows = view.core_log.slice(0, shown).map(renderLogRow).join('');
+  const rows = view.core_log
+    .slice(0, shown)
+    .map((entry) => renderLogRow(entry, view.tick_millis))
+    .join('');
   const emptyLine = total === 0 ? '<li class="combat-log__empty">핵심 로그가 없다.</li>' : '';
   const omittedLine =
     total > shown ? `<li class="combat-log__omitted">…(생략 ${total - shown}줄)</li>` : '';
@@ -276,7 +289,7 @@ export function renderCombatLog(view: CombatSpectatorView): string {
  * `damage_applied`는 같은 `DamageApplied` 사건에서 나오기 때문에 대응이
  * 증명 가능하다. 나머지 5개 template id는 대응하는 cue가 core에 없으므로
  * `data-cue`를 붙이지 않고 중립 잉크색으로 둔다 — 대응을 발명하지 않는다. */
-function renderLogRow(entry: CombatSpectatorLogEntry): string {
+function renderLogRow(entry: CombatSpectatorLogEntry, tickMillis: number): string {
   const line = combatLogTemplateLine(entry);
   const isDamageApplied = entry.template_id === 'combat.log.damage_applied';
   const cueAttr = isDamageApplied ? ' data-cue="hit"' : '';
@@ -286,7 +299,13 @@ function renderLogRow(entry: CombatSpectatorLogEntry): string {
   const unknownAttr = isKnownCombatLogTemplateId(entry.template_id)
     ? ''
     : ' data-log-unknown="true"';
-  return `<li class="combat-log__row" data-template-id="${escapeHtml(
+  // `animation-delay`만 인라인으로 얹는다 — `animation`(이름·길이·이징) 자체는
+  // storybook.css의 정적 `.combat-log__row` 규칙이 준다. 인라인 longhand가
+  // 외부 shorthand보다 그 속성 하나만 우선하는 표준 캐스케이드를 그대로
+  // 쓴다(WP1 keyframe 이름과 달리 매 행마다 다른 CSS 텍스트를 만들 필요가
+  // 없다).
+  const revealDelay = ` style="animation-delay: ${String(entry.tick * tickMillis)}ms"`;
+  return `<li class="combat-log__row"${revealDelay} data-template-id="${escapeHtml(
     entry.template_id,
   )}"${cueAttr}${unknownAttr}>${cueGlyph}${escapeHtml(line)}</li>`;
 }

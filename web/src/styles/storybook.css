@@ -2815,6 +2815,23 @@ button.character-title-seal {
   line-height: 1.45;
 }
 
+/* Wave 3 Step 1d-3 (WP4): 각 로그 줄은 자신의 tick 시각(entry.tick *
+   tick_millis, renderCombatStage.ts의 인라인 animation-delay)에 opacity로만
+   나타난다 — DOM에서 제거·재배치하지 않는다(I6). `reduce`에서는 이 규칙
+   자체가 no-preference 미디어 쿼리 밖이라 적용되지 않으므로 전부 즉시
+   보인다(I3), 1d-2와 동일하다. */
+@media (prefers-reduced-motion: no-preference) {
+  .combat-log__row {
+    opacity: 0;
+    animation: combat-log-reveal 0.3s ease-out both;
+  }
+
+  @keyframes combat-log-reveal {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+}
+
 .combat-log__row[data-cue="hit"] {
   color: var(--seal-red-lit);
 }

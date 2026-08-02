@@ -2669,8 +2669,13 @@ button.character-title-seal {
   grid-template-rows: minmax(0, 70fr) minmax(0, 30fr);
   gap: clamp(0.5rem, 2vw, 1rem);
   container-type: inline-size;
+  /* inline-size를 확정해 둔다. grid item이 두 축 모두 stretch인 상태에서
+     aspect-ratio와 max-block-size가 함께 걸리면 브라우저가 높이 상한에 맞춰
+     *너비*를 줄인다 — 데스크톱 폭에서 보드가 764px 칸 안에서 420px로
+     쪼그라들었다. 너비를 확정하면 비율이 높이를 정하고, 상한은 높이만 깎는다. */
+  inline-size: 100%;
   aspect-ratio: 3 / 4;
-  max-height: min(70dvh, 44rem);
+  max-block-size: min(70dvh, 44rem);
   margin-block: 1em;
   overflow: hidden;
 }
@@ -2681,6 +2686,20 @@ button.character-title-seal {
   overflow: hidden;
   border: 1px solid var(--line-soft);
   background: color-mix(in oklab, var(--paper-lit) 88%, var(--ink) 4%);
+}
+
+/* 빈 종이 위에 말 두 개만 떠 있으면 미완성으로 읽힌다. 중앙선과 먹 번짐을
+   깔아 "판"으로 보이게 한다. 좌표 격자도 바닥선도 아니다 — 말의 y는 데이터가
+   정하므로 고정된 바닥선을 그리면 말이 그 위에 떠 있는 것처럼 보인다.
+   배경 질감일 뿐이며 거리·높이를 수치로 주장하지 않는다. */
+.combat-stage__board::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background:
+    linear-gradient(90deg, transparent calc(50% - 1px), var(--line-soft) 50%, transparent calc(50% + 1px)),
+    radial-gradient(ellipse 58% 40% at 50% 50%, var(--ink-wash), transparent 72%);
 }
 
 .combat-board__empty {
@@ -2709,9 +2728,13 @@ button.character-title-seal {
   color: var(--paper-lit);
 }
 
+/* 종이 바탕에 종이색 말을 놓으면 대비가 거의 없어 글리프가 읽히지 않는다.
+   더 짙은 종이색으로 채우고 윤곽을 두껍게 한다. 진영 신호는 색 하나에
+   의존하지 않는다: 채움 대비 + 파선 윤곽 + 我/敵 글리프 셋이 함께 쓰인다. */
 .combat-board__piece[data-side="enemy"] {
-  background: var(--paper);
+  background: color-mix(in oklab, var(--paper-deep) 84%, var(--ink) 12%);
   color: var(--ink);
+  border-width: 2px;
   border-style: dashed;
 }
 
@@ -2724,16 +2747,28 @@ button.character-title-seal {
   line-height: 1;
 }
 
-.combat-board__cue {
+/* 한 말이 cue를 여러 개 가질 수 있으므로(피격 + 균형 붕괴 + 전투불능) 표식을
+   나란히 놓는다. 각 표식을 절대 배치하면 같은 자리에 겹쳐 하나만 보인다. */
+.combat-board__cues {
   position: absolute;
-  inset-block-start: -0.3em;
-  inset-inline-end: -0.35em;
-  font-size: 0.75em;
+  inset-block-start: -0.55em;
+  inset-inline-start: 50%;
+  translate: -50% 0;
+  display: flex;
+  gap: 0.12em;
+  white-space: nowrap;
+}
+
+.combat-board__cue {
+  display: grid;
+  place-items: center;
+  inline-size: 1.35em;
+  block-size: 1.35em;
+  font-size: 0.72em;
   line-height: 1;
   background: color-mix(in oklab, var(--paper-lit) 82%, var(--ink) 6%);
   border: 1px solid var(--line-hard);
   border-radius: 50%;
-  padding: 0.05em;
 }
 
 .combat-board__cue[data-cue="attack"] { color: var(--seal-red); }

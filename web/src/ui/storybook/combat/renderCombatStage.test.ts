@@ -104,6 +104,8 @@ describe('renderCombatBoard', () => {
       expect(html).toContain(`data-cue-${cue}="true"`);
       expect(html).toContain(`data-cue="${cue}"`);
     }
+    // 여러 cue가 같은 자리에 절대 배치되어 겹치지 않도록 한 컨테이너에 담는다.
+    expect(html).toContain('combat-board__cues');
     // The 5 glyphs from I11's cue table.
     expect(html).toContain('攻');
     expect(html).toContain('打');

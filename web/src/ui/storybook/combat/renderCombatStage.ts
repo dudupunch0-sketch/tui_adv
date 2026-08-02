@@ -103,12 +103,17 @@ export function renderCombatBoard(view: CombatSpectatorView): string {
 
 function renderPiece(piece: CombatSpectatorPiece, xPercent: number, yPercent: number): string {
   const cueAttrs = piece.cues.map((cue) => ` data-cue-${escapeHtml(cue)}="true"`).join('');
-  const cueSpans = piece.cues
-    .map(
-      (cue) =>
-        `<span class="combat-board__cue" data-cue="${escapeHtml(cue)}" aria-hidden="true">${CUE_GLYPHS[cue]}</span>`,
-    )
-    .join('');
+  // 말 하나가 cue를 여러 개 가질 수 있다 (예: 피격 + 균형 붕괴 + 전투불능).
+  // 표식을 각각 절대 배치하면 같은 자리에 겹쳐 마지막 하나만 보인다. 한
+  // 컨테이너에 담아 나란히 놓는다.
+  const cueSpans = piece.cues.length
+    ? `<span class="combat-board__cues" aria-hidden="true">${piece.cues
+        .map(
+          (cue) =>
+            `<span class="combat-board__cue" data-cue="${escapeHtml(cue)}">${CUE_GLYPHS[cue]}</span>`,
+        )
+        .join('')}</span>`
+    : '';
   return `<div class="combat-board__piece" data-piece-id="${escapeHtml(piece.id)}" data-side="${escapeHtml(
     piece.side,
   )}" data-active="${piece.active}"${cueAttrs} style="--piece-x: ${formatPercent(xPercent)}%; --piece-y: ${formatPercent(

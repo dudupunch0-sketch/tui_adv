@@ -5485,3 +5485,223 @@ encounters:
         outcome:
           add_flags: [accept_final_rest, second_wind_used]
           log: "무거운 눈꺼풀을 닫고, 더 이상 고통이 없는 침묵 속으로 서서히 가라앉는다."
+
+  # Wave 3 Step 2b: 시스템형 전투 인카운터 1개 (전투 관전 렌더러 프리뷰용).
+  #
+  # 게이트: `combat_spectator_preview_unlocked`는 일반 플레이가 절대 세우지
+  # 않는 전용 플래그다. Step 1d가 전투 관전 렌더러를 붙인 뒤에야 이 게이트를
+  # 제거해 정식 경로로 승격한다 (fable_combat_wave3_step2b_2608021228.md).
+  #
+  # 서술은 결과를 단정하지 않는다 — 실제 판정은 core의 시스템형 producer가
+  # `ScenePage.combat`에서 결정론적으로 계산하며, 이 event stage 텍스트는
+  # 승패를 미리 못박지 않는다.
+  - id: wuxia_combat_spectator_preview_bout
+    title: 관전용 표준 대련
+    body: 연무장 한쪽에서 표준 규격의 대련이 시작된다. 두 사람 모두 같은 기수식과 같은 초식만을 익힌 처지라, 겨루기가 어떻게 끝날지는 아직 누구의 것도 아니다.
+    presentation:
+      visual_id: wuxia_combat_spectator_preview_bout
+      layout: combat_intervention
+    conditions:
+      locations: [cheongryu_outer_courtyard]
+      required_flags: [combat_spectator_preview_unlocked]
+      forbidden_flags: [combat_spectator_preview_bout_resolved]
+    repeatable: false
+    event:
+      stages:
+        - id: combat_spectator_preview_bout_story
+          kind: story
+          blocks:
+            - kind: narration
+              text: 연무장 한쪽에서 표준 규격의 대련이 시작된다. 두 사람 모두 같은 기수식과 같은 초식만을 익힌 처지라, 겨루기가 어떻게 끝날지는 아직 누구의 것도 아니다.
+            - kind: illustration
+              visual_id: placeholder:wuxia_combat_spectator_preview_bout
+              alt: 연무장 한쪽에서 표준 규격의 대련 태세를 갖추는 두 수련생
+              placeholder: true
+        - id: combat_spectator_preview_bout_choice
+          kind: choice
+          choices:
+            - id: watch_the_bout_closely
+              next_stage_id: watch_the_bout_closely_result
+            - id: keep_a_measured_distance
+              next_stage_id: keep_a_measured_distance_result
+        - id: watch_the_bout_closely_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 가까이서 지켜본 대련의 흐름이 다음 수련의 기준으로 남는다.
+            - kind: narration
+              text: 한 걸음 다가가 앉아 두 사람의 호흡과 간격을 놓치지 않고 눈에 담는다. 승패는 아직 말해지지 않았지만, 겨루기의 결이 조금씩 눈에 들어온다.
+        - id: keep_a_measured_distance_result
+          kind: result
+          blocks:
+            - kind: result_summary
+              text: 거리를 둔 채로 지켜본 대련이 조용한 인상으로 남는다.
+            - kind: narration
+              text: 굳이 앞으로 나서지 않고 마당 끝에서 거리를 둔 채 지켜본다. 소리와 자세만으로도 표준 대련의 규격이 어떤 것인지 짐작할 수 있다.
+    choices:
+      - id: watch_the_bout_closely
+        label: 가까이서 대련을 지켜본다
+        outcome:
+          add_flags: [combat_spectator_preview_bout_resolved, combat_spectator_preview_watched_closely]
+          destination_id: cheongryu_outer_courtyard
+          experience: 5
+          log: 한 걸음 다가가 앉아 두 사람의 호흡과 간격을 놓치지 않고 눈에 담는다. 승패는 아직 말해지지 않았지만, 겨루기의 결이 조금씩 눈에 들어온다.
+      - id: keep_a_measured_distance
+        label: 거리를 두고 지켜본다
+        outcome:
+          add_flags: [combat_spectator_preview_bout_resolved, combat_spectator_preview_kept_distance]
+          destination_id: cheongryu_outer_courtyard
+          experience: 5
+          log: 굳이 앞으로 나서지 않고 마당 끝에서 거리를 둔 채 지켜본다. 소리와 자세만으로도 표준 대련의 규격이 어떤 것인지 짐작할 수 있다.
+    # combat: 정본 11의 표준 전투원(전투력 100) 수치를 그대로 쓴다 — 위력 40
+    # (power_hundredths 4000), 능력배율 1.0(100), 명중 100, 방어 5(500),
+    # 생명력/호흡 100/100. 검산: pre = 4000*5*100/1200 = 1666,
+    # reduction = 1666*500/2500 = 333, 첫 명중 피해 = 1333 hundredths
+    # (crates/escape-core/tests/encounter_combat_wave3.rs의
+    # wuxia_combat_spectator_preview_bout_first_hit_damage_is_1333_hundredths가 고정한다).
+    combat:
+      kind: systemic
+      intervention_budget: 0
+      manifest:
+        simulation_version: v1
+        # actual_seed는 authoring 값이며 producer가 런 상태(GameState.seed) +
+        # 인카운터 id에서 파생한 값으로 항상 덮어쓴다 — 이 값 자체는 의미가
+        # 없다 (scene_page.rs::derive_combat_seed 참고).
+        actual_seed: 1
+        world_state_fingerprint: wuxia_combat_spectator_preview_bout_wsf_v1
+        applied_effects: []
+        suppressed_effects: []
+        combatant_ids: [wuxia_spectator_bout_ally, wuxia_spectator_bout_challenger]
+        placement_ids: []
+        environment_ids: []
+        team_ids: []
+        rule_ids: [wuxia_standard_combatant_wave3_step2b]
+        public_info_ids: [wuxia_combat_spectator_preview_bout_public]
+      state:
+        battle_id: wuxia_combat_spectator_preview_bout_battle
+        combatants:
+          - id: wuxia_spectator_bout_ally
+            current_health: 100
+            maximum_health: 100
+            current_breath: 100
+            maximum_breath: 100
+            # balance/maximum_balance: provisional — 정본 11에 균형 최대치
+            # 정의가 없다. 생명력·호흡과 같은 100 스케일에 맞췄다.
+            balance: 100
+            maximum_balance: 100
+            fear: 0
+            anger: 0
+            posture: neutral
+            weapon_control: stable
+          - id: wuxia_spectator_bout_challenger
+            current_health: 100
+            maximum_health: 100
+            current_breath: 100
+            maximum_breath: 100
+            balance: 100
+            maximum_balance: 100
+            fear: 0
+            anger: 0
+            posture: neutral
+            weapon_control: stable
+        manifest_fingerprint: wuxia_combat_spectator_preview_bout_state_fp_v1
+      config:
+        # tick_millis/max_ticks: provisional — 정본 11에 tick 길이·상한 정의가
+        # 없다. 100ms/10틱은 8타 결착(§ 위 검산)에 여유를 둔 권장값이다.
+        tick_millis: 100
+        max_ticks: 10
+      participants:
+        - id: wuxia_spectator_bout_ally
+          side: ally
+          # position/facing/speed_per_tick/collision_radius/attack_range/
+          # support_range: 모두 provisional — 정본에 이동 속도·충돌 반경·
+          # 사거리 정의가 없다. 두 전투원이 첫 틱부터 사거리·충돌 반경 안에
+          # 들어오도록 최소값으로 잡았다.
+          position: { x: 0, y: 0 }
+          facing: { x: 1, y: 0 }
+          speed_per_tick: 1
+          collision_radius: 5
+          attack_range: 10
+          support_range: 10
+          role_id: role_wuxia_spectator_bout_ally
+          target_policy_id: null
+          active: true
+        - id: wuxia_spectator_bout_challenger
+          side: enemy
+          position: { x: 5, y: 0 }
+          facing: { x: -1, y: 0 }
+          speed_per_tick: 1
+          collision_radius: 5
+          attack_range: 10
+          support_range: 10
+          role_id: role_wuxia_spectator_bout_challenger
+          target_policy_id: null
+          active: true
+      roles:
+        - id: role_wuxia_spectator_bout_ally
+          weights:
+            preferred_distance: 0
+            aggression: 1
+            formation_maintenance: 0
+            pursuit_range: 10
+            protect_priority: 0
+            target_priority: 0
+            risk_tolerance: 0
+            ability_priority: 0
+        - id: role_wuxia_spectator_bout_challenger
+          weights:
+            preferred_distance: 0
+            aggression: 1
+            formation_maintenance: 0
+            pursuit_range: 10
+            protect_priority: 0
+            target_priority: 0
+            risk_tolerance: 0
+            ability_priority: 0
+      policies: []
+      attacks:
+        - id: wuxia_spectator_bout_ally_strike
+          actor_id: wuxia_spectator_bout_ally
+          # power_hundredths/ability_multiplier_hundredths/accuracy_percent:
+          # 정본 11 §7 초반 기술 표준값 그대로 (위력 40 / 배율 1.0 / 명중 100).
+          power_hundredths: 4000
+          ability_multiplier_hundredths: 100
+          accuracy_percent: 100
+          # attack_range: participants와 일관 — provisional.
+          attack_range: 10
+          penetration_hundredths: 0
+          # collision_balance_hundredths/balance_power_hundredths: provisional
+          # — 정본에 균형 피해 표준값이 없다. 작은 값으로만 둔다.
+          collision_balance_hundredths: 100
+          balance_power_hundredths: 100
+          effects: []
+        - id: wuxia_spectator_bout_challenger_strike
+          actor_id: wuxia_spectator_bout_challenger
+          power_hundredths: 4000
+          ability_multiplier_hundredths: 100
+          accuracy_percent: 100
+          attack_range: 10
+          penetration_hundredths: 0
+          collision_balance_hundredths: 100
+          balance_power_hundredths: 100
+          effects: []
+      defenses:
+        - combatant_id: wuxia_spectator_bout_ally
+          # defense_hundredths: 정본 11 §7 표준 방어력 5.
+          defense_hundredths: 500
+          # balance_resistance_hundredths: provisional — 정본에 정의 없음.
+          balance_resistance_hundredths: 0
+        - combatant_id: wuxia_spectator_bout_challenger
+          defense_hundredths: 500
+          balance_resistance_hundredths: 0
+      effect_catalog:
+        # 정본 04: 시스템형은 공유 효과만 사용한다. 이 인카운터는 효과를 쓰지
+        # 않으므로 빈 카탈로그로 둔다.
+        effects: []
+      # ticks/termination.max_ticks: provisional — 표준 전투원끼리 13.33
+      # 피해/타이므로 생명력 100에 8타면 결착이 난다. 8타보다 넉넉한 10틱을
+      # 두고 config.max_ticks와 맞췄다.
+      ticks: 10
+      termination:
+        max_ticks: 10
+        conclude_on_max_ticks: true

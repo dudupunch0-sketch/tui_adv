@@ -101,6 +101,52 @@ Inline image protocol은 baseline이 아니다. Kitty/Sixel/iTerm2 이미지는 
 - Terminal-only shortcut은 save/help/quit 같은 renderer control에만 허용한다.
 - Web과 terminal smoke는 같은 seed/content/action sequence에서 같은 action id 목록을 보여야 한다.
 
+### 전투 관전(Combat Spectator) 표시 계약 — Wave 3 Step 1d-1
+
+`crates/escape-terminal/src/snapshot.rs`가 `ScenePage.combat: Option<CombatSpectatorPage>`를 텍스트로 표시하는 계약이다. 이 렌더러는 **판정·집계를 다시 하지 않는다** — `escape-core`의 `resolve_combat`/`conclude_combat`/`spectate_combat`을 호출하지 않고, `CombatSpectatorView`/`CombatConclusionReport`에 이미 있는 값만 포맷한다. `page.combat`이 `None`이면 이 렌더러는 한 줄도 추가하지 않는다 — 스냅샷 출력이 이 slice 이전과 바이트 단위로 동일하다(`snapshot::tests::scene_snapshot_unchanged_bytes_when_combat_is_none`). Web Storybook 관전 렌더러(색·아이콘·애니메이션 동기화)와 게이트 플래그(`combat_spectator_preview_unlocked`) 제거는 Step 1d-2 소관이며, 이 표는 그 렌더러도 같은 대응표를 따라야 한다.
+
+표시 순서(정본 13 "상단 실시간 시뮬레이션 / 하단 로그"를 텍스트 줄 순서로 반영): `[전투 판]`(보드) → `[전투 로그]`(핵심 로그 + 전체 로그 개수) → `[전투 보고서]`(`combat.report`가 `Some`일 때만) → 기존 `[최근 로그]` 섹션. 기존 섹션(제목·상태·비주얼·인카운터·행동·잠긴 선택지)의 순서와 내용은 바뀌지 않는다.
+
+#### cue 5종 → 텍스트 표식 대응표
+
+정본 13의 공용 연출 문법(공격=짧은 전진/복귀, 피격=밀림/진동, 회피=측면 이동, 균형 붕괴=흔들림/기울어짐, 전투불능=흐려짐/표식)을 terminal은 애니메이션 없이 문자 표식으로 대응시킨다. 이 표는 `crates/escape-terminal/src/snapshot.rs`의 `combat_cue_symbol` 코드 주석과 짝을 이룬다 — 한쪽만 고치지 말 것.
+
+| `CombatSpectatorCue` | 정본 연출 의미 | terminal 표식 |
+|---|---|---|
+| `Attack` | 짧은 전진/복귀 | `>` |
+| `Hit` | 밀림/진동 | `<` |
+| `Evade` | 측면 이동 | `~` |
+| `BalanceBroken` | 흔들림/기울어짐 | `!` |
+| `Incapacitated` | 흐려짐/표식 | `x` |
+
+말 토큰은 진영/생존 문자(`A`/`a` = 아군 생존/비활성, `E`/`e` = 적 생존/비활성) 뒤에 cue 표식을 core가 정한 순서(Attack → Hit → Evade → BalanceBroken → Incapacitated) 그대로 이어붙인다. 예: 공격하며 균형이 무너진 활성 아군은 `A>!`. 보드 하단에 항상 범례 줄을 함께 출력한다.
+
+#### 로그 템플릿 6종 → 문장 형식 대응표
+
+로그 문장은 자유 생성이 아니라 `template_id` → 등록된 문장 형식으로만 만든다(`combat_log_template_line`). `value_hundredths`는 정수 반올림으로 표시한다(정본 11 §8). Hidden/Conditional 효과는 core가 이미 `effect_id`를 마스킹하고 `_hidden` 템플릿으로 바꿔 넘기므로, terminal은 `_hidden` 템플릿에서 효과 id를 절대 노출하지 않는다.
+
+| `template_id` | 문장 형식 |
+|---|---|
+| `combat.log.move_intent` | `{actor} 이동 의도 (목표 {target})` — target 없으면 목표 생략 |
+| `combat.log.target_selection` | `{actor} → 목표 지정: {target}` |
+| `combat.log.collision` | `{actor} × {target} 충돌` |
+| `combat.log.damage_applied` | `{actor} → {target} 피해 {value}` (hundredths 반올림 정수) |
+| `combat.log.effect_applied` | `{actor} → {target} 효과 적용 [{effect_id}]` |
+| `combat.log.effect_applied_hidden` | `{actor} → {target} 효과 적용 [정체불명]` (effect id 비공개) |
+| (미등록 id) | `{actor} → {target} 알 수 없는 사건 [template_id={id}]` — 조용히 버리지 않고 fallback으로 노출 |
+
+#### 보드 상한과 대체 규칙
+
+`view.frames`의 **마지막 프레임**만 그린다(정적 스냅샷, 애니메이션·시간 조작 없음). 프레임 pieces의 `position` min/max로 계산한 폭(`x_span`)·높이(`y_span`)가 각각 32/16을 넘으면 보드 대신 **좌표 목록**(id 오름차순)으로 대체하고 그 사유(범위 값)를 한 줄 남긴다 — 스케일을 줄여서 억지로 맞추지 않는다. 프레임이 없거나 pieces가 비어 있으면 그 사실을 한 줄로만 남기고 panic하지 않는다.
+
+#### 전투 종료 보고서
+
+`combat.report`가 `Some`일 때만 그린다(`None`이면 전투 진행 중이며 섹션 자체가 없다). 승패(`outcome`)·사유(`reason`)·전투 시간(`duration_millis`)·생존/전투불능 id·캐릭터별 입힌/받은 피해(정수 반올림)·처치 수·전투불능 여부를 그대로 옮긴다. `top_damage_dealt_id`/`top_damage_taken_id`가 `None`이면 그 줄 자체를 만들지 않는다(정본: 발생하지 않은 항목은 숨긴다). `resolution_fingerprint`/`fingerprint`를 표시할 경우 반드시 `simulation_version`과 같은 줄에 둔다(인덱스에 기록된 fingerprint 비교 계약). **금지**: 전략 평가, 핵심 전환점, 자동 원인 분석, 전략 조언, 종합 MVP, 이전 전투 비교 — 이런 문구·계산은 만들지 않는다.
+
+#### 전체 로그 열람 범위 밖
+
+`full_log`는 개수만 표시한다(정본 07: 전체 로그·상세 수치는 일시정지 또는 전투 종료 뒤 별도 열람). 전체 로그 열람 UI, 일시정지 흐름은 이 slice 범위 밖이다. `core_log`도 줄 수 상한(`COMBAT_CORE_LOG_LIMIT`)을 넘으면 생략된 줄 수를 명시한다 — 조용한 truncation은 금지한다.
+
 ## 기본 화면 구성
 
 권장 최소 터미널 크기:

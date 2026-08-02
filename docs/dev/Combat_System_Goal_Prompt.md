@@ -44,7 +44,8 @@ Notion 전투 시스템 허브와 canonical 00~13을 기준으로, Rust GameCore
 - `fable_combat_wave3_step1c_2608021109.md`가 구현·검증 완료다. `CombatSpectatorView.simulation_version`(provenance에서 파생)과 `CombatSpectatorPage`(`view` + optional `report`)를 추가하고 `ScenePage.combat: Option<CombatSpectatorPage>`로 renderer 경계 밖에 additive-optional 노출했다. 전투를 여는 인카운터 authoring이 없어(Wave 3 Step 2) `scene_page_from_turn_view`는 `combat: None`만 낸다 — 이 slice는 producer가 아니라 구조 슬롯만 추가했다. `#[serde(default, skip_serializing_if = "Option::is_none")]`로 기존 `ScenePage` JSON이 바이트 단위로 동일함을 신규 테스트로 고정했다. `crates/escape-core/tests/scene_page_combat_boundary.rs`(신규 5개 테스트)와 `crates/escape-wasm/tests/json_contract.rs`(기존 테스트 무수정, 1개 추가로 37개)가 있다.
 - `fable_combat_wave3_step2a_2608021137.md`가 구현·검증 완료다. `EncounterCombatKind`/`EncounterCombatDef`/`EncounterDef.combat`(additive-optional)을 추가하고, index-time에 정본 12의 11개 하드 오류 규칙(개입 예산 0~3 초과, 미지원 `mixed`/`scripted` kind, tick 설정, attack/defense 참조, participants/combatants id 집합, effect catalog·manifest 유효성, 효과 참조)을 검증한다. `scene_page.rs`에 시스템형(`kind: systemic`) 전용 producer를 연결해 `ScenePage.combat`을 실제로 채운다 — 실제 전투 seed는 런 상태 + 인카운터 id를 해싱해 파생하며(새 난수원 없음), authoring의 `actual_seed`는 결과에 영향을 주지 않는다. 파이프라인 실패는 `None`으로 숨기지 않고 `ContentTurnError`로 전파한다. `crates/escape-core/tests/encounter_combat_wave3.rs`(신규 21개 테스트)가 있다. 혼합형·각본형 개입 일시정지 흐름과 실제 인카운터 콘텐츠 authoring, 전투 결과 캐싱은 여전히 없다.
 - `fable_combat_wave3_step2b_2608021228.md`가 구현·검증 완료다. 이구학지 preview에 시스템형 전투 인카운터 1개(`wuxia_combat_spectator_preview_bout`, `cheongryu_outer_courtyard`)를 authoring해 Step 2a producer가 실제로 구동하게 했다. 정본 11의 표준 전투원 수치(위력 40/`power_hundredths: 4000`, 능력배율 1.0/100, 명중 100, 방어 5/500)만 그대로 썼고, 정본에 없는 균형 최대치·이동/충돌/사거리·tick 길이·균형 피해는 YAML 주석에 provisional로 남겼다. `intervention_budget: 0`·`kind: systemic`이며, 전투 관전 렌더러가 아직 없어 `combat_spectator_preview_unlocked` 게이트 플래그로 일반 플레이 경로에서 도달 불가하게 막았다(Step 1d가 렌더러를 붙인 뒤 게이트를 제거해 정식 경로로 승격한다). `crates/escape-core/tests/encounter_combat_wave3.rs`에 7개 테스트 추가(총 28개)했고, 그중 `wuxia_combat_spectator_preview_bout_first_hit_damage_is_1333_hundredths`가 첫 명중 피해 1333 hundredths(정본 §8 공식 검산)를 authoring 수치와 함께 고정한다.
-- 고급 다수전 AI 행동·조기 tick 중단, 치유량·명줄, 혼합형·각본형 개입 일시정지 흐름, 혼합형·각본형 실제 인카운터 콘텐츠 authoring(Wave 3 Step 2c), 전투 결과 캐싱(현재 매 렌더 재실행), Web/terminal 전투 UI, 기술 비용·호흡 회복률·밸런스 수치는 아직 미구현이다.
+- `fable_combat_wave3_step1d1_2608021329.md`가 구현·검증 완료다. `crates/escape-terminal/src/snapshot.rs`에 terminal(SuperLightTUI) 관전 렌더러를 추가했다 — `ScenePage.combat`에 이미 있는 값만 포맷하고(판정·집계·cue 재계산 없음, combat 함수 호출 0회), 6개 `template_id`를 한국어 문장 형식표로 매핑(미등록 id는 fallback으로 노출), 마지막 프레임을 체스말 보드로 그리되 32×16 초과 시 좌표 목록으로 대체, cue 5종(Attack/Hit/Evade/BalanceBroken/Incapacitated)에 텍스트 표식을 붙이고, `core_log`만 문장화(`full_log`는 개수만), `combat.report`가 `Some`일 때만 종료 보고서(하이라이트 `None`이면 줄 생략)를 그린다. `page.combat`이 `None`이면 스냅샷 출력이 이 slice 이전과 바이트 단위로 동일함을 테스트로 고정했다. `crates/escape-terminal/tests/cli_smoke.rs`는 무수정이며 기존 61개 테스트가 그대로 통과한다. `snapshot.rs`에 24개 단위 테스트를 추가했다(`cargo test --workspace --no-fail-fast`: 346 passed, 0 failed). 게이트 플래그(`combat_spectator_preview_unlocked`)는 Web 렌더러가 갖춰지는 Step 1d-2까지 유지한다.
+- 고급 다수전 AI 행동·조기 tick 중단, 치유량·명줄, 혼합형·각본형 개입 일시정지 흐름, 혼합형·각본형 실제 인카운터 콘텐츠 authoring(Wave 3 Step 2c), 전투 결과 캐싱(현재 매 렌더 재실행), Web 전투 UI·게이트 제거·5뷰포트 QA·wasm 재빌드(Wave 3 Step 1d-2, terminal은 Step 1d-1에서 확보됨), 전체 로그 열람 UI, 기술 비용·호흡 회복률·밸런스 수치는 아직 미구현이다.
 
 Notion 불변식:
 - 같은 manifest·seed·선택 이력·simulation version은 같은 결과와 로그를 만든다.
@@ -79,8 +80,14 @@ Notion 불변식:
 - Next: 다음 plan 파일 또는 사용자 결정이 필요한 질문
 ```
 
-권장 다음 goal 문장:
+권장 다음 goal 문장 (Wave 3 Step 1c 완료 시점, 이력 보존용):
 
 ```text
 Wave 3 Step 2(시스템형 1개 + 혼합형 1개 + 각본형 1개 authoring slice)를 별도 작은 plan으로 설계하고, 승인 후 WSL 회귀 검증까지 수행한다. `ScenePage.combat`은 Wave 3 Step 1c에서 이미 additive-optional로 노출됐지만 이를 채우는 producer(전투를 여는 인카운터 authoring)가 없어 여전히 항상 `None`이다. Step 1d(terminal/Web 렌더러)보다 Step 2를 먼저 진행한다 — authoring이 없으면 렌더러가 표시할 데이터가 없기 때문이다 (단계 순서 조정 근거는 `docs/design/Combat_System_Implementation_Plan_Index.md` 참고).
+```
+
+권장 다음 goal 문장 (Wave 3 Step 1d-1 완료 시점, 현재):
+
+```text
+Wave 3 Step 1d-2(Web Storybook 관전 렌더러 + TS 타입 + 게이트 플래그 제거 + 5뷰포트 실화면 QA + wasm 재빌드)를 별도 작은 plan으로 설계하고, 승인 후 WSL 회귀 검증까지 수행한다. terminal 관전 렌더러는 Step 1d-1에서 확보됐고(`crates/escape-terminal/src/snapshot.rs`), `combat_spectator_preview_unlocked` 게이트는 Web 렌더러가 없는 동안 일반 플레이 노출을 막기 위해 그대로 유지 중이다 — Step 1d-2가 게이트를 제거하려면 그 전에 Web 렌더러가 준비돼 있어야 한다. Wave 3 Step 2c(혼합형·각본형 authoring, 개입 일시정지 흐름)는 여전히 별도 plan으로 남아 있다.
 ```

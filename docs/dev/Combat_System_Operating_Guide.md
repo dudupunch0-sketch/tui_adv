@@ -76,6 +76,7 @@
 - `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`, `crates/escape-core/fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json`, `web/src/data/generated/storypack-preview/wuxia_jianghu_pack.content.bundle.json` (export 생성물)
 - `crates/escape-core/tests/encounter_combat_wave3.rs` 7개 테스트 추가(총 28개: `spectator_preview_bout_is_unreachable_without_the_gate_flag`, `gate_flag_selects_the_bout_and_fills_scene_page_combat`, `report_covers_both_combatants_with_non_negative_damage_totals`, `wuxia_combat_spectator_preview_bout_first_hit_damage_is_1333_hundredths`, `gated_combat_is_deterministic_for_the_same_state`, `spectator_preview_bout_has_a_staged_event`), `crates/escape-core/tests/event_stage_wave3.rs`(`wuxia_preview_has_full_51_event_coverage`→`wuxia_preview_has_full_52_event_coverage`로 이름·수치 갱신), `crates/escape-core/tests/content_bundle.rs`·`crates/escape-core/tests/reward_pipeline_wave1.rs`(51→52 카운트만 갱신), `tests/test_web_data_export.py`(51→52 카운트만 갱신)
 - Wave 3 Step 2b는 이구학지 preview에 Step 2a producer가 실제로 구동하는 시스템형 전투 인카운터 1개(`wuxia_combat_spectator_preview_bout`, `cheongryu_outer_courtyard`)를 authoring했다. 정본 11의 표준 전투원 수치(위력 40/`power_hundredths: 4000`, 능력배율 1.0/100, 명중 100, 방어 5/500, 생명력·호흡 100/100)만 그대로 썼고 새 밸런스 값을 발명하지 않았다. 정본에 없는 균형 최대치·이동/충돌/사거리·tick 길이·균형 피해 값은 YAML 주석에 provisional로 남겼다. `intervention_budget: 0`·`kind: systemic`이며, 전투 관전 렌더러가 아직 없어(Step 1d) `conditions.required_flags: [combat_spectator_preview_unlocked]`로 일반 플레이 경로에서 도달 불가하게 게이트했다 — 이 플래그를 세우는 콘텐츠는 만들지 않았다. staged `event`(Story→Choice→per-choice Result)와 illustration placeholder를 갖췄고, 서술은 승패를 단정하지 않는다. `wuxia_combat_spectator_preview_bout_first_hit_damage_is_1333_hundredths`가 authoring 수치와 resolver 공식(`pre = 4000*5*100/1200 = 1666`, `reduction = 1666*500/2500 = 333`, `damage = 1333`)을 함께 고정한다.
+- Wave 3 Step 1d-1은 `crates/escape-terminal/src/snapshot.rs`에 terminal(SuperLightTUI) 관전 렌더러를 추가했다. `ScenePage.combat`에 이미 있는 값만 포맷하고(`resolve_combat`/`conclude_combat`/`spectate_combat` 호출 0회, 판정·집계·cue 재계산 없음), 6개 `template_id`를 한국어 문장 형식표로 매핑하며(미등록 id는 fallback 줄로 노출), 마지막 프레임을 체스말 보드로 그리되 폭 32·높이 16 초과 시 좌표 목록으로 대체하고, cue 5종(Attack/Hit/Evade/BalanceBroken/Incapacitated)에 텍스트 표식(`>`/`<`/`~`/`!`/`x`)을 붙이고, `core_log`만 문장화(`full_log`는 개수만), `combat.report`가 `Some`일 때만 종료 보고서(하이라이트 `None`이면 줄 생략, 금지 문구 없음)를 그린다. `page.combat`이 `None`이면 한 줄도 추가하지 않아 스냅샷이 이 slice 이전과 바이트 단위로 동일하다(테스트로 고정). `crates/escape-terminal/tests/cli_smoke.rs`(다른 작업자의 uncommitted 변경, 무수정)의 기존 61개 테스트가 그대로 통과한다. `snapshot.rs`에 24개 단위 테스트를 추가했다(`cargo test --workspace --no-fail-fast`: 322 + 24 = 346, 0 failed). 게이트 플래그(`combat_spectator_preview_unlocked`)는 그대로 뒀다 — Web 렌더러가 갖춰지는 Step 1d-2에서 제거한다. 자세한 cue/템플릿 대응표는 [TUI_Layout.md](TUI_Layout.md)를 본다.
 
 아직 열지 않음:
 
@@ -83,9 +84,10 @@
 - 치유량·최대 치유량 캐릭터 — combat 파이프라인에 회복 개념이 없어 보류 (healing slice 선행 필요)
 - 명줄 소모·패배 결과 — 정본 10 기준 런 단위 메타 자원이며 인카운터 패배 결과 정의가 소유. 패배 결과 스키마 slice 선행 필요
 - 혼합형 1개 + 각본형 1개 authoring(Wave 3 Step 2c), 혼합형·각본형의 개입 일시정지 흐름과 필수 선택
-- `wuxia_combat_spectator_preview_bout`은 `combat_spectator_preview_unlocked` 게이트 뒤에 있다 — Step 1d가 전투 관전 렌더러를 붙인 뒤에야 이 게이트를 제거해 정식 경로로 승격한다
+- `wuxia_combat_spectator_preview_bout`은 `combat_spectator_preview_unlocked` 게이트 뒤에 있다 — terminal 렌더러는 Step 1d-1에서 붙었지만, Web 렌더러가 갖춰지는 Step 1d-2 전까지는 게이트를 유지한다
 - 전투 결과 캐싱·save 저장 (Wave 3 Step 2a는 매 렌더 재실행을 그대로 둔다)
-- ScenePage/WASM/Web/terminal 전투 화면
+- Web/WASM 전투 화면, 5뷰포트 실화면 QA, 게이트 플래그 제거 (Wave 3 Step 1d-2; terminal 화면은 Step 1d-1에서 확보됨)
+- 전체 로그(`full_log`) 열람 UI, 일시정지 흐름 (terminal은 현재 개수만 표시)
 - 기술 비용·호흡 회복률·피해·방어·쿨타임 등 밸런스 상수
 
 ## 4. context 압축 후 재개 절차

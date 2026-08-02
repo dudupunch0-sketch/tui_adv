@@ -52,6 +52,14 @@ describe('buildCombatMotionCss — I1: screen time equals simulation time', () =
     expect(result.css).toContain(`${3 * 250}ms linear`);
   });
 
+  it('a 10-frame / 100ms fixture sums to exactly 900ms (explicit verification number)', () => {
+    const points = Array.from({ length: 10 }, (_, i) => ({ x: i * 5, y: 50 }));
+    const input: CombatMotionInput = { tickMillis: 100, tracks: [track('ally_1', points)] };
+    const result = buildCombatMotionCss(input);
+    expect(result.durationMillis).toBe(900);
+    expect(result.css).toContain('900ms linear');
+  });
+
   it('places tick k at exactly k / (frames.length - 1) * 100% (no eased/padded offsets)', () => {
     const points = [{ x: 10, y: 10 }, { x: 20, y: 30 }, { x: 30, y: 70 }, { x: 40, y: 90 }, { x: 50, y: 10 }];
     const input: CombatMotionInput = { tickMillis: 100, tracks: [track('ally_1', points)] };

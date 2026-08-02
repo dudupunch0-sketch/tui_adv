@@ -38,6 +38,7 @@ pub(crate) fn render_scene_page_snapshot(page: &ScenePage, logs: &[String]) -> S
         .any(|item| item.stage_id.is_some())
     {
         render_ordered_content_stream(&mut lines, page);
+        render_combat_section(&mut lines, page);
         render_snapshot_tail(&mut lines, page, logs);
         return lines.join("\n");
     }
@@ -69,6 +70,7 @@ pub(crate) fn render_scene_page_snapshot(page: &ScenePage, logs: &[String]) -> S
         }
     }
 
+    render_combat_section(&mut lines, page);
     render_snapshot_logs(&mut lines, logs);
     lines.join("\n")
 }
@@ -651,6 +653,22 @@ fn render_combat_report(
     }
 }
 
+// -- P5: 스냅샷 통합 -------------------------------------------------------------
+
+/// `page.combat`이 `None`이면 아무 줄도 추가하지 않는다 — 호출부에서 이
+/// 함수를 부르기 전/후 로직을 바꾸지 않으므로 `None`일 때 스냅샷 출력은 이
+/// 함수를 추가하기 전과 바이트 단위로 동일하다 (`tests::combat_section_*` 참고).
+fn render_combat_section(lines: &mut Vec<String>, page: &ScenePage) {
+    let Some(combat) = &page.combat else {
+        return;
+    };
+    render_combat_board(lines, &combat.view);
+    render_combat_core_log(lines, &combat.view);
+    if let Some(report) = &combat.report {
+        render_combat_report(lines, &combat.view, report);
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1044,5 +1062,148 @@ mod tests {
             .find(|line| line.contains("시뮬레이션 버전"))
             .expect("simulation version line present");
         assert!(version_line.contains(&report.fingerprint));
+    }
+
+    // -- P5: 스냅샷 통합 -------------------------------------------------------
+    use escape_core::{
+        AchievementSummary, CombatSpectatorPage, InventorySummary, SceneLocation, SceneVisual,
+        StatusSummary,
+    };
+
+    fn minimal_scene_page(combat: Option<CombatSpectatorPage>) -> ScenePage {
+        ScenePage {
+            mode: SceneMode::Movement,
+            title: "테스트 장면".to_string(),
+            location: SceneLocation {
+                id: "loc_1".to_string(),
+                name: "테스트 위치".to_string(),
+                description: String::new(),
+            },
+            chapter_label: "1장".to_string(),
+            status_summary: StatusSummary {
+                turn: 1,
+                danger: 0,
+                resources: Vec::new(),
+                warnings: Vec::new(),
+            },
+            body_blocks: Vec::new(),
+            content_stream: Vec::new(),
+            dialogue_entries: Vec::new(),
+            visual: SceneVisual {
+                id: "visual_1".to_string(),
+                kind: "none".to_string(),
+                alt: String::new(),
+                source_id: None,
+            },
+            actions: Vec::new(),
+            blocked_actions: Vec::new(),
+            history_entries: Vec::new(),
+            inventory_summary: InventorySummary {
+                items: Vec::new(),
+                overflow_count: 0,
+            },
+            inventory_details: Vec::new(),
+            achievement_summary: AchievementSummary {
+                unlocked: Vec::new(),
+                newly_unlocked: Vec::new(),
+            },
+            pressure_cues: Vec::new(),
+            effect_cues: Vec::new(),
+            character_summary: None,
+            progression: None,
+            content_labels: None,
+            check_result: None,
+            insights: Vec::new(),
+            skills: Vec::new(),
+            titles: Vec::new(),
+            combat,
+        }
+    }
+
+    #[test]
+    fn combat_section_adds_nothing_when_combat_is_none() {
+        let mut lines = Vec::new();
+        render_combat_section(&mut lines, &minimal_scene_page(None));
+        assert!(lines.is_empty());
+    }
+
+    #[test]
+    fn scene_snapshot_unchanged_bytes_when_combat_is_none() {
+        let page = minimal_scene_page(None);
+        let with_no_combat_path = render_scene_page_snapshot(&page, &[]);
+        assert!(!with_no_combat_path.contains("[전투 판]"));
+        assert!(!with_no_combat_path.contains("[전투 로그]"));
+        assert!(!with_no_combat_path.contains("[전투 보고서]"));
+        // Determinism: same input renders identical bytes every time.
+        assert_eq!(with_no_combat_path, render_scene_page_snapshot(&page, &[]));
+    }
+
+    #[test]
+    fn scene_snapshot_includes_combat_sections_in_order_when_present() {
+        let combat = CombatSpectatorPage {
+            view: test_view(
+                vec![CombatSpectatorFrame {
+                    tick: 1,
+                    pieces: vec![test_piece(
+                        "ally_1",
+                        CombatSide::Ally,
+                        0,
+                        0,
+                        true,
+                        Vec::new(),
+                    )],
+                }],
+                vec![test_log_entry(
+                    "combat.log.move_intent",
+                    "ally_1",
+                    None,
+                    None,
+                    None,
+                )],
+                Vec::new(),
+            ),
+            report: Some(base_report()),
+        };
+        let page = minimal_scene_page(Some(combat));
+        let output = render_scene_page_snapshot(&page, &[]);
+        let board_pos = output.find("[전투 판]").expect("board section present");
+        let log_pos = output
+            .find("[전투 로그]")
+            .expect("core log section present");
+        let report_pos = output
+            .find("[전투 보고서]")
+            .expect("report section present");
+        let recent_log_pos = output
+            .find("[최근 로그]")
+            .expect("recent log section present");
+        assert!(board_pos < log_pos);
+        assert!(log_pos < report_pos);
+        assert!(report_pos < recent_log_pos);
+    }
+
+    #[test]
+    fn scene_snapshot_omits_report_section_when_combat_in_progress() {
+        let combat = CombatSpectatorPage {
+            view: test_view(
+                vec![CombatSpectatorFrame {
+                    tick: 1,
+                    pieces: vec![test_piece(
+                        "ally_1",
+                        CombatSide::Ally,
+                        0,
+                        0,
+                        true,
+                        Vec::new(),
+                    )],
+                }],
+                Vec::new(),
+                Vec::new(),
+            ),
+            report: None,
+        };
+        let page = minimal_scene_page(Some(combat));
+        let output = render_scene_page_snapshot(&page, &[]);
+        assert!(output.contains("[전투 판]"));
+        assert!(!output.contains("[전투 보고서]"));
     }
 }

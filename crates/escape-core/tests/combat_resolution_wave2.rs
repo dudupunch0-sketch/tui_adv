@@ -516,6 +516,12 @@ fn mirrored_attack(id: &str, actor_id: &str) -> CombatAttackDefinition {
     }
 }
 
+/// 여러 tick을 돌리는 픽스처. `request()`는 1 tick만 돌도록 되어 있다.
+fn set_ticks(r: &mut CombatResolutionRequest, ticks: u32) {
+    r.execution.ticks = ticks;
+    r.execution.input.config.max_ticks = ticks;
+}
+
 fn set_current_health(r: &mut CombatResolutionRequest, id: &str, current_health: i32) {
     let combatant = r
         .execution
@@ -611,4 +617,98 @@ fn simultaneous_mutual_defeat_is_independent_of_attack_definition_order() {
         ally_first.state, enemy_first.state,
         "final state must be identical regardless of attack definition order"
     );
+}
+
+// ---------------------------------------------------------------------
+// WP3 (같은 플랜, I2): 결착 tick 이후를 시뮬레이션하지 않는다. 결착 조건은
+// `conclude`와 공유하는 `side_all_defeated` 하나뿐이다. 한 명중은 500
+// hundredths(= 체력 5)이므로 체력 15는 정확히 3타에 쓰러진다.
+// ---------------------------------------------------------------------
+
+#[test]
+fn simulation_stops_at_the_tick_that_concludes_the_fight() {
+    let mut r = request();
+    set_ticks(&mut r, 6);
+    set_current_health(&mut r, "e", 15);
+
+    let result = resolve_combat(r).unwrap();
+    assert_eq!(
+        result.frames.len(),
+        3,
+        "enemy dies on the third hit, so tick 3 must be the last simulated tick"
+    );
+    let last_tick = result.frames.last().unwrap().tick;
+    assert!(
+        result.frames.iter().all(|f| f.tick <= last_tick),
+        "no frame may exist after the concluding tick"
+    );
+    assert!(
+        result.full_log.iter().all(|e| e.tick <= last_tick),
+        "no log entry may exist after the concluding tick"
+    );
+}
+
+#[test]
+fn the_concluding_tick_frame_is_included_with_its_outcomes() {
+    let mut r = request();
+    set_ticks(&mut r, 6);
+    set_current_health(&mut r, "e", 15);
+
+    let result = resolve_combat(r).unwrap();
+    let last = result.frames.last().unwrap();
+    assert!(
+        !last.outcomes.is_empty(),
+        "the tick where the fight concluded must still show what happened in it"
+    );
+    assert_eq!(
+        last.combatants
+            .iter()
+            .find(|c| c.id == "e")
+            .unwrap()
+            .current_health_hundredths,
+        0,
+        "the concluding tick's snapshot must show the knockout that ended it"
+    );
+}
+
+#[test]
+fn a_fight_with_no_conclusion_runs_every_tick() {
+    let mut r = request();
+    set_ticks(&mut r, 6);
+    // 체력 100은 6타(30)로 죽지 않는다 -> 결착 없음.
+    let result = resolve_combat(r).unwrap();
+    assert_eq!(
+        result.frames.len(),
+        6,
+        "without a terminal condition the resolver must keep going to the tick limit"
+    );
+}
+
+#[test]
+fn simultaneous_mutual_defeat_stops_at_that_tick() {
+    let mut r = request();
+    set_ticks(&mut r, 6);
+    r.attacks[0].id = "a_ally_strike".into();
+    r.attacks.push(mirrored_attack("z_challenger_strike", "e"));
+    set_current_health(&mut r, "a", 15);
+    set_current_health(&mut r, "e", 15);
+
+    let result = resolve_combat(r).unwrap();
+    assert_eq!(
+        result.frames.len(),
+        3,
+        "both sides wiped on the same tick must stop the simulation on that tick"
+    );
+    for id in ["a", "e"] {
+        assert_eq!(
+            result
+                .state
+                .combatants
+                .iter()
+                .find(|c| c.id == id)
+                .unwrap()
+                .current_health_hundredths,
+            0
+        );
+    }
 }

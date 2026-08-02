@@ -1,7 +1,8 @@
 use crate::{
-    execute_combat, CombatEffectCatalog, CombatEffectDefinition, CombatEffectInstance,
-    CombatExecutionError, CombatExecutionRequest, CombatExecutionResult, CombatLogImportance,
-    CombatRngNamespace, CombatSimulationError, EffectLifetime, EffectStacking,
+    execute_combat, side_all_defeated, CombatEffectCatalog, CombatEffectDefinition,
+    CombatEffectInstance, CombatExecutionError, CombatExecutionRequest, CombatExecutionResult,
+    CombatLogImportance, CombatRngNamespace, CombatSide, CombatSimulationError,
+    CombatSimulationParticipant, EffectLifetime, EffectStacking,
 };
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
@@ -188,6 +189,26 @@ pub fn resolve(
     let mut suppressed = Vec::new();
     let mut frames = Vec::new();
     let mut full_log = Vec::new();
+
+    // I2: 결착 tick 이후를 시뮬레이션하지 않는다. 판정 조건은 새로 만들지 않고
+    // `conclude`가 쓰는 것과 같은 `side_all_defeated`를 쓴다.
+    //
+    // 활성 전투원이 없는 진영이 있으면 조기 종료를 판정하지 않는다 —
+    // `all()`은 빈 집합에서 true이므로 첫 tick에 곧바로 결착으로 읽힌다.
+    // 그 입력은 `conclude`가 `EmptyActiveSide`로 거부하는 몫이며, resolver가
+    // 조용히 다르게 처리하지 않는다.
+    let active_allies: Vec<&CombatSimulationParticipant> = participants
+        .values()
+        .copied()
+        .filter(|p| p.active && p.side == CombatSide::Ally)
+        .collect();
+    let active_enemies: Vec<&CombatSimulationParticipant> = participants
+        .values()
+        .copied()
+        .filter(|p| p.active && p.side == CombatSide::Enemy)
+        .collect();
+    let early_conclusion_is_decidable = !active_allies.is_empty() && !active_enemies.is_empty();
+
     for frame in &execution.frames {
         // I1 (fable_combat_early_conclusion_step1_2608022130.md): whether an
         // actor/target is incapacitated is decided from THIS tick's starting
@@ -426,6 +447,26 @@ pub fn resolve(
             combatants: tick_combatants,
             fingerprint: fp,
         });
+
+        // 결착 tick의 프레임은 남기고 그 뒤를 돌지 않는다 (정본 03: 결착 시
+        // 정리가 일어나므로 결착 이후를 계속 시뮬레이션할 근거가 없다).
+        if early_conclusion_is_decidable {
+            // 추적되지 않는 id는 "전멸"로 읽지 않는다. `side_all_defeated`는
+            // 체력이 0일 때만 전멸로 보므로, 값을 지어내는 대신 0이 아님이
+            // 확실한 값을 준다 — 없는 상태를 결착 근거로 삼지 않는다.
+            // (`validate_inputs`가 이미 참가자와 상태의 일치를 보장한다.)
+            const UNTRACKED_IS_NOT_DEFEATED: i64 = i64::MAX;
+            let health_of = |id: &str| {
+                combatants
+                    .get(id)
+                    .map_or(UNTRACKED_IS_NOT_DEFEATED, |c| c.current_health_hundredths)
+            };
+            let allies_defeated = side_all_defeated(active_allies.iter().copied(), &health_of);
+            let enemies_defeated = side_all_defeated(active_enemies.iter().copied(), &health_of);
+            if allies_defeated || enemies_defeated {
+                break;
+            }
+        }
     }
     let state = CombatResolutionState {
         combatants: combatants.into_values().collect(),

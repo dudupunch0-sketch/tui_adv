@@ -1,0 +1,29 @@
+id: wuxia_mumyeong_awakening
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 무명의 각성
+  검수 상태: 미검수
+  결과: 무명이 분노 속에서 각성하고 자신의 카피 능력을 극단적으로 개화한다.
+  관련 세력: 주변 정파, 청류문
+  관련 인물: 무명
+  메모: 무명의 각성은 구원이 아니라 분노에 의한 변질이다. 주인공의 천외편린 성장과 대비된다.
+  미해결 부채: 'No'
+  보상: 무명 카피 무공의 기원 단서.
+  분류: 동료 사건, 성장 사건, 전투 사건
+  사건 ID: wuxia_mumyeong_awakening
+  상태: 초안
+  선택지 요약: 분노의 흔적을 본다 / 무공의 변질을 추적한다 / 청류안과 비교한다
+  선행 조건: wuxia_mumyeong_reads_orthodox_style
+  소속 루트: 청류문, 흑사방
+  엔딩 영향: 청류문, 침식
+  진행 단계: 중반
+  후일담 카드 연결: 훔친 초식의 끝 / 훔친 초식이 멈춘 날
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

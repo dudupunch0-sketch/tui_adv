@@ -1,0 +1,29 @@
+id: wuxia_side_herbalist_counting
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 약초꾼의 계산법
+  검수 상태: 기획자 검수 필요
+  결과: 약재 부족이 단순 도난인지 오래된 거래 문제인지 분기한다. 이후 회복 사건의 약재 상태와 서하린의 설명이 달라진다.
+  관련 세력: 주변 정파, 청류문
+  관련 인물: 서하린, 주인공
+  메모: 기존 약재 창고 사건과 연결되는 선택적 전조. 완전한 진실은 후반까지 보류.
+  미해결 부채: 'No'
+  보상: 약재 정보; 청류문 회복 보정
+  분류: 사이드 퀘스트
+  사건 ID: wuxia_side_herbalist_counting
+  상태: 초안
+  선택지 요약: 수량을 다시 센다 / 약초꾼을 믿는다 / 서하린에게 장부를 보여준다
+  선행 조건: 약재 심부름 계열 사건 미등장 시드
+  소속 루트: 청류문
+  엔딩 영향: 청류문
+  진행 단계: 초반
+  후일담 카드 연결: ''
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

@@ -1,0 +1,28 @@
+id: notion_0012
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/10 ьЭ┤ъ╡мэХЩьзА эЫДьЭ╝ыЛ┤
+    ь╣┤ыУЬ DB bd93ddd8de224c7da50abdd309bc2880.csv
+  database_id: bd93ddd8de224c7da50abdd309bc2880
+notion_properties:
+  카드명: 청류문의 후일
+  검수 상태: 기획자 검수 필요
+  검수 필요: 'Yes'
+  관련 사건: 청류문 첫 도착 / 청류문 임시 수습생 등록 / 보스 결산
+  관련 엔딩: 귀환, 모든 생존 계열, 정착, 청류문
+  대상: 청류문
+  메모: 무협팩 기본 후일담 카드. 거의 모든 생존 계열 엔딩에서 변형 출력 가능.
+  본문 초안: 청류문 수련장에는 다시 사람 목소리가 들리기 시작했다. 아직 가난했고, 아직 지붕은 새고 있었다. 하지만 더 이상 아무도 청류문이
+    끝났다고 말하지는 않았다.
+  삽화 힌트: 비어 있던 수련장에 다시 걸린 목검과 물동이
+  상호 배타 그룹: qingliu_future
+  연계 그룹: qingliu_aftermath
+  카드 ID: epilogue_qingliu_future
+  카테고리: 세력
+  풍문 여부: 'No'
+  해금 조건: 생존 계열 엔딩. 청류문 관련 사건 일정 이상 해결.
+kind: afterthought
+storypack_id: null
+arc_id: null
+stages: []

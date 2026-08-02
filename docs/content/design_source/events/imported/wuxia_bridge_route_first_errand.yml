@@ -1,0 +1,30 @@
+id: wuxia_bridge_route_first_errand
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 선택한 길의 첫 번째 심부름
+  검수 상태: 기획자 검수 필요
+  결과: 어떤 route를 골라도 첫 행동은 작은 심부름으로 시작된다. 세력별 정보와 서하린의 거리감이 달라지고, 선택이 생활의 방향을 바꾼다는
+    감각을 준다.
+  관련 세력: 객잔, 청류문
+  관련 인물: 객잔 주인, 서하린, 주인공
+  메모: route opener와 무명 중반선 사이에 하루의 행동을 넣는 재합류형 브리지. 메인 진입을 지연시키지 않는다.
+  미해결 부채: 'No'
+  보상: 첫 route 정보; 객잔 소문; 서하린 작별/동행 변주
+  분류: 사이드 퀘스트
+  사건 ID: wuxia_bridge_route_first_errand
+  상태: 초안
+  선택지 요약: 청류문 부탁을 먼저 처리한다 / 선택한 세력의 연락처를 찾는다 / 서하린과 마지막으로 장터를 걷는다
+  선행 조건: 습격 이후 회복 완료; route 선택 직후
+  소속 루트: 귀환, 무림맹, 정착, 청류문, 흑사방
+  엔딩 영향: 귀환, 정착, 청류문
+  진행 단계: 중반
+  후일담 카드 연결: ''
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

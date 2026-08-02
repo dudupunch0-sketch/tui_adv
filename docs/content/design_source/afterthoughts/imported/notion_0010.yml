@@ -1,0 +1,28 @@
+id: notion_0010
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/10 ьЭ┤ъ╡мэХЩьзА эЫДьЭ╝ыЛ┤
+    ь╣┤ыУЬ DB bd93ddd8de224c7da50abdd309bc2880.csv
+  database_id: bd93ddd8de224c7da50abdd309bc2880
+notion_properties:
+  카드명: 검은 뱀의 새 비늘
+  검수 상태: 기획자 검수 필요
+  검수 필요: 'Yes'
+  관련 사건: 보스 결산 / 무명 결산
+  관련 엔딩: 모든 생존 계열, 청류문, 침식
+  대상: 무명, 흑사방, 흑사방 보스
+  메모: 보스 이후 무명이 흑사방 구조를 이어받는 강한 비구원 계열.
+  본문 초안: 흑사방의 옛 깃발은 찢어졌지만, 장터의 밤길은 조용해지지 않았다. 사람들은 방주의 이름이 사라졌다고 말했다. 그러나 새로 걷히는 통행세의
+    손짓은 어딘가 청류문을 닮아 있었다.
+  삽화 힌트: 벗겨진 검은 뱀 비늘 위에 놓인 청류문식 목검 조각
+  상호 배타 그룹: mumyeong_fate
+  연계 그룹: black_serpent_aftermath
+  카드 ID: epilogue_mumyeong_black_serpent_new_scale
+  카테고리: 세력
+  풍문 여부: 'Yes'
+  해금 조건: 보스 실각 또는 사망 후 무명이 흑사방의 후계 구도로 이동.
+kind: afterthought
+storypack_id: null
+arc_id: null
+stages: []

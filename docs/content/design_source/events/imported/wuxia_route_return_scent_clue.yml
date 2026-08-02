@@ -1,0 +1,29 @@
+id: wuxia_route_return_scent_clue
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 귀환 단서의 냄새
+  검수 상태: 기획자 검수 필요
+  결과: 현대의 냄새와 비슷한 단서가 귀환 감정을 자극한다. 확정 포털은 아니며 후속 후일담의 선택만 변한다.
+  관련 세력: 객잔
+  관련 인물: 객잔 주인, 주인공
+  메모: 귀환 루트가 정보 수집만이 아니라 감각과 상실의 루트임을 보인다.
+  미해결 부채: 'No'
+  보상: 귀환 감정 변주
+  분류: 히든 사건
+  사건 ID: wuxia_route_return_scent_clue
+  상태: 초안
+  선택지 요약: 냄새를 기록한다 / 물건을 찾는다 / 잊으려 한다
+  선행 조건: 귀환 루트; 현대 물건 단서 1개 이상
+  소속 루트: 귀환, 히든
+  엔딩 영향: 귀환, 히든
+  진행 단계: 중반
+  후일담 카드 연결: wuxia_epilogue_return_object_left_behind
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

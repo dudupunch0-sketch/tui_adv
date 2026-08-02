@@ -1,0 +1,29 @@
+id: wuxia_route_heuksa_one_debt_line
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 흑사방의 빚 문서 한 줄
+  검수 상태: 기획자 검수 필요
+  결과: 빚을 인정하면 안전한 통로, 지우면 추적 위험, 태우면 보스와의 대화가 달라진다.
+  관련 세력: 흑사방
+  관련 인물: 주인공, 흑사방 말단/기타 적수, 흑사방 보스
+  메모: 흑사방 루트의 비용을 숫자가 아니라 문서와 약속으로 체감시킨다.
+  미해결 부채: 'No'
+  보상: 부채 상태; 침식/협상 변주
+  분류: 사이드 퀘스트
+  사건 ID: wuxia_route_heuksa_one_debt_line
+  상태: 초안
+  선택지 요약: 서명한다 / 줄을 지운다 / 문서를 태운다
+  선행 조건: 흑사방 루트; 미해결 부채 보유
+  소속 루트: 흑사방
+  엔딩 영향: 침식, 히든
+  진행 단계: 중반
+  후일담 카드 연결: wuxia_epilogue_first_morning_after_boss
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

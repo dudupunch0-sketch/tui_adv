@@ -1,0 +1,30 @@
+id: wuxia_cheongryu_gate_patrol_first_trouble
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 산문 순찰 중 들린 휘파람
+  검수 상태: 기획자 검수 필요
+  결과: 습격 세력의 정체를 확정하지 않은 채 산문 밖에 누군가 청류문의 순찰 리듬을 관찰하고 있음을 암시한다. 선택에 따라 작은 추격 또는 안전한
+    귀환이 발생한다.
+  관련 세력: 청류문
+  관련 인물: 서하린, 주인공
+  메모: 설계 초안. 짧고 촘촘한 랜덤 인카운터. 메인 진행을 막지 않고 습격 전 긴장만 올린다.
+  미해결 부채: 'No'
+  보상: 습격 전조 clue; 산문 순찰 hook; 서하린과의 짧은 공조 전투; 랜덤 로그
+  분류: 사이드 퀘스트, 전투 사건, 히든 사건
+  사건 ID: wuxia_cheongryu_gate_patrol_first_trouble
+  상태: 초안
+  선택지 요약: 소리를 따라가기 / 서하린에게 알리기 / 아무 일 없는 척 순찰 계속하기 / 가짜 순찰 신호를 남기기
+  선행 조건: 청류문 수습생 상태; 산문/외곽 이동; wuxia_cheongryu_raid_route_split 이전; 낮은 확률
+  소속 루트: 정착, 청류문
+  엔딩 영향: 정착, 청류문, 침식
+  진행 단계: 초반
+  후일담 카드 연결: ''
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

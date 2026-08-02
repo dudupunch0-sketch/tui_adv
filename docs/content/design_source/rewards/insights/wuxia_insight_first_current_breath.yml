@@ -1,0 +1,29 @@
+id: wuxia_insight_first_current_breath
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/15 ьЭ┤ъ╡мэХЩьзА ъ╕░ьЧ░
+    DB 9f599836e4344b9cbff9319f62d54dc6.csv
+  database_id: 9f599836e4344b9cbff9319f62d54dc6
+notion_properties:
+  이름: 청류심법의 첫 숨
+  검수 상태: 기획자 검수 필요
+  기연 ID: wuxia_insight_first_current_breath
+  도감 등록: 'Yes'
+  런타임 상태: 설계
+  배타성: 일반 배타
+  보너스: ''
+  보너스 능력치: ''
+  보상 등급: 희귀
+  선택 방향: 서하린의 자세를 복사하기보다 자기 몸의 실패를 관찰한 선택.
+  설명: 힘을 고정하는 대신 흐르게 해야 한다는 청류심법의 첫 이해.
+  중복·다회차 처리: 중복 시 기억 파편 지급 및 반대 선택의 설명 해금.
+  즉시 공개: 'Yes'
+  컨셉: 힘을 고정하는 대신 흐르게 해야 한다는 청류심법의 첫 이해.
+  트레이드오프 방향: 초기에는 몸이 따라오지 않아 피로와 실패가 함께 남음.
+  향후 효과 방향: 호흡·평정·기초 판정의 장기 성장 방향.
+  획득 사건 ID: wuxia_cheongryu_first_breathing_lesson
+  획득 성격: 메인
+kind: insight
+effect_policy:
+  numeric_effects: deferred

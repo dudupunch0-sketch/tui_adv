@@ -1,0 +1,29 @@
+id: wuxia_insight_map_of_escape
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/15 ьЭ┤ъ╡мэХЩьзА ъ╕░ьЧ░
+    DB 9f599836e4344b9cbff9319f62d54dc6.csv
+  database_id: 9f599836e4344b9cbff9319f62d54dc6
+notion_properties:
+  이름: 도망칠 때의 지도
+  검수 상태: 기획자 검수 필요
+  기연 ID: wuxia_insight_map_of_escape
+  도감 등록: 'Yes'
+  런타임 상태: 설계
+  배타성: 일반 배타
+  보너스: ''
+  보너스 능력치: ''
+  보상 등급: 보통
+  선택 방향: 휘파람을 쫓지 않고 안전한 귀환을 택한 선택.
+  설명: 도망이 비겁함이 아니라 다음 기회를 보존하는 기술이 될 수 있다는 이해.
+  중복·다회차 처리: 중복 시 기억 파편 지급 및 반대 선택의 설명 해금.
+  즉시 공개: 'Yes'
+  컨셉: 도망이 비겁함이 아니라 다음 기회를 보존하는 기술이 될 수 있다는 이해.
+  트레이드오프 방향: 중요한 단서를 놓칠 가능성이 생김.
+  향후 효과 방향: 후퇴·이동·위험 관리 방향.
+  획득 사건 ID: wuxia_cheongryu_gate_patrol_first_trouble
+  획득 성격: 랜덤
+kind: insight
+effect_policy:
+  numeric_effects: deferred

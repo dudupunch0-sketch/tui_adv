@@ -1,0 +1,26 @@
+id: wuxia_skill_tie_the_belt
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/17 ьЭ┤ъ╡мэХЩьзА ьКдэВм
+    DB d04d0e34055c4623b77c8499a6f1d6eb.csv
+  database_id: d04d0e34055c4623b77c8499a6f1d6eb
+notion_properties:
+  이름: 허리끈 묶기
+  검수 상태: 기획자 검수 필요
+  관련 사건 ID: wuxia_cheongryu_medicine_errand
+  도감 등록: 'Yes'
+  런타임 상태: 설계
+  배타성: 일반 배타
+  보상 등급: 보통
+  선택 방향: 거창한 영웅이 되기보다 생활을 책임진 선택.
+  스킬 ID: wuxia_skill_tie_the_belt
+  중복·다회차 처리: 중복 시 기억 파편 또는 관련 복기 대사로 전환. 다회차에서는 다른 선택의 설명을 해금.
+  즉시 공개: 'Yes'
+  컨셉: 출근 전 준비처럼 작은 절차를 지켜 몸과 물건을 정돈하는 기술.
+  트레이드오프 방향: 준비하지 않은 즉흥 선택에는 약함.
+  향후 효과 방향: 준비된 상태·도구 효율·생활 사건 방향.
+  획득 성격: 사이드
+kind: skill
+effect_policy:
+  numeric_effects: deferred

@@ -1,0 +1,25 @@
+id: wuxia_rewardmap_breath_copy_first_current
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/19 ьЭ┤ъ╡мэХЩьзА ы│┤ьГБ
+    эЪНыУЭ ыздэХС DB f1e2c76a9cb0474d8e9a07c45c90d26e.csv
+  database_id: f1e2c76a9cb0474d8e9a07c45c90d26e
+notion_properties:
+  이름: 첫 호흡·그대로 따라 하기 → 청류심법의 첫 숨
+  검수 상태: 기획자 검수 필요
+  런타임 상태: 설계
+  매핑 ID: wuxia_rewardmap_breath_copy_first_current
+  배타 규칙: 일반 배타
+  보상 ID: wuxia_insight_first_current_breath
+  보상 종류: 기연
+  사건 ID: wuxia_cheongryu_first_breathing_lesson
+  선택지·조건 키: 서하린의 호흡을 그대로 따라 하기
+  연계 조건: 천기록 호출 없음. 수련 실패도 후속 사건으로 남음.
+  중복 처리: 중복 시 기억 파편과 수련 대사 변주.
+  획득 시점: 판정 성공
+  획득 연출: 서하린이 처음으로 손목과 어깨를 직접 교정한다.
+event_id: null
+choice_id: null
+reward_ids: []
+condition: null

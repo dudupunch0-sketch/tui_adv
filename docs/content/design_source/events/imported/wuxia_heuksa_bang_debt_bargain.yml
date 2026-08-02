@@ -1,0 +1,29 @@
+id: wuxia_heuksa_bang_debt_bargain
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 빚을 대신 갚는 거래
+  검수 상태: 기획자 검수 필요
+  결과: 흑사방의 거래 논리와 사람을 빚으로 환산하는 방식을 체험한다. 선택에 따라 침식·정보·탈출 비용이 달라진다.
+  관련 세력: 청류문, 흑사방
+  관련 인물: 주인공, 흑사방 말단/기타 적수, 흑사방 보스
+  메모: 흑사방 전용 사이드. 흑사방을 단순 전투 적이 아니라 선택 가능한 논리로 보여준다. runtime 미반영 설계 초안.
+  미해결 부채: 'Yes'
+  보상: 거래 정보, 흑사방 내부 관계, 침식 상태 변형
+  분류: 사이드 퀘스트
+  사건 ID: wuxia_heuksa_bang_debt_bargain
+  상태: 초안
+  선택지 요약: 남의 빚을 대신 진다 / 빚의 내역을 조사한다 / 거래를 거절한다
+  선행 조건: 흑사방 성향 또는 빚 상태; 낮은 확률
+  소속 루트: 흑사방, 히든
+  엔딩 영향: 청류문, 침식, 히든
+  진행 단계: 중반
+  후일담 카드 연결: 무명의 결말 / 청류문의 후일
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

@@ -1,0 +1,25 @@
+id: wuxia_rewardmap_breath_own_pulse
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/19 ьЭ┤ъ╡мэХЩьзА ы│┤ьГБ
+    эЪНыУЭ ыздэХС DB f1e2c76a9cb0474d8e9a07c45c90d26e.csv
+  database_id: f1e2c76a9cb0474d8e9a07c45c90d26e
+notion_properties:
+  이름: 첫 호흡·자기 방식 관찰 → 심박 맞추기
+  검수 상태: 기획자 검수 필요
+  런타임 상태: 설계
+  매핑 ID: wuxia_rewardmap_breath_own_pulse
+  배타 규칙: 일반 배타
+  보상 ID: wuxia_skill_match_the_pulse
+  보상 종류: 스킬
+  사건 ID: wuxia_cheongryu_first_breathing_lesson
+  선택지·조건 키: 자신의 방식으로 관찰해 따라 하기
+  연계 조건: 자기 몸 관찰 선택이 성공한 경우
+  중복 처리: 중복 시 다른 수련 실패 설명 해금.
+  획득 시점: 판정 성공
+  획득 연출: 서하린은 따라 하지 않았다는 사실보다 스스로 멈출 줄 안 것을 기억한다.
+event_id: null
+choice_id: null
+reward_ids: []
+condition: null

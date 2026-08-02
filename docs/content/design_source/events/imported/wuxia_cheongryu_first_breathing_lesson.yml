@@ -1,0 +1,30 @@
+id: wuxia_cheongryu_first_breathing_lesson
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 청류심법 첫 호흡 — 흐르지 못하는 몸
+  검수 상태: 기획자 검수 필요
+  결과: 주인공은 청류심법의 핵심이 힘을 고정하는 것이 아니라 흐르게 하는 것임을 처음 이해한다. 성공보다 실패와 서하린의 관찰이 다음 훈련 전투를
+    준비한다.
+  관련 세력: 청류문
+  관련 인물: 서하린, 주인공
+  메모: 설계 초안. 천기록을 호출하지 않는 메인 수련 장면. 긴 대화와 행동 관찰 중심.
+  미해결 부채: 'No'
+  보상: 청류심법 기초 hook; 수련 실패 flag; 서하린의 첫 직접 교정; 능력치/기연과 무관한 서사 성장
+  분류: 동료 사건, 메인 사건, 성장 사건
+  사건 ID: wuxia_cheongryu_first_breathing_lesson
+  상태: 초안
+  선택지 요약: 서하린의 호흡을 그대로 따라 하기 / 자신의 방식으로 관찰해 따라 하기 / 왜 힘을 빼야 하는지 묻기 / 아픈 척하지 않고 중단하기
+  선행 조건: wuxia_cheongryu_first_night_shelter 해결; 아침 수련 시간; 천기록 발현 없이 진행
+  소속 루트: 정착, 청류문
+  엔딩 영향: 정착, 천기록, 청류문
+  진행 단계: 초반
+  후일담 카드 연결: ''
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

@@ -1,0 +1,29 @@
+id: wuxia_return_modern_object_rumor
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 현대 물건을 알아본 행상
+  검수 상태: 기획자 검수 필요
+  결과: 현대 세계와 닮은 물건에 대한 소문이 귀환 단서로 이어진다. 사실 여부는 확정하지 않고, 주인공의 외부 정체 노출 위험을 남긴다.
+  관련 세력: 객잔, 주변 정파
+  관련 인물: 객잔 주인, 주인공
+  메모: 귀환 전용 사이드. 천기록과 직접 연결하지 않고, 세계의 우연한 유사성을 활용한다. runtime 미반영 설계 초안.
+  미해결 부채: 'Yes'
+  보상: 귀환 단서, 외부 소문, 정체 노출 상태
+  분류: 사이드 퀘스트
+  사건 ID: wuxia_return_modern_object_rumor
+  상태: 초안
+  선택지 요약: 물건의 정체를 묻는다 / 거짓말한다 / 물건을 팔지 않고 숨긴다
+  선행 조건: 귀환 성향; 현대 물건 또는 복장 단서 보유; 외부 이동
+  소속 루트: 귀환, 히든
+  엔딩 영향: 귀환, 히든
+  진행 단계: 중반
+  후일담 카드 연결: 귀환 경로 후보 / 서하린의 후일
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

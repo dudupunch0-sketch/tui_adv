@@ -1,0 +1,28 @@
+id: notion_0004
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/10 ьЭ┤ъ╡мэХЩьзА эЫДьЭ╝ыЛ┤
+    ь╣┤ыУЬ DB bd93ddd8de224c7da50abdd309bc2880.csv
+  database_id: bd93ddd8de224c7da50abdd309bc2880
+notion_properties:
+  카드명: 무림맹의 침묵
+  검수 상태: 기획자 검수 필요
+  검수 필요: 'Yes'
+  관련 사건: 보스 결산 / 무림맹 감찰관 인카운터
+  관련 엔딩: 모든 생존 계열, 천기록, 청류문
+  대상: 무림맹, 흑사방, 흑사방 보스
+  메모: 정파 절차주의와 책임 회피를 보여주는 보스 결산 후일담.
+  본문 초안: 무림맹은 공문을 보냈다. 사건은 유감이나, 공식 기록상 흑사방의 활동 범위는 확인되지 않았다고 했다. 청류문 사람들은 그 문장을 세
+    번 읽고도 아무 말도 하지 않았다.
+  삽화 힌트: 붉은 인장이 찍힌 무림맹 공문과 비어 있는 책임자 칸
+  상호 배타 그룹: black_serpent_boss_fate
+  연계 그룹: black_serpent_aftermath
+  카드 ID: epilogue_boss_alliance_silence
+  카테고리: 세력
+  풍문 여부: 'No'
+  해금 조건: 보스 격파 또는 흑사방 사건 공개. 무림맹이 공식 책임을 회피.
+kind: afterthought
+storypack_id: null
+arc_id: null
+stages: []

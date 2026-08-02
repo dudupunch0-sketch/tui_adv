@@ -1,0 +1,28 @@
+id: notion_0008
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/10 ьЭ┤ъ╡мэХЩьзА эЫДьЭ╝ыЛ┤
+    ь╣┤ыУЬ DB bd93ddd8de224c7da50abdd309bc2880.csv
+  database_id: bd93ddd8de224c7da50abdd309bc2880
+notion_properties:
+  카드명: 전하지 못한 사과
+  검수 상태: 기획자 검수 필요
+  검수 필요: 'Yes'
+  관련 사건: wuxia_mumyeong_destroys_orthodox_sect
+  관련 엔딩: 모든 생존 계열
+  대상: 무명, 서하린, 청류문
+  메모: 무명 미완 구원 계열. 서하린이 무명을 배신자로 보지 않는다는 설정과 연결.
+  본문 초안: 청류문 산문 앞에는 접히지 않은 편지 한 장이 놓여 있었다. 서하린은 그 편지를 오래 들여다보았지만, 끝내 펼치지 않았다. 글자가
+    없다는 걸 알면서도, 그녀는 한동안 그 종이를 버리지 못했다.
+  삽화 힌트: 청류문 산문 앞에 놓인 접히지 않은 편지와 낡은 목검
+  상호 배타 그룹: mumyeong_fate
+  연계 그룹: mumyeong_resolution
+  카드 ID: epilogue_mumyeong_unsent_apology
+  카테고리: 동료
+  풍문 여부: 'No'
+  해금 조건: 무명 과거를 알았지만 무명 구원 조건 일부만 충족. 서하린에게 진실 전달 여부에 따라 변형 가능.
+kind: afterthought
+storypack_id: null
+arc_id: null
+stages: []

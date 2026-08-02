@@ -1,0 +1,26 @@
+id: wuxia_skill_record_the_gap
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/17 ьЭ┤ъ╡мэХЩьзА ьКдэВм
+    DB d04d0e34055c4623b77c8499a6f1d6eb.csv
+  database_id: d04d0e34055c4623b77c8499a6f1d6eb
+notion_properties:
+  이름: 빈틈 기록
+  검수 상태: 기획자 검수 필요
+  관련 사건 ID: wuxia_cheongryu_training_first_failure
+  도감 등록: 'Yes'
+  런타임 상태: 설계
+  배타성: 일반 배타
+  보상 등급: 희귀
+  선택 방향: 패배를 변명하지 않고 관찰 결과로 바꾼 선택.
+  스킬 ID: wuxia_skill_record_the_gap
+  중복·다회차 처리: 중복 시 기억 파편 또는 관련 복기 대사로 전환. 다회차에서는 다른 선택의 설명을 해금.
+  즉시 공개: 'Yes'
+  컨셉: 상대의 움직임을 머릿속이 아니라 기록으로 남겨 다음 시도에 쓰는 습관.
+  트레이드오프 방향: 준비 시간이 필요하고 즉흥 대응은 약해질 수 있음.
+  향후 효과 방향: 복기·재도전·관찰 판정 강화 방향.
+  획득 성격: 사이드
+kind: skill
+effect_policy:
+  numeric_effects: deferred

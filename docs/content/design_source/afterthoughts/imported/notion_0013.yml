@@ -1,0 +1,29 @@
+id: notion_0013
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/10 ьЭ┤ъ╡мэХЩьзА эЫДьЭ╝ыЛ┤
+    ь╣┤ыУЬ DB bd93ddd8de224c7da50abdd309bc2880.csv
+  database_id: bd93ddd8de224c7da50abdd309bc2880
+notion_properties:
+  카드명: 서하린의 후일
+  검수 상태: 기획자 검수 필요
+  검수 필요: 'Yes'
+  관련 사건: 서하린의 개입 / 무명 관련 사건 / 보스 결산
+  관련 엔딩: 귀환, 모든 생존 계열, 정착, 청류문
+  대상: 서하린, 청류문
+  메모: 무명과 주인공, 청류문 사이 감정선을 정리하는 기본 후일담.
+  본문 초안: 서하린은 여전히 청류문에 남아 있었다. 떠난 사람들을 모두 붙잡지는 못했다. 하지만 돌아오는 길을 없애지도 않았다. 산문 옆에는 낡은
+    목검 하나가 더 걸렸다. 누구의 것이냐고 묻는 수습생에게, 서하린은 잠시 침묵하다가 말했다. "비워둔 거야." 그 말이 기다림인지, 허락인지,
+    아니면 오래된 습관인지는 아무도 묻지 않았다.
+  삽화 힌트: 청류문 산문 앞에 서서 멀리 길을 바라보는 서하린
+  상호 배타 그룹: seoharin_future
+  연계 그룹: companion_aftermath
+  카드 ID: epilogue_seoharin_future
+  카테고리: 동료
+  풍문 여부: 'No'
+  해금 조건: 생존 계열 엔딩. 서하린 관계축 형성.
+kind: afterthought
+storypack_id: null
+arc_id: null
+stages: []

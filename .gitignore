@@ -22,6 +22,9 @@ env/
 *.log
 *.tmp
 *.bak
+
+# Local-only Notion provenance; normalized design records are the Git SSoT.
+docs/content/design_source/source_pages/
 .hermes/plans/
 
 # Node / browser build artifacts

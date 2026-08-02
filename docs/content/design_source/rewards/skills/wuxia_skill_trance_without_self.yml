@@ -1,0 +1,26 @@
+id: wuxia_skill_trance_without_self
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/17 ьЭ┤ъ╡мэХЩьзА ьКдэВм
+    DB d04d0e34055c4623b77c8499a6f1d6eb.csv
+  database_id: d04d0e34055c4623b77c8499a6f1d6eb
+notion_properties:
+  이름: 무아지경
+  검수 상태: 기획자 검수 필요
+  관련 사건 ID: wuxia_cheongryu_raid_omen
+  도감 등록: 'Yes'
+  런타임 상태: 설계
+  배타성: 히든 양립
+  보상 등급: 전설
+  선택 방향: 안전과 안정성을 버리고 한 순간의 초월을 택한 선택.
+  스킬 ID: wuxia_skill_trance_without_self
+  중복·다회차 처리: 중복 시 기억 파편 또는 관련 복기 대사로 전환. 다회차에서는 다른 선택의 설명을 해금.
+  즉시 공개: 'Yes'
+  컨셉: 자신을 지우고 움직임만 남기는 극단적인 몰입의 기술.
+  트레이드오프 방향: 속도와 집중이 오르는 대신 체력·안정성·관계 통제가 흔들림.
+  향후 효과 방향: 속도·연속 행동·고위험 돌파 방향.
+  획득 성격: 히든
+kind: skill
+effect_policy:
+  numeric_effects: deferred

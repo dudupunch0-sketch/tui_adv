@@ -1,0 +1,29 @@
+id: wuxia_sado_final_phase_1_price_tag
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: '사도 최종전 1페이즈: 가격표'
+  검수 상태: 기획자 검수 필요
+  결과: 사도가 흑사방 장부고의 빚 문서와 약점 장부를 전장 오브젝트로 사용하며, 플레이어가 무엇을 먼저 지키는지 관찰한다.
+  관련 세력: 흑사방
+  관련 인물: 주인공
+  메모: 사도 최종전 1페이즈. 사도는 약화되지 않는다. 장부/증거/인질성 압박 처리 방식이 보스 결산으로 넘어간다.
+  미해결 부채: 'No'
+  보상: 장부 처리 상태 결정, 증거 확보 상태 결정, 보스 결산 입력값 갱신
+  분류: 전투 사건
+  사건 ID: wuxia_sado_final_phase_1_price_tag
+  상태: 초안
+  선택지 요약: 사도에게 직접 접근한다 / 장부를 파괴한다 / 장부를 확보한다 / 인질성 압박을 먼저 해소한다
+  선행 조건: 'wuxia_sado_final_battle 시작. 전장: 흑사방 장부고.'
+  소속 루트: 청류문
+  엔딩 영향: 청류문
+  진행 단계: 최종장
+  후일담 카드 연결: 보스 결산 / 부러진 검은 뱀 / 흑사방의 깃발 / 무림맹의 침묵
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

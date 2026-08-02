@@ -1,0 +1,29 @@
+id: wuxia_prologue_commute_rift
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 출근길의 균열
+  검수 상태: 미검수
+  결과: 현대 출근길이 끊기고 무협 세계로 전이된다. 스마트폰은 전이 직후 사라진다.
+  관련 세력: ''
+  관련 인물: 주인공
+  메모: 프롤로그 전이 사건. 주인공은 빙의가 아니라 본인 몸 그대로 출근복장째 이동한다.
+  미해결 부채: 'No'
+  보상: 없음. 단, 현대 세계 기억과 출근복장 상태를 확정한다.
+  분류: 메인 사건
+  사건 ID: wuxia_prologue_commute_rift
+  상태: 초안
+  선택지 요약: 엘리베이터를 탄다 / 지하철 문틈을 본다 / 횡단보도 신호를 건넌다
+  선행 조건: 게임 시작
+  소속 루트: 귀환, 청류문
+  엔딩 영향: 귀환
+  진행 단계: 프롤로그
+  후일담 카드 연결: 추후 현대 귀환 계열 카드와 연결 가능
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

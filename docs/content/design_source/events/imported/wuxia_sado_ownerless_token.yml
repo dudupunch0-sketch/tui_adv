@@ -1,0 +1,29 @@
+id: wuxia_sado_ownerless_token
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 주인 없는 정파 패
+  검수 상태: 기획자 검수 필요
+  결과: 무명 구원 루트에서 이름이 긁힌 정파 패를 발견하고, 사도가 정파의 명분과 면책권을 질투했다는 단서를 얻는다.
+  관련 세력: 주변 정파
+  관련 인물: 무명
+  메모: '사도 아이템 로그 DB 연결: item_ownerless_orthodox_token. 무명 구원 루트 보상.'
+  미해결 부채: 'No'
+  보상: 주인 없는 정파 패 / item_ownerless_orthodox_token
+  분류: 동료 사건
+  사건 ID: wuxia_sado_ownerless_token
+  상태: 초안
+  선택지 요약: 패의 출처를 추적한다 / 무명에게 묻는다 / 서하린에게 보여준다 / 숨겨둔다
+  선행 조건: 무명 이탈의 진실 정리 진행 중. 무명 구원 루트 단서 누적.
+  소속 루트: 청류문
+  엔딩 영향: 청류문
+  진행 단계: 후반
+  후일담 카드 연결: 전하지 못한 사과 / 문밖의 두 번째 목검
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

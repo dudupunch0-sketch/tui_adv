@@ -1,0 +1,29 @@
+id: wuxia_weather_rain_hidden_conversation
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 빗소리에 묻힌 대화
+  검수 상태: 기획자 검수 필요
+  결과: 대화의 내용은 청류문 소문 또는 평범한 장사 이야기로 시드에 따라 달라진다. 플레이어의 태도만 후속 신뢰에 남는다.
+  관련 세력: 객잔, 청류문
+  관련 인물: 객잔 주인, 서하린, 주인공
+  메모: 정보를 독점하지 않는 관계형 랜덤.
+  미해결 부채: 'No'
+  보상: 소문; 신뢰 변주
+  분류: 히든 사건
+  사건 ID: wuxia_weather_rain_hidden_conversation
+  상태: 초안
+  선택지 요약: 엿듣지 않는다 / 일부만 듣는다 / 대화에 끼어든다
+  선행 조건: 폭우; 처마 아래 대기
+  소속 루트: 귀환, 정착, 청류문
+  엔딩 영향: 청류문, 히든
+  진행 단계: 중반
+  후일담 카드 연결: ''
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

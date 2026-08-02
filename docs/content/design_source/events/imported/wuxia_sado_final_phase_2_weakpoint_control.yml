@@ -1,0 +1,29 @@
+id: wuxia_sado_final_phase_2_weakpoint_control
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: '사도 최종전 2페이즈: 약점 장악'
+  검수 상태: 기획자 검수 필요
+  결과: 사도가 플레이어의 관계축과 지키려는 것을 약점으로 전환해 압박한다. 서하린, 무명, 청류문, 천기록 조건에 따라 전투 선택지가 달라진다.
+  관련 세력: 흑사방
+  관련 인물: 주인공
+  메모: 사도 최종전 2페이즈. 관계축은 사도 디버프가 아니라 플레이어 측 대응 선택지와 후일담 조건으로 작동한다.
+  미해결 부채: 'No'
+  보상: 동료 개입 조건 갱신, 무명 구원/비구원 압박, 천기록 개입 조건 갱신
+  분류: 전투 사건
+  사건 ID: wuxia_sado_final_phase_2_weakpoint_control
+  상태: 초안
+  선택지 요약: 서하린 관련 압박에 대응한다 / 무명에게 흐름을 돌려준다 / 천기록의 위험한 문장을 읽는다 / 사도에게 집중한다
+  선행 조건: wuxia_sado_final_phase_1_price_tag 완료
+  소속 루트: 청류문
+  엔딩 영향: 청류문
+  진행 단계: 최종장
+  후일담 카드 연결: 보스 결산 / 검은 뱀의 새 비늘 / 서하린의 후일 / 닫힌 산문
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

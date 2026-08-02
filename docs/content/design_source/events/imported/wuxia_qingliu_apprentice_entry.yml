@@ -1,0 +1,29 @@
+id: wuxia_qingliu_apprentice_entry
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 청류문 임시 수습생 등록
+  검수 상태: 미검수
+  결과: 주인공이 청류문 임시 수습생이 된다. 귀환/정착 양쪽 가능성을 모두 열어둔다.
+  관련 세력: 청류문
+  관련 인물: 서하린, 주인공, 청류문 장문인
+  메모: 정착 루트를 강제하지 않는다. 청류문에 소속감을 주되 귀환 목표도 유지한다.
+  미해결 부채: 'No'
+  보상: 청류문 소속 플래그, 수습생 상태, 청류문 목표 선택지 개방
+  분류: 동료 사건, 메인 사건
+  사건 ID: wuxia_qingliu_apprentice_entry
+  상태: 초안
+  선택지 요약: 임시로 머문다 / 정식 입문은 보류한다 / 돌아갈 길만 찾겠다고 말한다 / 청류문을 돕겠다고 한다
+  선행 조건: wuxia_qingliu_first_arrival 완료
+  소속 루트: 정착, 청류문
+  엔딩 영향: 귀환, 정착, 청류문
+  진행 단계: 초반
+  후일담 카드 연결: 청류문/서하린 후일 계열에 장기 영향
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

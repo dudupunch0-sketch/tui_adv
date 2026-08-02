@@ -1,0 +1,29 @@
+id: wuxia_cheongryu_first_route_message
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 문 밖에서 온 세 가지 소식
+  검수 상태: 기획자 검수 필요
+  결과: 첫 경로 비용을 선택하기 전 외부의 세 가지 목소리를 보여준다. 어떤 소식을 믿는지에 따라 귀환·정착·무림맹 접촉의 명분이 달라진다.
+  관련 세력: 무림맹, 주변 정파, 청류문
+  관련 인물: 서하린, 주인공, 청류문 장문인
+  메모: 선택적 브리지 사이드. route choice를 대체하지 않고 선택의 맥락을 풍부하게 한다. runtime 미반영 설계 초안.
+  미해결 부채: 'Yes'
+  보상: 경로 선택 전 정보, 외부 세력 대화 변형, 첫 route cost 보정
+  분류: 사이드 퀘스트
+  사건 ID: wuxia_cheongryu_first_route_message
+  상태: 초안
+  선택지 요약: 귀환 소식을 확인한다 / 청류문에 도움을 청한 세력을 본다 / 서하린에게 먼저 알린다
+  선행 조건: 회복 기간 종료 또는 습격 후 첫 경로 비용 직전
+  소속 루트: 귀환, 무림맹, 정착, 청류문
+  엔딩 영향: 귀환, 정착, 청류문
+  진행 단계: 초반
+  후일담 카드 연결: 청류문의 후일 / 귀환 경로 후보
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

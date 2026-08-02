@@ -1,0 +1,30 @@
+id: wuxia_item_red_thread_fragment
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/14 ьЭ┤ъ╡мэХЩьзА ьХДьЭ┤эЕЬ
+    DB bcdff734c16e4ea4bfd7ae43fb74e3af.csv
+  database_id: bcdff734c16e4ea4bfd7ae43fb74e3af
+notion_properties:
+  이름: 붉은 실 한 토막
+  검수 상태: 기획자 검수 필요
+  관련 사건 ID: wuxia_cheongryu_gate_patrol_first_trouble
+  도감 등록: 'Yes'
+  런타임 상태: 설계
+  배타성: 일반 배타
+  보상 등급: 보통
+  사용 가능: 'No'
+  사용 효과: ''
+  선택 방향: 휘파람의 근원을 쫓기보다 작은 표식을 기억한 선택.
+  설계 분류: 퀘스트 아이템
+  설명: 누군가 풀숲과 나뭇가지 사이에 묶어 둔 붉은 실.
+  아이템 ID: wuxia_item_red_thread_fragment
+  종류: quest
+  중복·다회차 처리: 다회차에서 다른 매듭 모양과 연결. 미획득 회차는 행상인 목록에 잠김.
+  즉시 공개: 'No'
+  컨셉: 누군가 풀숲과 나뭇가지 사이에 묶어 둔 붉은 실.
+  향후 효과 방향: 후속 랜덤 인카운터·혈월교 전조·추적 방향.
+  획득 성격: 랜덤
+kind: item
+effect_policy:
+  numeric_effects: deferred

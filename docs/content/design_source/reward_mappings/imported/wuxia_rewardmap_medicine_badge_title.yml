@@ -1,0 +1,25 @@
+id: wuxia_rewardmap_medicine_badge_title
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/19 ьЭ┤ъ╡мэХЩьзА ы│┤ьГБ
+    эЪНыУЭ ыздэХС DB f1e2c76a9cb0474d8e9a07c45c90d26e.csv
+  database_id: f1e2c76a9cb0474d8e9a07c45c90d26e
+notion_properties:
+  이름: 약재 빈칸·사원증 교환 → 사원증을 품은 자
+  검수 상태: 기획자 검수 필요
+  런타임 상태: 설계
+  매핑 ID: wuxia_rewardmap_medicine_badge_title
+  배타 규칙: 일반 배타
+  보상 ID: wuxia_title_badge_bearer
+  보상 종류: 칭호
+  사건 ID: wuxia_cheongryu_medicine_errand
+  선택지·조건 키: 사원증·출근 물건을 교환 제안하기
+  연계 조건: 현대 정체성을 거래에 사용한 경우
+  중복 처리: 중복 시 기억 파편.
+  획득 시점: 즉시
+  획득 연출: 사원증을 받은 상인이 이름을 읽지 못하고, 주인공은 처음으로 그 이름을 지키려 한다.
+event_id: null
+choice_id: null
+reward_ids: []
+condition: null

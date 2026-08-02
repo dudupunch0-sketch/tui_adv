@@ -1,0 +1,30 @@
+id: wuxia_pendant_empty_mind_bead
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/14 ьЭ┤ъ╡мэХЩьзА ьХДьЭ┤эЕЬ
+    DB bcdff734c16e4ea4bfd7ae43fb74e3af.csv
+  database_id: bcdff734c16e4ea4bfd7ae43fb74e3af
+notion_properties:
+  이름: 무아지경의 낡은 구슬
+  검수 상태: 기획자 검수 필요
+  관련 사건 ID: wuxia_cheongryu_raid_omen
+  도감 등록: 'Yes'
+  런타임 상태: 설계
+  배타성: 히든 양립
+  보상 등급: 전설
+  사용 가능: 'No'
+  사용 효과: ''
+  선택 방향: 안정된 관계와 안전을 포기하고 한순간의 초월을 택한 선택.
+  설계 분류: 패물
+  설명: 손에 쥐면 주변 소리가 멀어지고 자기 호흡만 남는 낡은 구슬.
+  아이템 ID: wuxia_pendant_empty_mind_bead
+  종류: tool
+  중복·다회차 처리: 전설 보상. 중복은 기억 파편으로만 전환하지 않고 다른 히든 조합의 조건으로 보존.
+  즉시 공개: 'Yes'
+  컨셉: 손에 쥐면 주변 소리가 멀어지고 자기 호흡만 남는 낡은 구슬.
+  향후 효과 방향: 집중·속도·고위험 돌파 방향.
+  획득 성격: 히든
+kind: item
+effect_policy:
+  numeric_effects: deferred

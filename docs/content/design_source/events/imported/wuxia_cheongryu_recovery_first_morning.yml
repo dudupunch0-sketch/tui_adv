@@ -1,0 +1,30 @@
+id: wuxia_cheongryu_recovery_first_morning
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 회복 첫 아침 — 몸이 따라오지 않는 수련
+  검수 상태: 기획자 검수 필요
+  결과: 훈련을 강행하면 부상 부담과 의지가 남고, 관찰하면 청류심법 이해와 정보가 쌓인다. 잡일·솔직한 보고는 청류문 생활과 서하린 신뢰를 다르게
+    연다.
+  관련 세력: 청류문
+  관련 인물: 서하린, 주인공
+  메모: 첫날 밤의 후속 메인 브리지. 몸 상태를 무시한 영웅성보다 자신의 한계를 어떻게 다루는지가 핵심. runtime 미반영 설계 초안.
+  미해결 부채: 'Yes'
+  보상: 회복 기간 상태, 청류심법 관찰 단서, 서하린의 첫 조정 기록
+  분류: 메인 사건, 성장 사건
+  사건 ID: wuxia_cheongryu_recovery_first_morning
+  상태: 초안
+  선택지 요약: 끝까지 훈련한다 / 동작을 줄여 관찰한다 / 잡일로 대신한다 / 몸 상태를 솔직히 말한다
+  선행 조건: wuxia_cheongryu_first_night_shelter 해결; 회복 1일차 아침
+  소속 루트: 귀환, 정착, 청류문
+  엔딩 영향: 귀환, 정착, 청류문
+  진행 단계: 초반
+  후일담 카드 연결: 청류문 무공 복원 / 서하린의 후일
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

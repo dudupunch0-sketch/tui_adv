@@ -1,0 +1,29 @@
+id: wuxia_side_gatekeeper_late_shift
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 문지기의 늦은 교대
+  검수 상태: 기획자 검수 필요
+  결과: 문지기의 가족 사정과 외부 연락의 흔적이 함께 드러난다. 도와주면 청류문 신뢰를 얻고, 보고하면 경계는 강화되나 내부 긴장이 생긴다.
+  관련 세력: 청류문
+  관련 인물: 서하린, 주인공, 청류문 장문인
+  메모: 문파 구성원을 적대/배신으로 단순화하지 않는 사이드.
+  미해결 부채: 'Yes'
+  보상: 산문 경계 변주; 문파 내부 인물 정보
+  분류: 동료 사건
+  사건 ID: wuxia_side_gatekeeper_late_shift
+  상태: 초안
+  선택지 요약: 교대를 대신 선다 / 늦은 이유를 묻는다 / 장문인에게 보고한다
+  선행 조건: 산문 순찰 사건 이후 낮은 확률
+  소속 루트: 청류문
+  엔딩 영향: 청류문, 히든
+  진행 단계: 초반
+  후일담 카드 연결: wuxia_epilogue_qingliu_guest_arrival
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

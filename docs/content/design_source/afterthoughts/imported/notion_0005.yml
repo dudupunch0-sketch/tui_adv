@@ -1,0 +1,28 @@
+id: notion_0005
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/10 ьЭ┤ъ╡мэХЩьзА эЫДьЭ╝ыЛ┤
+    ь╣┤ыУЬ DB bd93ddd8de224c7da50abdd309bc2880.csv
+  database_id: bd93ddd8de224c7da50abdd309bc2880
+notion_properties:
+  카드명: 문밖의 두 번째 목검
+  검수 상태: 기획자 검수 필요
+  검수 필요: 'Yes'
+  관련 사건: 무명 결산
+  관련 엔딩: 모든 생존 계열, 정착, 청류문
+  대상: 무명, 서하린, 청류문
+  메모: 무명 구원 계열. 반드시 완전 복귀가 아니라 문밖에서 다시 시작한다는 뉘앙스.
+  본문 초안: 청류문 산문 밖에는 목검이 두 자루 놓였다. 하나는 새 수습생의 것이었고, 다른 하나는 오래전에 사라진 제자의 것이었다. 서하린은
+    아무 말 없이 두 번째 목검에 묻은 흙을 털어냈다.
+  삽화 힌트: 청류문 산문 밖에 나란히 놓인 두 자루의 목검
+  상호 배타 그룹: mumyeong_fate
+  연계 그룹: mumyeong_resolution
+  카드 ID: epilogue_mumyeong_second_wooden_sword
+  카테고리: 동료
+  풍문 여부: 'No'
+  해금 조건: 무명 구원 조건 충족. 청류문 복귀 또는 복귀 암시.
+kind: afterthought
+storypack_id: null
+arc_id: null
+stages: []

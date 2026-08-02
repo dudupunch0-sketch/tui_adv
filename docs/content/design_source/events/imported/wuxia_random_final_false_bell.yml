@@ -1,0 +1,29 @@
+id: wuxia_random_final_false_bell
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 전투 전 누군가의 잘못된 종소리
+  검수 상태: 기획자 검수 필요
+  결과: 짧은 기습 또는 오인으로 끝난다. 대응에 따라 최종전 시작 시 부상자 수, 경계 상태, 서하린의 신뢰 대사가 달라진다.
+  관련 세력: 마도 잔당, 청류문
+  관련 인물: 서하린, 주인공, 흑사방 말단/기타 적수
+  메모: 결전 직전 긴장 완충용. 실패해도 최종전 진입을 막지 않는다.
+  미해결 부채: 'No'
+  보상: 최종전 초기 상태 변주
+  분류: 전투 사건
+  사건 ID: wuxia_random_final_false_bell
+  상태: 초안
+  선택지 요약: 종소리를 따라간다 / 문파 사람을 깨운다 / 함정이라고 판단한다
+  선행 조건: 최종전 입장 전; 경계 상태가 낮거나 랜덤 시드 적중
+  소속 루트: 무림맹, 청류문, 흑사방
+  엔딩 영향: 청류문, 침식
+  진행 단계: 최종장
+  후일담 카드 연결: ''
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

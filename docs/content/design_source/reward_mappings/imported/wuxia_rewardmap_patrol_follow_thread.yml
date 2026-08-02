@@ -1,0 +1,25 @@
+id: wuxia_rewardmap_patrol_follow_thread
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/19 ьЭ┤ъ╡мэХЩьзА ы│┤ьГБ
+    эЪНыУЭ ыздэХС DB f1e2c76a9cb0474d8e9a07c45c90d26e.csv
+  database_id: f1e2c76a9cb0474d8e9a07c45c90d26e
+notion_properties:
+  이름: 순찰 휘파람·소리 추적 → 붉은 실
+  검수 상태: 기획자 검수 필요
+  런타임 상태: 설계
+  매핑 ID: wuxia_rewardmap_patrol_follow_thread
+  배타 규칙: 일반 배타
+  보상 ID: wuxia_item_red_thread_fragment
+  보상 종류: 퀘스트 아이템
+  사건 ID: wuxia_cheongryu_gate_patrol_first_trouble
+  선택지·조건 키: 소리를 따라가기
+  연계 조건: 낮은 확률의 짧은 추격을 통과한 경우
+  중복 처리: 중복 시 다른 매듭 변주.
+  획득 시점: 히든 발견
+  획득 연출: 풀숲 끝에서 휘파람 대신 붉은 실만 발견한다.
+event_id: null
+choice_id: null
+reward_ids: []
+condition: null

@@ -1,0 +1,30 @@
+id: wuxia_item_oiled_umbrella
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/14 ьЭ┤ъ╡мэХЩьзА ьХДьЭ┤эЕЬ
+    DB bcdff734c16e4ea4bfd7ae43fb74e3af.csv
+  database_id: bcdff734c16e4ea4bfd7ae43fb74e3af
+notion_properties:
+  이름: 기름 먹인 우산
+  검수 상태: 기획자 검수 필요
+  관련 사건 ID: wuxia_cheongryu_raid_omen
+  도감 등록: 'Yes'
+  런타임 상태: 설계
+  배타성: 대체 경로
+  보상 등급: 희귀
+  사용 가능: 'No'
+  사용 효과: ''
+  선택 방향: 습격 전날 휴식과 준비를 선택한 생활형 태도.
+  설계 분류: 도구
+  설명: 비를 막는 동시에 젖은 흔적을 남기지 않게 하는 청류문의 생활 도구.
+  아이템 ID: wuxia_item_oiled_umbrella
+  종류: tool
+  중복·다회차 처리: 직전 회차에서 보유했다면 행상인이 다른 날씨 변주를 제시.
+  즉시 공개: 'Yes'
+  컨셉: 비를 막는 동시에 젖은 흔적을 남기지 않게 하는 청류문의 생활 도구.
+  향후 효과 방향: 날씨 변주·이동 흔적·방어 준비 방향.
+  획득 성격: 사이드
+kind: item
+effect_policy:
+  numeric_effects: deferred

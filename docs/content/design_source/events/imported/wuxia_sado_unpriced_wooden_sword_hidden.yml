@@ -1,0 +1,29 @@
+id: wuxia_sado_unpriced_wooden_sword_hidden
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 값이 매겨지지 않은 목검
+  검수 상태: 기획자 검수 필요
+  결과: 히든 조건을 만족한 플레이어가 사도의 장부 속에서 가격이 비어 있는 청류문 목검을 발견한다.
+  관련 세력: 청류문
+  관련 인물: 서하린
+  메모: '사도 아이템 로그 DB 연결: item_unpriced_wooden_sword. 히든 조건 보상.'
+  미해결 부채: 'No'
+  보상: 값이 매겨지지 않은 목검 / item_unpriced_wooden_sword
+  분류: 히든 사건
+  사건 ID: wuxia_sado_unpriced_wooden_sword_hidden
+  상태: 초안
+  선택지 요약: 목검을 챙긴다 / 제자리에 둔다 / 서하린에게 전한다 / 천기록 옆에 놓는다
+  선행 조건: 서하린 관계축 high. 무명 구원 또는 청류문 재건 조건 일부 충족. 보스 결산 이후 흑사방 장부 보관함 추가 탐색.
+  소속 루트: 청류문
+  엔딩 영향: 청류문
+  진행 단계: 후일담
+  후일담 카드 연결: 서하린의 후일 / 비워둔 자리 / 닫히지 않은 산문
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

@@ -1,0 +1,25 @@
+id: wuxia_rewardmap_omen_gate_register
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/19 ьЭ┤ъ╡мэХЩьзА ы│┤ьГБ
+    эЪНыУЭ ыздэХС DB f1e2c76a9cb0474d8e9a07c45c90d26e.csv
+  database_id: f1e2c76a9cb0474d8e9a07c45c90d26e
+notion_properties:
+  이름: 습격 전날·산문 확인 → 젖은 출입명부
+  검수 상태: 기획자 검수 필요
+  런타임 상태: 설계
+  매핑 ID: wuxia_rewardmap_omen_gate_register
+  배타 규칙: 일반 배타
+  보상 ID: wuxia_item_wet_gate_register
+  보상 종류: 퀘스트 아이템
+  사건 ID: wuxia_cheongryu_raid_omen
+  선택지·조건 키: 산문을 직접 확인하기
+  연계 조건: 출입 기록의 순서를 확인하고 돌아온 경우
+  중복 처리: 후속 습격 조사에서 의미 공개.
+  획득 시점: 후속 회수
+  획득 연출: 비에 젖은 명부의 마지막 이름만 번져 있다.
+event_id: null
+choice_id: null
+reward_ids: []
+condition: null

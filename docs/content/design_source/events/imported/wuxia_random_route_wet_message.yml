@@ -1,0 +1,29 @@
+id: wuxia_random_route_wet_message
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 젖은 봉투를 말리는 사람
+  검수 상태: 기획자 검수 필요
+  결과: 젖은 메시지 일부만 읽을 수 있다. 봉인을 지키면 신뢰를 얻고, 펼치면 정보는 늘지만 추적 위험이 생긴다.
+  관련 세력: 객잔, 무림맹, 흑사방
+  관련 인물: 객잔 주인, 무림맹 감찰관, 주인공
+  메모: 날씨 변주 문서와 연결되는 짧은 정보 사건. 핵심 증거를 단독으로 제공하지 않는다.
+  미해결 부채: 'No'
+  보상: 세력별 소문; 추적 위험 또는 신뢰 플래그
+  분류: 사이드 퀘스트
+  사건 ID: wuxia_random_route_wet_message
+  상태: 초안
+  선택지 요약: 봉투를 펼쳐 말린다 / 봉인을 지킨다 / 발신자를 찾아간다
+  선행 조건: 루트 선택 이후; 이동·비가 있는 시드
+  소속 루트: 귀환, 무림맹, 정착, 흑사방
+  엔딩 영향: 귀환, 침식, 히든
+  진행 단계: 중반
+  후일담 카드 연결: wuxia_epilogue_return_object_left_behind
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

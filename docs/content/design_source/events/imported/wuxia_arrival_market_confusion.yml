@@ -1,0 +1,29 @@
+id: wuxia_arrival_market_confusion
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 낯선 장터에 떨어지다
+  검수 상태: 미검수
+  결과: 주인공이 무협 세계의 사회 규칙을 전혀 모른다는 사실을 체감한다.
+  관련 세력: 객잔
+  관련 인물: 객잔 주인, 주인공
+  메모: 무협 세계의 첫 이질감 장면. 객잔 주인/정보상 캐릭터의 첫 암시 가능.
+  미해결 부채: 'No'
+  보상: '강호 기본 surface 노출: 객잔, 소문, 통행, 문파 패 오해'
+  분류: 메인 사건
+  사건 ID: wuxia_arrival_market_confusion
+  상태: 초안
+  선택지 요약: 상황을 관찰한다 / 촬영장인지 묻는다 / 사원증을 보여준다 / 조용히 빠져나간다
+  선행 조건: wuxia_prologue_commute_rift 완료
+  소속 루트: 청류문
+  엔딩 영향: ''
+  진행 단계: 초반
+  후일담 카드 연결: 없음
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

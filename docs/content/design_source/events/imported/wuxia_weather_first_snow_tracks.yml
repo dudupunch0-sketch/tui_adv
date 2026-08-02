@@ -1,0 +1,29 @@
+id: wuxia_weather_first_snow_tracks
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 첫눈 위의 두 줄 발자국
+  검수 상태: 기획자 검수 필요
+  결과: 발자국의 주인은 도망자일 수도 추적자일 수도 있다. 전투·구조·오독 중 하나로 짧게 끝난다.
+  관련 세력: 객잔, 마도 잔당
+  관련 인물: 주인공, 흑사방 말단/기타 적수
+  메모: 눈과 추적을 결합한 다회차 랜덤.
+  미해결 부채: 'No'
+  보상: 작은 소문; 상태 변주
+  분류: 전투 사건
+  사건 ID: wuxia_weather_first_snow_tracks
+  상태: 초안
+  선택지 요약: 발자국을 따른다 / 눈을 덮는다 / 다른 길을 택한다
+  선행 조건: 첫눈; 야간 이동
+  소속 루트: 귀환, 무림맹, 정착, 흑사방
+  엔딩 영향: 침식, 히든
+  진행 단계: 중반
+  후일담 카드 연결: wuxia_epilogue_small_rumor
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

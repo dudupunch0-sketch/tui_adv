@@ -1,0 +1,30 @@
+id: wuxia_item_modern_first_aid_pouch
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/14 ьЭ┤ъ╡мэХЩьзА ьХДьЭ┤эЕЬ
+    DB bcdff734c16e4ea4bfd7ae43fb74e3af.csv
+  database_id: bcdff734c16e4ea4bfd7ae43fb74e3af
+notion_properties:
+  이름: 현대식 응급 파우치
+  검수 상태: 기획자 검수 필요
+  관련 사건 ID: wuxia_cheongryu_medicine_errand
+  도감 등록: 'Yes'
+  런타임 상태: 설계
+  배타성: 일반 배타
+  보상 등급: 희귀
+  사용 가능: 'No'
+  사용 효과: ''
+  선택 방향: 현대 지식을 숨기지 않고 청류문 생활에 적용한 선택.
+  설계 분류: 소모품
+  설명: 무림에서 낯설지만 상처를 씻고 묶는 순서만큼은 분명한 파우치.
+  아이템 ID: wuxia_item_modern_first_aid_pouch
+  종류: consumable
+  중복·다회차 처리: 현대 정체성 사건을 보지 않은 회차에서는 행상인이 판매하지 않음.
+  즉시 공개: 'Yes'
+  컨셉: 무림에서 낯설지만 상처를 씻고 묶는 순서만큼은 분명한 파우치.
+  향후 효과 방향: 응급 처치·현대 정체성·교환 사건 방향.
+  획득 성격: 사이드
+kind: item
+effect_policy:
+  numeric_effects: deferred

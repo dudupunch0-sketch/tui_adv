@@ -1,0 +1,29 @@
+id: wuxia_random_route_child_sparring
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 비무를 구경하던 아이
+  검수 상태: 기획자 검수 필요
+  결과: 짧은 비무를 통해 주인공의 전투 태도가 주변에 알려진다. 승패보다 아이에게 남긴 말과 서하린을 어떻게 언급했는지가 후속 관계 대사를 바꾼다.
+  관련 세력: 주변 정파, 청류문
+  관련 인물: 서하린, 주인공
+  메모: 전투와 일상 관계를 결합한 1회성 랜덤. 보상은 작게, 기억되는 행동을 크게 둔다.
+  미해결 부채: 'No'
+  보상: 훈련 보정 대사; 지역 평판 소폭 변화
+  분류: 전투 사건
+  사건 ID: wuxia_random_route_child_sparring
+  상태: 초안
+  선택지 요약: 아이의 도전을 받아준다 / 기술 대신 원리를 설명한다 / 서하린의 이름을 빌려 거절한다
+  선행 조건: 루트 선택 이후; 이동 중 전투 인카운터가 비어 있는 시드
+  소속 루트: 무림맹, 정착, 청류문
+  엔딩 영향: 정착, 청류문
+  진행 단계: 중반
+  후일담 카드 연결: wuxia_epilogue_small_rumor
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

@@ -1,0 +1,30 @@
+id: wuxia_item_empty_medicine_ledger
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/14 ьЭ┤ъ╡мэХЩьзА ьХДьЭ┤эЕЬ
+    DB bcdff734c16e4ea4bfd7ae43fb74e3af.csv
+  database_id: bcdff734c16e4ea4bfd7ae43fb74e3af
+notion_properties:
+  이름: 약재 창고의 빈 장부
+  검수 상태: 기획자 검수 필요
+  관련 사건 ID: wuxia_cheongryu_medicine_errand
+  도감 등록: 'Yes'
+  런타임 상태: 설계
+  배타성: 일반 배타
+  보상 등급: 희귀
+  사용 가능: 'No'
+  사용 효과: ''
+  선택 방향: 빈손으로 돌아오거나 기록을 확인하는 선택.
+  설계 분류: 퀘스트 아이템
+  설명: 약재가 없다는 사실보다 누가 언제 비워 갔는지를 말하는 장부.
+  아이템 ID: wuxia_item_empty_medicine_ledger
+  종류: quest
+  중복·다회차 처리: 후속 사건에서 의미가 드러난 뒤 도감 설명이 확장됨.
+  즉시 공개: 'No'
+  컨셉: 약재가 없다는 사실보다 누가 언제 비워 갔는지를 말하는 장부.
+  향후 효과 방향: 약재 부족 후일담·내부 사정 조사·청류문 생활 이해 방향.
+  획득 성격: 사이드
+kind: item
+effect_policy:
+  numeric_effects: deferred

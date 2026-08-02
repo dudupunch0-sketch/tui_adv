@@ -1,0 +1,29 @@
+id: wuxia_qingliu_attack_after_war
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 무너져가는 청류문 습격
+  검수 상태: 미검수
+  결과: 전쟁 이후 약해진 청류문이 정체불명의 괴한에게 습격당했음이 드러난다.
+  관련 세력: 주변 정파, 청류문
+  관련 인물: 무명, 서하린, 청류문 장문인
+  메모: 괴한의 정체와 배후 문파명은 미정. 정파 계열 무공이라는 단서만 확정.
+  미해결 부채: 'No'
+  보상: 청류문 몰락 원인 단서. 무명 각성 사건의 선행 단서.
+  분류: 메인 사건, 전투 사건, 후일담 트리거
+  사건 ID: wuxia_qingliu_attack_after_war
+  상태: 초안
+  선택지 요약: 습격 기록을 찾는다 / 남은 상처를 조사한다 / 서하린의 반응을 본다
+  선행 조건: 무명 과거 조사 또는 서하린 침묵 이벤트
+  소속 루트: 청류문, 흑사방
+  엔딩 영향: 정착, 청류문
+  진행 단계: 중반
+  후일담 카드 연결: 청류문의 후일 / 무명의 결말 카드 후보
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

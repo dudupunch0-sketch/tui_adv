@@ -1,0 +1,25 @@
+id: wuxia_title_keeper_of_absence
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/18 ьЭ┤ъ╡мэХЩьзА ь╣нэШ╕
+    DB da8f254e72404c6f84a5db5738bb7588.csv
+  database_id: da8f254e72404c6f84a5db5738bb7588
+notion_properties:
+  이름: 빈자리를 지킨 자
+  검수 상태: 기획자 검수 필요
+  관련 사건 ID: wuxia_seoharin_hides_training_injury
+  도감 등록: 'Yes'
+  런타임 상태: 설계
+  배타성: 일반 배타
+  보상 등급: 희귀
+  선택 방향: 서하린의 손목을 보았지만 선택적으로 기다린 태도.
+  중복·다회차 처리: 중복 시 기억 파편 지급. 도감에는 최초 획득 선택과 반대 선택의 설명을 함께 기록.
+  즉시 공개: 'Yes'
+  칭호 ID: wuxia_title_keeper_of_absence
+  컨셉: 말하지 않는 사람의 자리를 억지로 채우지 않고 곁에 남은 사람.
+  향후 효과 방향: 인물 호감도·침묵의 대화·후일담 방향.
+  획득 성격: 사이드
+kind: title
+effect_policy:
+  numeric_effects: deferred

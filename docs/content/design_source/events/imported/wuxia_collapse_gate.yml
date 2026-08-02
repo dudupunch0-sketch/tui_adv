@@ -1,0 +1,30 @@
+id: wuxia_collapse_gate
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 천기록 붕괴 (붕괴 게이트)
+  검수 상태: 미검수
+  결과: 기사회생 시 진행 계속. 안식 또는 재사망 시 사망 엔딩 wuxia_death_rest
+  관련 세력: ''
+  관련 인물: 주인공, 천기록 관련 존재
+  메모: 2026-07 gameloop 슬라이스 2에서 엔진 붕괴 게이트와 함께 추가된 신규 사건. repo 동기화로 역기입 (13. 런타임 시스템
+    현황 참조).
+  미해결 부채: 'No'
+  보상: ''
+  분류: 메인 사건
+  사건 ID: wuxia_collapse_gate
+  상태: 확정
+  선택지 요약: '기사회생: 천기의 편린을 태워 다시 일어선다 (체력 +40, 경험 -10, 1회 한정) / 안식: 붉은 글씨 너머의 평온으로 흘러간다'
+  선행 조건: 체력 0 도달 시 런타임이 강제 진입 (진행 단계 무관, 회차당 1회)
+  소속 루트: ''
+  엔딩 영향: ''
+  진행 단계: ''
+  후일담 카드 연결: ''
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

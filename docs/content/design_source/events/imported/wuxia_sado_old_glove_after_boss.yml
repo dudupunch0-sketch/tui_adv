@@ -1,0 +1,29 @@
+id: wuxia_sado_old_glove_after_boss
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 사도의 낡은 장갑
+  검수 상태: 기획자 검수 필요
+  결과: 보스 결산 이후 사도의 낡은 장갑을 발견하고, 사도의 질투가 자기연민이 아니라 관찰과 통제의 감각이 되었음을 알게 된다.
+  관련 세력: 흑사방
+  관련 인물: 흑사방 보스
+  메모: '사도 아이템 로그 DB 연결: item_sado_old_glove. 보스 결산 보상.'
+  미해결 부채: 'No'
+  보상: 사도의 낡은 장갑 / item_sado_old_glove
+  분류: 후일담 트리거
+  사건 ID: wuxia_sado_old_glove_after_boss
+  상태: 초안
+  선택지 요약: 장갑을 조사한다 / 장부와 대조한다 / 무명에게 보여준다 / 버린다
+  선행 조건: 보스 결산 완료. 사도 패배 또는 본거지 수색 가능 상태.
+  소속 루트: 청류문
+  엔딩 영향: 청류문
+  진행 단계: 최종장
+  후일담 카드 연결: 부러진 검은 뱀 / 검은 뱀의 새 비늘
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

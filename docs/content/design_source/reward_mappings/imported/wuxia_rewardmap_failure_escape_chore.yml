@@ -1,0 +1,25 @@
+id: wuxia_rewardmap_failure_escape_chore
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/19 ьЭ┤ъ╡мэХЩьзА ы│┤ьГБ
+    эЪНыУЭ ыздэХС DB f1e2c76a9cb0474d8e9a07c45c90d26e.csv
+  database_id: f1e2c76a9cb0474d8e9a07c45c90d26e
+notion_properties:
+  이름: 첫 패배·잡일로 회피 → 제자 아닌 제자
+  검수 상태: 기획자 검수 필요
+  런타임 상태: 설계
+  매핑 ID: wuxia_rewardmap_failure_escape_chore
+  배타 규칙: 일반 배타
+  보상 ID: wuxia_title_not_yet_disciple
+  보상 종류: 칭호
+  사건 ID: wuxia_cheongryu_training_first_failure
+  선택지·조건 키: 다음 잡일로 도망가기
+  연계 조건: 훈련보다 생활을 택했지만 청류문에 남은 경우
+  중복 처리: 중복 시 기억 파편.
+  획득 시점: 즉시
+  획득 연출: 장작을 패면서도 수련장 쪽 소리가 들리는 짧은 장면이 남는다.
+event_id: null
+choice_id: null
+reward_ids: []
+condition: null

@@ -1,0 +1,29 @@
+id: wuxia_heuksa_bang_inn_key
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 객잔 열쇠
+  검수 상태: 기획자 검수 필요
+  결과: 객잔의 빈 방이 거래와 도피의 중간 지점임을 보여준다. 선택에 따라 흑사방 정보와 외부 사람의 안전이 달라진다.
+  관련 세력: 객잔, 흑사방
+  관련 인물: 객잔 주인, 주인공, 흑사방 말단/기타 적수
+  메모: 흑사방·귀환 교차 랜덤. 같은 객잔을 반복 방문해도 seed에 따라 열쇠의 주인이 달라진다. runtime 미반영 설계 초안.
+  미해결 부채: 'No'
+  보상: 객잔 관계, 거래 단서, 도피 경로 정보
+  분류: 히든 사건
+  사건 ID: wuxia_heuksa_bang_inn_key
+  상태: 초안
+  선택지 요약: 열쇠를 돌려준다 / 방을 확인한다 / 열쇠를 숨긴다
+  선행 조건: 흑사방 또는 귀환 성향; 객잔 방문; 낮은 확률
+  소속 루트: 귀환, 흑사방, 히든
+  엔딩 영향: 귀환, 침식, 히든
+  진행 단계: 중반
+  후일담 카드 연결: 귀환 경로 후보 / 무명의 결말
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

@@ -23,6 +23,7 @@ import {
 } from './labels';
 import { renderEpilogueBodyBlock } from './renderEpilogue';
 import { renderInkVisual } from './ink/renderInkVisual';
+import { renderCombatStage } from './combat/renderCombatStage';
 
 type StoryLayout = 'visual-first' | 'text-first' | 'ending';
 type StoryPhase = 'story' | 'combat' | 'result' | 'collapse';
@@ -47,6 +48,7 @@ export function renderStorybookPage(page: ScenePage, options: StorybookRenderOpt
   <div class="game-viewport" data-region="viewport">
     <section class="storybook-page" data-story-layout="${layout}" data-story-phase="${phase}">
       ${renderStoryFlow(page, layout, options)}
+      ${renderCombatStage(page.combat)}
       ${page.content_stream?.length ? '' : renderChoices(page)}
       ${page.mode === 'ending' ? renderEndingRestart() : ''}
     </section>

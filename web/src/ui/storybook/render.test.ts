@@ -776,4 +776,61 @@ describe('Web Storybook renderer', () => {
     expect(html).toContain('정체를 알 수 없는 물건');
     expect(html).not.toContain('봉인된 물건');
   });
+
+  it('mounts the combat spectator surface only when page.combat is present (Wave 3 Step 1d-2)', () => {
+    const html = renderStorybookPage(
+      samplePrinterPage({
+        combat: {
+          view: {
+            simulation_version: 'v-1',
+            resolution_fingerprint: 'res-fp',
+            tick_millis: 100,
+            frames: [
+              {
+                tick: 2,
+                pieces: [
+                  {
+                    id: 'ally_1',
+                    side: 'ally',
+                    position: { x: 0, y: 0 },
+                    facing: { x: 1, y: 0 },
+                    active: true,
+                    cues: ['hit'],
+                  },
+                ],
+              },
+            ],
+            core_log: [
+              {
+                tick: 2,
+                sequence: 0,
+                template_id: 'combat.log.damage_applied',
+                importance: 'important',
+                actor_id: 'ally_1',
+                target_id: null,
+                value_hundredths: 1050,
+                effect_id: null,
+              },
+            ],
+            full_log: [],
+            fingerprint: 'view-fp',
+          },
+        },
+      }),
+    );
+
+    expect(html).toContain('data-region="combat"');
+    expect(html).toContain('data-region="combat-board"');
+    expect(html).toContain('data-region="combat-log"');
+    expect(html).toContain('ally_1 피해 11 (대상 없음)');
+  });
+
+  it('I5: renders byte-identical output (no combat markup at all) when page.combat is absent', () => {
+    const html = renderStorybookPage(samplePrinterPage());
+    expect(html).not.toContain('combat-stage');
+    expect(html).not.toContain('data-region="combat"');
+    expect(html).not.toContain('data-region="combat-board"');
+    expect(html).not.toContain('data-region="combat-log"');
+    expect(html).not.toContain('data-region="combat-report"');
+  });
 });

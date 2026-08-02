@@ -189,6 +189,19 @@ pub fn resolve(
     let mut frames = Vec::new();
     let mut full_log = Vec::new();
     for frame in &execution.frames {
+        // I1 (fable_combat_early_conclusion_step1_2608022130.md): whether an
+        // actor/target is incapacitated is decided from THIS tick's starting
+        // health, snapshotted once before any attack in the tick is applied.
+        // Using the live `combatants` map instead would make the result
+        // depend on `attack_map`'s (BTreeMap-by-id) processing order: an
+        // actor killed earlier in the same tick would wrongly lose its own
+        // already-in-flight attack, breaking simultaneous mutual knockouts
+        // and order independence (I5, pinned by
+        // `simultaneous_mutual_defeat_is_independent_of_attack_definition_order`).
+        let health_snapshot: BTreeMap<String, i64> = combatants
+            .iter()
+            .map(|(id, c)| (id.clone(), c.current_health_hundredths))
+            .collect();
         let mut outcomes = Vec::new();
         let mut sequence = 0;
         for attack in attack_map.values() {
@@ -205,6 +218,22 @@ pub fn resolve(
                 continue;
             };
             if actor.side == target.side || !actor.active || !target.active {
+                continue;
+            }
+            // I1: an incapacitated actor does not attack, and an
+            // incapacitated target is not attacked -- judged from this
+            // tick's starting health snapshot (see comment above the loop).
+            // No roll, no log, no outcome is created for either case. A
+            // missing snapshot entry is NOT treated as incapacitated (rule
+            // 4, never fabricate a value): `validate_inputs` already
+            // guarantees the actor is a tracked combatant, and a target with
+            // no tracked state must still fall through to the existing
+            // `InvalidInput` error below rather than being silently skipped.
+            let actor_incapacitated = health_snapshot
+                .get(&attack.actor_id)
+                .is_some_and(|h| *h <= 0);
+            let target_incapacitated = health_snapshot.get(target_id).is_some_and(|h| *h <= 0);
+            if actor_incapacitated || target_incapacitated {
                 continue;
             }
             let collision = frame.positions[&actor.id]

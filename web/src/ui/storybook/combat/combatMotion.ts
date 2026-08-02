@@ -135,10 +135,26 @@ export function buildCombatMotionCss(input: CombatMotionInput): CombatMotionResu
 
   const blocks: string[] = [];
   for (const track of input.tracks) {
+    // The generated CSS is embedded in a `<style>` element (WP2 —
+    // `renderCombatStage.ts`), which HTML parses as *raw text*: the parser
+    // ends the element at the first literal `</style` substring regardless
+    // of any CSS-level quoting. The `@keyframes` name is already a sanitized
+    // hash (never contains the raw id), but the animation rule's attribute
+    // selector must match the piece's real `data-piece-id` value verbatim,
+    // so it cannot be sanitized the same way. If a piece id could break out
+    // of the `<style>` element this way, skip animating that piece rather
+    // than emitting unsafe markup — the piece still renders correctly at
+    // its static (last-frame) position, just without motion (I2 also
+    // forbids inventing a "safe" substitute id).
+    if (/<\/style/i.test(track.pieceId)) continue;
     const name = keyframeNameForPiece(track.pieceId);
     keyframeNames.set(track.pieceId, name);
     blocks.push(buildPieceKeyframesBlock(name, track.frames));
     blocks.push(buildPieceAnimationRule(track.pieceId, name, durationMillis));
+  }
+
+  if (blocks.length === 0) {
+    return { css: '', durationMillis: 0, keyframeNames };
   }
 
   const css = `@media (prefers-reduced-motion: no-preference) {\n${blocks.join('\n')}\n}`;

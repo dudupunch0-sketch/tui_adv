@@ -113,6 +113,32 @@ describe('buildCombatMotionCss — I9: only translate/opacity/filter are animate
   });
 });
 
+describe('buildCombatMotionCss — <style>-embedding safety', () => {
+  it('skips animating a piece id that could break out of a <style> raw-text element', () => {
+    const input: CombatMotionInput = {
+      tickMillis: 100,
+      tracks: [track('</style><script>alert(1)</script>', [{ x: 20, y: 50 }, { x: 40, y: 50 }])],
+    };
+    const result = buildCombatMotionCss(input);
+    expect(result.css).toBe('');
+    expect(result.keyframeNames.size).toBe(0);
+  });
+
+  it('still animates the other pieces when one piece id is unsafe', () => {
+    const input: CombatMotionInput = {
+      tickMillis: 100,
+      tracks: [
+        track('</style>', [{ x: 20, y: 50 }, { x: 40, y: 50 }]),
+        track('ally_1', [{ x: 60, y: 50 }, { x: 70, y: 50 }]),
+      ],
+    };
+    const result = buildCombatMotionCss(input);
+    expect(result.keyframeNames.has('</style>')).toBe(false);
+    expect(result.keyframeNames.has('ally_1')).toBe(true);
+    expect(result.css).toContain(keyframeNameForPiece('ally_1'));
+  });
+});
+
 describe('keyframeNameForPiece — CSS-identifier safety', () => {
   it('sanitizes dangerous characters and never collides for distinct ids that sanitize to the same string', () => {
     const nameA = keyframeNameForPiece('a<b');

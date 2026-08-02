@@ -2686,6 +2686,21 @@ button.character-title-seal {
   overflow: hidden;
   border: 1px solid var(--line-soft);
   background: color-mix(in oklab, var(--paper-lit) 88%, var(--ink) 4%);
+  /* Wave 3 Step 1d-3: `translate` percentages resolve against the animated
+     element's own box, never the container's — so a board-relative offset
+     (e.g. "move 20% of the board's width") cannot be expressed in `%` at
+     all. Container query length units (`cqw`/`cqh`, used by the generated
+     motion CSS in `renderCombatStage.ts`/`combatMotion.ts`) are the
+     board-relative unit that actually exists, and they need a query
+     container. `size` (not `inline-size`, unlike `.combat-stage` above) is
+     safe here specifically because this element is a CSS grid row
+     (`minmax(0, 70fr)` in `.combat-stage`) — its height is dictated by the
+     grid track, not by its own content, so containment cannot create a
+     circular sizing dependency. Side effect (intended, see the plan's
+     §4-2): pieces below now resolve their `12cqi`/`15cqi` size against this
+     board container instead of `.combat-stage`, so they render slightly
+     smaller than in Step 1d-2. */
+  container-type: size;
 }
 
 /* 빈 종이 위에 말 두 개만 떠 있으면 미완성으로 읽힌다. 중앙선과 먹 번짐을

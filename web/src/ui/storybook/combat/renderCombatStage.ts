@@ -16,9 +16,11 @@ import {
   isKnownCombatLogTemplateId,
   roundHundredthsToInt,
 } from './combatLogTemplates';
+import { buildCombatMotionCss } from './combatMotion';
+import type { PieceMotionTrack } from './combatMotion';
 
 // ---------------------------------------------------------------------------
-// Wave 3 Step 1d-2 — 관전 표면 렌더러.
+// Wave 3 Step 1d-2 — 관전 표면 렌더러. Step 1d-3 — 재생 연출(모션) 배선.
 //
 // Hard invariant: this module only *formats* `page.combat`. It never
 // recomputes damage, hit/miss, win/loss, cue derivation, log-importance
@@ -26,6 +28,12 @@ import {
 // already decided all of that (정본 13). The only math performed here is
 // display conversion: hundredths -> rounded int, tick -> elapsed ms,
 // coordinate -> board percentage projection, array length display.
+//
+// Step 1d-3 adds one more piece of display conversion: per-tick projected
+// coordinates -> a generated CSS `<style>` block (`combatMotion.ts` builds
+// the actual `@keyframes` text; this module only decides *which* frames/
+// coordinates feed it). See `combatMotion.ts`'s module comment for the full
+// I1–I5/I9 invariant list that generator satisfies.
 // ---------------------------------------------------------------------------
 
 /** cue 5종 -> web 글리프 (I11 cue 표. terminal의 `>`/`<`/`~`/`!`/`x` 표식과
@@ -59,11 +67,19 @@ const SIDE_LABELS: Record<CombatSide, string> = {
   enemy: '적군',
 };
 
-/** `view.frames`의 마지막 프레임만 그린다 (정적 스냅샷 — 1d-3이 시간축을
- * 얹는다). 좌표는 마지막 프레임 말들의 min/max로 0~100% 비례 투영한다.
- * `span === 0`이면 0으로 나누지 않고 50%(중앙)에 둔다. */
+/** `view.frames`의 마지막 프레임을 그린다(정지 상태·`reduce` 최종 상태 —
+ * 1d-2가 확보). 좌표 투영 범위는 Step 1d-3부터 **전체 프레임**의 말 min/max로
+ * 확장한다: 마지막 프레임만으로 범위를 잡으면 재생 중 이동하는 말이 그 범위
+ * 밖의 좌표를 지나칠 때 보드를 벗어나 보인다(§4-2). `span === 0`이면 0으로
+ * 나누지 않고 50%(중앙)에 둔다.
+ *
+ * 이 투영 범위 확장은 로직 변경이 아니라 1d-2가 이미 쓰던 `projectAxis`의
+ * 입력을 넓히는 것뿐이다 — 전투원이 매 프레임 같은 좌표에 머무는 저작
+ * 시나리오(현재 1d-2 테스트 대부분)에서는 min/max가 그대로이므로 기존 기대값이
+ * 바뀌지 않는다. */
 export function renderCombatBoard(view: CombatSpectatorView): string {
-  const frame = view.frames.length ? view.frames[view.frames.length - 1] : undefined;
+  const frames = view.frames;
+  const frame = frames.length ? frames[frames.length - 1] : undefined;
 
   if (!frame) {
     return `<div class="combat-stage__board" data-region="combat-board" role="img" aria-label="전투 판, 표시할 프레임이 없다">
@@ -79,14 +95,15 @@ export function renderCombatBoard(view: CombatSpectatorView): string {
     <table class="combat-board__table sr-only"><caption>전투 판 요약 표</caption><thead><tr><th scope="col">말 id</th><th scope="col">진영</th><th scope="col">좌표</th><th scope="col">참전</th><th scope="col">cue</th></tr></thead><tbody></tbody></table>`;
   }
 
-  const pieces = frame.pieces;
-  const xs = pieces.map((p) => p.position.x);
-  const ys = pieces.map((p) => p.position.y);
+  const allPieces = frames.flatMap((f) => f.pieces);
+  const xs = allPieces.map((p) => p.position.x);
+  const ys = allPieces.map((p) => p.position.y);
   const minX = Math.min(...xs);
   const maxX = Math.max(...xs);
   const minY = Math.min(...ys);
   const maxY = Math.max(...ys);
 
+  const pieces = frame.pieces;
   const pieceMarkup = pieces
     .map((p) => renderPiece(p, projectAxis(p.position.x, minX, maxX), projectAxis(p.position.y, minY, maxY)))
     .join('');
@@ -95,10 +112,74 @@ export function renderCombatBoard(view: CombatSpectatorView): string {
   const enemyCount = pieces.filter((p) => p.side === 'enemy').length;
   const boardLabel = `전투 판, tick ${frame.tick}, 아군 ${allyCount}명 · 적군 ${enemyCount}명`;
 
-  return `<div class="combat-stage__board" data-region="combat-board" role="img" aria-label="${escapeHtml(boardLabel)}">
+  const motionStyle = renderMotionStyleBlock(view, minX, maxX, minY, maxY);
+
+  return `${motionStyle}<div class="combat-stage__board" data-region="combat-board" role="img" aria-label="${escapeHtml(boardLabel)}">
     ${pieceMarkup}
   </div>
   ${renderBoardTable(pieces)}`;
+}
+
+/** 재생 연출 CSS를 만든다(Step 1d-3). 실제 keyframe 문자열 생성은
+ * `combatMotion.ts`가 전담한다 — 여기서는 어떤 프레임·좌표를 넘길지만
+ * 결정한다(I4: 판정 재계산 0회).
+ *
+ * `<style>` 요소를 `<body>` 안에 두는 것은 HTML 스펙상 엄격히는 비적합이다
+ * (`style`은 metadata content). 모든 브라우저가 그래도 적용하고 기능 문제는
+ * 없다 — `renderStorybookPage`가 문자열 렌더러라 마운트 훅이 없으므로
+ * `element.animate()`(WAAPI)를 쓰려면 `web/src/main.ts` 배선이 필요하고,
+ * `prefers-reduced-motion`을 JS로 다시 확인해야 하며, 결정론적 단위 테스트로
+ * 검증하기 어렵다(§4-1). 데이터에서 만든 `<style>`을 렌더 결과에 함께
+ * 방출하면 문자열 렌더러 구조를 그대로 쓰면서 미디어 쿼리로 네이티브
+ * 처리되고, 생성된 CSS 문자열이 결정론적이므로 단위 테스트로 총 길이·오프셋
+ * 좌표를 그대로 고정할 수 있다. 이 트레이드오프를 여기 코드 주석과
+ * `docs/design/Mobile_Ink_Storybook_UI.md`에 남긴다. */
+function renderMotionStyleBlock(
+  view: CombatSpectatorView,
+  minX: number,
+  maxX: number,
+  minY: number,
+  maxY: number,
+): string {
+  const tracks = collectPieceMotionTracks(view.frames, minX, maxX, minY, maxY);
+  const motion = buildCombatMotionCss({ tickMillis: view.tick_millis, tracks });
+  return motion.css ? `<style>${motion.css}</style>` : '';
+}
+
+/** 말 하나의 트랙은 그 말이 **모든** 프레임에 등장할 때만 만든다. 현재 core
+ * 출력은 매 tick 같은 전투원 집합을 유지하며(퇴장 없이 `active`만 바뀐다)
+ * 이 경우가 항상이지만, 만에 하나 어떤 tick의 `pieces`에 말이 아예 없으면 그
+ * tick의 좌표를 지어낼 수 없으므로(I2: 임의의 waypoint 금지) 그 말은
+ * 애니메이션 없이 마지막 프레임 정지 위치로만 남긴다. */
+function collectPieceMotionTracks(
+  frames: CombatSpectatorView['frames'],
+  minX: number,
+  maxX: number,
+  minY: number,
+  maxY: number,
+): PieceMotionTrack[] {
+  if (frames.length <= 1) return [];
+  const lastFrame = frames[frames.length - 1];
+  const tracks: PieceMotionTrack[] = [];
+  for (const piece of lastFrame.pieces) {
+    const points: { x: number; y: number }[] = [];
+    let presentInEveryFrame = true;
+    for (const f of frames) {
+      const match = f.pieces.find((p) => p.id === piece.id);
+      if (!match) {
+        presentInEveryFrame = false;
+        break;
+      }
+      points.push({
+        x: projectAxis(match.position.x, minX, maxX),
+        y: projectAxis(match.position.y, minY, maxY),
+      });
+    }
+    if (presentInEveryFrame) {
+      tracks.push({ pieceId: piece.id, frames: points });
+    }
+  }
+  return tracks;
 }
 
 function renderPiece(piece: CombatSpectatorPiece, xPercent: number, yPercent: number): string {

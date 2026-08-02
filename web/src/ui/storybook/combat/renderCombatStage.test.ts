@@ -170,6 +170,89 @@ describe('renderCombatBoard', () => {
   });
 });
 
+// ---------------------------------------------------------------------------
+// Wave 3 Step 1d-3 — WP2: playback wiring (projection range expansion +
+// generated <style> block). The underlying keyframe-string math (I1/I5/I9)
+// is pinned by combatMotion.test.ts; these tests only pin how
+// renderCombatStage.ts feeds that module (I4: which frames/coordinates,
+// nothing recomputed).
+// ---------------------------------------------------------------------------
+describe('renderCombatBoard — Step 1d-3 playback wiring', () => {
+  it('expands the projection range across every frame, not just the last one, so a mid-motion piece never clips the board edge', () => {
+    // ally_1 visits x=99 at tick 0 but rests at x=5 at the final tick. If the
+    // projection only looked at the final frame (1d-2 behaviour), a single
+    // piece there would have span 0 and sit dead-center (50%) — the old
+    // `renders only the last frame` test above already pins that the *last
+    // frame's own rendered position* does not literally contain "99". This
+    // test instead pins the *offset* asserted inside the generated
+    // `@keyframes`, which is the only place tick 0's coordinate can still
+    // show up now that the projection spans all frames.
+    const html = renderCombatBoard(
+      view({
+        frames: [
+          frame(0, [piece({ id: 'ally_1', position: { x: 99, y: 5 } })]),
+          frame(1, [piece({ id: 'ally_1', position: { x: 5, y: 5 } })]),
+        ],
+      }),
+    );
+    expect(html).toContain('<style>');
+    // With the range expanded to [5, 99], tick 0's projected x is 86%
+    // (the far edge of the inset band) rather than the 50% it would be if
+    // only the last frame were considered.
+    expect(html).toMatch(/0% \{ translate: calc\(-50% \+ 72cqw\)/);
+  });
+
+  it('emits no <style> block when there is only one frame (nothing to animate, matches 1d-2 byte-for-byte apart from this)', () => {
+    const html = renderCombatBoard(view({ frames: [frame(1, [piece()])] }));
+    expect(html).not.toContain('<style>');
+  });
+
+  it('emits a <style> block whose animation duration is exactly (frames.length - 1) * tick_millis', () => {
+    const html = renderCombatBoard(
+      view({
+        tick_millis: 150,
+        frames: [
+          frame(0, [piece({ id: 'ally_1', position: { x: 0, y: 0 } })]),
+          frame(1, [piece({ id: 'ally_1', position: { x: 2, y: 0 } })]),
+          frame(2, [piece({ id: 'ally_1', position: { x: 4, y: 0 } })]),
+        ],
+      }),
+    );
+    expect(html).toContain('300ms linear');
+  });
+
+  it('wraps the generated <style> content in prefers-reduced-motion: no-preference', () => {
+    const html = renderCombatBoard(
+      view({
+        frames: [
+          frame(0, [piece({ id: 'ally_1', position: { x: 0, y: 0 } })]),
+          frame(1, [piece({ id: 'ally_1', position: { x: 2, y: 0 } })]),
+        ],
+      }),
+    );
+    expect(html).toContain('<style>@media (prefers-reduced-motion: no-preference)');
+  });
+
+  it('does not animate a piece that is missing from an earlier frame instead of inventing its position', () => {
+    const html = renderCombatBoard(
+      view({
+        frames: [
+          frame(0, [piece({ id: 'ally_1', position: { x: 0, y: 0 } })]),
+          frame(1, [
+            piece({ id: 'ally_1', position: { x: 2, y: 0 } }),
+            piece({ id: 'enemy_1', side: 'enemy', position: { x: 8, y: 0 } }),
+          ]),
+        ],
+      }),
+    );
+    // enemy_1 only exists at tick 1 (the last frame) — no track, no
+    // @keyframes reference for it, but ally_1 (present at every frame)
+    // still gets one.
+    expect(html).not.toContain('data-piece-id="enemy_1"] { animation');
+    expect(html).toMatch(/data-piece-id="ally_1"\] \{ animation/);
+  });
+});
+
 function logEntry(overrides: Partial<CombatSpectatorLogEntry> = {}): CombatSpectatorLogEntry {
   return {
     tick: 1,

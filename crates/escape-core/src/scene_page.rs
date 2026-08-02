@@ -1,7 +1,8 @@
 use crate::ability_label;
 use crate::combat_spectator::CombatSpectatorPage;
 use crate::content::{
-    ContentIndex, EncounterDef, EndingDef, LocationDef, PresentationEffectCue, PublicSecretDef,
+    ContentIndex, EncounterCombatKind, EncounterDef, EndingDef, LocationDef, PresentationEffectCue,
+    PublicSecretDef,
 };
 use crate::effects::EffectCue;
 use crate::final_epilogue::final_epilogue_body_blocks;
@@ -13,6 +14,11 @@ use crate::state::{CheckResolution, GameHistoryEntry, GameState, PlayerState};
 use crate::turn::{
     ability_check_success_percent, available_stat_points, content_turn_view, insight_bonus,
     ordered_unique_insights, ActionView, BlockedActionView, ContentTurnError, TurnView,
+};
+use crate::{
+    conclude_combat, resolve_combat, spectate_combat, CombatConclusionRequest, CombatContractError,
+    CombatExecutionRequest, CombatManifest, CombatPresentationSpeed, CombatResolutionRequest,
+    CombatRngNamespace, CombatRunMode, CombatSimulationInput, CombatSpectatorRequest,
 };
 use serde::{Deserialize, Serialize};
 
@@ -213,9 +219,7 @@ pub fn scene_page_from_content(
         .as_deref()
         .and_then(|ending_id| content.ending(ending_id));
 
-    Ok(scene_page_from_turn_view(
-        state, content, location, encounter, ending, &view,
-    ))
+    scene_page_from_turn_view(state, content, location, encounter, ending, &view)
 }
 
 fn scene_page_from_turn_view(
@@ -225,7 +229,7 @@ fn scene_page_from_turn_view(
     encounter: Option<&EncounterDef>,
     ending: Option<&EndingDef>,
     view: &TurnView,
-) -> ScenePage {
+) -> Result<ScenePage, ContentTurnError> {
     let source_id = view
         .ending_id
         .as_ref()
@@ -385,7 +389,11 @@ fn scene_page_from_turn_view(
         &visual,
         &actions,
     );
-    ScenePage {
+    let combat = match encounter {
+        Some(encounter) => combat_spectator_page_for_encounter(state, encounter)?,
+        None => None,
+    };
+    Ok(ScenePage {
         mode: mode.clone(),
         title: view.title.clone(),
         location: SceneLocation {
@@ -450,10 +458,141 @@ fn scene_page_from_turn_view(
             .filter_map(|id| content.title(id))
             .map(reward_status)
             .collect(),
-        // 전투를 시작하는 인카운터 authoring이 아직 없다(Wave 3 Step 2). 이 slice는
-        // 필드를 노출만 하며, 이 producer는 항상 `None`을 낸다.
-        combat: None,
+        combat,
+    })
+}
+
+/// Wave 3 Step 2a systemic combat producer. `encounter.combat` gated to
+/// `EncounterCombatKind::Systemic` runs the full pipeline
+/// (`execute_combat` → `resolve_combat` → `conclude_combat` →
+/// `spectate_combat`) and fills `ScenePage.combat`. Any failure anywhere in
+/// that pipeline propagates as a `ContentTurnError` — this producer never
+/// quietly downgrades a failure to `None` (Hard invariant 3).
+///
+/// Cost note (recorded per the Step 2a plan): this re-runs the whole combat
+/// simulation on every `scene_page_from_content` call. The result is
+/// deterministic so the *outcome* never changes, but the computation is
+/// wasted work on every render. Caching combat results is out of scope for
+/// this slice (it needs a save-schema decision) and is left to a follow-up
+/// slice.
+fn combat_spectator_page_for_encounter(
+    state: &GameState,
+    encounter: &EncounterDef,
+) -> Result<Option<CombatSpectatorPage>, ContentTurnError> {
+    let Some(combat) = &encounter.combat else {
+        return Ok(None);
+    };
+    match combat.kind {
+        EncounterCombatKind::Systemic => {}
+        EncounterCombatKind::Mixed | EncounterCombatKind::Scripted => {
+            // Index-time validation (content.rs::validate_encounter_combat)
+            // already rejects these kinds, so this is a defensive guard that
+            // should be unreachable in practice.
+            return Err(combat_producer_error(
+                &encounter.id,
+                "unsupported combat kind reached the producer (mixed/scripted are Wave 3 Step 2b/2c 소관 and should have been rejected at index time)",
+            ));
+        }
     }
+
+    let derived_seed =
+        derive_combat_seed(state.seed, &encounter.id, &combat.manifest).map_err(|error| {
+            combat_producer_error(
+                &encounter.id,
+                &format!("failed to derive the actual combat seed: {error}"),
+            )
+        })?;
+    let mut manifest = combat.manifest.clone();
+    manifest.actual_seed = derived_seed;
+
+    let input = CombatSimulationInput {
+        manifest,
+        state: combat.state.clone(),
+        seed: derived_seed,
+        config: combat.config.clone(),
+        participants: combat.participants.clone(),
+        roles: combat.roles.clone(),
+        policies: combat.policies.clone(),
+    };
+    let execution_request = CombatExecutionRequest {
+        input,
+        mode: CombatRunMode::Actual,
+        presentation: CombatPresentationSpeed::Instant,
+        ticks: combat.ticks,
+    };
+
+    let resolution = resolve_combat(CombatResolutionRequest {
+        execution: execution_request,
+        attacks: combat.attacks.clone(),
+        defenses: combat.defenses.clone(),
+        catalog: combat.effect_catalog.clone(),
+    })
+    .map_err(|error| {
+        combat_producer_error(&encounter.id, &format!("combat resolution failed: {error}"))
+    })?;
+
+    let report = conclude_combat(CombatConclusionRequest {
+        resolution: resolution.clone(),
+        participants: combat.participants.clone(),
+        policy: combat.termination.clone(),
+    })
+    .map_err(|error| {
+        combat_producer_error(&encounter.id, &format!("combat conclusion failed: {error}"))
+    })?;
+
+    let view = spectate_combat(&CombatSpectatorRequest {
+        resolution,
+        participants: combat.participants.clone(),
+        catalog: combat.effect_catalog.clone(),
+    })
+    .map_err(|error| {
+        combat_producer_error(&encounter.id, &format!("combat spectate failed: {error}"))
+    })?;
+
+    Ok(Some(CombatSpectatorPage {
+        view,
+        report: Some(report),
+    }))
+}
+
+/// Derives the *actual* combat seed from run state, never from authoring.
+/// Overwrites a clone of `manifest`'s `actual_seed` with a hash of
+/// `(run_seed, encounter_id)` first — discarding whatever authoring put
+/// there — then reuses the existing `CombatManifest::derived_seed` FNV
+/// pipeline (no new randomness source) to fold in the rest of the manifest's
+/// content (world_state_fingerprint, combatant ids, etc.) and the
+/// `ActualCombat` RNG namespace. Because the authored `actual_seed` is
+/// discarded before any hashing happens, the result never depends on it
+/// (proven by `systemic_combat_producer_result_is_independent_of_authoring_actual_seed`).
+fn derive_combat_seed(
+    run_seed: u64,
+    encounter_id: &str,
+    manifest: &CombatManifest,
+) -> Result<u64, CombatContractError> {
+    let mut manifest = manifest.clone();
+    manifest.actual_seed = fnv1a_64(format!("{run_seed}:{encounter_id}").as_bytes());
+    manifest.derived_seed(CombatRngNamespace::ActualCombat)
+}
+
+/// `ContentTurnError` (crates/escape-core/src/turn.rs) is out of this
+/// slice's expected-file list, so a combat producer failure is carried in
+/// the existing single-variant `UnknownStateLocation(String)` payload
+/// rather than a dedicated variant. The message embeds the encounter id and
+/// reason so callers still see exactly what failed; see the Step 2a report
+/// for this deliberate scope trade-off.
+fn combat_producer_error(encounter_id: &str, message: &str) -> ContentTurnError {
+    ContentTurnError::UnknownStateLocation(format!(
+        "combat producer failed for encounter '{encounter_id}': {message}"
+    ))
+}
+
+fn fnv1a_64(bytes: &[u8]) -> u64 {
+    let mut hash = 0xcbf29ce484222325u64;
+    for byte in bytes {
+        hash ^= u64::from(*byte);
+        hash = hash.wrapping_mul(0x100000001b3);
+    }
+    hash
 }
 
 fn reward_status(def: &crate::content::RewardDef) -> RewardStatus {

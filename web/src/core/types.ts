@@ -165,6 +165,111 @@ export interface ScenePage {
   titles?: RewardEntry[];
   /** Ordered event presentation. Older bundles may omit this and use the legacy fields above. */
   content_stream?: SceneContentItem[];
+  /** 전투 인카운터가 아닌 페이지에는 이 필드 자체가 없다 (Wave 3 Step 1d-2). */
+  combat?: CombatSpectatorPage;
+}
+
+// ---------------------------------------------------------------------------
+// Wave 3 Step 1d-2: combat spectator types (Rust serde 표현과 1:1).
+//
+// Hard invariant: this module only mirrors escape-core's serialized shape.
+// TS renderers built on these types must never recompute damage, hit/miss,
+// win/loss, cue derivation, or log-importance filtering — escape-core has
+// already decided all of that (정본 13).
+// ---------------------------------------------------------------------------
+
+export type CombatSide = 'ally' | 'enemy';
+export type CombatSpectatorCue = 'attack' | 'hit' | 'evade' | 'balance_broken' | 'incapacitated';
+export type CombatLogImportance = 'routine' | 'important' | 'decisive';
+export type CombatConclusionOutcome =
+  | 'in_progress'
+  | 'ally_victory'
+  | 'enemy_victory'
+  | 'mutual_defeat'
+  | 'stalemate';
+export type CombatConclusionReason =
+  | 'no_terminal_condition'
+  | 'all_enemies_defeated'
+  | 'all_allies_defeated'
+  | 'both_sides_defeated'
+  | 'max_ticks_reached';
+
+/** CombatPosition / CombatFacing — both serialize as { x, y }. */
+export interface CombatPoint {
+  x: number;
+  y: number;
+}
+
+export interface CombatSpectatorPiece {
+  id: string;
+  side: CombatSide;
+  position: CombatPoint;
+  facing: CombatPoint;
+  active: boolean;
+  /** serde(default) on the Rust side → may be an empty array. */
+  cues: CombatSpectatorCue[];
+}
+
+export interface CombatSpectatorFrame {
+  tick: number;
+  pieces: CombatSpectatorPiece[];
+}
+
+export interface CombatSpectatorLogEntry {
+  tick: number;
+  sequence: number;
+  /** Sentence table lives in the renderer (combatLogTemplates.ts), not here. */
+  template_id: string;
+  importance: CombatLogImportance;
+  actor_id: string;
+  target_id?: string | null;
+  value_hundredths?: number | null;
+  effect_id?: string | null;
+}
+
+export interface CombatSpectatorView {
+  /** Newtype struct on the Rust side → serializes as a bare string. */
+  simulation_version: string;
+  resolution_fingerprint: string;
+  tick_millis: number;
+  frames: CombatSpectatorFrame[];
+  core_log: CombatSpectatorLogEntry[];
+  full_log: CombatSpectatorLogEntry[];
+  fingerprint: string;
+}
+
+export interface CombatCombatantReport {
+  id: string;
+  damage_dealt_hundredths: number;
+  damage_taken_hundredths: number;
+  kills: number;
+  incapacitated: boolean;
+}
+
+export interface CombatConclusionReport {
+  resolution_fingerprint: string;
+  outcome: CombatConclusionOutcome;
+  reason: CombatConclusionReason;
+  decisive_tick: number | null;
+  active_allies: number;
+  active_enemies: number;
+  survivor_ids: string[];
+  defeated_ids: string[];
+  removed_combat_effect_ids: string[];
+  retained_effect_ids: string[];
+  duration_millis: number;
+  combatants: CombatCombatantReport[];
+  /** null이면 피해가 발생하지 않은 것 — "없음" 문구 없이 그 줄 자체를 생략한다. */
+  top_damage_dealt_id?: string | null;
+  top_damage_taken_id?: string | null;
+  fingerprint: string;
+}
+
+/** ScenePage.combat — 전투 인카운터가 아니면 필드 자체가 없다. */
+export interface CombatSpectatorPage {
+  view: CombatSpectatorView;
+  /** 전투가 진행 중이면 없다. */
+  report?: CombatConclusionReport;
 }
 
 export type SceneContentKind =

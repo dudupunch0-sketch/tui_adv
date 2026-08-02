@@ -115,6 +115,105 @@ Web Storybook은 게임 HUD가 달린 앱처럼 보이면 안 된다. 기본 화
 - **요약 로그 및 칩**: 결과 로그(`.story-result-log`)는 최근 1행 및 필수 업적/아이템 행만 노출하도록 압축하며, GlyphFX stable-terms 칩은 figcaption 옆 한 줄 인라인으로 축소한다.
 - **모바일 간격**: 560px 이하 해상도에서 본문 폰트 `1rem/1.7`, 문단 간격 `0.7em`, 선택지 `min-height: 48px` 및 padding 축소로 조밀한 밀도를 확보한다.
 
+## 전투 관전 표면 (Combat Spectator Surface, Wave 3 Step 1d-2)
+
+`page.combat`(`CombatSpectatorPage`)이 있을 때만 `.storybook-page` 안에
+`renderCombatStage()`가 조립하는 별도 block이다. 없으면(기존 52개 인카운터)
+빈 문자열이며 래퍼 요소·클래스·`data-*` 속성도 전혀 추가되지 않는다
+(`web/src/ui/storybook/render.test.ts`의 `I5: emits no combat markup at all
+when page.combat is absent`).
+
+이 표면은 **정지 프레임**(마지막 `view.frames` 항목)이다 — 시간 조작 금지
+(정본 13)와 `prefers-reduced-motion` 안정 상태 요구가 겹치는 지점이며,
+Wave 3 Step 1d-3이 같은 DOM·같은 CSS 변수 위에 `@media
+(prefers-reduced-motion: no-preference)` 안에서만 모션을 얹는다.
+
+### 70:30 레이아웃
+
+`.combat-stage`는 `grid-template-rows: minmax(0, 70fr) minmax(0, 30fr)`로
+보드(상단 65~75% 범위의 중앙값)와 핵심 로그(25~35% 범위의 중앙값)를
+70:30으로 고정한다. 전투 종료 보고서(`.combat-report`)는 이 비율 밖,
+표면 **아래**에 일반 흐름으로 놓인다. 기존 `.storybook-shell`의
+`grid-template-rows: auto minmax(0, 1fr) auto`, `.game-viewport`,
+`.game-topbar`, `.storybook-hud`, `.storybook-dock` 규칙은 무수정이다.
+
+### cue 5종 대응표 (terminal과 짝 — 한쪽만 고치지 말 것)
+
+`docs/dev/TUI_Layout.md`의 "전투 관전(Combat Spectator) 표시 계약" 절이
+쓰는 terminal 표식(`>`/`<`/`~`/`!`/`x`)과 다음 표가 짝을 이룬다:
+
+| `CombatSpectatorCue` | 정본 연출 의미 | terminal 표식 | web 글리프 | web 색 토큰 |
+|---|---|---|---|---|
+| `attack` | 짧은 전진/복귀 | `>` | `攻` | `--seal-red` |
+| `hit` | 밀림/진동 | `<` | `打` | `--seal-red-lit` |
+| `evade` | 측면 이동 | `~` | `避` | `--jade` |
+| `balance_broken` | 흔들림/기울어짐 | `!` | `傾` | `--gold-leaf` |
+| `incapacitated` | 흐려짐/표식 | `x` | `倒` | `--ink-faded` |
+
+색·아이콘 동기화는 core에서 대응이 유도되는 짝만 연결한다:
+`combat.log.damage_applied` 로그 줄만 Hit cue와 같은 색·글리프를 쓴다
+(`DamageApplied` 사건 하나에서 로그와 cue가 함께 나오기 때문에 대응이
+증명 가능하다). 나머지 5개 template id는 대응하는 cue가 core에 없으므로
+중립 잉크색으로 두고 대응을 발명하지 않는다.
+
+### 접근성 대체
+
+- 보드(`[data-region="combat-board"]`, `role="img"`)는 그래픽 투영이므로
+  동등한 semantic `<table class="combat-board__table sr-only">`(말 id /
+  진영 / 좌표 / 상태 / cue)를 항상 함께 렌더한다.
+- 진영은 색만으로 구분하지 않는다 — 아군/적군 각각 고유 글리프(`我`/`敵`),
+  채움 대비(먹 채움 vs 짙은 종이 채움), 윤곽선 종류(실선 vs 2px 파선)를
+  함께 쓴다. 적 말을 종이색으로 채우면 종이 배경과 대비가 거의 없어
+  글리프가 읽히지 않는다.
+- `@media (forced-colors: active)`에서 `CanvasText`/`Canvas`/`Highlight`/
+  `GrayText` 시스템 색 키워드로 대체해 진영·cue 구분이 고대비 모드에서도
+  사라지지 않는다.
+- 로그 영역(`[data-region="combat-log"]`)은 `aria-label`만 갖는다 —
+  이 슬라이스는 정적 렌더이므로 `aria-live`는 쓰지 않는다(1d-3에서
+  재생 노출과 함께 판단).
+
+### 로그·보고서 계약
+
+- `core_log`만 문장화한다(`combatLogTemplates.ts`, 6개 template id, terminal
+  `combat_log_template_line`과 글자 단위 일치). `full_log`는 개수만 표시하고
+  전체 로그 열람 UI는 만들지 않는다(정본 07). 표시 상한(`WEB_CORE_LOG_LIMIT
+  = 40`)을 넘으면 `…(생략 N줄)`을 반드시 출력한다.
+- 알 수 없는 template_id는 버리지 않고 `data-log-unknown="true"` + id를
+  노출하는 fallback 문장을 만든다.
+- `combat.report`가 없으면(전투 진행 중) `.combat-report` 섹션 자체를
+  만들지 않는다. `top_damage_dealt_id`/`top_damage_taken_id`/
+  `decisive_tick`이 `null`이면 그 줄 자체를 생략한다("없음" 대체 문구도
+  없음). 금지 항목(전략 평가·핵심 전환점·자동 원인 분석·전략 조언·종합
+  MVP·이전 전투 비교)은 문구도 계산도 만들지 않는다.
+- fingerprint를 표시하는 요소에는 `simulation_version`을 같은 요소 안에
+  둔다(정본 03: 결정성은 같은 `simulation_version` 안에서만 보장).
+
+### 실화면에서만 잡히는 함정 (Step 1d-2 실측에서 나온 것)
+
+단위 테스트는 HTML 문자열만 본다. 아래 세 가지는 테스트가 전부 통과한 채로
+화면이 틀려 있던 항목이며, 320/390/1280 실측에서 발견했다.
+
+- **cue 표식 겹침**: 한 말이 cue를 여러 개 가질 수 있다(피격 + 균형 붕괴 +
+  전투불능). 표식을 각각 절대 배치하면 같은 자리에 겹쳐 마지막 하나만 보인다.
+  `.combat-board__cues` flex 컨테이너에 담아 나란히 놓는다.
+- **말이 보드 경계에서 절반 잘림**: 말은 `translate: -50% -50%`로 중심을
+  좌표에 맞추므로 투영 범위를 0~100%로 잡으면 최소·최대 좌표의 말이 잘린다.
+  전투원 2명이면 두 말이 항상 극단에 놓이므로 예외가 아니라 기본 경우다.
+  여백을 둔 띠(14~86%)로 투영한다.
+- **grid item이 높이 상한 때문에 너비가 줄어듦**: `.combat-stage`가 두 축
+  모두 stretch인 grid item일 때 `aspect-ratio`와 `max-block-size`를 함께 걸면
+  브라우저가 높이 상한을 만족시키려고 **너비**를 줄인다(764px 칸에서 420px로
+  축소됐다). `inline-size: 100%`로 너비를 확정해야 한다.
+
+### 알려진 갭
+
+전투원 표시 이름이 없다. 관전 화면과 보고서는 core가 주는 내부
+id(`wuxia_spectator_bout_ally` 등)를 그대로 보여준다.
+`CombatSpectatorPiece`/`CombatCombatantReport`에도, 인카운터 combat authoring
+에도 표시 이름 필드가 없어 renderer가 유도할 수 없다 — 이름을 발명하지 않고
+남겨 두었다. 게이트를 푸는 슬라이스 전에 authoring에 이름 필드를 추가할지
+결정해야 한다.
+
 ## Acceptance checklist
 
 - [ ] 기본 화면에 상단 HUD/스탯 그리드/아이콘 dock이 없다 — folio, 본문, 삽화,

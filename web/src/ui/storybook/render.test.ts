@@ -776,4 +776,64 @@ describe('Web Storybook renderer', () => {
     expect(html).toContain('정체를 알 수 없는 물건');
     expect(html).not.toContain('봉인된 물건');
   });
+
+  it('mounts the combat spectator surface only when page.combat is present (Wave 3 Step 1d-2)', () => {
+    const html = renderStorybookPage(
+      samplePrinterPage({
+        combat: {
+          view: {
+            simulation_version: 'v-1',
+            resolution_fingerprint: 'res-fp',
+            tick_millis: 100,
+            frames: [
+              {
+                tick: 2,
+                pieces: [
+                  {
+                    id: 'ally_1',
+                    side: 'ally',
+                    position: { x: 0, y: 0 },
+                    facing: { x: 1, y: 0 },
+                    active: true,
+                    cues: ['hit'],
+                  },
+                ],
+              },
+            ],
+            core_log: [
+              {
+                tick: 2,
+                sequence: 0,
+                template_id: 'combat.log.damage_applied',
+                importance: 'important',
+                actor_id: 'ally_1',
+                target_id: null,
+                value_hundredths: 1050,
+                effect_id: null,
+              },
+            ],
+            full_log: [],
+            fingerprint: 'view-fp',
+          },
+        },
+      }),
+    );
+
+    expect(html).toContain('data-region="combat"');
+    expect(html).toContain('data-region="combat-board"');
+    expect(html).toContain('data-region="combat-log"');
+    expect(html).toContain('ally_1 피해 11 (대상 없음)');
+  });
+
+  // I5: `combat`이 없는 페이지에는 관전 마크업이 한 조각도 나오지 않는다.
+  // 삽입 지점이 템플릿 리터럴 한 줄이라 공백 한 줄은 남으므로 "바이트 단위
+  // 동일"이 아니다 — 검증하는 것은 마크업 부재다.
+  it('I5: emits no combat markup at all when page.combat is absent', () => {
+    const html = renderStorybookPage(samplePrinterPage());
+    expect(html).not.toContain('combat-stage');
+    expect(html).not.toContain('data-region="combat"');
+    expect(html).not.toContain('data-region="combat-board"');
+    expect(html).not.toContain('data-region="combat-log"');
+    expect(html).not.toContain('data-region="combat-report"');
+  });
 });

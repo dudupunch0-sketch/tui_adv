@@ -2654,3 +2654,234 @@ button.character-title-seal {
 .reward-row:not([data-reward-masked="true"]) { animation: reward-acquired .55s ease-out both; }
 @keyframes reward-acquired { from { opacity: .35; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
 @media (prefers-reduced-motion: reduce) { .reward-row:not([data-reward-masked="true"]) { animation: none; } }
+
+/* ---------------------------------------------------------------------- */
+/* Wave 3 Step 1d-2 — 전투 관전 표면 (정지 프레임).                          */
+/*                                                                          */
+/* 이 슬라이스에서는 transition/animation을 추가하지 않는다 (1d-3 소관).     */
+/* 말 위치는 --piece-x/--piece-y 커스텀 속성으로 표현한다 — 1d-3이 이 값을   */
+/* 시간축으로 움직인다. cue 5종 표식은 terminal의 `>`/`<`/`~`/`!`/`x` 표식과 */
+/* 짝을 이룬다(`crates/escape-terminal/src/snapshot.rs::combat_cue_symbol`). */
+/* ---------------------------------------------------------------------- */
+
+.combat-stage {
+  display: grid;
+  grid-template-rows: minmax(0, 70fr) minmax(0, 30fr);
+  gap: clamp(0.5rem, 2vw, 1rem);
+  container-type: inline-size;
+  /* inline-size를 확정해 둔다. grid item이 두 축 모두 stretch인 상태에서
+     aspect-ratio와 max-block-size가 함께 걸리면 브라우저가 높이 상한에 맞춰
+     *너비*를 줄인다 — 데스크톱 폭에서 보드가 764px 칸 안에서 420px로
+     쪼그라들었다. 너비를 확정하면 비율이 높이를 정하고, 상한은 높이만 깎는다. */
+  inline-size: 100%;
+  aspect-ratio: 3 / 4;
+  max-block-size: min(70dvh, 44rem);
+  margin-block: 1em;
+  overflow: hidden;
+}
+
+.combat-stage__board {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid var(--line-soft);
+  background: color-mix(in oklab, var(--paper-lit) 88%, var(--ink) 4%);
+}
+
+/* 빈 종이 위에 말 두 개만 떠 있으면 미완성으로 읽힌다. 중앙선과 먹 번짐을
+   깔아 "판"으로 보이게 한다. 좌표 격자도 바닥선도 아니다 — 말의 y는 데이터가
+   정하므로 고정된 바닥선을 그리면 말이 그 위에 떠 있는 것처럼 보인다.
+   배경 질감일 뿐이며 거리·높이를 수치로 주장하지 않는다. */
+.combat-stage__board::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background:
+    linear-gradient(90deg, transparent calc(50% - 1px), var(--line-soft) 50%, transparent calc(50% + 1px)),
+    radial-gradient(ellipse 58% 40% at 50% 50%, var(--ink-wash), transparent 72%);
+}
+
+.combat-board__empty {
+  margin: 0;
+  padding: 1em;
+  color: var(--ink-faded);
+  font-size: 0.95rem;
+}
+
+.combat-board__piece {
+  position: absolute;
+  left: var(--piece-x);
+  top: var(--piece-y);
+  translate: -50% -50%;
+  display: grid;
+  place-items: center;
+  inline-size: clamp(1.6rem, 12cqi, 2.6rem);
+  block-size: clamp(2rem, 15cqi, 3.2rem);
+  border: 1px solid var(--line-hard);
+  border-radius: 50% 50% 22% 22% / 60% 60% 40% 40%;
+  font-size: clamp(0.85rem, 5cqi, 1.1rem);
+}
+
+.combat-board__piece[data-side="ally"] {
+  background: var(--ink);
+  color: var(--paper-lit);
+}
+
+/* 종이 바탕에 종이색 말을 놓으면 대비가 거의 없어 글리프가 읽히지 않는다.
+   더 짙은 종이색으로 채우고 윤곽을 두껍게 한다. 진영 신호는 색 하나에
+   의존하지 않는다: 채움 대비 + 파선 윤곽 + 我/敵 글리프 셋이 함께 쓰인다. */
+.combat-board__piece[data-side="enemy"] {
+  background: color-mix(in oklab, var(--paper-deep) 84%, var(--ink) 12%);
+  color: var(--ink);
+  border-width: 2px;
+  border-style: dashed;
+}
+
+.combat-board__piece[data-active="false"] {
+  opacity: 0.55;
+  filter: saturate(0.4);
+}
+
+.combat-board__glyph {
+  line-height: 1;
+}
+
+/* 한 말이 cue를 여러 개 가질 수 있으므로(피격 + 균형 붕괴 + 전투불능) 표식을
+   나란히 놓는다. 각 표식을 절대 배치하면 같은 자리에 겹쳐 하나만 보인다. */
+.combat-board__cues {
+  position: absolute;
+  inset-block-start: -0.55em;
+  inset-inline-start: 50%;
+  translate: -50% 0;
+  display: flex;
+  gap: 0.12em;
+  white-space: nowrap;
+}
+
+.combat-board__cue {
+  display: grid;
+  place-items: center;
+  inline-size: 1.35em;
+  block-size: 1.35em;
+  font-size: 0.72em;
+  line-height: 1;
+  background: color-mix(in oklab, var(--paper-lit) 82%, var(--ink) 6%);
+  border: 1px solid var(--line-hard);
+  border-radius: 50%;
+}
+
+.combat-board__cue[data-cue="attack"] { color: var(--seal-red); }
+.combat-board__cue[data-cue="hit"] { color: var(--seal-red-lit); }
+.combat-board__cue[data-cue="evade"] { color: var(--jade); }
+.combat-board__cue[data-cue="balance_broken"] { color: var(--gold-leaf); }
+.combat-board__cue[data-cue="incapacitated"] { color: var(--ink-faded); }
+
+.combat-stage__log {
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-inline: 0.25em;
+}
+
+.combat-log__meta {
+  margin: 0 0 0.4em;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--ink-faded);
+}
+
+.combat-log__list {
+  margin: 0;
+  padding-inline-start: 1.1em;
+  display: grid;
+  gap: 0.25em;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.combat-log__row[data-cue="hit"] {
+  color: var(--seal-red-lit);
+}
+
+.combat-log__cue-glyph {
+  margin-inline-end: 0.3em;
+}
+
+.combat-log__row[data-log-unknown="true"] {
+  border-inline-start: 2px solid var(--line-hard);
+  padding-inline-start: 0.4em;
+  font-style: italic;
+}
+
+.combat-log__omitted,
+.combat-log__empty {
+  color: var(--ink-faded);
+  font-style: italic;
+}
+
+.combat-report {
+  margin-block-start: 1em;
+  padding: 0.75em 1em;
+  border: 1px solid var(--line-soft);
+  background: color-mix(in oklab, var(--paper-lit) 92%, var(--ink) 3%);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.combat-report__row,
+.combat-report__fingerprint {
+  margin: 0.25em 0;
+}
+
+.combat-report__combatants {
+  margin: 0.5em 0 0;
+  padding-inline-start: 1.2em;
+}
+
+.combat-report__empty {
+  color: var(--ink-faded);
+  font-style: italic;
+}
+
+/* forced-colors(고대비 모드): 배경 채움/box-shadow만으로 표현한 경계는
+   시스템이 지워버릴 수 있으므로, 진영·cue 구분을 시스템 색 키워드로도
+   보존한다 (I9). */
+@media (forced-colors: active) {
+  .combat-board__piece {
+    forced-color-adjust: none;
+    border-color: CanvasText;
+  }
+
+  .combat-board__piece[data-side="ally"] {
+    background: CanvasText;
+    color: Canvas;
+    border-style: solid;
+  }
+
+  .combat-board__piece[data-side="enemy"] {
+    background: Canvas;
+    color: CanvasText;
+    border-style: dashed;
+  }
+
+  .combat-board__piece[data-active="false"] {
+    color: GrayText;
+    border-color: GrayText;
+  }
+
+  .combat-board__cue {
+    forced-color-adjust: none;
+    background: Canvas;
+    border-color: CanvasText;
+    color: Highlight;
+  }
+
+  .combat-log__row[data-cue="hit"] {
+    color: Highlight;
+  }
+
+  .combat-log__row[data-log-unknown="true"] {
+    border-inline-start-color: GrayText;
+  }
+}

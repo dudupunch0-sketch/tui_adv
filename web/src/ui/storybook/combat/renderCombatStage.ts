@@ -331,7 +331,7 @@ function renderLogRow(
   )}"${cueAttr}${unknownAttr}>${cueGlyph}${escapeHtml(line)}</li>`;
 }
 
-// -- 전체 로그 열람 --------------------------------------------------------------
+// -- 전체 로그 열람 ------------------------------------------------------------
 
 /** 정본 13 (중요도)의 세 값 그대로. renderer가 새 라벨을 만들지 않는다(I5). */
 const IMPORTANCE_LABELS: Record<CombatLogImportance, string> = {
@@ -364,8 +364,15 @@ const IMPORTANCE_LABELS: Record<CombatLogImportance, string> = {
 export function renderCombatFullLog(view: CombatSpectatorView): string {
   const rows = view.full_log.map(renderFullLogRow).join('');
   const summaryText = `전체 로그 ${view.full_log.length}건 열람`;
+  // I6를 줄마다 반복하지 않는다. core_log는 정확히 `importance >= 중요`인
+  // 부분집합이라 중요도 칩이 이미 그 사실을 담고 있다 — 줄마다 "핵심 로그에도
+  // 있음"을 붙이면 절반의 줄이 두 줄로 늘어나 목록을 훑을 수 없게 되고,
+  // 칩이 말하는 것을 한 번 더 말하는 것뿐이다. 대응 관계를 여기서 한 번만
+  // 밝힌다.
+  const legend = '중요·결정적으로 표시된 줄은 위 핵심 로그에도 나온 줄이다.';
   return `<details class="combat-full-log" data-region="combat-full-log">
     <summary>${escapeHtml(summaryText)}</summary>
+    <p class="combat-full-log__legend">${escapeHtml(legend)}</p>
     <ol class="combat-full-log__list">${rows}</ol>
   </details>`;
 }
@@ -376,9 +383,6 @@ function renderFullLogRow(entry: CombatSpectatorLogEntry): string {
   // 그 정의를 여기서 다시 필터로 재구현하지 않고 그대로 판정에 쓴다.
   const inCoreLog = entry.importance !== 'routine';
   const inCoreLogAttr = inCoreLog ? ' data-in-core-log="true"' : '';
-  const coreLogBadge = inCoreLog
-    ? '<span class="combat-full-log__core-flag">핵심 로그에도 있음</span>'
-    : '';
   const unknownAttr = isKnownCombatLogTemplateId(entry.template_id)
     ? ''
     : ' data-log-unknown="true"';
@@ -389,7 +393,7 @@ function renderFullLogRow(entry: CombatSpectatorLogEntry): string {
     tickLabel,
   )}</span><span class="combat-full-log__importance">${escapeHtml(
     IMPORTANCE_LABELS[entry.importance],
-  )}</span> ${escapeHtml(line)}${coreLogBadge}</li>`;
+  )}</span> ${escapeHtml(line)}</li>`;
 }
 
 // -- 전투 종료 보고서 ------------------------------------------------------------

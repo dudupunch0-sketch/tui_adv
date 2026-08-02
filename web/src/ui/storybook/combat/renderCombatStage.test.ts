@@ -504,6 +504,22 @@ describe('renderCombatFullLog', () => {
     expect(decisiveRow![0]).toContain('data-in-core-log="true"');
   });
 
+  it('states the core-log correspondence once, not on every row', () => {
+    // 64줄 중 절반이 `중요`/`결정적`이다. 줄마다 "핵심 로그에도 있음"을 붙이면
+    // 그 절반이 두 줄로 늘어나 목록을 훑을 수 없게 되고, 중요도 칩이 이미
+    // 말하는 것을 반복하는 것뿐이다 (core_log는 정확히 importance >= 중요).
+    const fullLog = Array.from({ length: 8 }, (_, i) =>
+      logEntry({ sequence: i, importance: i % 2 === 0 ? 'routine' : 'important' }),
+    );
+    const html = renderCombatFullLog(view({ full_log: fullLog }));
+    const legendCount = (html.match(/combat-full-log__legend/g) ?? []).length;
+    expect(legendCount).toBe(1);
+    expect(html).toContain('핵심 로그에도 나온 줄');
+    // 줄 단위 배지가 다시 들어오면 잡는다.
+    expect(html).not.toContain('핵심 로그에도 있음');
+    expect(html).not.toContain('combat-full-log__core-flag');
+  });
+
   it('shows tick and sequence for each row', () => {
     const html = renderCombatFullLog(view({ full_log: [logEntry({ tick: 8, sequence: 2 })] }));
     expect(html).toContain('t8·2');

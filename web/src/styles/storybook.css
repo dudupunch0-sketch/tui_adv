@@ -2959,13 +2959,14 @@ button.character-title-seal {
   font-size: 0.82em;
 }
 
-/* I6: core_log와의 중복을 색이 아니라 텍스트로 드러낸다(renderer가 만드는
-   `.combat-full-log__core-flag` span). */
-.combat-full-log__core-flag {
-  margin-inline-start: 0.4em;
+/* I6: core_log와의 대응을 줄마다 반복하지 않고 목록 앞에서 한 번만 밝힌다.
+   줄마다 "핵심 로그에도 있음"을 붙이면 절반의 줄이 두 줄로 늘어나 64줄
+   목록을 훑을 수 없게 되고, 중요도 칩이 이미 말하는 것을 반복하는 것뿐이다. */
+.combat-full-log__legend {
+  margin: 0;
+  padding: 0.5em 0.9em 0;
   color: var(--ink-faded);
   font-size: 0.85em;
-  font-style: italic;
 }
 
 .combat-full-log__row[data-log-unknown="true"] {

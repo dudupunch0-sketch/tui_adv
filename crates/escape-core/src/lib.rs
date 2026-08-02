@@ -49,7 +49,8 @@ pub use combat_simulation::{
 };
 pub use combat_spectator::{
     spectate as spectate_combat, CombatSpectatorCue, CombatSpectatorError, CombatSpectatorFrame,
-    CombatSpectatorLogEntry, CombatSpectatorPiece, CombatSpectatorRequest, CombatSpectatorView,
+    CombatSpectatorLogEntry, CombatSpectatorPage, CombatSpectatorPiece, CombatSpectatorRequest,
+    CombatSpectatorView,
 };
 pub use combat_state::{
     CombatConclusion, CombatEffectCatalog, CombatEffectCategory, CombatEffectDecision,

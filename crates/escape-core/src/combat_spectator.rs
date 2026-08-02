@@ -1,8 +1,9 @@
 use crate::{
-    CombatAttackOutcome, CombatEffectCatalog, CombatEffectDefinition, CombatFacing, CombatLogEvent,
-    CombatLogImportance, CombatLogTag, CombatPosition, CombatResolutionCombatant,
-    CombatResolutionLogEvent, CombatResolutionLogTag, CombatResolutionResult, CombatSide,
-    CombatSimulationParticipant, CombatSimulationVersion, EffectVisibility,
+    CombatAttackOutcome, CombatConclusionReport, CombatEffectCatalog, CombatEffectDefinition,
+    CombatFacing, CombatLogEvent, CombatLogImportance, CombatLogTag, CombatPosition,
+    CombatResolutionCombatant, CombatResolutionLogEvent, CombatResolutionLogTag,
+    CombatResolutionResult, CombatSide, CombatSimulationParticipant, CombatSimulationVersion,
+    EffectVisibility,
 };
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
@@ -74,6 +75,16 @@ pub struct CombatSpectatorView {
     #[serde(default)]
     pub full_log: Vec<CombatSpectatorLogEntry>,
     pub fingerprint: String,
+}
+
+/// renderer가 표시할 관전 화면 한 장. 정본 13의 "상단 시뮬레이션 / 하단 로그"와
+/// 종료 보고서를 renderer-neutral하게 담는다. 배치 비율·색·아이콘은 renderer가 정한다.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct CombatSpectatorPage {
+    pub view: CombatSpectatorView,
+    /// 전투가 아직 진행 중이면 `None` (발생하지 않은 항목은 숨긴다).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub report: Option<CombatConclusionReport>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]

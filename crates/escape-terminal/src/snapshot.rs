@@ -1,7 +1,7 @@
 use super::*;
 use escape_core::{
-    CombatSide, CombatSpectatorCue, CombatSpectatorLogEntry, CombatSpectatorPiece,
-    CombatSpectatorView,
+    CombatConclusionOutcome, CombatConclusionReason, CombatConclusionReport, CombatSide,
+    CombatSpectatorCue, CombatSpectatorLogEntry, CombatSpectatorPiece, CombatSpectatorView,
 };
 use std::collections::BTreeMap;
 
@@ -568,6 +568,89 @@ fn render_combat_core_log(lines: &mut Vec<String>, view: &CombatSpectatorView) {
     }
 }
 
+// -- P4: 보고서 ----------------------------------------------------------------
+
+fn combat_outcome_label(outcome: CombatConclusionOutcome) -> &'static str {
+    match outcome {
+        CombatConclusionOutcome::InProgress => "진행 중",
+        CombatConclusionOutcome::AllyVictory => "아군 승리",
+        CombatConclusionOutcome::EnemyVictory => "적 승리",
+        CombatConclusionOutcome::MutualDefeat => "양측 전멸",
+        CombatConclusionOutcome::Stalemate => "무승부",
+    }
+}
+
+fn combat_reason_label(reason: CombatConclusionReason) -> &'static str {
+    match reason {
+        CombatConclusionReason::NoTerminalCondition => "종료 조건 없음",
+        CombatConclusionReason::AllEnemiesDefeated => "적 전멸",
+        CombatConclusionReason::AllAlliesDefeated => "아군 전멸",
+        CombatConclusionReason::BothSidesDefeated => "양측 전멸",
+        CombatConclusionReason::MaxTicksReached => "최대 tick 도달",
+    }
+}
+
+/// P4: `combat.report`가 `Some`일 때만 호출된다 (호출부: `render_combat_section`).
+/// 금지: 전략 평가·핵심 전환점·자동 원인 분석·전략 조언·종합 MVP·이전 전투 비교 —
+/// 이 함수는 `CombatConclusionReport` 필드를 그대로 옮기기만 한다.
+fn render_combat_report(
+    lines: &mut Vec<String>,
+    view: &CombatSpectatorView,
+    report: &CombatConclusionReport,
+) {
+    lines.push("[전투 보고서]".to_string());
+    // fingerprint를 표시하면 반드시 simulation_version과 같은 줄에 둔다 (인덱스 계약).
+    lines.push(format!(
+        "시뮬레이션 버전: {} · 지문: {}",
+        view.simulation_version.as_str(),
+        report.fingerprint
+    ));
+    lines.push(format!("결과: {}", combat_outcome_label(report.outcome)));
+    lines.push(format!("사유: {}", combat_reason_label(report.reason)));
+    lines.push(format!("전투 시간: {}ms", report.duration_millis));
+    lines.push(format!(
+        "생존: {}",
+        if report.survivor_ids.is_empty() {
+            "없음".to_string()
+        } else {
+            report.survivor_ids.join(", ")
+        }
+    ));
+    lines.push(format!(
+        "전투불능: {}",
+        if report.defeated_ids.is_empty() {
+            "없음".to_string()
+        } else {
+            report.defeated_ids.join(", ")
+        }
+    ));
+    // 발생하지 않은 항목은 숨긴다: None이면 줄 자체를 만들지 않는다.
+    if let Some(top_dealt) = &report.top_damage_dealt_id {
+        lines.push(format!("최대 피해를 가한 전투원: {top_dealt}"));
+    }
+    if let Some(top_taken) = &report.top_damage_taken_id {
+        lines.push(format!("최대 피해를 받은 전투원: {top_taken}"));
+    }
+    if report.combatants.is_empty() {
+        lines.push("- 전투원 상세 기록 없음.".to_string());
+    } else {
+        for combatant in &report.combatants {
+            lines.push(format!(
+                "- {}: 가한 피해 {} · 받은 피해 {} · 처치 {} · 전투불능 {}",
+                combatant.id,
+                round_hundredths_to_int(combatant.damage_dealt_hundredths),
+                round_hundredths_to_int(combatant.damage_taken_hundredths),
+                combatant.kills,
+                if combatant.incapacitated {
+                    "예"
+                } else {
+                    "아니오"
+                }
+            ));
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -853,5 +936,113 @@ mod tests {
             .count();
         assert_eq!(shown, COMBAT_CORE_LOG_LIMIT);
         assert!(lines.iter().any(|line| line.contains("생략 5줄")));
+    }
+
+    // -- P4: 보고서 -----------------------------------------------------------
+    use escape_core::CombatCombatantReport;
+
+    fn base_report() -> CombatConclusionReport {
+        CombatConclusionReport {
+            resolution_fingerprint: "res-fp".to_string(),
+            outcome: CombatConclusionOutcome::AllyVictory,
+            reason: CombatConclusionReason::AllEnemiesDefeated,
+            decisive_tick: Some(3),
+            active_allies: 1,
+            active_enemies: 0,
+            survivor_ids: vec!["ally_1".to_string()],
+            defeated_ids: vec!["enemy_1".to_string()],
+            removed_combat_effect_ids: Vec::new(),
+            retained_effect_ids: Vec::new(),
+            duration_millis: 300,
+            combatants: vec![CombatCombatantReport {
+                id: "ally_1".to_string(),
+                damage_dealt_hundredths: 1050,
+                damage_taken_hundredths: 200,
+                kills: 1,
+                incapacitated: false,
+            }],
+            top_damage_dealt_id: Some("ally_1".to_string()),
+            top_damage_taken_id: Some("enemy_1".to_string()),
+            fingerprint: "report-fp".to_string(),
+        }
+    }
+
+    #[test]
+    fn report_hides_highlight_lines_when_none() {
+        let mut report = base_report();
+        report.top_damage_dealt_id = None;
+        report.top_damage_taken_id = None;
+        let view = test_view(Vec::new(), Vec::new(), Vec::new());
+        let mut lines = Vec::new();
+        render_combat_report(&mut lines, &view, &report);
+        let text = lines.join("\n");
+        assert!(!text.contains("최대 피해를 가한"));
+        assert!(!text.contains("최대 피해를 받은"));
+    }
+
+    #[test]
+    fn report_shows_highlight_lines_when_some() {
+        let report = base_report();
+        let view = test_view(Vec::new(), Vec::new(), Vec::new());
+        let mut lines = Vec::new();
+        render_combat_report(&mut lines, &view, &report);
+        let text = lines.join("\n");
+        assert!(text.contains("최대 피해를 가한 전투원: ally_1"));
+        assert!(text.contains("최대 피해를 받은 전투원: enemy_1"));
+    }
+
+    #[test]
+    fn report_lists_one_row_per_combatant() {
+        let mut report = base_report();
+        report.combatants.push(CombatCombatantReport {
+            id: "ally_2".to_string(),
+            damage_dealt_hundredths: 0,
+            damage_taken_hundredths: 500,
+            kills: 0,
+            incapacitated: true,
+        });
+        let view = test_view(Vec::new(), Vec::new(), Vec::new());
+        let mut lines = Vec::new();
+        render_combat_report(&mut lines, &view, &report);
+        let rows = lines
+            .iter()
+            .filter(|line| line.starts_with("- ally") || line.starts_with("- enemy"))
+            .count();
+        assert_eq!(rows, report.combatants.len());
+    }
+
+    #[test]
+    fn report_contains_no_forbidden_phrases() {
+        let report = base_report();
+        let view = test_view(Vec::new(), Vec::new(), Vec::new());
+        let mut lines = Vec::new();
+        render_combat_report(&mut lines, &view, &report);
+        let text = lines.join("\n");
+        for forbidden in [
+            "MVP",
+            "전략 평가",
+            "전환점",
+            "원인 분석",
+            "전략 조언",
+            "이전 전투",
+        ] {
+            assert!(
+                !text.contains(forbidden),
+                "forbidden phrase leaked: {forbidden}"
+            );
+        }
+    }
+
+    #[test]
+    fn report_fingerprint_shares_line_with_simulation_version() {
+        let report = base_report();
+        let view = test_view(Vec::new(), Vec::new(), Vec::new());
+        let mut lines = Vec::new();
+        render_combat_report(&mut lines, &view, &report);
+        let version_line = lines
+            .iter()
+            .find(|line| line.contains("시뮬레이션 버전"))
+            .expect("simulation version line present");
+        assert!(version_line.contains(&report.fingerprint));
     }
 }

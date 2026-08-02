@@ -93,6 +93,10 @@ describe('runtime content bundle registry', () => {
       'wuxia_settlement_stay_scene',
       'wuxia_black_serpent_aftermath',
       'wuxia_collapse_gate',
+      // Wave 3 Step 2b: gated behind combat_spectator_preview_unlocked until the
+      // Step 1d spectator renderer lands, so it is present in the bundle but
+      // unreachable in normal play.
+      'wuxia_combat_spectator_preview_bout',
     ]);
     expect(encounterIds).not.toContain('ex_employee_messenger');
   });

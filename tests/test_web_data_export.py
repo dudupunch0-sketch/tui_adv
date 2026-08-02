@@ -167,7 +167,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     assert bundle["manifest"]["counts"] == {
         "locations": 5,
         "items": 11,
-        "encounters": 51,
+        "encounters": 52,
         "endings": 3,
         "achievements": 2,
         "traits": 2,
@@ -189,7 +189,7 @@ def test_export_web_data_builds_wuxia_storypack_preview_bundle():
     ]
     encounter_ids = [encounter["id"] for encounter in bundle["content"]["encounters"]]
     encounters_by_id = {encounter["id"]: encounter for encounter in bundle["content"]["encounters"]}
-    assert len(encounter_ids) == 51
+    assert len(encounter_ids) == 52
     assert {
         "wuxia_cheongryu_first_night_shelter",
         "wuxia_cheongryu_first_breathing_lesson",

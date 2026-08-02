@@ -10,13 +10,25 @@
 
 use escape_core::{
     index_content_bundle, load_content_bundle, new_game_from_content_at, scene_page_from_content,
-    ContentBundle, ContentIndexError, ContentTurnError,
+    turn_view_from_content, ContentBundle, ContentIndexError, ContentTurnError,
 };
 use serde_json::{json, Value};
 
 const BUNDLE: &str = include_str!("../fixtures/content/content.bundle.json");
 const ENCOUNTER_ID: &str = "printer_prints_alone";
 const LOCATION_ID: &str = "printer_area";
+
+/// Wave 3 Step 2b: real authoring regression suite. Unlike the rest of this
+/// file (which injects a synthetic combat definition into a small unrelated
+/// fixture), these tests load the actual wuxia storypack-preview bundle and
+/// exercise the one real systemic combat encounter authored in
+/// `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`
+/// (`fable_combat_wave3_step2b_2608021228.md`).
+const WUXIA_BUNDLE: &str =
+    include_str!("../fixtures/content/storypack-preview/wuxia_jianghu_pack.content.bundle.json");
+const SPECTATOR_BOUT_ID: &str = "wuxia_combat_spectator_preview_bout";
+const SPECTATOR_LOCATION_ID: &str = "cheongryu_outer_courtyard";
+const SPECTATOR_GATE_FLAG: &str = "combat_spectator_preview_unlocked";
 
 /// A minimal, internally-consistent systemic combat definition: two
 /// combatants (one per side), one attack each, matching defenses, and a
@@ -423,4 +435,169 @@ fn combat_producer_failures_report_as_their_own_error_variant() {
         ContentTurnError::UnknownStateLocation("printer_prints_alone".to_string()),
         "a combat failure must not masquerade as an unknown location"
     );
+}
+
+// ---------------------------------------------------------------------
+// Wave 3 Step 2b: the real `wuxia_combat_spectator_preview_bout` encounter,
+// authored in the wuxia storypack-preview bundle behind the
+// `combat_spectator_preview_unlocked` gate flag (invariant 8 -- no ordinary
+// play path may ever set it, so these tests set it directly on the state).
+// ---------------------------------------------------------------------
+
+/// WP-3 case 1: without the gate flag, the encounter is unreachable -- some
+/// other (combat-less) encounter is current, and `ScenePage.combat` is `None`.
+#[test]
+fn spectator_preview_bout_is_unreachable_without_the_gate_flag() {
+    let index = index_content_bundle(&load_content_bundle(WUXIA_BUNDLE).unwrap())
+        .expect("wuxia preview bundle should index");
+    let state = new_game_from_content_at(1, &index, SPECTATOR_LOCATION_ID)
+        .expect("game should start at the courtyard");
+
+    let view = turn_view_from_content(&state, &index).expect("turn view should render");
+    assert_ne!(
+        view.encounter_id.as_deref(),
+        Some(SPECTATOR_BOUT_ID),
+        "the gated encounter must not be selectable without its flag"
+    );
+
+    let page = scene_page_from_content(&state, &index).expect("scene page should render");
+    assert!(
+        page.combat.is_none(),
+        "no other encounter in the bundle authors combat, so ScenePage.combat must be None here"
+    );
+}
+
+/// WP-3 case 2 & 3: setting the gate flag selects the encounter and fills
+/// `ScenePage.combat` with a non-empty spectator view and a report.
+#[test]
+fn gate_flag_selects_the_bout_and_fills_scene_page_combat() {
+    let index = index_content_bundle(&load_content_bundle(WUXIA_BUNDLE).unwrap())
+        .expect("wuxia preview bundle should index");
+    let mut state = new_game_from_content_at(2, &index, SPECTATOR_LOCATION_ID)
+        .expect("game should start at the courtyard");
+    state.flags.push(SPECTATOR_GATE_FLAG.to_string());
+
+    let view = turn_view_from_content(&state, &index).expect("turn view should render");
+    assert_eq!(
+        view.encounter_id.as_deref(),
+        Some(SPECTATOR_BOUT_ID),
+        "the gate flag must make this the current encounter"
+    );
+
+    let page = scene_page_from_content(&state, &index).expect("scene page should render");
+    let combat = page
+        .combat
+        .expect("gated systemic combat should fill ScenePage.combat");
+    assert!(
+        !combat.view.frames.is_empty(),
+        "spectator view should have at least one tick frame"
+    );
+    assert!(
+        combat.report.is_some(),
+        "a concluded combat should carry a report"
+    );
+}
+
+/// WP-3 case 4: the report carries exactly the two authored combatants, each
+/// with non-negative damage totals.
+#[test]
+fn report_covers_both_combatants_with_non_negative_damage_totals() {
+    let index = index_content_bundle(&load_content_bundle(WUXIA_BUNDLE).unwrap())
+        .expect("wuxia preview bundle should index");
+    let mut state = new_game_from_content_at(3, &index, SPECTATOR_LOCATION_ID)
+        .expect("game should start at the courtyard");
+    state.flags.push(SPECTATOR_GATE_FLAG.to_string());
+
+    let page = scene_page_from_content(&state, &index).expect("scene page should render");
+    let report = page
+        .combat
+        .expect("gated systemic combat should fill ScenePage.combat")
+        .report
+        .expect("concluded combat should carry a report");
+
+    assert_eq!(
+        report.combatants.len(),
+        2,
+        "exactly two authored combatants"
+    );
+    for combatant in &report.combatants {
+        assert!(combatant.damage_dealt_hundredths >= 0);
+        assert!(combatant.damage_taken_hundredths >= 0);
+    }
+}
+
+/// WP-3 case 5 (정본 검산): the first landed hit deals exactly 1333
+/// hundredths of damage. Both authored attacks use the canonical 정본 11
+/// standard combatant numbers (power 40 / ability multiplier 1.0 / defense 5),
+/// so `damage(attack, defense)` in `combat_resolution.rs` must yield
+/// `pre = 4000 * 5 * 100 / 1200 = 1666`, `reduction = 1666 * 500 / 2500 = 333`,
+/// `damage = 1666 - 333 = 1333`. This single assertion pins both the
+/// authoring numbers and the resolver formula together.
+#[test]
+fn wuxia_combat_spectator_preview_bout_first_hit_damage_is_1333_hundredths() {
+    let index = index_content_bundle(&load_content_bundle(WUXIA_BUNDLE).unwrap())
+        .expect("wuxia preview bundle should index");
+    let mut state = new_game_from_content_at(4, &index, SPECTATOR_LOCATION_ID)
+        .expect("game should start at the courtyard");
+    state.flags.push(SPECTATOR_GATE_FLAG.to_string());
+
+    let page = scene_page_from_content(&state, &index).expect("scene page should render");
+    let combat = page
+        .combat
+        .expect("gated systemic combat should fill ScenePage.combat");
+
+    let first_hit = combat
+        .view
+        .full_log
+        .iter()
+        .find(|entry| entry.template_id == "combat.log.damage_applied")
+        .expect("at least one landed hit is expected between two standard combatants");
+    assert_eq!(
+        first_hit.value_hundredths,
+        Some(1333),
+        "정본 11 표준 전투원 대 표준 전투원 첫 명중 피해는 1333 hundredths여야 한다"
+    );
+}
+
+/// WP-3 case 6: calling the producer twice for the same state yields a
+/// completely identical `ScenePage.combat`.
+#[test]
+fn gated_combat_is_deterministic_for_the_same_state() {
+    let index = index_content_bundle(&load_content_bundle(WUXIA_BUNDLE).unwrap())
+        .expect("wuxia preview bundle should index");
+    let mut state = new_game_from_content_at(5, &index, SPECTATOR_LOCATION_ID)
+        .expect("game should start at the courtyard");
+    state.flags.push(SPECTATOR_GATE_FLAG.to_string());
+
+    let first = scene_page_from_content(&state, &index).expect("first render should succeed");
+    let second = scene_page_from_content(&state, &index).expect("second render should succeed");
+    assert_eq!(first.combat, second.combat);
+}
+
+/// WP-3 case 7 (invariant 6): the encounter has a staged `event` (Story ->
+/// Choice -> per-choice Result), like every other wuxia preview encounter.
+#[test]
+fn spectator_preview_bout_has_a_staged_event() {
+    let index = index_content_bundle(&load_content_bundle(WUXIA_BUNDLE).unwrap())
+        .expect("wuxia preview bundle should index");
+    let encounter = index
+        .encounter(SPECTATOR_BOUT_ID)
+        .expect("the gated encounter must exist in the bundle");
+    let event = encounter
+        .event
+        .as_ref()
+        .expect("Wave 3 Step 2b entry must be staged");
+    assert_eq!(event.stages.first().map(|s| s.kind.as_str()), Some("story"));
+    assert_eq!(event.stages.get(1).map(|s| s.kind.as_str()), Some("choice"));
+    let illustrations: Vec<_> = event
+        .stages
+        .iter()
+        .flat_map(|s| s.blocks.iter())
+        .filter(|b| b.kind == "illustration")
+        .collect();
+    assert_eq!(illustrations.len(), 1);
+    assert!(illustrations[0]
+        .alt
+        .as_deref()
+        .is_some_and(|alt| !alt.trim().is_empty()));
 }

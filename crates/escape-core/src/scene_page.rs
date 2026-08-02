@@ -574,16 +574,11 @@ fn derive_combat_seed(
     manifest.derived_seed(CombatRngNamespace::ActualCombat)
 }
 
-/// `ContentTurnError` (crates/escape-core/src/turn.rs) is out of this
-/// slice's expected-file list, so a combat producer failure is carried in
-/// the existing single-variant `UnknownStateLocation(String)` payload
-/// rather than a dedicated variant. The message embeds the encounter id and
-/// reason so callers still see exactly what failed; see the Step 2a report
-/// for this deliberate scope trade-off.
 fn combat_producer_error(encounter_id: &str, message: &str) -> ContentTurnError {
-    ContentTurnError::UnknownStateLocation(format!(
-        "combat producer failed for encounter '{encounter_id}': {message}"
-    ))
+    ContentTurnError::CombatProducer {
+        encounter_id: encounter_id.to_string(),
+        reason: message.to_string(),
+    }
 }
 
 fn fnv1a_64(bytes: &[u8]) -> u64 {

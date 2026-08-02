@@ -171,3 +171,184 @@ links:
   priority: 100
   fallback: true
   status: approved
+- event_id: wuxia_cheongryu_empty_guest_room
+  afterthought_id: notion_0012
+  relation: primary
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_cheongryu_empty_guest_room:choice:방을 정리한다
+  reveal_policy: ending_resolution
+  exclusive_group: qingliu_future
+  priority: 10
+  fallback: false
+  status: approved
+- event_id: wuxia_cheongryu_empty_guest_room
+  afterthought_id: notion_0014
+  relation: conditional
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_cheongryu_empty_guest_room:choice:서하린에게 방의 주인을 묻는다
+  reveal_policy: ending_resolution
+  exclusive_group: seoharin_future
+  priority: 10
+  fallback: false
+  status: approved
+- event_id: wuxia_cheongryu_first_departure_cost
+  afterthought_id: notion_0012
+  relation: conditional
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_cheongryu_first_departure_cost:choice:부상자들이 안정될 때까지 남는다
+  reveal_policy: ending_resolution
+  exclusive_group: qingliu_future
+  priority: 10
+  fallback: false
+  status: approved
+- event_id: wuxia_cheongryu_first_departure_cost
+  afterthought_id: notion_0014
+  relation: conditional
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_cheongryu_first_departure_cost:choice:서하린과 습격 흔적을 조사한다
+  reveal_policy: ending_resolution
+  exclusive_group: seoharin_future
+  priority: 10
+  fallback: false
+  status: approved
+- event_id: wuxia_cheongryu_first_departure_cost
+  afterthought_id: notion_0017
+  relation: conditional
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_cheongryu_first_departure_cost:choice:외부로 나갈 사람을 따라 떠난다
+  reveal_policy: ending_resolution
+  exclusive_group: seoharin_future
+  priority: 20
+  fallback: false
+  status: approved
+- event_id: wuxia_cheongryu_medicine_errand
+  afterthought_id: local_afterthought_qingliu_empty_medicine_shelf
+  relation: primary
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_cheongryu_medicine_errand:choice:시장까지 혼자 다녀오기
+    - condition_ref:wuxia_cheongryu_medicine_errand:choice:서하린과 함께 가기
+    - condition_ref:wuxia_cheongryu_medicine_errand:choice:사원증·출근 물건을 교환 제안하기
+    - condition_ref:wuxia_cheongryu_medicine_errand:choice:빈손으로 돌아와 부족을 알리기
+  reveal_policy: ending_resolution
+  exclusive_group: qingliu_future
+  priority: 10
+  fallback: false
+  status: approved
+- event_id: wuxia_cheongryu_raid_aftermath_roll_call
+  afterthought_id: notion_0012
+  relation: primary
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_cheongryu_raid_aftermath_roll_call:choice:부상자부터 확인한다
+  reveal_policy: ending_resolution
+  exclusive_group: qingliu_future
+  priority: 10
+  fallback: false
+  status: approved
+- event_id: wuxia_cheongryu_raid_aftermath_roll_call
+  afterthought_id: notion_0013
+  relation: conditional
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_cheongryu_raid_aftermath_roll_call:choice:실종자 명단을 맡는다
+  reveal_policy: ending_resolution
+  exclusive_group: seoharin_future
+  priority: 10
+  fallback: false
+  status: approved
+- event_id: wuxia_cheongryu_raid_aftermath_roll_call
+  afterthought_id: local_afterthought_mumyeong_named_place
+  relation: conditional
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_cheongryu_raid_aftermath_roll_call:choice:무너진 서고에서 기록을 찾는다
+  reveal_policy: ending_resolution
+  exclusive_group: mumyeong_future
+  priority: 10
+  fallback: false
+  status: approved
+- event_id: wuxia_cheongryu_recovery_rain_patrol
+  afterthought_id: notion_0012
+  relation: primary
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_cheongryu_recovery_rain_patrol:choice:산문 지붕을 고친다
+  reveal_policy: ending_resolution
+  exclusive_group: qingliu_future
+  priority: 10
+  fallback: false
+  status: approved
+- event_id: wuxia_cheongryu_recovery_rain_patrol
+  afterthought_id: notion_0017
+  relation: conditional
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_cheongryu_recovery_rain_patrol:choice:빗물에 지워진 발자국을 살핀다
+    - condition_ref:wuxia_cheongryu_recovery_rain_patrol:choice:순찰자에게 우산을 건넨다
+  reveal_policy: ending_resolution
+  exclusive_group: seoharin_future
+  priority: 10
+  fallback: false
+  status: approved
+- event_id: wuxia_final_prep_last_meal
+  afterthought_id: notion_0012
+  relation: primary
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_final_prep_last_meal:choice:남은 사람의 몫을 확인한다
+  reveal_policy: ending_resolution
+  exclusive_group: qingliu_future
+  priority: 10
+  fallback: false
+  status: approved
+- event_id: wuxia_final_prep_last_meal
+  afterthought_id: notion_0014
+  relation: conditional
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_final_prep_last_meal:choice:귀환 이야기를 꺼낸다
+  reveal_policy: ending_resolution
+  exclusive_group: seoharin_future
+  priority: 10
+  fallback: false
+  status: approved
+- event_id: wuxia_final_prep_last_meal
+  afterthought_id: notion_0013
+  relation: conditional
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_final_prep_last_meal:choice:아무 말 없이 함께 있는다
+  reveal_policy: ending_resolution
+  exclusive_group: seoharin_future
+  priority: 20
+  fallback: false
+  status: approved
+- event_id: wuxia_final_prep_small_interruption
+  afterthought_id: notion_0012
+  relation: primary
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_final_prep_small_interruption:choice:산문을 지킨다
+  reveal_policy: ending_resolution
+  exclusive_group: qingliu_future
+  priority: 10
+  fallback: false
+  status: approved
+- event_id: wuxia_final_prep_small_interruption
+  afterthought_id: notion_0017
+  relation: conditional
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_final_prep_small_interruption:choice:소리를 따라간다
+    - condition_ref:wuxia_final_prep_small_interruption:choice:서하린에게 알리고 준비로 돌아간다
+  reveal_policy: ending_resolution
+  exclusive_group: seoharin_future
+  priority: 10
+  fallback: false
+  status: approved

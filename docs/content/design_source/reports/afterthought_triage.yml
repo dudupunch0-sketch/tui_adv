@@ -376,7 +376,8 @@ entries:
   - 'exact title/ID token(s): 청류문의 후일, 비워둔 자리'
   - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
   confidence: high
-  review_status: needs_designer_review
+  review_status: approved
+  approved_handling: split_multiple
   topic_keywords:
   - 청류문
   - 후일
@@ -395,7 +396,8 @@ entries:
   - 'exact title/ID token(s): 청류문의 후일, 비워둔 자리, 닫히지 않은 산문'
   - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
   confidence: high
-  review_status: needs_designer_review
+  review_status: approved
+  approved_handling: split_multiple
   topic_keywords:
   - 청류문
   - 산문
@@ -430,7 +432,8 @@ entries:
   - 'exact title/ID token(s): 청류문의 후일'
   - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
   confidence: medium
-  review_status: needs_designer_review
+  review_status: approved
+  approved_handling: condition_only
   topic_keywords:
   - 청류문
   - 귀환
@@ -446,7 +449,8 @@ entries:
   - raw reference is not an exact afterthought ID/title
   - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
   confidence: medium
-  review_status: needs_designer_review
+  review_status: approved
+  approved_handling: new_card_candidate
   topic_keywords:
   - 청류문
   - 후일
@@ -459,13 +463,15 @@ entries:
   candidate_afterthought_ids:
   - notion_0012
   - notion_0013
+  - local_afterthought_mumyeong_named_place
   evidence:
   - 후일담 카드 연결 필드의 원문을 보존함
   - raw reference is not an exact afterthought ID/title
   - 'exact title/ID token(s): 청류문의 후일, 서하린의 후일'
   - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
   confidence: high
-  review_status: needs_designer_review
+  review_status: approved
+  approved_handling: split_multiple
   topic_keywords:
   - 청류문
   - 서하린
@@ -561,7 +567,8 @@ entries:
   - 'exact title/ID token(s): 청류문의 후일, 닫히지 않은 산문'
   - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
   confidence: high
-  review_status: needs_designer_review
+  review_status: approved
+  approved_handling: split_multiple
   topic_keywords:
   - 청류문
   - 산문
@@ -785,7 +792,8 @@ entries:
   - 'exact title/ID token(s): 서하린의 후일, 청류문의 후일, 비워둔 자리'
   - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
   confidence: high
-  review_status: needs_designer_review
+  review_status: approved
+  approved_handling: split_multiple
   topic_keywords:
   - 청류문
   - 서하린
@@ -824,7 +832,8 @@ entries:
   - 'exact title/ID token(s): 닫히지 않은 산문, 청류문의 후일'
   - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
   confidence: high
-  review_status: needs_designer_review
+  review_status: approved
+  approved_handling: split_multiple
   topic_keywords:
   - 청류문
   - 산문

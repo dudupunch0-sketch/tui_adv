@@ -147,7 +147,7 @@ def main():
                 structural_errors.append(f"afterthought triage {entry.get('event_id')}: invalid classification {classification}")
                 continue
             triage_counts[classification] += 1
-            if classification == "designer_review_required": triage_review_ids.append(entry.get("event_id"))
+            if classification == "designer_review_required" and entry.get("review_status") == "needs_designer_review": triage_review_ids.append(entry.get("event_id"))
             candidates = entry.get("candidate_afterthought_ids", [])
             if not isinstance(candidates, list) or any(str(x) not in after_ids for x in candidates):
                 structural_errors.append(f"afterthought triage {entry.get('event_id')}: invalid candidate ids")
@@ -268,7 +268,16 @@ def main():
     expected_seoharin_events = {"wuxia_seoharin_empty_place", "wuxia_seoharin_hides_training_injury", "wuxia_seoharin_left_meal", "wuxia_seoharin_night_watch_after_raid", "wuxia_seoharin_old_song", "wuxia_seoharin_recovery_bandage_change", "wuxia_seoharin_shared_meal_after_raid", "wuxia_seoharin_unsaid_stay"}
     if seoharin_events and seoharin_events != expected_seoharin_events:
         semantic_errors.append(f"Seoharin link coverage mismatch: {sorted(seoharin_events)}")
-    pending_review_ids = sorted(str(x.get("event_id")) for x in triage_entries if isinstance(x, dict) and x.get("classification") == "designer_review_required")
+    expected_qingliu_events = {"wuxia_cheongryu_empty_guest_room", "wuxia_cheongryu_first_departure_cost", "wuxia_cheongryu_first_route_message", "wuxia_cheongryu_medicine_errand", "wuxia_cheongryu_raid_aftermath_roll_call", "wuxia_cheongryu_recovery_rain_patrol", "wuxia_final_prep_last_meal", "wuxia_final_prep_small_interruption"}
+    qingliu_link_events = {str(e.get("event_id")) for e in link_entries if isinstance(e, dict) and str(e.get("event_id")) in expected_qingliu_events}
+    qingliu_condition_only = {"wuxia_cheongryu_first_route_message"}
+    qingliu_source_present = bool(qingliu_link_events) or any(
+        isinstance(x, dict) and str(x.get("event_id")) in expected_qingliu_events
+        for x in choice_condition_entries
+    )
+    if qingliu_source_present and (qingliu_link_events | qingliu_condition_only != expected_qingliu_events or qingliu_link_events & qingliu_condition_only):
+        semantic_errors.append(f"Qingliu event coverage mismatch: {sorted(qingliu_link_events)}")
+    pending_review_ids = sorted(str(x.get("event_id")) for x in triage_entries if isinstance(x, dict) and x.get("review_status") == "needs_designer_review")
     if len(after_ids) == 18 and sum(afterthought_classification.values()) != 134:
         structural_errors.append(f"afterthought classification total mismatch: {sum(afterthought_classification.values())} != 134")
     capabilities = {"next_fallback": "not_available_in_source", "choice_matching": "partial_text_match", "notion_page_ids_urls": "unavailable_in_export", "afterthought_text_ids": "exact_id_or_name_only"}

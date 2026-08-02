@@ -1,5 +1,9 @@
 use super::*;
-use escape_core::CombatSpectatorLogEntry;
+use escape_core::{
+    CombatSide, CombatSpectatorCue, CombatSpectatorLogEntry, CombatSpectatorPiece,
+    CombatSpectatorView,
+};
+use std::collections::BTreeMap;
 
 pub(crate) fn render_scene_page_snapshot(page: &ScenePage, logs: &[String]) -> String {
     let mut lines = Vec::new();
@@ -414,6 +418,128 @@ fn combat_log_template_line(entry: &CombatSpectatorLogEntry) -> String {
     }
 }
 
+// -- P2: 체스말 보드 ----------------------------------------------------------
+
+/// Board render caps (정본: 스케일 축소 대신 좌표 목록으로 대체한다). Width/height
+/// are measured as `max - min` over the last frame's piece positions.
+const COMBAT_BOARD_MAX_WIDTH: i64 = 32;
+const COMBAT_BOARD_MAX_HEIGHT: i64 = 16;
+
+/// cue 5종 -> 텍스트 표식 대응표 (정본 13의 연출 문법을 문자 표식으로 옮긴 것).
+/// 이 표는 `docs/dev/TUI_Layout.md`의 동일 표와 짝을 이룬다 — 한쪽만 고치지 말 것.
+///
+/// | cue              | 정본 연출 의미      | 표식 |
+/// |------------------|--------------------|------|
+/// | Attack           | 짧은 전진/복귀       | `>`  |
+/// | Hit              | 밀림/진동           | `<`  |
+/// | Evade            | 측면 이동           | `~`  |
+/// | BalanceBroken    | 흔들림/기울어짐      | `!`  |
+/// | Incapacitated    | 흐려짐/표식         | `x`  |
+fn combat_cue_symbol(cue: CombatSpectatorCue) -> char {
+    match cue {
+        CombatSpectatorCue::Attack => '>',
+        CombatSpectatorCue::Hit => '<',
+        CombatSpectatorCue::Evade => '~',
+        CombatSpectatorCue::BalanceBroken => '!',
+        CombatSpectatorCue::Incapacitated => 'x',
+    }
+}
+
+const COMBAT_LEGEND_LINE: &str =
+    "표기: A/E=아군/적(생존) a/e=아군/적(비활성) · > 공격 · < 피격 · ~ 회피 · ! 균형붕괴 · x 전투불능";
+
+/// 말 한 개의 보드 토큰: 진영/생존 문자 + cue 표식들 (core가 정한 순서, Attack ->
+/// Hit -> Evade -> BalanceBroken -> Incapacitated 그대로 이어붙인다).
+fn combat_piece_token(piece: &CombatSpectatorPiece) -> String {
+    let side_char = match (piece.side, piece.active) {
+        (CombatSide::Ally, true) => 'A',
+        (CombatSide::Ally, false) => 'a',
+        (CombatSide::Enemy, true) => 'E',
+        (CombatSide::Enemy, false) => 'e',
+    };
+    let mut token = String::new();
+    token.push(side_char);
+    for cue in &piece.cues {
+        token.push(combat_cue_symbol(*cue));
+    }
+    token
+}
+
+/// `view.frames`의 마지막 프레임만 그린다 (정적 스냅샷이므로 결착 시점이
+/// 가장 정보량이 많다 — 정본: 시간 조작 금지, 애니메이션 없음).
+fn render_combat_board(lines: &mut Vec<String>, view: &CombatSpectatorView) {
+    lines.push("[전투 판]".to_string());
+    let Some(frame) = view.frames.last() else {
+        lines.push("- 표시할 프레임이 없다.".to_string());
+        return;
+    };
+    let elapsed_millis = u64::from(frame.tick) * u64::from(view.tick_millis);
+    lines.push(format!("tick {} · 경과 {elapsed_millis}ms", frame.tick));
+
+    if frame.pieces.is_empty() {
+        lines.push("- 표시할 말이 없다 (전투원 0명).".to_string());
+        return;
+    }
+
+    let mut sorted_pieces: Vec<&CombatSpectatorPiece> = frame.pieces.iter().collect();
+    sorted_pieces.sort_by(|a, b| a.id.cmp(&b.id));
+
+    let (mut min_x, mut max_x, mut min_y, mut max_y) = {
+        let first = &sorted_pieces[0];
+        (
+            first.position.x,
+            first.position.x,
+            first.position.y,
+            first.position.y,
+        )
+    };
+    for piece in &sorted_pieces[1..] {
+        min_x = min_x.min(piece.position.x);
+        max_x = max_x.max(piece.position.x);
+        min_y = min_y.min(piece.position.y);
+        max_y = max_y.max(piece.position.y);
+    }
+    let x_span = i64::from(max_x) - i64::from(min_x);
+    let y_span = i64::from(max_y) - i64::from(min_y);
+
+    if x_span > COMBAT_BOARD_MAX_WIDTH || y_span > COMBAT_BOARD_MAX_HEIGHT {
+        lines.push(format!(
+            "- 보드 범위(폭 {x_span}, 높이 {y_span})가 상한(폭 {COMBAT_BOARD_MAX_WIDTH}, 높이 {COMBAT_BOARD_MAX_HEIGHT})을 넘어 좌표 목록으로 대체한다 (스케일 축소는 하지 않는다)."
+        ));
+        for piece in &sorted_pieces {
+            lines.push(format!(
+                "- {} {} @ ({}, {})",
+                combat_piece_token(piece),
+                piece.id,
+                piece.position.x,
+                piece.position.y
+            ));
+        }
+        return;
+    }
+
+    let mut cell_tokens: BTreeMap<(i32, i32), Vec<String>> = BTreeMap::new();
+    for piece in &sorted_pieces {
+        cell_tokens
+            .entry((piece.position.y, piece.position.x))
+            .or_default()
+            .push(combat_piece_token(piece));
+    }
+    for y in min_y..=max_y {
+        let mut row = format!("y={y:>4}:");
+        for x in min_x..=max_x {
+            let cell = cell_tokens
+                .get(&(y, x))
+                .map(|tokens| tokens.join("/"))
+                .unwrap_or_else(|| "·".to_string());
+            row.push(' ');
+            row.push_str(&cell);
+        }
+        lines.push(row);
+    }
+    lines.push(COMBAT_LEGEND_LINE.to_string());
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -534,5 +660,130 @@ mod tests {
         assert_eq!(round_hundredths_to_int(1049), 10);
         assert_eq!(round_hundredths_to_int(1000), 10);
         assert_eq!(round_hundredths_to_int(-1050), -11);
+    }
+
+    // -- P2: 체스말 보드 ----------------------------------------------------
+    use escape_core::{
+        CombatFacing, CombatPosition, CombatSimulationVersion, CombatSpectatorFrame,
+    };
+
+    fn test_piece(
+        id: &str,
+        side: CombatSide,
+        x: i32,
+        y: i32,
+        active: bool,
+        cues: Vec<CombatSpectatorCue>,
+    ) -> CombatSpectatorPiece {
+        CombatSpectatorPiece {
+            id: id.to_string(),
+            side,
+            position: CombatPosition { x, y },
+            facing: CombatFacing { x: 1, y: 0 },
+            active,
+            cues,
+        }
+    }
+
+    fn test_view(
+        frames: Vec<CombatSpectatorFrame>,
+        core_log: Vec<CombatSpectatorLogEntry>,
+        full_log: Vec<CombatSpectatorLogEntry>,
+    ) -> CombatSpectatorView {
+        CombatSpectatorView {
+            simulation_version: CombatSimulationVersion::new("v-test").expect("valid version"),
+            resolution_fingerprint: "res-fp".to_string(),
+            tick_millis: 100,
+            frames,
+            core_log,
+            full_log,
+            fingerprint: "view-fp".to_string(),
+        }
+    }
+
+    #[test]
+    fn board_renders_last_frame_with_tick_and_elapsed_time() {
+        let frames = vec![
+            CombatSpectatorFrame {
+                tick: 0,
+                pieces: vec![test_piece(
+                    "ally_1",
+                    CombatSide::Ally,
+                    0,
+                    0,
+                    true,
+                    Vec::new(),
+                )],
+            },
+            CombatSpectatorFrame {
+                tick: 3,
+                pieces: vec![
+                    test_piece("ally_1", CombatSide::Ally, 0, 0, true, Vec::new()),
+                    test_piece("enemy_1", CombatSide::Enemy, 2, 1, true, Vec::new()),
+                ],
+            },
+        ];
+        let view = test_view(frames, Vec::new(), Vec::new());
+        let mut lines = Vec::new();
+        render_combat_board(&mut lines, &view);
+        let text = lines.join("\n");
+        assert!(text.contains("tick 3"));
+        assert!(text.contains("경과 300ms"));
+        assert!(text.contains(COMBAT_LEGEND_LINE));
+        assert!(!text.contains("좌표 목록"));
+    }
+
+    #[test]
+    fn board_exceeding_caps_falls_back_to_coordinate_list() {
+        let frames = vec![CombatSpectatorFrame {
+            tick: 1,
+            pieces: vec![
+                test_piece("ally_1", CombatSide::Ally, 0, 0, true, Vec::new()),
+                test_piece("enemy_1", CombatSide::Enemy, 40, 0, true, Vec::new()),
+            ],
+        }];
+        let view = test_view(frames, Vec::new(), Vec::new());
+        let mut lines = Vec::new();
+        render_combat_board(&mut lines, &view);
+        let text = lines.join("\n");
+        assert!(text.contains("좌표 목록으로 대체"));
+        assert!(text.contains("ally_1 @ (0, 0)"));
+        assert!(text.contains("enemy_1 @ (40, 0)"));
+    }
+
+    #[test]
+    fn board_shows_all_five_cue_symbols() {
+        let all_cues = vec![
+            CombatSpectatorCue::Attack,
+            CombatSpectatorCue::Hit,
+            CombatSpectatorCue::Evade,
+            CombatSpectatorCue::BalanceBroken,
+            CombatSpectatorCue::Incapacitated,
+        ];
+        let piece = test_piece("ally_1", CombatSide::Ally, 0, 0, true, all_cues);
+        let token = combat_piece_token(&piece);
+        assert_eq!(token, "A><~!x");
+    }
+
+    #[test]
+    fn board_handles_empty_pieces_without_panic() {
+        let frames = vec![CombatSpectatorFrame {
+            tick: 5,
+            pieces: Vec::new(),
+        }];
+        let view = test_view(frames, Vec::new(), Vec::new());
+        let mut lines = Vec::new();
+        render_combat_board(&mut lines, &view);
+        let text = lines.join("\n");
+        assert!(text.contains("말이 없다"));
+    }
+
+    #[test]
+    fn board_handles_no_frames_without_panic() {
+        let view = test_view(Vec::new(), Vec::new(), Vec::new());
+        let mut lines = Vec::new();
+        render_combat_board(&mut lines, &view);
+        let text = lines.join("\n");
+        assert!(text.contains("프레임이 없다"));
     }
 }

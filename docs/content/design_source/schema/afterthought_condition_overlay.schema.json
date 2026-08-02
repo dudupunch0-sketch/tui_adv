@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Afterthought Condition Overlay",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "source",
+    "runtime_contract",
+    "conditions",
+    "choice_conditions"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "source": {
+      "type": "string"
+    },
+    "runtime_contract": {
+      "const": false
+    },
+    "conditions": {
+      "type": "array"
+    },
+    "choice_conditions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "condition_id",
+          "event_id",
+          "source_path",
+          "raw_choice",
+          "condition_type",
+          "status"
+        ],
+        "properties": {
+          "condition_id": {
+            "type": "string"
+          },
+          "event_id": {
+            "type": "string"
+          },
+          "source_path": {
+            "type": "string"
+          },
+          "raw_choice": {
+            "type": "string"
+          },
+          "condition_type": {
+            "enum": [
+              "choice_text"
+            ]
+          },
+          "status": {
+            "const": "unresolved_external_condition"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

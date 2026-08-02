@@ -36,6 +36,7 @@
           "reveal_policy": {"enum": ["ending_resolution", "run_end"]},
           "exclusive_group": {"type": ["string", "null"]},
           "priority": {"type": ["integer", "null"]},
+          "fallback": {"type": "boolean", "default": false},
           "status": {"enum": ["draft", "approved", "rejected", "deprecated"]}
         },
         "additionalProperties": false

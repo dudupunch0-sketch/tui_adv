@@ -57,6 +57,27 @@ describe('renderCombatBoard', () => {
     expect(html).toContain('data-piece-id="ally_1"');
   });
 
+  it('keeps the extreme pieces off the board edge so translate(-50%) cannot clip them', () => {
+    const html = renderCombatBoard(
+      view({
+        frames: [
+          frame(1, [
+            piece({ id: 'ally_1', position: { x: 0, y: 0 } }),
+            piece({ id: 'enemy_1', position: { x: 5, y: 4 }, side: 'enemy' }),
+          ]),
+        ],
+      }),
+    );
+    // 전투원 2명이면 두 말이 항상 min/max에 놓인다. 0%/100%로 투영하면
+    // 둘 다 보드 경계에서 절반 잘린다.
+    expect(html).not.toContain('--piece-x: 0%');
+    expect(html).not.toContain('--piece-y: 0%');
+    expect(html).not.toContain('--piece-x: 100%');
+    expect(html).not.toContain('--piece-y: 100%');
+    expect(html).toContain('--piece-x: 14%');
+    expect(html).toContain('--piece-x: 86%');
+  });
+
   it('centers pieces at 50% when the coordinate span is zero, with no NaN/Infinity', () => {
     const html = renderCombatBoard(
       view({

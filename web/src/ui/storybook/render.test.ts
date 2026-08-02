@@ -825,7 +825,10 @@ describe('Web Storybook renderer', () => {
     expect(html).toContain('ally_1 피해 11 (대상 없음)');
   });
 
-  it('I5: renders byte-identical output (no combat markup at all) when page.combat is absent', () => {
+  // I5: `combat`이 없는 페이지에는 관전 마크업이 한 조각도 나오지 않는다.
+  // 삽입 지점이 템플릿 리터럴 한 줄이라 공백 한 줄은 남으므로 "바이트 단위
+  // 동일"이 아니다 — 검증하는 것은 마크업 부재다.
+  it('I5: emits no combat markup at all when page.combat is absent', () => {
     const html = renderStorybookPage(samplePrinterPage());
     expect(html).not.toContain('combat-stage');
     expect(html).not.toContain('data-region="combat"');

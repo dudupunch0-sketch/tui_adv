@@ -131,11 +131,20 @@ function renderBoardTable(pieces: CombatSpectatorPiece[]): string {
   return `<table class="combat-board__table sr-only"><caption>전투 판 요약 표</caption><thead><tr><th scope="col">말 id</th><th scope="col">진영</th><th scope="col">좌표</th><th scope="col">상태</th><th scope="col">cue</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 
-/** 좌표 -> 0~100 비례 투영. span === 0이면 0으로 나누지 않고 50(중앙)에 둔다. */
+/** 말은 `translate: -50% -50%`로 중심을 좌표에 맞추므로, 투영 범위가
+ * 0~100%면 최소·최대 좌표의 말이 보드 경계에서 절반 잘린다. 전투원 2명인
+ * 인카운터는 두 말이 항상 양 극단에 놓이므로 예외가 아니라 기본 경우다.
+ * 그래서 여백을 둔 띠(14~86%) 안으로 투영한다. */
+const BOARD_INSET_PERCENT = 14;
+
+/** 좌표 -> 비례 투영. 대칭 여백이므로 span === 0이면 정확히 50(중앙)이다.
+ * span === 0에서 0으로 나누지 않는다. 이 투영은 배치 비율일 뿐이며 거리·속도를
+ * 수치로 주장하지 않는다 (좌표 단위 의미는 정본에 확정되지 않았다). */
 function projectAxis(value: number, min: number, max: number): number {
   const span = max - min;
   if (span === 0) return 50;
-  return ((value - min) / span) * 100;
+  const usable = 100 - BOARD_INSET_PERCENT * 2;
+  return BOARD_INSET_PERCENT + ((value - min) / span) * usable;
 }
 
 function formatPercent(value: number): string {

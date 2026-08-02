@@ -602,6 +602,37 @@ fn cue_ordering_is_fixed_attack_hit_evade_balance_broken_incapacitated() {
     );
 }
 
+/// 조기 결착(`fable_combat_early_conclusion_step1_2608022130.md` I2) 뒤에는
+/// `execution.frames`가 tick 상한까지 남아 있지만 `resolution.frames`는 결착
+/// tick에서 끊긴다. 관전 화면은 판정된 범위만 보여야 한다 — 그러지 않으면
+/// 결착 뒤에도 말이 계속 움직이고 보고서의 `decisive_tick`과 어긋난다.
+#[test]
+fn spectator_view_never_extends_past_the_last_resolved_tick() {
+    let resolution = resolve_combat(two_way_resolution_request()).unwrap();
+    // 결착이 없는 픽스처라도 두 배열의 마지막 tick은 같아야 한다.
+    let last_resolved = resolution.frames.last().unwrap().tick;
+
+    let mut truncated = resolution.clone();
+    truncated.frames.retain(|frame| frame.tick == last_resolved);
+    // execution 쪽은 그대로 두고 resolution만 줄여, 관전 화면이 어느 쪽을
+    // 기준으로 삼는지 드러낸다.
+    let view = spectate_combat(&CombatSpectatorRequest {
+        resolution: truncated,
+        participants: participants(),
+        catalog: CombatEffectCatalog { effects: vec![] },
+    })
+    .unwrap();
+
+    assert!(
+        view.frames.iter().all(|f| f.tick <= last_resolved),
+        "no spectator frame may exist after the last resolved tick"
+    );
+    assert!(
+        view.full_log.iter().all(|e| e.tick <= last_resolved),
+        "no spectator log entry may exist after the last resolved tick"
+    );
+}
+
 #[test]
 fn empty_combatant_snapshot_yields_no_state_cues_and_no_error() {
     let mut resolution = resolve_combat(all_cues_request()).unwrap();

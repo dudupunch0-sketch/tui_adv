@@ -483,6 +483,29 @@ describe('renderCombatFullLog', () => {
     expect(html).toContain('결정적');
   });
 
+  it('pairs each row\'s Korean label with that row\'s own importance', () => {
+    // 위 테스트는 세 라벨이 html 어딘가에 있는지만 본다 — legend 문구가
+    // "중요·결정적…"을 담고 있어서, 모든 줄이 `일반`으로 잘못 찍혀도 통과한다.
+    // 라벨은 그 줄 **안에서** 확인해야 한다.
+    const html = renderCombatFullLog(
+      view({
+        full_log: [
+          logEntry({ importance: 'routine', actor_id: 'a1' }),
+          logEntry({ importance: 'important', actor_id: 'a2' }),
+          logEntry({ importance: 'decisive', actor_id: 'a3' }),
+        ],
+      }),
+    );
+    const rowFor = (importance: string) =>
+      new RegExp(`<li[^>]*data-importance="${importance}"[^>]*>.*?</li>`).exec(html)?.[0] ?? '';
+    expect(rowFor('routine')).toContain('일반');
+    expect(rowFor('routine')).not.toContain('결정적');
+    expect(rowFor('important')).toContain('중요');
+    expect(rowFor('important')).not.toContain('일반');
+    expect(rowFor('decisive')).toContain('결정적');
+    expect(rowFor('decisive')).not.toContain('일반');
+  });
+
   it('marks important/decisive rows as also present in the core log, but never routine rows', () => {
     const html = renderCombatFullLog(
       view({

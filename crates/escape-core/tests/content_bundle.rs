@@ -219,7 +219,7 @@ fn preview_fixture_indexes_wuxia_first_fight() {
     );
     assert_eq!(bundle.manifest.counts.get("locations"), Some(&5));
     assert_eq!(bundle.manifest.counts.get("items"), Some(&11));
-    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&51));
+    assert_eq!(bundle.manifest.counts.get("encounters"), Some(&52));
     assert_eq!(bundle.manifest.counts.get("achievements"), Some(&2));
     assert_eq!(bundle.manifest.counts.get("insights"), Some(&8));
     assert_eq!(bundle.manifest.counts.get("skills"), Some(&7));
@@ -227,7 +227,7 @@ fn preview_fixture_indexes_wuxia_first_fight() {
 
     let index = index_content_bundle(&bundle).expect("wuxia preview bundle should index");
     assert_eq!(index.locations_len(), 5);
-    assert_eq!(index.encounters_len(), 51);
+    assert_eq!(index.encounters_len(), 52);
     assert_eq!(
         index
             .insight("insight_read_the_flow")

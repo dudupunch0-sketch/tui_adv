@@ -138,11 +138,11 @@ fn collapse_gate_choice_order_is_revive_then_rest() {
 }
 
 #[test]
-fn wuxia_preview_has_full_51_event_coverage() {
+fn wuxia_preview_has_full_52_event_coverage() {
     let bundle = load_content_bundle(BUNDLE).unwrap();
     let index = index_content_bundle(&bundle).unwrap();
-    assert_eq!(index.encounters_len(), 51);
-    assert_eq!(index.encounters().filter(|e| e.event.is_some()).count(), 51);
+    assert_eq!(index.encounters_len(), 52);
+    assert_eq!(index.encounters().filter(|e| e.event.is_some()).count(), 52);
 }
 
 #[test]

@@ -271,7 +271,7 @@ fn active_state(
 fn wave1_adds_seven_staged_cards_and_all_29_mapping_rows() {
     let value: Value = serde_json::from_str(BUNDLE).unwrap();
     let index = index();
-    assert_eq!(index.encounters_len(), 51);
+    assert_eq!(index.encounters_len(), 52);
     for id in NEW_ENCOUNTERS {
         let event = index.encounter(id).unwrap().event.as_ref().unwrap();
         assert_eq!(event.stages[0].kind, "story");

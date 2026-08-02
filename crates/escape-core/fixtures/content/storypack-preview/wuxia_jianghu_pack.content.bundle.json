@@ -11315,6 +11315,292 @@
           "visual_id": "wuxia_collapse_gate"
         },
         "title": "천기록 붕괴"
+      },
+      {
+        "body": "연무장 한쪽에서 표준 규격의 대련이 시작된다. 두 사람 모두 같은 기수식과 같은 초식만을 익힌 처지라, 겨루기가 어떻게 끝날지는 아직 누구의 것도 아니다.",
+        "choices": [
+          {
+            "id": "watch_the_bout_closely",
+            "label": "가까이서 대련을 지켜본다",
+            "outcome": {
+              "add_flags": [
+                "combat_spectator_preview_bout_resolved",
+                "combat_spectator_preview_watched_closely"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "experience": 5,
+              "log": "한 걸음 다가가 앉아 두 사람의 호흡과 간격을 놓치지 않고 눈에 담는다. 승패는 아직 말해지지 않았지만, 겨루기의 결이 조금씩 눈에 들어온다."
+            }
+          },
+          {
+            "id": "keep_a_measured_distance",
+            "label": "거리를 두고 지켜본다",
+            "outcome": {
+              "add_flags": [
+                "combat_spectator_preview_bout_resolved",
+                "combat_spectator_preview_kept_distance"
+              ],
+              "destination_id": "cheongryu_outer_courtyard",
+              "experience": 5,
+              "log": "굳이 앞으로 나서지 않고 마당 끝에서 거리를 둔 채 지켜본다. 소리와 자세만으로도 표준 대련의 규격이 어떤 것인지 짐작할 수 있다."
+            }
+          }
+        ],
+        "combat": {
+          "attacks": [
+            {
+              "ability_multiplier_hundredths": 100,
+              "accuracy_percent": 100,
+              "actor_id": "wuxia_spectator_bout_ally",
+              "attack_range": 10,
+              "balance_power_hundredths": 100,
+              "collision_balance_hundredths": 100,
+              "effects": [],
+              "id": "wuxia_spectator_bout_ally_strike",
+              "penetration_hundredths": 0,
+              "power_hundredths": 4000
+            },
+            {
+              "ability_multiplier_hundredths": 100,
+              "accuracy_percent": 100,
+              "actor_id": "wuxia_spectator_bout_challenger",
+              "attack_range": 10,
+              "balance_power_hundredths": 100,
+              "collision_balance_hundredths": 100,
+              "effects": [],
+              "id": "wuxia_spectator_bout_challenger_strike",
+              "penetration_hundredths": 0,
+              "power_hundredths": 4000
+            }
+          ],
+          "config": {
+            "max_ticks": 10,
+            "tick_millis": 100
+          },
+          "defenses": [
+            {
+              "balance_resistance_hundredths": 0,
+              "combatant_id": "wuxia_spectator_bout_ally",
+              "defense_hundredths": 500
+            },
+            {
+              "balance_resistance_hundredths": 0,
+              "combatant_id": "wuxia_spectator_bout_challenger",
+              "defense_hundredths": 500
+            }
+          ],
+          "effect_catalog": {
+            "effects": []
+          },
+          "intervention_budget": 0,
+          "kind": "systemic",
+          "manifest": {
+            "actual_seed": 1,
+            "applied_effects": [],
+            "combatant_ids": [
+              "wuxia_spectator_bout_ally",
+              "wuxia_spectator_bout_challenger"
+            ],
+            "environment_ids": [],
+            "placement_ids": [],
+            "public_info_ids": [
+              "wuxia_combat_spectator_preview_bout_public"
+            ],
+            "rule_ids": [
+              "wuxia_standard_combatant_wave3_step2b"
+            ],
+            "simulation_version": "v1",
+            "suppressed_effects": [],
+            "team_ids": [],
+            "world_state_fingerprint": "wuxia_combat_spectator_preview_bout_wsf_v1"
+          },
+          "participants": [
+            {
+              "active": true,
+              "attack_range": 10,
+              "collision_radius": 5,
+              "facing": {
+                "x": 1,
+                "y": 0
+              },
+              "id": "wuxia_spectator_bout_ally",
+              "position": {
+                "x": 0,
+                "y": 0
+              },
+              "role_id": "role_wuxia_spectator_bout_ally",
+              "side": "ally",
+              "speed_per_tick": 1,
+              "support_range": 10,
+              "target_policy_id": null
+            },
+            {
+              "active": true,
+              "attack_range": 10,
+              "collision_radius": 5,
+              "facing": {
+                "x": -1,
+                "y": 0
+              },
+              "id": "wuxia_spectator_bout_challenger",
+              "position": {
+                "x": 5,
+                "y": 0
+              },
+              "role_id": "role_wuxia_spectator_bout_challenger",
+              "side": "enemy",
+              "speed_per_tick": 1,
+              "support_range": 10,
+              "target_policy_id": null
+            }
+          ],
+          "policies": [],
+          "roles": [
+            {
+              "id": "role_wuxia_spectator_bout_ally",
+              "weights": {
+                "ability_priority": 0,
+                "aggression": 1,
+                "formation_maintenance": 0,
+                "preferred_distance": 0,
+                "protect_priority": 0,
+                "pursuit_range": 10,
+                "risk_tolerance": 0,
+                "target_priority": 0
+              }
+            },
+            {
+              "id": "role_wuxia_spectator_bout_challenger",
+              "weights": {
+                "ability_priority": 0,
+                "aggression": 1,
+                "formation_maintenance": 0,
+                "preferred_distance": 0,
+                "protect_priority": 0,
+                "pursuit_range": 10,
+                "risk_tolerance": 0,
+                "target_priority": 0
+              }
+            }
+          ],
+          "state": {
+            "battle_id": "wuxia_combat_spectator_preview_bout_battle",
+            "combatants": [
+              {
+                "anger": 0,
+                "balance": 100,
+                "current_breath": 100,
+                "current_health": 100,
+                "fear": 0,
+                "id": "wuxia_spectator_bout_ally",
+                "maximum_balance": 100,
+                "maximum_breath": 100,
+                "maximum_health": 100,
+                "posture": "neutral",
+                "weapon_control": "stable"
+              },
+              {
+                "anger": 0,
+                "balance": 100,
+                "current_breath": 100,
+                "current_health": 100,
+                "fear": 0,
+                "id": "wuxia_spectator_bout_challenger",
+                "maximum_balance": 100,
+                "maximum_breath": 100,
+                "maximum_health": 100,
+                "posture": "neutral",
+                "weapon_control": "stable"
+              }
+            ],
+            "manifest_fingerprint": "wuxia_combat_spectator_preview_bout_state_fp_v1"
+          },
+          "termination": {
+            "conclude_on_max_ticks": true,
+            "max_ticks": 10
+          },
+          "ticks": 10
+        },
+        "conditions": {
+          "forbidden_flags": [
+            "combat_spectator_preview_bout_resolved"
+          ],
+          "locations": [
+            "cheongryu_outer_courtyard"
+          ],
+          "required_flags": [
+            "combat_spectator_preview_unlocked"
+          ]
+        },
+        "event": {
+          "stages": [
+            {
+              "blocks": [
+                {
+                  "kind": "narration",
+                  "text": "연무장 한쪽에서 표준 규격의 대련이 시작된다. 두 사람 모두 같은 기수식과 같은 초식만을 익힌 처지라, 겨루기가 어떻게 끝날지는 아직 누구의 것도 아니다."
+                },
+                {
+                  "alt": "연무장 한쪽에서 표준 규격의 대련 태세를 갖추는 두 수련생",
+                  "kind": "illustration",
+                  "placeholder": true,
+                  "visual_id": "placeholder:wuxia_combat_spectator_preview_bout"
+                }
+              ],
+              "id": "combat_spectator_preview_bout_story",
+              "kind": "story"
+            },
+            {
+              "choices": [
+                {
+                  "id": "watch_the_bout_closely",
+                  "next_stage_id": "watch_the_bout_closely_result"
+                },
+                {
+                  "id": "keep_a_measured_distance",
+                  "next_stage_id": "keep_a_measured_distance_result"
+                }
+              ],
+              "id": "combat_spectator_preview_bout_choice",
+              "kind": "choice"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "가까이서 지켜본 대련의 흐름이 다음 수련의 기준으로 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "한 걸음 다가가 앉아 두 사람의 호흡과 간격을 놓치지 않고 눈에 담는다. 승패는 아직 말해지지 않았지만, 겨루기의 결이 조금씩 눈에 들어온다."
+                }
+              ],
+              "id": "watch_the_bout_closely_result",
+              "kind": "result"
+            },
+            {
+              "blocks": [
+                {
+                  "kind": "result_summary",
+                  "text": "거리를 둔 채로 지켜본 대련이 조용한 인상으로 남는다."
+                },
+                {
+                  "kind": "narration",
+                  "text": "굳이 앞으로 나서지 않고 마당 끝에서 거리를 둔 채 지켜본다. 소리와 자세만으로도 표준 대련의 규격이 어떤 것인지 짐작할 수 있다."
+                }
+              ],
+              "id": "keep_a_measured_distance_result",
+              "kind": "result"
+            }
+          ]
+        },
+        "id": "wuxia_combat_spectator_preview_bout",
+        "presentation": {
+          "layout": "combat_intervention",
+          "visual_id": "wuxia_combat_spectator_preview_bout"
+        },
+        "repeatable": false,
+        "title": "관전용 표준 대련"
       }
     ],
     "endings": [
@@ -11773,7 +12059,7 @@
   "manifest": {
     "counts": {
       "achievements": 2,
-      "encounters": 51,
+      "encounters": 52,
       "endings": 3,
       "insights": 8,
       "items": 11,

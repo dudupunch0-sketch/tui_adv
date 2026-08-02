@@ -1,4 +1,5 @@
 use super::*;
+use escape_core::CombatSpectatorLogEntry;
 
 pub(crate) fn render_scene_page_snapshot(page: &ScenePage, logs: &[String]) -> String {
     let mut lines = Vec::new();
@@ -345,4 +346,193 @@ pub(crate) fn resource_value(page: &ScenePage, id: &str) -> i32 {
         .find(|resource| resource.id == id)
         .map(|resource| resource.value)
         .unwrap_or_default()
+}
+
+// ---------------------------------------------------------------------------
+// Wave 3 Step 1d-1: terminal 관전 렌더러.
+//
+// Hard invariant: this module only *formats* `ScenePage.combat`. It never
+// calls `resolve_combat` / `conclude_combat` / `spectate_combat` and never
+// recomputes damage totals, outcomes, or cue derivation — those are all
+// already decided by `escape-core` (정본 13 "감독형 관전·전략 피드백 시스템").
+// ---------------------------------------------------------------------------
+
+// -- P1: 로그 템플릿 테이블 ---------------------------------------------------
+
+/// hundredths 정수를 반올림 정수로 표시한다 (정본 11 §8 "UI는 정수 반올림으로
+/// 표시한다"). 부동소수점을 쓰지 않아 결과가 플랫폼과 무관하게 결정론적이다.
+fn round_hundredths_to_int(value_hundredths: i64) -> i64 {
+    let sign: i64 = if value_hundredths < 0 { -1 } else { 1 };
+    let magnitude = value_hundredths.unsigned_abs();
+    let rounded = (magnitude + 50) / 100;
+    sign * rounded as i64
+}
+
+/// 6개 template id -> 한국어 문장. 알 수 없는 id는 조용히 버리지 않고
+/// `template_id` 자체를 노출하는 fallback 줄을 만든다 (정본: 로그 계약 위반 금지).
+fn combat_log_template_line(entry: &CombatSpectatorLogEntry) -> String {
+    let actor = entry.actor_id.as_str();
+    let target = entry.target_id.as_deref();
+    match entry.template_id.as_str() {
+        "combat.log.move_intent" => match target {
+            Some(target) => format!("{actor} 이동 의도 (목표 {target})"),
+            None => format!("{actor} 이동 의도"),
+        },
+        "combat.log.target_selection" => match target {
+            Some(target) => format!("{actor} → 목표 지정: {target}"),
+            None => format!("{actor} 목표 지정 (대상 없음)"),
+        },
+        "combat.log.collision" => match target {
+            Some(target) => format!("{actor} × {target} 충돌"),
+            None => format!("{actor} 충돌 (대상 없음)"),
+        },
+        "combat.log.damage_applied" => {
+            let value = entry
+                .value_hundredths
+                .map(round_hundredths_to_int)
+                .unwrap_or(0);
+            match target {
+                Some(target) => format!("{actor} → {target} 피해 {value}"),
+                None => format!("{actor} 피해 {value} (대상 없음)"),
+            }
+        }
+        "combat.log.effect_applied" => {
+            let effect = entry.effect_id.as_deref().unwrap_or("(효과 id 없음)");
+            match target {
+                Some(target) => format!("{actor} → {target} 효과 적용 [{effect}]"),
+                None => format!("{actor} 효과 적용 [{effect}] (대상 없음)"),
+            }
+        }
+        "combat.log.effect_applied_hidden" => match target {
+            Some(target) => format!("{actor} → {target} 효과 적용 [정체불명]"),
+            None => format!("{actor} 효과 적용 [정체불명] (대상 없음)"),
+        },
+        other => format!(
+            "{actor} → {} 알 수 없는 사건 [template_id={other}]",
+            target.unwrap_or("(대상 없음)")
+        ),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use escape_core::CombatLogImportance;
+
+    fn test_log_entry(
+        template_id: &str,
+        actor: &str,
+        target: Option<&str>,
+        value_hundredths: Option<i64>,
+        effect_id: Option<&str>,
+    ) -> CombatSpectatorLogEntry {
+        CombatSpectatorLogEntry {
+            tick: 1,
+            sequence: 0,
+            template_id: template_id.to_string(),
+            importance: CombatLogImportance::Important,
+            actor_id: actor.to_string(),
+            target_id: target.map(|t| t.to_string()),
+            value_hundredths,
+            effect_id: effect_id.map(|e| e.to_string()),
+        }
+    }
+
+    // -- P1: 로그 템플릿 테이블 --------------------------------------------
+
+    #[test]
+    fn template_move_intent_renders() {
+        let entry = test_log_entry("combat.log.move_intent", "ally_1", None, None, None);
+        assert_eq!(combat_log_template_line(&entry), "ally_1 이동 의도");
+    }
+
+    #[test]
+    fn template_target_selection_renders() {
+        let entry = test_log_entry(
+            "combat.log.target_selection",
+            "ally_1",
+            Some("enemy_1"),
+            None,
+            None,
+        );
+        assert_eq!(
+            combat_log_template_line(&entry),
+            "ally_1 → 목표 지정: enemy_1"
+        );
+    }
+
+    #[test]
+    fn template_collision_renders() {
+        let entry = test_log_entry(
+            "combat.log.collision",
+            "ally_1",
+            Some("enemy_1"),
+            None,
+            None,
+        );
+        assert_eq!(combat_log_template_line(&entry), "ally_1 × enemy_1 충돌");
+    }
+
+    #[test]
+    fn template_damage_applied_rounds_hundredths() {
+        let entry = test_log_entry(
+            "combat.log.damage_applied",
+            "ally_1",
+            Some("enemy_1"),
+            Some(1050),
+            None,
+        );
+        assert_eq!(combat_log_template_line(&entry), "ally_1 → enemy_1 피해 11");
+    }
+
+    #[test]
+    fn template_effect_applied_shows_effect_id() {
+        let entry = test_log_entry(
+            "combat.log.effect_applied",
+            "ally_1",
+            Some("enemy_1"),
+            None,
+            Some("burn"),
+        );
+        assert_eq!(
+            combat_log_template_line(&entry),
+            "ally_1 → enemy_1 효과 적용 [burn]"
+        );
+    }
+
+    #[test]
+    fn template_effect_applied_hidden_masks_effect_id() {
+        let entry = test_log_entry(
+            "combat.log.effect_applied_hidden",
+            "ally_1",
+            Some("enemy_1"),
+            None,
+            None,
+        );
+        let line = combat_log_template_line(&entry);
+        assert_eq!(line, "ally_1 → enemy_1 효과 적용 [정체불명]");
+        assert!(!line.contains("burn"));
+    }
+
+    #[test]
+    fn template_unknown_id_falls_back_and_exposes_id() {
+        let entry = test_log_entry(
+            "combat.log.made_up_event",
+            "ally_1",
+            Some("enemy_1"),
+            None,
+            None,
+        );
+        let line = combat_log_template_line(&entry);
+        assert!(line.contains("combat.log.made_up_event"));
+        assert!(line.contains("알 수 없는 사건"));
+    }
+
+    #[test]
+    fn round_hundredths_rounds_half_up_both_signs() {
+        assert_eq!(round_hundredths_to_int(1050), 11);
+        assert_eq!(round_hundredths_to_int(1049), 10);
+        assert_eq!(round_hundredths_to_int(1000), 10);
+        assert_eq!(round_hundredths_to_int(-1050), -11);
+    }
 }

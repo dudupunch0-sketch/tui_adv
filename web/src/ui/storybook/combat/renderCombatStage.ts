@@ -266,8 +266,16 @@ const WEB_CORE_LOG_LIMIT = 40;
  * `aria-live`는 쓰지 않는다 — 초당 여러 줄이 붙으면 로그 도배가 된다(정본
  * 13의 "로그 도배를 막는다"와 같은 취지). `reduce`에서는 `no-preference`
  * 안에만 있는 이 애니메이션 자체가 적용되지 않으므로 전부 즉시 보인다(I3). */
-export function renderCombatLog(view: CombatSpectatorView): string {
-  const metaText = `전체 로그 ${view.full_log.length}건 (일시정지 또는 전투 종료 후 별도 열람, 이 화면은 개수만 표시)`;
+export function renderCombatLog(view: CombatSpectatorView, reportPresent: boolean = false): string {
+  // WP2: 정본 07/13은 "일시정지 또는 전투 종료 뒤" 열람할 수 있다고
+  // 정하지만, 이 슬라이스는 일시정지 흐름을 만들지 않는다 — 진입점은
+  // `combat.report`가 있을 때만 존재한다(I2). 그래서 이 메타 줄도 그때만
+  // "열람 가능"을 말한다. `report`가 아직 없으면(전투 진행 중) 지금
+  // 읽을 수 있다고 주장하지 않는다 — 정본이 정한 두 시점(일시정지/종료) 중
+  // 아직 오지 않은 상태를 그대로 서술한다.
+  const metaText = reportPresent
+    ? `전체 로그 ${view.full_log.length}건 (전투가 끝나 아래 전체 로그 열람에서 확인할 수 있다)`
+    : `전체 로그 ${view.full_log.length}건 (일시정지 또는 전투 종료 후 별도 열람)`;
   const total = view.core_log.length;
   const shown = Math.min(total, WEB_CORE_LOG_LIMIT);
   // 로그 노출 시각의 원점은 **보드 재생의 원점과 같아야** 한다. 보드는
@@ -463,7 +471,7 @@ function renderCombatantRow(combatant: CombatCombatantReport): string {
 export function renderCombatStage(combat: CombatSpectatorPage | undefined): string {
   if (!combat) return '';
   const board = renderCombatBoard(combat.view);
-  const log = renderCombatLog(combat.view);
+  const log = renderCombatLog(combat.view, Boolean(combat.report));
   const report = combat.report ? renderCombatReport(combat.view, combat.report) : '';
   // I2: 전투 종료 뒤(`report`가 `Some`)에만 전체 로그 열람 진입점을 연다.
   // I8: 이 섹션은 board:log 70:30 그리드 밖, 보고서와 같은 층(표면 아래

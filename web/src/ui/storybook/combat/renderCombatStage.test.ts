@@ -414,6 +414,31 @@ describe('renderCombatLog', () => {
     );
     expect(html).not.toContain('aria-live');
   });
+
+  // -------------------------------------------------------------------------
+  // WP2 — meta line wording. I2: the log-region meta line must not claim the
+  // full log is readable while the fight is still in progress (no `report`
+  // yet); once `report` is present, it should point at the new viewer below.
+  // -------------------------------------------------------------------------
+  it('says the full log is readable once the fight has ended', () => {
+    const html = renderCombatLog(view({ full_log: [logEntry()] }), true);
+    expect(html).toContain('전체 로그 1건');
+    expect(html).toContain('열람');
+    expect(html).not.toContain('이 화면은 개수만 표시');
+  });
+
+  it('does not claim the full log is readable while the fight is still in progress', () => {
+    const html = renderCombatLog(view({ full_log: [logEntry()] }), false);
+    expect(html).toContain('전체 로그 1건');
+    expect(html).not.toContain('이 화면은 개수만 표시');
+    // No claim that a viewer exists right now.
+    expect(html).not.toContain('아래');
+  });
+
+  it('defaults to the not-yet-readable wording when the reportPresent flag is omitted', () => {
+    const html = renderCombatLog(view({ full_log: [logEntry()] }));
+    expect(html).not.toContain('아래');
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -628,5 +653,17 @@ describe('renderCombatStage', () => {
     };
     const html = renderCombatStage(page);
     expect(html).toContain('data-region="combat-report"');
+  });
+
+  it('the log meta line only says the log is readable once report is present (WP2, I2)', () => {
+    const inProgress = renderCombatStage({
+      view: view({ frames: [frame(1, [piece()])], full_log: [logEntry()] }),
+    });
+    const ended = renderCombatStage({
+      view: view({ frames: [frame(1, [piece()])], full_log: [logEntry()] }),
+      report: baseReport(),
+    });
+    expect(inProgress).not.toContain('이 화면은 개수만 표시');
+    expect(ended).toContain('열람');
   });
 });

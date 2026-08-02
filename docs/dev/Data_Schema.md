@@ -415,7 +415,7 @@ Save/load 규칙:
 | `effect_cues` | GlyphFX/anomaly 등 장면 효과 cue |
 | `combat` | 이 장면에서 관전 중인 전투 (`CombatSpectatorPage`, optional). 아래 "`ScenePage.combat` — 전투 관전 boundary" 참고 |
 
-### `ScenePage.combat` — 전투 관전 boundary (Wave 3 Step 1c)
+### `ScenePage.combat` — 전투 관전 boundary (Wave 3 Step 1c, producer는 Step 2a)
 
 `combat`은 core가 만든 관전 view(`CombatSpectatorView`)와 종료 보고서(`CombatConclusionReport`)를
 renderer 경계 밖으로 내보내는 `Option<CombatSpectatorPage>` 필드다.
@@ -442,9 +442,13 @@ renderer 경계 밖으로 내보내는 `Option<CombatSpectatorPage>` 필드다.
   (`crates/escape-core/tests/scene_page_combat_boundary.rs`)과
   `json_boundary_scene_page_has_no_combat_key_before_combat_authoring_exists`
   (`crates/escape-wasm/tests/json_contract.rs`)가 이를 고정한다.
-- **현재 이 slice에는 producer가 없다.** 전투를 시작하는 인카운터 authoring(encounter schema의 전투
-  필드, 전투 stage kind)이 아직 없으므로 `scene_page_from_content`가 만드는 `ScenePage.combat`은
-  Wave 3 Step 2(authoring)가 도착하기 전까지 **항상 `None`**이다.
+- **Wave 3 Step 2a부터 시스템형 producer가 있다.** `encounter.combat`이 있고
+  `kind == systemic`이면 `scene_page_from_content`가 실제로 전투를 구동해 이 필드를 채운다 —
+  스키마·검증·producer 세부는 아래 "인카운터 전투 스키마(`EncounterCombatDef`, Wave 3 Step 2a)"
+  절을 본다. `combat`이 없거나(대부분의 기존 인카운터) `kind`가 아직 미지원인
+  `mixed`/`scripted`면(index-time 검증에서 이미 거부되므로 여기 도달하지 않는다) 여전히
+  `None`이다. 실제 콘텐츠(bundle에 전투를 여는 인카운터)는 아직 없다 — Wave 3 Step 2b(시스템형
+  1개)/2c(혼합형·각본형)가 채운다.
 - **renderer는 표시만 한다.** `combat.view`의 `frames`/`core_log`/`full_log`는 판정·seed·AI·로그
   순서를 담지 않는다 — 로그 항목은 자유 문장이 아니라 `template_id`(예:
   `combat.log.damage_applied`)로 오며, 문장은 renderer가 소유한 템플릿 테이블에서 고른다.
@@ -714,6 +718,91 @@ check:
     danger: 1
     log: 패킷이 역으로 단말을 훑고 지나갔다.
 ```
+
+### 인카운터 전투 스키마 (`EncounterCombatDef`, Wave 3 Step 2a)
+
+인카운터가 전투를 열 수 있게 하는 additive-optional 필드다. `encounters.yaml`(위)의 인카운터
+필드 표에 `combat`이 하나 더 있는 셈이다 — 없으면(대부분의 기존 인카운터) 아무 영향이 없고
+`ScenePage.combat`은 `None`으로 남는다 (Step 1c의 JSON boundary 계약 유지, 위 절 참고).
+
+```json
+{
+  "combat": {
+    "kind": "systemic",
+    "intervention_budget": 1,
+    "manifest": { "simulation_version": "v1", "actual_seed": 0, "world_state_fingerprint": "…", "…": "…" },
+    "state": { "battle_id": "…", "combatants": ["…"], "manifest_fingerprint": "…" },
+    "config": { "tick_millis": 100, "max_ticks": 5 },
+    "participants": ["…"],
+    "roles": ["…"],
+    "policies": [],
+    "attacks": ["…"],
+    "defenses": ["…"],
+    "effect_catalog": { "effects": ["…"] },
+    "ticks": 3,
+    "termination": { "max_ticks": 3, "conclude_on_max_ticks": true }
+  }
+}
+```
+
+필드:
+
+| 필드 | 필수 | 설명 |
+|---|---|---|
+| `kind` | yes | `systemic`(즉시 결과 가능) / `mixed` / `scripted`. **`mixed`·`scripted`는 지금 index-time에서 하드 오류다** — 개입 일시정지 흐름이 아직 없다 (Wave 3 Step 2b/2c 소관). |
+| `intervention_budget` | yes | 개입 기회 상한. 정본 01 기준 **0~3만 허용**, 4 이상은 오류. |
+| `manifest` | yes | `CombatManifest` (기존 combat 계약 타입 재사용). `actual_seed`는 authoring 값이 그대로 쓰이지 않는다 — 아래 "seed를 authoring에 두지 않는 이유" 참고. |
+| `state` | yes | `CombatState` — 전투원 초기 상태. |
+| `config` | yes | `CombatSimulationConfig` (`tick_millis`/`max_ticks`). `tick_millis == 0`은 오류. |
+| `participants` | yes | `CombatSimulationParticipant[]`. id 집합이 `state.combatants`의 id 집합과 정확히 같아야 한다. |
+| `roles` | yes | `CombatRolePreset[]`. |
+| `policies` | no, 기본 `[]` | `CombatTargetPolicy[]`. |
+| `attacks` | yes | `CombatAttackDefinition[]`. 각 `actor_id`는 `state.combatants`에 있어야 하고, `effects[].effect_id`는 `effect_catalog`에 있어야 한다. |
+| `defenses` | yes | `CombatDefenseProfile[]`. `state.combatants`의 모든 id가 정확히 하나씩 있어야 한다(`combat_resolution.rs`의 기존 런타임 검증과 같은 규칙을 index-time에도 적용). |
+| `effect_catalog` | yes | `CombatEffectCatalog`. `effect_catalog.validate()` 실패는 오류. |
+| `ticks` | yes | 이번 전투에서 진행할 tick 수. `1..=config.max_ticks` 범위를 벗어나면 오류. |
+| `termination` | yes | `CombatTerminationPolicy`. |
+
+**seed를 authoring에 두지 않는 이유**: 콘텐츠가 `actual_seed`를 고정하면 정본 03의 RNG
+namespace 분리·재시도 계약이 깨진다 — 같은 인카운터를 다른 런(다른 시드)에서 만나도 전투가
+항상 똑같이 흘러가 버린다. 그래서 `EncounterCombatDef`에는 seed 필드 자체가 없고, 실제 전투
+seed는 producer(`scene_page.rs::combat_spectator_page_for_encounter`)가 런 상태에서
+결정론적으로 파생한다: `manifest`를 복제해 `actual_seed`를 `fnv1a_64(run_seed:encounter_id)`로
+먼저 덮어써 authoring 값을 완전히 버린 뒤, 기존 `CombatManifest::derived_seed(ActualCombat)`
+FNV 파이프라인으로 manifest의 나머지 내용(월드 상태 fingerprint, 전투원 id 등)을 섞어 최종
+seed를 얻는다 — 새 난수원(`rand` 등)은 도입하지 않았다. 최종 `manifest.actual_seed`도 이
+값으로 맞춰 넣어 manifest와 실제 seed가 어긋나지 않게 한다. 같은 런 seed + 같은 인카운터 +
+같은 manifest 내용이면 항상 같은 전투 seed가 나오고, authoring이 `actual_seed`에 어떤 값을
+넣어도 결과에 영향을 주지 않는다 —
+`systemic_combat_producer_result_is_independent_of_authoring_actual_seed`
+(`crates/escape-core/tests/encounter_combat_wave3.rs`)가 이를 고정한다.
+
+index-time 검증 규칙(11개, 모두 하드 오류 — 조용히 무시하거나 기본값으로 때우지 않는다):
+
+1. `intervention_budget > 3`
+2. `kind`가 `mixed` 또는 `scripted` (오류 메시지에 인카운터 id + "Wave 3 Step 2b/2c 소관" 포함)
+3. `config.tick_millis == 0`
+4. `ticks == 0` 또는 `ticks > config.max_ticks`
+5. `attacks[].actor_id`가 `state.combatants`에 없음
+6. `defenses[].combatant_id`가 `state.combatants`에 없음
+7. `state.combatants`에는 있는데 `defenses`에 짝이 없는 전투원
+8. `participants`의 id 집합이 `state.combatants`의 id 집합과 다름
+9. `effect_catalog.validate()` 실패
+10. `manifest.validate()` 실패
+11. `attacks[].effects[].effect_id`가 `effect_catalog`에 없는 effect를 참조
+
+이 11개 규칙은 `crates/escape-core/tests/encounter_combat_wave3.rs`의
+`rule1_intervention_budget_over_three_is_rejected` ~
+`rule11_attack_references_unknown_effect_id_is_rejected` 21개 테스트 중 11개가 각각 고정한다.
+
+**현재 지원 범위**: `kind: systemic`만 producer가 실제로 구동한다(`resolve_combat`이 내부에서
+`execute_combat`을 호출한 뒤 → `conclude_combat` → `spectate_combat` 순으로 이어져
+`ScenePage.combat`을 채운다). `mixed`/`scripted`는 스키마로 받되 index-time에서 거부되므로
+producer에 도달하지 않는다 — 방어적으로 도달하면 `ContentTurnError`를 낸다. 실제 인카운터
+콘텐츠 authoring(bundle에 전투를 여는 인카운터)은 이 slice에 없다 — 시스템형 1개는 Wave 3
+Step 2b, 혼합형·각본형과 개입 일시정지 흐름은 Step 2c가 채운다. 이 producer는
+`scene_page_from_content` 호출마다 전투를 처음부터 재실행한다(결정론적이라 결과는 같지만
+렌더마다 비용이 든다) — 결과 캐싱은 save schema 결정이 필요해 후속 slice로 미룬다.
 
 ## endings.yaml
 

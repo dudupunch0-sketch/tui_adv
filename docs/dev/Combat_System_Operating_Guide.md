@@ -68,12 +68,18 @@
 - `crates/escape-core/tests/scene_page_combat_boundary.rs` 신규, 5개 테스트 (`content_backed_scene_page_has_no_combat_producer_and_no_combat_key_in_json`, `filled_combat_serializes_with_simulation_version_alongside_fingerprint`, `filled_combat_scene_page_round_trips_through_serde`, `scene_page_json_missing_combat_key_deserializes_to_none_without_error`, `combat_spectator_page_with_no_report_omits_report_key`)
 - `crates/escape-wasm/tests/json_contract.rs` 기존 테스트 무수정, 1개 추가로 37개 테스트 (`json_boundary_scene_page_has_no_combat_key_before_combat_authoring_exists`)
 - Wave 3 Step 1c는 `CombatSpectatorView.simulation_version`을 기존 `tick_millis` provenance 읽기 지점에서 함께 파생하고, `CombatSpectatorPage`(`view` + optional `report`)를 정의해 `ScenePage.combat: Option<CombatSpectatorPage>`로 renderer 경계 밖에 노출했다. 전투를 시작하는 인카운터 authoring이 아직 없어(Wave 3 Step 2) `scene_page_from_turn_view`는 `combat: None`만 낸다 — 억지 producer를 만들지 않았다. `#[serde(default, skip_serializing_if = "Option::is_none")]`로 `combat`이 `None`일 때 기존 `ScenePage` JSON이 바이트 단위로 동일하게 유지됨을 신규 테스트로 고정했다. RNG 호출·새 판정은 없다. terminal/Web 렌더러와 combat producer(authoring)는 여전히 별도 plan(Step 2/1d)이다.
+- `fable_combat_wave3_step2a_2608021137.md`
+- `crates/escape-core/src/content.rs`, `crates/escape-core/src/scene_page.rs`, `crates/escape-core/src/lib.rs`
+- `crates/escape-core/tests/encounter_combat_wave3.rs` 신규, 21개 테스트 (11개 index-time 검증 규칙 `rule1_intervention_budget_over_three_is_rejected`~`rule11_attack_references_unknown_effect_id_is_rejected`, producer 결정론·seed 파생 `systemic_combat_producer_fills_scene_page_combat`/`systemic_combat_producer_is_deterministic_for_the_same_state`/`systemic_combat_producer_seed_changes_with_run_seed`/`systemic_combat_producer_result_is_independent_of_authoring_actual_seed`, additive-optional·JSON 경계·round-trip 나머지)
+- Wave 3 Step 2a는 `EncounterCombatKind`(`systemic`/`mixed`/`scripted`)·`EncounterCombatDef`·`EncounterDef.combat`(additive-optional)을 정의하고, `validate_encounter_combat`으로 정본 12의 11개 하드 오류 규칙(개입 예산 0~3 초과, 미지원 kind, tick 설정, attack/defense 참조, participants/combatants id 집합, effect catalog·manifest 유효성, 효과 참조)을 index-time에 거부하도록 구현했다. 이어서 `scene_page.rs`에 시스템형 전용 producer(`combat_spectator_page_for_encounter`)를 연결해 `resolve_combat`(내부에서 `execute_combat` 호출) → `conclude_combat` → `spectate_combat` 순으로 실제 전투를 구동하고 `ScenePage.combat`을 채운다. 실제 전투 seed는 런 상태(`GameState.seed`) + 인카운터 id를 해싱해 manifest의 `actual_seed`를 먼저 덮어쓴 뒤 기존 `CombatManifest::derived_seed(ActualCombat)` FNV 파이프라인으로 파생한다(새 난수원 없음) — authoring의 `actual_seed`는 결과에 영향을 주지 않는다. 파이프라인 실패는 `ScenePage.combat`을 `None`으로 두지 않고 `ContentTurnError`로 전파한다(`turn.rs`가 이 slice의 소유 파일 밖이라 기존 `UnknownStateLocation(String)` payload를 재사용, 의도적 트레이드오프). 이 producer는 렌더마다 전투를 재실행한다 — 결과 캐싱은 save schema 결정이 필요해 후속 slice로 미뤘다. 실제 인카운터 콘텐츠 authoring, 혼합형·각본형 개입 일시정지 흐름은 여전히 별도 plan(Step 2b/2c)이다.
 
 아직 열지 않음:
 
 - 다수전 AI 행동·결착·전투 종료 조건 resolver
 - 치유량·최대 치유량 캐릭터 — combat 파이프라인에 회복 개념이 없어 보류 (healing slice 선행 필요)
 - 명줄 소모·패배 결과 — 정본 10 기준 런 단위 메타 자원이며 인카운터 패배 결과 정의가 소유. 패배 결과 스키마 slice 선행 필요
+- 실제 인카운터 콘텐츠 authoring(시스템형 1개 → Wave 3 Step 2b, 혼합형·각본형 → Step 2c), 혼합형·각본형의 개입 일시정지 흐름과 필수 선택
+- 전투 결과 캐싱·save 저장 (Wave 3 Step 2a는 매 렌더 재실행을 그대로 둔다)
 - ScenePage/WASM/Web/terminal 전투 화면
 - 기술 비용·호흡 회복률·피해·방어·쿨타임 등 밸런스 상수
 

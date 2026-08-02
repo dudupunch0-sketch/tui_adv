@@ -1,0 +1,2049 @@
+schema_version: 1
+source: docs/content/design_source/reports/validation/design_source_validation.json
+policy:
+  exact_match_requires_literal_one_to_one_id_or_title: true
+  fuzzy_matching: false
+  event_afterthought_links_modified: false
+coverage:
+  expected_unstructured_records: 127
+  entries: 127
+entries:
+- event_id: wuxia_alliance_inspector_three_questions
+  source_path: events/imported/wuxia_alliance_inspector_three_questions.yml
+  raw_reference: 무림맹 책임선 / 청류문의 후일
+  classification: descriptive_condition
+  candidate_afterthought_ids:
+  - notion_0012
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 청류문의 후일'
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: 무림맹 책임선 / 청류문의 후일
+  related_keywords:
+  - 청류문
+  - 무림맹
+  - 후일
+  - 문
+- event_id: wuxia_alliance_missing_seal
+  source_path: events/imported/wuxia_alliance_missing_seal.yml
+  raw_reference: 무림맹 책임선
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: 무림맹 책임선
+  related_keywords:
+  - 무림맹
+- event_id: wuxia_black_serpent_first_trouble
+  source_path: events/imported/wuxia_black_serpent_first_trouble.yml
+  raw_reference: 흑사방 관련 후속 사건으로 연결 가능
+  classification: designer_review_required
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: medium
+  review_status: needs_designer_review
+  topic_keywords:
+  - 흑사방
+- event_id: wuxia_black_serpent_ledger_trace
+  source_path: events/imported/wuxia_black_serpent_ledger_trace.yml
+  raw_reference: 흑사방의 깃발 / 검은 뱀의 새 비늘
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0009
+  - notion_0010
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 흑사방의 깃발, 검은 뱀의 새 비늘'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 흑사방
+  - 검
+- event_id: wuxia_black_serpent_old_hood
+  source_path: events/imported/wuxia_black_serpent_old_hood.yml
+  raw_reference: 남쪽 장터의 풍문 / 흑사방의 깃발
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0001
+  - notion_0009
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 남쪽 장터의 풍문, 흑사방의 깃발'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 흑사방
+  - 장터
+  - 풍문
+  - 문
+- event_id: wuxia_black_serpent_pressures_qingliu
+  source_path: events/imported/wuxia_black_serpent_pressures_qingliu.yml
+  raw_reference: 남쪽 장터의 풍문 / 흑사방의 깃발 / 부러진 검은 뱀
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0001
+  - notion_0006
+  - notion_0009
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 남쪽 장터의 풍문, 흑사방의 깃발, 부러진 검은 뱀'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 흑사방
+  - 검
+  - 장터
+  - 풍문
+  - 문
+- event_id: wuxia_boss_first_appearance
+  source_path: events/imported/wuxia_boss_first_appearance.yml
+  raw_reference: 부러진 검은 뱀 / 흑사방의 깃발 / 무림맹의 침묵
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0004
+  - notion_0006
+  - notion_0009
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 부러진 검은 뱀, 흑사방의 깃발, 무림맹의 침묵'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 흑사방
+  - 무림맹
+  - 검
+- event_id: wuxia_boss_pressure_debt_notice
+  source_path: events/imported/wuxia_boss_pressure_debt_notice.yml
+  raw_reference: 청류문의 후일 / 무명의 결말
+  classification: descriptive_condition
+  candidate_afterthought_ids:
+  - notion_0012
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 청류문의 후일'
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: 청류문의 후일 / 무명의 결말
+  related_keywords:
+  - 청류문
+  - 무명
+  - 결말
+  - 후일
+  - 문
+- event_id: wuxia_boss_pressure_false_alliance
+  source_path: events/imported/wuxia_boss_pressure_false_alliance.yml
+  raw_reference: 무명의 결말 / 청류문의 후일
+  classification: descriptive_condition
+  candidate_afterthought_ids:
+  - notion_0012
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 청류문의 후일'
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: 무명의 결말 / 청류문의 후일
+  related_keywords:
+  - 청류문
+  - 무명
+  - 결말
+  - 후일
+  - 문
+- event_id: wuxia_boss_recruits_mumyeong
+  source_path: events/imported/wuxia_boss_recruits_mumyeong.yml
+  raw_reference: 흑사방의 새 그림자 / 검은 뱀의 새 비늘
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0007
+  - notion_0010
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 흑사방의 새 그림자, 검은 뱀의 새 비늘'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 흑사방
+  - 검
+- event_id: wuxia_boss_resolution
+  source_path: events/imported/wuxia_boss_resolution.yml
+  raw_reference: 부러진 검은 뱀 / 흑사방의 깃발 / 무림맹의 침묵 / 검은 뱀의 새 비늘
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0004
+  - notion_0006
+  - notion_0009
+  - notion_0010
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 부러진 검은 뱀, 흑사방의 깃발, 무림맹의 침묵, 검은 뱀의 새 비늘'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 흑사방
+  - 무림맹
+  - 검
+- event_id: wuxia_bridge_mumyeong_misread_trace
+  source_path: events/imported/wuxia_bridge_mumyeong_misread_trace.yml
+  raw_reference: wuxia_epilogue_mumyeong_unanswered_letter
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_mumyeong_unanswered_letter
+  related_keywords: []
+- event_id: wuxia_bridge_raid_aftermath_nameplates
+  source_path: events/imported/wuxia_bridge_raid_aftermath_nameplates.yml
+  raw_reference: wuxia_epilogue_seoharin_empty_place
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_seoharin_empty_place
+  related_keywords: []
+- event_id: wuxia_bridge_training_partner_absent
+  source_path: events/imported/wuxia_bridge_training_partner_absent.yml
+  raw_reference: wuxia_epilogue_qingliu_guest_arrival
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_qingliu_guest_arrival
+  related_keywords: []
+- event_id: wuxia_chain_departed_disciple_letter
+  source_path: events/imported/wuxia_chain_departed_disciple_letter.yml
+  raw_reference: wuxia_epilogue_qingliu_guest_arrival
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_qingliu_guest_arrival
+  related_keywords: []
+- event_id: wuxia_chain_herbalist_second_ledger
+  source_path: events/imported/wuxia_chain_herbalist_second_ledger.yml
+  raw_reference: wuxia_epilogue_qingliu_guest_arrival
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_qingliu_guest_arrival
+  related_keywords: []
+- event_id: wuxia_chain_inn_empty_chair_tea
+  source_path: events/imported/wuxia_chain_inn_empty_chair_tea.yml
+  raw_reference: wuxia_epilogue_mumyeong_unanswered_letter
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_mumyeong_unanswered_letter
+  related_keywords: []
+- event_id: wuxia_chain_red_thread_witness
+  source_path: events/imported/wuxia_chain_red_thread_witness.yml
+  raw_reference: wuxia_epilogue_first_morning_after_boss
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_first_morning_after_boss
+  related_keywords: []
+- event_id: wuxia_chain_same_song_returner
+  source_path: events/imported/wuxia_chain_same_song_returner.yml
+  raw_reference: wuxia_epilogue_seoharin_empty_place
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_seoharin_empty_place
+  related_keywords: []
+- event_id: wuxia_chain_wet_message_sender
+  source_path: events/imported/wuxia_chain_wet_message_sender.yml
+  raw_reference: wuxia_epilogue_small_rumor
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_small_rumor
+  related_keywords: []
+- event_id: wuxia_cheongirok_blank_margin
+  source_path: events/imported/wuxia_cheongirok_blank_margin.yml
+  raw_reference: 천기록의 후일 / 청류문의 후일
+  classification: descriptive_condition
+  candidate_afterthought_ids:
+  - notion_0012
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 청류문의 후일'
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: 천기록의 후일 / 청류문의 후일
+  related_keywords:
+  - 청류문
+  - 천기록
+  - 후일
+  - 기록
+  - 문
+- event_id: wuxia_cheongryu_after_raid_bell
+  source_path: events/imported/wuxia_cheongryu_after_raid_bell.yml
+  raw_reference: 청류문의 후일 / 무명에게 돌아온 길
+  classification: descriptive_condition
+  candidate_afterthought_ids:
+  - notion_0012
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 청류문의 후일'
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: 청류문의 후일 / 무명에게 돌아온 길
+  related_keywords:
+  - 청류문
+  - 무명
+  - 후일
+  - 문
+- event_id: wuxia_cheongryu_empty_guest_room
+  source_path: events/imported/wuxia_cheongryu_empty_guest_room.yml
+  raw_reference: 청류문의 후일 / 비워둔 자리
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0012
+  - notion_0014
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 청류문의 후일, 비워둔 자리'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 청류문
+  - 후일
+  - 문
+- event_id: wuxia_cheongryu_first_departure_cost
+  source_path: events/imported/wuxia_cheongryu_first_departure_cost.yml
+  raw_reference: 청류문의 후일 / 비워둔 자리 / 닫히지 않은 산문
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0012
+  - notion_0014
+  - notion_0017
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 청류문의 후일, 비워둔 자리, 닫히지 않은 산문'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 청류문
+  - 산문
+  - 후일
+  - 문
+- event_id: wuxia_cheongryu_first_night_shelter
+  source_path: events/imported/wuxia_cheongryu_first_night_shelter.yml
+  raw_reference: 서하린의 후일 / 비워둔 자리
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0013
+  - notion_0014
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 서하린의 후일, 비워둔 자리'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 서하린
+  - 후일
+- event_id: wuxia_cheongryu_first_route_message
+  source_path: events/imported/wuxia_cheongryu_first_route_message.yml
+  raw_reference: 청류문의 후일 / 귀환 경로 후보
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0012
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 청류문의 후일'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: medium
+  review_status: needs_designer_review
+  topic_keywords:
+  - 청류문
+  - 귀환
+  - 후일
+  - 문
+- event_id: wuxia_cheongryu_medicine_errand
+  source_path: events/imported/wuxia_cheongryu_medicine_errand.yml
+  raw_reference: 청류문 약재 부족 후일담 후보
+  classification: designer_review_required
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: medium
+  review_status: needs_designer_review
+  topic_keywords:
+  - 청류문
+  - 후일
+  - 약재
+  - 문
+- event_id: wuxia_cheongryu_raid_aftermath_roll_call
+  source_path: events/imported/wuxia_cheongryu_raid_aftermath_roll_call.yml
+  raw_reference: 청류문의 후일 / 서하린의 후일 / 무명의 결말 카드 후보
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0012
+  - notion_0013
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 청류문의 후일, 서하린의 후일'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 청류문
+  - 서하린
+  - 무명
+  - 결말
+  - 후일
+  - 문
+- event_id: wuxia_cheongryu_raid_omen
+  source_path: events/imported/wuxia_cheongryu_raid_omen.yml
+  raw_reference: 청류문 습격 / 청류문 후일
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: 청류문 습격 / 청류문 후일
+  related_keywords:
+  - 청류문
+  - 습격
+  - 후일
+  - 문
+- event_id: wuxia_cheongryu_raid_repair_first_debt
+  source_path: events/imported/wuxia_cheongryu_raid_repair_first_debt.yml
+  raw_reference: 청류문의 후일 / 청류문 무공 복원
+  classification: descriptive_condition
+  candidate_afterthought_ids:
+  - notion_0012
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 청류문의 후일'
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: 청류문의 후일 / 청류문 무공 복원
+  related_keywords:
+  - 청류문
+  - 무공
+  - 후일
+  - 문
+- event_id: wuxia_cheongryu_rebuild_last_beam
+  source_path: events/imported/wuxia_cheongryu_rebuild_last_beam.yml
+  raw_reference: 청류문의 후일 / 청류문 무공 복원
+  classification: descriptive_condition
+  candidate_afterthought_ids:
+  - notion_0012
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 청류문의 후일'
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: 청류문의 후일 / 청류문 무공 복원
+  related_keywords:
+  - 청류문
+  - 무공
+  - 후일
+  - 문
+- event_id: wuxia_cheongryu_recovery_first_morning
+  source_path: events/imported/wuxia_cheongryu_recovery_first_morning.yml
+  raw_reference: 청류문 무공 복원 / 서하린의 후일
+  classification: descriptive_condition
+  candidate_afterthought_ids:
+  - notion_0013
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 서하린의 후일'
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: 청류문 무공 복원 / 서하린의 후일
+  related_keywords:
+  - 청류문
+  - 서하린
+  - 무공
+  - 후일
+  - 문
+- event_id: wuxia_cheongryu_recovery_rain_patrol
+  source_path: events/imported/wuxia_cheongryu_recovery_rain_patrol.yml
+  raw_reference: 청류문의 후일 / 닫히지 않은 산문
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0012
+  - notion_0017
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 청류문의 후일, 닫히지 않은 산문'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 청류문
+  - 산문
+  - 후일
+  - 문
+- event_id: wuxia_cheongryu_recovery_sparring_observer
+  source_path: events/imported/wuxia_cheongryu_recovery_sparring_observer.yml
+  raw_reference: 청류문 무공 복원
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: 청류문 무공 복원
+  related_keywords:
+  - 청류문
+  - 무공
+  - 문
+- event_id: wuxia_cheongryu_survivor_ledger
+  source_path: events/imported/wuxia_cheongryu_survivor_ledger.yml
+  raw_reference: 청류문의 후일 / 무명의 결말
+  classification: descriptive_condition
+  candidate_afterthought_ids:
+  - notion_0012
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 청류문의 후일'
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: 청류문의 후일 / 무명의 결말
+  related_keywords:
+  - 청류문
+  - 무명
+  - 결말
+  - 후일
+  - 문
+- event_id: wuxia_cheongryu_wrong_delivery
+  source_path: events/imported/wuxia_cheongryu_wrong_delivery.yml
+  raw_reference: 닫히지 않은 산문 / 귀환 경로 후보
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0017
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 닫히지 않은 산문'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: medium
+  review_status: needs_designer_review
+  topic_keywords:
+  - 귀환
+  - 산문
+  - 문
+- event_id: wuxia_epilogue_first_morning_after_boss
+  source_path: events/imported/wuxia_epilogue_first_morning_after_boss.yml
+  raw_reference: wuxia_epilogue_first_morning_after_boss
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_first_morning_after_boss
+  related_keywords: []
+- event_id: wuxia_epilogue_mumyeong_unanswered_letter
+  source_path: events/imported/wuxia_epilogue_mumyeong_unanswered_letter.yml
+  raw_reference: wuxia_epilogue_mumyeong_unanswered_letter
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_mumyeong_unanswered_letter
+  related_keywords: []
+- event_id: wuxia_epilogue_qingliu_guest_arrival
+  source_path: events/imported/wuxia_epilogue_qingliu_guest_arrival.yml
+  raw_reference: wuxia_epilogue_qingliu_guest_arrival
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_qingliu_guest_arrival
+  related_keywords: []
+- event_id: wuxia_epilogue_return_object_left_behind
+  source_path: events/imported/wuxia_epilogue_return_object_left_behind.yml
+  raw_reference: wuxia_epilogue_return_object_left_behind
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_return_object_left_behind
+  related_keywords: []
+- event_id: wuxia_epilogue_seoharin_empty_place
+  source_path: events/imported/wuxia_epilogue_seoharin_empty_place.yml
+  raw_reference: wuxia_epilogue_seoharin_empty_place
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_seoharin_empty_place
+  related_keywords: []
+- event_id: wuxia_epilogue_small_rumor
+  source_path: events/imported/wuxia_epilogue_small_rumor.yml
+  raw_reference: wuxia_epilogue_small_rumor
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_small_rumor
+  related_keywords: []
+- event_id: wuxia_fallback_boss_retreat_evening
+  source_path: events/imported/wuxia_fallback_boss_retreat_evening.yml
+  raw_reference: wuxia_epilogue_first_morning_after_boss
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_first_morning_after_boss
+  related_keywords: []
+- event_id: wuxia_fallback_final_missing_evidence
+  source_path: events/imported/wuxia_fallback_final_missing_evidence.yml
+  raw_reference: wuxia_epilogue_first_morning_after_boss
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_first_morning_after_boss
+  related_keywords: []
+- event_id: wuxia_fallback_mumyeong_wrong_target
+  source_path: events/imported/wuxia_fallback_mumyeong_wrong_target.yml
+  raw_reference: wuxia_epilogue_mumyeong_unanswered_letter
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_mumyeong_unanswered_letter
+  related_keywords: []
+- event_id: wuxia_fallback_recovery_overexertion
+  source_path: events/imported/wuxia_fallback_recovery_overexertion.yml
+  raw_reference: wuxia_epilogue_seoharin_empty_place
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_seoharin_empty_place
+  related_keywords: []
+- event_id: wuxia_final_prep_evidence_sort
+  source_path: events/imported/wuxia_final_prep_evidence_sort.yml
+  raw_reference: 청류문의 후일 / 무명의 결말 / 무림맹 책임선
+  classification: descriptive_condition
+  candidate_afterthought_ids:
+  - notion_0012
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 청류문의 후일'
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: 청류문의 후일 / 무명의 결말 / 무림맹 책임선
+  related_keywords:
+  - 청류문
+  - 무명
+  - 무림맹
+  - 결말
+  - 후일
+  - 문
+- event_id: wuxia_final_prep_last_meal
+  source_path: events/imported/wuxia_final_prep_last_meal.yml
+  raw_reference: 서하린의 후일 / 청류문의 후일 / 비워둔 자리
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0012
+  - notion_0013
+  - notion_0014
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 서하린의 후일, 청류문의 후일, 비워둔 자리'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 청류문
+  - 서하린
+  - 후일
+  - 문
+- event_id: wuxia_final_prep_last_training
+  source_path: events/imported/wuxia_final_prep_last_training.yml
+  raw_reference: 청류문 무공 복원 / 서하린의 후일
+  classification: descriptive_condition
+  candidate_afterthought_ids:
+  - notion_0013
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 서하린의 후일'
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: 청류문 무공 복원 / 서하린의 후일
+  related_keywords:
+  - 청류문
+  - 서하린
+  - 무공
+  - 후일
+  - 문
+- event_id: wuxia_final_prep_small_interruption
+  source_path: events/imported/wuxia_final_prep_small_interruption.yml
+  raw_reference: 닫히지 않은 산문 / 청류문의 후일
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0012
+  - notion_0017
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 닫히지 않은 산문, 청류문의 후일'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 청류문
+  - 산문
+  - 후일
+  - 문
+- event_id: wuxia_heuksa_bang_debt_bargain
+  source_path: events/imported/wuxia_heuksa_bang_debt_bargain.yml
+  raw_reference: 무명의 결말 / 청류문의 후일
+  classification: descriptive_condition
+  candidate_afterthought_ids:
+  - notion_0012
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 청류문의 후일'
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: 무명의 결말 / 청류문의 후일
+  related_keywords:
+  - 청류문
+  - 무명
+  - 결말
+  - 후일
+  - 문
+- event_id: wuxia_heuksa_bang_inn_key
+  source_path: events/imported/wuxia_heuksa_bang_inn_key.yml
+  raw_reference: 귀환 경로 후보 / 무명의 결말
+  classification: designer_review_required
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: medium
+  review_status: needs_designer_review
+  topic_keywords:
+  - 무명
+  - 귀환
+  - 결말
+- event_id: wuxia_mumyeong_awakening
+  source_path: events/imported/wuxia_mumyeong_awakening.yml
+  raw_reference: 훔친 초식의 끝 / 훔친 초식이 멈춘 날
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0002
+  - notion_0003
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 훔친 초식의 끝, 훔친 초식이 멈춘 날'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords: []
+- event_id: wuxia_mumyeong_bridge_child_story
+  source_path: events/imported/wuxia_mumyeong_bridge_child_story.yml
+  raw_reference: 무명의 결말
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: 무명의 결말
+  related_keywords:
+  - 무명
+  - 결말
+- event_id: wuxia_mumyeong_copy_style_reveal
+  source_path: events/imported/wuxia_mumyeong_copy_style_reveal.yml
+  raw_reference: 훔친 초식의 끝 / 훔친 초식이 멈춘 날
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0002
+  - notion_0003
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 훔친 초식의 끝, 훔친 초식이 멈춘 날'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords: []
+- event_id: wuxia_mumyeong_departure_truth_summary
+  source_path: events/imported/wuxia_mumyeong_departure_truth_summary.yml
+  raw_reference: 전하지 못한 사과 / 문밖의 두 번째 목검 / 훔친 초식이 멈춘 날
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0002
+  - notion_0005
+  - notion_0008
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 전하지 못한 사과, 문밖의 두 번째 목검, 훔친 초식이 멈춘 날'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 검
+  - 목검
+  - 문
+- event_id: wuxia_mumyeong_destroys_orthodox_sect
+  source_path: events/imported/wuxia_mumyeong_destroys_orthodox_sect.yml
+  raw_reference: 전하지 못한 사과 / 훔친 초식의 끝 / 닮은 초식의 풍문
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0003
+  - notion_0008
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 전하지 못한 사과, 훔친 초식의 끝'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 풍문
+  - 문
+- event_id: wuxia_mumyeong_false_sighting
+  source_path: events/imported/wuxia_mumyeong_false_sighting.yml
+  raw_reference: 무명의 결말 / 서하린의 후일
+  classification: descriptive_condition
+  candidate_afterthought_ids:
+  - notion_0013
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 서하린의 후일'
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: 무명의 결말 / 서하린의 후일
+  related_keywords:
+  - 서하린
+  - 무명
+  - 결말
+  - 후일
+- event_id: wuxia_mumyeong_first_confrontation
+  source_path: events/imported/wuxia_mumyeong_first_confrontation.yml
+  raw_reference: 무명 운명 카드 후보
+  classification: designer_review_required
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: medium
+  review_status: needs_designer_review
+  topic_keywords:
+  - 무명
+- event_id: wuxia_mumyeong_first_sighting
+  source_path: events/imported/wuxia_mumyeong_first_sighting.yml
+  raw_reference: 무명 운명 카드 후보
+  classification: designer_review_required
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: medium
+  review_status: needs_designer_review
+  topic_keywords:
+  - 무명
+- event_id: wuxia_mumyeong_midgame_reunion
+  source_path: events/imported/wuxia_mumyeong_midgame_reunion.yml
+  raw_reference: 전하지 못한 사과 / 훔친 초식이 멈춘 날 / 흑사방의 새 그림자
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0002
+  - notion_0007
+  - notion_0008
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 전하지 못한 사과, 훔친 초식이 멈춘 날, 흑사방의 새 그림자'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 흑사방
+- event_id: wuxia_mumyeong_name_returns
+  source_path: events/imported/wuxia_mumyeong_name_returns.yml
+  raw_reference: 서하린의 후일 / 무명의 결말
+  classification: descriptive_condition
+  candidate_afterthought_ids:
+  - notion_0013
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 서하린의 후일'
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: 서하린의 후일 / 무명의 결말
+  related_keywords:
+  - 서하린
+  - 무명
+  - 결말
+  - 후일
+- event_id: wuxia_mumyeong_old_trace_at_inn
+  source_path: events/imported/wuxia_mumyeong_old_trace_at_inn.yml
+  raw_reference: 무명의 결말 / 청류문의 후일
+  classification: descriptive_condition
+  candidate_afterthought_ids:
+  - notion_0012
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 청류문의 후일'
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: 무명의 결말 / 청류문의 후일
+  related_keywords:
+  - 청류문
+  - 무명
+  - 결말
+  - 후일
+  - 문
+- event_id: wuxia_mumyeong_request_for_aid
+  source_path: events/imported/wuxia_mumyeong_request_for_aid.yml
+  raw_reference: 무명 운명 카드 후보
+  classification: designer_review_required
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: medium
+  review_status: needs_designer_review
+  topic_keywords:
+  - 무명
+- event_id: wuxia_mumyeong_resolution
+  source_path: events/imported/wuxia_mumyeong_resolution.yml
+  raw_reference: 문밖의 두 번째 목검 / 전하지 못한 사과 / 훔친 초식의 끝 / 훔친 초식이 멈춘 날 / 흑사방의 새 그림자 / 검은
+    뱀의 새 비늘
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0002
+  - notion_0003
+  - notion_0005
+  - notion_0007
+  - notion_0008
+  - notion_0010
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 문밖의 두 번째 목검, 전하지 못한 사과, 훔친 초식의 끝, 훔친 초식이 멈춘 날, 흑사방의
+    새 그림자, 검은 뱀의 새 비늘'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 흑사방
+  - 검
+  - 목검
+  - 문
+- event_id: wuxia_mumyeong_trace_wrong_weapon
+  source_path: events/imported/wuxia_mumyeong_trace_wrong_weapon.yml
+  raw_reference: 무명의 결말 / 청류문 무공 복원
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: 무명의 결말 / 청류문 무공 복원
+  related_keywords:
+  - 청류문
+  - 무명
+  - 무공
+  - 결말
+  - 문
+- event_id: wuxia_prologue_commute_rift
+  source_path: events/imported/wuxia_prologue_commute_rift.yml
+  raw_reference: 추후 현대 귀환 계열 카드와 연결 가능
+  classification: designer_review_required
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: medium
+  review_status: needs_designer_review
+  topic_keywords:
+  - 귀환
+- event_id: wuxia_qingliu_apprentice_entry
+  source_path: events/imported/wuxia_qingliu_apprentice_entry.yml
+  raw_reference: 청류문/서하린 후일 계열에 장기 영향
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: 청류문/서하린 후일 계열에 장기 영향
+  related_keywords:
+  - 청류문
+  - 서하린
+  - 후일
+  - 문
+- event_id: wuxia_qingliu_attack_after_war
+  source_path: events/imported/wuxia_qingliu_attack_after_war.yml
+  raw_reference: 청류문의 후일 / 무명의 결말 카드 후보
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0012
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 청류문의 후일'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: medium
+  review_status: needs_designer_review
+  topic_keywords:
+  - 청류문
+  - 무명
+  - 결말
+  - 후일
+  - 문
+- event_id: wuxia_qingliu_first_arrival
+  source_path: events/imported/wuxia_qingliu_first_arrival.yml
+  raw_reference: 청류문의 후일 계열 카드 씨앗
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: 청류문의 후일 계열 카드 씨앗
+  related_keywords:
+  - 청류문
+  - 후일
+  - 문
+- event_id: wuxia_qingliu_patron_letter
+  source_path: events/imported/wuxia_qingliu_patron_letter.yml
+  raw_reference: 청류문의 후일 / 서하린의 후일
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0012
+  - notion_0013
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 청류문의 후일, 서하린의 후일'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 청류문
+  - 서하린
+  - 후일
+  - 문
+- event_id: wuxia_qingliu_silent_repair_shift
+  source_path: events/imported/wuxia_qingliu_silent_repair_shift.yml
+  raw_reference: 청류문의 후일 / 청류문 무공 복원
+  classification: descriptive_condition
+  candidate_afterthought_ids:
+  - notion_0012
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 청류문의 후일'
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: 청류문의 후일 / 청류문 무공 복원
+  related_keywords:
+  - 청류문
+  - 무공
+  - 후일
+  - 문
+- event_id: wuxia_random_epilogue_lamp
+  source_path: events/imported/wuxia_random_epilogue_lamp.yml
+  raw_reference: wuxia_epilogue_first_morning_after_boss
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_first_morning_after_boss
+  related_keywords: []
+- event_id: wuxia_random_epilogue_without_record
+  source_path: events/imported/wuxia_random_epilogue_without_record.yml
+  raw_reference: wuxia_epilogue_first_morning_after_boss
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_first_morning_after_boss
+  related_keywords: []
+- event_id: wuxia_random_fake_cheongryu_talisman
+  source_path: events/imported/wuxia_random_fake_cheongryu_talisman.yml
+  raw_reference: wuxia_epilogue_small_rumor
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_small_rumor
+  related_keywords: []
+- event_id: wuxia_random_final_torn_ledger
+  source_path: events/imported/wuxia_random_final_torn_ledger.yml
+  raw_reference: wuxia_epilogue_first_morning_after_boss
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_first_morning_after_boss
+  related_keywords: []
+- event_id: wuxia_random_hillside_old_grave
+  source_path: events/imported/wuxia_random_hillside_old_grave.yml
+  raw_reference: wuxia_epilogue_seoharin_empty_place
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_seoharin_empty_place
+  related_keywords: []
+- event_id: wuxia_random_inn_empty_chair
+  source_path: events/imported/wuxia_random_inn_empty_chair.yml
+  raw_reference: wuxia_epilogue_mumyeong_unanswered_letter
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_mumyeong_unanswered_letter
+  related_keywords: []
+- event_id: wuxia_random_kitchen_ladle
+  source_path: events/imported/wuxia_random_kitchen_ladle.yml
+  raw_reference: wuxia_epilogue_small_rumor
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_small_rumor
+  related_keywords: []
+- event_id: wuxia_random_modern_object_shard
+  source_path: events/imported/wuxia_random_modern_object_shard.yml
+  raw_reference: wuxia_epilogue_return_object_left_behind
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_return_object_left_behind
+  related_keywords: []
+- event_id: wuxia_random_night_two_lanterns
+  source_path: events/imported/wuxia_random_night_two_lanterns.yml
+  raw_reference: wuxia_epilogue_small_rumor
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_small_rumor
+  related_keywords: []
+- event_id: wuxia_random_qingliu_missing_errand_runner
+  source_path: events/imported/wuxia_random_qingliu_missing_errand_runner.yml
+  raw_reference: wuxia_epilogue_qingliu_guest_arrival
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_qingliu_guest_arrival
+  related_keywords: []
+- event_id: wuxia_random_qingliu_nothing_evening
+  source_path: events/imported/wuxia_random_qingliu_nothing_evening.yml
+  raw_reference: wuxia_epilogue_first_morning_after_boss
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_first_morning_after_boss
+  related_keywords: []
+- event_id: wuxia_random_returning_path_same_song
+  source_path: events/imported/wuxia_random_returning_path_same_song.yml
+  raw_reference: wuxia_epilogue_seoharin_empty_place
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_seoharin_empty_place
+  related_keywords: []
+- event_id: wuxia_random_route_child_sparring
+  source_path: events/imported/wuxia_random_route_child_sparring.yml
+  raw_reference: wuxia_epilogue_small_rumor
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_small_rumor
+  related_keywords: []
+- event_id: wuxia_random_route_wet_message
+  source_path: events/imported/wuxia_random_route_wet_message.yml
+  raw_reference: wuxia_epilogue_return_object_left_behind
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_return_object_left_behind
+  related_keywords: []
+- event_id: wuxia_random_seoharin_market_nickname
+  source_path: events/imported/wuxia_random_seoharin_market_nickname.yml
+  raw_reference: wuxia_epilogue_small_rumor
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_small_rumor
+  related_keywords: []
+- event_id: wuxia_random_seoharin_no_umbrella
+  source_path: events/imported/wuxia_random_seoharin_no_umbrella.yml
+  raw_reference: wuxia_epilogue_seoharin_empty_place
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_seoharin_empty_place
+  related_keywords: []
+- event_id: wuxia_random_seoharin_tea_temperature
+  source_path: events/imported/wuxia_random_seoharin_tea_temperature.yml
+  raw_reference: wuxia_epilogue_seoharin_empty_place
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_seoharin_empty_place
+  related_keywords: []
+- event_id: wuxia_return_hill_cart
+  source_path: events/imported/wuxia_return_hill_cart.yml
+  raw_reference: 귀환 경로 후보
+  classification: designer_review_required
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: medium
+  review_status: needs_designer_review
+  topic_keywords:
+  - 귀환
+- event_id: wuxia_return_modern_object_rumor
+  source_path: events/imported/wuxia_return_modern_object_rumor.yml
+  raw_reference: 귀환 경로 후보 / 서하린의 후일
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0013
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 서하린의 후일'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: medium
+  review_status: needs_designer_review
+  topic_keywords:
+  - 서하린
+  - 귀환
+  - 후일
+- event_id: wuxia_route_alliance_empty_question
+  source_path: events/imported/wuxia_route_alliance_empty_question.yml
+  raw_reference: wuxia_epilogue_small_rumor
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_small_rumor
+  related_keywords: []
+- event_id: wuxia_route_explain_choice_to_seoharin
+  source_path: events/imported/wuxia_route_explain_choice_to_seoharin.yml
+  raw_reference: 서하린의 후일 / 비워둔 자리
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0013
+  - notion_0014
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 서하린의 후일, 비워둔 자리'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 서하린
+  - 후일
+- event_id: wuxia_route_first_day_settlement
+  source_path: events/imported/wuxia_route_first_day_settlement.yml
+  raw_reference: 청류문의 후일 / 귀환 경로 후보 / 무림맹 책임선
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0012
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 청류문의 후일'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: medium
+  review_status: needs_designer_review
+  topic_keywords:
+  - 청류문
+  - 무림맹
+  - 귀환
+  - 후일
+  - 문
+- event_id: wuxia_route_heuksa_one_debt_line
+  source_path: events/imported/wuxia_route_heuksa_one_debt_line.yml
+  raw_reference: wuxia_epilogue_first_morning_after_boss
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_first_morning_after_boss
+  related_keywords: []
+- event_id: wuxia_route_qingliu_short_report
+  source_path: events/imported/wuxia_route_qingliu_short_report.yml
+  raw_reference: wuxia_epilogue_qingliu_guest_arrival
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_qingliu_guest_arrival
+  related_keywords: []
+- event_id: wuxia_route_record_refusal
+  source_path: events/imported/wuxia_route_record_refusal.yml
+  raw_reference: wuxia_epilogue_without_record
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_without_record
+  related_keywords: []
+- event_id: wuxia_route_return_scent_clue
+  source_path: events/imported/wuxia_route_return_scent_clue.yml
+  raw_reference: wuxia_epilogue_return_object_left_behind
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_return_object_left_behind
+  related_keywords: []
+- event_id: wuxia_route_settlement_first_wage
+  source_path: events/imported/wuxia_route_settlement_first_wage.yml
+  raw_reference: wuxia_epilogue_qingliu_guest_arrival
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_qingliu_guest_arrival
+  related_keywords: []
+- event_id: wuxia_route_small_debt_collection
+  source_path: events/imported/wuxia_route_small_debt_collection.yml
+  raw_reference: 청류문의 후일 / 무명의 결말
+  classification: descriptive_condition
+  candidate_afterthought_ids:
+  - notion_0012
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 청류문의 후일'
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: 청류문의 후일 / 무명의 결말
+  related_keywords:
+  - 청류문
+  - 무명
+  - 결말
+  - 후일
+  - 문
+- event_id: wuxia_sado_brush_after_boss
+  source_path: events/imported/wuxia_sado_brush_after_boss.yml
+  raw_reference: 부러진 검은 뱀 / 흑사방의 깃발 / 검은 뱀의 새 비늘
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0006
+  - notion_0009
+  - notion_0010
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 부러진 검은 뱀, 흑사방의 깃발, 검은 뱀의 새 비늘'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 흑사방
+  - 검
+- event_id: wuxia_sado_final_battle
+  source_path: events/imported/wuxia_sado_final_battle.yml
+  raw_reference: 보스 결산 / 부러진 검은 뱀 / 흑사방의 깃발 / 검은 뱀의 새 비늘 / 무림맹의 침묵
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0004
+  - notion_0006
+  - notion_0009
+  - notion_0010
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 부러진 검은 뱀, 흑사방의 깃발, 검은 뱀의 새 비늘, 무림맹의 침묵'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 흑사방
+  - 무림맹
+  - 검
+- event_id: wuxia_sado_final_phase_1_price_tag
+  source_path: events/imported/wuxia_sado_final_phase_1_price_tag.yml
+  raw_reference: 보스 결산 / 부러진 검은 뱀 / 흑사방의 깃발 / 무림맹의 침묵
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0004
+  - notion_0006
+  - notion_0009
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 부러진 검은 뱀, 흑사방의 깃발, 무림맹의 침묵'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 흑사방
+  - 무림맹
+  - 검
+- event_id: wuxia_sado_final_phase_2_weakpoint_control
+  source_path: events/imported/wuxia_sado_final_phase_2_weakpoint_control.yml
+  raw_reference: 보스 결산 / 검은 뱀의 새 비늘 / 서하린의 후일 / 닫힌 산문
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0010
+  - notion_0013
+  - notion_0015
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 검은 뱀의 새 비늘, 서하린의 후일, 닫힌 산문'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 서하린
+  - 산문
+  - 후일
+  - 검
+  - 문
+- event_id: wuxia_sado_final_phase_3_outside_calculation
+  source_path: events/imported/wuxia_sado_final_phase_3_outside_calculation.yml
+  raw_reference: 보스 결산 / 부러진 검은 뱀 / 검은 뱀의 새 비늘 / 무림맹의 침묵 / 닫힌 산문
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0004
+  - notion_0006
+  - notion_0010
+  - notion_0015
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 부러진 검은 뱀, 검은 뱀의 새 비늘, 무림맹의 침묵, 닫힌 산문'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 무림맹
+  - 산문
+  - 검
+  - 문
+- event_id: wuxia_sado_old_glove_after_boss
+  source_path: events/imported/wuxia_sado_old_glove_after_boss.yml
+  raw_reference: 부러진 검은 뱀 / 검은 뱀의 새 비늘
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0006
+  - notion_0010
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 부러진 검은 뱀, 검은 뱀의 새 비늘'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 검
+- event_id: wuxia_sado_ownerless_token
+  source_path: events/imported/wuxia_sado_ownerless_token.yml
+  raw_reference: 전하지 못한 사과 / 문밖의 두 번째 목검
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0005
+  - notion_0008
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 전하지 못한 사과, 문밖의 두 번째 목검'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 검
+  - 목검
+  - 문
+- event_id: wuxia_sado_unpriced_wooden_sword_hidden
+  source_path: events/imported/wuxia_sado_unpriced_wooden_sword_hidden.yml
+  raw_reference: 서하린의 후일 / 비워둔 자리 / 닫히지 않은 산문
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0013
+  - notion_0014
+  - notion_0017
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 서하린의 후일, 비워둔 자리, 닫히지 않은 산문'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 서하린
+  - 산문
+  - 후일
+  - 문
+- event_id: wuxia_seoharin_empty_place
+  source_path: events/imported/wuxia_seoharin_empty_place.yml
+  raw_reference: 서하린의 후일 / 비워둔 자리
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0013
+  - notion_0014
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 서하린의 후일, 비워둔 자리'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 서하린
+  - 후일
+- event_id: wuxia_seoharin_hides_training_injury
+  source_path: events/imported/wuxia_seoharin_hides_training_injury.yml
+  raw_reference: 서하린의 후일 / 비워둔 자리 / 닫힌 산문
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0013
+  - notion_0014
+  - notion_0015
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 서하린의 후일, 비워둔 자리, 닫힌 산문'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 서하린
+  - 산문
+  - 후일
+  - 문
+- event_id: wuxia_seoharin_intervention
+  source_path: events/imported/wuxia_seoharin_intervention.yml
+  raw_reference: 서하린의 후일 계열 카드 씨앗
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: 서하린의 후일 계열 카드 씨앗
+  related_keywords:
+  - 서하린
+  - 후일
+- event_id: wuxia_seoharin_left_meal
+  source_path: events/imported/wuxia_seoharin_left_meal.yml
+  raw_reference: 서하린의 후일 / 마지막 밥그릇
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0013
+  - notion_0016
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 서하린의 후일, 마지막 밥그릇'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 서하린
+  - 후일
+  - 밥
+- event_id: wuxia_seoharin_night_watch_after_raid
+  source_path: events/imported/wuxia_seoharin_night_watch_after_raid.yml
+  raw_reference: 서하린의 후일 / 비워둔 자리 / 닫히지 않은 산문
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0013
+  - notion_0014
+  - notion_0017
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 서하린의 후일, 비워둔 자리, 닫히지 않은 산문'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 서하린
+  - 산문
+  - 후일
+  - 문
+- event_id: wuxia_seoharin_old_song
+  source_path: events/imported/wuxia_seoharin_old_song.yml
+  raw_reference: 서하린의 후일 / 비워둔 자리
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0013
+  - notion_0014
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 서하린의 후일, 비워둔 자리'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 서하린
+  - 후일
+- event_id: wuxia_seoharin_recovery_bandage_change
+  source_path: events/imported/wuxia_seoharin_recovery_bandage_change.yml
+  raw_reference: 서하린의 후일 / 비워둔 자리
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0013
+  - notion_0014
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 서하린의 후일, 비워둔 자리'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 서하린
+  - 후일
+- event_id: wuxia_seoharin_shared_meal_after_raid
+  source_path: events/imported/wuxia_seoharin_shared_meal_after_raid.yml
+  raw_reference: 서하린의 후일 / 닫히지 않은 산문
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0013
+  - notion_0017
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 서하린의 후일, 닫히지 않은 산문'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 서하린
+  - 산문
+  - 후일
+  - 문
+- event_id: wuxia_seoharin_truth_share_before_boss
+  source_path: events/imported/wuxia_seoharin_truth_share_before_boss.yml
+  raw_reference: 서하린의 후일 / 무명의 결말
+  classification: descriptive_condition
+  candidate_afterthought_ids:
+  - notion_0013
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 서하린의 후일'
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: 서하린의 후일 / 무명의 결말
+  related_keywords:
+  - 서하린
+  - 무명
+  - 결말
+  - 후일
+- event_id: wuxia_seoharin_unsaid_stay
+  source_path: events/imported/wuxia_seoharin_unsaid_stay.yml
+  raw_reference: 서하린의 후일 / 비워둔 자리 / 닫힌 산문
+  classification: designer_review_required
+  candidate_afterthought_ids:
+  - notion_0013
+  - notion_0014
+  - notion_0015
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 서하린의 후일, 비워둔 자리, 닫힌 산문'
+  - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
+  confidence: high
+  review_status: needs_designer_review
+  topic_keywords:
+  - 서하린
+  - 산문
+  - 후일
+  - 문
+- event_id: wuxia_side_departed_disciple_sibling
+  source_path: events/imported/wuxia_side_departed_disciple_sibling.yml
+  raw_reference: wuxia_epilogue_qingliu_guest_arrival
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_qingliu_guest_arrival
+  related_keywords: []
+- event_id: wuxia_side_epilogue_empty_bundle
+  source_path: events/imported/wuxia_side_epilogue_empty_bundle.yml
+  raw_reference: wuxia_epilogue_qingliu_guest_arrival
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_qingliu_guest_arrival
+  related_keywords: []
+- event_id: wuxia_side_gatekeeper_late_shift
+  source_path: events/imported/wuxia_side_gatekeeper_late_shift.yml
+  raw_reference: wuxia_epilogue_qingliu_guest_arrival
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_qingliu_guest_arrival
+  related_keywords: []
+- event_id: wuxia_side_seoharin_asks_first
+  source_path: events/imported/wuxia_side_seoharin_asks_first.yml
+  raw_reference: wuxia_epilogue_seoharin_empty_place
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_seoharin_empty_place
+  related_keywords: []
+- event_id: wuxia_side_two_goodbyes
+  source_path: events/imported/wuxia_side_two_goodbyes.yml
+  raw_reference: wuxia_epilogue_seoharin_empty_place
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_seoharin_empty_place
+  related_keywords: []
+- event_id: wuxia_tianjilu_first_fragment
+  source_path: events/imported/wuxia_tianjilu_first_fragment.yml
+  raw_reference: 천기록의 마지막 장 / 천외편린 잔향 카드 씨앗
+  classification: descriptive_condition
+  candidate_afterthought_ids:
+  - notion_0011
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 'exact title/ID token(s): 천기록의 마지막 장'
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: 천기록의 마지막 장 / 천외편린 잔향 카드 씨앗
+  related_keywords:
+  - 천기록
+  - 기록
+- event_id: wuxia_weather_first_snow_tracks
+  source_path: events/imported/wuxia_weather_first_snow_tracks.yml
+  raw_reference: wuxia_epilogue_small_rumor
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_small_rumor
+  related_keywords: []
+- event_id: wuxia_weather_heat_empty_jug
+  source_path: events/imported/wuxia_weather_heat_empty_jug.yml
+  raw_reference: wuxia_epilogue_qingliu_guest_arrival
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_qingliu_guest_arrival
+  related_keywords: []
+- event_id: wuxia_weather_wind_letter_direction
+  source_path: events/imported/wuxia_weather_wind_letter_direction.yml
+  raw_reference: wuxia_epilogue_return_object_left_behind
+  classification: descriptive_condition
+  candidate_afterthought_ids: []
+  evidence:
+  - 후일담 카드 연결 필드의 원문을 보존함
+  - raw reference is not an exact afterthought ID/title
+  - 카드 ID가 아닌 사건 후속 조건/설명으로만 안전하게 해석함
+  confidence: medium
+  review_status: approved_as_condition
+  condition_summary: wuxia_epilogue_return_object_left_behind
+  related_keywords: []

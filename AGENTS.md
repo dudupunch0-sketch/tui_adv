@@ -96,26 +96,26 @@
 - 현재 세션에서 처리할 남은 plan/todo가 없을 때만 `idea_box/README.md`, `idea_box/BACKLOG_ORDER.md`, `idea_box/inbox/`의 열린 아이디어를 확인해 다음 설계/개발 항목을 찾는다.
 - 사용자가 직접 `idea_box` 확인을 요청한 경우에는 즉시 확인한다.
 
-### Notion reference 및 local design-source 파이프라인
+### Local design-source 및 Notion mirror 파이프라인
 
 현재 디자인 레코드의 정본은 Git repo 내부의 `docs/content/design_source/`다. 별도 DB/저장소가 아니며, 스토리·사건·선택지·후일담·보상·관계·기획 provenance를 설계/변경/감사할 때 참조하는 기획 SSoT다. 범위는 current design records로 한정하며 runtime graph/generated/game-code contract의 정본이 아니다. 일반 엔진/UI/빌드/전투 코드 작업에서는 전체 폴더를 매번 읽지 않고, 콘텐츠 ID·보상·분기 계약 구현 때만 manifest와 관련 소수 레코드를 선택 참조한다. Notion은 읽기·검수 미러다.
 
 표준 흐름은 다음 순서다.
 
-1. 사용자가 Notion에 아이디어를 정리하거나 기존 local design-source를 검토한다.
-2. agent는 Notion 문서를 읽고, repo 안의 설계 아이디어 문서로 변환한다. 보통 `docs/design/`, `docs/content/`, 또는 `docs/story/` 아래에 후보 문서를 만들고, `idea_box/inbox/*.md`에는 Notion page id/title/url과 `related_docs`를 기록한다.
+1. 사용자가 local design source에 아이디어를 정리하거나 기존 레코드를 검토한다. Notion-origin 아이디어는 필요할 때만 보존된 provenance를 참조한다.
+2. agent는 manifest/governance를 먼저 읽고 관련 local records를 선택 참조한다. Notion provenance가 필요한 경우에만 repo 안의 설계 아이디어 문서와 `idea_box/inbox/*.md`에 page id/title/url과 `related_docs`를 기록한다.
 3. 다음에 실제로 설계할 항목은 설계 아이디어 문서 중 하나를 `docs/dev/Development_Plan.md`의 active main plan / “현재 최우선 남은 작업”으로 격상시킨 뒤 진행한다.
-4. 설계가 끝나면 원본 Notion reference와 결과 설계 문서를 다시 비교해 방향, 핵심 제약, non-goals가 어긋나지 않았는지 확인한다.
-5. 이 Notion reference 대조까지 끝난 뒤에만 해당 idea entry를 `done` 처리한다. 단순 import, 단순 요약, 또는 설계 아이디어 문서 작성만으로는 `done`이 아니다.
+4. 설계가 끝나면 local design source와 결과 설계 문서를 비교해 방향, 핵심 제약, non-goals가 어긋나지 않았는지 확인한다. 필요하면 Notion mirror에도 검수 결과를 반영한다.
+5. local design source 반영 또는 명시적 폐기/병합 기록까지 끝난 뒤에만 해당 idea entry를 `done` 처리한다. 단순 import, 단순 요약, 또는 설계 아이디어 문서 작성만으로는 `done`이 아니다.
 6. local design source → review → 필요 시 runtime handoff/구현 → Notion mirror 순서로 수행한다. Runtime 직접 계약은 runtime schema/preview/generated source와 `Development_Plan.md`가 소유하며 design source를 자동 실행 데이터로 간주하지 않는다. Notion 역방향 변경을 current design records의 정본으로 사용하지 않는다. manifest/governance를 먼저 읽고 관련 레코드만 여는 progressive disclosure와 100KB 문서 제한을 따른다.
 
 ### 아이디어 처리
 
 - 아이디어는 즉시 현재 작업에 끼워 넣는 요구사항은 아니지만, `status: done`이 아닌 entry는 반영되지 않은 backlog다.
 - 남은 plan/todo가 없거나 사용자가 `idea_box` 처리를 요청하면 `idea_box/BACKLOG_ORDER.md`의 Git 최초 추가 순서대로 처리한다.
-- Notion-origin entry는 처리 전에 Notion 원본 reference를 다시 확인하고, 설계 완료 후에도 Notion reference 대조 결과를 처리 기록에 남긴다.
+- Notion-origin entry는 필요할 때 보존된 provenance를 확인하고, 설계 완료 후에는 local design source 반영 또는 폐기/병합 결과를 처리 기록에 남긴다.
 - 프로젝트의 톤, 우선순위, 현재 구현 단계에 맞지 않으면 구현하지 않고 폐기/병합 판단을 할 수 있지만, 그 이유를 처리 기록에 남겨야 한다.
-- 아이디어를 실제 설계/문서/구현에 사용했고 Notion reference 대조까지 마쳤거나, 명시적으로 폐기/병합 처리했다면 `done` 처리한다.
+- 아이디어를 실제 설계/문서/구현에 사용해 local design source에 반영했거나, 명시적으로 폐기/병합 처리했다면 `done` 처리한다.
 - `done`은 단순히 읽었다는 뜻이 아니다. 어디에 반영했는지, 어떤 Notion reference와 대조했는지, 또는 왜 폐기/병합했는지 기록한다.
 - 아이디어 파일은 삭제하지 않는다.
 

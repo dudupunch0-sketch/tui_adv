@@ -3,643 +3,7 @@
   "structural_errors": [],
   "semantic_errors": [],
   "warnings": [],
-  "unverifiable": [
-    {
-      "record": "wuxia_alliance_inspector_three_questions",
-      "source_path": "events/imported/wuxia_alliance_inspector_three_questions.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_alliance_missing_seal",
-      "source_path": "events/imported/wuxia_alliance_missing_seal.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_black_serpent_first_trouble",
-      "source_path": "events/imported/wuxia_black_serpent_first_trouble.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_black_serpent_ledger_trace",
-      "source_path": "events/imported/wuxia_black_serpent_ledger_trace.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_black_serpent_old_hood",
-      "source_path": "events/imported/wuxia_black_serpent_old_hood.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_black_serpent_pressures_qingliu",
-      "source_path": "events/imported/wuxia_black_serpent_pressures_qingliu.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_boss_first_appearance",
-      "source_path": "events/imported/wuxia_boss_first_appearance.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_boss_pressure_debt_notice",
-      "source_path": "events/imported/wuxia_boss_pressure_debt_notice.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_boss_pressure_false_alliance",
-      "source_path": "events/imported/wuxia_boss_pressure_false_alliance.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_boss_recruits_mumyeong",
-      "source_path": "events/imported/wuxia_boss_recruits_mumyeong.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_boss_resolution",
-      "source_path": "events/imported/wuxia_boss_resolution.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_bridge_mumyeong_misread_trace",
-      "source_path": "events/imported/wuxia_bridge_mumyeong_misread_trace.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_bridge_raid_aftermath_nameplates",
-      "source_path": "events/imported/wuxia_bridge_raid_aftermath_nameplates.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_bridge_training_partner_absent",
-      "source_path": "events/imported/wuxia_bridge_training_partner_absent.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_chain_departed_disciple_letter",
-      "source_path": "events/imported/wuxia_chain_departed_disciple_letter.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_chain_herbalist_second_ledger",
-      "source_path": "events/imported/wuxia_chain_herbalist_second_ledger.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_chain_inn_empty_chair_tea",
-      "source_path": "events/imported/wuxia_chain_inn_empty_chair_tea.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_chain_red_thread_witness",
-      "source_path": "events/imported/wuxia_chain_red_thread_witness.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_chain_same_song_returner",
-      "source_path": "events/imported/wuxia_chain_same_song_returner.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_chain_wet_message_sender",
-      "source_path": "events/imported/wuxia_chain_wet_message_sender.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_cheongirok_blank_margin",
-      "source_path": "events/imported/wuxia_cheongirok_blank_margin.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_cheongryu_after_raid_bell",
-      "source_path": "events/imported/wuxia_cheongryu_after_raid_bell.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_cheongryu_empty_guest_room",
-      "source_path": "events/imported/wuxia_cheongryu_empty_guest_room.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_cheongryu_first_departure_cost",
-      "source_path": "events/imported/wuxia_cheongryu_first_departure_cost.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_cheongryu_first_night_shelter",
-      "source_path": "events/imported/wuxia_cheongryu_first_night_shelter.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_cheongryu_first_route_message",
-      "source_path": "events/imported/wuxia_cheongryu_first_route_message.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_cheongryu_medicine_errand",
-      "source_path": "events/imported/wuxia_cheongryu_medicine_errand.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_cheongryu_raid_aftermath_roll_call",
-      "source_path": "events/imported/wuxia_cheongryu_raid_aftermath_roll_call.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_cheongryu_raid_omen",
-      "source_path": "events/imported/wuxia_cheongryu_raid_omen.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_cheongryu_raid_repair_first_debt",
-      "source_path": "events/imported/wuxia_cheongryu_raid_repair_first_debt.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_cheongryu_rebuild_last_beam",
-      "source_path": "events/imported/wuxia_cheongryu_rebuild_last_beam.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_cheongryu_recovery_first_morning",
-      "source_path": "events/imported/wuxia_cheongryu_recovery_first_morning.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_cheongryu_recovery_rain_patrol",
-      "source_path": "events/imported/wuxia_cheongryu_recovery_rain_patrol.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_cheongryu_recovery_sparring_observer",
-      "source_path": "events/imported/wuxia_cheongryu_recovery_sparring_observer.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_cheongryu_survivor_ledger",
-      "source_path": "events/imported/wuxia_cheongryu_survivor_ledger.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_cheongryu_wrong_delivery",
-      "source_path": "events/imported/wuxia_cheongryu_wrong_delivery.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_epilogue_first_morning_after_boss",
-      "source_path": "events/imported/wuxia_epilogue_first_morning_after_boss.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_epilogue_mumyeong_unanswered_letter",
-      "source_path": "events/imported/wuxia_epilogue_mumyeong_unanswered_letter.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_epilogue_qingliu_guest_arrival",
-      "source_path": "events/imported/wuxia_epilogue_qingliu_guest_arrival.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_epilogue_return_object_left_behind",
-      "source_path": "events/imported/wuxia_epilogue_return_object_left_behind.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_epilogue_seoharin_empty_place",
-      "source_path": "events/imported/wuxia_epilogue_seoharin_empty_place.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_epilogue_small_rumor",
-      "source_path": "events/imported/wuxia_epilogue_small_rumor.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_fallback_boss_retreat_evening",
-      "source_path": "events/imported/wuxia_fallback_boss_retreat_evening.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_fallback_final_missing_evidence",
-      "source_path": "events/imported/wuxia_fallback_final_missing_evidence.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_fallback_mumyeong_wrong_target",
-      "source_path": "events/imported/wuxia_fallback_mumyeong_wrong_target.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_fallback_recovery_overexertion",
-      "source_path": "events/imported/wuxia_fallback_recovery_overexertion.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_final_prep_evidence_sort",
-      "source_path": "events/imported/wuxia_final_prep_evidence_sort.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_final_prep_last_meal",
-      "source_path": "events/imported/wuxia_final_prep_last_meal.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_final_prep_last_training",
-      "source_path": "events/imported/wuxia_final_prep_last_training.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_final_prep_small_interruption",
-      "source_path": "events/imported/wuxia_final_prep_small_interruption.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_heuksa_bang_debt_bargain",
-      "source_path": "events/imported/wuxia_heuksa_bang_debt_bargain.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_heuksa_bang_inn_key",
-      "source_path": "events/imported/wuxia_heuksa_bang_inn_key.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_mumyeong_awakening",
-      "source_path": "events/imported/wuxia_mumyeong_awakening.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_mumyeong_bridge_child_story",
-      "source_path": "events/imported/wuxia_mumyeong_bridge_child_story.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_mumyeong_copy_style_reveal",
-      "source_path": "events/imported/wuxia_mumyeong_copy_style_reveal.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_mumyeong_departure_truth_summary",
-      "source_path": "events/imported/wuxia_mumyeong_departure_truth_summary.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_mumyeong_destroys_orthodox_sect",
-      "source_path": "events/imported/wuxia_mumyeong_destroys_orthodox_sect.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_mumyeong_false_sighting",
-      "source_path": "events/imported/wuxia_mumyeong_false_sighting.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_mumyeong_first_confrontation",
-      "source_path": "events/imported/wuxia_mumyeong_first_confrontation.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_mumyeong_first_sighting",
-      "source_path": "events/imported/wuxia_mumyeong_first_sighting.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_mumyeong_midgame_reunion",
-      "source_path": "events/imported/wuxia_mumyeong_midgame_reunion.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_mumyeong_name_returns",
-      "source_path": "events/imported/wuxia_mumyeong_name_returns.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_mumyeong_old_trace_at_inn",
-      "source_path": "events/imported/wuxia_mumyeong_old_trace_at_inn.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_mumyeong_request_for_aid",
-      "source_path": "events/imported/wuxia_mumyeong_request_for_aid.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_mumyeong_resolution",
-      "source_path": "events/imported/wuxia_mumyeong_resolution.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_mumyeong_trace_wrong_weapon",
-      "source_path": "events/imported/wuxia_mumyeong_trace_wrong_weapon.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_prologue_commute_rift",
-      "source_path": "events/imported/wuxia_prologue_commute_rift.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_qingliu_apprentice_entry",
-      "source_path": "events/imported/wuxia_qingliu_apprentice_entry.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_qingliu_attack_after_war",
-      "source_path": "events/imported/wuxia_qingliu_attack_after_war.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_qingliu_first_arrival",
-      "source_path": "events/imported/wuxia_qingliu_first_arrival.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_qingliu_patron_letter",
-      "source_path": "events/imported/wuxia_qingliu_patron_letter.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_qingliu_silent_repair_shift",
-      "source_path": "events/imported/wuxia_qingliu_silent_repair_shift.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_random_epilogue_lamp",
-      "source_path": "events/imported/wuxia_random_epilogue_lamp.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_random_epilogue_without_record",
-      "source_path": "events/imported/wuxia_random_epilogue_without_record.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_random_fake_cheongryu_talisman",
-      "source_path": "events/imported/wuxia_random_fake_cheongryu_talisman.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_random_final_torn_ledger",
-      "source_path": "events/imported/wuxia_random_final_torn_ledger.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_random_hillside_old_grave",
-      "source_path": "events/imported/wuxia_random_hillside_old_grave.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_random_inn_empty_chair",
-      "source_path": "events/imported/wuxia_random_inn_empty_chair.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_random_kitchen_ladle",
-      "source_path": "events/imported/wuxia_random_kitchen_ladle.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_random_modern_object_shard",
-      "source_path": "events/imported/wuxia_random_modern_object_shard.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_random_night_two_lanterns",
-      "source_path": "events/imported/wuxia_random_night_two_lanterns.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_random_qingliu_missing_errand_runner",
-      "source_path": "events/imported/wuxia_random_qingliu_missing_errand_runner.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_random_qingliu_nothing_evening",
-      "source_path": "events/imported/wuxia_random_qingliu_nothing_evening.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_random_returning_path_same_song",
-      "source_path": "events/imported/wuxia_random_returning_path_same_song.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_random_route_child_sparring",
-      "source_path": "events/imported/wuxia_random_route_child_sparring.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_random_route_wet_message",
-      "source_path": "events/imported/wuxia_random_route_wet_message.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_random_seoharin_market_nickname",
-      "source_path": "events/imported/wuxia_random_seoharin_market_nickname.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_random_seoharin_no_umbrella",
-      "source_path": "events/imported/wuxia_random_seoharin_no_umbrella.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_random_seoharin_tea_temperature",
-      "source_path": "events/imported/wuxia_random_seoharin_tea_temperature.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_return_hill_cart",
-      "source_path": "events/imported/wuxia_return_hill_cart.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_return_modern_object_rumor",
-      "source_path": "events/imported/wuxia_return_modern_object_rumor.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_route_alliance_empty_question",
-      "source_path": "events/imported/wuxia_route_alliance_empty_question.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_route_explain_choice_to_seoharin",
-      "source_path": "events/imported/wuxia_route_explain_choice_to_seoharin.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_route_first_day_settlement",
-      "source_path": "events/imported/wuxia_route_first_day_settlement.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_route_heuksa_one_debt_line",
-      "source_path": "events/imported/wuxia_route_heuksa_one_debt_line.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_route_qingliu_short_report",
-      "source_path": "events/imported/wuxia_route_qingliu_short_report.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_route_record_refusal",
-      "source_path": "events/imported/wuxia_route_record_refusal.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_route_return_scent_clue",
-      "source_path": "events/imported/wuxia_route_return_scent_clue.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_route_settlement_first_wage",
-      "source_path": "events/imported/wuxia_route_settlement_first_wage.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_route_small_debt_collection",
-      "source_path": "events/imported/wuxia_route_small_debt_collection.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_sado_brush_after_boss",
-      "source_path": "events/imported/wuxia_sado_brush_after_boss.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_sado_final_battle",
-      "source_path": "events/imported/wuxia_sado_final_battle.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_sado_final_phase_1_price_tag",
-      "source_path": "events/imported/wuxia_sado_final_phase_1_price_tag.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_sado_final_phase_2_weakpoint_control",
-      "source_path": "events/imported/wuxia_sado_final_phase_2_weakpoint_control.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_sado_final_phase_3_outside_calculation",
-      "source_path": "events/imported/wuxia_sado_final_phase_3_outside_calculation.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_sado_old_glove_after_boss",
-      "source_path": "events/imported/wuxia_sado_old_glove_after_boss.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_sado_ownerless_token",
-      "source_path": "events/imported/wuxia_sado_ownerless_token.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_sado_unpriced_wooden_sword_hidden",
-      "source_path": "events/imported/wuxia_sado_unpriced_wooden_sword_hidden.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_seoharin_empty_place",
-      "source_path": "events/imported/wuxia_seoharin_empty_place.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_seoharin_hides_training_injury",
-      "source_path": "events/imported/wuxia_seoharin_hides_training_injury.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_seoharin_intervention",
-      "source_path": "events/imported/wuxia_seoharin_intervention.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_seoharin_left_meal",
-      "source_path": "events/imported/wuxia_seoharin_left_meal.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_seoharin_night_watch_after_raid",
-      "source_path": "events/imported/wuxia_seoharin_night_watch_after_raid.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_seoharin_old_song",
-      "source_path": "events/imported/wuxia_seoharin_old_song.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_seoharin_recovery_bandage_change",
-      "source_path": "events/imported/wuxia_seoharin_recovery_bandage_change.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_seoharin_shared_meal_after_raid",
-      "source_path": "events/imported/wuxia_seoharin_shared_meal_after_raid.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_seoharin_truth_share_before_boss",
-      "source_path": "events/imported/wuxia_seoharin_truth_share_before_boss.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_seoharin_unsaid_stay",
-      "source_path": "events/imported/wuxia_seoharin_unsaid_stay.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_side_departed_disciple_sibling",
-      "source_path": "events/imported/wuxia_side_departed_disciple_sibling.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_side_epilogue_empty_bundle",
-      "source_path": "events/imported/wuxia_side_epilogue_empty_bundle.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_side_gatekeeper_late_shift",
-      "source_path": "events/imported/wuxia_side_gatekeeper_late_shift.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_side_seoharin_asks_first",
-      "source_path": "events/imported/wuxia_side_seoharin_asks_first.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_side_two_goodbyes",
-      "source_path": "events/imported/wuxia_side_two_goodbyes.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_tianjilu_first_fragment",
-      "source_path": "events/imported/wuxia_tianjilu_first_fragment.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_weather_first_snow_tracks",
-      "source_path": "events/imported/wuxia_weather_first_snow_tracks.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_weather_heat_empty_jug",
-      "source_path": "events/imported/wuxia_weather_heat_empty_jug.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    },
-    {
-      "record": "wuxia_weather_wind_letter_direction",
-      "source_path": "events/imported/wuxia_weather_wind_letter_direction.yml",
-      "reason": "afterthought reference unavailable or not exact"
-    }
-  ],
+  "unverifiable": [],
   "provenance": {
     "page_id_url_unavailable_in_export": [
       {
@@ -1909,6 +1273,28 @@
       }
     ]
   },
+  "verified_afterthought_links": [
+    {
+      "event_id": "wuxia_cheongryu_chore_small_dispute",
+      "afterthought_id": "notion_0012",
+      "match": "literal_title"
+    },
+    {
+      "event_id": "wuxia_cheongryu_recovery_meal_debt",
+      "afterthought_id": "notion_0012",
+      "match": "literal_title"
+    },
+    {
+      "event_id": "wuxia_cheongryu_scattered_supplies",
+      "afterthought_id": "notion_0012",
+      "match": "literal_title"
+    },
+    {
+      "event_id": "wuxia_cheongryu_training_first_failure",
+      "afterthought_id": "notion_0013",
+      "match": "literal_title"
+    }
+  ],
   "verified_external_relation_effects": [
     {
       "mapping_id": "wuxia_rewardmap_breath_ask_trust",
@@ -1949,6 +1335,135 @@
     "exact_card_name": 4,
     "general_description": 127,
     "malformed": 0
+  },
+  "afterthought_triage": {
+    "classification_counts": {
+      "exact_match": 0,
+      "intentional_no_link": 0,
+      "descriptive_condition": 77,
+      "designer_review_required": 50
+    },
+    "review_required_ids": [
+      "wuxia_black_serpent_first_trouble",
+      "wuxia_black_serpent_ledger_trace",
+      "wuxia_black_serpent_old_hood",
+      "wuxia_black_serpent_pressures_qingliu",
+      "wuxia_boss_first_appearance",
+      "wuxia_boss_recruits_mumyeong",
+      "wuxia_boss_resolution",
+      "wuxia_cheongryu_empty_guest_room",
+      "wuxia_cheongryu_first_departure_cost",
+      "wuxia_cheongryu_first_night_shelter",
+      "wuxia_cheongryu_first_route_message",
+      "wuxia_cheongryu_medicine_errand",
+      "wuxia_cheongryu_raid_aftermath_roll_call",
+      "wuxia_cheongryu_recovery_rain_patrol",
+      "wuxia_cheongryu_wrong_delivery",
+      "wuxia_final_prep_last_meal",
+      "wuxia_final_prep_small_interruption",
+      "wuxia_heuksa_bang_inn_key",
+      "wuxia_mumyeong_awakening",
+      "wuxia_mumyeong_copy_style_reveal",
+      "wuxia_mumyeong_departure_truth_summary",
+      "wuxia_mumyeong_destroys_orthodox_sect",
+      "wuxia_mumyeong_first_confrontation",
+      "wuxia_mumyeong_first_sighting",
+      "wuxia_mumyeong_midgame_reunion",
+      "wuxia_mumyeong_request_for_aid",
+      "wuxia_mumyeong_resolution",
+      "wuxia_prologue_commute_rift",
+      "wuxia_qingliu_attack_after_war",
+      "wuxia_qingliu_patron_letter",
+      "wuxia_return_hill_cart",
+      "wuxia_return_modern_object_rumor",
+      "wuxia_route_explain_choice_to_seoharin",
+      "wuxia_route_first_day_settlement",
+      "wuxia_sado_brush_after_boss",
+      "wuxia_sado_final_battle",
+      "wuxia_sado_final_phase_1_price_tag",
+      "wuxia_sado_final_phase_2_weakpoint_control",
+      "wuxia_sado_final_phase_3_outside_calculation",
+      "wuxia_sado_old_glove_after_boss",
+      "wuxia_sado_ownerless_token",
+      "wuxia_sado_unpriced_wooden_sword_hidden",
+      "wuxia_seoharin_empty_place",
+      "wuxia_seoharin_hides_training_injury",
+      "wuxia_seoharin_left_meal",
+      "wuxia_seoharin_night_watch_after_raid",
+      "wuxia_seoharin_old_song",
+      "wuxia_seoharin_recovery_bandage_change",
+      "wuxia_seoharin_shared_meal_after_raid",
+      "wuxia_seoharin_unsaid_stay"
+    ],
+    "coverage": {
+      "expected": 127,
+      "actual": 127,
+      "missing": [],
+      "extra": []
+    },
+    "ledger_path": "reports/afterthought_triage.yml",
+    "pending_review_ids": [
+      "wuxia_black_serpent_first_trouble",
+      "wuxia_black_serpent_ledger_trace",
+      "wuxia_black_serpent_old_hood",
+      "wuxia_black_serpent_pressures_qingliu",
+      "wuxia_boss_first_appearance",
+      "wuxia_boss_recruits_mumyeong",
+      "wuxia_boss_resolution",
+      "wuxia_cheongryu_empty_guest_room",
+      "wuxia_cheongryu_first_departure_cost",
+      "wuxia_cheongryu_first_night_shelter",
+      "wuxia_cheongryu_first_route_message",
+      "wuxia_cheongryu_medicine_errand",
+      "wuxia_cheongryu_raid_aftermath_roll_call",
+      "wuxia_cheongryu_recovery_rain_patrol",
+      "wuxia_cheongryu_wrong_delivery",
+      "wuxia_final_prep_last_meal",
+      "wuxia_final_prep_small_interruption",
+      "wuxia_heuksa_bang_inn_key",
+      "wuxia_mumyeong_awakening",
+      "wuxia_mumyeong_copy_style_reveal",
+      "wuxia_mumyeong_departure_truth_summary",
+      "wuxia_mumyeong_destroys_orthodox_sect",
+      "wuxia_mumyeong_first_confrontation",
+      "wuxia_mumyeong_first_sighting",
+      "wuxia_mumyeong_midgame_reunion",
+      "wuxia_mumyeong_request_for_aid",
+      "wuxia_mumyeong_resolution",
+      "wuxia_prologue_commute_rift",
+      "wuxia_qingliu_attack_after_war",
+      "wuxia_qingliu_patron_letter",
+      "wuxia_return_hill_cart",
+      "wuxia_return_modern_object_rumor",
+      "wuxia_route_explain_choice_to_seoharin",
+      "wuxia_route_first_day_settlement",
+      "wuxia_sado_brush_after_boss",
+      "wuxia_sado_final_battle",
+      "wuxia_sado_final_phase_1_price_tag",
+      "wuxia_sado_final_phase_2_weakpoint_control",
+      "wuxia_sado_final_phase_3_outside_calculation",
+      "wuxia_sado_old_glove_after_boss",
+      "wuxia_sado_ownerless_token",
+      "wuxia_sado_unpriced_wooden_sword_hidden",
+      "wuxia_seoharin_empty_place",
+      "wuxia_seoharin_hides_training_injury",
+      "wuxia_seoharin_left_meal",
+      "wuxia_seoharin_night_watch_after_raid",
+      "wuxia_seoharin_old_song",
+      "wuxia_seoharin_recovery_bandage_change",
+      "wuxia_seoharin_shared_meal_after_raid",
+      "wuxia_seoharin_unsaid_stay"
+    ],
+    "pending_review_count": 50,
+    "approved_condition_count": 77
+  },
+  "afterthought_overlays": {
+    "condition_overlay_path": "graphs/afterthought_conditions.yml",
+    "link_overlay_path": "graphs/event_afterthought_links.yml",
+    "approved_link_count": 0,
+    "unresolved_runtime_links": [],
+    "unresolved_external_conditions": [],
+    "runtime_contract": false
   },
   "capability_limitations": {
     "notion_page_ids_urls": "export did not include live page IDs/URLs; export-derived IDs are retained in provenance only",
@@ -2236,7 +1751,12 @@
   "duplicate_ids": {},
   "policy": {
     "semantic_errors_nonzero": true,
-    "warnings_and_unverifiable_only_do_not_fail": true
+    "warnings_and_unverifiable_only_do_not_fail": true,
+    "afterthought_unstructured_requires_triage_ledger": true,
+    "approved_condition_requires_raw_and_summary": true,
+    "approved_links_only_graph_input": true,
+    "default_reveal_policy": "ending_resolution",
+    "external_conditions_are_unresolved_not_silent_pass": true
   },
   "manifest_declares_local_canonical": true
 }

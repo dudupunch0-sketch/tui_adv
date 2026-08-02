@@ -1,0 +1,575 @@
+schema_version: 1
+source: reports/afterthought_triage.yml
+runtime_contract: false
+conditions:
+- event_id: wuxia_alliance_inspector_three_questions
+  source_path: events/imported/wuxia_alliance_inspector_three_questions.yml
+  raw_reference: 무림맹 책임선 / 청류문의 후일
+  condition_summary: 무림맹 책임선 / 청류문의 후일
+  related_keywords:
+  - 청류문
+  - 무림맹
+  - 후일
+  - 문
+  status: approved_as_condition
+- event_id: wuxia_alliance_missing_seal
+  source_path: events/imported/wuxia_alliance_missing_seal.yml
+  raw_reference: 무림맹 책임선
+  condition_summary: 무림맹 책임선
+  related_keywords:
+  - 무림맹
+  status: approved_as_condition
+- event_id: wuxia_boss_pressure_debt_notice
+  source_path: events/imported/wuxia_boss_pressure_debt_notice.yml
+  raw_reference: 청류문의 후일 / 무명의 결말
+  condition_summary: 청류문의 후일 / 무명의 결말
+  related_keywords:
+  - 청류문
+  - 무명
+  - 결말
+  - 후일
+  - 문
+  status: approved_as_condition
+- event_id: wuxia_boss_pressure_false_alliance
+  source_path: events/imported/wuxia_boss_pressure_false_alliance.yml
+  raw_reference: 무명의 결말 / 청류문의 후일
+  condition_summary: 무명의 결말 / 청류문의 후일
+  related_keywords:
+  - 청류문
+  - 무명
+  - 결말
+  - 후일
+  - 문
+  status: approved_as_condition
+- event_id: wuxia_bridge_mumyeong_misread_trace
+  source_path: events/imported/wuxia_bridge_mumyeong_misread_trace.yml
+  raw_reference: wuxia_epilogue_mumyeong_unanswered_letter
+  condition_summary: wuxia_epilogue_mumyeong_unanswered_letter
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_bridge_raid_aftermath_nameplates
+  source_path: events/imported/wuxia_bridge_raid_aftermath_nameplates.yml
+  raw_reference: wuxia_epilogue_seoharin_empty_place
+  condition_summary: wuxia_epilogue_seoharin_empty_place
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_bridge_training_partner_absent
+  source_path: events/imported/wuxia_bridge_training_partner_absent.yml
+  raw_reference: wuxia_epilogue_qingliu_guest_arrival
+  condition_summary: wuxia_epilogue_qingliu_guest_arrival
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_chain_departed_disciple_letter
+  source_path: events/imported/wuxia_chain_departed_disciple_letter.yml
+  raw_reference: wuxia_epilogue_qingliu_guest_arrival
+  condition_summary: wuxia_epilogue_qingliu_guest_arrival
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_chain_herbalist_second_ledger
+  source_path: events/imported/wuxia_chain_herbalist_second_ledger.yml
+  raw_reference: wuxia_epilogue_qingliu_guest_arrival
+  condition_summary: wuxia_epilogue_qingliu_guest_arrival
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_chain_inn_empty_chair_tea
+  source_path: events/imported/wuxia_chain_inn_empty_chair_tea.yml
+  raw_reference: wuxia_epilogue_mumyeong_unanswered_letter
+  condition_summary: wuxia_epilogue_mumyeong_unanswered_letter
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_chain_red_thread_witness
+  source_path: events/imported/wuxia_chain_red_thread_witness.yml
+  raw_reference: wuxia_epilogue_first_morning_after_boss
+  condition_summary: wuxia_epilogue_first_morning_after_boss
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_chain_same_song_returner
+  source_path: events/imported/wuxia_chain_same_song_returner.yml
+  raw_reference: wuxia_epilogue_seoharin_empty_place
+  condition_summary: wuxia_epilogue_seoharin_empty_place
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_chain_wet_message_sender
+  source_path: events/imported/wuxia_chain_wet_message_sender.yml
+  raw_reference: wuxia_epilogue_small_rumor
+  condition_summary: wuxia_epilogue_small_rumor
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_cheongirok_blank_margin
+  source_path: events/imported/wuxia_cheongirok_blank_margin.yml
+  raw_reference: 천기록의 후일 / 청류문의 후일
+  condition_summary: 천기록의 후일 / 청류문의 후일
+  related_keywords:
+  - 청류문
+  - 천기록
+  - 후일
+  - 기록
+  - 문
+  status: approved_as_condition
+- event_id: wuxia_cheongryu_after_raid_bell
+  source_path: events/imported/wuxia_cheongryu_after_raid_bell.yml
+  raw_reference: 청류문의 후일 / 무명에게 돌아온 길
+  condition_summary: 청류문의 후일 / 무명에게 돌아온 길
+  related_keywords:
+  - 청류문
+  - 무명
+  - 후일
+  - 문
+  status: approved_as_condition
+- event_id: wuxia_cheongryu_raid_omen
+  source_path: events/imported/wuxia_cheongryu_raid_omen.yml
+  raw_reference: 청류문 습격 / 청류문 후일
+  condition_summary: 청류문 습격 / 청류문 후일
+  related_keywords:
+  - 청류문
+  - 습격
+  - 후일
+  - 문
+  status: approved_as_condition
+- event_id: wuxia_cheongryu_raid_repair_first_debt
+  source_path: events/imported/wuxia_cheongryu_raid_repair_first_debt.yml
+  raw_reference: 청류문의 후일 / 청류문 무공 복원
+  condition_summary: 청류문의 후일 / 청류문 무공 복원
+  related_keywords:
+  - 청류문
+  - 무공
+  - 후일
+  - 문
+  status: approved_as_condition
+- event_id: wuxia_cheongryu_rebuild_last_beam
+  source_path: events/imported/wuxia_cheongryu_rebuild_last_beam.yml
+  raw_reference: 청류문의 후일 / 청류문 무공 복원
+  condition_summary: 청류문의 후일 / 청류문 무공 복원
+  related_keywords:
+  - 청류문
+  - 무공
+  - 후일
+  - 문
+  status: approved_as_condition
+- event_id: wuxia_cheongryu_recovery_first_morning
+  source_path: events/imported/wuxia_cheongryu_recovery_first_morning.yml
+  raw_reference: 청류문 무공 복원 / 서하린의 후일
+  condition_summary: 청류문 무공 복원 / 서하린의 후일
+  related_keywords:
+  - 청류문
+  - 서하린
+  - 무공
+  - 후일
+  - 문
+  status: approved_as_condition
+- event_id: wuxia_cheongryu_recovery_sparring_observer
+  source_path: events/imported/wuxia_cheongryu_recovery_sparring_observer.yml
+  raw_reference: 청류문 무공 복원
+  condition_summary: 청류문 무공 복원
+  related_keywords:
+  - 청류문
+  - 무공
+  - 문
+  status: approved_as_condition
+- event_id: wuxia_cheongryu_survivor_ledger
+  source_path: events/imported/wuxia_cheongryu_survivor_ledger.yml
+  raw_reference: 청류문의 후일 / 무명의 결말
+  condition_summary: 청류문의 후일 / 무명의 결말
+  related_keywords:
+  - 청류문
+  - 무명
+  - 결말
+  - 후일
+  - 문
+  status: approved_as_condition
+- event_id: wuxia_epilogue_first_morning_after_boss
+  source_path: events/imported/wuxia_epilogue_first_morning_after_boss.yml
+  raw_reference: wuxia_epilogue_first_morning_after_boss
+  condition_summary: wuxia_epilogue_first_morning_after_boss
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_epilogue_mumyeong_unanswered_letter
+  source_path: events/imported/wuxia_epilogue_mumyeong_unanswered_letter.yml
+  raw_reference: wuxia_epilogue_mumyeong_unanswered_letter
+  condition_summary: wuxia_epilogue_mumyeong_unanswered_letter
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_epilogue_qingliu_guest_arrival
+  source_path: events/imported/wuxia_epilogue_qingliu_guest_arrival.yml
+  raw_reference: wuxia_epilogue_qingliu_guest_arrival
+  condition_summary: wuxia_epilogue_qingliu_guest_arrival
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_epilogue_return_object_left_behind
+  source_path: events/imported/wuxia_epilogue_return_object_left_behind.yml
+  raw_reference: wuxia_epilogue_return_object_left_behind
+  condition_summary: wuxia_epilogue_return_object_left_behind
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_epilogue_seoharin_empty_place
+  source_path: events/imported/wuxia_epilogue_seoharin_empty_place.yml
+  raw_reference: wuxia_epilogue_seoharin_empty_place
+  condition_summary: wuxia_epilogue_seoharin_empty_place
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_epilogue_small_rumor
+  source_path: events/imported/wuxia_epilogue_small_rumor.yml
+  raw_reference: wuxia_epilogue_small_rumor
+  condition_summary: wuxia_epilogue_small_rumor
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_fallback_boss_retreat_evening
+  source_path: events/imported/wuxia_fallback_boss_retreat_evening.yml
+  raw_reference: wuxia_epilogue_first_morning_after_boss
+  condition_summary: wuxia_epilogue_first_morning_after_boss
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_fallback_final_missing_evidence
+  source_path: events/imported/wuxia_fallback_final_missing_evidence.yml
+  raw_reference: wuxia_epilogue_first_morning_after_boss
+  condition_summary: wuxia_epilogue_first_morning_after_boss
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_fallback_mumyeong_wrong_target
+  source_path: events/imported/wuxia_fallback_mumyeong_wrong_target.yml
+  raw_reference: wuxia_epilogue_mumyeong_unanswered_letter
+  condition_summary: wuxia_epilogue_mumyeong_unanswered_letter
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_fallback_recovery_overexertion
+  source_path: events/imported/wuxia_fallback_recovery_overexertion.yml
+  raw_reference: wuxia_epilogue_seoharin_empty_place
+  condition_summary: wuxia_epilogue_seoharin_empty_place
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_final_prep_evidence_sort
+  source_path: events/imported/wuxia_final_prep_evidence_sort.yml
+  raw_reference: 청류문의 후일 / 무명의 결말 / 무림맹 책임선
+  condition_summary: 청류문의 후일 / 무명의 결말 / 무림맹 책임선
+  related_keywords:
+  - 청류문
+  - 무명
+  - 무림맹
+  - 결말
+  - 후일
+  - 문
+  status: approved_as_condition
+- event_id: wuxia_final_prep_last_training
+  source_path: events/imported/wuxia_final_prep_last_training.yml
+  raw_reference: 청류문 무공 복원 / 서하린의 후일
+  condition_summary: 청류문 무공 복원 / 서하린의 후일
+  related_keywords:
+  - 청류문
+  - 서하린
+  - 무공
+  - 후일
+  - 문
+  status: approved_as_condition
+- event_id: wuxia_heuksa_bang_debt_bargain
+  source_path: events/imported/wuxia_heuksa_bang_debt_bargain.yml
+  raw_reference: 무명의 결말 / 청류문의 후일
+  condition_summary: 무명의 결말 / 청류문의 후일
+  related_keywords:
+  - 청류문
+  - 무명
+  - 결말
+  - 후일
+  - 문
+  status: approved_as_condition
+- event_id: wuxia_mumyeong_bridge_child_story
+  source_path: events/imported/wuxia_mumyeong_bridge_child_story.yml
+  raw_reference: 무명의 결말
+  condition_summary: 무명의 결말
+  related_keywords:
+  - 무명
+  - 결말
+  status: approved_as_condition
+- event_id: wuxia_mumyeong_false_sighting
+  source_path: events/imported/wuxia_mumyeong_false_sighting.yml
+  raw_reference: 무명의 결말 / 서하린의 후일
+  condition_summary: 무명의 결말 / 서하린의 후일
+  related_keywords:
+  - 서하린
+  - 무명
+  - 결말
+  - 후일
+  status: approved_as_condition
+- event_id: wuxia_mumyeong_name_returns
+  source_path: events/imported/wuxia_mumyeong_name_returns.yml
+  raw_reference: 서하린의 후일 / 무명의 결말
+  condition_summary: 서하린의 후일 / 무명의 결말
+  related_keywords:
+  - 서하린
+  - 무명
+  - 결말
+  - 후일
+  status: approved_as_condition
+- event_id: wuxia_mumyeong_old_trace_at_inn
+  source_path: events/imported/wuxia_mumyeong_old_trace_at_inn.yml
+  raw_reference: 무명의 결말 / 청류문의 후일
+  condition_summary: 무명의 결말 / 청류문의 후일
+  related_keywords:
+  - 청류문
+  - 무명
+  - 결말
+  - 후일
+  - 문
+  status: approved_as_condition
+- event_id: wuxia_mumyeong_trace_wrong_weapon
+  source_path: events/imported/wuxia_mumyeong_trace_wrong_weapon.yml
+  raw_reference: 무명의 결말 / 청류문 무공 복원
+  condition_summary: 무명의 결말 / 청류문 무공 복원
+  related_keywords:
+  - 청류문
+  - 무명
+  - 무공
+  - 결말
+  - 문
+  status: approved_as_condition
+- event_id: wuxia_qingliu_apprentice_entry
+  source_path: events/imported/wuxia_qingliu_apprentice_entry.yml
+  raw_reference: 청류문/서하린 후일 계열에 장기 영향
+  condition_summary: 청류문/서하린 후일 계열에 장기 영향
+  related_keywords:
+  - 청류문
+  - 서하린
+  - 후일
+  - 문
+  status: approved_as_condition
+- event_id: wuxia_qingliu_first_arrival
+  source_path: events/imported/wuxia_qingliu_first_arrival.yml
+  raw_reference: 청류문의 후일 계열 카드 씨앗
+  condition_summary: 청류문의 후일 계열 카드 씨앗
+  related_keywords:
+  - 청류문
+  - 후일
+  - 문
+  status: approved_as_condition
+- event_id: wuxia_qingliu_silent_repair_shift
+  source_path: events/imported/wuxia_qingliu_silent_repair_shift.yml
+  raw_reference: 청류문의 후일 / 청류문 무공 복원
+  condition_summary: 청류문의 후일 / 청류문 무공 복원
+  related_keywords:
+  - 청류문
+  - 무공
+  - 후일
+  - 문
+  status: approved_as_condition
+- event_id: wuxia_random_epilogue_lamp
+  source_path: events/imported/wuxia_random_epilogue_lamp.yml
+  raw_reference: wuxia_epilogue_first_morning_after_boss
+  condition_summary: wuxia_epilogue_first_morning_after_boss
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_random_epilogue_without_record
+  source_path: events/imported/wuxia_random_epilogue_without_record.yml
+  raw_reference: wuxia_epilogue_first_morning_after_boss
+  condition_summary: wuxia_epilogue_first_morning_after_boss
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_random_fake_cheongryu_talisman
+  source_path: events/imported/wuxia_random_fake_cheongryu_talisman.yml
+  raw_reference: wuxia_epilogue_small_rumor
+  condition_summary: wuxia_epilogue_small_rumor
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_random_final_torn_ledger
+  source_path: events/imported/wuxia_random_final_torn_ledger.yml
+  raw_reference: wuxia_epilogue_first_morning_after_boss
+  condition_summary: wuxia_epilogue_first_morning_after_boss
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_random_hillside_old_grave
+  source_path: events/imported/wuxia_random_hillside_old_grave.yml
+  raw_reference: wuxia_epilogue_seoharin_empty_place
+  condition_summary: wuxia_epilogue_seoharin_empty_place
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_random_inn_empty_chair
+  source_path: events/imported/wuxia_random_inn_empty_chair.yml
+  raw_reference: wuxia_epilogue_mumyeong_unanswered_letter
+  condition_summary: wuxia_epilogue_mumyeong_unanswered_letter
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_random_kitchen_ladle
+  source_path: events/imported/wuxia_random_kitchen_ladle.yml
+  raw_reference: wuxia_epilogue_small_rumor
+  condition_summary: wuxia_epilogue_small_rumor
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_random_modern_object_shard
+  source_path: events/imported/wuxia_random_modern_object_shard.yml
+  raw_reference: wuxia_epilogue_return_object_left_behind
+  condition_summary: wuxia_epilogue_return_object_left_behind
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_random_night_two_lanterns
+  source_path: events/imported/wuxia_random_night_two_lanterns.yml
+  raw_reference: wuxia_epilogue_small_rumor
+  condition_summary: wuxia_epilogue_small_rumor
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_random_qingliu_missing_errand_runner
+  source_path: events/imported/wuxia_random_qingliu_missing_errand_runner.yml
+  raw_reference: wuxia_epilogue_qingliu_guest_arrival
+  condition_summary: wuxia_epilogue_qingliu_guest_arrival
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_random_qingliu_nothing_evening
+  source_path: events/imported/wuxia_random_qingliu_nothing_evening.yml
+  raw_reference: wuxia_epilogue_first_morning_after_boss
+  condition_summary: wuxia_epilogue_first_morning_after_boss
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_random_returning_path_same_song
+  source_path: events/imported/wuxia_random_returning_path_same_song.yml
+  raw_reference: wuxia_epilogue_seoharin_empty_place
+  condition_summary: wuxia_epilogue_seoharin_empty_place
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_random_route_child_sparring
+  source_path: events/imported/wuxia_random_route_child_sparring.yml
+  raw_reference: wuxia_epilogue_small_rumor
+  condition_summary: wuxia_epilogue_small_rumor
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_random_route_wet_message
+  source_path: events/imported/wuxia_random_route_wet_message.yml
+  raw_reference: wuxia_epilogue_return_object_left_behind
+  condition_summary: wuxia_epilogue_return_object_left_behind
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_random_seoharin_market_nickname
+  source_path: events/imported/wuxia_random_seoharin_market_nickname.yml
+  raw_reference: wuxia_epilogue_small_rumor
+  condition_summary: wuxia_epilogue_small_rumor
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_random_seoharin_no_umbrella
+  source_path: events/imported/wuxia_random_seoharin_no_umbrella.yml
+  raw_reference: wuxia_epilogue_seoharin_empty_place
+  condition_summary: wuxia_epilogue_seoharin_empty_place
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_random_seoharin_tea_temperature
+  source_path: events/imported/wuxia_random_seoharin_tea_temperature.yml
+  raw_reference: wuxia_epilogue_seoharin_empty_place
+  condition_summary: wuxia_epilogue_seoharin_empty_place
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_route_alliance_empty_question
+  source_path: events/imported/wuxia_route_alliance_empty_question.yml
+  raw_reference: wuxia_epilogue_small_rumor
+  condition_summary: wuxia_epilogue_small_rumor
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_route_heuksa_one_debt_line
+  source_path: events/imported/wuxia_route_heuksa_one_debt_line.yml
+  raw_reference: wuxia_epilogue_first_morning_after_boss
+  condition_summary: wuxia_epilogue_first_morning_after_boss
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_route_qingliu_short_report
+  source_path: events/imported/wuxia_route_qingliu_short_report.yml
+  raw_reference: wuxia_epilogue_qingliu_guest_arrival
+  condition_summary: wuxia_epilogue_qingliu_guest_arrival
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_route_record_refusal
+  source_path: events/imported/wuxia_route_record_refusal.yml
+  raw_reference: wuxia_epilogue_without_record
+  condition_summary: wuxia_epilogue_without_record
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_route_return_scent_clue
+  source_path: events/imported/wuxia_route_return_scent_clue.yml
+  raw_reference: wuxia_epilogue_return_object_left_behind
+  condition_summary: wuxia_epilogue_return_object_left_behind
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_route_settlement_first_wage
+  source_path: events/imported/wuxia_route_settlement_first_wage.yml
+  raw_reference: wuxia_epilogue_qingliu_guest_arrival
+  condition_summary: wuxia_epilogue_qingliu_guest_arrival
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_route_small_debt_collection
+  source_path: events/imported/wuxia_route_small_debt_collection.yml
+  raw_reference: 청류문의 후일 / 무명의 결말
+  condition_summary: 청류문의 후일 / 무명의 결말
+  related_keywords:
+  - 청류문
+  - 무명
+  - 결말
+  - 후일
+  - 문
+  status: approved_as_condition
+- event_id: wuxia_seoharin_intervention
+  source_path: events/imported/wuxia_seoharin_intervention.yml
+  raw_reference: 서하린의 후일 계열 카드 씨앗
+  condition_summary: 서하린의 후일 계열 카드 씨앗
+  related_keywords:
+  - 서하린
+  - 후일
+  status: approved_as_condition
+- event_id: wuxia_seoharin_truth_share_before_boss
+  source_path: events/imported/wuxia_seoharin_truth_share_before_boss.yml
+  raw_reference: 서하린의 후일 / 무명의 결말
+  condition_summary: 서하린의 후일 / 무명의 결말
+  related_keywords:
+  - 서하린
+  - 무명
+  - 결말
+  - 후일
+  status: approved_as_condition
+- event_id: wuxia_side_departed_disciple_sibling
+  source_path: events/imported/wuxia_side_departed_disciple_sibling.yml
+  raw_reference: wuxia_epilogue_qingliu_guest_arrival
+  condition_summary: wuxia_epilogue_qingliu_guest_arrival
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_side_epilogue_empty_bundle
+  source_path: events/imported/wuxia_side_epilogue_empty_bundle.yml
+  raw_reference: wuxia_epilogue_qingliu_guest_arrival
+  condition_summary: wuxia_epilogue_qingliu_guest_arrival
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_side_gatekeeper_late_shift
+  source_path: events/imported/wuxia_side_gatekeeper_late_shift.yml
+  raw_reference: wuxia_epilogue_qingliu_guest_arrival
+  condition_summary: wuxia_epilogue_qingliu_guest_arrival
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_side_seoharin_asks_first
+  source_path: events/imported/wuxia_side_seoharin_asks_first.yml
+  raw_reference: wuxia_epilogue_seoharin_empty_place
+  condition_summary: wuxia_epilogue_seoharin_empty_place
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_side_two_goodbyes
+  source_path: events/imported/wuxia_side_two_goodbyes.yml
+  raw_reference: wuxia_epilogue_seoharin_empty_place
+  condition_summary: wuxia_epilogue_seoharin_empty_place
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_tianjilu_first_fragment
+  source_path: events/imported/wuxia_tianjilu_first_fragment.yml
+  raw_reference: 천기록의 마지막 장 / 천외편린 잔향 카드 씨앗
+  condition_summary: 천기록의 마지막 장 / 천외편린 잔향 카드 씨앗
+  related_keywords:
+  - 천기록
+  - 기록
+  status: approved_as_condition
+- event_id: wuxia_weather_first_snow_tracks
+  source_path: events/imported/wuxia_weather_first_snow_tracks.yml
+  raw_reference: wuxia_epilogue_small_rumor
+  condition_summary: wuxia_epilogue_small_rumor
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_weather_heat_empty_jug
+  source_path: events/imported/wuxia_weather_heat_empty_jug.yml
+  raw_reference: wuxia_epilogue_qingliu_guest_arrival
+  condition_summary: wuxia_epilogue_qingliu_guest_arrival
+  related_keywords: []
+  status: approved_as_condition
+- event_id: wuxia_weather_wind_letter_direction
+  source_path: events/imported/wuxia_weather_wind_letter_direction.yml
+  raw_reference: wuxia_epilogue_return_object_left_behind
+  condition_summary: wuxia_epilogue_return_object_left_behind
+  related_keywords: []
+  status: approved_as_condition

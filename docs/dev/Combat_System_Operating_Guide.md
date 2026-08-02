@@ -6,7 +6,7 @@
 
 ## 1. 역할과 책임
 
-- 오케스트레이터(main)는 Notion 정본 조사, 범위 판단, plan 파일 작성, 충돌 해결, 최종 검증과 사용자 보고를 담당한다.
+- 오케스트레이터(main)는 local design source 정본 조사, 범위 판단, plan 파일 작성, 충돌 해결, 최종 검증과 사용자 보고를 담당한다. Notion은 필요할 때만 provenance/검수 미러로 참조한다.
 - `coding_implementer`는 `tui_adv_coder` 역할의 5.6 luna / medium 구현 agent다. 승인된 한 slice의 코드·콘텐츠·테스트만 수정한다.
 - subagent의 PASS/FAIL 보고는 참고일 뿐이다. cargo, pytest, npm, generated artifact 검증은 main이 WSL에서 다시 실행한다.
 - 동일 저장소를 여러 작업자가 공유하므로 다른 작업자의 변경과 미추적 파일을 되돌리거나 정리하지 않는다.
@@ -16,12 +16,12 @@
 충돌 시 다음 순서를 따른다.
 
 1. 사용자가 현재 세션에서 명시한 결정
-2. Notion [전투 시스템 허브](https://app.notion.com/p/36f37e69695e81168360ef11cf3a4449)와 하위 canonical 00~13
+2. `docs/content/design_source/`의 manifest/governance와 관련 normalized records
 3. `docs/dev/Development_Plan.md`
 4. [Combat_System_Implementation_Plan_Index.md](../design/Combat_System_Implementation_Plan_Index.md)와 해당 step plan
 5. 기존 설계 기록과 테스트
 
-하위 canonical 문서가 허브 요약과 다르면 하위 문서를 따른다. Notion 원문을 repo에 복사해 source of truth로 만들지 말고, plan에는 URL과 적용한 규칙만 기록한다.
+보존된 Notion 허브/하위 문서가 local design source와 다르면 local design source와 runtime 계약을 따른다. Notion 원문은 provenance와 검수 미러로만 참조하고, plan에는 필요한 URL과 적용한 규칙만 기록한다.
 
 ## 3. 현재 구현 기준점
 
@@ -99,7 +99,7 @@
 3. `docs/dev/Development_Plan.md` 상단과 `docs/design/Combat_System_Implementation_Plan_Index.md`의 현재 상태를 읽는다.
 4. `git status --short --branch -uall`과 `git rev-parse HEAD`를 WSL에서 실행한다. 미추적 `.claude/worktrees/`는 보존한다.
 5. 현재 step plan 한 파일과 그 plan이 소유한 코드만 읽는다.
-6. 필요한 Notion canonical 문서만 다시 fetch한다. 이미 확인한 00~13 전체를 매번 반복 fetch하지 않는다.
+6. 필요한 local records만 선택 참조한다. Notion provenance/mirror 확인이 필요할 때만 관련 문서를 fetch하며, 00~13 전체를 매번 반복 fetch하지 않는다.
 7. coding agent에게 자기완결형 지시를 보내고, main 검증 전에는 완료로 표시하지 않는다.
 
 ## 5. plan 파일 분할 규칙
@@ -184,7 +184,7 @@ COMBAT_CHECKPOINT
 HEAD: <git rev-parse HEAD>
 BRANCH: <branch>
 DIRTY: <git status 요약; .claude/worktrees 보존>
-NOTION: hub + canonical 00~13 확인 여부, 마지막 fetch 문서
+NOTION: 필요 시 provenance/mirror 확인 여부, 마지막 fetch 문서
 DONE: 완료된 plan 파일과 핵심 public API
 ACTIVE_PLAN: 현재 coding agent가 수행 중인 파일
 NEXT: 다음 plan 파일과 선행 조건

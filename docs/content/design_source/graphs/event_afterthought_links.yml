@@ -1,0 +1,7 @@
+schema_version: 1
+policy:
+  eligibility_evaluation: event_resolution
+  reveal_default: ending_resolution
+  exclusive_group_rule: at_most_one
+  runtime_contract: false
+links: []

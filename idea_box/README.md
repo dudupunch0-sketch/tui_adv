@@ -24,16 +24,16 @@ idea_box/
   done/                     # 반영, 폐기, 병합 처리가 끝난 아이디어
 ```
 
-## Notion-first 설계 파이프라인
+## Local design-source 설계 파이프라인
 
 설계 아이디어는 다음 단계로 처리한다.
 
 1. **아이디어 reference**: 사용자가 Notion에 아이디어를 적거나 local design-source의 검토 backlog를 만든다. current design records의 정본은 local design-source다.
-2. **설계 아이디어 문서화**: agent는 Notion reference를 읽고 repo 안의 설계 아이디어 문서로 변환한다. 보통 `docs/design/`, `docs/content/`, `docs/story/` 중 적절한 위치에 candidate 문서를 만든다. `idea_box/inbox/*.md`에는 Notion page id/title/url, 간단 요약, `related_docs`를 남긴다.
+2. **설계 아이디어 문서화**: agent는 manifest/governance와 관련 local records를 먼저 읽고 repo 안의 설계 아이디어 문서로 정리한다. Notion provenance가 필요할 때만 page id/title/url, 간단 요약, `related_docs`를 `idea_box/inbox/*.md`에 남긴다.
 3. **main plan 격상**: 다음에 실제로 설계할 항목은 설계 아이디어 문서 중 하나를 `docs/dev/Development_Plan.md`의 active main plan / “현재 최우선 남은 작업”으로 격상시킨 뒤 진행한다.
 4. **설계 진행**: 격상된 main plan을 기준으로 설계 문서와 필요한 계약 문서를 작성한다. runtime YAML/Rust/Web 구현은 별도 요청이나 별도 runtime slice가 있을 때만 한다.
 5. **Notion mirror 검토**: local design-source 결과를 Notion 읽기·검수 미러에 반영하고 핵심 방향, 톤, 제약, non-goals를 대조해 기록한다.
-6. **done 처리**: Notion 대조까지 끝났거나, 명시적으로 폐기/병합 판단을 기록했을 때만 `done` 처리한다. Notion import나 설계 아이디어 문서 작성만으로는 `done`이 아니다.
+6. **done 처리**: local design source 반영 또는 명시적 폐기/병합 판단을 기록했을 때만 `done` 처리한다. 단순 import나 설계 아이디어 문서 작성만으로는 `done`이 아니다. 필요하면 Notion mirror 검수 결과를 함께 기록한다.
 
 ## backlog 처리 순서
 
@@ -119,13 +119,13 @@ done_at:
 ## 상태 규칙
 
 - `open`: 아직 반영되지 않은 backlog idea entry. `BACKLOG_ORDER.md`의 Git 최초 반영 순서대로 처리한다.
-- `done`: 실제 설계/문서/구현에 반영했고 Notion reference 대조까지 마쳤거나, 명시적으로 폐기/병합 처리한 아이디어.
+- `done`: 실제 설계/문서/구현을 local design source에 반영했거나, 명시적으로 폐기/병합 처리한 아이디어.
 
-`done`은 단순히 읽었다는 뜻이 아니다. Notion import, 설계 아이디어 문서 작성, 또는 main plan 격상만으로는 부족하다. 최종 설계가 원본 Notion reference와 같은 방향인지 확인한 기록이 있거나, 폐기/병합 이유가 있어야 한다.
+`done`은 단순히 읽었다는 뜻이 아니다. Notion import, 설계 아이디어 문서 작성, 또는 main plan 격상만으로는 부족하다. 최종 설계를 local design source에 반영한 기록이 있거나, 폐기/병합 이유가 있어야 한다.
 
 ## 처리 방법
 
-Notion-origin 아이디어를 사용할 때는 먼저 Notion reference를 다시 읽고, `related_docs`의 설계 아이디어 문서와 `docs/dev/Development_Plan.md`의 격상 상태를 확인한다.
+Notion-origin 아이디어를 사용할 때는 먼저 local design source의 manifest/governance와 `related_docs`의 설계 아이디어 문서, `docs/dev/Development_Plan.md`의 격상 상태를 확인한다. Notion은 provenance 확인이 필요할 때만 읽는다.
 
 아이디어를 사용했으면 다음 중 하나를 수행한다.
 
@@ -133,7 +133,7 @@ Notion-origin 아이디어를 사용할 때는 먼저 Notion reference를 다시
 
 ```md
 status: done
-reference_check: Notion reference 대조 완료, YYYY-MM-DD
+source_check: local design source 반영 완료, YYYY-MM-DD
 used_by: docs/some-file.md 또는 src/some-file.ts
 done_at: YYYY-MM-DD
 ```

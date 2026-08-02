@@ -413,6 +413,47 @@ Save/load 규칙:
 | `achievement_summary` | 기존/신규 업적 요약 |
 | `pressure_cues` | 저정신력, 고갈증, 저전원 등 pressure presentation cue |
 | `effect_cues` | GlyphFX/anomaly 등 장면 효과 cue |
+| `combat` | 이 장면에서 관전 중인 전투 (`CombatSpectatorPage`, optional). 아래 "`ScenePage.combat` — 전투 관전 boundary" 참고 |
+
+### `ScenePage.combat` — 전투 관전 boundary (Wave 3 Step 1c)
+
+`combat`은 core가 만든 관전 view(`CombatSpectatorView`)와 종료 보고서(`CombatConclusionReport`)를
+renderer 경계 밖으로 내보내는 `Option<CombatSpectatorPage>` 필드다.
+
+```json
+{
+  "combat": {
+    "view": {
+      "simulation_version": "v1",
+      "resolution_fingerprint": "…",
+      "tick_millis": 100,
+      "frames": [],
+      "core_log": [],
+      "full_log": [],
+      "fingerprint": "…"
+    }
+  }
+}
+```
+
+- **전투가 없으면 `combat` 자체가 없다.** `#[serde(default, skip_serializing_if = "Option::is_none")]`가
+  붙어 있어 `None`일 때 JSON에 `"combat"` 키가 나타나지 않는다. 기존 `ScenePage` JSON은 바이트 단위로
+  동일하게 유지된다 — `content_backed_scene_page_has_no_combat_producer_and_no_combat_key_in_json`
+  (`crates/escape-core/tests/scene_page_combat_boundary.rs`)과
+  `json_boundary_scene_page_has_no_combat_key_before_combat_authoring_exists`
+  (`crates/escape-wasm/tests/json_contract.rs`)가 이를 고정한다.
+- **현재 이 slice에는 producer가 없다.** 전투를 시작하는 인카운터 authoring(encounter schema의 전투
+  필드, 전투 stage kind)이 아직 없으므로 `scene_page_from_content`가 만드는 `ScenePage.combat`은
+  Wave 3 Step 2(authoring)가 도착하기 전까지 **항상 `None`**이다.
+- **renderer는 표시만 한다.** `combat.view`의 `frames`/`core_log`/`full_log`는 판정·seed·AI·로그
+  순서를 담지 않는다 — 로그 항목은 자유 문장이 아니라 `template_id`(예:
+  `combat.log.damage_applied`)로 오며, 문장은 renderer가 소유한 템플릿 테이블에서 고른다.
+- **fingerprint는 `simulation_version`과 함께만 비교한다.** `combat.view.fingerprint`(그리고
+  `resolution_fingerprint`)를 비교하는 consumer는 `combat.view.simulation_version`도 함께 비교해야
+  같은 결정성 계약 안에 있는지 확인할 수 있다 (정본 03). 이 쌍은
+  `filled_combat_serializes_with_simulation_version_alongside_fingerprint`
+  (`crates/escape-core/tests/scene_page_combat_boundary.rs`)로 고정된다.
+- **전투 종료 보고서(`combat.report`)도 optional이다.** 전투가 진행 중이면 `report` 키 자체가 없다.
 
 `body_blocks[].kind` 후보:
 

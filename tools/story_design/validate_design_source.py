@@ -175,6 +175,7 @@ def main():
         try: link_overlay = yaml.safe_load(link_overlay_path.read_text(encoding="utf-8")) or {}
         except Exception as exc: structural_errors.append(f"event_afterthought_links.yml invalid YAML: {exc}")
     condition_entries = condition_overlay.get("conditions", []) if isinstance(condition_overlay, dict) else []
+    choice_condition_entries = condition_overlay.get("choice_conditions", []) if isinstance(condition_overlay, dict) else []
     link_entries = link_overlay.get("links", []) if isinstance(link_overlay, dict) else []
     approved_condition_ids = {str(x.get("event_id")) for x in triage_entries if isinstance(x, dict) and x.get("classification") == "descriptive_condition" and x.get("review_status") == "approved_as_condition"}
     condition_overlay_ids = [str(x.get("event_id")) for x in condition_entries if isinstance(x, dict)]
@@ -185,8 +186,29 @@ def main():
             structural_errors.append(f"afterthought condition missing raw_reference/condition_summary: {entry}")
         elif entry.get("status") != "approved_as_condition":
             semantic_errors.append(f"afterthought condition is not approved: {entry.get('event_id')}")
+    choice_condition_ids = set()
+    choice_condition_by_event = {}
+    for entry in choice_condition_entries:
+        if not isinstance(entry, dict):
+            structural_errors.append("choice condition is not an object")
+            continue
+        cid = str(entry.get("condition_id", ""))
+        eid = str(entry.get("event_id", ""))
+        if not cid or cid in choice_condition_ids:
+            structural_errors.append(f"choice condition duplicate/missing condition_id: {cid}")
+        choice_condition_ids.add(cid)
+        if eid not in event_ids:
+            semantic_errors.append(f"choice condition event missing: {eid}")
+        if not entry.get("source_path") or not entry.get("raw_choice"):
+            structural_errors.append(f"choice condition missing source/raw choice: {cid}")
+        if entry.get("condition_type") != "choice_text":
+            structural_errors.append(f"choice condition invalid type: {cid}")
+        if entry.get("status") != "unresolved_external_condition":
+            semantic_errors.append(f"choice condition must remain unresolved_external_condition: {cid}")
+        choice_condition_by_event.setdefault(eid, set()).add(str(entry.get("raw_choice", "")))
     link_pairs = set()
     group_priorities = {}
+    fallback_by_event_group = {}
     chain_edges = {}
     for entry in link_entries:
         if not isinstance(entry, dict): structural_errors.append("event afterthought link is not an object"); continue
@@ -200,14 +222,35 @@ def main():
         group = entry.get("exclusive_group")
         priority = entry.get("priority")
         if group is not None and priority is not None:
-            key = (str(group), int(priority))
+            key = (pair[0], str(group), int(priority))
             if key in group_priorities: semantic_errors.append(f"exclusive-group priority tie: {key}")
             group_priorities[key] = pair
+        if pair[0].startswith("wuxia_seoharin_"):
+            if group != "seoharin_future":
+                semantic_errors.append(f"Seoharin link has wrong exclusive group: {pair}")
+            card_group = props(next((x for ff,x,fo in records if fo == "afterthoughts" and x.get("id") == pair[1]), {})).get("상호 배타 그룹")
+            if card_group != "seoharin_future":
+                semantic_errors.append(f"Seoharin card group mismatch: {pair}")
+        if entry.get("fallback"):
+            fg_key = (pair[0], str(group))
+            if fg_key in fallback_by_event_group:
+                semantic_errors.append(f"fallback uniqueness violation: {fg_key}")
+            fallback_by_event_group[fg_key] = (pair, priority)
+            if entry.get("relation") != "primary":
+                semantic_errors.append(f"fallback link must be primary: {pair}")
         eligibility = entry.get("eligibility") or {}
         for bucket in ("all_of", "any_of", "none_of"):
             for token in eligibility.get(bucket, []) if isinstance(eligibility, dict) else []:
-                if str(token).startswith(("flag:", "ending:", "relation:")):
-                    unresolved_external_conditions.append({"link": pair, "token": str(token), "reason": "external registry not present in design source"})
+                token = str(token)
+                if token.startswith("condition_ref:"):
+                    parts = token.split(":choice:", 1)
+                    event_key = parts[0].removeprefix("condition_ref:") if len(parts) == 2 else ""
+                    raw_choice = parts[1] if len(parts) == 2 else ""
+                    if event_key not in choice_condition_by_event or raw_choice not in choice_condition_by_event.get(event_key, set()):
+                        structural_errors.append(f"unknown choice condition reference: {pair} {token}")
+                    unresolved_external_conditions.append({"link": pair, "token": token, "reason": "choice condition registry is design-only; runtime resolver not present"})
+                elif token.startswith(("flag:", "ending:", "relation:")):
+                    unresolved_external_conditions.append({"link": pair, "token": token, "reason": "external registry not present in design source"})
         if entry.get("relation") == "chain" and entry.get("depends_on"):
             chain_edges.setdefault(pair[1], []).append(str(entry["depends_on"]))
     def has_cycle(node, visiting, visited):
@@ -217,6 +260,14 @@ def main():
         if any(has_cycle(child, visiting, visited) for child in chain_edges.get(node, [])): return True
         visiting.remove(node); visited.add(node); return False
     if any(has_cycle(node, set(), set()) for node in chain_edges): semantic_errors.append("afterthought chain cycle detected")
+    for (event_id, group), (pair, fallback_priority) in fallback_by_event_group.items():
+        specialized = [int(e.get("priority")) for e in link_entries if isinstance(e, dict) and str(e.get("event_id")) == event_id and e.get("exclusive_group") == group and not e.get("fallback") and e.get("priority") is not None]
+        if specialized and int(fallback_priority) <= max(specialized):
+            semantic_errors.append(f"fallback priority is not last: {(event_id, group)}")
+    seoharin_events = {str(e.get("event_id")) for e in link_entries if isinstance(e, dict) and str(e.get("event_id", "")).startswith("wuxia_seoharin_")}
+    expected_seoharin_events = {"wuxia_seoharin_empty_place", "wuxia_seoharin_hides_training_injury", "wuxia_seoharin_left_meal", "wuxia_seoharin_night_watch_after_raid", "wuxia_seoharin_old_song", "wuxia_seoharin_recovery_bandage_change", "wuxia_seoharin_shared_meal_after_raid", "wuxia_seoharin_unsaid_stay"}
+    if seoharin_events and seoharin_events != expected_seoharin_events:
+        semantic_errors.append(f"Seoharin link coverage mismatch: {sorted(seoharin_events)}")
     pending_review_ids = sorted(str(x.get("event_id")) for x in triage_entries if isinstance(x, dict) and x.get("classification") == "designer_review_required")
     if len(after_ids) == 18 and sum(afterthought_classification.values()) != 134:
         structural_errors.append(f"afterthought classification total mismatch: {sum(afterthought_classification.values())} != 134")
@@ -228,7 +279,7 @@ def main():
         try: json.loads(f.read_text(encoding="utf-8"))
         except Exception as exc: structural_errors.append(f"{f.relative_to(root)} invalid JSON: {exc}")
     if choice_unverifiable: unverifiable.append({"records": sorted(choice_unverifiable), "reason": "choice key could not be safely matched"})
-    result = {"status": "FAIL" if structural_errors or semantic_errors else "PASS", "structural_errors": structural_errors, "semantic_errors": semantic_errors, "warnings": warnings, "unverifiable": unverifiable, "provenance": {"page_id_url_unavailable_in_export": page_provenance_records}, "verified_afterthought_links": verified_afterthought_links, "verified_external_relation_effects": relation_effects, "verified_conditions": verified_conditions, "afterthought_classification": afterthought_classification, "afterthought_triage": {"classification_counts": triage_counts, "review_required_ids": sorted(triage_review_ids), "coverage": triage_coverage, "ledger_path": str(triage_path.relative_to(root)), "pending_review_ids": pending_review_ids, "pending_review_count": len(pending_review_ids), "approved_condition_count": len(approved_condition_ids)}, "afterthought_overlays": {"condition_overlay_path": str(condition_overlay_path.relative_to(root)), "link_overlay_path": str(link_overlay_path.relative_to(root)), "approved_link_count": sum(x.get("status") == "approved" for x in link_entries if isinstance(x, dict)), "unresolved_runtime_links": unresolved_runtime_links, "unresolved_external_conditions": unresolved_external_conditions, "runtime_contract": False}, "capability_limitations": {"notion_page_ids_urls": "export did not include live page IDs/URLs; export-derived IDs are retained in provenance only", "afterthought_text": {"record_ids": [x["record"] for x in afterthought_text_records], "source_paths": [x["source_path"] for x in afterthought_text_records]}}, "capabilities": capabilities, "counts": counts, "duplicate_ids": duplicates, "policy": {"semantic_errors_nonzero": True, "warnings_and_unverifiable_only_do_not_fail": True, "afterthought_unstructured_requires_triage_ledger": True, "approved_condition_requires_raw_and_summary": True, "approved_links_only_graph_input": True, "default_reveal_policy": "ending_resolution", "external_conditions_are_unresolved_not_silent_pass": True}, "manifest_declares_local_canonical": bool(manifest.get("local_canonical_declared", False))}
+    result = {"status": "FAIL" if structural_errors or semantic_errors else "PASS", "structural_errors": structural_errors, "semantic_errors": semantic_errors, "warnings": warnings, "unverifiable": unverifiable, "provenance": {"page_id_url_unavailable_in_export": page_provenance_records}, "verified_afterthought_links": verified_afterthought_links, "verified_external_relation_effects": relation_effects, "verified_conditions": verified_conditions, "afterthought_classification": afterthought_classification, "afterthought_triage": {"classification_counts": triage_counts, "review_required_ids": sorted(triage_review_ids), "coverage": triage_coverage, "ledger_path": str(triage_path.relative_to(root)), "pending_review_ids": pending_review_ids, "pending_review_count": len(pending_review_ids), "approved_condition_count": len(approved_condition_ids)}, "afterthought_overlays": {"condition_overlay_path": str(condition_overlay_path.relative_to(root)), "link_overlay_path": str(link_overlay_path.relative_to(root)), "approved_link_count": sum(x.get("status") == "approved" for x in link_entries if isinstance(x, dict)), "unresolved_runtime_links": unresolved_runtime_links, "unresolved_external_conditions": unresolved_external_conditions, "choice_condition_count": len(choice_condition_entries), "fallback_count": sum(bool(x.get("fallback")) for x in link_entries if isinstance(x, dict)), "runtime_contract": False}, "capability_limitations": {"notion_page_ids_urls": "export did not include live page IDs/URLs; export-derived IDs are retained in provenance only", "afterthought_text": {"record_ids": [x["record"] for x in afterthought_text_records], "source_paths": [x["source_path"] for x in afterthought_text_records]}}, "capabilities": capabilities, "counts": counts, "duplicate_ids": duplicates, "policy": {"semantic_errors_nonzero": True, "warnings_and_unverifiable_only_do_not_fail": True, "afterthought_unstructured_requires_triage_ledger": True, "approved_condition_requires_raw_and_summary": True, "approved_links_only_graph_input": True, "default_reveal_policy": "ending_resolution", "external_conditions_are_unresolved_not_silent_pass": True}, "manifest_declares_local_canonical": bool(manifest.get("local_canonical_declared", False))}
     out = root / "reports/validation/design_source_validation.json"; out.parent.mkdir(parents=True, exist_ok=True); out.write_text(json.dumps(result, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 1 if result["status"] == "FAIL" else 0

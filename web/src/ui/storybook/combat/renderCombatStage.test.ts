@@ -251,6 +251,24 @@ describe('renderCombatBoard — Step 1d-3 playback wiring', () => {
     expect(html).not.toContain('data-piece-id="enemy_1"] { animation');
     expect(html).toMatch(/data-piece-id="ally_1"\] \{ animation/);
   });
+
+  it('carries a piece\'s per-tick cues/facing through to the generated cue grammar (WP3 end-to-end)', () => {
+    const html = renderCombatBoard(
+      view({
+        frames: [
+          frame(0, [
+            piece({ id: 'ally_1', position: { x: 5, y: 0 }, facing: { x: 1, y: 0 }, cues: ['attack'] }),
+          ]),
+          frame(1, [piece({ id: 'ally_1', position: { x: 5, y: 0 } })]),
+        ],
+      }),
+    );
+    // Identical position at both ticks -> span 0 on both axes -> the base
+    // (pre-cue) offset is 0 at every stop, so the lunge stop's only
+    // non-zero component is the attack contribution itself: unit facing
+    // (1, 0) scaled by the fixed lunge magnitude (4).
+    expect(html).toMatch(/50% \{ translate: calc\(-50% \+ 4cqw\) calc\(-50% \+ 0cqh\)/);
+  });
 });
 
 function logEntry(overrides: Partial<CombatSpectatorLogEntry> = {}): CombatSpectatorLogEntry {

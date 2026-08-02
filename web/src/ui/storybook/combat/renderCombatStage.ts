@@ -162,7 +162,7 @@ function collectPieceMotionTracks(
   const lastFrame = frames[frames.length - 1];
   const tracks: PieceMotionTrack[] = [];
   for (const piece of lastFrame.pieces) {
-    const points: { x: number; y: number }[] = [];
+    const points: PieceMotionTrack['frames'] = [];
     let presentInEveryFrame = true;
     for (const f of frames) {
       const match = f.pieces.find((p) => p.id === piece.id);
@@ -173,6 +173,11 @@ function collectPieceMotionTracks(
       points.push({
         x: projectAxis(match.position.x, minX, maxX),
         y: projectAxis(match.position.y, minY, maxY),
+        // WP3: carry this tick's own cue set/facing through verbatim — the
+        // cue presentation grammar (combatMotion.ts) never infers either
+        // from a neighboring tick (I2/I4).
+        cues: match.cues,
+        facing: match.facing,
       });
     }
     if (presentInEveryFrame) {

@@ -5563,7 +5563,13 @@ encounters:
       kind: systemic
       intervention_budget: 0
       manifest:
-        simulation_version: v1
+        # v1 -> v2: resolver 의미가 바뀌었다. 전투불능(체력 0) 전투원이 더 이상
+        # 공격하지 않고, 한쪽이 전멸한 tick에서 시뮬레이션이 멈춘다
+        # (fable_combat_early_conclusion_step1_2608022130.md). 정본 03이 정한
+        # 방식이다 — "이 결정성은 같은 version 내부에서만 보장한다 … 이후 갱신된
+        # version이 과거 seed 결과를 재현할 필요는 없다." v1 결과를 보존하지
+        # 않는다: 이 인카운터는 게이트 뒤에 있어 이에 의존하는 저장·기록이 없다.
+        simulation_version: v2
         # actual_seed는 authoring 값이며 producer가 런 상태(GameState.seed) +
         # 인카운터 id에서 파생한 값으로 항상 덮어쓴다 — 이 값 자체는 의미가
         # 없다 (scene_page.rs::derive_combat_seed 참고).

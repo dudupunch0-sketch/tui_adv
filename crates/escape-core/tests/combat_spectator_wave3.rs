@@ -473,6 +473,16 @@ fn view_reports_the_tick_millis_from_provenance() {
 }
 
 #[test]
+fn view_reports_the_simulation_version_from_provenance() {
+    let view = spectate_combat(&spectator_request()).unwrap();
+    assert_eq!(
+        view.simulation_version,
+        manifest().simulation_version,
+        "the view must report the simulation_version carried by execution provenance, not a placeholder"
+    );
+}
+
+#[test]
 fn missing_provenance_is_rejected() {
     let mut request = spectator_request();
     request.resolution.execution.provenance = None;

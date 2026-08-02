@@ -2,7 +2,7 @@ use crate::{
     CombatAttackOutcome, CombatEffectCatalog, CombatEffectDefinition, CombatFacing, CombatLogEvent,
     CombatLogImportance, CombatLogTag, CombatPosition, CombatResolutionCombatant,
     CombatResolutionLogEvent, CombatResolutionLogTag, CombatResolutionResult, CombatSide,
-    CombatSimulationParticipant, EffectVisibility,
+    CombatSimulationParticipant, CombatSimulationVersion, EffectVisibility,
 };
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
@@ -62,6 +62,9 @@ pub struct CombatSpectatorLogEntry {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct CombatSpectatorView {
+    /// 이 기록을 만든 simulation version. `resolution.execution.provenance`에서 파생한다.
+    /// fingerprint를 비교하는 consumer는 이 값도 함께 비교해야 한다 (정본 03).
+    pub simulation_version: CombatSimulationVersion,
     pub resolution_fingerprint: String,
     pub tick_millis: u32,
     #[serde(default)]
@@ -98,14 +101,15 @@ impl std::error::Error for CombatSpectatorError {}
 pub fn spectate(
     request: &CombatSpectatorRequest,
 ) -> Result<CombatSpectatorView, CombatSpectatorError> {
-    let tick_millis = request
+    let provenance = request
         .resolution
         .execution
         .provenance
         .as_ref()
-        .map(|p| p.tick_millis)
-        .filter(|millis| *millis > 0)
+        .filter(|p| p.tick_millis > 0)
         .ok_or(CombatSpectatorError::MissingProvenance)?;
+    let tick_millis = provenance.tick_millis;
+    let simulation_version = provenance.simulation_version.clone();
     let participants: BTreeMap<&str, &CombatSimulationParticipant> = request
         .participants
         .iter()
@@ -157,6 +161,7 @@ pub fn spectate(
         .collect();
 
     let mut view = CombatSpectatorView {
+        simulation_version,
         resolution_fingerprint: request.resolution.fingerprint.clone(),
         tick_millis,
         frames,

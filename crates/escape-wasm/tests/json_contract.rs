@@ -4232,3 +4232,21 @@ fn json_boundary_reports_user_facing_errors() {
         load_state_json("[]").expect_err("malformed save should be rejected");
     assert!(malformed_save_error.contains("invalid save JSON"));
 }
+
+/// Wave 3 Step 1c regression guard: no encounter authoring opens combat yet, so
+/// `ScenePage.combat` must always be `None`, and `#[serde(skip_serializing_if =
+/// "Option::is_none")]` must keep the `"combat"` key out of the JSON that crosses
+/// the WASM boundary. If this ever fails, either a producer leaked a combat page
+/// before Wave 3 Step 2 authoring exists, or the `skip_serializing_if` attribute
+/// was dropped.
+#[test]
+fn json_boundary_scene_page_has_no_combat_key_before_combat_authoring_exists() {
+    let state_json = new_game_json(123, CONTENT_BUNDLE).expect("new game should serialize");
+    let page_json =
+        scene_page_json(&state_json, CONTENT_BUNDLE).expect("scene page should serialize");
+    let page: Value = serde_json::from_str(&page_json).expect("page JSON should parse");
+    assert!(
+        page.as_object().unwrap().get("combat").is_none(),
+        "combat key must not appear until Wave 3 Step 2 authoring adds a producer: {page}"
+    );
+}

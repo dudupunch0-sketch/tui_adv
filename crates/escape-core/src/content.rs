@@ -1,4 +1,4 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -13,6 +13,11 @@ const PRIVATE_SECRET_FIELDS: &[&str] = &[
     "treasure_location",
 ];
 use crate::resources::RESOURCE_IDS;
+use crate::{
+    CombatAttackDefinition, CombatDefenseProfile, CombatEffectCatalog, CombatManifest,
+    CombatRolePreset, CombatSimulationConfig, CombatSimulationParticipant, CombatState,
+    CombatTargetPolicy, CombatTerminationPolicy,
+};
 
 const RESOURCE_KEYS: &[&str] = &RESOURCE_IDS;
 
@@ -257,6 +262,47 @@ pub struct ItemDef {
     pub reveal_immediate: bool,
 }
 
+/// 정본 04/01의 인카운터 유형. 즉시 결과 가능 여부가 다르다.
+///
+/// 이 slice(Wave 3 Step 2a)는 `Systemic`만 producer를 돌린다. `Mixed`/`Scripted`는
+/// 개입 일시정지 흐름이 없어 index-time 검증에서 명시적으로 거부된다
+/// (`validate_encounter_combat` 참고, Wave 3 Step 2b/2c 소관).
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum EncounterCombatKind {
+    /// 공유 효과만 사용. 즉시 결과 가능.
+    Systemic,
+    /// 공유 효과 + 1~2개 특수 규칙. 필수 선택까지 즉시 진행 후 정지.
+    Mixed,
+    /// 커스텀 효과 허용. 즉시 결과 불가.
+    Scripted,
+}
+
+/// 인카운터가 여는 전투 정의. 기존 combat 파이프라인 타입을 그대로 재사용하며
+/// **seed는 담지 않는다**: `manifest.actual_seed`는 authoring 값이 그대로 쓰이지
+/// 않고, `scene_page.rs`의 producer가 런 상태(`GameState.seed`) + 인카운터 id +
+/// manifest fingerprint를 해싱해 덮어쓴다 (정본 03의 RNG namespace 분리·재시도 계약).
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct EncounterCombatDef {
+    pub kind: EncounterCombatKind,
+    /// 개입 기회 상한. 정본 01 기준 0~3. 인카운터 중요도·유형이 정한다.
+    pub intervention_budget: u8,
+    /// `CombatSimulationInput`에서 seed를 뺀 나머지.
+    pub manifest: CombatManifest,
+    pub state: CombatState,
+    pub config: CombatSimulationConfig,
+    pub participants: Vec<CombatSimulationParticipant>,
+    pub roles: Vec<CombatRolePreset>,
+    #[serde(default)]
+    pub policies: Vec<CombatTargetPolicy>,
+    pub attacks: Vec<CombatAttackDefinition>,
+    pub defenses: Vec<CombatDefenseProfile>,
+    pub effect_catalog: CombatEffectCatalog,
+    /// 이번 전투에서 진행할 tick 수. `config.max_ticks` 이하여야 한다.
+    pub ticks: u32,
+    pub termination: CombatTerminationPolicy,
+}
+
 #[derive(Clone, Debug, PartialEq)]
 pub struct EncounterDef {
     pub id: String,
@@ -268,6 +314,9 @@ pub struct EncounterDef {
     pub choices: Vec<ChoiceDef>,
     pub repeatable: bool,
     pub weight: u32,
+    /// additive-optional: 전투를 열지 않는 인카운터는 `None`이며, `ScenePage.combat`
+    /// producer도 `None`을 낸다 (Step 1c의 JSON boundary 계약 유지).
+    pub combat: Option<EncounterCombatDef>,
 }
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
@@ -481,6 +530,8 @@ struct RawEncounterDef {
     repeatable: bool,
     #[serde(default = "default_encounter_weight")]
     weight: u32,
+    #[serde(default)]
+    combat: Option<EncounterCombatDef>,
 }
 
 #[derive(Clone, Debug, Deserialize)]
@@ -922,6 +973,7 @@ fn parse_encounter(value: &Value) -> Result<EncounterDef, ContentIndexError> {
         choices,
         repeatable: raw.repeatable,
         weight: raw.weight,
+        combat: raw.combat,
     })
 }
 

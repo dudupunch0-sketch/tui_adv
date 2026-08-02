@@ -329,3 +329,25 @@ def test_cross_group_coexistence_is_allowed(tmp_path):
     )
     result = run(root)
     assert result.returncode == 0, result.stdout
+
+def test_mumyeong_fate_links_use_one_exclusive_group_and_no_fallback(tmp_path):
+    root = write_fixture(tmp_path)
+    write_links(root, [
+        approved_link(card="notion_0012", exclusive_group="mumyeong_fate", priority=10, fallback=False),
+        approved_link(card="notion_0013", exclusive_group="seoharin_future", priority=10, fallback=False),
+    ])
+    result = run(root)
+    assert result.returncode == 0, result.stdout
+    report = json.loads(result.stdout)
+    assert report["afterthought_overlays"]["fallback_count"] == 0
+
+
+def test_duplicate_yaml_mapping_key_is_rejected(tmp_path):
+    root = write_fixture(tmp_path)
+    (root / "graphs" / "afterthought_conditions.yml").write_text(
+        "conditions: []\nchoice_conditions: []\nchoice_conditions: []\n",
+        encoding="utf-8",
+    )
+    result = run(root)
+    assert result.returncode != 0
+    assert "duplicate key: choice_conditions" in result.stdout

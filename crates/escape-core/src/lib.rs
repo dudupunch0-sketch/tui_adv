@@ -4,6 +4,7 @@ mod combat_execution;
 mod combat_opportunity;
 mod combat_resolution;
 mod combat_simulation;
+mod combat_spectator;
 mod combat_state;
 mod content;
 mod effects;
@@ -15,9 +16,9 @@ mod state;
 mod turn;
 
 pub use combat_conclusion::{
-    conclude as conclude_combat, CombatConclusionError, CombatConclusionOutcome,
-    CombatConclusionReason, CombatConclusionReport, CombatConclusionRequest,
-    CombatTerminationPolicy,
+    conclude as conclude_combat, CombatCombatantReport, CombatConclusionError,
+    CombatConclusionOutcome, CombatConclusionReason, CombatConclusionReport,
+    CombatConclusionRequest, CombatTerminationPolicy,
 };
 pub use combat_contract::{
     CombatContractError, CombatEffectRef, CombatManifest, CombatRngNamespace,
@@ -25,7 +26,8 @@ pub use combat_contract::{
 };
 pub use combat_execution::{
     execute as execute_combat, CombatExecutionError, CombatExecutionRequest, CombatExecutionResult,
-    CombatLogEvent, CombatLogImportance, CombatLogTag, CombatPresentationSpeed, CombatRunMode,
+    CombatLogEvent, CombatLogImportance, CombatLogTag, CombatPresentationSpeed, CombatProvenance,
+    CombatRunMode,
 };
 pub use combat_opportunity::{
     CombatDetectionLevel, CombatDetectionThresholds, CombatInterventionBudget, CombatObserver,
@@ -44,6 +46,11 @@ pub use combat_simulation::{
     CombatRoleWeights, CombatSide, CombatSimulation, CombatSimulationConfig, CombatSimulationError,
     CombatSimulationInput, CombatSimulationParticipant, CombatTargetFallback, CombatTargetPolicy,
     CombatTargetPreference, CombatTickFrame,
+};
+pub use combat_spectator::{
+    spectate as spectate_combat, CombatSpectatorCue, CombatSpectatorError, CombatSpectatorFrame,
+    CombatSpectatorLogEntry, CombatSpectatorPage, CombatSpectatorPiece, CombatSpectatorRequest,
+    CombatSpectatorView,
 };
 pub use combat_state::{
     CombatConclusion, CombatEffectCatalog, CombatEffectCategory, CombatEffectDecision,

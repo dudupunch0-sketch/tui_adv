@@ -1,6 +1,6 @@
 use crate::{
     CombatRngNamespace, CombatSimulation, CombatSimulationError, CombatSimulationInput,
-    CombatTickFrame,
+    CombatSimulationVersion, CombatTickFrame,
 };
 use serde::{Deserialize, Serialize};
 
@@ -49,6 +49,17 @@ pub struct CombatExecutionRequest {
     pub presentation: CombatPresentationSpeed,
     pub ticks: u32,
 }
+/// 전투 기록의 출처. 정본 03 "전투 기록에는 version을 저장한다"의 구현이다.
+/// 결과에서 입력 맥락을 되찾을 수 있게 하여, 하위 단계가 같은 값을 호출자에게
+/// 다시 받지 않도록 한다.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct CombatProvenance {
+    pub simulation_version: CombatSimulationVersion,
+    /// tick 한 칸의 길이(ms). 입력 `CombatSimulationConfig.tick_millis`를 그대로 옮긴다.
+    pub tick_millis: u32,
+    pub manifest_fingerprint: String,
+}
+
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct CombatExecutionResult {
     pub mode: CombatRunMode,
@@ -58,6 +69,10 @@ pub struct CombatExecutionResult {
     pub frames: Vec<CombatTickFrame>,
     pub full_log: Vec<CombatLogEvent>,
     pub core_log: Vec<CombatLogEvent>,
+    /// provenance가 없는(구 JSON 역직렬화) 결과는 `None`이다. `execute()`가 만드는
+    /// 결과는 항상 `Some`이다.
+    #[serde(default)]
+    pub provenance: Option<CombatProvenance>,
     pub fingerprint: String,
 }
 
@@ -119,6 +134,16 @@ pub fn execute(
         .filter(|event| event.importance >= CombatLogImportance::Important)
         .cloned()
         .collect();
+    let manifest_fingerprint = request
+        .input
+        .manifest
+        .fingerprint()
+        .map_err(|_| CombatExecutionError::InvalidInput)?;
+    let provenance = CombatProvenance {
+        simulation_version: request.input.manifest.simulation_version.clone(),
+        tick_millis: request.input.config.tick_millis,
+        manifest_fingerprint,
+    };
     let fingerprint = stable_fingerprint(&(
         namespace,
         effective_seed,
@@ -134,6 +159,7 @@ pub fn execute(
         frames,
         full_log,
         core_log,
+        provenance: Some(provenance),
         fingerprint,
     })
 }

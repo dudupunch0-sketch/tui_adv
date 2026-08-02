@@ -35,6 +35,17 @@ pub enum CombatConclusionReason {
     MaxTicksReached,
 }
 
+/// 캐릭터 한 명의 전투 기록. 정본 13의 "캐릭터별 상세 기록".
+/// 치유량은 파이프라인에 회복 개념이 없어 아직 필드를 두지 않는다.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct CombatCombatantReport {
+    pub id: String,
+    pub damage_dealt_hundredths: i64,
+    pub damage_taken_hundredths: i64,
+    pub kills: u32,
+    pub incapacitated: bool,
+}
+
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct CombatConclusionReport {
     pub resolution_fingerprint: String,
@@ -47,12 +58,31 @@ pub struct CombatConclusionReport {
     pub defeated_ids: Vec<String>,
     pub removed_combat_effect_ids: Vec<String>,
     pub retained_effect_ids: Vec<String>,
+    /// 결착까지의 전투 시간. tick 수 × tick_millis.
+    #[serde(default)]
+    pub duration_millis: u64,
+    /// id 오름차순.
+    #[serde(default)]
+    pub combatants: Vec<CombatCombatantReport>,
+    /// 피해가 하나도 없으면 `None` (발생하지 않은 항목은 숨긴다).
+    #[serde(default)]
+    pub top_damage_dealt_id: Option<String>,
+    #[serde(default)]
+    pub top_damage_taken_id: Option<String>,
     pub fingerprint: String,
 }
 
 pub fn conclude(
     request: CombatConclusionRequest,
 ) -> Result<CombatConclusionReport, CombatConclusionError> {
+    let tick_millis = request
+        .resolution
+        .execution
+        .provenance
+        .as_ref()
+        .map(|p| p.tick_millis)
+        .filter(|millis| *millis > 0)
+        .ok_or(CombatConclusionError::MissingProvenance)?;
     if request.policy.max_ticks == 0 {
         return Err(CombatConclusionError::InvalidPolicy);
     }
@@ -155,21 +185,106 @@ pub fn conclude(
             retained.insert(effect.definition_id.clone());
         }
     }
+    let decisive_tick = terminal.then_some(last_tick).flatten();
+    let duration_millis = match decisive_tick {
+        Some(t) => (u64::from(t) + 1) * u64::from(tick_millis),
+        None => (request.resolution.frames.len() as u64) * u64::from(tick_millis),
+    };
+    let mut damage_dealt: BTreeMap<String, i64> = BTreeMap::new();
+    let mut damage_taken: BTreeMap<String, i64> = BTreeMap::new();
+    for f in &request.resolution.frames {
+        for o in &f.outcomes {
+            if o.hit && o.damage_hundredths > 0 {
+                *damage_dealt.entry(o.actor_id.clone()).or_insert(0) += o.damage_hundredths;
+                *damage_taken.entry(o.target_id.clone()).or_insert(0) += o.damage_hundredths;
+            }
+        }
+    }
+    let mut first_defeated_at: BTreeMap<String, usize> = BTreeMap::new();
+    for (idx, f) in request.resolution.frames.iter().enumerate() {
+        for c in &f.combatants {
+            if c.current_health_hundredths <= 0 && !first_defeated_at.contains_key(&c.id) {
+                first_defeated_at.insert(c.id.clone(), idx);
+            }
+        }
+    }
+    let mut kills: BTreeMap<String, u32> = BTreeMap::new();
+    for (target_id, idx) in &first_defeated_at {
+        if let Some(f) = request.resolution.frames.get(*idx) {
+            if let Some(o) = f
+                .outcomes
+                .iter()
+                .rev()
+                .find(|o| o.target_id == *target_id && o.hit && o.damage_hundredths > 0)
+            {
+                *kills.entry(o.actor_id.clone()).or_insert(0) += 1;
+            }
+        }
+    }
+    let last_frame_snapshot = request
+        .resolution
+        .frames
+        .last()
+        .map(|f| &f.combatants)
+        .filter(|c| !c.is_empty());
+    let health_of = |id: &str| -> i64 {
+        if let Some(snapshot) = last_frame_snapshot {
+            if let Some(c) = snapshot.iter().find(|c| c.id.as_str() == id) {
+                return c.current_health_hundredths;
+            }
+        }
+        state
+            .get(id)
+            .map(|c| c.current_health_hundredths)
+            .unwrap_or(0)
+    };
+    let combatants: Vec<CombatCombatantReport> = participants
+        .keys()
+        .map(|id| CombatCombatantReport {
+            id: id.clone(),
+            damage_dealt_hundredths: damage_dealt.get(id).copied().unwrap_or(0),
+            damage_taken_hundredths: damage_taken.get(id).copied().unwrap_or(0),
+            kills: kills.get(id).copied().unwrap_or(0),
+            incapacitated: health_of(id) <= 0,
+        })
+        .collect();
+    let top_damage_dealt_id = top_id_by(&combatants, |c| c.damage_dealt_hundredths);
+    let top_damage_taken_id = top_id_by(&combatants, |c| c.damage_taken_hundredths);
     let mut report = CombatConclusionReport {
         resolution_fingerprint: request.resolution.fingerprint.clone(),
         outcome,
         reason,
-        decisive_tick: terminal.then_some(last_tick).flatten(),
+        decisive_tick,
         active_allies: allies.len() as u32,
         active_enemies: enemies.len() as u32,
         survivor_ids,
         defeated_ids,
         removed_combat_effect_ids: removed.into_iter().collect(),
         retained_effect_ids: retained.into_iter().collect(),
+        duration_millis,
+        combatants,
+        top_damage_dealt_id,
+        top_damage_taken_id,
         fingerprint: String::new(),
     };
     report.fingerprint = fingerprint(&report);
     Ok(report)
+}
+
+/// 최대값을 가진 id를 반환한다 (id 오름차순 입력 가정, 동점은 최초 등장 = 최소 id).
+/// 최대값이 0 이하이면 발생하지 않은 항목이므로 `None`.
+fn top_id_by(
+    combatants: &[CombatCombatantReport],
+    value: impl Fn(&CombatCombatantReport) -> i64,
+) -> Option<String> {
+    let mut best: Option<(&str, i64)> = None;
+    for c in combatants {
+        let v = value(c);
+        if best.map_or(true, |(_, b)| v > b) {
+            best = Some((c.id.as_str(), v));
+        }
+    }
+    best.filter(|(_, v)| *v > 0).map(|(id, _)| id.to_string())
 }
 
 fn fingerprint<T: Serialize>(value: &T) -> String {
@@ -190,6 +305,9 @@ pub enum CombatConclusionError {
     ParticipantStateMismatch,
     EmptyActiveSide,
     FrameExceedsPolicy,
+    /// `resolution.execution.provenance`가 없거나(구 JSON) `tick_millis`가 0이면
+    /// `duration_millis`를 지어내지 않고 이 에러를 낸다.
+    MissingProvenance,
 }
 impl std::fmt::Display for CombatConclusionError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {

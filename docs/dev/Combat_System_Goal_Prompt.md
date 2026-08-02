@@ -32,12 +32,17 @@ Notion 전투 시스템 허브와 canonical 00~13을 기준으로, Rust GameCore
 - `crates/escape-core/src/combat_contract.rs`에 CombatSimulationVersion, 5개 CombatRngNamespace, CombatManifest, effect reason/suppressed effect, canonical JSON/fingerprint/derived seed, validation이 있다.
 - `crates/escape-core/tests/combat_contract_wave1.rs` 5개 테스트가 있다.
 - Wave 2 Step 2는 구현·검증 완료다. actual/retry/auto/fast parity, forecast namespace 분리, presentation parity, dual log와 실행 fingerprint가 추가되었다.
-- `crates/escape-core/src/combat_execution.rs`와 `crates/escape-core/tests/combat_execution_wave2.rs` 6개 테스트가 있다.
+- `crates/escape-core/src/combat_execution.rs`와 `crates/escape-core/tests/combat_execution_wave2.rs` 10개 테스트가 있다(Wave 2 Step 2 당시 6개, Wave 2 Step 6에서 provenance 회귀 테스트 4개가 늘었다).
 - `fable_combat_wave2_step3_2607261845.md`가 구현·검증 완료다. sidecar resolution request가 기존 execution frame을 재사용하고 collision/range/accuracy, fixed-point damage/defense, health/balance clamp, effect catalog stacking, resolution full/core log를 제공한다.
 - `crates/escape-core/src/combat_resolution.rs`와 `crates/escape-core/tests/combat_resolution_wave2.rs` 11개 테스트가 있다.
 - `fable_combat_wave2_step4_2607261845.md`가 구현·검증 완료다. resolution fingerprint/state를 소비하는 pure 결착 evaluator가 mutual-defeat precedence, max-tick stalemate, stable survivor/defeated report, combat-only cleanup sidecar를 제공한다.
-- `crates/escape-core/src/combat_conclusion.rs`와 `crates/escape-core/tests/combat_conclusion_wave2.rs` 결착 회귀 테스트 4개가 있다.
-- 고급 다수전 AI 행동·조기 tick 중단, ScenePage/WASM/Web/terminal 전투 UI, 기술 비용·호흡 회복률·밸런스 수치는 아직 미구현이다.
+- `crates/escape-core/src/combat_conclusion.rs`와 `crates/escape-core/tests/combat_conclusion_wave2.rs` 결착 회귀 테스트 14개가 있다(Wave 3 Step 1b 포함).
+- `fable_combat_wave3_step1a_2608020020.md`가 구현·검증 완료다. `CombatResolutionResult`를 입력으로 받는 `escape-core` 전용 관전 view 어댑터가 새 판정 없이 tick별 체스말 프레임, 공용 연출 cue(Attack/Hit/Evade), 템플릿 id 기반 이중 로그, 누설 차단(AttackRoll/EffectSuppressed 제외, Hidden/Conditional/미등록 효과 id 마스킹)을 제공한다. `crates/escape-core/src/combat_spectator.rs`와 `crates/escape-core/tests/combat_spectator_wave3.rs` 12개 테스트가 있다. `BalanceBroken`/`Incapacitated` cue는 tick별 상태 스냅샷이 아직 없어 의도적으로 제외했다(후속 slice 선행 필요).
+- `fable_combat_wave2_step5_2608020117.md`가 구현·검증 완료다. `CombatResolutionFrame.combatants`(tick 종료 시점 전투원 스냅샷, additive-optional)를 추가하고 `combat_spectator.rs`가 이를 소비해 `BalanceBroken`·`Incapacitated` cue 2개를 파생한다. 정본 13의 공용 연출 문법 5개가 모두 확보됐다. `crates/escape-core/tests/combat_resolution_wave2.rs` 16개 테스트, `crates/escape-core/tests/combat_spectator_wave3.rs` 19개 테스트가 있다.
+- `fable_combat_wave3_step1b_2608020437.md`가 구현·검증 완료다. `CombatConclusionRequest.tick_millis`(0은 `InvalidTickMillis`)와 `CombatConclusionReport.duration_millis`·`combatants: Vec<CombatCombatantReport>`(피해 입힘/받음·처치 수·전투불능, id 오름차순)·`top_damage_dealt_id`/`top_damage_taken_id`(발생하지 않으면 `None`, 동점은 id 최소)를 additive-optional로 추가했다. 판정은 `resolution.frames[].outcomes`/`combatants` 스냅샷만 집계하고 재계산하지 않는다. 치유량·명줄은 아직 없다(healing/패배 결과 스키마 slice 선행 필요). 정본 13이 금지하는 전략 평가·전환점·원인 분석·조언·MVP·이전 전투 비교는 의도적으로 구현하지 않았다.
+- `fable_combat_wave2_step6_2608020838.md`가 구현·검증 완료다. `CombatExecutionResult.provenance: Option<CombatProvenance>`(`simulation_version`·`tick_millis`·`manifest_fingerprint`, additive-optional, `execute()`는 항상 `Some`)를 추가하고 `CombatSpectatorRequest.tick_millis`/`CombatConclusionRequest.tick_millis` 중복 파라미터를 제거했다. `spectate()`/`conclude()`는 이제 `resolution.execution.provenance`에서 `tick_millis`를 읽고, 없거나 0이면 두 에러 enum의 `InvalidTickMillis`를 대체한 `MissingProvenance`를 낸다. 정본 03 근거로 fingerprint 안정성 선결 과제를 해소했다 — 결정성은 같은 `simulation_version` 안에서만 보장하므로 schema 추가로 fingerprint 값이 바뀌는 것은 계약 위반이 아니며, fingerprint를 비교하는 consumer는 반드시 `simulation_version`도 함께 비교해야 한다.
+- `fable_combat_wave3_step1c_2608021109.md`가 구현·검증 완료다. `CombatSpectatorView.simulation_version`(provenance에서 파생)과 `CombatSpectatorPage`(`view` + optional `report`)를 추가하고 `ScenePage.combat: Option<CombatSpectatorPage>`로 renderer 경계 밖에 additive-optional 노출했다. 전투를 여는 인카운터 authoring이 없어(Wave 3 Step 2) `scene_page_from_turn_view`는 `combat: None`만 낸다 — 이 slice는 producer가 아니라 구조 슬롯만 추가했다. `#[serde(default, skip_serializing_if = "Option::is_none")]`로 기존 `ScenePage` JSON이 바이트 단위로 동일함을 신규 테스트로 고정했다. `crates/escape-core/tests/scene_page_combat_boundary.rs`(신규 5개 테스트)와 `crates/escape-wasm/tests/json_contract.rs`(기존 테스트 무수정, 1개 추가로 37개)가 있다.
+- 고급 다수전 AI 행동·조기 tick 중단, 치유량·명줄, 전투를 여는 인카운터 authoring(`ScenePage.combat`의 producer), Web/terminal 전투 UI, 기술 비용·호흡 회복률·밸런스 수치는 아직 미구현이다.
 
 Notion 불변식:
 - 같은 manifest·seed·선택 이력·simulation version은 같은 결과와 로그를 만든다.
@@ -75,5 +80,5 @@ Notion 불변식:
 권장 다음 goal 문장:
 
 ```text
-Wave 3 Step 1의 ScenePage/WASM/terminal/Web 관전 adapter 계약을 별도 작은 plan으로 설계하고, 승인 후 WSL 회귀 검증까지 수행한다.
+Wave 3 Step 2(시스템형 1개 + 혼합형 1개 + 각본형 1개 authoring slice)를 별도 작은 plan으로 설계하고, 승인 후 WSL 회귀 검증까지 수행한다. `ScenePage.combat`은 Wave 3 Step 1c에서 이미 additive-optional로 노출됐지만 이를 채우는 producer(전투를 여는 인카운터 authoring)가 없어 여전히 항상 `None`이다. Step 1d(terminal/Web 렌더러)보다 Step 2를 먼저 진행한다 — authoring이 없으면 렌더러가 표시할 데이터가 없기 때문이다 (단계 순서 조정 근거는 `docs/design/Combat_System_Implementation_Plan_Index.md` 참고).
 ```

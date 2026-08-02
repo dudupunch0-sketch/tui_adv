@@ -438,3 +438,55 @@ fn resolution_logs_are_stable_and_core_filtered() {
         .iter()
         .all(|event| event.importance >= CombatLogImportance::Important));
 }
+
+#[test]
+fn frame_snapshot_is_id_sorted_and_covers_every_combatant() {
+    let result = resolve_combat(request()).unwrap();
+    for frame in &result.frames {
+        let ids: Vec<&str> = frame.combatants.iter().map(|c| c.id.as_str()).collect();
+        let mut sorted = ids.clone();
+        sorted.sort();
+        assert_eq!(ids, sorted, "frame.combatants must already be id-ascending");
+        assert_eq!(
+            ids,
+            vec!["a", "e"],
+            "frame.combatants must cover every combatant"
+        );
+    }
+}
+
+#[test]
+fn frame_snapshot_reflects_the_tick_damage_from_its_own_outcomes() {
+    let result = resolve_combat(request()).unwrap();
+    let frame = &result.frames[0];
+    let outcome = &frame.outcomes[0];
+    let snapshot_health = frame
+        .combatants
+        .iter()
+        .find(|c| c.id == outcome.target_id)
+        .unwrap()
+        .current_health_hundredths;
+    assert_eq!(snapshot_health, 10_000 - outcome.damage_hundredths);
+}
+
+#[test]
+fn last_frame_snapshot_matches_final_state_combatants() {
+    let result = resolve_combat(request()).unwrap();
+    let last_frame = result.frames.last().unwrap();
+    assert_eq!(last_frame.combatants, result.state.combatants);
+}
+
+#[test]
+fn combatants_field_is_additive_optional_for_deserialization() {
+    let json = r#"{"tick":1,"outcomes":[],"fingerprint":"f"}"#;
+    let frame: CombatResolutionFrame = serde_json::from_str(json).unwrap();
+    assert_eq!(frame.combatants, Vec::new());
+}
+
+#[test]
+fn frame_snapshots_are_deterministic_across_identical_runs() {
+    let a = resolve_combat(request()).unwrap();
+    let b = resolve_combat(request()).unwrap();
+    assert_eq!(a.frames, b.frames);
+    assert_eq!(a.fingerprint, b.fingerprint);
+}

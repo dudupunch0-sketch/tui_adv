@@ -1,4 +1,5 @@
 use crate::ability_label;
+use crate::combat_spectator::CombatSpectatorPage;
 use crate::content::{
     ContentIndex, EncounterDef, EndingDef, LocationDef, PresentationEffectCue, PublicSecretDef,
 };
@@ -62,6 +63,10 @@ pub struct ScenePage {
     pub skills: Vec<RewardStatus>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub titles: Vec<RewardStatus>,
+    /// 이 장면에서 관전 중인 전투. 전투가 없으면 `None`이며 JSON에 키가 나타나지 않는다.
+    /// renderer는 이 데이터를 표시만 하고 판정·seed·AI·로그 순서를 재계산하지 않는다.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub combat: Option<CombatSpectatorPage>,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -445,6 +450,9 @@ fn scene_page_from_turn_view(
             .filter_map(|id| content.title(id))
             .map(reward_status)
             .collect(),
+        // 전투를 시작하는 인카운터 authoring이 아직 없다(Wave 3 Step 2). 이 slice는
+        // 필드를 노출만 하며, 이 producer는 항상 `None`을 낸다.
+        combat: None,
     }
 }
 

@@ -1,0 +1,25 @@
+id: wuxia_title_footprints_of_two_paths
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/18 ьЭ┤ъ╡мэХЩьзА ь╣нэШ╕
+    DB da8f254e72404c6f84a5db5738bb7588.csv
+  database_id: da8f254e72404c6f84a5db5738bb7588
+notion_properties:
+  이름: 두 길의 발자국
+  검수 상태: 기획자 검수 필요
+  관련 사건 ID: wuxia_cheongryu_raid_omen
+  도감 등록: 'Yes'
+  런타임 상태: 설계
+  배타성: 히든 양립
+  보상 등급: 전설
+  선택 방향: 일반적으로 배타적인 선택을 히든 경로로 연결한 증표.
+  중복·다회차 처리: 중복 시 기억 파편 지급. 도감에는 최초 획득 선택과 반대 선택의 설명을 함께 기록.
+  즉시 공개: 'Yes'
+  칭호 ID: wuxia_title_footprints_of_two_paths
+  컨셉: 한쪽을 택했지만 다른 길의 흔적도 끝까지 추적한 사람.
+  향후 효과 방향: 서로 반대되는 보상 조합·다회차 특수 대화 방향.
+  획득 성격: 히든
+kind: title
+effect_policy:
+  numeric_effects: deferred

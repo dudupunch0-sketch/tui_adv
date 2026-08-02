@@ -1,0 +1,29 @@
+id: notion_0018
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/10 ьЭ┤ъ╡мэХЩьзА эЫДьЭ╝ыЛ┤
+    ь╣┤ыУЬ DB bd93ddd8de224c7da50abdd309bc2880.csv
+  database_id: bd93ddd8de224c7da50abdd309bc2880
+notion_properties:
+  카드명: 복구된 무공의 후일
+  검수 상태: 기획자 검수 필요
+  검수 필요: 'Yes'
+  관련 사건: 청류문 재건 / 무명의 카피 무공 공개 / 사도 최종전
+  관련 엔딩: 모든 생존 계열, 정착, 청류문
+  대상: 복구된 비급, 청류문, 청류문 무공
+  메모: 청류문이 단순 생존을 넘어 자기 무공의 흐름을 일부 되찾는 후일담 카드. 완전 복원이나 강호 최강화로 쓰지 않는다.
+  본문 초안: 수련장 한쪽에는 새 비급이 아니라, 오래된 초식의 빈칸을 메운 종이들이 걸렸다. 청류문 사람들은 그것을 복구라 부르지 않았다. 잃어버린
+    흐름이 다시 물길을 찾았다고만 했다.
+  삽화 힌트: 낡은 비급 사이에 새로 끼워진 얇은 종이와 수련장 바닥의 물길 같은 발자국
+  상호 배타 그룹: qingliu_future_detail
+  연계 그룹: qingliu_aftermath
+  카드 ID: epilogue_qingliu_restored_martial_art
+  카테고리: 세력
+  풍문 여부: 'No'
+  해금 조건: 청류문 재건 조건 일부 이상 충족. 소실된 청류문 무공 복구 단서 확보. 사도 최종전에서 청류문의 뜻으로 버티거나 장부/증거 조건
+    충족.
+kind: afterthought
+storypack_id: null
+arc_id: null
+stages: []

@@ -1,0 +1,29 @@
+id: wuxia_tianjilu_first_fragment
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 천기록 첫 천외편린
+  검수 상태: 미검수
+  결과: 천기록이 검색창이 아니라 랜덤 현대지식 보상 시스템임을 보여준다.
+  관련 세력: 청류문
+  관련 인물: 주인공, 천기록 관련 존재
+  메모: 천기록은 사용자가 질문하는 검색창이 아니다. 조건 충족 시 후보 3개 중 하나만 고르는 보상 구조다.
+  미해결 부채: 'No'
+  보상: 천외편린 1개 획득. 선택에 따라 청류문 무공 응용 방향이 달라진다.
+  분류: 기연 사건, 메인 사건, 성장 사건, 천기록 사건
+  사건 ID: wuxia_tianjilu_first_fragment
+  상태: 초안
+  선택지 요약: 후보 3개 중 하나만 선택한다
+  선행 조건: 청류안 첫 발현 이후 또는 청류문 임시 수습생 등록 이후
+  소속 루트: 천기록, 청류문
+  엔딩 영향: 천기록, 청류문, 침식
+  진행 단계: 초반
+  후일담 카드 연결: 천기록의 마지막 장 / 천외편린 잔향 카드 씨앗
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

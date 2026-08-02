@@ -1,0 +1,29 @@
+id: wuxia_fallback_boss_retreat_evening
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 패배 뒤에도 남은 저녁
+  검수 상태: 기획자 검수 필요
+  결과: 보스전이 한 번의 실패로 끝나지 않고, 다음 최종전 준비의 관계와 상태가 달라진다. 서하린에게 말하면 신뢰가, 숨기면 침식 위험이 남는다.
+  관련 세력: 청류문, 흑사방
+  관련 인물: 서하린, 주인공
+  메모: 최종전 실패에도 서사적 aftermath를 보장한다.
+  미해결 부채: 'No'
+  보상: 최종전 재도전 상태; 관계 변주
+  분류: 후일담 트리거
+  사건 ID: wuxia_fallback_boss_retreat_evening
+  상태: 초안
+  선택지 요약: 상처를 숨긴다 / 서하린에게 말한다 / 혼자 남는다
+  선행 조건: 보스전 1차 후퇴 또는 전투 실패; 즉시 사망 아님
+  소속 루트: 귀환, 무림맹, 정착, 청류문, 흑사방
+  엔딩 영향: 청류문, 침식
+  진행 단계: 최종장
+  후일담 카드 연결: wuxia_epilogue_first_morning_after_boss
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

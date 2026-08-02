@@ -96,18 +96,18 @@
 - 현재 세션에서 처리할 남은 plan/todo가 없을 때만 `idea_box/README.md`, `idea_box/BACKLOG_ORDER.md`, `idea_box/inbox/`의 열린 아이디어를 확인해 다음 설계/개발 항목을 찾는다.
 - 사용자가 직접 `idea_box` 확인을 요청한 경우에는 즉시 확인한다.
 
-### Notion-first 아이디어-설계 파이프라인
+### Notion reference 및 local design-source 파이프라인
 
-앞으로 설계 아이디어의 원본 reference는 Notion이다. `idea_box/inbox/*.md`는 Notion 원문을 대신하는 최종 source of truth가 아니라, Notion reference를 추적하고 repo 안에서 설계 후보를 처리하기 위한 구조화 entry다.
+현재 디자인 레코드의 정본은 Git repo 내부의 `docs/content/design_source/`다. 별도 DB/저장소가 아니며, 스토리·사건·선택지·후일담·보상·관계·기획 provenance를 설계/변경/감사할 때 참조하는 기획 SSoT다. 범위는 current design records로 한정하며 runtime graph/generated/game-code contract의 정본이 아니다. 일반 엔진/UI/빌드/전투 코드 작업에서는 전체 폴더를 매번 읽지 않고, 콘텐츠 ID·보상·분기 계약 구현 때만 manifest와 관련 소수 레코드를 선택 참조한다. Notion은 읽기·검수 미러다.
 
 표준 흐름은 다음 순서다.
 
-1. 사용자가 Notion에 아이디어를 정리한다.
+1. 사용자가 Notion에 아이디어를 정리하거나 기존 local design-source를 검토한다.
 2. agent는 Notion 문서를 읽고, repo 안의 설계 아이디어 문서로 변환한다. 보통 `docs/design/`, `docs/content/`, 또는 `docs/story/` 아래에 후보 문서를 만들고, `idea_box/inbox/*.md`에는 Notion page id/title/url과 `related_docs`를 기록한다.
 3. 다음에 실제로 설계할 항목은 설계 아이디어 문서 중 하나를 `docs/dev/Development_Plan.md`의 active main plan / “현재 최우선 남은 작업”으로 격상시킨 뒤 진행한다.
 4. 설계가 끝나면 원본 Notion reference와 결과 설계 문서를 다시 비교해 방향, 핵심 제약, non-goals가 어긋나지 않았는지 확인한다.
 5. 이 Notion reference 대조까지 끝난 뒤에만 해당 idea entry를 `done` 처리한다. 단순 import, 단순 요약, 또는 설계 아이디어 문서 작성만으로는 `done`이 아니다.
-6. (2026-07-16 재개) 역방향 동기화도 상시 의무다: 구현 사이클(슬라이스 플랜)의 마감 WP는 `idea_box/notion_sources.yml`의 기준 커밋과 Notion의 "13. 런타임 시스템 현황 (repo 동기화)" 페이지를 갱신한다. 아이템은 Notion "14. 아이템 DB", 기연은 "15. 기연 DB"가 설계 원본이며, 행의 `런타임 상태`(설계/구현됨) 전환은 구현을 완료한 에이전트가 수행한다.
+6. local design source → review → 필요 시 runtime handoff/구현 → Notion mirror 순서로 수행한다. Runtime 직접 계약은 runtime schema/preview/generated source와 `Development_Plan.md`가 소유하며 design source를 자동 실행 데이터로 간주하지 않는다. Notion 역방향 변경을 current design records의 정본으로 사용하지 않는다. manifest/governance를 먼저 읽고 관련 레코드만 여는 progressive disclosure와 100KB 문서 제한을 따른다.
 
 ### 아이디어 처리
 

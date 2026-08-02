@@ -1,0 +1,29 @@
+id: wuxia_seoharin_intervention
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 서하린의 개입
+  검수 상태: 미검수
+  결과: 서하린이 주인공을 구하고 청류문과 연결한다.
+  관련 세력: 청류문, 흑사방
+  관련 인물: 서하린, 주인공
+  메모: 서하린은 내부 적대자가 아니라 플레이어가 청류문에 소속감을 느끼게 하는 첫 연결고리.
+  미해결 부채: 'No'
+  보상: 서하린 관계축 초기화, 청류문 연결 플래그 획득
+  분류: 동료 사건, 메인 사건, 전투 사건
+  사건 ID: wuxia_seoharin_intervention
+  상태: 초안
+  선택지 요약: 도움을 받는다 / 경계한다 / 자신이 괜찮다고 우긴다 / 흑사방을 가리킨다
+  선행 조건: wuxia_black_serpent_first_trouble 진행 중 또는 직후
+  소속 루트: 청류문
+  엔딩 영향: 정착, 청류문
+  진행 단계: 초반
+  후일담 카드 연결: 서하린의 후일 계열 카드 씨앗
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

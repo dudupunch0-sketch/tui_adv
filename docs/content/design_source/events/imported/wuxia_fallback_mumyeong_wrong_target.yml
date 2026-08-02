@@ -1,0 +1,30 @@
+id: wuxia_fallback_mumyeong_wrong_target
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 잘못 짚은 무명
+  검수 상태: 기획자 검수 필요
+  결과: 잘못 쫓은 사람은 무명의 협력자가 아니라 피해자일 수 있다. 사과하면 소문을 줄이고, 도망치면 후속 재회가 차가워지며, 들으면 무명의 흔적을
+    다른 방식으로 해석한다.
+  관련 세력: 객잔, 마도 잔당
+  관련 인물: 객잔 주인, 무명, 주인공
+  메모: 오독과 실패도 중반 서사의 재료가 되게 한다.
+  미해결 부채: 'No'
+  보상: 오독 플래그; 무명 재회 변주
+  분류: 히든 사건
+  사건 ID: wuxia_fallback_mumyeong_wrong_target
+  상태: 초안
+  선택지 요약: 사과한다 / 도망친다 / 상대의 말을 듣는다
+  선행 조건: 무명 추적 실패 또는 오독 사건의 추적 선택
+  소속 루트: 귀환, 무림맹, 정착, 흑사방, 히든
+  엔딩 영향: 침식, 히든
+  진행 단계: 중반
+  후일담 카드 연결: wuxia_epilogue_mumyeong_unanswered_letter
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

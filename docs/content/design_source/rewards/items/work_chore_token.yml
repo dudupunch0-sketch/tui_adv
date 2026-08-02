@@ -1,0 +1,30 @@
+id: work_chore_token
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/14 ьЭ┤ъ╡мэХЩьзА ьХДьЭ┤эЕЬ
+    DB bcdff734c16e4ea4bfd7ae43fb74e3af.csv
+  database_id: bcdff734c16e4ea4bfd7ae43fb74e3af
+notion_properties:
+  이름: 청류문 잡일패
+  검수 상태: 확정
+  관련 사건 ID: ''
+  도감 등록: 'No'
+  런타임 상태: 구현됨
+  배타성: ''
+  보상 등급: ''
+  사용 가능: 'No'
+  사용 효과: ''
+  선택 방향: ''
+  설계 분류: ''
+  설명: 석 달 수습 기간 동안 물 긷기, 장작 패기, 연무장 청소를 맡았다는 작은 나무패.
+  아이템 ID: work_chore_token
+  종류: quest
+  중복·다회차 처리: ''
+  즉시 공개: 'No'
+  컨셉: ''
+  향후 효과 방향: ''
+  획득 성격: ''
+kind: item
+effect_policy:
+  numeric_effects: deferred

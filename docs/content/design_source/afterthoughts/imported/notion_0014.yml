@@ -1,0 +1,28 @@
+id: notion_0014
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/10 ьЭ┤ъ╡мэХЩьзА эЫДьЭ╝ыЛ┤
+    ь╣┤ыУЬ DB bd93ddd8de224c7da50abdd309bc2880.csv
+  database_id: bd93ddd8de224c7da50abdd309bc2880
+notion_properties:
+  카드명: 비워둔 자리
+  검수 상태: 기획자 검수 필요
+  검수 필요: 'Yes'
+  관련 사건: wuxia_seoharin_empty_place
+  관련 엔딩: 귀환
+  대상: 서하린
+  메모: '대상: 서하린. 카테고리: 동료. 관련 엔딩: 귀환, 정착, 모든 생존 계열. 소속은 떠난 사람도 포함할 수 있다는 감정선.'
+  본문 초안: 주인공은 돌아오지 않았다. 그래도 서하린은 수련장 한쪽을 비워두었다. 비가 오는 날이면 그 자리의 먼지는 다른 곳보다 늦게 말랐고,
+    새 수습생들은 그곳에 물건을 두지 않았다. "없는 사람 자리도, 자리야."
+  삽화 힌트: 비어 있는 수련장 한켠, 목검 하나가 걸린 자리
+  상호 배타 그룹: seoharin_future
+  연계 그룹: companion_aftermath
+  카드 ID: epilogue_seoharin_empty_place
+  카테고리: 동료
+  풍문 여부: 'No'
+  해금 조건: 귀환 엔딩 또는 주인공 부재 계열. 서하린 관계축 높음.
+kind: afterthought
+storypack_id: null
+arc_id: null
+stages: []

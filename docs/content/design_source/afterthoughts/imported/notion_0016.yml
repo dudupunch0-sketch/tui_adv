@@ -1,0 +1,28 @@
+id: notion_0016
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/10 ьЭ┤ъ╡мэХЩьзА эЫДьЭ╝ыЛ┤
+    ь╣┤ыУЬ DB bd93ddd8de224c7da50abdd309bc2880.csv
+  database_id: bd93ddd8de224c7da50abdd309bc2880
+notion_properties:
+  카드명: 마지막 밥그릇
+  검수 상태: 기획자 검수 필요
+  검수 필요: 'Yes'
+  관련 사건: wuxia_seoharin_left_meal
+  관련 엔딩: 모든 생존 계열
+  대상: 서하린
+  메모: '대상: 서하린. 카테고리: 동료. 무명 비구원 + 관계축 low 변주.'
+  본문 초안: 서하린은 더 이상 밥을 남기지 않았다. 식탁 끝의 빈 그릇은 어느 날부터 찬장 안으로 들어갔다. 남은 음식을 버리는 일은 줄었고,
+    청류문 부엌은 조금 더 조용해졌다. 그날 저녁, 그녀는 평소보다 오래 식탁을 닦았다.
+  삽화 힌트: 비어 있는 식탁, 치워진 마지막 밥그릇
+  상호 배타 그룹: seoharin_future
+  연계 그룹: companion_aftermath
+  카드 ID: epilogue_seoharin_last_bowl
+  카테고리: 동료
+  풍문 여부: 'No'
+  해금 조건: 무명 비구원. 서하린 관계축 낮음.
+kind: afterthought
+storypack_id: null
+arc_id: null
+stages: []

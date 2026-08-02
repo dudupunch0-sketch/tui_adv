@@ -1,0 +1,29 @@
+id: wuxia_black_serpent_first_trouble
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 흑사방 첫 시비
+  검수 상태: 미검수
+  결과: 대부분 패배하거나 크게 다친다. 이 세계가 위험하다는 것을 보여준다.
+  관련 세력: 객잔, 흑사방
+  관련 인물: 주인공
+  메모: 이기기 위한 전투가 아니라 무협 세계의 위험성과 주인공의 무력함을 보여주는 튜토리얼.
+  미해결 부채: 'No'
+  보상: 전투/도주/소지품 사용/부상/평판 시스템 튜토리얼
+  분류: 메인 사건, 전투 사건
+  사건 ID: wuxia_black_serpent_first_trouble
+  상태: 초안
+  선택지 요약: 말로 넘긴다 / 도망친다 / 가방을 휘두른다 / 넥타이를 푼다 / 구두를 벗는다 / 커피를 뿌린다
+  선행 조건: wuxia_arrival_market_confusion 이후
+  소속 루트: 청류문, 흑사방
+  엔딩 영향: 청류문
+  진행 단계: 초반
+  후일담 카드 연결: 흑사방 관련 후속 사건으로 연결 가능
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

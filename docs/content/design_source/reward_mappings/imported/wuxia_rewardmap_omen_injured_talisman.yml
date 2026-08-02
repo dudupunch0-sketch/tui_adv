@@ -1,0 +1,25 @@
+id: wuxia_rewardmap_omen_injured_talisman
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/19 ьЭ┤ъ╡мэХЩьзА ы│┤ьГБ
+    эЪНыУЭ ыздэХС DB f1e2c76a9cb0474d8e9a07c45c90d26e.csv
+  database_id: f1e2c76a9cb0474d8e9a07c45c90d26e
+notion_properties:
+  이름: 습격 전날·부상자 점검 → 생명의 부적
+  검수 상태: 기획자 검수 필요
+  런타임 상태: 설계
+  매핑 ID: wuxia_rewardmap_omen_injured_talisman
+  배타 규칙: 일반 배타
+  보상 ID: wuxia_pendant_life_talisman
+  보상 종류: 패물
+  사건 ID: wuxia_cheongryu_raid_omen
+  선택지·조건 키: 부상자와 약재를 점검하기
+  연계 조건: 전투 준비보다 사람의 생존을 먼저 둔 경우
+  중복 처리: 중복 시 보호 대사 변주.
+  획득 시점: 즉시
+  획득 연출: 문 안쪽에 걸린 부적을 서하린이 떼어 주며 살아 돌아오라고만 말한다.
+event_id: null
+choice_id: null
+reward_ids: []
+condition: null

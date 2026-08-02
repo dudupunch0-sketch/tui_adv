@@ -1,0 +1,29 @@
+id: wuxia_random_master_old_gloves
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 장문인의 낡은 장갑
+  검수 상태: 기획자 검수 필요
+  결과: 장문인이 오래된 장갑을 버리지 않는 이유를 들을 수 있다. 청류문을 지키는 방식에 대한 짧은 관점이 추가된다.
+  관련 세력: 청류문
+  관련 인물: 주인공, 청류문 장문인
+  메모: 장문인을 설명자 대신 생활 인물로 보여준다.
+  미해결 부채: 'No'
+  보상: 문파 가치관; 훈련 대사
+  분류: 동료 사건
+  사건 ID: wuxia_random_master_old_gloves
+  상태: 초안
+  선택지 요약: 장갑을 꿰맨다 / 새것을 권한다 / 아무 말 없이 돌려놓는다
+  선행 조건: 첫 훈련 전투 이후; 낮은 확률
+  소속 루트: 청류문
+  엔딩 영향: 청류문
+  진행 단계: 초반
+  후일담 카드 연결: ''
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

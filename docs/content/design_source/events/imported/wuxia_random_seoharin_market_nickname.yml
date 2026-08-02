@@ -1,0 +1,29 @@
+id: wuxia_random_seoharin_market_nickname
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 장터에서 들은 서하린의 별명
+  검수 상태: 기획자 검수 필요
+  결과: 장터 사람들이 서하린을 부르는 별명은 칭찬과 오해가 섞인 말이다. 플레이어의 대응이 이후 그녀를 부르는 호칭에 영향을 준다.
+  관련 세력: 객잔, 청류문
+  관련 인물: 객잔 주인, 서하린, 주인공
+  메모: 서하린의 외부 모습을 플레이어가 발견하는 사건.
+  미해결 부채: 'No'
+  보상: 서하린 호칭 변주; 지역 소문
+  분류: 히든 사건
+  사건 ID: wuxia_random_seoharin_market_nickname
+  상태: 초안
+  선택지 요약: 웃으며 확인한다 / 모른 척한다 / 서하린에게 직접 묻는다
+  선행 조건: 서하린 관계 행동 2회 이상; 장터 방문
+  소속 루트: 귀환, 정착, 청류문
+  엔딩 영향: 정착, 청류문
+  진행 단계: 중반
+  후일담 카드 연결: wuxia_epilogue_small_rumor
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

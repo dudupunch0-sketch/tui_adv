@@ -1,0 +1,30 @@
+id: wuxia_mumyeong_false_sighting
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 무명의 잘못된 목격담
+  검수 상태: 기획자 검수 필요
+  결과: 무명을 잘못 단정할 위험을 보여준다. 추적에 실패해도 무명의 상처를 단순 악행으로 소비하지 않는 후속 대화가 열린다.
+  관련 세력: 주변 정파, 청류문
+  관련 인물: 무명, 서하린, 주인공
+  메모: 무명 중반선 랜덤 사건. 핵심 재회 위치를 대체하지 않으며, 다회차마다 소문과 목격자의 태도를 바꿀 수 있다. runtime 미반영 설계
+    초안.
+  미해결 부채: 'No'
+  보상: 무명 해석 변형, 서하린 신뢰 변화, 잘못된 추적 seen 상태
+  분류: 히든 사건
+  사건 ID: wuxia_mumyeong_false_sighting
+  상태: 초안
+  선택지 요약: 소문을 따라간다 / 서하린에게 먼저 확인한다 / 목격자의 말을 반박한다
+  선행 조건: 무명 첫 목격 이후; 외부 이동; 낮은 확률
+  소속 루트: 정착, 청류문, 히든
+  엔딩 영향: 정착, 청류문, 히든
+  진행 단계: 중반
+  후일담 카드 연결: 무명의 결말 / 서하린의 후일
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

@@ -1,0 +1,26 @@
+id: wuxia_skill_cut_the_presence
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/17 ьЭ┤ъ╡мэХЩьзА ьКдэВм
+    DB d04d0e34055c4623b77c8499a6f1d6eb.csv
+  database_id: d04d0e34055c4623b77c8499a6f1d6eb
+notion_properties:
+  이름: 기척 끊기
+  검수 상태: 기획자 검수 필요
+  관련 사건 ID: wuxia_cheongryu_gate_patrol_first_trouble
+  도감 등록: 'Yes'
+  런타임 상태: 설계
+  배타성: 일반 배타
+  보상 등급: 보통
+  선택 방향: 위험을 쫓기보다 들키지 않고 돌아온 선택.
+  스킬 ID: wuxia_skill_cut_the_presence
+  중복·다회차 처리: 중복 시 기억 파편 또는 관련 복기 대사로 전환. 다회차에서는 다른 선택의 설명을 해금.
+  즉시 공개: 'Yes'
+  컨셉: 산길의 풀잎과 숨소리 사이에 자신을 섞는 정통 은신 기술.
+  트레이드오프 방향: 정보를 얻는 대신 직접 개입 기회가 줄어듦.
+  향후 효과 방향: 은신·추적 회피·랜덤 인카운터 변주 방향.
+  획득 성격: 랜덤
+kind: skill
+effect_policy:
+  numeric_effects: deferred

@@ -1,0 +1,27 @@
+id: notion_0006
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/10 ьЭ┤ъ╡мэХЩьзА эЫДьЭ╝ыЛ┤
+    ь╣┤ыУЬ DB bd93ddd8de224c7da50abdd309bc2880.csv
+  database_id: bd93ddd8de224c7da50abdd309bc2880
+notion_properties:
+  카드명: 부러진 검은 뱀
+  검수 상태: 기획자 검수 필요
+  검수 필요: 'Yes'
+  관련 사건: 보스 결산
+  관련 엔딩: 모든 생존 계열, 정착, 청류문
+  대상: 흑사방, 흑사방 보스
+  메모: 보스 격파 계열. 흑사방이 무너져도 세계의 불안은 완전히 사라지지 않게 한다.
+  본문 초안: 흑사방의 깃발은 한동안 장터 바닥에 끌렸다. 사람들은 이제 밤길이 안전해졌다고 말하지 않았다. 다만 예전보다 조금 늦게 문을 닫았다.
+  삽화 힌트: 부러진 검은 뱀 깃발과 흩어진 빚 문서
+  상호 배타 그룹: black_serpent_boss_fate
+  연계 그룹: black_serpent_aftermath
+  카드 ID: epilogue_boss_broken_black_serpent
+  카테고리: 세력
+  풍문 여부: 'Yes'
+  해금 조건: 보스 격파. 흑사방 조직망 일부 붕괴.
+kind: afterthought
+storypack_id: null
+arc_id: null
+stages: []

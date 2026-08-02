@@ -1,0 +1,29 @@
+id: wuxia_mumyeong_midgame_reunion
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 무명 중반 재회
+  검수 상태: 미검수
+  결과: 무명과 주인공의 관계가 단순 적대에서 라이벌/거울 관계로 강화된다.
+  관련 세력: 청류문, 흑사방
+  관련 인물: 무명, 서하린, 주인공
+  메모: 서하린이 무명을 배신자로 보지 않는다는 설정과 연결. 진실 전달 루트의 중간 관문.
+  미해결 부채: 'No'
+  보상: 무명 구원 조건 일부 개방, 과거 사건 단서 획득 가능
+  분류: 동료 사건, 메인 사건, 전투 사건
+  사건 ID: wuxia_mumyeong_midgame_reunion
+  상태: 초안
+  선택지 요약: 진실을 묻는다 / 초식의 결함을 지적한다 / 서하린의 이름을 꺼낸다 / 싸움에 집중한다
+  선행 조건: 무명 첫 대치 이후, 무명 과거 단서 일부 획득
+  소속 루트: 청류문, 흑사방
+  엔딩 영향: 청류문, 침식
+  진행 단계: 중반
+  후일담 카드 연결: 전하지 못한 사과 / 훔친 초식이 멈춘 날 / 흑사방의 새 그림자
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

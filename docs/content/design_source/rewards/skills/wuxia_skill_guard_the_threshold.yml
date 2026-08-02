@@ -1,0 +1,26 @@
+id: wuxia_skill_guard_the_threshold
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/17 ьЭ┤ъ╡мэХЩьзА ьКдэВм
+    DB d04d0e34055c4623b77c8499a6f1d6eb.csv
+  database_id: d04d0e34055c4623b77c8499a6f1d6eb
+notion_properties:
+  이름: 문지방 지키기
+  검수 상태: 기획자 검수 필요
+  관련 사건 ID: wuxia_cheongryu_raid_omen
+  도감 등록: 'Yes'
+  런타임 상태: 설계
+  배타성: 일반 배타
+  보상 등급: 희귀
+  선택 방향: 청류문과 그 안의 사람을 우선한 선택.
+  스킬 ID: wuxia_skill_guard_the_threshold
+  중복·다회차 처리: 중복 시 기억 파편 또는 관련 복기 대사로 전환. 다회차에서는 다른 선택의 설명을 해금.
+  즉시 공개: 'Yes'
+  컨셉: 문밖으로 나갈 수 없는 밤에도 누군가의 자리를 지키는 기술.
+  트레이드오프 방향: 보호하는 동안 자기 행동 폭이 줄어드는 방향.
+  향후 효과 방향: 방어·보호·단체 호감도 연계 방향.
+  획득 성격: 메인
+kind: skill
+effect_policy:
+  numeric_effects: deferred

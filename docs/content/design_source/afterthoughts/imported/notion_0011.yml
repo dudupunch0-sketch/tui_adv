@@ -1,0 +1,27 @@
+id: notion_0011
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/10 ьЭ┤ъ╡мэХЩьзА эЫДьЭ╝ыЛ┤
+    ь╣┤ыУЬ DB bd93ddd8de224c7da50abdd309bc2880.csv
+  database_id: bd93ddd8de224c7da50abdd309bc2880
+notion_properties:
+  카드명: 천기록의 마지막 장
+  검수 상태: 기획자 검수 필요
+  검수 필요: 'Yes'
+  관련 사건: 천기록 첫 천외편린 / 천기록 관련 사건들
+  관련 엔딩: 귀환, 모든 생존 계열, 정착, 천기록
+  대상: 천기록
+  메모: 천기록 관련 기본 후일담. 기록자의 존재감을 남기되 정체는 공개하지 않는다.
+  본문 초안: 마지막 장은 거의 비어 있었다. 다만 한 줄만은 지워지지 않았다. [기록자는 대답하지 않는다. 다만 다음 장을 넘긴다.]
+  삽화 힌트: 거의 비어 있는 기록서의 마지막 장, 한 줄만 남은 글씨
+  상호 배타 그룹: tianjilu_finale
+  연계 그룹: tianjilu_aftermath
+  카드 ID: epilogue_tianjilu_last_page
+  카테고리: 기연 / 천외편린
+  풍문 여부: 'No'
+  해금 조건: 천기록 관련 사건 접근. 진실 또는 생존 계열 엔딩.
+kind: afterthought
+storypack_id: null
+arc_id: null
+stages: []

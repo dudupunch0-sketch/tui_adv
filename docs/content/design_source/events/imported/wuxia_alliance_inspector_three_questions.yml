@@ -1,0 +1,29 @@
+id: wuxia_alliance_inspector_three_questions
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 감찰관의 세 질문
+  검수 상태: 기획자 검수 필요
+  결과: 증언의 정확성·문파 보호·개인 안전 사이에서 선택한다. 무림맹 신뢰와 청류문 관계가 동시에 변한다.
+  관련 세력: 무림맹, 주변 정파, 청류문
+  관련 인물: 무림맹 감찰관, 서하린, 주인공
+  메모: 무림맹 전용 사이드. 정답을 고르는 심문이 아니라 증거를 어떤 책임 구조로 말할지 선택한다. runtime 미반영 설계 초안.
+  미해결 부채: 'Yes'
+  보상: 감찰 기록, 무림맹 책임선, 최종전 증거 배열 보정
+  분류: 사이드 퀘스트
+  사건 ID: wuxia_alliance_inspector_three_questions
+  상태: 초안
+  선택지 요약: 모든 사실을 말한다 / 청류문을 보호한다 / 모르는 것은 모른다고 한다
+  선행 조건: 무림맹 성향; 청류문 습격 증거 보유; 감찰 상태
+  소속 루트: 무림맹, 청류문
+  엔딩 영향: 귀환, 정착, 청류문, 히든
+  진행 단계: 중반
+  후일담 카드 연결: 무림맹 책임선 / 청류문의 후일
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

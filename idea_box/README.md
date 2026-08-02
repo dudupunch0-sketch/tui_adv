@@ -2,7 +2,7 @@
 
 이 폴더는 사용자가 별도 세션에서 떠오르는 아이디어를 임시 저장하는 공간이다. 다른 agent는 이곳의 아이디어를 나중에 설계/문서/구현 후보로 사용할 수 있다.
 
-현재 표준은 Notion-first다. 원본 reference는 Notion 문서이고, 이 repo의 `idea_box/inbox/*.md`는 Notion reference를 추적하고 처리 순서를 관리하는 구조화 entry다.
+현재 표준은 local design-source 우선이다. `docs/content/design_source/`가 current design records의 정본이며, Notion의 원본 reference는 provenance reference로 보존하고 읽기·검수 미러로 사용한다. `idea_box/inbox/*.md`는 Notion provenance와 아이디어 backlog를 추적하는 구조화 entry다.
 
 ## 확인 시점
 
@@ -28,11 +28,11 @@ idea_box/
 
 설계 아이디어는 다음 단계로 처리한다.
 
-1. **Notion 정리**: 사용자가 Notion에 원본 아이디어를 적는다. 이 Notion 문서가 원본 reference다.
+1. **아이디어 reference**: 사용자가 Notion에 아이디어를 적거나 local design-source의 검토 backlog를 만든다. current design records의 정본은 local design-source다.
 2. **설계 아이디어 문서화**: agent는 Notion reference를 읽고 repo 안의 설계 아이디어 문서로 변환한다. 보통 `docs/design/`, `docs/content/`, `docs/story/` 중 적절한 위치에 candidate 문서를 만든다. `idea_box/inbox/*.md`에는 Notion page id/title/url, 간단 요약, `related_docs`를 남긴다.
 3. **main plan 격상**: 다음에 실제로 설계할 항목은 설계 아이디어 문서 중 하나를 `docs/dev/Development_Plan.md`의 active main plan / “현재 최우선 남은 작업”으로 격상시킨 뒤 진행한다.
 4. **설계 진행**: 격상된 main plan을 기준으로 설계 문서와 필요한 계약 문서를 작성한다. runtime YAML/Rust/Web 구현은 별도 요청이나 별도 runtime slice가 있을 때만 한다.
-5. **Notion reference 대조**: 설계 후 Notion 원본 reference와 실제 설계 결과를 비교해 핵심 방향, 톤, 제약, non-goals가 일치하는지 확인하고 처리 기록에 남긴다.
+5. **Notion mirror 검토**: local design-source 결과를 Notion 읽기·검수 미러에 반영하고 핵심 방향, 톤, 제약, non-goals를 대조해 기록한다.
 6. **done 처리**: Notion 대조까지 끝났거나, 명시적으로 폐기/병합 판단을 기록했을 때만 `done` 처리한다. Notion import나 설계 아이디어 문서 작성만으로는 `done`이 아니다.
 
 ## backlog 처리 순서

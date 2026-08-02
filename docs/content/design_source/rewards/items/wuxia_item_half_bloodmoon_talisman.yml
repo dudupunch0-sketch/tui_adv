@@ -1,0 +1,30 @@
+id: wuxia_item_half_bloodmoon_talisman
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/14 ьЭ┤ъ╡мэХЩьзА ьХДьЭ┤эЕЬ
+    DB bcdff734c16e4ea4bfd7ae43fb74e3af.csv
+  database_id: bcdff734c16e4ea4bfd7ae43fb74e3af
+notion_properties:
+  이름: 혈월교의 반쪽 부적
+  검수 상태: 기획자 검수 필요
+  관련 사건 ID: wuxia_cheongryu_raid_omen
+  도감 등록: 'Yes'
+  런타임 상태: 설계
+  배타성: 히든 양립
+  보상 등급: 전설
+  사용 가능: 'No'
+  사용 효과: ''
+  선택 방향: 습격의 이름을 서둘러 단정하지 않고 증거를 보관한 선택.
+  설계 분류: 퀘스트 아이템
+  설명: 문양의 절반만 남아 있어 주인이 누구인지 끝까지 확정하지 못하는 부적.
+  아이템 ID: wuxia_item_half_bloodmoon_talisman
+  종류: quest
+  중복·다회차 처리: 다른 반쪽은 특수 사건에서만 획득. 두 반쪽을 모으면 별도 히든 매핑 후보.
+  즉시 공개: 'No'
+  컨셉: 문양의 절반만 남아 있어 주인이 누구인지 끝까지 확정하지 못하는 부적.
+  향후 효과 방향: 외부 세력 식별·고위험 조사·히든 루트 방향.
+  획득 성격: 메인
+kind: item
+effect_policy:
+  numeric_effects: deferred

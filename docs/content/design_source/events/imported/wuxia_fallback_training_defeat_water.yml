@@ -1,0 +1,29 @@
+id: wuxia_fallback_training_defeat_water
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 비무에서 밀려난 뒤의 물 한 잔
+  검수 상태: 기획자 검수 필요
+  결과: 패배가 다음 훈련의 보정과 서하린의 복기 방식으로 이어진다. 승리 루트와 다른 대사가 생기지만 메인은 지연되지 않는다.
+  관련 세력: 청류문
+  관련 인물: 서하린, 주인공
+  메모: 훈련 실패를 막다른 길이 아닌 관계·성장 콘텐츠로 전환한다.
+  미해결 부채: 'No'
+  보상: 복기 정보; 재도전 보정
+  분류: 성장 사건
+  사건 ID: wuxia_fallback_training_defeat_water
+  상태: 초안
+  선택지 요약: 물을 받는다 / 다시 자세를 묻는다 / 혼자 정리한다
+  선행 조건: 훈련 전투 패배; 부상 중하지 않음
+  소속 루트: 청류문
+  엔딩 영향: 청류문
+  진행 단계: 초반
+  후일담 카드 연결: ''
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

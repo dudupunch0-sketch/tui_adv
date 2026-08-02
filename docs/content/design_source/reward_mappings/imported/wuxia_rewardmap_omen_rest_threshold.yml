@@ -1,0 +1,25 @@
+id: wuxia_rewardmap_omen_rest_threshold
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/19 ьЭ┤ъ╡мэХЩьзА ы│┤ьГБ
+    эЪНыУЭ ыздэХС DB f1e2c76a9cb0474d8e9a07c45c90d26e.csv
+  database_id: f1e2c76a9cb0474d8e9a07c45c90d26e
+notion_properties:
+  이름: 습격 전날·휴식 → 문지방 지키기
+  검수 상태: 기획자 검수 필요
+  런타임 상태: 설계
+  매핑 ID: wuxia_rewardmap_omen_rest_threshold
+  배타 규칙: 일반 배타
+  보상 ID: wuxia_skill_guard_the_threshold
+  보상 종류: 스킬
+  사건 ID: wuxia_cheongryu_raid_omen
+  선택지·조건 키: 서하린의 지시에 따라 휴식하기
+  연계 조건: 서하린의 판단을 믿고 체력을 보존한 경우
+  중복 처리: 중복 시 기억 파편.
+  획득 시점: 즉시
+  획득 연출: 서하린은 산문으로 나가고, 주인공은 문 안쪽 사람들의 자리를 지키게 된다.
+event_id: null
+choice_id: null
+reward_ids: []
+condition: null

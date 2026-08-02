@@ -1,0 +1,28 @@
+id: notion_0015
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/10 ьЭ┤ъ╡мэХЩьзА эЫДьЭ╝ыЛ┤
+    ь╣┤ыУЬ DB bd93ddd8de224c7da50abdd309bc2880.csv
+  database_id: bd93ddd8de224c7da50abdd309bc2880
+notion_properties:
+  카드명: 닫힌 산문
+  검수 상태: 기획자 검수 필요
+  검수 필요: 'Yes'
+  관련 사건: wuxia_seoharin_unsaid_stay
+  관련 엔딩: 침식
+  대상: 서하린
+  메모: '대상: 서하린. 카테고리: 히든/특수. 침식 또는 붕괴 계열 변주.'
+  본문 초안: 산문은 닫혀 있었다. 안에 있는 사람들은 안전했다. 서하린은 그렇게 믿었다. 바깥에서 부르는 소리는 들리지 않았다. 아니, 들리지
+    않아야 했다. "나가면, 다시 돌아오지 않을 거야."
+  삽화 힌트: 굳게 닫힌 산문, 안쪽에서만 비치는 등불
+  상호 배타 그룹: seoharin_future
+  연계 그룹: seoharin_corruption
+  카드 ID: epilogue_seoharin_closed_gate
+  카테고리: 히든 / 특수
+  풍문 여부: 'No'
+  해금 조건: 침식 계열. 서하린 타락 조건 충족.
+kind: afterthought
+storypack_id: null
+arc_id: null
+stages: []

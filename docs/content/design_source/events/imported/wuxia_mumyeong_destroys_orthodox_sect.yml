@@ -1,0 +1,30 @@
+id: wuxia_mumyeong_destroys_orthodox_sect
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 정파 문파 멸문
+  검수 상태: 기획자 검수 필요
+  결과: 무명이 청류문을 습격한 배후로 판단한 문파에 홀로 쳐들어가 멸문시킨다.
+  관련 세력: 주변 정파, 청류문
+  관련 인물: 무명
+  메모: 배후 문파명은 현악문, 사용 무공은 복호금쇄수로 확정. 공동파 본산이 직접 악역이라는 뜻은 아니다. 서하린은 사건의 결과와 상처는 알지만,
+    현악문/복호금쇄수/무명 이탈의 전체 인과는 처음에는 모른다.
+  미해결 부채: 'No'
+  보상: 무명 이탈의 결정적 이유. 정파 모순의 핵심 증거.
+  분류: 동료 사건, 전투 사건, 후일담 트리거
+  사건 ID: wuxia_mumyeong_destroys_orthodox_sect
+  상태: 초안
+  선택지 요약: 멸문 기록을 찾는다 / 생존자의 풍문을 듣는다 / 서하린에게 확인한다
+  선행 조건: wuxia_mumyeong_awakening
+  소속 루트: 청류문, 흑사방
+  엔딩 영향: 청류문, 침식
+  진행 단계: 후반
+  후일담 카드 연결: 전하지 못한 사과 / 훔친 초식의 끝 / 닮은 초식의 풍문
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

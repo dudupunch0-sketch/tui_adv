@@ -1,0 +1,29 @@
+id: wuxia_chain_herbalist_second_ledger
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 약초꾼이 남긴 두 번째 장부
+  검수 상태: 기획자 검수 필요
+  결과: 약재 거래의 책임 소재를 일부 확인한다. 선택에 따라 청류문이 약초꾼을 보호하거나 거래를 끊으며 후반 약재 대사가 달라진다.
+  관련 세력: 주변 정파, 청류문
+  관련 인물: 서하린, 주인공
+  메모: 1차 사건을 본 회차에서만 등장하는 연쇄 후속.
+  미해결 부채: 'No'
+  보상: 약재 공급 변주; 후속 정보
+  분류: 사이드 퀘스트
+  사건 ID: wuxia_chain_herbalist_second_ledger
+  상태: 초안
+  선택지 요약: 장부를 돌려준다 / 복사한다 / 태운다
+  선행 조건: 약초꾼의 계산법을 본 시드; 회복 기간 종료 전
+  소속 루트: 청류문
+  엔딩 영향: 청류문, 히든
+  진행 단계: 중반
+  후일담 카드 연결: wuxia_epilogue_qingliu_guest_arrival
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

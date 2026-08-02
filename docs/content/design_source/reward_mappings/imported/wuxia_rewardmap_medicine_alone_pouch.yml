@@ -1,0 +1,25 @@
+id: wuxia_rewardmap_medicine_alone_pouch
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/19 ьЭ┤ъ╡мэХЩьзА ы│┤ьГБ
+    эЪНыУЭ ыздэХС DB f1e2c76a9cb0474d8e9a07c45c90d26e.csv
+  database_id: f1e2c76a9cb0474d8e9a07c45c90d26e
+notion_properties:
+  이름: 약재 빈칸·혼자 시장 → 현대식 응급 파우치
+  검수 상태: 기획자 검수 필요
+  런타임 상태: 설계
+  매핑 ID: wuxia_rewardmap_medicine_alone_pouch
+  배타 규칙: 일반 배타
+  보상 ID: wuxia_item_modern_first_aid_pouch
+  보상 종류: 아이템
+  사건 ID: wuxia_cheongryu_medicine_errand
+  선택지·조건 키: 시장까지 혼자 다녀오기
+  연계 조건: 현대 물건을 교환하지 않고 직접 해결하려 한 경우
+  중복 처리: 중복 시 행상인 가격 대신 현대 대사 해금.
+  획득 시점: 후속 회수
+  획득 연출: 시장에서 주인공의 파우치를 본 약재상이 낯선 붕대법을 묻는다.
+event_id: null
+choice_id: null
+reward_ids: []
+condition: null

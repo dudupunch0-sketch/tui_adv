@@ -1,0 +1,29 @@
+id: wuxia_random_river_three_crossings
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 강을 건너는 세 가지 방법
+  검수 상태: 기획자 검수 필요
+  결과: 이동 시간, 작은 부상, 지역 소문 중 하나가 달라진다. 어떤 방법도 메인을 막지 않으며 다음 사건의 첫 대사에 반영된다.
+  관련 세력: 객잔, 주변 정파
+  관련 인물: 객잔 주인, 주인공
+  메모: 전투 없는 이동형 랜덤. 선택에 따라 시간과 상태만 바꾼다.
+  미해결 부채: 'No'
+  보상: 이동 상태 변주; 지역 소문
+  분류: 히든 사건
+  사건 ID: wuxia_random_river_three_crossings
+  상태: 초안
+  선택지 요약: 나룻배를 탄다 / 다리를 찾아 돌아간다 / 직접 건넌다
+  선행 조건: 산길 또는 장터 이동; 강 수위가 높은 시드
+  소속 루트: 귀환, 무림맹, 정착, 흑사방
+  엔딩 영향: 귀환, 정착
+  진행 단계: 중반
+  후일담 카드 연결: ''
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

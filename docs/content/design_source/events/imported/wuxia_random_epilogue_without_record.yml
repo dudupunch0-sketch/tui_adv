@@ -1,0 +1,29 @@
+id: wuxia_random_epilogue_without_record
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 천기록 없이 맞는 아침
+  검수 상태: 기획자 검수 필요
+  결과: 천기록을 사용하지 않은 플레이도 결핍이 아니라 하나의 결말 감각을 갖는다. 청류문 생활과 관계가 결산의 중심이 된다.
+  관련 세력: 청류문
+  관련 인물: 서하린, 주인공
+  메모: 천기록을 자주 등장시키지 않는 사용자 방향을 후일담에서도 보장한다.
+  미해결 부채: 'No'
+  보상: 천기록 비노출 후일담; 청류문 관계 강화
+  분류: 후일담 트리거
+  사건 ID: wuxia_random_epilogue_without_record
+  상태: 초안
+  선택지 요약: 평범한 아침을 받아들인다 / 기록이 없는 것이 불안하다 / 서하린에게 오늘 할 일을 묻는다
+  선행 조건: 천기록 사건 미발생 또는 낮은 노출 시드; 결전 생존
+  소속 루트: 귀환, 정착, 청류문
+  엔딩 영향: 귀환, 정착, 청류문
+  진행 단계: 후일담
+  후일담 카드 연결: wuxia_epilogue_first_morning_after_boss
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

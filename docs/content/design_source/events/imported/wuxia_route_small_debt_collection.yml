@@ -1,0 +1,29 @@
+id: wuxia_route_small_debt_collection
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 선택의 첫 번째 작은 대가
+  검수 상태: 기획자 검수 필요
+  결과: 선택한 루트의 대가가 추상값이 아니라 시간·정보·관계 손실로 구체화된다. 거부해도 게임오버가 아니라 후속 압박이 열린다.
+  관련 세력: 무림맹, 주변 정파, 청류문, 흑사방
+  관련 인물: 서하린, 주인공
+  메모: 다회차용 핵심 사이드. 같은 사건이 루트와 seed에 따라 다른 대가를 요구한다. runtime 미반영 설계 초안.
+  미해결 부채: 'Yes'
+  보상: 첫 route cost 해소 또는 변형, 후속 압박 상태
+  분류: 사이드 퀘스트
+  사건 ID: wuxia_route_small_debt_collection
+  상태: 초안
+  선택지 요약: 시간으로 갚는다 / 정보를 내놓는다 / 도움을 요청한다 / 대가를 거부한다
+  선행 조건: 첫 경로의 첫날 이후; route cost 보유
+  소속 루트: 귀환, 무림맹, 정착, 청류문, 흑사방
+  엔딩 영향: 귀환, 정착, 청류문, 침식
+  진행 단계: 초반
+  후일담 카드 연결: 청류문의 후일 / 무명의 결말
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

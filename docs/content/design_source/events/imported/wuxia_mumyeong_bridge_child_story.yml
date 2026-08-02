@@ -1,0 +1,29 @@
+id: wuxia_mumyeong_bridge_child_story
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 다리 아래 아이의 이야기
+  검수 상태: 기획자 검수 필요
+  결과: 무명이 과거에 누군가를 도왔다는 작은 기억을 얻지만, 그 행동이 구원이나 면죄로 확정되지는 않는다.
+  관련 세력: 주변 정파
+  관련 인물: 무명, 주인공
+  메모: 랜덤 인카운터. 무명을 전설이나 악인으로 설명하지 않고 타인의 기억으로 간접 노출한다. runtime 미반영 설계 초안.
+  미해결 부채: 'No'
+  보상: 무명 정서 단서, 재회 대사 변형, 랜덤 seen 상태
+  분류: 히든 사건
+  사건 ID: wuxia_mumyeong_bridge_child_story
+  상태: 초안
+  선택지 요약: 아이의 이야기를 듣는다 / 무명의 이름을 묻는다 / 위험을 경고하고 떠난다
+  선행 조건: 무명 관련 소문 1개 이상; 이동 중 낮은 확률
+  소속 루트: 귀환, 청류문, 히든
+  엔딩 영향: 귀환, 히든
+  진행 단계: 중반
+  후일담 카드 연결: 무명의 결말
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

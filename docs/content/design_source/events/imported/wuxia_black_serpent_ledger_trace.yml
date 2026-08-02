@@ -1,0 +1,29 @@
+id: wuxia_black_serpent_ledger_trace
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 검은 비늘 장부 조각
+  검수 상태: 기획자 검수 필요
+  결과: 흑사방 지부 또는 장부 보관함에서 검은 비늘 장부 조각을 발견한다.
+  관련 세력: 흑사방
+  관련 인물: 흑사방 보스
+  메모: '사도 아이템 로그 DB 연결: item_blackscale_ledger. 일반 흑사방 사건 보상.'
+  미해결 부채: 'No'
+  보상: 검은 비늘 장부 / item_blackscale_ledger
+  분류: 사이드 퀘스트
+  사건 ID: wuxia_black_serpent_ledger_trace
+  상태: 초안
+  선택지 요약: 장부를 챙긴다 / 일부만 베낀다 / 태운다 / 서하린 또는 객잔 주인에게 보여준다
+  선행 조건: 흑사방의 청류문 압박 또는 흑사방 지부 조사 계열 사건 진행
+  소속 루트: 청류문
+  엔딩 영향: 청류문
+  진행 단계: 중반
+  후일담 카드 연결: 흑사방의 깃발 / 검은 뱀의 새 비늘
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

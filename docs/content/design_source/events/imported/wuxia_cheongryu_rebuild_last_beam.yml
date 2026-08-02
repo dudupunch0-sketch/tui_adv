@@ -1,0 +1,29 @@
+id: wuxia_cheongryu_rebuild_last_beam
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 마지막 들보
+  검수 상태: 기획자 검수 필요
+  결과: 청류문 재건의 우선순위를 정한다. 최종전에서 지킬 장소와 후일담의 청류문 모습이 달라진다.
+  관련 세력: 청류문
+  관련 인물: 서하린, 주인공, 청류문 장문인
+  메모: 후반 선택적 사이드. 전투력 상승이 아니라 청류문을 무엇으로 남길지 결정한다. runtime 미반영 설계 초안.
+  미해결 부채: 'Yes'
+  보상: qingliu_rebuild 보정, 최종전 3페이즈 지형·대사 변형, 후일담 재건 카드
+  분류: 사이드 퀘스트
+  사건 ID: wuxia_cheongryu_rebuild_last_beam
+  상태: 초안
+  선택지 요약: 수련장을 완성한다 / 병상 지붕을 먼저 고친다 / 재건 자재를 다음 세대에 남긴다
+  선행 조건: 청류문 재건 상태; 보스 압박 이전 또는 직후; 낮은 확률
+  소속 루트: 정착, 청류문
+  엔딩 영향: 정착, 청류문
+  진행 단계: 후반
+  후일담 카드 연결: 청류문의 후일 / 청류문 무공 복원
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

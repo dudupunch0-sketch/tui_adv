@@ -1,0 +1,30 @@
+id: wuxia_item_three_folded_medicine_packet
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/14 ьЭ┤ъ╡мэХЩьзА ьХДьЭ┤эЕЬ
+    DB bcdff734c16e4ea4bfd7ae43fb74e3af.csv
+  database_id: bcdff734c16e4ea4bfd7ae43fb74e3af
+notion_properties:
+  이름: 세 번 접은 약포
+  검수 상태: 기획자 검수 필요
+  관련 사건 ID: wuxia_seoharin_hides_training_injury
+  도감 등록: 'Yes'
+  런타임 상태: 설계
+  배타성: 대체 경로
+  보상 등급: 보통
+  사용 가능: 'No'
+  사용 효과: ''
+  선택 방향: 자기 몫과 문파의 몫 사이에서 타협한 선택.
+  설계 분류: 소모품
+  설명: 누가 쓸지 정하지 못해 세 번이나 접힌 작은 약포.
+  아이템 ID: wuxia_item_three_folded_medicine_packet
+  종류: consumable
+  중복·다회차 처리: 다회차 중복 시 기억 파편보다 서하린의 다른 대사 해금 우선.
+  즉시 공개: 'Yes'
+  컨셉: 누가 쓸지 정하지 못해 세 번이나 접힌 작은 약포.
+  향후 효과 방향: 작은 회복·관계 대화·자원 분배 방향.
+  획득 성격: 사이드
+kind: item
+effect_policy:
+  numeric_effects: deferred

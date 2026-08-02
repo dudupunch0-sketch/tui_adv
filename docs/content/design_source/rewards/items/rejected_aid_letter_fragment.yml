@@ -1,0 +1,30 @@
+id: rejected_aid_letter_fragment
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/14 ьЭ┤ъ╡мэХЩьзА ьХДьЭ┤эЕЬ
+    DB bcdff734c16e4ea4bfd7ae43fb74e3af.csv
+  database_id: bcdff734c16e4ea4bfd7ae43fb74e3af
+notion_properties:
+  이름: 거절당한 도움 요청 서찰 조각
+  검수 상태: 확정
+  관련 사건 ID: ''
+  도감 등록: 'No'
+  런타임 상태: 구현됨
+  배타성: ''
+  보상 등급: ''
+  사용 가능: 'No'
+  사용 효과: ''
+  선택 방향: ''
+  설계 분류: ''
+  설명: 무명이 청류문을 살리려 정파 문파에 보냈으나 돌아온 도움 요청 서찰의 찢긴 조각.
+  아이템 ID: rejected_aid_letter_fragment
+  종류: clue
+  중복·다회차 처리: ''
+  즉시 공개: 'No'
+  컨셉: ''
+  향후 효과 방향: ''
+  획득 성격: ''
+kind: item
+effect_policy:
+  numeric_effects: deferred

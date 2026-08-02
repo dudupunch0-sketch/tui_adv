@@ -1,0 +1,29 @@
+id: wuxia_weather_sun_red_thread
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 햇볕에 드러난 붉은 실
+  검수 상태: 기획자 검수 필요
+  결과: 밤에는 보이지 않던 정찰 표식이 드러난다. 정보량과 경계 상태만 변하고 습격은 정상 진행된다.
+  관련 세력: 마도 잔당, 청류문
+  관련 인물: 서하린, 주인공
+  메모: 환경이 플레이어의 관찰을 보상한다.
+  미해결 부채: 'No'
+  보상: 습격 전조; 경계 상태
+  분류: 사이드 퀘스트
+  사건 ID: wuxia_weather_sun_red_thread
+  상태: 초안
+  선택지 요약: 실을 끊는다 / 위치를 기억한다 / 서하린에게 알린다
+  선행 조건: 맑은 날; 습격 전 산문 통과
+  소속 루트: 청류문
+  엔딩 영향: 청류문, 히든
+  진행 단계: 초반
+  후일담 카드 연결: ''
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

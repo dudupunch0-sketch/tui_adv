@@ -1,0 +1,25 @@
+id: wuxia_rewardmap_medicine_empty_ledger
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/19 ьЭ┤ъ╡мэХЩьзА ы│┤ьГБ
+    эЪНыУЭ ыздэХС DB f1e2c76a9cb0474d8e9a07c45c90d26e.csv
+  database_id: f1e2c76a9cb0474d8e9a07c45c90d26e
+notion_properties:
+  이름: 약재 빈칸·빈손 보고 → 빈 장부
+  검수 상태: 기획자 검수 필요
+  런타임 상태: 설계
+  매핑 ID: wuxia_rewardmap_medicine_empty_ledger
+  배타 규칙: 일반 배타
+  보상 ID: wuxia_item_empty_medicine_ledger
+  보상 종류: 퀘스트 아이템
+  사건 ID: wuxia_cheongryu_medicine_errand
+  선택지·조건 키: 빈손으로 돌아와 부족을 알리기
+  연계 조건: 약재를 구하지 못했지만 부족을 숨기지 않은 경우
+  중복 처리: 후속 사건에서 의미가 공개됨.
+  획득 시점: 후속 회수
+  획득 연출: 서하린이 장부의 빈칸을 손가락으로 짚으며 누군가 먼저 가져갔을 가능성을 말한다.
+event_id: null
+choice_id: null
+reward_ids: []
+condition: null

@@ -1,0 +1,26 @@
+id: wuxia_skill_turning_blade
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/17 ьЭ┤ъ╡мэХЩьзА ьКдэВм
+    DB d04d0e34055c4623b77c8499a6f1d6eb.csv
+  database_id: d04d0e34055c4623b77c8499a6f1d6eb
+notion_properties:
+  이름: 돌아보는 칼끝
+  검수 상태: 기획자 검수 필요
+  관련 사건 ID: wuxia_cheongryu_training_first_failure
+  도감 등록: 'Yes'
+  런타임 상태: 설계
+  배타성: 일반 배타
+  보상 등급: 희귀
+  선택 방향: 다시 겨뤄 달라고 요청하며 실패를 피하지 않은 선택.
+  스킬 ID: wuxia_skill_turning_blade
+  중복·다회차 처리: 중복 시 기억 파편 또는 관련 복기 대사로 전환. 다회차에서는 다른 선택의 설명을 해금.
+  즉시 공개: 'Yes'
+  컨셉: 한 번 물러난 칼끝이 상대의 다음 발을 기다렸다가 돌아오는 반격.
+  트레이드오프 방향: 반격을 기다리는 동안 선제권을 잃음.
+  향후 효과 방향: 반격·재대결·위험 감수 방향.
+  획득 성격: 사이드
+kind: skill
+effect_policy:
+  numeric_effects: deferred

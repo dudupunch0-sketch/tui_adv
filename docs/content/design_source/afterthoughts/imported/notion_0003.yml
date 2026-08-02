@@ -1,0 +1,28 @@
+id: notion_0003
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/10 ьЭ┤ъ╡мэХЩьзА эЫДьЭ╝ыЛ┤
+    ь╣┤ыУЬ DB bd93ddd8de224c7da50abdd309bc2880.csv
+  database_id: bd93ddd8de224c7da50abdd309bc2880
+notion_properties:
+  카드명: 훔친 초식의 끝
+  검수 상태: 기획자 검수 필요
+  검수 필요: 'Yes'
+  관련 사건: wuxia_mumyeong_awakening / 무명 결산
+  관련 엔딩: 모든 생존 계열, 침식
+  대상: 무명, 청류문 무공
+  메모: 무명 비구원 계열. 이해 없는 모방의 끝을 보여준다.
+  본문 초안: 그가 마지막으로 쓴 초식은 아무 문파의 것도 아니었다. 검로는 검객의 것이었고, 발은 보법가의 것이었고, 호흡은 독공 수련자의 것이었다.
+    몸은 그 모든 것을 견디지 못했다.
+  삽화 힌트: 서로 다른 문파의 자세가 뒤섞인 채 무너진 그림자
+  상호 배타 그룹: mumyeong_fate
+  연계 그룹: mumyeong_resolution
+  카드 ID: epilogue_mumyeong_end_of_stolen_forms
+  카테고리: 동료
+  풍문 여부: 'No'
+  해금 조건: 무명 비구원. 카피 무공 부작용 또는 과사용.
+kind: afterthought
+storypack_id: null
+arc_id: null
+stages: []

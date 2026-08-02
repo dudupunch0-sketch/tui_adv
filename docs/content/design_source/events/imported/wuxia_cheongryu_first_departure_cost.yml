@@ -1,0 +1,31 @@
+id: wuxia_cheongryu_first_departure_cost
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 떠날 수 있다는 말 — 첫 경로 비용
+  검수 상태: 기획자 검수 필요
+  결과: 귀환·정착을 확정하지 않고 first_route_cost를 남긴다. stay_time, leave_support, trace_pursuit
+    중 하나가 후속 세력·무명 추적 루트의 입력이 된다.
+  관련 세력: 주변 정파, 청류문
+  관련 인물: 서하린, 주인공, 청류문 장문인
+  메모: 습격 이후 첫 큰 선택. 어느 선택도 정답/최종 루트가 아니다. 플레이어가 시간·관계·증거 중 하나를 일부 포기하게 해 다음 구간이 점프가
+    아니라 대가의 연속으로 느껴지게 한다. runtime 미반영 설계 초안.
+  미해결 부채: 'Yes'
+  보상: 첫 경로 비용 플래그, 후속 메인 브리지 개방, 선택에 따른 서하린·청류문 대화 변형
+  분류: 메인 사건
+  사건 ID: wuxia_cheongryu_first_departure_cost
+  상태: 초안
+  선택지 요약: 부상자들이 안정될 때까지 남는다 / 외부로 나갈 사람을 따라 떠난다 / 서하린과 습격 흔적을 조사한다 / 아무 약속 없이 답을 요구한다
+  선행 조건: 습격 직후 사건 1개 이상 해결; 청류문이 임시로 움직일 수 있게 됨
+  소속 루트: 귀환, 정착, 청류문
+  엔딩 영향: 귀환, 정착, 청류문
+  진행 단계: 초반
+  후일담 카드 연결: 청류문의 후일 / 비워둔 자리 / 닫히지 않은 산문
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

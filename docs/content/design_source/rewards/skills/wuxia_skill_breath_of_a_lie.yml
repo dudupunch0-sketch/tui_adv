@@ -1,0 +1,26 @@
+id: wuxia_skill_breath_of_a_lie
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/17 ьЭ┤ъ╡мэХЩьзА ьКдэВм
+    DB d04d0e34055c4623b77c8499a6f1d6eb.csv
+  database_id: d04d0e34055c4623b77c8499a6f1d6eb
+notion_properties:
+  이름: 거짓말의 호흡
+  검수 상태: 기획자 검수 필요
+  관련 사건 ID: wuxia_cheongryu_first_night_shelter
+  도감 등록: 'Yes'
+  런타임 상태: 설계
+  배타성: 일반 배타
+  보상 등급: 희귀
+  선택 방향: 떠나고 싶다는 마음을 숨기고 잔류의 이익을 택한 선택.
+  스킬 ID: wuxia_skill_breath_of_a_lie
+  중복·다회차 처리: 중복 시 기억 파편 또는 관련 복기 대사로 전환. 다회차에서는 다른 선택의 설명을 해금.
+  즉시 공개: 'Yes'
+  컨셉: 숨을 고르는 순간마다 진실과 거짓의 간격을 계산하는 위험한 기술.
+  트레이드오프 방향: 거짓이 누적될수록 관계 회복 비용이 커짐.
+  향후 효과 방향: 기만·탈출 위장·정보 은닉 방향.
+  획득 성격: 메인
+kind: skill
+effect_policy:
+  numeric_effects: deferred

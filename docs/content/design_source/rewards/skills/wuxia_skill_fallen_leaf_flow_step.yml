@@ -1,0 +1,26 @@
+id: wuxia_skill_fallen_leaf_flow_step
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/17 ьЭ┤ъ╡мэХЩьзА ьКдэВм
+    DB d04d0e34055c4623b77c8499a6f1d6eb.csv
+  database_id: d04d0e34055c4623b77c8499a6f1d6eb
+notion_properties:
+  이름: 낙엽 회류보
+  검수 상태: 기획자 검수 필요
+  관련 사건 ID: wuxia_cheongryu_first_breathing_lesson
+  도감 등록: 'Yes'
+  런타임 상태: 설계
+  배타성: 일반 배타
+  보상 등급: 희귀
+  선택 방향: 정면 승부 대신 살아남을 각도와 거리를 택한 선택.
+  스킬 ID: wuxia_skill_fallen_leaf_flow_step
+  중복·다회차 처리: 중복 시 기억 파편 또는 관련 복기 대사로 전환. 다회차에서는 다른 선택의 설명을 해금.
+  즉시 공개: 'Yes'
+  컨셉: 직선으로 맞서지 않고 한 걸음 비껴 흐르는 청류문의 보법.
+  트레이드오프 방향: 직접 공격력보다 생존과 준비를 우선하는 방향.
+  향후 효과 방향: 회피·거리 조절·첫 공격 회피 방향.
+  획득 성격: 사이드
+kind: skill
+effect_policy:
+  numeric_effects: deferred

@@ -1,0 +1,29 @@
+id: wuxia_random_final_torn_ledger
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 마지막 장부의 찢긴 모서리
+  검수 상태: 기획자 검수 필요
+  결과: 장부의 일부 거래가 청류문 붕괴와 연결되었음을 확인한다. 반환하면 협상 여지가 생기고 보관하면 최종전의 증거가 되지만 침식 위험이 남는다.
+  관련 세력: 객잔, 흑사방
+  관련 인물: 객잔 주인, 주인공, 흑사방 보스
+  메모: 최종 준비를 단순 아이템 정렬이 아니라 과거 사건의 책임을 다시 선택하는 사건으로 만든다.
+  미해결 부채: 'Yes'
+  보상: 최종 증거 조각; 협상 또는 침식 변주
+  분류: 사이드 퀘스트
+  사건 ID: wuxia_random_final_torn_ledger
+  상태: 초안
+  선택지 요약: 찢긴 조각을 맞춘다 / 보스에게 돌려보낸다 / 증거로 보관한다
+  선행 조건: 보스 압박 사건 1개 이상; 증거 정리 이전
+  소속 루트: 무림맹, 정착, 흑사방
+  엔딩 영향: 침식, 히든
+  진행 단계: 후반
+  후일담 카드 연결: wuxia_epilogue_first_morning_after_boss
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

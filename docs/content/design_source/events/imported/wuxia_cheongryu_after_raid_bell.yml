@@ -1,0 +1,31 @@
+id: wuxia_cheongryu_after_raid_bell
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 습격 뒤에도 울리는 산문 종
+  검수 상태: 기획자 검수 필요
+  결과: 사라진 순찰 표식과 현악문 계열 제압술의 잔흔을 부분적으로 발견한다. 메인 진행은 막지 않고 evidence_state 또는 patrol_trace_seen만
+    남긴다.
+  관련 세력: 주변 정파, 청류문
+  관련 인물: 서하린, 주인공
+  메모: 랜덤 인카운터 표면. 혈월교 이름이나 공동파 본산을 즉시 확정하지 않는다. 반복 방지를 위해 seen/patrol_trace_seen을
+    기록한다. runtime 미반영 설계 초안.
+  미해결 부채: 'No'
+  보상: 습격 흔적 단서, 후속 조사 대화 변형, 랜덤 사건 seen 상태
+  분류: 히든 사건
+  사건 ID: wuxia_cheongryu_after_raid_bell
+  상태: 초안
+  선택지 요약: 종소리를 따라간다 / 망가진 종을 고친다 / 흔적만 기록하고 돌아간다
+  선행 조건: wuxia_cheongryu_raid_route_split 해결; 산문/외곽 이동; 낮은 확률
+  소속 루트: 청류문, 히든
+  엔딩 영향: 청류문, 히든
+  진행 단계: 초반
+  후일담 카드 연결: 청류문의 후일 / 무명에게 돌아온 길
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

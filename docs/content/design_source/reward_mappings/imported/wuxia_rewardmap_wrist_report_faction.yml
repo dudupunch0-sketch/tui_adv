@@ -1,0 +1,25 @@
+id: wuxia_rewardmap_wrist_report_faction
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/19 ьЭ┤ъ╡мэХЩьзА ы│┤ьГБ
+    эЪНыУЭ ыздэХС DB f1e2c76a9cb0474d8e9a07c45c90d26e.csv
+  database_id: f1e2c76a9cb0474d8e9a07c45c90d26e
+notion_properties:
+  이름: 숨긴 손목·장문인에게 알리기 → 청류문 호감
+  검수 상태: 기획자 검수 필요
+  런타임 상태: 설계
+  매핑 ID: wuxia_rewardmap_wrist_report_faction
+  배타 규칙: 일반 배타
+  보상 ID: relationship_faction_cheongryu_affection
+  보상 종류: 단체 호감도
+  사건 ID: wuxia_seoharin_hides_training_injury
+  선택지·조건 키: 장문인에게 알리기
+  연계 조건: 문파의 규율과 치료 체계를 우선한 경우
+  중복 처리: 중복 시 문파 규율 관련 대사로 전환.
+  획득 시점: 즉시
+  획득 연출: 치료는 시작되지만 서하린은 당분간 주인공과 거리를 둔다.
+event_id: null
+choice_id: null
+reward_ids: []
+condition: null

@@ -1,0 +1,28 @@
+id: notion_0017
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/10 ьЭ┤ъ╡мэХЩьзА эЫДьЭ╝ыЛ┤
+    ь╣┤ыУЬ DB bd93ddd8de224c7da50abdd309bc2880.csv
+  database_id: bd93ddd8de224c7da50abdd309bc2880
+notion_properties:
+  카드명: 닫히지 않은 산문
+  검수 상태: 기획자 검수 필요
+  검수 필요: 'Yes'
+  관련 사건: wuxia_mumyeong_departure_truth_summary
+  관련 엔딩: 청류문
+  대상: 서하린
+  메모: '대상: 서하린, 무명, 청류문. 카테고리: 동료. 무명 구원 성공 계열.'
+  본문 초안: 무명은 돌아오지 않았다. 적어도 그날은 그랬다. 하지만 산문 앞의 흙은 쓸려 있지 않았다. 비가 온 뒤에도 누군가 발자국이 남을 길을
+    고쳐 두었다. "막아두면, 돌아오는 사람도 길을 잃어."
+  삽화 힌트: 열린 산문과 비에 젖은 발자국
+  상호 배타 그룹: seoharin_future
+  연계 그룹: companion_aftermath
+  카드 ID: epilogue_seoharin_open_gate
+  카테고리: 동료
+  풍문 여부: 'No'
+  해금 조건: 무명 구원 성공. 서하린 관계축 형성.
+kind: afterthought
+storypack_id: null
+arc_id: null
+stages: []

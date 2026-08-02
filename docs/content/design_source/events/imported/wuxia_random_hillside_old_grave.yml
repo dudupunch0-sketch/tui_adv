@@ -1,0 +1,30 @@
+id: wuxia_random_hillside_old_grave
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 비탈길의 묵은 무덤
+  검수 상태: 기획자 검수 필요
+  결과: 청류문이 과거에 지키지 못한 사람의 흔적을 발견한다. 정리하면 서하린의 짧은 감사가, 이름을 확인하면 후반 대사가, 지나치면 후일담의 미완성감이
+    남는다.
+  관련 세력: 주변 정파, 청류문
+  관련 인물: 서하린, 주인공
+  메모: 큰 진실을 추가하지 않고 문파의 기억을 체감시키는 후반 사이드.
+  미해결 부채: 'No'
+  보상: 청류문 과거 정보; 관계 대사 변주
+  분류: 사이드 퀘스트
+  사건 ID: wuxia_random_hillside_old_grave
+  상태: 초안
+  선택지 요약: 무덤을 정리한다 / 이름을 확인한다 / 지나친다
+  선행 조건: 후반 산길 이동; 청류문 과거 정보 1개 이상
+  소속 루트: 귀환, 정착, 청류문
+  엔딩 영향: 정착, 청류문
+  진행 단계: 후반
+  후일담 카드 연결: wuxia_epilogue_seoharin_empty_place
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

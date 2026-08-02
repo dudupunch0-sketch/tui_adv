@@ -1,0 +1,29 @@
+id: wuxia_qingliu_first_arrival
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 청류문 첫 도착
+  검수 상태: 미검수
+  결과: 청류문이 망했지만 따뜻한 언더독 홈베이스임을 보여준다.
+  관련 세력: 청류문
+  관련 인물: 서하린, 주인공, 청류문 장문인
+  메모: 청류문은 내부 정치질 공간이 아니라 소속감을 주는 홈베이스로 묘사한다.
+  미해결 부채: 'No'
+  보상: 청류문 거점 개방, 청류문 결핍 정보 획득
+  분류: 메인 사건
+  사건 ID: wuxia_qingliu_first_arrival
+  상태: 초안
+  선택지 요약: 산문을 둘러본다 / 무너진 수련장을 본다 / 서하린에게 묻는다 / 조용히 따라간다
+  선행 조건: wuxia_seoharin_intervention 완료
+  소속 루트: 청류문
+  엔딩 영향: 정착, 청류문
+  진행 단계: 초반
+  후일담 카드 연결: 청류문의 후일 계열 카드 씨앗
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

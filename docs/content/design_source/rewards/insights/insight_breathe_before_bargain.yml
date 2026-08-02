@@ -1,0 +1,29 @@
+id: insight_breathe_before_bargain
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/15 ьЭ┤ъ╡мэХЩьзА ъ╕░ьЧ░
+    DB 9f599836e4344b9cbff9319f62d54dc6.csv
+  database_id: 9f599836e4344b9cbff9319f62d54dc6
+notion_properties:
+  이름: 호흡을 먼저 고른 기록
+  검수 상태: 기획자 검수 필요
+  기연 ID: insight_breathe_before_bargain
+  도감 등록: 'No'
+  런타임 상태: 구현됨
+  배타성: ''
+  보너스: '1'
+  보너스 능력치: 공감
+  보상 등급: ''
+  선택 방향: ''
+  설명: 서하린의 경계 앞에서 숨을 고르고 말의 순서를 세웠다.
+  중복·다회차 처리: ''
+  즉시 공개: 'No'
+  컨셉: ''
+  트레이드오프 방향: ''
+  향후 효과 방향: ''
+  획득 사건 ID: wuxia_seo_harin_rescue
+  획득 성격: ''
+kind: insight
+effect_policy:
+  numeric_effects: deferred

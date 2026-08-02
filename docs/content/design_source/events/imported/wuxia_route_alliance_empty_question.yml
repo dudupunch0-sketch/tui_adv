@@ -1,0 +1,29 @@
+id: wuxia_route_alliance_empty_question
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 무림맹 감찰관의 빈 질문
+  검수 상태: 기획자 검수 필요
+  결과: 감찰관의 질문이 이미 알고 있는 사실을 확인하는 시험이었음이 드러난다. 답변 방식에 따라 다음 조사 범위가 달라진다.
+  관련 세력: 무림맹
+  관련 인물: 무림맹 감찰관, 주인공
+  메모: 무림맹 루트의 질서와 의심을 대화 선택으로 보여준다.
+  미해결 부채: 'No'
+  보상: 조사 범위; 청류문 평판
+  분류: 히든 사건
+  사건 ID: wuxia_route_alliance_empty_question
+  상태: 초안
+  선택지 요약: 사실만 답한다 / 청류문을 변호한다 / 질문을 되묻는다
+  선행 조건: 무림맹 루트; 감찰관 사건 이후 낮은 확률
+  소속 루트: 무림맹
+  엔딩 영향: 청류문, 히든
+  진행 단계: 중반
+  후일담 카드 연결: wuxia_epilogue_small_rumor
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

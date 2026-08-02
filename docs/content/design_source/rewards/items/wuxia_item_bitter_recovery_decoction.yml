@@ -1,0 +1,30 @@
+id: wuxia_item_bitter_recovery_decoction
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/14 ьЭ┤ъ╡мэХЩьзА ьХДьЭ┤эЕЬ
+    DB bcdff734c16e4ea4bfd7ae43fb74e3af.csv
+  database_id: bcdff734c16e4ea4bfd7ae43fb74e3af
+notion_properties:
+  이름: 쓴 약탕
+  검수 상태: 기획자 검수 필요
+  관련 사건 ID: wuxia_cheongryu_medicine_errand
+  도감 등록: 'Yes'
+  런타임 상태: 설계
+  배타성: 일반 배타
+  보상 등급: 보통
+  사용 가능: 'No'
+  사용 효과: ''
+  선택 방향: 전투보다 부상자와 약재를 먼저 챙긴 선택.
+  설계 분류: 소모품
+  설명: 맛은 쓰지만 누군가의 회복을 하루 앞당기는 약탕.
+  아이템 ID: wuxia_item_bitter_recovery_decoction
+  종류: consumable
+  중복·다회차 처리: 사용하지 않고 회차를 끝내면 행상인의 회수 후보가 됨.
+  즉시 공개: 'Yes'
+  컨셉: 맛은 쓰지만 누군가의 회복을 하루 앞당기는 약탕.
+  향후 효과 방향: 회복·부상 후속·청류문 생활 방향.
+  획득 성격: 사이드
+kind: item
+effect_policy:
+  numeric_effects: deferred

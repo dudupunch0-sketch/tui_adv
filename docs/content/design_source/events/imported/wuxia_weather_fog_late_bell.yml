@@ -1,0 +1,29 @@
+id: wuxia_weather_fog_late_bell
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 안개 속에서 늦어진 종소리
+  검수 상태: 기획자 검수 필요
+  결과: 청류문의 시간 감각과 산문 경계를 짧게 체감한다. 선택에 따라 첫 수련의 시작 대사와 서하린의 평가가 달라진다.
+  관련 세력: 청류문
+  관련 인물: 서하린, 주인공
+  메모: 날씨 기반 생활 랜덤.
+  미해결 부채: 'No'
+  보상: 생활 정보; 훈련 대사
+  분류: 히든 사건
+  사건 ID: wuxia_weather_fog_late_bell
+  상태: 초안
+  선택지 요약: 종을 대신 친다 / 소리를 따라간다 / 방으로 돌아간다
+  선행 조건: 안개 날씨; 청류문 새벽 이동
+  소속 루트: 청류문
+  엔딩 영향: 청류문, 히든
+  진행 단계: 초반
+  후일담 카드 연결: ''
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

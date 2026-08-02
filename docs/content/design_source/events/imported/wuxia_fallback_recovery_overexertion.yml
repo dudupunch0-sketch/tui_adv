@@ -1,0 +1,29 @@
+id: wuxia_fallback_recovery_overexertion
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 회복 중 무리한 외출
+  검수 상태: 기획자 검수 필요
+  결과: 회복 기간이 하루 늘어날 수 있지만, 서하린의 돌봄과 주인공의 자존심을 다루는 별도 장면이 열린다.
+  관련 세력: 청류문
+  관련 인물: 서하린, 주인공
+  메모: ‘바로 나가기’ 선택의 fallback을 감금이 아닌 보호와 합의로 처리한다.
+  미해결 부채: 'No'
+  보상: 회복 기간 대사; 관계 행동
+  분류: 동료 사건
+  사건 ID: wuxia_fallback_recovery_overexertion
+  상태: 초안
+  선택지 요약: 사과한다 / 끝까지 걷는다 / 서하린에게 업힌다
+  선행 조건: 회복 중 이동/전투 실패
+  소속 루트: 청류문
+  엔딩 영향: 청류문
+  진행 단계: 중반
+  후일담 카드 연결: wuxia_epilogue_seoharin_empty_place
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

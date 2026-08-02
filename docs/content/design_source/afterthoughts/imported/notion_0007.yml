@@ -1,0 +1,28 @@
+id: notion_0007
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/10 ьЭ┤ъ╡мэХЩьзА эЫДьЭ╝ыЛ┤
+    ь╣┤ыУЬ DB bd93ddd8de224c7da50abdd309bc2880.csv
+  database_id: bd93ddd8de224c7da50abdd309bc2880
+notion_properties:
+  카드명: 흑사방의 새 그림자
+  검수 상태: 기획자 검수 필요
+  검수 필요: 'Yes'
+  관련 사건: 무명 결산
+  관련 엔딩: 모든 생존 계열, 침식
+  대상: 무명, 흑사방
+  메모: 무명 비구원/흑사방 동화 계열.
+  본문 초안: 흑사방 깃발 아래에 새 그림자가 섰다는 소문이 돌았다. 그는 이름을 쓰지 않았고, 어느 문파의 초식이든 한 번은 따라 했다. 두 번째부터는
+    더 이상 따라 하는 것처럼 보이지 않았다.
+  삽화 힌트: 흑사방 깃발 아래 얼굴을 가린 검은 옷의 무인
+  상호 배타 그룹: mumyeong_fate
+  연계 그룹: mumyeong_resolution
+  카드 ID: epilogue_mumyeong_new_shadow
+  카테고리: 동료
+  풍문 여부: 'Yes'
+  해금 조건: 무명 비구원. 흑사방에 완전히 동화.
+kind: afterthought
+storypack_id: null
+arc_id: null
+stages: []

@@ -1,0 +1,29 @@
+id: wuxia_insight_blank_line_of_record
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/15 ьЭ┤ъ╡мэХЩьзА ъ╕░ьЧ░
+    DB 9f599836e4344b9cbff9319f62d54dc6.csv
+  database_id: 9f599836e4344b9cbff9319f62d54dc6
+notion_properties:
+  이름: 기록자의 빈칸
+  검수 상태: 기획자 검수 필요
+  기연 ID: wuxia_insight_blank_line_of_record
+  도감 등록: 'Yes'
+  런타임 상태: 설계
+  배타성: 히든 양립
+  보너스: ''
+  보너스 능력치: ''
+  보상 등급: 전설
+  선택 방향: 천기록을 찾지 않고 청류문 자체의 흔적과 빈칸을 읽은 선택.
+  설명: 기록되지 않은 선택도 누군가의 시선 안에 있을 수 있다는 불안한 깨달음.
+  중복·다회차 처리: 중복 시 기억 파편 대신 후속 문장·히든 조건을 변주.
+  즉시 공개: 'No'
+  컨셉: 기록되지 않은 선택도 누군가의 시선 안에 있을 수 있다는 불안한 깨달음.
+  트레이드오프 방향: 무엇을 읽었는지 확신할 수 없고 심리적 부담이 커짐.
+  향후 효과 방향: 숨은 조건·미기록 사건·다회차 변주 방향.
+  획득 사건 ID: wuxia_cheongryu_raid_omen
+  획득 성격: 히든
+kind: insight
+effect_policy:
+  numeric_effects: deferred

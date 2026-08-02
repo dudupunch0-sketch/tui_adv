@@ -1,0 +1,29 @@
+id: wuxia_random_modern_object_shard
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 발밑에서 부서진 현대 물건
+  검수 상태: 기획자 검수 필요
+  결과: 현대 물건의 조각은 귀환의 확정 열쇠가 아니라 감정적 흔들림을 만든다. 숨기면 개인 단서, 공개하면 소문, 추적하면 위험이 남는다.
+  관련 세력: 객잔
+  관련 인물: 주인공, 천기록 관련 존재
+  메모: 천기록을 자주 노출하지 않으면서 현대 정체성 축을 유지한다.
+  미해결 부채: 'No'
+  보상: 귀환 감정 변주; 천기록 대체 단서
+  분류: 기연 사건
+  사건 ID: wuxia_random_modern_object_shard
+  상태: 초안
+  선택지 요약: 조각을 숨긴다 / 객잔 주인에게 보여준다 / 출처를 추적한다
+  선행 조건: 귀환 단서가 1개 이상 있거나 천기록 비노출 시드
+  소속 루트: 귀환, 천기록, 히든
+  엔딩 영향: 귀환, 천기록, 히든
+  진행 단계: 중반
+  후일담 카드 연결: wuxia_epilogue_return_object_left_behind
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

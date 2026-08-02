@@ -1,0 +1,28 @@
+id: notion_0001
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/10 ьЭ┤ъ╡мэХЩьзА эЫДьЭ╝ыЛ┤
+    ь╣┤ыУЬ DB bd93ddd8de224c7da50abdd309bc2880.csv
+  database_id: bd93ddd8de224c7da50abdd309bc2880
+notion_properties:
+  카드명: 남쪽 장터의 풍문
+  검수 상태: 기획자 검수 필요
+  검수 필요: 'Yes'
+  관련 사건: wuxia_side_black_serpent_remnants_ignored
+  관련 엔딩: 모든 생존 계열
+  대상: 남쪽 장터, 흑사방 잔당
+  메모: 미해결 부채 카드 예시. 플레이어를 직접 비난하지 않고, 세계가 계속 움직이고 있음을 보여주는 풍문형 후일담.
+  본문 초안: 남쪽 장터에서는 흑사방 잔당이 다시 표국을 습격했다는 풍문이 돌았다. 청류문 장로들은 그것을 작은 불씨라 불렀지만, 장터 사람들은
+    안다. 작은 불씨는 늘 누군가가 대수롭지 않게 넘긴 자리에서 살아난다는 것을.
+  삽화 힌트: 객잔 탁자 위 술잔 옆에 펼쳐진 낡은 전단
+  상호 배타 그룹: black_serpent_remnants_fate
+  연계 그룹: southern_market_aftermath
+  카드 ID: epilogue_wuxia_southern_market_rumor
+  카테고리: 풍문
+  풍문 여부: 'Yes'
+  해금 조건: 흑사방 잔당 사이드 퀘스트 미해결
+kind: afterthought
+storypack_id: null
+arc_id: null
+stages: []

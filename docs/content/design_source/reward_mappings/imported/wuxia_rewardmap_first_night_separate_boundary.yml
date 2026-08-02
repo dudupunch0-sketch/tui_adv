@@ -1,0 +1,25 @@
+id: wuxia_rewardmap_first_night_separate_boundary
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/19 ьЭ┤ъ╡мэХЩьзА ы│┤ьГБ
+    эЪНыУЭ ыздэХС DB f1e2c76a9cb0474d8e9a07c45c90d26e.csv
+  database_id: f1e2c76a9cb0474d8e9a07c45c90d26e
+notion_properties:
+  이름: 첫날 밤·따로 방 요구 → 제자 아닌 제자
+  검수 상태: 기획자 검수 필요
+  런타임 상태: 설계
+  매핑 ID: wuxia_rewardmap_first_night_separate_boundary
+  배타 규칙: 일반 배타
+  보상 ID: wuxia_title_not_yet_disciple
+  보상 종류: 칭호
+  사건 ID: wuxia_cheongryu_first_night_shelter
+  선택지·조건 키: 방을 따로 달라고 하기
+  연계 조건: 이후 관계 대화 난이도 상승
+  중복 처리: 중복 시 기억 파편.
+  획득 시점: 즉시
+  획득 연출: 서하린은 방을 내주지만 다음날 설명을 줄이고 직접 묻기를 기다린다.
+event_id: null
+choice_id: null
+reward_ids: []
+condition: null

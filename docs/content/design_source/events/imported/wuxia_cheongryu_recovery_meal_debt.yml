@@ -1,0 +1,30 @@
+id: wuxia_cheongryu_recovery_meal_debt
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 회복 중 맡은 첫 당번
+  검수 상태: 기획자 검수 필요
+  결과: 청류문 사람들의 결핍과 생활 규칙을 직접 배운다. 선택에 따라 qingliu_familiarity, work_chore_token, 관계
+    대화가 달라진다.
+  관련 세력: 청류문
+  관련 인물: 서하린, 주인공
+  메모: 짧은 생활 사이드. 음식 자체보다 누가 누구의 몫을 조용히 양보하는지 보여준다. runtime 미반영 설계 초안.
+  미해결 부채: 'No'
+  보상: 청류문 생활 정보, 작은 신뢰, 회복 기간의 식사·잡일 루프 개방
+  분류: 사이드 퀘스트
+  사건 ID: wuxia_cheongryu_recovery_meal_debt
+  상태: 초안
+  선택지 요약: 식사 준비를 맡는다 / 장작과 물을 나른다 / 다른 사람의 당번을 대신한다
+  선행 조건: wuxia_cheongryu_recovery_first_morning 이후
+  소속 루트: 정착, 청류문
+  엔딩 영향: 정착, 청류문
+  진행 단계: 초반
+  후일담 카드 연결: 청류문의 후일
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

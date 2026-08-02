@@ -1,0 +1,25 @@
+id: wuxia_rewardmap_first_night_stay_guest
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/19 ьЭ┤ъ╡мэХЩьзА ы│┤ьГБ
+    эЪНыУЭ ыздэХС DB f1e2c76a9cb0474d8e9a07c45c90d26e.csv
+  database_id: f1e2c76a9cb0474d8e9a07c45c90d26e
+notion_properties:
+  이름: 첫날 밤·머무르기 → 청류문의 손님
+  검수 상태: 기획자 검수 필요
+  런타임 상태: 설계
+  매핑 ID: wuxia_rewardmap_first_night_stay_guest
+  배타 규칙: 일반 배타
+  보상 ID: wuxia_title_guest_of_cheongryu
+  보상 종류: 칭호
+  사건 ID: wuxia_cheongryu_first_night_shelter
+  선택지·조건 키: 서하린이 정한 자리에 머물기
+  연계 조건: 청류문 생활 hook 개방
+  중복 처리: 중복 시 기억 파편과 생활 대사 변주.
+  획득 시점: 즉시
+  획득 연출: 서하린이 말없이 이불을 다시 펴고 다음날 장작 당번을 알려 준다.
+event_id: null
+choice_id: null
+reward_ids: []
+condition: null

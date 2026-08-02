@@ -1,0 +1,29 @@
+id: wuxia_random_cheongryu_laundry_knot
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 빨래줄에 걸린 낯선 매듭
+  검수 상태: 기획자 검수 필요
+  결과: 매듭의 의미를 알면 서하린의 과거 제자 관계를 엿보고, 모른 척하면 서하린이 먼저 주인공의 눈치를 살핀다.
+  관련 세력: 청류문
+  관련 인물: 서하린, 주인공
+  메모: 전투 없음. 짧은 관찰형 랜덤. 핵심 진실을 공개하지 않고 관계의 결을 추가한다.
+  미해결 부채: 'No'
+  보상: 서하린 관계 대사 변주; 청류문 생활 정보
+  분류: 히든 사건
+  사건 ID: wuxia_random_cheongryu_laundry_knot
+  상태: 초안
+  선택지 요약: 매듭을 풀어본다 / 서하린에게 묻는다 / 모른 척 빨래를 걷는다
+  선행 조건: 청류문 수련기; 다른 생활 인카운터 미등장 시드
+  소속 루트: 청류문
+  엔딩 영향: 청류문
+  진행 단계: 초반
+  후일담 카드 연결: ''
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

@@ -1,0 +1,30 @@
+id: cheonggi_record_notebook
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/14 ьЭ┤ъ╡мэХЩьзА ьХДьЭ┤эЕЬ
+    DB bcdff734c16e4ea4bfd7ae43fb74e3af.csv
+  database_id: bcdff734c16e4ea4bfd7ae43fb74e3af
+notion_properties:
+  이름: 천기록이 깃든 업무수첩
+  검수 상태: 확정
+  관련 사건 ID: ''
+  도감 등록: 'No'
+  런타임 상태: 구현됨
+  배타성: ''
+  보상 등급: ''
+  사용 가능: 'No'
+  사용 효과: ''
+  선택 방향: ''
+  설계 분류: ''
+  설명: 빈 장에 현대 지식의 편린이 먹물처럼 떠오르는 업무수첩. 검색창도 즉시 보상도 아니다.
+  아이템 ID: cheonggi_record_notebook
+  종류: clue
+  중복·다회차 처리: ''
+  즉시 공개: 'No'
+  컨셉: ''
+  향후 효과 방향: ''
+  획득 성격: ''
+kind: item
+effect_policy:
+  numeric_effects: deferred

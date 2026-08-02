@@ -5,7 +5,7 @@
 ## 기본 전제
 
 - 사용자가 이 세션에서 주는 내용은 즉시 현재 작업에 끼워 넣는 요구사항이 아니라, 나중에 순서대로 처리할 backlog 입력이다.
-- Notion에 정리된 아이디어가 있으면 원본 reference는 Notion이다. `idea_box/inbox/*.md`는 Notion page id/title/url과 요약, 처리 순서를 추적하는 repo-local entry다.
+- Notion에 정리된 아이디어의 원본 reference는 provenance로 보존한다. current design records의 정본은 `docs/content/design_source/`이며 Notion은 읽기·검수 미러다. `idea_box/inbox/*.md`는 Notion page id/title/url과 요약, 처리 순서를 추적하는 repo-local entry다.
 - `status: open`인 아이디어 문서는 나중에 설계/개발 agent가 Git 최초 반영 순서대로 반영/폐기/병합 판단해야 한다.
 - agent는 아이디어를 과도하게 해석하거나 현재 프로젝트 우선순위에 끼워 넣으려 하지 않는다.
 - 원문 의도와 뉘앙스를 최대한 보존하되, 나중에 읽기 쉽도록 구조화한다.

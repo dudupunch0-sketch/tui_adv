@@ -1,0 +1,25 @@
+id: wuxia_rewardmap_breath_stop_flow
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/19 ьЭ┤ъ╡мэХЩьзА ы│┤ьГБ
+    эЪНыУЭ ыздэХС DB f1e2c76a9cb0474d8e9a07c45c90d26e.csv
+  database_id: f1e2c76a9cb0474d8e9a07c45c90d26e
+notion_properties:
+  이름: 첫 호흡·중단하기 → 낙엽 회류보
+  검수 상태: 기획자 검수 필요
+  런타임 상태: 설계
+  매핑 ID: wuxia_rewardmap_breath_stop_flow
+  배타 규칙: 대체 경로
+  보상 ID: wuxia_skill_fallen_leaf_flow_step
+  보상 종류: 스킬
+  사건 ID: wuxia_cheongryu_first_breathing_lesson
+  선택지·조건 키: 아픈 척하지 않고 중단하기
+  연계 조건: 몸의 한계를 인정한 경우. 다음 훈련에서 방어 자세가 먼저 열린다.
+  중복 처리: 중복 시 기억 파편.
+  획득 시점: 즉시
+  획득 연출: 서하린은 실패라고 하지 않고 오늘은 여기까지라고 말한다.
+event_id: null
+choice_id: null
+reward_ids: []
+condition: null

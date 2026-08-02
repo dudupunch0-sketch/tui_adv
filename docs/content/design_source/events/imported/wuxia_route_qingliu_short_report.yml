@@ -1,0 +1,29 @@
+id: wuxia_route_qingliu_short_report
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤
+    ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv
+  database_id: 0c98f6f18d4f4605ad66c9f899286f06
+notion_properties:
+  사건명: 청류문에 보내는 짧은 보고
+  검수 상태: 기획자 검수 필요
+  결과: 보고량에 따라 청류문이 다음 행동을 준비한다. 서하린은 상세한 보고를 신뢰로, 침묵을 걱정으로 해석한다.
+  관련 세력: 청류문
+  관련 인물: 서하린, 주인공
+  메모: 청류문 루트의 소속감을 행동으로 보여준다.
+  미해결 부채: 'No'
+  보상: 청류문 경계 또는 관계 대사
+  분류: 사이드 퀘스트
+  사건 ID: wuxia_route_qingliu_short_report
+  상태: 초안
+  선택지 요약: 상세히 쓴다 / 안전하다고만 쓴다 / 보내지 않는다
+  선행 조건: 청류문 루트; 이동 중 연락 가능 슬롯
+  소속 루트: 청류문
+  엔딩 영향: 청류문
+  진행 단계: 중반
+  후일담 카드 연결: wuxia_epilogue_qingliu_guest_arrival
+kind: event
+storypack_id: null
+arc_id: null
+stages: []

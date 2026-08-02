@@ -1,0 +1,25 @@
+id: wuxia_rewardmap_failure_no_excuse
+status: imported_unreviewed
+runtime_status: design
+source_refs:
+- export_file: ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/19 ьЭ┤ъ╡мэХЩьзА ы│┤ьГБ
+    эЪНыУЭ ыздэХС DB f1e2c76a9cb0474d8e9a07c45c90d26e.csv
+  database_id: f1e2c76a9cb0474d8e9a07c45c90d26e
+notion_properties:
+  이름: 첫 패배·변명하지 않기 → 패배를 받아 적는 습관
+  검수 상태: 기획자 검수 필요
+  런타임 상태: 설계
+  매핑 ID: wuxia_rewardmap_failure_no_excuse
+  배타 규칙: 일반 배타
+  보상 ID: wuxia_insight_recording_defeat
+  보상 종류: 기연
+  사건 ID: wuxia_cheongryu_training_first_failure
+  선택지·조건 키: 변명하지 않고 복기하기
+  연계 조건: 패배 후 복기 대화 완료
+  중복 처리: 중복 시 복기 기록의 다른 문장 해금.
+  획득 시점: 즉시
+  획득 연출: 서하린이 정답 대신 한 가지 오류만 짚고, 다음날 같은 지점을 다시 보게 한다.
+event_id: null
+choice_id: null
+reward_ids: []
+condition: null

@@ -451,10 +451,11 @@ pub fn resolve(
         // 결착 tick의 프레임은 남기고 그 뒤를 돌지 않는다 (정본 03: 결착 시
         // 정리가 일어나므로 결착 이후를 계속 시뮬레이션할 근거가 없다).
         if early_conclusion_is_decidable {
-            // 추적되지 않는 id는 "전멸"로 읽지 않는다. `side_all_defeated`는
-            // 체력이 0일 때만 전멸로 보므로, 값을 지어내는 대신 0이 아님이
-            // 확실한 값을 준다 — 없는 상태를 결착 근거로 삼지 않는다.
-            // (`validate_inputs`가 이미 참가자와 상태의 일치를 보장한다.)
+            // 추적되지 않는 id는 "전멸"로 읽지 않는다 — 없는 상태를 결착
+            // 근거로 삼지 않는다. `validate_inputs`가 참가자와 상태의 일치를
+            // 이미 보장하므로 이 분기는 도달하지 않으며, 따라서 테스트로
+            // 고정할 수 없다. 방어용으로만 둔다 (`mutate_ec` M5는 잡히지
+            // 않는다 — 도달 불가라서 그렇다).
             const UNTRACKED_IS_NOT_DEFEATED: i64 = i64::MAX;
             let health_of = |id: &str| {
                 combatants

@@ -685,6 +685,31 @@ fn a_fight_with_no_conclusion_runs_every_tick() {
 }
 
 #[test]
+fn a_side_with_no_active_participant_does_not_read_as_wiped_on_tick_one() {
+    // `all()`은 빈 집합에서 true다. 활성 전투원이 없는 진영을 그대로 판정하면
+    // 첫 tick에 곧바로 "전멸"로 읽혀 시뮬레이션이 1 tick에서 멈춘다. 그 입력을
+    // 거부하는 것은 `conclude`의 몫(`EmptyActiveSide`)이며 resolver가 조용히
+    // 다르게 처리하지 않는다.
+    let mut r = request();
+    set_ticks(&mut r, 4);
+    let enemy = r
+        .execution
+        .input
+        .participants
+        .iter_mut()
+        .find(|p| p.id == "e")
+        .expect("fixture has an enemy");
+    enemy.active = false;
+
+    let result = resolve_combat(r).unwrap();
+    assert_eq!(
+        result.frames.len(),
+        4,
+        "an empty active side must not be treated as a wiped side"
+    );
+}
+
+#[test]
 fn simultaneous_mutual_defeat_stops_at_that_tick() {
     let mut r = request();
     set_ticks(&mut r, 6);

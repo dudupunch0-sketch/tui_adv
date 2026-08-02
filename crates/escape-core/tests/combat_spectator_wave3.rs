@@ -608,14 +608,29 @@ fn cue_ordering_is_fixed_attack_hit_evade_balance_broken_incapacitated() {
 /// 결착 뒤에도 말이 계속 움직이고 보고서의 `decisive_tick`과 어긋난다.
 #[test]
 fn spectator_view_never_extends_past_the_last_resolved_tick() {
-    let resolution = resolve_combat(two_way_resolution_request()).unwrap();
-    // 결착이 없는 픽스처라도 두 배열의 마지막 tick은 같아야 한다.
-    let last_resolved = resolution.frames.last().unwrap().tick;
+    // 여러 tick을 돌려야 이 규칙이 드러난다 — 1 tick 픽스처에서는 어떤 구현이든
+    // 통과한다.
+    let mut request = two_way_resolution_request();
+    request.execution.ticks = 5;
+    request.execution.input.config.max_ticks = 5;
+    let resolution = resolve_combat(request).unwrap();
+    assert_eq!(
+        resolution.frames.len(),
+        5,
+        "fixture sanity: no terminal condition here, so all 5 ticks resolve"
+    );
 
+    // execution 쪽 프레임은 5개로 남겨 둔 채 resolution만 첫 tick으로 줄인다 —
+    // 관전 화면이 어느 쪽을 시간 범위의 기준으로 삼는지 드러낸다.
+    let first_tick = resolution.frames[0].tick;
     let mut truncated = resolution.clone();
-    truncated.frames.retain(|frame| frame.tick == last_resolved);
-    // execution 쪽은 그대로 두고 resolution만 줄여, 관전 화면이 어느 쪽을
-    // 기준으로 삼는지 드러낸다.
+    truncated.frames.retain(|frame| frame.tick == first_tick);
+    assert_eq!(
+        truncated.execution.frames.len(),
+        5,
+        "the execution pass must still carry every tick, or the test proves nothing"
+    );
+
     let view = spectate_combat(&CombatSpectatorRequest {
         resolution: truncated,
         participants: participants(),
@@ -623,12 +638,17 @@ fn spectator_view_never_extends_past_the_last_resolved_tick() {
     })
     .unwrap();
 
+    assert_eq!(
+        view.frames.len(),
+        1,
+        "the view must stop at the last resolved tick, not follow the execution pass"
+    );
     assert!(
-        view.frames.iter().all(|f| f.tick <= last_resolved),
+        view.frames.iter().all(|f| f.tick <= first_tick),
         "no spectator frame may exist after the last resolved tick"
     );
     assert!(
-        view.full_log.iter().all(|e| e.tick <= last_resolved),
+        view.full_log.iter().all(|e| e.tick <= first_tick),
         "no spectator log entry may exist after the last resolved tick"
     );
 }

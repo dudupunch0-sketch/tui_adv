@@ -4,7 +4,9 @@ Effective date: 2026-08-02
 
 ## Canonical scope
 
-`docs/content/design_source/` is the canonical source for the current design records only: events, afterthoughts, rewards, reward mappings, provenance metadata, and validation reports. It is not the canonical runtime graph, generated bundle, or game-code contract.
+`docs/content/design_source/` is the canonical source for the current design records only: events, afterthoughts, rewards, reward mappings, provenance metadata, and validation reports. The unstructured afterthought review ledger is `reports/afterthought_triage.yml`; it classifies source text without changing event links. It is not the canonical runtime graph, generated bundle, or game-code contract.
+
+Afterthought policy: multiple cards may be eligible, but at most one card may resolve within an `exclusive_group`. Eligibility is evaluated at event resolution and cards are revealed at ending resolution or run end. Expressions not matching one of the 18 existing card IDs/titles remain conditions or new-card candidates; they are never auto-linked. Phase B approves descriptive conditions into `graphs/afterthought_conditions.yml` while `graphs/event_afterthought_links.yml` contains only approved explicit links.
 
 This is a versioned directory inside the Git repository, not a separate database or storage service. It is the planning SSoT for story, events, choices, afterthoughts, rewards, relations, and planning provenance. General engine, UI, build, and combat work should not read the whole directory on every task; for content IDs, rewards, or branch-contract work, read the manifest first and then only the relevant records.
 
@@ -35,6 +37,7 @@ Statuses distinguish design readiness from runtime implementation. A record mark
 
 - `next`/`fallback` are `not_available_in_source`; no links may be invented.
 - 127 afterthought references remain source-unstructured and require human review.
+- `reports/afterthought_triage.yml` must cover all 127 source-unstructured references with no duplicate or missing `event_id`; only literal one-to-one ID/title matches may be marked referentially verified.
 - Live Notion page URLs/IDs were unavailable in the export; export-derived IDs are provenance only.
 - Legacy inventory contains 7 rows whose canonical candidacy remains undecided.
 

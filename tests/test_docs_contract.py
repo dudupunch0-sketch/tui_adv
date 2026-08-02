@@ -86,14 +86,13 @@ def test_notion_first_idea_design_workflow_is_documented():
 
     for doc in (agents, readme, idea_readme, backlog_order, intake, handoff, plan):
         assert "Notion" in doc
-        assert "원본 reference" in doc
+        assert "local design source" in doc or "local design-source" in doc
 
-    assert "Notion 정리 → repo 설계 아이디어 문서 변환" in readme
-    assert "설계 아이디어 문서 변환 → main plan 격상 → 설계 후 Notion reference 대조" in checklist
+    assert "local design-source 우선" in readme or "local design source 우선" in readme
     assert "main plan" in idea_readme
-    assert "reference_check" in idea_readme
+    assert "source_check" in idea_readme
     assert "notion_page_id" in intake
-    assert "Notion reference 대조" in handoff
+    assert "local design source" in handoff
     assert "단순 import나 설계 아이디어 문서 작성만으로는 `done`" in plan
 
 

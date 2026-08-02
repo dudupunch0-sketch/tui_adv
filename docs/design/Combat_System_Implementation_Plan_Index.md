@@ -3,14 +3,14 @@
 status: wave3-step1d2-complete
 기준일: 2026-08-02
 
-이 문서는 Notion `전투 시스템` 허브와 canonical 문서 00~13을 Rust GameCore 구현 순서로 쪼갠 인덱스다. 각 단계 문서는 한 번의 coding subagent 작업으로 완료할 수 있는 크기를 목표로 한다.
+이 문서는 보존된 Notion `전투 시스템` 허브와 local design source의 관련 canonical 문서를 Rust GameCore 구현 순서로 쪼갠 인덱스다. 각 단계 문서는 한 번의 coding subagent 작업으로 완료할 수 있는 크기를 목표로 한다.
 
 ## 원본과 우선순위
 
 - 허브: [전투 시스템](https://app.notion.com/p/36f37e69695e81168360ef11cf3a4449)
-- 하위 정본: 00~13 문서. 허브와 충돌하면 하위 정본을 우선한다.
+- 하위 설계 provenance: 00~13 문서. current design records와 충돌하면 local design source를 우선하고, 필요하면 mirror 검수만 수행한다.
 - 저장소 truth: `crates/escape-core` → `ScenePage`/WASM JSON → Web Storybook·SuperLightTUI.
-- 기존 `docs/design/Combat_System_Auto_Brawl.md`는 이전 schema-less 방향의 설계 기록이다. 새 구현 계약은 Notion 정본을 우선하되, 기존 renderer-neutral 원칙과 non-goal은 유지한다.
+- 기존 `docs/design/Combat_System_Auto_Brawl.md`는 이전 schema-less 방향의 설계 기록이다. 새 구현 계약은 local design source와 runtime schema를 우선하되, 기존 renderer-neutral 원칙과 non-goal은 유지한다.
 
 ## 현재 코드와 정본의 경계
 

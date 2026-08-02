@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Approved Event Afterthought Link Overlay",
+  "type": "object",
+  "required": ["schema_version", "policy", "links"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "policy": {
+      "type": "object",
+      "required": ["eligibility_evaluation", "reveal_default", "exclusive_group_rule"],
+      "properties": {
+        "eligibility_evaluation": {"const": "event_resolution"},
+        "reveal_default": {"enum": ["ending_resolution", "run_end"]},
+        "exclusive_group_rule": {"const": "at_most_one"}
+      },
+      "additionalProperties": false
+    },
+    "links": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["event_id", "afterthought_id", "relation", "eligibility", "reveal_policy", "status"],
+        "properties": {
+          "event_id": {"type": "string"},
+          "afterthought_id": {"type": "string"},
+          "relation": {"enum": ["primary", "supporting", "conditional", "chain"]},
+          "eligibility": {
+            "type": "object",
+            "properties": {
+              "all_of": {"type": "array", "items": {"type": "string"}},
+              "any_of": {"type": "array", "items": {"type": "string"}},
+              "none_of": {"type": "array", "items": {"type": "string"}}
+            },
+            "additionalProperties": false
+          },
+          "reveal_policy": {"enum": ["ending_resolution", "run_end"]},
+          "exclusive_group": {"type": ["string", "null"]},
+          "priority": {"type": ["integer", "null"]},
+          "status": {"enum": ["draft", "approved", "rejected", "deprecated"]}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

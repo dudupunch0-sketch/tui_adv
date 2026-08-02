@@ -96,11 +96,11 @@ done_at:
    - 하지만 `status: open`으로 저장된 뒤에는 backlog로 취급하며, 나중에 `BACKLOG_ORDER.md`의 순서대로 반영/폐기/병합 판단을 해야 한다.
    - 다른 agent가 현재 plan/todo를 먼저 수행해야 한다는 기존 우선순위를 유지한다.
 
-6. Notion reference를 추적한다.
-   - Notion에서 가져온 아이디어는 `notion_page_id`, `notion_title`, 가능하면 `notion_url`을 frontmatter에 남긴다.
+6. provenance와 source 반영을 추적한다.
+   - Notion에서 가져온 아이디어는 `notion_page_id`, `notion_title`, 가능하면 `notion_url`을 provenance로 frontmatter에 남긴다.
    - repo 설계 아이디어 문서로 변환한 뒤에는 `related_docs`를 갱신한다.
    - main plan으로 격상한 뒤에는 `main_plan_ref`를 갱신한다.
-   - 설계 완료 후에는 Notion reference 대조 결과를 `reference_check`와 처리 기록에 남긴다.
+   - 설계 완료 후에는 local design source 반영 결과를 `source_check`와 처리 기록에 남기고, 필요하면 Notion mirror 검수 결과를 덧붙인다.
 
 ## 하지 말 것
 
@@ -114,11 +114,11 @@ done_at:
 
 이 수집 세션에서는 보통 새 아이디어를 `open` 상태로 둔다. `done` 처리는 나중에 설계/개발 agent가 실제로 다음 중 하나를 수행했을 때 한다.
 
-- Notion reference를 repo 설계 아이디어 문서로 변환했다.
+- local design source에 반영할 설계 아이디어 문서로 정리했다.
 - 그 설계 아이디어 문서를 `docs/dev/Development_Plan.md`의 main plan으로 격상했다.
-- 격상된 설계를 진행했고, 마지막에 Notion reference와 결과 설계를 대조했다.
+- 격상된 설계를 진행했고, 마지막에 local design source와 결과 설계를 대조했다.
 - 코드/데이터/테스트에 반영했다.
 - 다른 아이디어나 계획에 병합했다.
 - 프로젝트 방향과 맞지 않는다고 명시적으로 폐기했다.
 
-Notion-origin entry는 단순 import나 설계 아이디어 문서 작성만으로는 `done`이 아니다. 처리할 때는 어디에 반영했는지, 어떤 Notion reference와 대조했는지, 또는 왜 폐기/병합했는지 기록한다.
+Notion-origin entry는 단순 import나 설계 아이디어 문서 작성만으로는 `done`이 아니다. 처리할 때는 local design source 어디에 반영했는지, provenance를 확인했는지, 또는 왜 폐기/병합했는지 기록한다.

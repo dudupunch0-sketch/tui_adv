@@ -1,0 +1,17 @@
+contract_id: combat_log_presentation
+status: canonical
+effective_date: '2026-08-02'
+runtime_status: handoff_required
+owners:
+  raw_events: gamecore
+  presentation_aggregation: renderer
+raw_event_fields: [tick, sequence, template_id, actor_id, target_id, group_key, group_role]
+group_key: [tick, template_family, actor_id, target_id]
+group_boundaries: [tick, template_family, actor_id, target_id, visibility, reason]
+groupable:
+  move_intent: same_group_key
+  damage_applied: same_group_key_sum_value_preserve_hit_count
+non_groupable: [terminal, status, objective, effect_applied_hidden]
+raw_policy: immutable_ordered_retained
+presentation_policy: aggregation_must_preserve_raw_sequence_range_and_count
+debug_raw_view: allowed

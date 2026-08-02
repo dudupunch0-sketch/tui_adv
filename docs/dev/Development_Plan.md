@@ -10,6 +10,12 @@
 
 > WP-P1 Phase B 기준: 복수 후일담은 허용하되 동일 `exclusive_group`에서는 하나만 허용한다. eligibility는 사건 종료 시 판정하고 카드 공개는 `ending_resolution` 또는 `run_end`로 제한한다. 77개 descriptive condition은 조건 overlay로 승인하고, 50개 `designer_review_required`는 승인 전까지 graph/runtime 입력에서 제외한다.
 
+> WP-L18 전투 계약 정본화: [combat contract index](../content/design_source/contracts/combat_contract_index.md)와 [Claude handoff](../content/design_source/handoffs/combat_contract_handoff.md)가 종료 조건·simulation version·표시명·로그·전술 구역의 owner와 검증 경계를 정의한다. 현재 runtime 구현은 완료로 표시하지 않고 handoff_required로 유지한다.
+>
+> 결정된 종료 우선순위는 forced_stop > captured > surrendered > fled > objective_completed > both_sides_defeated > one_side_defeated > max_ticks다. 낮은 숫자가 우선이며 priority tie는 validator error다. 실제 코드에서 관찰된 simulation version은 v1이다.
+>
+> 후속 read order: 정본 02 자동전투/상황 트리거 → 정본 05 무기 세부 → 정본 08 전투 예시. 이 세 항목은 이번 WP-L18에서 구현 완료로 승격하지 않는다.
+
 ## 0.0 계획 문서 우선순위
 
 1. `docs/dev/Development_Plan.md`: 단일 메인 플랜. 현재 방향, 다음 작업, 우선순위, phase 순서를 여기서 판단한다.

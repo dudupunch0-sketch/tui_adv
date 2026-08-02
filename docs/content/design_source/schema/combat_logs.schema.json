@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","required":["contract_id","group_key","non_groupable"],"properties":{"contract_id":{"const":"combat_log_presentation"},"group_key":{"type":"array","minItems":4},"non_groupable":{"type":"array","minItems":1}}}

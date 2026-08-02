@@ -1,0 +1,18 @@
+contract_id: combat_display_identity
+status: canonical
+effective_date: '2026-08-02'
+runtime_status: handoff_required
+owner: canonical_character_identity_registry
+legacy_policy: migration_warning
+participant_fields:
+  required: [entity_id]
+  optional: [display_name_ref, encounter_alias, generic_role_label, visibility]
+fallback_order: [encounter_alias, canonical_name, declared_generic_role_label, unknown_combatant]
+visibility_values: [public, masked, unknown]
+internal_id:
+  user_visible: forbidden
+  debug_view: allowed
+validation:
+  missing_identity: warning_for_legacy_error_for_new_authoring
+  duplicate_display_name_in_encounter: validator_error
+  empty_label: validator_error

@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","required":["contract_id","supported_versions","unsupported_version"],"properties":{"contract_id":{"const":"combat_simulation_version"},"supported_versions":{"type":"array","minItems":1},"unsupported_version":{"const":"validator_error"}}}

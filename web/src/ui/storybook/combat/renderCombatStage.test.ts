@@ -145,6 +145,22 @@ describe('renderCombatBoard', () => {
     expect(html).toContain('10');
   });
 
+  it('never calls an active piece "생존" — active is participation, not liveness', () => {
+    // 실측: 체력이 0이 된 뒤에도 core는 `active: true`를 유지하고 전투불능은
+    // `Incapacitated` cue로만 나타난다. 생존/전투불능은 보고서의
+    // survivor_ids/defeated_ids가 소유한다.
+    const html = renderCombatBoard(
+      view({
+        frames: [
+          frame(8, [piece({ id: 'ally_1', active: true, cues: ['incapacitated'] })]),
+        ],
+      }),
+    );
+    expect(html).not.toContain('생존');
+    expect(html).toContain('참전');
+    expect(html).toContain('전투불능');
+  });
+
   it('escapes a piece id containing markup', () => {
     const html = renderCombatBoard(
       view({ frames: [frame(1, [piece({ id: '<script>alert(1)</script>' })])] }),

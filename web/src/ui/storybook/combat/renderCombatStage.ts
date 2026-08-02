@@ -69,14 +69,14 @@ export function renderCombatBoard(view: CombatSpectatorView): string {
     return `<div class="combat-stage__board" data-region="combat-board" role="img" aria-label="전투 판, 표시할 프레임이 없다">
       <p class="combat-board__empty">표시할 프레임이 없다.</p>
     </div>
-    <table class="combat-board__table sr-only"><caption>전투 판 요약 표</caption><thead><tr><th scope="col">말 id</th><th scope="col">진영</th><th scope="col">좌표</th><th scope="col">상태</th><th scope="col">cue</th></tr></thead><tbody></tbody></table>`;
+    <table class="combat-board__table sr-only"><caption>전투 판 요약 표</caption><thead><tr><th scope="col">말 id</th><th scope="col">진영</th><th scope="col">좌표</th><th scope="col">참전</th><th scope="col">cue</th></tr></thead><tbody></tbody></table>`;
   }
 
   if (!frame.pieces.length) {
     return `<div class="combat-stage__board" data-region="combat-board" role="img" aria-label="전투 판, tick ${frame.tick}, 표시할 말이 없다">
       <p class="combat-board__empty">표시할 말이 없다 (전투원 0명).</p>
     </div>
-    <table class="combat-board__table sr-only"><caption>전투 판 요약 표</caption><thead><tr><th scope="col">말 id</th><th scope="col">진영</th><th scope="col">좌표</th><th scope="col">상태</th><th scope="col">cue</th></tr></thead><tbody></tbody></table>`;
+    <table class="combat-board__table sr-only"><caption>전투 판 요약 표</caption><thead><tr><th scope="col">말 id</th><th scope="col">진영</th><th scope="col">좌표</th><th scope="col">참전</th><th scope="col">cue</th></tr></thead><tbody></tbody></table>`;
   }
 
   const pieces = frame.pieces;
@@ -126,14 +126,19 @@ function renderPiece(piece: CombatSpectatorPiece, xPercent: number, yPercent: nu
 function renderBoardTable(pieces: CombatSpectatorPiece[]): string {
   const rows = pieces
     .map((p) => {
-      const status = p.active ? '생존' : '비활성';
+      // `active`는 생존 여부가 아니다 — 정본 09의 "활성 전투"(완전 시뮬레이션)
+      // 참가 여부이며 authoring 값에서 온다. 실측 확인: 체력이 0이 된 뒤에도
+      // `active`는 계속 true이고, 전투불능은 `Incapacitated` cue로만 나타난다.
+      // 그래서 이 칸을 "생존"이라고 쓰면 거짓이 된다. 생존/전투불능은
+      // 보고서의 `survivor_ids`/`defeated_ids`가 소유한다.
+      const participation = p.active ? '참전' : '비참전';
       const cueText = p.cues.length ? p.cues.map((cue) => CUE_LABELS[cue]).join(', ') : '없음';
       return `<tr><td>${escapeHtml(p.id)}</td><td>${escapeHtml(SIDE_LABELS[p.side])}</td><td>(${String(
         p.position.x,
-      )}, ${String(p.position.y)})</td><td>${escapeHtml(status)}</td><td>${escapeHtml(cueText)}</td></tr>`;
+      )}, ${String(p.position.y)})</td><td>${escapeHtml(participation)}</td><td>${escapeHtml(cueText)}</td></tr>`;
     })
     .join('');
-  return `<table class="combat-board__table sr-only"><caption>전투 판 요약 표</caption><thead><tr><th scope="col">말 id</th><th scope="col">진영</th><th scope="col">좌표</th><th scope="col">상태</th><th scope="col">cue</th></tr></thead><tbody>${rows}</tbody></table>`;
+  return `<table class="combat-board__table sr-only"><caption>전투 판 요약 표</caption><thead><tr><th scope="col">말 id</th><th scope="col">진영</th><th scope="col">좌표</th><th scope="col">참전</th><th scope="col">cue</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 
 /** 말은 `translate: -50% -50%`로 중심을 좌표에 맞추므로, 투영 범위가

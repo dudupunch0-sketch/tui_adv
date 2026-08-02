@@ -160,7 +160,11 @@ Wave 3 Step 1d-3이 같은 DOM·같은 CSS 변수 위에 `@media
 
 - 보드(`[data-region="combat-board"]`, `role="img"`)는 그래픽 투영이므로
   동등한 semantic `<table class="combat-board__table sr-only">`(말 id /
-  진영 / 좌표 / 상태 / cue)를 항상 함께 렌더한다.
+  진영 / 좌표 / **참전** / cue)를 항상 함께 렌더한다.
+- **`piece.active`를 "생존"으로 표시하지 않는다.** 정본 09의 "활성
+  전투"(완전 시뮬레이션) 참가 여부이며 authoring 정적 값에서 온다 — 실측에서
+  체력이 0이 된 뒤에도 계속 `true`였고 전투불능은 `Incapacitated` cue로만
+  나타났다. 생존·전투불능은 보고서의 `survivor_ids`/`defeated_ids`가 소유한다.
 - 진영은 색만으로 구분하지 않는다 — 아군/적군 각각 고유 글리프(`我`/`敵`),
   채움 대비(먹 채움 vs 짙은 종이 채움), 윤곽선 종류(실선 vs 2px 파선)를
   함께 쓴다. 적 말을 종이색으로 채우면 종이 배경과 대비가 거의 없어

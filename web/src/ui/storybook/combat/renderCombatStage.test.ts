@@ -170,6 +170,107 @@ describe('renderCombatBoard', () => {
   });
 });
 
+// ---------------------------------------------------------------------------
+// Wave 3 Step 1d-3 — WP2: playback wiring (projection range expansion +
+// generated <style> block). The underlying keyframe-string math (I1/I5/I9)
+// is pinned by combatMotion.test.ts; these tests only pin how
+// renderCombatStage.ts feeds that module (I4: which frames/coordinates,
+// nothing recomputed).
+// ---------------------------------------------------------------------------
+describe('renderCombatBoard — Step 1d-3 playback wiring', () => {
+  it('expands the projection range across every frame, not just the last one, so a mid-motion piece never clips the board edge', () => {
+    // ally_1 visits x=99 at tick 0 but rests at x=5 at the final tick. If the
+    // projection only looked at the final frame (1d-2 behaviour), a single
+    // piece there would have span 0 and sit dead-center (50%) — the old
+    // `renders only the last frame` test above already pins that the *last
+    // frame's own rendered position* does not literally contain "99". This
+    // test instead pins the *offset* asserted inside the generated
+    // `@keyframes`, which is the only place tick 0's coordinate can still
+    // show up now that the projection spans all frames.
+    const html = renderCombatBoard(
+      view({
+        frames: [
+          frame(0, [piece({ id: 'ally_1', position: { x: 99, y: 5 } })]),
+          frame(1, [piece({ id: 'ally_1', position: { x: 5, y: 5 } })]),
+        ],
+      }),
+    );
+    expect(html).toContain('<style>');
+    // With the range expanded to [5, 99], tick 0's projected x is 86%
+    // (the far edge of the inset band) rather than the 50% it would be if
+    // only the last frame were considered.
+    expect(html).toMatch(/0% \{ translate: calc\(-50% \+ 72cqw\)/);
+  });
+
+  it('emits no <style> block when there is only one frame (nothing to animate, matches 1d-2 byte-for-byte apart from this)', () => {
+    const html = renderCombatBoard(view({ frames: [frame(1, [piece()])] }));
+    expect(html).not.toContain('<style>');
+  });
+
+  it('emits a <style> block whose animation duration is exactly (frames.length - 1) * tick_millis', () => {
+    const html = renderCombatBoard(
+      view({
+        tick_millis: 150,
+        frames: [
+          frame(0, [piece({ id: 'ally_1', position: { x: 0, y: 0 } })]),
+          frame(1, [piece({ id: 'ally_1', position: { x: 2, y: 0 } })]),
+          frame(2, [piece({ id: 'ally_1', position: { x: 4, y: 0 } })]),
+        ],
+      }),
+    );
+    expect(html).toContain('300ms linear');
+  });
+
+  it('wraps the generated <style> content in prefers-reduced-motion: no-preference', () => {
+    const html = renderCombatBoard(
+      view({
+        frames: [
+          frame(0, [piece({ id: 'ally_1', position: { x: 0, y: 0 } })]),
+          frame(1, [piece({ id: 'ally_1', position: { x: 2, y: 0 } })]),
+        ],
+      }),
+    );
+    expect(html).toContain('<style>@media (prefers-reduced-motion: no-preference)');
+  });
+
+  it('does not animate a piece that is missing from an earlier frame instead of inventing its position', () => {
+    const html = renderCombatBoard(
+      view({
+        frames: [
+          frame(0, [piece({ id: 'ally_1', position: { x: 0, y: 0 } })]),
+          frame(1, [
+            piece({ id: 'ally_1', position: { x: 2, y: 0 } }),
+            piece({ id: 'enemy_1', side: 'enemy', position: { x: 8, y: 0 } }),
+          ]),
+        ],
+      }),
+    );
+    // enemy_1 only exists at tick 1 (the last frame) — no track, no
+    // @keyframes reference for it, but ally_1 (present at every frame)
+    // still gets one.
+    expect(html).not.toContain('data-piece-id="enemy_1"] { animation');
+    expect(html).toMatch(/data-piece-id="ally_1"\] \{ animation/);
+  });
+
+  it('carries a piece\'s per-tick cues/facing through to the generated cue grammar (WP3 end-to-end)', () => {
+    const html = renderCombatBoard(
+      view({
+        frames: [
+          frame(0, [
+            piece({ id: 'ally_1', position: { x: 5, y: 0 }, facing: { x: 1, y: 0 }, cues: ['attack'] }),
+          ]),
+          frame(1, [piece({ id: 'ally_1', position: { x: 5, y: 0 } })]),
+        ],
+      }),
+    );
+    // Identical position at both ticks -> span 0 on both axes -> the base
+    // (pre-cue) offset is 0 at every stop, so the lunge stop's only
+    // non-zero component is the attack contribution itself: unit facing
+    // (1, 0) scaled by the fixed lunge magnitude (4).
+    expect(html).toMatch(/50% \{ translate: calc\(-50% \+ 4cqw\) calc\(-50% \+ 0cqh\)/);
+  });
+});
+
 function logEntry(overrides: Partial<CombatSpectatorLogEntry> = {}): CombatSpectatorLogEntry {
   return {
     tick: 1,
@@ -241,6 +342,71 @@ describe('renderCombatLog', () => {
     );
     expect(html).toContain('data-log-unknown="true"');
     expect(html).toContain('combat.log.made_up_event');
+  });
+
+  // -------------------------------------------------------------------------
+  // Wave 3 Step 1d-3 — WP4: each row's reveal timing is entry.tick *
+  // tick_millis (I6). No aria-live, no reordering, DOM never pruned.
+  // -------------------------------------------------------------------------
+  it('sets animation-delay to entry.tick * tick_millis for each row', () => {
+    const html = renderCombatLog(
+      view({
+        tick_millis: 250,
+        core_log: [logEntry({ tick: 0 }), logEntry({ tick: 3 }), logEntry({ tick: 7 })],
+      }),
+    );
+    expect(html).toContain('style="animation-delay: 0ms"');
+    expect(html).toContain('style="animation-delay: 750ms"');
+    expect(html).toContain('style="animation-delay: 1750ms"');
+  });
+
+  it('anchors log reveal to the first frame tick so the board and the log share one origin', () => {
+    // 실측 데이터의 첫 프레임 tick은 0이 아니라 1이다. 보드는 프레임 인덱스
+    // k를 k × tick_millis에 놓으므로 tick 1이 0ms다. 로그를 entry.tick ×
+    // tick_millis로 놓으면 같은 사건이 보드보다 한 tick 늦게 나타난다.
+    const html = renderCombatLog(
+      view({
+        tick_millis: 100,
+        frames: [frame(1, [piece()]), frame(2, [piece()]), frame(3, [piece()])],
+        core_log: [logEntry({ tick: 1 }), logEntry({ tick: 3 })],
+      }),
+    );
+    expect(html).toContain('style="animation-delay: 0ms"');
+    expect(html).toContain('style="animation-delay: 200ms"');
+    expect(html).not.toContain('style="animation-delay: 100ms"');
+    expect(html).not.toContain('style="animation-delay: 300ms"');
+  });
+
+  it('never produces a negative reveal delay when a log tick precedes the first frame', () => {
+    const html = renderCombatLog(
+      view({
+        tick_millis: 100,
+        frames: [frame(5, [piece()]), frame(6, [piece()])],
+        core_log: [logEntry({ tick: 2 })],
+      }),
+    );
+    expect(html).toContain('style="animation-delay: 0ms"');
+    expect(html).not.toMatch(/animation-delay: -/);
+  });
+
+  it('keeps core_log array order (sequence order) even when reveal delays are computed per row', () => {
+    const html = renderCombatLog(
+      view({
+        tick_millis: 100,
+        core_log: [
+          logEntry({ tick: 2, sequence: 0, actor_id: 'first_in_sequence' }),
+          logEntry({ tick: 2, sequence: 1, actor_id: 'second_in_sequence' }),
+        ],
+      }),
+    );
+    expect(html.indexOf('first_in_sequence')).toBeLessThan(html.indexOf('second_in_sequence'));
+  });
+
+  it('never adds aria-live anywhere in the log region', () => {
+    const html = renderCombatLog(
+      view({ core_log: [logEntry(), logEntry({ tick: 5 })] }),
+    );
+    expect(html).not.toContain('aria-live');
   });
 });
 

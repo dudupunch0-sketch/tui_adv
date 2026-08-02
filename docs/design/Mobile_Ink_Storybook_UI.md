@@ -115,7 +115,7 @@ Web Storybook은 게임 HUD가 달린 앱처럼 보이면 안 된다. 기본 화
 - **요약 로그 및 칩**: 결과 로그(`.story-result-log`)는 최근 1행 및 필수 업적/아이템 행만 노출하도록 압축하며, GlyphFX stable-terms 칩은 figcaption 옆 한 줄 인라인으로 축소한다.
 - **모바일 간격**: 560px 이하 해상도에서 본문 폰트 `1rem/1.7`, 문단 간격 `0.7em`, 선택지 `min-height: 48px` 및 padding 축소로 조밀한 밀도를 확보한다.
 
-## 전투 관전 표면 (Combat Spectator Surface, Wave 3 Step 1d-2)
+## 전투 관전 표면 (Combat Spectator Surface, Wave 3 Step 1d-2·1d-3)
 
 `page.combat`(`CombatSpectatorPage`)이 있을 때만 `.storybook-page` 안에
 `renderCombatStage()`가 조립하는 별도 block이다. 없으면(기존 52개 인카운터)
@@ -123,10 +123,11 @@ Web Storybook은 게임 HUD가 달린 앱처럼 보이면 안 된다. 기본 화
 (`web/src/ui/storybook/render.test.ts`의 `I5: emits no combat markup at all
 when page.combat is absent`).
 
-이 표면은 **정지 프레임**(마지막 `view.frames` 항목)이다 — 시간 조작 금지
-(정본 13)와 `prefers-reduced-motion` 안정 상태 요구가 겹치는 지점이며,
-Wave 3 Step 1d-3이 같은 DOM·같은 CSS 변수 위에 `@media
-(prefers-reduced-motion: no-preference)` 안에서만 모션을 얹는다.
+DOM은 **마지막 `view.frames` 항목**(정지 프레임)이다 — Wave 3 Step 1d-3부터는
+그 위에 `@media (prefers-reduced-motion: no-preference)` 안에서만 재생 연출
+(모션)이 얹힌다. `prefers-reduced-motion: reduce`에서는 이 media block 전체가
+적용되지 않으므로 1d-2의 정지 프레임이 그대로 최종 상태다 — 재생 연출 계약은
+아래 별도 절에 있다.
 
 ### 70:30 레이아웃
 
@@ -173,8 +174,11 @@ Wave 3 Step 1d-3이 같은 DOM·같은 CSS 변수 위에 `@media
   `GrayText` 시스템 색 키워드로 대체해 진영·cue 구분이 고대비 모드에서도
   사라지지 않는다.
 - 로그 영역(`[data-region="combat-log"]`)은 `aria-label`만 갖는다 —
-  이 슬라이스는 정적 렌더이므로 `aria-live`는 쓰지 않는다(1d-3에서
-  재생 노출과 함께 판단).
+  Wave 3 Step 1d-3이 재생 노출(tick 시각 opacity 등장)을 얹은 뒤에도
+  `aria-live`는 쓰지 않는다: 초당 여러 줄이 붙으면 스크린리더가 로그에
+  도배당한다(정본 13의 "로그 도배를 막는다"와 같은 취지). 노출 전에도
+  DOM에서 제거하지 않으므로(아래 재생 연출 계약 참고) 전체 로그는 항상
+  읽을 수 있다.
 
 ### 로그·보고서 계약
 
@@ -209,6 +213,90 @@ Wave 3 Step 1d-3이 같은 DOM·같은 CSS 변수 위에 `@media
   브라우저가 높이 상한을 만족시키려고 **너비**를 줄인다(764px 칸에서 420px로
   축소됐다). `inline-size: 100%`로 너비를 확정해야 한다.
 
+### 재생 연출 계약 (Playback Contract, Wave 3 Step 1d-3)
+
+`renderCombatBoard`/`renderCombatLog`(`renderCombatStage.ts`)가 매 호출마다
+결정론적으로 만드는 CSS `@keyframes`/`animation`을 데이터 그대로 `<style>`
+요소로 방출한다(실제 keyframe 텍스트 생성은 `combatMotion.ts`가 전담). 마운트
+훅이 없는 문자열 렌더러(`renderStorybookPage`) 구조를 그대로 쓰기 위한
+선택이다 — `element.animate()`(WAAPI)를 쓰려면 `web/src/main.ts` 배선이
+필요하고 `prefers-reduced-motion`을 JS로 다시 확인해야 하며 결정론적 단위
+테스트로 검증하기 어렵다. **트레이드오프**: `<style>` 요소가 `<body>` 안에
+들어간다 — HTML 스펙상 `style`은 metadata content이므로 body 안에서는
+엄격히는 비적합이다. 모든 브라우저가 그래도 적용하며 기능 문제는 없다.
+
+- **총 재생 길이는 정확히 `(view.frames.length - 1) × view.tick_millis`
+  ms다.** 연출을 위해 늘이거나 줄이지 않는다(정본 13: "시뮬레이션 시간과
+  화면 시간은 항상 일치"). `frames.length <= 1`이면 애니메이션을 만들지
+  않고 정지 프레임만 남긴다.
+- 위치 모션은 `translate`만 쓴다(`left`/`top`은 1d-2가 이미 고정했다).
+  `translate`의 백분율은 컨테이너가 아니라 요소 자기 크기 기준이므로,
+  보드-상대 오프셋은 `%` 대신 컨테이너 쿼리 단위(`cqw`/`cqh`)로 쓴다 —
+  `.combat-stage__board`에 `container-type: size`를 준다(그리드 행이라
+  높이가 내용과 무관하게 정해지므로 size containment가 안전하다). 부수
+  효과(의도됨): 말 크기(`12cqi`/`15cqi`)의 가장 가까운 컨테이너가
+  `.combat-stage`에서 이 보드로 바뀌어 말이 1d-2보다 살짝 작아진다.
+- 투영 범위(`projectAxis`의 min/max)는 1d-2의 "마지막 프레임만"에서
+  **전체 프레임**으로 확장했다 — 마지막 프레임만으로 범위를 잡으면 재생
+  중 이동하는 말이 그 범위 밖 좌표를 지날 때 보드를 벗어나 보인다. 전투원이
+  매 프레임 같은 좌표에 머무는 저작 시나리오에서는 min/max가 그대로이므로
+  1d-2 테스트 기대값은 바뀌지 않았다.
+- 각 말의 keyframe은 **마지막 프레임 대비 상대 오프셋**으로 표현한다(마지막
+  프레임 자신의 오프셋은 항상 0). 그래서 애니메이션 종료 위치와
+  `prefers-reduced-motion: reduce`의 정지 위치가 `animation-fill-mode`
+  의존 없이 정확히 같다.
+- **cue 5종 연출 문법**(정본 13): `attack`은 `piece.facing` 방향으로 짧게
+  전진 후 복귀(`facing`이 `(0, 0)`이거나 없으면 생략 — 방향을 지어내지
+  않는다), `hit`은 방향 없는 감쇠 2단 진동, `evade`는 보드 Y축(정본 09:
+  "측면: 화면 위·아래") 방향 짧은 이동 후 복귀, `incapacitated`는 1d-2가
+  이미 쓰는 `[data-active="false"]`의 dimming 값(`opacity: 0.55`,
+  `filter: saturate(0.4)`)을 그대로 재사용해 그 tick 자신의 `cues` 배열에
+  있을 때만 적용한다(다른 tick으로 지속을 추론하지 않는다).
+  - `balance_broken`은 `translate` 좌우 흔들림 **+ `rotate` 기울어짐**이다
+    (정본 13이 "흔들림/기울어짐" 둘 다 요구한다). 흔들림만 쓰면 `hit`의 진동과
+    구별되지 않아 공용 문법이 무너진다. `rotate`는 `translate`와 같은 개별
+    transform 속성이라 컴포지터 스레드에서 처리되고 레이아웃을 만들지 않는다.
+    기울지 않은 stop에도 `rotate: 0deg`를 명시한다 — 빼면 보간 대상에서 빠져
+    한쪽으로 기운 채 남는다.
+- 전투불능 감광(`opacity: 0.55` / `filter: saturate(0.4)`)은 **정적 층**에도
+  둔다(`[data-cue-incapacitated="true"]`). 애니메이션 안에만 두면 `reduce`에서
+  마지막 프레임이 전투불능인데도 말이 멀쩡하게 보여 재생 경로와 정지 경로의
+  그림이 달라진다. 반대로 감광 속성을 **모든** keyframe stop에 내보내면
+  `opacity: 1`이 재생 내내 `[data-active="false"]`의 정적 감광을 덮어쓰므로,
+  `incapacitated` cue가 한 번이라도 있는 트랙에서만 내보낸다.
+- 핵심 로그 각 줄은 `(entry.tick − frames[0].tick) × view.tick_millis`ms에
+  opacity로 나타난다
+  (`animation-delay` 인라인 + `storybook.css`의 정적 `.combat-log__row`
+  규칙). **원점은 `frames[0].tick`이다** — 보드가 프레임 인덱스 k를
+  `k × tick_millis`에 놓고 실측 데이터의 첫 tick이 0이 아니라 1이므로, 원점을
+  빼지 않으면 같은 사건이 보드보다 한 tick 늦게 나타나 정본 13의 색·아이콘
+  동기화가 깨진다. `.combat-log__row`에 `opacity: 0` 기본값을 두지 않는다 —
+  `animation-fill-mode: both`가 delay 구간에 이미 `from` 상태를 적용하고,
+  기본값으로 두면 애니메이션이 돌지 않을 때 로그가 영구히 보이지 않는다. `core_log` 배열 순서(`sequence`)는 그대로 유지하며, 노출 전에도
+  DOM에서 제거하지 않는다.
+- 모든 `animation`/`transition`/`@keyframes` 선언(생성된 `<style>` 포함)은
+  `@media (prefers-reduced-motion: no-preference)` 안에만 있다. `reduce`
+  에서는 이 media block 전체가 무효이므로 1d-2가 만든 출력이 그대로다.
+- 신규 색상 리터럴 0개 — 기존 CSS 커스텀 프로퍼티/토큰만 쓴다. 새 이미지·
+  SVG 파일도 만들지 않았다(정본 13: 공용 좌표 이동·진동으로 자산 비용
+  절감).
+
+### 정본 09 축 계약 위반 (재생 중에만 드러남 — 알려진 core 결함, WP5)
+
+정본 09: **"화면 왼쪽: 아군 영역 / 화면 오른쪽: 적 영역"**. 저작 시점
+좌표(아군 x=0 / 도전자 x=5)는 이 계약을 지킨다. 그런데 실제 프레임을
+덤프해 보면 아군 x가 1, 2, 3, 2, 3, … 도전자 x가 4, 3, 2, 3, 2, … 로
+진동하며 **tick 3부터 아군이 도전자보다 오른쪽에 놓인다** — 역할 가중치
+`preferred_distance: 0`이 두 말을 서로 통과시키기 때문이다. 저작 시점
+좌표만 검사하는 테스트로는 잡히지 않는다(저작 값 자체는 계약을 지킨다).
+
+이 슬라이스(web)는 **이 사실을 문서에 남기는 것 이상을 하지 않는다** —
+렌더러가 좌표를 왜곡해 축 계약을 "고치면" 거리 읽기 자체가 망가진다. 고칠
+곳은 escape-core의 AI·충돌 규칙이며 별도 슬라이스다. `crates/`는 이
+슬라이스에서 무수정이다(`combat_resolution.rs`의 역할 가중치 로직 변경
+필요). 게이트 플래그(`combat_spectator_preview_unlocked`)를 유지하는 또
+하나의 근거다.
+
 ### 알려진 갭
 
 전투원 표시 이름이 없다. 관전 화면과 보고서는 core가 주는 내부
@@ -217,6 +305,10 @@ id(`wuxia_spectator_bout_ally` 등)를 그대로 보여준다.
 에도 표시 이름 필드가 없어 renderer가 유도할 수 없다 — 이름을 발명하지 않고
 남겨 두었다. 게이트를 푸는 슬라이스 전에 authoring에 이름 필드를 추가할지
 결정해야 한다.
+
+Wave 3 Step 1d-4(남은 범위): 게이트 플래그 제거, wasm 재빌드, 5뷰포트
+실화면 QA, 전투원 표시 이름 — `docs/design/Combat_System_Implementation_Plan_Index.md`의
+단계 순서 표를 본다.
 
 ## Acceptance checklist
 

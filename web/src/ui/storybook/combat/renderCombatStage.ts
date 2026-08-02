@@ -16,9 +16,11 @@ import {
   isKnownCombatLogTemplateId,
   roundHundredthsToInt,
 } from './combatLogTemplates';
+import { buildCombatMotionCss } from './combatMotion';
+import type { PieceMotionTrack } from './combatMotion';
 
 // ---------------------------------------------------------------------------
-// Wave 3 Step 1d-2 — 관전 표면 렌더러.
+// Wave 3 Step 1d-2 — 관전 표면 렌더러. Step 1d-3 — 재생 연출(모션) 배선.
 //
 // Hard invariant: this module only *formats* `page.combat`. It never
 // recomputes damage, hit/miss, win/loss, cue derivation, log-importance
@@ -26,6 +28,12 @@ import {
 // already decided all of that (정본 13). The only math performed here is
 // display conversion: hundredths -> rounded int, tick -> elapsed ms,
 // coordinate -> board percentage projection, array length display.
+//
+// Step 1d-3 adds one more piece of display conversion: per-tick projected
+// coordinates -> a generated CSS `<style>` block (`combatMotion.ts` builds
+// the actual `@keyframes` text; this module only decides *which* frames/
+// coordinates feed it). See `combatMotion.ts`'s module comment for the full
+// I1–I5/I9 invariant list that generator satisfies.
 // ---------------------------------------------------------------------------
 
 /** cue 5종 -> web 글리프 (I11 cue 표. terminal의 `>`/`<`/`~`/`!`/`x` 표식과
@@ -59,11 +67,19 @@ const SIDE_LABELS: Record<CombatSide, string> = {
   enemy: '적군',
 };
 
-/** `view.frames`의 마지막 프레임만 그린다 (정적 스냅샷 — 1d-3이 시간축을
- * 얹는다). 좌표는 마지막 프레임 말들의 min/max로 0~100% 비례 투영한다.
- * `span === 0`이면 0으로 나누지 않고 50%(중앙)에 둔다. */
+/** `view.frames`의 마지막 프레임을 그린다(정지 상태·`reduce` 최종 상태 —
+ * 1d-2가 확보). 좌표 투영 범위는 Step 1d-3부터 **전체 프레임**의 말 min/max로
+ * 확장한다: 마지막 프레임만으로 범위를 잡으면 재생 중 이동하는 말이 그 범위
+ * 밖의 좌표를 지나칠 때 보드를 벗어나 보인다(§4-2). `span === 0`이면 0으로
+ * 나누지 않고 50%(중앙)에 둔다.
+ *
+ * 이 투영 범위 확장은 로직 변경이 아니라 1d-2가 이미 쓰던 `projectAxis`의
+ * 입력을 넓히는 것뿐이다 — 전투원이 매 프레임 같은 좌표에 머무는 저작
+ * 시나리오(현재 1d-2 테스트 대부분)에서는 min/max가 그대로이므로 기존 기대값이
+ * 바뀌지 않는다. */
 export function renderCombatBoard(view: CombatSpectatorView): string {
-  const frame = view.frames.length ? view.frames[view.frames.length - 1] : undefined;
+  const frames = view.frames;
+  const frame = frames.length ? frames[frames.length - 1] : undefined;
 
   if (!frame) {
     return `<div class="combat-stage__board" data-region="combat-board" role="img" aria-label="전투 판, 표시할 프레임이 없다">
@@ -79,14 +95,15 @@ export function renderCombatBoard(view: CombatSpectatorView): string {
     <table class="combat-board__table sr-only"><caption>전투 판 요약 표</caption><thead><tr><th scope="col">말 id</th><th scope="col">진영</th><th scope="col">좌표</th><th scope="col">참전</th><th scope="col">cue</th></tr></thead><tbody></tbody></table>`;
   }
 
-  const pieces = frame.pieces;
-  const xs = pieces.map((p) => p.position.x);
-  const ys = pieces.map((p) => p.position.y);
+  const allPieces = frames.flatMap((f) => f.pieces);
+  const xs = allPieces.map((p) => p.position.x);
+  const ys = allPieces.map((p) => p.position.y);
   const minX = Math.min(...xs);
   const maxX = Math.max(...xs);
   const minY = Math.min(...ys);
   const maxY = Math.max(...ys);
 
+  const pieces = frame.pieces;
   const pieceMarkup = pieces
     .map((p) => renderPiece(p, projectAxis(p.position.x, minX, maxX), projectAxis(p.position.y, minY, maxY)))
     .join('');
@@ -95,10 +112,79 @@ export function renderCombatBoard(view: CombatSpectatorView): string {
   const enemyCount = pieces.filter((p) => p.side === 'enemy').length;
   const boardLabel = `전투 판, tick ${frame.tick}, 아군 ${allyCount}명 · 적군 ${enemyCount}명`;
 
-  return `<div class="combat-stage__board" data-region="combat-board" role="img" aria-label="${escapeHtml(boardLabel)}">
+  const motionStyle = renderMotionStyleBlock(view, minX, maxX, minY, maxY);
+
+  return `${motionStyle}<div class="combat-stage__board" data-region="combat-board" role="img" aria-label="${escapeHtml(boardLabel)}">
     ${pieceMarkup}
   </div>
   ${renderBoardTable(pieces)}`;
+}
+
+/** 재생 연출 CSS를 만든다(Step 1d-3). 실제 keyframe 문자열 생성은
+ * `combatMotion.ts`가 전담한다 — 여기서는 어떤 프레임·좌표를 넘길지만
+ * 결정한다(I4: 판정 재계산 0회).
+ *
+ * `<style>` 요소를 `<body>` 안에 두는 것은 HTML 스펙상 엄격히는 비적합이다
+ * (`style`은 metadata content). 모든 브라우저가 그래도 적용하고 기능 문제는
+ * 없다 — `renderStorybookPage`가 문자열 렌더러라 마운트 훅이 없으므로
+ * `element.animate()`(WAAPI)를 쓰려면 `web/src/main.ts` 배선이 필요하고,
+ * `prefers-reduced-motion`을 JS로 다시 확인해야 하며, 결정론적 단위 테스트로
+ * 검증하기 어렵다(§4-1). 데이터에서 만든 `<style>`을 렌더 결과에 함께
+ * 방출하면 문자열 렌더러 구조를 그대로 쓰면서 미디어 쿼리로 네이티브
+ * 처리되고, 생성된 CSS 문자열이 결정론적이므로 단위 테스트로 총 길이·오프셋
+ * 좌표를 그대로 고정할 수 있다. 이 트레이드오프를 여기 코드 주석과
+ * `docs/design/Mobile_Ink_Storybook_UI.md`에 남긴다. */
+function renderMotionStyleBlock(
+  view: CombatSpectatorView,
+  minX: number,
+  maxX: number,
+  minY: number,
+  maxY: number,
+): string {
+  const tracks = collectPieceMotionTracks(view.frames, minX, maxX, minY, maxY);
+  const motion = buildCombatMotionCss({ tickMillis: view.tick_millis, tracks });
+  return motion.css ? `<style>${motion.css}</style>` : '';
+}
+
+/** 말 하나의 트랙은 그 말이 **모든** 프레임에 등장할 때만 만든다. 현재 core
+ * 출력은 매 tick 같은 전투원 집합을 유지하며(퇴장 없이 `active`만 바뀐다)
+ * 이 경우가 항상이지만, 만에 하나 어떤 tick의 `pieces`에 말이 아예 없으면 그
+ * tick의 좌표를 지어낼 수 없으므로(I2: 임의의 waypoint 금지) 그 말은
+ * 애니메이션 없이 마지막 프레임 정지 위치로만 남긴다. */
+function collectPieceMotionTracks(
+  frames: CombatSpectatorView['frames'],
+  minX: number,
+  maxX: number,
+  minY: number,
+  maxY: number,
+): PieceMotionTrack[] {
+  if (frames.length <= 1) return [];
+  const lastFrame = frames[frames.length - 1];
+  const tracks: PieceMotionTrack[] = [];
+  for (const piece of lastFrame.pieces) {
+    const points: PieceMotionTrack['frames'] = [];
+    let presentInEveryFrame = true;
+    for (const f of frames) {
+      const match = f.pieces.find((p) => p.id === piece.id);
+      if (!match) {
+        presentInEveryFrame = false;
+        break;
+      }
+      points.push({
+        x: projectAxis(match.position.x, minX, maxX),
+        y: projectAxis(match.position.y, minY, maxY),
+        // WP3: carry this tick's own cue set/facing through verbatim — the
+        // cue presentation grammar (combatMotion.ts) never infers either
+        // from a neighboring tick (I2/I4).
+        cues: match.cues,
+        facing: match.facing,
+      });
+    }
+    if (presentInEveryFrame) {
+      tracks.push({ pieceId: piece.id, frames: points });
+    }
+  }
+  return tracks;
 }
 
 function renderPiece(piece: CombatSpectatorPiece, xPercent: number, yPercent: number): string {
@@ -168,12 +254,32 @@ function formatPercent(value: number): string {
  * 명시한다 (I7, 조용한 truncation 금지). */
 const WEB_CORE_LOG_LIMIT = 40;
 
-/** `core_log`만 문장화한다. `full_log`는 개수만 표시한다. */
+/** `core_log`만 문장화한다. `full_log`는 개수만 표시한다.
+ *
+ * Step 1d-3 (WP4): 각 줄의 노출 시각은 `entry.tick × view.tick_millis`다
+ * (I6). `sequence` 순서는 core가 만든 `core_log` 배열 순서 그대로 유지한다
+ * (`.slice`/`.map`은 재정렬하지 않는다) — 같은 tick의 여러 줄이 뒤섞이지
+ * 않는다. 노출 전에도 DOM에서 제거하지 않는다: `animation-delay`로 opacity만
+ * 늦추므로(storybook.css의 `.combat-log__row` 규칙), 스크린리더는 처음부터
+ * 전체 로그를 읽을 수 있고 `full_log` 개수 표시와도 어긋나지 않는다.
+ * `aria-live`는 쓰지 않는다 — 초당 여러 줄이 붙으면 로그 도배가 된다(정본
+ * 13의 "로그 도배를 막는다"와 같은 취지). `reduce`에서는 `no-preference`
+ * 안에만 있는 이 애니메이션 자체가 적용되지 않으므로 전부 즉시 보인다(I3). */
 export function renderCombatLog(view: CombatSpectatorView): string {
   const metaText = `전체 로그 ${view.full_log.length}건 (일시정지 또는 전투 종료 후 별도 열람, 이 화면은 개수만 표시)`;
   const total = view.core_log.length;
   const shown = Math.min(total, WEB_CORE_LOG_LIMIT);
-  const rows = view.core_log.slice(0, shown).map(renderLogRow).join('');
+  // 로그 노출 시각의 원점은 **보드 재생의 원점과 같아야** 한다. 보드는
+  // 프레임 인덱스 k를 `k × tick_millis`에 놓으므로 첫 프레임(= tick
+  // `frames[0].tick`)이 0ms다. 실측 데이터의 첫 프레임 tick은 0이 아니라 1이라,
+  // 로그를 `entry.tick × tick_millis`로 놓으면 같은 사건이 보드보다 한 tick
+  // 늦게 나타난다(100ms 어긋남). 정본 13의 "상단 연출과 하단 로그 동기화"를
+  // 깨뜨리므로 원점을 빼서 맞춘다.
+  const originTick = view.frames.length ? view.frames[0].tick : 0;
+  const rows = view.core_log
+    .slice(0, shown)
+    .map((entry) => renderLogRow(entry, view.tick_millis, originTick))
+    .join('');
   const emptyLine = total === 0 ? '<li class="combat-log__empty">핵심 로그가 없다.</li>' : '';
   const omittedLine =
     total > shown ? `<li class="combat-log__omitted">…(생략 ${total - shown}줄)</li>` : '';
@@ -190,7 +296,11 @@ export function renderCombatLog(view: CombatSpectatorView): string {
  * `damage_applied`는 같은 `DamageApplied` 사건에서 나오기 때문에 대응이
  * 증명 가능하다. 나머지 5개 template id는 대응하는 cue가 core에 없으므로
  * `data-cue`를 붙이지 않고 중립 잉크색으로 둔다 — 대응을 발명하지 않는다. */
-function renderLogRow(entry: CombatSpectatorLogEntry): string {
+function renderLogRow(
+  entry: CombatSpectatorLogEntry,
+  tickMillis: number,
+  originTick: number,
+): string {
   const line = combatLogTemplateLine(entry);
   const isDamageApplied = entry.template_id === 'combat.log.damage_applied';
   const cueAttr = isDamageApplied ? ' data-cue="hit"' : '';
@@ -200,7 +310,14 @@ function renderLogRow(entry: CombatSpectatorLogEntry): string {
   const unknownAttr = isKnownCombatLogTemplateId(entry.template_id)
     ? ''
     : ' data-log-unknown="true"';
-  return `<li class="combat-log__row" data-template-id="${escapeHtml(
+  // `animation-delay`만 인라인으로 얹는다 — `animation`(이름·길이·이징) 자체는
+  // storybook.css의 정적 `.combat-log__row` 규칙이 준다. 인라인 longhand가
+  // 외부 shorthand보다 그 속성 하나만 우선하는 표준 캐스케이드를 그대로
+  // 쓴다(WP1 keyframe 이름과 달리 매 행마다 다른 CSS 텍스트를 만들 필요가
+  // 없다).
+  const revealMillis = Math.max(0, entry.tick - originTick) * tickMillis;
+  const revealDelay = ` style="animation-delay: ${String(revealMillis)}ms"`;
+  return `<li class="combat-log__row"${revealDelay} data-template-id="${escapeHtml(
     entry.template_id,
   )}"${cueAttr}${unknownAttr}>${cueGlyph}${escapeHtml(line)}</li>`;
 }

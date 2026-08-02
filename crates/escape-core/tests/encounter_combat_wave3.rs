@@ -380,3 +380,27 @@ fn encounter_without_combat_still_yields_no_combat_key_in_json() {
     let value = serde_json::to_value(&page).expect("ScenePage should serialize");
     assert!(value.as_object().unwrap().get("combat").is_none());
 }
+
+/// WP-4 regression: a `ScenePage` filled by the *real* systemic combat
+/// producer (not the synthetic `CombatSpectatorPage` used in
+/// `scene_page_combat_boundary.rs`) still round-trips losslessly through
+/// serde, and the `"combat"` key is present with a non-empty view.
+#[test]
+fn systemic_combat_scene_page_round_trips_through_serde() {
+    let bundle = bundle_with_combat(|_| {});
+    let index = index_content_bundle(&bundle).expect("bundle should index");
+    let state = new_game_from_content_at(9, &index, LOCATION_ID).expect("game should start");
+    let page = scene_page_from_content(&state, &index).expect("scene page should render");
+    assert!(page.combat.is_some());
+
+    let json = serde_json::to_string(&page).expect("ScenePage should serialize to string");
+    let value: Value = serde_json::from_str(&json).expect("serialized JSON should parse");
+    assert!(
+        value.as_object().unwrap().get("combat").is_some(),
+        "combat key must appear once ScenePage.combat is Some"
+    );
+
+    let restored: escape_core::ScenePage =
+        serde_json::from_str(&json).expect("ScenePage should deserialize");
+    assert_eq!(restored, page);
+}

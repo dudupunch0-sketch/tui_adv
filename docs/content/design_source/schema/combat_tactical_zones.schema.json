@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","required":["contract_id","coordinate_basis","validation"],"properties":{"contract_id":{"const":"combat_tactical_zones"},"coordinate_basis":{"type":"object"},"validation":{"type":"object"}}}

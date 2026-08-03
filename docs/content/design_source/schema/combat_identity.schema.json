@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","required":["contract_id","fallback_order","internal_id"],"properties":{"contract_id":{"const":"combat_display_identity"},"fallback_order":{"type":"array","minItems":4},"internal_id":{"type":"object","required":["user_visible"]}}}

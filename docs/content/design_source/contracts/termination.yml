@@ -1,0 +1,25 @@
+contract_id: combat_termination
+status: canonical
+effective_date: '2026-08-02'
+runtime_status: handoff_required
+owners:
+  engine_primitive: gamecore
+  objective_mapping: authoring
+priority_order:
+  - {id: forced_stop, priority: 10}
+  - {id: captured, priority: 20}
+  - {id: surrendered, priority: 30}
+  - {id: fled, priority: 40}
+  - {id: objective_completed, priority: 50}
+  - {id: both_sides_defeated, priority: 60}
+  - {id: one_side_defeated, priority: 70}
+  - {id: max_ticks, priority: 80}
+primitive_facts: [forced_stop_requested, actor_captured, actor_surrendered, actor_fled, objective_progressed, both_sides_defeated, one_side_defeated, tick_limit_reached]
+tie_policy: validator_error
+mutual_defeat_primitive: preserved
+objective_mapping:
+  allowed_result_kinds: [victory, defeat, escape, surrender, capture, objective, forced_stop]
+  required_fields: [id, kind, required_facts, result]
+  unknown_fact: validator_error
+  unknown_result: validator_error
+  terminal_objective_required: true

@@ -1,0 +1,24 @@
+contract_id: combat_tactical_zones
+status: canonical
+effective_date: '2026-08-02'
+runtime_status: handoff_required
+owners:
+  authoring_semantics: authoring
+  validation_projection: gamecore
+  labels: renderer
+coordinate_basis:
+  normalized_bounds: [0.0, 1.0]
+  optional_projection: encounter_local_grid
+  raw_coordinates: debug_only
+default_layout:
+  depth_boundaries: [0.0, 0.33, 0.66, 1.0]
+  lane_boundaries: [0.0, 0.5, 1.0]
+zone_fields: [id, bounds, purpose, accessibility_label]
+purposes: [start, objective, cover, escape, hazard]
+validation:
+  min_less_than_max: validator_error
+  out_of_bounds: validator_error
+  overlap: validator_error
+  incomplete_coverage: validator_error
+  missing_accessibility_label: validator_error
+author_override: allowed_with_same_invariants

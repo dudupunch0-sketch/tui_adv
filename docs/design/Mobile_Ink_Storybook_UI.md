@@ -183,9 +183,11 @@ DOM은 **마지막 `view.frames` 항목**(정지 프레임)이다 — Wave 3 Ste
 ### 로그·보고서 계약
 
 - `core_log`만 문장화한다(`combatLogTemplates.ts`, 6개 template id, terminal
-  `combat_log_template_line`과 글자 단위 일치). `full_log`는 개수만 표시하고
-  전체 로그 열람 UI는 만들지 않는다(정본 07). 표시 상한(`WEB_CORE_LOG_LIMIT
-  = 40`)을 넘으면 `…(생략 N줄)`을 반드시 출력한다.
+  `combat_log_template_line`과 글자 단위 일치). 표시 상한(`WEB_CORE_LOG_LIMIT
+  = 40`)을 넘으면 `…(생략 N줄)`을 반드시 출력한다. 로그 영역 메타 줄
+  (`.combat-log__meta`)은 `combat.report`가 있을 때만 "아래 전체 로그
+  열람에서 확인할 수 있다"고 말한다 — 전투 진행 중에는 열람 가능하다고
+  주장하지 않는다(아래 "전체 로그 열람" 절, I2).
 - 알 수 없는 template_id는 버리지 않고 `data-log-unknown="true"` + id를
   노출하는 fallback 문장을 만든다.
 - `combat.report`가 없으면(전투 진행 중) `.combat-report` 섹션 자체를
@@ -195,6 +197,64 @@ DOM은 **마지막 `view.frames` 항목**(정지 프레임)이다 — Wave 3 Ste
   MVP·이전 전투 비교)은 문구도 계산도 만들지 않는다.
 - fingerprint를 표시하는 요소에는 `simulation_version`을 같은 요소 안에
   둔다(정본 03: 결정성은 같은 `simulation_version` 안에서만 보장).
+
+### 전체 로그(`full_log`) 열람 (Wave 3 Step 1d-4 continue)
+
+정본 07/13: "전체 로그와 상세 수치는 일시정지 또는 전투 종료 뒤 별도로
+열람한다." 이 슬라이스는 일시정지 흐름을 만들지 않으므로, 열람 진입점은
+**전투 종료 뒤(`combat.report`가 `Some`)에만** 존재한다(`renderCombatStage.ts`의
+`renderCombatFullLog`, I2). 전투 진행 중에는 이 섹션 자체가 출력에 없다 —
+"나중에 열람 가능"이라는 미래형 서술은 로그 메타 줄이 대신 한다(위 절 참고).
+
+- `view.full_log`만 읽는다(I1) — core가 이미 누설 차단
+  (`AttackRoll`/`EffectSuppressed` 제외, Hidden/Conditional 효과 id 마스킹)을
+  마친 배열이라 resolution·execution 레벨에는 접근하지 않는다.
+- 상한이 없다(I4) — `full_log`의 모든 줄을 `<ol class="combat-full-log__list">`
+  에 낸다. 넘치는 길이는 `storybook.css`의 내부 스크롤
+  (`max-block-size` + `overflow-y: auto`)이 처리하며 DOM에서 행을 빼지
+  않는다. 핵심 로그의 `WEB_CORE_LOG_LIMIT = 40` 상한과는 별개이며 그대로
+  둔다.
+- `entry.importance`(`routine`/`important`/`decisive`)를 그대로 쓴다(I5) —
+  renderer가 중요도를 다시 판단하지 않는다. 각 줄은 `data-importance`와
+  정본 13의 한국어 라벨(`일반`/`중요`/`결정적`)을 함께 낸다(I9: 색만으로
+  전달하지 않는다).
+- `core_log`는 `full_log`의 `importance >= important` 부분집합이므로(정본
+  13), 그 조건을 그대로 판정에 써서 `data-in-core-log="true"`를 붙인다(I6).
+  다만 **대응 관계는 목록 앞에서 한 번만 문장으로 밝힌다**
+  (`.combat-full-log__legend`). 줄마다 "핵심 로그에도 있음" 배지를 붙였을
+  때 실측에서 64줄 중 32줄이 두 줄로 늘어나 목록을 훑을 수 없었고, 중요도
+  칩(`중요`/`결정적`)이 이미 같은 것을 말하고 있었다 — core_log가 정확히
+  `importance >= 중요`이기 때문이다. 배지를 빼자 390px에서 줄 높이가 43px로
+  균일해지고 목록 전체 높이가 3551→3039px로 줄었다.
+  `states the core-log correspondence once, not on every row`가 배지
+  재도입을 잡는다.
+- 문장은 `combatLogTemplateLine`을 그대로 쓴다(I3) — 새 문장 형식을 만들지
+  않는다. 알 수 없는 template_id도 버리지 않고 core_log와 같은
+  `data-log-unknown="true"` fallback을 낸다.
+- tick·sequence를 `t{tick}·{sequence}` 형식으로 함께 보여 순서를 읽을 수
+  있게 한다.
+- 네이티브 `<details>`/`<summary>`를 쓴다(I9) — 커스텀 토글을 만들지 않는다.
+  `<summary>`는 건수를 포함한다("전체 로그 N건 열람"). 로그 목록은 `<ol>`로
+  순서를 의미로 표현한다.
+- 이 섹션은 `.combat-stage`의 board:log 70:30 그리드 **밖**, 보고서와 같은
+  층(표면 아래 일반 흐름)에 둔다(I8) — 그리드 행을 건드리지 않는다.
+- 애니메이션·트랜지션을 추가하지 않는다(I10) — `<details>` 열림 자체도
+  네이티브 동작이며 트랜지션을 걸지 않는다.
+- **terminal(SuperLightTUI)은 여전히 개수만 표시한다** — terminal 쪽 열람
+  UI는 이 슬라이스의 범위가 아니고 별도 슬라이스다. 이 web/terminal 비대칭은
+  의도적이다.
+- **일시정지 중 열람은 아직 없다** — 일시정지 흐름 자체가 별도 슬라이스
+  (Step 2c 개입 흐름과 얽혀 있다). 전투 종료 뒤 열람만 이 슬라이스의
+  범위다.
+- 실화면 QA 메모: 이 인카운터는 여전히 `combat_spectator_preview_unlocked`
+  게이트 뒤에 있어 `npm run qa:storybook:visual`(시작 화면에서 실제 플레이로
+  진입)이 도달하지 못한다. 대신 `renderCombatStage()` 출력을 실제 빌드 CSS와
+  함께 감싼 임시 하네스를 `web/dist`(gitignore됨)에 만들고 **WSL 안에서
+  Playwright로 320/390/1280 폭을 계측**했다(하네스·스크립트 모두 커밋하지
+  않는다). 확인한 것: 64줄 전부 렌더, legend 1회, 줄 단위 배지 0개, 세 폭
+  모두 가로 스크롤 0(`listScrollW == listClientW`), 목록 내부 스크롤 동작,
+  보드:로그 0.700 유지, `<summary>` 높이 38px(터치 타겟 24px 이상).
+  정식 5뷰포트 QA는 게이트를 푸는 Step 1d-4 소관이다.
 
 ### 실화면에서만 잡히는 함정 (Step 1d-2 실측에서 나온 것)
 

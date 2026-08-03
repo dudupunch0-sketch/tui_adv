@@ -2889,6 +2889,92 @@ button.character-title-seal {
   font-style: italic;
 }
 
+/* ---------------------------------------------------------------------- */
+/* Wave 3 Step 1d-4 continue — 전체 로그(`full_log`) 열람 섹션.              */
+/* 표면 아래 일반 흐름에 둔다 — `.combat-stage`의 70:30 그리드 밖(I8),      */
+/* 보고서와 같은 층이다. 애니메이션/트랜지션 선언은 없다(I10).              */
+/* ---------------------------------------------------------------------- */
+
+.combat-full-log {
+  margin-block-start: 1em;
+  border: 1px solid var(--line-soft);
+  background: color-mix(in oklab, var(--paper-lit) 92%, var(--ink) 3%);
+  font-size: 0.92rem;
+}
+
+/* I9: summary 터치 타겟 최소 24px. 커스텀 토글을 만들지 않고 네이티브
+   `<details>` 삼각 marker를 그대로 쓴다. */
+.combat-full-log > summary {
+  padding: 0.6em 0.9em;
+  min-block-size: 24px;
+  cursor: pointer;
+  color: var(--ink-body);
+}
+
+.combat-full-log[open] > summary {
+  border-block-end: 1px solid var(--line-soft);
+}
+
+/* I4: 상한 없이 full_log 전부를 낸다 — 길이는 내부 스크롤로만 처리하고
+   DOM에서 행을 빼지 않는다. */
+.combat-full-log__list {
+  margin: 0;
+  padding: 0.5em 0.9em 0.9em 1.6em;
+  max-block-size: min(50dvh, 24rem);
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: grid;
+  gap: 0.3em;
+  line-height: 1.45;
+}
+
+.combat-full-log__row {
+  color: var(--ink-faded);
+}
+
+/* I5/I9: 중요도는 색 + 텍스트 라벨을 함께 준다 — 색만으로 구분하지 않는다.
+   라벨 자체는 `combat-full-log__importance` span(`일반`/`중요`/`결정적`)이
+   renderer에서 이미 만든다. */
+.combat-full-log__row[data-importance="important"] {
+  color: var(--ink-body);
+}
+
+.combat-full-log__row[data-importance="decisive"] {
+  color: var(--seal-red);
+  font-weight: 600;
+}
+
+.combat-full-log__tick {
+  display: inline-block;
+  min-inline-size: 3.4em;
+  color: var(--ink-faded);
+  font-variant-numeric: tabular-nums;
+}
+
+.combat-full-log__importance {
+  display: inline-block;
+  margin-inline: 0.4em;
+  padding-inline: 0.35em;
+  border: 1px solid var(--line-soft);
+  font-size: 0.82em;
+}
+
+/* I6: core_log와의 대응을 줄마다 반복하지 않고 목록 앞에서 한 번만 밝힌다.
+   줄마다 "핵심 로그에도 있음"을 붙이면 절반의 줄이 두 줄로 늘어나 64줄
+   목록을 훑을 수 없게 되고, 중요도 칩이 이미 말하는 것을 반복하는 것뿐이다. */
+.combat-full-log__legend {
+  margin: 0;
+  padding: 0.5em 0.9em 0;
+  color: var(--ink-faded);
+  font-size: 0.85em;
+}
+
+.combat-full-log__row[data-log-unknown="true"] {
+  border-inline-start: 2px solid var(--line-hard);
+  padding-inline-start: 0.4em;
+  font-style: italic;
+}
+
 /* forced-colors(고대비 모드): 배경 채움/box-shadow만으로 표현한 경계는
    시스템이 지워버릴 수 있으므로, 진영·cue 구분을 시스템 색 키워드로도
    보존한다 (I9). */
@@ -2927,6 +3013,25 @@ button.character-title-seal {
   }
 
   .combat-log__row[data-log-unknown="true"] {
+    border-inline-start-color: GrayText;
+  }
+
+  .combat-full-log {
+    forced-color-adjust: none;
+    border-color: CanvasText;
+    background: Canvas;
+    color: CanvasText;
+  }
+
+  .combat-full-log__row[data-importance="decisive"] {
+    color: Highlight;
+  }
+
+  .combat-full-log__importance {
+    border-color: CanvasText;
+  }
+
+  .combat-full-log__row[data-log-unknown="true"] {
     border-inline-start-color: GrayText;
   }
 }

@@ -3,6 +3,7 @@ import type {
   CombatConclusionOutcome,
   CombatConclusionReason,
   CombatConclusionReport,
+  CombatLogImportance,
   CombatSpectatorCue,
   CombatSpectatorLogEntry,
   CombatSpectatorPage,
@@ -265,8 +266,16 @@ const WEB_CORE_LOG_LIMIT = 40;
  * `aria-live`는 쓰지 않는다 — 초당 여러 줄이 붙으면 로그 도배가 된다(정본
  * 13의 "로그 도배를 막는다"와 같은 취지). `reduce`에서는 `no-preference`
  * 안에만 있는 이 애니메이션 자체가 적용되지 않으므로 전부 즉시 보인다(I3). */
-export function renderCombatLog(view: CombatSpectatorView): string {
-  const metaText = `전체 로그 ${view.full_log.length}건 (일시정지 또는 전투 종료 후 별도 열람, 이 화면은 개수만 표시)`;
+export function renderCombatLog(view: CombatSpectatorView, reportPresent: boolean = false): string {
+  // WP2: 정본 07/13은 "일시정지 또는 전투 종료 뒤" 열람할 수 있다고
+  // 정하지만, 이 슬라이스는 일시정지 흐름을 만들지 않는다 — 진입점은
+  // `combat.report`가 있을 때만 존재한다(I2). 그래서 이 메타 줄도 그때만
+  // "열람 가능"을 말한다. `report`가 아직 없으면(전투 진행 중) 지금
+  // 읽을 수 있다고 주장하지 않는다 — 정본이 정한 두 시점(일시정지/종료) 중
+  // 아직 오지 않은 상태를 그대로 서술한다.
+  const metaText = reportPresent
+    ? `전체 로그 ${view.full_log.length}건 (전투가 끝나 아래 전체 로그 열람에서 확인할 수 있다)`
+    : `전체 로그 ${view.full_log.length}건 (일시정지 또는 전투 종료 후 별도 열람)`;
   const total = view.core_log.length;
   const shown = Math.min(total, WEB_CORE_LOG_LIMIT);
   // 로그 노출 시각의 원점은 **보드 재생의 원점과 같아야** 한다. 보드는
@@ -320,6 +329,71 @@ function renderLogRow(
   return `<li class="combat-log__row"${revealDelay} data-template-id="${escapeHtml(
     entry.template_id,
   )}"${cueAttr}${unknownAttr}>${cueGlyph}${escapeHtml(line)}</li>`;
+}
+
+// -- 전체 로그 열람 ------------------------------------------------------------
+
+/** 정본 13 (중요도)의 세 값 그대로. renderer가 새 라벨을 만들지 않는다(I5). */
+const IMPORTANCE_LABELS: Record<CombatLogImportance, string> = {
+  routine: '일반',
+  important: '중요',
+  decisive: '결정적',
+};
+
+/** `combat.report`가 `Some`일 때만 호출된다(호출부: `renderCombatStage`) —
+ * 정본 07/13의 "일시정지 또는 전투 종료 뒤 열람"을 반영해, 이 슬라이스는
+ * 일시정지 흐름을 만들지 않으므로 전투 종료 뒤에만 진입점을 연다(I2).
+ *
+ * `view.full_log`만 읽는다(I1) — core가 이미 누설 차단(`AttackRoll`/
+ * `EffectSuppressed` 제외, Hidden/Conditional 효과 id 마스킹)을 마친
+ * 배열이라 resolution·execution 레벨에는 접근하지 않는다.
+ *
+ * 상한을 두지 않는다(I4) — `full_log`의 모든 줄을 낸다. 넘치는 길이는
+ * `storybook.css`의 내부 스크롤(`.combat-full-log__list`)이 처리하며 DOM에서
+ * 빼지 않는다. 핵심 로그의 `WEB_CORE_LOG_LIMIT = 40` 상한은 그대로 둔다 —
+ * 이 함수와는 별개다.
+ *
+ * `entry.importance`를 그대로 쓴다(I5) — 어떤 사건이 중요한지 renderer가
+ * 다시 판단하지 않는다. `core_log`는 `full_log`의 `importance >= important`
+ * 부분집합이므로(정본 13) 그 조건에서 `data-in-core-log`를 유도한다(I6) —
+ * 별도 필터를 다시 만들지 않는다.
+ *
+ * 문장은 `combatLogTemplateLine`을 그대로 쓴다(I3) — 새 문장 형식을 만들지
+ * 않는다. `<details>`/`<summary>`(I9 네이티브 드로어)와 `<ol>`(순서 의미)을
+ * 쓴다. */
+export function renderCombatFullLog(view: CombatSpectatorView): string {
+  const rows = view.full_log.map(renderFullLogRow).join('');
+  const summaryText = `전체 로그 ${view.full_log.length}건 열람`;
+  // I6를 줄마다 반복하지 않는다. core_log는 정확히 `importance >= 중요`인
+  // 부분집합이라 중요도 칩이 이미 그 사실을 담고 있다 — 줄마다 "핵심 로그에도
+  // 있음"을 붙이면 절반의 줄이 두 줄로 늘어나 목록을 훑을 수 없게 되고,
+  // 칩이 말하는 것을 한 번 더 말하는 것뿐이다. 대응 관계를 여기서 한 번만
+  // 밝힌다.
+  const legend = '중요·결정적으로 표시된 줄은 위 핵심 로그에도 나온 줄이다.';
+  return `<details class="combat-full-log" data-region="combat-full-log">
+    <summary>${escapeHtml(summaryText)}</summary>
+    <p class="combat-full-log__legend">${escapeHtml(legend)}</p>
+    <ol class="combat-full-log__list">${rows}</ol>
+  </details>`;
+}
+
+function renderFullLogRow(entry: CombatSpectatorLogEntry): string {
+  const line = combatLogTemplateLine(entry);
+  // core_log는 importance >= important인 full_log 부분집합이다(정본 13) —
+  // 그 정의를 여기서 다시 필터로 재구현하지 않고 그대로 판정에 쓴다.
+  const inCoreLog = entry.importance !== 'routine';
+  const inCoreLogAttr = inCoreLog ? ' data-in-core-log="true"' : '';
+  const unknownAttr = isKnownCombatLogTemplateId(entry.template_id)
+    ? ''
+    : ' data-log-unknown="true"';
+  const tickLabel = `t${entry.tick}·${entry.sequence}`;
+  return `<li class="combat-full-log__row" data-importance="${escapeHtml(
+    entry.importance,
+  )}"${inCoreLogAttr} data-template-id="${escapeHtml(entry.template_id)}"${unknownAttr}><span class="combat-full-log__tick">${escapeHtml(
+    tickLabel,
+  )}</span><span class="combat-full-log__importance">${escapeHtml(
+    IMPORTANCE_LABELS[entry.importance],
+  )}</span> ${escapeHtml(line)}</li>`;
 }
 
 // -- 전투 종료 보고서 ------------------------------------------------------------
@@ -401,12 +475,17 @@ function renderCombatantRow(combatant: CombatCombatantReport): string {
 export function renderCombatStage(combat: CombatSpectatorPage | undefined): string {
   if (!combat) return '';
   const board = renderCombatBoard(combat.view);
-  const log = renderCombatLog(combat.view);
+  const log = renderCombatLog(combat.view, Boolean(combat.report));
   const report = combat.report ? renderCombatReport(combat.view, combat.report) : '';
+  // I2: 전투 종료 뒤(`report`가 `Some`)에만 전체 로그 열람 진입점을 연다.
+  // I8: 이 섹션은 board:log 70:30 그리드 밖, 보고서와 같은 층(표면 아래
+  // 일반 흐름)에 둔다 — `.combat-stage`의 그리드 행을 건드리지 않는다.
+  const fullLog = combat.report ? renderCombatFullLog(combat.view) : '';
 
   return `<section class="combat-stage" data-region="combat" aria-label="전투 관전">
     ${board}
     ${log}
   </section>
-  ${report}`;
+  ${report}
+  ${fullLog}`;
 }

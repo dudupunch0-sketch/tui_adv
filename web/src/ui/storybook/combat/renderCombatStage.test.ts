@@ -9,7 +9,13 @@ import type {
   CombatSpectatorPiece,
   CombatSpectatorView,
 } from '../../../core/types';
-import { renderCombatBoard, renderCombatLog, renderCombatReport, renderCombatStage } from './renderCombatStage';
+import {
+  renderCombatBoard,
+  renderCombatFullLog,
+  renderCombatLog,
+  renderCombatReport,
+  renderCombatStage,
+} from './renderCombatStage';
 
 function piece(overrides: Partial<CombatSpectatorPiece> = {}): CombatSpectatorPiece {
   return {
@@ -408,6 +414,188 @@ describe('renderCombatLog', () => {
     );
     expect(html).not.toContain('aria-live');
   });
+
+  // -------------------------------------------------------------------------
+  // WP2 — meta line wording. I2: the log-region meta line must not claim the
+  // full log is readable while the fight is still in progress (no `report`
+  // yet); once `report` is present, it should point at the new viewer below.
+  // -------------------------------------------------------------------------
+  it('says the full log is readable once the fight has ended', () => {
+    const html = renderCombatLog(view({ full_log: [logEntry()] }), true);
+    expect(html).toContain('전체 로그 1건');
+    expect(html).toContain('열람');
+    expect(html).not.toContain('이 화면은 개수만 표시');
+  });
+
+  it('does not claim the full log is readable while the fight is still in progress', () => {
+    const html = renderCombatLog(view({ full_log: [logEntry()] }), false);
+    expect(html).toContain('전체 로그 1건');
+    expect(html).not.toContain('이 화면은 개수만 표시');
+    // No claim that a viewer exists right now.
+    expect(html).not.toContain('아래');
+  });
+
+  it('defaults to the not-yet-readable wording when the reportPresent flag is omitted', () => {
+    const html = renderCombatLog(view({ full_log: [logEntry()] }));
+    expect(html).not.toContain('아래');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// WP1 — 전체 로그(`full_log`) 열람 섹션. 정본 07/13: 전투 종료 뒤에만
+// 열람 가능(I2). `view.full_log`만 읽는다(I1) — core_log/resolution/
+// execution 레벨에는 접근하지 않는다. 상한 없음(I4). importance는 데이터
+// 그대로 쓴다(I5). core_log와의 중복을 `data-in-core-log`로 드러낸다(I6).
+// 문장은 combatLogTemplateLine 재사용(I3).
+// ---------------------------------------------------------------------------
+describe('renderCombatFullLog', () => {
+  it('shows every full_log row with no cap, even past the 40-row core-log limit', () => {
+    const fullLog = Array.from({ length: 64 }, (_, i) =>
+      logEntry({ actor_id: `ally_${i}`, sequence: i }),
+    );
+    const html = renderCombatFullLog(view({ full_log: fullLog }));
+    const rows = html.match(/class="combat-full-log__row"/g) ?? [];
+    expect(rows.length).toBe(64);
+    expect(html).not.toContain('생략');
+  });
+
+  it('includes the full_log count in the <summary>', () => {
+    const html = renderCombatFullLog(view({ full_log: [logEntry(), logEntry(), logEntry()] }));
+    expect(html).toContain('<summary>');
+    expect(html).toContain('전체 로그 3건');
+  });
+
+  it('shows all three importance levels with data-importance and their canon Korean labels', () => {
+    const html = renderCombatFullLog(
+      view({
+        full_log: [
+          logEntry({ importance: 'routine', actor_id: 'a1' }),
+          logEntry({ importance: 'important', actor_id: 'a2' }),
+          logEntry({ importance: 'decisive', actor_id: 'a3' }),
+        ],
+      }),
+    );
+    expect(html).toContain('data-importance="routine"');
+    expect(html).toContain('data-importance="important"');
+    expect(html).toContain('data-importance="decisive"');
+    expect(html).toContain('일반');
+    expect(html).toContain('중요');
+    expect(html).toContain('결정적');
+  });
+
+  it('pairs each row\'s Korean label with that row\'s own importance', () => {
+    // 위 테스트는 세 라벨이 html 어딘가에 있는지만 본다 — legend 문구가
+    // "중요·결정적…"을 담고 있어서, 모든 줄이 `일반`으로 잘못 찍혀도 통과한다.
+    // 라벨은 그 줄 **안에서** 확인해야 한다.
+    const html = renderCombatFullLog(
+      view({
+        full_log: [
+          logEntry({ importance: 'routine', actor_id: 'a1' }),
+          logEntry({ importance: 'important', actor_id: 'a2' }),
+          logEntry({ importance: 'decisive', actor_id: 'a3' }),
+        ],
+      }),
+    );
+    const rowFor = (importance: string) =>
+      new RegExp(`<li[^>]*data-importance="${importance}"[^>]*>.*?</li>`).exec(html)?.[0] ?? '';
+    expect(rowFor('routine')).toContain('일반');
+    expect(rowFor('routine')).not.toContain('결정적');
+    expect(rowFor('important')).toContain('중요');
+    expect(rowFor('important')).not.toContain('일반');
+    expect(rowFor('decisive')).toContain('결정적');
+    expect(rowFor('decisive')).not.toContain('일반');
+  });
+
+  it('marks important/decisive rows as also present in the core log, but never routine rows', () => {
+    const html = renderCombatFullLog(
+      view({
+        full_log: [
+          logEntry({ importance: 'routine', actor_id: 'a1' }),
+          logEntry({ importance: 'important', actor_id: 'a2' }),
+          logEntry({ importance: 'decisive', actor_id: 'a3' }),
+        ],
+      }),
+    );
+    const routineRow = /<li[^>]*data-importance="routine"[^>]*>/.exec(html);
+    const importantRow = /<li[^>]*data-importance="important"[^>]*>/.exec(html);
+    const decisiveRow = /<li[^>]*data-importance="decisive"[^>]*>/.exec(html);
+    expect(routineRow).not.toBeNull();
+    expect(importantRow).not.toBeNull();
+    expect(decisiveRow).not.toBeNull();
+    expect(routineRow![0]).not.toContain('data-in-core-log');
+    expect(importantRow![0]).toContain('data-in-core-log="true"');
+    expect(decisiveRow![0]).toContain('data-in-core-log="true"');
+  });
+
+  it('states the core-log correspondence once, not on every row', () => {
+    // 64줄 중 절반이 `중요`/`결정적`이다. 줄마다 "핵심 로그에도 있음"을 붙이면
+    // 그 절반이 두 줄로 늘어나 목록을 훑을 수 없게 되고, 중요도 칩이 이미
+    // 말하는 것을 반복하는 것뿐이다 (core_log는 정확히 importance >= 중요).
+    const fullLog = Array.from({ length: 8 }, (_, i) =>
+      logEntry({ sequence: i, importance: i % 2 === 0 ? 'routine' : 'important' }),
+    );
+    const html = renderCombatFullLog(view({ full_log: fullLog }));
+    const legendCount = (html.match(/combat-full-log__legend/g) ?? []).length;
+    expect(legendCount).toBe(1);
+    expect(html).toContain('핵심 로그에도 나온 줄');
+    // 줄 단위 배지가 다시 들어오면 잡는다.
+    expect(html).not.toContain('핵심 로그에도 있음');
+    expect(html).not.toContain('combat-full-log__core-flag');
+  });
+
+  it('shows tick and sequence for each row', () => {
+    const html = renderCombatFullLog(view({ full_log: [logEntry({ tick: 8, sequence: 2 })] }));
+    expect(html).toContain('t8·2');
+  });
+
+  it('sentences reuse combatLogTemplateLine — identical wording to the core log', () => {
+    const html = renderCombatFullLog(
+      view({ full_log: [logEntry({ template_id: 'combat.log.move_intent', actor_id: 'ally_9' })] }),
+    );
+    expect(html).toContain('ally_9 이동 의도');
+  });
+
+  it('surfaces an unknown template_id row instead of dropping it, with a visible marker', () => {
+    const html = renderCombatFullLog(
+      view({ full_log: [logEntry({ template_id: 'combat.log.made_up_event' })] }),
+    );
+    expect(html).toContain('data-log-unknown="true"');
+    expect(html).toContain('combat.log.made_up_event');
+  });
+
+  it('escapes actor ids containing markup', () => {
+    const html = renderCombatFullLog(
+      view({ full_log: [logEntry({ actor_id: '<script>alert(1)</script>' })] }),
+    );
+    expect(html).not.toContain('<script>alert(1)</script>');
+    expect(html).toContain('&lt;script&gt;');
+  });
+
+  it('uses <details>/<summary> — no custom toggle markup', () => {
+    const html = renderCombatFullLog(view({ full_log: [logEntry()] }));
+    expect(html).toContain('<details');
+    expect(html).toContain('data-region="combat-full-log"');
+    expect(html).toContain('<ol class="combat-full-log__list">');
+  });
+});
+
+describe('renderCombatStage — full log viewer entry point (I2)', () => {
+  it('omits the combat-full-log section entirely when report is absent (fight in progress)', () => {
+    const page: CombatSpectatorPage = {
+      view: view({ full_log: [logEntry()] }),
+    };
+    const html = renderCombatStage(page);
+    expect(html).not.toContain('data-region="combat-full-log"');
+  });
+
+  it('includes the combat-full-log section once the fight has ended (report present)', () => {
+    const page: CombatSpectatorPage = {
+      view: view({ full_log: [logEntry()] }),
+      report: baseReport(),
+    };
+    const html = renderCombatStage(page);
+    expect(html).toContain('data-region="combat-full-log"');
+  });
 });
 
 function baseReport(overrides: Partial<CombatConclusionReport> = {}): CombatConclusionReport {
@@ -504,5 +692,17 @@ describe('renderCombatStage', () => {
     };
     const html = renderCombatStage(page);
     expect(html).toContain('data-region="combat-report"');
+  });
+
+  it('the log meta line only says the log is readable once report is present (WP2, I2)', () => {
+    const inProgress = renderCombatStage({
+      view: view({ frames: [frame(1, [piece()])], full_log: [logEntry()] }),
+    });
+    const ended = renderCombatStage({
+      view: view({ frames: [frame(1, [piece()])], full_log: [logEntry()] }),
+      report: baseReport(),
+    });
+    expect(inProgress).not.toContain('이 화면은 개수만 표시');
+    expect(ended).toContain('열람');
   });
 });

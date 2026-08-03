@@ -887,7 +887,8 @@ entries:
   - 'exact title/ID token(s): 훔친 초식의 끝, 훔친 초식이 멈춘 날'
   - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
   confidence: high
-  review_status: needs_designer_review
+  review_status: approved
+  approved_handling: split_multiple
   topic_keywords: []
 - event_id: wuxia_mumyeong_bridge_child_story
   source_path: events/imported/wuxia_mumyeong_bridge_child_story.yml
@@ -917,7 +918,8 @@ entries:
   - 'exact title/ID token(s): 훔친 초식의 끝, 훔친 초식이 멈춘 날'
   - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
   confidence: high
-  review_status: needs_designer_review
+  review_status: approved
+  approved_handling: split_multiple
   topic_keywords: []
 - event_id: wuxia_mumyeong_departure_truth_summary
   source_path: events/imported/wuxia_mumyeong_departure_truth_summary.yml
@@ -933,7 +935,8 @@ entries:
   - 'exact title/ID token(s): 전하지 못한 사과, 문밖의 두 번째 목검, 훔친 초식이 멈춘 날'
   - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
   confidence: high
-  review_status: needs_designer_review
+  review_status: approved
+  approved_handling: split_multiple
   topic_keywords:
   - 검
   - 목검
@@ -951,7 +954,8 @@ entries:
   - 'exact title/ID token(s): 전하지 못한 사과, 훔친 초식의 끝'
   - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
   confidence: high
-  review_status: needs_designer_review
+  review_status: approved
+  approved_handling: split_multiple
   topic_keywords:
   - 풍문
   - 문
@@ -984,7 +988,8 @@ entries:
   - raw reference is not an exact afterthought ID/title
   - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
   confidence: medium
-  review_status: needs_designer_review
+  review_status: approved
+  approved_handling: condition_only
   topic_keywords:
   - 무명
 - event_id: wuxia_mumyeong_first_sighting
@@ -997,7 +1002,8 @@ entries:
   - raw reference is not an exact afterthought ID/title
   - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
   confidence: medium
-  review_status: needs_designer_review
+  review_status: approved
+  approved_handling: condition_only
   topic_keywords:
   - 무명
 - event_id: wuxia_mumyeong_midgame_reunion
@@ -1014,7 +1020,8 @@ entries:
   - 'exact title/ID token(s): 전하지 못한 사과, 훔친 초식이 멈춘 날, 흑사방의 새 그림자'
   - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
   confidence: high
-  review_status: needs_designer_review
+  review_status: approved
+  approved_handling: split_multiple
   topic_keywords:
   - 흑사방
 - event_id: wuxia_mumyeong_name_returns
@@ -1066,7 +1073,8 @@ entries:
   - raw reference is not an exact afterthought ID/title
   - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
   confidence: medium
-  review_status: needs_designer_review
+  review_status: approved
+  approved_handling: condition_only
   topic_keywords:
   - 무명
 - event_id: wuxia_mumyeong_resolution
@@ -1088,7 +1096,8 @@ entries:
     새 그림자, 검은 뱀의 새 비늘'
   - 둘 이상의 후보 또는 후속/후보/가능/연결 표현이 있어 새 설계 결정이 필요함
   confidence: high
-  review_status: needs_designer_review
+  review_status: approved
+  approved_handling: split_multiple
   topic_keywords:
   - 흑사방
   - 검

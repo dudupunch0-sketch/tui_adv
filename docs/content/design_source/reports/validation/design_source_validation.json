@@ -1364,15 +1364,6 @@
       "wuxia_cheongryu_first_night_shelter",
       "wuxia_cheongryu_wrong_delivery",
       "wuxia_heuksa_bang_inn_key",
-      "wuxia_mumyeong_awakening",
-      "wuxia_mumyeong_copy_style_reveal",
-      "wuxia_mumyeong_departure_truth_summary",
-      "wuxia_mumyeong_destroys_orthodox_sect",
-      "wuxia_mumyeong_first_confrontation",
-      "wuxia_mumyeong_first_sighting",
-      "wuxia_mumyeong_midgame_reunion",
-      "wuxia_mumyeong_request_for_aid",
-      "wuxia_mumyeong_resolution",
       "wuxia_prologue_commute_rift",
       "wuxia_qingliu_attack_after_war",
       "wuxia_qingliu_patron_letter",
@@ -1415,15 +1406,6 @@
       "wuxia_cheongryu_first_night_shelter",
       "wuxia_cheongryu_wrong_delivery",
       "wuxia_heuksa_bang_inn_key",
-      "wuxia_mumyeong_awakening",
-      "wuxia_mumyeong_copy_style_reveal",
-      "wuxia_mumyeong_departure_truth_summary",
-      "wuxia_mumyeong_destroys_orthodox_sect",
-      "wuxia_mumyeong_first_confrontation",
-      "wuxia_mumyeong_first_sighting",
-      "wuxia_mumyeong_midgame_reunion",
-      "wuxia_mumyeong_request_for_aid",
-      "wuxia_mumyeong_resolution",
       "wuxia_prologue_commute_rift",
       "wuxia_qingliu_attack_after_war",
       "wuxia_qingliu_patron_letter",
@@ -1448,13 +1430,13 @@
       "wuxia_seoharin_shared_meal_after_raid",
       "wuxia_seoharin_unsaid_stay"
     ],
-    "pending_review_count": 42,
+    "pending_review_count": 33,
     "approved_condition_count": 77
   },
   "afterthought_overlays": {
     "condition_overlay_path": "graphs/afterthought_conditions.yml",
     "link_overlay_path": "graphs/event_afterthought_links.yml",
-    "approved_link_count": 31,
+    "approved_link_count": 49,
     "unresolved_runtime_links": [],
     "unresolved_external_conditions": [
       {
@@ -1688,9 +1670,193 @@
         ],
         "token": "condition_ref:wuxia_final_prep_small_interruption:choice:서하린에게 알리고 준비로 돌아간다",
         "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_mumyeong_awakening",
+          "notion_0003"
+        ],
+        "token": "condition_ref:wuxia_mumyeong_awakening:choice:분노의 흔적을 본다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_mumyeong_awakening",
+          "notion_0003"
+        ],
+        "token": "condition_ref:wuxia_mumyeong_awakening:choice:무공의 변질을 추적한다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_mumyeong_awakening",
+          "notion_0002"
+        ],
+        "token": "condition_ref:wuxia_mumyeong_awakening:choice:청류안과 비교한다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_mumyeong_copy_style_reveal",
+          "notion_0003"
+        ],
+        "token": "condition_ref:wuxia_mumyeong_copy_style_reveal:choice:검로를 읽는다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_mumyeong_copy_style_reveal",
+          "notion_0003"
+        ],
+        "token": "condition_ref:wuxia_mumyeong_copy_style_reveal:choice:보법을 본다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_mumyeong_copy_style_reveal",
+          "notion_0002"
+        ],
+        "token": "condition_ref:wuxia_mumyeong_copy_style_reveal:choice:호흡을 본다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_mumyeong_copy_style_reveal",
+          "notion_0002"
+        ],
+        "token": "condition_ref:wuxia_mumyeong_copy_style_reveal:choice:무명의 몸이 흔들리는 순간을 본다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_mumyeong_departure_truth_summary",
+          "notion_0008"
+        ],
+        "token": "condition_ref:wuxia_mumyeong_departure_truth_summary:choice:서하린에게 전한다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_mumyeong_departure_truth_summary",
+          "notion_0005"
+        ],
+        "token": "condition_ref:wuxia_mumyeong_departure_truth_summary:choice:무명에게 묻는다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_mumyeong_departure_truth_summary",
+          "notion_0002"
+        ],
+        "token": "condition_ref:wuxia_mumyeong_departure_truth_summary:choice:진실을 정리한다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_mumyeong_destroys_orthodox_sect",
+          "notion_0003"
+        ],
+        "token": "condition_ref:wuxia_mumyeong_destroys_orthodox_sect:choice:멸문 기록을 찾는다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_mumyeong_destroys_orthodox_sect",
+          "notion_0003"
+        ],
+        "token": "condition_ref:wuxia_mumyeong_destroys_orthodox_sect:choice:생존자의 풍문을 듣는다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_mumyeong_destroys_orthodox_sect",
+          "notion_0008"
+        ],
+        "token": "condition_ref:wuxia_mumyeong_destroys_orthodox_sect:choice:서하린에게 확인한다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_mumyeong_midgame_reunion",
+          "notion_0007"
+        ],
+        "token": "condition_ref:wuxia_mumyeong_midgame_reunion:choice:싸움에 집중한다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_mumyeong_midgame_reunion",
+          "notion_0008"
+        ],
+        "token": "condition_ref:wuxia_mumyeong_midgame_reunion:choice:진실을 묻는다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_mumyeong_midgame_reunion",
+          "notion_0008"
+        ],
+        "token": "condition_ref:wuxia_mumyeong_midgame_reunion:choice:서하린의 이름을 꺼낸다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_mumyeong_midgame_reunion",
+          "notion_0002"
+        ],
+        "token": "condition_ref:wuxia_mumyeong_midgame_reunion:choice:초식의 결함을 지적한다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_mumyeong_resolution",
+          "notion_0003"
+        ],
+        "token": "condition_ref:wuxia_mumyeong_resolution:choice:쓰러뜨린다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_mumyeong_resolution",
+          "notion_0005"
+        ],
+        "token": "condition_ref:wuxia_mumyeong_resolution:choice:살려둔다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_mumyeong_resolution",
+          "notion_0008"
+        ],
+        "token": "condition_ref:wuxia_mumyeong_resolution:choice:진실을 말한다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_mumyeong_resolution",
+          "notion_0002"
+        ],
+        "token": "condition_ref:wuxia_mumyeong_resolution:choice:자기 흐름을 묻는다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_mumyeong_resolution",
+          "notion_0007"
+        ],
+        "token": "condition_ref:wuxia_mumyeong_resolution:choice:보스가 이용했음을 드러낸다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
+      },
+      {
+        "link": [
+          "wuxia_mumyeong_resolution",
+          "notion_0010"
+        ],
+        "token": "condition_ref:wuxia_mumyeong_resolution:choice:보스가 이용했음을 드러낸다",
+        "reason": "choice condition registry is design-only; runtime resolver not present"
       }
     ],
-    "choice_condition_count": 36,
+    "choice_condition_count": 71,
     "fallback_count": 5,
     "runtime_contract": false
   },

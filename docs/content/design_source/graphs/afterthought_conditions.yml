@@ -790,3 +790,213 @@ choice_conditions:
   raw_choice: 서하린에게 알리고 준비로 돌아간다
   condition_type: choice_text
   status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_awakening_choice_01
+  event_id: wuxia_mumyeong_awakening
+  source_path: events/imported/wuxia_mumyeong_awakening.yml
+  raw_choice: 분노의 흔적을 본다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_awakening_choice_02
+  event_id: wuxia_mumyeong_awakening
+  source_path: events/imported/wuxia_mumyeong_awakening.yml
+  raw_choice: 무공의 변질을 추적한다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_awakening_choice_03
+  event_id: wuxia_mumyeong_awakening
+  source_path: events/imported/wuxia_mumyeong_awakening.yml
+  raw_choice: 청류안과 비교한다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_copy_style_reveal_choice_01
+  event_id: wuxia_mumyeong_copy_style_reveal
+  source_path: events/imported/wuxia_mumyeong_copy_style_reveal.yml
+  raw_choice: 검로를 읽는다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_copy_style_reveal_choice_02
+  event_id: wuxia_mumyeong_copy_style_reveal
+  source_path: events/imported/wuxia_mumyeong_copy_style_reveal.yml
+  raw_choice: 보법을 본다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_copy_style_reveal_choice_03
+  event_id: wuxia_mumyeong_copy_style_reveal
+  source_path: events/imported/wuxia_mumyeong_copy_style_reveal.yml
+  raw_choice: 호흡을 본다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_copy_style_reveal_choice_04
+  event_id: wuxia_mumyeong_copy_style_reveal
+  source_path: events/imported/wuxia_mumyeong_copy_style_reveal.yml
+  raw_choice: 무명의 몸이 흔들리는 순간을 본다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_departure_truth_summary_choice_01
+  event_id: wuxia_mumyeong_departure_truth_summary
+  source_path: events/imported/wuxia_mumyeong_departure_truth_summary.yml
+  raw_choice: 진실을 정리한다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_departure_truth_summary_choice_02
+  event_id: wuxia_mumyeong_departure_truth_summary
+  source_path: events/imported/wuxia_mumyeong_departure_truth_summary.yml
+  raw_choice: 서하린에게 전한다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_departure_truth_summary_choice_03
+  event_id: wuxia_mumyeong_departure_truth_summary
+  source_path: events/imported/wuxia_mumyeong_departure_truth_summary.yml
+  raw_choice: 무명에게 묻는다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_departure_truth_summary_choice_04
+  event_id: wuxia_mumyeong_departure_truth_summary
+  source_path: events/imported/wuxia_mumyeong_departure_truth_summary.yml
+  raw_choice: 침묵한다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_destroys_orthodox_sect_choice_01
+  event_id: wuxia_mumyeong_destroys_orthodox_sect
+  source_path: events/imported/wuxia_mumyeong_destroys_orthodox_sect.yml
+  raw_choice: 멸문 기록을 찾는다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_destroys_orthodox_sect_choice_02
+  event_id: wuxia_mumyeong_destroys_orthodox_sect
+  source_path: events/imported/wuxia_mumyeong_destroys_orthodox_sect.yml
+  raw_choice: 생존자의 풍문을 듣는다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_destroys_orthodox_sect_choice_03
+  event_id: wuxia_mumyeong_destroys_orthodox_sect
+  source_path: events/imported/wuxia_mumyeong_destroys_orthodox_sect.yml
+  raw_choice: 서하린에게 확인한다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_first_confrontation_choice_01
+  event_id: wuxia_mumyeong_first_confrontation
+  source_path: events/imported/wuxia_mumyeong_first_confrontation.yml
+  raw_choice: 맞선다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_first_confrontation_choice_02
+  event_id: wuxia_mumyeong_first_confrontation
+  source_path: events/imported/wuxia_mumyeong_first_confrontation.yml
+  raw_choice: 버틴다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_first_confrontation_choice_03
+  event_id: wuxia_mumyeong_first_confrontation
+  source_path: events/imported/wuxia_mumyeong_first_confrontation.yml
+  raw_choice: 서하린을 본다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_first_confrontation_choice_04
+  event_id: wuxia_mumyeong_first_confrontation
+  source_path: events/imported/wuxia_mumyeong_first_confrontation.yml
+  raw_choice: 무명의 초식을 읽는다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_first_confrontation_choice_05
+  event_id: wuxia_mumyeong_first_confrontation
+  source_path: events/imported/wuxia_mumyeong_first_confrontation.yml
+  raw_choice: 도발하지 않는다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_first_sighting_choice_01
+  event_id: wuxia_mumyeong_first_sighting
+  source_path: events/imported/wuxia_mumyeong_first_sighting.yml
+  raw_choice: 그 움직임을 본다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_first_sighting_choice_02
+  event_id: wuxia_mumyeong_first_sighting
+  source_path: events/imported/wuxia_mumyeong_first_sighting.yml
+  raw_choice: 서하린의 반응을 살핀다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_first_sighting_choice_03
+  event_id: wuxia_mumyeong_first_sighting
+  source_path: events/imported/wuxia_mumyeong_first_sighting.yml
+  raw_choice: 뒤쫓는다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_first_sighting_choice_04
+  event_id: wuxia_mumyeong_first_sighting
+  source_path: events/imported/wuxia_mumyeong_first_sighting.yml
+  raw_choice: 모른 척한다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_midgame_reunion_choice_01
+  event_id: wuxia_mumyeong_midgame_reunion
+  source_path: events/imported/wuxia_mumyeong_midgame_reunion.yml
+  raw_choice: 진실을 묻는다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_midgame_reunion_choice_02
+  event_id: wuxia_mumyeong_midgame_reunion
+  source_path: events/imported/wuxia_mumyeong_midgame_reunion.yml
+  raw_choice: 초식의 결함을 지적한다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_midgame_reunion_choice_03
+  event_id: wuxia_mumyeong_midgame_reunion
+  source_path: events/imported/wuxia_mumyeong_midgame_reunion.yml
+  raw_choice: 서하린의 이름을 꺼낸다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_midgame_reunion_choice_04
+  event_id: wuxia_mumyeong_midgame_reunion
+  source_path: events/imported/wuxia_mumyeong_midgame_reunion.yml
+  raw_choice: 싸움에 집중한다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_request_for_aid_choice_01
+  event_id: wuxia_mumyeong_request_for_aid
+  source_path: events/imported/wuxia_mumyeong_request_for_aid.yml
+  raw_choice: 정파 문파들의 기록을 찾는다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_request_for_aid_choice_02
+  event_id: wuxia_mumyeong_request_for_aid
+  source_path: events/imported/wuxia_mumyeong_request_for_aid.yml
+  raw_choice: 객잔 소문을 추적한다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_request_for_aid_choice_03
+  event_id: wuxia_mumyeong_request_for_aid
+  source_path: events/imported/wuxia_mumyeong_request_for_aid.yml
+  raw_choice: 서하린에게 묻는다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_resolution_choice_01
+  event_id: wuxia_mumyeong_resolution
+  source_path: events/imported/wuxia_mumyeong_resolution.yml
+  raw_choice: 쓰러뜨린다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_resolution_choice_02
+  event_id: wuxia_mumyeong_resolution
+  source_path: events/imported/wuxia_mumyeong_resolution.yml
+  raw_choice: 살려둔다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_resolution_choice_03
+  event_id: wuxia_mumyeong_resolution
+  source_path: events/imported/wuxia_mumyeong_resolution.yml
+  raw_choice: 진실을 말한다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_resolution_choice_04
+  event_id: wuxia_mumyeong_resolution
+  source_path: events/imported/wuxia_mumyeong_resolution.yml
+  raw_choice: 보스가 이용했음을 드러낸다
+  condition_type: choice_text
+  status: unresolved_external_condition
+- condition_id: wuxia_mumyeong_resolution_choice_05
+  event_id: wuxia_mumyeong_resolution
+  source_path: events/imported/wuxia_mumyeong_resolution.yml
+  raw_choice: 자기 흐름을 묻는다
+  condition_type: choice_text
+  status: unresolved_external_condition

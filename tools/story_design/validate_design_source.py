@@ -10,6 +10,31 @@ URL = re.compile(r"^https?://")
 HEX = re.compile(r"(?<![0-9a-f])[0-9a-f]{32}(?![0-9a-f])", re.I)
 FOLDERS = ("events", "afterthoughts", "rewards", "reward_mappings", "legacy_rewards")
 
+class UniqueKeyLoader(yaml.SafeLoader):
+    pass
+
+def _construct_unique_mapping(loader, node, deep=False):
+    mapping = {}
+    for key_node, value_node in node.value:
+        key = loader.construct_object(key_node, deep=deep)
+        if key in mapping:
+            raise yaml.constructor.ConstructorError(
+                "while constructing a mapping",
+                node.start_mark,
+                f"duplicate key: {key}",
+                key_node.start_mark,
+            )
+        mapping[key] = loader.construct_object(value_node, deep=deep)
+    return mapping
+
+UniqueKeyLoader.add_constructor(
+    yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
+    _construct_unique_mapping,
+)
+
+def load_yaml(text):
+    return yaml.load(text, Loader=UniqueKeyLoader)
+
 def props(d):
     return d.get("notion_properties") if isinstance(d.get("notion_properties"), dict) else {}
 
@@ -23,14 +48,14 @@ def main():
     relation_effects, verified_conditions = [], []
     records, by_id = [], {}
     manifest_path = root / "manifest.yml"
-    manifest = yaml.safe_load(manifest_path.read_text(encoding="utf-8")) if manifest_path.exists() else {}
+    manifest = load_yaml(manifest_path.read_text(encoding="utf-8")) if manifest_path.exists() else {}
     if not manifest: structural_errors.append("missing manifest.yml")
     for folder in FOLDERS:
         base = root / folder
         if not base.exists(): continue
         for f in sorted(base.rglob("*.yml")):
             try:
-                d = yaml.safe_load(f.read_text(encoding="utf-8"))
+                d = load_yaml(f.read_text(encoding="utf-8"))
                 if not isinstance(d, dict): raise ValueError("not an object")
             except Exception as exc:
                 structural_errors.append(f"{f.relative_to(root)} invalid YAML: {exc}"); continue
@@ -118,7 +143,7 @@ def main():
         structural_errors.append("missing reports/afterthought_triage.yml")
     else:
         try:
-            triage_document = yaml.safe_load(triage_path.read_text(encoding="utf-8"))
+            triage_document = load_yaml(triage_path.read_text(encoding="utf-8"))
             triage_entries = triage_document.get("entries", []) if isinstance(triage_document, dict) else []
             if not isinstance(triage_entries, list):
                 structural_errors.append("afterthought_triage.yml entries is not a list")
@@ -168,11 +193,11 @@ def main():
     unresolved_runtime_links = []
     if not condition_overlay_path.exists(): structural_errors.append("missing graphs/afterthought_conditions.yml")
     else:
-        try: condition_overlay = yaml.safe_load(condition_overlay_path.read_text(encoding="utf-8")) or {}
+        try: condition_overlay = load_yaml(condition_overlay_path.read_text(encoding="utf-8")) or {}
         except Exception as exc: structural_errors.append(f"afterthought_conditions.yml invalid YAML: {exc}")
     if not link_overlay_path.exists(): structural_errors.append("missing graphs/event_afterthought_links.yml")
     else:
-        try: link_overlay = yaml.safe_load(link_overlay_path.read_text(encoding="utf-8")) or {}
+        try: link_overlay = load_yaml(link_overlay_path.read_text(encoding="utf-8")) or {}
         except Exception as exc: structural_errors.append(f"event_afterthought_links.yml invalid YAML: {exc}")
     condition_entries = condition_overlay.get("conditions", []) if isinstance(condition_overlay, dict) else []
     choice_condition_entries = condition_overlay.get("choice_conditions", []) if isinstance(condition_overlay, dict) else []
@@ -277,6 +302,27 @@ def main():
     )
     if qingliu_source_present and (qingliu_link_events | qingliu_condition_only != expected_qingliu_events or qingliu_link_events & qingliu_condition_only):
         semantic_errors.append(f"Qingliu event coverage mismatch: {sorted(qingliu_link_events)}")
+    expected_mumyeong_events = {"wuxia_mumyeong_awakening", "wuxia_mumyeong_copy_style_reveal", "wuxia_mumyeong_departure_truth_summary", "wuxia_mumyeong_destroys_orthodox_sect", "wuxia_mumyeong_first_confrontation", "wuxia_mumyeong_first_sighting", "wuxia_mumyeong_midgame_reunion", "wuxia_mumyeong_request_for_aid", "wuxia_mumyeong_resolution"}
+    mumyeong_link_events = {str(e.get("event_id")) for e in link_entries if isinstance(e, dict) and str(e.get("event_id")) in expected_mumyeong_events}
+    mumyeong_condition_only = {"wuxia_mumyeong_first_confrontation", "wuxia_mumyeong_first_sighting", "wuxia_mumyeong_request_for_aid"}
+    mumyeong_source_present = bool(mumyeong_link_events) or any(
+        isinstance(x, dict) and str(x.get("event_id")) in expected_mumyeong_events
+        for x in choice_condition_entries
+    )
+    if mumyeong_source_present:
+        if mumyeong_link_events | mumyeong_condition_only != expected_mumyeong_events or mumyeong_link_events & mumyeong_condition_only:
+            semantic_errors.append(f"Mumyeong event coverage mismatch: {sorted(mumyeong_link_events)}")
+        for entry in link_entries:
+            if not isinstance(entry, dict) or str(entry.get("event_id")) not in expected_mumyeong_events:
+                continue
+            pair = (str(entry.get("event_id")), str(entry.get("afterthought_id")))
+            if entry.get("exclusive_group") != "mumyeong_fate":
+                semantic_errors.append(f"Mumyeong link has wrong exclusive group: {pair}")
+            if entry.get("afterthought_id") == "local_afterthought_mumyeong_named_place":
+                semantic_errors.append(f"Mumyeong named-place card must remain outside 9-event overlay: {pair}")
+            card_group = props(next((x for ff,x,fo in records if fo == "afterthoughts" and x.get("id") == pair[1]), {})).get("상호 배타 그룹")
+            if card_group != "mumyeong_fate":
+                semantic_errors.append(f"Mumyeong card group mismatch: {pair}")
     pending_review_ids = sorted(str(x.get("event_id")) for x in triage_entries if isinstance(x, dict) and x.get("review_status") == "needs_designer_review")
     if len(after_ids) == 18 and sum(afterthought_classification.values()) != 134:
         structural_errors.append(f"afterthought classification total mismatch: {sum(afterthought_classification.values())} != 134")

@@ -352,3 +352,208 @@ links:
   priority: 10
   fallback: false
   status: approved
+
+- event_id: wuxia_mumyeong_awakening
+  afterthought_id: notion_0003
+  relation: primary
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_mumyeong_awakening:choice:분노의 흔적을 본다
+    - condition_ref:wuxia_mumyeong_awakening:choice:무공의 변질을 추적한다
+  reveal_policy: ending_resolution
+  exclusive_group: mumyeong_fate
+  priority: 10
+  fallback: false
+  status: approved
+- event_id: wuxia_mumyeong_awakening
+  afterthought_id: notion_0002
+  relation: conditional
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_mumyeong_awakening:choice:청류안과 비교한다
+  reveal_policy: ending_resolution
+  exclusive_group: mumyeong_fate
+  priority: 20
+  fallback: false
+  status: approved
+- event_id: wuxia_mumyeong_copy_style_reveal
+  afterthought_id: notion_0003
+  relation: primary
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_mumyeong_copy_style_reveal:choice:검로를 읽는다
+    - condition_ref:wuxia_mumyeong_copy_style_reveal:choice:보법을 본다
+  reveal_policy: ending_resolution
+  exclusive_group: mumyeong_fate
+  priority: 10
+  fallback: false
+  status: approved
+- event_id: wuxia_mumyeong_copy_style_reveal
+  afterthought_id: notion_0002
+  relation: conditional
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_mumyeong_copy_style_reveal:choice:호흡을 본다
+    - condition_ref:wuxia_mumyeong_copy_style_reveal:choice:무명의 몸이 흔들리는 순간을 본다
+  reveal_policy: ending_resolution
+  exclusive_group: mumyeong_fate
+  priority: 20
+  fallback: false
+  status: approved
+- event_id: wuxia_mumyeong_departure_truth_summary
+  afterthought_id: notion_0008
+  relation: primary
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_mumyeong_departure_truth_summary:choice:서하린에게 전한다
+  reveal_policy: ending_resolution
+  exclusive_group: mumyeong_fate
+  priority: 10
+  fallback: false
+  status: approved
+- event_id: wuxia_mumyeong_departure_truth_summary
+  afterthought_id: notion_0005
+  relation: conditional
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_mumyeong_departure_truth_summary:choice:무명에게 묻는다
+  reveal_policy: ending_resolution
+  exclusive_group: mumyeong_fate
+  priority: 20
+  fallback: false
+  status: approved
+- event_id: wuxia_mumyeong_departure_truth_summary
+  afterthought_id: notion_0002
+  relation: conditional
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_mumyeong_departure_truth_summary:choice:진실을 정리한다
+  reveal_policy: ending_resolution
+  exclusive_group: mumyeong_fate
+  priority: 30
+  fallback: false
+  status: approved
+- event_id: wuxia_mumyeong_destroys_orthodox_sect
+  afterthought_id: notion_0003
+  relation: primary
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_mumyeong_destroys_orthodox_sect:choice:멸문 기록을 찾는다
+    - condition_ref:wuxia_mumyeong_destroys_orthodox_sect:choice:생존자의 풍문을 듣는다
+  reveal_policy: ending_resolution
+  exclusive_group: mumyeong_fate
+  priority: 10
+  fallback: false
+  status: approved
+- event_id: wuxia_mumyeong_destroys_orthodox_sect
+  afterthought_id: notion_0008
+  relation: conditional
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_mumyeong_destroys_orthodox_sect:choice:서하린에게 확인한다
+  reveal_policy: ending_resolution
+  exclusive_group: mumyeong_fate
+  priority: 20
+  fallback: false
+  status: approved
+- event_id: wuxia_mumyeong_midgame_reunion
+  afterthought_id: notion_0007
+  relation: primary
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_mumyeong_midgame_reunion:choice:싸움에 집중한다
+  reveal_policy: ending_resolution
+  exclusive_group: mumyeong_fate
+  priority: 10
+  fallback: false
+  status: approved
+- event_id: wuxia_mumyeong_midgame_reunion
+  afterthought_id: notion_0008
+  relation: conditional
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_mumyeong_midgame_reunion:choice:진실을 묻는다
+    - condition_ref:wuxia_mumyeong_midgame_reunion:choice:서하린의 이름을 꺼낸다
+  reveal_policy: ending_resolution
+  exclusive_group: mumyeong_fate
+  priority: 20
+  fallback: false
+  status: approved
+- event_id: wuxia_mumyeong_midgame_reunion
+  afterthought_id: notion_0002
+  relation: conditional
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_mumyeong_midgame_reunion:choice:초식의 결함을 지적한다
+  reveal_policy: ending_resolution
+  exclusive_group: mumyeong_fate
+  priority: 30
+  fallback: false
+  status: approved
+- event_id: wuxia_mumyeong_resolution
+  afterthought_id: notion_0003
+  relation: primary
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_mumyeong_resolution:choice:쓰러뜨린다
+  reveal_policy: ending_resolution
+  exclusive_group: mumyeong_fate
+  priority: 10
+  fallback: false
+  status: approved
+- event_id: wuxia_mumyeong_resolution
+  afterthought_id: notion_0005
+  relation: conditional
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_mumyeong_resolution:choice:살려둔다
+  reveal_policy: ending_resolution
+  exclusive_group: mumyeong_fate
+  priority: 20
+  fallback: false
+  status: approved
+- event_id: wuxia_mumyeong_resolution
+  afterthought_id: notion_0008
+  relation: conditional
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_mumyeong_resolution:choice:진실을 말한다
+  reveal_policy: ending_resolution
+  exclusive_group: mumyeong_fate
+  priority: 30
+  fallback: false
+  status: approved
+- event_id: wuxia_mumyeong_resolution
+  afterthought_id: notion_0002
+  relation: conditional
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_mumyeong_resolution:choice:자기 흐름을 묻는다
+  reveal_policy: ending_resolution
+  exclusive_group: mumyeong_fate
+  priority: 40
+  fallback: false
+  status: approved
+- event_id: wuxia_mumyeong_resolution
+  afterthought_id: notion_0007
+  relation: conditional
+  eligibility:
+    any_of:
+    - condition_ref:wuxia_mumyeong_resolution:choice:보스가 이용했음을 드러낸다
+  reveal_policy: ending_resolution
+  exclusive_group: mumyeong_fate
+  priority: 50
+  fallback: false
+  status: approved
+- event_id: wuxia_mumyeong_resolution
+  afterthought_id: notion_0010
+  relation: conditional
+  eligibility:
+    all_of:
+    - event:wuxia_boss_recruits_mumyeong
+    - condition_ref:wuxia_mumyeong_resolution:choice:보스가 이용했음을 드러낸다
+  reveal_policy: ending_resolution
+  exclusive_group: mumyeong_fate
+  priority: 60
+  fallback: false
+  status: approved

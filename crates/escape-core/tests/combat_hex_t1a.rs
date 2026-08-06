@@ -122,7 +122,7 @@ fn range_equals_union_of_rings_up_to_radius() {
 fn line_includes_both_endpoints() {
     let from = c(-2, 3);
     let to = c(4, -1);
-    let path = line(from, to);
+    let path = line(from, to).unwrap();
     assert_eq!(path.first(), Some(&from));
     assert_eq!(path.last(), Some(&to));
 }
@@ -131,7 +131,7 @@ fn line_includes_both_endpoints() {
 fn line_length_equals_distance_plus_one() {
     let from = c(-3, 5);
     let to = c(6, -2);
-    let path = line(from, to);
+    let path = line(from, to).unwrap();
     assert_eq!(path.len() as i64, from.distance(to) + 1);
 }
 
@@ -139,7 +139,7 @@ fn line_length_equals_distance_plus_one() {
 fn consecutive_line_tiles_are_adjacent() {
     let from = c(-4, 6);
     let to = c(5, -3);
-    let path = line(from, to);
+    let path = line(from, to).unwrap();
     for pair in path.windows(2) {
         assert!(
             pair[0].is_adjacent(pair[1]),
@@ -156,7 +156,7 @@ fn consecutive_line_tiles_are_adjacent() {
 /// 이 입력에서 정확히 어떤 타일을 고르는지 여기서 못박는다.
 #[test]
 fn line_tie_break_is_pinned() {
-    let path = line(c(0, 0), c(1, 1));
+    let path = line(c(0, 0), c(1, 1)).unwrap();
     assert_eq!(path, vec![c(0, 0), c(0, 1), c(1, 1)]);
 }
 
@@ -176,8 +176,8 @@ fn line_direction_asymmetry_is_pinned() {
         (c(i32::MAX, i32::MAX), c(i32::MAX - 4, i32::MAX)),
     ];
     for (a, b) in cases {
-        let forward = line(a, b);
-        let mut backward = line(b, a);
+        let forward = line(a, b).unwrap();
+        let mut backward = line(b, a).unwrap();
         backward.reverse();
         assert_eq!(
             forward, backward,
@@ -199,9 +199,9 @@ fn same_shape_in_different_order_normalizes_identically() {
 /// 오프셋 집합을 통째로 옮겨 적으면 앵커가 모양의 어디에 있는지에 대해 다른
 /// 것을 말하게 되므로, 두 `HexShape`는 (같은 상대 모양이라도) 같은 값이
 /// 아니어야 한다. 예: 중심+인접 6칸의 "꽃" 모양을 `(0,0)` 기준으로 적은 것과
-/// 옆으로 옮겨 적은 것은, `tiles_at`으로 실제로 놓아 보면 서로 다른 자리에
-/// 중심이 온다 — 정규화가 이 차이를 지워버리면 저자가 앵커를 모양의 어디에
-/// 둘지 정할 방법이 없어진다.
+/// 옆으로 한 칸 옮겨 적은 것은, `tiles_at`으로 실제로 놓아 보면 서로 다른
+/// 자리에 중심이 온다 — 정규화가 이 차이를 지워버리면 저자가 앵커를 모양의
+/// 어디에 둘지 정할 방법이 없어진다.
 #[test]
 fn translated_shape_is_not_the_same_shape() {
     let flower = HexShape::new(vec![
@@ -322,26 +322,45 @@ fn iteration_order_is_deterministic() {
 fn extreme_coordinates_do_not_panic() {
     let min = c(i32::MIN, i32::MIN);
     let max = c(i32::MAX, i32::MAX);
-    // 좌표값이 극단인 것과 "두 점 사이의 거리가 천문학적으로 먼 것"은 다른
-    // 문제다. min<->max 사이는 약 43억 타일 거리라 `line()`이 시도하면 43억
-    // 개짜리 Vec를 할당하려다 프로세스가 죽는다 — 이건 checked 산술이 막을 수
-    // 있는 "오버플로 패닉"이 아니라 순수한 메모리 자원 한계이고, 이 슬라이스가
-    // 다룰 범위 밖이다(계획 문서 §9, "경로 탐색"도 범위 밖). 그래서 여기서는
-    // 좌표는 극단이되 서로 가까운 입력으로 `line()`을 검증한다.
     let _ = min.distance(max);
     let _ = min.is_adjacent(max);
     let _ = min.neighbors();
     let _ = max.neighbors();
     let _ = ring(min, 3);
     let _ = range(max, 3);
-    let _ = line(min, c(i32::MIN + 5, i32::MIN));
-    let _ = line(c(i32::MAX, i32::MAX), c(i32::MAX, i32::MAX - 5));
+    // 좌표는 극단이되 서로 가까운 두 점 — 짧은 경로라 길이 레일 아래다.
+    line(min, c(i32::MIN + 5, i32::MIN)).unwrap();
+    line(c(i32::MAX, i32::MAX), c(i32::MAX, i32::MAX - 5)).unwrap();
+    // min<->max는 약 43억 타일 거리다. 이게 예전에는 43억짜리 Vec를 할당하려다
+    // 프로세스를 abort시켰다(패닉이 아니라 abort라 catch도 안 됐다) — 지금은
+    // MAX_LINE_LENGTH 레일이 좌표를 하나도 계산하기 전에 명시적으로 거부한다.
+    // "패닉하지 않는다"고 이름 붙은 이 테스트가 실제로 이 입력을 부르는 게
+    // 핵심이다 — 안 부르면 이름이 보장하지 않는 걸 보장한다고 주장하는 셈이다.
+    assert!(line(min, max).is_err());
     let shape = HexShape::new(vec![c(0, 0), c(1, 0)]).unwrap();
     let _ = shape.tiles_at(max);
     let _ = shape.tiles_at(min);
     let mut occ = HexOccupancy::new();
     occ.try_occupy(&[min, max], "extreme").unwrap();
     occ.vacate("extreme");
+}
+
+/// [`extreme_coordinates_do_not_panic`]가 "안 죽는다"만 확인한다면, 이 테스트는
+/// 정확히 어떤 에러가 나는지 고정한다 — `MAX_LINE_LENGTH`를 넘는 거리는
+/// [`HexError::PathTooLong`](실제 거리를 담아)로 거부되고, 그 경계값(정확히
+/// 레일 크기)은 아직 통과한다.
+#[test]
+fn line_over_the_length_rail_is_rejected() {
+    let from = c(0, 0);
+    let too_far = c(i32::try_from(MAX_LINE_LENGTH).unwrap(), 0);
+    let distance = from.distance(too_far);
+    assert!(distance + 1 > MAX_LINE_LENGTH);
+    assert_eq!(line(from, too_far), Err(HexError::PathTooLong(distance)));
+
+    // 경계값: 정확히 레일 크기인 경로는 여전히 성공해야 한다.
+    let just_fits = c(i32::try_from(MAX_LINE_LENGTH - 1).unwrap(), 0);
+    assert_eq!(from.distance(just_fits) + 1, MAX_LINE_LENGTH);
+    assert!(line(from, just_fits).is_ok());
 }
 
 #[test]

@@ -48,6 +48,12 @@
 //! 거부한다. 측정·판정만 하는 함수([`HexCoord::distance`], [`HexCoord::is_adjacent`])는
 //! 결과 타입을 넓혀(`i64`) 애초에 오버플로가 발생하지 않게 만들었으므로 `Result`가
 //! 필요 없다 — 이 두 부류를 섞지 않는다.
+//!
+//! [`line`]은 세 번째 이유로 `Result`를 반환한다: 만들어내는 좌표 하나하나는
+//! (여전히) `i32` 오버플로가 불가능하지만, 반환 벡터의 **길이**는 다른 문제다.
+//! `from`/`to`가 서로 아주 멀면 그만큼의 `Vec`를 할당하려다 프로세스가
+//! 죽는다 — `i32` 산술이 아니라 메모리가 한계다. [`MAX_LINE_LENGTH`]가 그
+//! 한계를 명시적인 [`HexError::PathTooLong`]으로 바꾼다. [`line`]의 문서를 본다.
 
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
@@ -224,27 +230,39 @@ pub fn range(center: HexCoord, radius: i32) -> Result<Vec<HexCoord>, HexError> {
     coords_from_offsets(center, &offsets)
 }
 
+/// `line()`이 반환할 수 있는 최대 타일 수(=`distance(from, to) + 1`의 상한).
+///
+/// **게임 규칙이 아니라 메모리 안전 레일이다.** 이 값 자체는 계약이 아니고,
+/// 어떤 판정도 이 숫자를 근거로 삼아서는 안 된다 — 전투 보드는 이 값보다
+/// 세 자릿수 이상 작다(실측: 보이는 격자 약 11×7, 계획 §1). 이 상수가 막는
+/// 것은 순전히 `from`/`to`가 (버그로든 악의로든) 서로 천문학적으로 떨어진
+/// 입력이 들어왔을 때 그만큼의 `Vec<HexCoord>`를 할당하려다 프로세스가
+/// 죽는 사고뿐이다. 값이 65536 근처인 것도 임의다 — 중요한 건 이 레일이
+/// 있다는 사실과, 이게 `i32` 오버플로가 아니라 순수한 자원 한계라는 구분이다.
+pub const MAX_LINE_LENGTH: i64 = 65_536;
+
 /// `from`에서 `to`까지의 직선 경로. 양 끝 포함. 대시·관통 이동(T2)이 소비할
 /// helper다 — **`line()`은 장애물을 모른다.** 경로 탐색(A* 등 우회)은 이 함수의
 /// 범위 밖이다.
 ///
-/// 반환 타입이 계획 문서의 `Vec<HexCoord>` 그대로인 이유(=`Result`가 필요 없는 이유):
-/// 아래 알고리즘이 만드는 각 좌표는 `from`과 `to`의 해당 큐브축 값 사이로
-/// **바운드된 반올림**이다(증명: 보간값은 항상 두 끝값 사이의 구간에 있고,
-/// 구간 끝이 이미 정수면 그 구간 안의 실수를 가장 가까운 정수로 반올림한 값도
-/// 그 구간을 벗어나지 않는다 — 최종 축 fix-up도 같은 구간 성질을 물려받는다).
-/// `from`/`to`가 이미 유효한 `i32`이므로 중간 결과도 항상 유효한 `i32`다.
-/// 나눗셈이 필요한 중간 계산(`round_half_up`)은 `i128`로 하므로(`i32` 두 값의
-/// 차 × 거리, 최악 폭이 대략 2^64 — `i128`의 2^127에 비하면 여유가 크다) 그
-/// 계산 자체도 오버플로하지 않는다.
+/// ## `Result`인 이유
 ///
-/// **주의(메모리, 오버플로와는 다른 문제).** 반환 벡터 길이는 `distance(from,
-/// to) + 1`이다. `from`/`to`가 서로 아주 멀면(예: `i32::MIN`과 `i32::MAX`, 약
-/// 43억 타일) 이 함수는 그만큼의 `Vec<HexCoord>`를 할당하려다 프로세스가
-/// 죽는다. 이건 checked 산술이 막아주는 "오버플로 패닉"이 아니라 순수한 자원
-/// 한계이며, 이 슬라이스의 범위 밖이다(경로 탐색·거리 상한은 계획 §9). 대시·
-/// 관통 이동(T2)이 이 함수를 쓸 때는 호출부가 합리적인 사거리로 이미 걸러진
-/// `from`/`to`를 넘긴다고 가정한다.
+/// 만들어내는 좌표 하나하나는 `from`과 `to`의 해당 큐브축 값 사이로 **바운드된
+/// 반올림**이다(증명: 보간값은 항상 두 끝값 사이의 구간에 있고, 구간 끝이
+/// 이미 정수면 그 구간 안의 실수를 가장 가까운 정수로 반올림한 값도 그 구간을
+/// 벗어나지 않는다 — 최종 축 fix-up도 같은 구간 성질을 물려받는다). 그래서
+/// **개별 좌표의 `i32` 오버플로는 여전히 불가능하다.** 나눗셈이 필요한 중간
+/// 계산(`round_half_up`)도 `i128`로 하므로(`i32` 두 값의 차 × 거리, 최악 폭이
+/// 대략 2^64 — `i128`의 2^127에 비하면 여유가 크다) 오버플로하지 않는다.
+///
+/// 그런데도 `Result`인 것은 **다른 이유** 때문이다: 반환 벡터의 길이는
+/// `distance(from, to) + 1`이고, `from`/`to`가 서로 아주 멀면(예: `i32::MIN`과
+/// `i32::MAX`, 약 43억 타일) 그만큼의 `Vec<HexCoord>`를 할당하려다 프로세스가
+/// **abort**한다 — 패닉이 아니라 abort라 어디서도 catch할 수 없고, 이 함수는
+/// `lib.rs`에서 재노출되는 public API다. [`MAX_LINE_LENGTH`]를 넘는 길이는
+/// 그래서 좌표를 하나도 계산하기 전에 [`HexError::PathTooLong`]으로 거부한다.
+/// 대시·관통 이동(T2)이 이 함수를 쓸 때 실제 사거리는 이 레일에 한참 못
+/// 미치므로, 정상적인 호출은 이 에러를 볼 일이 없다.
 ///
 /// ## tie-break 규칙 (계약 — [`line_tie_break_is_pinned`] 테스트가 고정한다)
 ///
@@ -271,10 +289,16 @@ pub fn range(center: HexCoord, radius: i32) -> Result<Vec<HexCoord>, HexError> {
 /// (계획 §4-4). 억지로 대칭을 만들려고 tie-break를 흐리지 않는다. 실제로 어떤
 /// 입력이 비대칭을 보이는지는 [`line_direction_asymmetry_is_pinned`] 테스트가
 /// 고정한다.
-pub fn line(from: HexCoord, to: HexCoord) -> Vec<HexCoord> {
+pub fn line(from: HexCoord, to: HexCoord) -> Result<Vec<HexCoord>, HexError> {
     let steps = from.distance(to);
     if steps == 0 {
-        return vec![from];
+        return Ok(vec![from]);
+    }
+    // steps + 1은 반환할 타일 수다. steps <= i64에서 아주 크더라도(최대
+    // 약 2^33) 이 비교 자체는 오버플로하지 않는다 — MAX_LINE_LENGTH도 같은
+    // i64 범위 안이다.
+    if steps + 1 > MAX_LINE_LENGTH {
+        return Err(HexError::PathTooLong(steps));
     }
     let (x0, z0) = (i128::from(from.q), i128::from(from.r));
     let (x1, z1) = (i128::from(to.q), i128::from(to.r));
@@ -300,7 +324,7 @@ pub fn line(from: HexCoord, to: HexCoord) -> Vec<HexCoord> {
             r: z as i32,
         });
     }
-    path
+    Ok(path)
 }
 
 /// [`line`]의 tie-break 2단계(반올림 half-up -> 최대오차축 fix-up)를 구현한다.
@@ -495,6 +519,9 @@ pub enum HexError {
     DuplicateOffset(HexCoord),
     /// [`HexOccupancy::try_occupy`]가 요청한 타일 중 이미 점유된 것을 만났다.
     TileOccupied(HexCoord),
+    /// [`line`]이 [`MAX_LINE_LENGTH`]를 넘는 경로를 요청받았다. 값은 실제
+    /// `distance(from, to)`다 — 게임 규칙 위반이 아니라 메모리 안전 레일이다.
+    PathTooLong(i64),
 }
 impl std::fmt::Display for HexError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {

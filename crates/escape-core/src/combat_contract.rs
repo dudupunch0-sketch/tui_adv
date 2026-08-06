@@ -1,6 +1,34 @@
 use serde::{Deserialize, Serialize};
 use std::fmt;
 
+/// The one `simulation_version` this build's judgement actually implements.
+///
+/// 정본 03: determinism is only promised *within* a simulation version. A
+/// single binary implementing two versions' worth of judgement at once is
+/// out of scope (T0 §4-1) — so there is exactly one current value, not a
+/// supported-list. Bumping it is a breaking change owned by whichever slice
+/// changes the judgement (e.g. T1's hex coordinate swap), never this one.
+pub const CURRENT_SIMULATION_VERSION: &str = "v2";
+
+/// Rejects `version` unless it equals [`CURRENT_SIMULATION_VERSION`].
+///
+/// Callers decide *where* this applies (simulation entry, index-time
+/// authoring) — this only decides *whether* a given value is acceptable.
+/// Deliberately not called from [`CombatSimulationVersion::new`] or its
+/// `Deserialize` impl: archived records carrying an old version string must
+/// keep deserializing without error (T0 §4-2).
+pub fn ensure_supported_simulation_version(
+    version: &CombatSimulationVersion,
+) -> Result<(), CombatContractError> {
+    if version.as_str() == CURRENT_SIMULATION_VERSION {
+        Ok(())
+    } else {
+        Err(CombatContractError::UnsupportedSimulationVersion(
+            version.as_str().to_string(),
+        ))
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct CombatSimulationVersion(String);
 
@@ -159,6 +187,11 @@ pub enum CombatContractError {
     EmptySuppressionReason(String),
     EmptyEffectReason(String),
     Serialization(String),
+    /// A `simulation_version` other than [`CURRENT_SIMULATION_VERSION`] was
+    /// used to attempt judgement (not merely to deserialize a past record).
+    /// Carries the received value; the expected value is
+    /// [`CURRENT_SIMULATION_VERSION`] and is added by `Display`.
+    UnsupportedSimulationVersion(String),
 }
 impl fmt::Display for CombatContractError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -173,6 +206,10 @@ impl fmt::Display for CombatContractError {
             }
             Self::EmptyEffectReason(id) => write!(f, "applied effect '{id}' requires a reason"),
             Self::Serialization(msg) => write!(f, "combat contract serialization failed: {msg}"),
+            Self::UnsupportedSimulationVersion(received) => write!(
+                f,
+                "unsupported simulation version '{received}' (this build implements '{CURRENT_SIMULATION_VERSION}')"
+            ),
         }
     }
 }

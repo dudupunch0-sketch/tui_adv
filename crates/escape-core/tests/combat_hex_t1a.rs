@@ -1,7 +1,7 @@
 //! T1-a `combat_hex` 회귀 테스트. 이 모듈은 아무 데도 배선되지 않았으므로 여기가
 //! 실질적인 산출물이다(`fable_combat_hex_t1a_step1_2608061847.md` §7).
 //!
-//! WP 순서대로 늘어난다 — 지금은 WP2(`ring`/`range`)까지다.
+//! WP 순서대로 늘어난다 — 지금은 WP3(`line`)까지다.
 use escape_core::*;
 
 fn c(q: i32, r: i32) -> HexCoord {
@@ -116,18 +116,96 @@ fn range_equals_union_of_rings_up_to_radius() {
     }
 }
 
+// ---- 경로 -----------------------------------------------------------
+
+#[test]
+fn line_includes_both_endpoints() {
+    let from = c(-2, 3);
+    let to = c(4, -1);
+    let path = line(from, to);
+    assert_eq!(path.first(), Some(&from));
+    assert_eq!(path.last(), Some(&to));
+}
+
+#[test]
+fn line_length_equals_distance_plus_one() {
+    let from = c(-3, 5);
+    let to = c(6, -2);
+    let path = line(from, to);
+    assert_eq!(path.len() as i64, from.distance(to) + 1);
+}
+
+#[test]
+fn consecutive_line_tiles_are_adjacent() {
+    let from = c(-4, 6);
+    let to = c(5, -3);
+    let path = line(from, to);
+    for pair in path.windows(2) {
+        assert!(
+            pair[0].is_adjacent(pair[1]),
+            "{:?} and {:?} not adjacent",
+            pair[0],
+            pair[1]
+        );
+    }
+}
+
+/// tie-break 고정: `(0,0)` -> `(1,1)`은 큐브 좌표에서 중간 step(`i=1`)의 `x`,`z` 축이
+/// 정확히 `.5` 반올림 동점이면서 동시에 fix-up 단계에서도 `err_x == err_z`인
+/// 동점을 만든다(모듈 문서 참고). 규칙(반올림 half-up, 최대오차축 `x > y > z` 우선)이
+/// 이 입력에서 정확히 어떤 타일을 고르는지 여기서 못박는다.
+#[test]
+fn line_tie_break_is_pinned() {
+    let path = line(c(0, 0), c(1, 1));
+    assert_eq!(path, vec![c(0, 0), c(0, 1), c(1, 1)]);
+}
+
+/// 방향 비대칭은 계획상 **허용되지만 강제되지 않는다.** 이 구현이 고른 tie-break
+/// (반올림 half-up + 최대오차축 우선순위)는 보간 분자가 방향과 무관하게 동일한
+/// 값으로 재현되도록 만들어서(모듈 문서의 증명 참고) **방향에 대해 대칭이다** —
+/// float epsilon류의 방향 편향을 넣지 않은 결과다. 그 대칭성 자체가 "문서화한
+/// 거동"이므로 여기서 고정한다.
+#[test]
+fn line_direction_asymmetry_is_pinned() {
+    let cases = [
+        (c(0, 0), c(2, -1)),
+        (c(0, 0), c(1, 1)),
+        (c(-3, 5), c(6, -2)),
+        // 극단 좌표 근처지만 서로 가까운 두 점 — "극단값"과 "천문학적으로 먼 거리"는
+        // 다른 얘기다(아래 extreme_coordinates_do_not_panic의 주석 참고).
+        (c(i32::MAX, i32::MAX), c(i32::MAX - 4, i32::MAX)),
+    ];
+    for (a, b) in cases {
+        let forward = line(a, b);
+        let mut backward = line(b, a);
+        backward.reverse();
+        assert_eq!(
+            forward, backward,
+            "line({a:?},{b:?}) is not direction-symmetric"
+        );
+    }
+}
+
 // ---- 안전 -------------------------------------------------------------
 
 #[test]
 fn extreme_coordinates_do_not_panic() {
     let min = c(i32::MIN, i32::MIN);
     let max = c(i32::MAX, i32::MAX);
+    // 좌표값이 극단인 것과 "두 점 사이의 거리가 천문학적으로 먼 것"은 다른
+    // 문제다. min<->max 사이는 약 43억 타일 거리라 `line()`이 시도하면 43억
+    // 개짜리 Vec를 할당하려다 프로세스가 죽는다 — 이건 checked 산술이 막을 수
+    // 있는 "오버플로 패닉"이 아니라 순수한 메모리 자원 한계이고, 이 슬라이스가
+    // 다룰 범위 밖이다(계획 문서 §9, "경로 탐색"도 범위 밖). 그래서 여기서는
+    // 좌표는 극단이되 서로 가까운 입력으로 `line()`을 검증한다.
     let _ = min.distance(max);
     let _ = min.is_adjacent(max);
     let _ = min.neighbors();
     let _ = max.neighbors();
     let _ = ring(min, 3);
     let _ = range(max, 3);
+    let _ = line(min, c(i32::MIN + 5, i32::MIN));
+    let _ = line(c(i32::MAX, i32::MAX), c(i32::MAX, i32::MAX - 5));
 }
 
 #[test]

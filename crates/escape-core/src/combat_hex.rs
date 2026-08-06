@@ -230,6 +230,118 @@ pub fn range(center: HexCoord, radius: i32) -> Result<Vec<HexCoord>, HexError> {
     coords_from_offsets(center, &offsets)
 }
 
+/// `from`에서 `to`까지의 직선 경로. 양 끝 포함. 대시·관통 이동(T2)이 소비할
+/// helper다 — **`line()`은 장애물을 모른다.** 경로 탐색(A* 등 우회)은 이 함수의
+/// 범위 밖이다.
+///
+/// 반환 타입이 계획 문서의 `Vec<HexCoord>` 그대로인 이유(=`Result`가 필요 없는 이유):
+/// 아래 알고리즘이 만드는 각 좌표는 `from`과 `to`의 해당 큐브축 값 사이로
+/// **바운드된 반올림**이다(증명: 보간값은 항상 두 끝값 사이의 구간에 있고,
+/// 구간 끝이 이미 정수면 그 구간 안의 실수를 가장 가까운 정수로 반올림한 값도
+/// 그 구간을 벗어나지 않는다 — 최종 축 fix-up도 같은 구간 성질을 물려받는다).
+/// `from`/`to`가 이미 유효한 `i32`이므로 중간 결과도 항상 유효한 `i32`다.
+/// 나눗셈이 필요한 중간 계산(`round_half_up`)은 `i128`로 하므로(`i32` 두 값의
+/// 차 × 거리, 최악 폭이 대략 2^64 — `i128`의 2^127에 비하면 여유가 크다) 그
+/// 계산 자체도 오버플로하지 않는다.
+///
+/// **주의(메모리, 오버플로와는 다른 문제).** 반환 벡터 길이는 `distance(from,
+/// to) + 1`이다. `from`/`to`가 서로 아주 멀면(예: `i32::MIN`과 `i32::MAX`, 약
+/// 43억 타일) 이 함수는 그만큼의 `Vec<HexCoord>`를 할당하려다 프로세스가
+/// 죽는다. 이건 checked 산술이 막아주는 "오버플로 패닉"이 아니라 순수한 자원
+/// 한계이며, 이 슬라이스의 범위 밖이다(경로 탐색·거리 상한은 계획 §9). 대시·
+/// 관통 이동(T2)이 이 함수를 쓸 때는 호출부가 합리적인 사거리로 이미 걸러진
+/// `from`/`to`를 넘긴다고 가정한다.
+///
+/// ## tie-break 규칙 (계약 — [`line_tie_break_is_pinned`] 테스트가 고정한다)
+///
+/// 직선이 정확히 두 타일의 경계(꼭짓점 등)를 지나는 지점은 부동소수점으로
+/// 풀면 epsilon에 좌우된다. 이 구현은 float를 전혀 쓰지 않고 두 단계의 정수
+/// 규칙으로 그 동점을 깬다.
+///
+/// 1. axial `(q, r)`을 큐브 `(x, y, z) = (q, r, -q-r)`으로 보고, 각 단계
+///    `i = 0..=N`(N = [`HexCoord::distance`])에서 `x/y/z`를 `from`→`to` 선형
+///    보간한 뒤 **반올림 동점(정확히 .5)은 큰 쪽으로 올린다** (round-half-up,
+///    `-inf` 방향이 아니라 `+inf` 방향).
+/// 2. 세 축을 독립적으로 반올림하면 `x+y+z=0`이 깨질 수 있으므로, 반올림
+///    오차(=원래 값과의 차이의 절댓값)가 **가장 큰 축 하나를 나머지 둘의 합의
+///    음수로 재계산**해 constraint를 되살린다. 오차가 동점이면 **`x`를 `y`나
+///    `z`보다 먼저, `y`를 `z`보다 먼저** 재계산 대상으로 고른다 — 즉 `x >= y,
+///    x >= z`면 `x`를, 아니면 `y > z`면 `y`를, 아니면 `z`를 고친다.
+///
+/// 이 두 규칙(반올림 동점은 위로, 축 동점은 `x > y > z` 우선)이 "정확히 두 타일
+/// 사이"의 유일한 결정 기준이다.
+///
+/// ## 방향 비대칭
+///
+/// `line(a, b)`를 뒤집은 것이 `line(b, a)`와 다를 수 있다 — **허용된 거동이다**
+/// (계획 §4-4). 억지로 대칭을 만들려고 tie-break를 흐리지 않는다. 실제로 어떤
+/// 입력이 비대칭을 보이는지는 [`line_direction_asymmetry_is_pinned`] 테스트가
+/// 고정한다.
+pub fn line(from: HexCoord, to: HexCoord) -> Vec<HexCoord> {
+    let steps = from.distance(to);
+    if steps == 0 {
+        return vec![from];
+    }
+    let (x0, z0) = (i128::from(from.q), i128::from(from.r));
+    let (x1, z1) = (i128::from(to.q), i128::from(to.r));
+    let (y0, y1) = (-x0 - z0, -x1 - z1);
+    let n = i128::from(steps);
+
+    let mut path = Vec::with_capacity((steps + 1) as usize);
+    for i in 0..=steps {
+        let i = i128::from(i);
+        let xi = x0 * (n - i) + x1 * i;
+        let yi = y0 * (n - i) + y1 * i;
+        let zi = z0 * (n - i) + z1 * i;
+        let (x, _y, z) = cube_round(xi, yi, zi, n);
+        // 큐브 -> axial: q = x, r = z (y = -x-z는 버린다). x/y/z는 각각 from과
+        // to의 해당 축 값 사이로 바운드돼 있으므로(위 문서의 증명) i32에 항상
+        // 들어간다. `debug_assert`로 그 증명을 테스트에서 스스로 검증한다 —
+        // 만약 증명이 틀렸다면 여기서 패닉하는 대신 `extreme_coordinates_do_not_panic`
+        // 같은 디버그 빌드 테스트가 먼저 잡아낸다.
+        debug_assert!(i32::try_from(x).is_ok(), "line() q out of i32 range");
+        debug_assert!(i32::try_from(z).is_ok(), "line() r out of i32 range");
+        path.push(HexCoord {
+            q: x as i32,
+            r: z as i32,
+        });
+    }
+    path
+}
+
+/// [`line`]의 tie-break 2단계(반올림 half-up -> 최대오차축 fix-up)를 구현한다.
+/// `n > 0` (호출부가 `steps == 0`을 먼저 걸러낸다).
+fn cube_round(xi: i128, yi: i128, zi: i128, n: i128) -> (i128, i128, i128) {
+    let mut x = round_half_up(xi, n);
+    let mut y = round_half_up(yi, n);
+    let mut z = round_half_up(zi, n);
+
+    let err_x = (xi - x * n).abs();
+    let err_y = (yi - y * n).abs();
+    let err_z = (zi - z * n).abs();
+
+    if err_x >= err_y && err_x >= err_z {
+        x = -y - z;
+    } else if err_y > err_z {
+        y = -x - z;
+    } else {
+        z = -x - y;
+    }
+    (x, y, z)
+}
+
+/// `numerator / denom`을 가장 가까운 정수로 반올림한다. `denom > 0`이 전제다.
+/// 정확히 절반(.5)인 동점은 **위로**(더 큰 정수로) 올린다 — 이것이 정한 규칙이다.
+fn round_half_up(numerator: i128, denom: i128) -> i128 {
+    let q = numerator.div_euclid(denom);
+    let rem = numerator - q * denom; // [0, denom) 범위, div_euclid이 보장한다.
+    if 2 * rem >= denom {
+        q + 1
+    } else {
+        q
+    }
+}
+
 /// 이 모듈의 모든 산술 실패·잘못된 입력을 표현한다. 값을 지어내거나 조용히
 /// 기본값으로 대체하지 않고 항상 이 타입으로 거부한다.
 #[derive(Clone, Debug, PartialEq, Eq)]

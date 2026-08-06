@@ -287,6 +287,20 @@ fn rule11_attack_references_unknown_effect_id_is_rejected() {
     expect_combat_error(&bundle);
 }
 
+/// T0 rule 12: an encounter declaring a `simulation_version` this build
+/// doesn't implement is a hard index-time error, named with the encounter id
+/// like every other rule in this function.
+#[test]
+fn unsupported_simulation_version_is_rejected_at_index_time() {
+    let bundle =
+        bundle_with_combat(|combat| combat["manifest"]["simulation_version"] = json!("v9"));
+    let error = expect_combat_error(&bundle);
+    let message = error.to_string();
+    assert!(message.contains(ENCOUNTER_ID));
+    assert!(message.contains("v9"));
+    assert!(message.contains("v2"));
+}
+
 // ---------------------------------------------------------------------
 // Additive-optional proof (also WP-4 minimal case 13).
 // ---------------------------------------------------------------------

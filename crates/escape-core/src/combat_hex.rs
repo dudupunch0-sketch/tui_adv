@@ -342,6 +342,83 @@ fn round_half_up(numerator: i128, denom: i128) -> i128 {
     }
 }
 
+/// 대형 유닛의 점유 형태 — 앵커 기준 오프셋 집합. **회전이 없다** (상위 문서
+/// 결정 12: 대형 유닛은 회전 없이 점유 형태가 고정이다). 이 타입에도, 이
+/// 모듈 어디에도 회전 helper를 추가하지 않는다 — 비대칭 형태가 좌우 배치에서
+/// 같은 방향을 향하는 문제는 콘텐츠 가이드(대칭 형태를 쓰라는 안내)로 해소한다.
+///
+/// ## 정규형 (계약 — [`same_shape_in_different_order_normalizes_identically`]과
+/// [`same_shape_at_different_absolute_position_normalizes_identically`]가 고정한다)
+///
+/// [`HexShape::new`]는 입력 오프셋을 다음 두 단계로 정규화한다.
+///
+/// 1. 입력 오프셋 중 `Ord`([`HexCoord`]의 `(q, r)` 사전순) 기준 **최솟값을
+///    원점(0,0)으로 옮기도록 전체를 이동**한다. 사전순은 이동에 대해
+///    불변이다(모든 오프셋에서 같은 상수를 빼도 상대 순서가 바뀌지 않는다) —
+///    그래서 이동한 뒤에도 그 최솟값이 그대로 `(0,0)`이 되고, 여전히 정규화된
+///    집합의 최솟값이다.
+/// 2. 이동한 오프셋을 `Ord` 오름차순으로 정렬한다.
+///
+/// **결과적으로 정규형은 입력의 순서에도, 입력이 어떤 절대 위치를 기준으로
+/// 적혀 있었는지에도 무관하다** — 같은 상대 모양이면 항상 같은 정규형이
+/// 나온다. 이것이 이 슬라이스가 확정하는 세 번째 계약이다.
+///
+/// 빈 오프셋 집합과 중복 오프셋은 [`HexError::EmptyShape`]/[`HexError::DuplicateOffset`]로
+/// 거부한다 — 빈 모양이나 겹친 타일을 조용히 정리해 지어내지 않는다.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct HexShape {
+    /// 정규화된 오프셋. 항상 비어 있지 않고, 중복이 없고, `Ord` 오름차순이며,
+    /// 첫 원소가 `(0,0)`이다. `HexShape::new`를 통과한 값만 이 불변식을 만족한다.
+    normalized_offsets: Vec<HexCoord>,
+}
+
+impl HexShape {
+    /// 오프셋 집합으로부터 정규화된 [`HexShape`]를 만든다. 정규형 규칙은
+    /// 타입 문서를 본다.
+    pub fn new(offsets: Vec<HexCoord>) -> Result<HexShape, HexError> {
+        if offsets.is_empty() {
+            return Err(HexError::EmptyShape);
+        }
+
+        // 중복 검사. 입력 순서대로 훑어 처음 중복이 나타나는 오프셋을 보고한다
+        // (결정론적이되, 그 값 자체는 계약이 아니다 — HexError 문서 참고).
+        let mut seen: std::collections::BTreeSet<HexCoord> = std::collections::BTreeSet::new();
+        for &offset in &offsets {
+            if !seen.insert(offset) {
+                return Err(HexError::DuplicateOffset(offset));
+            }
+        }
+
+        // 안전: offsets가 비어있지 않음을 위에서 이미 확인했다.
+        let anchor = *offsets.iter().min().expect("offsets is non-empty");
+        let mut normalized_offsets = offsets
+            .into_iter()
+            .map(|offset| offset.checked_sub(anchor))
+            .collect::<Result<Vec<HexCoord>, HexError>>()?;
+        normalized_offsets.sort();
+
+        Ok(HexShape { normalized_offsets })
+    }
+
+    /// 이 모양을 `anchor`에 놓았을 때 실제로 점유하는 타일들. `Ord` 오름차순이다
+    /// (정규화된 오프셋이 이미 오름차순이고, 상수 이동이 그 순서를 보존하므로
+    /// — [`HexShape`] 타입 문서의 정규형 절과 같은 논증 — 여기서 다시 정렬할
+    /// 필요는 없지만, 방어적으로 한 번 더 정렬한다).
+    ///
+    /// 반환 타입이 계획 문서의 `Vec<HexCoord>`가 아니라 `Result<Vec<HexCoord>,
+    /// HexError>`인 이유는 [`ring`]/[`range`]와 같다: `anchor + offset`은 실제
+    /// 덧셈이고 `anchor`가 극단값 근처면 오버플로할 수 있다.
+    pub fn tiles_at(&self, anchor: HexCoord) -> Result<Vec<HexCoord>, HexError> {
+        let mut tiles = self
+            .normalized_offsets
+            .iter()
+            .map(|&offset| anchor.checked_add(offset))
+            .collect::<Result<Vec<HexCoord>, HexError>>()?;
+        tiles.sort();
+        Ok(tiles)
+    }
+}
+
 /// 이 모듈의 모든 산술 실패·잘못된 입력을 표현한다. 값을 지어내거나 조용히
 /// 기본값으로 대체하지 않고 항상 이 타입으로 거부한다.
 #[derive(Clone, Debug, PartialEq, Eq)]

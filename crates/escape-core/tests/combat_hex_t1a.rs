@@ -1,7 +1,7 @@
 //! T1-a `combat_hex` 회귀 테스트. 이 모듈은 아무 데도 배선되지 않았으므로 여기가
 //! 실질적인 산출물이다(`fable_combat_hex_t1a_step1_2608061847.md` §7).
 //!
-//! WP 순서대로 늘어난다 — 지금은 WP3(`line`)까지다.
+//! WP 순서대로 늘어난다 — 지금은 WP4(`HexShape`)까지다.
 use escape_core::*;
 
 fn c(q: i32, r: i32) -> HexCoord {
@@ -186,6 +186,45 @@ fn line_direction_asymmetry_is_pinned() {
     }
 }
 
+// ---- 형태 -----------------------------------------------------------
+
+#[test]
+fn same_shape_in_different_order_normalizes_identically() {
+    let a = HexShape::new(vec![c(0, 0), c(1, 0), c(0, 1)]).unwrap();
+    let b = HexShape::new(vec![c(0, 1), c(0, 0), c(1, 0)]).unwrap();
+    assert_eq!(a.tiles_at(c(0, 0)).unwrap(), b.tiles_at(c(0, 0)).unwrap());
+}
+
+/// 정규형의 두 번째 성질: 절대 위치가 달라도(=입력 오프셋을 통째로 옮겨 적어도)
+/// 같은 상대 모양은 같은 정규형이 된다. [`HexShape`] 타입 문서의 정규형 절이
+/// 명시하는 계약이다.
+#[test]
+fn same_shape_at_different_absolute_position_normalizes_identically() {
+    let a = HexShape::new(vec![c(0, 0), c(1, 0), c(0, 1)]).unwrap();
+    let b = HexShape::new(vec![c(5, 5), c(6, 5), c(5, 6)]).unwrap();
+    assert_eq!(a.tiles_at(c(0, 0)).unwrap(), b.tiles_at(c(0, 0)).unwrap());
+}
+
+#[test]
+fn tiles_at_translates_every_offset() {
+    let shape = HexShape::new(vec![c(0, 0), c(1, 0), c(0, 1)]).unwrap();
+    let anchor = c(10, -4);
+    let mut expected = vec![c(10, -4), c(11, -4), c(10, -3)];
+    expected.sort();
+    assert_eq!(shape.tiles_at(anchor).unwrap(), expected);
+}
+
+#[test]
+fn empty_shape_is_rejected() {
+    assert_eq!(HexShape::new(vec![]), Err(HexError::EmptyShape));
+}
+
+#[test]
+fn duplicate_offset_is_rejected() {
+    let err = HexShape::new(vec![c(0, 0), c(1, 0), c(0, 0)]).unwrap_err();
+    assert_eq!(err, HexError::DuplicateOffset(c(0, 0)));
+}
+
 // ---- 안전 -------------------------------------------------------------
 
 #[test]
@@ -206,6 +245,15 @@ fn extreme_coordinates_do_not_panic() {
     let _ = range(max, 3);
     let _ = line(min, c(i32::MIN + 5, i32::MIN));
     let _ = line(c(i32::MAX, i32::MAX), c(i32::MAX, i32::MAX - 5));
+    let shape = HexShape::new(vec![c(0, 0), c(1, 0)]).unwrap();
+    let _ = shape.tiles_at(max);
+    let _ = shape.tiles_at(min);
+}
+
+#[test]
+fn tiles_at_overflow_instead_of_panicking() {
+    let shape = HexShape::new(vec![c(0, 0), c(1, 0)]).unwrap();
+    assert_eq!(shape.tiles_at(c(i32::MAX, 0)), Err(HexError::Overflow));
 }
 
 #[test]

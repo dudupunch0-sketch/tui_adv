@@ -58,3 +58,4 @@ target/
 /escape-terminal
 /escape-terminal-cloud-server-only
 .worktrees/
+.claude/worktrees/

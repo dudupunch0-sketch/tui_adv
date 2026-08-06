@@ -195,14 +195,43 @@ fn same_shape_in_different_order_normalizes_identically() {
     assert_eq!(a.tiles_at(c(0, 0)).unwrap(), b.tiles_at(c(0, 0)).unwrap());
 }
 
-/// 정규형의 두 번째 성질: 절대 위치가 달라도(=입력 오프셋을 통째로 옮겨 적어도)
-/// 같은 상대 모양은 같은 정규형이 된다. [`HexShape`] 타입 문서의 정규형 절이
-/// 명시하는 계약이다.
+/// 정규형은 **정렬만** 한다 — 이동하지 않는다([`HexShape`] 타입 문서 참고).
+/// 오프셋 집합을 통째로 옮겨 적으면 앵커가 모양의 어디에 있는지에 대해 다른
+/// 것을 말하게 되므로, 두 `HexShape`는 (같은 상대 모양이라도) 같은 값이
+/// 아니어야 한다. 예: 중심+인접 6칸의 "꽃" 모양을 `(0,0)` 기준으로 적은 것과
+/// 옆으로 옮겨 적은 것은, `tiles_at`으로 실제로 놓아 보면 서로 다른 자리에
+/// 중심이 온다 — 정규화가 이 차이를 지워버리면 저자가 앵커를 모양의 어디에
+/// 둘지 정할 방법이 없어진다.
 #[test]
-fn same_shape_at_different_absolute_position_normalizes_identically() {
-    let a = HexShape::new(vec![c(0, 0), c(1, 0), c(0, 1)]).unwrap();
-    let b = HexShape::new(vec![c(5, 5), c(6, 5), c(5, 6)]).unwrap();
-    assert_eq!(a.tiles_at(c(0, 0)).unwrap(), b.tiles_at(c(0, 0)).unwrap());
+fn translated_shape_is_not_the_same_shape() {
+    let flower = HexShape::new(vec![
+        c(0, 0),
+        c(1, 0),
+        c(1, -1),
+        c(0, -1),
+        c(-1, 0),
+        c(-1, 1),
+        c(0, 1),
+    ])
+    .unwrap();
+    let shifted_flower = HexShape::new(vec![
+        c(5, 5),
+        c(6, 5),
+        c(6, 4),
+        c(5, 4),
+        c(4, 5),
+        c(4, 6),
+        c(5, 6),
+    ])
+    .unwrap();
+    assert_ne!(flower, shifted_flower);
+
+    // 구체적으로: 옮겨 적지 않은 꽃은 오프셋 (0,0)을 포함하므로 앵커에 자기
+    // 중심을 놓지만, `(5,5)`만큼 통째로 옮겨 적은 꽃은 오프셋 집합에 (0,0)이
+    // 없으므로(전부 (4,4)~(6,6) 범위로 밀려났다) 앵커에 중심이 오지 않는다.
+    let anchor = c(10, -4);
+    assert!(flower.tiles_at(anchor).unwrap().contains(&anchor));
+    assert!(!shifted_flower.tiles_at(anchor).unwrap().contains(&anchor));
 }
 
 #[test]

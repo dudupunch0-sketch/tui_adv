@@ -132,13 +132,6 @@ impl HexCoord {
         Ok(HexCoord { q, r })
     }
 
-    /// checked 벡터 뺄셈.
-    fn checked_sub(self, other: HexCoord) -> Result<HexCoord, HexError> {
-        let q = self.q.checked_sub(other.q).ok_or(HexError::Overflow)?;
-        let r = self.r.checked_sub(other.r).ok_or(HexError::Overflow)?;
-        Ok(HexCoord { q, r })
-    }
-
     /// `self - other`를 `i64`로. `i32` 두 값의 차는 `i64`에서 절대 오버플로하지
     /// 않으므로(폭이 최대 2^32) checked가 필요 없다.
     fn delta_i64(self, other: Self) -> (i64, i64) {
@@ -348,34 +341,42 @@ fn round_half_up(numerator: i128, denom: i128) -> i128 {
 /// 모듈 어디에도 회전 helper를 추가하지 않는다 — 비대칭 형태가 좌우 배치에서
 /// 같은 방향을 향하는 문제는 콘텐츠 가이드(대칭 형태를 쓰라는 안내)로 해소한다.
 ///
-/// ## 정규형 (계약 — [`same_shape_in_different_order_normalizes_identically`]과
-/// [`same_shape_at_different_absolute_position_normalizes_identically`]가 고정한다)
+/// ## 정규형 (계약 — [`same_shape_in_different_order_normalizes_identically`]이
+/// 고정한다): **정렬만 한다. 이동하지 않는다.**
 ///
-/// [`HexShape::new`]는 입력 오프셋을 다음 두 단계로 정규화한다.
+/// [`HexShape::new`]는 입력 오프셋을 `Ord`([`HexCoord`]의 `(q, r)` 사전순)
+/// 오름차순으로 정렬하기만 한다. 그래서 오프셋 `(0,0)`을 포함하지 않은 채로
+/// 만들어진 모양도 있을 수 있고, 그건 유효하다 — **앵커는 저자가 오프셋
+/// 집합 안에 어디를 둘지 스스로 정하는 값이고, 이 타입은 그 결정을 훼손하지
+/// 않는다.**
 ///
-/// 1. 입력 오프셋 중 `Ord`([`HexCoord`]의 `(q, r)` 사전순) 기준 **최솟값을
-///    원점(0,0)으로 옮기도록 전체를 이동**한다. 사전순은 이동에 대해
-///    불변이다(모든 오프셋에서 같은 상수를 빼도 상대 순서가 바뀌지 않는다) —
-///    그래서 이동한 뒤에도 그 최솟값이 그대로 `(0,0)`이 되고, 여전히 정규화된
-///    집합의 최솟값이다.
-/// 2. 이동한 오프셋을 `Ord` 오름차순으로 정렬한다.
+/// (이전 버전은 여기서 `Ord` 최솟값을 원점으로 옮기는 이동을 추가로 했다 —
+/// "정렬 + 앵커 기준 이동"이라는 계획 문구를 그렇게 읽었기 때문이다. 이건
+/// 틀린 설계였다: 이동은 앵커가 모양의 어디에 있는지에 대한 저자의 정보를
+/// 지워버린다. 예를 들어 중심 + 인접 6칸으로 된 "꽃" 모양은 `Ord` 최솟값이
+/// `(-1, 0)`이라 이동을 하면 `tiles_at(A)`가 꽃의 중심을 `A`가 아니라
+/// `A + (1, 0)`에 놓게 된다 — 즉 **대칭 모양조차 자기 중심을 앵커에 놓을 수
+/// 없게 된다.** 계획이 실제로 요구한 성질은 "같은 모양을 다른 순서로 넣어도
+/// 같은 정규형"뿐이고, 그건 정렬만으로 충족된다. 이동은 애초에 필요 없었다.
+/// 다음 구현자가 "정리"랍시고 이 이동을 되살리지 않도록 여기 남겨 둔다.)
 ///
-/// **결과적으로 정규형은 입력의 순서에도, 입력이 어떤 절대 위치를 기준으로
-/// 적혀 있었는지에도 무관하다** — 같은 상대 모양이면 항상 같은 정규형이
-/// 나온다. 이것이 이 슬라이스가 확정하는 세 번째 계약이다.
+/// 정렬만 하므로, **오프셋 집합을 통째로 옮겨 적은 두 [`HexShape`]는 서로
+/// 다른 값이다** — 둘이 앵커에 대해 다른 것을 말하고 있기 때문이다
+/// ([`translated_shape_is_not_the_same_shape`] 테스트가 고정한다).
 ///
 /// 빈 오프셋 집합과 중복 오프셋은 [`HexError::EmptyShape`]/[`HexError::DuplicateOffset`]로
 /// 거부한다 — 빈 모양이나 겹친 타일을 조용히 정리해 지어내지 않는다.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct HexShape {
-    /// 정규화된 오프셋. 항상 비어 있지 않고, 중복이 없고, `Ord` 오름차순이며,
-    /// 첫 원소가 `(0,0)`이다. `HexShape::new`를 통과한 값만 이 불변식을 만족한다.
+    /// 정렬된 오프셋. 항상 비어 있지 않고, 중복이 없고, `Ord` 오름차순이다.
+    /// **이동하지 않는다** — 입력에 없던 `(0,0)`을 만들어내지 않는다.
+    /// `HexShape::new`를 통과한 값만 이 불변식을 만족한다.
     normalized_offsets: Vec<HexCoord>,
 }
 
 impl HexShape {
     /// 오프셋 집합으로부터 정규화된 [`HexShape`]를 만든다. 정규형 규칙은
-    /// 타입 문서를 본다.
+    /// 타입 문서를 본다 — **정렬만, 이동 없음.**
     pub fn new(offsets: Vec<HexCoord>) -> Result<HexShape, HexError> {
         if offsets.is_empty() {
             return Err(HexError::EmptyShape);
@@ -390,12 +391,7 @@ impl HexShape {
             }
         }
 
-        // 안전: offsets가 비어있지 않음을 위에서 이미 확인했다.
-        let anchor = *offsets.iter().min().expect("offsets is non-empty");
-        let mut normalized_offsets = offsets
-            .into_iter()
-            .map(|offset| offset.checked_sub(anchor))
-            .collect::<Result<Vec<HexCoord>, HexError>>()?;
+        let mut normalized_offsets = offsets;
         normalized_offsets.sort();
 
         Ok(HexShape { normalized_offsets })
@@ -403,8 +399,7 @@ impl HexShape {
 
     /// 이 모양을 `anchor`에 놓았을 때 실제로 점유하는 타일들. `Ord` 오름차순이다
     /// (정규화된 오프셋이 이미 오름차순이고, 상수 이동이 그 순서를 보존하므로
-    /// — [`HexShape`] 타입 문서의 정규형 절과 같은 논증 — 여기서 다시 정렬할
-    /// 필요는 없지만, 방어적으로 한 번 더 정렬한다).
+    /// 여기서 다시 정렬할 필요는 없지만, 방어적으로 한 번 더 정렬한다).
     ///
     /// 반환 타입이 계획 문서의 `Vec<HexCoord>`가 아니라 `Result<Vec<HexCoord>,
     /// HexError>`인 이유는 [`ring`]/[`range`]와 같다: `anchor + offset`은 실제

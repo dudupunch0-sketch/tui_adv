@@ -1,3 +1,4 @@
+use crate::combat_contract::ensure_supported_simulation_version;
 use crate::{CombatManifest, CombatState};
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
@@ -163,6 +164,11 @@ impl CombatSimulation {
         if input.config.tick_millis == 0 || input.config.max_ticks == 0 {
             return Err(CombatSimulationError::InvalidConfig);
         }
+        ensure_supported_simulation_version(&input.manifest.simulation_version).map_err(|_| {
+            CombatSimulationError::UnsupportedSimulationVersion(
+                input.manifest.simulation_version.as_str().to_string(),
+            )
+        })?;
         input
             .manifest
             .validate()
@@ -499,6 +505,10 @@ pub enum CombatSimulationError {
     InvalidReference,
     MaxTicksExceeded,
     Serialization,
+    /// `input.manifest.simulation_version` is not the one this build
+    /// implements. Dedicated variant so the cause is visible at a glance,
+    /// rather than folded into `InvalidReference` (T0 §4-3).
+    UnsupportedSimulationVersion(String),
 }
 impl std::fmt::Display for CombatSimulationError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {

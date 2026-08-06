@@ -1,7 +1,7 @@
 use escape_core::{
     index_content_bundle, load_content_bundle, new_game_from_content, scene_page_from_content,
     CombatConclusionOutcome, CombatConclusionReason, CombatConclusionReport,
-    CombatSimulationVersion, CombatSpectatorPage, CombatSpectatorView,
+    CombatSimulationVersion, CombatSpectatorPage, CombatSpectatorView, CURRENT_SIMULATION_VERSION,
 };
 use serde_json::Value;
 
@@ -11,7 +11,7 @@ const CONTENT_BUNDLE: &str = include_str!("../fixtures/content/content.bundle.js
 /// slice only wires existing structs together, it never recomputes resolution.
 fn sample_view() -> CombatSpectatorView {
     CombatSpectatorView {
-        simulation_version: CombatSimulationVersion::new("v1").unwrap(),
+        simulation_version: CombatSimulationVersion::new(CURRENT_SIMULATION_VERSION).unwrap(),
         resolution_fingerprint: "resolution-fp".into(),
         tick_millis: 100,
         frames: vec![],
@@ -85,7 +85,7 @@ fn filled_combat_serializes_with_simulation_version_alongside_fingerprint() {
         .expect("combat key must appear once ScenePage.combat is Some");
     assert_eq!(
         combat["view"]["simulation_version"],
-        Value::String("v1".into())
+        Value::String(CURRENT_SIMULATION_VERSION.into())
     );
     assert_eq!(
         combat["view"]["fingerprint"],

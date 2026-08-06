@@ -1,7 +1,7 @@
 //! T1-a `combat_hex` 회귀 테스트. 이 모듈은 아무 데도 배선되지 않았으므로 여기가
 //! 실질적인 산출물이다(`fable_combat_hex_t1a_step1_2608061847.md` §7).
 //!
-//! WP 순서대로 늘어난다 — 지금은 WP4(`HexShape`)까지다.
+//! WP 순서대로 늘어난다 — 지금은 WP5(`HexOccupancy`)까지다.
 use escape_core::*;
 
 fn c(q: i32, r: i32) -> HexCoord {
@@ -225,6 +225,68 @@ fn duplicate_offset_is_rejected() {
     assert_eq!(err, HexError::DuplicateOffset(c(0, 0)));
 }
 
+// ---- 점유 -----------------------------------------------------------
+
+#[test]
+fn one_tile_holds_one_occupant() {
+    let mut occ = HexOccupancy::new();
+    occ.try_occupy(&[c(0, 0)], "a").unwrap();
+    assert_eq!(occ.occupant_at(c(0, 0)), Some("a"));
+    assert!(!occ.is_free(c(0, 0)));
+}
+
+#[test]
+fn occupying_an_occupied_tile_fails() {
+    let mut occ = HexOccupancy::new();
+    occ.try_occupy(&[c(0, 0)], "a").unwrap();
+    let err = occ.try_occupy(&[c(0, 0)], "b").unwrap_err();
+    assert_eq!(err, HexError::TileOccupied(c(0, 0)));
+}
+
+#[test]
+fn a_failed_multi_tile_occupy_leaves_no_partial_state() {
+    let mut occ = HexOccupancy::new();
+    occ.try_occupy(&[c(5, 5)], "blocker").unwrap();
+    let err = occ
+        .try_occupy(&[c(0, 0), c(1, 0), c(5, 5)], "big")
+        .unwrap_err();
+    assert_eq!(err, HexError::TileOccupied(c(5, 5)));
+    // 실패한 요청의 다른 타일들은 점유되지 않은 채로 남아야 한다(all-or-nothing).
+    assert!(occ.is_free(c(0, 0)));
+    assert!(occ.is_free(c(1, 0)));
+    assert_eq!(occ.occupant_at(c(5, 5)), Some("blocker"));
+}
+
+#[test]
+fn vacate_frees_every_tile_of_that_id() {
+    let mut occ = HexOccupancy::new();
+    occ.try_occupy(&[c(0, 0), c(1, 0), c(0, 1)], "big").unwrap();
+    occ.vacate("big");
+    assert!(occ.is_free(c(0, 0)));
+    assert!(occ.is_free(c(1, 0)));
+    assert!(occ.is_free(c(0, 1)));
+}
+
+#[test]
+fn vacating_an_id_with_no_tiles_is_a_harmless_no_op() {
+    let mut occ = HexOccupancy::new();
+    occ.try_occupy(&[c(0, 0)], "a").unwrap();
+    occ.vacate("nobody");
+    assert_eq!(occ.occupant_at(c(0, 0)), Some("a"));
+}
+
+#[test]
+fn iteration_order_is_deterministic() {
+    let mut occ = HexOccupancy::new();
+    occ.try_occupy(&[c(3, 3)], "a").unwrap();
+    occ.try_occupy(&[c(-1, -1)], "b").unwrap();
+    occ.try_occupy(&[c(0, 0)], "c").unwrap();
+    let coords: Vec<HexCoord> = occ.iter().map(|(coord, _)| *coord).collect();
+    let mut sorted = coords.clone();
+    sorted.sort();
+    assert_eq!(coords, sorted);
+}
+
 // ---- 안전 -------------------------------------------------------------
 
 #[test]
@@ -248,6 +310,9 @@ fn extreme_coordinates_do_not_panic() {
     let shape = HexShape::new(vec![c(0, 0), c(1, 0)]).unwrap();
     let _ = shape.tiles_at(max);
     let _ = shape.tiles_at(min);
+    let mut occ = HexOccupancy::new();
+    occ.try_occupy(&[min, max], "extreme").unwrap();
+    occ.vacate("extreme");
 }
 
 #[test]

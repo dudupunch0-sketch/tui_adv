@@ -50,6 +50,7 @@
 //! 필요 없다 — 이 두 부류를 섞지 않는다.
 
 use serde::{Deserialize, Serialize};
+use std::collections::{BTreeMap, BTreeSet};
 
 /// 육각 타일 하나의 axial 좌표.
 ///
@@ -382,7 +383,7 @@ impl HexShape {
 
         // 중복 검사. 입력 순서대로 훑어 처음 중복이 나타나는 오프셋을 보고한다
         // (결정론적이되, 그 값 자체는 계약이 아니다 — HexError 문서 참고).
-        let mut seen: std::collections::BTreeSet<HexCoord> = std::collections::BTreeSet::new();
+        let mut seen: BTreeSet<HexCoord> = BTreeSet::new();
         for &offset in &offsets {
             if !seen.insert(offset) {
                 return Err(HexError::DuplicateOffset(offset));
@@ -416,6 +417,71 @@ impl HexShape {
             .collect::<Result<Vec<HexCoord>, HexError>>()?;
         tiles.sort();
         Ok(tiles)
+    }
+}
+
+/// 타일 점유 맵. 한 타일에는 한 id만 들어갈 수 있지만, 한 id는(대형 유닛처럼)
+/// 여러 타일을 동시에 점유할 수 있다.
+///
+/// 내부를 `BTreeMap`으로 두는 것은 장식이 아니다 — [`HexCoord`]의 `Ord`
+/// (=(q,r) 사전순)로 자동 정렬돼 순회하므로 [`iter`](Self::iter)가 별도로 정렬할
+/// 필요가 없고, 이 모듈이 어디서도 `HashMap`을 쓰지 않는다는 결정론 요구사항을
+/// 만족한다.
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub struct HexOccupancy {
+    tiles: BTreeMap<HexCoord, String>,
+}
+
+impl HexOccupancy {
+    /// 비어 있는 점유 맵.
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// `tiles`를 전부 `id`에게 배정한다. **all-or-nothing**이다: 요청한 타일 중
+    /// 단 하나라도 이미 (누구에게든) 점유돼 있으면 전체 요청이 실패하고, 이미
+    /// 성공한 타일이 부분적으로 남지 않는다. 대형 유닛이 자기 오프셋 집합
+    /// 전체를 점유하거나 아예 점유하지 않아야 하는 요구사항이 여기서 나온다.
+    ///
+    /// 충돌 검사는 `tiles`를 정렬한 뒤 진행한다 — 호출자가 어떤 순서로 슬라이스를
+    /// 넘기든 어떤 타일이 충돌로 보고되는지가 호출 순서에 좌우되지 않는다
+    /// (결정론). 같은 타일이 `tiles`에 두 번 들어있어도(같은 id를 두 번 놓는
+    /// 셈이니) 그 자체는 충돌이 아니다 — 실제로 이미 다른 id가 점유했을 때만
+    /// 거부한다.
+    pub fn try_occupy(&mut self, tiles: &[HexCoord], id: &str) -> Result<(), HexError> {
+        let mut sorted_tiles = tiles.to_vec();
+        sorted_tiles.sort();
+        for &tile in &sorted_tiles {
+            if self.tiles.contains_key(&tile) {
+                return Err(HexError::TileOccupied(tile));
+            }
+        }
+        for tile in sorted_tiles {
+            self.tiles.insert(tile, id.to_string());
+        }
+        Ok(())
+    }
+
+    /// `id`가 점유한 모든 타일을 비운다. `id`가 아무것도 점유하지 않았어도
+    /// 오류가 아니다(no-op).
+    pub fn vacate(&mut self, id: &str) {
+        self.tiles.retain(|_, occupant| occupant != id);
+    }
+
+    /// `coord`를 누가 점유하고 있는지. 비어 있으면 `None`.
+    pub fn occupant_at(&self, coord: HexCoord) -> Option<&str> {
+        self.tiles.get(&coord).map(String::as_str)
+    }
+
+    /// `coord`가 비어 있는가.
+    pub fn is_free(&self, coord: HexCoord) -> bool {
+        !self.tiles.contains_key(&coord)
+    }
+
+    /// 점유된 `(타일, id)` 전부를 [`HexCoord`]의 `Ord` 오름차순으로 순회한다
+    /// (`BTreeMap`의 기본 순회 순서 — 별도로 정렬하지 않는다).
+    pub fn iter(&self) -> impl Iterator<Item = (&HexCoord, &str)> {
+        self.tiles.iter().map(|(coord, id)| (coord, id.as_str()))
     }
 }
 

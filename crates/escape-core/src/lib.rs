@@ -30,7 +30,7 @@ pub use combat_execution::{
     CombatLogEvent, CombatLogImportance, CombatLogTag, CombatPresentationSpeed, CombatProvenance,
     CombatRunMode,
 };
-pub use combat_hex::{line, range, ring, HexCoord, HexError, HexShape};
+pub use combat_hex::{line, range, ring, HexCoord, HexError, HexOccupancy, HexShape};
 pub use combat_opportunity::{
     CombatDetectionLevel, CombatDetectionThresholds, CombatInterventionBudget, CombatObserver,
     CombatOpportunityCandidate, CombatOpportunityCatalog, CombatOpportunityContext,

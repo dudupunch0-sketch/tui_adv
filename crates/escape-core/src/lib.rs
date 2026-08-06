@@ -1,6 +1,7 @@
 mod combat_conclusion;
 mod combat_contract;
 mod combat_execution;
+mod combat_hex;
 mod combat_opportunity;
 mod combat_resolution;
 mod combat_simulation;
@@ -29,6 +30,7 @@ pub use combat_execution::{
     CombatLogEvent, CombatLogImportance, CombatLogTag, CombatPresentationSpeed, CombatProvenance,
     CombatRunMode,
 };
+pub use combat_hex::{HexCoord, HexError};
 pub use combat_opportunity::{
     CombatDetectionLevel, CombatDetectionThresholds, CombatInterventionBudget, CombatObserver,
     CombatOpportunityCandidate, CombatOpportunityCatalog, CombatOpportunityContext,

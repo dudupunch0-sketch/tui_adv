@@ -14,8 +14,8 @@ baseline: `ab9fc7e`
 이 슬라이스는 그 구멍을 막는다. T1이 육각 좌표계로 breaking change를 낼 때 안전장치가 되므로
 T1보다 먼저 선다.
 
-현재 저작에서 선언된 version은 `v2` 한 값뿐이다(3곳: preview YAML 1, 생성 번들 2 —
-번들은 export 산출물이라 손으로 고치지 않는다).
+현재 트리에는 **두 version이 공존한다** — 저작 콘텐츠는 `v2`, Rust 테스트 픽스처는 `v1`이다.
+아무도 이 불일치를 잡지 못하고 있다는 사실 자체가 이 슬라이스의 근거다. 자세한 내용과 파급 실측은 §4-4에 있다.
 
 ## 2. 선행 조건
 
@@ -29,7 +29,12 @@ T1보다 먼저 선다.
 - `crates/escape-core/src/combat_simulation.rs` (검증 호출 추가만)
 - `crates/escape-core/src/content.rs` (`validate_encounter_combat`에 규칙 추가만)
 - `crates/escape-core/tests/combat_contract_wave1.rs` (테스트 추가)
-- `crates/escape-core/tests/encounter_combat_wave3.rs` (테스트 추가)
+- `crates/escape-core/tests/encounter_combat_wave3.rs` (테스트 추가 + 픽스처 version 정규화)
+- 픽스처 version 정규화 대상 (2026-08-06 개정, §4-4 참조):
+  `crates/escape-core/tests/combat_simulation_wave2.rs`,
+  `combat_execution_wave2.rs`, `combat_resolution_wave2.rs`,
+  `combat_conclusion_wave2.rs`, `combat_spectator_wave3.rs`,
+  `scene_page_combat_boundary.rs`
 
 수정 금지:
 
@@ -80,6 +85,40 @@ pub const CURRENT_SIMULATION_VERSION: &str = "v2";
   (같은 문제로 `ContentTurnError::CombatProducer`가 리뷰에서 전용 변형으로 교체된 선례가 있다).
 - `validate_encounter_combat`의 오류 메시지에는 **인카운터 id를 포함**한다 (기존 규칙들과 동일).
 
+### 4-4. 픽스처 version이 이미 갈라져 있다 (2026-08-06 개정)
+
+**이 계획서의 초판은 "저작에 선언된 version은 `v2` 한 값뿐"이라고 적었다. 틀렸다.**
+초판 조사가 `--include=*.yaml --include=*.json`으로 제한되어 **Rust 테스트 픽스처를 보지 않았다.**
+
+실제 상태:
+
+| 위치 | 선언된 version |
+|---|---|
+| 저작 콘텐츠 (preview YAML 1 + 생성 번들 2) | `v2` |
+| Rust 테스트 픽스처 (**7개 파일 9곳**) | `v1` |
+
+즉 **트리에 이미 두 version이 공존하고 아무도 잡지 못하고 있다.** 이건 이 슬라이스를 막는 장애물이
+아니라 **이 슬라이스가 존재해야 하는 이유의 실물 증거**다. 검증을 붙이는 순간 65개 테스트가
+`UnsupportedSimulationVersion("v1")`로 떨어지는 것이 정상 동작이다.
+
+**파급 실측 (main이 직접 확인).** 픽스처를 `v1` → `v2`로 올리면 manifest fingerprint가 바뀌고
+따라서 파생 seed와 `roll_percent`가 바뀐다. 그럼에도 안전하다:
+
+- 테스트에 **하드코딩된 fingerprint 문자열이 하나도 없다** — 전부 "같은 입력 두 번 = 같은 값" 자기일관성 단정이다.
+- 테스트에 **리터럴 roll 값 단정이 없다.**
+- 확률이 걸리는 유일한 테스트(`accuracy_range_penetration_and_overflow_are_explicit`,
+  `accuracy_percent = 50`)는 `assert_eq!(outcome.hit, outcome.roll_percent < 50)`으로
+  **관측값에서 기대를 재도출**하므로 seed가 바뀌어도 성립한다.
+- 나머지 픽스처의 `accuracy_percent`는 0 아니면 100이라 명중 여부가 seed와 무관하다.
+
+따라서 정규화는 문자열 교체로 끝나야 한다. **테스트의 기대값을 새 결과에 맞춰 고쳐 쓰는 일이
+필요해지면, 그것은 이 실측이 틀렸다는 뜻이므로 멈추고 보고한다.** 기대값을 조용히 맞추지 않는다.
+
+**정규화 방법.** Rust에서 구성하는 픽스처는 리터럴 대신 `CURRENT_SIMULATION_VERSION` 상수를 쓴다
+— 이후 bump(T1의 `v2` → `v3`)에서 테스트를 다시 건드리지 않기 위해서다.
+`encounter_combat_wave3.rs`의 JSON 문자열 안에 있는 값은 리터럴로 둘 수밖에 없으므로
+상수를 가리키는 주석을 단다. version 값 자체를 고정하는 것은 §6 WP5의 전용 테스트 한 곳의 몫이다.
+
 ## 5. Hard invariants (상속)
 
 상위 문서 §3에서 상속한다. 이 슬라이스에서 특히 걸리는 것만 다시 적는다.
@@ -101,7 +140,15 @@ version이 상수와 일치하는지 확인하는 공개 helper 하나를 둔다
 
 검증: `cargo test -p escape-core --test combat_contract_wave1`
 
-### WP2 — runtime 검증 (`CombatSimulation::new`)
+### WP2 — 픽스처 version 정규화 (2026-08-06 신설)
+
+§4-4의 7개 파일 9곳을 `v1`에서 `CURRENT_SIMULATION_VERSION`(= `v2`)으로 정규화한다.
+**검증을 붙이기 전에** 한다 — 순서를 뒤집으면 65개 테스트가 빨간 상태로 커밋된다.
+
+검증: `cargo test --workspace --no-fail-fast` → **354 passed, 0 failed** 유지.
+숫자가 하나라도 달라지면 §4-4의 파급 실측이 틀렸다는 뜻이므로 **멈추고 보고한다.**
+
+### WP3 — runtime 검증 (`CombatSimulation::new`)
 
 `CombatSimulation::new()`가 WP1의 helper로 `input.manifest.simulation_version`을 검사하고,
 전용 `CombatSimulationError` 변형으로 거부한다. 기존 manifest/state 검증 호출은 건드리지 않는다.
@@ -111,17 +158,17 @@ version이 상수와 일치하는지 확인하는 공개 helper 하나를 둔다
 cargo test -p escape-core --test combat_simulation_wave2
 cargo test -p escape-core --test combat_execution_wave2
 cargo test -p escape-core --test combat_resolution_wave2
+cargo test --workspace --no-fail-fast
 ```
-기존 테스트가 전부 통과해야 한다 — 픽스처가 이미 `v2`이므로 통과가 정상이다.
-**하나라도 깨지면 멈추고 보고한다** (픽스처가 다른 version을 쓰고 있다는 뜻이므로 계획을 다시 세워야 한다).
+WP2가 끝났으므로 전부 통과가 정상이다. 깨지면 멈추고 보고한다.
 
-### WP3 — index-time 검증 (`validate_encounter_combat`)
+### WP4 — index-time 검증 (`validate_encounter_combat`)
 
 기존 11개 하드 오류 규칙 옆에 12번째 규칙으로 추가한다. 오류 메시지에 인카운터 id를 포함한다.
 
 검증: `cargo test -p escape-core --test encounter_combat_wave3`
 
-### WP4 — 테스트
+### WP5 — 테스트
 
 `combat_contract_wave1.rs`와 `encounter_combat_wave3.rs`에 추가한다.
 **구현보다 테스트를 먼저 red로 만든 뒤 통과시키는 순서를 권장한다.**
@@ -149,7 +196,8 @@ cargo test --workspace --no-fail-fast
 git diff --check
 ```
 
-기대: baseline의 워크스페이스 테스트 수(346)에서 **감소가 없어야 한다.** 신규 테스트만큼 증가한다.
+기대: baseline의 워크스페이스 테스트 수 **354**(2026-08-06 main이 이 컨테이너에서 직접 측정)에서
+**감소가 없어야 한다.** 신규 테스트만큼만 증가한다. 문서 곳곳의 346은 옛 수치다.
 
 `web`은 이 슬라이스에서 변경이 없으므로 `npm test`는 필요 없다. 실행했다면 결과를 보고에 적는다.
 
@@ -158,7 +206,8 @@ git diff --check
 - version bump 자체 (`v2` → `v3`). **T1이 좌표계를 바꿀 때 한다.**
 - 복수 version 동시 지원, version 간 마이그레이션 경로
 - `CombatPresentationSpeed`의 재생 레이어 이동 — **T4로 이관했다** (실행/재생 분리는 T4가 어차피 수술하는 자리이며, 지금 건드리면 같은 곳을 두 번 연다)
-- 저작 YAML·번들·픽스처의 version 값 변경
+- 저작 YAML과 생성 번들의 version 값 변경 (`v2`는 그대로 유효하다)
+  — 단 **Rust 테스트 픽스처의 `v1` → `v2` 정규화는 WP2로 범위 안에 들어왔다**(§4-4)
 - 육각 좌표계 관련 일체
 - renderer 변경
 
@@ -175,6 +224,7 @@ git diff --check
 ## 10. 최종 체크리스트
 
 - [ ] `CURRENT_SIMULATION_VERSION`이 한 곳에만 정의되어 있다
+- [ ] 픽스처 version이 트리 전체에서 하나로 통일됐다 (`grep -rn '"v1"' crates/`가 비어 있다)
 - [ ] 런타임·index-time 두 지점에서 거부된다
 - [ ] 오류가 `InvalidReference` 같은 뭉뚱그린 변형이 아니라 전용 변형이다
 - [ ] 오류 문자열이 받은 값과 기대 값을 모두 노출한다
@@ -183,4 +233,4 @@ git diff --check
 - [ ] fingerprint 값이 하나도 바뀌지 않았다
 - [ ] `crates/escape-terminal`, `web/`, 저작 YAML, 번들, 픽스처 무변경
 - [ ] `cargo fmt --all -- --check` 통과
-- [ ] `cargo test --workspace --no-fail-fast` 0 failed, 테스트 수 감소 없음
+- [ ] `cargo test --workspace --no-fail-fast` 0 failed, 354에서 감소 없음

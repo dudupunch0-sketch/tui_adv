@@ -22,7 +22,7 @@ pub use combat_conclusion::{
 };
 pub use combat_contract::{
     CombatContractError, CombatEffectRef, CombatManifest, CombatRngNamespace,
-    CombatSimulationVersion, SuppressedCombatEffect,
+    CombatSimulationVersion, SuppressedCombatEffect, CURRENT_SIMULATION_VERSION,
 };
 pub use combat_execution::{
     execute as execute_combat, CombatExecutionError, CombatExecutionRequest, CombatExecutionResult,

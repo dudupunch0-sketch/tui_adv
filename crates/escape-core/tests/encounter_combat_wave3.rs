@@ -40,7 +40,10 @@ fn valid_combat_json() -> Value {
         "kind": "systemic",
         "intervention_budget": 1,
         "manifest": {
-            "simulation_version": "v1",
+            // Kept as a literal: this manifest lives inside a JSON string blob
+            // built with `json!()`, so it cannot reference the Rust constant
+            // directly. Must match `escape_core::CURRENT_SIMULATION_VERSION`.
+            "simulation_version": "v2",
             "actual_seed": 999,
             "world_state_fingerprint": "wsf-1",
             "applied_effects": [],

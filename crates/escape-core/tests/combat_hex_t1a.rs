@@ -1,7 +1,7 @@
 //! T1-a `combat_hex` 회귀 테스트. 이 모듈은 아무 데도 배선되지 않았으므로 여기가
 //! 실질적인 산출물이다(`fable_combat_hex_t1a_step1_2608061847.md` §7).
 //!
-//! WP 순서대로 늘어난다 — 지금은 WP5(`HexOccupancy`)까지다.
+//! WP 순서대로 늘어난다 — WP6(오버플로 방어·마무리)에서 끝난다.
 use escape_core::*;
 
 fn c(q: i32, r: i32) -> HexCoord {
@@ -319,6 +319,14 @@ fn extreme_coordinates_do_not_panic() {
 fn tiles_at_overflow_instead_of_panicking() {
     let shape = HexShape::new(vec![c(0, 0), c(1, 0)]).unwrap();
     assert_eq!(shape.tiles_at(c(i32::MAX, 0)), Err(HexError::Overflow));
+}
+
+/// `ring`/`range`도 `neighbors`/`tiles_at`과 같은 규칙(경계 계산은 `i64`로 안전하게,
+/// 실제 좌표로 옮기는 마지막 단계에서만 checked)을 따른다는 것을 직접 확인한다.
+#[test]
+fn ring_and_range_overflow_instead_of_panicking() {
+    assert_eq!(ring(c(i32::MAX, 0), 5), Err(HexError::Overflow));
+    assert_eq!(range(c(i32::MAX, 0), 5), Err(HexError::Overflow));
 }
 
 #[test]

@@ -12,6 +12,7 @@ const PRIVATE_SECRET_FIELDS: &[&str] = &[
     "office_location",
     "treasure_location",
 ];
+use crate::combat_contract::ensure_supported_simulation_version;
 use crate::resources::RESOURCE_IDS;
 use crate::{
     CombatAttackDefinition, CombatDefenseProfile, CombatEffectCatalog, CombatManifest,
@@ -1432,6 +1433,13 @@ fn validate_encounter_combat(encounter: &EncounterDef) -> Result<(), ContentInde
             }
         }
     }
+
+    // Rule 12 (T0): the declared simulation_version must be the one this
+    // build actually implements. 정본 03 promises determinism only within a
+    // simulation version; authoring a version this build doesn't implement
+    // must fail loudly here, not silently succeed with the wrong judgement.
+    ensure_supported_simulation_version(&combat.manifest.simulation_version)
+        .map_err(|error| fail(error.to_string()))?;
 
     Ok(())
 }

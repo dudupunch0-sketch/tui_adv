@@ -154,6 +154,82 @@ fn axial_distance_i64(dq: i64, dr: i64) -> i64 {
     dq.abs().max(dr.abs()).max((dq + dr).abs())
 }
 
+/// `center`에서 `dq`/`dr`만큼 떨어진 실제 좌표를 만든다. checked — `center`가
+/// 극단값 근처이거나 오프셋이 너무 크면 `i32`를 벗어날 수 있으므로 [`HexError::Overflow`].
+fn checked_offset(base: i32, delta: i64) -> Result<i32, HexError> {
+    i32::try_from(i64::from(base) + delta).map_err(|_| HexError::Overflow)
+}
+
+/// `center + (dq, dr)` 목록을 실제 [`HexCoord`] 목록으로 옮기고 `Ord` 오름차순으로
+/// 정렬한다. [`ring`]/[`range`]가 공유하는 마지막 단계.
+fn coords_from_offsets(
+    center: HexCoord,
+    offsets: &[(i64, i64)],
+) -> Result<Vec<HexCoord>, HexError> {
+    let mut tiles = Vec::with_capacity(offsets.len());
+    for &(dq, dr) in offsets {
+        tiles.push(HexCoord {
+            q: checked_offset(center.q, dq)?,
+            r: checked_offset(center.r, dr)?,
+        });
+    }
+    tiles.sort();
+    Ok(tiles)
+}
+
+/// 반지름 `radius` 이내(경계 포함)의 axial 오프셋 `(dq, dr)` 전부를 생성한다.
+///
+/// 전부 `i64`로 계산한다 — `radius`가 `i32` 안에서 크더라도(예: `i32::MAX`에
+/// 가까운 값) 경계 계산(`-dq - radius` 등)이 중간에 `i32`를 벗어날 수 있는데,
+/// `i64`로 넓히면 `i32` 범위의 `radius` 하나로 만들 수 있는 이 계산 전체가
+/// `i64` 안에 항상 들어간다(최대 폭이 `radius`의 약 2배, `i32::MAX`의 2배는
+/// `i64`에 비하면 미미하다). 실제 좌표로 옮기는 마지막 단계([`coords_from_offsets`])
+/// 에서만 `i32` 오버플로 여부를 checked로 판정한다.
+fn axial_disk_offsets(radius: i32) -> Result<Vec<(i64, i64)>, HexError> {
+    if radius < 0 {
+        return Err(HexError::NegativeRadius);
+    }
+    let radius = i64::from(radius);
+    let mut offsets = Vec::new();
+    for dq in -radius..=radius {
+        let r_min = (-radius).max(-dq - radius);
+        let r_max = radius.min(-dq + radius);
+        for dr in r_min..=r_max {
+            offsets.push((dq, dr));
+        }
+    }
+    Ok(offsets)
+}
+
+/// 반지름 `radius`의 테두리(정확히 그 거리에 있는 타일들). `radius == 0`이면
+/// `[center]` 하나뿐이다. 음수 `radius`는 빈 벡터가 아니라 [`HexError::NegativeRadius`]다
+/// — "반지름이 없다"를 빈 목록으로 지어내지 않는다.
+///
+/// 반환값은 [`HexCoord`]의 `Ord` 기준 오름차순이다(생성 순서를 그대로 흘리지 않는다).
+pub fn ring(center: HexCoord, radius: i32) -> Result<Vec<HexCoord>, HexError> {
+    if radius < 0 {
+        return Err(HexError::NegativeRadius);
+    }
+    if radius == 0 {
+        return Ok(vec![center]);
+    }
+    let radius_i64 = i64::from(radius);
+    let boundary: Vec<(i64, i64)> = axial_disk_offsets(radius)?
+        .into_iter()
+        .filter(|&(dq, dr)| axial_distance_i64(dq, dr) == radius_i64)
+        .collect();
+    coords_from_offsets(center, &boundary)
+}
+
+/// 반지름 `radius` 이내 전체(중심 포함, 경계 포함). 음수 `radius`는
+/// [`HexError::NegativeRadius`]다.
+///
+/// 반환값은 [`HexCoord`]의 `Ord` 기준 오름차순이다.
+pub fn range(center: HexCoord, radius: i32) -> Result<Vec<HexCoord>, HexError> {
+    let offsets = axial_disk_offsets(radius)?;
+    coords_from_offsets(center, &offsets)
+}
+
 /// 이 모듈의 모든 산술 실패·잘못된 입력을 표현한다. 값을 지어내거나 조용히
 /// 기본값으로 대체하지 않고 항상 이 타입으로 거부한다.
 #[derive(Clone, Debug, PartialEq, Eq)]

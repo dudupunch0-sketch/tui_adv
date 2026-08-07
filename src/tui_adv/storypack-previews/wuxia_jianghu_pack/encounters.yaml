@@ -5565,11 +5565,19 @@ encounters:
       manifest:
         # v1 -> v2: resolver 의미가 바뀌었다. 전투불능(체력 0) 전투원이 더 이상
         # 공격하지 않고, 한쪽이 전멸한 tick에서 시뮬레이션이 멈춘다
-        # (fable_combat_early_conclusion_step1_2608022130.md). 정본 03이 정한
-        # 방식이다 — "이 결정성은 같은 version 내부에서만 보장한다 … 이후 갱신된
-        # version이 과거 seed 결과를 재현할 필요는 없다." v1 결과를 보존하지
-        # 않는다: 이 인카운터는 게이트 뒤에 있어 이에 의존하는 저장·기록이 없다.
-        simulation_version: v2
+        # (fable_combat_early_conclusion_step1_2608022130.md).
+        # v2 -> v3 (fable_combat_hex_t1b1_step1_2608071921.md §4-6): 좌표가
+        # 직교 {x,y}에서 육각 axial {q,r}로 바뀌었다. 이 대련은 두 전투원 모두
+        # r=0이라 육각 거리가 옛 유클리드 거리(|dq|)와 정확히 같으므로, 아래
+        # position/facing을 q=x, r=y로 기계적으로 옮기는 것만으로 거동이
+        # 완전히 그대로 유지된다(검산: crates/escape-core/tests/
+        # encounter_combat_wave3.rs의
+        # wuxia_combat_spectator_preview_bout_first_hit_damage_is_1333_hundredths).
+        # 정본 03이 정한 방식이다 — "이 결정성은 같은 version 내부에서만
+        # 보장한다 … 이후 갱신된 version이 과거 seed 결과를 재현할 필요는
+        # 없다." 과거 버전 결과를 보존하지 않는다: 이 인카운터는 게이트 뒤에
+        # 있어 이에 의존하는 저장·기록이 없다.
+        simulation_version: v3
         # actual_seed는 authoring 값이며 producer가 런 상태(GameState.seed) +
         # 인카운터 id에서 파생한 값으로 항상 덮어쓴다 — 이 값 자체는 의미가
         # 없다 (scene_page.rs::derive_combat_seed 참고).
@@ -5622,9 +5630,10 @@ encounters:
           # position/facing/speed_per_tick/collision_radius/attack_range/
           # support_range: 모두 provisional — 정본에 이동 속도·충돌 반경·
           # 사거리 정의가 없다. 두 전투원이 첫 틱부터 사거리·충돌 반경 안에
-          # 들어오도록 최소값으로 잡았다.
-          position: { x: 0, y: 0 }
-          facing: { x: 1, y: 0 }
+          # 들어오도록 최소값으로 잡았다. position/facing은 v3에서 axial
+          # {q,r}이다 (q=x, r=y로 기계적 이관 — 위 manifest 주석 참고).
+          position: { q: 0, r: 0 }
+          facing: { q: 1, r: 0 }
           speed_per_tick: 1
           collision_radius: 5
           attack_range: 10
@@ -5634,8 +5643,8 @@ encounters:
           active: true
         - id: wuxia_spectator_bout_challenger
           side: enemy
-          position: { x: 5, y: 0 }
-          facing: { x: -1, y: 0 }
+          position: { q: 5, r: 0 }
+          facing: { q: -1, r: 0 }
           speed_per_tick: 1
           collision_radius: 5
           attack_range: 10

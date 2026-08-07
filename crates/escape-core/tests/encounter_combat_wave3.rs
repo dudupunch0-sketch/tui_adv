@@ -43,7 +43,7 @@ fn valid_combat_json() -> Value {
             // Kept as a literal: this manifest lives inside a JSON string blob
             // built with `json!()`, so it cannot reference the Rust constant
             // directly. Must match `escape_core::CURRENT_SIMULATION_VERSION`.
-            "simulation_version": "v2",
+            "simulation_version": "v3",
             "actual_seed": 999,
             "world_state_fingerprint": "wsf-1",
             "applied_effects": [],
@@ -298,7 +298,7 @@ fn unsupported_simulation_version_is_rejected_at_index_time() {
     let message = error.to_string();
     assert!(message.contains(ENCOUNTER_ID));
     assert!(message.contains("v9"));
-    assert!(message.contains("v2"));
+    assert!(message.contains("v3"));
 }
 
 // ---------------------------------------------------------------------

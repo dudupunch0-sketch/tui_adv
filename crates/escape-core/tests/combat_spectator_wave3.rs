@@ -61,7 +61,15 @@ fn participant(id: &str, side: CombatSide, q: i32) -> CombatSimulationParticipan
 fn participants() -> Vec<CombatSimulationParticipant> {
     vec![
         participant("a", CombatSide::Ally, 0),
-        participant("e", CombatSide::Enemy, 0),
+        // T1-c: CombatSimulation::new now rejects two active participants
+        // starting on the same tile (§4-2①). This fixture never cared about
+        // spatial validity -- only attack resolution and spectator log
+        // formatting -- so `q: 0` for both was always technically an
+        // invalid input that nothing checked until this slice. One tile of
+        // separation keeps every existing assertion valid: collision_radius
+        // is 1 on each (summed threshold 2) and attack_range is 2, and hex
+        // distance 1 satisfies both exactly as distance 0 did.
+        participant("e", CombatSide::Enemy, 1),
     ]
 }
 

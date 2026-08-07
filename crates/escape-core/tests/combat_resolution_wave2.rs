@@ -66,7 +66,21 @@ fn request() -> CombatResolutionRequest {
                     tick_millis: 100,
                     max_ticks: 1,
                 },
-                participants: vec![p("a", CombatSide::Ally), p("e", CombatSide::Enemy)],
+                participants: vec![p("a", CombatSide::Ally), {
+                    // T1-c: CombatSimulation::new now rejects two active
+                    // participants starting on the same tile (§4-2①). This
+                    // fixture never cared about spatial validity -- only
+                    // attack resolution -- so both at `(0,0)` was always
+                    // technically an invalid input that nothing checked
+                    // until this slice. One tile of separation keeps every
+                    // existing assertion valid: collision_radius is 1 on
+                    // each (summed threshold 2) and attack_range is 2, and
+                    // hex distance 1 satisfies both exactly as distance 0
+                    // did.
+                    let mut e = p("e", CombatSide::Enemy);
+                    e.position = HexCoord { q: 1, r: 0 };
+                    e
+                }],
                 roles: vec![CombatRolePreset {
                     id: "r".into(),
                     weights: CombatRoleWeights {

@@ -96,14 +96,17 @@ export function renderCombatBoard(view: CombatSpectatorView): string {
     <table class="combat-board__table sr-only"><caption>전투 판 요약 표</caption><thead><tr><th scope="col">말 id</th><th scope="col">진영</th><th scope="col">좌표</th><th scope="col">참전</th><th scope="col">cue</th></tr></thead><tbody></tbody></table>`;
   }
 
-  // WP1 (§4-1 type swap): field rename only — `q`/`r` still feed
-  // `projectAxis` directly here, exactly like `x`/`y` did before. The axial
-  // -> screen conversion this actually needs (§4-2) lands in WP2; until then
-  // the projection is still wrong on purpose (it reads two 60°-apart axes as
-  // if they were orthogonal), per the plan.
-  const allPieces = frames.flatMap((f) => f.pieces);
-  const xs = allPieces.map((p) => p.position.q);
-  const ys = allPieces.map((p) => p.position.r);
+  // §4-2: convert every piece's axial (q, r) to a flat-top screen vector
+  // *before* taking min/max. `q`/`r` are two axes 60° apart, not screen x/y —
+  // normalizing them directly (WP1's placeholder behavior, inherited from
+  // when this was literal cartesian `{x, y}`) shears the board and makes two
+  // pieces at equal hex distance land at unequal screen distances. The
+  // min/max below must come from the *converted* px/py, not the raw q/r —
+  // computing it from raw axial values is the easy-to-miss version of this
+  // same bug (a piece can end up placed outside the projected board).
+  const allScreenPoints = frames.flatMap((f) => f.pieces.map((p) => axialToScreen(p.position.q, p.position.r)));
+  const xs = allScreenPoints.map((p) => p.x);
+  const ys = allScreenPoints.map((p) => p.y);
   const minX = Math.min(...xs);
   const maxX = Math.max(...xs);
   const minY = Math.min(...ys);
@@ -111,7 +114,10 @@ export function renderCombatBoard(view: CombatSpectatorView): string {
 
   const pieces = frame.pieces;
   const pieceMarkup = pieces
-    .map((p) => renderPiece(p, projectAxis(p.position.q, minX, maxX), projectAxis(p.position.r, minY, maxY)))
+    .map((p) => {
+      const screen = axialToScreen(p.position.q, p.position.r);
+      return renderPiece(p, projectAxis(screen.x, minX, maxX), projectAxis(screen.y, minY, maxY));
+    })
     .join('');
 
   const allyCount = pieces.filter((p) => p.side === 'ally').length;
@@ -176,12 +182,16 @@ function collectPieceMotionTracks(
         presentInEveryFrame = false;
         break;
       }
+      const screen = axialToScreen(match.position.q, match.position.r);
       points.push({
-        x: projectAxis(match.position.q, minX, maxX),
-        y: projectAxis(match.position.r, minY, maxY),
+        x: projectAxis(screen.x, minX, maxX),
+        y: projectAxis(screen.y, minY, maxY),
         // WP3: carry this tick's own cue set/facing through verbatim — the
         // cue presentation grammar (combatMotion.ts) never infers either
-        // from a neighboring tick (I2/I4).
+        // from a neighboring tick (I2/I4). `facing` stays a raw hex
+        // direction here (never converted to a screen vector) — WP3 makes
+        // combatMotion.ts the one place that turns it into a lunge
+        // direction, right where it normalizes.
         cues: match.cues,
         facing: match.facing,
       });
@@ -232,6 +242,33 @@ function renderBoardTable(pieces: CombatSpectatorPiece[]): string {
     })
     .join('');
   return `<table class="combat-board__table sr-only"><caption>전투 판 요약 표</caption><thead><tr><th scope="col">말 id</th><th scope="col">진영</th><th scope="col">좌표</th><th scope="col">참전</th><th scope="col">cue</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+/** flat-top axial `(q, r)` -> unit-scale screen vector (§4-2). `q`/`r` are
+ * two axes 60° apart, not screen x/y — feeding them straight into
+ * `projectAxis` (which normalizes each axis independently, as if they were
+ * already orthogonal) shears the board and makes two pieces at equal hex
+ * distance land at unequal screen distances. This conversion goes in *ahead
+ * of* that normalization, and every min/max used by that normalization must
+ * be computed from its output, never from the raw `q`/`r` — see the two
+ * call sites below.
+ *
+ * `crates/escape-core/src/combat_hex.rs`'s module comment documents the
+ * coordinate system as flat-top axial; this is the standard flat-top
+ * axial-to-pixel formula (unit hex size — the caller's own normalization
+ * rescales to whatever board size it needs, so this function only fixes the
+ * *shape* of the two 60°-apart axes into orthogonal screen axes, not any
+ * absolute scale).
+ *
+ * Duplicated (not shared/exported) in `combatMotion.ts`, which needs the
+ * same conversion for a *direction* (piece facing) rather than a *position*
+ * — see that module's `hexFacingToScreenVector`. Both must stay numerically
+ * identical; `attack_lunge_direction_follows_the_hex_facing` in
+ * `combatMotion.test.ts` and this module's
+ * `pieces_at_equal_hex_distance_are_equally_far_apart_on_screen` pin each
+ * copy independently against the same formula. */
+function axialToScreen(q: number, r: number): { x: number; y: number } {
+  return { x: 1.5 * q, y: Math.sqrt(3) * (r + q / 2) };
 }
 
 /** 말은 `translate: -50% -50%`로 중심을 좌표에 맞추므로, 투영 범위가

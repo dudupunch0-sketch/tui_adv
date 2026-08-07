@@ -177,6 +177,85 @@ describe('renderCombatBoard', () => {
 });
 
 // ---------------------------------------------------------------------------
+// §4-2 of fable_combat_hex_t1b2_step1_2608072024.md — the axial-to-screen
+// conversion goes in *ahead of* projectAxis's per-axis normalization, and
+// that normalization's min/max must be computed from the *converted*
+// px/py, never the raw q/r. Before this fix, `q`/`r` were normalized
+// directly as if they were already orthogonal screen axes (they are 60°
+// apart), shearing the board.
+// ---------------------------------------------------------------------------
+describe('renderCombatBoard — §4-2 axial-to-screen projection', () => {
+  it('pieces_at_equal_hex_distance_are_equally_far_apart_on_screen: two hex-adjacent pairs in different directions land the same percent-distance apart', () => {
+    // Flat-top axial -> screen: px = 1.5q, py = sqrt(3)*(r + q/2). Any two of
+    // `HexCoord::NEIGHBOR_DIRECTIONS` are hex distance 1 from the origin, and
+    // a correct conversion places every one of them at the same Euclidean
+    // distance from the origin (they form a regular hexagon around it) — a
+    // property that is specific to distance-1 pairs sharing an endpoint
+    // (translation-invariance of the linear conversion extends it to any
+    // adjacent pair anywhere on the grid), not a general "same hex distance
+    // implies same screen distance" claim for arbitrary pairs.
+    //
+    // `renderCombatBoard`'s subsequent step (`projectAxis`) still normalizes
+    // x and y *independently*, which is kept as-is per plan §9 (full
+    // aspect-correct hex-tile projection is T9's job, out of scope here) —
+    // independent per-axis scaling would rescale the two pairs' converted
+    // deltas by different factors unless the combined bounding box is
+    // square. `anchor` is a scaffolding piece (not real game data,
+    // deliberately non-integer q/r) chosen so xspan === yspan, isolating the
+    // §4-2 property this test pins from that separate, accepted limitation.
+    const html = renderCombatBoard(
+      view({
+        frames: [
+          frame(1, [
+            piece({ id: 'origin', position: { q: 0, r: 0 } }),
+            piece({ id: 'dir_a', position: { q: 1, r: 0 } }),
+            piece({ id: 'dir_b', position: { q: 0, r: 1 } }),
+            piece({ id: 'anchor', position: { q: 2 / Math.sqrt(3), r: -1 / Math.sqrt(3) } }),
+          ]),
+        ],
+      }),
+    );
+    const percentOf = (id: string) => {
+      const match = new RegExp(
+        `data-piece-id="${id}"[^>]*--piece-x: (-?[\\d.]+)%; --piece-y: (-?[\\d.]+)%`,
+      ).exec(html);
+      expect(match).not.toBeNull();
+      return { x: Number(match![1]), y: Number(match![2]) };
+    };
+    const origin = percentOf('origin');
+    const distanceFromOrigin = (id: string) => {
+      const p = percentOf(id);
+      return Math.hypot(p.x - origin.x, p.y - origin.y);
+    };
+    expect(distanceFromOrigin('dir_a')).toBeCloseTo(distanceFromOrigin('dir_b'), 1);
+    // With the square bounding box, both land exactly 72 points apart (the
+    // full inset-adjusted 14%–86% range) — either one is both the axis
+    // minimum on one screen axis and the axis maximum on the other.
+    expect(distanceFromOrigin('dir_a')).toBeCloseTo(72, 1);
+  });
+
+  it('projection_range_uses_converted_coordinates_not_raw_axial: the axis range comes from converted px/py, not raw q/r', () => {
+    // If min/max were taken from raw axial q/r (the bug this pins), `mid`
+    // would land at --piece-y: 14% — the same as `origin`, since both have
+    // raw r = 0 — instead of the correct 50% its actual converted y
+    // (sqrt(3)*2, out of a converted span of sqrt(3)*4) works out to.
+    const html = renderCombatBoard(
+      view({
+        frames: [
+          frame(1, [
+            piece({ id: 'origin', position: { q: 0, r: 0 } }),
+            piece({ id: 'mid', position: { q: 4, r: 0 } }),
+            piece({ id: 'far_r', position: { q: 0, r: 4 } }),
+          ]),
+        ],
+      }),
+    );
+    expect(html).toMatch(/data-piece-id="mid"[^>]*--piece-y: 50%/);
+    expect(html).not.toMatch(/data-piece-id="mid"[^>]*--piece-y: 14%/);
+  });
+});
+
+// ---------------------------------------------------------------------------
 // Wave 3 Step 1d-3 — WP2: playback wiring (projection range expansion +
 // generated <style> block). The underlying keyframe-string math (I1/I5/I9)
 // is pinned by combatMotion.test.ts; these tests only pin how
@@ -185,27 +264,29 @@ describe('renderCombatBoard', () => {
 // ---------------------------------------------------------------------------
 describe('renderCombatBoard — Step 1d-3 playback wiring', () => {
   it('expands the projection range across every frame, not just the last one, so a mid-motion piece never clips the board edge', () => {
-    // ally_1 visits x=99 at tick 0 but rests at x=5 at the final tick. If the
-    // projection only looked at the final frame (1d-2 behaviour), a single
-    // piece there would have span 0 and sit dead-center (50%) — the old
-    // `renders only the last frame` test above already pins that the *last
-    // frame's own rendered position* does not literally contain "99". This
-    // test instead pins the *offset* asserted inside the generated
+    // ally_1 visits (q=10, r=0) at tick 0 but rests at the origin at the
+    // final tick. If the projection only looked at the final frame (1d-2
+    // behaviour), a single piece there would have span 0 and sit dead-center
+    // (50%). This test pins the *offset* asserted inside the generated
     // `@keyframes`, which is the only place tick 0's coordinate can still
     // show up now that the projection spans all frames.
+    //
+    // Converted screen points: origin -> (0, 0); (q=10, r=0) -> (15,
+    // 5*sqrt(3)) ≈ (15, 8.660254). The origin is the min on both axes and
+    // (10, 0) the max on both, so both axes' spans differ from the old
+    // cartesian fixture's numbers but the two axes' *own* offsets come out
+    // equal by construction (both go from min to max over their own span) —
+    // 72 points on both x and y, not just x.
     const html = renderCombatBoard(
       view({
         frames: [
-          frame(0, [piece({ id: 'ally_1', position: { q: 99, r: 5 } })]),
-          frame(1, [piece({ id: 'ally_1', position: { q: 5, r: 5 } })]),
+          frame(0, [piece({ id: 'ally_1', position: { q: 10, r: 0 } })]),
+          frame(1, [piece({ id: 'ally_1', position: { q: 0, r: 0 } })]),
         ],
       }),
     );
     expect(html).toContain('<style>');
-    // With the range expanded to [5, 99], tick 0's projected x is 86%
-    // (the far edge of the inset band) rather than the 50% it would be if
-    // only the last frame were considered.
-    expect(html).toMatch(/0% \{ translate: calc\(-50% \+ 72cqw\)/);
+    expect(html).toMatch(/0% \{ translate: calc\(-50% \+ 72cqw\) calc\(-50% \+ 72cqh\)/);
   });
 
   it('emits no <style> block when there is only one frame (nothing to animate, matches 1d-2 byte-for-byte apart from this)', () => {

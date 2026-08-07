@@ -285,6 +285,26 @@ impl CombatSimulation {
                 .is_some_and(|p| p.active && p.side != actor.side)
         };
         if let Some(policy) = policy {
+            // T1-d §4-4 site 1/5: target-preference distance. Precomputed
+            // into a map before the comparator runs, because
+            // `footprint_distance` is fallible (`HexError::Overflow`) and
+            // `max_by`'s closure isn't -- `?` can't be used inside it. Both
+            // of the two distance lookups the old comparator made inline
+            // (`da` for `a`'s target, `db` for `b`'s target) now read from
+            // this same footprint-based map instead of raw anchor
+            // `.distance()`.
+            let mut preference_distance: BTreeMap<&str, i64> = BTreeMap::new();
+            for pref in policy.preferences.iter().filter(|p| valid(&p.target_id)) {
+                let target = &self.participants[&pref.target_id];
+                let distance = footprint_distance(
+                    target.position,
+                    &target.occupies,
+                    actor.position,
+                    &actor.occupies,
+                )
+                .map_err(CombatSimulationError::HexMath)?;
+                preference_distance.insert(pref.target_id.as_str(), distance);
+            }
             if let Some(target) = policy
                 .preferences
                 .iter()
@@ -293,15 +313,8 @@ impl CombatSimulation {
                     a.priority
                         .cmp(&b.priority)
                         .then_with(|| {
-                            // `HexCoord::distance` is total (no invalid
-                            // input exists), so no `unwrap_or` fallback is
-                            // needed anymore (T1-b1 §4-1).
-                            let da = self.participants[&a.target_id]
-                                .position
-                                .distance(actor.position);
-                            let db = self.participants[&b.target_id]
-                                .position
-                                .distance(actor.position);
+                            let da = preference_distance[a.target_id.as_str()];
+                            let db = preference_distance[b.target_id.as_str()];
                             db.cmp(&da)
                         })
                         .then_with(|| b.target_id.cmp(&a.target_id))
@@ -310,11 +323,19 @@ impl CombatSimulation {
                 return Ok(Some(target.target_id.clone()));
             }
         }
-        Ok(self
-            .participants
-            .values()
-            .filter(|p| valid(&p.id))
-            .map(|p| (p.position.distance(actor.position), p.id.clone()))
+        // T1-d §4-4 site 2/5: nearest-target fallback. Same fallibility
+        // reason as above -- distances are collected into a `Vec` first
+        // (propagating `?` per candidate), then `min_by` runs over the
+        // already-computed values.
+        let mut nearest_candidates = Vec::new();
+        for p in self.participants.values().filter(|p| valid(&p.id)) {
+            let distance =
+                footprint_distance(p.position, &p.occupies, actor.position, &actor.occupies)
+                    .map_err(CombatSimulationError::HexMath)?;
+            nearest_candidates.push((distance, p.id.clone()));
+        }
+        Ok(nearest_candidates
+            .into_iter()
             .min_by(|a, b| a.0.cmp(&b.0).then(a.1.cmp(&b.1)))
             .map(|(_, id)| id))
     }
@@ -338,7 +359,17 @@ impl CombatSimulation {
                     // so the old `d > preferred * preferred` comparison
                     // becomes a direct `d > preferred` -- no squaring on
                     // either side.
-                    let d = actor.position.distance(target.position);
+                    // T1-d §4-4 site 3/5: movement decision. Footprint
+                    // distance replaces anchor distance so a large unit's
+                    // preferred-distance judgement is based on how close its
+                    // body actually is, not just its anchor.
+                    let d = footprint_distance(
+                        actor.position,
+                        &actor.occupies,
+                        target.position,
+                        &target.occupies,
+                    )
+                    .map_err(CombatSimulationError::HexMath)?;
                     let preferred = i64::from(role.weights.preferred_distance.max(0));
                     let step = actor.speed_per_tick;
                     if d > preferred {
@@ -582,6 +613,59 @@ fn footprint_is_connected(offsets: &[HexCoord]) -> bool {
         }
     }
     visited.len() == all.len()
+}
+
+/// T1-d §4-1: the tiles occupied by a footprint anchored at `anchor`. An
+/// empty `occupies` means exactly one tile, `anchor` itself. A non-empty list
+/// is placed as a `HexShape` at `anchor`.
+///
+/// Callers are expected to have already validated `occupies` (anchor
+/// inclusion, connectivity, no duplicates) via
+/// `CombatSimulation::new`/`participant_footprint` -- this function does not
+/// re-check any of that, only hex-math (`anchor + offset` can overflow
+/// `i32`, hence `Result`).
+fn footprint_tiles(anchor: HexCoord, occupies: &[HexCoord]) -> Result<Vec<HexCoord>, HexError> {
+    if occupies.is_empty() {
+        return Ok(vec![anchor]);
+    }
+    HexShape::new(occupies.to_vec())?.tiles_at(anchor)
+}
+
+/// T1-d §4-4: the distance between two participants, defined as the minimum
+/// hex distance between any tile of one's footprint and any tile of the
+/// other's -- not anchor-to-anchor. Anchor distance stayed correct only for
+/// single-tile participants; a large unit's anchor can be far away while its
+/// body is already adjacent (or in range), and anchor distance alone would
+/// wrongly read that as "out of range."
+///
+/// Both anchors are each participant's *current* tile (`position` in
+/// `combat_simulation.rs`, or a frozen `CombatTickFrame` anchor in
+/// `combat_resolution.rs`); `occupies` is each one's fixed offset list,
+/// which never itself moves -- only the anchor does. That is what lets this
+/// same function serve both call sites (this slice's five distance
+/// measurement sites, plan §4-4: two in `select_target`'s target-preference
+/// comparator, one in `select_target`'s nearest-target fallback, one in
+/// `advance_tick`'s movement decision, and one in `combat_resolution.rs`'s
+/// range/collision judgement).
+///
+/// For two single-tile participants (`occupies` empty on both sides) this
+/// collapses to exactly `HexCoord::distance(a_anchor, b_anchor)`, since each
+/// footprint reduces to the one-tile set `[anchor]` -- the minimum over a
+/// single pair is that one distance (T1-d §5 invariant 1: no existing fight
+/// changes).
+pub fn footprint_distance(
+    a_anchor: HexCoord,
+    a_occupies: &[HexCoord],
+    b_anchor: HexCoord,
+    b_occupies: &[HexCoord],
+) -> Result<i64, HexError> {
+    let a_tiles = footprint_tiles(a_anchor, a_occupies)?;
+    let b_tiles = footprint_tiles(b_anchor, b_occupies)?;
+    Ok(a_tiles
+        .iter()
+        .flat_map(|&a| b_tiles.iter().map(move |&b| a.distance(b)))
+        .min()
+        .expect("footprint_tiles never returns an empty vec"))
 }
 
 /// Reflects `other` through `anchor`: the point the same distance from

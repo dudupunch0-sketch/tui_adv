@@ -352,9 +352,15 @@ describe('renderCombatBoard — Step 1d-3 playback wiring', () => {
     );
     // Identical position at both ticks -> span 0 on both axes -> the base
     // (pre-cue) offset is 0 at every stop, so the lunge stop's only
-    // non-zero component is the attack contribution itself: unit facing
-    // (1, 0) scaled by the fixed lunge magnitude (4).
-    expect(html).toMatch(/50% \{ translate: calc\(-50% \+ 4cqw\) calc\(-50% \+ 0cqh\)/);
+    // non-zero component is the attack contribution itself: hex facing
+    // (q=1, r=0) converted to its flat-top screen vector (1.5, sqrt(3)/2),
+    // normalized to (0.8660254, 0.5), and scaled by the fixed lunge
+    // magnitude (4) -> (3.4641, 2). This is a changed expected value from
+    // the pre-hex `facing: { x: 1, y: 0 }` fixture (which used to add +4 on
+    // x only, since a cartesian unit vector along x needs no axis
+    // conversion) — the hex direction (1, 0) is not itself a screen unit
+    // vector, so both components of the lunge now carry contribution.
+    expect(html).toMatch(/50% \{ translate: calc\(-50% \+ 3\.4641cqw\) calc\(-50% \+ 2cqh\)/);
   });
 });
 

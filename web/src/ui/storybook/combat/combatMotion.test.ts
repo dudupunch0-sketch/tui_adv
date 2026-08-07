@@ -211,18 +211,28 @@ describe('keyframeNameForPiece — CSS-identifier safety', () => {
 // explicitly-reported deviation from that non-invariant table).
 // ---------------------------------------------------------------------------
 describe('buildCombatMotionCss — WP3 cue grammar: attack lunges toward facing, then returns', () => {
-  it('inserts one extra stop at the midpoint of the tick interval, offset toward facing, when facing is non-zero', () => {
+  it('attack_lunge_direction_follows_the_hex_facing: the lunge direction is the flat-top screen vector for the hex facing, not the raw q/r pair', () => {
     const input: CombatMotionInput = {
       tickMillis: 100,
       tracks: [cueTrack('ally_1', [{ x: 0, y: 50, cues: ['attack'], facing: { q: 1, r: 0 } }, { x: 10, y: 50 }])],
     };
     const { css } = buildCombatMotionCss(input);
-    // natural midpoint (linear interp of -10 -> 0) is -5; unit facing (1,0)
-    // scaled by the lunge magnitude (4) adds +4 on x only.
-    expect(css).toMatch(/50% \{ translate: calc\(-50% \+ -1cqw\) calc\(-50% \+ 0cqh\)/);
+    // natural midpoint (linear interp of -10 -> 0) is -5. Facing (q=1, r=0)
+    // is one of `HexCoord::NEIGHBOR_DIRECTIONS` (flat-top axial "east"); its
+    // screen vector via §4-2's formula (px = 1.5q, py = sqrt(3)*(r + q/2)) is
+    // (1.5, 0.8660254), which normalizes to (0.8660254, 0.5) and scales by
+    // the fixed lunge magnitude (4) to (3.4641016, 2). This is a changed
+    // expected value from the pre-hex `facing: { x: 1, y: 0 }` fixture
+    // (which used to add +4 on x only, since a cartesian unit vector along x
+    // needs no axis conversion) — the hex direction (1, 0) is not a screen
+    // unit vector, so both components of the lunge now carry contribution.
+    expect(css).toMatch(/50% \{ translate: calc\(-50% \+ -1\.5359cqw\) calc\(-50% \+ 2cqh\)/);
   });
 
-  it('omits the lunge stop entirely when facing is (0, 0) — never guesses a direction', () => {
+  it('zero_facing_still_produces_no_lunge: omits the lunge stop entirely when the hex facing is (q: 0, r: 0) — never guesses a direction', () => {
+    // Rust now rejects a zero facing before this ever runs (T1-b1), but this
+    // renderer keeps its own guard regardless — it does not become code that
+    // trusts its input.
     const input: CombatMotionInput = {
       tickMillis: 100,
       tracks: [cueTrack('ally_1', [{ x: 0, y: 50, cues: ['attack'], facing: { q: 0, r: 0 } }, { x: 10, y: 50 }])],

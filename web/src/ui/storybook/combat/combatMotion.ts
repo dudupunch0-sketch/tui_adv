@@ -84,12 +84,11 @@ export interface PieceMotionFrame {
   /** This tick's cue set, exactly as core decided it (WP3). Omit (or leave
    * empty) for pure positional motion with no presentation flourish. */
   cues?: CombatSpectatorCue[];
-  /** This piece's own facing at this tick, now a raw hex direction (WP1
-   * field rename — §4-1) — the only input the `attack` lunge direction may
-   * use (§4-3). Omit, or `(q: 0, r: 0)`, to skip the lunge. WP1 does not yet
-   * convert it to a screen vector before use (that lands in WP3); until
-   * then the lunge math below is intentionally still wrong, same as
-   * `renderCombatStage.ts`'s projection until WP2. */
+  /** This piece's own facing at this tick, as a raw hex direction (never a
+   * screen vector) — the only input the `attack` lunge direction may use
+   * (§4-3). Omit, or `(q: 0, r: 0)`, to skip the lunge. This module converts
+   * it to a screen vector itself (`hexFacingToScreenVector`), right where it
+   * normalizes — nothing upstream pre-converts it. */
   facing?: HexCoord;
 }
 
@@ -245,6 +244,17 @@ interface Contribution {
   dy: number;
 }
 
+/** flat-top axial `(q, r)` -> unit-scale screen vector — the exact formula
+ * `renderCombatStage.ts`'s `axialToScreen` uses (§4-2 of
+ * `fable_combat_hex_t1b2_step1_2608072024.md`), duplicated here rather than
+ * imported because that module imports *from* this one (`buildCombatMotionCss`)
+ * and a hex direction needs the same axis-shape fix a hex position does
+ * before it can be normalized. Only `q`/`r` ever feed this — never
+ * `facing.x`/`facing.y`, which do not exist on `HexCoord`. */
+function hexFacingToScreenVector(q: number, r: number): { x: number; y: number } {
+  return { x: 1.5 * q, y: Math.sqrt(3) * (r + q / 2) };
+}
+
 /** cue-driven translate contribution at one fraction *within* the tick
  * interval `[k, k+1)` — added on top of the natural (linearly interpolated)
  * position, so the base position track is never distorted, only briefly
@@ -258,15 +268,16 @@ function lungeContributionAtFraction(
   let dx = 0;
   let dy = 0;
   if (fraction === LUNGE_FRACTION) {
-    // WP1: field rename only (`facing.x`/`facing.y` -> `facing.q`/`facing.r`)
-    // — still reads the hex direction as if it were already a screen
-    // vector. The zero-vector guard stays regardless of what WP3 changes
-    // about the vector itself; Rust restricting facing to 6 nonzero
-    // directions does not make this renderer trust its input.
     if (cues.includes('attack') && facing && (facing.q !== 0 || facing.r !== 0)) {
-      const length = Math.hypot(facing.q, facing.r);
-      dx += (facing.q / length) * ATTACK_LUNGE_MAGNITUDE;
-      dy += (facing.r / length) * ATTACK_LUNGE_MAGNITUDE;
+      // §4-3: facing is a hex direction now, not a screen vector — convert
+      // it the same way a hex position is converted (§4-2) before
+      // normalizing. The zero-vector guard above stays even though Rust now
+      // restricts facing to the 6 hex directions (never `(0, 0)`) — this
+      // renderer does not become code that trusts its input.
+      const screen = hexFacingToScreenVector(facing.q, facing.r);
+      const length = Math.hypot(screen.x, screen.y);
+      dx += (screen.x / length) * ATTACK_LUNGE_MAGNITUDE;
+      dy += (screen.y / length) * ATTACK_LUNGE_MAGNITUDE;
     }
     if (cues.includes('evade')) {
       // Lateral = board Y axis (정본 09: "측면: 화면 위·아래"). The sign is a

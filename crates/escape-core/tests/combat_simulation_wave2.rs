@@ -56,6 +56,7 @@ fn participant(id: &str, side: CombatSide, q: i32) -> CombatSimulationParticipan
         role_id: "r".into(),
         target_policy_id: None,
         active: true,
+        occupies: vec![],
     }
 }
 fn input(parts: Vec<CombatSimulationParticipant>) -> CombatSimulationInput {

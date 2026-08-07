@@ -44,6 +44,7 @@ fn request() -> CombatResolutionRequest {
         role_id: "r".into(),
         target_policy_id: None,
         active: true,
+        occupies: vec![],
     };
     CombatResolutionRequest {
         execution: CombatExecutionRequest {

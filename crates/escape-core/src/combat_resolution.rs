@@ -1,8 +1,8 @@
 use crate::{
-    execute_combat, side_all_defeated, CombatEffectCatalog, CombatEffectDefinition,
-    CombatEffectInstance, CombatExecutionError, CombatExecutionRequest, CombatExecutionResult,
-    CombatLogImportance, CombatRngNamespace, CombatSide, CombatSimulationError,
-    CombatSimulationParticipant, EffectLifetime, EffectStacking,
+    execute_combat, footprint_distance, side_all_defeated, CombatEffectCatalog,
+    CombatEffectDefinition, CombatEffectInstance, CombatExecutionError, CombatExecutionRequest,
+    CombatExecutionResult, CombatLogImportance, CombatRngNamespace, CombatSide,
+    CombatSimulationError, CombatSimulationParticipant, EffectLifetime, EffectStacking,
 };
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
@@ -263,10 +263,23 @@ pub fn resolve(
             // (`a.distance(b) <= i64::from(range)`) applied to different
             // thresholds. `collision_radius` keeps its old "combined melee
             // reach" meaning; only the metric under it moved from euclidean
-            // to hex distance. Neither line can overflow or otherwise fail
-            // now: `HexCoord::distance` is total, and two `i32`s widened to
-            // `i64` before adding cannot overflow `i64`.
-            let distance = frame.positions[&actor.id].distance(frame.positions[target_id]);
+            // to hex distance.
+            //
+            // T1-d §4-4 site 5/5: footprint distance, not anchor distance.
+            // `combat_resolution.rs` only has each tick's frozen anchor
+            // (`frame.positions`), not a live `position` field, but
+            // `actor`/`target` (from `request.execution.input.participants`)
+            // still carry their fixed `occupies` offset list -- the plan's
+            // "프레임 스키마를 바꾸지 마라" (§4-4), satisfied by reading the
+            // shape from the participant and the anchor from the frame
+            // instead of adding a footprint field to the frame itself.
+            let distance = footprint_distance(
+                frame.positions[&actor.id],
+                &actor.occupies,
+                frame.positions[target_id],
+                &target.occupies,
+            )
+            .map_err(|e| CombatResolutionError::Simulation(CombatSimulationError::HexMath(e)))?;
             let collision_reach =
                 i64::from(actor.collision_radius) + i64::from(target.collision_radius);
             let collision = distance <= collision_reach;

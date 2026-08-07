@@ -14,6 +14,13 @@ fn participant(id: &str, side: CombatSide, active: bool) -> CombatSimulationPart
         role_id: "r".into(),
         target_policy_id: None,
         active,
+        // T1-d (fable_combat_hex_t1d_step1_2608072234.md): new field on
+        // `CombatSimulationParticipant`. Empty = single tile at the anchor,
+        // exactly this fixture's pre-T1-d meaning -- mechanical fix to keep
+        // this file compiling, not a scope change; see the T1-d step2
+        // report for why this file needed touching despite being outside
+        // that slice's original ownership list.
+        occupies: vec![],
     }
 }
 fn resolution(ally: i64, enemy: i64, tick: u32) -> CombatResolutionResult {

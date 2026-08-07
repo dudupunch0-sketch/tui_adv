@@ -374,12 +374,26 @@ impl CombatSimulation {
                     let step = actor.speed_per_tick;
                     if d > preferred {
                         Ok((
-                            step_toward(actor.position, target.position, step, &occupancy)?,
+                            step_toward(
+                                actor.position,
+                                target.position,
+                                step,
+                                &occupancy,
+                                &actor.occupies,
+                                &actor.id,
+                            )?,
                             CombatMoveMode::Advance,
                         ))
                     } else if d < preferred && role.weights.aggression < 0 {
                         Ok((
-                            step_away(actor.position, target.position, step, &occupancy)?,
+                            step_away(
+                                actor.position,
+                                target.position,
+                                step,
+                                &occupancy,
+                                &actor.occupies,
+                                &actor.id,
+                            )?,
                             CombatMoveMode::Retreat,
                         ))
                     } else {
@@ -397,12 +411,16 @@ impl CombatSimulation {
             });
         }
         moves.sort_by(|a, b| a.actor_id.cmp(&b.actor_id));
-        // T1-c §4-2③/§4-3: two participants that (after the per-actor
-        // occupancy-aware path truncation above) still land on the very same
-        // still-vacant tile both give up the move this tick and hold at
-        // `from` instead. See `resolve_destination_contention`'s doc comment
-        // for why neither one is allowed to win the tile.
-        resolve_destination_contention(&mut moves);
+        // T1-c §4-2③/§4-3, broadened by T1-d §4-5: two participants whose
+        // destination *footprints* (after the per-actor occupancy-aware path
+        // truncation above) share even one tile both give up the move this
+        // tick and hold at `from` instead. See `resolve_destination_contention`'s
+        // doc comment for why neither one is allowed to win the tile.
+        let occupies_by_actor: BTreeMap<&str, &[HexCoord]> = snapshot
+            .values()
+            .map(|p| (p.id.as_str(), p.occupies.as_slice()))
+            .collect();
+        resolve_destination_contention(&mut moves, &occupies_by_actor)?;
         for intent in &moves {
             if let Some(p) = self.participants.get_mut(&intent.actor_id) {
                 p.position = intent.to;
@@ -445,14 +463,21 @@ impl CombatSimulation {
 // occupied, rather than walking through it.
 
 /// Moves `from` up to `step` tiles toward `to` along `line(from, to)`,
-/// stopping at the last free tile if `occupancy` blocks the rest of the path
-/// (T1-c §4-2②). Returns `from` unchanged if the two tiles coincide (no
-/// direction exists).
+/// stopping at the last tile whose whole footprint is free if `occupancy`
+/// blocks the rest of the path (T1-c §4-2②, footprint-wide since T1-d §4-5).
+/// `occupies` is the mover's own offset list (empty means one tile) and
+/// `mover_id` lets the scan ignore the mover's own current footprint (T1-d
+/// §4-5's "자기 자신의 현재 타일은 자기를 막지 않는다" -- see
+/// `first_free_tile_along`'s doc comment for why that matters for footprints
+/// bigger than one tile). Returns `from` unchanged if the two tiles
+/// coincide (no direction exists).
 fn step_toward(
     from: HexCoord,
     to: HexCoord,
     step: i32,
     occupancy: &HexOccupancy,
+    occupies: &[HexCoord],
+    mover_id: &str,
 ) -> Result<HexCoord, CombatSimulationError> {
     if from == to {
         return Ok(from);
@@ -460,16 +485,17 @@ fn step_toward(
     let path = line(from, to).map_err(CombatSimulationError::HexMath)?;
     let steps_available = path.len() - 1; // >= 1: `from != to` was just checked.
     let step_count = (step as usize).min(steps_available);
-    Ok(first_free_tile_along(&path, step_count, occupancy))
+    first_free_tile_along(&path, step_count, occupancy, occupies, mover_id)
 }
 
 /// Moves `from` up to `step` tiles away from `to`, along the straight line
-/// through `from` on the far side from `to`, stopping at the last free tile
-/// if `occupancy` blocks the rest of the path (T1-c §4-2②, applied to
-/// retreat too -- not just advance). Implemented by reflecting `to` through
-/// `from` (a cube-coordinate reflection, always a valid `HexCoord` at the
-/// same distance from `from` as `to` is) and walking `line(from, mirror)` --
-/// the plan's "line()-based" retreat, since `line()` only ever interpolates
+/// through `from` on the far side from `to`, stopping at the last tile whose
+/// whole footprint is free if `occupancy` blocks the rest of the path (T1-c
+/// §4-2②, applied to retreat too -- not just advance; footprint-wide since
+/// T1-d §4-5). Implemented by reflecting `to` through `from` (a
+/// cube-coordinate reflection, always a valid `HexCoord` at the same
+/// distance from `from` as `to` is) and walking `line(from, mirror)` -- the
+/// plan's "line()-based" retreat, since `line()` only ever interpolates
 /// *between* two given tiles and never extrapolates past an endpoint on its
 /// own. Returns `from` unchanged if the two tiles coincide (no direction
 /// exists), matching `step_toward` and the old euclidean `step_away`.
@@ -478,6 +504,8 @@ fn step_away(
     to: HexCoord,
     step: i32,
     occupancy: &HexOccupancy,
+    occupies: &[HexCoord],
+    mover_id: &str,
 ) -> Result<HexCoord, CombatSimulationError> {
     if from == to {
         return Ok(from);
@@ -486,50 +514,70 @@ fn step_away(
     let path = line(from, mirror).map_err(CombatSimulationError::HexMath)?;
     let steps_available = path.len() - 1; // >= 1: reflection preserves distance, which is >= 1 here.
     let step_count = (step as usize).min(steps_available);
-    Ok(first_free_tile_along(&path, step_count, occupancy))
+    first_free_tile_along(&path, step_count, occupancy, occupies, mover_id)
 }
 
-/// Walks `path[1..=max_index]` -- `path[0]` is always the mover's own
-/// starting tile and never blocks itself (T1-c §4-4: "자기 자신의 출발
-/// 타일은 자기를 막지 않는다"), so the scan starts one tile past it --
-/// stopping at the tile just before the first occupied one. If `path[1]` is
-/// already occupied the mover doesn't move at all and this returns
-/// `path[0]`.
+/// Walks `path[1..=max_index]`, checking at each candidate anchor whether
+/// the mover's *whole footprint* there (`footprint_tiles(candidate,
+/// occupies)`, T1-d §4-5) is free -- stopping at the last candidate that
+/// passes and returning `path[0]` unmoved if even the first candidate
+/// (`path[1]`) fails.
 ///
-/// **Deliberately conservative, and that is intentional (T1-c §4-4), not a
-/// bug** -- pinned by `a_tile_vacated_this_tick_is_not_entered_this_tick`.
-/// `occupancy` is always the tick-start snapshot (`advance_tick` builds it
-/// once via `occupancy_snapshot` and never rebuilds it mid-tick), so a tile
-/// some other unit is vacating *this very tick* still reads as occupied
-/// here. A unit trailing one step behind another loses that step and the
-/// gap doesn't close as fast as it "should." This is the price paid for
-/// order independence (invariant 4): if occupancy were instead read from the
-/// partially-mutated `self.participants` map as moves get applied, whichever
-/// actor happened to be processed first would free up its tile for whoever
-/// came next, and the *order* participants are processed in would change the
-/// resulting positions. Reading only the frozen snapshot removes that
-/// dependency entirely. T2's move-reservation design is expected to relax
-/// this later; until then, leave it as the conservative rule it is.
+/// **A tile occupied by `mover_id` itself counts as free (T1-d §4-5's
+/// trap).** `path[0]` (the mover's own starting tile) was excluded from this
+/// scan by range alone before T1-d, which was enough when every footprint
+/// was exactly one tile -- a one-tile mover's footprint at any candidate
+/// *other* than `path[0]` can never coincide with `path[0]` itself. That
+/// stops being true once a footprint can be more than one tile: a large
+/// unit's footprint at a candidate one step forward still overlaps most of
+/// its own *current* footprint (still marked occupied under its own id in
+/// this tick's frozen snapshot). Range-based exclusion no longer covers
+/// that, so this checks occupancy by identity instead --
+/// `occupancy.occupant_at(tile) == Some(mover_id)` reads as free, any other
+/// occupant does not. Miss this and a large unit's every candidate step
+/// re-collides with its own trailing tiles and it never moves at all, which
+/// looks exactly like "correctly blocked by an enemy" until someone checks
+/// why (`a_large_unit_does_not_block_itself_while_moving` pins this).
+///
+/// **Still otherwise deliberately conservative (T1-c §4-4), not a bug** --
+/// pinned by `a_tile_vacated_this_tick_is_not_entered_this_tick`. `occupancy`
+/// is always the tick-start snapshot (`advance_tick` builds it once via
+/// `occupancy_snapshot` and never rebuilds it mid-tick, T1-d §4-5's "점유는
+/// 여전히 tick 시작 스냅샷에서 읽는다"), so a tile some *other* unit is
+/// vacating this very tick still reads as occupied here. This is the price
+/// paid for order independence (invariant 4) -- see the historical T1-c
+/// discussion this replaced for the full argument; nothing about that
+/// argument changes for footprints.
 fn first_free_tile_along(
     path: &[HexCoord],
     max_index: usize,
     occupancy: &HexOccupancy,
-) -> HexCoord {
+    occupies: &[HexCoord],
+    mover_id: &str,
+) -> Result<HexCoord, CombatSimulationError> {
     let mut last_free = path[0];
-    for &tile in &path[1..=max_index] {
-        if occupancy.is_free(tile) {
-            last_free = tile;
-        } else {
+    for &candidate in &path[1..=max_index] {
+        let footprint =
+            footprint_tiles(candidate, occupies).map_err(CombatSimulationError::HexMath)?;
+        let blocked = footprint.iter().any(|&tile| {
+            occupancy
+                .occupant_at(tile)
+                .is_some_and(|occupant| occupant != mover_id)
+        });
+        if blocked {
             break;
         }
+        last_free = candidate;
     }
-    last_free
+    Ok(last_free)
 }
 
 /// Builds the tile-occupancy map for one tick, from a snapshot of
 /// participants taken at tick start (T1-c §4-4). Every active participant
-/// occupies exactly one tile, its own current position -- T1-c §4-1 fixes
-/// "one tile, one unit" for this slice; multi-tile large units are T1-d.
+/// occupies its full footprint (T1-d §4-1: `p.occupies` placed at
+/// `p.position`, or just `p.position` alone if `occupies` is empty) --
+/// T1-c §4-1 fixed "one tile, one unit" for that slice; this is T1-d wiring
+/// multi-tile footprints into the same snapshot.
 ///
 /// This is built once per tick and handed around read-only; nothing in
 /// `advance_tick` mutates it mid-tick. That is what makes occupancy checks
@@ -537,11 +585,12 @@ fn first_free_tile_along(
 /// comment for what that buys and what it costs.
 ///
 /// `try_occupy` is expected to never fail: `CombatSimulation::new` already
-/// rejects two active participants starting on the same tile
-/// (`DuplicateStartingPosition`, T1-c §4-2①), and every tick's
-/// occupancy-aware movement (§4-2②/③) keeps that property true afterwards
-/// too. If it fails anyway, that invariant was violated somewhere it
-/// shouldn't have been -- a real bug, reported as
+/// rejects two active participants whose starting footprints overlap by even
+/// one tile (`DuplicateStartingPosition`, T1-c §4-2①, broadened to
+/// footprints by T1-d §4-6), and every tick's occupancy-aware movement
+/// (§4-2②/③, footprint-aware since T1-d §4-5) keeps that property true
+/// afterwards too. If it fails anyway, that invariant was violated somewhere
+/// it shouldn't have been -- a real bug, reported as
 /// `CombatSimulationError::OccupancyInvariantViolated` rather than swallowed
 /// or panicked on, since nothing else in this crate panics on bad state and
 /// a library that panics on bad input is worse than one that returns an
@@ -551,8 +600,9 @@ fn occupancy_snapshot(
 ) -> Result<HexOccupancy, CombatSimulationError> {
     let mut occupancy = HexOccupancy::new();
     for p in participants.values() {
+        let footprint = participant_footprint(p)?;
         occupancy
-            .try_occupy(&[p.position], &p.id)
+            .try_occupy(&footprint, &p.id)
             .map_err(|_| CombatSimulationError::OccupancyInvariantViolated(p.position))?;
     }
     Ok(occupancy)
@@ -689,9 +739,12 @@ fn reflect_through(anchor: HexCoord, other: HexCoord) -> Result<HexCoord, Combat
         r: i32::try_from(r).map_err(|_| CombatSimulationError::Overflow)?,
     })
 }
-/// T1-c §4-2③/§4-3: if two (or more) move intents computed above land on the
-/// exact same tile, none of them gets it -- both/all give up the move this
-/// tick and hold at `from` instead.
+/// T1-c §4-2③/§4-3, broadened to footprints by T1-d §4-5: if two (or more)
+/// move intents computed above land on *destination footprints that share
+/// even one tile*, none of them gets it -- all give up the move this tick
+/// and hold at `from` instead. For single-tile participants this is exactly
+/// the old "exact same destination tile" rule (a one-tile footprint can only
+/// ever "share a tile" with another by being that same tile).
 ///
 /// **Why nobody wins the tile (design rationale -- do not "fix" this by
 /// adding a priority):** contention for the same free tile in the same tick
@@ -713,20 +766,48 @@ fn reflect_through(anchor: HexCoord, other: HexCoord) -> Result<HexCoord, Combat
 /// and anything invented here would just be dead weight T2 has to rip out
 /// later. Refusing both is the only answer that commits to nothing.
 ///
-/// Grouping by destination with a `BTreeMap<HexCoord, u32>` (not a
-/// `HashMap`) keeps this itself deterministic, matching the rest of
-/// `combat_hex`/`combat_simulation`'s no-`HashMap` convention.
-fn resolve_destination_contention(moves: &mut [CombatMoveIntent]) {
-    let mut destination_counts: BTreeMap<HexCoord, u32> = BTreeMap::new();
+/// `occupies_by_actor` supplies each actor's own fixed offset list (the
+/// caller reads it from the tick-start snapshot); a missing entry is treated
+/// as the single-tile default (`&[]`), which cannot actually happen since
+/// `advance_tick` builds this map from the same snapshot as `moves`, but
+/// doing it this way means a lookup miss degrades to "one tile" instead of
+/// panicking. Grouping by destination tile with a `BTreeMap<HexCoord,
+/// Vec<usize>>` (not a `HashMap`) keeps this itself deterministic, matching
+/// the rest of `combat_hex`/`combat_simulation`'s no-`HashMap` convention.
+fn resolve_destination_contention(
+    moves: &mut [CombatMoveIntent],
+    occupies_by_actor: &BTreeMap<&str, &[HexCoord]>,
+) -> Result<(), CombatSimulationError> {
+    let mut destination_footprints: Vec<Vec<HexCoord>> = Vec::with_capacity(moves.len());
     for m in moves.iter() {
-        *destination_counts.entry(m.to).or_insert(0) += 1;
+        let occupies = occupies_by_actor
+            .get(m.actor_id.as_str())
+            .copied()
+            .unwrap_or(&[]);
+        destination_footprints
+            .push(footprint_tiles(m.to, occupies).map_err(CombatSimulationError::HexMath)?);
     }
-    for m in moves.iter_mut() {
-        if destination_counts[&m.to] > 1 {
+    let mut tile_claimants: BTreeMap<HexCoord, Vec<usize>> = BTreeMap::new();
+    for (index, footprint) in destination_footprints.iter().enumerate() {
+        for &tile in footprint {
+            tile_claimants.entry(tile).or_default().push(index);
+        }
+    }
+    let mut contended = vec![false; moves.len()];
+    for claimants in tile_claimants.values() {
+        if claimants.len() > 1 {
+            for &index in claimants {
+                contended[index] = true;
+            }
+        }
+    }
+    for (index, m) in moves.iter_mut().enumerate() {
+        if contended[index] {
             m.to = m.from;
             m.mode = CombatMoveMode::Hold;
         }
     }
+    Ok(())
 }
 
 /// T1-c §4-6: pure, unwired surround derivation. Reports which of `actor`'s

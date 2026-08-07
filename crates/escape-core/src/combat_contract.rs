@@ -8,7 +8,14 @@ use std::fmt;
 /// out of scope (T0 §4-1) — so there is exactly one current value, not a
 /// supported-list. Bumping it is a breaking change owned by whichever slice
 /// changes the judgement (e.g. T1's hex coordinate swap), never this one.
-pub const CURRENT_SIMULATION_VERSION: &str = "v2";
+///
+/// v2 -> v3 (`fable_combat_hex_t1b1_step1_2608071921.md` §4-4): `{x,y}`
+/// euclidean `CombatPosition`/`CombatFacing` became `{q,r}` axial `HexCoord`,
+/// changing both the wire representation and the meaning of `attack_range`/
+/// `support_range`/`speed_per_tick` (hex distance and tile count, not
+/// euclidean units). T0's enforcement (index-time + runtime) is what makes
+/// this bump safe to make here.
+pub const CURRENT_SIMULATION_VERSION: &str = "v3";
 
 /// Rejects `version` unless it equals [`CURRENT_SIMULATION_VERSION`].
 ///

@@ -42,12 +42,12 @@ fn combatant(id: &str) -> CombatantState {
     }
 }
 
-fn participant(id: &str, side: CombatSide, x: i32) -> CombatSimulationParticipant {
+fn participant(id: &str, side: CombatSide, q: i32) -> CombatSimulationParticipant {
     CombatSimulationParticipant {
         id: id.into(),
         side,
-        position: CombatPosition { x, y: 0 },
-        facing: CombatFacing { x: 1, y: 0 },
+        position: HexCoord { q, r: 0 },
+        facing: HexCoord { q: 1, r: 0 },
         speed_per_tick: 1,
         collision_radius: 1,
         attack_range: 2,

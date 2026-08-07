@@ -43,12 +43,12 @@ fn role() -> CombatRolePreset {
         },
     }
 }
-fn participant(id: &str, side: CombatSide, x: i32) -> CombatSimulationParticipant {
+fn participant(id: &str, side: CombatSide, q: i32) -> CombatSimulationParticipant {
     CombatSimulationParticipant {
         id: id.into(),
         side,
-        position: CombatPosition { x, y: 0 },
-        facing: CombatFacing { x: 1, y: 0 },
+        position: HexCoord { q, r: 0 },
+        facing: HexCoord { q: 1, r: 0 },
         speed_per_tick: 1,
         collision_radius: 1,
         attack_range: 2,
@@ -82,12 +82,19 @@ fn config_geometry_and_facing_validate() {
         ..input(vec![])
     })
     .is_err());
-    assert!(CombatPosition { x: i32::MAX, y: 0 }
-        .distance_squared(CombatPosition { x: i32::MIN, y: 0 })
-        .is_err());
-    assert!(CombatPosition { x: 0, y: 0 }
-        .in_range(CombatPosition { x: 1, y: 0 }, -1)
-        .is_err());
+    // T1-b1 §4-2: facing must be one of the six hex neighbor directions.
+    // `HexCoord{q:2,r:0}` is two tiles away along an axis, not adjacent, so
+    // it is rejected the same way the old zero-vector facing was.
+    // `combat_hex_t1a.rs` already covers `HexCoord` math itself (overflow,
+    // extreme coordinates) -- this only re-checks the wiring through
+    // `CombatSimulation::new`. WP6's `facing_must_be_one_of_the_six_neighbor_directions`
+    // and `facing_zero_vector_is_still_rejected` pin the full behaviour.
+    let mut bad_facing = participant("a", CombatSide::Ally, 0);
+    bad_facing.facing = HexCoord { q: 2, r: 0 };
+    assert!(matches!(
+        CombatSimulation::new(input(vec![bad_facing])),
+        Err(CombatSimulationError::InvalidFacing(_))
+    ));
 }
 #[test]
 fn active_limits_ignore_inactive() {
@@ -152,9 +159,12 @@ fn snapshot_order_invariant_and_same_setup() {
 }
 #[test]
 fn range_overlap_boundaries() {
-    let p = CombatPosition { x: 0, y: 0 };
-    assert!(p.in_range(CombatPosition { x: 2, y: 0 }, 2).unwrap());
-    assert!(p.overlaps(CombatPosition { x: 1, y: 0 }, 1).unwrap());
+    // T1-b1 §4-1: `CombatPosition::in_range`/`overlaps` are gone; range and
+    // collision judgement (`combat_resolution.rs`) both now compare
+    // `HexCoord::distance` directly against a threshold.
+    let p = HexCoord { q: 0, r: 0 };
+    assert!(p.distance(HexCoord { q: 2, r: 0 }) <= 2);
+    assert!(p.distance(HexCoord { q: 1, r: 0 }) <= 1);
 }
 #[test]
 fn max_ticks_and_missing_refs_fail() {
@@ -217,6 +227,77 @@ fn setup_fingerprint_and_structural_duplicates_are_deterministic_errors() {
         CombatSimulation::new(policy_input),
         Err(CombatSimulationError::DuplicateId(_))
     ));
+}
+
+// ---------------------------------------------------------------------
+// T1-b1 WP6 (fable_combat_hex_t1b1_step1_2608071921.md §6): pin the new
+// properties the coordinate swap introduces.
+// ---------------------------------------------------------------------
+
+#[test]
+fn position_serializes_as_q_and_r_not_x_and_y() {
+    let p = participant("a", CombatSide::Ally, 3);
+    let value = serde_json::to_value(&p).expect("participant should serialize");
+    let position = &value["position"];
+    assert_eq!(position["q"], 3);
+    assert_eq!(position["r"], 0);
+    assert!(
+        position.get("x").is_none() && position.get("y").is_none(),
+        "position must not carry the old {{x, y}} keys: {position}"
+    );
+}
+
+#[test]
+fn facing_must_be_one_of_the_six_neighbor_directions() {
+    for direction in HexCoord::NEIGHBOR_DIRECTIONS {
+        let mut p = participant("a", CombatSide::Ally, 0);
+        p.facing = direction;
+        assert!(
+            CombatSimulation::new(input(vec![p])).is_ok(),
+            "facing {direction:?} is one of the six neighbor directions and must be accepted"
+        );
+    }
+    // Two tiles away along an axis: a real direction (q=1,r=0) scaled up,
+    // but not itself adjacent, so it is not a neighbor direction.
+    let mut not_adjacent = participant("a", CombatSide::Ally, 0);
+    not_adjacent.facing = HexCoord { q: 2, r: 0 };
+    assert!(matches!(
+        CombatSimulation::new(input(vec![not_adjacent])),
+        Err(CombatSimulationError::InvalidFacing(_))
+    ));
+}
+
+#[test]
+fn facing_zero_vector_is_still_rejected() {
+    // T1-b1 §4-2: the zero vector is not among the six neighbor directions,
+    // so the old "facing.x == 0 && facing.y == 0" special case is gone but
+    // the zero vector keeps being rejected under the new rule too.
+    let mut p = participant("a", CombatSide::Ally, 0);
+    p.facing = HexCoord { q: 0, r: 0 };
+    assert!(matches!(
+        CombatSimulation::new(input(vec![p])),
+        Err(CombatSimulationError::InvalidFacing(_))
+    ));
+}
+
+#[test]
+fn speed_per_tick_moves_that_many_tiles() {
+    // T1-b1 §4-3: `speed_per_tick` is now a tile count, not a coordinate-unit
+    // budget. An actor with speed_per_tick=3 heading straight for a target
+    // 10 tiles away must land exactly 3 tiles along the way, not some
+    // fraction of the distance.
+    let mut a = participant("a", CombatSide::Ally, 0);
+    a.speed_per_tick = 3;
+    let e = participant("e", CombatSide::Enemy, 10);
+    let mut s = CombatSimulation::new(input(vec![a, e])).unwrap();
+    let frame = s.advance_tick().unwrap();
+    let mover = frame
+        .moves
+        .iter()
+        .find(|m| m.actor_id == "a")
+        .expect("actor 'a' must have a move intent this tick");
+    assert_eq!(mover.mode, CombatMoveMode::Advance);
+    assert_eq!(mover.to, HexCoord { q: 3, r: 0 });
 }
 
 #[test]

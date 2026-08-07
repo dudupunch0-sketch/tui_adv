@@ -469,6 +469,11 @@ fn combat_piece_token(piece: &CombatSpectatorPiece) -> String {
 
 /// `view.frames`의 마지막 프레임만 그린다 (정적 스냅샷이므로 결착 시점이
 /// 가장 정보량이 많다 — 정본: 시간 조작 금지, 애니메이션 없음).
+///
+/// T1-b1 §4-7: 좌표가 axial `(q, r)`로 바뀌었다. 이 함수는 육각을 화면에
+/// 제대로 투영하려 하지 않는다(그건 T9의 일이다) — `(q, r)`을 그대로 텍스트
+/// 격자 좌표로 쓰고, 상한 초과 시의 접근성 대체 표기도 라벨이 `(x, y)`가
+/// 아니라 `(q, r)`임을 명시한다.
 fn render_combat_board(lines: &mut Vec<String>, view: &CombatSpectatorView) {
     lines.push("[전투 판]".to_string());
     let Some(frame) = view.frames.last() else {
@@ -486,35 +491,35 @@ fn render_combat_board(lines: &mut Vec<String>, view: &CombatSpectatorView) {
     let mut sorted_pieces: Vec<&CombatSpectatorPiece> = frame.pieces.iter().collect();
     sorted_pieces.sort_by(|a, b| a.id.cmp(&b.id));
 
-    let (mut min_x, mut max_x, mut min_y, mut max_y) = {
+    let (mut min_q, mut max_q, mut min_r, mut max_r) = {
         let first = &sorted_pieces[0];
         (
-            first.position.x,
-            first.position.x,
-            first.position.y,
-            first.position.y,
+            first.position.q,
+            first.position.q,
+            first.position.r,
+            first.position.r,
         )
     };
     for piece in &sorted_pieces[1..] {
-        min_x = min_x.min(piece.position.x);
-        max_x = max_x.max(piece.position.x);
-        min_y = min_y.min(piece.position.y);
-        max_y = max_y.max(piece.position.y);
+        min_q = min_q.min(piece.position.q);
+        max_q = max_q.max(piece.position.q);
+        min_r = min_r.min(piece.position.r);
+        max_r = max_r.max(piece.position.r);
     }
-    let x_span = i64::from(max_x) - i64::from(min_x);
-    let y_span = i64::from(max_y) - i64::from(min_y);
+    let q_span = i64::from(max_q) - i64::from(min_q);
+    let r_span = i64::from(max_r) - i64::from(min_r);
 
-    if x_span > COMBAT_BOARD_MAX_WIDTH || y_span > COMBAT_BOARD_MAX_HEIGHT {
+    if q_span > COMBAT_BOARD_MAX_WIDTH || r_span > COMBAT_BOARD_MAX_HEIGHT {
         lines.push(format!(
-            "- 보드 범위(폭 {x_span}, 높이 {y_span})가 상한(폭 {COMBAT_BOARD_MAX_WIDTH}, 높이 {COMBAT_BOARD_MAX_HEIGHT})을 넘어 좌표 목록으로 대체한다 (스케일 축소는 하지 않는다)."
+            "- 보드 범위(폭 {q_span}, 높이 {r_span})가 상한(폭 {COMBAT_BOARD_MAX_WIDTH}, 높이 {COMBAT_BOARD_MAX_HEIGHT})을 넘어 좌표 목록으로 대체한다 (스케일 축소는 하지 않는다)."
         ));
         for piece in &sorted_pieces {
             lines.push(format!(
-                "- {} {} @ ({}, {})",
+                "- {} {} @ (q={}, r={})",
                 combat_piece_token(piece),
                 piece.id,
-                piece.position.x,
-                piece.position.y
+                piece.position.q,
+                piece.position.r
             ));
         }
         return;
@@ -523,15 +528,15 @@ fn render_combat_board(lines: &mut Vec<String>, view: &CombatSpectatorView) {
     let mut cell_tokens: BTreeMap<(i32, i32), Vec<String>> = BTreeMap::new();
     for piece in &sorted_pieces {
         cell_tokens
-            .entry((piece.position.y, piece.position.x))
+            .entry((piece.position.r, piece.position.q))
             .or_default()
             .push(combat_piece_token(piece));
     }
-    for y in min_y..=max_y {
-        let mut row = format!("y={y:>4}:");
-        for x in min_x..=max_x {
+    for r in min_r..=max_r {
+        let mut row = format!("r={r:>4}:");
+        for q in min_q..=max_q {
             let cell = cell_tokens
-                .get(&(y, x))
+                .get(&(r, q))
                 .map(|tokens| tokens.join("/"))
                 .unwrap_or_else(|| "·".to_string());
             row.push(' ');
@@ -792,23 +797,21 @@ mod tests {
     }
 
     // -- P2: 체스말 보드 ----------------------------------------------------
-    use escape_core::{
-        CombatFacing, CombatPosition, CombatSimulationVersion, CombatSpectatorFrame,
-    };
+    use escape_core::{CombatSimulationVersion, CombatSpectatorFrame, HexCoord};
 
     fn test_piece(
         id: &str,
         side: CombatSide,
-        x: i32,
-        y: i32,
+        q: i32,
+        r: i32,
         active: bool,
         cues: Vec<CombatSpectatorCue>,
     ) -> CombatSpectatorPiece {
         CombatSpectatorPiece {
             id: id.to_string(),
             side,
-            position: CombatPosition { x, y },
-            facing: CombatFacing { x: 1, y: 0 },
+            position: HexCoord { q, r },
+            facing: HexCoord { q: 1, r: 0 },
             active,
             cues,
         }
@@ -876,8 +879,8 @@ mod tests {
         render_combat_board(&mut lines, &view);
         let text = lines.join("\n");
         assert!(text.contains("좌표 목록으로 대체"));
-        assert!(text.contains("ally_1 @ (0, 0)"));
-        assert!(text.contains("enemy_1 @ (40, 0)"));
+        assert!(text.contains("ally_1 @ (q=0, r=0)"));
+        assert!(text.contains("enemy_1 @ (q=40, r=0)"));
     }
 
     #[test]

@@ -35,8 +35,8 @@ fn input() -> CombatSimulationInput {
             CombatSimulationParticipant {
                 id: "ally".into(),
                 side: CombatSide::Ally,
-                position: CombatPosition { x: 0, y: 0 },
-                facing: CombatFacing { x: 1, y: 0 },
+                position: HexCoord { q: 0, r: 0 },
+                facing: HexCoord { q: 1, r: 0 },
                 speed_per_tick: 1,
                 collision_radius: 1,
                 attack_range: 2,
@@ -48,8 +48,8 @@ fn input() -> CombatSimulationInput {
             CombatSimulationParticipant {
                 id: "enemy".into(),
                 side: CombatSide::Enemy,
-                position: CombatPosition { x: 10, y: 0 },
-                facing: CombatFacing { x: -1, y: 0 },
+                position: HexCoord { q: 10, r: 0 },
+                facing: HexCoord { q: -1, r: 0 },
                 speed_per_tick: 1,
                 collision_radius: 1,
                 attack_range: 2,
@@ -181,7 +181,7 @@ fn execution_fingerprint_binds_world_and_positions() {
     world.input.manifest.world_state_fingerprint = "changed".into();
     assert_ne!(a.fingerprint, execute_combat(world).unwrap().fingerprint);
     let mut position = request(CombatRunMode::Actual, CombatPresentationSpeed::OneX);
-    position.input.participants[0].position.x = 1;
+    position.input.participants[0].position.q = 1;
     assert_ne!(a.fingerprint, execute_combat(position).unwrap().fingerprint);
 }
 

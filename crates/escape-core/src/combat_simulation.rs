@@ -1,5 +1,5 @@
 use crate::combat_contract::ensure_supported_simulation_version;
-use crate::{CombatManifest, CombatState};
+use crate::{line, CombatManifest, CombatState, HexCoord};
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -14,34 +14,15 @@ pub enum CombatSide {
     Ally,
     Enemy,
 }
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
-pub struct CombatPosition {
-    pub x: i32,
-    pub y: i32,
-}
-impl CombatPosition {
-    pub fn distance_squared(self, other: Self) -> Result<i64, CombatSimulationError> {
-        let dx = i64::from(self.x) - i64::from(other.x);
-        let dy = i64::from(self.y) - i64::from(other.y);
-        dx.checked_mul(dx)
-            .and_then(|x| dy.checked_mul(dy).and_then(|y| x.checked_add(y)))
-            .ok_or(CombatSimulationError::Overflow)
-    }
-    pub fn in_range(self, other: Self, range: i32) -> Result<bool, CombatSimulationError> {
-        if range < 0 {
-            return Err(CombatSimulationError::InvalidRange);
-        }
-        Ok(self.distance_squared(other)? <= i64::from(range).pow(2))
-    }
-    pub fn overlaps(self, other: Self, radius: i32) -> Result<bool, CombatSimulationError> {
-        self.in_range(other, radius)
-    }
-}
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
-pub struct CombatFacing {
-    pub x: i32,
-    pub y: i32,
-}
+// T1-b1 (fable_combat_hex_t1b1_step1_2608071921.md §4-1): `CombatPosition{x,y}`
+// and `CombatFacing{x,y}` are gone, not renamed. Both roles are now played by
+// `HexCoord{q,r}` (axial, from the frozen `combat_hex` module) --
+// `Serialize`/`Deserialize`/`Ord`/`Hash` on that type already cover everything
+// these two used to need. The old euclidean helpers have no 1:1 method
+// replacement on `HexCoord`; call sites below inline the plan's mapping
+// table instead (`distance_squared` -> `HexCoord::distance`, `in_range` ->
+// `a.distance(b) <= i64::from(range)`, `overlaps` -> deleted, see
+// `combat_resolution.rs`).
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct CombatRoleWeights {
     pub preferred_distance: i32,
@@ -78,8 +59,8 @@ pub struct CombatTargetPolicy {
 pub struct CombatSimulationParticipant {
     pub id: String,
     pub side: CombatSide,
-    pub position: CombatPosition,
-    pub facing: CombatFacing,
+    pub position: HexCoord,
+    pub facing: HexCoord,
     pub speed_per_tick: i32,
     pub collision_radius: i32,
     pub attack_range: i32,
@@ -92,8 +73,8 @@ pub struct CombatSimulationParticipant {
 pub struct CombatMoveIntent {
     pub actor_id: String,
     pub target_id: Option<String>,
-    pub from: CombatPosition,
-    pub to: CombatPosition,
+    pub from: HexCoord,
+    pub to: HexCoord,
     pub mode: CombatMoveMode,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -107,7 +88,7 @@ pub enum CombatMoveMode {
 pub struct CombatTickFrame {
     pub tick: u32,
     pub moves: Vec<CombatMoveIntent>,
-    pub positions: BTreeMap<String, CombatPosition>,
+    pub positions: BTreeMap<String, HexCoord>,
     pub fingerprint: String,
 }
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -194,7 +175,10 @@ impl CombatSimulation {
             {
                 return Err(CombatSimulationError::InvalidParticipant(p.id.clone()));
             }
-            if p.facing.x == 0 && p.facing.y == 0 {
+            // T1-b1 §4-2: facing must be one of the six hex neighbor
+            // directions. The zero vector is not among them, so it keeps
+            // being rejected automatically -- no special case needed.
+            if !HexCoord::NEIGHBOR_DIRECTIONS.contains(&p.facing) {
                 return Err(CombatSimulationError::InvalidFacing(p.id.clone()));
             }
             if participants.insert(p.id.clone(), p.clone()).is_some() {
@@ -276,14 +260,15 @@ impl CombatSimulation {
                     a.priority
                         .cmp(&b.priority)
                         .then_with(|| {
+                            // `HexCoord::distance` is total (no invalid
+                            // input exists), so no `unwrap_or` fallback is
+                            // needed anymore (T1-b1 §4-1).
                             let da = self.participants[&a.target_id]
                                 .position
-                                .distance_squared(actor.position)
-                                .unwrap_or(i64::MAX);
+                                .distance(actor.position);
                             let db = self.participants[&b.target_id]
                                 .position
-                                .distance_squared(actor.position)
-                                .unwrap_or(i64::MAX);
+                                .distance(actor.position);
                             db.cmp(&da)
                         })
                         .then_with(|| b.target_id.cmp(&a.target_id))
@@ -296,12 +281,7 @@ impl CombatSimulation {
             .participants
             .values()
             .filter(|p| valid(&p.id))
-            .filter_map(|p| {
-                p.position
-                    .distance_squared(actor.position)
-                    .ok()
-                    .map(|d| (d, p.id.clone()))
-            })
+            .map(|p| (p.position.distance(actor.position), p.id.clone()))
             .min_by(|a, b| a.0.cmp(&b.0).then(a.1.cmp(&b.1)))
             .map(|(_, id)| id))
     }
@@ -317,18 +297,19 @@ impl CombatSimulation {
             let role = &self.roles[&actor.role_id];
             let (to, mode) = target
                 .map(|target| {
-                    let d = actor
-                        .position
-                        .distance_squared(target.position)
-                        .unwrap_or(i64::MAX);
+                    // T1-b1 §4-1/§4-3: hex distance is linear, not squared,
+                    // so the old `d > preferred * preferred` comparison
+                    // becomes a direct `d > preferred` -- no squaring on
+                    // either side.
+                    let d = actor.position.distance(target.position);
                     let preferred = i64::from(role.weights.preferred_distance.max(0));
                     let step = actor.speed_per_tick;
-                    if d > preferred * preferred {
+                    if d > preferred {
                         Ok((
                             step_toward(actor.position, target.position, step)?,
                             CombatMoveMode::Advance,
                         ))
-                    } else if d < preferred * preferred && role.weights.aggression < 0 {
+                    } else if d < preferred && role.weights.aggression < 0 {
                         Ok((
                             step_away(actor.position, target.position, step)?,
                             CombatMoveMode::Retreat,
@@ -375,100 +356,72 @@ impl CombatSimulation {
         (0..count).map(|_| self.advance_tick()).collect()
     }
 }
-fn step_toward(
-    from: CombatPosition,
-    to: CombatPosition,
-    step: i32,
-) -> Result<CombatPosition, CombatSimulationError> {
-    let dx =
-        to.x.checked_sub(from.x)
-            .ok_or(CombatSimulationError::Overflow)?;
-    let dy =
-        to.y.checked_sub(from.y)
-            .ok_or(CombatSimulationError::Overflow)?;
-    let ax = dx.checked_abs().ok_or(CombatSimulationError::Overflow)?;
-    let ay = dy.checked_abs().ok_or(CombatSimulationError::Overflow)?;
-    let dominant = ax.max(ay);
-    if dominant == 0 {
+// T1-b1 §4-3: `speed_per_tick` now means "tiles per tick", not "coordinate
+// units per tick". Both functions below walk the straight-line path
+// `combat_hex::line()` gives between two tiles, taking at most
+// `speed_per_tick` steps along it (never overshooting the far end -- "최대
+// speed_per_tick 타일만큼" means *up to*, not *exactly*). The old
+// dominant-axis fractional-step decomposition is gone; there is nothing
+// left to divide by an axis magnitude.
+//
+// Occupancy is intentionally NOT enforced here. Two participants can end a
+// tick on the same tile and walk through each other exactly as the old
+// euclidean code allowed -- this is the pre-existing behaviour, not a
+// regression introduced by this slice. Tile exclusivity is T1-c's job
+// (`fable_combat_hex_t1b1_step1_2608071921.md` §8, plan §6 T1 slice table).
+
+/// Moves `from` up to `step` tiles toward `to` along `line(from, to)`.
+/// Returns `from` unchanged if the two tiles coincide (no direction exists).
+fn step_toward(from: HexCoord, to: HexCoord, step: i32) -> Result<HexCoord, CombatSimulationError> {
+    if from == to {
         return Ok(from);
     }
-    let x_step = step
-        .checked_mul(ax)
-        .ok_or(CombatSimulationError::Overflow)?
-        .checked_div(dominant)
-        .ok_or(CombatSimulationError::Overflow)?;
-    let y_step = step
-        .checked_mul(ay)
-        .ok_or(CombatSimulationError::Overflow)?
-        .checked_div(dominant)
-        .ok_or(CombatSimulationError::Overflow)?;
-    Ok(CombatPosition {
-        x: from
-            .x
-            .checked_add(
-                dx.signum()
-                    .checked_mul(x_step)
-                    .ok_or(CombatSimulationError::Overflow)?,
-            )
-            .ok_or(CombatSimulationError::Overflow)?,
-        y: from
-            .y
-            .checked_add(
-                dy.signum()
-                    .checked_mul(y_step)
-                    .ok_or(CombatSimulationError::Overflow)?,
-            )
-            .ok_or(CombatSimulationError::Overflow)?,
-    })
+    let path = line(from, to).map_err(CombatSimulationError::HexMath)?;
+    let steps_available = path.len() - 1; // >= 1: `from != to` was just checked.
+    let step_count = (step as usize).min(steps_available);
+    Ok(path[step_count])
 }
-fn step_away(
-    from: CombatPosition,
-    to: CombatPosition,
-    step: i32,
-) -> Result<CombatPosition, CombatSimulationError> {
-    let dx = from
-        .x
-        .checked_sub(to.x)
-        .ok_or(CombatSimulationError::Overflow)?;
-    let dy = from
-        .y
-        .checked_sub(to.y)
-        .ok_or(CombatSimulationError::Overflow)?;
-    let ax = dx.checked_abs().ok_or(CombatSimulationError::Overflow)?;
-    let ay = dy.checked_abs().ok_or(CombatSimulationError::Overflow)?;
-    let dominant = ax.max(ay);
-    if dominant == 0 {
+
+/// Moves `from` up to `step` tiles away from `to`, along the straight line
+/// through `from` on the far side from `to`. Implemented by reflecting `to`
+/// through `from` (a cube-coordinate reflection, always a valid `HexCoord` at
+/// the same distance from `from` as `to` is) and walking `line(from,
+/// mirror)` -- the plan's "line()-based" retreat, since `line()` only ever
+/// interpolates *between* two given tiles and never extrapolates past an
+/// endpoint on its own. Returns `from` unchanged if the two tiles coincide
+/// (no direction exists), matching `step_toward` and the old euclidean
+/// `step_away`.
+fn step_away(from: HexCoord, to: HexCoord, step: i32) -> Result<HexCoord, CombatSimulationError> {
+    if from == to {
         return Ok(from);
     }
-    let x_step = step
-        .checked_mul(ax)
-        .ok_or(CombatSimulationError::Overflow)?
-        .checked_div(dominant)
+    let mirror = reflect_through(from, to)?;
+    let path = line(from, mirror).map_err(CombatSimulationError::HexMath)?;
+    let steps_available = path.len() - 1; // >= 1: reflection preserves distance, which is >= 1 here.
+    let step_count = (step as usize).min(steps_available);
+    Ok(path[step_count])
+}
+
+/// Reflects `other` through `anchor`: the point the same distance from
+/// `anchor` as `other`, in exactly the opposite direction. Axial coordinates
+/// are cube coordinates with the redundant third axis dropped, and cube
+/// reflection is linear component-wise, so `2*anchor - other` on `q`/`r`
+/// alone is exact (no separate `x+y+z=0` fix-up is needed, unlike
+/// `combat_hex::line`'s rounding). Checked in `i64` first since `2*anchor.q`
+/// can exceed `i32` before the subtraction brings it back in range.
+fn reflect_through(anchor: HexCoord, other: HexCoord) -> Result<HexCoord, CombatSimulationError> {
+    let q = i64::from(anchor.q)
+        .checked_mul(2)
+        .and_then(|doubled| doubled.checked_sub(i64::from(other.q)))
         .ok_or(CombatSimulationError::Overflow)?;
-    let y_step = step
-        .checked_mul(ay)
-        .ok_or(CombatSimulationError::Overflow)?
-        .checked_div(dominant)
+    let r = i64::from(anchor.r)
+        .checked_mul(2)
+        .and_then(|doubled| doubled.checked_sub(i64::from(other.r)))
         .ok_or(CombatSimulationError::Overflow)?;
-    let target = CombatPosition {
-        x: from
-            .x
-            .checked_add(
-                dx.signum()
-                    .checked_mul(x_step)
-                    .ok_or(CombatSimulationError::Overflow)?,
-            )
-            .ok_or(CombatSimulationError::Overflow)?,
-        y: from
-            .y
-            .checked_add(
-                dy.signum()
-                    .checked_mul(y_step)
-                    .ok_or(CombatSimulationError::Overflow)?,
-            )
-            .ok_or(CombatSimulationError::Overflow)?,
-    };
-    Ok(target)
+    Ok(HexCoord {
+        q: i32::try_from(q).map_err(|_| CombatSimulationError::Overflow)?,
+        r: i32::try_from(r).map_err(|_| CombatSimulationError::Overflow)?,
+    })
 }
 fn fingerprint<T: Serialize>(value: &T) -> Result<String, CombatSimulationError> {
     serde_json::to_string(value)
@@ -509,6 +462,13 @@ pub enum CombatSimulationError {
     /// implements. Dedicated variant so the cause is visible at a glance,
     /// rather than folded into `InvalidReference` (T0 §4-3).
     UnsupportedSimulationVersion(String),
+    /// `combat_hex::line()` rejected a movement path (T1-b1 §4-3). In
+    /// practice this can only be `HexError::PathTooLong`, since the board is
+    /// nowhere near `combat_hex::MAX_LINE_LENGTH` and individual coordinates
+    /// along a line cannot overflow `i32` (see that module's own docs) --
+    /// the variant is still generic over `HexError` rather than hand-picking
+    /// one case, so it does not silently swallow a future new variant.
+    HexMath(crate::HexError),
 }
 impl std::fmt::Display for CombatSimulationError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {

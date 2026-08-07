@@ -10,7 +10,8 @@
 
 use escape_core::{
     index_content_bundle, load_content_bundle, new_game_from_content_at, scene_page_from_content,
-    turn_view_from_content, ContentBundle, ContentIndexError, ContentTurnError,
+    turn_view_from_content, CombatConclusionOutcome, CombatConclusionReason, ContentBundle,
+    ContentIndexError, ContentTurnError,
 };
 use serde_json::{json, Value};
 
@@ -43,7 +44,7 @@ fn valid_combat_json() -> Value {
             // Kept as a literal: this manifest lives inside a JSON string blob
             // built with `json!()`, so it cannot reference the Rust constant
             // directly. Must match `escape_core::CURRENT_SIMULATION_VERSION`.
-            "simulation_version": "v2",
+            "simulation_version": "v3",
             "actual_seed": 999,
             "world_state_fingerprint": "wsf-1",
             "applied_effects": [],
@@ -79,14 +80,14 @@ fn valid_combat_json() -> Value {
         "participants": [
             {
                 "id": "ally_1", "side": "ally",
-                "position": {"x": 0, "y": 0}, "facing": {"x": 1, "y": 0},
+                "position": {"q": 0, "r": 0}, "facing": {"q": 1, "r": 0},
                 "speed_per_tick": 1, "collision_radius": 5,
                 "attack_range": 10, "support_range": 10,
                 "role_id": "role_ally", "target_policy_id": null, "active": true
             },
             {
                 "id": "enemy_1", "side": "enemy",
-                "position": {"x": 5, "y": 0}, "facing": {"x": -1, "y": 0},
+                "position": {"q": 5, "r": 0}, "facing": {"q": -1, "r": 0},
                 "speed_per_tick": 1, "collision_radius": 5,
                 "attack_range": 10, "support_range": 10,
                 "role_id": "role_enemy", "target_policy_id": null, "active": true
@@ -298,7 +299,22 @@ fn unsupported_simulation_version_is_rejected_at_index_time() {
     let message = error.to_string();
     assert!(message.contains(ENCOUNTER_ID));
     assert!(message.contains("v9"));
+    assert!(message.contains("v3"));
+}
+
+/// T1-b1 WP6 (§4-4): `v2` was the current version before this slice's bump
+/// and is a well-formed version string, not a typo like `v9` above -- this
+/// is what actually proves T0's enforcement catches a missed bump, rather
+/// than just proving it catches nonsense input.
+#[test]
+fn v2_authoring_is_rejected_after_the_bump() {
+    let bundle =
+        bundle_with_combat(|combat| combat["manifest"]["simulation_version"] = json!("v2"));
+    let error = expect_combat_error(&bundle);
+    let message = error.to_string();
+    assert!(message.contains(ENCOUNTER_ID));
     assert!(message.contains("v2"));
+    assert!(message.contains("v3"));
 }
 
 // ---------------------------------------------------------------------
@@ -617,4 +633,58 @@ fn spectator_preview_bout_has_a_staged_event() {
         .alt
         .as_deref()
         .is_some_and(|alt| !alt.trim().is_empty()));
+}
+
+/// T1-b1 WP6 (§4-6, the plan's own pre-registered prediction): both
+/// combatants sit on `r = 0`, where hex distance collapses to `|dq|` and
+/// equals the old euclidean distance exactly, so swapping `{x,y}` for
+/// `{q,r}` was predicted to leave this bout's behaviour completely
+/// unchanged. This test turns that prediction into a fixed regression --
+/// exactly the tick count, conclusion, and per-hit damage confirmed by a
+/// direct pre/post-change comparison (see step2 report §4). If any of these
+/// values ever moves, that means the coordinate swap changed real combat
+/// behaviour and the fix belongs in analysis, not in this assertion.
+#[test]
+fn authored_preview_bout_behaviour_is_unchanged_by_the_coordinate_swap() {
+    let index = index_content_bundle(&load_content_bundle(WUXIA_BUNDLE).unwrap())
+        .expect("wuxia preview bundle should index");
+    let mut state = new_game_from_content_at(4, &index, SPECTATOR_LOCATION_ID)
+        .expect("game should start at the courtyard");
+    state.flags.push(SPECTATOR_GATE_FLAG.to_string());
+
+    let page = scene_page_from_content(&state, &index).expect("scene page should render");
+    let combat = page
+        .combat
+        .expect("gated systemic combat should fill ScenePage.combat");
+    let report = combat
+        .report
+        .as_ref()
+        .expect("concluded combat should carry a report");
+
+    assert_eq!(
+        combat.view.frames.len(),
+        8,
+        "the bout must still take exactly 8 ticks to conclude"
+    );
+    assert_eq!(report.decisive_tick, Some(8));
+    assert_eq!(report.outcome, CombatConclusionOutcome::MutualDefeat);
+    assert_eq!(report.reason, CombatConclusionReason::BothSidesDefeated);
+
+    let damage_entries: Vec<_> = combat
+        .view
+        .full_log
+        .iter()
+        .filter(|e| e.template_id == "combat.log.damage_applied")
+        .collect();
+    assert_eq!(
+        damage_entries.len(),
+        16,
+        "16 landed hits total (2 per tick x 8 ticks)"
+    );
+    assert!(
+        damage_entries
+            .iter()
+            .all(|e| e.value_hundredths == Some(1333)),
+        "every landed hit must still deal exactly 1333 hundredths"
+    );
 }

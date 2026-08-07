@@ -44,6 +44,14 @@ fn input() -> CombatSimulationInput {
                 role_id: "role".into(),
                 target_policy_id: None,
                 active: true,
+                // T1-d (fable_combat_hex_t1d_step1_2608072234.md): new field
+                // on `CombatSimulationParticipant`. Empty = single tile at
+                // the anchor, exactly this fixture's pre-T1-d meaning --
+                // mechanical fix to keep this file compiling, not a scope
+                // change; see the T1-d step2 report for why this file
+                // needed touching despite being outside that slice's
+                // original ownership list.
+                occupies: vec![],
             },
             CombatSimulationParticipant {
                 id: "enemy".into(),
@@ -57,6 +65,7 @@ fn input() -> CombatSimulationInput {
                 role_id: "role".into(),
                 target_policy_id: None,
                 active: true,
+                occupies: vec![],
             },
         ],
         roles: vec![CombatRolePreset {

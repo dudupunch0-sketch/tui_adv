@@ -1,5 +1,5 @@
 use crate::combat_contract::ensure_supported_simulation_version;
-use crate::{line, CombatManifest, CombatState, HexCoord, HexOccupancy};
+use crate::{line, CombatManifest, CombatState, HexCoord, HexError, HexOccupancy, HexShape};
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -68,6 +68,17 @@ pub struct CombatSimulationParticipant {
     pub role_id: String,
     pub target_policy_id: Option<String>,
     pub active: bool,
+    // T1-d §4-1: a plain offset list at the serialization boundary, not a
+    // `HexShape` -- `HexShape` deliberately has no `Serialize`/`Deserialize`
+    // (T1-a's choice), so this is converted to one only at validation time
+    // (`participant_footprint`). An empty list means exactly one tile, the
+    // anchor (`position`) itself -- every participant before this slice
+    // implicitly meant that, and still does. `skip_serializing_if` makes the
+    // key vanish entirely from JSON when empty, so every existing bundle and
+    // fixture serializes to the exact same bytes as before (hard invariant
+    // 2) -- no version bump is needed, or should be, for this change.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub occupies: Vec<HexCoord>,
 }
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct CombatMoveIntent {
@@ -190,8 +201,18 @@ impl CombatSimulation {
             if !HexCoord::NEIGHBOR_DIRECTIONS.contains(&p.facing) {
                 return Err(CombatSimulationError::InvalidFacing(p.id.clone()));
             }
-            if starting_occupancy.try_occupy(&[p.position], &p.id).is_err() {
-                return Err(CombatSimulationError::DuplicateStartingPosition(p.position));
+            // T1-d §4-2/§4-3/§4-6: validates `p.occupies` (anchor-inclusion,
+            // connectivity) and returns the actual tiles `p` occupies.
+            // `try_occupy`'s all-or-nothing (`combat_hex.rs`) is what makes
+            // "reject if the two footprints overlap by even one tile" come
+            // for free here -- no separate overlap scan is needed.
+            let footprint = participant_footprint(p)?;
+            match starting_occupancy.try_occupy(&footprint, &p.id) {
+                Ok(()) => {}
+                Err(HexError::TileOccupied(tile)) => {
+                    return Err(CombatSimulationError::DuplicateStartingPosition(tile));
+                }
+                Err(other) => return Err(CombatSimulationError::HexMath(other)),
             }
             if participants.insert(p.id.clone(), p.clone()).is_some() {
                 return Err(CombatSimulationError::DuplicateId(p.id.clone()));
@@ -506,6 +527,63 @@ fn occupancy_snapshot(
     Ok(occupancy)
 }
 
+/// T1-d §4-1/§4-2/§4-3: validates `p.occupies` and returns the tiles `p`
+/// actually occupies at its current `position`.
+///
+/// An empty `occupies` means exactly one tile, `p.position` itself (§4-1;
+/// every participant before this slice implicitly meant that, and still
+/// does) -- the footprint-specific checks below are skipped entirely in that
+/// case, since a single tile trivially satisfies all of them.
+///
+/// Non-empty `occupies` must: contain the `(0,0)` offset (§4-2 -- the anchor
+/// must be one of the occupied tiles, or logs/targeting/spectator would
+/// describe the participant as standing somewhere it doesn't stand); have no
+/// duplicate offsets (`HexShape::new` rejects this on its own, surfaced here
+/// as `CombatSimulationError::HexMath(HexError::DuplicateOffset(..))`); and
+/// be hex-adjacency-connected as one blob (§4-3 -- two disconnected tiles
+/// are two units, not one; this is a distinct structural rule from symmetry,
+/// which is deliberately *not* enforced in code, per §4-3).
+fn participant_footprint(
+    p: &CombatSimulationParticipant,
+) -> Result<Vec<HexCoord>, CombatSimulationError> {
+    if p.occupies.is_empty() {
+        return Ok(vec![p.position]);
+    }
+    let origin = HexCoord { q: 0, r: 0 };
+    if !p.occupies.contains(&origin) {
+        return Err(CombatSimulationError::FootprintMissingAnchor(p.id.clone()));
+    }
+    let shape = HexShape::new(p.occupies.clone()).map_err(CombatSimulationError::HexMath)?;
+    if !footprint_is_connected(&p.occupies) {
+        return Err(CombatSimulationError::DisconnectedFootprint(p.id.clone()));
+    }
+    shape
+        .tiles_at(p.position)
+        .map_err(CombatSimulationError::HexMath)
+}
+
+/// T1-d §4-3: are `offsets` a single hex-adjacency-connected blob? BFS from
+/// `(0,0)`, which the caller (`participant_footprint`) has already confirmed
+/// is present before calling this. Two offsets are adjacent by
+/// `HexCoord::is_adjacent` -- the same primitive `combat_hex.rs` exposes for
+/// exactly this kind of check. O(n^2) in footprint size, which is fine:
+/// large units are a handful of tiles, not hundreds.
+fn footprint_is_connected(offsets: &[HexCoord]) -> bool {
+    let all: BTreeSet<HexCoord> = offsets.iter().copied().collect();
+    let origin = HexCoord { q: 0, r: 0 };
+    let mut visited: BTreeSet<HexCoord> = BTreeSet::from([origin]);
+    let mut frontier = vec![origin];
+    while let Some(current) = frontier.pop() {
+        for &candidate in &all {
+            if !visited.contains(&candidate) && current.is_adjacent(candidate) {
+                visited.insert(candidate);
+                frontier.push(candidate);
+            }
+        }
+    }
+    visited.len() == all.len()
+}
+
 /// Reflects `other` through `anchor`: the point the same distance from
 /// `anchor` as `other`, in exactly the opposite direction. Axial coordinates
 /// are cube coordinates with the redundant third axis dropped, and cube
@@ -663,6 +741,21 @@ pub enum CombatSimulationError {
     /// since nothing else in this crate panics on bad state. Carries the
     /// contested tile.
     OccupancyInvariantViolated(HexCoord),
+    /// T1-d §4-2: a participant's `occupies` is non-empty but does not
+    /// include the `(0,0)` offset. The anchor (`position`) is "where this
+    /// participant is" for logs, targeting, and spectator purposes -- an
+    /// anchor outside the occupied tiles would mean reporting a combatant
+    /// standing somewhere it doesn't actually stand. Carries the
+    /// participant's id.
+    FootprintMissingAnchor(String),
+    /// T1-d §4-3: a participant's `occupies` tiles do not form a single
+    /// hex-adjacency-connected blob. Two disconnected tiles describe two
+    /// units, not one -- a distinct structural-validity failure from
+    /// `HexError::DuplicateOffset` (which `HexShape::new` already rejects on
+    /// its own) and unrelated to symmetry, which is deliberately left as a
+    /// content-authoring guideline rather than a code-enforced rule (§4-3).
+    /// Carries the participant's id.
+    DisconnectedFootprint(String),
     MissingReference(String),
     InvalidReference,
     MaxTicksExceeded,

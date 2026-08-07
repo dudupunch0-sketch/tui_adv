@@ -792,8 +792,8 @@ describe('Web Storybook renderer', () => {
                   {
                     id: 'ally_1',
                     side: 'ally',
-                    position: { x: 0, y: 0 },
-                    facing: { x: 1, y: 0 },
+                    position: { q: 0, r: 0 },
+                    facing: { q: 1, r: 0 },
                     active: true,
                     cues: ['hit'],
                   },

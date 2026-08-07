@@ -39,18 +39,21 @@
 //   piece's box position with those; motion rides on top via `translate`).
 //
 // WP3 — cue presentation grammar (정본 13's 5-cue vocabulary, §4-3 of the
-// plan): a **known deviation from the plan's illustrative table**, called
-// out explicitly because instructed to report every such deviation. §4-3's
-// table lists "rotate 흔들림 유지" as the suggested implementation for
-// `balance_broken`, but §3 I9 — listed under "Hard invariants" — restricts
-// every animated property to `translate`/`opacity`/`filter` with no stated
-// exception. Since I9 is the Hard invariant and §4-3 is non-binding
-// implementation guidance, I9 wins: `balance_broken` is rendered as a
-// `translate`-based side-to-side wobble (a stand-in for "흔들림", the shake
-// half of "흔들림/기울어짐") rather than a `rotate` tilt. The "기울어짐"
-// (tilt) half of that cue's description is not reproduced — CSS has no
-// tilt-without-`rotate` primitive, and inventing a fake tilt via `skew`
-// (also not in the I9 allow-list) would repeat the same problem.
+// plan). **`balance_broken` animates `rotate`, which I9's allow-list above
+// does not include.** This paragraph used to claim the opposite — that I9
+// won and the cue was a `translate`-only wobble — and stayed that way after
+// the tilt was implemented, so the comment contradicted the file it
+// documents. Corrected 2026-08-07 to describe what the code actually does.
+//
+// The contradiction is real and unresolved, not a wording slip: §4-3's table
+// asks for "rotate 흔들림 유지" while §3 I9, a Hard invariant, restricts every
+// animated property to `translate`/`opacity`/`filter` with no stated
+// exception. One of the two has to give. Widening the allow-list is a
+// presentation-grammar decision, so it belongs to the cue-vocabulary track
+// rather than to whichever slice happens to notice — see
+// `docs/design/Combat_Hex_Rework_Development_Plan.md` §9. Until that is
+// decided, do not "restore" this comment to the old claim and do not silently
+// drop the tilt; either move would hide the open question again.
 //
 // The other four cues stay within `translate`/`opacity`/`filter`:
 // - `attack`: a brief lunge toward `piece.facing` (never a direction this
@@ -73,7 +76,7 @@
 //   inventing persistence the data does not state, rule 2).
 // ---------------------------------------------------------------------------
 
-import type { CombatSpectatorCue } from '../../../core/types';
+import type { CombatSpectatorCue, HexCoord } from '../../../core/types';
 
 export interface PieceMotionFrame {
   /** Board-percent x/y for this tick, projected with the SAME min/max-over-
@@ -84,9 +87,12 @@ export interface PieceMotionFrame {
   /** This tick's cue set, exactly as core decided it (WP3). Omit (or leave
    * empty) for pure positional motion with no presentation flourish. */
   cues?: CombatSpectatorCue[];
-  /** This piece's own facing at this tick — the only input the `attack`
-   * lunge direction may use (§4-3). Omit, or `(0, 0)`, to skip the lunge. */
-  facing?: { x: number; y: number };
+  /** This piece's own facing at this tick, as a raw hex direction (never a
+   * screen vector) — the only input the `attack` lunge direction may use
+   * (§4-3). Omit, or `(q: 0, r: 0)`, to skip the lunge. This module converts
+   * it to a screen vector itself (`hexFacingToScreenVector`), right where it
+   * normalizes — nothing upstream pre-converts it. */
+  facing?: HexCoord;
 }
 
 export interface PieceMotionTrack {
@@ -241,6 +247,17 @@ interface Contribution {
   dy: number;
 }
 
+/** flat-top axial `(q, r)` -> unit-scale screen vector — the exact formula
+ * `renderCombatStage.ts`'s `axialToScreen` uses (§4-2 of
+ * `fable_combat_hex_t1b2_step1_2608072024.md`), duplicated here rather than
+ * imported because that module imports *from* this one (`buildCombatMotionCss`)
+ * and a hex direction needs the same axis-shape fix a hex position does
+ * before it can be normalized. Only `q`/`r` ever feed this — never
+ * `facing.x`/`facing.y`, which do not exist on `HexCoord`. */
+function hexFacingToScreenVector(q: number, r: number): { x: number; y: number } {
+  return { x: 1.5 * q, y: Math.sqrt(3) * (r + q / 2) };
+}
+
 /** cue-driven translate contribution at one fraction *within* the tick
  * interval `[k, k+1)` — added on top of the natural (linearly interpolated)
  * position, so the base position track is never distorted, only briefly
@@ -249,15 +266,21 @@ interface Contribution {
 function lungeContributionAtFraction(
   fraction: number,
   cues: CombatSpectatorCue[],
-  facing: { x: number; y: number } | undefined,
+  facing: HexCoord | undefined,
 ): Contribution {
   let dx = 0;
   let dy = 0;
   if (fraction === LUNGE_FRACTION) {
-    if (cues.includes('attack') && facing && (facing.x !== 0 || facing.y !== 0)) {
-      const length = Math.hypot(facing.x, facing.y);
-      dx += (facing.x / length) * ATTACK_LUNGE_MAGNITUDE;
-      dy += (facing.y / length) * ATTACK_LUNGE_MAGNITUDE;
+    if (cues.includes('attack') && facing && (facing.q !== 0 || facing.r !== 0)) {
+      // §4-3: facing is a hex direction now, not a screen vector — convert
+      // it the same way a hex position is converted (§4-2) before
+      // normalizing. The zero-vector guard above stays even though Rust now
+      // restricts facing to the 6 hex directions (never `(0, 0)`) — this
+      // renderer does not become code that trusts its input.
+      const screen = hexFacingToScreenVector(facing.q, facing.r);
+      const length = Math.hypot(screen.x, screen.y);
+      dx += (screen.x / length) * ATTACK_LUNGE_MAGNITUDE;
+      dy += (screen.y / length) * ATTACK_LUNGE_MAGNITUDE;
     }
     if (cues.includes('evade')) {
       // Lateral = board Y axis (정본 09: "측면: 화면 위·아래"). The sign is a

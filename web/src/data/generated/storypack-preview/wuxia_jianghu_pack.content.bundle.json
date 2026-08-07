@@ -11409,7 +11409,7 @@
             "rule_ids": [
               "wuxia_standard_combatant_wave3_step2b"
             ],
-            "simulation_version": "v2",
+            "simulation_version": "v3",
             "suppressed_effects": [],
             "team_ids": [],
             "world_state_fingerprint": "wuxia_combat_spectator_preview_bout_wsf_v1"
@@ -11420,13 +11420,13 @@
               "attack_range": 10,
               "collision_radius": 5,
               "facing": {
-                "x": 1,
-                "y": 0
+                "q": 1,
+                "r": 0
               },
               "id": "wuxia_spectator_bout_ally",
               "position": {
-                "x": 0,
-                "y": 0
+                "q": 0,
+                "r": 0
               },
               "role_id": "role_wuxia_spectator_bout_ally",
               "side": "ally",
@@ -11439,13 +11439,13 @@
               "attack_range": 10,
               "collision_radius": 5,
               "facing": {
-                "x": -1,
-                "y": 0
+                "q": -1,
+                "r": 0
               },
               "id": "wuxia_spectator_bout_challenger",
               "position": {
-                "x": 5,
-                "y": 0
+                "q": 5,
+                "r": 0
               },
               "role_id": "role_wuxia_spectator_bout_challenger",
               "side": "enemy",

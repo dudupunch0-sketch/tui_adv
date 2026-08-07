@@ -257,18 +257,20 @@ pub fn resolve(
             if actor_incapacitated || target_incapacitated {
                 continue;
             }
-            let collision = frame.positions[&actor.id]
-                .overlaps(
-                    frame.positions[target_id],
-                    actor
-                        .collision_radius
-                        .checked_add(target.collision_radius)
-                        .ok_or(CombatResolutionError::Overflow)?,
-                )
-                .map_err(CombatResolutionError::Simulation)?;
-            let in_range = frame.positions[&actor.id]
-                .in_range(frame.positions[target_id], attack.attack_range)
-                .map_err(CombatResolutionError::Simulation)?;
+            // T1-b1 §4-1/§4-5: `CombatPosition::overlaps`/`in_range` no
+            // longer exist -- `HexCoord` only offers `distance`. Both
+            // predicates are now the plan's replacement formula
+            // (`a.distance(b) <= i64::from(range)`) applied to different
+            // thresholds. `collision_radius` keeps its old "combined melee
+            // reach" meaning; only the metric under it moved from euclidean
+            // to hex distance. Neither line can overflow or otherwise fail
+            // now: `HexCoord::distance` is total, and two `i32`s widened to
+            // `i64` before adding cannot overflow `i64`.
+            let distance = frame.positions[&actor.id].distance(frame.positions[target_id]);
+            let collision_reach =
+                i64::from(actor.collision_radius) + i64::from(target.collision_radius);
+            let collision = distance <= collision_reach;
+            let in_range = distance <= i64::from(attack.attack_range);
             let roll_value = roll(
                 execution.effective_seed,
                 execution.namespace,

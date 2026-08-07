@@ -1,9 +1,8 @@
 use crate::{
     CombatAttackOutcome, CombatConclusionReport, CombatEffectCatalog, CombatEffectDefinition,
-    CombatFacing, CombatLogEvent, CombatLogImportance, CombatLogTag, CombatPosition,
-    CombatResolutionCombatant, CombatResolutionLogEvent, CombatResolutionLogTag,
-    CombatResolutionResult, CombatSide, CombatSimulationParticipant, CombatSimulationVersion,
-    EffectVisibility,
+    CombatLogEvent, CombatLogImportance, CombatLogTag, CombatResolutionCombatant,
+    CombatResolutionLogEvent, CombatResolutionLogTag, CombatResolutionResult, CombatSide,
+    CombatSimulationParticipant, CombatSimulationVersion, EffectVisibility, HexCoord,
 };
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
@@ -31,8 +30,8 @@ pub enum CombatSpectatorCue {
 pub struct CombatSpectatorPiece {
     pub id: String,
     pub side: CombatSide,
-    pub position: CombatPosition,
-    pub facing: CombatFacing,
+    pub position: HexCoord,
+    pub facing: HexCoord,
     pub active: bool,
     #[serde(default)]
     pub cues: Vec<CombatSpectatorCue>,

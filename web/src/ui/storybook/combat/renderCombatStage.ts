@@ -235,10 +235,12 @@ function renderBoardTable(pieces: CombatSpectatorPiece[]): string {
       // 보고서의 `survivor_ids`/`defeated_ids`가 소유한다.
       const participation = p.active ? '참전' : '비참전';
       const cueText = p.cues.length ? p.cues.map((cue) => CUE_LABELS[cue]).join(', ') : '없음';
-      // WP1: field rename only — `(q, r)` label text lands in WP4 (§4-4).
-      return `<tr><td>${escapeHtml(p.id)}</td><td>${escapeHtml(SIDE_LABELS[p.side])}</td><td>(${String(
+      // §4-4: `(q=…, r=…)` — matches the terminal renderer's own labeling
+      // (`crates/escape-terminal/src/snapshot.rs`'s `"@ (q={}, r={})"`).
+      // Never `(x, y)`; the underlying value is an axial hex coordinate.
+      return `<tr><td>${escapeHtml(p.id)}</td><td>${escapeHtml(SIDE_LABELS[p.side])}</td><td>(q=${String(
         p.position.q,
-      )}, ${String(p.position.r)})</td><td>${escapeHtml(participation)}</td><td>${escapeHtml(cueText)}</td></tr>`;
+      )}, r=${String(p.position.r)})</td><td>${escapeHtml(participation)}</td><td>${escapeHtml(cueText)}</td></tr>`;
     })
     .join('');
   return `<table class="combat-board__table sr-only"><caption>전투 판 요약 표</caption><thead><tr><th scope="col">말 id</th><th scope="col">진영</th><th scope="col">좌표</th><th scope="col">참전</th><th scope="col">cue</th></tr></thead><tbody>${rows}</tbody></table>`;

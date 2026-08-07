@@ -151,6 +151,18 @@ describe('renderCombatBoard', () => {
     expect(html).toContain('10');
   });
 
+  it('accessibility_table_labels_coordinates_as_q_and_r: matches the terminal renderer\'s "q=…, r=…" notation, never "(x, y)"', () => {
+    // §4-4: the two renderers' notation must agree — terminal's format is
+    // `"@ (q={}, r={})"` (`crates/escape-terminal/src/snapshot.rs`).
+    const html = renderCombatBoard(
+      view({
+        frames: [frame(2, [piece({ id: 'ally_1', side: 'ally', position: { q: 3, r: -2 } })])],
+      }),
+    );
+    expect(html).toContain('(q=3, r=-2)');
+    expect(html).not.toMatch(/\(3, -2\)/);
+  });
+
   it('never calls an active piece "생존" — active is participation, not liveness', () => {
     // 실측: 체력이 0이 된 뒤에도 core는 `active: true`를 유지하고 전투불능은
     // `Incapacitated` cue로만 나타난다. 생존/전투불능은 보고서의

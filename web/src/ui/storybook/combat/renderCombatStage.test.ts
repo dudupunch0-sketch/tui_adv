@@ -21,8 +21,8 @@ function piece(overrides: Partial<CombatSpectatorPiece> = {}): CombatSpectatorPi
   return {
     id: 'ally_1',
     side: 'ally',
-    position: { x: 0, y: 0 },
-    facing: { x: 1, y: 0 },
+    position: { q: 0, r: 0 },
+    facing: { q: 1, r: 0 },
     active: true,
     cues: [],
     ...overrides,
@@ -51,8 +51,8 @@ describe('renderCombatBoard', () => {
     const html = renderCombatBoard(
       view({
         frames: [
-          frame(0, [piece({ id: 'ally_1', position: { x: 99, y: 99 } })]),
-          frame(3, [piece({ id: 'ally_1', position: { x: 5, y: 5 } })]),
+          frame(0, [piece({ id: 'ally_1', position: { q: 99, r: 99 } })]),
+          frame(3, [piece({ id: 'ally_1', position: { q: 5, r: 5 } })]),
         ],
       }),
     );
@@ -68,8 +68,8 @@ describe('renderCombatBoard', () => {
       view({
         frames: [
           frame(1, [
-            piece({ id: 'ally_1', position: { x: 0, y: 0 } }),
-            piece({ id: 'enemy_1', position: { x: 5, y: 4 }, side: 'enemy' }),
+            piece({ id: 'ally_1', position: { q: 0, r: 0 } }),
+            piece({ id: 'enemy_1', position: { q: 5, r: 4 }, side: 'enemy' }),
           ]),
         ],
       }),
@@ -89,8 +89,8 @@ describe('renderCombatBoard', () => {
       view({
         frames: [
           frame(1, [
-            piece({ id: 'ally_1', position: { x: 7, y: 7 } }),
-            piece({ id: 'ally_2', position: { x: 7, y: 7 }, side: 'ally' }),
+            piece({ id: 'ally_1', position: { q: 7, r: 7 } }),
+            piece({ id: 'ally_2', position: { q: 7, r: 7 }, side: 'ally' }),
           ]),
         ],
       }),
@@ -136,8 +136,8 @@ describe('renderCombatBoard', () => {
       view({
         frames: [
           frame(2, [
-            piece({ id: 'ally_1', side: 'ally', position: { x: 0, y: 3 } }),
-            piece({ id: 'enemy_1', side: 'enemy', position: { x: 10, y: 3 } }),
+            piece({ id: 'ally_1', side: 'ally', position: { q: 0, r: 3 } }),
+            piece({ id: 'enemy_1', side: 'enemy', position: { q: 10, r: 3 } }),
           ]),
         ],
       }),
@@ -196,8 +196,8 @@ describe('renderCombatBoard — Step 1d-3 playback wiring', () => {
     const html = renderCombatBoard(
       view({
         frames: [
-          frame(0, [piece({ id: 'ally_1', position: { x: 99, y: 5 } })]),
-          frame(1, [piece({ id: 'ally_1', position: { x: 5, y: 5 } })]),
+          frame(0, [piece({ id: 'ally_1', position: { q: 99, r: 5 } })]),
+          frame(1, [piece({ id: 'ally_1', position: { q: 5, r: 5 } })]),
         ],
       }),
     );
@@ -218,9 +218,9 @@ describe('renderCombatBoard — Step 1d-3 playback wiring', () => {
       view({
         tick_millis: 150,
         frames: [
-          frame(0, [piece({ id: 'ally_1', position: { x: 0, y: 0 } })]),
-          frame(1, [piece({ id: 'ally_1', position: { x: 2, y: 0 } })]),
-          frame(2, [piece({ id: 'ally_1', position: { x: 4, y: 0 } })]),
+          frame(0, [piece({ id: 'ally_1', position: { q: 0, r: 0 } })]),
+          frame(1, [piece({ id: 'ally_1', position: { q: 2, r: 0 } })]),
+          frame(2, [piece({ id: 'ally_1', position: { q: 4, r: 0 } })]),
         ],
       }),
     );
@@ -231,8 +231,8 @@ describe('renderCombatBoard — Step 1d-3 playback wiring', () => {
     const html = renderCombatBoard(
       view({
         frames: [
-          frame(0, [piece({ id: 'ally_1', position: { x: 0, y: 0 } })]),
-          frame(1, [piece({ id: 'ally_1', position: { x: 2, y: 0 } })]),
+          frame(0, [piece({ id: 'ally_1', position: { q: 0, r: 0 } })]),
+          frame(1, [piece({ id: 'ally_1', position: { q: 2, r: 0 } })]),
         ],
       }),
     );
@@ -243,10 +243,10 @@ describe('renderCombatBoard — Step 1d-3 playback wiring', () => {
     const html = renderCombatBoard(
       view({
         frames: [
-          frame(0, [piece({ id: 'ally_1', position: { x: 0, y: 0 } })]),
+          frame(0, [piece({ id: 'ally_1', position: { q: 0, r: 0 } })]),
           frame(1, [
-            piece({ id: 'ally_1', position: { x: 2, y: 0 } }),
-            piece({ id: 'enemy_1', side: 'enemy', position: { x: 8, y: 0 } }),
+            piece({ id: 'ally_1', position: { q: 2, r: 0 } }),
+            piece({ id: 'enemy_1', side: 'enemy', position: { q: 8, r: 0 } }),
           ]),
         ],
       }),
@@ -263,9 +263,9 @@ describe('renderCombatBoard — Step 1d-3 playback wiring', () => {
       view({
         frames: [
           frame(0, [
-            piece({ id: 'ally_1', position: { x: 5, y: 0 }, facing: { x: 1, y: 0 }, cues: ['attack'] }),
+            piece({ id: 'ally_1', position: { q: 5, r: 0 }, facing: { q: 1, r: 0 }, cues: ['attack'] }),
           ]),
-          frame(1, [piece({ id: 'ally_1', position: { x: 5, y: 0 } })]),
+          frame(1, [piece({ id: 'ally_1', position: { q: 5, r: 0 } })]),
         ],
       }),
     );

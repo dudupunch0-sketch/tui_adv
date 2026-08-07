@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import type { CombatSpectatorCue } from '../../../core/types';
+import type { CombatSpectatorCue, HexCoord } from '../../../core/types';
 import { buildCombatMotionCss, keyframeNameForPiece } from './combatMotion';
 import type { CombatMotionInput, PieceMotionTrack } from './combatMotion';
 
@@ -17,14 +17,15 @@ function track(pieceId: string, points: Array<{ x: number; y: number }>): PieceM
 }
 
 // WP3 helper: like `track`, but each point may carry a cue set / facing so
-// tests can pin the cue presentation grammar.
+// tests can pin the cue presentation grammar. `facing` is now a raw hex
+// direction (`{ q, r }`, WP1's §4-1 rename) rather than `{ x, y }`.
 function cueTrack(
   pieceId: string,
   points: Array<{
     x: number;
     y: number;
     cues?: CombatSpectatorCue[];
-    facing?: { x: number; y: number };
+    facing?: HexCoord;
   }>,
 ): PieceMotionTrack {
   return { pieceId, frames: points };
@@ -213,7 +214,7 @@ describe('buildCombatMotionCss — WP3 cue grammar: attack lunges toward facing,
   it('inserts one extra stop at the midpoint of the tick interval, offset toward facing, when facing is non-zero', () => {
     const input: CombatMotionInput = {
       tickMillis: 100,
-      tracks: [cueTrack('ally_1', [{ x: 0, y: 50, cues: ['attack'], facing: { x: 1, y: 0 } }, { x: 10, y: 50 }])],
+      tracks: [cueTrack('ally_1', [{ x: 0, y: 50, cues: ['attack'], facing: { q: 1, r: 0 } }, { x: 10, y: 50 }])],
     };
     const { css } = buildCombatMotionCss(input);
     // natural midpoint (linear interp of -10 -> 0) is -5; unit facing (1,0)
@@ -224,7 +225,7 @@ describe('buildCombatMotionCss — WP3 cue grammar: attack lunges toward facing,
   it('omits the lunge stop entirely when facing is (0, 0) — never guesses a direction', () => {
     const input: CombatMotionInput = {
       tickMillis: 100,
-      tracks: [cueTrack('ally_1', [{ x: 0, y: 50, cues: ['attack'], facing: { x: 0, y: 0 } }, { x: 10, y: 50 }])],
+      tracks: [cueTrack('ally_1', [{ x: 0, y: 50, cues: ['attack'], facing: { q: 0, r: 0 } }, { x: 10, y: 50 }])],
     };
     const { css } = buildCombatMotionCss(input);
     expect(css).not.toMatch(/50% \{/);
@@ -245,7 +246,7 @@ describe('buildCombatMotionCss — WP3 cue grammar: attack lunges toward facing,
       tracks: [
         cueTrack('ally_1', [
           { x: 0, y: 50 },
-          { x: 10, y: 50, cues: ['attack'], facing: { x: 1, y: 0 } },
+          { x: 10, y: 50, cues: ['attack'], facing: { q: 1, r: 0 } },
         ]),
       ],
     };
@@ -282,7 +283,7 @@ describe('buildCombatMotionCss — WP3 cue grammar: hit is a damped two-beat jud
   it('does not use piece.facing for the hit direction (only attack is allowed to)', () => {
     const withFacing: CombatMotionInput = {
       tickMillis: 100,
-      tracks: [cueTrack('ally_1', [{ x: 20, y: 50, cues: ['hit'], facing: { x: 1, y: 0 } }, { x: 20, y: 50 }])],
+      tracks: [cueTrack('ally_1', [{ x: 20, y: 50, cues: ['hit'], facing: { q: 1, r: 0 } }, { x: 20, y: 50 }])],
     };
     const withoutFacing: CombatMotionInput = {
       tickMillis: 100,
@@ -348,7 +349,7 @@ describe('buildCombatMotionCss — dimming must not override the static [data-ac
       tickMillis: 100,
       tracks: [
         cueTrack('ally_1', [
-          { x: 20, y: 50, cues: ['attack'], facing: { x: 1, y: 0 } },
+          { x: 20, y: 50, cues: ['attack'], facing: { q: 1, r: 0 } },
           { x: 30, y: 50 },
         ]),
       ],
@@ -394,7 +395,7 @@ describe('buildCombatMotionCss — WP3: only compositor-thread properties (I9)',
       tickMillis: 100,
       tracks: [
         cueTrack('ally_1', [
-          { x: 20, y: 50, cues: ['attack', 'hit', 'evade', 'balance_broken', 'incapacitated'], facing: { x: 1, y: 1 } },
+          { x: 20, y: 50, cues: ['attack', 'hit', 'evade', 'balance_broken', 'incapacitated'], facing: { q: 1, r: 1 } },
           { x: 30, y: 40 },
         ]),
       ],

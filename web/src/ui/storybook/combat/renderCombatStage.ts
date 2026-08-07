@@ -96,9 +96,14 @@ export function renderCombatBoard(view: CombatSpectatorView): string {
     <table class="combat-board__table sr-only"><caption>전투 판 요약 표</caption><thead><tr><th scope="col">말 id</th><th scope="col">진영</th><th scope="col">좌표</th><th scope="col">참전</th><th scope="col">cue</th></tr></thead><tbody></tbody></table>`;
   }
 
+  // WP1 (§4-1 type swap): field rename only — `q`/`r` still feed
+  // `projectAxis` directly here, exactly like `x`/`y` did before. The axial
+  // -> screen conversion this actually needs (§4-2) lands in WP2; until then
+  // the projection is still wrong on purpose (it reads two 60°-apart axes as
+  // if they were orthogonal), per the plan.
   const allPieces = frames.flatMap((f) => f.pieces);
-  const xs = allPieces.map((p) => p.position.x);
-  const ys = allPieces.map((p) => p.position.y);
+  const xs = allPieces.map((p) => p.position.q);
+  const ys = allPieces.map((p) => p.position.r);
   const minX = Math.min(...xs);
   const maxX = Math.max(...xs);
   const minY = Math.min(...ys);
@@ -106,7 +111,7 @@ export function renderCombatBoard(view: CombatSpectatorView): string {
 
   const pieces = frame.pieces;
   const pieceMarkup = pieces
-    .map((p) => renderPiece(p, projectAxis(p.position.x, minX, maxX), projectAxis(p.position.y, minY, maxY)))
+    .map((p) => renderPiece(p, projectAxis(p.position.q, minX, maxX), projectAxis(p.position.r, minY, maxY)))
     .join('');
 
   const allyCount = pieces.filter((p) => p.side === 'ally').length;
@@ -172,8 +177,8 @@ function collectPieceMotionTracks(
         break;
       }
       points.push({
-        x: projectAxis(match.position.x, minX, maxX),
-        y: projectAxis(match.position.y, minY, maxY),
+        x: projectAxis(match.position.q, minX, maxX),
+        y: projectAxis(match.position.r, minY, maxY),
         // WP3: carry this tick's own cue set/facing through verbatim — the
         // cue presentation grammar (combatMotion.ts) never infers either
         // from a neighboring tick (I2/I4).
@@ -220,9 +225,10 @@ function renderBoardTable(pieces: CombatSpectatorPiece[]): string {
       // 보고서의 `survivor_ids`/`defeated_ids`가 소유한다.
       const participation = p.active ? '참전' : '비참전';
       const cueText = p.cues.length ? p.cues.map((cue) => CUE_LABELS[cue]).join(', ') : '없음';
+      // WP1: field rename only — `(q, r)` label text lands in WP4 (§4-4).
       return `<tr><td>${escapeHtml(p.id)}</td><td>${escapeHtml(SIDE_LABELS[p.side])}</td><td>(${String(
-        p.position.x,
-      )}, ${String(p.position.y)})</td><td>${escapeHtml(participation)}</td><td>${escapeHtml(cueText)}</td></tr>`;
+        p.position.q,
+      )}, ${String(p.position.r)})</td><td>${escapeHtml(participation)}</td><td>${escapeHtml(cueText)}</td></tr>`;
     })
     .join('');
   return `<table class="combat-board__table sr-only"><caption>전투 판 요약 표</caption><thead><tr><th scope="col">말 id</th><th scope="col">진영</th><th scope="col">좌표</th><th scope="col">참전</th><th scope="col">cue</th></tr></thead><tbody>${rows}</tbody></table>`;

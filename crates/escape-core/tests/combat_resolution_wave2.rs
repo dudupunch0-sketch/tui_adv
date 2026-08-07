@@ -342,6 +342,39 @@ fn accuracy_range_penetration_and_overflow_are_explicit() {
     ));
 }
 
+/// T1-b1 WP6 (§4-1): `attack_range` is measured in hex distance, not by
+/// reinterpreting `q`/`r` as cartesian `x`/`y`. `(0,0)` to `(3,-3)` is hex
+/// distance exactly 3 (`max(|dq|, |dr|, |dq+dr|)` = `max(3, 3, 0)`), even
+/// though a naive cartesian reading of the same two points would put them
+/// `sqrt(3^2 + 3^2)` ~= 4.24 apart and wrongly reject an `attack_range` of 3.
+/// Both participants share a role with `preferred_distance: 3` here so
+/// neither moves before the tick's attack is judged -- the position used
+/// for the range check is the post-movement position, not the input one.
+#[test]
+fn attack_range_is_measured_in_hex_distance() {
+    let mut at_range = request();
+    at_range.execution.input.participants[1].position = HexCoord { q: 3, r: -3 };
+    at_range.execution.input.roles[0].weights.preferred_distance = 3;
+    at_range.attacks[0].attack_range = 3;
+    let result = resolve_combat(at_range).unwrap();
+    assert!(
+        result.frames[0].outcomes[0].in_range,
+        "hex distance 3 must be in range for attack_range 3"
+    );
+
+    let mut short_by_one = request();
+    short_by_one.execution.input.participants[1].position = HexCoord { q: 3, r: -3 };
+    short_by_one.execution.input.roles[0]
+        .weights
+        .preferred_distance = 3;
+    short_by_one.attacks[0].attack_range = 2;
+    let result = resolve_combat(short_by_one).unwrap();
+    assert!(
+        !result.frames[0].outcomes[0].in_range,
+        "hex distance 3 must be out of range for attack_range 2"
+    );
+}
+
 #[test]
 fn effect_stacking_policies_are_deterministic() {
     let definition = |id: &str, group: &str, stacking: EffectStacking, cap: Option<u32>| {

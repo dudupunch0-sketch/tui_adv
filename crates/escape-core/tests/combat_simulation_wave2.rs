@@ -229,6 +229,77 @@ fn setup_fingerprint_and_structural_duplicates_are_deterministic_errors() {
     ));
 }
 
+// ---------------------------------------------------------------------
+// T1-b1 WP6 (fable_combat_hex_t1b1_step1_2608071921.md §6): pin the new
+// properties the coordinate swap introduces.
+// ---------------------------------------------------------------------
+
+#[test]
+fn position_serializes_as_q_and_r_not_x_and_y() {
+    let p = participant("a", CombatSide::Ally, 3);
+    let value = serde_json::to_value(&p).expect("participant should serialize");
+    let position = &value["position"];
+    assert_eq!(position["q"], 3);
+    assert_eq!(position["r"], 0);
+    assert!(
+        position.get("x").is_none() && position.get("y").is_none(),
+        "position must not carry the old {{x, y}} keys: {position}"
+    );
+}
+
+#[test]
+fn facing_must_be_one_of_the_six_neighbor_directions() {
+    for direction in HexCoord::NEIGHBOR_DIRECTIONS {
+        let mut p = participant("a", CombatSide::Ally, 0);
+        p.facing = direction;
+        assert!(
+            CombatSimulation::new(input(vec![p])).is_ok(),
+            "facing {direction:?} is one of the six neighbor directions and must be accepted"
+        );
+    }
+    // Two tiles away along an axis: a real direction (q=1,r=0) scaled up,
+    // but not itself adjacent, so it is not a neighbor direction.
+    let mut not_adjacent = participant("a", CombatSide::Ally, 0);
+    not_adjacent.facing = HexCoord { q: 2, r: 0 };
+    assert!(matches!(
+        CombatSimulation::new(input(vec![not_adjacent])),
+        Err(CombatSimulationError::InvalidFacing(_))
+    ));
+}
+
+#[test]
+fn facing_zero_vector_is_still_rejected() {
+    // T1-b1 §4-2: the zero vector is not among the six neighbor directions,
+    // so the old "facing.x == 0 && facing.y == 0" special case is gone but
+    // the zero vector keeps being rejected under the new rule too.
+    let mut p = participant("a", CombatSide::Ally, 0);
+    p.facing = HexCoord { q: 0, r: 0 };
+    assert!(matches!(
+        CombatSimulation::new(input(vec![p])),
+        Err(CombatSimulationError::InvalidFacing(_))
+    ));
+}
+
+#[test]
+fn speed_per_tick_moves_that_many_tiles() {
+    // T1-b1 §4-3: `speed_per_tick` is now a tile count, not a coordinate-unit
+    // budget. An actor with speed_per_tick=3 heading straight for a target
+    // 10 tiles away must land exactly 3 tiles along the way, not some
+    // fraction of the distance.
+    let mut a = participant("a", CombatSide::Ally, 0);
+    a.speed_per_tick = 3;
+    let e = participant("e", CombatSide::Enemy, 10);
+    let mut s = CombatSimulation::new(input(vec![a, e])).unwrap();
+    let frame = s.advance_tick().unwrap();
+    let mover = frame
+        .moves
+        .iter()
+        .find(|m| m.actor_id == "a")
+        .expect("actor 'a' must have a move intent this tick");
+    assert_eq!(mover.mode, CombatMoveMode::Advance);
+    assert_eq!(mover.to, HexCoord { q: 3, r: 0 });
+}
+
 #[test]
 fn state_changes_simulation_identity() {
     let a = input(vec![

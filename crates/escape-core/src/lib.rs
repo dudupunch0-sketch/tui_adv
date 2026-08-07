@@ -48,8 +48,8 @@ pub use combat_resolution::{
 pub use combat_simulation::{
     CombatMoveIntent, CombatMoveMode, CombatRolePreset, CombatRoleWeights, CombatSide,
     CombatSimulation, CombatSimulationConfig, CombatSimulationError, CombatSimulationInput,
-    CombatSimulationParticipant, CombatTargetFallback, CombatTargetPolicy,
-    CombatTargetPreference, CombatTickFrame,
+    CombatSimulationParticipant, CombatTargetFallback, CombatTargetPolicy, CombatTargetPreference,
+    CombatTickFrame,
 };
 pub use combat_spectator::{
     spectate as spectate_combat, CombatSpectatorCue, CombatSpectatorError, CombatSpectatorFrame,

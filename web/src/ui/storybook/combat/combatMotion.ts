@@ -39,18 +39,21 @@
 //   piece's box position with those; motion rides on top via `translate`).
 //
 // WP3 — cue presentation grammar (정본 13's 5-cue vocabulary, §4-3 of the
-// plan): a **known deviation from the plan's illustrative table**, called
-// out explicitly because instructed to report every such deviation. §4-3's
-// table lists "rotate 흔들림 유지" as the suggested implementation for
-// `balance_broken`, but §3 I9 — listed under "Hard invariants" — restricts
-// every animated property to `translate`/`opacity`/`filter` with no stated
-// exception. Since I9 is the Hard invariant and §4-3 is non-binding
-// implementation guidance, I9 wins: `balance_broken` is rendered as a
-// `translate`-based side-to-side wobble (a stand-in for "흔들림", the shake
-// half of "흔들림/기울어짐") rather than a `rotate` tilt. The "기울어짐"
-// (tilt) half of that cue's description is not reproduced — CSS has no
-// tilt-without-`rotate` primitive, and inventing a fake tilt via `skew`
-// (also not in the I9 allow-list) would repeat the same problem.
+// plan). **`balance_broken` animates `rotate`, which I9's allow-list above
+// does not include.** This paragraph used to claim the opposite — that I9
+// won and the cue was a `translate`-only wobble — and stayed that way after
+// the tilt was implemented, so the comment contradicted the file it
+// documents. Corrected 2026-08-07 to describe what the code actually does.
+//
+// The contradiction is real and unresolved, not a wording slip: §4-3's table
+// asks for "rotate 흔들림 유지" while §3 I9, a Hard invariant, restricts every
+// animated property to `translate`/`opacity`/`filter` with no stated
+// exception. One of the two has to give. Widening the allow-list is a
+// presentation-grammar decision, so it belongs to the cue-vocabulary track
+// rather than to whichever slice happens to notice — see
+// `docs/design/Combat_Hex_Rework_Development_Plan.md` §9. Until that is
+// decided, do not "restore" this comment to the old claim and do not silently
+// drop the tilt; either move would hide the open question again.
 //
 // The other four cues stay within `translate`/`opacity`/`filter`:
 // - `attack`: a brief lunge toward `piece.facing` (never a direction this

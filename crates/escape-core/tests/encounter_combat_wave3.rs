@@ -40,7 +40,10 @@ fn valid_combat_json() -> Value {
         "kind": "systemic",
         "intervention_budget": 1,
         "manifest": {
-            "simulation_version": "v1",
+            // Kept as a literal: this manifest lives inside a JSON string blob
+            // built with `json!()`, so it cannot reference the Rust constant
+            // directly. Must match `escape_core::CURRENT_SIMULATION_VERSION`.
+            "simulation_version": "v2",
             "actual_seed": 999,
             "world_state_fingerprint": "wsf-1",
             "applied_effects": [],
@@ -282,6 +285,20 @@ fn rule11_attack_references_unknown_effect_id_is_rejected() {
             json!([{"effect_id": "nonexistent", "chance_percent": 100}]);
     });
     expect_combat_error(&bundle);
+}
+
+/// T0 rule 12: an encounter declaring a `simulation_version` this build
+/// doesn't implement is a hard index-time error, named with the encounter id
+/// like every other rule in this function.
+#[test]
+fn unsupported_simulation_version_is_rejected_at_index_time() {
+    let bundle =
+        bundle_with_combat(|combat| combat["manifest"]["simulation_version"] = json!("v9"));
+    let error = expect_combat_error(&bundle);
+    let message = error.to_string();
+    assert!(message.contains(ENCOUNTER_ID));
+    assert!(message.contains("v9"));
+    assert!(message.contains("v2"));
 }
 
 // ---------------------------------------------------------------------

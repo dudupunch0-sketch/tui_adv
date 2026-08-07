@@ -1,6 +1,7 @@
 mod combat_conclusion;
 mod combat_contract;
 mod combat_execution;
+mod combat_hex;
 mod combat_opportunity;
 mod combat_resolution;
 mod combat_simulation;
@@ -22,12 +23,15 @@ pub use combat_conclusion::{
 };
 pub use combat_contract::{
     CombatContractError, CombatEffectRef, CombatManifest, CombatRngNamespace,
-    CombatSimulationVersion, SuppressedCombatEffect,
+    CombatSimulationVersion, SuppressedCombatEffect, CURRENT_SIMULATION_VERSION,
 };
 pub use combat_execution::{
     execute as execute_combat, CombatExecutionError, CombatExecutionRequest, CombatExecutionResult,
     CombatLogEvent, CombatLogImportance, CombatLogTag, CombatPresentationSpeed, CombatProvenance,
     CombatRunMode,
+};
+pub use combat_hex::{
+    line, range, ring, HexCoord, HexError, HexOccupancy, HexShape, MAX_LINE_LENGTH,
 };
 pub use combat_opportunity::{
     CombatDetectionLevel, CombatDetectionThresholds, CombatInterventionBudget, CombatObserver,

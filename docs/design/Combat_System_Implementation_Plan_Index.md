@@ -5,6 +5,8 @@ status: wave3-step1d2-complete
 
 이 문서는 보존된 Notion `전투 시스템` 허브와 local design source의 관련 canonical 문서를 Rust GameCore 구현 순서로 쪼갠 인덱스다. 각 단계 문서는 한 번의 coding subagent 작업으로 완료할 수 있는 크기를 목표로 한다.
 
+육각 타일 레퍼런스를 기준으로 한 다음 방향(좌표계 교체, 행동 주기, 세그먼트 실행과 개입, 표현 문법 확장)은 [Combat_Hex_Rework_Development_Plan.md](Combat_Hex_Rework_Development_Plan.md)가 소유한다. 그 문서는 트랙과 결정 항목만 정의하며, 각 트랙의 구현 plan은 종전대로 `fable_<주제>_step1_<YYMMDDHHMM>.md`로 따로 만든다.
+
 ## 원본과 우선순위
 
 - 허브: [전투 시스템](https://app.notion.com/p/36f37e69695e81168360ef11cf3a4449)

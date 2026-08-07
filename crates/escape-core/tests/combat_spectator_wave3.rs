@@ -7,7 +7,7 @@ const SIM_TICK_MILLIS: u32 = 100;
 
 fn manifest() -> CombatManifest {
     CombatManifest {
-        simulation_version: CombatSimulationVersion::new("v1").unwrap(),
+        simulation_version: CombatSimulationVersion::new(CURRENT_SIMULATION_VERSION).unwrap(),
         actual_seed: 7,
         world_state_fingerprint: "w".into(),
         applied_effects: vec![],

@@ -48,7 +48,8 @@ fn resolution(ally: i64, enemy: i64, tick: u32) -> CombatResolutionResult {
             full_log: vec![],
             core_log: vec![],
             provenance: Some(CombatProvenance {
-                simulation_version: CombatSimulationVersion::new("v1").unwrap(),
+                simulation_version: CombatSimulationVersion::new(CURRENT_SIMULATION_VERSION)
+                    .unwrap(),
                 tick_millis: 100,
                 manifest_fingerprint: "mf".into(),
             }),
@@ -116,7 +117,8 @@ fn multi_resolution(
             full_log: vec![],
             core_log: vec![],
             provenance: Some(CombatProvenance {
-                simulation_version: CombatSimulationVersion::new("v1").unwrap(),
+                simulation_version: CombatSimulationVersion::new(CURRENT_SIMULATION_VERSION)
+                    .unwrap(),
                 tick_millis: 50,
                 manifest_fingerprint: "mf".into(),
             }),

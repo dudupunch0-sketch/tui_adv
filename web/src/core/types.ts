@@ -194,17 +194,20 @@ export type CombatConclusionReason =
   | 'both_sides_defeated'
   | 'max_ticks_reached';
 
-/** CombatPosition / CombatFacing — both serialize as { x, y }. */
-export interface CombatPoint {
-  x: number;
-  y: number;
+/** escape-core `HexCoord` (`crates/escape-core/src/combat_hex.rs`) — used for
+ * both position and facing, and serializes as `{ q, r }` (flat-top axial).
+ * T1-b1 removed `CombatPosition`/`CombatFacing` on the Rust side in favor of
+ * this single type for both roles. */
+export interface HexCoord {
+  q: number;
+  r: number;
 }
 
 export interface CombatSpectatorPiece {
   id: string;
   side: CombatSide;
-  position: CombatPoint;
-  facing: CombatPoint;
+  position: HexCoord;
+  facing: HexCoord;
   active: boolean;
   /** serde(default) on the Rust side → may be an empty array. */
   cues: CombatSpectatorCue[];

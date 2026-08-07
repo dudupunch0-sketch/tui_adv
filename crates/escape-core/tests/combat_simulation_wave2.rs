@@ -43,12 +43,12 @@ fn role() -> CombatRolePreset {
         },
     }
 }
-fn participant(id: &str, side: CombatSide, x: i32) -> CombatSimulationParticipant {
+fn participant(id: &str, side: CombatSide, q: i32) -> CombatSimulationParticipant {
     CombatSimulationParticipant {
         id: id.into(),
         side,
-        position: CombatPosition { x, y: 0 },
-        facing: CombatFacing { x: 1, y: 0 },
+        position: HexCoord { q, r: 0 },
+        facing: HexCoord { q: 1, r: 0 },
         speed_per_tick: 1,
         collision_radius: 1,
         attack_range: 2,
@@ -82,12 +82,19 @@ fn config_geometry_and_facing_validate() {
         ..input(vec![])
     })
     .is_err());
-    assert!(CombatPosition { x: i32::MAX, y: 0 }
-        .distance_squared(CombatPosition { x: i32::MIN, y: 0 })
-        .is_err());
-    assert!(CombatPosition { x: 0, y: 0 }
-        .in_range(CombatPosition { x: 1, y: 0 }, -1)
-        .is_err());
+    // T1-b1 §4-2: facing must be one of the six hex neighbor directions.
+    // `HexCoord{q:2,r:0}` is two tiles away along an axis, not adjacent, so
+    // it is rejected the same way the old zero-vector facing was.
+    // `combat_hex_t1a.rs` already covers `HexCoord` math itself (overflow,
+    // extreme coordinates) -- this only re-checks the wiring through
+    // `CombatSimulation::new`. WP6's `facing_must_be_one_of_the_six_neighbor_directions`
+    // and `facing_zero_vector_is_still_rejected` pin the full behaviour.
+    let mut bad_facing = participant("a", CombatSide::Ally, 0);
+    bad_facing.facing = HexCoord { q: 2, r: 0 };
+    assert!(matches!(
+        CombatSimulation::new(input(vec![bad_facing])),
+        Err(CombatSimulationError::InvalidFacing(_))
+    ));
 }
 #[test]
 fn active_limits_ignore_inactive() {
@@ -152,9 +159,12 @@ fn snapshot_order_invariant_and_same_setup() {
 }
 #[test]
 fn range_overlap_boundaries() {
-    let p = CombatPosition { x: 0, y: 0 };
-    assert!(p.in_range(CombatPosition { x: 2, y: 0 }, 2).unwrap());
-    assert!(p.overlaps(CombatPosition { x: 1, y: 0 }, 1).unwrap());
+    // T1-b1 §4-1: `CombatPosition::in_range`/`overlaps` are gone; range and
+    // collision judgement (`combat_resolution.rs`) both now compare
+    // `HexCoord::distance` directly against a threshold.
+    let p = HexCoord { q: 0, r: 0 };
+    assert!(p.distance(HexCoord { q: 2, r: 0 }) <= 2);
+    assert!(p.distance(HexCoord { q: 1, r: 0 }) <= 1);
 }
 #[test]
 fn max_ticks_and_missing_refs_fail() {

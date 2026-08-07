@@ -79,14 +79,14 @@ fn valid_combat_json() -> Value {
         "participants": [
             {
                 "id": "ally_1", "side": "ally",
-                "position": {"x": 0, "y": 0}, "facing": {"x": 1, "y": 0},
+                "position": {"q": 0, "r": 0}, "facing": {"q": 1, "r": 0},
                 "speed_per_tick": 1, "collision_radius": 5,
                 "attack_range": 10, "support_range": 10,
                 "role_id": "role_ally", "target_policy_id": null, "active": true
             },
             {
                 "id": "enemy_1", "side": "enemy",
-                "position": {"x": 5, "y": 0}, "facing": {"x": -1, "y": 0},
+                "position": {"q": 5, "r": 0}, "facing": {"q": -1, "r": 0},
                 "speed_per_tick": 1, "collision_radius": 5,
                 "attack_range": 10, "support_range": 10,
                 "role_id": "role_enemy", "target_policy_id": null, "active": true

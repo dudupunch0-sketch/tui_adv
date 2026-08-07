@@ -35,8 +35,8 @@ fn request() -> CombatResolutionRequest {
     let p = |id: &str, side: CombatSide| CombatSimulationParticipant {
         id: id.into(),
         side,
-        position: CombatPosition { x: 0, y: 0 },
-        facing: CombatFacing { x: 1, y: 0 },
+        position: HexCoord { q: 0, r: 0 },
+        facing: HexCoord { q: 1, r: 0 },
         speed_per_tick: 1,
         collision_radius: 1,
         attack_range: 2,
@@ -303,7 +303,7 @@ fn accuracy_range_penetration_and_overflow_are_explicit() {
     assert_eq!(mid_outcome.hit, mid_outcome.roll_percent < 50);
 
     let mut far = request();
-    far.execution.input.participants[1].position.x = 10;
+    far.execution.input.participants[1].position.q = 10;
     let far_result = resolve_combat(far).unwrap();
     let far_outcome = &far_result.frames[0].outcomes[0];
     assert!(!far_outcome.collision);

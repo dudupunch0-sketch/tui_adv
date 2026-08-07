@@ -46,9 +46,9 @@ pub use combat_resolution::{
     CombatResolutionResult, CombatResolutionState,
 };
 pub use combat_simulation::{
-    CombatFacing, CombatMoveIntent, CombatMoveMode, CombatPosition, CombatRolePreset,
-    CombatRoleWeights, CombatSide, CombatSimulation, CombatSimulationConfig, CombatSimulationError,
-    CombatSimulationInput, CombatSimulationParticipant, CombatTargetFallback, CombatTargetPolicy,
+    CombatMoveIntent, CombatMoveMode, CombatRolePreset, CombatRoleWeights, CombatSide,
+    CombatSimulation, CombatSimulationConfig, CombatSimulationError, CombatSimulationInput,
+    CombatSimulationParticipant, CombatTargetFallback, CombatTargetPolicy,
     CombatTargetPreference, CombatTickFrame,
 };
 pub use combat_spectator::{

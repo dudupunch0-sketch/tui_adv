@@ -5,8 +5,8 @@ fn participant(id: &str, side: CombatSide, active: bool) -> CombatSimulationPart
     CombatSimulationParticipant {
         id: id.into(),
         side,
-        position: CombatPosition { x: 0, y: 0 },
-        facing: CombatFacing { x: 1, y: 0 },
+        position: HexCoord { q: 0, r: 0 },
+        facing: HexCoord { q: 1, r: 0 },
         speed_per_tick: 1,
         collision_radius: 1,
         attack_range: 1,

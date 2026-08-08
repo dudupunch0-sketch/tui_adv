@@ -1193,3 +1193,114 @@ impl CombatRuntime {
         Ok(runtime)
     }
 }
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub(crate) struct CombatRuntimeFrameDelta {
+    tick: u32,
+    moves: Option<Vec<crate::CombatMoveIntent>>,
+    position_updates: std::collections::BTreeMap<String, crate::HexCoord>,
+    execution_fingerprint: String,
+    outcomes: Option<Vec<crate::CombatAttackOutcome>>,
+    combatant_updates: Vec<crate::CombatResolutionCombatant>,
+    resolution_fingerprint: String,
+}
+pub(crate) fn encode_frame_deltas(
+    execution: &[crate::CombatTickFrame],
+    resolution: &[crate::CombatResolutionFrame],
+) -> Result<Vec<CombatRuntimeFrameDelta>, CombatRuntimeError> {
+    if execution.len() != resolution.len() {
+        return Err(CombatRuntimeError::InvalidInput);
+    }
+    let mut out = Vec::with_capacity(execution.len());
+    let mut prev_pos = std::collections::BTreeMap::new();
+    let mut prev_moves = None;
+    let mut prev_outcomes = None;
+    for (i, (e, r)) in execution.iter().zip(resolution).enumerate() {
+        if e.tick != i as u32 + 1
+            || r.tick != e.tick
+            || e.fingerprint.is_empty()
+            || r.fingerprint.is_empty()
+        {
+            return Err(CombatRuntimeError::InvalidInput);
+        }
+        let updates = e
+            .positions
+            .iter()
+            .filter(|(id, p)| prev_pos.get(*id) != Some(*p))
+            .map(|(id, p)| (id.clone(), *p))
+            .collect();
+        let d = CombatRuntimeFrameDelta {
+            tick: e.tick,
+            moves: if prev_moves.as_ref() == Some(&e.moves) {
+                None
+            } else {
+                Some(e.moves.clone())
+            },
+            position_updates: updates,
+            execution_fingerprint: e.fingerprint.clone(),
+            outcomes: if prev_outcomes.as_ref() == Some(&r.outcomes) {
+                None
+            } else {
+                Some(r.outcomes.clone())
+            },
+            combatant_updates: r.combatants.clone(),
+            resolution_fingerprint: r.fingerprint.clone(),
+        };
+        prev_pos = e.positions.clone();
+        prev_moves = Some(e.moves.clone());
+        prev_outcomes = Some(r.outcomes.clone());
+        out.push(d);
+    }
+    Ok(out)
+}
+
+pub(crate) fn decode_frame_deltas(
+    deltas: &[CombatRuntimeFrameDelta],
+) -> Result<
+    (
+        Vec<crate::CombatTickFrame>,
+        Vec<crate::CombatResolutionFrame>,
+    ),
+    CombatRuntimeError,
+> {
+    let mut ex = Vec::new();
+    let mut re = Vec::new();
+    let mut pos = std::collections::BTreeMap::new();
+    let mut moves = None;
+    let mut outcomes = None;
+    for (i, d) in deltas.iter().enumerate() {
+        if d.tick != i as u32 + 1
+            || d.execution_fingerprint.is_empty()
+            || d.resolution_fingerprint.is_empty()
+            || (i == 0 && (d.moves.is_none() || d.outcomes.is_none()))
+        {
+            return Err(CombatRuntimeError::InvalidInput);
+        }
+        if let Some(m) = &d.moves {
+            moves = Some(m.clone())
+        }
+        let m = moves.clone().ok_or(CombatRuntimeError::InvalidInput)?;
+        for (id, p) in &d.position_updates {
+            pos.insert(id.clone(), *p);
+        }
+        if let Some(o) = &d.outcomes {
+            outcomes = Some(o.clone())
+        }
+        let o = outcomes.clone().ok_or(CombatRuntimeError::InvalidInput)?;
+        let ef = d.execution_fingerprint.clone();
+        let rf = d.resolution_fingerprint.clone();
+        ex.push(crate::CombatTickFrame {
+            tick: d.tick,
+            moves: m,
+            positions: pos.clone(),
+            fingerprint: ef,
+        });
+        re.push(crate::CombatResolutionFrame {
+            tick: d.tick,
+            outcomes: o,
+            combatants: d.combatant_updates.clone(),
+            fingerprint: rf,
+        });
+    }
+    Ok((ex, re))
+}

@@ -160,6 +160,30 @@ fn resolution_is_repeatable_and_clamps_damage() {
 }
 
 #[test]
+fn fast_attack_emits_one_outcome_per_fire() {
+    let mut r = request();
+    r.attacks[0].attack_speed_hundredths = Some(20_000);
+    let result = resolve_combat(r).unwrap();
+    assert_eq!(result.frames[0].outcomes.len(), 2);
+    assert_eq!(
+        result.frames[0]
+            .outcomes
+            .iter()
+            .filter(|outcome| outcome.hit)
+            .count(),
+        2
+    );
+    assert_eq!(
+        result
+            .full_log
+            .iter()
+            .filter(|event| event.tag == CombatResolutionLogTag::DamageApplied)
+            .count(),
+        2
+    );
+}
+
+#[test]
 fn fixed_point_formula_and_invalid_effect_are_data_driven() {
     let mut r = request();
     r.attacks[0].effects.push(CombatAttackEffect {
@@ -219,6 +243,14 @@ fn effect_stacking_preserves_catalog_phase_and_persistent_lifetime() {
     let active = &result.state.active_effects[0];
     assert!(!active.combat_only);
     assert_eq!(active.phase, EffectPhase::CombatStart);
+    assert_eq!(
+        result.frames[0].outcomes[0].applied_effect_ids,
+        vec!["mark".to_string()]
+    );
+    assert!(result
+        .full_log
+        .iter()
+        .any(|event| event.tag == CombatResolutionLogTag::EffectApplied));
     assert_eq!(result.state.suppressed_effect_ids, vec!["mark"]);
     assert!(result
         .full_log

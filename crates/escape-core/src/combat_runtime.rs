@@ -145,6 +145,9 @@ pub(crate) struct CombatRuntime {
     resolution_frames: Vec<CombatResolutionFrame>,
     opportunities: Option<CombatRuntimeOpportunityState>,
     paused: Option<CombatRuntimePause>,
+    segment_index: u32,
+    selection_history: Vec<CombatRuntimeSelectionHistoryEntry>,
+    next_segment_seed: Option<u64>,
 }
 
 struct CombatRuntimeOpportunityState {
@@ -177,6 +180,9 @@ impl CombatRuntime {
             resolution_frames: vec![],
             opportunities: None,
             paused: None,
+            segment_index: 0,
+            selection_history: vec![],
+            next_segment_seed: None,
         })
     }
 
@@ -251,11 +257,59 @@ impl CombatRuntime {
         Ok(CombatRuntimeAdvance::Paused(pause))
     }
 
-    pub(crate) fn resume_no_intervention(&mut self) -> Result<(), CombatRuntimeError> {
-        if self.paused.take().is_none() {
+    pub(crate) fn resume_with_response(
+        &mut self,
+        response_id: &str,
+    ) -> Result<u64, CombatRuntimeError> {
+        if response_id.trim().is_empty() {
             return Err(CombatRuntimeError::InvalidInput);
         }
-        Ok(())
+        let pause = self
+            .paused
+            .as_ref()
+            .ok_or(CombatRuntimeError::InvalidInput)?;
+        let candidate = pause
+            .evaluation
+            .candidate
+            .as_ref()
+            .ok_or(CombatRuntimeError::InvalidInput)?;
+        if !candidate
+            .options
+            .iter()
+            .any(|option| option.id == response_id)
+        {
+            return Err(CombatRuntimeError::InvalidInput);
+        }
+        let next_segment_index = self
+            .segment_index
+            .checked_add(1)
+            .ok_or(CombatRuntimeError::InvalidInput)?;
+        let entry = CombatRuntimeSelectionHistoryEntry {
+            segment_index: self.segment_index,
+            tick: pause.tick,
+            instance_id: candidate.instance_id.clone(),
+            opportunity_id: candidate.opportunity_id.clone(),
+            response_id: response_id.to_owned(),
+        };
+        let mut history = self.selection_history.clone();
+        history.push(entry);
+        let next_seed = derive_segment_seed(
+            self.context.effective_seed,
+            self.context.namespace,
+            &self.context.provenance.simulation_version,
+            &self.context.provenance.manifest_fingerprint,
+            next_segment_index,
+            &history,
+        )?;
+        self.selection_history = history;
+        self.segment_index = next_segment_index;
+        self.next_segment_seed = Some(next_seed);
+        self.paused = None;
+        Ok(next_seed)
+    }
+
+    pub(crate) fn resume_no_intervention(&mut self) -> Result<(), CombatRuntimeError> {
+        self.resume_with_response("no_intervention").map(|_| ())
     }
 
     pub(crate) fn finish(self) -> Result<CombatResolutionResult, CombatRuntimeError> {
@@ -587,6 +641,85 @@ mod tests {
         );
         assert!(matches!(
             runtime.resume_no_intervention(),
+            Err(CombatRuntimeError::InvalidInput)
+        ));
+    }
+
+    #[test]
+    fn response_selection_records_history_and_derives_deterministic_segment_seed() {
+        let request = make_request(2);
+        let mut first =
+            CombatRuntime::with_opportunities(request.clone(), opportunity_config()).unwrap();
+        let mut second = CombatRuntime::with_opportunities(request, opportunity_config()).unwrap();
+        assert!(matches!(
+            first.advance_with_opportunities().unwrap(),
+            CombatRuntimeAdvance::Paused(_)
+        ));
+        assert!(matches!(
+            second.advance_with_opportunities().unwrap(),
+            CombatRuntimeAdvance::Paused(_)
+        ));
+
+        let first_seed = first.resume_with_response("intervene").unwrap();
+        let second_seed = second.resume_with_response("intervene").unwrap();
+        assert_eq!(first_seed, second_seed);
+        assert_eq!(first.segment_index, 1);
+        assert_eq!(first.selection_history, second.selection_history);
+        assert_eq!(
+            stable_fingerprint(&first.selection_history),
+            stable_fingerprint(&second.selection_history)
+        );
+        assert_eq!(first.next_segment_seed, Some(first_seed));
+        assert!(first.paused.is_none());
+        assert_eq!(first.selection_history[0].segment_index, 0);
+        assert_eq!(first.selection_history[0].tick, 1);
+        assert_eq!(first.selection_history[0].instance_id, "danger_instance");
+        assert_eq!(first.selection_history[0].opportunity_id, "danger");
+        assert_eq!(first.selection_history[0].response_id, "intervene");
+    }
+
+    #[test]
+    fn response_selection_distinguishes_no_intervention_and_rejects_invalid_input() {
+        let mut no_intervention =
+            CombatRuntime::with_opportunities(make_request(2), opportunity_config()).unwrap();
+        let mut actionable =
+            CombatRuntime::with_opportunities(make_request(2), opportunity_config()).unwrap();
+        assert!(matches!(
+            no_intervention.advance_with_opportunities().unwrap(),
+            CombatRuntimeAdvance::Paused(_)
+        ));
+        assert!(matches!(
+            actionable.advance_with_opportunities().unwrap(),
+            CombatRuntimeAdvance::Paused(_)
+        ));
+        no_intervention.resume_no_intervention().unwrap();
+        let no_intervention_seed = no_intervention.next_segment_seed.unwrap();
+        let actionable_seed = actionable.resume_with_response("intervene").unwrap();
+        assert_ne!(no_intervention_seed, actionable_seed);
+        assert_eq!(
+            no_intervention.selection_history[0].response_id,
+            "no_intervention"
+        );
+
+        let mut invalid =
+            CombatRuntime::with_opportunities(make_request(2), opportunity_config()).unwrap();
+        assert!(matches!(
+            invalid.resume_with_response("intervene"),
+            Err(CombatRuntimeError::InvalidInput)
+        ));
+        assert!(matches!(
+            invalid.advance_with_opportunities().unwrap(),
+            CombatRuntimeAdvance::Paused(_)
+        ));
+        assert!(matches!(
+            invalid.resume_with_response("unknown"),
+            Err(CombatRuntimeError::InvalidInput)
+        ));
+        assert_eq!(invalid.segment_index, 0);
+        assert!(invalid.selection_history.is_empty());
+        invalid.resume_with_response("intervene").unwrap();
+        assert!(matches!(
+            invalid.resume_with_response("intervene"),
             Err(CombatRuntimeError::InvalidInput)
         ));
     }

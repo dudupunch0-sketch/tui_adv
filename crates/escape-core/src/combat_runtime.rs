@@ -241,6 +241,7 @@ impl CombatRuntime {
         let mut context = state.context.clone();
         context.current_tick = frame.resolution.tick;
         let evaluation = state.catalog.evaluate(&state.instances, &context)?;
+        state.context.current_tick = frame.resolution.tick;
         state.context.budget = evaluation.budget.clone();
         let Some(candidate) = &evaluation.candidate else {
             return Ok(CombatRuntimeAdvance::Frame(frame));
@@ -861,6 +862,60 @@ mod tests {
             Err(CombatRuntimeError::Simulation(
                 CombatSimulationError::MaxTicksExceeded
             ))
+        ));
+    }
+    #[test]
+    fn checkpoint_roundtrip_paused_restore_resume_matches() {
+        let request = make_request(2);
+        let mut original =
+            CombatRuntime::with_opportunities(request.clone(), opportunity_config()).unwrap();
+        let _ = original.advance_with_opportunities().unwrap();
+        let checkpoint = original.checkpoint().unwrap();
+        let json = serde_json::to_string(&checkpoint).unwrap();
+        let decoded: CombatRuntimeCheckpoint = serde_json::from_str(&json).unwrap();
+        let mut restored = CombatRuntime::restore(decoded).unwrap();
+        if original.paused.is_some() {
+            original.resume_no_intervention().unwrap();
+            restored.resume_no_intervention().unwrap();
+        }
+        while original.advance_tick().unwrap().is_some() {}
+        while restored.advance_tick().unwrap().is_some() {}
+        assert_eq!(
+            original.finish().unwrap().fingerprint,
+            restored.finish().unwrap().fingerprint
+        );
+    }
+
+    #[test]
+    fn checkpoint_restore_rejects_frame_length_mismatch() {
+        let mut runtime = CombatRuntime::new(make_request(2)).unwrap();
+        runtime.advance_tick().unwrap();
+        let mut checkpoint = runtime.checkpoint().unwrap();
+        checkpoint.resolution_frames.clear();
+        assert!(matches!(
+            CombatRuntime::restore(checkpoint),
+            Err(CombatRuntimeError::InvalidInput)
+        ));
+    }
+
+    #[test]
+    fn checkpoint_restore_rejects_forged_next_segment_seed() {
+        let mut runtime = CombatRuntime::new(make_request(1)).unwrap();
+        let mut checkpoint = runtime.checkpoint().unwrap();
+        checkpoint.segment_index = 1;
+        checkpoint
+            .selection_history
+            .push(CombatRuntimeSelectionHistoryEntry {
+                segment_index: 0,
+                tick: 1,
+                instance_id: "i".into(),
+                opportunity_id: "o".into(),
+                response_id: "r".into(),
+            });
+        checkpoint.next_segment_seed = Some(0);
+        assert!(matches!(
+            CombatRuntime::restore(checkpoint),
+            Err(CombatRuntimeError::InvalidInput)
         ));
     }
 }

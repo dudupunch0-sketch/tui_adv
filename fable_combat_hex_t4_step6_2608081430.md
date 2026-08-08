@@ -105,5 +105,5 @@ renderer/terminal/Web, content/generated artifacts, 실제 effect/role/policy �
   `(segment, tick, instance, opportunity, response)` entry를 한 번 기록한다.
 - `resume_no_intervention`은 기존 API를 유지하면서 `no_intervention` option을 같은 경로로
   기록한다. 실제 response effect/state 재구성은 의도적으로 다음 slice 범위다.
-- 테스트: runtime unit 10/10, opportunity integration 12/12, workspace 0 failures.
+- 테스트: runtime unit 8/8, opportunity integration 12/12, workspace 0 failures.
 - `cargo fmt --all -- --check`, `git diff --check` 통과.

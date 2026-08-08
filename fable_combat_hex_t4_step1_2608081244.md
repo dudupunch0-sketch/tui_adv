@@ -1,6 +1,6 @@
 # T4 S1 — tick 단위 실행·판정 인터리빙
 
-status: revised-ready-for-implementation
+status: implemented
 date: 2026-08-08
 baseline_commit: `2ae781fdb427b94f10353529aaddb1341d986b1b`
 baseline_test: `cargo test --workspace --no-fail-fast` = **434 passed / 0 failed**
@@ -213,3 +213,16 @@ git diff --check
 - 변경된 fingerprint/fixture 기대값 목록과 각각의 이유
 - 소유 범위 밖 diff 여부
 - 다음 S2 plan이 소비해야 할 확정 `CombatResolutionStepper` 서명과 남은 질문
+
+## 10. 구현 결과 (2026-08-08)
+
+- Production `resolve_combat` now uses `CombatResolutionStepper::new → step → finish`.
+- Step preserves tick-start health snapshot, active/KO guards, attack gauges including multi-fire,
+  deterministic collision/roll/damage, effect stacking, per-outcome effect IDs, and full logs.
+- Batch fingerprint assembly remains `(execution.fingerprint, frames, state, full_log)`.
+- Commits: `abe63b3` (wiring/parity), `e696f0b` (direct stepper contract tests).
+- Verification: `cargo fmt --all -- --check`; direct unit contract 2/2; resolution integration 25/25;
+  workspace `cargo test --workspace --no-fail-fast --quiet` 0 failures; `git diff --check` clean.
+- Direct tests cover deterministic repeated step/finish and missing-position `Result` handling.
+- `resolve_legacy` remains as a temporary parity oracle and should be removed after S2 confirms the
+  new runtime does not need it.

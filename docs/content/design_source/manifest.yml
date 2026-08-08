@@ -34,8 +34,11 @@ paths:
   graphs: graphs/*.yml
 records:
   events:
-    count: 161
+    count: 164
     ids:
+    - wuxia_guestpass_sado_first_calculation_bargain
+    - wuxia_guestpass_network_headquarters_infiltration
+    - wuxia_guestpass_modern_return_freedom
     - wuxia_guestpass_bloodmoon_qingliu_network_destruction
     - wuxia_guestpass_gohyeonmuk_inn_succession
     - wuxia_guestpass_one_eye_mountain_bearer_passage

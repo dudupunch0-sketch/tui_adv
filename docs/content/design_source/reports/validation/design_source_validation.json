@@ -32,12 +32,27 @@
         "source_path": ""
       },
       {
+        "record": "wuxia_guestpass_modern_return_freedom",
+        "source_export_id": null,
+        "source_path": ""
+      },
+      {
+        "record": "wuxia_guestpass_network_headquarters_infiltration",
+        "source_export_id": null,
+        "source_path": ""
+      },
+      {
         "record": "wuxia_guestpass_one_eye_mountain_bearer_passage",
         "source_export_id": null,
         "source_path": ""
       },
       {
         "record": "wuxia_guestpass_qingliu_empty_room_seizure_defense",
+        "source_export_id": null,
+        "source_path": ""
+      },
+      {
+        "record": "wuxia_guestpass_sado_first_calculation_bargain",
         "source_export_id": null,
         "source_path": ""
       },
@@ -2165,16 +2180,16 @@
     "afterthought_text_ids": "exact_id_or_name_only"
   },
   "counts": {
-    "events": 161,
+    "events": 164,
     "afterthoughts": 20,
     "formal_rewards": 51,
     "legacy_reward_records": 1,
     "reward_mappings": 29,
-    "records": 262,
-    "source_refs": 262,
+    "records": 265,
+    "source_refs": 265,
     "source_refs_with_page_id_url": 0,
     "source_refs_with_export_id": 253,
-    "page_provenance_records": 262,
+    "page_provenance_records": 265,
     "afterthought_text_unverifiable": 127,
     "afterthought_original_total": 134
   },

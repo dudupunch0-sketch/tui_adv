@@ -53,16 +53,16 @@ source_arc: guestpass_homecoming_main_story_v1_1
 | 4/27 | 흑사방 원장부 위치 | wuxia_black_serpent_ledger_trace | 유지 | 기존 흔적을 원장부 위치로 수렴; 중복 소유 여부 검수 | 4/26 → 4/28 | authoring_review_required |
 | 4/28 | 흑사방 보스 채무 거래 | wuxia_heuksa_bang_debt_bargain | 유지 | 보스는 채무 거래, 사도는 최종 계산으로 분리 | 4/27 → 4/29 | authoring_review_required |
 | 4/29 | 객패 장부 지연 계략 | [wuxia_guestpass_ledger_delay_stratagem](../events/authored/wuxia_guestpass_ledger_delay_stratagem.yml) | 신규 필요 | 신규 canonical authoring draft 작성; 서하린이 낮 작성·밤 재배열로 보호 시간차 생성 | 4/28 → 4/30, 5/33 | authoring_draft / authoring_review_required / not_implemented |
-| 4/30 | 사도의 첫 거래와 계산 논리 | 없음 | 신규 필요 | 세 요소 분리 통제·가격표를 첫 대면으로 저작 | 4/29 → 4/31 | authoring_review_required |
+| 4/30 | 사도의 첫 거래와 계산 논리 | [wuxia_guestpass_sado_first_calculation_bargain](../events/authored/wuxia_guestpass_sado_first_calculation_bargain.yml) | 신규 필요 | 신규 canonical authoring draft 작성; 제한 거래·역질문·미끼·가격 밖 선언으로 세 요소 분리 통제와 계산 논리를 노출 | 4/29 → 4/31, 4/32 | authoring_draft / authoring_review_required / not_implemented |
 | 4/31 | 원장부 확보 또는 회수 경로 | wuxia_chain_herbalist_second_ledger | 흡수 | 약재 장부 구조를 원장부 우회 경로로 변경 | 4/30 → 4/32 | authoring_review_required |
 | 4/32 | 본거지 문이 세 요소를 요구함 | wuxia_collapse_gate | 흡수 | 객패·원장부·귀환 단서 자격 조건으로 재정의 | 4/31 → 5/33 | authoring_review_required |
-| 5/33 | 귀로객망 본거지 귀환 잠입 | 없음 | 신규 필요 | 세 요소를 잠입 목표로 삼는 신분·기록 선택 신규 저작 | 4/32 → 5/34 | authoring_review_required |
+| 5/33 | 귀로객망 본거지 귀환 잠입 | [wuxia_guestpass_network_headquarters_infiltration](../events/authored/wuxia_guestpass_network_headquarters_infiltration.yml) | 신규 필요 | 신규 canonical authoring draft 작성; 신분 서술·기록 정합성·환대 규칙·동료 분산으로 문턱만 넘고 재인식과 자격 시험은 보존 | 4/32 → 5/34, 5/36 | authoring_draft / authoring_review_required / not_implemented |
 | 5/34 | 묵돌·흉터·매듭·빈방의 단계적 재인식 | wuxia_mumyeong_name_returns | 흡수 | 이름 회복을 세 단계 증거 구조로 확장 | 5/33 → 5/35 | authoring_review_required |
 | 5/35 | 청우진·고현묵의 행동 확인 | wuxia_route_qingliu_short_report | 흡수 | 보고를 두 인물의 실제 행동·지속 증거로 변경 | 5/34 → 5/36 | authoring_review_required |
 | 5/36 | 객패·원장부·귀환 단서 공개 자격 시험 | wuxia_alliance_inspector_three_questions | 흡수 | 세 질문을 공개 자격 시험으로 전환 | 5/35 → 5/37 | authoring_review_required |
 | 5/37 | 사도의 세 요소 분리 통제 공개 | wuxia_sado_ownerless_token | 흡수 | 토큰을 분리 가격화 표식으로 변경 | 5/36 → 5/38 | authoring_review_required |
 | 5/38 | 귀향소 목소리 시험 | wuxia_return_modern_object_rumor | 유지 | 현대 물품 소문을 기억 시험과 연결; 정답 제시 금지 | 5/37 → 5/39 | authoring_review_required |
-| 5/39 | 현대 귀환 자유 확보 | 없음 | 신규 필요 | 세 요소 확보 뒤 귀환 선택을 정상 엔딩으로 열기 | 5/38 → 5/40, 6/41 | authoring_review_required |
+| 5/39 | 현대 귀환 자유 확보 | [wuxia_guestpass_modern_return_freedom](../events/authored/wuxia_guestpass_modern_return_freedom.yml) | 신규 필요 | 신규 canonical authoring draft 작성; 즉시 현대 귀환 정상 terminal ending 1개와 귀환권 보존 후 진행 3개를 분리 | 5/38 → 현대 귀환 종료 또는 5/40, 6/41 | authoring_draft / authoring_review_required / not_implemented |
 | 5/40 | 서하린과 진실 공유 | wuxia_seoharin_truth_share_before_boss | 유지 | 귀환 자유를 숨기지 않는 관계 장면 | 5/39 → 6/41 | authoring_review_required |
 | 6/41 | 사도 최종전 가격표 | wuxia_sado_final_phase_1_price_tag | 유지 | 최종전 1단계와 세 엔딩 축 연결 | 5/40 → 6/42 | authoring_review_required |
 | 6/42 | 약점 장악 | wuxia_sado_final_phase_2_weakpoint_control | 유지 | 관계·청류문·타인 이름을 인질화 | 6/41 → 6/43 | authoring_review_required |
@@ -104,4 +104,4 @@ source_arc: guestpass_homecoming_main_story_v1_1
 
 청류문 내부 악의적 배신은 추가하지 않는다. 빈방 압류와 장부 지연의 갈등 상대는 외부 채권·추적 세력이다. 혈월교는 물리 파괴, 흑사방 보스는 채무 거래, 사도는 계산·통제의 최종 적으로 분리한다. 이 문서는 설계 매핑일 뿐 imported event와 runtime/code를 수정하거나 구현 완료로 승격하지 않는다. 새 사건은 핵심·보조·선택·보류 등급과 중심축 영향 평가를 거쳐야 하며 청류문·서하린·객패귀로를 강화하지 않거나 6막 순서·세 요소 인과를 덮으면 승격하지 않는다.
 
-1/08 불탄 객패, 2/10 혈월교 물리 파괴, 3/18 고현묵 객잔과 객패 계승, 3/19 빈방 압류 방어, 3/20 외안배산귀 통과, 4/25 황천수맥, 4/29 객패 장부 지연 계략은 canonical authoring draft가 작성되었으며 개별 검수는 남아 있다. 다음 신규 사건 저작 순서는 별도 authoring review에서 정한다. runtime 구현은 별도 handoff와 승인 이후에만 시작한다.
+1/08 불탄 객패, 2/10 혈월교 물리 파괴, 3/18 고현묵 객잔과 객패 계승, 3/19 빈방 압류 방어, 3/20 외안배산귀 통과, 4/25 황천수맥, 4/29 객패 장부 지연 계략, 4/30 사도의 첫 거래, 5/33 본거지 잠입, 5/39 현대 귀환 자유 확보는 canonical authoring draft가 작성되었으며 개별 검수는 남아 있다. 다음 신규 사건 저작 순서는 별도 authoring review에서 정한다. runtime 구현은 별도 handoff와 승인 이후에만 시작한다.

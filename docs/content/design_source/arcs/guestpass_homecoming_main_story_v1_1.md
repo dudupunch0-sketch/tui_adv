@@ -78,3 +78,5 @@ source_refs:
   - user_approved_guestpass_homecoming_v1_1
   - imported_arc_16_story_graph_audit
   - imported_arc_04_main_route_structure
+
+다음 단계의 48개 필수 사건 대조표: [canonical event mapping 초안](guestpass_homecoming_main_story_v1_1_event_mapping.md). 이 문서는 승인된 상위 방향을 기존 event ID와 대조한 authoring 검수용 초안이며, 개별 사건과 runtime은 아직 확정·구현되지 않았다.

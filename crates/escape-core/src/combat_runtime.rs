@@ -900,7 +900,7 @@ mod tests {
 
     #[test]
     fn checkpoint_restore_rejects_forged_next_segment_seed() {
-        let mut runtime = CombatRuntime::new(make_request(1)).unwrap();
+        let runtime = CombatRuntime::new(make_request(1)).unwrap();
         let mut checkpoint = runtime.checkpoint().unwrap();
         checkpoint.segment_index = 1;
         checkpoint

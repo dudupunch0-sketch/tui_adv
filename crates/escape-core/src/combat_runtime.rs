@@ -938,6 +938,68 @@ mod tests {
     }
 
     #[test]
+    fn compact_checkpoint_roundtrip_preserves_finish_parity() {
+        let mut runtime = CombatRuntime::new(make_request(2)).unwrap();
+        runtime.advance_tick().unwrap();
+        runtime.advance_tick().unwrap();
+        let full = runtime.checkpoint().unwrap();
+        let compact = runtime.checkpoint_compact().unwrap();
+        assert!(!full.execution_frames.is_empty());
+        assert!(compact.execution_frames.is_empty());
+        assert!(compact.resolution_frames.is_empty());
+        assert!(compact.frame_deltas.as_ref().is_some_and(|d| !d.is_empty()));
+
+        let compact_json = serde_json::to_vec(&compact).unwrap();
+        let decoded: CombatRuntimeCheckpoint = serde_json::from_slice(&compact_json).unwrap();
+        let full_restored = CombatRuntime::restore(full).unwrap();
+        let compact_restored = CombatRuntime::restore(decoded).unwrap();
+        assert_eq!(
+            full_restored.finish().unwrap().fingerprint,
+            compact_restored.finish().unwrap().fingerprint
+        );
+    }
+
+    #[test]
+    fn checkpoint_restore_rejects_ambiguous_or_empty_storage() {
+        let mut runtime = CombatRuntime::new(make_request(2)).unwrap();
+        runtime.advance_tick().unwrap();
+        runtime.advance_tick().unwrap();
+        let full = runtime.checkpoint().unwrap();
+        let compact = runtime.checkpoint_compact().unwrap();
+
+        let mut both = compact.clone();
+        both.execution_frames = full.execution_frames.clone();
+        both.resolution_frames = full.resolution_frames.clone();
+        assert!(matches!(
+            CombatRuntime::restore(both),
+            Err(CombatRuntimeError::InvalidInput)
+        ));
+
+        let mut none = full.clone();
+        none.execution_frames.clear();
+        none.resolution_frames.clear();
+        none.frame_deltas = None;
+        assert!(matches!(
+            CombatRuntime::restore(none),
+            Err(CombatRuntimeError::InvalidInput)
+        ));
+
+        let mut empty_delta = full;
+        empty_delta.frame_deltas = Some(Vec::new());
+        assert!(matches!(
+            CombatRuntime::restore(empty_delta),
+            Err(CombatRuntimeError::InvalidInput)
+        ));
+
+        let mut corrupt = compact;
+        corrupt.frame_deltas.as_mut().unwrap()[1].tick = 3;
+        assert!(matches!(
+            CombatRuntime::restore(corrupt),
+            Err(CombatRuntimeError::InvalidInput)
+        ));
+    }
+
+    #[test]
     fn checkpoint_save_envelope_roundtrip_preserves_public_payload() {
         let mut runtime = CombatRuntime::new(make_request(1)).unwrap();
         runtime.advance_tick().unwrap();
@@ -950,6 +1012,14 @@ mod tests {
         let encoded = serde_json::to_string(&envelope).unwrap();
         let decoded: crate::SaveEnvelope = serde_json::from_str(&encoded).unwrap();
         assert_eq!(decoded.combat_checkpoint, Some(checkpoint));
+
+        let mut old_checkpoint = serde_json::to_value(decoded.combat_checkpoint.unwrap()).unwrap();
+        old_checkpoint
+            .as_object_mut()
+            .unwrap()
+            .remove("frame_deltas");
+        let restored_old: CombatRuntimeCheckpoint = serde_json::from_value(old_checkpoint).unwrap();
+        assert_eq!(restored_old.frame_deltas, None);
     }
 
     #[test]
@@ -1006,6 +1076,8 @@ mod tests {
         while runtime.advance_tick().unwrap().is_some() {}
         let checkpoint = runtime.checkpoint().unwrap();
         let checkpoint_json = serde_json::to_vec(&checkpoint).unwrap();
+        let compact = runtime.checkpoint_compact().unwrap();
+        let compact_json = serde_json::to_vec(&compact).unwrap();
         let deltas =
             encode_frame_deltas(&checkpoint.execution_frames, &checkpoint.resolution_frames)
                 .unwrap();
@@ -1026,8 +1098,9 @@ mod tests {
             .sum::<usize>()
             / checkpoint.execution_frames.len();
         println!(
-            "combat_measurement participants=12 ticks=1200 checkpoint_json_bytes={} save_envelope_json_bytes={} delta_json_bytes={} execution_frames={} average_execution_frame_bytes={}",
+            "combat_measurement participants=12 ticks=1200 checkpoint_json_bytes={} compact_checkpoint_json_bytes={} save_envelope_json_bytes={} delta_json_bytes={} execution_frames={} average_execution_frame_bytes={}",
             checkpoint_json.len(),
+            compact_json.len(),
             envelope_json.len(),
             delta_json.len(),
             checkpoint.execution_frames.len(),
@@ -1035,11 +1108,16 @@ mod tests {
         );
         assert_eq!(checkpoint.execution_frames.len(), 1_200);
         assert!(checkpoint_json.len() > 0);
+        assert!(compact_json.len() < checkpoint_json.len());
         assert!(envelope_json.len() > checkpoint_json.len());
         let expected = runtime.finish().unwrap().fingerprint;
         let decoded: CombatRuntimeCheckpoint = serde_json::from_slice(&checkpoint_json).unwrap();
         let restored = CombatRuntime::restore(decoded).unwrap();
         assert_eq!(expected, restored.finish().unwrap().fingerprint);
+        let compact_decoded: CombatRuntimeCheckpoint =
+            serde_json::from_slice(&compact_json).unwrap();
+        let compact_restored = CombatRuntime::restore(compact_decoded).unwrap();
+        assert_eq!(expected, compact_restored.finish().unwrap().fingerprint);
     }
 
     #[test]
@@ -1101,6 +1179,7 @@ pub struct CombatRuntimeCheckpoint {
     pub namespace: crate::CombatRngNamespace,
     pub(crate) request: CombatResolutionRequest,
     pub(crate) execution_frames: Vec<CombatTickFrame>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub(crate) frame_deltas: Option<Vec<CombatRuntimeFrameDelta>>,
     pub(crate) resolution_frames: Vec<CombatResolutionFrame>,
     pub(crate) opportunities: Option<CombatRuntimeOpportunityState>,
@@ -1171,11 +1250,12 @@ impl CombatRuntime {
         let mut checkpoint = checkpoint;
         let has_full =
             !checkpoint.execution_frames.is_empty() || !checkpoint.resolution_frames.is_empty();
+        let has_delta_field = checkpoint.frame_deltas.is_some();
         let has_delta = checkpoint
             .frame_deltas
             .as_ref()
             .is_some_and(|d| !d.is_empty());
-        if has_full == has_delta || (!has_full && !has_delta) {
+        if (has_delta_field && !has_delta) || has_full == has_delta || (!has_full && !has_delta) {
             return Err(CombatRuntimeError::InvalidInput);
         }
         if has_delta {

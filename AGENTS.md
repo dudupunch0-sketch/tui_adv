@@ -40,6 +40,7 @@
 - "실패가 환경 탓"이라는 보고는 도구 존재 여부부터 확인(`which`/`Get-Command`). 이 머신에서 `cargo`/`wasm-pack`/`gh`는 **WSL에만** 있고, pytest는 repo `.venv`를 쓴다.
 - 콘텐츠 변경의 도달 경로를 먼저 파악한다. 런타임 Rust 생성 텍스트(epilogue body 등)는 **wasm 바이너리**에 들어가므로 `export_web_data.py`가 아니라 wasm 재빌드가 필요하다.
 - 상세 절차는 `docs/dev/Development_Methodology.md`, 환경/알려진 실패는 `docs/dev/Troubleshooting.md`를 따른다.
+- 한 슬라이스를 실제로 굴릴 때의 규율(플랜에 적을 정지 조건, 기대값 수정 규칙, 직접 재검증 항목, 위임 지시서 체크리스트)과 이 저장소에서 반복해서 밟은 함정은 `docs/dev/Implementation_Slice_Discipline.md`에 정리돼 있다. 구현을 위임하기 전에 읽는다.
 
 ## 협업 루프: 플랜/리뷰 ↔ 구현 (역할 이관 가능해야 함)
 

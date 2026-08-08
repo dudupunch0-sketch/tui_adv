@@ -11,7 +11,34 @@ group_boundaries: [tick, template_family, actor_id, target_id, visibility, reaso
 groupable:
   move_intent: same_group_key
   damage_applied: same_group_key_sum_value_preserve_hit_count
-non_groupable: [terminal, status, objective, effect_applied_hidden]
+intervention_raw_events:
+  decision: intervention_decision_committed
+  strategy: strategy_overlay_applied
+  effect: special_effect_resolved
+  action: outcome_action_applied
+  entitlement: loot_entitlement_created
+  claim: loot_claim_resolved
+intervention_event_required_fields:
+  common: [tick, sequence, template_id, receipt_id, visibility]
+  decision: [pause_id, decision_receipt_fingerprint]
+  strategy: [strategy_before_fingerprint, strategy_after_fingerprint, scope_ids]
+  effect: [formula_id, input_fingerprint, outcome]
+  action: [action_id, application_transaction_id, action_receipt_status]
+  entitlement: [action_id, entitlement_id, application_transaction_id]
+  claim: [claim_action_id, claim_application_transaction_id, entitlement_id, claim_status]
+non_groupable:
+  - terminal
+  - status
+  - objective
+  - effect_applied_hidden
+  - intervention_decision_committed
+  - strategy_overlay_applied
+  - special_effect_resolved
+  - outcome_action_applied
+  - loot_entitlement_created
+  - loot_claim_resolved
 raw_policy: immutable_ordered_retained
 presentation_policy: aggregation_must_preserve_raw_sequence_range_and_count
+receipt_policy: references_sequence_range_and_fingerprint_without_copying_raw_events
+intervention_presentation_policy: non_groupable_render_individually_with_identity_and_zone_labels_resolved_at_render_time
 debug_raw_view: allowed

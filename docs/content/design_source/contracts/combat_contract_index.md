@@ -4,9 +4,9 @@ status: canonical
 effective_date: 2026-08-02
 runtime_status: handoff_required
 owner: GameCore/runtime handoff + design validator
-source_basis: docs/content/design_source/reports/combat_contract_gap_audit.md
+source_basis: docs/content/design_source/reports/combat_contract_gap_audit.md + approved intervention decisions
 
-이 디렉터리는 전투 계약의 설계 정본이다. Rust GameCore가 이미 제공하는 사실과 아직 구현하지 않은 handoff 계약을 분리한다. 이 문서와 5개 YAML은 runtime API를 대체하지 않으며, 구현 완료를 선언하지 않는다.
+이 디렉터리는 전투 계약의 설계 정본이다. Rust GameCore가 이미 제공하는 사실과 아직 구현하지 않은 handoff 계약을 분리한다. 이 문서와 6개 YAML은 runtime API를 대체하지 않으며, 구현 완료를 선언하지 않는다.
 
 ## 결정 요약
 
@@ -17,12 +17,15 @@ source_basis: docs/content/design_source/reports/combat_contract_gap_audit.md
 | 표시 이름 | identity.yml | canonical character identity registry | handoff_required |
 | 로그 | logs.yml | immutable raw events / renderer aggregation | handoff_required |
 | 전술 구역 | tactical_zones.yml | author semantics / GameCore validation / renderer labels | handoff_required |
+| 전투 개입 응답 | intervention.yml | Combat core plan / GameCore atomic apply / renderer display | handoff_required |
 
 ## 근거와 범위
 
 정본 01/02/03/05/06/08/09/13은 audit에 기록된 local design-source arc/event records와 docs/dev/Data_Schema.md, docs/dev/Combat_System_Operating_Guide.md를 근거로 한다. 02 자동전투·상황 트리거, 05 무기 세부, 08 전투 예시는 독립 normalized record로 아직 승격되지 않았다. 이 계약 작업에서는 구현 완료로 표시하지 않고 후속 read order로 남긴다.
 
-현재 runtime 사실은 crates/escape-core/src/combat_conclusion.rs, combat_contract.rs, combat_spectator.rs와 해당 wave 테스트에 있다. 현재 코드가 사용하는 실제 version은 v1이지만 code-supported registry는 아직 없으므로 새 authoring은 validator가 v1만 허용하며 runtime registry 구현을 후속 handoff로 남긴다.
+현재 runtime 사실은 crates/escape-core/src/combat_conclusion.rs, combat_contract.rs, combat_runtime.rs, combat_spectator.rs와 해당 wave/T4 테스트에 있다. 코드 capability의 현재 simulation version은 `v3`이며 design validator는 Rust 상수를 읽어 계약의 current observed 값과 대조한다. selector/formula registry의 `v1`은 독립된 의미 버전이며 simulation `v3`과 같은 축이 아니다.
+
+`intervention.yml`은 composite response, typed outcome action, versioned selector/formula registry, typed strategy overlay, pause/terminal lifecycle, resolved decision receipt와 checkpoint v2를 정본화한다. 현재 Rust의 response 적용은 이 계약을 아직 구현하지 않았으므로 `runtime_status: handoff_required`를 유지한다.
 
 검증 명령:
 

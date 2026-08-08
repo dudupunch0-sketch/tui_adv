@@ -1,0 +1,302 @@
+contract_id: combat_intervention_response
+status: canonical
+effective_date: '2026-08-08'
+runtime_status: handoff_required
+schemas:
+  canonical_contract: schema/combat_intervention.schema.json
+  authoring_payload: schema/combat_intervention_response.schema.json
+  roles:
+    canonical_contract: validates_this_entire_yaml_document
+    authoring_payload: validates_each_authored_response_payload_only
+owners:
+  response_resolution: combat_core
+  atomic_application: gamecore
+  authoring_validation: design_validator
+  presentation: renderer
+
+response_payload:
+  optional_fields: [strategy_modifier, special_effect]
+  minimum_present: 1
+  derived_kinds: [effect_only, strategy_only, both]
+  derived_from_payload_presence: true
+  forbidden_fields: [intervention_kind, resolution_kind, hybrid_kind]
+  composite_strategy_applies_on: [special_effect_success, special_effect_failure]
+  preflight_error_result: reject_entire_response_transaction
+  special_effect_failure_is_outcome: true
+
+transaction:
+  boundary: one_pause_before_next_tick
+  input_snapshot: pause_snapshot
+  resolve_before_mutation: [executor, targets, strategy_scope, formula_inputs]
+  phases:
+    - preflight_validate
+    - resolve_selectors_and_formula_inputs
+    - evaluate_special_effect
+    - plan_strategy_and_outcome_actions
+    - atomic_commit
+    - write_decision_receipt
+    - derive_next_segment_seed
+  validation_failure:
+    failure_class: authoring_or_input_preflight_error
+    rollback_scope: entire_response_transaction
+    state_changes: 0
+    cost_changes: 0
+    rng_draws: 0
+    history_changes: 0
+    pause: retained
+  outcome_failure:
+    failure_class: resolved_special_effect_outcome
+    strategy_modifier: applied
+    outcome_actions: failure_branch_only
+  checkpoint_states: [pre_transaction, post_transaction]
+  partial_apply_serialization: forbidden
+  delayed_or_multi_tick_workflow: forbidden
+  rng_draws:
+    strategy_only: 0
+    deterministic_special_effect: 0
+    probabilistic_special_effect: 1
+  probabilistic_rng:
+    namespace: actual_combat
+    source: deterministic_sub_seed
+    provenance_required: true
+
+registry:
+  selector_version: v1
+  formula_version: v1
+  strategy_targeting_version: v1
+  canonical_only_runtime: true
+  unknown_id: validator_error
+  legacy_policy: migration_only
+  legacy_aliases: [self, target, observer, opponent, any]
+  tie_break: stable_combatant_id_ascending
+  response_selector_resolution: once_from_pause_snapshot
+  dynamic_strategy_targeting: reevaluate_each_tick_from_canonical_snapshot
+  selector_ids:
+    executor:
+      - combat.selector.executor.v1.observer
+      - combat.selector.executor.v1.any_capable
+    target:
+      - combat.selector.target.v1.executor_self
+      - combat.selector.target.v1.selected_target
+      - combat.selector.target.v1.nearest_active_enemy
+      - combat.selector.target.v1.lowest_health_active_ally
+      - combat.selector.target.v1.surrounded_active_ally
+      - combat.selector.target.v1.all_active_allies
+  formula_ids:
+    - combat.formula.v1.fixed_chance
+  strategy_targeting_rule_ids:
+    - combat.strategy.targeting.v1.attackers_of
+    - combat.strategy.targeting.v1.rearmost_active_enemy
+    - combat.strategy.targeting.v1.focus_resolved_target
+  version_relationship:
+    registry_versions_independent_from_simulation_version: true
+    same_id_semantic_change: forbidden
+    global_judgement_change_requires_simulation_version_bump: true
+
+legacy_migration:
+  boundary: offline_or_load_time_migration_only
+  canonical_runtime_authoring: reject_legacy_fields_and_aliases
+  legacy_fields: [resolution_kind, executor_selector, target_selector]
+  resolution_kind_mapping:
+    effect: special_effect_only_if_formula_and_effect_branches_are_recoverable
+    choice: designer_review_required
+    unknown: designer_review_required
+  selector_alias_mapping:
+    observer: combat.selector.executor.v1.observer_only_in_executor_selector
+    self: combat.selector.target.v1.executor_self_only_in_target_selector
+    target: selected_target_only_if_single_bound_target_is_proven_else_designer_review_required
+    opponent: designer_review_required
+    any: designer_review_required
+  ambiguous_alias_result: designer_review_required
+  automatic_ambiguous_conversion: forbidden
+  preserve_original_fields_in: migration_provenance
+  legacy_v1_selection_result: legacy_no_effect
+  retroactive_reward_or_effect: forbidden
+
+special_effect:
+  required_fields: [formula_id, formula_parameters, executor_selector_id, target_selector_id, success, failure]
+  outcome_branches: [success, failure]
+  branch_fields: [effect_ids, outcome_actions]
+  outcome_action_kinds: [set_flag, create_loot_entitlement, grant_item]
+  outcome_action_fields:
+    authored_common: [kind]
+    set_flag: [flag_id]
+    create_loot_entitlement: [item_id, source_selector_id, claim_policy]
+    grant_item: [item_id]
+  action_plan_owner: combat_core
+  application_owner: gamecore
+  exactly_once:
+    id_generation_owner:
+      action_id: combat_core
+      entitlement_id: combat_core
+      response_application_transaction_id: gamecore
+      claim_action_id: gamecore
+      claim_application_transaction_id: gamecore
+    deterministic_inputs:
+      action_id: [decision_receipt_fingerprint, outcome_branch, action_index]
+      entitlement_id: [action_id]
+      response_application_transaction_id: [pause_id, decision_receipt_fingerprint]
+      claim_action_id: [entitlement_id, terminal_facts_fingerprint]
+      claim_application_transaction_id: [combat_id, terminal_facts_fingerprint]
+    ledgers:
+      response_actions: decision_receipt.action_receipts
+      applied_action_ids: compact_checkpoint.applied_action_ids
+      entitlements: compact_checkpoint.unresolved_loot_entitlements
+      claims: terminal_receipt.loot_claim_receipts
+      applied_claim_action_ids: compact_checkpoint.applied_claim_action_ids
+    retry:
+      response_action: matching_action_id_returns_already_applied_without_mutation
+      entitlement_creation: matching_entitlement_id_returns_existing_entitlement
+      entitlement_claim: matching_claim_action_id_returns_already_applied_without_mutation
+    transaction_separation:
+      response_application: response_application_transaction_id
+      terminal_loot_claim: claim_application_transaction_id
+      same_transaction_id: forbidden
+  direct_grant:
+    timing: immediate_atomic_commit
+    inventory_result: acquired
+  loot_entitlement:
+    timing: create_on_outcome_claim_on_terminal
+    default_claimable_results: [victory, objective]
+    default_denied_results: [escape, defeat, surrender, capture, forced_stop]
+    default_denied_reasons: [both_sides_defeated]
+    explicit_override: allowed
+
+strategy_modifier:
+  baseline: immutable
+  scopes: [all_allies, role, combatants]
+  operations: [set_role_weight, set_targeting_rule, set_target_policy, clear_override]
+  durations: [until_replaced, next_segment]
+  default_duration: until_replaced
+  combat_end: discard_all_overlays
+  stacking:
+    same_scope_and_field: latest_replaces
+    disjoint_fields: coexist
+    additive_numeric: forbidden
+    arbitrary_json_patch: forbidden
+  precedence: [combatant, role, side, baseline]
+  clear_override_result: restore_baseline
+  invalid_target:
+    first: canonical_fallback
+    otherwise: baseline_targeting
+  special_effect_outcome_dependency: none
+
+lifecycle:
+  states: [running, paused_for_intervention, terminal]
+  terminal_reason_separate: true
+  terminal_result_separate: true
+  pause_is_termination_candidate: false
+  pause_required_fields: [pause_id, tick, segment_index, evaluation_fingerprint, allowed_response_ids]
+  stable_pause_id: required
+  stale_response_match: [pause_id, evaluation_fingerprint, state_revision]
+  stale_response: reject
+  nested_pause: forbidden
+  host_timeout: submit_no_intervention
+  forced_stop:
+    overrides_pause: true
+    invalidates_pause_id: true
+    terminal_priority: 10
+  ko_tick_order:
+    - apply_tick_results
+    - collect_provisional_terminal_facts
+    - detect_intervention
+    - apply_intervention
+    - recompute_terminal_facts
+    - settle_terminal
+
+checkpoint_and_receipt:
+  storage_model: resolved_decision_receipt_plus_compact_state_snapshot
+  save_schema_version: 2
+  combat_checkpoint_schema_version: 2
+  decision_receipt_schema_version: 1
+  receipt_required_fields:
+    - receipt_id
+    - pause_id
+    - evaluation_fingerprint
+    - application_transaction_id
+    - authored_response_id
+    - canonical_registry_ids
+    - resolved_executor_id
+    - resolved_target_ids
+    - resolved_strategy_scope_ids
+    - formula_receipt
+    - strategy_before_fingerprint
+    - strategy_after_fingerprint
+    - effect_ids
+    - outcome_actions
+    - action_receipts
+    - lifecycle_before
+    - lifecycle_after
+    - terminal_facts
+    - raw_log_references
+  formula_receipt_fields:
+    - formula_id
+    - formula_parameters
+    - input_fingerprint
+    - rng_namespace
+    - rng_draw_index
+    - roll
+    - outcome
+  action_receipt_statuses: [applied, already_applied, pending_claim, rejected]
+  compact_snapshot_fields:
+    - lifecycle
+    - active_pause
+    - combatant_state
+    - active_effects
+    - active_strategy_overlays
+    - unresolved_loot_entitlements
+    - applied_action_ids
+    - applied_claim_action_ids
+    - application_transaction_ids
+    - claim_application_transaction_ids
+    - current_segment_seed
+    - raw_log_cursor
+  fingerprints: [intent_fingerprint, decision_receipt_fingerprint, checkpoint_fingerprint]
+  next_segment_seed_input: decision_receipt_fingerprint
+  raw_log_policy:
+    storage: immutable_ordered_stream
+    receipt_reference_fields: [sequence_start, sequence_end, raw_log_fingerprint]
+    duplicate_raw_events_in_receipt: forbidden
+  legacy_v1:
+    selection_status: legacy_no_effect
+    preserve_original_intent: true
+    retroactive_effect_application: forbidden
+    unsupported_simulation_version: explicit_migration_or_reject
+  terminal_receipt_schema_version: 1
+  terminal_receipt_required_fields:
+    - terminal_receipt_id
+    - combat_id
+    - terminal_facts_fingerprint
+    - claim_application_transaction_id
+    - loot_claim_receipts
+    - raw_log_references
+
+provenance_and_logs:
+  receipt_raw_event_policy: references_only_no_event_duplication
+  receipt_entity_references: canonical_entity_ids_only
+  receipt_zone_references: canonical_zone_ids_or_selector_provenance
+  display_labels_in_receipt: forbidden
+  render_time_label_resolution: [combat_display_identity, combat_tactical_zones]
+  hidden_state_capture: only_formula_inputs_and_fingerprints_required_for_replay
+  internal_id_user_visible: forbidden
+  raw_event_contract: combat_log_presentation
+  raw_event_types:
+    decision: intervention_decision_committed
+    strategy: strategy_overlay_applied
+    effect: special_effect_resolved
+    action: outcome_action_applied
+    entitlement: loot_entitlement_created
+    claim: loot_claim_resolved
+  renderer_aggregation: non_groupable_preserve_sequence_and_receipt_reference
+
+runtime_handoff:
+  current_runtime_simulation_version: v3
+  implementation_complete: false
+  required_work_packages:
+    - response_schema_and_registry
+    - atomic_response_transaction
+    - strategy_overlay_runtime
+    - typed_outcome_action_application
+    - lifecycle_and_terminal_integration
+    - receipt_and_checkpoint_v2
+    - renderer_consumer_boundary

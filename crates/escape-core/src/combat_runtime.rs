@@ -936,6 +936,40 @@ mod tests {
             restored.finish().unwrap().fingerprint
         );
     }
+
+    #[test]
+    fn checkpoint_save_envelope_roundtrip_preserves_public_payload() {
+        let mut runtime = CombatRuntime::new(make_request(1)).unwrap();
+        runtime.advance_tick().unwrap();
+        let checkpoint = runtime.checkpoint().unwrap();
+        let envelope = crate::SaveEnvelope {
+            schema_version: crate::SAVE_SCHEMA_VERSION,
+            state: crate::new_game(7),
+            combat_checkpoint: Some(checkpoint.clone()),
+        };
+        let encoded = serde_json::to_string(&envelope).unwrap();
+        let decoded: crate::SaveEnvelope = serde_json::from_str(&encoded).unwrap();
+        assert_eq!(decoded.combat_checkpoint, Some(checkpoint));
+    }
+
+    #[test]
+    fn checkpoint_restore_rejects_schema_and_provenance_mismatch() {
+        let mut runtime = CombatRuntime::new(make_request(1)).unwrap();
+        runtime.advance_tick().unwrap();
+        let checkpoint = runtime.checkpoint().unwrap();
+        let mut wrong_schema = checkpoint.clone();
+        wrong_schema.schema_version += 1;
+        assert!(matches!(
+            CombatRuntime::restore(wrong_schema),
+            Err(CombatRuntimeError::InvalidInput)
+        ));
+        let mut wrong_manifest = checkpoint;
+        wrong_manifest.manifest_fingerprint = "different_manifest".into();
+        assert!(matches!(
+            CombatRuntime::restore(wrong_manifest),
+            Err(CombatRuntimeError::InvalidInput)
+        ));
+    }
 }
 
 pub const COMBAT_RUNTIME_CHECKPOINT_SCHEMA_VERSION: u32 = 1;

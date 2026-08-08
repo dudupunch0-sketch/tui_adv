@@ -1,6 +1,6 @@
 # T4 S2d1 — canonical selection-history segment seed primitive
 
-status: ready-for-implementation
+status: implemented
 date: 2026-08-08
 baseline_commit: `e0e0060`
 baseline_test: `cargo test --workspace --no-fail-fast --quiet` = 0 failures
@@ -97,3 +97,16 @@ renderer/terminal/Web, content/generated artifacts.
 response를 실제 combat state에 적용하거나 paused runtime을 새 seed로 재구성하는 것은 다음
 slice다. public provenance/schema/version bump, 기존 hash algorithm 변경, RNG namespace 추가가
 필요하면 정지 보고한다.
+
+## 8. 구현 보고
+
+- implementation commit: `3d941f2`
+- `CombatRuntimeSelectionHistoryEntry`와 `derive_segment_seed`를
+  `combat_runtime.rs`에 추가했다.
+- canonical key는 `(segment_index, tick, instance_id, opportunity_id, response_id)`이며,
+  duplicate/future segment와 trim-empty id/version/manifest를 `InvalidInput`으로 거부한다.
+- payload는 기존 `stable_fingerprint`와 `CombatRngNamespace`를 사용한다. 새 RNG source,
+  public serde/save 필드, response 적용·resume 재구성은 추가하지 않았다.
+- 테스트: runtime unit 6/6, 기존 opportunity integration 12/12, workspace
+  `cargo test --workspace --no-fail-fast --quiet` 0 failures.
+- `cargo fmt --all -- --check`, `git diff --check` 통과.

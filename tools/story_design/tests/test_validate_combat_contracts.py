@@ -56,7 +56,7 @@ def special_effect_payload():
     return {
         "special_effect": {
             "formula_id": "combat.formula.v1.fixed_chance",
-            "formula_parameters": {"chance_hundredths": 5000},
+            "formula_parameters": {"chance_percent": 50},
             "executor_selector_id": "combat.selector.executor.v1.observer",
             "target_selector_id": "combat.selector.target.v1.selected_target",
             "success": {
@@ -140,6 +140,45 @@ def test_authoring_schema_rejects_empty_and_legacy_kind_payloads(tmp_path):
     assert "unknown property 'resolution_kind'" in run(
         root, write_payload(tmp_path, legacy)
     ).stdout
+
+
+@pytest.mark.parametrize(
+    ("parameters", "message"),
+    [
+        ({"chance_percent": -1}, "less than minimum 0"),
+        ({"chance_percent": 101}, "greater than maximum 100"),
+        ({"chance_percent": 50.5}, "expected type integer"),
+        ({"chance_percent": "50"}, "expected type integer"),
+        ({"chance_percent": True}, "expected type integer"),
+        ({}, "missing required property 'chance_percent'"),
+        ({"chance_percent": 50, "unexpected": 1}, "unknown property 'unexpected'"),
+    ],
+)
+def test_fixed_chance_authoring_parameters_are_strict(tmp_path, parameters, message):
+    root = fixture(tmp_path)
+    payload = special_effect_payload()
+    payload["special_effect"]["formula_parameters"] = parameters
+    result = run(root, write_payload(tmp_path, payload))
+    assert result.returncode != 0
+    assert message in result.stdout
+
+
+@pytest.mark.parametrize("chance_percent", [0, 100])
+def test_fixed_chance_authoring_accepts_deterministic_boundaries(tmp_path, chance_percent):
+    root = fixture(tmp_path)
+    payload = special_effect_payload()
+    payload["special_effect"]["formula_parameters"] = {"chance_percent": chance_percent}
+    result = run(root, write_payload(tmp_path, payload))
+    assert result.returncode == 0, result.stdout
+
+
+def test_fixed_chance_authoring_rejects_unknown_formula(tmp_path):
+    root = fixture(tmp_path)
+    payload = special_effect_payload()
+    payload["special_effect"]["formula_id"] = "combat.formula.v1.unknown"
+    result = run(root, write_payload(tmp_path, payload))
+    assert result.returncode != 0
+    assert "expected const 'combat.formula.v1.fixed_chance'" in result.stdout
 
 
 @pytest.mark.parametrize(

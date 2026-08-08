@@ -72,11 +72,14 @@
         "resolve_before_mutation": {"const": ["executor", "targets", "strategy_scope", "formula_inputs"]},
         "phases": {"const": ["preflight_validate", "resolve_selectors_and_formula_inputs", "evaluate_special_effect", "plan_strategy_and_outcome_actions", "atomic_commit", "write_decision_receipt", "derive_next_segment_seed"]},
         "validation_failure": {
-          "const": {
-            "failure_class": "authoring_or_input_preflight_error",
-            "rollback_scope": "entire_response_transaction",
-            "state_changes": 0, "cost_changes": 0, "rng_draws": 0, "history_changes": 0,
-            "pause": "retained"
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["failure_class", "rollback_scope", "state_changes", "cost_changes", "rng_draws", "history_changes", "pause", "receipt"],
+          "properties": {
+            "failure_class": {"const": "authoring_or_input_preflight_error"},
+            "rollback_scope": {"const": "entire_response_transaction"},
+            "state_changes": {"const": 0}, "cost_changes": {"const": 0}, "rng_draws": {"const": 0}, "history_changes": {"const": 0},
+            "pause": {"const": "retained"}, "receipt": {"const": "none"}
           }
         },
         "outcome_failure": {
@@ -90,7 +93,28 @@
         "partial_apply_serialization": {"const": "forbidden"},
         "delayed_or_multi_tick_workflow": {"const": "forbidden"},
         "rng_draws": {"const": {"strategy_only": 0, "deterministic_special_effect": 0, "probabilistic_special_effect": 1}},
-        "probabilistic_rng": {"const": {"namespace": "actual_combat", "source": "deterministic_sub_seed", "provenance_required": true}}
+        "probabilistic_rng": {
+          "type": "object", "additionalProperties": false,
+          "required": ["namespace", "source", "provenance_required", "canonical_sub_seed_inputs", "canonical_encoding", "draw_index", "forbidden_inputs"],
+          "properties": {
+            "namespace": {"const": "actual_combat"}, "source": {"const": "deterministic_sub_seed"}, "provenance_required": {"const": true},
+            "canonical_sub_seed_inputs": {"const": ["effective_segment_seed", "simulation_version", "manifest_fingerprint", "segment_index", "pause_tick", "pause_id", "evaluation_fingerprint", "authored_response_id", "formula_id", "normalized_formula_parameters", "resolved_executor_id", "canonical_ordered_target_ids"]},
+            "canonical_encoding": {
+              "type": "object", "additionalProperties": false,
+              "required": ["input", "serialization", "whitespace", "object_key_order", "integer_encoding", "normalized_formula_parameters_key_order", "sub_seed_derivation_hash"],
+              "properties": {
+                "input": {"const": "ordered_tuple_in_declared_input_order"},
+                "serialization": {"const": "utf_8_canonical_json_array"},
+                "whitespace": {"const": "none"},
+                "object_key_order": {"const": "lexicographic"},
+                "integer_encoding": {"const": "decimal"},
+                "normalized_formula_parameters_key_order": {"const": "lexicographic"},
+                "sub_seed_derivation_hash": {"const": "simulation_version_owned_deterministic_rng_primitive"}
+              }
+            }, "draw_index": {"const": 0},
+            "forbidden_inputs": {"const": ["wall_clock", "frame", "renderer", "forecast"]}
+          }
+        }
       }
     },
     "registry": {
@@ -100,7 +124,7 @@
         "selector_version", "formula_version", "strategy_targeting_version", "canonical_only_runtime",
         "unknown_id", "legacy_policy", "legacy_aliases", "tie_break", "response_selector_resolution",
         "dynamic_strategy_targeting", "selector_ids", "formula_ids", "strategy_targeting_rule_ids",
-        "version_relationship"
+        "version_relationship", "opportunity_provenance", "selector_definitions", "formula_definitions"
       ],
       "properties": {
         "selector_version": {"const": "v1"},
@@ -113,6 +137,46 @@
         "tie_break": {"const": "stable_combatant_id_ascending"},
         "response_selector_resolution": {"const": "once_from_pause_snapshot"},
         "dynamic_strategy_targeting": {"const": "reevaluate_each_tick_from_canonical_snapshot"},
+        "opportunity_provenance": {
+          "type": "object", "additionalProperties": false,
+          "required": ["required_fields", "bound_target_ids", "source"],
+          "properties": {
+            "required_fields": {"const": ["bound_target_ids"]},
+            "bound_target_ids": {"const": "immutable_single_bound_target_ids_or_empty"},
+            "source": {"const": "pause_snapshot"}
+          }
+        },
+        "selector_definitions": {
+          "type": "object", "additionalProperties": false,
+          "required": ["executor_self", "selected_target", "nearest_active_enemy", "lowest_health_active_ally", "surrounded_active_ally", "all_active_allies", "multi_target_selector_ids", "zero_target_result"],
+          "properties": {
+            "executor_self": {"type": "object", "additionalProperties": false, "required": ["resolves"], "properties": {"resolves": {"const": "executor_combatant_exactly_one"}}},
+            "selected_target": {"type": "object", "additionalProperties": false, "required": ["resolves", "ai_current_target_fallback"], "properties": {"resolves": {"const": "immutable_single_bound_target_from_pause_opportunity_provenance"}, "ai_current_target_fallback": {"const": "forbidden"}}},
+            "nearest_active_enemy": {"type": "object", "additionalProperties": false, "required": ["candidate_set", "ordering"], "properties": {"candidate_set": {"const": "active_enemy_combatants_opposite_side"}, "ordering": {"const": "minimum_occupied_footprint_hex_distance_between_executor_and_candidate_ascending_then_stable_id"}}},
+            "lowest_health_active_ally": {"type": "object", "additionalProperties": false, "required": ["candidate_set", "ordering"], "properties": {"candidate_set": {"const": "active_same_side_combatants_including_executor"}, "ordering": {"const": "current_hp_divided_by_max_hp_ascending_then_stable_id"}}},
+            "surrounded_active_ally": {"type": "object", "additionalProperties": false, "required": ["candidate_set", "neighborhood", "predicate", "candidate_self_occupancy", "exclusions", "ordering", "terrain_and_boundary_inputs"], "properties": {"candidate_set": {"const": "active_same_side_combatants_including_executor"}, "neighborhood": {"const": "six_adjacent_hexes"}, "predicate": {"const": "enemy_occupancy_at_least_3_and_ally_occupancy_zero"}, "candidate_self_occupancy": {"const": "excluded_from_ally_occupancy_count"}, "exclusions": {"const": ["ko", "departed", "captured"]}, "ordering": {"const": "enemy_count_descending_then_stable_id"}, "terrain_and_boundary_inputs": {"const": "excluded"}}},
+            "all_active_allies": {"type": "object", "additionalProperties": false, "required": ["candidate_set", "ordering", "multi_target"], "properties": {"candidate_set": {"const": "active_same_side_combatants_including_executor"}, "ordering": {"const": "stable_id_ascending"}, "multi_target": {"const": true}}},
+            "multi_target_selector_ids": {"const": ["combat.selector.target.v1.all_active_allies"]},
+            "zero_target_result": {"const": "preflight_error"}
+          }
+        },
+        "formula_definitions": {
+          "type": "object", "additionalProperties": false,
+          "required": ["combat.formula.v1.fixed_chance"],
+          "properties": {
+            "combat.formula.v1.fixed_chance": {
+              "type": "object", "additionalProperties": false,
+              "required": ["parameters", "authored_inputs_only", "modifiers", "rounding", "clamp", "roll", "success", "rng_draws", "deterministic_outcomes", "deterministic_receipt_rng_fields"],
+              "properties": {
+                "parameters": {"type": "object", "additionalProperties": false, "required": ["required", "properties", "type", "additional_properties", "chance_percent"], "properties": {"required": {"const": ["chance_percent"]}, "properties": {"const": ["chance_percent"]}, "type": {"const": "object"}, "additional_properties": {"const": false}, "chance_percent": {"type": "object", "additionalProperties": false, "required": ["type", "minimum", "maximum"], "properties": {"type": {"const": "integer"}, "minimum": {"const": 0}, "maximum": {"const": 100}}}}},
+                "authored_inputs_only": {"const": true}, "modifiers": {"const": "forbidden"}, "rounding": {"const": "forbidden"}, "clamp": {"const": "forbidden"}, "roll": {"const": "integer_range_0_99"}, "success": {"const": "roll_less_than_chance_percent"},
+                "rng_draws": {"const": {"zero_percent": 0, "one_to_ninety_nine_percent": 1, "one_hundred_percent": 0}},
+                "deterministic_outcomes": {"const": {"zero_percent": "failure", "one_hundred_percent": "success"}},
+                "deterministic_receipt_rng_fields": {"type": "object", "additionalProperties": false, "required": ["rng_namespace", "rng_draw_index", "roll"], "properties": {"rng_namespace": {"const": "actual_combat"}, "rng_draw_index": {"const": null}, "roll": {"const": null}}}
+              }
+            }
+          }
+        },
         "selector_ids": {
           "type": "object",
           "additionalProperties": false,
@@ -212,7 +276,7 @@
       "required": [
         "storage_model", "save_schema_version", "combat_checkpoint_schema_version",
         "decision_receipt_schema_version", "receipt_required_fields", "formula_receipt_fields",
-        "action_receipt_statuses", "compact_snapshot_fields", "fingerprints", "next_segment_seed_input",
+        "formula_receipt_rules", "receipt_optional_fields", "action_receipt_statuses", "compact_snapshot_fields", "fingerprints", "next_segment_seed_input",
         "raw_log_policy", "legacy_v1", "terminal_receipt_schema_version", "terminal_receipt_required_fields"
       ],
       "properties": {
@@ -220,8 +284,18 @@
         "save_schema_version": {"const": 2},
         "combat_checkpoint_schema_version": {"const": 2},
         "decision_receipt_schema_version": {"const": 1},
-        "receipt_required_fields": {"type": "array", "minItems": 1, "uniqueItems": true},
-        "formula_receipt_fields": {"type": "array", "minItems": 1, "uniqueItems": true},
+        "receipt_required_fields": {"const": ["receipt_id", "pause_id", "evaluation_fingerprint", "application_transaction_id", "authored_response_id", "canonical_registry_ids", "resolved_executor_id", "resolved_target_ids", "resolved_strategy_scope_ids", "strategy_before_fingerprint", "strategy_after_fingerprint", "effect_ids", "outcome_actions", "action_receipts", "lifecycle_before", "lifecycle_after", "terminal_facts", "raw_log_references"]},
+        "formula_receipt_fields": {"const": ["formula_id", "normalized_formula_parameters", "input_fingerprint", "rng_namespace", "rng_draw_index", "roll", "outcome"]},
+        "receipt_optional_fields": {"const": ["formula_receipt"]},
+        "formula_receipt_rules": {
+          "type": "object", "additionalProperties": false,
+          "required": ["strategy_only", "deterministic_zero_or_one_hundred", "probabilistic_one_to_ninety_nine"],
+          "properties": {
+            "strategy_only": {"const": "absent"},
+            "deterministic_zero_or_one_hundred": {"type": "object", "additionalProperties": false, "required": ["rng_namespace", "rng_draw_index", "roll"], "properties": {"rng_namespace": {"const": "actual_combat"}, "rng_draw_index": {"const": null}, "roll": {"const": null}}},
+            "probabilistic_one_to_ninety_nine": {"type": "object", "additionalProperties": false, "required": ["rng_namespace", "rng_draw_index", "roll"], "properties": {"rng_namespace": {"const": "actual_combat"}, "rng_draw_index": {"const": 0}, "roll": {"const": "integer_range_0_99"}}}
+          }
+        },
         "action_receipt_statuses": {"const": ["applied", "already_applied", "pending_claim", "rejected"]},
         "compact_snapshot_fields": {"type": "array", "minItems": 1, "uniqueItems": true},
         "fingerprints": {"const": ["intent_fingerprint", "decision_receipt_fingerprint", "checkpoint_fingerprint"]},

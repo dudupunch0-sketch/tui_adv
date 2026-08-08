@@ -60,6 +60,16 @@ Response selector는 pause snapshot에서 한 번 resolve하고 stable combatant
 
 Formula ID와 selector ID의 v1은 의미 registry version이다. 현재 runtime simulation version `v3`과 독립된 축이다. 동일 canonical ID의 의미를 제자리 수정하지 않는다. 전투 전체 판정 순서·RNG·좌표 의미가 바뀔 때만 simulation version을 올린다.
 
+### WP-I2b 승인 정본 보충
+
+이 보충은 v1의 의미를 변경하지 않고, 기존에 처음 열어 둔 의미를 완성한다. `combat.formula.v1.fixed_chance`는 authored `chance_percent` 정수 하나만 받으며 0..=100만 유효하다. unknown/missing/type/range 오류는 preflight 실패이고, executor·target·strategy 보정, clamp, round는 없다. roll은 0..99이며 `roll < chance_percent`가 성공이다. 0/100은 각각 항상 실패/성공으로 RNG 0회, roll/draw index null이다. 1..99는 정확히 1회 draw를 사용한다. 능력치 기반 판정은 별도 formula ID이며 새 formula 추가 시 schema도 갱신한다.
+
+Probabilistic namespace는 `actual_combat`이다. canonical sub-seed 입력은 명시된 순서의 ordered tuple이며 UTF-8 canonical JSON array(whitespace 없음), object key lexicographic order, integer decimal encoding, `normalized_formula_parameters` key lexicographic order를 사용한다. sub-seed derivation hash는 simulation-version-owned deterministic RNG primitive을 사용한다. wall clock/frame/renderer/forecast는 금지하며 draw index는 0이다. Receipt는 `formula_id`, `normalized_formula_parameters`, `input_fingerprint`, `rng_namespace`, nullable `rng_draw_index`, nullable `roll`, `outcome`을 저장하고, strategy-only에는 formula receipt 자체가 없다.
+
+Selectors는 pause snapshot에서 1회 resolve한다. executor_self는 executor와 일치하는 정확히 한 combatant, selected_target은 pause/opportunity provenance의 immutable single bound target만 사용하며 AI 현재 target fallback은 금지한다. nearest active enemy는 반대편 active 중 executor와 후보의 occupied footprint 간 최소 hex distance 최솟값, lowest health active ally는 같은 side active/self 포함의 current_hp/max_hp 최솟값, surrounded active ally는 executor를 포함한 anchor 인접 6칸의 active same-side 후보에서 active enemy 3칸 이상·active ally 0칸 후보를 enemy 수 내림차순으로 선택한다. 대상 본인의 점유만 ally occupancy 계산에서 제외하며 executor를 후보에서 제외하지 않는다. surrounded 판정은 terrain/boundary를 포함하지 않고 KO/이탈/포획을 제외한다. all active allies만 multi-target이며 stable ID 오름차순이고, 0 target은 preflight 실패다. `bound_target_ids`는 pause/opportunity provenance에 보존한다.
+
+Preflight 실패는 mutation/cost/RNG/history/receipt 없이 pause를 유지한다. resolved failure는 정상 outcome이며 failure branch만 적용하고 composite strategy는 결과와 무관하게 적용한다. 이 결정은 runtime 구현을 완료로 표시하지 않으며 다음 runtime handoff에서 소비한다.
+
 ## 4. Strategy modifier
 
 전투 시작 전 역할·정책은 immutable baseline이다. 개입은 baseline을 직접 고치지 않고 typed overlay를 적용한다.

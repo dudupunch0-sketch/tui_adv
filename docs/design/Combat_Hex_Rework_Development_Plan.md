@@ -8,6 +8,10 @@ baseline: `6f28160` (docs: define combat contract ownership, #194)
 
 이 문서는 **개발 플랜**이다. 방향, 트랙 분해, 트랙 간 의존, 결정 항목을 소유한다.
 
+> **처음 이 리워크를 이어받는다면 [Combat_Hex_Rework_Handoff.md](Combat_Hex_Rework_Handoff.md)를
+> 먼저 읽는다.** 현재 진행 상태, 지어진 것, 남은 것, 작업 규율, 이 저장소에서 밟기 쉬운 함정을
+> 한 문서로 정리해 두었다. 이 문서는 그 다음이다.
+
 **구현 플랜이 아니다.** WP 목록, 소유 파일, 커밋 단위, 검증 명령은 각 트랙이 열릴 때
 `fable_<주제>_step1_<YYMMDDHHMM>.md`로 따로 만든다 (AGENTS.md의 플랜 문서 컨벤션).
 여기서 다음 단계의 schema를 미리 확정하지 않는다 —

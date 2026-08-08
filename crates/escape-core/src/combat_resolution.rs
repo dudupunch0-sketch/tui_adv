@@ -1033,6 +1033,41 @@ impl CombatResolutionStepper {
                     }
                 }
             }
+            self.full_log.push(log(
+                frame.tick,
+                sequence,
+                CombatResolutionLogTag::Collision,
+                CombatLogImportance::Routine,
+                attack,
+                target_id,
+                i64::from(collision),
+                None,
+            ));
+            sequence += 1;
+            self.full_log.push(log(
+                frame.tick,
+                sequence,
+                CombatResolutionLogTag::AttackRoll,
+                CombatLogImportance::Important,
+                attack,
+                target_id,
+                i64::from(roll_value),
+                None,
+            ));
+            sequence += 1;
+            if hit {
+                self.full_log.push(log(
+                    frame.tick,
+                    sequence,
+                    CombatResolutionLogTag::DamageApplied,
+                    CombatLogImportance::Decisive,
+                    attack,
+                    target_id,
+                    damage_hundredths,
+                    None,
+                ));
+                sequence += 1;
+            }
             outcomes.push(CombatAttackOutcome {
                 attack_id: attack.id.clone(),
                 actor_id: actor.id.clone(),
@@ -1056,5 +1091,16 @@ impl CombatResolutionStepper {
             combatants,
             fingerprint,
         })
+    }
+    pub(crate) fn finish(self) -> CombatResolutionState {
+        CombatResolutionState {
+            combatants: self.combatants.into_values().collect(),
+            active_effects: self.active_effects,
+            applied_effect_ids: self.applied,
+            suppressed_effect_ids: self.suppressed,
+        }
+    }
+    pub(crate) fn full_log(&self) -> &[CombatResolutionLogEvent] {
+        &self.full_log
     }
 }

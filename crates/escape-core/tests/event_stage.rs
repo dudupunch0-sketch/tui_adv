@@ -164,6 +164,7 @@ fn old_save_json_defaults_event_cursor_fields() {
     let state = new_game_from_content_at(7, &index, "printer_area").unwrap();
     let mut value = serde_json::to_value(SaveEnvelope {
         schema_version: 1,
+        combat_checkpoint: None,
         state,
     })
     .unwrap();

@@ -321,6 +321,21 @@ impl CombatSimulation {
             move_gauges,
         })
     }
+    pub(crate) fn sync_active_from_health(
+        &mut self,
+        health_hundredths: &BTreeMap<String, i64>,
+    ) -> Result<(), CombatSimulationError> {
+        for participant in self.participants.values_mut() {
+            if health_hundredths
+                .get(&participant.id)
+                .is_some_and(|health| *health <= 0)
+            {
+                participant.active = false;
+            }
+        }
+        Ok(())
+    }
+
     pub fn select_target(
         &self,
         actor: &CombatSimulationParticipant,
@@ -412,7 +427,7 @@ impl CombatSimulation {
         // a speed slower than the threshold yields zero actions on some
         // ticks.
         let mut move_actions: BTreeMap<String, i32> = BTreeMap::new();
-        for actor in snapshot.values() {
+        for actor in snapshot.values().filter(|actor| actor.active) {
             let speed = actor
                 .move_speed_hundredths
                 .unwrap_or(ACTION_THRESHOLD_HUNDREDTHS);
@@ -428,7 +443,7 @@ impl CombatSimulation {
             move_actions.insert(actor.id.clone(), actions);
         }
         let mut moves = Vec::new();
-        for actor in snapshot.values() {
+        for actor in snapshot.values().filter(|actor| actor.active) {
             // T3 §4-2: target selection runs every tick unconditionally,
             // never gated on the movement-cadence gauge above. An attack's
             // own, independent attack-speed gauge (`combat_resolution.rs`)
@@ -530,6 +545,7 @@ impl CombatSimulation {
         // doc comment for why neither one is allowed to win the tile.
         let occupies_by_actor: BTreeMap<&str, &[HexCoord]> = snapshot
             .values()
+            .filter(|p| p.active)
             .map(|p| (p.id.as_str(), p.occupies.as_slice()))
             .collect();
         resolve_destination_contention(&mut moves, &occupies_by_actor)?;
@@ -711,7 +727,7 @@ fn occupancy_snapshot(
     participants: &BTreeMap<String, CombatSimulationParticipant>,
 ) -> Result<HexOccupancy, CombatSimulationError> {
     let mut occupancy = HexOccupancy::new();
-    for p in participants.values() {
+    for p in participants.values().filter(|p| p.active) {
         let footprint = participant_footprint(p)?;
         occupancy
             .try_occupy(&footprint, &p.id)

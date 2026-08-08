@@ -145,6 +145,71 @@ pub fn resolve(
 ) -> Result<CombatResolutionResult, CombatResolutionError> {
     let execution =
         execute_combat(request.execution.clone()).map_err(CombatResolutionError::Execution)?;
+    let participants: BTreeMap<_, _> = request
+        .execution
+        .input
+        .participants
+        .iter()
+        .map(|p| (p.id.clone(), p))
+        .collect();
+    let active_allies: Vec<&CombatSimulationParticipant> = participants
+        .values()
+        .copied()
+        .filter(|p| p.active && p.side == CombatSide::Ally)
+        .collect();
+    let active_enemies: Vec<&CombatSimulationParticipant> = participants
+        .values()
+        .copied()
+        .filter(|p| p.active && p.side == CombatSide::Enemy)
+        .collect();
+    let early_conclusion_is_decidable = !active_allies.is_empty() && !active_enemies.is_empty();
+    let mut stepper = CombatResolutionStepper::new(&request, execution.clone())?;
+    let mut frames = Vec::new();
+    for frame in &execution.frames {
+        let resolution_frame = stepper.step(frame)?;
+        let should_stop = if early_conclusion_is_decidable {
+            let health_by_id: BTreeMap<&str, i64> = resolution_frame
+                .combatants
+                .iter()
+                .map(|c| (c.id.as_str(), c.current_health_hundredths))
+                .collect();
+            let health_of = |id: &str| health_by_id.get(id).copied().unwrap_or(i64::MAX);
+            side_all_defeated(active_allies.iter().copied(), health_of)
+                || side_all_defeated(active_enemies.iter().copied(), health_of)
+        } else {
+            false
+        };
+        frames.push(resolution_frame);
+        if should_stop {
+            break;
+        }
+    }
+    let full_log = stepper.full_log().to_vec();
+    let state = stepper.finish();
+    let core_log = full_log
+        .iter()
+        .filter(|event| event.importance >= CombatLogImportance::Important)
+        .cloned()
+        .collect();
+    let fingerprint = fingerprint(&(execution.fingerprint.clone(), &frames, &state, &full_log));
+    Ok(CombatResolutionResult {
+        execution,
+        frames,
+        state,
+        full_log,
+        core_log,
+        fingerprint,
+    })
+}
+
+// Kept as a local parity oracle while the stepper is exercised by the existing
+// resolution suite; remove after the next slice adds direct stepper fixtures.
+#[allow(dead_code)]
+fn resolve_legacy(
+    request: CombatResolutionRequest,
+) -> Result<CombatResolutionResult, CombatResolutionError> {
+    let execution =
+        execute_combat(request.execution.clone()).map_err(CombatResolutionError::Execution)?;
     request
         .catalog
         .validate()
@@ -790,3 +855,549 @@ impl std::fmt::Display for CombatResolutionError {
     }
 }
 impl std::error::Error for CombatResolutionError {}
+
+#[allow(dead_code)]
+pub(crate) struct CombatResolutionStepper {
+    pub(crate) execution: CombatExecutionResult,
+    pub(crate) participants: BTreeMap<String, CombatSimulationParticipant>,
+    pub(crate) combatants: BTreeMap<String, CombatResolutionCombatant>,
+    pub(crate) defenses: BTreeMap<String, CombatDefenseProfile>,
+    pub(crate) attacks: BTreeMap<String, CombatAttackDefinition>,
+    pub(crate) catalog: BTreeMap<String, CombatEffectDefinition>,
+    pub(crate) active_effects: Vec<CombatEffectInstance>,
+    pub(crate) attack_gauges: BTreeMap<String, i64>,
+    pub(crate) applied: Vec<String>,
+    pub(crate) suppressed: Vec<String>,
+    pub(crate) full_log: Vec<CombatResolutionLogEvent>,
+}
+impl CombatResolutionStepper {
+    pub(crate) fn new(
+        request: &CombatResolutionRequest,
+        execution: CombatExecutionResult,
+    ) -> Result<Self, CombatResolutionError> {
+        request
+            .catalog
+            .validate()
+            .map_err(CombatResolutionError::State)?;
+        let participants = request
+            .execution
+            .input
+            .participants
+            .iter()
+            .map(|p| (p.id.clone(), p.clone()))
+            .collect::<BTreeMap<_, _>>();
+        let mut combatants = BTreeMap::new();
+        for c in &request.execution.input.state.combatants {
+            combatants.insert(
+                c.id.clone(),
+                CombatResolutionCombatant {
+                    id: c.id.clone(),
+                    current_health_hundredths: i64::from(c.current_health)
+                        .checked_mul(100)
+                        .ok_or(CombatResolutionError::Overflow)?,
+                    maximum_health_hundredths: i64::from(c.maximum_health)
+                        .checked_mul(100)
+                        .ok_or(CombatResolutionError::Overflow)?,
+                    balance_hundredths: i64::from(c.balance)
+                        .checked_mul(100)
+                        .ok_or(CombatResolutionError::Overflow)?,
+                    maximum_balance_hundredths: i64::from(c.maximum_balance)
+                        .checked_mul(100)
+                        .ok_or(CombatResolutionError::Overflow)?,
+                },
+            );
+        }
+        let refs = participants.iter().map(|(id, p)| (id.clone(), p)).collect();
+        validate_inputs(request, &refs, &combatants)?;
+        let defenses = request
+            .defenses
+            .iter()
+            .map(|d| (d.combatant_id.clone(), d.clone()))
+            .collect();
+        let attacks = request
+            .attacks
+            .iter()
+            .map(|a| (a.id.clone(), a.clone()))
+            .collect::<BTreeMap<_, _>>();
+        let catalog = request
+            .catalog
+            .effects
+            .iter()
+            .map(|e| (e.id.clone(), e.clone()))
+            .collect();
+        let mut active_effects = request.execution.input.state.active_effects.clone();
+        active_effects.sort_by(|a, b| {
+            a.definition_id
+                .cmp(&b.definition_id)
+                .then(a.target_selector.cmp(&b.target_selector))
+                .then(a.source.cmp(&b.source))
+                .then(a.stacking_group.cmp(&b.stacking_group))
+        });
+        let attack_gauges = attacks.keys().map(|id| (id.clone(), 0)).collect();
+        Ok(Self {
+            execution,
+            participants,
+            combatants,
+            defenses,
+            attacks,
+            catalog,
+            active_effects,
+            attack_gauges,
+            applied: vec![],
+            suppressed: vec![],
+            full_log: vec![],
+        })
+    }
+}
+
+impl CombatResolutionStepper {
+    pub(crate) fn step(
+        &mut self,
+        frame: &crate::CombatTickFrame,
+    ) -> Result<CombatResolutionFrame, CombatResolutionError> {
+        let health_snapshot: BTreeMap<String, i64> = self
+            .combatants
+            .iter()
+            .map(|(id, combatant)| (id.clone(), combatant.current_health_hundredths))
+            .collect();
+        let mut attack_fires = BTreeMap::new();
+        for attack in self.attacks.values() {
+            let speed = attack
+                .attack_speed_hundredths
+                .unwrap_or(ACTION_THRESHOLD_HUNDREDTHS);
+            let gauge = self
+                .attack_gauges
+                .get_mut(&attack.id)
+                .ok_or(CombatResolutionError::InvalidInput)?;
+            *gauge = gauge
+                .checked_add(speed)
+                .ok_or(CombatResolutionError::Overflow)?;
+            let mut fires = 0u32;
+            while *gauge >= ACTION_THRESHOLD_HUNDREDTHS {
+                fires += 1;
+                *gauge -= ACTION_THRESHOLD_HUNDREDTHS;
+            }
+            attack_fires.insert(attack.id.clone(), fires);
+        }
+        let mut outcomes = Vec::new();
+        let mut sequence = 0u32;
+        for attack in self.attacks.values() {
+            let fires = attack_fires.get(&attack.id).copied().unwrap_or(0);
+            if fires == 0 {
+                continue;
+            }
+            let Some(intent) = frame.moves.iter().find(|m| m.actor_id == attack.actor_id) else {
+                continue;
+            };
+            let Some(target_id) = &intent.target_id else {
+                continue;
+            };
+            let (Some(actor), Some(target)) = (
+                self.participants.get(&attack.actor_id),
+                self.participants.get(target_id),
+            ) else {
+                continue;
+            };
+            if actor.side == target.side || !actor.active || !target.active {
+                continue;
+            }
+            if health_snapshot.get(&actor.id).is_some_and(|h| *h <= 0)
+                || health_snapshot.get(target_id).is_some_and(|h| *h <= 0)
+            {
+                continue;
+            }
+            for fire_index in 0..fires {
+                let actor_position = frame
+                    .positions
+                    .get(&actor.id)
+                    .ok_or(CombatResolutionError::InvalidInput)?;
+                let target_position = frame
+                    .positions
+                    .get(target_id)
+                    .ok_or(CombatResolutionError::InvalidInput)?;
+                let distance = footprint_distance(
+                    *actor_position,
+                    &actor.occupies,
+                    *target_position,
+                    &target.occupies,
+                )
+                .map_err(|e| {
+                    CombatResolutionError::Simulation(CombatSimulationError::HexMath(e))
+                })?;
+                let collision =
+                    distance <= i64::from(actor.collision_radius + target.collision_radius);
+                let in_range = distance <= i64::from(attack.attack_range);
+                let roll_value = roll(
+                    self.execution.effective_seed,
+                    self.execution.namespace,
+                    frame.tick,
+                    &attack.id,
+                    &actor.id,
+                    target_id,
+                    fire_index as u64,
+                );
+                let hit = collision
+                    && in_range
+                    && (attack.accuracy_percent == 100
+                        || (attack.accuracy_percent > 0 && roll_value < attack.accuracy_percent));
+                let mut damage_hundredths = 0;
+                let mut balance_delta_hundredths = if collision {
+                    -attack.collision_balance_hundredths
+                } else {
+                    0
+                };
+                let mut applied_effect_ids = Vec::new();
+                let mut suppressed_effect_ids = Vec::new();
+                self.full_log.push(log(
+                    frame.tick,
+                    sequence,
+                    CombatResolutionLogTag::Collision,
+                    CombatLogImportance::Routine,
+                    attack,
+                    target_id,
+                    i64::from(collision),
+                    None,
+                ));
+                sequence += 1;
+                self.full_log.push(log(
+                    frame.tick,
+                    sequence,
+                    CombatResolutionLogTag::AttackRoll,
+                    CombatLogImportance::Important,
+                    attack,
+                    target_id,
+                    i64::from(roll_value),
+                    None,
+                ));
+                sequence += 1;
+                if hit {
+                    let defense = self
+                        .defenses
+                        .get(target_id)
+                        .ok_or(CombatResolutionError::InvalidInput)?;
+                    damage_hundredths = damage(attack, defense)?;
+                    balance_delta_hundredths -= attack
+                        .balance_power_hundredths
+                        .saturating_sub(defense.balance_resistance_hundredths);
+                    let state = self
+                        .combatants
+                        .get_mut(target_id)
+                        .ok_or(CombatResolutionError::InvalidInput)?;
+                    state.current_health_hundredths = state
+                        .current_health_hundredths
+                        .saturating_sub(damage_hundredths)
+                        .max(0);
+                    self.full_log.push(log(
+                        frame.tick,
+                        sequence,
+                        CombatResolutionLogTag::DamageApplied,
+                        CombatLogImportance::Decisive,
+                        attack,
+                        target_id,
+                        damage_hundredths,
+                        None,
+                    ));
+                    sequence += 1;
+                    let mut effects = attack.effects.clone();
+                    effects.sort_by(|a, b| {
+                        a.effect_id
+                            .cmp(&b.effect_id)
+                            .then(a.chance_percent.cmp(&b.chance_percent))
+                    });
+                    for effect in effects {
+                        let effect_stream = effect
+                            .effect_id
+                            .as_bytes()
+                            .iter()
+                            .fold(1u64 + fire_index as u64, |a, b| {
+                                a.wrapping_add(u64::from(*b))
+                            });
+                        let effect_roll = roll(
+                            self.execution.effective_seed,
+                            self.execution.namespace,
+                            frame.tick,
+                            &attack.id,
+                            &actor.id,
+                            target_id,
+                            effect_stream,
+                        );
+                        if effect.chance_percent == 0
+                            || (effect.chance_percent < 100 && effect_roll >= effect.chance_percent)
+                        {
+                            suppressed_effect_ids.push(effect.effect_id.clone());
+                            self.suppressed.push(effect.effect_id.clone());
+                            self.full_log.push(log(
+                                frame.tick,
+                                sequence,
+                                CombatResolutionLogTag::EffectSuppressed,
+                                CombatLogImportance::Important,
+                                attack,
+                                target_id,
+                                i64::from(effect_roll),
+                                Some(effect.effect_id.clone()),
+                            ));
+                            sequence += 1;
+                            continue;
+                        }
+                        let def = self
+                            .catalog
+                            .get(&effect.effect_id)
+                            .ok_or(CombatResolutionError::InvalidInput)?;
+                        let catalog_refs: BTreeMap<_, _> = self
+                            .catalog
+                            .iter()
+                            .map(|(id, definition)| (id.clone(), definition))
+                            .collect();
+                        if apply_effect(&mut self.active_effects, def, target_id, &catalog_refs) {
+                            applied_effect_ids.push(effect.effect_id.clone());
+                            self.applied.push(effect.effect_id.clone());
+                            self.full_log.push(log(
+                                frame.tick,
+                                sequence,
+                                CombatResolutionLogTag::EffectApplied,
+                                CombatLogImportance::Important,
+                                attack,
+                                target_id,
+                                i64::from(effect_roll),
+                                Some(effect.effect_id.clone()),
+                            ));
+                        } else {
+                            suppressed_effect_ids.push(effect.effect_id.clone());
+                            self.suppressed.push(effect.effect_id.clone());
+                            self.full_log.push(log(
+                                frame.tick,
+                                sequence,
+                                CombatResolutionLogTag::EffectSuppressed,
+                                CombatLogImportance::Important,
+                                attack,
+                                target_id,
+                                i64::from(effect_roll),
+                                Some(effect.effect_id.clone()),
+                            ));
+                        }
+                        sequence += 1;
+                    }
+                }
+                let state = self
+                    .combatants
+                    .get_mut(target_id)
+                    .ok_or(CombatResolutionError::InvalidInput)?;
+                state.balance_hundredths = state
+                    .balance_hundredths
+                    .checked_add(balance_delta_hundredths)
+                    .ok_or(CombatResolutionError::Overflow)?
+                    .clamp(0, state.maximum_balance_hundredths);
+                outcomes.push(CombatAttackOutcome {
+                    attack_id: attack.id.clone(),
+                    actor_id: actor.id.clone(),
+                    target_id: target_id.clone(),
+                    collision,
+                    in_range,
+                    roll_percent: roll_value,
+                    hit,
+                    damage_hundredths,
+                    balance_delta_hundredths,
+                    applied_effect_ids,
+                    suppressed_effect_ids,
+                });
+            }
+        }
+        let combatants = self.combatants.values().cloned().collect();
+        let fingerprint = fingerprint(&(frame.tick, &outcomes));
+        Ok(CombatResolutionFrame {
+            tick: frame.tick,
+            outcomes,
+            combatants,
+            fingerprint,
+        })
+    }
+    pub(crate) fn finish(self) -> CombatResolutionState {
+        CombatResolutionState {
+            combatants: self.combatants.into_values().collect(),
+            active_effects: self.active_effects,
+            applied_effect_ids: self.applied,
+            suppressed_effect_ids: self.suppressed,
+        }
+    }
+    pub(crate) fn full_log(&self) -> &[CombatResolutionLogEvent] {
+        &self.full_log
+    }
+}
+
+#[cfg(test)]
+mod stepper_contract_tests {
+    use super::*;
+
+    fn fixture() -> (CombatResolutionRequest, CombatExecutionResult) {
+        let combatant = |id: &str| crate::CombatantState {
+            id: id.into(),
+            current_health: 100,
+            maximum_health: 100,
+            current_breath: 1,
+            maximum_breath: 1,
+            balance: 100,
+            maximum_balance: 100,
+            fear: 0,
+            anger: 0,
+            posture: crate::Posture::Neutral,
+            weapon_control: crate::WeaponControl::Stable,
+            relationship_refs: vec![],
+            environment_refs: vec![],
+            team_refs: vec![],
+            persistent_status_ids: vec![],
+            combat_effect_ids: vec![],
+        };
+        let participant = |id: &str, side: crate::CombatSide, position: crate::HexCoord| {
+            crate::CombatSimulationParticipant {
+                id: id.into(),
+                side,
+                position,
+                facing: crate::HexCoord { q: 1, r: 0 },
+                speed_per_tick: 1,
+                move_speed_hundredths: None,
+                collision_radius: 1,
+                attack_range: 2,
+                support_range: 2,
+                role_id: "r".into(),
+                target_policy_id: None,
+                active: true,
+                occupies: vec![],
+            }
+        };
+        let a_position = crate::HexCoord { q: 0, r: 0 };
+        let e_position = crate::HexCoord { q: 1, r: 0 };
+        let manifest = crate::CombatManifest {
+            simulation_version: crate::CombatSimulationVersion::new(
+                crate::CURRENT_SIMULATION_VERSION,
+            )
+            .unwrap(),
+            actual_seed: 7,
+            world_state_fingerprint: "w".into(),
+            applied_effects: vec![],
+            suppressed_effects: vec![],
+            combatant_ids: vec!["a".into(), "e".into()],
+            placement_ids: vec![],
+            environment_ids: vec![],
+            team_ids: vec![],
+            rule_ids: vec![],
+            public_info_ids: vec![],
+        };
+        let input = crate::CombatSimulationInput {
+            manifest,
+            state: crate::CombatState {
+                battle_id: "b".into(),
+                combatants: vec![combatant("a"), combatant("e")],
+                persistent_statuses: vec![],
+                active_effects: vec![],
+                environment_refs: vec![],
+                team_refs: vec![],
+                team_formations: vec![],
+                relationships: vec![],
+                environment_states: vec![],
+                manifest_fingerprint: "fp".into(),
+            },
+            seed: 7,
+            config: crate::CombatSimulationConfig {
+                tick_millis: 100,
+                max_ticks: 1,
+            },
+            participants: vec![
+                participant("a", crate::CombatSide::Ally, a_position),
+                participant("e", crate::CombatSide::Enemy, e_position),
+            ],
+            roles: vec![],
+            policies: vec![],
+        };
+        let mut positions = BTreeMap::new();
+        positions.insert("a".into(), a_position);
+        positions.insert("e".into(), e_position);
+        let mut moves = vec![crate::CombatMoveIntent {
+            actor_id: "a".into(),
+            target_id: Some("e".into()),
+            from: a_position,
+            to: a_position,
+            mode: crate::CombatMoveMode::Hold,
+        }];
+        moves.push(crate::CombatMoveIntent {
+            actor_id: "e".into(),
+            target_id: Some("a".into()),
+            from: e_position,
+            to: e_position,
+            mode: crate::CombatMoveMode::Hold,
+        });
+        let frame = crate::CombatTickFrame {
+            tick: 0,
+            moves,
+            positions,
+            fingerprint: "frame".into(),
+        };
+        let execution = CombatExecutionResult {
+            mode: crate::CombatRunMode::Actual,
+            presentation: crate::CombatPresentationSpeed::OneX,
+            effective_seed: 7,
+            namespace: crate::CombatRngNamespace::ActualCombat,
+            frames: vec![frame],
+            full_log: vec![],
+            core_log: vec![],
+            provenance: None,
+            fingerprint: "execution".into(),
+        };
+        let request = CombatResolutionRequest {
+            execution: crate::CombatExecutionRequest {
+                input,
+                mode: crate::CombatRunMode::Actual,
+                presentation: crate::CombatPresentationSpeed::OneX,
+                ticks: 1,
+            },
+            attacks: vec![CombatAttackDefinition {
+                id: "slash".into(),
+                actor_id: "a".into(),
+                power_hundredths: 1200,
+                ability_multiplier_hundredths: 100,
+                accuracy_percent: 100,
+                attack_range: 2,
+                penetration_hundredths: 0,
+                collision_balance_hundredths: 100,
+                balance_power_hundredths: 500,
+                attack_speed_hundredths: None,
+                effects: vec![],
+            }],
+            defenses: vec![
+                CombatDefenseProfile {
+                    combatant_id: "a".into(),
+                    defense_hundredths: 0,
+                    balance_resistance_hundredths: 0,
+                },
+                CombatDefenseProfile {
+                    combatant_id: "e".into(),
+                    defense_hundredths: 0,
+                    balance_resistance_hundredths: 0,
+                },
+            ],
+            catalog: CombatEffectCatalog { effects: vec![] },
+        };
+        (request, execution)
+    }
+
+    #[test]
+    fn stepper_single_tick_and_finish_are_stable() {
+        let (request, execution) = fixture();
+        let mut first = CombatResolutionStepper::new(&request, execution.clone()).unwrap();
+        let mut second = CombatResolutionStepper::new(&request, execution.clone()).unwrap();
+        let first_frame = first.step(&execution.frames[0]).unwrap();
+        let second_frame = second.step(&execution.frames[0]).unwrap();
+        assert_eq!(first_frame, second_frame);
+        assert_eq!(first.finish(), second.finish());
+    }
+
+    #[test]
+    fn stepper_rejects_missing_frame_position_without_panic() {
+        let (request, mut execution) = fixture();
+        execution.frames[0].positions.remove("e");
+        let mut stepper = CombatResolutionStepper::new(&request, execution.clone()).unwrap();
+        assert_eq!(
+            stepper.step(&execution.frames[0]),
+            Err(CombatResolutionError::InvalidInput)
+        );
+    }
+}

@@ -884,3 +884,12 @@ impl CombatResolutionStepper {
         })
     }
 }
+
+impl CombatResolutionStepper {
+    pub(crate) fn step(
+        &mut self,
+        _frame: &crate::CombatTickFrame,
+    ) -> Result<CombatResolutionFrame, CombatResolutionError> {
+        Err(CombatResolutionError::InvalidInput)
+    }
+}

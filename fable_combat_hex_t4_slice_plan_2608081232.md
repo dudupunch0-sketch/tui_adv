@@ -1,6 +1,6 @@
 # T4 실행 모델·개입·지속 — 3~4 슬라이스 분해 플랜
 
-status: proposed
+status: in-progress
 date: 2026-08-08
 baseline_commit: `2ae781fdb427b94f10353529aaddb1341d986b1b`
 baseline_test: `cargo test --workspace --no-fail-fast` = **434 passed / 0 failed**
@@ -256,6 +256,11 @@ git diff --check
 
 ## 10. 다음 행동
 
-1. 이 분해 플랜을 기준으로 S1의 실제 코드 생성 지점을 다시 세고, `fable_combat_hex_t4_step1_<YYMMDDHHMM>.md`를 작성한다.
-2. S1 plan 승인 후 `gpt-5.6-luna` medium coding subagent에 격리 위임한다.
-3. S1 report의 확정 public contract를 읽고 S2 plan을 새로 쓴다. S2~S4 schema를 지금 미리 고정하지 않는다.
+1. S1은 `abe63b3` + `e696f0b`로 완료됐다. `CombatResolutionStepper`와 batch parity가 고정됐다.
+2. S2a~S2c는 각각 `e842fde`, `270f178`, `6f304ff`로 완료됐다. interleaved runtime, KO roster
+   sync, opportunity pause marker가 고정됐다.
+3. S2d1은 `3d941f2`, S2d2는 `f848afb`로 완료됐다. canonical segment seed와 paused response
+   history/transition이 내부 runtime 계약으로 추가됐다. 각 상세 보고서는
+   `fable_combat_hex_t4_step5_2608081415.md`, `fable_combat_hex_t4_step6_2608081430.md`다.
+4. 다음 계획은 S2d3 또는 S3로 분리 작성한다. response effect 적용·runtime 재구성·save/serde
+   schema를 한 coding slice에 묶지 않는다.

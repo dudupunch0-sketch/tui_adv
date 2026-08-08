@@ -1223,3 +1223,181 @@ impl CombatResolutionStepper {
         &self.full_log
     }
 }
+
+#[cfg(test)]
+mod stepper_contract_tests {
+    use super::*;
+
+    fn fixture() -> (CombatResolutionRequest, CombatExecutionResult) {
+        let combatant = |id: &str| crate::CombatantState {
+            id: id.into(),
+            current_health: 100,
+            maximum_health: 100,
+            current_breath: 1,
+            maximum_breath: 1,
+            balance: 100,
+            maximum_balance: 100,
+            fear: 0,
+            anger: 0,
+            posture: crate::Posture::Neutral,
+            weapon_control: crate::WeaponControl::Stable,
+            relationship_refs: vec![],
+            environment_refs: vec![],
+            team_refs: vec![],
+            persistent_status_ids: vec![],
+            combat_effect_ids: vec![],
+        };
+        let participant = |id: &str, side: crate::CombatSide, position: crate::HexCoord| {
+            crate::CombatSimulationParticipant {
+                id: id.into(),
+                side,
+                position,
+                facing: crate::HexCoord { q: 1, r: 0 },
+                speed_per_tick: 1,
+                move_speed_hundredths: None,
+                collision_radius: 1,
+                attack_range: 2,
+                support_range: 2,
+                role_id: "r".into(),
+                target_policy_id: None,
+                active: true,
+                occupies: vec![],
+            }
+        };
+        let a_position = crate::HexCoord { q: 0, r: 0 };
+        let e_position = crate::HexCoord { q: 1, r: 0 };
+        let manifest = crate::CombatManifest {
+            simulation_version: crate::CombatSimulationVersion::new(
+                crate::CURRENT_SIMULATION_VERSION,
+            )
+            .unwrap(),
+            actual_seed: 7,
+            world_state_fingerprint: "w".into(),
+            applied_effects: vec![],
+            suppressed_effects: vec![],
+            combatant_ids: vec!["a".into(), "e".into()],
+            placement_ids: vec![],
+            environment_ids: vec![],
+            team_ids: vec![],
+            rule_ids: vec![],
+            public_info_ids: vec![],
+        };
+        let input = crate::CombatSimulationInput {
+            manifest,
+            state: crate::CombatState {
+                battle_id: "b".into(),
+                combatants: vec![combatant("a"), combatant("e")],
+                persistent_statuses: vec![],
+                active_effects: vec![],
+                environment_refs: vec![],
+                team_refs: vec![],
+                team_formations: vec![],
+                relationships: vec![],
+                environment_states: vec![],
+                manifest_fingerprint: "fp".into(),
+            },
+            seed: 7,
+            config: crate::CombatSimulationConfig {
+                tick_millis: 100,
+                max_ticks: 1,
+            },
+            participants: vec![
+                participant("a", crate::CombatSide::Ally, a_position),
+                participant("e", crate::CombatSide::Enemy, e_position),
+            ],
+            roles: vec![],
+            policies: vec![],
+        };
+        let mut positions = BTreeMap::new();
+        positions.insert("a".into(), a_position);
+        positions.insert("e".into(), e_position);
+        let mut moves = vec![crate::CombatMoveIntent {
+            actor_id: "a".into(),
+            target_id: Some("e".into()),
+            from: a_position,
+            to: a_position,
+            mode: crate::CombatMoveMode::Hold,
+        }];
+        moves.push(crate::CombatMoveIntent {
+            actor_id: "e".into(),
+            target_id: Some("a".into()),
+            from: e_position,
+            to: e_position,
+            mode: crate::CombatMoveMode::Hold,
+        });
+        let frame = crate::CombatTickFrame {
+            tick: 0,
+            moves,
+            positions,
+            fingerprint: "frame".into(),
+        };
+        let execution = CombatExecutionResult {
+            mode: crate::CombatRunMode::Actual,
+            presentation: crate::CombatPresentationSpeed::OneX,
+            effective_seed: 7,
+            namespace: crate::CombatRngNamespace::ActualCombat,
+            frames: vec![frame],
+            full_log: vec![],
+            core_log: vec![],
+            provenance: None,
+            fingerprint: "execution".into(),
+        };
+        let request = CombatResolutionRequest {
+            execution: crate::CombatExecutionRequest {
+                input,
+                mode: crate::CombatRunMode::Actual,
+                presentation: crate::CombatPresentationSpeed::OneX,
+                ticks: 1,
+            },
+            attacks: vec![CombatAttackDefinition {
+                id: "slash".into(),
+                actor_id: "a".into(),
+                power_hundredths: 1200,
+                ability_multiplier_hundredths: 100,
+                accuracy_percent: 100,
+                attack_range: 2,
+                penetration_hundredths: 0,
+                collision_balance_hundredths: 100,
+                balance_power_hundredths: 500,
+                attack_speed_hundredths: None,
+                effects: vec![],
+            }],
+            defenses: vec![
+                CombatDefenseProfile {
+                    combatant_id: "a".into(),
+                    defense_hundredths: 0,
+                    balance_resistance_hundredths: 0,
+                },
+                CombatDefenseProfile {
+                    combatant_id: "e".into(),
+                    defense_hundredths: 0,
+                    balance_resistance_hundredths: 0,
+                },
+            ],
+            catalog: CombatEffectCatalog { effects: vec![] },
+        };
+        (request, execution)
+    }
+
+    #[test]
+    fn stepper_single_tick_and_finish_are_stable() {
+        let (request, execution) = fixture();
+        let mut first = CombatResolutionStepper::new(&request, execution.clone()).unwrap();
+        let mut second = CombatResolutionStepper::new(&request, execution.clone()).unwrap();
+        let first_frame = first.step(&execution.frames[0]).unwrap();
+        let second_frame = second.step(&execution.frames[0]).unwrap();
+        assert_eq!(first_frame, second_frame);
+        assert_eq!(first.finish(), second.finish());
+    }
+
+    #[test]
+    fn stepper_rejects_missing_frame_position_without_panic() {
+        let (request, mut execution) = fixture();
+        execution.frames[0].positions.remove("e");
+        let mut stepper = CombatResolutionStepper::new(&request, execution.clone()).unwrap();
+        assert_eq!(
+            stepper.step(&execution.frames[0]),
+            Err(CombatResolutionError::InvalidInput)
+        );
+    }
+}

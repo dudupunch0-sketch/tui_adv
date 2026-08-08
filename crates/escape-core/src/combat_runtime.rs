@@ -938,8 +938,15 @@ mod tests {
     }
 }
 
+pub const COMBAT_RUNTIME_CHECKPOINT_SCHEMA_VERSION: u32 = 1;
+
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
-pub(crate) struct CombatRuntimeCheckpoint {
+pub struct CombatRuntimeCheckpoint {
+    pub schema_version: u32,
+    pub simulation_version: crate::CombatSimulationVersion,
+    pub manifest_fingerprint: String,
+    pub effective_seed: u64,
+    pub namespace: crate::CombatRngNamespace,
     pub(crate) request: CombatResolutionRequest,
     pub(crate) execution_frames: Vec<CombatTickFrame>,
     pub(crate) resolution_frames: Vec<CombatResolutionFrame>,
@@ -980,6 +987,11 @@ impl CombatRuntime {
             &self.selection_history,
         )?;
         Ok(CombatRuntimeCheckpoint {
+            schema_version: COMBAT_RUNTIME_CHECKPOINT_SCHEMA_VERSION,
+            simulation_version: self.context.provenance.simulation_version.clone(),
+            manifest_fingerprint: self.context.provenance.manifest_fingerprint.clone(),
+            effective_seed: self.context.effective_seed,
+            namespace: self.context.namespace,
             request: self.request.clone(),
             execution_frames: self.execution_frames.clone(),
             resolution_frames: self.resolution_frames.clone(),
@@ -991,7 +1003,8 @@ impl CombatRuntime {
         })
     }
     pub(crate) fn restore(checkpoint: CombatRuntimeCheckpoint) -> Result<Self, CombatRuntimeError> {
-        if checkpoint.execution_frames.len() != checkpoint.resolution_frames.len()
+        if checkpoint.schema_version != COMBAT_RUNTIME_CHECKPOINT_SCHEMA_VERSION
+            || checkpoint.execution_frames.len() != checkpoint.resolution_frames.len()
             || checkpoint.request.execution.ticks == 0
             || checkpoint.execution_frames.len() as u32 > checkpoint.request.execution.ticks
             || checkpoint.request.execution.ticks
@@ -1018,6 +1031,13 @@ impl CombatRuntime {
             }
         }
         let mut runtime = Self::new(checkpoint.request.clone())?;
+        if checkpoint.simulation_version != runtime.context.provenance.simulation_version
+            || checkpoint.manifest_fingerprint != runtime.context.provenance.manifest_fingerprint
+            || checkpoint.effective_seed != runtime.context.effective_seed
+            || checkpoint.namespace != runtime.context.namespace
+        {
+            return Err(CombatRuntimeError::InvalidInput);
+        }
         let derived_seed = derive_segment_seed(
             runtime.context.effective_seed,
             runtime.context.namespace,

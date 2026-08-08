@@ -46,6 +46,7 @@ pub use combat_resolution::{
     CombatResolutionLogEvent, CombatResolutionLogTag, CombatResolutionRequest,
     CombatResolutionResult, CombatResolutionState,
 };
+pub use combat_runtime::{CombatRuntimeCheckpoint, COMBAT_RUNTIME_CHECKPOINT_SCHEMA_VERSION};
 pub use combat_simulation::{
     footprint_distance, surrounding_enemy_neighbors, CombatMoveIntent, CombatMoveMode,
     CombatRolePreset, CombatRoleWeights, CombatSide, CombatSimulation, CombatSimulationConfig,

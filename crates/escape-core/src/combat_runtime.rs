@@ -1101,6 +1101,7 @@ pub struct CombatRuntimeCheckpoint {
     pub namespace: crate::CombatRngNamespace,
     pub(crate) request: CombatResolutionRequest,
     pub(crate) execution_frames: Vec<CombatTickFrame>,
+    pub(crate) frame_deltas: Option<Vec<CombatRuntimeFrameDelta>>,
     pub(crate) resolution_frames: Vec<CombatResolutionFrame>,
     pub(crate) opportunities: Option<CombatRuntimeOpportunityState>,
     pub(crate) paused: Option<CombatRuntimePause>,
@@ -1146,6 +1147,7 @@ impl CombatRuntime {
             namespace: self.context.namespace,
             request: self.request.clone(),
             execution_frames: self.execution_frames.clone(),
+            frame_deltas: None,
             resolution_frames: self.resolution_frames.clone(),
             opportunities: self.opportunities.clone(),
             paused: self.paused.clone(),
@@ -1154,7 +1156,34 @@ impl CombatRuntime {
             next_segment_seed: self.next_segment_seed,
         })
     }
+    pub(crate) fn checkpoint_compact(&self) -> Result<CombatRuntimeCheckpoint, CombatRuntimeError> {
+        let mut checkpoint = self.checkpoint()?;
+        checkpoint.frame_deltas = Some(encode_frame_deltas(
+            &checkpoint.execution_frames,
+            &checkpoint.resolution_frames,
+        )?);
+        checkpoint.execution_frames.clear();
+        checkpoint.resolution_frames.clear();
+        Ok(checkpoint)
+    }
+
     pub(crate) fn restore(checkpoint: CombatRuntimeCheckpoint) -> Result<Self, CombatRuntimeError> {
+        let mut checkpoint = checkpoint;
+        let has_full =
+            !checkpoint.execution_frames.is_empty() || !checkpoint.resolution_frames.is_empty();
+        let has_delta = checkpoint
+            .frame_deltas
+            .as_ref()
+            .is_some_and(|d| !d.is_empty());
+        if has_full == has_delta || (!has_full && !has_delta) {
+            return Err(CombatRuntimeError::InvalidInput);
+        }
+        if has_delta {
+            let (execution, resolution) =
+                decode_frame_deltas(checkpoint.frame_deltas.as_ref().unwrap())?;
+            checkpoint.execution_frames = execution;
+            checkpoint.resolution_frames = resolution;
+        }
         if checkpoint.schema_version != COMBAT_RUNTIME_CHECKPOINT_SCHEMA_VERSION
             || checkpoint.execution_frames.len() != checkpoint.resolution_frames.len()
             || checkpoint.request.execution.ticks == 0

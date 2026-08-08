@@ -1,10 +1,11 @@
 # T4 S3e — compact checkpoint storage selection
 
-status: ready-for-implementation
+status: implemented
 date: 2026-08-08
 baseline_commit: `52c3a78`
 baseline_test: `cargo test --workspace --no-fail-fast --quiet` = 0 failures
 workspace: `/home/dudu/work/tui-adv` (WSL)
+implementation_commits: `5e1d3d5`, `99d1361`
 
 ## 1. 읽기·운영 규칙
 
@@ -82,3 +83,20 @@ renderer/terminal/Web, response effect/state mutation, generated content.
 - full checkpoint compatibility를 깨지 않고 dual storage를 표현할 수 없는 경우.
 - compact restore가 새 RNG source 또는 public schema bump를 요구하는 경우.
 - delta decode 결과가 기존 frame/result fingerprint와 달라지는 경우.
+
+## 8. 구현·검수 결과
+
+- `CombatRuntimeCheckpoint.frame_deltas`는 additive optional 필드이며 `serde(default)`로
+  기존 full checkpoint JSON(필드 없음)을 계속 읽는다. `checkpoint()`는 full frame을 유지하고,
+  `checkpoint_compact()`는 frame 배열을 비우고 S3d delta만 저장한다.
+- restore는 full frame 또는 non-empty delta 중 정확히 하나만 허용한다. both/none/empty delta,
+  tick gap 및 corrupt delta는 `InvalidInput`으로 거부하며 panic 경로가 없다.
+- full/compact JSON roundtrip과 finish fingerprint parity, 구버전 checkpoint 필드 누락 호환,
+  malformed storage 테스트를 추가했다.
+- 12 participant·1,200 tick 측정값:
+  `checkpoint_json_bytes=3,800,404`, `compact_checkpoint_json_bytes=220,138`,
+  `delta_json_bytes=211,902`, `save_envelope_json_bytes=3,801,007`.
+  compact payload는 full 대비 약 94.2% 작다.
+- 검증: runtime 19/0, workspace 0 failures, `cargo fmt --all`, `cargo check -p escape-core`,
+  `git diff --check` 통과. 사용자 변경 `cli_smoke` 및 `HANDOFF_combat_wave3_2608021400.md`는
+  커밋하지 않았다.

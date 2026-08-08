@@ -274,3 +274,9 @@ git diff --check
    완료했고, delta JSON은 211,902 bytes로 측정됐다. 상세 보고서는
    `fable_combat_hex_t4_step10_2608081635.md`다. 다음은 public checkpoint 저장 경로에
    delta를 선택적으로 연결하는 S3e다.
+5. S3e는 `5e1d3d5`/`99d1361`로 완료했다. `CombatRuntimeCheckpoint`에 additive delta 저장 경로를
+   연결하고 full/delta 단일 선택 restore, compact parity·구버전 JSON·malformed storage 검증을
+   고정했다. 12 participant·1,200 tick 기준 full checkpoint 3,800,404 bytes 대비 compact
+   checkpoint 220,138 bytes(약 94.2% 감소)였다. 상세 보고서는
+   `fable_combat_hex_t4_step11_2608081705.md`다. 다음은 S4 착수 전 response effect/consumer
+   연결 계약을 별도 plan 파일로 분해하는 것이다.

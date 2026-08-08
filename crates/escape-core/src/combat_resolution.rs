@@ -790,3 +790,91 @@ impl std::fmt::Display for CombatResolutionError {
     }
 }
 impl std::error::Error for CombatResolutionError {}
+
+#[allow(dead_code)]
+pub(crate) struct CombatResolutionStepper {
+    pub(crate) execution: CombatExecutionResult,
+    pub(crate) participants: BTreeMap<String, CombatSimulationParticipant>,
+    pub(crate) combatants: BTreeMap<String, CombatResolutionCombatant>,
+    pub(crate) defenses: BTreeMap<String, CombatDefenseProfile>,
+    pub(crate) attacks: BTreeMap<String, CombatAttackDefinition>,
+    pub(crate) catalog: BTreeMap<String, CombatEffectDefinition>,
+    pub(crate) active_effects: Vec<CombatEffectInstance>,
+    pub(crate) attack_gauges: BTreeMap<String, i64>,
+    pub(crate) applied: Vec<String>,
+    pub(crate) suppressed: Vec<String>,
+    pub(crate) full_log: Vec<CombatResolutionLogEvent>,
+}
+impl CombatResolutionStepper {
+    pub(crate) fn new(
+        request: &CombatResolutionRequest,
+        execution: CombatExecutionResult,
+    ) -> Result<Self, CombatResolutionError> {
+        request
+            .catalog
+            .validate()
+            .map_err(CombatResolutionError::State)?;
+        let participants = request
+            .execution
+            .input
+            .participants
+            .iter()
+            .map(|p| (p.id.clone(), p.clone()))
+            .collect::<BTreeMap<_, _>>();
+        let mut combatants = BTreeMap::new();
+        for c in &request.execution.input.state.combatants {
+            combatants.insert(
+                c.id.clone(),
+                CombatResolutionCombatant {
+                    id: c.id.clone(),
+                    current_health_hundredths: i64::from(c.current_health)
+                        .checked_mul(100)
+                        .ok_or(CombatResolutionError::Overflow)?,
+                    maximum_health_hundredths: i64::from(c.maximum_health)
+                        .checked_mul(100)
+                        .ok_or(CombatResolutionError::Overflow)?,
+                    balance_hundredths: i64::from(c.balance)
+                        .checked_mul(100)
+                        .ok_or(CombatResolutionError::Overflow)?,
+                    maximum_balance_hundredths: i64::from(c.maximum_balance)
+                        .checked_mul(100)
+                        .ok_or(CombatResolutionError::Overflow)?,
+                },
+            );
+        }
+        let refs = participants.iter().map(|(id, p)| (id.clone(), p)).collect();
+        validate_inputs(request, &refs, &combatants)?;
+        let defenses = request
+            .defenses
+            .iter()
+            .map(|d| (d.combatant_id.clone(), d.clone()))
+            .collect();
+        let attacks = request
+            .attacks
+            .iter()
+            .map(|a| (a.id.clone(), a.clone()))
+            .collect::<BTreeMap<_, _>>();
+        let catalog = request
+            .catalog
+            .effects
+            .iter()
+            .map(|e| (e.id.clone(), e.clone()))
+            .collect();
+        let mut active_effects = request.execution.input.state.active_effects.clone();
+        active_effects.sort_by(|a, b| a.definition_id.cmp(&b.definition_id));
+        let attack_gauges = attacks.keys().map(|id| (id.clone(), 0)).collect();
+        Ok(Self {
+            execution,
+            participants,
+            combatants,
+            defenses,
+            attacks,
+            catalog,
+            active_effects,
+            attack_gauges,
+            applied: vec![],
+            suppressed: vec![],
+            full_log: vec![],
+        })
+    }
+}

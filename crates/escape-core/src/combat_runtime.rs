@@ -956,8 +956,34 @@ impl CombatRuntime {
         if checkpoint.selection_history.len() as u32 != checkpoint.segment_index {
             return Err(CombatRuntimeError::InvalidInput);
         }
-        if checkpoint.next_segment_seed != Some(derived_seed) && checkpoint.segment_index > 0 {
+        if (checkpoint.segment_index == 0 && checkpoint.next_segment_seed.is_some())
+            || (checkpoint.segment_index > 0 && checkpoint.next_segment_seed != Some(derived_seed))
+        {
             return Err(CombatRuntimeError::InvalidInput);
+        }
+        if let Some(opportunities) = &checkpoint.opportunities {
+            opportunities.catalog.validate()?;
+            opportunities.context.budget.validate()?;
+        }
+        if let Some(pause) = &checkpoint.paused {
+            let opportunities = checkpoint
+                .opportunities
+                .as_ref()
+                .ok_or(CombatRuntimeError::InvalidInput)?;
+            let candidate = pause
+                .evaluation
+                .candidate
+                .as_ref()
+                .ok_or(CombatRuntimeError::InvalidInput)?;
+            if opportunities.context.current_tick != pause.tick
+                || !opportunities
+                    .context
+                    .presented_instance_ids
+                    .contains(&candidate.instance_id)
+                || pause.evaluation_fingerprint != pause.evaluation.fingerprint()?
+            {
+                return Err(CombatRuntimeError::InvalidInput);
+            }
         }
         for i in 0..checkpoint.execution_frames.len() {
             let Some(frame) = runtime.advance_tick()? else {

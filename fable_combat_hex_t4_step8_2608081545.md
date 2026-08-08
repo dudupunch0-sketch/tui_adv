@@ -30,6 +30,9 @@ payload에는 schema version, simulation version, manifest fingerprint, effectiv
   `COMBAT_RUNTIME_CHECKPOINT_SCHEMA_VERSION`을 둔다.
 - `CombatRuntimeCheckpoint`는 S3a 필드를 유지한다. public visibility가 필요한 필드만
   노출하고 내부 opportunity 구현 세부는 private field로 숨겨도 된다.
+- 확정 결정: `CombatRuntimeCheckpoint` 자체는 `lib.rs`에서 re-export하지만
+  `opportunities` 필드와 `CombatRuntimeOpportunityState` 타입은 private으로 유지한다.
+  serde DTO 경계에는 포함되지만 Rust public API에 opportunity 구현 세부를 누출하지 않는다.
 - `SaveEnvelope`에 다음 additive field를 추가한다.
 
 ```rust

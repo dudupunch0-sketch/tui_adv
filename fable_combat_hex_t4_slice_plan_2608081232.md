@@ -263,4 +263,6 @@ git diff --check
    history/transition이 내부 runtime 계약으로 추가됐다. 각 상세 보고서는
    `fable_combat_hex_t4_step5_2608081415.md`, `fable_combat_hex_t4_step6_2608081430.md`다.
 4. 다음 계획은 S2d3 또는 S3로 분리 작성한다. response effect 적용·runtime 재구성·save/serde
-   schema를 한 coding slice에 묶지 않는다.
+   schema를 한 coding slice에 묶지 않는다. S3a 내부 checkpoint/restore는
+   `505d5ff`~`ead0ec4`로 완료했고, 상세 보고서는
+   `fable_combat_hex_t4_step7_2608081505.md`다. 다음은 S3b public save/delta 경계다.

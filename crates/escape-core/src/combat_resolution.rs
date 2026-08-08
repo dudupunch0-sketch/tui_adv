@@ -861,7 +861,13 @@ impl CombatResolutionStepper {
             .map(|e| (e.id.clone(), e.clone()))
             .collect();
         let mut active_effects = request.execution.input.state.active_effects.clone();
-        active_effects.sort_by(|a, b| a.definition_id.cmp(&b.definition_id));
+        active_effects.sort_by(|a, b| {
+            a.definition_id
+                .cmp(&b.definition_id)
+                .then(a.target_selector.cmp(&b.target_selector))
+                .then(a.source.cmp(&b.source))
+                .then(a.stacking_group.cmp(&b.stacking_group))
+        });
         let attack_gauges = attacks.keys().map(|id| (id.clone(), 0)).collect();
         Ok(Self {
             execution,

@@ -914,7 +914,33 @@ impl CombatResolutionStepper {
             }
             _attack_fires.insert(attack.id.clone(), fires);
         }
-        let outcomes = Vec::new();
+        let mut outcomes = Vec::new();
+        let mut sequence = 0u32;
+        for attack in self.attacks.values() {
+            if _attack_fires.get(&attack.id).copied().unwrap_or(0) == 0 { continue; }
+            let Some(intent) = frame.moves.iter().find(|m| m.actor_id == attack.actor_id) else { continue; };
+            let Some(target_id) = &intent.target_id else { continue; };
+            let (Some(actor), Some(target)) = (self.participants.get(&attack.actor_id), self.participants.get(target_id)) else { continue; };
+            if actor.side == target.side { continue; }
+            let distance = footprint_distance(frame.positions[&actor.id], &actor.occupies, frame.positions[target_id], &target.occupies).map_err(|e| CombatResolutionError::Simulation(CombatSimulationError::HexMath(e)))?;
+            let collision = distance <= i64::from(actor.collision_radius + target.collision_radius);
+            let in_range = distance <= i64::from(attack.attack_range);
+            let roll_value = roll(self.execution.effective_seed, self.execution.namespace, frame.tick, &attack.id, &actor.id, target_id, 0);
+            let hit = collision && in_range && (attack.accuracy_percent == 100 || (attack.accuracy_percent > 0 && roll_value < attack.accuracy_percent));
+            let mut damage_hundredths = 0;
+            let mut balance_delta_hundredths = if collision { -attack.collision_balance_hundredths } else { 0 };
+            if hit {
+                let defense = self.defenses.get(target_id).ok_or(CombatResolutionError::InvalidInput)?;
+                damage_hundredths = damage(attack, defense)?;
+                balance_delta_hundredths -= attack.balance_power_hundredths.saturating_sub(defense.balance_resistance_hundredths);
+                let state = self.combatants.get_mut(target_id).ok_or(CombatResolutionError::InvalidInput)?;
+                state.current_health_hundredths = state.current_health_hundredths.saturating_sub(damage_hundredths).max(0);
+            }
+            let state = self.combatants.get_mut(target_id).ok_or(CombatResolutionError::InvalidInput)?;
+            state.balance_hundredths = state.balance_hundredths.checked_add(balance_delta_hundredths).ok_or(CombatResolutionError::Overflow)?.clamp(0, state.maximum_balance_hundredths);
+            outcomes.push(CombatAttackOutcome { attack_id: attack.id.clone(), actor_id: actor.id.clone(), target_id: target_id.clone(), collision, in_range, roll_percent: roll_value, hit, damage_hundredths, balance_delta_hundredths, applied_effect_ids: vec![], suppressed_effect_ids: vec![] });
+            sequence += 1;
+        }
         let combatants = self.combatants.values().cloned().collect();
         let fingerprint = fingerprint(&(frame.tick, &outcomes));
         Ok(CombatResolutionFrame {

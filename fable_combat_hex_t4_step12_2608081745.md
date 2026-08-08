@@ -1,10 +1,11 @@
 # T4 S4a — response application contract gate
 
-status: design-gate
+status: awaiting-canonical-sync
 date: 2026-08-08
 baseline_commit: `b15f7fb`
 baseline_test: `cargo test --workspace --no-fail-fast --quiet` = 0 failures
 workspace: `/home/dudu/work/tui-adv` (WSL)
+canonical_handoff: `docs/design/Combat_Intervention_Response_Model_Handoff.md`
 
 ## 1. 읽기·운영 규칙
 
@@ -76,5 +77,7 @@ workspace: `/home/dudu/work/tui-adv` (WSL)
 - response 선택을 기존 `resume_with_response(response_id)`에 임의 기본값으로 끼워 넣어야 하는
   상태.
 
-이 문서는 위 계약이 승인되기 전에는 코드 구현을 시작하지 않는 설계 게이트다. 계약 승인 뒤
+이 문서는 위 계약이 승인되기 전에는 코드 구현을 시작하지 않는 설계 게이트다. 전략 수정형과
+특수 효과형을 분리한 정본 수정 요청은
+`docs/design/Combat_Intervention_Response_Model_Handoff.md`에 기록했다. 정본 반영·승인 뒤
 S4a 구현 plan으로 승격하고, 그때 한 subagent가 수행할 파일·테스트 단위로 다시 고정한다.

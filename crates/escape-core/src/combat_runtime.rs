@@ -918,6 +918,24 @@ mod tests {
             Err(CombatRuntimeError::InvalidInput)
         ));
     }
+    #[test]
+    fn response_checkpoint_roundtrip_preserves_finish() {
+        let request = make_request(2);
+        let mut original =
+            CombatRuntime::with_opportunities(request.clone(), opportunity_config()).unwrap();
+        let _ = original.advance_with_opportunities().unwrap();
+        original.resume_with_response("intervene").unwrap();
+        let checkpoint = original.checkpoint().unwrap();
+        let encoded = serde_json::to_string(&checkpoint).unwrap();
+        let decoded: CombatRuntimeCheckpoint = serde_json::from_str(&encoded).unwrap();
+        let mut restored = CombatRuntime::restore(decoded).unwrap();
+        while original.advance_tick().unwrap().is_some() {}
+        while restored.advance_tick().unwrap().is_some() {}
+        assert_eq!(
+            original.finish().unwrap().fingerprint,
+            restored.finish().unwrap().fingerprint
+        );
+    }
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]

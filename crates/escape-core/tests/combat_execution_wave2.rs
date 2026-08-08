@@ -38,12 +38,26 @@ fn input() -> CombatSimulationInput {
                 position: HexCoord { q: 0, r: 0 },
                 facing: HexCoord { q: 1, r: 0 },
                 speed_per_tick: 1,
+                // T3 (fable_combat_hex_t3_step1_2608080951.md §4-3): new
+                // field on `CombatSimulationParticipant`. `None` means "act
+                // every tick", exactly this fixture's pre-T3 behaviour --
+                // mechanical fix to keep this file compiling, not a scope
+                // change.
+                move_speed_hundredths: None,
                 collision_radius: 1,
                 attack_range: 2,
                 support_range: 2,
                 role_id: "role".into(),
                 target_policy_id: None,
                 active: true,
+                // T1-d (fable_combat_hex_t1d_step1_2608072234.md): new field
+                // on `CombatSimulationParticipant`. Empty = single tile at
+                // the anchor, exactly this fixture's pre-T1-d meaning --
+                // mechanical fix to keep this file compiling, not a scope
+                // change; see the T1-d step2 report for why this file
+                // needed touching despite being outside that slice's
+                // original ownership list.
+                occupies: vec![],
             },
             CombatSimulationParticipant {
                 id: "enemy".into(),
@@ -51,12 +65,14 @@ fn input() -> CombatSimulationInput {
                 position: HexCoord { q: 10, r: 0 },
                 facing: HexCoord { q: -1, r: 0 },
                 speed_per_tick: 1,
+                move_speed_hundredths: None,
                 collision_radius: 1,
                 attack_range: 2,
                 support_range: 2,
                 role_id: "role".into(),
                 target_policy_id: None,
                 active: true,
+                occupies: vec![],
             },
         ],
         roles: vec![CombatRolePreset {

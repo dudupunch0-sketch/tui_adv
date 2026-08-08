@@ -688,3 +688,53 @@ fn authored_preview_bout_behaviour_is_unchanged_by_the_coordinate_swap() {
         "every landed hit must still deal exactly 1333 hundredths"
     );
 }
+
+/// T1-c (`fable_combat_hex_t1c_step1_2608072138.md` §6): the test above
+/// deliberately never asserts positions -- it only pins conclusion and
+/// damage, which the plan predicted (and this confirms) stay identical
+/// whether or not occupancy is enforced, since both combatants remain
+/// within `attack_range: 10` either way. This is the assertion that
+/// actually checks occupancy did something: before T1-c, the two
+/// combatants walked through each other and swapped which side of the
+/// board they were on tick to tick (the recorded defect the plan opens
+/// with, violating canon 09's "ally on the left / enemy on the right").
+/// With occupancy enforced they must never cross, and never share a tile.
+#[test]
+fn authored_preview_bout_never_lets_the_two_combatants_swap_sides_or_share_a_tile() {
+    let index = index_content_bundle(&load_content_bundle(WUXIA_BUNDLE).unwrap())
+        .expect("wuxia preview bundle should index");
+    let mut state = new_game_from_content_at(4, &index, SPECTATOR_LOCATION_ID)
+        .expect("game should start at the courtyard");
+    state.flags.push(SPECTATOR_GATE_FLAG.to_string());
+
+    let page = scene_page_from_content(&state, &index).expect("scene page should render");
+    let combat = page
+        .combat
+        .expect("gated systemic combat should fill ScenePage.combat");
+
+    for frame in &combat.view.frames {
+        let ally = frame
+            .pieces
+            .iter()
+            .find(|p| p.id == "wuxia_spectator_bout_ally")
+            .expect("ally piece must be present every frame");
+        let challenger = frame
+            .pieces
+            .iter()
+            .find(|p| p.id == "wuxia_spectator_bout_challenger")
+            .expect("challenger piece must be present every frame");
+        assert_ne!(
+            ally.position, challenger.position,
+            "tick {}: the two combatants must never occupy the same tile",
+            frame.tick
+        );
+        assert!(
+            ally.position.q < challenger.position.q,
+            "tick {}: the ally (started at q=0) must stay left of the challenger \
+             (started at q=5) -- got ally={:?}, challenger={:?}",
+            frame.tick,
+            ally.position,
+            challenger.position
+        );
+    }
+}

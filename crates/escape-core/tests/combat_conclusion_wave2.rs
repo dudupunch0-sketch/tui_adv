@@ -8,12 +8,24 @@ fn participant(id: &str, side: CombatSide, active: bool) -> CombatSimulationPart
         position: HexCoord { q: 0, r: 0 },
         facing: HexCoord { q: 1, r: 0 },
         speed_per_tick: 1,
+        // T3 (fable_combat_hex_t3_step1_2608080951.md §4-3): new field on
+        // `CombatSimulationParticipant`. `None` means "act every tick",
+        // exactly this fixture's pre-T3 behaviour -- mechanical fix to keep
+        // this file compiling, not a scope change.
+        move_speed_hundredths: None,
         collision_radius: 1,
         attack_range: 1,
         support_range: 1,
         role_id: "r".into(),
         target_policy_id: None,
         active,
+        // T1-d (fable_combat_hex_t1d_step1_2608072234.md): new field on
+        // `CombatSimulationParticipant`. Empty = single tile at the anchor,
+        // exactly this fixture's pre-T1-d meaning -- mechanical fix to keep
+        // this file compiling, not a scope change; see the T1-d step2
+        // report for why this file needed touching despite being outside
+        // that slice's original ownership list.
+        occupies: vec![],
     }
 }
 fn resolution(ally: i64, enemy: i64, tick: u32) -> CombatResolutionResult {

@@ -1,6 +1,6 @@
 # T4 S2b — KO roster synchronization
 
-status: ready-for-implementation
+status: implemented
 date: 2026-08-08
 baseline_commit: `cf6dbef`
 baseline_test: `cargo test --workspace --no-fail-fast --quiet` = 0 failures
@@ -138,3 +138,15 @@ existing simulation/resolution/cadence tests는 기대값을 임의로 고치지
 - lethal tick/next tick 관측값 및 동시 KO 순서 invariance 결과
 - static input/manifest fingerprint 변화 여부
 - S2c pause marker가 소비할 tick/health/active roster 경계
+
+## 9. 구현 결과 (2026-08-08)
+
+- 구현 커밋: pending (code + regression test)
+- `sync_active_from_health(&BTreeMap<String, i64>)`를 추가하고, simulation의 move gauge,
+  move intent, contention occupancy, occupancy snapshot을 active participant로 제한했다.
+- runtime은 매 resolution frame 직후 health map을 sync한다. lethal tick의 frame/outcome은
+  유지되고, 다음 tick에는 KO participant의 move/target이 생성되지 않는다.
+- 직접 검증: runtime unit 3/3, simulation integration 14/14, workspace 0 failures,
+  `cargo fmt --all -- --check`, `git diff --check` 통과.
+- static input/manifest fingerprint·public schema는 변경하지 않았다. S2c는 이 runtime의
+  tick/health/active overlay 경계를 소비한다.

@@ -93,6 +93,13 @@ impl CombatRuntime {
         }
         let execution = self.simulation.advance_tick()?;
         let resolution = self.stepper.step(&execution)?;
+        let health_hundredths = resolution
+            .combatants
+            .iter()
+            .map(|combatant| (combatant.id.clone(), combatant.current_health_hundredths))
+            .collect();
+        self.simulation
+            .sync_active_from_health(&health_hundredths)?;
         self.execution_frames.push(execution.clone());
         self.resolution_frames.push(resolution.clone());
         Ok(Some(CombatRuntimeFrame {
@@ -265,6 +272,54 @@ mod tests {
         assert!(runtime.advance_tick().unwrap().is_none());
         let actual = runtime.finish().unwrap();
         assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn lethal_tick_syncs_inactive_roster_before_next_tick() {
+        let mut request = make_request(2);
+        request.attacks.push(crate::CombatAttackDefinition {
+            id: "lethal".into(),
+            actor_id: "a".into(),
+            power_hundredths: 24_000,
+            ability_multiplier_hundredths: 100,
+            accuracy_percent: 100,
+            attack_range: 2,
+            penetration_hundredths: 0,
+            collision_balance_hundredths: 0,
+            balance_power_hundredths: 0,
+            attack_speed_hundredths: None,
+            effects: vec![],
+        });
+        let mut runtime = CombatRuntime::new(request).unwrap();
+        let first = runtime.advance_tick().unwrap().unwrap();
+        assert!(first.resolution.outcomes.iter().any(|outcome| outcome.hit));
+        assert_eq!(
+            first
+                .resolution
+                .combatants
+                .iter()
+                .find(|combatant| combatant.id == "e")
+                .unwrap()
+                .current_health_hundredths,
+            0
+        );
+
+        let second = runtime.advance_tick().unwrap().unwrap();
+        assert!(!second
+            .execution
+            .moves
+            .iter()
+            .any(|intent| intent.actor_id == "e"));
+        assert_eq!(
+            second
+                .execution
+                .moves
+                .iter()
+                .find(|intent| intent.actor_id == "a")
+                .and_then(|intent| intent.target_id.clone()),
+            None
+        );
+        assert!(second.resolution.outcomes.is_empty());
     }
 
     #[test]

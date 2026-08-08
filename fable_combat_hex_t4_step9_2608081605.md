@@ -1,6 +1,6 @@
 # T4 S3c — full-frame checkpoint size measurement
 
-status: ready-for-implementation
+status: implemented
 date: 2026-08-08
 baseline_commit: `7d78d63`
 baseline_test: `cargo test --workspace --no-fail-fast --quiet` = 0 failures
@@ -64,3 +64,16 @@ round-trip fingerprint가 같은지만 보장한다.
 - 1,200 tick fixture가 기존 max tick/overflow 계약과 충돌하는 경우.
 - participant 수를 늘리려면 combat rule/fingerprint 기대값을 바꿔야 하는 경우.
 - 측정 결과 없이 delta 상한·압축률·새 schema를 추가하려는 경우.
+
+## 7. 구현 보고
+
+- implementation commit: `d3920b5`
+- 12 participant·1,200 tick fixture와 deterministic checkpoint round-trip test를 추가했다.
+- WSL 측정값: `checkpoint_json_bytes=3,800,404`,
+  `save_envelope_json_bytes=3,801,007`, `execution_frames=1,200`,
+  `average_execution_frame_bytes=1,380`.
+- 12 participant 생성은 기존 limit(ally ≤4, enemy ≤8)에 맞춰 4/8로 구성했다. 규칙/limit은
+  변경하지 않았다.
+- `cargo fmt --all -- --check`, `git diff --check`, targeted test 통과. 전체 workspace 회귀는
+  다음 최종 검수에서 다시 실행한다.
+- delta/압축 표현은 아직 추가하지 않았다. 측정값을 기준으로 다음 S3d plan에서 결정한다.

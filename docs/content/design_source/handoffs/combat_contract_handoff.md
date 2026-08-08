@@ -15,16 +15,17 @@ GameCore primitive owner가 사실을 수집하고, authoring objective mapping�
 코드 담당자는 다음 순서로 읽는다.
 
 1. `contracts/intervention.yml`: 승인된 machine-readable 정본
-2. `schema/combat_intervention.schema.json`: response/contract 구조
-3. 이 문서의 구현 WP와 acceptance criteria
-4. `docs/design/Combat_Intervention_Response_Model_Handoff.md`: 역사적 제안과 current runtime gap
-5. `crates/escape-core/src/combat_opportunity.rs`, `combat_runtime.rs`, `save.rs`: 구현 touchpoint
+2. `schema/combat_intervention.schema.json`: `intervention.yml` 전체 문서 검증
+3. `schema/combat_intervention_response.schema.json`: 개별 authoring response payload 검증
+4. 이 문서의 구현 WP와 acceptance criteria
+5. `docs/design/Combat_Intervention_Response_Model_Handoff.md`: 역사적 제안과 current runtime gap
+6. `crates/escape-core/src/combat_opportunity.rs`, `combat_runtime.rs`, `save.rs`: 구현 touchpoint
 
 Response는 optional `strategy_modifier`와 optional `special_effect`의 composite이며 둘 중 하나 이상이 필요하다. effect-only/strategy-only/both는 payload 존재로 파생한다. `intervention_kind`, `resolution_kind`, hybrid enum을 추가하지 않는다. 복합형의 strategy는 special effect 성공·실패와 무관하게 항상 적용한다.
 
-Special effect의 success/failure는 `set_flag`, `create_loot_entitlement`, `grant_item` typed action plan을 만든다. Combat core가 plan을 계산하고 GameCore가 `action_id`와 `application_transaction_id`로 exactly-once 원자 적용한다. Loot entitlement는 기본적으로 victory/objective에서 claim 가능하고 escape/defeat/surrender/capture/forced_stop/both-sides-defeated에서는 미획득이다. 직접 지급은 같은 response transaction에서 즉시 획득한다.
+Special effect의 success/failure는 `set_flag`, `create_loot_entitlement`, `grant_item` typed action plan을 만든다. Combat core가 deterministic `action_id`/`entitlement_id`를 만들고 GameCore가 response application transaction에서 exactly-once 적용한다. Retry는 receipt/checkpoint ledger의 ID가 있으면 `already_applied` 또는 기존 entitlement를 반환하며 mutation을 반복하지 않는다. Terminal loot claim은 별도 claim action/transaction ID와 terminal receipt를 사용한다. Loot entitlement는 기본적으로 victory/objective에서 claim 가능하고 escape/defeat/surrender/capture/forced_stop/both-sides-defeated에서는 미획득이다. 직접 지급은 response transaction에서 즉시 획득한다.
 
-Selector/formula는 namespaced canonical ID만 runtime authoring에 허용한다. `self`, `target`, `observer`, `opponent`, `any`는 migration 입력에서만 정규화하며 runtime에서는 거부한다. Response selector는 pause snapshot에서 한 번 resolve하고 stable combatant ID 오름차순으로 tie-break한다. Strategy targeting rule은 매 tick canonical snapshot에서 재평가한다.
+Selector/formula는 namespaced canonical ID만 runtime authoring에 허용한다. `resolution_kind`, `self`, `target`, `observer`, `opponent`, `any`는 offline/load-time migration 입력에서만 처리하며 runtime에서는 거부한다. 문맥으로 1:1 증명되지 않는 `choice`/`target`/`opponent`/`any`는 자동 변환하지 않고 `designer_review_required`로 보낸다. Response selector는 pause snapshot에서 한 번 resolve하고 stable combatant ID 오름차순으로 tie-break한다. Strategy targeting rule은 매 tick canonical snapshot에서 재평가한다.
 
 Strategy는 immutable baseline 위 typed overlay다. Scope는 all_allies/role/combatants, 기본 duration은 until_replaced이며 next_segment도 허용한다. 같은 scope+field는 최신 patch가 교체하고 서로 다른 필드는 공존한다. precedence는 combatant > role > side > baseline이다. additive numeric stacking과 임의 JSON patch는 금지하고 `clear_override`는 baseline을 복원한다.
 
@@ -38,7 +39,7 @@ Lifecycle은 running/paused_for_intervention/terminal이며 terminal reason/resu
 
 ## 로그
 
-GameCore는 raw event를 tick/sequence 순서로 보존한다. renderer만 presentation aggregation을 수행한다. 현재 runtime event type(move_intent, target_selection, collision, damage_applied, effect_applied, hidden effect)을 기준으로, move intent는 동일 tick/template family/actor/target 그룹만 합치고 damage는 값을 합산하되 hit count와 sequence 범위를 보존한다. terminal/status/objective/effect hidden은 합치지 않는다. debug raw view는 허용한다.
+GameCore는 raw event를 tick/sequence 순서로 보존한다. decision receipt는 raw event를 복제하지 않고 sequence range/fingerprint만 참조한다. Strategy/effect/action/entitlement/claim은 `logs.yml`의 각 intervention raw event type으로 남기며 모두 non-groupable이다. Receipt에는 canonical entity/zone ID 또는 selector provenance만 저장하고 display label은 identity/tactical contract를 따라 render-time resolve한다. 재현에 불필요한 hidden state 전체 저장과 internal ID 사용자 노출은 금지한다. Renderer만 presentation aggregation을 수행하며 debug raw view는 허용한다.
 
 ## 전술 구역
 

@@ -1,21 +1,14 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "combat_intervention.schema.json",
-  "title": "Canonical combat intervention contract",
+  "title": "Canonical combat intervention contract document",
+  "description": "Validates the complete contracts/intervention.yml document. Authored response payloads use combat_intervention_response.schema.json.",
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "contract_id",
-    "status",
-    "runtime_status",
-    "owners",
-    "response_payload",
-    "transaction",
-    "registry",
-    "special_effect",
-    "strategy_modifier",
-    "lifecycle",
-    "checkpoint_and_receipt",
+    "contract_id", "status", "effective_date", "runtime_status", "schemas", "owners",
+    "response_payload", "transaction", "registry", "legacy_migration", "special_effect",
+    "strategy_modifier", "lifecycle", "checkpoint_and_receipt", "provenance_and_logs",
     "runtime_handoff"
   ],
   "properties": {
@@ -23,148 +16,247 @@
     "status": {"const": "canonical"},
     "effective_date": {"type": "string"},
     "runtime_status": {"const": "handoff_required"},
-    "owners": {"type": "object"},
-    "response_payload": {
+    "schemas": {
       "type": "object",
-      "required": ["optional_fields", "minimum_present", "derived_kinds", "forbidden_fields"],
+      "additionalProperties": false,
+      "required": ["canonical_contract", "authoring_payload", "roles"],
       "properties": {
-        "optional_fields": {"const": ["strategy_modifier", "special_effect"]},
-        "minimum_present": {"const": 1},
-        "derived_kinds": {"const": ["effect_only", "strategy_only", "both"]},
-        "forbidden_fields": {
-          "type": "array",
-          "allOf": [
-            {"contains": {"const": "intervention_kind"}},
-            {"contains": {"const": "resolution_kind"}},
-            {"contains": {"const": "hybrid_kind"}}
-          ]
-        }
-      }
-    },
-    "transaction": {
-      "type": "object",
-      "required": ["boundary", "input_snapshot", "phases", "validation_failure", "checkpoint_states", "partial_apply_serialization", "delayed_or_multi_tick_workflow", "rng_draws"],
-      "properties": {
-        "boundary": {"const": "one_pause_before_next_tick"},
-        "input_snapshot": {"const": "pause_snapshot"},
-        "phases": {"type": "array", "minItems": 7, "uniqueItems": true},
-        "validation_failure": {"type": "object"},
-        "checkpoint_states": {"const": ["pre_transaction", "post_transaction"]},
-        "partial_apply_serialization": {"const": "forbidden"},
-        "delayed_or_multi_tick_workflow": {"const": "forbidden"},
-        "rng_draws": {
-          "type": "object",
-          "required": ["strategy_only", "deterministic_special_effect", "probabilistic_special_effect"],
-          "properties": {
-            "strategy_only": {"const": 0},
-            "deterministic_special_effect": {"const": 0},
-            "probabilistic_special_effect": {"const": 1}
+        "canonical_contract": {"const": "schema/combat_intervention.schema.json"},
+        "authoring_payload": {"const": "schema/combat_intervention_response.schema.json"},
+        "roles": {
+          "const": {
+            "canonical_contract": "validates_this_entire_yaml_document",
+            "authoring_payload": "validates_each_authored_response_payload_only"
           }
         }
       }
     },
+    "owners": {
+      "const": {
+        "response_resolution": "combat_core",
+        "atomic_application": "gamecore",
+        "authoring_validation": "design_validator",
+        "presentation": "renderer"
+      }
+    },
+    "response_payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "optional_fields", "minimum_present", "derived_kinds", "derived_from_payload_presence",
+        "forbidden_fields", "composite_strategy_applies_on", "preflight_error_result",
+        "special_effect_failure_is_outcome"
+      ],
+      "properties": {
+        "optional_fields": {"const": ["strategy_modifier", "special_effect"]},
+        "minimum_present": {"const": 1},
+        "derived_kinds": {"const": ["effect_only", "strategy_only", "both"]},
+        "derived_from_payload_presence": {"const": true},
+        "forbidden_fields": {"const": ["intervention_kind", "resolution_kind", "hybrid_kind"]},
+        "composite_strategy_applies_on": {"const": ["special_effect_success", "special_effect_failure"]},
+        "preflight_error_result": {"const": "reject_entire_response_transaction"},
+        "special_effect_failure_is_outcome": {"const": true}
+      }
+    },
+    "transaction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "boundary", "input_snapshot", "resolve_before_mutation", "phases", "validation_failure",
+        "outcome_failure", "checkpoint_states", "partial_apply_serialization",
+        "delayed_or_multi_tick_workflow", "rng_draws", "probabilistic_rng"
+      ],
+      "properties": {
+        "boundary": {"const": "one_pause_before_next_tick"},
+        "input_snapshot": {"const": "pause_snapshot"},
+        "resolve_before_mutation": {"const": ["executor", "targets", "strategy_scope", "formula_inputs"]},
+        "phases": {"const": ["preflight_validate", "resolve_selectors_and_formula_inputs", "evaluate_special_effect", "plan_strategy_and_outcome_actions", "atomic_commit", "write_decision_receipt", "derive_next_segment_seed"]},
+        "validation_failure": {
+          "const": {
+            "failure_class": "authoring_or_input_preflight_error",
+            "rollback_scope": "entire_response_transaction",
+            "state_changes": 0, "cost_changes": 0, "rng_draws": 0, "history_changes": 0,
+            "pause": "retained"
+          }
+        },
+        "outcome_failure": {
+          "const": {
+            "failure_class": "resolved_special_effect_outcome",
+            "strategy_modifier": "applied",
+            "outcome_actions": "failure_branch_only"
+          }
+        },
+        "checkpoint_states": {"const": ["pre_transaction", "post_transaction"]},
+        "partial_apply_serialization": {"const": "forbidden"},
+        "delayed_or_multi_tick_workflow": {"const": "forbidden"},
+        "rng_draws": {"const": {"strategy_only": 0, "deterministic_special_effect": 0, "probabilistic_special_effect": 1}},
+        "probabilistic_rng": {"const": {"namespace": "actual_combat", "source": "deterministic_sub_seed", "provenance_required": true}}
+      }
+    },
     "registry": {
       "type": "object",
-      "required": ["selector_version", "formula_version", "canonical_only_runtime", "unknown_id", "legacy_policy", "legacy_aliases", "tie_break", "selector_ids", "formula_ids"],
+      "additionalProperties": false,
+      "required": [
+        "selector_version", "formula_version", "strategy_targeting_version", "canonical_only_runtime",
+        "unknown_id", "legacy_policy", "legacy_aliases", "tie_break", "response_selector_resolution",
+        "dynamic_strategy_targeting", "selector_ids", "formula_ids", "strategy_targeting_rule_ids",
+        "version_relationship"
+      ],
       "properties": {
         "selector_version": {"const": "v1"},
         "formula_version": {"const": "v1"},
+        "strategy_targeting_version": {"const": "v1"},
         "canonical_only_runtime": {"const": true},
         "unknown_id": {"const": "validator_error"},
         "legacy_policy": {"const": "migration_only"},
-        "legacy_aliases": {"type": "array", "uniqueItems": true},
+        "legacy_aliases": {"const": ["self", "target", "observer", "opponent", "any"]},
         "tie_break": {"const": "stable_combatant_id_ascending"},
-        "selector_ids": {"type": "object"},
-        "formula_ids": {"type": "array", "minItems": 1, "uniqueItems": true}
+        "response_selector_resolution": {"const": "once_from_pause_snapshot"},
+        "dynamic_strategy_targeting": {"const": "reevaluate_each_tick_from_canonical_snapshot"},
+        "selector_ids": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["executor", "target"],
+          "properties": {
+            "executor": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^combat\\.selector\\.executor\\.v1\\."}},
+            "target": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^combat\\.selector\\.target\\.v1\\."}}
+          }
+        },
+        "formula_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^combat\\.formula\\.v1\\."}},
+        "strategy_targeting_rule_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^combat\\.strategy\\.targeting\\.v1\\."}},
+        "version_relationship": {"type": "object"}
+      }
+    },
+    "legacy_migration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "boundary", "canonical_runtime_authoring", "legacy_fields", "resolution_kind_mapping",
+        "selector_alias_mapping", "ambiguous_alias_result", "automatic_ambiguous_conversion",
+        "preserve_original_fields_in", "legacy_v1_selection_result", "retroactive_reward_or_effect"
+      ],
+      "properties": {
+        "boundary": {"const": "offline_or_load_time_migration_only"},
+        "canonical_runtime_authoring": {"const": "reject_legacy_fields_and_aliases"},
+        "legacy_fields": {"const": ["resolution_kind", "executor_selector", "target_selector"]},
+        "resolution_kind_mapping": {"type": "object"},
+        "selector_alias_mapping": {"type": "object"},
+        "ambiguous_alias_result": {"const": "designer_review_required"},
+        "automatic_ambiguous_conversion": {"const": "forbidden"},
+        "preserve_original_fields_in": {"const": "migration_provenance"},
+        "legacy_v1_selection_result": {"const": "legacy_no_effect"},
+        "retroactive_reward_or_effect": {"const": "forbidden"}
       }
     },
     "special_effect": {
       "type": "object",
-      "required": ["required_fields", "outcome_branches", "outcome_action_kinds", "action_plan_owner", "application_owner", "exactly_once_keys", "loot_entitlement"],
+      "additionalProperties": false,
+      "required": [
+        "required_fields", "outcome_branches", "branch_fields", "outcome_action_kinds",
+        "outcome_action_fields", "action_plan_owner", "application_owner", "exactly_once",
+        "direct_grant", "loot_entitlement"
+      ],
       "properties": {
         "required_fields": {"type": "array", "uniqueItems": true},
         "outcome_branches": {"const": ["success", "failure"]},
+        "branch_fields": {"const": ["effect_ids", "outcome_actions"]},
         "outcome_action_kinds": {"const": ["set_flag", "create_loot_entitlement", "grant_item"]},
+        "outcome_action_fields": {"type": "object"},
         "action_plan_owner": {"const": "combat_core"},
         "application_owner": {"const": "gamecore"},
-        "exactly_once_keys": {"const": ["action_id", "application_transaction_id"]},
+        "exactly_once": {"type": "object"},
+        "direct_grant": {"type": "object"},
         "loot_entitlement": {"type": "object"}
       }
     },
     "strategy_modifier": {
       "type": "object",
-      "required": ["baseline", "scopes", "operations", "durations", "default_duration", "stacking", "precedence", "clear_override_result"],
+      "additionalProperties": false,
+      "required": ["baseline", "scopes", "operations", "durations", "default_duration", "combat_end", "stacking", "precedence", "clear_override_result", "invalid_target", "special_effect_outcome_dependency"],
       "properties": {
         "baseline": {"const": "immutable"},
         "scopes": {"const": ["all_allies", "role", "combatants"]},
         "operations": {"const": ["set_role_weight", "set_targeting_rule", "set_target_policy", "clear_override"]},
         "durations": {"const": ["until_replaced", "next_segment"]},
         "default_duration": {"const": "until_replaced"},
+        "combat_end": {"const": "discard_all_overlays"},
         "stacking": {"type": "object"},
         "precedence": {"const": ["combatant", "role", "side", "baseline"]},
-        "clear_override_result": {"const": "restore_baseline"}
+        "clear_override_result": {"const": "restore_baseline"},
+        "invalid_target": {"type": "object"},
+        "special_effect_outcome_dependency": {"const": "none"}
       }
     },
     "lifecycle": {
       "type": "object",
-      "required": ["states", "terminal_reason_separate", "terminal_result_separate", "pause_is_termination_candidate", "stable_pause_id", "stale_response", "nested_pause", "host_timeout", "forced_stop", "ko_tick_order"],
+      "additionalProperties": false,
+      "required": ["states", "terminal_reason_separate", "terminal_result_separate", "pause_is_termination_candidate", "pause_required_fields", "stable_pause_id", "stale_response_match", "stale_response", "nested_pause", "host_timeout", "forced_stop", "ko_tick_order"],
       "properties": {
         "states": {"const": ["running", "paused_for_intervention", "terminal"]},
         "terminal_reason_separate": {"const": true},
         "terminal_result_separate": {"const": true},
         "pause_is_termination_candidate": {"const": false},
+        "pause_required_fields": {"type": "array", "uniqueItems": true},
         "stable_pause_id": {"const": "required"},
+        "stale_response_match": {"const": ["pause_id", "evaluation_fingerprint", "state_revision"]},
         "stale_response": {"const": "reject"},
         "nested_pause": {"const": "forbidden"},
         "host_timeout": {"const": "submit_no_intervention"},
-        "forced_stop": {"type": "object"},
-        "ko_tick_order": {"type": "array", "minItems": 6, "uniqueItems": true}
+        "forced_stop": {"const": {"overrides_pause": true, "invalidates_pause_id": true, "terminal_priority": 10}},
+        "ko_tick_order": {"const": ["apply_tick_results", "collect_provisional_terminal_facts", "detect_intervention", "apply_intervention", "recompute_terminal_facts", "settle_terminal"]}
       }
     },
     "checkpoint_and_receipt": {
       "type": "object",
-      "required": ["storage_model", "save_schema_version", "combat_checkpoint_schema_version", "decision_receipt_schema_version", "receipt_required_fields", "action_receipt_statuses", "compact_snapshot_fields", "fingerprints", "next_segment_seed_input", "legacy_v1"],
+      "additionalProperties": false,
+      "required": [
+        "storage_model", "save_schema_version", "combat_checkpoint_schema_version",
+        "decision_receipt_schema_version", "receipt_required_fields", "formula_receipt_fields",
+        "action_receipt_statuses", "compact_snapshot_fields", "fingerprints", "next_segment_seed_input",
+        "raw_log_policy", "legacy_v1", "terminal_receipt_schema_version", "terminal_receipt_required_fields"
+      ],
       "properties": {
         "storage_model": {"const": "resolved_decision_receipt_plus_compact_state_snapshot"},
         "save_schema_version": {"const": 2},
         "combat_checkpoint_schema_version": {"const": 2},
         "decision_receipt_schema_version": {"const": 1},
-        "receipt_required_fields": {"type": "array", "uniqueItems": true},
+        "receipt_required_fields": {"type": "array", "minItems": 1, "uniqueItems": true},
+        "formula_receipt_fields": {"type": "array", "minItems": 1, "uniqueItems": true},
         "action_receipt_statuses": {"const": ["applied", "already_applied", "pending_claim", "rejected"]},
-        "compact_snapshot_fields": {"type": "array", "uniqueItems": true},
+        "compact_snapshot_fields": {"type": "array", "minItems": 1, "uniqueItems": true},
         "fingerprints": {"const": ["intent_fingerprint", "decision_receipt_fingerprint", "checkpoint_fingerprint"]},
         "next_segment_seed_input": {"const": "decision_receipt_fingerprint"},
-        "legacy_v1": {"type": "object"}
+        "raw_log_policy": {"type": "object"},
+        "legacy_v1": {"type": "object"},
+        "terminal_receipt_schema_version": {"const": 1},
+        "terminal_receipt_required_fields": {"type": "array", "minItems": 1, "uniqueItems": true}
+      }
+    },
+    "provenance_and_logs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["receipt_raw_event_policy", "receipt_entity_references", "receipt_zone_references", "display_labels_in_receipt", "render_time_label_resolution", "hidden_state_capture", "internal_id_user_visible", "raw_event_contract", "raw_event_types", "renderer_aggregation"],
+      "properties": {
+        "receipt_raw_event_policy": {"const": "references_only_no_event_duplication"},
+        "receipt_entity_references": {"const": "canonical_entity_ids_only"},
+        "receipt_zone_references": {"const": "canonical_zone_ids_or_selector_provenance"},
+        "display_labels_in_receipt": {"const": "forbidden"},
+        "render_time_label_resolution": {"const": ["combat_display_identity", "combat_tactical_zones"]},
+        "hidden_state_capture": {"const": "only_formula_inputs_and_fingerprints_required_for_replay"},
+        "internal_id_user_visible": {"const": "forbidden"},
+        "raw_event_contract": {"const": "combat_log_presentation"},
+        "raw_event_types": {"type": "object"},
+        "renderer_aggregation": {"const": "non_groupable_preserve_sequence_and_receipt_reference"}
       }
     },
     "runtime_handoff": {
       "type": "object",
+      "additionalProperties": false,
       "required": ["current_runtime_simulation_version", "implementation_complete", "required_work_packages"],
       "properties": {
         "current_runtime_simulation_version": {"const": "v3"},
         "implementation_complete": {"const": false},
         "required_work_packages": {"type": "array", "minItems": 1, "uniqueItems": true}
-      }
-    }
-  },
-  "$defs": {
-    "responseAuthoring": {
-      "type": "object",
-      "properties": {
-        "strategy_modifier": {"type": "object"},
-        "special_effect": {"type": "object"}
-      },
-      "additionalProperties": false,
-      "anyOf": [
-        {"required": ["strategy_modifier"]},
-        {"required": ["special_effect"]}
-      ],
-      "not": {
-        "anyOf": [
-          {"required": ["intervention_kind"]},
-          {"required": ["resolution_kind"]},
-          {"required": ["hybrid_kind"]}
-        ]
       }
     }
   }

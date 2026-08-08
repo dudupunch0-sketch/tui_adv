@@ -4,6 +4,7 @@ status: canonical-synced / runtime-handoff-required
 date: 2026-08-08
 canonical_contract: `docs/content/design_source/contracts/intervention.yml`
 canonical_schema: `docs/content/design_source/schema/combat_intervention.schema.json`
+authoring_payload_schema: `docs/content/design_source/schema/combat_intervention_response.schema.json`
 implementation_handoff: `docs/content/design_source/handoffs/combat_contract_handoff.md`
 related_plan: `fable_combat_hex_t4_step12_2608081745.md`
 
@@ -83,7 +84,7 @@ Special effect는 canonical formula, parameters, executor/target selector와 suc
 - `create_loot_entitlement`: 전리품 획득 권리 생성
 - `grant_item`: 즉시 아이템 지급
 
-Combat core는 action plan만 계산하고 GameCore가 `action_id`와 `application_transaction_id`로 exactly-once 적용한다. 직접 지급은 같은 response transaction에서 즉시 획득한다. Loot entitlement는 기본적으로 승리·목표 달성에서 claim 가능하고 도주·패배·항복·포획·forced stop·상호 전멸에서는 미획득이다. 명시적 authoring override는 validator를 통과한 경우만 허용한다.
+Combat core는 action plan과 deterministic `action_id`/`entitlement_id`를 만들고 GameCore가 response application transaction으로 exactly-once 적용한다. Terminal-time loot claim은 별도 claim action/transaction과 terminal receipt를 사용하며 retry는 ledger에 존재하는 ID를 근거로 `already_applied` 처리한다. 직접 지급은 response transaction에서 즉시 획득한다. Loot entitlement는 기본적으로 승리·목표 달성에서 claim 가능하고 도주·패배·항복·포획·forced stop·상호 전멸에서는 미획득이다. 명시적 authoring override는 validator를 통과한 경우만 허용한다.
 
 도감·기억 파편은 별도 account-meta 보상 계약이며 현재 runtime에 있다고 가정하지 않는다. Action receipt는 향후 최초 획득 consumer가 사용할 acquisition provenance만 보존한다.
 

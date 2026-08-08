@@ -152,7 +152,7 @@ Use deterministic unit fixtures:
 
 ## 9. 구현 결과 (2026-08-08)
 
-- 구현 커밋: pending (runtime patch + plan update)
+- 구현 커밋: `6f304ff`
 - `CombatRuntimeOpportunityConfig`, `CombatRuntimePause`, `CombatRuntimeAdvance`를 추가하고,
   candidate가 발생한 resolution tick에서 pause/동일 marker 재반환/no-intervention resume을
   구현했다.

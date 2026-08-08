@@ -5,6 +5,7 @@
 > 이 문서는 처음 작성된 구현 전 기준점도 포함하므로, 충돌이 있으면 상단의 최신 방향/다음 액션을 우선한다. `README.md`는 요약/실행법, `docs/dev/Checklist.md`는 완료 여부 추적, 아키텍처/스키마 문서는 계약 참조, `idea_box/`는 active plan이 없을 때 보는 backlog다. `.hermes/plans/`는 세션용 작업 계획이며 canonical source가 아니다.
 >
 > 아이디어-설계 흐름은 local design-source 우선이다. `docs/content/design_source/`의 Git-tracked normalized records가 current design records의 정본이며, Notion은 역사적 provenance와 읽기·검수 미러다. 새 변경은 local design source → review → 필요 시 runtime handoff/구현 → Notion mirror 순서로 운영한다.
+> 객패귀로 메인 스토리 방향: [통합 설계 v1.1](../content/design_source/arcs/guestpass_homecoming_main_story_v1_1.md)은 승인된 메인 스토리 방향이며, 개별 authoring 검수가 필요하고 runtime에는 아직 구현되지 않았다. 이 링크는 현재 최우선 코드/runtime 작업 순서나 완료 상태를 변경하지 않는다.
 
 > 후일담 source-unstructured 127건은 `docs/content/design_source/reports/afterthought_triage.yml`에서 원문을 보존한 채 분류한다. 해당 ledger는 coverage·중복·누락을 검증하며, 실제 event의 후일담 연결 필드는 별도 기획 검수 전까지 변경하지 않는다.
 

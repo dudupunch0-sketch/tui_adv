@@ -40,7 +40,7 @@ Machine-readable mirror는 `docs/content/storypack_db/storypacks.json`에 둔다
 
 ## 우선순위
 
-첫 설계 slice는 `isolation_pack`으로 시작했다. 2026-05-29부터는 office-only 편향을 줄이기 위해 `wuxia_jianghu_pack`을 첫 비-office 기준 storypack으로 함께 관리했고, 2026-06-01 이후 Web/default storypack은 **이구학지 — 천기록**이며 2026-06-02 이후 terminal content scene default도 이구학지 fixture다. 현재 무협팩의 canonical story는 Notion에서 갱신된 이구학지이며, 이전의 generic 무협 placeholder는 superseded다. 2026-05-31에는 Notion-origin `야근몽`을 별도 office-family 후보인 `yageunmong_pack`으로 문서화하고, live Notion Markdown 대조 후 관련 idea entry를 done 처리했다. 2026-06-02에는 같은 Notion 원문을 다시 확인해 이구학지식 route-pressure/동료 구출/후일담 handoff 구조로 후보 카드를 12개까지 확장했다. 이는 legacy office bundle을 삭제한다는 뜻이 아니다.
+첫 설계 slice는 `isolation_pack`으로 시작했다. 2026-05-29부터는 office-only 편향을 줄이기 위해 `wuxia_jianghu_pack`을 첫 비-office 기준 storypack으로 함께 관리했고, 2026-06-01 이후 Web/default storypack은 **이구학지 — 천기록**이며 2026-06-02 이후 terminal content scene default도 이구학지 fixture다. 현재 무협팩의 canonical story source는 [local design source](../design_source/)이며, [객패귀로 메인 스토리 통합 설계 v1.1](../design_source/arcs/guestpass_homecoming_main_story_v1_1.md)은 승인된 메인 방향·개별 authoring 검수 필요·runtime not implemented 상태다. Notion은 보존된 provenance와 읽기·검수 미러이며, 이전의 generic 무협 placeholder는 superseded다. 2026-05-31에는 Notion-origin `야근몽`을 별도 office-family 후보인 `yageunmong_pack`으로 문서화하고, live Notion Markdown 대조 후 관련 idea entry를 done 처리했다. 2026-06-02에는 같은 Notion 원문을 다시 확인해 이구학지식 route-pressure/동료 구출/후일담 handoff 구조로 후보 카드를 12개까지 확장했다. 이는 legacy office bundle을 삭제한다는 뜻이 아니다.
 
 나머지 팩은 다음 조건을 만족할 때 별도 문서로 승격한다.
 

@@ -1,6 +1,6 @@
 # T4 S3d — deterministic sparse frame delta primitive
 
-status: ready-for-implementation
+status: implemented
 date: 2026-08-08
 baseline_commit: `68501d4`
 baseline_test: `cargo test --workspace --no-fail-fast --quiet` = 0 failures
@@ -88,3 +88,15 @@ renderer/terminal/Web, response effect/state mutation, generated content.
 - frame field를 보존하려면 public schema/fingerprint 계산식을 변경해야 하는 경우.
 - sparse delta가 현재 fixture에서 더 작지 않아도 임의 압축 목표를 추가하지 않는다.
 - 기존 frame/result fingerprint가 설명 없이 변하는 경우.
+
+## 8. 구현 보고
+
+- implementation commits: `28f2110`, `0ce15b7`
+- crate-private sparse delta encode/decode를 추가했다. moves/outcomes는 unchanged면 생략하고,
+  positions/combatants는 BTreeMap 기반 changed update만 저장한다. decode는 이전 snapshot을
+  carry-forward하며 duplicate id/tick gap/first None/fingerprint 오류를 거부한다.
+- 2 participant fixture exact equality 및 malformed delta 테스트 추가.
+- WSL 측정값(12 participant·1,200 tick): full checkpoint JSON `3,800,404` bytes,
+  sparse delta JSON `211,902` bytes. 두 payload는 metadata 범위가 다르므로 절대 비교값으로
+  기록하고, public 저장 교체는 다음 slice에서 결정한다.
+- runtime unit 17/17, workspace 0 failures, fmt/diff check 통과.

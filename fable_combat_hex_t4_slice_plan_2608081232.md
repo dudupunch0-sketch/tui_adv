@@ -270,4 +270,7 @@ git diff --check
    `fable_combat_hex_t4_step8_2608081545.md`다. S3c full-frame 측정도 `d3920b5`로
    완료했고, 12 participant·1,200 tick checkpoint JSON은 3,800,404 bytes였다.
    상세 보고서는 `fable_combat_hex_t4_step9_2608081605.md`다. 다음은 측정값을 기준으로
-   delta 표현을 설계하는 S3d다.
+   delta 표현을 설계하는 S3d다. S3d sparse delta primitive도 `28f2110`/`0ce15b7`로
+   완료했고, delta JSON은 211,902 bytes로 측정됐다. 상세 보고서는
+   `fable_combat_hex_t4_step10_2608081635.md`다. 다음은 public checkpoint 저장 경로에
+   delta를 선택적으로 연결하는 S3e다.

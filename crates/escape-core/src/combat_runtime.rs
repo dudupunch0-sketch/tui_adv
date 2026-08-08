@@ -7,8 +7,9 @@ use crate::combat_resolution::{
     CombatResolutionState, CombatResolutionStepper,
 };
 use crate::{
-    CombatExecutionError, CombatExecutionResult, CombatSimulation, CombatSimulationError,
-    CombatTickFrame,
+    CombatExecutionError, CombatExecutionResult, CombatOpportunityCatalog,
+    CombatOpportunityContext, CombatOpportunityError, CombatOpportunityEvaluation,
+    CombatOpportunityInstance, CombatSimulation, CombatSimulationError, CombatTickFrame,
 };
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -17,11 +18,32 @@ pub(crate) struct CombatRuntimeFrame {
     pub(crate) resolution: CombatResolutionFrame,
 }
 
+pub(crate) struct CombatRuntimeOpportunityConfig {
+    pub(crate) catalog: CombatOpportunityCatalog,
+    pub(crate) instances: Vec<CombatOpportunityInstance>,
+    pub(crate) context: CombatOpportunityContext,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(crate) struct CombatRuntimePause {
+    pub(crate) tick: u32,
+    pub(crate) evaluation: CombatOpportunityEvaluation,
+    pub(crate) evaluation_fingerprint: String,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(crate) enum CombatRuntimeAdvance {
+    Frame(CombatRuntimeFrame),
+    Paused(CombatRuntimePause),
+    Complete,
+}
+
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(crate) enum CombatRuntimeError {
     Execution(CombatExecutionError),
     Simulation(CombatSimulationError),
     Resolution(CombatResolutionError),
+    Opportunity(CombatOpportunityError),
     InvalidInput,
 }
 
@@ -43,6 +65,12 @@ impl From<CombatResolutionError> for CombatRuntimeError {
     }
 }
 
+impl From<CombatOpportunityError> for CombatRuntimeError {
+    fn from(error: CombatOpportunityError) -> Self {
+        Self::Opportunity(error)
+    }
+}
+
 impl std::fmt::Display for CombatRuntimeError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{self:?}")
@@ -58,6 +86,14 @@ pub(crate) struct CombatRuntime {
     stepper: CombatResolutionStepper,
     execution_frames: Vec<CombatTickFrame>,
     resolution_frames: Vec<CombatResolutionFrame>,
+    opportunities: Option<CombatRuntimeOpportunityState>,
+    paused: Option<CombatRuntimePause>,
+}
+
+struct CombatRuntimeOpportunityState {
+    catalog: CombatOpportunityCatalog,
+    instances: Vec<CombatOpportunityInstance>,
+    context: CombatOpportunityContext,
 }
 
 impl CombatRuntime {
@@ -82,7 +118,24 @@ impl CombatRuntime {
             stepper,
             execution_frames: vec![],
             resolution_frames: vec![],
+            opportunities: None,
+            paused: None,
         })
+    }
+
+    pub(crate) fn with_opportunities(
+        request: CombatResolutionRequest,
+        config: CombatRuntimeOpportunityConfig,
+    ) -> Result<Self, CombatRuntimeError> {
+        config.catalog.validate()?;
+        config.context.budget.validate()?;
+        let mut runtime = Self::new(request)?;
+        runtime.opportunities = Some(CombatRuntimeOpportunityState {
+            catalog: config.catalog,
+            instances: config.instances,
+            context: config.context,
+        });
+        Ok(runtime)
     }
 
     pub(crate) fn advance_tick(
@@ -106,6 +159,46 @@ impl CombatRuntime {
             execution,
             resolution,
         }))
+    }
+
+    pub(crate) fn advance_with_opportunities(
+        &mut self,
+    ) -> Result<CombatRuntimeAdvance, CombatRuntimeError> {
+        if let Some(pause) = &self.paused {
+            return Ok(CombatRuntimeAdvance::Paused(pause.clone()));
+        }
+        let Some(frame) = self.advance_tick()? else {
+            return Ok(CombatRuntimeAdvance::Complete);
+        };
+        let Some(state) = &mut self.opportunities else {
+            return Ok(CombatRuntimeAdvance::Frame(frame));
+        };
+        let mut context = state.context.clone();
+        context.current_tick = frame.resolution.tick;
+        let evaluation = state.catalog.evaluate(&state.instances, &context)?;
+        state.context.budget = evaluation.budget.clone();
+        let Some(candidate) = &evaluation.candidate else {
+            return Ok(CombatRuntimeAdvance::Frame(frame));
+        };
+        state
+            .context
+            .presented_instance_ids
+            .insert(candidate.instance_id.clone());
+        let evaluation_fingerprint = evaluation.fingerprint()?;
+        let pause = CombatRuntimePause {
+            tick: frame.resolution.tick,
+            evaluation,
+            evaluation_fingerprint,
+        };
+        self.paused = Some(pause.clone());
+        Ok(CombatRuntimeAdvance::Paused(pause))
+    }
+
+    pub(crate) fn resume_no_intervention(&mut self) -> Result<(), CombatRuntimeError> {
+        if self.paused.take().is_none() {
+            return Err(CombatRuntimeError::InvalidInput);
+        }
+        Ok(())
     }
 
     pub(crate) fn finish(self) -> Result<CombatResolutionResult, CombatRuntimeError> {
@@ -142,6 +235,7 @@ impl CombatRuntime {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::collections::BTreeSet;
 
     fn make_request(ticks: u32) -> CombatResolutionRequest {
         let combatant = |id: &str| crate::CombatantState {
@@ -259,6 +353,86 @@ mod tests {
         }
     }
 
+    fn opportunity_config() -> CombatRuntimeOpportunityConfig {
+        CombatRuntimeOpportunityConfig {
+            catalog: crate::CombatOpportunityCatalog {
+                opportunities: vec![crate::CombatOpportunityDefinition {
+                    id: "danger".into(),
+                    trigger_tags: vec!["danger_tag".into()],
+                    required_condition_ids: vec![],
+                    thresholds: crate::CombatDetectionThresholds {
+                        detected: 0,
+                        interpreted: 1,
+                        insightful: 2,
+                    },
+                    expiry_tick: None,
+                    dedupe: true,
+                    scripted: false,
+                    defeat_risk: true,
+                    battlefield_impact: false,
+                    unique_response: false,
+                    tactical_priority: 1,
+                    free_alert_id: None,
+                }],
+                responses: vec![crate::CombatResponseDefinition {
+                    id: "intervene".into(),
+                    opportunity_id: "danger".into(),
+                    minimum_detection: crate::CombatDetectionLevel::Detected,
+                    required_capability_ids: vec![],
+                    required_condition_ids: vec![],
+                    executor_selector: "observer".into(),
+                    target_selector: "self".into(),
+                    cost_tags: vec![],
+                    resolution_kind: "effect".into(),
+                    success_effect_ids: vec!["noop_effect".into()],
+                    failure_effect_ids: vec!["noop_effect".into()],
+                    unique: false,
+                    tactical_priority: 1,
+                }],
+                effect_catalog: crate::CombatEffectCatalog {
+                    effects: vec![crate::CombatEffectDefinition {
+                        id: "noop_effect".into(),
+                        source: "test".into(),
+                        category: crate::CombatEffectCategory::State,
+                        target_selector: "target".into(),
+                        parameters: Default::default(),
+                        conditions: vec![],
+                        phase: crate::EffectPhase::CombatStart,
+                        lifetime: crate::EffectLifetime::Persistent,
+                        stacking: crate::EffectStacking::Unique,
+                        stacking_group: "noop".into(),
+                        stacking_cap: None,
+                        priority: 0,
+                        visibility: crate::EffectVisibility::Public,
+                        tags: vec![],
+                    }],
+                },
+            },
+            instances: vec![crate::CombatOpportunityInstance {
+                id: "danger_instance".into(),
+                definition_id: "danger".into(),
+            }],
+            context: crate::CombatOpportunityContext {
+                current_tick: 0,
+                active_tag_ids: BTreeSet::from(["danger_tag".into()]),
+                active_condition_ids: BTreeSet::new(),
+                presented_instance_ids: BTreeSet::new(),
+                observers: vec![crate::CombatObserver {
+                    id: "observer".into(),
+                    detection_score: 10,
+                    capability_ids: vec![],
+                    can_observe: true,
+                    can_act: true,
+                }],
+                budget: crate::CombatInterventionBudget {
+                    maximum: 1,
+                    consumed: 0,
+                },
+                manifest_fingerprint: "manifest".into(),
+            },
+        }
+    }
+
     #[test]
     fn runtime_interleaves_one_tick_and_matches_batch_result() {
         let request = make_request(2);
@@ -320,6 +494,44 @@ mod tests {
             None
         );
         assert!(second.resolution.outcomes.is_empty());
+    }
+
+    #[test]
+    fn opportunity_candidate_pauses_at_exact_tick_and_dedupes_after_resume() {
+        let request = make_request(2);
+        let mut runtime = CombatRuntime::with_opportunities(request, opportunity_config()).unwrap();
+        let paused = match runtime.advance_with_opportunities().unwrap() {
+            CombatRuntimeAdvance::Paused(pause) => pause,
+            other => panic!("expected pause, got {other:?}"),
+        };
+        assert_eq!(paused.tick, 1);
+        assert_eq!(paused.evaluation.budget.consumed, 1);
+        assert_eq!(
+            paused.evaluation.candidate.as_ref().unwrap().instance_id,
+            "danger_instance"
+        );
+        assert_eq!(
+            paused.evaluation_fingerprint,
+            paused.evaluation.fingerprint().unwrap()
+        );
+        assert_eq!(
+            runtime.advance_with_opportunities().unwrap(),
+            CombatRuntimeAdvance::Paused(paused.clone())
+        );
+
+        runtime.resume_no_intervention().unwrap();
+        match runtime.advance_with_opportunities().unwrap() {
+            CombatRuntimeAdvance::Frame(frame) => assert_eq!(frame.execution.tick, 2),
+            other => panic!("expected resumed frame, got {other:?}"),
+        }
+        assert_eq!(
+            runtime.advance_with_opportunities().unwrap(),
+            CombatRuntimeAdvance::Complete
+        );
+        assert!(matches!(
+            runtime.resume_no_intervention(),
+            Err(CombatRuntimeError::InvalidInput)
+        ));
     }
 
     #[test]

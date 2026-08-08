@@ -1,6 +1,6 @@
 # T4 S2c — opportunity pause marker
 
-status: ready-for-implementation
+status: implemented
 date: 2026-08-08
 baseline_commit: `5e8899f`
 baseline_test: `cargo test --workspace --no-fail-fast --quiet` = 0 failures
@@ -149,3 +149,16 @@ Use deterministic unit fixtures:
 - trigger tick, marker fingerprint, budget/presented-id observations
 - no-op path regression and out-of-scope diff report
 - S2d가 소비할 pause/response boundary
+
+## 9. 구현 결과 (2026-08-08)
+
+- 구현 커밋: pending (runtime patch + plan update)
+- `CombatRuntimeOpportunityConfig`, `CombatRuntimePause`, `CombatRuntimeAdvance`를 추가하고,
+  candidate가 발생한 resolution tick에서 pause/동일 marker 재반환/no-intervention resume을
+  구현했다.
+- 기존 `CombatOpportunityCatalog::evaluate`를 변경하지 않고 presented id와 budget을 runtime이
+  보존한다. test fixture에서 tick 1 pause, budget 1회 소비, resume 후 tick 2 진행과 dedupe를
+  확인했다.
+- 직접 검증: runtime unit 4/4, opportunity integration 12/12, workspace 0 failures,
+  `cargo fmt --all -- --check`, `git diff --check` 통과.
+- S2d는 이 pause marker를 response selection/history와 segment seed에 연결한다.

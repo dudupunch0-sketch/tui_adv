@@ -38,6 +38,12 @@ fn input() -> CombatSimulationInput {
                 position: HexCoord { q: 0, r: 0 },
                 facing: HexCoord { q: 1, r: 0 },
                 speed_per_tick: 1,
+                // T3 (fable_combat_hex_t3_step1_2608080951.md §4-3): new
+                // field on `CombatSimulationParticipant`. `None` means "act
+                // every tick", exactly this fixture's pre-T3 behaviour --
+                // mechanical fix to keep this file compiling, not a scope
+                // change.
+                move_speed_hundredths: None,
                 collision_radius: 1,
                 attack_range: 2,
                 support_range: 2,
@@ -59,6 +65,7 @@ fn input() -> CombatSimulationInput {
                 position: HexCoord { q: 10, r: 0 },
                 facing: HexCoord { q: -1, r: 0 },
                 speed_per_tick: 1,
+                move_speed_hundredths: None,
                 collision_radius: 1,
                 attack_range: 2,
                 support_range: 2,

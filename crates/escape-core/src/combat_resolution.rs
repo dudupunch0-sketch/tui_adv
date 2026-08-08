@@ -1,3 +1,4 @@
+use crate::combat_simulation::ACTION_THRESHOLD_HUNDREDTHS;
 use crate::{
     execute_combat, footprint_distance, side_all_defeated, CombatEffectCatalog,
     CombatEffectDefinition, CombatEffectInstance, CombatExecutionError, CombatExecutionRequest,
@@ -24,6 +25,18 @@ pub struct CombatAttackDefinition {
     pub penetration_hundredths: i64,
     pub collision_balance_hundredths: i64,
     pub balance_power_hundredths: i64,
+    // T3 (fable_combat_hex_t3_step1_2608080951.md §4-1/§4-2/§4-3):
+    // hundredths-fixed-point attack-cadence gauge speed, independent of the
+    // actor's movement cadence -- one combatant can carry several attacks,
+    // each with its own rhythm (plan's two-gauge table). `None` means "fire
+    // every tick" (`ACTION_THRESHOLD_HUNDREDTHS`), which is every existing
+    // attack's behaviour before and after this slice. `skip_serializing_if`
+    // drops the key from JSON when unset, so no existing bundle or fixture's
+    // bytes change and no version bump is needed (hard invariant 2).
+    // `Some(v)` with `v <= 0` is rejected in `validate_inputs` rather than
+    // treated as "never fires" (§4-3: don't invent a meaning for it).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub attack_speed_hundredths: Option<i64>,
     #[serde(default)]
     pub effects: Vec<CombatAttackEffect>,
 }
@@ -209,6 +222,13 @@ pub fn resolve(
         .collect();
     let early_conclusion_is_decidable = !active_allies.is_empty() && !active_enemies.is_empty();
 
+    // T3 §4-1/§4-2/§4-4: each attack definition's own, independent
+    // attack-cadence gauge, carried across ticks. Keyed by attack id in a
+    // `BTreeMap` (not tied to actor or target) because one actor can own
+    // several attacks, each with its own rhythm.
+    let mut attack_gauges: BTreeMap<&str, i64> =
+        attack_map.keys().map(|id| (id.as_str(), 0i64)).collect();
+
     for frame in &execution.frames {
         // I1 (fable_combat_early_conclusion_step1_2608022130.md): whether an
         // actor/target is incapacitated is decided from THIS tick's starting
@@ -223,9 +243,42 @@ pub fn resolve(
             .iter()
             .map(|(id, c)| (id.clone(), c.current_health_hundredths))
             .collect();
+        // T3 §4-1/§4-4: how many times each attack's cadence gauge crosses
+        // `ACTION_THRESHOLD_HUNDREDTHS` this tick, decided from every
+        // attack's *tick-start* gauge value in a pass that completes before
+        // any attack in this tick is resolved. Each attack's gauge depends
+        // only on its own speed and its own prior value -- never on another
+        // attack's outcome, actor, or target -- so advancing it here in
+        // `attack_map`'s fixed (id-sorted) order can never leak processing
+        // order into the result (invariant 4, §4-4). A speed of `20_000`
+        // crosses the threshold twice in one tick and fires twice, not once
+        // (§4-1: don't clamp a cadence to "at most once per tick").
+        let mut attack_fires: BTreeMap<&str, u32> = BTreeMap::new();
+        for attack in attack_map.values() {
+            let speed = attack
+                .attack_speed_hundredths
+                .unwrap_or(ACTION_THRESHOLD_HUNDREDTHS);
+            let gauge = attack_gauges.get_mut(attack.id.as_str()).unwrap();
+            *gauge = gauge
+                .checked_add(speed)
+                .ok_or(CombatResolutionError::Overflow)?;
+            let mut fires = 0u32;
+            while *gauge >= ACTION_THRESHOLD_HUNDREDTHS {
+                fires += 1;
+                *gauge -= ACTION_THRESHOLD_HUNDREDTHS;
+            }
+            attack_fires.insert(attack.id.as_str(), fires);
+        }
         let mut outcomes = Vec::new();
         let mut sequence = 0;
         for attack in attack_map.values() {
+            // T3 §4-1: this attack's cadence gauge did not cross the
+            // threshold this tick -- it does not fire at all, independent of
+            // whether it has a valid actor/target/move-intent this tick.
+            let fires = attack_fires[attack.id.as_str()];
+            if fires == 0 {
+                continue;
+            }
             let Some(intent) = frame.moves.iter().find(|m| m.actor_id == attack.actor_id) else {
                 continue;
             };
@@ -257,200 +310,225 @@ pub fn resolve(
             if actor_incapacitated || target_incapacitated {
                 continue;
             }
-            // T1-b1 §4-1/§4-5: `CombatPosition::overlaps`/`in_range` no
-            // longer exist -- `HexCoord` only offers `distance`. Both
-            // predicates are now the plan's replacement formula
-            // (`a.distance(b) <= i64::from(range)`) applied to different
-            // thresholds. `collision_radius` keeps its old "combined melee
-            // reach" meaning; only the metric under it moved from euclidean
-            // to hex distance.
-            //
-            // T1-d §4-4 site 5/5: footprint distance, not anchor distance.
-            // `combat_resolution.rs` only has each tick's frozen anchor
-            // (`frame.positions`), not a live `position` field, but
-            // `actor`/`target` (from `request.execution.input.participants`)
-            // still carry their fixed `occupies` offset list -- the plan's
-            // "프레임 스키마를 바꾸지 마라" (§4-4), satisfied by reading the
-            // shape from the participant and the anchor from the frame
-            // instead of adding a footprint field to the frame itself.
-            let distance = footprint_distance(
-                frame.positions[&actor.id],
-                &actor.occupies,
-                frame.positions[target_id],
-                &target.occupies,
-            )
-            .map_err(|e| CombatResolutionError::Simulation(CombatSimulationError::HexMath(e)))?;
-            let collision_reach =
-                i64::from(actor.collision_radius) + i64::from(target.collision_radius);
-            let collision = distance <= collision_reach;
-            let in_range = distance <= i64::from(attack.attack_range);
-            let roll_value = roll(
-                execution.effective_seed,
-                execution.namespace,
-                frame.tick,
-                &attack.id,
-                &actor.id,
-                target_id,
-                0,
-            );
-            let mut outcome = CombatAttackOutcome {
-                attack_id: attack.id.clone(),
-                actor_id: actor.id.clone(),
-                target_id: target_id.clone(),
-                collision,
-                in_range,
-                roll_percent: roll_value,
-                hit: false,
-                damage_hundredths: 0,
-                balance_delta_hundredths: 0,
-                applied_effect_ids: Vec::new(),
-                suppressed_effect_ids: Vec::new(),
-            };
-            full_log.push(log(
-                frame.tick,
-                sequence,
-                CombatResolutionLogTag::Collision,
-                CombatLogImportance::Routine,
-                attack,
-                target_id,
-                i64::from(collision),
-                None,
-            ));
-            sequence += 1;
-            full_log.push(log(
-                frame.tick,
-                sequence,
-                CombatResolutionLogTag::AttackRoll,
-                CombatLogImportance::Important,
-                attack,
-                target_id,
-                i64::from(roll_value),
-                None,
-            ));
-            sequence += 1;
-            outcome.hit = collision
-                && in_range
-                && (attack.accuracy_percent == 100
-                    || (attack.accuracy_percent > 0 && roll_value < attack.accuracy_percent));
-            if collision {
-                outcome.balance_delta_hundredths = outcome
-                    .balance_delta_hundredths
-                    .checked_sub(attack.collision_balance_hundredths)
-                    .ok_or(CombatResolutionError::Overflow)?;
-            }
-            if outcome.hit {
-                let Some(defense) = defenses.get(target_id).copied() else {
-                    return Err(CombatResolutionError::InvalidInput);
+            // T3 §4-1: `fires` (>= 1 here) repeats this attack's resolution
+            // that many times within this one tick, each producing its own
+            // outcome and log entries -- a fast attack's extra actions are
+            // not folded into a single bigger hit the way movement folds
+            // extra actions into a longer step (§4-1's "don't clamp to one
+            // per tick" applies just the same to attacks, and an attack's
+            // per-fire roll is what makes each fire an independent judgment,
+            // unlike movement's deterministic distance walk). `fire_index`
+            // (0-based) is mixed into the roll `stream` below purely to keep
+            // repeated fires from rolling identically against the same
+            // tick/attack/actor/target -- deterministic, not new randomness
+            // (invariant/§5 rule 6: no RNG call added). `fire_index == 0`
+            // reproduces the exact stream value used before this slice, so
+            // the default one-fire-per-tick path is byte-for-byte unchanged.
+            for fire_index in 0..fires {
+                // T1-b1 §4-1/§4-5: `CombatPosition::overlaps`/`in_range` no
+                // longer exist -- `HexCoord` only offers `distance`. Both
+                // predicates are now the plan's replacement formula
+                // (`a.distance(b) <= i64::from(range)`) applied to different
+                // thresholds. `collision_radius` keeps its old "combined melee
+                // reach" meaning; only the metric under it moved from euclidean
+                // to hex distance.
+                //
+                // T1-d §4-4 site 5/5: footprint distance, not anchor distance.
+                // `combat_resolution.rs` only has each tick's frozen anchor
+                // (`frame.positions`), not a live `position` field, but
+                // `actor`/`target` (from `request.execution.input.participants`)
+                // still carry their fixed `occupies` offset list -- the plan's
+                // "프레임 스키마를 바꾸지 마라" (§4-4), satisfied by reading the
+                // shape from the participant and the anchor from the frame
+                // instead of adding a footprint field to the frame itself.
+                let distance = footprint_distance(
+                    frame.positions[&actor.id],
+                    &actor.occupies,
+                    frame.positions[target_id],
+                    &target.occupies,
+                )
+                .map_err(|e| {
+                    CombatResolutionError::Simulation(CombatSimulationError::HexMath(e))
+                })?;
+                let collision_reach =
+                    i64::from(actor.collision_radius) + i64::from(target.collision_radius);
+                let collision = distance <= collision_reach;
+                let in_range = distance <= i64::from(attack.attack_range);
+                // T3 §4-1: `fire_index` (0-based) is folded into the roll
+                // stream so repeated fires of the same attack, in the same
+                // tick, against the same target, don't roll identically --
+                // deterministic, not new randomness. `fire_index == 0` is
+                // exactly the stream value used before this slice.
+                let roll_value = roll(
+                    execution.effective_seed,
+                    execution.namespace,
+                    frame.tick,
+                    &attack.id,
+                    &actor.id,
+                    target_id,
+                    fire_index as u64,
+                );
+                let mut outcome = CombatAttackOutcome {
+                    attack_id: attack.id.clone(),
+                    actor_id: actor.id.clone(),
+                    target_id: target_id.clone(),
+                    collision,
+                    in_range,
+                    roll_percent: roll_value,
+                    hit: false,
+                    damage_hundredths: 0,
+                    balance_delta_hundredths: 0,
+                    applied_effect_ids: Vec::new(),
+                    suppressed_effect_ids: Vec::new(),
                 };
-                outcome.damage_hundredths = damage(attack, defense)?;
-                outcome.balance_delta_hundredths = outcome
-                    .balance_delta_hundredths
-                    .checked_sub(
-                        attack
-                            .balance_power_hundredths
-                            .checked_sub(defense.balance_resistance_hundredths)
-                            .unwrap_or(0),
-                    )
-                    .ok_or(CombatResolutionError::Overflow)?;
-                let target_state = combatants
-                    .get_mut(target_id)
-                    .ok_or(CombatResolutionError::InvalidInput)?;
-                target_state.current_health_hundredths = target_state
-                    .current_health_hundredths
-                    .saturating_sub(outcome.damage_hundredths)
-                    .max(0);
-            }
-            let target_state = combatants
-                .get_mut(target_id)
-                .ok_or(CombatResolutionError::InvalidInput)?;
-            target_state.balance_hundredths = target_state
-                .balance_hundredths
-                .checked_add(outcome.balance_delta_hundredths)
-                .ok_or(CombatResolutionError::Overflow)?
-                .clamp(0, target_state.maximum_balance_hundredths);
-            if outcome.hit {
                 full_log.push(log(
                     frame.tick,
                     sequence,
-                    CombatResolutionLogTag::DamageApplied,
-                    CombatLogImportance::Decisive,
+                    CombatResolutionLogTag::Collision,
+                    CombatLogImportance::Routine,
                     attack,
                     target_id,
-                    outcome.damage_hundredths,
+                    i64::from(collision),
                     None,
                 ));
                 sequence += 1;
-                let mut effects = attack.effects.clone();
-                effects.sort_by(|a, b| {
-                    a.effect_id
-                        .cmp(&b.effect_id)
-                        .then(a.chance_percent.cmp(&b.chance_percent))
-                });
-                for effect in &effects {
-                    let effect_roll = roll(
-                        execution.effective_seed,
-                        execution.namespace,
+                full_log.push(log(
+                    frame.tick,
+                    sequence,
+                    CombatResolutionLogTag::AttackRoll,
+                    CombatLogImportance::Important,
+                    attack,
+                    target_id,
+                    i64::from(roll_value),
+                    None,
+                ));
+                sequence += 1;
+                outcome.hit = collision
+                    && in_range
+                    && (attack.accuracy_percent == 100
+                        || (attack.accuracy_percent > 0 && roll_value < attack.accuracy_percent));
+                if collision {
+                    outcome.balance_delta_hundredths = outcome
+                        .balance_delta_hundredths
+                        .checked_sub(attack.collision_balance_hundredths)
+                        .ok_or(CombatResolutionError::Overflow)?;
+                }
+                if outcome.hit {
+                    let Some(defense) = defenses.get(target_id).copied() else {
+                        return Err(CombatResolutionError::InvalidInput);
+                    };
+                    outcome.damage_hundredths = damage(attack, defense)?;
+                    outcome.balance_delta_hundredths = outcome
+                        .balance_delta_hundredths
+                        .checked_sub(
+                            attack
+                                .balance_power_hundredths
+                                .checked_sub(defense.balance_resistance_hundredths)
+                                .unwrap_or(0),
+                        )
+                        .ok_or(CombatResolutionError::Overflow)?;
+                    let target_state = combatants
+                        .get_mut(target_id)
+                        .ok_or(CombatResolutionError::InvalidInput)?;
+                    target_state.current_health_hundredths = target_state
+                        .current_health_hundredths
+                        .saturating_sub(outcome.damage_hundredths)
+                        .max(0);
+                }
+                let target_state = combatants
+                    .get_mut(target_id)
+                    .ok_or(CombatResolutionError::InvalidInput)?;
+                target_state.balance_hundredths = target_state
+                    .balance_hundredths
+                    .checked_add(outcome.balance_delta_hundredths)
+                    .ok_or(CombatResolutionError::Overflow)?
+                    .clamp(0, target_state.maximum_balance_hundredths);
+                if outcome.hit {
+                    full_log.push(log(
                         frame.tick,
-                        &attack.id,
-                        &actor.id,
+                        sequence,
+                        CombatResolutionLogTag::DamageApplied,
+                        CombatLogImportance::Decisive,
+                        attack,
                         target_id,
-                        effect
-                            .effect_id
-                            .as_bytes()
-                            .iter()
-                            .fold(1u64, |a, b| a.wrapping_add(u64::from(*b))),
-                    );
-                    if effect.chance_percent == 0
-                        || (effect.chance_percent < 100 && effect_roll >= effect.chance_percent)
-                    {
-                        outcome.suppressed_effect_ids.push(effect.effect_id.clone());
-                        suppressed.push(effect.effect_id.clone());
-                        full_log.push(log(
+                        outcome.damage_hundredths,
+                        None,
+                    ));
+                    sequence += 1;
+                    let mut effects = attack.effects.clone();
+                    effects.sort_by(|a, b| {
+                        a.effect_id
+                            .cmp(&b.effect_id)
+                            .then(a.chance_percent.cmp(&b.chance_percent))
+                    });
+                    for effect in &effects {
+                        let effect_roll = roll(
+                            execution.effective_seed,
+                            execution.namespace,
                             frame.tick,
-                            sequence,
-                            CombatResolutionLogTag::EffectSuppressed,
-                            CombatLogImportance::Important,
-                            attack,
+                            &attack.id,
+                            &actor.id,
                             target_id,
-                            i64::from(effect_roll),
-                            Some(effect.effect_id.clone()),
-                        ));
-                        sequence += 1;
-                        continue;
-                    }
-                    let def = catalog.get(&effect.effect_id).unwrap();
-                    if apply_effect(&mut active_effects, def, target_id, &catalog) {
-                        outcome.applied_effect_ids.push(effect.effect_id.clone());
-                        applied.push(effect.effect_id.clone());
-                        full_log.push(log(
-                            frame.tick,
-                            sequence,
-                            CombatResolutionLogTag::EffectApplied,
-                            CombatLogImportance::Important,
-                            attack,
-                            target_id,
-                            i64::from(effect_roll),
-                            Some(effect.effect_id.clone()),
-                        ));
-                        sequence += 1;
-                    } else {
-                        outcome.suppressed_effect_ids.push(effect.effect_id.clone());
-                        suppressed.push(effect.effect_id.clone());
-                        full_log.push(log(
-                            frame.tick,
-                            sequence,
-                            CombatResolutionLogTag::EffectSuppressed,
-                            CombatLogImportance::Important,
-                            attack,
-                            target_id,
-                            i64::from(effect_roll),
-                            Some(effect.effect_id.clone()),
-                        ));
-                        sequence += 1;
+                            effect
+                                .effect_id
+                                .as_bytes()
+                                .iter()
+                                .fold(1u64 + fire_index as u64, |a, b| {
+                                    a.wrapping_add(u64::from(*b))
+                                }),
+                        );
+                        if effect.chance_percent == 0
+                            || (effect.chance_percent < 100 && effect_roll >= effect.chance_percent)
+                        {
+                            outcome.suppressed_effect_ids.push(effect.effect_id.clone());
+                            suppressed.push(effect.effect_id.clone());
+                            full_log.push(log(
+                                frame.tick,
+                                sequence,
+                                CombatResolutionLogTag::EffectSuppressed,
+                                CombatLogImportance::Important,
+                                attack,
+                                target_id,
+                                i64::from(effect_roll),
+                                Some(effect.effect_id.clone()),
+                            ));
+                            sequence += 1;
+                            continue;
+                        }
+                        let def = catalog.get(&effect.effect_id).unwrap();
+                        if apply_effect(&mut active_effects, def, target_id, &catalog) {
+                            outcome.applied_effect_ids.push(effect.effect_id.clone());
+                            applied.push(effect.effect_id.clone());
+                            full_log.push(log(
+                                frame.tick,
+                                sequence,
+                                CombatResolutionLogTag::EffectApplied,
+                                CombatLogImportance::Important,
+                                attack,
+                                target_id,
+                                i64::from(effect_roll),
+                                Some(effect.effect_id.clone()),
+                            ));
+                            sequence += 1;
+                        } else {
+                            outcome.suppressed_effect_ids.push(effect.effect_id.clone());
+                            suppressed.push(effect.effect_id.clone());
+                            full_log.push(log(
+                                frame.tick,
+                                sequence,
+                                CombatResolutionLogTag::EffectSuppressed,
+                                CombatLogImportance::Important,
+                                attack,
+                                target_id,
+                                i64::from(effect_roll),
+                                Some(effect.effect_id.clone()),
+                            ));
+                            sequence += 1;
+                        }
                     }
                 }
+                outcomes.push(outcome);
             }
-            outcomes.push(outcome);
         }
         let fp = fingerprint(&(frame.tick, &outcomes));
         // `combatants` is a `BTreeMap`, so this iterates id ascending already;
@@ -524,6 +602,10 @@ fn validate_inputs(
             || a.penetration_hundredths < 0
             || a.collision_balance_hundredths < 0
             || a.balance_power_hundredths < 0
+            // T3 §4-3: `Some(v)` with `v <= 0` is an input error, not "never
+            // fires" -- a fabricated meaning the plan explicitly forbids
+            // inventing. `None` (unset) is the only way to mean "every tick".
+            || a.attack_speed_hundredths.is_some_and(|v| v <= 0)
         {
             return Err(CombatResolutionError::InvalidInput);
         }

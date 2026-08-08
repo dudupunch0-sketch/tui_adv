@@ -3,6 +3,19 @@ use crate::{line, CombatManifest, CombatState, HexCoord, HexError, HexOccupancy,
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
 
+// T3 (fable_combat_hex_t3_step1_2608080951.md §4-1): the gauge threshold an
+// action cadence must accumulate to before it fires. `10_000` reads as
+// "100.00" in this crate's hundredths-fixed-point convention -- a speed of
+// `10_000` per tick means the gauge crosses the threshold exactly once every
+// tick, which is today's behaviour for every existing combatant and attack
+// (none of them set a speed, so `Option::None` resolves to this value, §4-3).
+// `combat_resolution.rs` shares this same threshold for its independent
+// attack-speed gauge (§4-2's two-axis table); it reaches this constant via
+// `crate::combat_simulation::ACTION_THRESHOLD_HUNDREDTHS` rather than a
+// duplicated literal, so the two axes can never drift out of sync with each
+// other by editing only one of them.
+pub(crate) const ACTION_THRESHOLD_HUNDREDTHS: i64 = 10_000;
+
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct CombatSimulationConfig {
     pub tick_millis: u32,
@@ -61,7 +74,24 @@ pub struct CombatSimulationParticipant {
     pub side: CombatSide,
     pub position: HexCoord,
     pub facing: HexCoord,
+    // T3 §4-2: `speed_per_tick` is a *distance* per movement action (how
+    // many tiles one movement judgment covers), unchanged by this slice.
+    // `move_speed_hundredths` below is a *cadence* (how often a movement
+    // judgment happens at all) -- a different axis entirely. The two names
+    // now look confusable; renaming `speed_per_tick` is its own boundary
+    // change this slice deliberately leaves alone (plan §4-2).
     pub speed_per_tick: i32,
+    // T3 §4-1/§4-2/§4-3: hundredths-fixed-point movement-cadence gauge speed.
+    // `None` means "act every tick" (`ACTION_THRESHOLD_HUNDREDTHS`), which is
+    // every existing participant's behaviour before and after this slice --
+    // no existing fixture or bundle sets this, so nothing changes for them.
+    // `skip_serializing_if` drops the key from JSON entirely when unset, so
+    // existing serialized bytes are untouched and no version bump is needed
+    // (hard invariant 2). `Some(v)` with `v <= 0` is rejected as invalid
+    // input in `CombatSimulation::new` -- never silently treated as "never
+    // acts" (plan §4-3: don't invent a meaning for it).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub move_speed_hundredths: Option<i64>,
     pub collision_radius: i32,
     pub attack_range: i32,
     pub support_range: i32,
@@ -119,6 +149,14 @@ pub struct CombatSimulation {
     participants: BTreeMap<String, CombatSimulationParticipant>,
     roles: BTreeMap<String, CombatRolePreset>,
     policies: BTreeMap<String, CombatTargetPolicy>,
+    // T3 §4-1/§4-4: each active participant's accumulated movement-cadence
+    // gauge, carried across ticks. This is pure runtime state, not part of
+    // `CombatSimulationInput` -- it never crosses a JSON boundary, so adding
+    // it here touches no serialized contract and needs no version bump.
+    // Keyed by participant id in a `BTreeMap` so lookups (and, incidentally,
+    // any iteration) are independent of `input.participants`'s original
+    // order (invariant 4/§4-4).
+    move_gauges: BTreeMap<String, i64>,
 }
 impl CombatSimulation {
     pub fn participants(&self) -> impl Iterator<Item = &CombatSimulationParticipant> {
@@ -195,6 +233,13 @@ impl CombatSimulation {
             {
                 return Err(CombatSimulationError::InvalidParticipant(p.id.clone()));
             }
+            // T3 §4-3: `Some(v)` with `v <= 0` is an input error, not "never
+            // acts" -- a fabricated meaning the plan explicitly forbids
+            // inventing. `None` (unset) is the only way to mean "every tick"
+            // and is handled at the gauge, not here.
+            if p.move_speed_hundredths.is_some_and(|v| v <= 0) {
+                return Err(CombatSimulationError::InvalidParticipant(p.id.clone()));
+            }
             // T1-b1 §4-2: facing must be one of the six hex neighbor
             // directions. The zero vector is not among them, so it keeps
             // being rejected automatically -- no special case needed.
@@ -263,12 +308,17 @@ impl CombatSimulation {
                 }
             }
         }
+        // T3 §4-1: every active participant starts at gauge 0, regardless of
+        // its speed -- the first tick after construction is exactly one
+        // gauge accumulation away from acting, same as any later tick.
+        let move_gauges = participants.keys().map(|id| (id.clone(), 0i64)).collect();
         Ok(Self {
             input,
             tick: 0,
             participants,
             roles,
             policies,
+            move_gauges,
         })
     }
     pub fn select_target(
@@ -348,60 +398,122 @@ impl CombatSimulation {
         // never rebuilt mid-tick. See `occupancy_snapshot`'s doc comment for
         // why that is load-bearing, not incidental.
         let occupancy = occupancy_snapshot(&snapshot)?;
+        // T3 §4-1/§4-4: how many times each active participant's movement
+        // gauge crosses `ACTION_THRESHOLD_HUNDREDTHS` this tick, decided
+        // from every participant's *tick-start* gauge value, in a pass that
+        // completes before any participant's movement is applied below. Each
+        // participant's gauge depends only on its own speed and its own
+        // prior value -- never on another participant's position, gauge, or
+        // this tick's moves -- so advancing it here regardless of the order
+        // `snapshot` happens to iterate in can never leak processing order
+        // into the result (invariant 4, §4-4). A speed of `20_000` crosses
+        // the threshold twice in one tick and yields two actions, not one
+        // (§4-1: a cadence must not be clamped to "at most once per tick");
+        // a speed slower than the threshold yields zero actions on some
+        // ticks.
+        let mut move_actions: BTreeMap<String, i32> = BTreeMap::new();
+        for actor in snapshot.values() {
+            let speed = actor
+                .move_speed_hundredths
+                .unwrap_or(ACTION_THRESHOLD_HUNDREDTHS);
+            let gauge = self.move_gauges.entry(actor.id.clone()).or_insert(0);
+            *gauge = gauge
+                .checked_add(speed)
+                .ok_or(CombatSimulationError::Overflow)?;
+            let mut actions = 0i32;
+            while *gauge >= ACTION_THRESHOLD_HUNDREDTHS {
+                actions += 1;
+                *gauge -= ACTION_THRESHOLD_HUNDREDTHS;
+            }
+            move_actions.insert(actor.id.clone(), actions);
+        }
         let mut moves = Vec::new();
         for actor in snapshot.values() {
+            // T3 §4-2: target selection runs every tick unconditionally,
+            // never gated on the movement-cadence gauge above. An attack's
+            // own, independent attack-speed gauge (`combat_resolution.rs`)
+            // reads its actor's `target_id` off this tick's intent, and must
+            // not be starved of a target just because that actor's
+            // *movement* gauge happened to be slow this same tick -- the two
+            // cadences are separate axes (plan's two-gauge table) and must
+            // not leak into each other.
             let target_id = self.select_target(actor)?;
             let target = target_id.as_ref().and_then(|id| snapshot.get(id));
             let role = &self.roles[&actor.role_id];
-            let (to, mode) = target
-                .map(|target| {
-                    // T1-b1 §4-1/§4-3: hex distance is linear, not squared,
-                    // so the old `d > preferred * preferred` comparison
-                    // becomes a direct `d > preferred` -- no squaring on
-                    // either side.
-                    // T1-d §4-4 site 3/5: movement decision. Footprint
-                    // distance replaces anchor distance so a large unit's
-                    // preferred-distance judgement is based on how close its
-                    // body actually is, not just its anchor.
-                    let d = footprint_distance(
-                        actor.position,
-                        &actor.occupies,
-                        target.position,
-                        &target.occupies,
-                    )
-                    .map_err(CombatSimulationError::HexMath)?;
-                    let preferred = i64::from(role.weights.preferred_distance.max(0));
-                    let step = actor.speed_per_tick;
-                    if d > preferred {
-                        Ok((
-                            step_toward(
-                                actor.position,
-                                target.position,
-                                step,
-                                &occupancy,
-                                &actor.occupies,
-                                &actor.id,
-                            )?,
-                            CombatMoveMode::Advance,
-                        ))
-                    } else if d < preferred && role.weights.aggression < 0 {
-                        Ok((
-                            step_away(
-                                actor.position,
-                                target.position,
-                                step,
-                                &occupancy,
-                                &actor.occupies,
-                                &actor.id,
-                            )?,
-                            CombatMoveMode::Retreat,
-                        ))
-                    } else {
-                        Ok((actor.position, CombatMoveMode::Hold))
-                    }
-                })
-                .transpose()?
-                .unwrap_or((actor.position, CombatMoveMode::Hold));
+            let actions = move_actions[&actor.id];
+            let (to, mode) = if actions == 0 {
+                // T3 §4-1: the gauge did not cross the threshold this tick --
+                // no movement judgment is acted on, regardless of what the
+                // distance-based decision below would otherwise choose. This
+                // reads identically to an ordinary "already at preferred
+                // distance" hold in the frame (both are `Hold`/`to == from`),
+                // which is exactly the allowed kind of visible-but-numberless
+                // leak (§4-5): a viewer can see the piece didn't move, never
+                // why or how fast.
+                (actor.position, CombatMoveMode::Hold)
+            } else {
+                target
+                    .map(|target| {
+                        // T1-b1 §4-1/§4-3: hex distance is linear, not squared,
+                        // so the old `d > preferred * preferred` comparison
+                        // becomes a direct `d > preferred` -- no squaring on
+                        // either side.
+                        // T1-d §4-4 site 3/5: movement decision. Footprint
+                        // distance replaces anchor distance so a large unit's
+                        // preferred-distance judgement is based on how close its
+                        // body actually is, not just its anchor.
+                        let d = footprint_distance(
+                            actor.position,
+                            &actor.occupies,
+                            target.position,
+                            &target.occupies,
+                        )
+                        .map_err(CombatSimulationError::HexMath)?;
+                        let preferred = i64::from(role.weights.preferred_distance.max(0));
+                        // T3 §4-1: `actions` (>= 1 in this branch) folds
+                        // multiple movement actions this tick into a single
+                        // longer step along the same line, rather than
+                        // multiple `CombatMoveIntent` entries -- the frame
+                        // schema stays one intent per actor per tick (plan's
+                        // "프레임 스키마를 바꾸지 마라" pattern, already used by
+                        // T1-d for footprints). This is exactly equivalent to
+                        // resolving the same number of individual steps in
+                        // sequence: `occupancy` is the frozen tick-start
+                        // snapshot for every one of those hypothetical
+                        // sub-steps, so combining them into one longer walk
+                        // along `line()` stops at the same tile either way.
+                        let step = actor.speed_per_tick.saturating_mul(actions);
+                        if d > preferred {
+                            Ok((
+                                step_toward(
+                                    actor.position,
+                                    target.position,
+                                    step,
+                                    &occupancy,
+                                    &actor.occupies,
+                                    &actor.id,
+                                )?,
+                                CombatMoveMode::Advance,
+                            ))
+                        } else if d < preferred && role.weights.aggression < 0 {
+                            Ok((
+                                step_away(
+                                    actor.position,
+                                    target.position,
+                                    step,
+                                    &occupancy,
+                                    &actor.occupies,
+                                    &actor.id,
+                                )?,
+                                CombatMoveMode::Retreat,
+                            ))
+                        } else {
+                            Ok((actor.position, CombatMoveMode::Hold))
+                        }
+                    })
+                    .transpose()?
+                    .unwrap_or((actor.position, CombatMoveMode::Hold))
+            };
             moves.push(CombatMoveIntent {
                 actor_id: actor.id.clone(),
                 target_id,

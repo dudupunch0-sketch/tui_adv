@@ -49,6 +49,11 @@ fn participant(id: &str, side: CombatSide, q: i32) -> CombatSimulationParticipan
         position: HexCoord { q, r: 0 },
         facing: HexCoord { q: 1, r: 0 },
         speed_per_tick: 1,
+        // T3 (fable_combat_hex_t3_step1_2608080951.md §4-3): new field on
+        // `CombatSimulationParticipant`. `None` means "act every tick",
+        // exactly this fixture's pre-T3 behaviour -- mechanical fix to keep
+        // this file compiling, not a scope change.
+        move_speed_hundredths: None,
         collision_radius: 1,
         attack_range: 2,
         support_range: 2,
@@ -132,6 +137,11 @@ fn resolution_request() -> CombatResolutionRequest {
             penetration_hundredths: 0,
             collision_balance_hundredths: 100,
             balance_power_hundredths: 500,
+            // T3 (fable_combat_hex_t3_step1_2608080951.md §4-3): new field on
+            // `CombatAttackDefinition`. `None` means "fire every tick",
+            // exactly this fixture's pre-T3 behaviour -- mechanical fix to
+            // keep this file compiling, not a scope change.
+            attack_speed_hundredths: None,
             effects: vec![],
         }],
         defenses: vec![
@@ -175,6 +185,7 @@ fn two_way_resolution_request() -> CombatResolutionRequest {
         penetration_hundredths: 0,
         collision_balance_hundredths: 100,
         balance_power_hundredths: 500,
+        attack_speed_hundredths: None,
         effects: vec![],
     });
     request
@@ -560,6 +571,7 @@ fn all_cues_request() -> CombatResolutionRequest {
         penetration_hundredths: 0,
         collision_balance_hundredths: 0,
         balance_power_hundredths: 0,
+        attack_speed_hundredths: None,
         effects: vec![],
     });
     request
@@ -679,4 +691,44 @@ fn empty_combatant_snapshot_yields_no_state_cues_and_no_error() {
         assert!(!piece.cues.contains(&CombatSpectatorCue::Incapacitated));
         assert!(!piece.cues.contains(&CombatSpectatorCue::BalanceBroken));
     }
+}
+
+/// T3 §4-5 (fable_combat_hex_t3_step1_2608080951.md, user decision 15):
+/// movement- and attack-cadence speed must never reach the spectator
+/// surface. Distinctive, unmistakable values are chosen so a future leak
+/// would show up as a literal substring in the serialized JSON -- a
+/// stronger check than "the field doesn't exist," which a differently
+/// named leak field would slip past. Confirms both halves of the pipeline:
+/// `resolve_combat`'s own output (frames/outcomes/logs, which
+/// `CombatSpectatorView` is built from) and `spectate_combat`'s output
+/// (pieces/core_log/full_log, the actual "관전 표면").
+#[test]
+fn attack_speed_never_appears_in_any_log_or_view() {
+    let mut resolution_req = resolution_request();
+    resolution_req.execution.input.participants[0].move_speed_hundredths = Some(24_680);
+    resolution_req.attacks[0].attack_speed_hundredths = Some(13_579);
+    let resolution = resolve_combat(resolution_req).unwrap();
+    let resolution_json = serde_json::to_string(&resolution).unwrap();
+    assert!(
+        !resolution_json.contains("24680") && !resolution_json.contains("13579"),
+        "resolution output must never carry the raw speed values"
+    );
+
+    let mut spectator_participants = participants();
+    spectator_participants[0].move_speed_hundredths = Some(24_680);
+    let view = spectate_combat(&CombatSpectatorRequest {
+        resolution,
+        participants: spectator_participants,
+        catalog: CombatEffectCatalog { effects: vec![] },
+    })
+    .unwrap();
+    let view_json = serde_json::to_string(&view).unwrap();
+    assert!(
+        !view_json.contains("24680") && !view_json.contains("13579"),
+        "spectator view must never carry the raw speed values"
+    );
+    assert!(
+        !view_json.to_lowercase().contains("speed"),
+        "spectator view must not name speed at all, not even under a masked field"
+    );
 }

@@ -1,6 +1,6 @@
 # T4 S2a — interleaved runtime primitive
 
-status: ready-for-implementation
+status: implemented
 date: 2026-08-08
 baseline_commit: `d2c5e19`
 baseline_test: `cargo test --workspace --no-fail-fast --quiet` = 0 failures
@@ -155,3 +155,18 @@ batch path는 이 runtime을 아직 production default로 교체하지 않아도
 - 첫 tick 번호, 호출별 frame 수, runtime-vs-batch fingerprint 비교값
 - 변경 파일과 범위 밖 diff 여부
 - S2b가 소비할 runtime state/active roster 질문
+
+## 10. 구현 결과 (2026-08-08)
+
+- 구현 커밋: `e842fde`
+- `CombatRuntime::new → advance_tick → finish` 구현. 첫 frame tick은 1이며, 매 호출마다
+  simulation 1회와 S1 stepper 1회를 실행한다.
+- execution metadata/seed/provenance/log/fingerprint 조립을 `combat_execution` helper로 추출했고,
+  기존 `execute_combat` 회귀 fingerprint는 유지했다.
+- 내부 unit contract test에서 2-tick runtime과 기존 `resolve_combat`의 execution/resolution
+  frames, state, full/core log, fingerprint가 모두 일치한다. zero-tick/over-max 오류와 상한 후
+  `None`도 확인했다.
+- 직접 검증: `cargo fmt --all -- --check`, workspace `cargo test --workspace --no-fail-fast --quiet`
+  모두 통과, `git diff --check` 통과.
+- S2b에서 사용할 상태: `CombatRuntime` 내부 `CombatSimulation`과 `CombatResolutionStepper`,
+  누적 frame/log, effective seed/provenance. 아직 active overlay·결착·opportunity pause는 없다.

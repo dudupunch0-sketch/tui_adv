@@ -1006,6 +1006,13 @@ mod tests {
         while runtime.advance_tick().unwrap().is_some() {}
         let checkpoint = runtime.checkpoint().unwrap();
         let checkpoint_json = serde_json::to_vec(&checkpoint).unwrap();
+        let deltas =
+            encode_frame_deltas(&checkpoint.execution_frames, &checkpoint.resolution_frames)
+                .unwrap();
+        let delta_json = serde_json::to_vec(&deltas).unwrap();
+        let (decoded_execution, decoded_resolution) = decode_frame_deltas(&deltas).unwrap();
+        assert_eq!(decoded_execution, checkpoint.execution_frames);
+        assert_eq!(decoded_resolution, checkpoint.resolution_frames);
         let envelope = crate::SaveEnvelope {
             schema_version: crate::SAVE_SCHEMA_VERSION,
             state: crate::new_game(7),
@@ -1019,9 +1026,10 @@ mod tests {
             .sum::<usize>()
             / checkpoint.execution_frames.len();
         println!(
-            "combat_measurement participants=12 ticks=1200 checkpoint_json_bytes={} save_envelope_json_bytes={} execution_frames={} average_execution_frame_bytes={}",
+            "combat_measurement participants=12 ticks=1200 checkpoint_json_bytes={} save_envelope_json_bytes={} delta_json_bytes={} execution_frames={} average_execution_frame_bytes={}",
             checkpoint_json.len(),
             envelope_json.len(),
+            delta_json.len(),
             checkpoint.execution_frames.len(),
             frame_bytes
         );
@@ -1032,6 +1040,53 @@ mod tests {
         let decoded: CombatRuntimeCheckpoint = serde_json::from_slice(&checkpoint_json).unwrap();
         let restored = CombatRuntime::restore(decoded).unwrap();
         assert_eq!(expected, restored.finish().unwrap().fingerprint);
+    }
+
+    #[test]
+    fn frame_deltas_round_trip_execution_and_resolution_frames_exactly() {
+        let mut runtime = CombatRuntime::new(make_request(2)).unwrap();
+        runtime.advance_tick().unwrap();
+        runtime.advance_tick().unwrap();
+        let checkpoint = runtime.checkpoint().unwrap();
+        let deltas =
+            encode_frame_deltas(&checkpoint.execution_frames, &checkpoint.resolution_frames)
+                .unwrap();
+        let (execution, resolution) = decode_frame_deltas(&deltas).unwrap();
+        assert_eq!(execution, checkpoint.execution_frames);
+        assert_eq!(resolution, checkpoint.resolution_frames);
+    }
+
+    #[test]
+    fn frame_deltas_reject_malformed_first_delta_tick_gap_and_duplicate_id() {
+        let mut runtime = CombatRuntime::new(make_request(2)).unwrap();
+        runtime.advance_tick().unwrap();
+        runtime.advance_tick().unwrap();
+        let checkpoint = runtime.checkpoint().unwrap();
+        let deltas =
+            encode_frame_deltas(&checkpoint.execution_frames, &checkpoint.resolution_frames)
+                .unwrap();
+
+        let mut first_missing = deltas.clone();
+        first_missing[0].moves = None;
+        assert!(matches!(
+            decode_frame_deltas(&first_missing),
+            Err(CombatRuntimeError::InvalidInput)
+        ));
+
+        let mut tick_gap = deltas.clone();
+        tick_gap[1].tick = 3;
+        assert!(matches!(
+            decode_frame_deltas(&tick_gap),
+            Err(CombatRuntimeError::InvalidInput)
+        ));
+
+        let mut duplicate = deltas;
+        let update = duplicate[0].combatant_updates[0].clone();
+        duplicate[0].combatant_updates.push(update);
+        assert!(matches!(
+            decode_frame_deltas(&duplicate),
+            Err(CombatRuntimeError::InvalidInput)
+        ));
     }
 }
 
@@ -1213,6 +1268,7 @@ pub(crate) fn encode_frame_deltas(
     }
     let mut out = Vec::with_capacity(execution.len());
     let mut prev_pos = std::collections::BTreeMap::new();
+    let mut prev_combatants = std::collections::BTreeMap::new();
     let mut prev_moves = None;
     let mut prev_outcomes = None;
     for (i, (e, r)) in execution.iter().zip(resolution).enumerate() {
@@ -1229,6 +1285,22 @@ pub(crate) fn encode_frame_deltas(
             .filter(|(id, p)| prev_pos.get(*id) != Some(*p))
             .map(|(id, p)| (id.clone(), *p))
             .collect();
+        let mut current_combatants = std::collections::BTreeMap::new();
+        let mut combatant_updates = Vec::new();
+        for combatant in &r.combatants {
+            if current_combatants
+                .insert(combatant.id.clone(), combatant.clone())
+                .is_some()
+            {
+                return Err(CombatRuntimeError::InvalidInput);
+            }
+            if prev_combatants.get(&combatant.id) != Some(combatant) {
+                combatant_updates.push(combatant.clone());
+            }
+        }
+        if !prev_combatants.is_empty() && current_combatants.keys().ne(prev_combatants.keys()) {
+            return Err(CombatRuntimeError::InvalidInput);
+        }
         let d = CombatRuntimeFrameDelta {
             tick: e.tick,
             moves: if prev_moves.as_ref() == Some(&e.moves) {
@@ -1243,10 +1315,11 @@ pub(crate) fn encode_frame_deltas(
             } else {
                 Some(r.outcomes.clone())
             },
-            combatant_updates: r.combatants.clone(),
+            combatant_updates,
             resolution_fingerprint: r.fingerprint.clone(),
         };
         prev_pos = e.positions.clone();
+        prev_combatants = current_combatants;
         prev_moves = Some(e.moves.clone());
         prev_outcomes = Some(r.outcomes.clone());
         out.push(d);
@@ -1266,6 +1339,7 @@ pub(crate) fn decode_frame_deltas(
     let mut ex = Vec::new();
     let mut re = Vec::new();
     let mut pos = std::collections::BTreeMap::new();
+    let mut combatants = std::collections::BTreeMap::new();
     let mut moves = None;
     let mut outcomes = None;
     for (i, d) in deltas.iter().enumerate() {
@@ -1287,6 +1361,14 @@ pub(crate) fn decode_frame_deltas(
             outcomes = Some(o.clone())
         }
         let o = outcomes.clone().ok_or(CombatRuntimeError::InvalidInput)?;
+        let mut update_ids = std::collections::BTreeSet::new();
+        for combatant in &d.combatant_updates {
+            if !update_ids.insert(combatant.id.clone()) {
+                return Err(CombatRuntimeError::InvalidInput);
+            }
+            combatants.insert(combatant.id.clone(), combatant.clone());
+        }
+        let combatant_snapshot = combatants.values().cloned().collect();
         let ef = d.execution_fingerprint.clone();
         let rf = d.resolution_fingerprint.clone();
         ex.push(crate::CombatTickFrame {
@@ -1298,7 +1380,7 @@ pub(crate) fn decode_frame_deltas(
         re.push(crate::CombatResolutionFrame {
             tick: d.tick,
             outcomes: o,
-            combatants: d.combatant_updates.clone(),
+            combatants: combatant_snapshot,
             fingerprint: rf,
         });
     }

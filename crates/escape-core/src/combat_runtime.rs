@@ -970,6 +970,69 @@ mod tests {
             Err(CombatRuntimeError::InvalidInput)
         ));
     }
+
+    #[test]
+    fn checkpoint_size_measurement_uses_twelve_participants_and_twelve_hundred_ticks() {
+        let mut request = make_request(1_200);
+        request.execution.input.config.max_ticks = 1_200;
+        let participant_template = request.execution.input.participants[0].clone();
+        let combatant_template = request.execution.input.state.combatants[0].clone();
+        let defense_template = request.defenses[0].clone();
+        for index in 2..12 {
+            let id = format!("p{index}");
+            let mut participant = participant_template.clone();
+            participant.id = id.clone();
+            participant.side = if index <= 6 && index % 2 == 0 {
+                crate::CombatSide::Ally
+            } else {
+                crate::CombatSide::Enemy
+            };
+            participant.position = crate::HexCoord { q: index, r: 0 };
+            request.execution.input.participants.push(participant);
+            let mut combatant = combatant_template.clone();
+            combatant.id = id.clone();
+            request.execution.input.state.combatants.push(combatant);
+            request
+                .execution
+                .input
+                .manifest
+                .combatant_ids
+                .push(id.clone());
+            let mut defense = defense_template.clone();
+            defense.combatant_id = id;
+            request.defenses.push(defense);
+        }
+        let mut runtime = CombatRuntime::new(request).unwrap();
+        while runtime.advance_tick().unwrap().is_some() {}
+        let checkpoint = runtime.checkpoint().unwrap();
+        let checkpoint_json = serde_json::to_vec(&checkpoint).unwrap();
+        let envelope = crate::SaveEnvelope {
+            schema_version: crate::SAVE_SCHEMA_VERSION,
+            state: crate::new_game(7),
+            combat_checkpoint: Some(checkpoint.clone()),
+        };
+        let envelope_json = serde_json::to_vec(&envelope).unwrap();
+        let frame_bytes = checkpoint
+            .execution_frames
+            .iter()
+            .map(|frame| serde_json::to_vec(frame).unwrap().len())
+            .sum::<usize>()
+            / checkpoint.execution_frames.len();
+        println!(
+            "combat_measurement participants=12 ticks=1200 checkpoint_json_bytes={} save_envelope_json_bytes={} execution_frames={} average_execution_frame_bytes={}",
+            checkpoint_json.len(),
+            envelope_json.len(),
+            checkpoint.execution_frames.len(),
+            frame_bytes
+        );
+        assert_eq!(checkpoint.execution_frames.len(), 1_200);
+        assert!(checkpoint_json.len() > 0);
+        assert!(envelope_json.len() > checkpoint_json.len());
+        let expected = runtime.finish().unwrap().fingerprint;
+        let decoded: CombatRuntimeCheckpoint = serde_json::from_slice(&checkpoint_json).unwrap();
+        let restored = CombatRuntime::restore(decoded).unwrap();
+        assert_eq!(expected, restored.finish().unwrap().fingerprint);
+    }
 }
 
 pub const COMBAT_RUNTIME_CHECKPOINT_SCHEMA_VERSION: u32 = 1;

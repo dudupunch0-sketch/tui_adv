@@ -692,3 +692,43 @@ fn empty_combatant_snapshot_yields_no_state_cues_and_no_error() {
         assert!(!piece.cues.contains(&CombatSpectatorCue::BalanceBroken));
     }
 }
+
+/// T3 §4-5 (fable_combat_hex_t3_step1_2608080951.md, user decision 15):
+/// movement- and attack-cadence speed must never reach the spectator
+/// surface. Distinctive, unmistakable values are chosen so a future leak
+/// would show up as a literal substring in the serialized JSON -- a
+/// stronger check than "the field doesn't exist," which a differently
+/// named leak field would slip past. Confirms both halves of the pipeline:
+/// `resolve_combat`'s own output (frames/outcomes/logs, which
+/// `CombatSpectatorView` is built from) and `spectate_combat`'s output
+/// (pieces/core_log/full_log, the actual "관전 표면").
+#[test]
+fn attack_speed_never_appears_in_any_log_or_view() {
+    let mut resolution_req = resolution_request();
+    resolution_req.execution.input.participants[0].move_speed_hundredths = Some(24_680);
+    resolution_req.attacks[0].attack_speed_hundredths = Some(13_579);
+    let resolution = resolve_combat(resolution_req).unwrap();
+    let resolution_json = serde_json::to_string(&resolution).unwrap();
+    assert!(
+        !resolution_json.contains("24680") && !resolution_json.contains("13579"),
+        "resolution output must never carry the raw speed values"
+    );
+
+    let mut spectator_participants = participants();
+    spectator_participants[0].move_speed_hundredths = Some(24_680);
+    let view = spectate_combat(&CombatSpectatorRequest {
+        resolution,
+        participants: spectator_participants,
+        catalog: CombatEffectCatalog { effects: vec![] },
+    })
+    .unwrap();
+    let view_json = serde_json::to_string(&view).unwrap();
+    assert!(
+        !view_json.contains("24680") && !view_json.contains("13579"),
+        "spectator view must never carry the raw speed values"
+    );
+    assert!(
+        !view_json.to_lowercase().contains("speed"),
+        "spectator view must not name speed at all, not even under a masked field"
+    );
+}

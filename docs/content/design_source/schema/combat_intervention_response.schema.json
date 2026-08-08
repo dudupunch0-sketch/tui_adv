@@ -19,12 +19,20 @@
       "additionalProperties": false,
       "required": ["formula_id", "formula_parameters", "executor_selector_id", "target_selector_id", "success", "failure"],
       "properties": {
-        "formula_id": {"type": "string", "pattern": "^combat\\.formula\\.v1\\."},
-        "formula_parameters": {"type": "object"},
+        "formula_id": {"const": "combat.formula.v1.fixed_chance"},
+        "formula_parameters": {"$ref": "#/$defs/fixedChanceFormulaParameters"},
         "executor_selector_id": {"type": "string", "pattern": "^combat\\.selector\\.executor\\.v1\\."},
         "target_selector_id": {"type": "string", "pattern": "^combat\\.selector\\.target\\.v1\\."},
         "success": {"$ref": "#/$defs/outcomeBranch"},
         "failure": {"$ref": "#/$defs/outcomeBranch"}
+      }
+    },
+    "fixedChanceFormulaParameters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["chance_percent"],
+      "properties": {
+        "chance_percent": {"type": "integer", "minimum": 0, "maximum": 100}
       }
     },
     "outcomeBranch": {

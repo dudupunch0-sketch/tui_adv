@@ -44,6 +44,7 @@ transaction:
     rng_draws: 0
     history_changes: 0
     pause: retained
+    receipt: none
   outcome_failure:
     failure_class: resolved_special_effect_outcome
     strategy_modifier: applied
@@ -59,6 +60,29 @@ transaction:
     namespace: actual_combat
     source: deterministic_sub_seed
     provenance_required: true
+    canonical_sub_seed_inputs:
+      - effective_segment_seed
+      - simulation_version
+      - manifest_fingerprint
+      - segment_index
+      - pause_tick
+      - pause_id
+      - evaluation_fingerprint
+      - authored_response_id
+      - formula_id
+      - normalized_formula_parameters
+      - resolved_executor_id
+      - canonical_ordered_target_ids
+    canonical_encoding:
+      input: ordered_tuple_in_declared_input_order
+      serialization: utf_8_canonical_json_array
+      whitespace: none
+      object_key_order: lexicographic
+      integer_encoding: decimal
+      normalized_formula_parameters_key_order: lexicographic
+      sub_seed_derivation_hash: simulation_version_owned_deterministic_rng_primitive
+    draw_index: 0
+    forbidden_inputs: [wall_clock, frame, renderer, forecast]
 
 registry:
   selector_version: v1
@@ -71,6 +95,56 @@ registry:
   tie_break: stable_combatant_id_ascending
   response_selector_resolution: once_from_pause_snapshot
   dynamic_strategy_targeting: reevaluate_each_tick_from_canonical_snapshot
+  opportunity_provenance:
+    required_fields: [bound_target_ids]
+    bound_target_ids: immutable_single_bound_target_ids_or_empty
+    source: pause_snapshot
+  selector_definitions:
+    executor_self:
+      resolves: executor_combatant_exactly_one
+    selected_target:
+      resolves: immutable_single_bound_target_from_pause_opportunity_provenance
+      ai_current_target_fallback: forbidden
+    nearest_active_enemy:
+      candidate_set: active_enemy_combatants_opposite_side
+      ordering: minimum_occupied_footprint_hex_distance_between_executor_and_candidate_ascending_then_stable_id
+    lowest_health_active_ally:
+      candidate_set: active_same_side_combatants_including_executor
+      ordering: current_hp_divided_by_max_hp_ascending_then_stable_id
+    surrounded_active_ally:
+      candidate_set: active_same_side_combatants_including_executor
+      neighborhood: six_adjacent_hexes
+      predicate: enemy_occupancy_at_least_3_and_ally_occupancy_zero
+      candidate_self_occupancy: excluded_from_ally_occupancy_count
+      exclusions: [ko, departed, captured]
+      ordering: enemy_count_descending_then_stable_id
+      terrain_and_boundary_inputs: excluded
+    all_active_allies:
+      candidate_set: active_same_side_combatants_including_executor
+      ordering: stable_id_ascending
+      multi_target: true
+    multi_target_selector_ids: [combat.selector.target.v1.all_active_allies]
+    zero_target_result: preflight_error
+  formula_definitions:
+    combat.formula.v1.fixed_chance:
+      parameters:
+        required: [chance_percent]
+        properties: [chance_percent]
+        type: object
+        additional_properties: false
+        chance_percent: {type: integer, minimum: 0, maximum: 100}
+      authored_inputs_only: true
+      modifiers: forbidden
+      rounding: forbidden
+      clamp: forbidden
+      roll: integer_range_0_99
+      success: roll_less_than_chance_percent
+      rng_draws: {zero_percent: 0, one_to_ninety_nine_percent: 1, one_hundred_percent: 0}
+      deterministic_outcomes: {zero_percent: failure, one_hundred_percent: success}
+      deterministic_receipt_rng_fields:
+        rng_namespace: actual_combat
+        rng_draw_index: null
+        roll: null
   selector_ids:
     executor:
       - combat.selector.executor.v1.observer
@@ -219,7 +293,6 @@ checkpoint_and_receipt:
     - resolved_executor_id
     - resolved_target_ids
     - resolved_strategy_scope_ids
-    - formula_receipt
     - strategy_before_fingerprint
     - strategy_after_fingerprint
     - effect_ids
@@ -231,12 +304,23 @@ checkpoint_and_receipt:
     - raw_log_references
   formula_receipt_fields:
     - formula_id
-    - formula_parameters
+    - normalized_formula_parameters
     - input_fingerprint
     - rng_namespace
     - rng_draw_index
     - roll
     - outcome
+  receipt_optional_fields: [formula_receipt]
+  formula_receipt_rules:
+    strategy_only: absent
+    deterministic_zero_or_one_hundred:
+      rng_namespace: actual_combat
+      rng_draw_index: null
+      roll: null
+    probabilistic_one_to_ninety_nine:
+      rng_namespace: actual_combat
+      rng_draw_index: 0
+      roll: integer_range_0_99
   action_receipt_statuses: [applied, already_applied, pending_claim, rejected]
   compact_snapshot_fields:
     - lifecycle

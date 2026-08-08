@@ -81,7 +81,6 @@ RECEIPT_REQUIRED_FIELDS = {
     "resolved_executor_id",
     "resolved_target_ids",
     "resolved_strategy_scope_ids",
-    "formula_receipt",
     "strategy_before_fingerprint",
     "strategy_after_fingerprint",
     "effect_ids",
@@ -92,6 +91,15 @@ RECEIPT_REQUIRED_FIELDS = {
     "terminal_facts",
     "raw_log_references",
 }
+RECEIPT_FORMULA_FIELDS = [
+    "formula_id",
+    "normalized_formula_parameters",
+    "input_fingerprint",
+    "rng_namespace",
+    "rng_draw_index",
+    "roll",
+    "outcome",
+]
 INTERVENTION_RAW_EVENTS = {
     "decision": "intervention_decision_committed",
     "strategy": "strategy_overlay_applied",
@@ -104,7 +112,7 @@ SUPPORTED_SCHEMA_KEYWORDS = {
     "$schema", "$id", "$ref", "$defs", "title", "description", "type", "const",
     "enum", "required", "properties", "additionalProperties", "items", "minItems",
     "minProperties", "uniqueItems", "pattern", "allOf", "anyOf", "oneOf", "not",
-    "contains",
+    "contains", "minimum", "maximum",
 }
 
 
@@ -224,6 +232,11 @@ def validate_json_schema(instance, schema, root_schema=None, path="$"):
     if isinstance(instance, str) and "pattern" in schema:
         if re.search(schema["pattern"], instance) is None:
             errors.append(f"{path}: value {instance!r} does not match {schema['pattern']!r}")
+    if isinstance(instance, (int, float)) and not isinstance(instance, bool):
+        if "minimum" in schema and instance < schema["minimum"]:
+            errors.append(f"{path}: value {instance!r} is less than minimum {schema['minimum']!r}")
+        if "maximum" in schema and instance > schema["maximum"]:
+            errors.append(f"{path}: value {instance!r} is greater than maximum {schema['maximum']!r}")
     if isinstance(instance, dict):
         for key in schema.get("required", []):
             if key not in instance:
@@ -418,6 +431,21 @@ def validate_intervention(value, errors):
     strategy_rule_ids = registry.get("strategy_targeting_rule_ids", [])
     if not strategy_rule_ids or len(strategy_rule_ids) != len(set(strategy_rule_ids)):
         errors.append("intervention: strategy targeting IDs must be present and unique")
+    fixed_chance = registry.get("formula_definitions", {}).get("combat.formula.v1.fixed_chance", {})
+    require_equal(errors, "fixed chance parameters", fixed_chance.get("parameters", {}).get("required"), ["chance_percent"])
+    require_equal(errors, "fixed chance authored inputs", fixed_chance.get("authored_inputs_only"), True)
+    require_equal(errors, "fixed chance modifiers", fixed_chance.get("modifiers"), "forbidden")
+    require_equal(errors, "fixed chance rounding", fixed_chance.get("rounding"), "forbidden")
+    require_equal(errors, "fixed chance clamp", fixed_chance.get("clamp"), "forbidden")
+    require_equal(errors, "fixed chance roll", fixed_chance.get("roll"), "integer_range_0_99")
+    require_equal(errors, "fixed chance success", fixed_chance.get("success"), "roll_less_than_chance_percent")
+    selector_definitions = registry.get("selector_definitions", {})
+    nearest = selector_definitions.get("nearest_active_enemy", {})
+    require_equal(errors, "nearest enemy distance metric", nearest.get("ordering"), "minimum_occupied_footprint_hex_distance_between_executor_and_candidate_ascending_then_stable_id")
+    surrounded = selector_definitions.get("surrounded_active_ally", {})
+    require_equal(errors, "surrounded ally candidate set", surrounded.get("candidate_set"), "active_same_side_combatants_including_executor")
+    require_equal(errors, "surrounded ally self occupancy", surrounded.get("candidate_self_occupancy"), "excluded_from_ally_occupancy_count")
+    require_equal(errors, "surrounded ally predicate", surrounded.get("predicate"), "enemy_occupancy_at_least_3_and_ally_occupancy_zero")
 
     migration = value.get("legacy_migration", {})
     require_equal(errors, "intervention legacy migration boundary", migration.get("boundary"), "offline_or_load_time_migration_only")
@@ -479,6 +507,9 @@ def validate_intervention(value, errors):
     require_equal(errors, "intervention receipt schema", receipt.get("decision_receipt_schema_version"), 1)
     require_equal(errors, "intervention terminal receipt schema", receipt.get("terminal_receipt_schema_version"), 1)
     require_equal(errors, "intervention receipt required fields", set(receipt.get("receipt_required_fields", [])), RECEIPT_REQUIRED_FIELDS)
+    require_equal(errors, "intervention receipt optional fields", receipt.get("receipt_optional_fields"), ["formula_receipt"])
+    require_equal(errors, "intervention formula receipt fields", receipt.get("formula_receipt_fields"), RECEIPT_FORMULA_FIELDS)
+    require_equal(errors, "intervention strategy-only formula receipt", receipt.get("formula_receipt_rules", {}).get("strategy_only"), "absent")
     require_equal(errors, "intervention action receipt statuses", receipt.get("action_receipt_statuses"), ACTION_RECEIPT_STATUSES)
     require_equal(errors, "intervention fingerprints", receipt.get("fingerprints"), FINGERPRINTS)
     require_equal(errors, "intervention next segment seed", receipt.get("next_segment_seed_input"), "decision_receipt_fingerprint")

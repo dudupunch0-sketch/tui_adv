@@ -918,6 +918,55 @@ impl CombatRuntime {
         })
     }
     pub(crate) fn restore(checkpoint: CombatRuntimeCheckpoint) -> Result<Self, CombatRuntimeError> {
+        if checkpoint.execution_frames.len() != checkpoint.resolution_frames.len()
+            || checkpoint.request.execution.ticks != checkpoint.execution_frames.len() as u32
+            || checkpoint.request.execution.ticks == 0
+            || checkpoint.request.execution.ticks
+                > checkpoint.request.execution.input.config.max_ticks
+        {
+            return Err(CombatRuntimeError::InvalidInput);
+        }
+        for (i, (execution, resolution)) in checkpoint
+            .execution_frames
+            .iter()
+            .zip(&checkpoint.resolution_frames)
+            .enumerate()
+        {
+            let expected_tick = i as u32 + 1;
+            if execution.tick != expected_tick || resolution.tick != expected_tick {
+                return Err(CombatRuntimeError::InvalidInput);
+            }
+        }
+        if let Some(pause) = &checkpoint.paused {
+            if checkpoint.resolution_frames.last().map(|f| f.tick) != Some(pause.tick)
+                || pause.evaluation.candidate.is_none()
+            {
+                return Err(CombatRuntimeError::InvalidInput);
+            }
+        }
+        derive_segment_seed(
+            checkpoint.request.execution.input.seed,
+            if checkpoint.request.execution.mode == crate::CombatRunMode::Forecast {
+                crate::CombatRngNamespace::ForecastEnsemble
+            } else {
+                crate::CombatRngNamespace::ActualCombat
+            },
+            &checkpoint
+                .request
+                .execution
+                .input
+                .manifest
+                .simulation_version,
+            &checkpoint
+                .request
+                .execution
+                .input
+                .manifest
+                .fingerprint()
+                .map_err(|_| CombatRuntimeError::InvalidInput)?,
+            checkpoint.segment_index,
+            &checkpoint.selection_history,
+        )?;
         let mut runtime = Self::new(checkpoint.request.clone())?;
         for i in 0..checkpoint.execution_frames.len() {
             let Some(frame) = runtime.advance_tick()? else {

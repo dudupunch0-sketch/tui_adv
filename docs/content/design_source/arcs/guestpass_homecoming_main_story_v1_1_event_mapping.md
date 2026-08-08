@@ -14,8 +14,8 @@ source_arc: guestpass_homecoming_main_story_v1_1
 | 유지 (existing) | 14 |
 | 흡수 (adapt existing) | 21 |
 | 사이드 전환 (demote existing) | 0 |
-| 병합 (merge) | 4 |
-| 신규 필요 (new) | 9 |
+| 병합 (merge) | 3 |
+| 신규 필요 (new) | 10 |
 | 합계 | 48 |
 
 모든 행의 authoring_review_required는 개별 사건 저작·선택지·보상 검수가 아직 끝나지 않았다는 뜻이며, 상위 방향 승인이나 runtime 구현 완료를 뜻하지 않는다.
@@ -26,14 +26,14 @@ source_arc: guestpass_homecoming_main_story_v1_1
 | --- | --- | --- | --- | --- | --- | --- |
 | 1/01 | 출근길 균열: 현대인 전이·출근복장 | wuxia_prologue_commute_rift | 유지 | 전이 직후 혼란과 현대 물품을 시작점으로 명시 | 없음 → 1/02 | authoring_review_required |
 | 1/02 | 낯선 장터와 흑사방 첫 시비 | wuxia_arrival_market_confusion | 유지 | 시장 오해를 흑사방 채무·착취 징후와 연결 | 1/01 → 1/03 | authoring_review_required |
-| 1/03 | 서하린 개입과 치료 | wuxia_seoharin_rescue | 유지 | 구조를 보호·관찰·책임의 시작으로 유지 | 1/02 → 1/04 | authoring_review_required |
+| 1/03 | 서하린 개입과 치료 | wuxia_seoharin_intervention | 유지 | 실제 서하린 개입 사건을 보호·관찰·책임의 시작으로 유지 | 1/02 → 1/04 | authoring_review_required |
 | 1/04 | 청류문 임시 수습생 편입 | wuxia_qingliu_apprentice_entry | 유지 | 소속·잡역·치료비를 객패 환대와 연결 | 1/03 → 1/05 | authoring_review_required |
 | 1/05 | 첫 식사·잠자리·치료비 | wuxia_cheongryu_first_night_shelter + wuxia_cheongryu_recovery_meal_debt | 병합 | 쉼과 비용·노동을 한 감정 장면으로 통합 | 1/04 → 1/06 | authoring_review_required |
 | 1/06 | 첫 호흡 수련 | wuxia_cheongryu_first_breathing_lesson | 흡수 | 현대인의 몸·출근복장 부적응과 서하린 지도 추가 | 1/05 → 1/07 | authoring_review_required |
 | 1/07 | 서하린 복기와 청류문 적응 | wuxia_cheongryu_training_first_failure | 흡수 | 패배를 복기·소속감 장면으로 확장 | 1/06 → 1/08 | authoring_review_required |
 | 1/08 | 불탄 객패와 마지막 이동 기록 | 없음 | 신규 필요 | 귀로객망 표식·최초 소유자 기록 신규 부여 | 1/07 → 2/09 | authoring_review_required |
 | 2/09 | 혈월교 습격 전조 | wuxia_cheongryu_raid_omen | 흡수 | 객패 표식 추적과 연결, 천기록은 보조 | 1/08 → 2/10 | authoring_review_required |
-| 2/10 | 혈월교의 청류문·귀로객망 물리 파괴 | wuxia_cheongryu_raid_route_split | 흡수 | 루트 분기를 외부 물리 폭력으로 재구성 | 2/09 → 2/11 | authoring_review_required |
+| 2/10 | 혈월교의 청류문·귀로객망 물리 파괴 | 없음 | 신규 필요 | 현재 습격 본체에 대응하는 기존 ID가 없어 외부 물리 폭력 사건을 신규 저작 | 2/09 → 2/11 | authoring_review_required |
 | 2/11 | 부상자·실종자·파괴 시설 확인 | wuxia_cheongryu_raid_aftermath_roll_call | 유지 | 피해자 이름 보존과 서하린 공동 책임 유지 | 2/10 → 2/12 | authoring_review_required |
 | 2/12 | 객패 표식과 최초 소유자 기록 해독 | wuxia_cheongryu_survivor_ledger | 흡수 | 생존자 장부 기능을 객패 기록 해독으로 변경 | 2/11 → 2/13 | authoring_review_required |
 | 2/13 | 청류문 재건과 환대의 빚 | wuxia_cheongryu_raid_repair_first_debt + wuxia_cheongryu_rebuild_last_beam | 병합 | 복구·빚 결산을 공동 노동으로 통합 | 2/12 → 2/14 | authoring_review_required |
@@ -67,7 +67,7 @@ source_arc: guestpass_homecoming_main_story_v1_1
 | 6/41 | 사도 최종전 가격표 | wuxia_sado_final_phase_1_price_tag | 유지 | 최종전 1단계와 세 엔딩 축 연결 | 5/40 → 6/42 | authoring_review_required |
 | 6/42 | 약점 장악 | wuxia_sado_final_phase_2_weakpoint_control | 유지 | 관계·청류문·타인 이름을 인질화 | 6/41 → 6/43 | authoring_review_required |
 | 6/43 | 계산식 밖 | wuxia_sado_final_phase_3_outside_calculation | 유지 | 세 축을 누적 증거·행동으로 결산 | 6/42 → 6/44 | authoring_review_required |
-| 6/44 | 혈월교 파괴·흑사방 채무 거래 결산 | wuxia_boss_resolution + wuxia_black_serpent_aftermath | 병합 | 두 인간 갈등 결과를 별도 결산으로 압축 | 6/43 → 6/45 | authoring_review_required |
+| 6/44 | 혈월교 파괴·흑사방 채무 거래 결산 | wuxia_boss_resolution | 흡수 | 실제 보스 결산에 2/10 혈월교 파괴 결과를 참조하도록 확장 | 6/43 → 6/45 | authoring_review_required |
 | 6/45 | 무명·청류문 선택 결산 | wuxia_mumyeong_resolution | 유지 | 무명 구원과 청류문 소속을 이름 보존 축으로 결산 | 6/44 → 6/46 | authoring_review_required |
 | 6/46 | 보복 연쇄 중단 | wuxia_sado_final_battle | 흡수 | 승패와 별개로 보복 반복 중단 선택 추가 | 6/45 → 6/47 | authoring_review_required |
 | 6/47 | 빈 밥그릇과 이름 | wuxia_final_prep_last_meal | 흡수 | 최종전 전 식사를 결말 후 공동체 상징으로 재배치 | 6/46 → 6/48 | authoring_review_required |

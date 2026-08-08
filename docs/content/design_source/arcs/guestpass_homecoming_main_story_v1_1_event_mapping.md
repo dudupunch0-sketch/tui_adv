@@ -31,7 +31,7 @@ source_arc: guestpass_homecoming_main_story_v1_1
 | 1/05 | 첫 식사·잠자리·치료비 | wuxia_cheongryu_first_night_shelter + wuxia_cheongryu_recovery_meal_debt | 병합 | 쉼과 비용·노동을 한 감정 장면으로 통합 | 1/04 → 1/06 | authoring_review_required |
 | 1/06 | 첫 호흡 수련 | wuxia_cheongryu_first_breathing_lesson | 흡수 | 현대인의 몸·출근복장 부적응과 서하린 지도 추가 | 1/05 → 1/07 | authoring_review_required |
 | 1/07 | 서하린 복기와 청류문 적응 | wuxia_cheongryu_training_first_failure | 흡수 | 패배를 복기·소속감 장면으로 확장 | 1/06 → 1/08 | authoring_review_required |
-| 1/08 | 불탄 객패와 마지막 이동 기록 | 없음 | 신규 필요 | 귀로객망 표식·최초 소유자 기록 신규 부여 | 1/07 → 2/09 | authoring_review_required |
+| 1/08 | 불탄 객패와 마지막 이동 기록 | [wuxia_guestpass_burnt_token_last_route_record](../events/authored/wuxia_guestpass_burnt_token_last_route_record.yml) | 신규 필요 | 신규 canonical authoring draft 작성; 귀로객망 파괴 표식과 최초 소유자 이동 기록을 같은 객패에 보존 | 1/07 → 2/09 | authoring_draft / authoring_review_required / not_implemented |
 | 2/09 | 혈월교 습격 전조 | wuxia_cheongryu_raid_omen | 흡수 | 객패 표식 추적과 연결, 천기록은 보조 | 1/08 → 2/10 | authoring_review_required |
 | 2/10 | 혈월교의 청류문·귀로객망 물리 파괴 | 없음 | 신규 필요 | 현재 습격 본체에 대응하는 기존 ID가 없어 외부 물리 폭력 사건을 신규 저작 | 2/09 → 2/11 | authoring_review_required |
 | 2/11 | 부상자·실종자·파괴 시설 확인 | wuxia_cheongryu_raid_aftermath_roll_call | 유지 | 피해자 이름 보존과 서하린 공동 책임 유지 | 2/10 → 2/12 | authoring_review_required |
@@ -48,7 +48,7 @@ source_arc: guestpass_homecoming_main_story_v1_1
 | 3/22 | 흑사방 장부·귀로객망 경로 연결 | wuxia_black_serpent_old_hood | 흡수 | 조직 흔적을 채무 추적·귀로 노선 중첩으로 재기능화 | 3/21 → 3/23 | authoring_review_required |
 | 3/23 | 무명의 첫 흔적 | wuxia_mumyeong_first_sighting | 흡수 | 무명을 이름·기술·선택의 거울로 배치 | 3/22 → 3/24 | authoring_review_required |
 | 3/24 | 청류문에 첫 답장 | wuxia_chain_wet_message_sender | 흡수 | 생존 보고·압류 방어 후속으로 변경 | 3/23 → 4/25 | authoring_review_required |
-| 4/25 | 황천수맥과 최초 소유자 마지막 기록 | 없음 | 신규 필요 | 괴이 규칙·기록 회수·이동 기록 신규 저작 | 3/24 → 4/26 | authoring_review_required |
+| 4/25 | 황천수맥과 최초 소유자 마지막 기록 | [wuxia_guestpass_huangquan_waterway_testimony](../events/authored/wuxia_guestpass_huangquan_waterway_testimony.yml) | 신규 필요 | 신규 canonical authoring draft 작성; 이름·빚·기억·물리 조사 중 선택해 예언 아닌 마지막 경로 증언을 회수 | 3/24 → 4/26 | authoring_draft / authoring_review_required / not_implemented |
 | 4/26 | 무명과 객패·이름 대치 | wuxia_mumyeong_first_confrontation | 흡수 | 객패를 누구 이름으로 부를지 묻는 장면으로 재배치 | 4/25 → 4/27 | authoring_review_required |
 | 4/27 | 흑사방 원장부 위치 | wuxia_black_serpent_ledger_trace | 유지 | 기존 흔적을 원장부 위치로 수렴; 중복 소유 여부 검수 | 4/26 → 4/28 | authoring_review_required |
 | 4/28 | 흑사방 보스 채무 거래 | wuxia_heuksa_bang_debt_bargain | 유지 | 보스는 채무 거래, 사도는 최종 계산으로 분리 | 4/27 → 4/29 | authoring_review_required |
@@ -104,4 +104,4 @@ source_arc: guestpass_homecoming_main_story_v1_1
 
 청류문 내부 악의적 배신은 추가하지 않는다. 빈방 압류와 장부 지연의 갈등 상대는 외부 채권·추적 세력이다. 혈월교는 물리 파괴, 흑사방 보스는 채무 거래, 사도는 계산·통제의 최종 적으로 분리한다. 이 문서는 설계 매핑일 뿐 imported event와 runtime/code를 수정하거나 구현 완료로 승격하지 않는다. 새 사건은 핵심·보조·선택·보류 등급과 중심축 영향 평가를 거쳐야 하며 청류문·서하린·객패귀로를 강화하지 않거나 6막 순서·세 요소 인과를 덮으면 승격하지 않는다.
 
-3/19 빈방 압류 방어와 4/29 객패 장부 지연 계략은 canonical authoring draft가 작성되었으며 개별 검수는 남아 있다. 다음 신규 저작 순서는 1/08 불탄 객패 → 4/25 황천수맥 기록 기능이다. 두 우선 초안의 검수 뒤 나머지 adapt existing 슬롯을 저작하며, runtime 구현은 별도 handoff와 승인 이후에만 시작한다.
+1/08 불탄 객패, 3/19 빈방 압류 방어, 4/25 황천수맥, 4/29 객패 장부 지연 계략은 canonical authoring draft가 작성되었으며 개별 검수는 남아 있다. 다음 신규 사건 저작 순서는 별도 authoring review에서 정한다. runtime 구현은 별도 handoff와 승인 이후에만 시작한다.

@@ -110,12 +110,12 @@ batch path는 이 runtime을 아직 production default로 교체하지 않아도
 - `crates/escape-core/src/combat_runtime.rs` (신규)
 - `crates/escape-core/src/combat_execution.rs`
 - `crates/escape-core/src/lib.rs` (crate 내부 모듈 등록만)
-- `crates/escape-core/tests/combat_hex_t4_runtime_step2.rs` (신규)
+- `crates/escape-core/src/combat_runtime.rs`의 `#[cfg(test)]` contract tests
 
 수정 금지:
 
 - `combat_simulation.rs` (KO/active overlay는 S2b)
-- `combat_resolution.rs` (S1 contract 동결)
+- `combat_resolution.rs` (S1 semantics 동결; helper visibility 변경 금지)
 - `combat_opportunity.rs`, `combat_conclusion.rs`, `combat_state.rs`
 - `combat_hex.rs`, `combat_spectator.rs`, `scene_page.rs`, terminal/Web, docs/dev canonical 문서
 - save/progress/serde schema 및 generated artifact

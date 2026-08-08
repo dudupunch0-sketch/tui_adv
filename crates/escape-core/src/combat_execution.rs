@@ -76,9 +76,19 @@ pub struct CombatExecutionResult {
     pub fingerprint: String,
 }
 
-pub fn execute(
-    request: CombatExecutionRequest,
-) -> Result<CombatExecutionResult, CombatExecutionError> {
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(crate) struct CombatExecutionContext {
+    pub(crate) mode: CombatRunMode,
+    pub(crate) presentation: CombatPresentationSpeed,
+    pub(crate) effective_seed: u64,
+    pub(crate) namespace: CombatRngNamespace,
+    pub(crate) provenance: CombatProvenance,
+    pub(crate) setup_fingerprint: String,
+}
+
+pub(crate) fn prepare_context(
+    request: &CombatExecutionRequest,
+) -> Result<(CombatExecutionContext, CombatSimulation), CombatExecutionError> {
     if request.ticks == 0 {
         return Err(CombatExecutionError::ZeroTicks);
     }
@@ -98,11 +108,34 @@ pub fn execute(
     };
     let mut input = request.input.clone();
     input.seed = effective_seed;
-    let mut simulation = CombatSimulation::new(input)?;
+    let simulation = CombatSimulation::new(input)?;
     let setup_fingerprint = simulation.fingerprint()?;
-    let frames = simulation.run_ticks(request.ticks)?;
+    let manifest_fingerprint = request
+        .input
+        .manifest
+        .fingerprint()
+        .map_err(|_| CombatExecutionError::InvalidInput)?;
+    let provenance = CombatProvenance {
+        simulation_version: request.input.manifest.simulation_version.clone(),
+        tick_millis: request.input.config.tick_millis,
+        manifest_fingerprint,
+    };
+    Ok((
+        CombatExecutionContext {
+            mode: request.mode,
+            presentation: request.presentation,
+            effective_seed,
+            namespace,
+            provenance,
+            setup_fingerprint,
+        },
+        simulation,
+    ))
+}
+
+pub(crate) fn build_execution_log(frames: &[CombatTickFrame]) -> Vec<CombatLogEvent> {
     let mut full_log = Vec::new();
-    for frame in &frames {
+    for frame in frames {
         let mut sequence = 0u32;
         for intent in &frame.moves {
             full_log.push(CombatLogEvent {
@@ -129,42 +162,49 @@ pub fn execute(
             sequence += 1;
         }
     }
+    full_log
+}
+
+pub(crate) fn assemble_result(
+    context: &CombatExecutionContext,
+    frames: Vec<CombatTickFrame>,
+    full_log: Vec<CombatLogEvent>,
+) -> CombatExecutionResult {
     let core_log = full_log
         .iter()
         .filter(|event| event.importance >= CombatLogImportance::Important)
         .cloned()
         .collect();
-    let manifest_fingerprint = request
-        .input
-        .manifest
-        .fingerprint()
-        .map_err(|_| CombatExecutionError::InvalidInput)?;
-    let provenance = CombatProvenance {
-        simulation_version: request.input.manifest.simulation_version.clone(),
-        tick_millis: request.input.config.tick_millis,
-        manifest_fingerprint,
-    };
     let fingerprint = stable_fingerprint(&(
-        namespace,
-        effective_seed,
-        setup_fingerprint,
+        context.namespace,
+        context.effective_seed,
+        &context.setup_fingerprint,
         &frames,
         &full_log,
     ));
-    Ok(CombatExecutionResult {
-        mode: request.mode,
-        presentation: request.presentation,
-        effective_seed,
-        namespace,
+    CombatExecutionResult {
+        mode: context.mode,
+        presentation: context.presentation,
+        effective_seed: context.effective_seed,
+        namespace: context.namespace,
         frames,
         full_log,
         core_log,
-        provenance: Some(provenance),
+        provenance: Some(context.provenance.clone()),
         fingerprint,
-    })
+    }
 }
 
-fn stable_fingerprint<T: Serialize>(value: &T) -> String {
+pub fn execute(
+    request: CombatExecutionRequest,
+) -> Result<CombatExecutionResult, CombatExecutionError> {
+    let (context, mut simulation) = prepare_context(&request)?;
+    let frames = simulation.run_ticks(request.ticks)?;
+    let full_log = build_execution_log(&frames);
+    Ok(assemble_result(&context, frames, full_log))
+}
+
+pub(crate) fn stable_fingerprint<T: Serialize>(value: &T) -> String {
     let bytes = serde_json::to_vec(value).unwrap_or_default();
     format!("{:016x}", fnv(&bytes))
 }

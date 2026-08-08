@@ -4,6 +4,7 @@ mod combat_execution;
 mod combat_hex;
 mod combat_opportunity;
 mod combat_resolution;
+mod combat_runtime;
 mod combat_simulation;
 mod combat_spectator;
 mod combat_state;

@@ -11,6 +11,7 @@ use crate::{
     CombatOpportunityContext, CombatOpportunityError, CombatOpportunityEvaluation,
     CombatOpportunityInstance, CombatSimulation, CombatSimulationError, CombatTickFrame,
 };
+use serde::Serialize;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(crate) struct CombatRuntimeFrame {
@@ -22,6 +23,62 @@ pub(crate) struct CombatRuntimeOpportunityConfig {
     pub(crate) catalog: CombatOpportunityCatalog,
     pub(crate) instances: Vec<CombatOpportunityInstance>,
     pub(crate) context: CombatOpportunityContext,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub(crate) struct CombatRuntimeSelectionHistoryEntry {
+    pub(crate) segment_index: u32,
+    pub(crate) tick: u32,
+    pub(crate) instance_id: String,
+    pub(crate) opportunity_id: String,
+    pub(crate) response_id: String,
+}
+
+pub(crate) fn derive_segment_seed(
+    base_effective_seed: u64,
+    namespace: crate::CombatRngNamespace,
+    simulation_version: &crate::CombatSimulationVersion,
+    manifest_fingerprint: &str,
+    segment_index: u32,
+    history: &[CombatRuntimeSelectionHistoryEntry],
+) -> Result<u64, CombatRuntimeError> {
+    if simulation_version.as_str().trim().is_empty() || manifest_fingerprint.trim().is_empty() {
+        return Err(CombatRuntimeError::InvalidInput);
+    }
+    let mut canonical = history.to_vec();
+    for entry in &canonical {
+        if entry.segment_index > segment_index
+            || entry.instance_id.trim().is_empty()
+            || entry.opportunity_id.trim().is_empty()
+            || entry.response_id.trim().is_empty()
+        {
+            return Err(CombatRuntimeError::InvalidInput);
+        }
+    }
+    canonical.sort_by(|a, b| {
+        a.segment_index
+            .cmp(&b.segment_index)
+            .then(a.tick.cmp(&b.tick))
+            .then(a.instance_id.cmp(&b.instance_id))
+            .then(a.opportunity_id.cmp(&b.opportunity_id))
+            .then(a.response_id.cmp(&b.response_id))
+    });
+    if canonical
+        .windows(2)
+        .any(|entries| entries[0].segment_index == entries[1].segment_index)
+    {
+        return Err(CombatRuntimeError::InvalidInput);
+    }
+    let payload = (
+        base_effective_seed,
+        namespace.as_str(),
+        simulation_version.as_str(),
+        manifest_fingerprint,
+        segment_index,
+        canonical,
+    );
+    u64::from_str_radix(&stable_fingerprint(&payload), 16)
+        .map_err(|_| CombatRuntimeError::InvalidInput)
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -530,6 +587,122 @@ mod tests {
         );
         assert!(matches!(
             runtime.resume_no_intervention(),
+            Err(CombatRuntimeError::InvalidInput)
+        ));
+    }
+
+    #[test]
+    fn segment_seed_is_canonical_and_namespace_isolated() {
+        let version =
+            crate::CombatSimulationVersion::new(crate::CURRENT_SIMULATION_VERSION).unwrap();
+        let first = CombatRuntimeSelectionHistoryEntry {
+            segment_index: 0,
+            tick: 1,
+            instance_id: "instance_a".into(),
+            opportunity_id: "danger".into(),
+            response_id: "no_intervention".into(),
+        };
+        let second = CombatRuntimeSelectionHistoryEntry {
+            segment_index: 1,
+            tick: 4,
+            instance_id: "instance_b".into(),
+            opportunity_id: "rescue".into(),
+            response_id: "assist".into(),
+        };
+        let history = vec![first.clone(), second.clone()];
+        let mut reversed = vec![second, first];
+        let actual = derive_segment_seed(
+            7,
+            crate::CombatRngNamespace::ActualCombat,
+            &version,
+            "manifest",
+            1,
+            &history,
+        )
+        .unwrap();
+        assert_eq!(
+            actual,
+            derive_segment_seed(
+                7,
+                crate::CombatRngNamespace::ActualCombat,
+                &version,
+                "manifest",
+                1,
+                &reversed,
+            )
+            .unwrap()
+        );
+        reversed[0].response_id = "different".into();
+        assert_ne!(
+            actual,
+            derive_segment_seed(
+                7,
+                crate::CombatRngNamespace::ActualCombat,
+                &version,
+                "manifest",
+                1,
+                &reversed,
+            )
+            .unwrap()
+        );
+        assert_ne!(
+            actual,
+            derive_segment_seed(
+                7,
+                crate::CombatRngNamespace::ForecastEnsemble,
+                &version,
+                "manifest",
+                1,
+                &history,
+            )
+            .unwrap()
+        );
+    }
+
+    #[test]
+    fn segment_seed_rejects_invalid_history() {
+        let version =
+            crate::CombatSimulationVersion::new(crate::CURRENT_SIMULATION_VERSION).unwrap();
+        let entry = CombatRuntimeSelectionHistoryEntry {
+            segment_index: 1,
+            tick: 1,
+            instance_id: "instance".into(),
+            opportunity_id: "danger".into(),
+            response_id: "assist".into(),
+        };
+        assert!(matches!(
+            derive_segment_seed(
+                7,
+                crate::CombatRngNamespace::ActualCombat,
+                &version,
+                "manifest",
+                1,
+                &[entry.clone(), entry.clone()]
+            ),
+            Err(CombatRuntimeError::InvalidInput)
+        ));
+        let mut future = entry.clone();
+        future.segment_index = 2;
+        assert!(matches!(
+            derive_segment_seed(
+                7,
+                crate::CombatRngNamespace::ActualCombat,
+                &version,
+                "manifest",
+                1,
+                &[future]
+            ),
+            Err(CombatRuntimeError::InvalidInput)
+        ));
+        assert!(matches!(
+            derive_segment_seed(
+                7,
+                crate::CombatRngNamespace::ActualCombat,
+                &version,
+                "",
+                1,
+                &[]
+            ),
             Err(CombatRuntimeError::InvalidInput)
         ));
     }

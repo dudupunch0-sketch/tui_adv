@@ -267,4 +267,7 @@ git diff --check
    `505d5ff`~`ead0ec4`로 완료했고, 상세 보고서는
    `fable_combat_hex_t4_step7_2608081505.md`다. S3b public SaveEnvelope 경계도
    `be77d67`/`0cd7fab`로 완료했고, 상세 보고서는
-   `fable_combat_hex_t4_step8_2608081545.md`다. 다음은 S3c delta/size 측정이다.
+   `fable_combat_hex_t4_step8_2608081545.md`다. S3c full-frame 측정도 `d3920b5`로
+   완료했고, 12 participant·1,200 tick checkpoint JSON은 3,800,404 bytes였다.
+   상세 보고서는 `fable_combat_hex_t4_step9_2608081605.md`다. 다음은 측정값을 기준으로
+   delta 표현을 설계하는 S3d다.

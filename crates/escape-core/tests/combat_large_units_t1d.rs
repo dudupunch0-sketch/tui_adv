@@ -234,6 +234,11 @@ fn resolution_request(
             penetration_hundredths: 0,
             collision_balance_hundredths: 100,
             balance_power_hundredths: 500,
+            // T3 (fable_combat_hex_t3_step1_2608080951.md §4-3): new field on
+            // `CombatAttackDefinition`. `None` means "fire every tick",
+            // exactly this fixture's pre-T3 behaviour -- mechanical fix to
+            // keep this file compiling, not a scope change.
+            attack_speed_hundredths: None,
             effects: vec![],
         }],
         defenses: vec![

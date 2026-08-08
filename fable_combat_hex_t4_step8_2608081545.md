@@ -1,6 +1,6 @@
 # T4 S3b — additive public combat save boundary
 
-status: ready-for-implementation
+status: implemented
 date: 2026-08-08
 baseline_commit: `f5aa11c`
 baseline_test: `cargo test --workspace --no-fail-fast --quiet` = 0 failures
@@ -96,3 +96,16 @@ delta encoding/compression, response effect/state mutation, content/generated ar
 - public export가 private opportunity type을 누출하거나 API 이름이 두 가지로 해석되는 경우.
 - schema/simulation version bump가 필요한데 canonical owner가 불명확한 경우.
 - frame payload 크기 측정 없이 임의 delta/상한을 추가해야 하는 경우.
+
+## 8. 구현 보고
+
+- implementation commits: `be77d67`, `0cd7fab`
+- `CombatRuntimeCheckpoint`와 schema constant를 public export하고, `SaveEnvelope`에
+  `combat_checkpoint: Option<_>` additive field를 연결했다. 기존 `save_state`는 `None`을
+  유지해 combat key를 생략한다.
+- old SaveEnvelope JSON missing combat key round-trips to `None`; checkpoint 포함 envelope와
+  schema/provenance mismatch rejection을 테스트했다.
+- 테스트: runtime lib 17/17, save compatibility 1/1, event-stage 11/11, workspace 0 failures.
+- S3a response-selected checkpoint fixture의 full-frame JSON payload은 4,429 bytes였다.
+  delta/compression은 수치 측정 후 S3c에서 별도 결정한다.
+- `cargo fmt --all -- --check`, `git diff --check` 통과.

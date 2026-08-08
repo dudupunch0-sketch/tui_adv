@@ -34,8 +34,11 @@ paths:
   graphs: graphs/*.yml
 records:
   events:
-    count: 158
+    count: 161
     ids:
+    - wuxia_guestpass_bloodmoon_qingliu_network_destruction
+    - wuxia_guestpass_gohyeonmuk_inn_succession
+    - wuxia_guestpass_one_eye_mountain_bearer_passage
     - wuxia_guestpass_burnt_token_last_route_record
     - wuxia_guestpass_huangquan_waterway_testimony
     - wuxia_guestpass_qingliu_empty_room_seizure_defense

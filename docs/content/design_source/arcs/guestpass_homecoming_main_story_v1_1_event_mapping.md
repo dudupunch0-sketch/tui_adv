@@ -33,7 +33,7 @@ source_arc: guestpass_homecoming_main_story_v1_1
 | 1/07 | 서하린 복기와 청류문 적응 | wuxia_cheongryu_training_first_failure | 흡수 | 패배를 복기·소속감 장면으로 확장 | 1/06 → 1/08 | authoring_review_required |
 | 1/08 | 불탄 객패와 마지막 이동 기록 | [wuxia_guestpass_burnt_token_last_route_record](../events/authored/wuxia_guestpass_burnt_token_last_route_record.yml) | 신규 필요 | 신규 canonical authoring draft 작성; 귀로객망 파괴 표식과 최초 소유자 이동 기록을 같은 객패에 보존 | 1/07 → 2/09 | authoring_draft / authoring_review_required / not_implemented |
 | 2/09 | 혈월교 습격 전조 | wuxia_cheongryu_raid_omen | 흡수 | 객패 표식 추적과 연결, 천기록은 보조 | 1/08 → 2/10 | authoring_review_required |
-| 2/10 | 혈월교의 청류문·귀로객망 물리 파괴 | 없음 | 신규 필요 | 현재 습격 본체에 대응하는 기존 ID가 없어 외부 물리 폭력 사건을 신규 저작 | 2/09 → 2/11 | authoring_review_required |
+| 2/10 | 혈월교의 청류문·귀로객망 물리 파괴 | [wuxia_guestpass_bloodmoon_qingliu_network_destruction](../events/authored/wuxia_guestpass_bloodmoon_qingliu_network_destruction.yml) | 신규 필요 | 신규 canonical authoring draft 작성; 청류문 일상 공간의 손실 속 방어·구조·추적·객패 보호 선택으로 혈월교의 물리 파괴 역할 고정 | 2/09 → 2/11, 2/12 | authoring_draft / authoring_review_required / not_implemented |
 | 2/11 | 부상자·실종자·파괴 시설 확인 | wuxia_cheongryu_raid_aftermath_roll_call | 유지 | 피해자 이름 보존과 서하린 공동 책임 유지 | 2/10 → 2/12 | authoring_review_required |
 | 2/12 | 객패 표식과 최초 소유자 기록 해독 | wuxia_cheongryu_survivor_ledger | 흡수 | 생존자 장부 기능을 객패 기록 해독으로 변경 | 2/11 → 2/13 | authoring_review_required |
 | 2/13 | 청류문 재건과 환대의 빚 | wuxia_cheongryu_raid_repair_first_debt + wuxia_cheongryu_rebuild_last_beam | 병합 | 복구·빚 결산을 공동 노동으로 통합 | 2/12 → 2/14 | authoring_review_required |
@@ -41,9 +41,9 @@ source_arc: guestpass_homecoming_main_story_v1_1
 | 2/15 | 서하린 손목 부상과 공동 책임 | wuxia_seoharin_hides_training_injury | 유지 | 신뢰와 책임의 증거로 유지 | 2/14 → 2/16 | authoring_review_required |
 | 2/16 | 객패 추적 출발 | wuxia_cheongryu_first_departure_cost | 흡수 | 출발 비용을 객패·환대·추적 목표로 묶음 | 2/15 → 3/17 | authoring_review_required |
 | 3/17 | 첫 역참 신분 선택 | wuxia_route_explain_choice_to_seoharin | 흡수 | 가명·객패 제시 선택으로 확장 | 2/16 → 3/18 | authoring_review_required |
-| 3/18 | 고현묵 객잔과 객패 계승 | 없음 | 신규 필요 | 고현묵·최초 소유자·객잔 거점 신규 저작 | 3/17 → 3/19 | authoring_review_required |
+| 3/18 | 고현묵 객잔과 객패 계승 | [wuxia_guestpass_gohyeonmuk_inn_succession](../events/authored/wuxia_guestpass_gohyeonmuk_inn_succession.yml) | 신규 필요 | 신규 canonical authoring draft 작성; 말이 아닌 환대 행동으로 시험하고 객패를 소유가 아닌 다음 손님의 생존 책임으로 계승 | 3/17 → 3/19 | authoring_draft / authoring_review_required / not_implemented |
 | 3/19 | 청류문 빈방 압류 방어 | [wuxia_guestpass_qingliu_empty_room_seizure_defense](../events/authored/wuxia_guestpass_qingliu_empty_room_seizure_defense.yml) | 신규 필요 | 신규 canonical authoring draft 작성; 청우진·서하린이 문패·객패·공동체 증거 제시 | 3/18 → 3/20, 3/24 | authoring_draft / authoring_review_required / not_implemented |
-| 3/20 | 외안배산귀 통과 | 없음 | 신규 필요 | 이름과 시선의 시험 규칙·대가·선택 신규 저작 | 3/19 → 3/21 | authoring_review_required |
+| 3/20 | 외안배산귀 통과 | [wuxia_guestpass_one_eye_mountain_bearer_passage](../events/authored/wuxia_guestpass_one_eye_mountain_bearer_passage.yml) | 신규 필요 | 신규 canonical authoring draft 작성; 협상·관찰·기한부 역할 이름·비살상 전투로 이름과 환대 규칙을 시험 | 3/19 → 3/21 | authoring_draft / authoring_review_required / not_implemented |
 | 3/21 | 객패 다음 이동지 추적 | wuxia_route_return_scent_clue | 흡수 | 흔적을 객패 다음 역참과 연결 | 3/20 → 3/22 | authoring_review_required |
 | 3/22 | 흑사방 장부·귀로객망 경로 연결 | wuxia_black_serpent_old_hood | 흡수 | 조직 흔적을 채무 추적·귀로 노선 중첩으로 재기능화 | 3/21 → 3/23 | authoring_review_required |
 | 3/23 | 무명의 첫 흔적 | wuxia_mumyeong_first_sighting | 흡수 | 무명을 이름·기술·선택의 거울로 배치 | 3/22 → 3/24 | authoring_review_required |
@@ -104,4 +104,4 @@ source_arc: guestpass_homecoming_main_story_v1_1
 
 청류문 내부 악의적 배신은 추가하지 않는다. 빈방 압류와 장부 지연의 갈등 상대는 외부 채권·추적 세력이다. 혈월교는 물리 파괴, 흑사방 보스는 채무 거래, 사도는 계산·통제의 최종 적으로 분리한다. 이 문서는 설계 매핑일 뿐 imported event와 runtime/code를 수정하거나 구현 완료로 승격하지 않는다. 새 사건은 핵심·보조·선택·보류 등급과 중심축 영향 평가를 거쳐야 하며 청류문·서하린·객패귀로를 강화하지 않거나 6막 순서·세 요소 인과를 덮으면 승격하지 않는다.
 
-1/08 불탄 객패, 3/19 빈방 압류 방어, 4/25 황천수맥, 4/29 객패 장부 지연 계략은 canonical authoring draft가 작성되었으며 개별 검수는 남아 있다. 다음 신규 사건 저작 순서는 별도 authoring review에서 정한다. runtime 구현은 별도 handoff와 승인 이후에만 시작한다.
+1/08 불탄 객패, 2/10 혈월교 물리 파괴, 3/18 고현묵 객잔과 객패 계승, 3/19 빈방 압류 방어, 3/20 외안배산귀 통과, 4/25 황천수맥, 4/29 객패 장부 지연 계략은 canonical authoring draft가 작성되었으며 개별 검수는 남아 있다. 다음 신규 사건 저작 순서는 별도 authoring review에서 정한다. runtime 구현은 별도 handoff와 승인 이후에만 시작한다.

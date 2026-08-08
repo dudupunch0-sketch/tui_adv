@@ -84,3 +84,5 @@ source_refs:
 우선 사건 canonical authoring draft: [3/19 청류문 빈방 압류 방어](../events/authored/wuxia_guestpass_qingliu_empty_room_seizure_defense.yml), [4/29 객패 장부 지연 계략](../events/authored/wuxia_guestpass_ledger_delay_stratagem.yml). 두 사건 모두 authoring_draft / authoring_review_required / not_implemented 상태다.
 
 추가 canonical authoring draft: [1/08 불탄 객패와 마지막 이동 기록](../events/authored/wuxia_guestpass_burnt_token_last_route_record.yml), [4/25 황천수맥과 최초 소유자 마지막 기록](../events/authored/wuxia_guestpass_huangquan_waterway_testimony.yml). 두 사건 모두 authoring_draft / authoring_review_required / not_implemented 상태이며 천기록은 진행 게이트가 아니다.
+
+2·3막 canonical authoring draft: [2/10 혈월교의 청류문·귀로객망 물리 파괴](../events/authored/wuxia_guestpass_bloodmoon_qingliu_network_destruction.yml), [3/18 고현묵 객잔과 객패 계승](../events/authored/wuxia_guestpass_gohyeonmuk_inn_succession.yml), [3/20 외안배산귀 통과](../events/authored/wuxia_guestpass_one_eye_mountain_bearer_passage.yml). 세 사건 모두 authoring_draft / authoring_review_required / not_implemented 상태이며, 각각 혈월교의 물리 파괴 역할·객패의 책임 계승·이름과 환대의 비살상 통과를 저작 검수 대상으로 둔다.

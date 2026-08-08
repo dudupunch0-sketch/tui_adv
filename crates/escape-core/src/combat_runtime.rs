@@ -11,7 +11,7 @@ use crate::{
     CombatOpportunityContext, CombatOpportunityError, CombatOpportunityEvaluation,
     CombatOpportunityInstance, CombatSimulation, CombatSimulationError, CombatTickFrame,
 };
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(crate) struct CombatRuntimeFrame {
@@ -19,13 +19,14 @@ pub(crate) struct CombatRuntimeFrame {
     pub(crate) resolution: CombatResolutionFrame,
 }
 
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub(crate) struct CombatRuntimeOpportunityConfig {
     pub(crate) catalog: CombatOpportunityCatalog,
     pub(crate) instances: Vec<CombatOpportunityInstance>,
     pub(crate) context: CombatOpportunityContext,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub(crate) struct CombatRuntimeSelectionHistoryEntry {
     pub(crate) segment_index: u32,
     pub(crate) tick: u32,
@@ -81,7 +82,7 @@ pub(crate) fn derive_segment_seed(
         .map_err(|_| CombatRuntimeError::InvalidInput)
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub(crate) struct CombatRuntimePause {
     pub(crate) tick: u32,
     pub(crate) evaluation: CombatOpportunityEvaluation,
@@ -150,7 +151,8 @@ pub(crate) struct CombatRuntime {
     next_segment_seed: Option<u64>,
 }
 
-struct CombatRuntimeOpportunityState {
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub(crate) struct CombatRuntimeOpportunityState {
     catalog: CombatOpportunityCatalog,
     instances: Vec<CombatOpportunityInstance>,
     context: CombatOpportunityContext,
@@ -860,5 +862,78 @@ mod tests {
                 CombatSimulationError::MaxTicksExceeded
             ))
         ));
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub(crate) struct CombatRuntimeCheckpoint {
+    pub(crate) request: CombatResolutionRequest,
+    pub(crate) execution_frames: Vec<CombatTickFrame>,
+    pub(crate) resolution_frames: Vec<CombatResolutionFrame>,
+    pub(crate) opportunities: Option<CombatRuntimeOpportunityState>,
+    pub(crate) paused: Option<CombatRuntimePause>,
+    pub(crate) segment_index: u32,
+    pub(crate) selection_history: Vec<CombatRuntimeSelectionHistoryEntry>,
+    pub(crate) next_segment_seed: Option<u64>,
+}
+impl CombatRuntime {
+    pub(crate) fn checkpoint(&self) -> Result<CombatRuntimeCheckpoint, CombatRuntimeError> {
+        if self.execution_frames.len() != self.resolution_frames.len() {
+            return Err(CombatRuntimeError::InvalidInput);
+        }
+        for (i, (e, r)) in self
+            .execution_frames
+            .iter()
+            .zip(&self.resolution_frames)
+            .enumerate()
+        {
+            if e.tick != (i as u32 + 1) || r.tick != e.tick {
+                return Err(CombatRuntimeError::InvalidInput);
+            }
+        }
+        if let Some(p) = &self.paused {
+            if self.resolution_frames.last().map(|f| f.tick) != Some(p.tick)
+                || p.evaluation.candidate.is_none()
+            {
+                return Err(CombatRuntimeError::InvalidInput);
+            }
+        }
+        derive_segment_seed(
+            self.context.effective_seed,
+            self.context.namespace,
+            &self.context.provenance.simulation_version,
+            &self.context.provenance.manifest_fingerprint,
+            self.segment_index,
+            &self.selection_history,
+        )?;
+        Ok(CombatRuntimeCheckpoint {
+            request: self.request.clone(),
+            execution_frames: self.execution_frames.clone(),
+            resolution_frames: self.resolution_frames.clone(),
+            opportunities: self.opportunities.clone(),
+            paused: self.paused.clone(),
+            segment_index: self.segment_index,
+            selection_history: self.selection_history.clone(),
+            next_segment_seed: self.next_segment_seed,
+        })
+    }
+    pub(crate) fn restore(checkpoint: CombatRuntimeCheckpoint) -> Result<Self, CombatRuntimeError> {
+        let mut runtime = Self::new(checkpoint.request.clone())?;
+        for i in 0..checkpoint.execution_frames.len() {
+            let Some(frame) = runtime.advance_tick()? else {
+                return Err(CombatRuntimeError::InvalidInput);
+            };
+            if frame.execution != checkpoint.execution_frames[i]
+                || frame.resolution != checkpoint.resolution_frames[i]
+            {
+                return Err(CombatRuntimeError::InvalidInput);
+            }
+        }
+        runtime.opportunities = checkpoint.opportunities;
+        runtime.paused = checkpoint.paused;
+        runtime.segment_index = checkpoint.segment_index;
+        runtime.selection_history = checkpoint.selection_history;
+        runtime.next_segment_seed = checkpoint.next_segment_seed;
+        Ok(runtime)
     }
 }

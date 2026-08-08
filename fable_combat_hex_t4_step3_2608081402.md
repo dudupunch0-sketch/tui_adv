@@ -141,7 +141,7 @@ existing simulation/resolution/cadence tests는 기대값을 임의로 고치지
 
 ## 9. 구현 결과 (2026-08-08)
 
-- 구현 커밋: pending (code + regression test)
+- 구현 커밋: `270f178`
 - `sync_active_from_health(&BTreeMap<String, i64>)`를 추가하고, simulation의 move gauge,
   move intent, contention occupancy, occupancy snapshot을 active participant로 제한했다.
 - runtime은 매 resolution frame 직후 health map을 sync한다. lethal tick의 frame/outcome은

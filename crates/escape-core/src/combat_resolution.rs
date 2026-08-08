@@ -932,7 +932,17 @@ impl CombatResolutionStepper {
             ) else {
                 continue;
             };
-            if actor.side == target.side {
+            if actor.side == target.side || !actor.active || !target.active {
+                continue;
+            }
+            let health_snapshot: BTreeMap<String, i64> = self
+                .combatants
+                .iter()
+                .map(|(id, c)| (id.clone(), c.current_health_hundredths))
+                .collect();
+            if health_snapshot.get(&actor.id).is_some_and(|h| *h <= 0)
+                || health_snapshot.get(target_id).is_some_and(|h| *h <= 0)
+            {
                 continue;
             }
             let distance = footprint_distance(

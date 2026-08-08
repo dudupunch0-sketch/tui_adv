@@ -1,0 +1,90 @@
+# 객패귀로 메인 스토리 통합 설계 v1.1
+
+design_status: approved_direction
+review_status: authoring_review_required
+runtime_status: not_implemented
+
+## 목적과 최종 기준
+
+객패귀로를 기존 서브퀘스트가 아닌 이구학지 — 천기록의 메인 스토리 중심축으로 선언한다. 현대 회사원이 본인 몸과 출근복장 그대로 전이하고, 청류문 생활·수련과 서하린 관계가 감정 중심이 된다. 청류문 신뢰가 트루 엔딩의 핵심이다.
+
+혈월교는 물리 파괴, 흑사방 보스는 채무 거래, 사도는 모든 선택을 계산·통제로 환원하는 최종 적이다. 오디세이 오마주는 기능·구조만 계승하며 원전 복사는 금지한다. 환상은 산해경·도교풍 여행 시험이며 신령은 전승·징조 중심이다.
+
+필수 시간·슬롯 목표: 청류문·서하린·관계 40%, 인간 갈등 30%, 여행·환상 20%, 천기록·직접 초월 10%. 이는 사건 수가 아니며 랜덤 인카운터는 별도다. 천기록은 정보·선택 보조이고 막 진행 게이트가 아니며 직접 기능 장면은 최대 3회다.
+
+## 단일 인과
+
+불탄 객패에는 혈월교가 파괴 중인 귀로객망 표식과 최초 소유자의 마지막 이동 기록이 있다. 이를 추적하면 귀로객망 본거지와 현대 귀환 단서에 도달한다. 본거지 문은 객패·흑사방 원장부·귀환 단서가 모두 있어야 열리며, 사도가 세 요소를 분리 통제한다.
+
+## 6막 48개 필수 사건
+
+1막 균열과 빈 방:
+1 출근길의 균열 / 2 낯선 장터와 흑사방 첫 시비 / 3 서하린의 개입과 치료 / 4 청류문 임시 수습생 편입 / 5 첫 식사·잠자리·치료비 / 6 첫 호흡 수련과 첫 패배 / 7 서하린의 복기와 청류문 적응 / 8 불탄 객패와 마지막 이동 기록 발견.
+
+2막 불탄 객패와 환대의 빚:
+9 혈월교 습격 전조 / 10 혈월교의 청류문·귀로객망 물리 파괴 / 11 부상자·실종자·파괴 시설 확인 / 12 객패 표식과 최초 소유자 기록 해독 / 13 청류문 재건과 환대의 빚 / 14 흑사방 채무 장부 흔적 / 15 서하린 손목 부상과 공동 책임 / 16 객패 추적 출발.
+
+3막 빌린 이름의 길:
+17 첫 역참 신분 선택 / 18 고현묵 객잔과 객패 계승 / 19 청류문 빈방 압류 방어 / 20 외안배산귀 통과 / 21 객패 다음 이동지 추적 / 22 흑사방 추적 장부·귀로객망 경로 연결 / 23 무명의 첫 흔적 / 24 청류문에 첫 답장.
+빈방 압류 방어는 청우진·서하린이 객패·문패·공동체 증거로 수행한다. 청류문 내부 악의적 배신은 금지한다.
+
+4막 사람과 장부 사이:
+25 황천수맥에서 최초 소유자 마지막 기록 확인 / 26 무명과 객패·이름 대치 / 27 흑사방 원장부 위치 / 28 흑사방 보스 채무 거래 / 29 서하린 객패 장부 지연 계략(낮 작성, 밤 삭제·순서 변경) / 30 사도의 첫 거래와 계산 논리 / 31 원장부 확보 또는 회수 경로 / 32 본거지 문이 세 요소를 요구함을 확인.
+지연 계략은 귀로객망과 청류문을 보호하는 방어이며 배신이 아니다.
+
+5막 귀로의 문:
+33 귀로객망 본거지 귀환 잠입 / 34 묵돌·흉터와 매듭·빈방 기억으로 단계적 재인식 / 35 청우진·고현묵의 행동 확인 / 36 객패·원장부·귀환 단서 공개 자격 시험 / 37 사도의 세 요소 분리 통제 공개 / 38 귀향소 목소리 시험 / 39 현대 귀환 자유 확보 / 40 서하린과 진실 공유.
+필수 순서: 귀환 잠입 → 단계적 재인식 → 공개 자격 시험.
+
+6막 빈 밥그릇에 이름을 쓰다:
+41 사도 최종전 가격표 / 42 약점 장악 / 43 계산식 밖 / 44 혈월교 파괴·흑사방 채무 거래 결산 / 45 무명·청류문 선택 결산 / 46 보복 연쇄 중단 / 47 빈 밥그릇과 이름 / 48 현대 귀환·청류문 잔류·실리·트루 엔딩.
+
+## 서하린 병행 서사
+
+1막 구조자·감시자 → 2막 부상당한 공동체 수호자 → 3막 빈방 압류 방어와 부재 속 조력자 → 4막 낮 작성·밤 삭제 지연 계략을 실행하는 공동 주역 → 5막 귀환 자유를 보장하는 사람 → 6막 보복 연쇄 중단과 청류문 미래를 함께 결산하는 사람. 수동적으로 기다리거나 주인공을 붙잡지 않는다.
+
+## 핵심 인물
+
+장기: 청우진(청류문 후계 기능), 진서목(동료 불신), 고현묵(객패·환대의 기억), 노백운(완전한 맹인, 경험·기억으로 길 해석, 만능 예언자 금지).
+구간: 백연수(수로·환대), 유자하(빌린 이름), 연유란(가짜 안식처), 담소리(민간 기록), 묵돌(단계적 재인식). 서하린 대체·연애 경쟁 금지.
+
+## 필수·선택·보류
+
+필수 직접 괴이: 외안배산귀·귀향소·황천수맥. 벽뢰진군·직심현녀·창해수령은 전승·징조 중심, 직접 대면 전체 1~2회 이하.
+선택: 백연수·유자하·연유란·담소리·묵돌 구간, 세 신령 전승, 기존 random_*/weather_*/side_*.
+보류: 망향화림, 봉풍낭곡, 식문협, 육두절벽·회류와, 금륜목장, 부유도 화객궁, 반복 신령 대면, 초월 존재의 최종전 개입.
+
+## 엔딩 3축
+
+귀환의 자유·공동체의 신뢰·타인의 이름 보존으로 판정하며 세부 선택은 증거로만 사용한다. 현대 귀환은 정상 엔딩이다. 청류문 잔류는 귀환 자유를 알고도 남는 선택이다. 실리·타락은 사람·이름·기록을 거래한 변주다. 트루 엔딩은 귀환 자유 확보 후 자발적 청류문·서하린 곁 잔류 + 공동체 신뢰 + 타인의 이름 보존 + 보복 연쇄 중단이다.
+
+## 사건 정책·추가 가드레일
+
+유지·메인 흡수: 전이, 장터, 서하린 구조, 청류문 편입·수련, 혈월교 습격, 흑사방·무명·보스·사도·최종 준비·결산.
+객패귀로 흡수: 청류문 회복·재건, 서하린 관계, bridge_*, route_*, 객잔·장부·귀환 단서.
+사이드·랜덤: random_*, weather_*, side_*, 일부 fallback_*.
+병합 후보: 청류문 도착/수습생 편입, 첫날 밤/빈 객실, 서하린 빈자리/말없이 남은 자리, 객잔 빈 의자.
+
+개별 사건은 미검수이며 runtime에는 아직 반영되지 않았다. 신규 아이디어는 핵심·보조·선택·보류 등급과 중심축 영향 평가를 거쳐야 하며 청류문·서하린·객패귀로를 강화하지 못하거나 6막 순서·시간 목표를 덮어쓰면 승격하지 않는다.
+
+## 정본 상태
+
+id: arc_guestpass_homecoming_main_story_v1_1
+status: approved_direction
+design_status: approved_direction
+review_status: authoring_review_required
+runtime_status: not_implemented
+source_refs:
+  - user_approved_guestpass_homecoming_v1_1
+  - imported_arc_16_story_graph_audit
+  - imported_arc_04_main_route_structure
+
+다음 단계의 48개 필수 사건 대조표: [canonical event mapping 초안](guestpass_homecoming_main_story_v1_1_event_mapping.md). 이 문서는 승인된 상위 방향을 기존 event ID와 대조한 authoring 검수용 초안이며, 개별 사건과 runtime은 아직 확정·구현되지 않았다.
+
+우선 사건 canonical authoring draft: [3/19 청류문 빈방 압류 방어](../events/authored/wuxia_guestpass_qingliu_empty_room_seizure_defense.yml), [4/29 객패 장부 지연 계략](../events/authored/wuxia_guestpass_ledger_delay_stratagem.yml). 두 사건 모두 authoring_draft / authoring_review_required / not_implemented 상태다.
+
+추가 canonical authoring draft: [1/08 불탄 객패와 마지막 이동 기록](../events/authored/wuxia_guestpass_burnt_token_last_route_record.yml), [4/25 황천수맥과 최초 소유자 마지막 기록](../events/authored/wuxia_guestpass_huangquan_waterway_testimony.yml). 두 사건 모두 authoring_draft / authoring_review_required / not_implemented 상태이며 천기록은 진행 게이트가 아니다.
+
+2·3막 canonical authoring draft: [2/10 혈월교의 청류문·귀로객망 물리 파괴](../events/authored/wuxia_guestpass_bloodmoon_qingliu_network_destruction.yml), [3/18 고현묵 객잔과 객패 계승](../events/authored/wuxia_guestpass_gohyeonmuk_inn_succession.yml), [3/20 외안배산귀 통과](../events/authored/wuxia_guestpass_one_eye_mountain_bearer_passage.yml). 세 사건 모두 authoring_draft / authoring_review_required / not_implemented 상태이며, 각각 혈월교의 물리 파괴 역할·객패의 책임 계승·이름과 환대의 비살상 통과를 저작 검수 대상으로 둔다.
+
+4·5막 canonical authoring draft: [4/30 사도의 첫 거래와 계산 논리](../events/authored/wuxia_guestpass_sado_first_calculation_bargain.yml), [5/33 귀로객망 본거지 귀환 잠입](../events/authored/wuxia_guestpass_network_headquarters_infiltration.yml), [5/39 현대 귀환 자유 확보](../events/authored/wuxia_guestpass_modern_return_freedom.yml). 세 사건 모두 authoring_draft / authoring_review_required / not_implemented 상태다. 5/33은 단계적 재인식과 공개 자격 시험을 건너뛰지 않으며, 5/39의 즉시 현대 귀환은 실패가 아닌 정상 terminal ending이고 나머지 분기만 5/40과 6막으로 진행한다.

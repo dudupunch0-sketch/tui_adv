@@ -7,6 +7,56 @@
   "provenance": {
     "page_id_url_unavailable_in_export": [
       {
+        "record": "wuxia_guestpass_bloodmoon_qingliu_network_destruction",
+        "source_export_id": null,
+        "source_path": ""
+      },
+      {
+        "record": "wuxia_guestpass_burnt_token_last_route_record",
+        "source_export_id": null,
+        "source_path": ""
+      },
+      {
+        "record": "wuxia_guestpass_gohyeonmuk_inn_succession",
+        "source_export_id": null,
+        "source_path": ""
+      },
+      {
+        "record": "wuxia_guestpass_huangquan_waterway_testimony",
+        "source_export_id": null,
+        "source_path": ""
+      },
+      {
+        "record": "wuxia_guestpass_ledger_delay_stratagem",
+        "source_export_id": null,
+        "source_path": ""
+      },
+      {
+        "record": "wuxia_guestpass_modern_return_freedom",
+        "source_export_id": null,
+        "source_path": ""
+      },
+      {
+        "record": "wuxia_guestpass_network_headquarters_infiltration",
+        "source_export_id": null,
+        "source_path": ""
+      },
+      {
+        "record": "wuxia_guestpass_one_eye_mountain_bearer_passage",
+        "source_export_id": null,
+        "source_path": ""
+      },
+      {
+        "record": "wuxia_guestpass_qingliu_empty_room_seizure_defense",
+        "source_export_id": null,
+        "source_path": ""
+      },
+      {
+        "record": "wuxia_guestpass_sado_first_calculation_bargain",
+        "source_export_id": null,
+        "source_path": ""
+      },
+      {
         "record": "wuxia_alliance_inspector_three_questions",
         "source_export_id": "0c98f6f18d4f4605ad66c9f899286f06",
         "source_path": "ым┤эШС ьКдэЖаыжмэМй ьЭ┤ъ╡мэХЩьзА тАФ ь▓Ьъ╕░ыбЭ/09 ьЭ┤ъ╡мэХЩьзА ьВмъ▒┤ ь╣┤ыУЬ DB 0c98f6f18d4f4605ad66c9f899286f06.csv"
@@ -2130,16 +2180,16 @@
     "afterthought_text_ids": "exact_id_or_name_only"
   },
   "counts": {
-    "events": 154,
+    "events": 164,
     "afterthoughts": 20,
     "formal_rewards": 51,
     "legacy_reward_records": 1,
     "reward_mappings": 29,
-    "records": 255,
-    "source_refs": 255,
+    "records": 265,
+    "source_refs": 265,
     "source_refs_with_page_id_url": 0,
     "source_refs_with_export_id": 253,
-    "page_provenance_records": 255,
+    "page_provenance_records": 265,
     "afterthought_text_unverifiable": 127,
     "afterthought_original_total": 134
   },

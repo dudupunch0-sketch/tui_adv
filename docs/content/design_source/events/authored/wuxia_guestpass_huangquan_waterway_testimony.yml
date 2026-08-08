@@ -1,0 +1,200 @@
+id: wuxia_guestpass_huangquan_waterway_testimony
+kind: event
+status: authoring_draft
+review_status: authoring_review_required
+runtime_status: not_implemented
+source_refs:
+- source: user-approved-local-design
+  arc_path: arcs/guestpass_homecoming_main_story_v1_1.md
+  mapping_path: arcs/guestpass_homecoming_main_story_v1_1_event_mapping.md
+  slot: 4/25 황천수맥과 최초 소유자 마지막 기록
+storypack_id: wuxia_jianghu_pack
+arc_id: arc_guestpass_homecoming_main_story_v1_1
+act: 4
+global_slot: 25
+title: 황천수맥과 최초 소유자 마지막 기록
+narrative_role: >-
+  죽은 자의 이름·빚·기억을 대가로 길의 잔향을 읽는 황천수맥에서 최초 소유자의 마지막 기록을
+  과거 선택과 경로의 증언으로 회수한다. 저승 방문의 기능을 빌리되 예언이나 정답을 주지 않고,
+  인간이 무엇을 기억하고 지불하며 대신 짊어질지 선택하게 한다.
+entry_conditions:
+  required_flags:
+  - guestpass_route_to_huangquan_opened
+  - qingliu_first_reply_received
+  optional_context_flags:
+  - guestpass_last_route_order_reconstructed
+  - guestpass_network_witness_opened
+  - black_serpent_ledger_mark_seen
+  blocked_by: []
+role_constraints:
+  huangquan_waterway: 죽은 자의 목소리를 재현하지 않고 이름·빚·기억이 남긴 경로의 잔향만 돌려준다.
+  first_owner_record: 예언이나 정답이 아니라 당시 선택·실패·이동 경로의 불완전한 증언이다.
+  no_baekun: 완전한 맹인이며 물소리·돌의 감촉·과거 통행 기억으로 길을 설명할 뿐 미래나 숨은 진실을 보지 못한다.
+  tianjilu: absent_or_ambient_only_never_required
+  forced_sacrifice: forbidden
+  single_moral_answer: forbidden
+scene_flow:
+- beat: 물이 거꾸로 흐르는 협곡
+  content: 강물이 땅속으로 스며들고 벽에는 돌아오지 못한 이들의 이름을 긁어낸 자국만 남아 있다.
+- beat: 노백운의 안내
+  content: 노백운은 지팡이로 돌의 패임과 물방울 간격을 세어 안전한 발판을 찾고, 자신도 틀릴 수 있다고 먼저 말한다.
+- beat: 대가의 물결
+  content: 수맥은 이름을 부르거나 빚을 인정하거나 기억을 내어놓거나 물리 흔적만 좇을 때 서로 다른 잔향을 드러낸다.
+- beat: 최초 소유자의 증언
+  content: 객패의 각인과 물결이 겹쳐 최초 소유자가 누구를 살리기 위해 어느 길을 버렸고 어디서 기록을 멈췄는지 보여준다.
+- beat: 불완전한 귀로
+  content: 증언은 본거지와 현대 귀환 단서가 갈라진 방향을 가리키지만 어느 선택이 옳은지는 말하지 않는다.
+- beat: 산 사람의 출구
+  content: 선택의 대가와 관계없이 핵심 경로 증거는 보존되고 무명과 객패의 계승을 묻는 다음 대치로 이어진다.
+dialogue_beats:
+- speaker: 노백운
+  line_intent: 길을 안다는 말 대신 예전에 살아서 건넌 발판과 이번에 달라진 물소리를 구분해 준다.
+- speaker: 수맥의 잔향
+  line_intent: 문장이나 예언이 아니라 이름, 빚, 귀향, 중단된 발걸음의 파편으로 반응한다.
+- speaker: 주인공
+  line_intent: 돌아갈 자유를 얻기 위해 타인의 기억을 소비할지, 자신의 기억이나 책임을 내놓을지 선택한다.
+- speaker: 노백운
+  line_intent: 보았다고 말하지 않고 주인공이 들은 것과 객패 각인이 실제로 맞는지 다시 손으로 대조하게 한다.
+effect_policy:
+  numeric_effects: deferred
+  rarity: deferred
+  reward_ids: unassigned_until_authoring_review
+choice_policy:
+  normal_rewards: mutually_exclusive
+  essential_clue_recovery: >-
+    선택하지 않은 보상은 일반 경로에서 얻지 못한다. 마지막 경로 증언이 불완전해도 4/26의 무명 대치나
+    4/31의 원장부 회수에서 추가 위험·채무·정보 노출 중 하나를 감수해 본거지 방향을 복구할 수 있다.
+  hidden_dual_reward_route: not_approved
+choices:
+- id: speak_first_owners_name
+  label: 최초 소유자의 이름을 물 위에 남긴다
+  intent: 죽은 이를 익명의 단서로 소비하지 않고 이름과 선택을 기억하는 책임을 받아들인다.
+  immediate_result: 객패에 남은 희미한 이름 획이 물결과 겹치며 마지막 이동 중 버린 길과 지킨 사람의 흔적이 드러난다.
+  resolution:
+    success: 이름과 객패 각인이 일치해 본거지로 향하는 마지막 중계 지점을 정확히 확인한다.
+    failure: 이름 한 획이 틀려 지점은 흐려지지만, 최초 소유자가 일부러 다른 사람의 이름을 감췄다는 사실을 알아낸다.
+  relation_directions:
+    people:
+      no_baekun: positive_respects_named_memory
+    factions:
+      qingliu: positive_dead_not_used_as_tools
+      guestpass_network: strong_positive_name_preserved
+  quest_items_and_clues:
+  - name: 물비늘에 남은 이름 탁본
+    type: quest_clue
+    visibility: delayed_meaning
+    concept: 최초 소유자의 이름과 마지막 중계 지점이 겹쳐 나타난 한 번뿐인 물결 자국.
+  reward_candidate:
+    name: 이름을 건너는 자
+    type: title
+    concept: 죽은 이를 길표로 소비하지 않고 이름을 기억한 채 살아 있는 쪽으로 건너온 자.
+  flags:
+    always:
+    - first_owner_name_carried_forward
+    success:
+    - guestpass_last_relay_confirmed_by_name
+    failure:
+    - first_owner_protected_another_name_seen
+- id: acknowledge_unpaid_hospitality_debt
+  label: 미처 갚지 못한 환대의 빚을 인정한다
+  intent: 최초 소유자의 빚을 무조건 대신 갚지 않고 어떤 의무가 남았는지 조건을 붙여 짊어진다.
+  immediate_result: 수맥이 빚의 대상을 사람, 객잔, 길로 나누어 보여주고 흑사방이 이를 하나의 금액으로 합쳤다는 흔적이 떠오른다.
+  resolution:
+    success: 지불 대상을 구분해 귀로객망의 환대 빚과 흑사방 채무 장부가 다른 체계임을 증명한다.
+    failure: 일부 채무가 주인공 이름에 임시로 붙지만 흑사방 원장부의 대조 문구를 확보한다.
+  relation_directions:
+    people:
+      no_baekun: positive_respects_limited_commitment
+    factions:
+      qingliu: mixed_responsibility_with_risk
+      guestpass_network: positive_debt_named_not_priced
+  quest_items_and_clues:
+  - name: 황천수맥의 미납 매듭
+    type: quest_item
+    visibility: immediate_partial
+    concept: 누구에게 무엇을 갚아야 하는지 구분한 매듭으로 흑사방의 일괄 가격화와 충돌한다.
+  reward_candidate:
+    name: 빚의 주인을 묻는 법
+    type: insight
+    concept: 빚을 외면하지 않으면서도 타인의 책임을 통째로 떠안지 않는 경계의 지혜.
+  flags:
+    always:
+    - hospitality_debt_categories_seen
+    success:
+    - black_serpent_debt_model_contradicted
+    failure:
+    - protagonist_temporary_huangquan_debt
+- id: offer_a_memory_of_commute
+  label: 나의 출근길 기억을 잠시 내어놓는다
+  intent: 타인의 이름 대신 자신의 익숙한 귀로 기억을 대가로 삼되 영구 상실이 아닌 회복 가능한 흐림을 선택한다.
+  immediate_result: 지하철 안내음과 횡단보도 불빛의 기억이 수면에 번지며 현대 귀환 단서가 갈라진 방향과 공명한다.
+  resolution:
+    success: 현대의 귀로 감각과 최초 소유자의 경로가 겹치는 분기점을 확인한다.
+    failure: 회사와 집으로 향하던 세부 기억이 한동안 흐려지지만 어떤 현대 물품이 귀환 단서와 반응하는지 알아낸다.
+  relation_directions:
+    people:
+      no_baekun: mixed_warns_against_overpayment
+    factions:
+      qingliu: neutral_personal_cost_hidden_or_shared_later
+      guestpass_network: positive_return_route_resonance
+  quest_items_and_clues:
+  - name: 젖은 사원증의 잔상
+    type: clue
+    visibility: delayed_meaning
+    concept: 현대 귀환 단서가 장소 자체보다 주인공이 반복해 온 귀로 기억에 반응한다는 흔적.
+  reward_candidate:
+    name: 돌아갈 길의 잔상
+    type: insight
+    concept: 귀향은 장소를 기억하는 일인 동시에 어떤 삶으로 돌아갈지를 선택하는 일이라는 깨달음.
+  flags:
+    always:
+    - modern_return_clue_resonance_seen
+    success:
+    - modern_return_branch_direction_confirmed
+    failure:
+    - commute_memory_temporarily_blurred
+- id: reconstruct_route_without_toll
+  label: 대가를 거부하고 물리 흔적만으로 길을 복원한다
+  intent: 수맥의 거래 문법을 따르지 않고 노백운의 경험과 객패의 각인, 돌의 마모를 대조한다.
+  immediate_result: 환상적 잔향은 닫히지만 노백운이 기억한 발판과 현재 물소리의 차이로 우회 경로를 찾는다.
+  resolution:
+    success: 세 물리 증거가 일치해 최초 소유자의 마지막 경로를 인간의 조사만으로 복원한다.
+    failure: 지름길은 놓치지만 잘못된 발판에서 흑사방 추적자가 남긴 쇠못을 찾아 원장부 회수선과 연결한다.
+  relation_directions:
+    people:
+      no_baekun: strong_positive_method_shared_not_oracular
+    factions:
+      qingliu: positive_human_judgment
+      guestpass_network: neutral_route_found_with_less_memory_context
+  quest_items_and_clues:
+  - name: 물먹은 추적 쇠못
+    type: quest_item
+    visibility: immediate
+    concept: 황천수맥조차 흑사방의 인간적인 추적과 장부 회수망 밖에 있지 않다는 물증.
+  reward_candidate:
+    name: 물소리로 세는 길
+    type: skill
+    concept: 보지 못하는 것을 예언으로 채우지 않고 소리·촉감·반복 기억으로 경로를 검증하는 방법.
+  flags:
+    always:
+    - huangquan_route_physically_investigated
+    success:
+    - first_owner_route_reconstructed_without_toll
+    failure:
+    - black_serpent_waterway_pursuit_trace_seen
+convergence:
+  common_flags:
+  - guestpass_huangquan_testimony_resolved
+  - guestpass_first_owner_route_testimony_recovered
+  - guestpass_hq_and_return_branch_direction_retained
+  - guestpass_route_to_mumyeong_confrontation_opened
+  next_required_slot: 4/26 무명과 객패·이름 대치
+  later_links:
+  - slot: 4/30
+    use: 이름·빚·귀환 기억·물리 조사 중 선택한 대가가 사도의 계산 논리와 충돌하는 대화 증거가 된다.
+  - slot: 4/31
+    use: 마지막 경로 증언과 흑사방 추적 흔적이 원장부 회수 경로의 정확도와 위험을 바꾼다.
+  - slot: 5/33
+    use: 본거지 방향과 현대 귀환 단서의 분기가 잠입 목표를 구성하되 어느 귀향이 정답인지는 고정하지 않는다.
+  progression_guarantee: 모든 분기는 불완전하더라도 마지막 경로 증언을 보존하고 4/26을 열며 실패는 대가·정보량·추적 위험만 바꾼다.
+stages: []

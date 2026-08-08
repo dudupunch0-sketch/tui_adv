@@ -1,0 +1,200 @@
+id: wuxia_guestpass_bloodmoon_qingliu_network_destruction
+kind: event
+status: authoring_draft
+review_status: authoring_review_required
+runtime_status: not_implemented
+source_refs:
+- source: user-approved-local-design
+  arc_path: arcs/guestpass_homecoming_main_story_v1_1.md
+  mapping_path: arcs/guestpass_homecoming_main_story_v1_1_event_mapping.md
+  slot: 2/10 혈월교의 청류문·귀로객망 물리 파괴
+storypack_id: wuxia_jianghu_pack
+arc_id: arc_guestpass_homecoming_main_story_v1_1
+act: 2
+global_slot: 10
+title: 혈월교의 청류문·귀로객망 물리 파괴
+narrative_role: >-
+  2/09의 전조를 청류문과 인근 귀로객망 중계소를 동시에 덮치는 실제 습격으로 폭발시킨다.
+  매일 쓰던 연무장, 약방, 손님채와 사람들의 자리가 무너지는 과정을 통해 혈월교를 물리 파괴와
+  공포의 세력으로 고정하고, 구조·방어·추적·객패 보호 중 무엇을 우선할지 선택하게 한다.
+entry_conditions:
+  required_flags:
+  - bloodmoon_raid_omen_enabled
+  - guestpass_burnt_token_acquired
+  optional_context_flags:
+  - guestpass_network_mark_preserved_cleanly
+  - qingliu_guestpass_archive_link_opened
+  - seoharin_mentor_trust_opened
+  blocked_by: []
+role_constraints:
+  bloodmoon_cult: 물리 파괴·방화·살상 위협과 공포만 담당하며 채무 거래나 계산 통제의 언어를 사용하지 않는다.
+  seo_harin: 대피로를 열고 부상자를 지키며 주인공과 다른 방어선을 능동적으로 맡는다.
+  qingliu_members: 종을 울리고 물동이를 잇고 어린 수련생과 환자를 옮기는 공동체 방어의 주체다.
+  protagonist: 전투·구조·추적·객패 보호 중 손실을 줄일 축을 선택하되 모든 곳을 혼자 구하지 못한다.
+  black_serpent_debt_logic: forbidden
+  sado_calculation_control: forbidden
+scene_flow:
+- beat: 끝나지 못한 아침
+  content: 죽을 데우던 솥, 서하린과 닦던 목검, 약방 앞 건조대가 평소 자리에 있는 가운데 2/09에서 발견한 붉은 재가 산문 안으로 날아든다.
+- beat: 전조의 폭발
+  content: 경계종이 세 번 울리기 전에 혈월교가 산문과 귀로객망 중계 초가를 함께 불태우고, 표식이 새겨진 기둥부터 부순다.
+- beat: 익숙한 자리의 손실
+  content: 첫날 묵었던 손님채 지붕이 내려앉고 약재 창고 문이 터지며, 이름을 익힌 수련생과 환자들이 서로를 부르며 대피한다.
+- beat: 공동 방어
+  content: 서하린은 환자 쪽 길을 열고 청류문 구성원들은 물줄기와 들것을 잇는다. 주인공은 정면 방어, 구조, 퇴로 추적, 객패 보호 중 하나를 맡는다.
+- beat: 불길 뒤의 이름
+  content: 혈월교는 오래 머물지 않고 파괴한 표식의 방향으로 퇴각한다. 승패와 무관하게 생존자 호명과 시설 확인이 즉시 시작된다.
+dialogue_beats:
+- speaker: 서하린
+  line_intent: 서로 맡을 길을 확인하고 반드시 살아서 피해 확인 자리에서 만나자고 한다.
+- speaker: 청류문 수련생
+  line_intent: 어제 함께 밥을 나른 사람의 이름을 부르며 평범했던 일상이 무엇을 잃는지 체감시킨다.
+- speaker: 혈월교 습격자
+  line_intent: 거래나 회유 없이 표식과 사람의 연결을 불로 끊겠다는 파괴 의지만 드러낸다.
+- speaker: 주인공
+  line_intent: 회사의 비상대피 훈련과 실제 재난의 차이를 깨닫고 지금 자신이 책임질 한 축을 고른다.
+effect_policy:
+  numeric_effects: deferred
+  rarity: deferred
+  reward_ids: unassigned_until_authoring_review
+choice_policy:
+  normal_rewards: mutually_exclusive
+  essential_clue_recovery: >-
+    선택하지 않은 보상은 일반 경로에서 얻지 못한다. 퇴각 방향·파괴 순서·객패 보존 정보가 부족해도
+    2/11의 위험한 잔해 수색 또는 2/12의 추가 해독에서 시간·부상 위험·적의 재추적 노출 중 하나를
+    지불해 메인 필수 단서를 복구할 수 있다.
+  hidden_dual_reward_route: not_approved
+choices:
+- id: hold_gate_with_seoharin
+  label: 서하린과 산문에 파진을 세운다
+  intent: 전투로 습격자의 돌입을 늦춰 대피와 객패 반출 시간을 번다.
+  immediate_result: 서하린과 등을 나눠 산문을 지키며 청류문 구성원들이 환자와 기록을 옮길 틈을 만든다.
+  resolution:
+    success: 선두의 화공대를 밀어내고 표식 파괴에 쓰인 붉은 쐐기 하나를 회수한다.
+    failure: 산문을 내주고 부상을 입지만 서하린이 후퇴선을 열어 주며 화공대의 진입 순서를 기억한다.
+  relation_directions:
+    people:
+      seo_harin: strong_positive_shared_combat_line
+    factions:
+      qingliu: strong_positive_defense_bought_time
+      guestpass_network: positive_relics_evacuated
+  quest_items_and_clues:
+  - name: 혈월의 붉은 파문쐐기
+    type: quest_clue
+    visibility: immediate
+    concept: 귀로객망 표식이 있는 기둥부터 물리적으로 갈라뜨린 파괴 도구.
+  reward_candidate:
+    name: 청류 파진보
+    type: skill
+    concept: 쓰러뜨리기보다 자리를 지켜 뒤의 사람에게 시간을 만드는 방어 보법.
+  flags:
+    always:
+    - bloodmoon_gate_assault_witnessed
+    success:
+    - bloodmoon_destruction_wedge_recovered
+    failure:
+    - protagonist_raid_wound_requires_care
+- id: open_medicine_hall_escape
+  label: 약방의 사람부터 불길 밖으로 옮긴다
+  intent: 시설과 물건보다 환자·수련생·약방 사람의 생존을 우선한다.
+  immediate_result: 평소 약재를 나르던 통로의 막힌 문을 부수고 청류문 구성원들과 들것 행렬을 만든다.
+  resolution:
+    success: 약방 사람들과 환자 명부를 함께 구해 즉시 호명할 수 있다.
+    failure: 약재와 명부 일부를 잃지만 구조된 수련생이 귀로객망 중계소 쪽 폭발 순서를 증언한다.
+  relation_directions:
+    people:
+      seo_harin: strong_positive_people_first_trust
+    factions:
+      qingliu: strong_positive_members_rescued
+      guestpass_network: neutral_route_testimony_saved
+  quest_items_and_clues:
+  - name: 그을린 들것의 이름끈
+    type: quest_item
+    visibility: delayed_meaning
+    concept: 구조된 사람과 아직 찾지 못한 사람을 중복 없이 호명하기 위해 묶은 천끈.
+  reward_candidate:
+    name: 불길 속 빈자리
+    type: title
+    concept: 구한 사람뿐 아니라 아직 돌아오지 않은 사람의 자리까지 기억한 자.
+  flags:
+    always:
+    - qingliu_raid_rescue_line_opened
+    success:
+    - qingliu_patient_roll_preserved
+    failure:
+    - guestpass_outpost_blast_order_testimony
+- id: trace_the_raiders_retreat
+  label: 연기 속 퇴각선을 역산한다
+  intent: 현대의 비상동선 감각과 산길 흔적을 이용해 적이 어디를 부수고 어디로 빠지는지 추적한다.
+  immediate_result: 무너진 담장과 불붙지 않은 좁은 길을 잇고 혈월교의 퇴로를 표시한다.
+  resolution:
+    success: 청류문과 중계소를 친 뒤 합류하는 퇴각 지점을 찾아 다음 추적의 위험을 낮춘다.
+    failure: 추적조에게 발각되어 돌아오지만 공포를 위한 흔적과 실제 퇴로가 다르다는 사실을 알아낸다.
+  relation_directions:
+    people:
+      seo_harin: mixed_concern_and_respect_for_independent_risk
+    factions:
+      qingliu: positive_countertrack_opened
+      guestpass_network: positive_next_destroyed_relay_narrowed
+  quest_items_and_clues:
+  - name: 재 위에 겹친 퇴각선
+    type: clue
+    visibility: immediate_partial
+    concept: 위협용 발자국과 실제 이동 흔적을 분리해 그린 산길 약도.
+  reward_candidate:
+    name: 야근자의 비상동선
+    type: insight
+    concept: 익숙한 길이 막혔을 때 사람의 흐름과 빈 통로로 탈출 순서를 다시 짜는 현대인의 습관.
+  flags:
+    always:
+    - bloodmoon_retreat_trace_opened
+    success:
+    - bloodmoon_retreat_convergence_found
+    failure:
+    - bloodmoon_fear_trail_decoy_identified
+- id: protect_token_and_guest_records
+  label: 객패와 손님 기록을 불에서 건져낸다
+  intent: 적이 표식과 이동 기록을 우선 파괴한다는 사실을 보고 불탄 객패와 살아 있는 손님 명부를 지킨다.
+  immediate_result: 무너지는 손님채에서 객패 싸개와 구조 요청이 적힌 기록함을 청류문 사람들과 이어 나른다.
+  resolution:
+    success: 객패의 두 흔적과 중계소 연락 기록을 함께 보존해 2/12 해독의 기준점을 얻는다.
+    failure: 기록함 일부가 타지만 젖은 종이의 눌린 자국으로 사라진 중계소 이름을 복원할 여지를 남긴다.
+  relation_directions:
+    people:
+      seo_harin: positive_understands_why_memory_matters
+    factions:
+      qingliu: positive_guest_records_preserved
+      guestpass_network: strong_positive_names_protected
+  quest_items_and_clues:
+  - name: 물에 젖은 중계소 연락첩
+    type: quest_clue
+    visibility: delayed_meaning
+    concept: 혈월교가 지우려 한 귀로객망 지점과 마지막 연락 시각이 눌린 흔적으로 남은 기록.
+  reward_candidate:
+    name: 불타지 않은 약속
+    type: insight
+    concept: 건물은 잃어도 다음 사람을 살려 보내겠다는 환대의 약속은 기록과 행동으로 이어진다는 깨달음.
+  flags:
+    always:
+    - guestpass_relics_evacuated_from_raid
+    success:
+    - guestpass_decode_reference_preserved
+    failure:
+    - guestpass_contact_imprint_requires_recovery
+convergence:
+  common_flags:
+  - bloodmoon_qingliu_network_destruction_resolved
+  - qingliu_physical_losses_confirmed_pending_roll_call
+  - guestpass_outpost_physically_destroyed
+  - bloodmoon_role_physical_terror_locked
+  - guestpass_route_to_damage_roll_call_opened
+  next_required_slot: 2/11 부상자·실종자·파괴 시설 확인
+  later_links:
+  - slot: 2/11
+    use: 선택한 방어축에 따라 먼저 확인 가능한 사람·시설과 추가 수색 위험이 달라진다.
+  - slot: 2/12
+    use: 파괴 도구·폭발 순서·퇴각선·연락첩 중 확보한 물증이 객패 해독의 정보량과 복구 비용을 바꾼다.
+  - slot: 6/44
+    use: 실제로 파괴된 장소와 보존된 이름을 물리 파괴 결산의 증거로 되돌린다.
+  progression_guarantee: 모든 분기는 습격을 종결하고 피해 확인과 객패 해독을 열며 실패는 손실·위험·정보량·관계 변주만 바꾼다.
+stages: []

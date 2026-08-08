@@ -1,0 +1,220 @@
+id: wuxia_guestpass_modern_return_freedom
+kind: event
+status: authoring_draft
+review_status: authoring_review_required
+runtime_status: not_implemented
+source_refs:
+- source: user-approved-local-design
+  arc_path: arcs/guestpass_homecoming_main_story_v1_1.md
+  mapping_path: arcs/guestpass_homecoming_main_story_v1_1_event_mapping.md
+  slot: 5/39 현대 귀환 자유 확보
+storypack_id: wuxia_jianghu_pack
+arc_id: arc_guestpass_homecoming_main_story_v1_1
+act: 5
+global_slot: 39
+title: 현대 귀환 자유 확보
+narrative_role: >-
+  객패·흑사방 원장부·귀환 단서를 결합해 주인공이 실제로 현대에 돌아갈 수 있는 권리를 확보한다.
+  지금 귀환해 정상 엔딩으로 끝내는 선택과 귀환권을 보존한 채 서하린에게 진실을 공유하고 6막으로
+  나아가는 선택을 분리한다. 계속 남는 것은 귀환 불가능의 결과가 아니라 자유를 가진 뒤의 유예다.
+entry_conditions:
+  required_flags:
+  - guestpass_hq_infiltration_resolved
+  - guestpass_public_qualification_passed
+  - sado_three_element_control_publicly_exposed
+  - guestpass_return_voice_test_resolved
+  optional_context_flags:
+  - sado_three_element_control_exposed
+  - sado_name_collateral_refused
+  - guestpass_hq_elements_split_by_consent
+  - other_names_preserved_in_delay
+  blocked_by: []
+role_constraints:
+  seo_harin: 주인공을 붙잡거나 귀환을 폄하하지 않고 어떤 선택을 하든 그 진실을 숨기지 말아 달라고 요구한다.
+  protagonist: 귀환권을 지금 행사하거나 보존할 수 있으며, 보존은 최종 잔류 결정과 동일하지 않다.
+  modern_return_ending: valid_normal_ending_not_failure
+  true_ending: return_freedom_then_voluntary_stay_names_preserved_revenge_cycle_stopped
+  romance_or_moral_coercion: forbidden
+  tianjilu: absent_or_ambient_never_required
+scene_flow:
+- beat: 세 요소의 한자리
+  content: 공개 자격 시험과 귀향소 시험을 거친 객패·원장부·귀환 단서가 처음으로 사도의 단독 통제 밖에서 한자리에 놓인다.
+- beat: 돌아갈 수 있다는 증명
+  content: 문 너머로 출근길 지하철 소리와 익숙한 아침 공기가 짧게 이어지고, 이는 환상이나 예언이 아니라 실제 통과 가능한 경로로 확인된다.
+- beat: 선택의 진실
+  content: 서하린은 남아 달라고 요구하지 않고 지금 돌아갈지, 권리를 어떻게 보존할지 자신에게 숨기지 말아 달라고 한다.
+- beat: 귀환권의 구조
+  content: 세 요소를 즉시 결합, 공동 보관, 공개 기록, 분리 봉인 중 하나로 다루며 귀환권의 행사자와 재통제 위험을 정한다.
+- beat: 종결 또는 다음 밤
+  content: 즉시 귀환은 현대 귀환 정상 엔딩으로 완결되고, 나머지 선택은 귀환 가능성을 유지한 채 5/40 진실 공유로 이어진다.
+dialogue_beats:
+- speaker: 서하린
+  line_intent: 돌아가는 선택을 배신이라 부르지 않으며 거짓으로 남는 약속만은 하지 말아 달라고 한다.
+- speaker: 주인공
+  line_intent: 돌아갈 수 없어서 머무는 것과 돌아갈 수 있어도 지금은 남는 것이 다르다는 점을 분명히 한다.
+- speaker: 귀로객망 기록자들
+  line_intent: 세 요소는 귀환을 명령하지 않고 선택할 자격과 통로만 증명한다고 확인한다.
+- speaker: 서하린
+  line_intent: 계속 간다면 5/40에서 귀환권과 사도의 위협을 모두 숨김없이 이야기하자고 제안한다.
+effect_policy:
+  numeric_effects: deferred
+  rarity: deferred
+  reward_ids: unassigned_until_authoring_review
+choice_policy:
+  normal_rewards: mutually_exclusive
+  essential_clue_recovery: >-
+    선택하지 않은 보상은 일반 경로에서 얻지 못한다. 귀환권 보존 방식의 증빙이 불완전해도 5/40의
+    공동 검토 또는 6/41 이전의 재봉인에서 시간·세 요소 공개 범위·사도에게 위치가 노출될 위험 중
+    하나를 지불해 복구할 수 있다. 즉시 귀환 분기는 복구가 필요한 실패가 아니라 정상 종결이다.
+  hidden_dual_reward_route: not_approved
+choices:
+- id: return_to_modern_world_now
+  label: 세 요소를 결합해 지금 현대에 돌아간다
+  intent: 확보한 자유를 즉시 행사하고 청류문과 서하린에게 거짓 약속을 남기지 않은 채 현대 귀환 정상 엔딩을 선택한다.
+  immediate_result: 주인공은 작별의 시간을 짧게라도 직접 요청하고 객패·원장부·귀환 단서를 정해진 순서로 맞춰 열린 통로를 건넌다.
+  resolution:
+    success: 현대의 출근길로 안정적으로 돌아가며 무협 세계에서 지킨 이름과 기억을 자신의 것으로 간직한다.
+    failure: 도착 시각과 장소가 예상과 조금 다르지만 현대 귀환 자체는 확실히 이루어지고 선택의 가치가 훼손되지 않는다.
+  relation_directions:
+    people:
+      seo_harin: positive_honest_farewell_respected
+    factions:
+      qingliu: positive_departure_as_free_guest
+      guestpass_network: positive_return_route_used_without_ownership
+  quest_items_and_clues:
+  - name: 돌아온 사원증의 아침빛
+    type: quest_item
+    visibility: ending_reveal
+    concept: 출근복장 그대로 돌아온 주인공이 두 세계의 경험이 실제였음을 기억하게 하는 현대의 물건.
+  reward_candidate:
+    name: 귀환을 택한 사람
+    type: title
+    concept: 남지 않았기 때문에 실패한 것이 아니라 되찾은 자유를 자신의 삶으로 사용한 자.
+  flags:
+    always:
+    - modern_return_terminal_selected
+    - modern_return_normal_ending_reached
+    success:
+    - modern_return_arrival_stable
+    failure:
+    - modern_return_arrival_timing_unverified
+  branch:
+    terminal: true
+    ending: modern_return_normal_ending
+    next_required_slot: none
+- id: place_three_elements_in_joint_custody
+  label: 세 요소를 공동 보관하고 귀환권을 유지한다
+  intent: 주인공 혼자도 사도 혼자도 세 요소를 독점하지 못하도록 본거지·서하린·주인공의 교차 확인 아래 보관한다.
+  immediate_result: 객패와 원장부는 서로 다른 보관함에 두고 귀환 단서의 활성 문구는 주인공이 기억하며, 서하린과 회수 조건을 함께 확인한다.
+  resolution:
+    success: 어느 한쪽도 귀환권을 빼앗거나 강제 행사할 수 없는 공동 개방 절차가 성립한다.
+    failure: 보관 위치 하나가 노출되지만 세 요소가 갈라져 있어 권리는 유지되고 5/40에서 재배치가 필요해진다.
+  relation_directions:
+    people:
+      seo_harin: strong_positive_choice_and_risk_shared
+    factions:
+      qingliu: positive_return_choice_respected
+      guestpass_network: strong_positive_no_single_owner
+  quest_items_and_clues:
+  - name: 셋이 맞춰야 열리는 귀로함
+    type: quest_item
+    visibility: immediate
+    concept: 세 요소의 소유권을 합치지 않고 공동 확인이 있을 때만 귀환 통로를 다시 열 수 있는 보관함.
+  reward_candidate:
+    name: 문을 닫지 않은 열쇠
+    type: insight
+    concept: 지금 지나가지 않아도 돌아갈 자유가 사라지지 않도록 선택권 자체를 보존하는 판단.
+  flags:
+    always:
+    - modern_return_right_jointly_preserved
+    success:
+    - modern_return_joint_activation_established
+    failure:
+    - modern_return_custody_relocation_required
+  branch:
+    terminal: false
+    next_required_slot: 5/40 서하린과 진실 공유
+- id: publish_the_return_method
+  label: 귀환법을 공개 기록으로 남기고 권리를 보존한다
+  intent: 사도나 주인공 어느 한 사람의 비밀 자산이 되지 않도록 세 요소의 결합 원리와 안전 조건을 귀로객망 공동 기록에 공개한다.
+  immediate_result: 개인의 귀환 시각과 활성 문구는 감추되 누가 무엇을 독점하면 문이 닫히는지 공개 자격 기록에 덧붙인다.
+  resolution:
+    success: 여러 증인이 귀환권의 존재를 확인해 사도가 다시 없던 권리처럼 숨길 수 없게 된다.
+    failure: 기록 일부가 외부에 알려져 추적 위험이 커지지만 핵심 활성 문구는 분리되어 귀환권은 유지된다.
+  relation_directions:
+    people:
+      seo_harin: positive_truth_shared_without_demand
+    factions:
+      qingliu: positive_return_freedom_publicly_respected
+      guestpass_network: strong_positive_route_not_monopolized
+  quest_items_and_clues:
+  - name: 귀로의 공개본
+    type: quest_clue
+    visibility: immediate
+    concept: 귀환을 강요하지 않으면서 누구도 돌아갈 자유의 존재를 지우지 못하게 남긴 공동 기록.
+  reward_candidate:
+    name: 돌아갈 길을 숨기지 않은 자
+    type: title
+    concept: 자신의 선택권을 지키면서도 타인의 귀환 가능성을 독점하지 않은 자.
+  flags:
+    always:
+    - modern_return_method_publicly_attested
+    success:
+    - sado_cannot_erase_return_right
+    failure:
+    - modern_return_method_exposure_risk_opened
+  branch:
+    terminal: false
+    next_required_slot: 5/40 서하린과 진실 공유
+- id: separate_keys_with_mutual_seals
+  label: 세 요소를 다시 나누되 서로의 봉인으로 묶는다
+  intent: 사도의 분리 통제를 반복하지 않도록 각 요소의 보관자는 소유권이 아니라 상호 검증과 회수 의무만 갖게 한다.
+  immediate_result: 객패·원장부·귀환 단서에 서로 다른 봉인을 걸고 주인공은 최종 활성 선택을 자신에게 남긴다.
+  resolution:
+    success: 세 보관자가 서로를 감시하는 대신 누구도 단독으로 귀환을 열거나 닫지 못하는 균형이 성립한다.
+    failure: 봉인 하나가 약해 재작업이 필요하지만 주인공의 활성 선택과 귀환 가능성은 훼손되지 않는다.
+  relation_directions:
+    people:
+      seo_harin: positive_autonomy_explicitly_protected
+    factions:
+      qingliu: positive_custody_without_coercion
+      guestpass_network: positive_three_element_duty_distributed
+  quest_items_and_clues:
+  - name: 세 갈래 상호봉인
+    type: quest_item
+    visibility: delayed_meaning
+    concept: 세 요소를 갈라 놓되 어느 보관자도 타인의 선택권을 가격화하거나 강제하지 못하게 하는 봉인 묶음.
+  reward_candidate:
+    name: 세 갈래 봉인법
+    type: skill
+    concept: 권한을 한곳에 몰지 않고 상호 검증하되 최종 선택은 당사자에게 남기는 통제 분산법.
+  flags:
+    always:
+    - modern_return_keys_mutually_sealed
+    success:
+    - modern_return_activation_remains_protagonist_choice
+    failure:
+    - modern_return_one_seal_requires_rework
+  branch:
+    terminal: false
+    next_required_slot: 5/40 서하린과 진실 공유
+convergence:
+  common_flags:
+  - modern_return_freedom_secured
+  - modern_return_choice_is_real
+  - modern_return_is_valid_normal_ending
+  - modern_return_choice_not_moralized
+  - tianjilu_not_required_for_return
+  branch_routes:
+    terminal: 지금 귀환 선택은 현대 귀환 정상 엔딩으로 종결하며 실패·벌·관계 열등 판정을 붙이지 않는다.
+    continuation: 나머지 세 선택은 귀환권을 보존한 채 5/40에서 진실을 공유하고 6막으로 진행하며 최종 잔류를 아직 확정하지 않는다.
+  next_required_slot: 5/40 서하린과 진실 공유 (non-terminal branches only)
+  later_links:
+  - slot: 5/40
+    use: 귀환권 보존 방식과 노출 위험을 서하린에게 숨기지 않고 공유하며 붙잡기나 잔류 강요로 전환하지 않는다.
+  - slot: 6/41
+    use: 사도는 확보된 귀환 자유를 다시 가격화하려 하지만 귀환 가능성 자체를 취소할 수 없다.
+  - slot: 6/48
+    use: 계속 진행한 경우에만 귀환·잔류·실리·트루 엔딩을 최종 결산하며 트루 엔딩은 자유 확보 뒤 자발적 잔류와 이름 보존·보복 중단을 요구한다.
+  progression_guarantee: 즉시 귀환은 정상 terminal ending이고, 나머지 모든 분기는 귀환권을 보존한 채 5/40과 6막을 열며 실패는 보관 비용·노출·재작업만 바꾼다.
+stages: []

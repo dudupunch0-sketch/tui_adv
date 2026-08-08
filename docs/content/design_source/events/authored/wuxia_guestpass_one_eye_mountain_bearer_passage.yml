@@ -1,0 +1,203 @@
+id: wuxia_guestpass_one_eye_mountain_bearer_passage
+kind: event
+status: authoring_draft
+review_status: authoring_review_required
+runtime_status: not_implemented
+source_refs:
+- source: user-approved-local-design
+  arc_path: arcs/guestpass_homecoming_main_story_v1_1.md
+  mapping_path: arcs/guestpass_homecoming_main_story_v1_1_event_mapping.md
+  slot: 3/20 외안배산귀 통과
+storypack_id: wuxia_jianghu_pack
+arc_id: arc_guestpass_homecoming_main_story_v1_1
+act: 3
+global_slot: 20
+title: 외안배산귀 통과
+narrative_role: >-
+  파괴된 귀로객망 산길에서 산을 등에 진 외눈 거구 외안배산귀와 마주쳐 이름·시선·환대의 규칙을
+  시험한다. 협상·관찰·이름 전략·비살상 전투가 모두 가능한 통과 사건으로 만들고, 괴이를 죽이는 대신
+  귀로객망이 보존하던 이름과 다음 이동 흔적을 어떤 방식으로 이어받을지 선택하게 한다.
+entry_conditions:
+  required_flags:
+  - guestpass_route_to_baesan_opened
+  - guestpass_stewardship_accepted
+  optional_context_flags:
+  - guestpass_broken_relay_seal_recovered
+  - guestpass_next_mountain_soil_identified
+  - qingliu_absent_name_preserved
+  blocked_by: []
+role_constraints:
+  one_eye_mountain_bearer: 산과 무너진 길의 무게를 등에 진 고유한 존재로 묘사하며 외형·신체 차이를 조롱하거나 열등함의 표지로 쓰지 않는다.
+  seo_harin: 괴이를 대신 해설하지 않고 주인공과 시선·이름·대가의 위험을 함께 판단하는 동행자다.
+  protagonist: 상대를 보스 몬스터로 단정하지 않고 환대 규칙의 파괴 원인과 통과 방법을 선택한다.
+  killing_as_only_solution: forbidden
+  tianjilu: absent_or_ambient_never_required
+scene_flow:
+- beat: 등에 진 산
+  content: 무너진 중계소 너머에서 바위 능선처럼 굽은 등과 하나의 큰 눈을 지닌 거구가 길목을 막고 돌무더기 아래에서 사람 이름이 새겨진 패찰을 꺼낸다.
+- beat: 끊긴 환대
+  content: 귀로객망은 지나가는 사람의 이름과 목적지를 적어 배산귀에게 보여 주고 음식을 나눴지만 혈월교가 표식과 명부를 태운 뒤 규칙이 끊겼다.
+- beat: 잘못 향한 시선
+  content: 배산귀는 이름 없는 침입자와 이름을 빼앗긴 피난민을 구분하지 못한 채 모든 움직임을 위협으로 바라본다.
+- beat: 통과의 선택
+  content: 객패로 협상하기, 패찰과 시선의 순서를 관찰하기, 임시 이름으로 책임을 약속하기, 길을 막는 돌팔을 비살상 전투로 꺾기 중 하나를 택한다.
+- beat: 돌 아래의 다음 이름
+  content: 결과와 무관하게 파괴된 중계소에서 다음 이동지로 향한 이름 하나와 물리 흔적이 회수되고 3/21 추적이 열린다.
+dialogue_beats:
+- speaker: 외안배산귀
+  line_intent: 이름을 소유하려 하지 않고 누가 이 길에서 누구를 손님으로 책임지는지 묻는다.
+- speaker: 서하린
+  line_intent: 보이는 모습으로 의도를 단정하지 말되 공격받을 사람의 안전도 포기하지 말자고 균형을 잡는다.
+- speaker: 주인공
+  line_intent: 사원증의 이름과 실제 자신이 같았는지를 떠올리며 이름을 숨기거나 밝히는 데 따르는 책임을 선택한다.
+- speaker: 외안배산귀
+  line_intent: 귀로객망이 사라져도 지나간 사람의 이름을 돌 아래 눌러 보존해 왔음을 행동으로 드러낸다.
+effect_policy:
+  numeric_effects: deferred
+  rarity: deferred
+  reward_ids: unassigned_until_authoring_review
+choice_policy:
+  normal_rewards: mutually_exclusive
+  essential_clue_recovery: >-
+    선택하지 않은 보상은 일반 경로에서 얻지 못한다. 다음 이동지의 이름 패찰이나 물리 흔적이 불완전해도
+    3/21에서 무너진 산길 재탐색, 식량 공양, 추적자 노출 중 하나를 비용으로 지불해 필수 이동 단서를
+    복구할 수 있다. 배산귀 살해는 복구 조건이나 필수 진행 조건이 아니다.
+  hidden_dual_reward_route: not_approved
+choices:
+- id: negotiate_with_token_and_provisions
+  label: 객패를 보이고 한 끼를 먼저 나눈다
+  intent: 옛 환대 규칙을 완벽히 흉내 내지 않고 현재 가진 이름·목적·식량을 정직하게 제시한다.
+  immediate_result: 주인공과 서하린이 길 한가운데 밥을 덜어 놓고 객패가 소유물이 아니라 맡은 책임임을 설명한다.
+  resolution:
+    success: 배산귀가 경계를 풀고 돌 아래 보존한 다음 손님의 이름 패찰을 직접 건넨다.
+    failure: 말의 순서를 어겨 식량을 더 내주지만 배산귀가 객패의 수탁 매듭을 알아보고 공격을 멈춘다.
+  relation_directions:
+    people:
+      seo_harin: strong_positive_shared_hospitality_choice
+      one_eye_mountain_bearer: positive_guest_rule_restored
+    factions:
+      guestpass_network: strong_positive_hospitality_continued
+      qingliu: positive_values_applied_abroad
+  quest_items_and_clues:
+  - name: 돌 아래 눌린 손님 패찰
+    type: quest_clue
+    visibility: immediate
+    concept: 파괴 직전 다음 중계소로 떠난 사람의 이름과 방향을 배산귀가 비바람에서 지켜 낸 나무패.
+  reward_candidate:
+    name: 산문 밖의 한 끼
+    type: insight
+    concept: 규칙이 끊긴 자리에서도 먼저 내어 준 한 끼가 손님과 적을 다시 구분하게 한다는 깨달음.
+  flags:
+    always:
+    - baesan_guest_rite_attempted
+    success:
+    - baesan_guest_name_tablet_received
+    failure:
+    - baesan_extra_provisions_paid
+- id: read_gaze_and_name_stones
+  label: 시선이 머무는 돌의 순서를 읽는다
+  intent: 외형을 약점으로 취급하지 않고 배산귀가 어떤 이름돌을 먼저 확인하고 무엇을 지키는지 관찰한다.
+  immediate_result: 배산귀의 눈길이 무기보다 불탄 이름돌과 무너진 중계 표식에 오래 머문다는 사실을 알아낸다.
+  resolution:
+    success: 공격 동작 없이 잃어버린 패찰을 제자리에 놓아 통과 허락과 다음 발자국 방향을 얻는다.
+    failure: 돌 하나를 잘못 옮겨 길이 막히지만 서하린과 원상 복구하며 혈월교가 훼손한 표식 순서를 읽는다.
+  relation_directions:
+    people:
+      seo_harin: positive_patient_joint_observation
+      one_eye_mountain_bearer: positive_guardianship_understood
+    factions:
+      guestpass_network: positive_name_memorial_preserved
+      qingliu: neutral_careful_passage
+  quest_items_and_clues:
+  - name: 시선이 머문 이름돌 탁본
+    type: clue
+    visibility: delayed_meaning
+    concept: 배산귀가 지키던 이름돌의 배열과 혈월교가 부순 순서를 함께 남긴 탁본.
+  reward_candidate:
+    name: 한눈 아래의 세 걸음
+    type: skill
+    concept: 상대가 지키는 대상과 시선의 순서를 읽어 불필요한 충돌 없이 세 걸음 앞을 정하는 관찰법.
+  flags:
+    always:
+    - baesan_name_stone_order_observed
+    success:
+    - guestpass_next_footprint_direction_read
+    failure:
+    - bloodmoon_name_stone_destruction_order_seen
+- id: offer_a_role_name_with_limits
+  label: 내 이름 대신 맡은 역할을 기한부로 건다
+  intent: 거짓 무명을 내세우지 않고 ‘다음 손님을 보내는 자’라는 역할 이름과 그 책임이 끝나는 조건을 밝힌다.
+  immediate_result: 배산귀는 본명을 요구하는 대신 그 역할로 누구를 통과시킬 것인지 되묻고 서하린은 자신도 공동 증인이 되겠다고 나선다.
+  resolution:
+    success: 역할과 책임이 일치해 배산귀가 두 사람의 통과 이름을 돌에 임시로 새긴다.
+    failure: 문구가 사람을 기능으로만 줄여 거부당하지만 주인공이 보호할 실제 이름을 다시 말해 길을 연다.
+  relation_directions:
+    people:
+      seo_harin: strong_positive_co_witness_of_name
+      one_eye_mountain_bearer: positive_bounded_name_promise
+    factions:
+      guestpass_network: positive_name_not_owned
+      qingliu: positive_absent_names_carried
+  quest_items_and_clues:
+  - name: 기한부 통과명 돌조각
+    type: quest_item
+    visibility: delayed_meaning
+    concept: 이름을 숨겨 빼앗는 대신 한정된 책임을 공개해 통과했음을 기록한 작은 돌조각.
+  reward_candidate:
+    name: 퇴근증 없는 통행법
+    type: insight
+    concept: 신분증이 없어도 맡은 책임과 끝나는 조건을 분명히 해 자신을 증명하는 현대인의 이름 전략.
+  flags:
+    always:
+    - baesan_bounded_role_name_offered
+    success:
+    - baesan_passage_name_witnessed
+    failure:
+    - protected_real_name_spoken_after_refusal
+- id: break_the_blocking_stone_arm
+  label: 사람 대신 길을 내리치는 돌팔을 꺾는다
+  intent: 배산귀를 죽이지 않고 길을 봉쇄하는 바위 팔과 낙석 구조만 무력화한다.
+  immediate_result: 서하린이 피난 방향을 맡고 주인공은 돌팔의 충격을 이름 패찰이 없는 빈 지면으로 유도한다.
+  resolution:
+    success: 배산귀를 쓰러뜨리지 않고 봉쇄 동작을 멈춰 세우며 부서진 중계 이정표를 확보한다.
+    failure: 장비와 체력을 소모하고 밀려나지만 배산귀가 이름돌을 피해서 싸우는 모습을 보고 전투를 중지할 근거를 찾는다.
+  relation_directions:
+    people:
+      seo_harin: positive_coordinated_nonlethal_combat
+      one_eye_mountain_bearer: mixed_force_used_without_killing
+    factions:
+      guestpass_network: positive_name_tablets_not_damaged
+      qingliu: positive_defense_with_restraint
+  quest_items_and_clues:
+  - name: 부서진 귀로 이정표 촉
+    type: quest_clue
+    visibility: immediate_partial
+    concept: 전투 중 드러난 옛 이정표의 금속촉으로 다음 이동지 방향과 파괴 당시 충격을 함께 가리킨다.
+  reward_candidate:
+    name: 배산의 눌러치기
+    type: skill
+    concept: 상대의 몸이 아니라 공격이 닿을 자리와 구조물을 제압해 통로를 여는 비살상 전투법.
+  flags:
+    always:
+    - baesan_nonlethal_combat_engaged
+    success:
+    - guestpass_broken_waypost_spike_recovered
+    failure:
+    - baesan_protects_name_stones_in_combat_seen
+convergence:
+  common_flags:
+  - guestpass_one_eye_mountain_bearer_passage_resolved
+  - one_eye_mountain_bearer_survival_preserved
+  - guestpass_next_destination_trace_opened
+  - guestpass_name_preservation_theme_reinforced
+  - guestpass_route_to_next_movement_trace_opened
+  next_required_slot: 3/21 객패 다음 이동지 추적
+  later_links:
+  - slot: 3/21
+    use: 이름 패찰·발자국·통과명·이정표 중 얻은 증거에 따라 추적의 정보량과 위험이 달라진다.
+  - slot: 5/34
+    use: 통과 과정에서 보존하거나 다시 말한 이름이 단계적 재인식의 보조 증거가 된다.
+  - slot: 6/46
+    use: 살해 없이 길을 연 선택과 배산귀의 생존이 보복 연쇄를 끊을 수 있다는 선행 증거가 된다.
+  progression_guarantee: 모든 분기는 배산귀를 살린 채 또는 죽이지 않고 이탈한 채 다음 이동 흔적을 열며 실패는 비용·위험·관계·정보량만 바꾼다.
+stages: []

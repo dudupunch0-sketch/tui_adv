@@ -1,0 +1,204 @@
+id: wuxia_guestpass_network_headquarters_infiltration
+kind: event
+status: authoring_draft
+review_status: authoring_review_required
+runtime_status: not_implemented
+source_refs:
+- source: user-approved-local-design
+  arc_path: arcs/guestpass_homecoming_main_story_v1_1.md
+  mapping_path: arcs/guestpass_homecoming_main_story_v1_1_event_mapping.md
+  slot: 5/33 귀로객망 본거지 귀환 잠입
+storypack_id: wuxia_jianghu_pack
+arc_id: arc_guestpass_homecoming_main_story_v1_1
+act: 5
+global_slot: 33
+title: 귀로객망 본거지 귀환 잠입
+narrative_role: >-
+  객패·흑사방 원장부·귀환 단서를 함께 사용해 사도가 통제하는 귀로객망 본거지 문턱을 넘는다.
+  변장과 신분 서술, 기록 정합성 이용, 내부 환대 규칙, 동료 분산 중 잠입 방식을 공동 결정하되,
+  내부 인물의 신뢰·단계적 재인식·공개 자격 시험은 해결하지 않고 다음 필수 슬롯으로 보존한다.
+entry_conditions:
+  required_flags:
+  - guestpass_hq_infiltration_lead_retained
+  - sado_first_calculation_bargain_resolved
+  - guestpass_master_ledger_recovery_route_opened
+  - guestpass_three_element_gate_requirement_confirmed
+  optional_context_flags:
+  - guestpass_huangquan_testimony_resolved
+  - guestpass_dual_record_survives
+  - black_serpent_master_ledger_recovery_window_opened
+  - sado_name_collateral_refused
+  blocked_by: []
+role_constraints:
+  seo_harin: 잠입 신분·증거 분담·퇴로와 위험을 주인공과 공동 결정하고 필요할 때 별도 역할을 수행한다.
+  protagonist: 세 요소를 만능 열쇠로 쓰지 않고 서로 다른 검문 규칙에 맞춰 조합한다.
+  headquarters_people: 침입을 허용해도 주인공과 서하린을 즉시 믿거나 이름을 회복해 주지 않는다.
+  recognition_sequence_5_34: reserved_not_resolved_here
+  public_qualification_5_36: mandatory_not_bypassed
+  new_named_characters: forbidden
+scene_flow:
+- beat: 돌아온 문 앞
+  content: 불타고 버려진 줄 알았던 본거지는 산허리의 객잔과 지하 기록고가 겹친 형태로 남아 있고, 문지기는 얼굴보다 객패의 책임선과 원장부의 이동 기록을 대조한다.
+- beat: 세 요소의 서로 다른 검문
+  content: 객패는 누구를 들일지, 원장부는 누가 값을 붙였는지, 귀환 단서는 왜 나갈 자유를 요구하는지 각각 다른 질문을 연다.
+- beat: 공동 잠입 설계
+  content: 서하린은 주인공의 보조 역할을 받지 않고 위장·기록·환대·분산 중 자신이 맡을 위험과 중단 신호를 함께 정한다.
+- beat: 문턱 통과
+  content: 선택한 방식으로 외곽 검문을 넘지만 내부 사람들은 객패가 돌아왔다는 사실만 인정하고 소지자의 자격은 보류한다.
+- beat: 낯익으나 믿지 않는 얼굴들
+  content: 묵돌의 반응, 흉터, 매듭, 빈방의 기억은 파편으로만 보이며 누구도 즉시 이름이나 과거를 확정하지 않는다.
+dialogue_beats:
+- speaker: 서하린
+  line_intent: 누가 앞에 서고 누가 증거를 들지 서로 동의하지 않으면 잠입하지 않겠다고 말한다.
+- speaker: 본거지 문지기
+  line_intent: 세 물건이 문을 열 수는 있어도 사람의 자격과 이름을 증명하지는 못한다고 선을 긋는다.
+- speaker: 주인공
+  line_intent: 출입증·원장·퇴사 권한이 한 사람의 정체를 대신하지 못한다는 현대적 비유로 잠입 방식을 정리한다.
+- speaker: 내부 생존자
+  line_intent: 객패를 알아보면서도 최초 소유자의 후계라는 주장은 행동과 기억을 다시 확인해야 한다고 경계한다.
+effect_policy:
+  numeric_effects: deferred
+  rarity: deferred
+  reward_ids: unassigned_until_authoring_review
+choice_policy:
+  normal_rewards: mutually_exclusive
+  essential_clue_recovery: >-
+    선택하지 않은 보상은 일반 경로에서 얻지 못한다. 내부 동선·기록 교정 규칙·환대 신호·재집결 지점이
+    부족해도 5/34의 제한된 탐문 또는 5/35의 외부 행동 확인에서 시간·신분 노출·증거 한 층 공개 중
+    하나를 지불해 복구할 수 있다. 모든 분기는 5/34 재인식과 5/36 공개 자격 시험을 남긴다.
+  hidden_dual_reward_route: not_approved
+choices:
+- id: enter_as_returning_record_couriers
+  label: 돌아온 기록 운반꾼으로 신분을 맞춘다
+  intent: 최초 소유자나 계승자를 사칭하지 않고 객패·원장부·귀환 단서를 원래 자리로 돌려보내는 운반 책임만 주장한다.
+  immediate_result: 주인공과 서하린은 출근복장 위에 낡은 객잔 겉옷을 걸치되 각자의 이름과 실제 목적은 숨기지 않는 제한 위장을 택한다.
+  resolution:
+    success: 운반 책임과 세 요소의 이동 기록이 맞아 외곽 기록고까지 동행 허가를 받는다.
+    failure: 복장이 어색해 의심받지만 소유권을 주장하지 않은 덕분에 감시 동행 조건으로 문을 넘는다.
+  relation_directions:
+    people:
+      seo_harin: positive_joint_cover_agreed
+    factions:
+      guestpass_network: positive_stewardship_not_impersonation
+      qingliu: neutral_identity_not_denied
+  quest_items_and_clues:
+  - name: 귀환 운반꾼의 반쪽 옷고름
+    type: quest_item
+    visibility: immediate
+    concept: 계승자 행세가 아니라 세 기록을 돌려놓는 제한 임무를 나타내는 낡은 객잔 옷고름.
+  reward_candidate:
+    name: 빌린 이름의 겉옷
+    type: title
+    concept: 타인의 이름을 훔치지 않고 맡은 역할만 잠시 입어 문턱을 넘은 자.
+  flags:
+    always:
+    - guestpass_hq_courier_cover_used
+    success:
+    - guestpass_hq_outer_archive_escort_granted
+    failure:
+    - guestpass_hq_entry_under_watch
+- id: exploit_ledger_consistency_gap
+  label: 원장부의 모순을 정정하러 왔다고 기록을 맞춘다
+  intent: 새 기록을 함부로 위조하지 않고 사도가 만든 원장부 불일치와 4/29 보호본의 정합성을 검문 규칙에 이용한다.
+  immediate_result: 서하린은 두 필체의 대조본을, 주인공은 원장부 검증 순서를 맡아 내부 기록관의 오류 접수 절차를 연다.
+  resolution:
+    success: 사도 쪽 원본에서만 생긴 모순을 제시해 기록 교정 통로와 내부 시각표를 얻는다.
+    failure: 보호본 일부를 공개해야 하지만 불일치가 실제라는 점은 인정되어 임시 조사자로 들어간다.
+  relation_directions:
+    people:
+      seo_harin: strong_positive_coauthored_evidence_used
+    factions:
+      guestpass_network: positive_record_integrity_respected
+      qingliu: positive_protective_recording_validated
+  quest_items_and_clues:
+  - name: 원장부 오류 정정띠
+    type: quest_clue
+    visibility: delayed_meaning
+    concept: 사도 보관본과 귀로객망 보호본이 갈라진 시점과 내부 기록고 교대 순서를 표시한 종이띠.
+  reward_candidate:
+    name: 장부 사이의 한 칸
+    type: skill
+    concept: 두 기록이 모두 맞는 척하는 대신 서로 어긋난 한 칸을 합법적인 진입 절차로 바꾸는 기록술.
+  flags:
+    always:
+    - guestpass_hq_ledger_consistency_invoked
+    success:
+    - guestpass_hq_archive_schedule_learned
+    failure:
+    - guestpass_protective_record_partially_exposed
+- id: invoke_the_empty_bowl_rule
+  label: 빈 밥그릇 하나를 청해 손님 규칙으로 들어간다
+  intent: 본거지가 완전히 버리지 못한 환대 규칙을 이용하되 안전을 보장받은 뒤 자격이 생겼다고 주장하지 않는다.
+  immediate_result: 서하린과 주인공은 무기를 맡기고 한 끼와 하룻밤만 청하며 객패에 기록된 다음 손님의 책임을 제시한다.
+  resolution:
+    success: 내부 식당의 빈 자리와 손님용 통로를 배정받아 사람들의 반응을 가까이서 볼 수 있다.
+    failure: 환대가 축소되어 문간에서만 식사하지만 오래된 배식 순서로 숨은 이동문 위치를 알아낸다.
+  relation_directions:
+    people:
+      seo_harin: positive_shared_vulnerability_accepted
+    factions:
+      guestpass_network: strong_positive_hospitality_rule_reactivated
+      qingliu: positive_guest_ethic_carried_inside
+  quest_items_and_clues:
+  - name: 문 안의 빈 밥그릇 표식
+    type: quest_clue
+    visibility: immediate_partial
+    concept: 손님을 믿지는 않아도 굶겨 내쫓지 않는 내부 규칙과 손님용 이동문을 함께 가리키는 자리표.
+  reward_candidate:
+    name: 문 안의 빈 밥그릇
+    type: insight
+    concept: 환대는 신뢰의 결론이 아니라 서로를 확인할 시간을 보장하는 최소한의 시작이라는 깨달음.
+  flags:
+    always:
+    - guestpass_hq_empty_bowl_rule_invoked
+    success:
+    - guestpass_hq_guest_corridor_opened
+    failure:
+    - guestpass_hq_service_door_pattern_seen
+- id: split_elements_and_rejoin_inside
+  label: 세 요소와 퇴로를 둘로 나눠 들어간다
+  intent: 한 사람이 붙잡혀도 세 요소와 동료가 동시에 사도에게 넘어가지 않도록 서하린과 역할·위험·재집결 조건을 나눈다.
+  immediate_result: 서하린이 객패와 환대 경로를, 주인공이 원장부와 귀환 단서 대조를 맡거나 그 반대로 정하고 서로 중단권을 갖는다.
+  resolution:
+    success: 서로 다른 검문을 통과해 내부의 약속 지점에서 재집결하고 사도의 감시선을 분산한다.
+    failure: 한쪽 검문이 막혀 세 요소 하나를 임시 보관함에 맡기지만 공동 매듭으로 회수 권한을 보존한다.
+  relation_directions:
+    people:
+      seo_harin: strong_positive_equal_risk_and_stop_authority
+    factions:
+      guestpass_network: positive_three_elements_not_monopolized
+      qingliu: positive_companion_not_used_as_decoy
+  quest_items_and_clues:
+  - name: 둘로 나눈 재집결 매듭
+    type: quest_item
+    visibility: immediate
+    concept: 어느 한쪽도 상대 없이 세 요소를 넘길 수 없고 약속 장소에서 다시 합칠 수 있도록 만든 쌍매듭.
+  reward_candidate:
+    name: 두 갈래 귀로
+    type: skill
+    concept: 동료를 미끼로 삼지 않고 위험·증거·중단권을 대등하게 나눠 한 통제점의 시선을 흩는 잠입술.
+  flags:
+    always:
+    - guestpass_hq_elements_split_by_consent
+    success:
+    - seoharin_protagonist_rejoined_inside_hq
+    failure:
+    - guestpass_hq_one_element_in_joint_recovery
+convergence:
+  common_flags:
+  - guestpass_hq_infiltration_resolved
+  - guestpass_hq_threshold_crossed
+  - guestpass_hq_occupants_remain_unconvinced
+  - guestpass_recognition_sequence_reserved
+  - guestpass_public_qualification_test_reserved
+  - guestpass_route_to_staged_recognition_opened
+  next_required_slot: 5/34 묵돌·흉터·매듭·빈방의 단계적 재인식
+  later_links:
+  - slot: 5/34
+    use: 잠입 방식은 누가 먼저 반응하고 어떤 증거를 볼 수 있는지만 바꾸며 묵돌·흉터·매듭·빈방의 재인식을 대신하지 않는다.
+  - slot: 5/35
+    use: 내부 진술만으로 부족한 자격을 청우진·고현묵의 실제 행동 확인으로 보완한다.
+  - slot: 5/36
+    use: 잠입 성공은 공개 자격을 부여하지 않으며 세 요소와 행동 증거를 공개 검증받아야 한다.
+  progression_guarantee: 모든 분기는 본거지 문턱만 넘고 즉시 신뢰를 얻지 않으며 5/34 재인식과 5/36 자격 시험을 반드시 남긴다.
+stages: []

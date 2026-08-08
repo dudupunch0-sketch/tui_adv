@@ -2,6 +2,10 @@
 
 Status: candidate
 
+> Design source: [객패귀로 메인 스토리 통합 설계 v1.1](../design_source/arcs/guestpass_homecoming_main_story_v1_1.md)
+>
+> 설계 상태: 승인된 메인 스토리 방향 / 개별 authoring 검수 필요 / runtime not implemented. 아래 Record의 기존 runtime 구현 기록은 유지하며, 새 통합 설계가 이를 supersede하거나 구현 완료를 선언하지 않는다.
+
 ## Record
 
 ```yaml

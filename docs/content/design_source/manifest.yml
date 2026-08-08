@@ -34,8 +34,10 @@ paths:
   graphs: graphs/*.yml
 records:
   events:
-    count: 154
+    count: 156
     ids:
+    - wuxia_guestpass_qingliu_empty_room_seizure_defense
+    - wuxia_guestpass_ledger_delay_stratagem
     - wuxia_main_qingliu_eye_001
     - wuxia_tianjilu_first_fragment
     - wuxia_seoharin_intervention

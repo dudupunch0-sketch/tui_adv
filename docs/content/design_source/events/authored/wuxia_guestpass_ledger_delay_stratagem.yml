@@ -1,0 +1,195 @@
+id: wuxia_guestpass_ledger_delay_stratagem
+kind: event
+status: authoring_draft
+review_status: authoring_review_required
+runtime_status: not_implemented
+source_refs:
+- source: user-approved-local-design
+  arc_path: arcs/guestpass_homecoming_main_story_v1_1.md
+  mapping_path: arcs/guestpass_homecoming_main_story_v1_1_event_mapping.md
+  slot: 4/29 객패 장부 지연 계략
+storypack_id: wuxia_jianghu_pack
+arc_id: arc_guestpass_homecoming_main_story_v1_1
+act: 4
+global_slot: 29
+title: 객패 장부 지연 계략
+narrative_role: >-
+  귀로객망의 사람과 이동 경로를 실시간 추적으로부터 보호하면서 기록 자체는 없애지 않는 시간차 계략.
+  서하린을 능동적인 공동 주역으로 세우고 흑사방 원장부·사도의 계산 논리·본거지 잠입에 서로 다른 입력을 남긴다.
+entry_conditions:
+  required_flags:
+  - black_serpent_boss_bargain_resolved
+  - guestpass_route_records_at_risk
+  optional_context_flags:
+  - black_serpent_ledger_mark_seen
+  - guestpass_network_witness_opened
+  - seoharin_shared_burden
+  blocked_by: []
+role_constraints:
+  seo_harin: 낮 장부 작성과 밤의 안전한 재배열을 제안·실행하는 능동적 설계자다.
+  protagonist: 계략의 위험과 책임을 분담하거나 다른 기록 방식을 선택하는 공동 저작자가 될 수 있다.
+  qingliu_internal_malicious_betrayal: forbidden
+  record_destruction_as_betrayal: forbidden
+scene_flow:
+- beat: 낮의 장부
+  content: 서하린은 감시자가 보는 앞에서 정확한 객패 이동 기록을 작성해 거짓 기록이라는 즉시 의심을 피한다.
+- beat: 밤의 빈칸
+  content: 밤이 되면 이름과 이동 순서 사이에 시간차, 매듭 암호, 전달 지연을 넣어 실시간 추적을 무력화한다.
+- beat: 공동 저작 제안
+  content: 서하린은 주인공에게 지울 것과 남길 것을 묻고, 혼자 책임지거나 희생하려 하지 않는다.
+- beat: 선택과 추적
+  content: 순서 변경, 이름 암호화, 미끼 장부, 이중 원본 중 하나를 택하며 흑사방의 감시가 반응한다.
+- beat: 계산의 흔적
+  content: 성공과 실패 모두 사도가 기록 불일치를 사람의 가격으로 환산한다는 패턴을 드러낸다.
+dialogue_beats:
+- speaker: 서하린
+  line_intent: 기록을 없애면 사람도 사라진다며, 남기되 늦게 도착하게 만들자고 제안한다.
+- speaker: 주인공
+  line_intent: 현대의 결재선·버전 관리 감각을 빌려 누가 언제 어떤 원본을 보았는지 분리한다.
+- speaker: 흑사방 감시자
+  line_intent: 장부가 맞지 않는 시간만큼 누군가 값을 치러야 한다고 압박한다.
+- speaker: 서하린
+  line_intent: 보호의 책임을 혼자 떠안지 않고 주인공에게 공동 저작 여부를 명시적으로 묻는다.
+effect_policy:
+  numeric_effects: deferred
+  rarity: deferred
+  reward_ids: unassigned_until_authoring_review
+choice_policy:
+  normal_rewards: mutually_exclusive
+  essential_clue_recovery: >-
+    선택하지 않은 보상은 일반 경로에서 얻지 못한다. 본거지 잠입에 필수인 안전 경로와 사도 계산 패턴은
+    4/30 또는 4/31에서 추가 위험을 감수해 복구할 수 있어 메인 인과를 막지 않는다.
+  hidden_dual_reward_route: not_approved
+choices:
+- id: reorder_delivery_after_dark
+  label: 낮 기록을 두고 밤에 전달 순서만 바꾼다
+  intent: 기록의 진실성을 유지하면서 정보가 행동으로 바뀌는 시간을 늦춘다.
+  immediate_result: 낮 장부는 검사를 통과하고, 추적대는 이미 비워진 역참에 한발 늦게 도착한다.
+  resolution:
+    success: 지연 간격이 들키지 않아 안전 경로와 원장부 회수 시간이 함께 확보된다.
+    failure: 순서 변경은 발각되지만 어떤 기록 시점을 사도가 중요하게 보는지 확인한다.
+  relation_directions:
+    people:
+      seo_harin: positive_respects_restraint
+    factions:
+      qingliu: positive_rules_preserved
+      guestpass_network: positive_safe_delay
+  quest_items_and_clues:
+  - name: 세 번 접힌 전달표
+    type: clue
+    visibility: immediate_partial
+    concept: 같은 사실도 전달 순서에 따라 사람을 살리거나 팔 수 있음을 보여주는 표.
+  reward_candidate:
+    name: 야간 결재선
+    type: insight
+    concept: 기록을 거짓으로 만들지 않고 승인과 전달의 시차로 위험을 흘리는 현대인의 관점.
+  flags:
+    always:
+    - guestpass_ledger_delivery_reordered
+    success:
+    - black_serpent_realtime_trace_delayed
+    failure:
+    - sado_timing_priority_seen
+- id: preserve_names_in_knot_code
+  label: 위험한 이름을 빈칸과 매듭 암호로 보존한다
+  intent: 이름은 지우지 않되 당장 읽을 수 없는 별도 문법으로 옮긴다.
+  immediate_result: 공개 장부에는 빈칸이 남고 서하린만 풀 수 있는 매듭 순서에 사람의 이름이 보존된다.
+  resolution:
+    success: 감시자는 빈칸을 누락으로 오해하고 귀로객망은 이름과 경로를 함께 지킨다.
+    failure: 암호 존재가 드러나 추적 압박이 높아지지만 사도가 이름 자체를 통제 자산으로 본다는 증거를 얻는다.
+  relation_directions:
+    people:
+      seo_harin: strong_positive_shared_ethic
+    factions:
+      qingliu: positive_names_preserved
+      guestpass_network: strong_positive_identity_protected
+  quest_items_and_clues:
+  - name: 밤에만 읽히는 매듭 장부
+    type: quest_item
+    visibility: delayed_meaning
+    concept: 빈칸을 지움이 아니라 보존 방식으로 바꾼 귀로객망의 대체 원본.
+  reward_candidate:
+    name: 이름을 묶는 사람
+    type: title
+    concept: 타인의 이름을 소유하지 않고 위험이 지나갈 때까지 안전하게 묶어 둔 자.
+  flags:
+    always:
+    - night_knot_ledger_seen
+    - other_names_preserved_in_delay
+    success:
+    - guestpass_names_hidden_without_erasure
+    failure:
+    - sado_name_asset_logic_revealed
+- id: carry_decoy_ledger
+  label: 주인공이 미끼 장부를 들고 추적선을 끈다
+  intent: 기록 조작의 책임과 현장 위험을 주인공에게 집중시켜 실제 이동자들을 보호한다.
+  immediate_result: 추적대가 주인공을 따라 본선에서 이탈하고 서하린은 안전 경로를 재배치한다.
+  resolution:
+    success: 미끼 장부가 원장부 회수조를 다른 길로 유도해 4/31의 잠입 위험을 낮춘다.
+    failure: 미끼임이 드러나 포위되지만 감시자의 대조용 납인을 빼앗거나 복제한다.
+  relation_directions:
+    people:
+      seo_harin: mixed_trust_and_concern
+    factions:
+      qingliu: conditional_positive_if_returned
+      guestpass_network: positive_route_protected
+  quest_items_and_clues:
+  - name: 원장부 대조용 납인
+    type: quest_item
+    visibility: immediate
+    concept: 흑사방이 미끼와 원본을 가르는 검증 도구이자 원장부 접근의 물리 단서.
+  reward_candidate:
+    name: 장부를 든 표적
+    type: title
+    concept: 거짓 이름 뒤에 숨지 않고 추적의 시선을 스스로 끌어 다른 길을 비운 자.
+  flags:
+    always:
+    - guestpass_decoy_ledger_deployed
+    success:
+    - black_serpent_recovery_team_misdirected
+    failure:
+    - black_serpent_ledger_seal_copied
+    - protagonist_infiltration_risk_raised
+- id: author_dual_record_together
+  label: 서하린과 공동 저자로 이중 원본을 만든다
+  intent: 한 사람이 모든 위험과 해독 권한을 독점하지 않도록 두 필체와 교차 확인 규칙을 남긴다.
+  immediate_result: 서하린과 주인공이 서로의 기록을 검증하며 공개본과 보호본을 동시에 완성한다.
+  resolution:
+    success: 한 원본이 압수돼도 다른 원본으로 사람과 경로를 복원할 수 있고 공동 저작 증거가 남는다.
+    failure: 필체 차이가 들켜 감시가 강화되지만 사도가 어느 원본을 우선 통제하는지 확인한다.
+  relation_directions:
+    people:
+      seo_harin: strong_positive_coauthor_trust
+    factions:
+      qingliu: positive_shared_responsibility
+      guestpass_network: positive_redundant_record
+  quest_items_and_clues:
+  - name: 두 필체의 대조본
+    type: quest_item
+    visibility: immediate_partial
+    concept: 어느 한 사람의 희생이나 독점 없이 기록을 복원하기 위한 두 사람의 교차 원본.
+  reward_candidate:
+    name: 두 사람의 여백
+    type: insight
+    concept: 신뢰는 같은 문장을 쓰는 것이 아니라 서로가 남긴 빈칸을 함부로 지우지 않는다는 깨달음.
+  flags:
+    always:
+    - seoharin_defensive_recording
+    - seoharin_protagonist_coauthors
+    success:
+    - guestpass_dual_record_survives
+    failure:
+    - sado_preferred_original_revealed
+convergence:
+  common_flags:
+  - guestpass_ledger_delay_resolved
+  - guestpass_hq_infiltration_lead_retained
+  - sado_first_bargain_opened
+  next_required_slot: 4/30 사도의 첫 거래와 계산 논리
+  later_links:
+  - slot: 4/31
+    use: 전달 지연·매듭 장부·납인·이중 원본 중 선택한 방식이 원장부 회수 경로와 위험을 바꾼다.
+  - slot: 5/33
+    use: 보존된 이름과 안전 경로가 본거지 잠입의 증언·위장·복구 수단으로 쓰인다.
+  progression_guarantee: 모든 분기는 사도의 첫 거래와 원장부 회수 경로를 열며 실패는 압박·정보량·관계 비용만 바꾼다.
+stages: []

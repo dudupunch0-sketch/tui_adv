@@ -80,3 +80,5 @@ source_refs:
   - imported_arc_04_main_route_structure
 
 다음 단계의 48개 필수 사건 대조표: [canonical event mapping 초안](guestpass_homecoming_main_story_v1_1_event_mapping.md). 이 문서는 승인된 상위 방향을 기존 event ID와 대조한 authoring 검수용 초안이며, 개별 사건과 runtime은 아직 확정·구현되지 않았다.
+
+우선 사건 canonical authoring draft: [3/19 청류문 빈방 압류 방어](../events/authored/wuxia_guestpass_qingliu_empty_room_seizure_defense.yml), [4/29 객패 장부 지연 계략](../events/authored/wuxia_guestpass_ledger_delay_stratagem.yml). 두 사건 모두 authoring_draft / authoring_review_required / not_implemented 상태다.

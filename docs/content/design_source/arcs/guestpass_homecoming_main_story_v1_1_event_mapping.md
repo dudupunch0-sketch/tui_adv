@@ -42,7 +42,7 @@ source_arc: guestpass_homecoming_main_story_v1_1
 | 2/16 | 객패 추적 출발 | wuxia_cheongryu_first_departure_cost | 흡수 | 출발 비용을 객패·환대·추적 목표로 묶음 | 2/15 → 3/17 | authoring_review_required |
 | 3/17 | 첫 역참 신분 선택 | wuxia_route_explain_choice_to_seoharin | 흡수 | 가명·객패 제시 선택으로 확장 | 2/16 → 3/18 | authoring_review_required |
 | 3/18 | 고현묵 객잔과 객패 계승 | 없음 | 신규 필요 | 고현묵·최초 소유자·객잔 거점 신규 저작 | 3/17 → 3/19 | authoring_review_required |
-| 3/19 | 청류문 빈방 압류 방어 | 없음 | 신규 필요 | 청우진·서하린이 문패·객패·공동체 증거 제시 | 3/18 → 3/20, 3/24 | authoring_review_required |
+| 3/19 | 청류문 빈방 압류 방어 | [wuxia_guestpass_qingliu_empty_room_seizure_defense](../events/authored/wuxia_guestpass_qingliu_empty_room_seizure_defense.yml) | 신규 필요 | 신규 canonical authoring draft 작성; 청우진·서하린이 문패·객패·공동체 증거 제시 | 3/18 → 3/20, 3/24 | authoring_draft / authoring_review_required / not_implemented |
 | 3/20 | 외안배산귀 통과 | 없음 | 신규 필요 | 이름과 시선의 시험 규칙·대가·선택 신규 저작 | 3/19 → 3/21 | authoring_review_required |
 | 3/21 | 객패 다음 이동지 추적 | wuxia_route_return_scent_clue | 흡수 | 흔적을 객패 다음 역참과 연결 | 3/20 → 3/22 | authoring_review_required |
 | 3/22 | 흑사방 장부·귀로객망 경로 연결 | wuxia_black_serpent_old_hood | 흡수 | 조직 흔적을 채무 추적·귀로 노선 중첩으로 재기능화 | 3/21 → 3/23 | authoring_review_required |
@@ -52,7 +52,7 @@ source_arc: guestpass_homecoming_main_story_v1_1
 | 4/26 | 무명과 객패·이름 대치 | wuxia_mumyeong_first_confrontation | 흡수 | 객패를 누구 이름으로 부를지 묻는 장면으로 재배치 | 4/25 → 4/27 | authoring_review_required |
 | 4/27 | 흑사방 원장부 위치 | wuxia_black_serpent_ledger_trace | 유지 | 기존 흔적을 원장부 위치로 수렴; 중복 소유 여부 검수 | 4/26 → 4/28 | authoring_review_required |
 | 4/28 | 흑사방 보스 채무 거래 | wuxia_heuksa_bang_debt_bargain | 유지 | 보스는 채무 거래, 사도는 최종 계산으로 분리 | 4/27 → 4/29 | authoring_review_required |
-| 4/29 | 객패 장부 지연 계략 | 없음 | 신규 필요 | 서하린이 낮 작성·밤 삭제/순서 변경으로 시간차 생성 | 4/28 → 4/30, 5/33 | authoring_review_required |
+| 4/29 | 객패 장부 지연 계략 | [wuxia_guestpass_ledger_delay_stratagem](../events/authored/wuxia_guestpass_ledger_delay_stratagem.yml) | 신규 필요 | 신규 canonical authoring draft 작성; 서하린이 낮 작성·밤 재배열로 보호 시간차 생성 | 4/28 → 4/30, 5/33 | authoring_draft / authoring_review_required / not_implemented |
 | 4/30 | 사도의 첫 거래와 계산 논리 | 없음 | 신규 필요 | 세 요소 분리 통제·가격표를 첫 대면으로 저작 | 4/29 → 4/31 | authoring_review_required |
 | 4/31 | 원장부 확보 또는 회수 경로 | wuxia_chain_herbalist_second_ledger | 흡수 | 약재 장부 구조를 원장부 우회 경로로 변경 | 4/30 → 4/32 | authoring_review_required |
 | 4/32 | 본거지 문이 세 요소를 요구함 | wuxia_collapse_gate | 흡수 | 객패·원장부·귀환 단서 자격 조건으로 재정의 | 4/31 → 5/33 | authoring_review_required |
@@ -104,4 +104,4 @@ source_arc: guestpass_homecoming_main_story_v1_1
 
 청류문 내부 악의적 배신은 추가하지 않는다. 빈방 압류와 장부 지연의 갈등 상대는 외부 채권·추적 세력이다. 혈월교는 물리 파괴, 흑사방 보스는 채무 거래, 사도는 계산·통제의 최종 적으로 분리한다. 이 문서는 설계 매핑일 뿐 imported event와 runtime/code를 수정하거나 구현 완료로 승격하지 않는다. 새 사건은 핵심·보조·선택·보류 등급과 중심축 영향 평가를 거쳐야 하며 청류문·서하린·객패귀로를 강화하지 않거나 6막 순서·세 요소 인과를 덮으면 승격하지 않는다.
 
-다음 authoring 순서는 3/19 빈방 압류 방어 → 4/29 객패 장부 지연 계략 → 1/08 불탄 객패·4/25 황천수맥 기록 기능이다. 검수 뒤 나머지 adapt existing 슬롯을 저작하며, runtime 구현은 별도 handoff와 승인 이후에만 시작한다.
+3/19 빈방 압류 방어와 4/29 객패 장부 지연 계략은 canonical authoring draft가 작성되었으며 개별 검수는 남아 있다. 다음 신규 저작 순서는 1/08 불탄 객패 → 4/25 황천수맥 기록 기능이다. 두 우선 초안의 검수 뒤 나머지 adapt existing 슬롯을 저작하며, runtime 구현은 별도 handoff와 승인 이후에만 시작한다.

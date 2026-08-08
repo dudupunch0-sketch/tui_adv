@@ -1,0 +1,192 @@
+id: wuxia_guestpass_qingliu_empty_room_seizure_defense
+kind: event
+status: authoring_draft
+review_status: authoring_review_required
+runtime_status: not_implemented
+source_refs:
+- source: user-approved-local-design
+  arc_path: arcs/guestpass_homecoming_main_story_v1_1.md
+  mapping_path: arcs/guestpass_homecoming_main_story_v1_1_event_mapping.md
+  slot: 3/19 청류문 빈방 압류 방어
+storypack_id: wuxia_jianghu_pack
+arc_id: arc_guestpass_homecoming_main_story_v1_1
+act: 3
+global_slot: 19
+title: 청류문 빈방 압류 방어
+narrative_role: >-
+  청류문이 사람과 기억을 채무의 담보로 취급하지 않는다는 원칙을 행동으로 증명하고,
+  흑사방 원장부 표식 또는 귀로객망 증언을 다음 추적 구간으로 넘기는 공동체 방어 사건.
+entry_conditions:
+  required_flags:
+  - guestpass_inn_inheritance_resolved
+  - qingliu_empty_room_known
+  optional_context_flags:
+  - black_serpent_debt_trace_opened
+  - seoharin_shared_burden
+  blocked_by: []
+role_constraints:
+  cheong_ujin: 규정·문패·채무 증빙과 공개 절차를 담당한다.
+  seo_harin: 사람의 안전·압류 현장 통제·약자 보호를 담당한다.
+  protagonist: 어떤 증거와 비용으로 빈방의 사람성을 지킬지 선택한다.
+  qingliu_internal_malicious_betrayal: forbidden
+scene_flow:
+- beat: 압류 통고
+  content: 외부 채권 대리인이 치료비와 수리비를 이유로 떠난 제자의 빈방을 봉인하려 한다.
+- beat: 역할 분담
+  content: 청우진은 문패와 장부를 펼치고, 서하린은 부상자와 구경꾼을 물리며 현장을 안전하게 만든다.
+- beat: 빈방의 증거
+  content: 방 안의 물품은 값싼 잡동사니지만 문패 뒷면과 압류 목록에는 흑사방 장부 체계의 흔적이 있다.
+- beat: 플레이어 선택
+  content: 규정, 증언, 은닉, 채무 인수 중 무엇을 앞세울지 정한다.
+- beat: 불완전한 방어
+  content: 방을 온전히 지키지 못해도 사람의 이름과 추적 단서는 보존되고 다음 여정은 열린다.
+dialogue_beats:
+- speaker: 청우진
+  line_intent: 빚이 있다는 사실과 사람의 자리를 압류할 권리는 같은 말이 아니라고 선을 긋는다.
+- speaker: 서하린
+  line_intent: 물건보다 먼저 방 안과 복도의 사람을 안전하게 빼내며 행동으로 우선순위를 보여준다.
+- speaker: 채권 대리인
+  line_intent: 이름과 기억도 결국 값을 매길 수 있다고 주장해 흑사방의 논리를 예고한다.
+- speaker: 주인공
+  line_intent: 현대의 계약 감각과 청류문의 환대 원칙 사이에서 방어 방식을 선택한다.
+effect_policy:
+  numeric_effects: deferred
+  rarity: deferred
+  reward_ids: unassigned_until_authoring_review
+choice_policy:
+  normal_rewards: mutually_exclusive
+  essential_clue_recovery: >-
+    선택하지 않은 보상은 일반 경로에서 획득하지 못한다. 다만 메인 진행에 필요한 원장부 표식 또는
+    귀로객망 증언은 3/22의 비용 있는 보완 조사로 한 종류만 복구할 수 있다.
+  hidden_dual_reward_route: not_approved
+choices:
+- id: compare_ledger_and_nameplate
+  label: 장부와 문패를 공개 대조한다
+  intent: 청우진의 규정·증빙 절차에 힘을 싣고 공개적으로 압류 근거를 무너뜨린다.
+  immediate_result: 압류 절차가 중단되고 채권 대리인은 원장부 대조를 요구하며 물러난다.
+  resolution:
+    success: 문패 뒷면 표식과 압류 문서의 계보가 일치해 흑사방 원장부 위치 단서의 신뢰도가 높아진다.
+    failure: 문서 일부가 훼손되어 방은 임시 봉인되지만, 위조된 날인 순서에서 원장부 표식을 발견한다.
+  relation_directions:
+    people:
+      cheong_ujin: positive_trust_in_method
+      seo_harin: positive_reliable_partner
+    factions:
+      qingliu: positive_public_legitimacy
+  quest_items_and_clues:
+  - name: 빈방 문패 뒷면 표식
+    type: clue
+    visibility: delayed_meaning
+    concept: 압류 대상의 이름과 흑사방 원장부 기호가 같은 체계에서 기록됐다는 물증.
+  reward_candidate:
+    name: 먹줄의 증인
+    type: title
+    concept: 사람의 자리를 지키기 위해 계약의 문장을 끝까지 읽어낸 자.
+  flags:
+    always:
+    - black_serpent_ledger_mark_seen
+    success:
+    - qingliu_empty_room_defended_by_evidence
+    failure:
+    - qingliu_empty_room_temporarily_sealed
+- id: gather_witnesses_for_the_absent
+  label: 가족과 이웃의 증언을 모은다
+  intent: 빈방의 주인을 채무 항목이 아니라 관계를 가진 사람으로 공개한다.
+  immediate_result: 압류는 늦춰지고, 귀로객망을 이용했던 행상인 한 명이 최초 소유자의 이동 습관을 증언한다.
+  resolution:
+    success: 서로 독립된 증언이 맞물려 압류 명분이 약해지고 귀로객망 협력자가 열린다.
+    failure: 증언이 엇갈려 방 일부를 내주지만, 누가 증언자를 겁줬는지 추적할 단서를 얻는다.
+  relation_directions:
+    people:
+      cheong_ujin: neutral_respects_non_documentary_proof
+      seo_harin: strong_positive_people_first
+    factions:
+      qingliu: strong_positive_community_trust
+  quest_items_and_clues:
+  - name: 환대의 빚 증언 묶음
+    type: quest_clue
+    visibility: immediate_partial
+    concept: 같은 방에서 밥과 잠자리를 빌렸던 사람들이 남긴 서로 다른 기억.
+  reward_candidate:
+    name: 사람이 먼저인 장부
+    type: insight
+    concept: 숫자가 맞아도 사람의 사정이 빠지면 기록은 완전하지 않다는 깨달음.
+  flags:
+    always:
+    - guestpass_network_witness_opened
+    success:
+    - qingliu_empty_room_defended_by_witness
+    failure:
+    - witness_intimidation_trace_opened
+- id: move_goods_before_seizure
+  label: 압류품을 빼돌려 시간을 번다
+  intent: 서하린의 현장 통제에 맞춰 핵심 물품과 문패를 먼저 안전한 곳으로 옮긴다.
+  immediate_result: 사람과 기록은 안전해지지만 주인공이 압류 방해의 책임을 떠안고 추적 대상이 된다.
+  resolution:
+    success: 채권 대리인이 빈손으로 돌아가며 추적선이 주인공에게 집중된다.
+    failure: 일부 물품을 빼앗기지만 뜯긴 압류 목록을 확보해 흑사방의 회수 순서를 읽는다.
+  relation_directions:
+    people:
+      cheong_ujin: mixed_concern_about_procedure
+      seo_harin: positive_shared_field_risk
+    factions:
+      qingliu: conditional_positive_if_people_safe
+  quest_items_and_clues:
+  - name: 뜯긴 압류 목록 귀퉁이
+    type: quest_item
+    visibility: delayed_meaning
+    concept: 값비싼 물건보다 이름 적힌 문패를 먼저 회수하라는 흑사방의 이상한 우선순위.
+  reward_candidate:
+    name: 문틈 바꾸기
+    type: skill
+    concept: 정면 승부 대신 사람과 물건의 위치를 먼저 바꿔 위험의 초점을 흘리는 요령.
+  flags:
+    always:
+    - protagonist_marked_as_seizure_obstructor
+    success:
+    - qingliu_empty_room_defended_by_delay
+    failure:
+    - black_serpent_recovery_order_seen
+- id: assume_part_of_the_debt
+  label: 빚 일부를 내 이름으로 떠안는다
+  intent: 방과 문패를 지키는 대신 주인공이 명시적인 상환 책임과 후속 위험을 선택한다.
+  immediate_result: 압류는 멈추지만 주인공의 이름이 흑사방 채무선에 올라가고 서하린은 혼자 결정한 희생을 경계한다.
+  resolution:
+    success: 채무 조건을 제한해 방과 사람 기록을 모두 보존하고 협상 문서 사본을 얻는다.
+    failure: 불리한 조항이 남아 후속 추심 위험이 커지지만 원장부 대조에 필요한 납인 흔적을 확보한다.
+  relation_directions:
+    people:
+      cheong_ujin: mixed_respects_commitment_questions_cost
+      seo_harin: mixed_care_and_disagreement
+    factions:
+      qingliu: positive_debt_shared_not_erased
+  quest_items_and_clues:
+  - name: 제한부 채무 인수서
+    type: quest_item
+    visibility: immediate
+    concept: 방을 지킨 대가와 흑사방의 거래 문법이 동시에 적힌 문서.
+  reward_candidate:
+    name: 서하린이 맡긴 빈방 열쇠
+    type: quest_item
+    concept: 소유권이 아니라 다시 돌아올 사람의 자리를 잠시 지킬 권한과 책임.
+  flags:
+    always:
+    - seoharin_shared_burden
+    - protagonist_black_serpent_debt_named
+    success:
+    - qingliu_empty_room_defended_by_assumption
+    failure:
+    - black_serpent_debt_collection_risk_opened
+convergence:
+  common_flags:
+  - guestpass_qingliu_empty_room_resolved
+  - qingliu_absent_name_preserved
+  - guestpass_route_to_baesan_opened
+  next_required_slot: 3/20 외안배산귀 통과
+  later_links:
+  - slot: 3/22
+    use: 원장부 표식·증언·회수 순서 중 확보한 정보에 따라 조사 비용과 정보량이 달라진다.
+  - slot: 4/29
+    use: 빈방을 지킨 방식이 장부에서 이름을 보존하거나 숨기는 선택의 대화와 관계 변주가 된다.
+  progression_guarantee: 모든 분기는 다음 필수 슬롯을 열며 실패는 정보량·위험·관계 비용만 바꾼다.
+stages: []

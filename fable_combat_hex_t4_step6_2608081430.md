@@ -1,6 +1,6 @@
 # T4 S2d2 — paused response selection + segment transition
 
-status: ready-for-implementation
+status: implemented
 date: 2026-08-08
 baseline_commit: `3bd3fc0`
 baseline_test: `cargo test --workspace --no-fail-fast --quiet` = 0 failures
@@ -96,3 +96,14 @@ renderer/terminal/Web, content/generated artifacts, 실제 effect/role/policy �
   필요한 경우.
 - pause candidate와 response id를 stable하게 매칭할 수 없는 경우.
 - 기존 fingerprint/결정론 테스트가 설명 없이 바뀌는 경우.
+
+## 8. 구현 보고
+
+- implementation commit: `f848afb`
+- `CombatRuntime`이 `segment_index`, selection history, next segment seed를 내부 보유한다.
+- `resume_with_response`가 현재 pause candidate의 option을 검증하고
+  `(segment, tick, instance, opportunity, response)` entry를 한 번 기록한다.
+- `resume_no_intervention`은 기존 API를 유지하면서 `no_intervention` option을 같은 경로로
+  기록한다. 실제 response effect/state 재구성은 의도적으로 다음 slice 범위다.
+- 테스트: runtime unit 10/10, opportunity integration 12/12, workspace 0 failures.
+- `cargo fmt --all -- --check`, `git diff --check` 통과.

@@ -636,7 +636,7 @@ def validate(root: Path, authoring_payload: Path | None = None):
                 runtime_version,
             )
 
-    return errors, runtime_version
+    return errors, runtime_version, "combat_intervention_response" in schemas
 
 
 def main():
@@ -644,7 +644,7 @@ def main():
     parser.add_argument("--root", type=Path, required=True)
     parser.add_argument("--authoring-payload", type=Path)
     args = parser.parse_args()
-    errors, runtime_version = validate(
+    errors, runtime_version, authoring_schema_loaded = validate(
         args.root.resolve(),
         args.authoring_payload.resolve() if args.authoring_payload else None,
     )
@@ -654,7 +654,10 @@ def main():
         "runtime_status": "handoff_required",
         "supported_simulation_version_observed": runtime_version,
         "schema_engine": "builtin_strict_subset",
-        "authoring_payload_validated": args.authoring_payload is not None,
+        "authoring_payload_schema_loaded": authoring_schema_loaded,
+        "authoring_payload_instance_validation": (
+            "validated" if args.authoring_payload is not None else "not_requested"
+        ),
     }
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 1 if errors else 0

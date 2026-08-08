@@ -99,6 +99,8 @@ def test_contracts_pass_and_match_runtime_capability(tmp_path):
     assert report["status"] == "PASS"
     assert report["runtime_status"] == "handoff_required"
     assert report["supported_simulation_version_observed"] == "v3"
+    assert report["authoring_payload_schema_loaded"] is True
+    assert report["authoring_payload_instance_validation"] == "not_requested"
 
 
 def test_contract_and_authoring_schemas_have_distinct_root_roles(tmp_path):
@@ -125,7 +127,9 @@ def test_authoring_schema_accepts_three_payload_presence_shapes(tmp_path, payloa
         payload.update(strategy_payload())
     result = run(root, write_payload(tmp_path, payload))
     assert result.returncode == 0, result.stdout
-    assert json.loads(result.stdout)["authoring_payload_validated"] is True
+    report = json.loads(result.stdout)
+    assert report["authoring_payload_schema_loaded"] is True
+    assert report["authoring_payload_instance_validation"] == "validated"
 
 
 def test_authoring_schema_rejects_empty_and_legacy_kind_payloads(tmp_path):

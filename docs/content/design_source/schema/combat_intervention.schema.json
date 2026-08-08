@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "combat_intervention.schema.json",
+  "title": "Canonical combat intervention contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_id",
+    "status",
+    "runtime_status",
+    "owners",
+    "response_payload",
+    "transaction",
+    "registry",
+    "special_effect",
+    "strategy_modifier",
+    "lifecycle",
+    "checkpoint_and_receipt",
+    "runtime_handoff"
+  ],
+  "properties": {
+    "contract_id": {"const": "combat_intervention_response"},
+    "status": {"const": "canonical"},
+    "effective_date": {"type": "string"},
+    "runtime_status": {"const": "handoff_required"},
+    "owners": {"type": "object"},
+    "response_payload": {
+      "type": "object",
+      "required": ["optional_fields", "minimum_present", "derived_kinds", "forbidden_fields"],
+      "properties": {
+        "optional_fields": {"const": ["strategy_modifier", "special_effect"]},
+        "minimum_present": {"const": 1},
+        "derived_kinds": {"const": ["effect_only", "strategy_only", "both"]},
+        "forbidden_fields": {
+          "type": "array",
+          "allOf": [
+            {"contains": {"const": "intervention_kind"}},
+            {"contains": {"const": "resolution_kind"}},
+            {"contains": {"const": "hybrid_kind"}}
+          ]
+        }
+      }
+    },
+    "transaction": {
+      "type": "object",
+      "required": ["boundary", "input_snapshot", "phases", "validation_failure", "checkpoint_states", "partial_apply_serialization", "delayed_or_multi_tick_workflow", "rng_draws"],
+      "properties": {
+        "boundary": {"const": "one_pause_before_next_tick"},
+        "input_snapshot": {"const": "pause_snapshot"},
+        "phases": {"type": "array", "minItems": 7, "uniqueItems": true},
+        "validation_failure": {"type": "object"},
+        "checkpoint_states": {"const": ["pre_transaction", "post_transaction"]},
+        "partial_apply_serialization": {"const": "forbidden"},
+        "delayed_or_multi_tick_workflow": {"const": "forbidden"},
+        "rng_draws": {
+          "type": "object",
+          "required": ["strategy_only", "deterministic_special_effect", "probabilistic_special_effect"],
+          "properties": {
+            "strategy_only": {"const": 0},
+            "deterministic_special_effect": {"const": 0},
+            "probabilistic_special_effect": {"const": 1}
+          }
+        }
+      }
+    },
+    "registry": {
+      "type": "object",
+      "required": ["selector_version", "formula_version", "canonical_only_runtime", "unknown_id", "legacy_policy", "legacy_aliases", "tie_break", "selector_ids", "formula_ids"],
+      "properties": {
+        "selector_version": {"const": "v1"},
+        "formula_version": {"const": "v1"},
+        "canonical_only_runtime": {"const": true},
+        "unknown_id": {"const": "validator_error"},
+        "legacy_policy": {"const": "migration_only"},
+        "legacy_aliases": {"type": "array", "uniqueItems": true},
+        "tie_break": {"const": "stable_combatant_id_ascending"},
+        "selector_ids": {"type": "object"},
+        "formula_ids": {"type": "array", "minItems": 1, "uniqueItems": true}
+      }
+    },
+    "special_effect": {
+      "type": "object",
+      "required": ["required_fields", "outcome_branches", "outcome_action_kinds", "action_plan_owner", "application_owner", "exactly_once_keys", "loot_entitlement"],
+      "properties": {
+        "required_fields": {"type": "array", "uniqueItems": true},
+        "outcome_branches": {"const": ["success", "failure"]},
+        "outcome_action_kinds": {"const": ["set_flag", "create_loot_entitlement", "grant_item"]},
+        "action_plan_owner": {"const": "combat_core"},
+        "application_owner": {"const": "gamecore"},
+        "exactly_once_keys": {"const": ["action_id", "application_transaction_id"]},
+        "loot_entitlement": {"type": "object"}
+      }
+    },
+    "strategy_modifier": {
+      "type": "object",
+      "required": ["baseline", "scopes", "operations", "durations", "default_duration", "stacking", "precedence", "clear_override_result"],
+      "properties": {
+        "baseline": {"const": "immutable"},
+        "scopes": {"const": ["all_allies", "role", "combatants"]},
+        "operations": {"const": ["set_role_weight", "set_targeting_rule", "set_target_policy", "clear_override"]},
+        "durations": {"const": ["until_replaced", "next_segment"]},
+        "default_duration": {"const": "until_replaced"},
+        "stacking": {"type": "object"},
+        "precedence": {"const": ["combatant", "role", "side", "baseline"]},
+        "clear_override_result": {"const": "restore_baseline"}
+      }
+    },
+    "lifecycle": {
+      "type": "object",
+      "required": ["states", "terminal_reason_separate", "terminal_result_separate", "pause_is_termination_candidate", "stable_pause_id", "stale_response", "nested_pause", "host_timeout", "forced_stop", "ko_tick_order"],
+      "properties": {
+        "states": {"const": ["running", "paused_for_intervention", "terminal"]},
+        "terminal_reason_separate": {"const": true},
+        "terminal_result_separate": {"const": true},
+        "pause_is_termination_candidate": {"const": false},
+        "stable_pause_id": {"const": "required"},
+        "stale_response": {"const": "reject"},
+        "nested_pause": {"const": "forbidden"},
+        "host_timeout": {"const": "submit_no_intervention"},
+        "forced_stop": {"type": "object"},
+        "ko_tick_order": {"type": "array", "minItems": 6, "uniqueItems": true}
+      }
+    },
+    "checkpoint_and_receipt": {
+      "type": "object",
+      "required": ["storage_model", "save_schema_version", "combat_checkpoint_schema_version", "decision_receipt_schema_version", "receipt_required_fields", "action_receipt_statuses", "compact_snapshot_fields", "fingerprints", "next_segment_seed_input", "legacy_v1"],
+      "properties": {
+        "storage_model": {"const": "resolved_decision_receipt_plus_compact_state_snapshot"},
+        "save_schema_version": {"const": 2},
+        "combat_checkpoint_schema_version": {"const": 2},
+        "decision_receipt_schema_version": {"const": 1},
+        "receipt_required_fields": {"type": "array", "uniqueItems": true},
+        "action_receipt_statuses": {"const": ["applied", "already_applied", "pending_claim", "rejected"]},
+        "compact_snapshot_fields": {"type": "array", "uniqueItems": true},
+        "fingerprints": {"const": ["intent_fingerprint", "decision_receipt_fingerprint", "checkpoint_fingerprint"]},
+        "next_segment_seed_input": {"const": "decision_receipt_fingerprint"},
+        "legacy_v1": {"type": "object"}
+      }
+    },
+    "runtime_handoff": {
+      "type": "object",
+      "required": ["current_runtime_simulation_version", "implementation_complete", "required_work_packages"],
+      "properties": {
+        "current_runtime_simulation_version": {"const": "v3"},
+        "implementation_complete": {"const": false},
+        "required_work_packages": {"type": "array", "minItems": 1, "uniqueItems": true}
+      }
+    }
+  },
+  "$defs": {
+    "responseAuthoring": {
+      "type": "object",
+      "properties": {
+        "strategy_modifier": {"type": "object"},
+        "special_effect": {"type": "object"}
+      },
+      "additionalProperties": false,
+      "anyOf": [
+        {"required": ["strategy_modifier"]},
+        {"required": ["special_effect"]}
+      ],
+      "not": {
+        "anyOf": [
+          {"required": ["intervention_kind"]},
+          {"required": ["resolution_kind"]},
+          {"required": ["hybrid_kind"]}
+        ]
+      }
+    }
+  }
+}

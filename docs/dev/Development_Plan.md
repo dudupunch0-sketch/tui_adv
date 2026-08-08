@@ -12,7 +12,9 @@
 
 > WP-L18 전투 계약 정본화: [combat contract index](../content/design_source/contracts/combat_contract_index.md)와 [Claude handoff](../content/design_source/handoffs/combat_contract_handoff.md)가 종료 조건·simulation version·표시명·로그·전술 구역의 owner와 검증 경계를 정의한다. 현재 runtime 구현은 완료로 표시하지 않고 handoff_required로 유지한다.
 >
-> 결정된 종료 우선순위는 forced_stop > captured > surrendered > fled > objective_completed > both_sides_defeated > one_side_defeated > max_ticks다. 낮은 숫자가 우선이며 priority tie는 validator error다. 실제 코드에서 관찰된 simulation version은 v1이다.
+> 결정된 종료 우선순위는 forced_stop > captured > surrendered > fled > objective_completed > both_sides_defeated > one_side_defeated > max_ticks다. 낮은 숫자가 우선이며 priority tie는 validator error다. 실제 코드에서 관찰된 simulation version은 v3이며 selector/formula registry v1은 simulation version과 독립된 축이다.
+>
+> 전투 개입 계약 정본화: 승인된 composite response, typed outcome actions, versioned selector/formula registry, typed strategy overlay, pause lifecycle, resolved decision receipt·checkpoint 및 원자 적용 규칙은 [intervention contract](../content/design_source/contracts/intervention.yml)와 [schema](../content/design_source/schema/combat_intervention.schema.json)가 정본이다. 구현 담당자는 [contract index](../content/design_source/contracts/combat_contract_index.md) → intervention contract → [combat contract handoff](../content/design_source/handoffs/combat_contract_handoff.md)의 WP-I1~I6 순서로 읽는다. 현재 `runtime_status`는 `handoff_required`이며 Rust/TS 구현 완료를 뜻하지 않는다.
 >
 > 후속 read order: 정본 02 자동전투/상황 트리거 → 정본 05 무기 세부 → 정본 08 전투 예시. 이 세 항목은 이번 WP-L18에서 구현 완료로 승격하지 않는다.
 

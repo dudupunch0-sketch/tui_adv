@@ -7,10 +7,10 @@ owners:
   required_version: authoring
   enforcement: validator
 supported_versions:
-  - version: v1
+  - version: v3
     source: crates/escape-core/src/combat_contract.rs
     current_runtime_observed: true
-    features: [deterministic_seed, provenance, spectator_fingerprint]
+    features: [deterministic_seed, provenance, spectator_fingerprint, axial_hex]
 authoring:
   required_simulation_version: required
   required_features: optional

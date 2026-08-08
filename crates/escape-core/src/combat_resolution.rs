@@ -888,8 +888,40 @@ impl CombatResolutionStepper {
 impl CombatResolutionStepper {
     pub(crate) fn step(
         &mut self,
-        _frame: &crate::CombatTickFrame,
+        frame: &crate::CombatTickFrame,
     ) -> Result<CombatResolutionFrame, CombatResolutionError> {
-        Err(CombatResolutionError::InvalidInput)
+        let _health_snapshot: BTreeMap<String, i64> = self
+            .combatants
+            .iter()
+            .map(|(id, combatant)| (id.clone(), combatant.current_health_hundredths))
+            .collect();
+        let mut _attack_fires = BTreeMap::new();
+        for attack in self.attacks.values() {
+            let speed = attack
+                .attack_speed_hundredths
+                .unwrap_or(ACTION_THRESHOLD_HUNDREDTHS);
+            let gauge = self
+                .attack_gauges
+                .get_mut(&attack.id)
+                .ok_or(CombatResolutionError::InvalidInput)?;
+            *gauge = gauge
+                .checked_add(speed)
+                .ok_or(CombatResolutionError::Overflow)?;
+            let mut fires = 0u32;
+            while *gauge >= ACTION_THRESHOLD_HUNDREDTHS {
+                fires += 1;
+                *gauge -= ACTION_THRESHOLD_HUNDREDTHS;
+            }
+            _attack_fires.insert(attack.id.clone(), fires);
+        }
+        let outcomes = Vec::new();
+        let combatants = self.combatants.values().cloned().collect();
+        let fingerprint = fingerprint(&(frame.tick, &outcomes));
+        Ok(CombatResolutionFrame {
+            tick: frame.tick,
+            outcomes,
+            combatants,
+            fingerprint,
+        })
     }
 }

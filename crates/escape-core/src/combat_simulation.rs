@@ -397,12 +397,7 @@ impl CombatSimulation {
         // T1-c §4-4: occupancy is read from this tick-start snapshot and
         // never rebuilt mid-tick. See `occupancy_snapshot`'s doc comment for
         // why that is load-bearing, not incidental.
-        let active_snapshot: BTreeMap<_, _> = snapshot
-            .iter()
-            .filter(|(_, p)| p.active)
-            .map(|(id, p)| (id.clone(), p.clone()))
-            .collect();
-        let occupancy = occupancy_snapshot(&active_snapshot)?;
+        let occupancy = occupancy_snapshot(&snapshot)?;
         // T3 §4-1/§4-4: how many times each active participant's movement
         // gauge crosses `ACTION_THRESHOLD_HUNDREDTHS` this tick, decided
         // from every participant's *tick-start* gauge value, in a pass that
@@ -417,7 +412,7 @@ impl CombatSimulation {
         // a speed slower than the threshold yields zero actions on some
         // ticks.
         let mut move_actions: BTreeMap<String, i32> = BTreeMap::new();
-        for actor in snapshot.values().filter(|actor| actor.active) {
+        for actor in snapshot.values() {
             let speed = actor
                 .move_speed_hundredths
                 .unwrap_or(ACTION_THRESHOLD_HUNDREDTHS);
@@ -434,16 +429,6 @@ impl CombatSimulation {
         }
         let mut moves = Vec::new();
         for actor in snapshot.values() {
-            if !actor.active {
-                moves.push(CombatMoveIntent {
-                    actor_id: actor.id.clone(),
-                    target_id: None,
-                    from: actor.position,
-                    to: actor.position,
-                    mode: CombatMoveMode::Hold,
-                });
-                continue;
-            }
             // T3 §4-2: target selection runs every tick unconditionally,
             // never gated on the movement-cadence gauge above. An attack's
             // own, independent attack-speed gauge (`combat_resolution.rs`)

@@ -1,6 +1,6 @@
 # T4 S3a — deterministic runtime checkpoint restore
 
-status: ready-for-implementation
+status: implemented
 date: 2026-08-08
 baseline_commit: `1cc1f83`
 baseline_test: `cargo test --workspace --no-fail-fast --quiet` = 0 failures
@@ -108,3 +108,17 @@ public result/schema, renderer/terminal/Web, delta compression, response effect/
 - 현재 runtime private state만으로 deterministic replay가 불가능한 경우.
 - checkpoint 필드 추가가 public serde boundary를 암묵적으로 바꾸는 경우.
 - 기존 fingerprint/test 값이 설명 없이 변경되는 경우.
+
+## 8. 구현 보고
+
+- implementation commits: `505d5ff`, `1623379`, `3838557`, `25a6b32`, `2e0e0af`,
+  `17fdd94`, `ead0ec4`
+- 내부 `CombatRuntimeCheckpoint`가 request, full execution/resolution frames, opportunity
+  state, pause marker, segment/history/seed를 serde round-trip한다.
+- restore는 partial progress를 허용하고, 원본 request로 deterministic replay한 frame과 exact
+  equality를 확인한다. frame length/tick, pause/candidate, opportunity budget/context,
+  canonical history, derived seed를 검증한다.
+- 테스트: runtime unit 12/12, opportunity integration 12/12, workspace 0 failures.
+- `cargo fmt --all -- --check`, `git diff --check` 통과.
+- full-frame checkpoint는 내부 기반만 제공한다. `SaveEnvelope`/public export/delta encoding과
+  실제 response effect/state mutation은 다음 slice 범위다.

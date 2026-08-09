@@ -45,7 +45,7 @@ Strategy는 immutable baseline 위 typed overlay다. Authoring scope는 combatan
 
 Lifecycle은 running/paused_for_intervention/terminal이며 terminal reason/result는 별도다. Pause는 termination 후보가 아니다. Stable pause ID와 evaluation fingerprint가 일치하지 않는 stale response는 거부하고 nested pause는 금지한다. Host timeout은 명시적 no_intervention 입력이다. forced_stop은 pause를 무효화하고 terminal priority 1위로 처리한다. KO tick은 결과 반영 → 잠정 terminal facts → 개입 감지 → 개입 적용 → facts 재계산 → 결착 순서다.
 
-저장은 resolved decision receipt + compact state snapshot이다. Save/checkpoint schema는 v2, receipt schema는 v1이다. Checkpoint는 pre/post stable state만 허용하며 partial apply를 직렬화하지 않는다. Intent/decision/checkpoint fingerprint를 분리하고 decision receipt fingerprint를 확정한 뒤 다음 segment seed를 파생한다. Legacy v1 selection은 `legacy_no_effect`로 보존하고 새 효과를 소급 적용하지 않는다.
+저장은 resolved decision receipt + `GameState.combat_intervention_ledger`와 optional active-session `SaveEnvelope.combat_checkpoint`로 분리한다. I7b의 SaveEnvelope target은 v2, checkpoint target은 별도 v2, receipt schema는 v1이다. Checkpoint는 paused session restart를 위해 serialize할 수 있지만 terminal/forced stop 후 폐기하며 transaction scratch/partial working copy/renderer state는 직렬화하지 않는다. Intent/decision/checkpoint fingerprint를 분리하고 candidate swap 시 transaction cache와 deterministic next-segment seed를 함께 확정한다. Legacy v1 selection은 `legacy_no_effect`로 보존하고 새 효과를 소급 적용하지 않는다.
 
 ## 표시 이름
 
@@ -66,7 +66,8 @@ author가 normalized 0..1 bounds와 purpose/accessibility label을 선언하고 
 - crates/escape-core/src/combat_spectator.rs: raw log event and renderer-neutral view
 - crates/escape-core/src/content.rs: encounter combat authoring boundary
 - crates/escape-core/src/combat_opportunity.rs: response schema, selector/formula registry references
-- crates/escape-core/src/combat_runtime.rs: lifecycle, atomic response transaction, receipt/checkpoint
+- crates/escape-core/src/combat_runtime.rs: lifecycle, response planning/preflight, receipt/checkpoint orchestration
+- crates/escape-core/src/combat_intervention_transaction.rs: new_required_module; candidate GameState atomic commit/swap and transaction retry cache
 - crates/escape-core/src/save.rs: save envelope v2 migration and active combat checkpoint
 - crates/escape-core/tests/combat_conclusion_wave2.rs, combat_execution_wave2.rs, combat_spectator_wave3.rs: acceptance fixture locations
 
@@ -103,3 +104,24 @@ author가 normalized 0..1 bounds와 purpose/accessibility label을 선언하고 
 미구현은 atomic application(다중 target effect application 포함), lifecycle/terminal integration, selected-target provenance 정책 delta, outcome-action source-selector resolve/provenance다. 현재 runtime effect definitions의 target_selector는 legacy/noncanonical일 수 있어 이 canonical compatibility로 수렴하는 구현 delta가 남아 있다. 이 문서는 runtime merge/completion을 주장하지 않는다.
 
 This slice does not modify Rust/TS/Web/runtime/generated files, add combat balance or weapon numbers, implement AI, create entity registry, or declare runtime completion. 정본 02 자동전투/상황 트리거, 05 무기 세부, 08 전투 예시는 후속 read order이며 이 PR의 구현 완료 항목이 아니다.
+
+## WP-I7 transaction contract — implementation handoff
+
+이 절은 WP-I7의 착수 질문을 모두 닫은 canonical contract다. response/preflight planning은 `crates/escape-core/src/combat_runtime.rs`가 소유하고, 새 `crates/escape-core/src/combat_intervention_transaction.rs`(`new_required_module`)가 candidate `GameState`의 atomic commit/swap을 소유한다. `crates/escape-core/src/lib.rs`는 public export/entry facade이며 atomic owner가 아니다. `save.rs`는 현재 `SaveEnvelope`/`SAVE_SCHEMA_VERSION = 1`의 load-save 경계다. 다음 DTO 이름은 모두 `new required type`이다: `CombatInterventionResponseInput`, `CombatInterventionResponsePlan`, `CombatInterventionCommitResult`, `CombatLootClaimInput`, `CombatLootClaimResult`, `CombatLootEntitlement`.
+
+`CombatInterventionResponsePlan`은 fully resolved DTO다. 필드는 정확히 `response_application_transaction_id`, `pause_id`, `evaluation_fingerprint`, `precondition_game_state_fingerprint`, `resolved_executor_id`, `resolved_target_ids`, `resolved_outcome`, `strategy_overlay_plan`, `effect_application_plan`, `outcome_action_plan`, `formula_receipt`, `decision_receipt_draft`, `deterministic_next_segment_seed`, `provenance`다. `decision_receipt_draft`는 plan input-only이며 candidate에서 최종 `decision_receipt`를 만드는 데만 쓰고 `GameState.combat_intervention_ledger`나 `SaveEnvelope.combat_checkpoint`에 절대 저장하지 않는다. GameCore transaction은 이 plan을 소비만 하며 selector/formula/branch/target을 재평가하지 않는다. precondition fingerprint가 stale이면 response result `rejected`, candidate swap/ledger/history/cost는 0, pause retained다.
+
+`set_flag`는 authored action order로 한 번 append하는 idempotent set, `grant_item`은 전역 item dedupe 없이 action ID별 exact-once direct grant, `create_loot_entitlement`는 inventory mutation 없는 unique-ID entitlement 생성이다. Combat core는 typed plan과 deterministic ID를 만들고 transaction module은 clone/candidate 전체 적용 후 성공 시에만 swap한다. terminal loot claim은 별도의 claim action/application transaction이다. response result는 `applied|already_applied|rejected`, action receipt는 `applied|already_applied|pending_claim`, claim result는 `applied|already_applied|rejected`다.
+
+Preflight 성공 직후 receipt는 active session context에서 GameState mutation 전에 만든다. SaveEnvelope의 optional `combat_checkpoint`/`CombatRuntimeCheckpoint`는 paused session restart를 위해 serialize할 수 있지만 terminal/forced stop 뒤 폐기하며 GameState ledger로 승격하지 않는다. transaction scratch, partial working copy, renderer state만 절대 serialize하지 않는다. preflight/selector/formula/branch compatibility 또는 candidate operation 실패는 original state/ledger/history/cost unchanged, pause retained다. candidate에는 최종 `decision_receipt`, action receipts, transaction result cache, deterministic seed만 넣고 swap한 뒤 next-segment seed는 cache의 값을 그대로 retry에 반환한다.
+
+I7b에서 `GameState.combat_intervention_ledger`를 추가할 때만 `SaveEnvelope` schema를 v1에서 v2로 올린다. ledger는 transaction result cache, applied action IDs, entitlement map, claim receipt map, applied claim IDs를 단일 field로 가진다. v1 load는 빈 `CombatInterventionLedger`로 default한다. checkpoint schema v1→v2는 별도 gate이며 I2b/I7a에서 checkpoint 필드를 바꾸면 `COMBAT_RUNTIME_CHECKPOINT_SCHEMA_VERSION`도 v2가 된다. provenance 없는 v1 paused checkpoint는 explicit reject한다.
+
+### 별도 work package와 acceptance
+
+1. **I2b — runtime delta**: same-tick KO provenance, `any_capable` stable combatant ID 선택, RNG semantic/domain tuple, effect target selector canonicalization/source provenance를 먼저 구현한다. acceptance는 same-tick KO 허용 경계, vector/insertion order 독립성, 동일 tuple replay, success/failure 양 branch pre-RNG compatibility failure다.
+2. **I7a — transaction adapter**: 새 transaction module이 `CombatInterventionResponsePlan`을 candidate에 적용하고 GameCore entry facade를 통해 atomic swap한다. acceptance는 preflight zero mutation, action collision rollback, same item distinct actions, transaction retry equal result, rejected zero commit이다.
+3. **I7b — persistence/claim ledger**: v2 SaveEnvelope, empty-ledger v1 load, restart exactly-once, entitlement survival, separate terminal claim transaction을 구현한다. acceptance는 claim denial retry, v1 checkpoint policy, entitlement collision rollback, claim idempotency다.
+4. **I7c — lifecycle/terminal E2E**: KO tick의 `apply → provisional facts → detect → intervene → recompute → settle`, stale/nested pause, forced-stop invalidation, terminal claim policy를 연결한다. acceptance는 same-tick intervention-before-settlement, stale response rejection, nested pause rejection, terminal claim result, uninterrupted/restart parity다.
+
+구현 순서는 **I2b → I7a → I7b → I7c**다. 바로 다음 action은 I2b runtime delta를 완료한 뒤 I7a adapter를 구현하는 것이다. 이 design slice에서는 Rust/TS/Web 파일을 수정하지 않는다.

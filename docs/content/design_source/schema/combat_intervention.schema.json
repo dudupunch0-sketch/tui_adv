@@ -7,7 +7,7 @@
   "additionalProperties": false,
   "required": [
     "contract_id", "status", "effective_date", "runtime_status", "schemas", "owners",
-    "response_payload", "transaction", "registry", "legacy_migration", "special_effect",
+    "response_payload", "canonical_semantics", "transaction", "registry", "legacy_migration", "special_effect",
     "strategy_modifier", "lifecycle", "checkpoint_and_receipt", "provenance_and_logs",
     "runtime_handoff"
   ],
@@ -16,6 +16,7 @@
     "status": {"const": "canonical"},
     "effective_date": {"type": "string"},
     "runtime_status": {"const": "handoff_required"},
+    "canonical_semantics": {"const": {"selected_target": {"cardinality": "exactly_one", "binding": "immutable_bound_target_from_pause_opportunity_provenance", "accepted_when": ["active_at_pause_snapshot", "active_at_triggering_tick_start_and_ko_during_that_same_tick"], "rejected_when": ["previously_ko", "fled", "departed", "captured"], "departed_meaning": "non_flee_departure", "provenance_fields": ["bound_target_ids", "bound_target_tick", "bound_target_state_at_tick_start", "trigger_tick"], "resolution": "no_re_evaluation_against_later_state_within_atomic_transaction"}, "executor": {"observer": {"opportunity_observer": "exact", "requires": ["can_act", "required_capabilities"], "mapping": "exactly_one_active_combatant_with_hp_greater_than_zero", "otherwise": "preflight_error"}, "any_capable": {"candidates": "all_pause_snapshot_observers_satisfying_can_act_and_required_capabilities", "candidate_mapping": "exactly_one_active_combatant_with_hp_greater_than_zero_per_candidate", "selection": "stable_combatant_id_ascending_first", "zero_candidates": "preflight_error", "ordering_source": "stable_combatant_id_not_vector_or_insertion_order"}}, "effect_target_compatibility": {"source_registry": "pause_snapshot_bound_CombatEffectCatalog.effects", "branches": ["success", "failure"], "effect_ids": "all_authored_effect_ids_in_both_branches", "unknown_effect_id": "preflight_error", "definition_target_selector": "canonical_target_selector_id_required", "compatibility_rule": "effect_target_selector_exactly_matches_response_special_effect_target_selector_id", "validate_before_rng": ["success_branch", "failure_branch"], "incompatibility": "preflight_error", "rejection_mutations": {"state": 0, "cost": 0, "rng": 0, "history": 0}, "static_authoring_validator_without_catalog": "do_not_guess_combinations", "runtime_preflight": "mandatory_machine_contract"}, "multi_target": {"resolved_target_ids": "stable_combatant_id_ascending", "authored_effect_ids": "unique_and_authored_order_is_semantic", "application_order": "effect-major, then target stable ascending", "exactly_once_per_effect_target_pair": true, "atomic_rejection": {"state_mutations": 0, "cost_mutations": 0, "rng_draws": 0}}, "lowest_health": {"population": "active_same_side_combatants_including_executor", "required_snapshot_invariant": "every_candidate_max_hp_greater_than_zero", "invalid_snapshot": "corrupted_snapshot_preflight_error", "comparison": "integer_rational_cross_multiplication_no_float", "tie_break": "stable_combatant_id_ascending"}, "surrounded": {"neighborhood": "six_adjacent_hexes_intersecting_candidate_anchor", "counts": "distinct_occupied_hexes_not_combatants", "ally_count": "exclude_entire_candidate_footprint", "active_footprints_only": true}, "strategy_scope": {"allowed": ["combatants", "role", "all_allies"], "all_allies_resolution": "executor_side_all_allies_side_overlay", "unsupported_authoring_scope": "side", "precedence": ["combatant", "role", "all_allies_side", "baseline"]}, "formula_fingerprint": {"semantic_tag": "combat.formula.v1.fixed_chance", "namespace": "actual_combat", "tuple_prefix": ["combat.formula.v1.fixed_chance", "actual_combat"], "encoding": "utf_8_compact_canonical_json_array", "object_keys": "BTreeMap_lexicographic", "hash": "FNV-1a_64", "input_fingerprint": "lowercase_16_hex_of_fnv_result", "sub_seed": "same_64_bit_fnv_result", "draw_zero_roll": "sub_seed_mod_100", "deterministic_0_or_100": "fingerprint_and_sub_seed_derived_but_no_draw_or_roll", "algorithm_change": "simulation_version_bump_required"}, "registry_membership": "unknown_ids_are_preflight_or_validator_errors", "outcome_resolution": {"action_source_selectors": "resolve_in_pause_preflight_and_record_provenance", "target_ordering": "deterministic"}}},
     "schemas": {
       "type": "object",
       "additionalProperties": false,
@@ -98,10 +99,10 @@
           "required": ["namespace", "source", "provenance_required", "canonical_sub_seed_inputs", "canonical_encoding", "draw_index", "forbidden_inputs"],
           "properties": {
             "namespace": {"const": "actual_combat"}, "source": {"const": "deterministic_sub_seed"}, "provenance_required": {"const": true},
-            "canonical_sub_seed_inputs": {"const": ["effective_segment_seed", "simulation_version", "manifest_fingerprint", "segment_index", "pause_tick", "pause_id", "evaluation_fingerprint", "authored_response_id", "formula_id", "normalized_formula_parameters", "resolved_executor_id", "canonical_ordered_target_ids"]},
+            "canonical_sub_seed_inputs": {"const": ["formula_semantic_tag", "rng_namespace", "effective_segment_seed", "simulation_version", "manifest_fingerprint", "segment_index", "pause_tick", "pause_id", "evaluation_fingerprint", "authored_response_id", "formula_id", "normalized_formula_parameters", "resolved_executor_id", "canonical_ordered_target_ids"]},
             "canonical_encoding": {
               "type": "object", "additionalProperties": false,
-              "required": ["input", "serialization", "whitespace", "object_key_order", "integer_encoding", "normalized_formula_parameters_key_order", "sub_seed_derivation_hash"],
+              "required": ["input", "serialization", "whitespace", "object_key_order", "integer_encoding", "normalized_formula_parameters_key_order", "sub_seed_derivation_hash", "input_fingerprint", "sub_seed", "draw_zero_roll"],
               "properties": {
                 "input": {"const": "ordered_tuple_in_declared_input_order"},
                 "serialization": {"const": "utf_8_canonical_json_array"},
@@ -109,7 +110,7 @@
                 "object_key_order": {"const": "lexicographic"},
                 "integer_encoding": {"const": "decimal"},
                 "normalized_formula_parameters_key_order": {"const": "lexicographic"},
-                "sub_seed_derivation_hash": {"const": "simulation_version_owned_deterministic_rng_primitive"}
+                "sub_seed_derivation_hash": {"const": "fnv_1a_64_current_v3"}, "input_fingerprint": {"const": "lowercase_16_hex_of_fnv_result"}, "sub_seed": {"const": "same_64_bit_fnv_result"}, "draw_zero_roll": {"const": "sub_seed_mod_100"}
               }
             }, "draw_index": {"const": 0},
             "forbidden_inputs": {"const": ["wall_clock", "frame", "renderer", "forecast"]}
@@ -141,7 +142,7 @@
           "type": "object", "additionalProperties": false,
           "required": ["required_fields", "bound_target_ids", "source"],
           "properties": {
-            "required_fields": {"const": ["bound_target_ids"]},
+            "required_fields": {"const": ["bound_target_ids", "bound_target_tick", "bound_target_state_at_tick_start", "trigger_tick"]},
             "bound_target_ids": {"const": "immutable_single_bound_target_ids_or_empty"},
             "source": {"const": "pause_snapshot"}
           }
@@ -151,10 +152,10 @@
           "required": ["executor_self", "selected_target", "nearest_active_enemy", "lowest_health_active_ally", "surrounded_active_ally", "all_active_allies", "multi_target_selector_ids", "zero_target_result"],
           "properties": {
             "executor_self": {"type": "object", "additionalProperties": false, "required": ["resolves"], "properties": {"resolves": {"const": "executor_combatant_exactly_one"}}},
-            "selected_target": {"type": "object", "additionalProperties": false, "required": ["resolves", "ai_current_target_fallback"], "properties": {"resolves": {"const": "immutable_single_bound_target_from_pause_opportunity_provenance"}, "ai_current_target_fallback": {"const": "forbidden"}}},
+            "selected_target": {"type": "object", "additionalProperties": false, "required": ["resolves", "ai_current_target_fallback"], "properties": {"resolves": {"const": "exactly_one_immutable_bound_target; active_at_pause_or_active_at_trigger_tick_start_then_ko_same_tick_only"}, "ai_current_target_fallback": {"const": "forbidden"}}},
             "nearest_active_enemy": {"type": "object", "additionalProperties": false, "required": ["candidate_set", "ordering"], "properties": {"candidate_set": {"const": "active_enemy_combatants_opposite_side"}, "ordering": {"const": "minimum_occupied_footprint_hex_distance_between_executor_and_candidate_ascending_then_stable_id"}}},
-            "lowest_health_active_ally": {"type": "object", "additionalProperties": false, "required": ["candidate_set", "ordering"], "properties": {"candidate_set": {"const": "active_same_side_combatants_including_executor"}, "ordering": {"const": "current_hp_divided_by_max_hp_ascending_then_stable_id"}}},
-            "surrounded_active_ally": {"type": "object", "additionalProperties": false, "required": ["candidate_set", "neighborhood", "predicate", "candidate_self_occupancy", "exclusions", "ordering", "terrain_and_boundary_inputs"], "properties": {"candidate_set": {"const": "active_same_side_combatants_including_executor"}, "neighborhood": {"const": "six_adjacent_hexes"}, "predicate": {"const": "enemy_occupancy_at_least_3_and_ally_occupancy_zero"}, "candidate_self_occupancy": {"const": "excluded_from_ally_occupancy_count"}, "exclusions": {"const": ["ko", "departed", "captured"]}, "ordering": {"const": "enemy_count_descending_then_stable_id"}, "terrain_and_boundary_inputs": {"const": "excluded"}}},
+            "lowest_health_active_ally": {"type": "object", "additionalProperties": false, "required": ["candidate_set", "ordering"], "properties": {"candidate_set": {"const": "active_same_side_combatants_including_executor"}, "ordering": {"const": "exact_integer_rational_cross_multiplication_current_hp_over_max_hp_ascending_then_stable_id"}}},
+            "surrounded_active_ally": {"type": "object", "additionalProperties": false, "required": ["candidate_set", "neighborhood", "predicate", "candidate_self_occupancy", "exclusions", "ordering", "terrain_and_boundary_inputs"], "properties": {"candidate_set": {"const": "active_same_side_combatants_including_executor"}, "neighborhood": {"const": "six_adjacent_hexes"}, "predicate": {"const": "distinct_enemy_occupied_hexes_at_least_3_and_distinct_ally_occupied_hexes_zero"}, "candidate_self_occupancy": {"const": "entire_candidate_footprint_excluded_from_ally_occupancy_count"}, "exclusions": {"const": ["ko", "departed", "captured"]}, "ordering": {"const": "enemy_count_descending_then_stable_id"}, "terrain_and_boundary_inputs": {"const": "excluded"}}},
             "all_active_allies": {"type": "object", "additionalProperties": false, "required": ["candidate_set", "ordering", "multi_target"], "properties": {"candidate_set": {"const": "active_same_side_combatants_including_executor"}, "ordering": {"const": "stable_id_ascending"}, "multi_target": {"const": true}}},
             "multi_target_selector_ids": {"const": ["combat.selector.target.v1.all_active_allies"]},
             "zero_target_result": {"const": "preflight_error"}
@@ -182,13 +183,13 @@
           "additionalProperties": false,
           "required": ["executor", "target"],
           "properties": {
-            "executor": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^combat\\.selector\\.executor\\.v1\\."}},
-            "target": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^combat\\.selector\\.target\\.v1\\."}}
+            "executor": {"const": ["combat.selector.executor.v1.observer", "combat.selector.executor.v1.any_capable"]},
+            "target": {"const": ["combat.selector.target.v1.executor_self", "combat.selector.target.v1.selected_target", "combat.selector.target.v1.nearest_active_enemy", "combat.selector.target.v1.lowest_health_active_ally", "combat.selector.target.v1.surrounded_active_ally", "combat.selector.target.v1.all_active_allies"]}
           }
         },
-        "formula_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^combat\\.formula\\.v1\\."}},
-        "strategy_targeting_rule_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^combat\\.strategy\\.targeting\\.v1\\."}},
-        "version_relationship": {"type": "object"}
+        "formula_ids": {"const": ["combat.formula.v1.fixed_chance"]},
+        "strategy_targeting_rule_ids": {"const": ["combat.strategy.targeting.v1.attackers_of", "combat.strategy.targeting.v1.rearmost_active_enemy", "combat.strategy.targeting.v1.focus_resolved_target"]},
+        "version_relationship": {"const": {"registry_versions_independent_from_simulation_version": true, "same_id_semantic_change": "forbidden", "global_judgement_change_requires_simulation_version_bump": true}}
       }
     },
     "legacy_migration": {
@@ -221,16 +222,16 @@
         "direct_grant", "loot_entitlement"
       ],
       "properties": {
-        "required_fields": {"type": "array", "uniqueItems": true},
+        "required_fields": {"const": ["formula_id", "formula_parameters", "executor_selector_id", "target_selector_id", "success", "failure"]},
         "outcome_branches": {"const": ["success", "failure"]},
         "branch_fields": {"const": ["effect_ids", "outcome_actions"]},
         "outcome_action_kinds": {"const": ["set_flag", "create_loot_entitlement", "grant_item"]},
-        "outcome_action_fields": {"type": "object"},
+        "outcome_action_fields": {"const": {"authored_common": ["kind"], "set_flag": ["flag_id"], "create_loot_entitlement": ["item_id", "source_selector_id", "claim_policy"], "grant_item": ["item_id"]}},
         "action_plan_owner": {"const": "combat_core"},
         "application_owner": {"const": "gamecore"},
-        "exactly_once": {"type": "object"},
-        "direct_grant": {"type": "object"},
-        "loot_entitlement": {"type": "object"}
+        "exactly_once": {"const": {"id_generation_owner": {"action_id": "combat_core", "entitlement_id": "combat_core", "response_application_transaction_id": "gamecore", "claim_action_id": "gamecore", "claim_application_transaction_id": "gamecore"}, "deterministic_inputs": {"action_id": ["decision_receipt_fingerprint", "outcome_branch", "action_index"], "entitlement_id": ["action_id"], "response_application_transaction_id": ["pause_id", "decision_receipt_fingerprint"], "claim_action_id": ["entitlement_id", "terminal_facts_fingerprint"], "claim_application_transaction_id": ["combat_id", "terminal_facts_fingerprint"]}, "ledgers": {"response_actions": "decision_receipt.action_receipts", "applied_action_ids": "compact_checkpoint.applied_action_ids", "entitlements": "compact_checkpoint.unresolved_loot_entitlements", "claims": "terminal_receipt.loot_claim_receipts", "applied_claim_action_ids": "compact_checkpoint.applied_claim_action_ids"}, "retry": {"response_action": "matching_action_id_returns_already_applied_without_mutation", "entitlement_creation": "matching_entitlement_id_returns_existing_entitlement", "entitlement_claim": "matching_claim_action_id_returns_already_applied_without_mutation"}, "transaction_separation": {"response_application": "response_application_transaction_id", "terminal_loot_claim": "claim_application_transaction_id", "same_transaction_id": "forbidden"}}},
+        "direct_grant": {"const": {"timing": "immediate_atomic_commit", "inventory_result": "acquired"}},
+        "loot_entitlement": {"const": {"timing": "create_on_outcome_claim_on_terminal", "default_claimable_results": ["victory", "objective"], "default_denied_results": ["escape", "defeat", "surrender", "capture", "forced_stop"], "default_denied_reasons": ["both_sides_defeated"], "explicit_override": "allowed"}}
       }
     },
     "strategy_modifier": {
@@ -245,7 +246,7 @@
         "default_duration": {"const": "until_replaced"},
         "combat_end": {"const": "discard_all_overlays"},
         "stacking": {"type": "object"},
-        "precedence": {"const": ["combatant", "role", "side", "baseline"]},
+        "precedence": {"const": ["combatant", "role", "all_allies_side", "baseline"]}, "unsupported_authoring_scope": {"const": "side"},
         "clear_override_result": {"const": "restore_baseline"},
         "invalid_target": {"type": "object"},
         "special_effect_outcome_dependency": {"const": "none"}
@@ -289,9 +290,10 @@
         "receipt_optional_fields": {"const": ["formula_receipt"]},
         "formula_receipt_rules": {
           "type": "object", "additionalProperties": false,
-          "required": ["strategy_only", "deterministic_zero_or_one_hundred", "probabilistic_one_to_ninety_nine"],
+          "required": ["strategy_only", "special_effect_present", "deterministic_zero_or_one_hundred", "probabilistic_one_to_ninety_nine"],
           "properties": {
             "strategy_only": {"const": "absent"},
+            "special_effect_present": {"const": "required"},
             "deterministic_zero_or_one_hundred": {"type": "object", "additionalProperties": false, "required": ["rng_namespace", "rng_draw_index", "roll"], "properties": {"rng_namespace": {"const": "actual_combat"}, "rng_draw_index": {"const": null}, "roll": {"const": null}}},
             "probabilistic_one_to_ninety_nine": {"type": "object", "additionalProperties": false, "required": ["rng_namespace", "rng_draw_index", "roll"], "properties": {"rng_namespace": {"const": "actual_combat"}, "rng_draw_index": {"const": 0}, "roll": {"const": "integer_range_0_99"}}}
           }

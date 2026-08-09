@@ -12,7 +12,7 @@ related_plan: `fable_combat_hex_t4_step12_2608081745.md`
 
 이 문서는 처음에는 T4 response application의 미결정을 정본 담당자에게 전달하는 proposal이었다. 해당 결정은 이제 local design source의 `intervention.yml`에 승인·정본화됐다. 이 문서는 canonical contract를 대체하지 않으며, 현재 Rust 구현과 승인 계약 사이의 gap 및 구현 read order를 설명한다.
 
-현재 `CombatRuntime::resume_with_response(response_id)`는 선택 이력과 segment seed만 갱신한다. 실제 selector/formula 해석, strategy overlay, effect/action 적용, lifecycle/terminal 통합, decision receipt는 아직 구현하지 않는다. 따라서 정본 상태는 canonical design이지만 runtime은 `handoff_required`다.
+현재 runtime은 pause preflight에서 canonical selector/formula를 해석하고 formula receipt 및 decision receipt 구조를 이미 생성·보존한다. `CombatRuntime::resume_with_response(response_id)`의 남은 gap은 resolved inputs를 실제 state에 반영하는 atomic application, lifecycle/terminal integration, selected-target provenance 정책 delta, outcome-action source-selector resolve/provenance다. 따라서 정본 상태는 canonical design이지만 runtime은 `handoff_required`다.
 
 ## 2. 확정된 response 모델
 
@@ -62,24 +62,26 @@ Formula ID와 selector ID의 v1은 의미 registry version이다. 현재 runtime
 
 ### WP-I2b 승인 정본 보충
 
-이 보충은 v1의 의미를 변경하지 않고, 기존에 처음 열어 둔 의미를 완성한다. `combat.formula.v1.fixed_chance`는 authored `chance_percent` 정수 하나만 받으며 0..=100만 유효하다. unknown/missing/type/range 오류는 preflight 실패이고, executor·target·strategy 보정, clamp, round는 없다. roll은 0..99이며 `roll < chance_percent`가 성공이다. 0/100은 각각 항상 실패/성공으로 RNG 0회, roll/draw index null이다. 1..99는 정확히 1회 draw를 사용한다. 능력치 기반 판정은 별도 formula ID이며 새 formula 추가 시 schema도 갱신한다.
+이 보충은 v1의 의미를 변경하지 않고 WP-I2b 후속 canonical semantics를 완성한다. `combat.formula.v1.fixed_chance`는 authored `chance_percent` 정수 하나만 받으며 0..=100만 유효하다. unknown/missing/type/range 오류는 preflight 실패이고, 보정·clamp·round는 없다. roll은 0..99이며 `roll < chance_percent`가 성공이다. 0/100은 항상 실패/성공으로 draw와 roll은 없지만 fingerprint/sub-seed는 계산한다. 1..99는 정확히 1회 draw를 사용한다. 새 formula 추가 시 schema도 갱신한다.
 
-Probabilistic namespace는 `actual_combat`이다. canonical sub-seed 입력은 명시된 순서의 ordered tuple이며 UTF-8 canonical JSON array(whitespace 없음), object key lexicographic order, integer decimal encoding, `normalized_formula_parameters` key lexicographic order를 사용한다. sub-seed derivation hash는 simulation-version-owned deterministic RNG primitive을 사용한다. wall clock/frame/renderer/forecast는 금지하며 draw index는 0이다. Receipt는 `formula_id`, `normalized_formula_parameters`, `input_fingerprint`, `rng_namespace`, nullable `rng_draw_index`, nullable `roll`, `outcome`을 저장하고, strategy-only에는 formula receipt 자체가 없다.
+Canonical tuple은 `[combat.formula.v1.fixed_chance, actual_combat, effective_segment_seed, simulation_version, manifest_fingerprint, segment_index, pause_tick, pause_id, evaluation_fingerprint, authored_response_id, formula_id, normalized_formula_parameters, resolved_executor_id, canonical_ordered_target_ids]`다. UTF-8 compact canonical JSON array, BTreeMap lexicographic object keys, decimal integer encoding을 사용한다. 현재 v3 hash는 FNV-1a 64이며 input fingerprint는 lowercase 16-hex FNV 결과, sub-seed는 같은 64-bit 값, draw 0 roll은 `sub_seed % 100`이다. 알고리즘 변경은 simulation version bump가 필요하다. wall clock/frame/renderer/forecast는 금지하며 draw index는 0이다. Receipt는 formula receipt가 필요한 경우에만 `formula_id`, `normalized_formula_parameters`, `input_fingerprint`, `rng_namespace`, nullable `rng_draw_index`, nullable `roll`, `outcome`을 저장하고, strategy-only에는 formula receipt 자체가 없다.
 
-Selectors는 pause snapshot에서 1회 resolve한다. executor_self는 executor와 일치하는 정확히 한 combatant, selected_target은 pause/opportunity provenance의 immutable single bound target만 사용하며 AI 현재 target fallback은 금지한다. nearest active enemy는 반대편 active 중 executor와 후보의 occupied footprint 간 최소 hex distance 최솟값, lowest health active ally는 같은 side active/self 포함의 current_hp/max_hp 최솟값, surrounded active ally는 executor를 포함한 anchor 인접 6칸의 active same-side 후보에서 active enemy 3칸 이상·active ally 0칸 후보를 enemy 수 내림차순으로 선택한다. 대상 본인의 점유만 ally occupancy 계산에서 제외하며 executor를 후보에서 제외하지 않는다. surrounded 판정은 terrain/boundary를 포함하지 않고 KO/이탈/포획을 제외한다. all active allies만 multi-target이며 stable ID 오름차순이고, 0 target은 preflight 실패다. `bound_target_ids`는 pause/opportunity provenance에 보존한다.
+Selectors는 pause snapshot에서 1회 resolve한다. exact `observer`는 opportunity observer이며 can_act·required capabilities·hp>0인 active combatant 하나로 매핑되어야 하고, `any_capable`의 각 후보도 같은 조건을 만족하는 exactly one active combatant with hp>0로 매핑되어야 한다. `any_capable`은 pause-snapshot observers 중 같은 조건을 만족하는 전원을 stable combatant ID 오름차순으로 정렬해 첫 항목을 고른다. zero/불일치면 preflight다. vector/insertion order는 사용하지 않는다. selected_target은 정확히 하나의 immutable bound target만 받으며 pause에서 active였거나 triggering tick 시작에 active였다가 같은 tick에 KO가 된 경우만 허용한다. previously-KO/fled/departed/captured는 거부하고, `departed`는 fled가 아닌 비도주 이탈이다. bound ID·bound tick·tick 시작 상태·trigger tick provenance를 보존하며 atomic transaction 안에서 later state로 재평가하지 않는다. lowest health는 active same-side/self 포함 전원의 max_hp>0을 먼저 검증하고 integer cross-multiplication으로 비교하며 tie는 stable ID다. surrounded는 candidate anchor six-neighborhood와 교차하는 distinct occupied hexes를 세고 전체 candidate footprint를 ally count에서 제외하며 active footprints만 사용한다. all active allies의 target IDs는 stable ID 오름차순이다. authored unique effect_ids order가 semantic이고 각 effect마다 각 target을 effect-major, then target stable ascending으로 exactly once 적용한다. success/failure 양 branch compatibility, action source selector resolution/provenance, registry membership은 RNG 전에 preflight한다.
 
-Preflight 실패는 mutation/cost/RNG/history/receipt 없이 pause를 유지한다. resolved failure는 정상 outcome이며 failure branch만 적용하고 composite strategy는 결과와 무관하게 적용한다. 이 결정은 runtime 구현을 완료로 표시하지 않으며 다음 runtime handoff에서 소비한다.
+Effect-target compatibility는 pause snapshot에 결박된 `CombatEffectCatalog.effects`를 source registry로 사용한다. success/failure 양 branch의 모든 authored `effect_id`를 조회하고 unknown ID는 preflight error다. 각 `CombatEffectDefinition.target_selector`는 canonical target selector ID여야 하며, response의 `special_effect.target_selector_id`와 exact match할 때만 compatible하다. 하나라도 mismatch면 RNG 전에 preflight error이며 state/cost/RNG/history는 모두 0이다. static authoring validator는 catalog 입력이 없으면 조합을 추측하지 않고, 이 runtime preflight를 mandatory machine contract로 검증한다.
+
+Preflight 실패는 mutation/cost/RNG/history/receipt 없이 pause를 유지한다. resolved failure는 정상 outcome이며 failure branch만 적용하고 composite strategy는 결과와 무관하게 적용한다. `special_effect`가 present이면 `formula_receipt`가 required이고, strategy-only에는 formula receipt 자체가 없다. 이 결정은 runtime 구현을 완료로 표시하지 않으며 다음 runtime handoff에서 소비한다.
 
 ## 4. Strategy modifier
 
 전투 시작 전 역할·정책은 immutable baseline이다. 개입은 baseline을 직접 고치지 않고 typed overlay를 적용한다.
 
-- scope: `all_allies`, `role`, `combatants`
+- scope: `all_allies`, `role`, `combatants`; `all_allies` resolves to the executor-side `all_allies_side` overlay; unsupported authoring scope `side` is rejected
 - operation: `set_role_weight`, `set_targeting_rule`, `set_target_policy`, `clear_override`
 - duration: 기본 `until_replaced`, 선택적으로 `next_segment`
 - 같은 scope+field: 최신 patch가 교체
 - 서로 다른 field: 공존
-- precedence: combatant > role > side > baseline
+- precedence: combatant > role > all_allies_side > baseline
 - 전투 종료: overlay 전부 폐기
 - additive numeric stacking과 임의 JSON patch: 금지
 - `clear_override`: 해당 key를 baseline으로 복원
@@ -126,7 +128,13 @@ Fingerprint는 세 층이다.
 
 Save schema와 combat checkpoint는 v2로 올리고 receipt schema는 v1로 시작한다. 기존 v1 selection history는 당시 effect application이 없었으므로 `legacy_no_effect`로 보존하고 새 효과를 소급 적용하지 않는다.
 
-## 8. 구현 read order와 acceptance
+## 8. 현재 runtime drift
+
+현재 mismatch는 세 가지다: selected_target의 same-tick KO 및 current-target binding, any_capable의 observer input-order 의존, 새 explicit RNG formula semantic/domain tags 부재다.
+
+미구현은 atomic application(다중 target effect application 포함), lifecycle/terminal integration, selected-target provenance 정책 delta, outcome-action source-selector resolve/provenance다. 현재 runtime effect definitions의 target_selector는 legacy/noncanonical일 수 있어 이 canonical compatibility로 수렴하는 구현 delta가 남아 있다.
+
+## 9. 구현 read order와 acceptance
 
 구현자는 다음 순서로 읽는다.
 

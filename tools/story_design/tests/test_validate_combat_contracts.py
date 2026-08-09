@@ -29,7 +29,11 @@ def fixture(tmp_path):
     root = tmp_path / "design_source"
     shutil.copytree(SOURCE / "contracts", root / "contracts")
     (root / "schema").mkdir()
-    for name in ("combat_intervention.schema.json", "combat_intervention_response.schema.json"):
+    for name in (
+        "combat_intervention.schema.json",
+        "combat_intervention_response.schema.json",
+        "combat_simulation_version.schema.json",
+    ):
         shutil.copy2(SOURCE / "schema" / name, root / "schema" / name)
     return root
 
@@ -86,6 +90,15 @@ def strategy_payload():
     }
 
 
+def combatant_scope_payload():
+    payload = strategy_payload()
+    payload["strategy_modifier"]["scope"] = {
+        "kind": "combatants",
+        "combatant_selector_ids": ["combat.selector.target.v1.selected_target"],
+    }
+    return payload
+
+
 def assert_invalid(root, message):
     result = run(root)
     assert result.returncode != 0
@@ -140,6 +153,216 @@ def test_authoring_schema_rejects_empty_and_legacy_kind_payloads(tmp_path):
     assert "unknown property 'resolution_kind'" in run(
         root, write_payload(tmp_path, legacy)
     ).stdout
+
+
+@pytest.mark.parametrize(
+    ("payload_factory", "path", "unknown", "message"),
+    [
+        (special_effect_payload, ("special_effect", "executor_selector_id"), "combat.selector.executor.v1.unknown", "executor_selector_id"),
+        (special_effect_payload, ("special_effect", "target_selector_id"), "combat.selector.target.v1.unknown", "target_selector_id"),
+        (combatant_scope_payload, ("strategy_modifier", "scope", "combatant_selector_ids"), "combat.selector.target.v1.unknown", "combatant scope selector ID"),
+        (special_effect_payload, ("special_effect", "success", "outcome_actions"), None, "loot source_selector_id"),
+        (strategy_payload, ("strategy_modifier", "operations", 0, "rule_id"), "combat.strategy.targeting.v1.unknown", "strategy targeting rule ID"),
+    ],
+)
+def test_authored_ids_must_be_exact_registry_members(tmp_path, payload_factory, path, unknown, message):
+    root = fixture(tmp_path)
+    payload = payload_factory()
+    target = payload
+    for part in path[:-1]:
+        target = target[part]
+    if unknown is None:
+        target["outcome_actions"][0] = {"kind": "create_loot_entitlement", "item_id": "token", "source_selector_id": "combat.selector.target.v1.unknown", "claim_policy": "default_terminal_policy"}
+    else:
+        target[path[-1]] = unknown
+    result = run(root, write_payload(tmp_path, payload))
+    assert result.returncode != 0
+    assert message in result.stdout
+
+
+@pytest.mark.parametrize(
+    ("registry_path", "message"),
+    [
+        (("selector_ids", "executor"), "executor registry membership"),
+        (("selector_ids", "target"), "target registry membership"),
+        (("formula_ids",), "formula registry membership"),
+        (("strategy_targeting_rule_ids",), "strategy-rule registry membership"),
+    ],
+)
+def test_registry_membership_rejects_omission_or_unknown_canonical_id(tmp_path, registry_path, message):
+    root = fixture(tmp_path)
+
+    def remove_id(data):
+        target = data["registry"]
+        for part in registry_path[:-1]:
+            target = target[part]
+        target[registry_path[-1]].pop()
+
+    mutate(root / "contracts/intervention.yml", remove_id)
+    result = run(root)
+    assert result.returncode != 0
+    assert message in result.stdout
+
+
+@pytest.mark.parametrize(
+    ("change", "message"),
+    [
+        (
+            lambda data: data["canonical_semantics"]["executor"]["any_capable"].__setitem__("candidate_mapping", "any_active_combatant"),
+            "canonical any-capable candidate mapping",
+        ),
+        (
+            lambda data: data["registry"]["opportunity_provenance"].__setitem__(
+                "required_fields", ["bound_target_ids", "trigger_tick", "bound_target_tick", "bound_target_state_at_tick"]
+            ),
+            "selected target provenance fields",
+        ),
+        (
+            lambda data: data["checkpoint_and_receipt"]["formula_receipt_rules"].pop("special_effect_present"),
+            "special-effect formula receipt",
+        ),
+        (
+            lambda data: data["canonical_semantics"]["selected_target"].__setitem__("departed_meaning", "allowed"),
+            "canonical selected target departed definition",
+        ),
+    ],
+)
+def test_new_semantic_contract_mutations_are_rejected(tmp_path, change, message):
+    root = fixture(tmp_path)
+    mutate(root / "contracts/intervention.yml", change)
+    assert_invalid(root, message)
+
+
+@pytest.mark.parametrize(
+    ("change", "message"),
+    [
+        (
+            lambda data: data["canonical_semantics"]["effect_target_compatibility"].__setitem__(
+                "validate_before_rng", ["success_branch"]
+            ),
+            "effect-target compatibility contract",
+        ),
+        (
+            lambda data: data["canonical_semantics"]["effect_target_compatibility"].__setitem__(
+                "incompatibility", "designer_review"
+            ),
+            "effect-target compatibility contract",
+        ),
+    ],
+)
+def test_both_effect_branches_require_pre_rng_compatibility_preflight(tmp_path, change, message):
+    root = fixture(tmp_path)
+    mutate(root / "contracts/intervention.yml", change)
+    assert_invalid(root, message)
+
+
+EFFECT_TARGET_COMPATIBILITY_FIELDS = [
+    "source_registry",
+    "branches",
+    "effect_ids",
+    "unknown_effect_id",
+    "definition_target_selector",
+    "compatibility_rule",
+    "validate_before_rng",
+    "incompatibility",
+    "rejection_mutations",
+    "static_authoring_validator_without_catalog",
+    "runtime_preflight",
+]
+
+
+@pytest.mark.parametrize("field", EFFECT_TARGET_COMPATIBILITY_FIELDS)
+def test_effect_target_compatibility_contract_rejects_field_omission(tmp_path, field):
+    root = fixture(tmp_path)
+
+    def remove_field(data):
+        data["canonical_semantics"]["effect_target_compatibility"].pop(field)
+
+    mutate(root / "contracts/intervention.yml", remove_field)
+    assert_invalid(root, "effect-target compatibility contract")
+
+
+@pytest.mark.parametrize(
+    ("path", "value"),
+    [
+        (("source_registry",), "runtime_effects"),
+        (("branches",), ["success"]),
+        (("effect_ids",), "success_effect_ids_only"),
+        (("unknown_effect_id",), "designer_review"),
+        (("definition_target_selector",), "target_selector_optional"),
+        (("compatibility_rule",), "effect_target_is_compatible"),
+        (("validate_before_rng",), ["success_branch"]),
+        (("incompatibility",), "designer_review"),
+        (("rejection_mutations", "rng"), 1),
+        (("static_authoring_validator_without_catalog",), "guess_combinations"),
+        (("runtime_preflight",), "optional"),
+    ],
+)
+def test_effect_target_compatibility_contract_rejects_field_mutation(tmp_path, path, value):
+    root = fixture(tmp_path)
+
+    def change(data):
+        target = data["canonical_semantics"]["effect_target_compatibility"]
+        for part in path[:-1]:
+            target = target[part]
+        target[path[-1]] = value
+
+    mutate(root / "contracts/intervention.yml", change)
+    assert_invalid(root, "effect-target compatibility contract")
+
+
+def test_static_payload_does_not_infer_missing_effect_catalog_compatibility(tmp_path):
+    root = fixture(tmp_path)
+    result = run(root, write_payload(tmp_path, special_effect_payload()))
+    assert result.returncode == 0, result.stdout
+
+
+@pytest.mark.parametrize(
+    ("action", "message"),
+    [
+        ({"kind": "set_flag", "flag_id": ""}, "ID must not be empty"),
+        ({"kind": "grant_item", "item_id": ""}, "ID must not be empty"),
+        (
+            {
+                "kind": "create_loot_entitlement",
+                "item_id": "",
+                "source_selector_id": "combat.selector.target.v1.selected_target",
+                "claim_policy": "default_terminal_policy",
+            },
+            "ID must not be empty",
+        ),
+    ],
+)
+def test_response_action_and_entitlement_ids_cannot_be_empty(tmp_path, action, message):
+    root = fixture(tmp_path)
+    payload = special_effect_payload()
+    payload["special_effect"]["success"]["outcome_actions"] = [action]
+    result = run(root, write_payload(tmp_path, payload))
+    assert result.returncode != 0
+    assert message in result.stdout
+
+
+@pytest.mark.parametrize(
+    ("change", "message"),
+    [
+        (
+            lambda data: data["supported_versions"].__setitem__(0, "v3"),
+            "malformed supported_versions item",
+        ),
+        (
+            lambda data: data["authoring"].pop("required_simulation_version"),
+            "missing authoring.required_simulation_version",
+        ),
+        (
+            lambda data: data["authoring"].__setitem__("compatibility", "compatible"),
+            "compatibility must be exact",
+        ),
+    ],
+)
+def test_simulation_version_schema_rejects_malformed_or_non_exact_contracts(tmp_path, change, message):
+    root = fixture(tmp_path)
+    mutate(root / "contracts/simulation_version.yml", change)
+    assert_invalid(root, message)
 
 
 @pytest.mark.parametrize(

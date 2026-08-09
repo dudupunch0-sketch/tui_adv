@@ -47,6 +47,30 @@ REQUIRED_RESULTS = {
     "forced_stop",
 }
 LEGACY_SELECTOR_ALIASES = {"self", "target", "observer", "opponent", "any"}
+EXPECTED_EXECUTOR_IDS = [
+    "combat.selector.executor.v1.observer",
+    "combat.selector.executor.v1.any_capable",
+]
+EXPECTED_TARGET_IDS = [
+    "combat.selector.target.v1.executor_self",
+    "combat.selector.target.v1.selected_target",
+    "combat.selector.target.v1.nearest_active_enemy",
+    "combat.selector.target.v1.lowest_health_active_ally",
+    "combat.selector.target.v1.surrounded_active_ally",
+    "combat.selector.target.v1.all_active_allies",
+]
+EXPECTED_FORMULA_IDS = ["combat.formula.v1.fixed_chance"]
+EXPECTED_STRATEGY_RULE_IDS = [
+    "combat.strategy.targeting.v1.attackers_of",
+    "combat.strategy.targeting.v1.rearmost_active_enemy",
+    "combat.strategy.targeting.v1.focus_resolved_target",
+]
+EXPECTED_OPPORTUNITY_PROVENANCE_FIELDS = [
+    "bound_target_ids",
+    "bound_target_tick",
+    "bound_target_state_at_tick_start",
+    "trigger_tick",
+]
 ACTION_KINDS = ["set_flag", "create_loot_entitlement", "grant_item"]
 STRATEGY_SCOPES = ["all_allies", "role", "combatants"]
 STRATEGY_DURATIONS = ["until_replaced", "next_segment"]
@@ -112,7 +136,7 @@ SUPPORTED_SCHEMA_KEYWORDS = {
     "$schema", "$id", "$ref", "$defs", "title", "description", "type", "const",
     "enum", "required", "properties", "additionalProperties", "items", "minItems",
     "minProperties", "uniqueItems", "pattern", "allOf", "anyOf", "oneOf", "not",
-    "contains", "minimum", "maximum",
+    "contains", "minimum", "maximum", "minLength", "maxItems",
 }
 
 
@@ -232,6 +256,8 @@ def validate_json_schema(instance, schema, root_schema=None, path="$"):
     if isinstance(instance, str) and "pattern" in schema:
         if re.search(schema["pattern"], instance) is None:
             errors.append(f"{path}: value {instance!r} does not match {schema['pattern']!r}")
+    if isinstance(instance, str) and "minLength" in schema and len(instance) < schema["minLength"]:
+        errors.append(f"{path}: string length {len(instance)} is less than minLength {schema['minLength']}")
     if isinstance(instance, (int, float)) and not isinstance(instance, bool):
         if "minimum" in schema and instance < schema["minimum"]:
             errors.append(f"{path}: value {instance!r} is less than minimum {schema['minimum']!r}")
@@ -254,6 +280,8 @@ def validate_json_schema(instance, schema, root_schema=None, path="$"):
     if isinstance(instance, list):
         if len(instance) < schema.get("minItems", 0):
             errors.append(f"{path}: expected at least {schema['minItems']} items")
+        if "maxItems" in schema and len(instance) > schema["maxItems"]:
+            errors.append(f"{path}: expected at most {schema['maxItems']} items")
         if schema.get("uniqueItems"):
             fingerprints = [json.dumps(item, ensure_ascii=False, sort_keys=True) for item in instance]
             if len(fingerprints) != len(set(fingerprints)):
@@ -345,6 +373,74 @@ def require_equal(errors, label, actual, expected):
         errors.append(f"{label}: expected {expected!r}, got {actual!r}")
 
 
+def require_membership(errors, label, value, allowed):
+    if value not in allowed:
+        errors.append(f"{label}: unknown canonical registry ID {value!r}")
+
+
+def validate_authoring_membership(payload, registry, errors):
+    """Patterns in the JSON schema are supplemented by closed registry checks."""
+    selectors = registry.get("selector_ids", {})
+    executor_ids = selectors.get("executor", [])
+    target_ids = selectors.get("target", [])
+    strategy_ids = registry.get("strategy_targeting_rule_ids", [])
+
+    effect = payload.get("special_effect")
+    if isinstance(effect, dict):
+        require_membership(errors, "authoring executor_selector_id", effect.get("executor_selector_id"), executor_ids)
+        require_membership(errors, "authoring target_selector_id", effect.get("target_selector_id"), target_ids)
+        for branch_name in ("success", "failure"):
+            branch = effect.get(branch_name, {})
+            for action in branch.get("outcome_actions", []):
+                if not isinstance(action, dict):
+                    continue
+                if action.get("kind") == "create_loot_entitlement":
+                    require_membership(errors, "authoring loot source_selector_id", action.get("source_selector_id"), target_ids)
+
+    strategy = payload.get("strategy_modifier")
+    if isinstance(strategy, dict):
+        scope = strategy.get("scope", {})
+        if scope.get("kind") == "combatants":
+            for selector_id in scope.get("combatant_selector_ids", []):
+                require_membership(errors, "authoring combatant scope selector ID", selector_id, target_ids)
+        for operation in strategy.get("operations", []):
+            if isinstance(operation, dict) and operation.get("kind") == "set_targeting_rule":
+                require_membership(errors, "authoring strategy targeting rule ID", operation.get("rule_id"), strategy_ids)
+
+
+def validate_non_empty_authored_ids(value, errors, path="$"):
+    if isinstance(value, dict):
+        for key, child in value.items():
+            child_path = f"{path}.{key}"
+            if key.endswith("_id") and isinstance(child, str) and not child:
+                errors.append(f"authoring payload schema: {child_path}: ID must not be empty")
+            validate_non_empty_authored_ids(child, errors, child_path)
+    elif isinstance(value, list):
+        for index, child in enumerate(value):
+            validate_non_empty_authored_ids(child, errors, f"{path}[{index}]")
+
+
+def validate_effect_target_preflight(value, errors):
+    # Boundary: this validator receives only static authored payloads.  Until
+    # intervention.yml supplies a closed CombatEffectCatalog, it must enforce
+    # the declared two-branch preflight policy but must not infer effect/target
+    # compatibility from authored effect_ids or runtime state.
+    compatibility = value.get("canonical_semantics", {}).get("effect_target_compatibility", {})
+    require_equal(errors, "effect-target compatibility contract", compatibility, {
+        "source_registry": "pause_snapshot_bound_CombatEffectCatalog.effects",
+        "branches": ["success", "failure"],
+        "effect_ids": "all_authored_effect_ids_in_both_branches",
+        "unknown_effect_id": "preflight_error",
+        "definition_target_selector": "canonical_target_selector_id_required",
+        "compatibility_rule": "effect_target_selector_exactly_matches_response_special_effect_target_selector_id",
+        "validate_before_rng": ["success_branch", "failure_branch"],
+        "incompatibility": "preflight_error",
+        "rejection_mutations": {"state": 0, "cost": 0, "rng": 0, "history": 0},
+        "static_authoring_validator_without_catalog": "do_not_guess_combinations",
+        "runtime_preflight": "mandatory_machine_contract",
+    })
+
+
 def validate_intervention(value, errors):
     response = value.get("response_payload", {})
     require_equal(
@@ -416,6 +512,10 @@ def validate_intervention(value, errors):
     require_equal(errors, "intervention legacy alias set", set(registry.get("legacy_aliases", [])), LEGACY_SELECTOR_ALIASES)
     require_equal(errors, "intervention selector tie break", registry.get("tie_break"), "stable_combatant_id_ascending")
     selectors = registry.get("selector_ids", {})
+    require_equal(errors, "intervention executor registry membership", selectors.get("executor"), EXPECTED_EXECUTOR_IDS)
+    require_equal(errors, "intervention target registry membership", selectors.get("target"), EXPECTED_TARGET_IDS)
+    if len(selectors.get("executor", [])) != len(set(selectors.get("executor", []))) or len(selectors.get("target", [])) != len(set(selectors.get("target", []))):
+        errors.append("intervention registry: duplicate array items")
     canonical_ids = list(selectors.get("executor", [])) + list(selectors.get("target", []))
     if not canonical_ids or len(canonical_ids) != len(set(canonical_ids)):
         errors.append("intervention: selector IDs must be present and unique")
@@ -423,12 +523,18 @@ def validate_intervention(value, errors):
         if selector_id in LEGACY_SELECTOR_ALIASES or not selector_id.startswith("combat.selector.") or ".v1." not in selector_id:
             errors.append(f"intervention: legacy or non-canonical selector ID: {selector_id}")
     formula_ids = registry.get("formula_ids", [])
+    require_equal(errors, "intervention formula registry membership", formula_ids, EXPECTED_FORMULA_IDS)
+    if len(formula_ids) != len(set(formula_ids)):
+        errors.append("intervention registry: duplicate array items")
     if not formula_ids or len(formula_ids) != len(set(formula_ids)):
         errors.append("intervention: formula IDs must be present and unique")
     for formula_id in formula_ids:
         if not formula_id.startswith("combat.formula.v1."):
             errors.append(f"intervention: non-canonical formula ID: {formula_id}")
     strategy_rule_ids = registry.get("strategy_targeting_rule_ids", [])
+    require_equal(errors, "intervention strategy-rule registry membership", strategy_rule_ids, EXPECTED_STRATEGY_RULE_IDS)
+    if len(strategy_rule_ids) != len(set(strategy_rule_ids)):
+        errors.append("intervention registry: duplicate array items")
     if not strategy_rule_ids or len(strategy_rule_ids) != len(set(strategy_rule_ids)):
         errors.append("intervention: strategy targeting IDs must be present and unique")
     fixed_chance = registry.get("formula_definitions", {}).get("combat.formula.v1.fixed_chance", {})
@@ -444,8 +550,30 @@ def validate_intervention(value, errors):
     require_equal(errors, "nearest enemy distance metric", nearest.get("ordering"), "minimum_occupied_footprint_hex_distance_between_executor_and_candidate_ascending_then_stable_id")
     surrounded = selector_definitions.get("surrounded_active_ally", {})
     require_equal(errors, "surrounded ally candidate set", surrounded.get("candidate_set"), "active_same_side_combatants_including_executor")
-    require_equal(errors, "surrounded ally self occupancy", surrounded.get("candidate_self_occupancy"), "excluded_from_ally_occupancy_count")
-    require_equal(errors, "surrounded ally predicate", surrounded.get("predicate"), "enemy_occupancy_at_least_3_and_ally_occupancy_zero")
+    require_equal(errors, "surrounded ally self occupancy", surrounded.get("candidate_self_occupancy"), "entire_candidate_footprint_excluded_from_ally_occupancy_count")
+    require_equal(errors, "surrounded ally predicate", surrounded.get("predicate"), "distinct_enemy_occupied_hexes_at_least_3_and_distinct_ally_occupied_hexes_zero")
+    require_equal(errors, "surrounded ally neighborhood", surrounded.get("neighborhood"), "six_adjacent_hexes")
+    require_equal(errors, "surrounded ally exclusions", surrounded.get("exclusions"), ["ko", "departed", "captured"])
+    require_equal(errors, "surrounded ally ordering", surrounded.get("ordering"), "enemy_count_descending_then_stable_id")
+    lowest = selector_definitions.get("lowest_health_active_ally", {})
+    require_equal(errors, "lowest health candidate set", lowest.get("candidate_set"), "active_same_side_combatants_including_executor")
+    require_equal(errors, "lowest health ordering", lowest.get("ordering"), "exact_integer_rational_cross_multiplication_current_hp_over_max_hp_ascending_then_stable_id")
+    all_allies = selector_definitions.get("all_active_allies", {})
+    require_equal(errors, "all allies candidate set", all_allies.get("candidate_set"), "active_same_side_combatants_including_executor")
+    require_equal(errors, "all allies ordering", all_allies.get("ordering"), "stable_id_ascending")
+    require_equal(errors, "all allies multi-target", all_allies.get("multi_target"), True)
+
+    provenance = registry.get("opportunity_provenance", {})
+    require_equal(errors, "selected target provenance fields", provenance.get("required_fields"), EXPECTED_OPPORTUNITY_PROVENANCE_FIELDS)
+    require_equal(errors, "selected target provenance source", provenance.get("source"), "pause_snapshot")
+    require_equal(errors, "selected target bound IDs", provenance.get("bound_target_ids"), "immutable_single_bound_target_ids_or_empty")
+    selected = selector_definitions.get("selected_target", {})
+    require_equal(errors, "selected target resolution", selected.get("resolves"), "exactly_one_immutable_bound_target; active_at_pause_or_active_at_trigger_tick_start_then_ko_same_tick_only")
+    require_equal(errors, "selected target AI fallback", selected.get("ai_current_target_fallback"), "forbidden")
+    executor_ids = selectors.get("executor", [])
+    require_equal(errors, "executor observer rule", executor_ids[0] if len(executor_ids) > 0 else None, "combat.selector.executor.v1.observer")
+    require_equal(errors, "executor any-capable rule", executor_ids[1] if len(executor_ids) > 1 else None, "combat.selector.executor.v1.any_capable")
+    require_equal(errors, "executor tie-break", registry.get("tie_break"), "stable_combatant_id_ascending")
 
     migration = value.get("legacy_migration", {})
     require_equal(errors, "intervention legacy migration boundary", migration.get("boundary"), "offline_or_load_time_migration_only")
@@ -481,7 +609,7 @@ def validate_intervention(value, errors):
     require_equal(errors, "intervention strategy operations", strategy.get("operations"), STRATEGY_OPERATIONS)
     require_equal(errors, "intervention strategy durations", strategy.get("durations"), STRATEGY_DURATIONS)
     require_equal(errors, "intervention strategy default duration", strategy.get("default_duration"), "until_replaced")
-    require_equal(errors, "intervention strategy precedence", strategy.get("precedence"), ["combatant", "role", "side", "baseline"])
+    require_equal(errors, "intervention strategy precedence", strategy.get("precedence"), ["combatant", "role", "all_allies_side", "baseline"])
     stacking = strategy.get("stacking", {})
     require_equal(errors, "intervention same-field stacking", stacking.get("same_scope_and_field"), "latest_replaces")
     require_equal(errors, "intervention disjoint stacking", stacking.get("disjoint_fields"), "coexist")
@@ -510,11 +638,31 @@ def validate_intervention(value, errors):
     require_equal(errors, "intervention receipt optional fields", receipt.get("receipt_optional_fields"), ["formula_receipt"])
     require_equal(errors, "intervention formula receipt fields", receipt.get("formula_receipt_fields"), RECEIPT_FORMULA_FIELDS)
     require_equal(errors, "intervention strategy-only formula receipt", receipt.get("formula_receipt_rules", {}).get("strategy_only"), "absent")
+    require_equal(errors, "intervention special-effect formula receipt", receipt.get("formula_receipt_rules", {}).get("special_effect_present"), "required")
     require_equal(errors, "intervention action receipt statuses", receipt.get("action_receipt_statuses"), ACTION_RECEIPT_STATUSES)
     require_equal(errors, "intervention fingerprints", receipt.get("fingerprints"), FINGERPRINTS)
     require_equal(errors, "intervention next segment seed", receipt.get("next_segment_seed_input"), "decision_receipt_fingerprint")
     require_equal(errors, "intervention legacy v1 status", receipt.get("legacy_v1", {}).get("selection_status"), "legacy_no_effect")
     require_equal(errors, "intervention legacy retroactive effects", receipt.get("legacy_v1", {}).get("retroactive_effect_application"), "forbidden")
+
+    encoding = value.get("transaction", {}).get("probabilistic_rng", {}).get("canonical_encoding", {})
+    require_equal(errors, "v3 RNG canonical serialization", encoding.get("serialization"), "utf_8_canonical_json_array")
+    require_equal(errors, "RNG JSON whitespace", encoding.get("whitespace"), "none")
+    require_equal(errors, "RNG JSON object key order", encoding.get("object_key_order"), "lexicographic")
+    require_equal(errors, "RNG JSON integer encoding", encoding.get("integer_encoding"), "decimal")
+    require_equal(errors, "RNG formula parameter key order", encoding.get("normalized_formula_parameters_key_order"), "lexicographic")
+    require_equal(errors, "RNG sub-seed derivation owner", encoding.get("sub_seed_derivation_hash"), "fnv_1a_64_current_v3")
+    require_equal(errors, "RNG sub-seed input order", value.get("transaction", {}).get("probabilistic_rng", {}).get("canonical_sub_seed_inputs"), [
+        "formula_semantic_tag", "rng_namespace", "effective_segment_seed", "simulation_version", "manifest_fingerprint", "segment_index", "pause_tick", "pause_id", "evaluation_fingerprint", "authored_response_id", "formula_id", "normalized_formula_parameters", "resolved_executor_id", "canonical_ordered_target_ids"
+    ])
+    require_equal(errors, "RNG draw index", value.get("transaction", {}).get("probabilistic_rng", {}).get("draw_index"), 0)
+
+    exactly_once = special.get("exactly_once", {})
+    require_equal(errors, "exactly-once action ID inputs", exactly_once.get("deterministic_inputs", {}).get("action_id"), ["decision_receipt_fingerprint", "outcome_branch", "action_index"])
+    require_equal(errors, "exactly-once entitlement ID inputs", exactly_once.get("deterministic_inputs", {}).get("entitlement_id"), ["action_id"])
+    require_equal(errors, "exactly-once transaction ID separation", exactly_once.get("transaction_separation", {}).get("same_transaction_id"), "forbidden")
+    require_equal(errors, "loot entitlement creation timing", loot.get("timing"), "create_on_outcome_claim_on_terminal")
+    require_equal(errors, "direct grant atomic timing", special.get("direct_grant", {}).get("timing"), "immediate_atomic_commit")
 
     provenance = value.get("provenance_and_logs", {})
     require_equal(errors, "intervention receipt raw event policy", provenance.get("receipt_raw_event_policy"), "references_only_no_event_duplication")
@@ -526,6 +674,70 @@ def validate_intervention(value, errors):
 
     handoff = value.get("runtime_handoff", {})
     require_equal(errors, "intervention runtime implementation status", handoff.get("implementation_complete"), False)
+
+
+def validate_canonical_semantics(value, errors):
+    semantics = value.get("canonical_semantics", {})
+    selected = semantics.get("selected_target", {})
+    require_equal(errors, "canonical selected target cardinality", selected.get("cardinality"), "exactly_one")
+    require_equal(errors, "canonical selected target binding", selected.get("binding"), "immutable_bound_target_from_pause_opportunity_provenance")
+    require_equal(errors, "canonical selected target accepted states", selected.get("accepted_when"), ["active_at_pause_snapshot", "active_at_triggering_tick_start_and_ko_during_that_same_tick"])
+    require_equal(errors, "canonical selected target rejected states", selected.get("rejected_when"), ["previously_ko", "fled", "departed", "captured"])
+    require_equal(errors, "canonical selected target provenance fields", selected.get("provenance_fields"), ["bound_target_ids", "bound_target_tick", "bound_target_state_at_tick_start", "trigger_tick"])
+    require_equal(errors, "canonical selected target resolution", selected.get("resolution"), "no_re_evaluation_against_later_state_within_atomic_transaction")
+    if "departed" in selected:
+        require_equal(errors, "canonical selected target departed definition", selected.get("departed"), "rejected")
+    if "departed_meaning" in selected:
+        require_equal(errors, "canonical selected target departed definition", selected.get("departed_meaning"), "non_flee_departure")
+
+    executor = semantics.get("executor", {})
+    observer = executor.get("observer", {})
+    require_equal(errors, "canonical observer opportunity", observer.get("opportunity_observer"), "exact")
+    require_equal(errors, "canonical observer requirements", observer.get("requires"), ["can_act", "required_capabilities"])
+    require_equal(errors, "canonical observer mapping", observer.get("mapping"), "exactly_one_active_combatant_with_hp_greater_than_zero")
+    require_equal(errors, "canonical observer ambiguity", observer.get("otherwise"), "preflight_error")
+    capable = executor.get("any_capable", {})
+    require_equal(errors, "canonical any-capable selection", capable.get("selection"), "stable_combatant_id_ascending_first")
+    if "mapping" in capable:
+        require_equal(errors, "canonical any-capable mapping", capable.get("mapping"), "exactly_one_active_combatant_with_hp_greater_than_zero")
+    if "candidate_mapping" in capable:
+        require_equal(errors, "canonical any-capable candidate mapping", capable.get("candidate_mapping"), "exactly_one_active_combatant_with_hp_greater_than_zero_per_candidate")
+    require_equal(errors, "canonical any-capable zero result", capable.get("zero_candidates"), "preflight_error")
+    require_equal(errors, "canonical any-capable ordering source", capable.get("ordering_source"), "stable_combatant_id_not_vector_or_insertion_order")
+
+    multi = semantics.get("multi_target", {})
+    require_equal(errors, "canonical multi-target ordering", multi.get("application_order"), "effect-major, then target stable ascending")
+    require_equal(errors, "canonical multi-target exactly once", multi.get("exactly_once_per_effect_target_pair"), True)
+    require_equal(errors, "canonical multi-target atomic rejection", multi.get("atomic_rejection"), {"state_mutations": 0, "cost_mutations": 0, "rng_draws": 0})
+    lowest = semantics.get("lowest_health", {})
+    require_equal(errors, "canonical lowest-health population", lowest.get("population"), "active_same_side_combatants_including_executor")
+    require_equal(errors, "canonical lowest-health max hp invariant", lowest.get("required_snapshot_invariant"), "every_candidate_max_hp_greater_than_zero")
+    require_equal(errors, "canonical lowest-health invalid snapshot", lowest.get("invalid_snapshot"), "corrupted_snapshot_preflight_error")
+    require_equal(errors, "canonical lowest-health comparison", lowest.get("comparison"), "integer_rational_cross_multiplication_no_float")
+    require_equal(errors, "canonical lowest-health tie break", lowest.get("tie_break"), "stable_combatant_id_ascending")
+    surrounded = semantics.get("surrounded", {})
+    require_equal(errors, "canonical surrounded neighborhood", surrounded.get("neighborhood"), "six_adjacent_hexes_intersecting_candidate_anchor")
+    require_equal(errors, "canonical surrounded counts", surrounded.get("counts"), "distinct_occupied_hexes_not_combatants")
+    require_equal(errors, "canonical surrounded ally count", surrounded.get("ally_count"), "exclude_entire_candidate_footprint")
+    require_equal(errors, "canonical surrounded active footprints", surrounded.get("active_footprints_only"), True)
+    scope = semantics.get("strategy_scope", {})
+    require_equal(errors, "canonical strategy scopes", scope.get("allowed"), ["combatants", "role", "all_allies"])
+    require_equal(errors, "canonical all-allies side precedence", scope.get("all_allies_resolution"), "executor_side_all_allies_side_overlay")
+    require_equal(errors, "canonical unsupported strategy scope", scope.get("unsupported_authoring_scope"), "side")
+    require_equal(errors, "canonical strategy precedence", scope.get("precedence"), ["combatant", "role", "all_allies_side", "baseline"])
+    formula = semantics.get("formula_fingerprint", {})
+    require_equal(errors, "canonical formula semantic tag", formula.get("semantic_tag"), "combat.formula.v1.fixed_chance")
+    require_equal(errors, "canonical formula namespace", formula.get("namespace"), "actual_combat")
+    require_equal(errors, "canonical formula tuple prefix", formula.get("tuple_prefix"), ["combat.formula.v1.fixed_chance", "actual_combat"])
+    require_equal(errors, "canonical formula encoding", formula.get("encoding"), "utf_8_compact_canonical_json_array")
+    require_equal(errors, "canonical formula object keys", formula.get("object_keys"), "BTreeMap_lexicographic")
+    require_equal(errors, "canonical formula hash", formula.get("hash"), "FNV-1a_64")
+    require_equal(errors, "canonical input fingerprint", formula.get("input_fingerprint"), "lowercase_16_hex_of_fnv_result")
+    require_equal(errors, "canonical sub-seed relation", formula.get("sub_seed"), "same_64_bit_fnv_result")
+    require_equal(errors, "canonical roll modulo", formula.get("draw_zero_roll"), "sub_seed_mod_100")
+    require_equal(errors, "canonical registry membership policy", semantics.get("registry_membership"), "unknown_ids_are_preflight_or_validator_errors")
+    require_equal(errors, "canonical outcome selector provenance", semantics.get("outcome_resolution", {}).get("action_source_selectors"), "resolve_in_pause_preflight_and_record_provenance")
+    require_equal(errors, "canonical outcome target ordering", semantics.get("outcome_resolution", {}).get("target_ordering"), "deterministic")
 
 
 def validate(root: Path, authoring_payload: Path | None = None):
@@ -550,7 +762,7 @@ def validate(root: Path, authoring_payload: Path | None = None):
             errors.append(f"{path.name}: runtime_status must remain handoff_required")
 
     schemas = {}
-    for name in ("combat_intervention", "combat_intervention_response"):
+    for name in ("combat_intervention", "combat_intervention_response", "combat_simulation_version"):
         schema_path = root / f"schema/{name}.schema.json"
         try:
             schemas[name] = load_json_schema(schema_path)
@@ -579,6 +791,9 @@ def validate(root: Path, authoring_payload: Path | None = None):
                     f"authoring payload schema: {message}"
                     for message in validate_json_schema(payload, response_schema)
                 )
+                if isinstance(payload, dict) and isinstance(intervention_value, dict):
+                    validate_non_empty_authored_ids(payload, errors)
+                    validate_authoring_membership(payload, intervention_value.get("registry", {}), errors)
 
     term = data.get("termination", {})
     order = term.get("priority_order", [])
@@ -602,7 +817,26 @@ def validate(root: Path, authoring_payload: Path | None = None):
         errors.append(f"simulation_version: {exc}")
         runtime_version = None
     sim = data.get("simulation_version", {})
+    simulation_schema = schemas.get("combat_simulation_version")
+    if simulation_schema is not None:
+        errors.extend(
+            f"combat_simulation_version.schema.json: {message}"
+            for message in validate_json_schema(sim, simulation_schema)
+        )
     versions = sim.get("supported_versions", [])
+    if not isinstance(versions, list) or any(
+        not isinstance(item, dict)
+        or not isinstance(item.get("version"), str)
+        or not isinstance(item.get("source"), str)
+        or not isinstance(item.get("current_runtime_observed"), bool)
+        or not isinstance(item.get("features"), list)
+        for item in versions
+    ):
+        errors.append("simulation_version schema: malformed supported_versions item")
+    if not isinstance(sim.get("authoring"), dict) or "required_simulation_version" not in sim.get("authoring", {}):
+        errors.append("simulation_version schema: missing authoring.required_simulation_version")
+    if sim.get("authoring", {}).get("compatibility") != "exact":
+        errors.append("simulation_version schema: compatibility must be exact")
     current = [
         x.get("version")
         for x in versions
@@ -616,6 +850,9 @@ def validate(root: Path, authoring_payload: Path | None = None):
         errors.append("simulation_version: unsupported/missing versions must fail")
     if sim.get("fallback") != "forbidden":
         errors.append("simulation_version: fallback must be forbidden")
+    require_equal(errors, "simulation version supported set", [x.get("version") for x in versions if isinstance(x, dict)], ["v3"])
+    require_equal(errors, "simulation authoring version required", sim.get("authoring", {}).get("required_simulation_version"), "required")
+    require_equal(errors, "simulation compatibility", sim.get("authoring", {}).get("compatibility"), "exact")
 
     identity = data.get("identity", {})
     if identity.get("fallback_order") != [
@@ -658,6 +895,8 @@ def validate(root: Path, authoring_payload: Path | None = None):
 
     intervention = data.get("intervention")
     if isinstance(intervention, dict):
+        validate_effect_target_preflight(intervention, errors)
+        validate_canonical_semantics(intervention, errors)
         validate_intervention(intervention, errors)
         if runtime_version is not None:
             require_equal(

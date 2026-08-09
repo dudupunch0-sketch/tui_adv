@@ -24,6 +24,8 @@ limitations:
 - notion_page_urls: unavailable_in_export
 - local_source_is_not_runtime_graph_contract: true
 paths:
+  chapter_scripts: chapter_scripts/manifest.yml
+  chapter_scripts_policy: 런타임 그래프에 포함되지 않는 보조 저작 자료이며 사건 수를 변경하지 않음
   source_pages: source_pages/**/*
   arcs: arcs/**/*.md
   events: events/**/*.yml

@@ -1,0 +1,32 @@
+schema_version: 1
+kind: chapter_script_companion_manifest
+status: authoring_draft
+review_status: authoring_review_required
+runtime_status: not_implemented
+canonical_manifest: ../manifest.yml
+canonical_arc: ../arcs/guestpass_homecoming_main_story_v1_1.md
+canonical_mapping: ../arcs/guestpass_homecoming_main_story_v1_1_event_mapping.md
+format: companion_script_id_plus_event_ref
+scope:
+  act: 1
+  slots: [1/01, 1/02, 1/03, 1/04, 1/05, 1/06, 1/07, 1/08]
+  target_chapter_count: 48
+  current_companion_count: 8
+  act1_unique_event_refs: 8
+  event_count_preserved: 48
+files:
+- guestpass_act1_chapter_01.yml
+- guestpass_act1_chapter_02.yml
+- guestpass_act1_chapter_03.yml
+- guestpass_act1_chapter_04.yml
+- guestpass_act1_chapter_05.yml
+- guestpass_act1_chapter_06.yml
+- guestpass_act1_chapter_07.yml
+- guestpass_act1_chapter_08.yml
+validation:
+  generated_report: not_updated_by_authoring
+  validator_scope_note: design_source_validator_scans canonical records; companion checks are in cadence_audit_report.md
+  narrative_rewrite: act1_replaced_templated_prose
+  choice_schema_check: 32_choices_have_immediate_success_failure_relation_reward_clue_flags
+  continuity_check: 1/01_phone_missing_before_first_market; 1/03_seoharin_first_appearance; 1/08_two_traces_sealed_without_raid
+  cadence_check: 8_state_based_unique_reentry_triggers

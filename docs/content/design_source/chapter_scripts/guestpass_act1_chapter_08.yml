@@ -1,0 +1,183 @@
+schema_version: 1
+kind: chapter_script_companion
+script_id: guestpass_act1_chapter_08
+event_ref: wuxia_guestpass_burnt_token_last_route_record
+slot: 1/08
+title: 불탄 객패와 마지막 이동 기록
+entry_conditions:
+  required_flags: [qingliu_first_training_review_resolved, protagonist_recovering_at_qingliu]
+status: authoring_draft
+review_status: authoring_review_required
+runtime_status: not_implemented
+reentry_recap: 전이·장터 시비·서하린의 구조·청류문 편입·첫 식사·호흡 수련·첫 패배가 지나갔다. 주인공은 창고 정리 중 낡은 짐꾸러미를 마주하고, 이제 청류문 일상 속에서 물건의 과거를 읽을 준비를 한다.
+stable_opening: 저녁 식사 전, 서하린과 주인공은 연무장 천과 손님용 침구를 턴다. 탄 나무패는 화로 받침 사이에 섞여 있어, 주인공이 장작을 옮기다 금이 간 모서리를 발견한다.
+local_urgent_conflict: 불탄 객패를 닦으면 표식이 지워지고, 숨기면 청류문이 대비할 기회를 잃는다. 객패는 주인공의 소유물이 아니라 누군가가 다음 집으로 넘기려던 증거이며, 두 흔적을 함께 보존해야 한다.
+beats_and_dialogue:
+  - beat: 패배 다음의 평범한 정리
+    scene: 서하린은 주인공의 무릎을 보고 창고 일을 앉아서 하라고 말한다. 주인공은 오늘 대련에서 놓친 발의 압력을 이야기하고, 서하린은 웃지 않고 재의 냄새를 확인한다.
+    dialogue: '서하린: “오늘은 많이 배웠네요. 무공 말고도, 어떤 장작은 오래 타고 어떤 장작은 속을 태우는지.”'
+  - beat: 화로 받침에서 갈라진 나무
+    scene: 주인공이 탄 나무를 들어 올리자 안쪽에서 얇은 나무패가 갈라진다. 겉면에는 지워진 문양, 가장자리에는 세 번 끊긴 각인이 있다.
+    dialogue: '주인공: “이건 누가 버린 패가 아니라, 버리지 못해서 태운 물건 같아요.”'
+  - beat: 객패의 쓰임
+    scene: 서하린은 객패가 돈을 낸 사람의 표가 아니라, 다음 집이 길손의 상태를 이어받겠다는 약속이었다고 설명한다. 그녀는 패를 가져가지 않고 천 위에 올려 둔다.
+    dialogue: '서하린: “이 패는 누구의 것이 아니에요. 누군가가 다음 사람에게 넘겨야 했던 약속이죠.”'
+  - beat: 두 흔적을 나누지 않기
+    scene: 붉은 재가 묻은 표식과 마지막 이동 각인은 서로 다른 기록처럼 보인다. 주인공은 하나만 복원하면 다른 하나를 훼손한다는 사실을 깨닫는다.
+    dialogue: '서하린: “표식만 보면 누가 부쉈는지만 남고, 각인만 보면 누가 도망쳤는지만 남아요. 둘을 같이 봐야 사람이 남습니다.”'
+  - beat: 기록함의 자물쇠
+    scene: 청우진은 발견을 숨기지 말되 산문 밖에 소문내지도 말자고 한다. 객패는 기록함에 봉인할 수 있고, 선택에 따라 주인공과 서하린이 보존 방법을 정한다.
+    dialogue: '청우진: “이건 네 전리품이 아니다. 문이 맡아 두는 증거다. 네가 본 것을 적고, 물건은 모두가 지키게 하자.”'
+  - beat: 불안이 생활로 돌아가는 밤
+    scene: 봉인 뒤 산문 순번이 한 차례 늘어나지만 아무도 출발하지 않는다. 서하린은 며칠 뒤 장부와 산문 기록을 함께 보자고 하고, 주인공은 식사 시간에 맞춰 창고 문을 닫는다.
+    dialogue: '주인공: “당장 쫓아가면 기록을 잃겠죠.”\n서하린: “그래서 오늘은 여기서 멈추는 겁니다.”'
+choices:
+  - id: clean_token_with_seoharin
+    label: 서하린과 재를 조금씩 털어낸다
+    immediate_result: 주인공은 마른 붓으로 표면을 한 획씩 닦고, 서하린은 손에 묻은 재를 천에 따로 턴다. 두 사람은 패를 뒤집지 않고 앞면의 끊긴 문양부터 확인한다.
+    success: 귀로객망 표식의 끊긴 획이 온전히 드러나 여러 역참이 동시에 파괴되고 있음을 알아낸다. 서하린은 발견을 생활 기록과 함께 봉인한다.
+    failure: 그을음이 번져 세부 지점은 흐려진다. 대신 서하린의 기억으로 문양이 귀로객망 것임을 확인하고, 2/12에서 장부 대조가 필요하다는 비용을 남긴다.
+    relationship_directions:
+      people:
+        seo_harin: strong_positive_shared_daily_attention
+        cheong_u_jin: trust_through_careful_report
+      factions:
+        qingliu: guest_tradition_understood
+        guestpass_network: hospitality_respected
+    reward_candidate:
+      name: 빌린 자리의 온기
+      type: insight
+      concept: 객패를 소유물이 아니라 다음 사람에게 넘기는 환대의 약속으로 이해한 관계적 통찰.
+    quest_clue:
+      name: 파괴된 귀로객망 표식 탁본
+      type: quest_clue
+      concept: 한 객잔이 아니라 이어진 환대망이 공격받고 있음을 보여 주는 부분 탁본.
+    flags:
+      always: [guestpass_burnt_token_acquired, guestpass_destroyed_network_mark_present, guestpass_first_owner_last_route_record_present, guestpass_destroyed_network_mark_seen, guestpass_first_owner_route_notches_seen]
+      success: [guestpass_network_mark_preserved_cleanly, guestpass_shared_investigation_with_seoharin]
+      failure: [guestpass_mark_requires_archive_check, guestpass_route_record_still_protected]
+  - id: arrange_notches_like_commute_log
+    label: 이동 각인을 출근 기록처럼 배열한다
+    immediate_result: 주인공은 각인을 날짜로 단정하지 않고, 통근 카드의 환승 순서처럼 반복·중단·되돌림을 종이에 배열한다. 서하린은 틀린 순서도 지우지 않는다.
+    success: 최초 소유자가 마지막으로 거친 두 지점과 도달하지 못한 방향을 분리한다. 기록은 주인공의 추측이 아니라 객패 옆 봉인 문서로 남는다.
+    failure: 한 차례 순서를 거꾸로 읽어 불가능한 경로가 만들어진다. 그 오류 덕분에 각인이 시간표가 아니라 이동 순서라는 점을 좁혀 낸다.
+    relationship_directions:
+      people:
+        seo_harin: respect_for_modern_method_with_correction
+        cheong_u_jin: useful_outsider_record
+      factions:
+        qingliu: outsider_method_recorded
+        guestpass_network: route_history_reconstructed_partially
+    reward_candidate:
+      name: 퇴근하지 못한 노선도
+      type: insight
+      concept: 익숙한 출퇴근 기록을 실종된 길손의 마지막 이동 순서로 읽어 낸 현대인의 시선.
+    quest_clue:
+      name: 마지막 세 각인의 배열표
+      type: quest_clue
+      concept: 최초 소유자의 마지막 중계 지점과 멈춘 방향을 후속 해독에 넘기는 기록.
+    flags:
+      always: [guestpass_burnt_token_acquired, guestpass_destroyed_network_mark_present, guestpass_first_owner_last_route_record_present, guestpass_destroyed_network_mark_seen, guestpass_first_owner_route_notches_seen]
+      success: [guestpass_last_route_order_reconstructed, first_owner_last_route_narrowed]
+      failure: [guestpass_route_reversal_error_recorded, route_reading_requires_ledger]
+  - id: preserve_ash_and_heat_scars
+    label: 재와 열흔을 닦지 않고 그대로 보존한다
+    immediate_result: 주인공은 객패를 천으로 감싸고 붉은 재, 긁어낸 획, 접힌 모서리를 각각 작은 종이에 표시한다. 표식을 복원하려는 손은 멈춘다.
+    success: 자연 화재가 아니라 표식을 지우려 한 의도적 파괴였다는 증거가 남는다. 혈월교를 단정하지 않고, 파괴 방식만 후속 조사에 넘긴다.
+    failure: 세력 식별은 늦어지지만 누군가 이동 기록만은 남기려 객패를 접어 보호했다는 사실을 알아낸다. 사람의 행동이 파괴보다 먼저 기록된다.
+    relationship_directions:
+      people:
+        seo_harin: cautious_partner_in_evidence_care
+        cheong_u_jin: threat_preparation_respected
+      factions:
+        qingliu: quiet_boundary_watch_opened
+        bloodmoon_cult: suspected_eraser_not_confronted
+    reward_candidate:
+      name: 재 속의 순서
+      type: skill
+      concept: 손상된 흔적을 성급히 복구하지 않고, 무엇이 먼저 훼손됐는지 읽는 조사 습관.
+    quest_clue:
+      name: 붉은 재가 묻은 객패 싸개
+      type: quest_item
+      concept: 표식을 지우려 한 불과, 이동 기록을 보호한 접힘을 함께 보존한 증거물.
+    flags:
+      always: [guestpass_burnt_token_acquired, guestpass_destroyed_network_mark_present, guestpass_first_owner_last_route_record_present, guestpass_destruction_trace_preserved, guestpass_destroyed_network_mark_seen, guestpass_first_owner_route_notches_seen]
+      success: [guestpass_destruction_trace_preserved, bloodmoon_erasure_method_suspected]
+      failure: [bloodmoon_identification_delayed, first_owner_protection_seen]
+  - id: compare_qingliu_guest_records
+    label: 청류문 손님 기록과 공개 대조한다
+    immediate_result: 주인공은 발견을 숨기지 않고 청우진 앞에서 기록함을 연다. 서하린은 오래된 숙박·치료 장부에서 객패 표식이 쓰인 줄만 찾아 함께 대조한다.
+    success: 옛 표식과 각인의 용례가 맞아 최초 소유자의 마지막 중계 지점을 좁힌다. 청류문과 귀로객망이 환대와 치료로 이어져 있었다는 사실도 확인한다.
+    failure: 장부에 뜯긴 빈 장이 있어 지점은 찾지 못한다. 대신 최근 누군가 같은 항목을 훼손했다는 외부 침입 단서가 남는다.
+    relationship_directions:
+      people:
+        seo_harin: strong_positive_open_record_trust
+        cheong_u_jin: shared_archive_responsibility
+      factions:
+        qingliu: boundary_preparation
+        guestpass_network: old_alliance_recalled
+    reward_candidate:
+      name: 손님 명부의 첫 줄
+      type: title
+      concept: 발견을 독점하지 않고 공동체 기록 속에서 낯선 길손의 자리를 되살린 사람.
+    quest_clue:
+      name: 청류문 옛 손님 명부의 빈 장
+      type: quest_item
+      concept: 객패와 청류문의 오래된 연결을 누군가 최근 지우려 했다는 증거.
+    flags:
+      always: [guestpass_burnt_token_acquired, guestpass_destroyed_network_mark_present, guestpass_first_owner_last_route_record_present, qingliu_guestpass_archive_link_opened, guestpass_destroyed_network_mark_seen, guestpass_first_owner_route_notches_seen]
+      success: [guestpass_last_relay_narrowed, qingliu_guestpass_archive_linked]
+      failure: [qingliu_guest_ledger_page_stolen, archive_gap_requires_later_repair]
+relationship_directions:
+  people:
+    seo_harin: shared_investigation_without_ownership
+    cheong_u_jin: evidence_custodian_trust
+  factions:
+    qingliu: quiet_watch_and_archive_opened
+    guestpass_network: destroyed_but_not_erased
+    bloodmoon_cult: suspected_physical_eraser_not_engaged
+rewards:
+  - name: 파괴된 귀로객망 표식 탁본
+    type: quest_clue
+    concept: 환대망 전체가 물리적으로 지워지고 있다는 표식.
+  - name: 마지막 세 각인의 배열표
+    type: investigation_record
+    concept: 최초 소유자의 마지막 이동 순서와 멈춘 방향.
+  - name: 재 속의 순서
+    type: skill
+    concept: 파괴의 순서에서 사람의 행동을 추적하는 조사 감각.
+quest_clues:
+  - name: 불탄 객패의 이중 기록
+    type: main_quest_clue
+    concept: 파괴된 귀로객망 표식과 최초 소유자의 마지막 이동 기록이 하나의 인과로 연결된다는 핵심 증거.
+  - name: 청류문 손님 명부의 빈 장
+    type: investigation_clue
+    concept: 오래된 연결을 최근 누군가 지웠을 가능성.
+flags:
+  always: [guestpass_burnt_token_acquired, guestpass_destroyed_network_mark_present, guestpass_first_owner_last_route_record_present, guestpass_single_causal_chain_opened, guestpass_destroyed_network_mark_seen, guestpass_first_owner_route_notches_seen, bloodmoon_raid_omen_enabled]
+  success: [guestpass_network_mark_or_route_preserved_cleanly, qingliu_archive_or_destruction_method_learned]
+  failure: [guestpass_followup_repair_cost_recorded]
+  follow_up: [qingliu_boundary_watch_strengthened, guestpass_investigation_scheduled]
+local_closure: 객패는 주인공의 소유 목록에 들어가지 않는다. 청류문 기록함에 두 흔적이 함께 봉인되고, 산문 순번만 조용히 한 차례 늘어난다. 누구도 즉시 출발하거나 습격하지 않는다.
+interlude_safe_state: 며칠 동안 탁본 정리, 청류문 장부 대조, 경계 순번 참여, 잡역, 회복, 서하린과의 저녁 대화를 삽입할 수 있다. 객패는 기록함에 있어 조사 중에도 안전하다.
+low_pressure_hook: 외부 표식을 더 조사할지, 청류문 손님 장부의 빈 장을 복원할지, 객패의 환대 관습을 배울지 선택할 수 있다.
+next_reentry_trigger: 객패의 두 흔적이 기록함에 봉인된 뒤 며칠간 산문 기록·장부·외부 발자국 중 서로 다른 전조가 누적되어, 청류문이 경계 순번을 재편성할 필요가 생기면 2/09가 열린다.
+cadence_audit:
+  time: evening_after_first_training_and_recovery
+  place: qingliu_storehouse_and_record_room
+  companions: seo_harin_cheong_u_jin_qingliu_watch
+  injury: protagonist_recovering
+  information: destroyed_network_mark_and_first_owner_last_route
+  hostile_pressure: observation_and_boundary_watch_only
+scene_context:
+  location: 청류문 창고와 기록함 앞
+  cast: [주인공, 서하린, 청우진, 청류문 당번]
+  emotional_state: 발견을 서둘러 쫓아가고 싶은 마음과 증거를 보존해 사람을 지켜야 한다는 판단 사이의 긴장
+convergence:
+  meaningful_exclusive_outcomes: 재 닦기는 환대 이해, 각인 배열은 이동 경로, 열흔 보존은 물리 파괴 방식, 장부 대조는 공동체 기록과 빈 장을 앞세운다.
+  common_minimum_facts: [guestpass_burnt_token_acquired, guestpass_destroyed_network_mark_present, guestpass_first_owner_last_route_record_present, guestpass_single_causal_chain_opened, guestpass_destroyed_network_mark_seen, guestpass_first_owner_route_notches_seen]
+  local_closure: 객패를 모두가 지키는 증거로 봉인하고 산문 경계를 조용히 강화한다. 즉시 습격·전투·출발은 없다.
+  exact_state_bridge: 며칠의 생활 사이에 외부 표식과 장부 공백이 누적되어 청류문이 습격 전조를 정식 조사하기로 결정하면 2/09가 재진입한다.
+  next_slot: 2/09
+  next_event_ref: wuxia_cheongryu_raid_omen
+  terminal: false

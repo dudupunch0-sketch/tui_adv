@@ -1,0 +1,158 @@
+schema_version: 1
+kind: chapter_script_companion
+script_id: guestpass_act1_chapter_04
+event_ref: wuxia_qingliu_apprentice_entry
+slot: 1/04
+title: 청류문 임시 수습생 편입
+status: authoring_draft
+review_status: authoring_review_required
+runtime_status: not_implemented
+reentry_recap: 서하린과 함께 청류문 산문에 도착했다. 팔에는 약방 붕대가 남았고 출근 셔츠와 운동화는 낯설지만, 주인공은 돌아갈 길을 찾겠다는 말을 거두지 않았다.
+stable_opening: 서하린은 산문에서 주인공을 내려놓고 떠나지 않는다. 청우진과 함께 약방 기록, 남은 약재, 팔의 움직임을 대조한 뒤 주인공에게 빠진 사실을 직접 채우게 한다.
+local_urgent_conflict: 청류문은 무너진 수련장과 모자란 식량을 안고 있어 장기 손님을 무조건 품을 수 없다. 주인공은 치료와 밥을 빚으로 삼지 않는 임시 수습생 조건, 손님 조건, 잡역 범위를 선택하면서 귀환 목표를 남겨야 한다.
+beats_and_dialogue:
+  - beat: 문 안으로 들어오는 방식
+    scene: 청우진은 주인공의 운동화를 신기하다고 묻지만 벗기거나 빼앗지 않는다. 서하린은 산문 밖 흑사방의 관심을 과장하지 않고 필요한 사실만 말한다.
+    dialogue: '청우진: “이 문은 낯선 신발을 이유로 사람을 재지 않는다. 대신 네가 어디까지 걸을 수 있는지는 확인하겠다.”'
+  - beat: 도착 평가의 세 칸
+    scene: 청우진은 이름, 팔의 상태, 오늘 필요한 것을 작은 목간 세 칸에 나눈다. 주인공이 “모르겠다”고 쓰자 서하린은 그것도 정확한 상태라고 인정한다.
+    dialogue: '서하린: “모르는 길을 안다고 쓰지 마세요. 오늘은 치료, 한 끼, 잠자리부터 확인하면 됩니다.”'
+  - beat: 빈방의 생활 흔적
+    scene: 배정된 방에는 접은 돗자리와 금 간 물그릇, 이전 손님이 남긴 실밥 묶음이 있다. 청우진은 문패를 새로 달지 않고 임시 숙박 표를 문 안쪽에 건다.
+    dialogue: '청우진: “이 방은 네 이름으로 잠그지 않는다. 네가 돌아가면 다음 사람이 다시 쓸 수 있어야 한다.”'
+  - beat: 수습생과 손님의 두 면
+    scene: 임시 패 앞면에는 ‘수습’, 뒷면에는 ‘객’이 새겨져 있다. 어느 면을 보일지는 주인공이 정하지만 두 면 모두 식사 시간과 치료 보고 규칙을 따른다.
+    dialogue: '주인공: “수습생이라면 떠날 수 없습니까?”\n청우진: “아니다. 임시라는 글자가 바로 떠날 권리까지 포함한다.”'
+  - beat: 팔에 맞는 첫 일
+    scene: 서하린은 물동이를 보자마자 치우고, 마른 천 개기·약재 봉투 세기·부엌의 빈 그릇 닦기 중 하나를 고르게 한다. 청우진은 속도보다 약속한 양을 기록한다.
+    dialogue: '서하린: “도움을 갚으려다 다시 다치면 문에도 빚이 생겨요. 할 수 있는 양을 말하는 게 첫 수련입니다.”'
+  - beat: 돌아갈 목표의 자리
+    scene: 청우진은 다른 세계 이야기를 캐묻지 않고, 무엇을 확인해야 떠날 수 있는지 묻는다. 주인공은 사라진 휴대전화와 귀환 방법을 적고, 천기록을 만능 답으로 부르지 않는다.
+    dialogue: '청우진: “청류문에 남으라는 조건은 걸지 않겠다. 네가 찾는 길을 이 집의 일상과 함께 기록하자.”'
+choices:
+  - id: accept_chore_term
+    label: 팔에 맞는 잡역을 맡고 임시 수습생이 된다
+    immediate_result: 주인공은 물 긷기를 거절하고 마른 천 개기와 약재 봉투 세기를 선택한다. 청우진 앞에서 한 번에 할 양을 정하고 서하린이 붕대를 확인한다.
+    success: 임시 수습생 패와 저녁 자리를 얻고 첫 잡역 기록이 생활 장부에 남는다. 청우진은 약속을 지킨 사람으로, 서하린은 한계를 말한 사람으로 본다.
+    failure: 천을 빨리 개려다 팔이 저리고 약재 봉투를 놓친다. 일은 중단되고 회복 우선 조건이 패 뒷면에 추가되며 수습생 자격은 유지된다.
+    relationship_directions:
+      people: {seo_harin: trust_through_self_limit, cheong_u_jin: provisional_respect_earned}
+      factions: {qingliu: temporary_apprentice_life_opened}
+    reward_candidate:
+      name: 빈방 첫날의 임시패
+      type: identity_token
+      concept: 정식 제자가 아니라 회복과 생활을 함께 시작하도록 청류문이 건넨 조건부 신분 표식.
+    quest_clue:
+      name: 실밥 묶음의 생활 기록
+      type: quest_clue
+      concept: 이전 손님들이 식사·치료·잡역을 한 줄씩 남겨 다음 사람의 회복을 돕던 방의 관습.
+    flags:
+      always: [qingliu_gate_entered, provisional_apprentice_status, return_goal_preserved]
+      success: [qingliu_chore_term_accepted, qingliu_life_loop_opened]
+      failure: [recovery_priority_added, chore_limit_recorded]
+  - id: request_guest_only
+    label: 객 면을 앞세운 임시 수습생 조건을 받아들인다
+    immediate_result: 주인공은 임시 패의 ‘객’ 면을 앞으로 돌리되 정식 수습생 일을 거절하는 대신, 회복에 맞춘 최소 잡역·식사·약방 비용 확인·밤의 산문 규칙을 따르겠다고 약속한다.
+    success: 임시 수습생 신분과 방·식사를 보장받으면서 소속을 서두르지 않는다. 청류문은 수련 기록을 넓게 공유하지 않아 거리를 지켜 주고, 귀환 조사와 치료를 방해하지 않는다.
+    failure: 객 면을 지나치게 굳게 세워 공동 식사 초대와 비공식 도움에서 멀어진다. 서하린은 임시 수습생 신분과 회복 규칙은 유지한 채, 필요한 생활 질문을 직접 묻게 한다.
+    relationship_directions:
+      people: {seo_harin: boundary_respected_with_distance, cheong_u_jin: provisional_apprentice_with_formal_distance}
+      factions: {qingliu: shelter_granted_information_limited}
+    reward_candidate:
+      name: 임시패의 객면
+      type: title
+      concept: 임시 수습생의 회복 규칙을 지키면서도 패의 객 면을 앞세워 귀환 전 거리를 스스로 조절한 이름.
+    quest_clue:
+      name: 닫힌 손님 장부의 갈피
+      type: quest_clue
+      concept: 외부 손님의 이동 기록은 보호하지만 임시 수습생보다 적게 공유하는 청류문의 안전 규칙.
+    flags:
+      always: [qingliu_gate_entered, provisional_apprentice_status, return_goal_preserved]
+      success: [apprentice_recovery_rules_accepted, qingliu_information_limited]
+      failure: [guest_distance_increased, shared_meal_access_reduced]
+  - id: disclose_partial_origin
+    label: 출근길 전이와 귀환 목표를 제한적으로 밝힌다
+    immediate_result: 주인공은 회사, 출근 중이던 거리, 사라진 휴대전화, 돌아가야 할 사람을 말하되 천기록이나 이 세계의 비밀을 빌려 설명하지 않는다. 청우진은 들은 범위만 목간에 옮긴다.
+    success: 청류문은 출신 기록을 소문내지 않고 서하린과 청우진만 확인한다. 귀환 목표가 임시 생활 조건에 명시되어 머무름이 포기의 뜻으로 바뀌지 않는다.
+    failure: 문지기 한 명이 전이를 귀신 이야기로 오해해 질문을 쏟아낸다. 서하린은 대신 해명하지 않고 주인공이 말한 범위만 닫힌 기록으로 보존한다.
+    relationship_directions:
+      people: {seo_harin: trust_through_limited_truth, cheong_u_jin: cautious_recorded_interest, gatekeeper: rumor_prone_but_corrected}
+      factions: {qingliu: origin_record_protected, black_serpent: no_direct_exposure}
+    reward_candidate:
+      name: 돌아갈 주소를 적은 목간
+      type: quest_item
+      concept: 청류문에 기대면서도 현대의 삶과 귀환 이유를 거래물로 내놓지 않은 제한 공개의 증거.
+    quest_clue:
+      name: 휴대전화가 빠진 출근 기록
+      type: quest_clue
+      concept: 전이 순간 현대 물품 중 휴대전화만 사라졌다는 사실로 훗날 귀환 단서와 대조할 수 있는 빈자리.
+    flags:
+      always: [qingliu_gate_entered, provisional_apprentice_status, return_goal_preserved]
+      success: [origin_record_protected, return_goal_shared]
+      failure: [origin_rumor_questioned, explanation_scope_narrowed]
+  - id: choose_water_chore
+    label: 작은 물동이와 산문 심부름을 맡는다
+    immediate_result: 주인공은 큰 물동이 하나 대신 작은 물동이를 두 번 나르겠다고 제안한다. 서하린은 우물에서 부엌까지 먼저 걷고, 청우진은 심부름 범위를 산문 안으로 제한한다.
+    success: 우물·부엌·약재방·산문 사이의 안전한 동선을 익힌다. 생활을 배우면서도 귀환을 찾겠다는 목표를 버리지 않았다는 사실이 남는다.
+    failure: 젖은 돌에서 미끄러져 팔을 다시 감싼다. 서하린이 물동이를 내려놓고 주인공은 그날 동선 확인만 하며 회복을 우선한다.
+    relationship_directions:
+      people: {seo_harin: shared_guardianship_through_routine, cheong_u_jin: useful_but_cautious}
+      factions: {qingliu: daily_route_opened}
+    reward_candidate:
+      name: 두 번 나른 물동이표
+      type: skill
+      concept: 힘을 과시하지 않고 반복 가능한 생활 동작으로 몸과 청류문의 공간을 익힌 첫 잡역 기술.
+    quest_clue:
+      name: 산문 안쪽 심부름표
+      type: route_clue
+      concept: 회복 뒤 장터와 청류문 사이를 합법적으로 오갈 수 있는 산문 기록과 확인 절차.
+    flags:
+      always: [qingliu_gate_entered, provisional_apprentice_status, return_goal_preserved]
+      success: [qingliu_daily_route_learned, chore_trust_seeded]
+      failure: [injury_reopened, routine_start_slowed]
+relationship_directions:
+  people:
+    seo_harin: watchful_bridge_not_romantic_commitment
+    cheong_u_jin: provisional_assessment_and_clear_terms
+    protagonist_self: return_goal_preserved_while_accepting_shelter
+  factions:
+    qingliu: temporary_apprentice_status_and_recovery_opened
+    guestpass_network: hospitality_rule_seen_not_claimed
+rewards:
+  - name: 빈방 첫날의 임시패
+    type: identity_token
+    concept: 귀환 목표를 유지한 채 청류문 생활과 회복을 시작하게 한 조건부 신분.
+  - name: 실밥 묶음의 생활 기록
+    type: quest_clue
+    concept: 빈방을 거쳐 간 손님들이 남긴 식사·치료·잡역의 실제 규칙.
+quest_clues:
+  - name: 청류문 손님 장부의 열린 칸
+    type: clue
+    concept: 임시 수습생은 생활 기록을 더 넓게 확인할 수 있지만 정식 제자 권한은 아직 없다는 경계.
+flags:
+  always: [qingliu_gate_entered, provisional_apprentice_status, return_goal_preserved]
+  success: [qingliu_life_loop_opened]
+  failure: [qingliu_role_boundary_uncertain]
+local_closure: 산문은 닫히고 주인공은 물그릇과 돗자리를 받는다. 정식 제자도 추방된 손님도 아닌 임시 수습생으로 한 끼와 잠자리와 회복을 시험할 며칠이 열린다.
+interlude_safe_state: 작은 잡역량 조정, 방 정리, 식사, 세탁, 붕대 교체, 청류문 사람들의 생활 관찰이 가능하다. 임시 패는 회복 기간 동안 유지되고 즉시 입문 시험이나 추격은 발생하지 않는다.
+low_pressure_hook: 빈방 벽의 실밥 묶음에는 “객패를 가진 사람은 이름보다 상태를 먼저 적는다”는 문장이 있고 마지막 줄은 비어 있다.
+next_reentry_trigger: provisional_apprentice_status와 return_goal_preserved가 유지된 채 주인공이 첫 식사·붕대 상태·맡은 잡역 중 두 가지를 생활 장부에 기록하고, 한두 개의 서브 장과 여러 랜덤 인카운터가 지난 뒤 다음 회복·생활 결정을 직접 고를 때 재진입한다.
+cadence_audit:
+  time: late_morning_arrival_into_first_evening
+  place: qingliu_gate_and_guest_room
+  companions: seo_harin_cheong_u_jin_gatekeeper
+  injury: recovering_arm_with_reinjury_risk
+  information: temporary_role_return_goal_qingliu_rules
+  hostile_pressure: belonging_terms_and_resource_scarcity_only
+scene_context:
+  location: 청류문 산문, 우물길, 임시 객실
+  cast: [주인공, 서하린, 청우진, 산문 문지기]
+  emotional_state: 보호받고 싶은 몸과 돌아가야 한다는 목표를 동시에 지키며 낯선 공동체의 생활 규칙을 시험하는 상태
+convergence:
+  meaningful_exclusive_outcomes: 잡역 수락은 생활 참여와 회복 조건, 손님 요청은 자율과 정보 제한, 출신 공개는 보호된 귀환 기록, 물 긷기는 청류문 동선과 반복 가능한 몸 쓰기로 수렴한다.
+  common_minimum_facts: [qingliu_gate_entered, provisional_apprentice_status, return_goal_preserved, recovery_period_opened]
+  local_closure: 어떤 선택도 정식 입문이나 영구 정착을 결정하지 않으며 주인공은 청류문 안에서 회복하고 생활을 배울 방과 식사를 얻는다.
+  exact_state_bridge: 첫 식사와 치료 상태, 맡은 일의 양이 주인공의 생활 기록에 남으면 1/05의 쉼·식사·치료비 결산으로 이어진다.
+  next_slot: 1/05
+  next_event_ref: wuxia_cheongryu_first_night_shelter
+  terminal: false

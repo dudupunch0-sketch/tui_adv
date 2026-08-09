@@ -105,3 +105,6 @@ source_arc: guestpass_homecoming_main_story_v1_1
 청류문 내부 악의적 배신은 추가하지 않는다. 빈방 압류와 장부 지연의 갈등 상대는 외부 채권·추적 세력이다. 혈월교는 물리 파괴, 흑사방 보스는 채무 거래, 사도는 계산·통제의 최종 적으로 분리한다. 이 문서는 설계 매핑일 뿐 imported event와 runtime/code를 수정하거나 구현 완료로 승격하지 않는다. 새 사건은 핵심·보조·선택·보류 등급과 중심축 영향 평가를 거쳐야 하며 청류문·서하린·객패귀로를 강화하지 않거나 6막 순서·세 요소 인과를 덮으면 승격하지 않는다.
 
 1/08 불탄 객패, 2/10 혈월교 물리 파괴, 3/18 고현묵 객잔과 객패 계승, 3/19 빈방 압류 방어, 3/20 외안배산귀 통과, 4/25 황천수맥, 4/29 객패 장부 지연 계략, 4/30 사도의 첫 거래, 5/33 본거지 잠입, 5/39 현대 귀환 자유 확보는 canonical authoring draft가 작성되었으며 개별 검수는 남아 있다. 다음 신규 사건 저작 순서는 별도 authoring review에서 정한다. runtime 구현은 별도 handoff와 승인 이후에만 시작한다.
+
+보조 자료 경로: chapter_scripts/manifest.yml
+보조 자료 상태: authoring_draft; review_status authoring_review_required; runtime_status not_implemented. 이 보조 자료는 런타임 및 정본 사건 수를 변경하지 않는다.

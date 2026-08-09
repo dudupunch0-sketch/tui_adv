@@ -1,0 +1,177 @@
+schema_version: 1
+kind: chapter_script_companion
+script_id: guestpass_act1_chapter_03
+event_ref: wuxia_seoharin_intervention
+slot: 1/03
+title: 서하린 개입과 치료
+status: authoring_draft
+review_status: authoring_review_required
+runtime_status: not_implemented
+reentry_recap: 장터의 난전이 끝났지만 팔목은 붓고 출근 셔츠 소매는 찢어졌다. 마철의 흑사방 심부름꾼들은 약방 맞은편에서 외지인의 이름과 가방을 훑고 있다.
+stable_opening: 해 질 무렵 서하린이 약초 바구니를 약방 처마 안쪽에 내려놓는다. 그녀는 가방이나 사원증을 먼저 묻지 않고 주인공의 손가락, 팔의 각도, 숨이 끊기는 지점을 살핀다.
+local_urgent_conflict: 약방 주인은 치료에 쓸 약재와 붕대를 내놓는 대신 사원증을 담보로 잡으려 한다. 마철의 동료는 문밖에서 주인공을 흑사방 채무 목록에 올리려 하며, 서하린은 치료와 신분 확인을 분리할지 주인공에게 결정하게 한다.
+beats_and_dialogue:
+  - beat: 손을 보이는 구조자
+    scene: 서하린은 칼자루에서 손을 떼고 손바닥을 펼친 채 한 걸음 떨어진다. 주인공이 고개를 끄덕일 때까지 붕대를 꺼내지 않는다.
+    dialogue: '서하린: “팔을 만져도 될까요? 싫으면 물과 천만 두고 가겠습니다. 구했다는 이유로 허락을 얻었다고 생각하지 않아요.”'
+  - beat: 출근복의 단추
+    scene: 찢어진 셔츠 아래의 플라스틱 사원증이 피에 젖어 있다. 서하린은 그것을 신분패로 부르지 않고, 주인공이 직접 목에서 풀어 약방 주인에게 건네지 않게 막는다.
+    dialogue: '서하린: “이 물건이 당신에게 중요한 건 알겠어요. 치료비를 못 냈다는 이유로 빼앗길 물건은 아니에요.”'
+  - beat: 팔목의 선택
+    scene: 약방 주인이 삔 관절을 세게 펴 보자고 하자 주인공은 이를 악문다. 서하린은 통증을 대신 판정하지 않고 손가락 하나부터 셋까지로 상태를 표시하게 한다.
+    dialogue: '서하린: “참을 수 있느냐보다, 지금 무엇을 할 수 있느냐가 중요해요. 숫자로 말해도 됩니다.”'
+  - beat: 문밖의 채무선
+    scene: 검은 팔토시를 한 사내가 약방 간판 아래 서서 “마철이 기다린다”고 말한다. 서하린은 몸으로 시야를 가리되 주인공을 뒤로 밀어 숨기지 않는다.
+    dialogue: '서하린: “저 사람을 가리킬지, 이름을 남기지 않을지는 당신이 정해요. 제가 대신 싸우면 흑사방은 당신 대신 제 이름을 적을 겁니다.”'
+  - beat: 현대 물건의 값
+    scene: 약방 주인은 반창고의 접착면과 소독 티슈를 보고 낯선 비단 종이라고 한다. 주인공은 가방을 통째로 열지 않고 하나씩 꺼내 물과 천을 먼저 내민다.
+    dialogue: '약방 주인: “이 작은 종이가 약초보다 낫다는 걸 누가 보증하지?”\n주인공: “보증은 못 합니다. 한 장으로 시험하고, 나머지는 제가 갖겠습니다.”'
+  - beat: 작은 책임의 약속
+    scene: 처치가 끝난 뒤 서하린은 청류문을 말하지만 데려가겠다고 단정하지 않는다. 약방 기록에는 오늘의 비용, 밤에 확인할 증상, 아침에 다시 물을 시간이 따로 적힌다.
+    dialogue: '서하린: “당신을 믿으라고 재촉하지 않겠습니다. 내일 같은 질문을 다시 할 수 있게, 오늘 한 일만 남겨 둘게요.”'
+choices:
+  - id: accept_full_treatment
+    label: 허락한 범위에서 정식 처치를 받는다
+    immediate_result: 주인공은 소매를 걷고 팔을 낮은 탁자에 올린다. 서하린은 찬물로 열을 내린 뒤 붕대를 세 번 감고, 각 단계마다 손짓으로 확인을 받는다.
+    success: 관절의 움직임이 안정되고 약방 기록에 치료 과정과 밤 점검 방법이 남는다. 서하린은 보호자 행세를 하지 않고 주인공에게 붕대 상태를 설명한다.
+    failure: 약초 연기에 어지럼이 올라 처치를 중단한다. 서하린은 향이 없는 찬 천으로 바꾸고 회복 기간을 늘리지만, 주인공의 거부 의사를 기록해 치료 주도권을 돌려준다.
+    relationship_directions:
+      people:
+        seo_harin: watchful_responsibility_accepted
+        apothecary_keeper: treatment_record_respected
+      factions:
+        qingliu: first_safe_route_linked
+        black_serpent: debt_claim_temporarily_delayed
+    reward_candidate:
+      name: 세 번 확인한 붕대매듭
+      type: relationship_token
+      concept: 서하린이 매 단계 허락을 확인하며 남긴, 호감이 아니라 초기 책임과 관찰의 증거.
+    quest_clue:
+      name: 약방의 밤 점검표
+      type: quest_clue
+      concept: 청류문으로 환자를 보낼 때 통증·비용·동행 조건을 나누어 적는 지역 치료 기록의 형식.
+    flags:
+      always: [seoharin_intervention_seen, protagonist_name_shared, treatment_started]
+      success: [injury_stabilized, seoharin_first_responsibility]
+      failure: [recovery_delayed, treatment_method_adjusted]
+  - id: trade_modern_first_aid
+    label: 현대 구급물품 일부를 치료비와 교환한다
+    immediate_result: 주인공은 소독 티슈와 반창고를 한 개씩만 꺼내 사용법을 보이고, 가방 전체가 아닌 시험분만 약방 주인에게 건넨다. 서하린은 거래 수량을 입회한다.
+    success: 약방 주인이 물품을 치료 보조재로 인정해 비용을 낮추고, 주인공은 가방 속 나머지 구급물품과 사원증을 보존한다.
+    failure: 포장 글자가 독성 표식으로 오해되어 물품이 압수될 뻔한다. 흑사방 심부름꾼이 “외지 물품”이라는 새 항목을 적어 정체 추적의 실마리가 생긴다.
+    relationship_directions:
+      people:
+        seo_harin: cautious_respect_for_resourcefulness
+        apothecary_keeper: tested_trade_with_reservation
+        black_serpent_runner: foreign_item_interest_drawn
+      factions:
+        qingliu: modern_survival_skill_noted
+        black_serpent: foreign_goods_recorded
+    reward_candidate:
+      name: 한 장만 건넨 구급표
+      type: quest_item
+      concept: 현대 물품을 전부 내놓지 않고 필요한 만큼만 나누어 자원과 자율을 함께 지킨 교환 표식.
+    quest_clue:
+      name: 외지 물품 장부의 붉은 점
+      type: quest_clue
+      concept: 흑사방이 사람뿐 아니라 낯선 물건의 용도와 소유자를 함께 추적한다는 구체적 흔적.
+    flags:
+      always: [seoharin_intervention_seen, protagonist_name_shared, treatment_cost_negotiated]
+      success: [modern_aid_understood, debt_amount_reduced]
+      failure: [black_serpent_foreign_item_recorded, apothecary_suspicion]
+  - id: ask_seoharin_to_witness
+    label: 서하린에게 치료와 신분 확인의 증인을 부탁한다
+    immediate_result: 주인공은 사원증을 담보로 넘기지 않겠다고 말하고, 서하린에게 자신이 약방에 자발적으로 머물렀다는 사실만 증언해 달라고 요청한다.
+    success: 서하린은 치료 기록과 신분 확인을 분리하고 흑사방 사내가 안으로 들어오지 못하게 선을 긋는다. 약방 주인은 사원증을 돌려주고 주인공의 선택을 그대로 적는다.
+    failure: 증언 때문에 흑사방이 서하린의 이름을 채무 책임자 칸에 올린다. 주인공의 사원증은 되찾지만 서하린은 손목을 감싸며 다음 청류문 길의 위험을 다시 계산한다.
+    relationship_directions:
+      people:
+        seo_harin: early_trust_requested_with_cost
+        apothecary_keeper: witness_based_fairness
+        black_serpent_runner: attention_redirected_to_seoharin
+      factions:
+        qingliu: shared_responsibility_seeded
+        black_serpent: seoharin_debt_pressure_increased
+    reward_candidate:
+      name: 처마 아래 사실확인패
+      type: title
+      concept: 상대를 소유하지 않고 곁에서 본 사실만 확인한 사람에게 약방 주인이 남긴 초기 증언의 이름.
+    quest_clue:
+      name: 서하린의 오래된 치료 채무선
+      type: quest_clue
+      concept: 서하린이 청류문 환자와 약재 비용을 두고 흑사방과 반복해 맞섰다는 관계의 흔적.
+    flags:
+      always: [seoharin_intervention_seen, protagonist_name_shared, seoharin_witness_requested]
+      success: [treatment_and_interrogation_separated, seoharin_first_responsibility]
+      failure: [seoharin_debt_line_added, wrist_burden_seeded]
+  - id: insist_on_minimum_care
+    label: 최소 처치와 하룻밤 휴식만 약속한다
+    immediate_result: 주인공은 상처를 씻고 붕대만 감은 뒤, 출신과 흑사방 이야기는 아침까지 미루겠다고 말한다. 서하린은 그 범위를 약방 주인 앞에서 확인한다.
+    success: 통증을 감당할 수준으로 낮추고 물과 잠자리를 얻는다. 서하린은 밤새 곁을 지키지 않고 문밖에 확인 매듭만 걸어 둔다.
+    failure: 잠들기 전 부기가 다시 올라 손을 제대로 펴지 못한다. 서하린은 이동을 늦추고 회복 계획을 수정하지만, 주인공이 거절한 질문을 다시 캐묻지 않는다.
+    relationship_directions:
+      people:
+        seo_harin: guarded_trust_with_explicit_boundary
+        apothecary_keeper: limited_care_transaction
+      factions:
+        qingliu: safe_route_delayed_not_closed
+        black_serpent: no_new_personal_exposure
+    reward_candidate:
+      name: 새벽까지 미룬 대답
+      type: skill
+      concept: 도움을 받으면서도 몸과 정보의 공개 범위를 스스로 정하는 생존 습관.
+    quest_clue:
+      name: 청류문 아침 길의 흰 매듭
+      type: route_clue
+      concept: 팔의 상태가 이동을 허락할 때 서하린이 약방 처마에서 청류문으로 안내할 안전한 표식.
+    flags:
+      always: [seoharin_intervention_seen, protagonist_name_shared, recovery_boundary_declared]
+      success: [guarded_trust_recorded, rest_without_extra_debt]
+      failure: [recovery_period_extended, qingliu_route_delayed]
+relationship_directions:
+  people:
+    seo_harin: rescuer_watchful_responsibility_only
+    protagonist_self: help_accepted_with_agency
+    apothecary_keeper: treatment_separated_from_ownership
+    black_serpent_runner: limited_black_serpent_pressure
+  factions:
+    qingliu: first_connection_through_seoharin
+    black_serpent: debt_pressure_recorded_not_resolved
+rewards:
+  - name: 세 번 확인한 붕대매듭
+    type: relationship_token
+    concept: 첫 만남의 친밀감이 아니라 허락과 상태 확인으로 만들어진 서하린의 책임 표식.
+  - name: 약방의 밤 점검표
+    type: quest_clue
+    concept: 사람의 몸과 빚을 별도 항목으로 보존하는 치료 기록.
+quest_clues:
+  - name: 청류문 아침 길의 흰 매듭
+    type: route_clue
+    concept: 회복 상태와 동행 의사를 확인한 뒤 열리는 약방-청류문 이동 표식.
+flags:
+  always: [seoharin_intervention_seen, protagonist_name_shared, recovery_loop_opened]
+  success: [injury_stabilized_or_plan_set, qingliu_route_open]
+  failure: [recovery_delayed_or_debt_recorded]
+local_closure: 약방 문이 닫히고 서하린은 주인공의 시야 안쪽에 앉는다. 그녀는 칼을 빼지 않은 채 붕대가 젖으면 말해 달라는 약속만 남기고 흑사방을 쫓아가지 않는다.
+interlude_safe_state: 수면, 물 마시기, 붕대 교체, 약방 주인과 비용 확인, 서하린에게 질문하기가 가능하다. 흑사방은 기록을 확인하려는 압력만 남기며 즉시 공격하지 않는다.
+low_pressure_hook: 치료 기록의 빈칸에 청류문 손님용 흰 매듭과 서하린의 확인 표시가 나란히 남는다.
+next_reentry_trigger: injury_stabilized 또는 recovery_period_extended 상태에서 주인공이 붕대 점검과 동행 조건을 스스로 기록하고, 임의의 서브 장·랜덤 인카운터가 지난 뒤 서하린의 청류문 안내를 선택할 때 재진입한다.
+cadence_audit:
+  time: dusk_into_first_watch
+  place: market_apothecary_eave
+  companions: seo_harin_apothecary_keeper_black_serpent_runner
+  injury: wrist_and_arm_injury_in_recovery
+  information: treatment_cost_seoharin_qingliu_route
+  hostile_pressure: black_serpent_debt_claim_without_active_attack
+scene_context:
+  location: 장터 약방과 처마
+  cast: [주인공, 서하린, 약방 주인, 마철의 흑사방 심부름꾼]
+  emotional_state: 처음 만난 구조자를 믿을지 시험하면서도 도움과 정보의 범위를 직접 정하려는 경계심
+convergence:
+  meaningful_exclusive_outcomes: 전면 처치는 팔의 안정과 초기 책임, 구급물품 교환은 자원 자율과 외지 물품 단서, 증인 요청은 공동 부담과 서하린 노출, 최소 처치는 경계 보존과 회복 지연으로 수렴한다.
+  common_minimum_facts: [seoharin_intervention_seen, protagonist_name_shared, treatment_started, qingliu_route_open_or_delayed]
+  local_closure: 선택에 따라 관계의 거리는 달라도 약방에서 밤을 보내며 즉시 공격·추격을 닫는다.
+  exact_state_bridge: 팔의 회복 계획과 치료 비용, 서하린의 동행 조건 중 하나가 주인공의 기록으로 남으면 1/04의 안전 도착 평가가 열린다.
+  next_slot: 1/04
+  next_event_ref: wuxia_qingliu_apprentice_entry
+  terminal: false

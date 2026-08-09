@@ -1,0 +1,168 @@
+schema_version: 1
+kind: chapter_script_companion
+script_id: guestpass_act1_chapter_02
+event_ref: wuxia_arrival_market_confusion
+slot: 1/02
+title: 낯선 장터와 흑사방 첫 시비
+status: authoring_draft
+review_status: authoring_review_required
+runtime_status: not_implemented
+reentry_recap: 산길 사냥꾼의 도움으로 장터에 내려왔지만 객패도 돈도 없다. 주인공의 사원증은 이곳에서 신분증이 아니라 계산할 수 없는 금속 조각이다.
+stable_opening: 점심 무렵, 비에 젖은 천막 사이로 국밥 냄새가 난다. 주인공은 국밥집 주인에게 가격을 묻기도 전에 흑색 팔토시를 찬 심부름꾼이 가방을 발로 막는다.
+local_urgent_conflict: 흑사방 심부름꾼은 사원증과 가방을 담보 목록에 올리고, 수레를 빌린 시장 상인의 미납금까지 주인공에게 떠넘기려 한다. 공개된 장터에서 계산을 끝내야 한다.
+beats_and_dialogue:
+  - beat: 국밥 한 그릇의 망설임
+    scene: 국밥집 주인 복연은 주인공이 젓가락을 들지 못하는 모습을 보고 물부터 내놓는다. 흑사방 심부름꾼은 그 물값까지 장부에 적으려 한다.
+    dialogue: '복연: “먹기 전에 값을 묻는 손님은 드물지. 값을 못 치르는 손님을 대신해 주는 사람은 더 드물고.”'
+  - beat: 낯선 물건의 가격
+    scene: 심부름꾼 마철은 사원증을 빛에 비추고, 가방 안의 회의 자료를 한 장씩 넘긴다. 글을 읽지는 못하지만 종이와 금속이 돈이 될 수 있다고 확신한다.
+    dialogue: '마철: “이름이 적혔으니 장부에 올릴 수 있겠지. 사람 이름은 빚보다 오래 남거든.”'
+  - beat: 수레 주인의 침묵
+    scene: 옆 수레의 주인 담복은 흑사방에 진 빚이 자기 것이라고 말하지 못한다. 주인공이 끼어들면 담복의 딸이 국밥집 뒤에서 숨을 죽인다.
+    dialogue: '담복: “저 사람 말이 틀렸다고 하면, 내 수레 바퀴가 오늘 밤 또 빠질 겁니다.”'
+  - beat: 누구의 계산인가
+    scene: 주인공은 돈, 증언, 사원증, 도망 중 하나를 택해 계산의 기준을 바꾼다. 마철은 칼을 뽑지 않지만, 장터 밖으로 나가면 자유롭지 않다는 식으로 압박한다.
+    dialogue: '주인공: “제가 빚진 것과 저 사람이 빚진 것을 한 줄에 쓰면, 그건 계산이 아니라 협박입니다.”'
+  - beat: 처마 아래의 임시 평화
+    scene: 복연이 국자를 내려놓고 장터 사람들의 시선을 모은다. 마철은 오늘의 장부를 접고 물러나지만, 주인공의 이름과 외지인 표시는 남긴다.
+    dialogue: '복연: “밥값은 밥 먹은 사람이 낸다. 그 원칙도 못 지키는 장부라면 국물에 젖어도 아깝지 않네.”'
+choices:
+  - id: place_foreign_coins
+    label: 지갑의 동전을 계산대에 모두 올린다
+    immediate_result: 주인공은 동전을 바닥에 흩뿌리지 않고 복연의 국자 옆에 줄지어 놓아, 물건의 값과 시비의 값을 분리한다.
+    success: 복연이 동전 일부를 그릇값으로 받아 적고 나머지는 돌려준다. 마철은 외지인의 물건을 전부 가져갈 명분을 잃는다.
+    failure: 동전이 위조품이라는 말이 나와 마철이 금속 조각의 출처를 캐묻는다. 주인공은 국밥 대신 물만 받고 장터의 의심을 감수한다.
+    relationship_directions:
+      people:
+        market_cook: practical_gratitude
+        black_serpent_runner: open_defiance
+      factions:
+        black_serpent: debt_claim_challenged
+    reward_candidate:
+      name: 환율 없는 동전 두 닢
+      type: item
+      concept: 값이 통하지 않는 세계에서 물건의 가격을 정직하게 다시 협상한 기억의 물건.
+    quest_clue:
+      name: 젖은 장부의 첫 줄
+      type: quest_clue
+      concept: 흑사방 장부가 현금보다 이동·숙박·치료를 한 사람에게 묶는 구조라는 흔적.
+    flags:
+      always: [black_serpent_first_pressure_seen, market_rules_partial, foreign_coin_offered]
+      success: [market_cook_publicly_recognized_payment, runner_withdrew_claim]
+      failure: [counterfeit_coin_suspicion, black_serpent_interest_raised]
+  - id: call_dambok_as_witness
+    label: 수레 주인 담복을 앞으로 세운다
+    immediate_result: 주인공은 담복의 수레 손잡이를 잡고, 오늘 누가 무엇을 빌렸는지 담복의 입으로 말하게 한다.
+    success: 담복이 자기 빚과 주인공의 물건을 분리해 진술한다. 마철은 사람들 앞에서 계산을 다시 적겠다고 물러난다.
+    failure: 담복이 딸을 보며 말을 바꾼다. 주인공은 증언 대신 담복의 수레 바퀴 자국과 장부의 날짜를 기억해야 한다.
+    relationship_directions:
+      people:
+        market_cook: respect_for_public_fairness
+        black_serpent_runner: wary_hostility
+        market_cart_owner: burden_shared_then_fragile
+      factions:
+        black_serpent: witness_network_exposed
+    reward_candidate:
+      name: 국밥집 벽에 남은 증언
+      type: quest_item
+      concept: 말로만 사라질 증언을 장터 사람들의 기억과 장소에 묶어 두는 기록.
+    quest_clue:
+      name: 담복 수레의 세 번째 바퀴 자국
+      type: quest_clue
+      concept: 흑사방 심부름꾼이 장터 안쪽이 아니라 약방 방향으로 같은 장부를 옮겼다는 이동 흔적.
+    flags:
+      always: [black_serpent_first_pressure_seen, market_rules_partial, market_witness_called]
+      success: [market_witness_opened, black_serpent_claim_separated]
+      failure: [witness_intimidated, cart_route_clue_retained]
+  - id: reclaim_badge_by_question
+    label: 사원증을 되찾기보다 마철의 장부를 펼치게 한다
+    immediate_result: 주인공은 사원증에 손을 뻗지 않고 마철의 장부에서 자신의 이름이 적힌 줄을 손가락으로 가리킨다. 무엇을 빚으로 계산했는지 먼저 묻는다.
+    success: 마철은 장터 숙박, 물, 치료를 한 묶음으로 기록하는 방식과 청류문이라는 이름을 말한다. 사원증도 돌려준다.
+    failure: 질문이 길어지는 사이 마철이 주인공의 팔을 잡는다. 복연이 국자를 들어 막고, 장부의 한 줄만 찢겨 나간다.
+    relationship_directions:
+      people:
+        market_cook: trust_through_intervention
+        black_serpent_runner: calculated_animosity
+      factions:
+        black_serpent: ledger_method_learned
+        local_apothecary_network: treatment_route_only_heard
+    reward_candidate:
+      name: 장부를 읽는 손가락
+      type: skill
+      concept: 빚의 액수보다 누가 누구를 한 줄로 묶었는지 먼저 확인하는 조사 습관.
+    quest_clue:
+      name: 약방으로 이어진 청류문 표식
+      type: quest_clue
+      concept: 청류문과 치료비가 흑사방 계산망에 함께 기록되어 있다는 첫 연결.
+    flags:
+      always: [black_serpent_first_pressure_seen, market_rules_partial, debt_ledger_questioned]
+      success: [treatment_route_heard, debt_method_understood]
+      failure: [arm_grip_tenderness, ledger_line_torn]
+  - id: step_into_quiet_alley
+    label: 시비를 골목으로 끌고 가 사람들을 떼어 놓는다
+    immediate_result: 주인공은 가방을 복연에게 맡기고 마철에게 빈 골목에서 한 사람씩 말하자고 제안한다. 군중이 밀려 다치지 않게 통로를 만든다.
+    success: 마철은 공개 장부를 들고 오지 못해 흥정을 포기한다. 골목 끝의 낡은 처마와 약방 간판을 발견한다.
+    failure: 골목이 막다른 곳이라 마철의 동료가 앞을 막는다. 주인공은 복연의 종소리를 신호로 삼아 다시 장터로 돌아온다.
+    relationship_directions:
+      people:
+        market_cook: trust_through_return
+        black_serpent_runner: opportunistic_avoidance
+      factions:
+        black_serpent: pressure_not_confronted
+    reward_candidate:
+      name: 골목의 빠른 발
+      type: skill
+      concept: 싸움을 이기려 하기보다 사람과 시선이 움직이는 공간을 바꾸는 회피 기술.
+    quest_clue:
+      name: 약방 처마의 푸른 천
+      type: route_clue
+      concept: 밤에도 약재를 정리하는 사람이 드나드는 약방이라는 장터 사람들의 설명. 누가 오는지는 아직 알 수 없다.
+    flags:
+      always: [black_serpent_first_pressure_seen, market_rules_partial, public_dispute_displaced]
+      success: [apothecary_route_seen, temporary_shelter_found]
+      failure: [alley_blocked, market_bell_signal_used]
+relationship_directions:
+  people:
+    market_cook: first_local_ally
+    black_serpent_runner: exploitative_pressure_identified
+  factions:
+    black_serpent: debt_method_seen_without_active_pursuit
+    local_apothecary_network: treatment_rumor_only
+rewards:
+  - name: 장터의 따뜻한 국물값
+    type: recovery_token
+    concept: 낯선 사람이 하루를 버티도록 내어 준 식사와 장소의 기억.
+  - name: 검은 줄 채무표의 모사
+    type: quest_clue
+    concept: 흑사방이 물건보다 사람의 이동과 치료를 계산하는 방식.
+quest_clues:
+  - name: 약방의 푸른 천막
+    type: route_clue
+    concept: 치료와 청류문으로 이어지는 안전한 질문의 첫 방향.
+flags:
+  always: [black_serpent_first_pressure_seen, market_rules_partial]
+  success: [market_conflict_closed_publicly]
+  failure: [black_serpent_interest_raised_without_pursuit]
+local_closure: 마철은 오늘의 장부를 접고 동료와 함께 장터 밖으로 물러난다. 복연은 국밥 한 그릇을 내고, 주인공에게 약방 처마에서 밤을 보내도 된다고 말한다.
+interlude_safe_state: 국밥을 먹고 잠자리를 정하거나, 담복의 수레를 살피거나, 약방과 청류문 소문을 더 묻거나, 장터에서 흑사방 표식을 관찰할 수 있다. 즉시 추격은 없다.
+low_pressure_hook: 약방의 푸른 천막과 청류문이라는 이름이 같은 장부의 다른 줄에 적혀 있다.
+next_reentry_trigger: 주인공의 팔 또는 옷 손상이 치료가 필요할 정도로 확인되고 약방의 야간 당번이 외지인을 치료할지 판단할 상태가 누적되면 재진입한다. 한두 개의 생활형 사이드와 약 7회의 랜덤 인카운터가 끼어도 유효하며, 다음 장에서 처음 특정 인물의 개입이 열린다.
+cadence_audit:
+  time: midday_after_market_descent
+  place: market_cookstall_and_alley
+  companions: market_cook_dambok_black_serpent_runner
+  injury: arm_grip_or_clothing_damage_possible
+  information: black_serpent_ledger_method_and_unnamed_treatment_route
+  hostile_pressure: public_claim_closed_without_pursuit
+scene_context:
+  location: 장터 국밥집과 뒤골목
+  cast: [주인공, 복연, 담복, 마철, 장터 사람들]
+  emotional_state: 굶주림과 분노 속에서도 누구의 빚인지 선을 그으려는 상태
+convergence:
+  meaningful_exclusive_outcomes: 동전 지불은 공정한 값의 기억, 증언은 시장 공동체의 증거, 장부 질문은 흑사방 방식, 골목 회피는 안전한 이동법을 앞세운다.
+  common_minimum_facts: [black_serpent_first_pressure_seen, market_rules_partial, temporary_shelter_possible, apothecary_route_open]
+  local_closure: 심부름꾼은 공개 시비를 끝내고 물러나며, 주인공은 치료를 선택할 수 있는 처마를 확보한다.
+  exact_state_bridge: 손상된 팔·옷, 약방 처마의 치료 가능성, 장터에서 확보한 임시 숙소가 모두 남아 있으면 다음 장의 개입 장면을 열 수 있다. 1/02 자체에서는 특정 인물을 만나지 않는다.
+  next_slot: 1/03
+  next_event_ref: wuxia_seoharin_intervention
+  terminal: false

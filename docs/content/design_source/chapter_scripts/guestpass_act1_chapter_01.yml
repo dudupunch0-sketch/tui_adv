@@ -1,0 +1,165 @@
+schema_version: 1
+kind: chapter_script_companion
+script_id: guestpass_act1_chapter_01
+event_ref: wuxia_prologue_commute_rift
+slot: 1/01
+title: 출근길 균열
+status: authoring_draft
+review_status: authoring_review_required
+runtime_status: not_implemented
+reentry_recap: 없음. 주인공은 평소처럼 출근하던 자신의 몸과 옷 그대로 균열 너머의 젖은 산길에 떨어진다.
+stable_opening: 휴대전화는 손에서 사라졌고, 가방에는 반쯤 남은 물과 사원증, 볼펜, 구겨진 회의 자료가 있다. 비는 그쳤지만 셔츠 소매는 흙으로 젖어 있다.
+local_urgent_conflict: 사냥꾼 셋이 주인공을 무덤가에서 물건을 훔친 외지인으로 오해한다. 해가 완전히 뜨기 전에 서로의 손이 무기에 닿지 않도록 상황을 설명하고 산길을 내려가야 한다.
+beats_and_dialogue:
+  - beat: 균열이 닫히는 소리
+    scene: 뒤를 돌아보면 출근길의 형광등도, 지하철 선로도 없다. 젖은 바위 틈이 한 번 번쩍인 뒤 아무 일도 없었다는 듯 어두워진다.
+    dialogue: '주인공: “회사에 늦은 게 아니라, 회사가 사라진 건가?”'
+  - beat: 가방 속의 익숙한 것들
+    scene: 주인공은 물과 사원증을 먼저 꺼내고 노트북은 무게만 확인한 뒤 다시 넣는다. 휴대전화는 균열이 닫히는 순간 사라져 손바닥에 남지 않았다.
+    dialogue: '주인공: “배터리보다 지금 필요한 건 사람이다. 이건 나중에 생각하자.”'
+  - beat: 산길의 세 사람
+    scene: 멀리서 사냥꾼들이 내려온다. 선두의 사내가 칼자루를 잡고, 뒤의 젊은 사냥꾼은 주인공의 가방을 본다. 말이 통하는지 확인하기 전까지 누구도 가까이 오지 않는다.
+    dialogue: '사냥꾼: “그 옷은 관복도 아니고, 패도 없군. 어느 무덤에서 나왔느냐?”'
+  - beat: 첫 설명의 값
+    scene: 주인공은 말, 손짓, 물건 중 무엇을 내놓을지 선택한다. 사냥꾼들은 대답의 내용보다 손을 움직이는 방식과 물건을 대하는 태도를 살핀다.
+    dialogue: '젊은 사냥꾼: “모르는 사람이라도 물을 나누면 길손이다. 칼을 먼저 보이면 도적이지.”'
+  - beat: 장터로 내려가는 길
+    scene: 오해가 풀리거나 남은 의심이 장터 사람들에게 전달된다. 사냥꾼은 산 아래 처마와 장터 방향만 알려 주고, 주인공은 첫날을 버틸 생활 선택을 남긴다.
+    dialogue: '주인공: “오늘은 귀환보다 생존을 먼저 적자. 내일의 나는 아직 살아 있어야 하니까.”'
+choices:
+  - id: show_commuter_badge
+    label: 사원증을 내밀고 이름을 또박또박 말한다
+    immediate_result: 주인공은 사원증을 양손으로 내밀고 사진과 이름을 가리킨다. 젊은 사냥꾼이 금속 집게로 표면을 살핀다.
+    success: 선두 사냥꾼은 글자를 읽지는 못해도 이름을 반복해 부르며 외지인 기록에 올린다. 장터까지 동행할 사람을 지목한다.
+    failure: 사원증의 금속 테두리가 패처럼 보인 탓에 사냥꾼은 통행 대가를 요구한다. 사원증은 되돌려 받지만 장터에서 설명할 빚이 생긴다.
+    relationship_directions:
+      people:
+        hunters: cautious_respect
+        protagonist_self: name_exposed_without_alias
+      factions:
+        local_mountain_village: route_opened_through_public_name
+    reward_candidate:
+      name: 젖은 사원증
+      type: identity_token
+      concept: 현대의 이름표가 이 세계에서는 신분 증명이 아니라, 누군가의 이름을 기억시키는 첫 물건이 된다.
+    quest_clue:
+      name: 산길 외지인 기록
+      type: quest_clue
+      concept: 사냥꾼이 적은 이름과 장터 방향이 다음 사건에서 주인공의 신원을 증명하거나 의심하게 만든다.
+    flags:
+      always: [modern_body_arrived, commuter_clothes_preserved, hunter_name_recorded]
+      success: [hunter_directions_received, public_name_route_open]
+      failure: [market_suspicion_seeded, guestpass_explanation_debt]
+  - id: offer_water_first
+    label: 가방의 물을 먼저 건넨다
+    immediate_result: 주인공은 질문에 답하기 전에 물병을 열어 사냥꾼들 앞의 바위에 놓는다. 자신도 마시지 않고 상대의 반응을 기다린다.
+    success: 젊은 사냥꾼이 물을 받아 선두에게 먼저 건넨다. 그들은 주인공을 굶주린 길손으로 분류하고 장터의 국밥집까지 알려 준다.
+    failure: 병 입구가 낯선 물건처럼 보여 독으로 오해받는다. 사냥꾼은 물을 거절하고, 주인공에게 손을 머리 위로 올린 채 걷게 한다.
+    relationship_directions:
+      people:
+        hunters: trust_through_shared_water
+        protagonist_self: resource_cost_accepted
+      factions:
+        local_mountain_village: hospitality_custom_glimpse
+    reward_candidate:
+      name: 길손에게 남긴 한 모금
+      type: relationship_token
+      concept: 가진 것이 적을 때도 먼저 내놓는 선택이 길의 환대 규칙과 연결된다.
+    quest_clue:
+      name: 처마 밑 국밥집
+      type: route_clue
+      concept: 장터에서 돈 대신 물과 일을 교환하는 사람이 있다는 구체적인 생존 경로.
+    flags:
+      always: [modern_body_arrived, commuter_clothes_preserved, water_shared_on_first_path]
+      success: [hunter_directions_received, hospitality_rule_glimpsed]
+      failure: [hunter_poison_suspicion, escorted_walk_recorded]
+  - id: hide_and_observe
+    label: 현대 물품을 숨기고 산길의 규칙을 관찰한다
+    immediate_result: 주인공은 가방 지퍼를 잠그고 사원증을 셔츠 안으로 넣은 뒤, 사냥꾼들의 신발 자국과 시선 방향을 먼저 살핀다.
+    success: 칼을 뽑지 않는 거리와 장터에서 손을 비워 보이는 관습을 알아낸다. 주인공은 불필요한 물건을 드러내지 않은 채 길을 얻는다.
+    failure: 침묵이 도망칠 준비로 읽힌다. 선두 사냥꾼이 산길을 막고, 주인공은 가방을 열어 위험하지 않다는 것을 직접 보여 줘야 한다.
+    relationship_directions:
+      people:
+        hunters: wary_observation
+        protagonist_self: caution_before_disclosure
+      factions:
+        local_mountain_village: unknown_but_not_hostile
+    reward_candidate:
+      name: 낯선 길의 눈금
+      type: skill
+      concept: 말보다 거리·손·시선을 먼저 읽어 오해를 줄이는 생존 습관.
+    quest_clue:
+      name: 검은 줄이 묶인 화살통
+      type: quest_clue
+      concept: 사냥꾼들이 장터의 누군가에게 같은 표식으로 물건을 맡긴다는 작은 연결 흔적.
+    flags:
+      always: [modern_body_arrived, commuter_clothes_preserved, local_gesture_observed]
+      success: [hunter_directions_received, market_gesture_rule_learned]
+      failure: [silence_read_as_suspicion, modern_items_exposed]
+  - id: ask_guestpass_rule
+    label: 객패가 무엇인지 먼저 묻는다
+    immediate_result: 주인공은 사원증 대신 산길에 걸린 낡은 나무패를 가리키며, 사냥꾼이 그 패를 확인하는 이유를 묻는다.
+    success: 사냥꾼은 객패가 다음 집에 길손을 넘겼다는 약속이라고 설명한다. 주인공은 장터에서 객패 없는 사람으로 어디까지 머물 수 있는지 듣는다.
+    failure: 객패를 빚패로 잘못 발음해 흑사방의 이름이 먼저 나온다. 사냥꾼들은 장터 심부름꾼에게 직접 확인하라며 주인공을 보낸다.
+    relationship_directions:
+      people:
+        hunters: curiosity_rewarded
+        protagonist_self: social_rule_named
+      factions:
+        local_mountain_village: guestpass_rule_first_heard
+    reward_candidate:
+      name: 빈 패를 읽는 질문
+      type: insight
+      concept: 물건을 소유물로 단정하지 않고 그 물건이 사람 사이에서 맡은 약속을 묻는 관점.
+    quest_clue:
+      name: 객패 없는 길손의 규칙
+      type: quest_clue
+      concept: 장터와 청류문을 잇는 환대망이 존재하며, 패가 없으면 먼저 자신의 사정을 설명해야 한다.
+    flags:
+      always: [modern_body_arrived, commuter_clothes_preserved, guestpass_rule_named]
+      success: [hospitality_network_direction_open, market_entry_explained]
+      failure: [market_debt_rumor_heard, debt_mark_misread]
+relationship_directions:
+  people:
+    hunters: first_contact_established
+    protagonist_self: modern_identity_under_pressure
+  factions:
+    local_mountain_village: first_local_custom_glimpsed
+rewards:
+  - name: 출근복장 그대로
+    type: identity_state
+    concept: 빙의가 아니라 본인의 몸과 사원증을 가진 채 세계가 바뀌었다는 출발 조건.
+  - name: 가방 속 마지막 볼펜
+    type: item
+    concept: 무기가 아닌 기록 도구가 낯선 세계에서 관찰과 이름 보존의 도구가 된다.
+quest_clues:
+  - name: 산 아래 장터
+    type: route_clue
+    concept: 생존을 위해 내려가야 할 첫 장소이며, 객패와 흑사방 소문이 만나는 곳.
+flags:
+  always: [modern_body_arrived, commuter_clothes_preserved, smartphone_lost_immediately, qingliu_route_unknown]
+  success: [safe_descent_possible]
+  failure: [local_suspicion_remains_without_pursuit]
+local_closure: 사냥꾼들은 산길의 칼을 거두고 주인공을 앞세워 걷지 않는다. 장터 지붕이 보이는 지점에서 각자 사냥길로 흩어지고, 주인공은 처마 아래에서 물과 잠자리를 구할 수 있다.
+interlude_safe_state: 장터로 내려가 물과 국밥을 구하거나, 산길에 남아 발자국과 표식을 조사하거나, 현대 물품을 정리할 수 있다. 사냥꾼은 추격하지 않는다.
+low_pressure_hook: 사원증 뒷면의 젖은 잉크와 산길 나무패의 긁힌 자국이 비슷한 방향으로 번져 있다.
+next_reentry_trigger: 장터에서 첫 끼와 쉴 처마를 확보하고 객패 없는 외지인이라는 상태가 현지 기록에 남은 뒤 재진입한다. 짧은 시간 제한 없이 생활형 사이드와 랜덤 인카운터를 거친 후 장터의 채무 시비가 열릴 때 이어진다.
+cadence_audit:
+  time: rain_stopped_before_dawn
+  place: mountain_path_below_rift
+  companions: solitary_then_hunters
+  injury: mud_scrape_only
+  information: guestpass_rule_or_market_route_partial
+  hostile_pressure: misunderstanding_resolved_without_pursuit
+scene_context:
+  location: 균열이 닫힌 산길과 산 아래 처마
+  cast: [주인공, 선두 사냥꾼, 젊은 사냥꾼, 동행 사냥꾼]
+  emotional_state: 익숙한 신분을 붙잡을지 낯선 규칙을 배울지 결정해야 하는 공포와 실무적 집중
+convergence:
+  meaningful_exclusive_outcomes: 사원증 공개, 물 나눔, 관찰, 객패 질문에 따라 이름 노출·환대 규칙·흑사방 소문·생존 기술 중 하나가 앞선다.
+  common_minimum_facts: [modern_body_arrived, commuter_clothes_preserved, mountain_path_reached, market_direction_available]
+  local_closure: 사냥꾼과의 오해는 산 아래에서 끝나고, 주인공은 장터에서 하루를 버틸 선택권을 얻는다.
+  exact_state_bridge: 장터에서 첫 끼와 처마를 확보하고 객패 없는 외지인이라는 사실이 현지인의 기록에 남으면 1/02가 열린다. 흑사방 이름은 1/01에서 확정하지 않는다.
+  next_slot: 1/02
+  next_event_ref: wuxia_arrival_market_confusion
+  terminal: false

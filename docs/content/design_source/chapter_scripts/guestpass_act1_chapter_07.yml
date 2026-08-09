@@ -1,0 +1,171 @@
+schema_version: 1
+kind: chapter_script_companion
+script_id: guestpass_act1_chapter_07
+event_ref: wuxia_cheongryu_training_first_failure
+slot: 1/07
+title: 서하린 복기와 청류문 적응
+status: authoring_draft
+review_status: authoring_review_required
+runtime_status: not_implemented
+reentry_recap: 첫 호흡 수련에서 주인공은 흐름을 잠깐 느꼈지만, 몸이 싸움에 익숙해진 것은 아니다. 오늘은 청류문 문인의 짧은 대련에서 처음 패하고, 서하린에게 오류 하나만 배운다.
+stable_opening: 오후의 연무장에는 구경하던 문인 몇 명과 일을 마친 청우진이 있다. 서하린은 대련 전에 주인공에게 승패가 아니라 멈출 신호를 정하라고 한다.
+local_urgent_conflict: 상대의 목봉이 어깨를 건드리고 주인공은 균형을 잃는다. 패배를 숨기거나 모든 답을 요구하는 대신, 무엇을 보지 못했는지 인정하고 문 안의 생활로 돌아가야 한다.
+beats_and_dialogue:
+  - beat: 대련 전의 약속
+    scene: 서하린은 주인공의 손목 붕대를 확인하고 상대 문인에게 세 번의 교환만 하자고 말한다. 주인공은 상대의 이름을 듣고, 목봉을 피할 때 발을 먼저 보겠다고 정한다.
+    dialogue: '서하린: “제가 중간에 멈추라고 하면 멈춰요. 그리고 오늘은 한 가지 실수만 찾습니다.”'
+  - beat: 첫 교환의 착각
+    scene: 상대는 공격하는 척 상체를 흔들고 발을 바꾼다. 주인공은 목봉 끝을 따라가다 발목의 방향을 놓친다.
+    dialogue: '주인공: “봉이 오른쪽으로 왔는데, 왜 몸은 반대에서 무너졌지?”'
+  - beat: 넘어지는 순간
+    scene: 주인공은 목봉을 막는 데 성공하지만, 뒤꿈치가 젖은 흙을 밟아 무릎을 찧는다. 상대는 바로 봉을 거두고, 구경하던 문인들은 웃음을 멈춘다.
+    dialogue: '서하린: “괜찮다고 일어나지 말아요. 발부터 확인하고, 일어날 수 있으면 그때 일어나요.”'
+  - beat: 하나만 짚는 복기
+    scene: 서하린은 호흡, 손목, 시선, 상대의 심리 중 전부를 설명하지 않는다. 그녀는 주인공이 봉 끝을 보느라 발의 압력을 놓친 한 장면만 다시 보여 준다.
+    dialogue: '서하린: “당신은 공격을 막으려고 발을 고정했어요. 오늘 고칠 건 그 한 가지예요.”'
+  - beat: 식사 자리의 패배
+    scene: 저녁 식사에서 주인공은 패배를 말할지, 변명할지, 아예 말을 피할지 선택한다. 청우진은 결과보다 다음 날 할 수 있는 일을 묻는다.
+    dialogue: '청우진: “넘어진 사람에게 필요한 건 박수도 비난도 아니다. 내일 다시 들 수 있는 일이지.”'
+  - beat: 창고의 낡은 짐
+    scene: 식사 뒤 주인공은 창고 한쪽으로 낡은 짐꾸러미를 옮긴다. 탄 나무와 접힌 천이 보이지만, 오늘은 그것을 해석하지 않고 먼지만 턴다.
+    dialogue: '주인공: “오늘은 패배를 정리하고, 이상한 물건은 내일의 나에게 맡기겠습니다.”'
+choices:
+  - id: review_foot_pressure
+    label: 발바닥의 압력부터 다시 복기한다
+    immediate_result: 주인공은 흙 위에 발자국을 세 번 남기고, 목봉 끝이 아니라 발뒤꿈치가 먼저 움직인 순간을 표시한다.
+    success: 출근 구두와 젖은 흙에서 균형이 무너지는 조건을 구분한다. 서하린은 다음 대련에서 발만 관찰하라는 좁은 과제를 준다.
+    failure: 발자국을 해석하는 데 몰두해 상대의 몸 전체를 놓친다. 서하린은 기록을 접고, 다음에는 눈을 들고 한 번만 움직이라고 한다.
+    relationship_directions:
+      people:
+        seo_harin: trust_through_precise_correction
+        training_partner: respectful_retry_open
+      factions:
+        qingliu: training_failure_shared_as_learning
+    reward_candidate:
+      name: 뒤꿈치가 남긴 선
+      type: skill
+      concept: 넘어짐을 장비 탓으로 돌리지 않고 발과 땅의 관계로 쪼개 보는 전투 감각.
+    quest_clue:
+      name: 창고 앞 젖은 발자국
+      type: clue
+      concept: 오래된 짐을 옮긴 사람의 발자국과 오늘 대련의 흔적이 같은 방향으로 이어진다는 관찰.
+    flags:
+      always: [first_training_failure_reviewed, qingliu_daily_rhythm_known, one_error_selected, qingliu_first_training_review_resolved, protagonist_recovering_at_qingliu, qingliu_chore_sparring]
+      success: [foot_pressure_error_named, retraining_condition_opened]
+      failure: [overanalysis_recorded, single_motion_task_assigned]
+  - id: explain_seen_motion
+    label: 방금 본 상대의 동작을 자기 말로 설명한다
+    immediate_result: 주인공은 목봉의 궤적을 말하지 않고 상대가 발을 바꾼 순서와 자신의 시선이 따라간 순서를 말한다.
+    success: 상대 문인이 자신의 의도와 다른 부분을 보태며, 주인공은 공격과 유도의 차이를 이해한다. 서하린은 정답 대신 다음 관찰 대상을 남긴다.
+    failure: 설명이 상대를 탓하는 말로 들려 식사 자리의 분위기가 굳는다. 주인공은 변명 대신 틀린 문장을 지우고, 대련 상대에게 한 가지 질문만 다시 한다.
+    relationship_directions:
+      people:
+        seo_harin: honest_analysis_requested
+        training_partner: curiosity_or_defensiveness
+      factions:
+        qingliu: observer_role_opened
+    reward_candidate:
+      name: 목봉 뒤의 빈자리
+      type: insight
+      concept: 눈에 보인 공격보다 상대가 비워 둔 자리와 의도를 읽는 관찰의 시작.
+    quest_clue:
+      name: 장작 마당 대련의 규칙
+      type: quest_clue
+      concept: 청류문 문인들이 훈련을 승부가 아니라 서로의 오류를 확인하는 생활 방식으로 다룬다는 정보.
+    flags:
+      always: [first_training_failure_reviewed, qingliu_daily_rhythm_known, motion_explained_in_own_words, qingliu_first_training_review_resolved, protagonist_recovering_at_qingliu, qingliu_chore_sparring]
+      success: [training_partner_pattern_learned, observation_question_opened]
+      failure: [blame_tone_recorded, repair_conversation_needed]
+  - id: request_one_more_exchange
+    label: 서하린에게 짧은 재대련을 요청한다
+    immediate_result: 주인공은 무리한 승부가 아니라 같은 동작 한 번만 다시 하자고 요청하고, 서하린에게 멈출 신호를 맡긴다.
+    success: 두 번째 교환에서 주인공은 봉을 막지 않고 한 걸음 물러나 균형을 지킨다. 서하린은 승리라 부르지 않고 몸이 바뀐 순간을 확인한다.
+    failure: 첫 동작 전에 무릎 통증이 올라 재대련을 중단한다. 서하린은 재도전 의지는 남기되, 오늘은 회복이 결과라고 못 박는다.
+    relationship_directions:
+      people:
+        seo_harin: trust_through_safe_retry
+        training_partner: measured_competition
+      factions:
+        qingliu: persistence_without_showmanship
+    reward_candidate:
+      name: 다시 들지 않은 목봉
+      type: title
+      concept: 이기기 위해 무리하지 않고 멈출 때를 선택한 첫 훈련의 명예.
+    quest_clue:
+      name: 재대련 전 회복 조건
+      type: route_clue
+      concept: 다음 훈련 전투는 수면·식사·손목 회복을 거친 뒤에만 열려야 한다는 기준.
+    flags:
+      always: [first_training_failure_reviewed, qingliu_daily_rhythm_known, retry_requested, qingliu_first_training_review_resolved, protagonist_recovering_at_qingliu, qingliu_chore_sparring]
+      success: [safe_retry_observed, balance_preserved_once]
+      failure: [retry_stopped_for_recovery, overexertion_avoided]
+  - id: retreat_to_chore
+    label: 다음 잡일로 물러나 패배를 생활 속에 묻는다
+    immediate_result: 주인공은 더 묻지 않고 청우진에게 창고의 천과 장작을 정리할 일을 요청한다. 대련 상대에게는 다음에 이름을 다시 묻겠다고 한다.
+    success: 반복되는 잡역 속에서 문인들의 이름과 식사 시간을 익힌다. 서하린은 도망이 아니라 회복을 위한 후퇴로 받아들인다.
+    failure: 창고에서 무거운 장작을 들다 무릎이 더 아파진다. 청우진이 일을 나누며, 주인공은 패배를 숨기는 것과 몸을 보호하는 것을 구분하게 된다.
+    relationship_directions:
+      people:
+        seo_harin: concern_without_pity
+        cheong_u_jin: daily_work_trust_or_correction
+        training_partner: distance_kept
+      factions:
+        qingliu: routine_belonging_or_chore_limit
+    reward_candidate:
+      name: 밥때를 아는 손
+      type: skill
+      concept: 문파의 힘보다 먼저 식사·잡역·휴식의 리듬을 익혀 살아남는 생활 기술.
+    quest_clue:
+      name: 탄 나무와 접힌 천 꾸러미
+      type: investigation_hook
+      concept: 장터에서 거둔 물건과 오래된 손님 기록을 대조할 수 있는 창고의 조사 대상.
+    flags:
+      always: [first_training_failure_reviewed, qingliu_daily_rhythm_known, defeat_absorbed_into_routine, qingliu_first_training_review_resolved, protagonist_recovering_at_qingliu, qingliu_chore_sparring]
+      success: [qingliu_member_names_learned, daily_belonging_grows]
+      failure: [small_chore_debt_recorded, injury_limit_reaffirmed]
+relationship_directions:
+  people:
+    seo_harin: mentor_who_corrects_one_thing
+    cheong_u_jin: routine_supervision
+    training_partner: first_nonhostile_rival
+  factions:
+    qingliu: daily_belonging_grows_through_failure
+    black_serpent: rumor_pressure_possible_but_inactive
+rewards:
+  - name: 패배 복기 쪽지
+    type: insight
+    concept: 실패를 재능 판정이 아니라 다음 행동 하나로 바꾸는 기록.
+  - name: 청류문 일과표
+    type: quest_clue
+    concept: 메인 사건 사이에 회복·잡역·식사·훈련을 삽입할 수 있는 실제 생활 리듬.
+quest_clues:
+  - name: 창고의 낡은 짐
+    type: investigation_hook
+    concept: 1/08에서 불탄 객패와 청류문 손님 기록을 연결할 조사 대상.
+flags:
+  always: [first_training_failure_reviewed, qingliu_daily_rhythm_known, no_raid_after_training, qingliu_first_training_review_resolved, protagonist_recovering_at_qingliu, qingliu_chore_sparring]
+  success: [training_review_method_selected]
+  failure: [small_chore_debt_or_rumor_recorded]
+local_closure: 패배는 대련장에 남지 않고 저녁 식사와 창고 정리로 흡수된다. 서하린은 모든 답을 주지 않은 채, 다음에는 발의 압력 하나만 다시 보자고 약속한다.
+interlude_safe_state: 일과표에 따라 잡역·세탁·식사·가벼운 재활·창고 정리가 가능하다. 서하린과의 짧은 대화와 다른 문인들의 생활 사건을 넣을 수 있으며 습격은 없다.
+low_pressure_hook: 창고 구석의 탄 나무와 접힌 천에서 객패처럼 보이는 가장자리가 드러나지만, 지금 당장 열어 보지 않아도 된다.
+next_reentry_trigger: 패배 원인 하나가 기록되고, 적어도 한 번의 식사·휴식·잡역이 지나 창고 정리나 저녁 대화에서 낡은 짐을 꺼내 볼 수 있게 될 때 1/08이 열린다.
+cadence_audit:
+  time: following_afternoon
+  place: qingliu_training_yard_and_storehouse
+  companions: seo_harin_cheong_u_jin_training_partner
+  injury: bruised_knee_and_recovering_wrist
+  information: one_training_error_and_qingliu_routine
+  hostile_pressure: embarrassment_only_no_raid
+scene_context:
+  location: 청류문 연무장과 창고
+  cast: [주인공, 서하린, 청우진, 대련 상대 문인, 청류문 문인들]
+  emotional_state: 패배를 숨기고 싶은 마음과 다시 문 안에 섞이고 싶은 마음이 충돌하는 상태
+convergence:
+  meaningful_exclusive_outcomes: 발 복기는 전투 기준, 동작 설명은 관찰 언어, 재대련은 안전한 의지, 잡역 후퇴는 생활 소속을 앞세운다.
+  common_minimum_facts: [first_training_failure_reviewed, qingliu_daily_rhythm_known, seoharin_one_error_correction, no_raid_after_training, qingliu_first_training_review_resolved, protagonist_recovering_at_qingliu, qingliu_chore_sparring]
+  local_closure: 패배는 안전하게 종료되고, 서하린은 오류 하나만 남긴 채 주인공을 생활로 돌려보낸다.
+  exact_state_bridge: 회복 생활과 창고 조사 준비가 동시에 가능해지고, 낡은 짐에서 객패의 흔적이 실제로 드러나면 1/08이 재진입한다.
+  next_slot: 1/08
+  next_event_ref: wuxia_guestpass_burnt_token_last_route_record
+  terminal: false

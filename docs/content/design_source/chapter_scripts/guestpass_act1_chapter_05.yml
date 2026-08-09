@@ -1,0 +1,169 @@
+schema_version: 1
+kind: chapter_script_companion
+script_id: guestpass_act1_chapter_05
+event_ref: wuxia_cheongryu_first_night_shelter
+slot: 1/05
+title: 첫 식사·잠자리·치료비
+status: authoring_draft
+review_status: authoring_review_required
+runtime_status: not_implemented
+reentry_recap: 청류문은 주인공을 임시 수습생으로 받아들였지만, 방과 식사와 치료에는 실제 비용이 든다. 오늘의 선택은 신분보다 회복 기간의 생활 방식을 정한다.
+stable_opening: 해가 산 뒤로 기울 무렵 청류문 식당에 보리죽 냄새가 찬다. 서하린은 죽을 식혀 주지 않고 그릇을 주인공 쪽으로 밀며, 청우진은 약값·밥값·잠자리를 따로 적은 새 장부를 펼친다. 출근 셔츠의 뜯긴 단추는 아직 고치지 못했다.
+local_urgent_conflict: 주인공은 환대를 공짜로 소비하고 싶지 않지만, 회복 전 노동으로 몸을 망칠 수도 없다. 청류문은 사람을 빚의 담보로 삼지 않으면서도 생활의 책임을 함께 정해야 한다.
+beats_and_dialogue:
+  - beat: 첫 숟가락을 기다리는 사람
+    scene: 식당의 젊은 문인들은 주인공의 젓가락질을 흘끔거리지만 말을 걸지 않는다. 서하린은 반찬을 덜어 주지 않고, 어떤 맛이 익숙한지 묻는다.
+    dialogue: '서하린: “고향 음식과 다르면 남기셔도 돼요. 남긴 이유를 말해 주면 다음 끼니를 바꿀 수 있으니까.”'
+  - beat: 세 줄로 나뉜 장부
+    scene: 청우진은 치료 약초, 밥과 물, 방과 천을 별도 줄에 적는다. 장부에는 주인공의 이름 옆에 몸 상태를 먼저 적는 칸이 있다.
+    dialogue: '청우진: “여기서 빚은 사람의 목에 거는 줄이 아니다. 어느 일을 할 수 있는지 정하는 계산이다.”'
+  - beat: 방을 고르는 대화
+    scene: 빈방 하나와 식당 가까운 작은 칸이 남아 있다. 서하린은 혼자 있고 싶은 마음을 이상하게 여기지 않지만, 문을 잠글 수 없는 이유를 설명한다.
+    dialogue: '주인공: “누가 들이닥칠까 봐서가 아니라, 내가 누구인지 모르는 채 잠들까 봐 무섭습니다.”'
+  - beat: 회복을 일로 바꾸지 않기
+    scene: 청우진은 물 긷기와 약재 정리를 내일 일로 제안한다. 주인공이 당장 갚겠다고 하면 서하린이 손목의 붕대를 가리킨다.
+    dialogue: '서하린: “빨리 갚는 사람이 오래 남는 건 아니에요. 내일도 할 수 있는 양을 정해야 해요.”'
+  - beat: 빌린 자리에 이름 쓰기
+    scene: 식사가 끝난 뒤 주인공은 장부에 서명 대신 사원증의 이름을 옮겨 적는다. 청우진은 그 이름 아래 회복 상태와 다음 확인일을 남긴다.
+    dialogue: '주인공: “이름을 적는다고 빚이 사라지진 않겠지만, 적어도 누가 먹고 누가 치료받았는지는 남겠네요.”'
+  - beat: 등불을 끄는 순서
+    scene: 서하린은 문밖에 물을 두고, 주인공은 구두를 가지런히 벗는다. 다음 사건이 아니라 다음 끼니와 회복이 먼저 이어지는 밤이다.
+    dialogue: '서하린: “내일은 수련을 보러 가도 되고, 그냥 자도 돼요. 몸이 먼저 답할 거예요.”'
+choices:
+  - id: accept_staying_recovery_terms
+    label: 머물며 회복 조건을 받아들인다
+    immediate_result: 주인공은 오늘 밤 떠나겠다는 말을 거두고, 약값·식사·잠자리와 회복 뒤 협의할 잡역 범위를 청우진과 함께 읽는다. 서하린은 팔의 붕대를 확인한 뒤 임시 객실을 정식 회복 자리로 배정한다.
+    success: 주인공은 장부의 각 항목과 다음 몸 상태 확인일을 이해하고, 청류문 사람들도 무리하지 않는 생활량을 지킬 약속을 공유한다. 서하린의 설명은 짧지만 신뢰가 분명히 올라간다.
+    failure: 주인공은 조건을 모두 외우려다 비용과 노동을 한꺼번에 떠안으려 한다. 청우진이 문장을 다시 나누고, 서하린은 회복 전에는 무거운 일을 하지 않는다는 제한을 별도로 적는다. 머무름과 치료는 그대로 이어진다.
+    relationship_directions:
+      people:
+        seo_harin: trust_through_shared_recovery_terms
+        cheong_u_jin: mutual_accountability_established
+      factions:
+        qingliu: protected_stay_with_clear_conditions
+    reward_candidate:
+      name: 회복을 먼저 적은 객패끈
+      type: identity_token
+      concept: 떠날 권리를 포기하지 않으면서도 몸이 나을 때까지 머물 조건을 스스로 받아들인 표식.
+    quest_clue:
+      name: 회복 뒤에 열리는 장부 칸
+      type: quest_clue
+      concept: 청류문은 손님이 나은 뒤 잡역·수련·조사를 원하는 만큼 선택하게 하며, 그 기록이 다음 생활 경로를 연다.
+    flags:
+      always: [first_meal_shared, treatment_cost_acknowledged, recovery_life_loop_opened, shelter_secured, stay_until_recovered]
+      success: [recovery_terms_understood, qingliu_stay_trust_seeded, qingliu_familiarity, work_chore_token]
+      failure: [terms_reexplained, heavy_chore_deferred_until_recovery]
+  - id: ask_why_qingliu_help
+    label: 서하린과 청류문이 왜 돕는지 묻는다
+    immediate_result: 주인공은 빚을 계산하기 전에 서하린에게 왜 자신을 산문 안으로 데려왔는지, 청류문이 낯선 손님을 왜 재우는지 묻는다. 서하린과 청우진은 서로 다른 이유를 한 가지씩 말한다.
+    success: 서하린은 장터에서 다친 사람을 두고 갈 수 없었다고 밝히고, 청우진은 청류문이 길 잃은 손님에게 한 끼와 회복 자리를 내주는 오래된 규칙을 설명한다. 주인공은 사람과 문파의 동기를 구분해 이해하고 대화 신뢰를 얻는다.
+    failure: 질문이 심문처럼 들려 서하린이 처음에는 짧게만 답한다. 청우진은 규칙만 설명하고 개인 사정은 닫는다. 그래도 주인공은 도움의 조건과 회복 기간을 듣고, 객실에 머물며 나중에 다시 물을 기회를 얻는다.
+    relationship_directions:
+      people:
+        seo_harin: personal_reason_shared_with_caution
+        cheong_u_jin: qingliu_rule_explained_not_personalized
+      factions:
+        qingliu: hospitality_history_revealed
+    reward_candidate:
+      name: 산문 안쪽의 세 문장
+      type: insight
+      concept: 서하린의 개인적 책임과 청류문의 공동체 규칙을 같은 환대로 착각하지 않게 된 이해.
+    quest_clue:
+      name: 먼저 재운 사람들의 명단
+      type: quest_clue
+      concept: 청류문 장부의 오래된 이름들에는 치료 뒤 수련·잡역·여행을 택한 손님들의 서로 다른 후속 경로가 남아 있다.
+    flags:
+      always: [first_meal_shared, treatment_cost_acknowledged, recovery_life_loop_opened, shelter_secured, stay_until_recovered]
+      success: [seoharin_help_reason_shared, qingliu_hospitality_rule_understood, qingliu_familiarity]
+      failure: [personal_reason_withheld, later_dialogue_needed]
+  - id: demand_separate_room
+    label: 따로 쉴 방을 달라고 요구한다
+    immediate_result: 주인공은 식당과 떨어진 작은 방을 달라고 분명히 말한다. 청우진은 방을 유지하되 붕대 확인 시간과 식사 전달 방법만 정하고, 서하린은 허락 없이 문을 열지 않겠다고 약속한다.
+    success: 주인공은 잠과 회복을 방해받지 않는 자리를 얻는다. 서하린은 정해진 시간에만 안부를 묻고, 주인공이 먼저 말을 걸면 장터와 청류문 이야기를 이어 가기로 한다.
+    failure: 분리 요구가 도움을 거절하는 말처럼 들려 이후 대화의 문턱이 높아진다. 방과 식사와 치료는 끝까지 보장되지만, 서하린과 청우진은 필요한 설명을 먼저 꺼내지 않고 주인공의 질문을 기다린다.
+    relationship_directions:
+      people:
+        seo_harin: boundary_respected_but_conversation_harder
+        cheong_u_jin: formal_privacy_agreement
+      factions:
+        qingliu: recovery_shelter_kept_with_limited_access
+    reward_candidate:
+      name: 닫히지 않은 개인 문패
+      type: title
+      concept: 공동체의 보호 안에서 혼자 쉴 권리를 요구하고, 그 대가로 먼저 대화를 건넬 책임을 받아들인 태도.
+    quest_clue:
+      name: 객실 등불의 교대 시간
+      type: route_clue
+      concept: 방 앞 등불과 발소리를 관찰하면 약방·식당·산문이 언제 움직이는지 알 수 있다.
+    flags:
+      always: [first_meal_shared, treatment_cost_acknowledged, recovery_life_loop_opened, shelter_secured, stay_until_recovered]
+      success: [separate_room_granted, scheduled_care_respected, qingliu_familiarity]
+      failure: [later_conversation_difficulty_raised, information_must_be_requested]
+  - id: insist_leave_immediately
+    label: 지금 당장 나가겠다고 고집한다
+    immediate_result: 주인공은 빚지기 싫다며 밤중이라도 산문을 나가겠다고 고집한다. 서하린은 출구를 막아 세우고, 피가 배어 나오는 팔로는 산 아래까지 갈 수 없다며 회복 전 이탈을 허락하지 않는다.
+    success: 주인공은 서하린이 자신을 붙잡는 이유를 직접 확인하고, ‘떠나고 싶다’는 의사와 ‘지금은 머물러야 한다’는 몸의 현실을 분리해 말한다. 객실과 치료 계획은 유지되고, 이후 떠날 준비를 스스로 정할 권리를 얻는다.
+    failure: 주인공이 문턱까지 나가다 어지러워 주저앉는다. 서하린은 화내지 않고 다시 식당으로 데려오며, 청우진은 회복 전 외출 금지와 물·약 전달을 장부에 추가한다. 자존심은 상하지만 잔류와 치료는 바뀌지 않는다.
+    relationship_directions:
+      people:
+        seo_harin: protective_refusal_creates_tension_and_care
+        cheong_u_jin: safety_rule_recorded_without_punishment
+      factions:
+        qingliu: recovery_stay_enforced_for_survival
+    reward_candidate:
+      name: 살아서 나갈 날의 약속
+      type: recovery_token
+      concept: 억류가 아니라 회복 뒤 스스로 떠날 수 있도록 오늘 밤을 넘기는 약속.
+    quest_clue:
+      name: 산문까지 남은 세 번의 계단
+      type: route_clue
+      concept: 청류문에서 산 아래 길까지의 계단 수와 중간 쉼터가 기록되어, 회복 뒤 첫 외출 준비에 쓰인다.
+    flags:
+      always: [first_meal_shared, treatment_cost_acknowledged, recovery_life_loop_opened, shelter_secured, stay_until_recovered]
+      success: [leave_desire_acknowledged, future_departure_agency_preserved]
+      failure: [injury_prevents_departure, seoharin_forced_rest]
+relationship_directions:
+  people:
+    seo_harin: everyday_care_begins_without_romance_forcing
+    cheong_u_jin: transparent_recovery_terms
+  factions:
+    qingliu: community_participation_or_boundary_set
+    black_serpent: no_new_pressure_during_recovery
+rewards:
+  - name: 따뜻한 첫 끼
+    type: recovery_token
+    concept: 치료비와 환대를 한 식탁에서 확인한 첫 생활의 기억.
+  - name: 청류문 치료비 장부 사본
+    type: quest_clue
+    concept: 사람을 담보로 삼지 않는 회복 비용 기록의 기준.
+quest_clues:
+  - name: 다음 수련 자리의 빈 칸
+    type: route_clue
+    concept: 몸이 허락할 때 청류심법 첫 호흡을 관찰할 수 있도록 비워 둔 일정.
+flags:
+  always: [first_meal_shared, treatment_cost_acknowledged, recovery_life_loop_opened, shelter_secured, stay_until_recovered]
+  success: [qingliu_recovery_routine_stable]
+  failure: [overexertion_or_information_cost_recorded]
+local_closure: 네 선택은 모두 청류문에 머물며 완전히 회복할 때까지의 식사·방·치료 계획으로 수렴한다. 달라지는 것은 신뢰의 깊이, 얻는 정보, 대화의 난도, 다칠 위험이다. 회복 뒤에는 수련·잡역·조사·청류문 생활을 스스로 넓힐 수 있다.
+interlude_safe_state: 수면, 식사, 세탁, 약재 정리, 장부 열람, 서하린과의 짧은 대화가 모두 가능하다. 주인공은 완전히 회복할 때까지 청류문 객실에 머물며, 그 사이 1~2개 서브 장과 여러 랜덤 인카운터가 지나도 훈련·사건·청류문 생활의 진입점이 열린다. 즉시 퇴거·전투는 없다.
+low_pressure_hook: 장부 가장자리의 빈 칸에는 청류심법 첫 호흡을 기록할 자리가 있고, 서하린은 그 칸을 채우라고 재촉하지 않는다.
+next_reentry_trigger: recovery_life_loop_opened와 shelter_secured가 유지된 상태에서 주인공이 식사·수면·생활량을 한 차례 스스로 기록하고 통증이 관리 가능한지 말하면 1/06이 재진입한다. 그 사이 1~2개 서브 장과 여러 랜덤 인카운터가 지나도 유효하며 특정 시각이나 짧은 기한을 요구하지 않는다.
+cadence_audit:
+  time: first_evening_at_qingliu
+  place: qingliu_dining_hall_and_guest_room
+  companions: seo_harin_cheong_u_jin_qingliu_disciples
+  injury: recovery_priority
+  information: transparent_cost_and_life_rhythm
+  hostile_pressure: social_discomfort_only
+scene_context:
+  location: 청류문 식당과 임시 객실
+  cast: [주인공, 서하린, 청우진, 청류문 문인들]
+  emotional_state: 환대를 빚으로 인정하되 자신을 담보로 내주지 않으려는 불편함과 안도
+convergence:
+  meaningful_exclusive_outcomes: 회복 조건 수락은 비용과 신뢰를 투명하게 만들고, 이유 묻기는 서하린과 청류문의 동기 정보를 늘리며, 별실 요구는 안전한 거리와 후속 대화 난도를 남기고, 즉시 이탈 주장은 서하린의 보호적 거절과 부상 위험을 드러낸다.
+  common_minimum_facts: [first_meal_shared, treatment_cost_acknowledged, recovery_life_loop_opened, shelter_secured, stay_until_recovered]
+  local_closure: 네 결과는 모두 완전히 회복할 때까지 청류문에 머무는 방·식사·치료 계획으로 수렴한다. 그 뒤 훈련·사건·청류문 생활을 열며, 즉시 이탈이나 전투는 없다.
+  exact_state_bridge: 한 차례의 회복 생활 기록과 관리 가능한 통증 확인이 끝난 뒤 서하린이 연무장 관찰을 제안하면 1/06이 열린다.
+  next_slot: 1/06
+  next_event_ref: wuxia_cheongryu_first_breathing_lesson
+  terminal: false

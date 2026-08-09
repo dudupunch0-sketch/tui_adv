@@ -88,3 +88,6 @@ source_refs:
 2·3막 canonical authoring draft: [2/10 혈월교의 청류문·귀로객망 물리 파괴](../events/authored/wuxia_guestpass_bloodmoon_qingliu_network_destruction.yml), [3/18 고현묵 객잔과 객패 계승](../events/authored/wuxia_guestpass_gohyeonmuk_inn_succession.yml), [3/20 외안배산귀 통과](../events/authored/wuxia_guestpass_one_eye_mountain_bearer_passage.yml). 세 사건 모두 authoring_draft / authoring_review_required / not_implemented 상태이며, 각각 혈월교의 물리 파괴 역할·객패의 책임 계승·이름과 환대의 비살상 통과를 저작 검수 대상으로 둔다.
 
 4·5막 canonical authoring draft: [4/30 사도의 첫 거래와 계산 논리](../events/authored/wuxia_guestpass_sado_first_calculation_bargain.yml), [5/33 귀로객망 본거지 귀환 잠입](../events/authored/wuxia_guestpass_network_headquarters_infiltration.yml), [5/39 현대 귀환 자유 확보](../events/authored/wuxia_guestpass_modern_return_freedom.yml). 세 사건 모두 authoring_draft / authoring_review_required / not_implemented 상태다. 5/33은 단계적 재인식과 공개 자격 시험을 건너뛰지 않으며, 5/39의 즉시 현대 귀환은 실패가 아닌 정상 terminal ending이고 나머지 분기만 5/40과 6막으로 진행한다.
+
+보조 자료 경로: chapter_scripts/manifest.yml
+보조 자료 상태: authoring_draft; review_status authoring_review_required; runtime_status not_implemented. 이 보조 자료는 런타임 및 정본 사건 수를 변경하지 않는다.

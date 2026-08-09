@@ -132,6 +132,23 @@ INTERVENTION_RAW_EVENTS = {
     "entitlement": "loot_entitlement_created",
     "claim": "loot_claim_resolved",
 }
+I7_DTO_NAMES = [
+    "CombatInterventionResponseInput",
+    "CombatInterventionResponsePlan",
+    "CombatInterventionCommitResult",
+    "CombatLootClaimInput",
+    "CombatLootClaimResult",
+    "CombatLootEntitlement",
+]
+I7_STATUS_NAMES = ["applied", "already_applied", "pending_claim", "rejected"]
+I7_DTO_FIELDS = {
+    "input": ["pause_id", "evaluation_fingerprint", "authored_response_id", "payload"],
+    "plan": ["response_application_transaction_id", "pause_id", "evaluation_fingerprint", "precondition_game_state_fingerprint", "resolved_executor_id", "resolved_target_ids", "resolved_outcome", "strategy_overlay_plan", "effect_application_plan", "outcome_action_plan", "formula_receipt", "decision_receipt_draft", "deterministic_next_segment_seed", "provenance"],
+    "output": ["status", "decision_receipt", "action_receipts", "next_segment_seed"],
+    "claim_input": ["entitlement_id", "terminal_facts_fingerprint"],
+    "claim_output": ["status", "claim_receipt", "inventory_delta"],
+    "entitlement": ["entitlement_id", "item_id", "source_ids", "source_provenance", "claim_policy", "origin_combat_id", "origin_pause_id", "origin_decision_receipt_fingerprint", "status"],
+}
 SUPPORTED_SCHEMA_KEYWORDS = {
     "$schema", "$id", "$ref", "$defs", "title", "description", "type", "const",
     "enum", "required", "properties", "additionalProperties", "items", "minItems",
@@ -585,7 +602,7 @@ def validate_intervention(value, errors):
     special = value.get("special_effect", {})
     require_equal(errors, "intervention outcome action kinds", special.get("outcome_action_kinds"), ACTION_KINDS)
     require_equal(errors, "intervention action plan owner", special.get("action_plan_owner"), "combat_core")
-    require_equal(errors, "intervention action application owner", special.get("application_owner"), "gamecore")
+    require_equal(errors, "intervention action application owner", special.get("application_owner"), "combat_intervention_transaction")
     action_fields = special.get("outcome_action_fields", {})
     require_equal(errors, "intervention set_flag authored fields", action_fields.get("set_flag"), ["flag_id"])
     require_equal(errors, "intervention loot authored fields", action_fields.get("create_loot_entitlement"), ["item_id", "source_selector_id", "claim_policy"])
@@ -675,6 +692,121 @@ def validate_intervention(value, errors):
     handoff = value.get("runtime_handoff", {})
     require_equal(errors, "intervention runtime implementation status", handoff.get("implementation_complete"), False)
 
+
+def validate_i7_contract(value, errors):
+    contract = value.get("i7_contract", {})
+    require_equal(errors, "I7 decision status", contract.get("decision_status"), "all_open_questions_closed")
+    require_equal(errors, "I7 response plan owner module", contract.get("owner_modules", {}).get("response_plan", {}).get("existing_owner_module"), "crates/escape-core/src/combat_runtime.rs")
+    require_equal(errors, "I7 atomic mutation owner module", contract.get("owner_modules", {}).get("atomic_mutation", {}).get("module"), "crates/escape-core/src/combat_intervention_transaction.rs")
+    require_equal(errors, "I7 atomic mutation module status", contract.get("owner_modules", {}).get("atomic_mutation", {}).get("status"), "new_required_module")
+    require_equal(errors, "I7 entry boundary module", contract.get("owner_modules", {}).get("entry_boundary", {}).get("existing_owner_module"), "crates/escape-core/src/lib.rs")
+    require_equal(errors, "I7 persistence owner module", contract.get("owner_modules", {}).get("persistence_boundary", {}).get("existing_owner_module"), "crates/escape-core/src/save.rs")
+
+    dto = contract.get("dto_contract", {})
+    actual_dto_names = []
+    for key in ("input", "plan", "output", "claim_input", "claim_output", "entitlement"):
+        item = dto.get(key, {})
+        actual_dto_names.append(item.get("name"))
+        require_equal(errors, f"I7 {key} DTO status", item.get("status"), "new_required_type")
+        require_equal(errors, f"I7 {key} DTO fields", item.get("fields"), I7_DTO_FIELDS[key])
+    require_equal(errors, "I7 DTO names", actual_dto_names, I7_DTO_NAMES)
+    plan_boundary = contract.get("plan_boundary", {})
+    require_equal(errors, "I7 plan draft input-only", plan_boundary.get("input_only_plan_fields"), ["decision_receipt_draft"])
+    require_equal(errors, "I7 plan draft candidate use", plan_boundary.get("candidate_use"), "finalize_decision_receipt_before_swap")
+    require_equal(errors, "I7 plan draft persistence exclusion", plan_boundary.get("never_persisted_to"), ["GameState.combat_intervention_ledger", "SaveEnvelope.combat_checkpoint"])
+    require_equal(errors, "I7 plan durable replacement", plan_boundary.get("durable_replacement"), "decision_receipt")
+
+    actions = contract.get("action_semantics", {})
+    require_equal(errors, "I7 set_flag semantics", actions.get("set_flag"), "idempotent_set_existing_or_new_flag")
+    require_equal(errors, "I7 grant_item semantics", actions.get("grant_item"), "exact_once_direct_inventory_grant")
+    require_equal(errors, "I7 entitlement semantics", actions.get("create_loot_entitlement"), "create_unclaimed_entitlement_without_inventory_mutation")
+    require_equal(errors, "I7 action plan owner", actions.get("action_plan_owner"), "combat_core")
+    require_equal(errors, "I7 atomic commit owner", actions.get("atomic_commit_owner"), "combat_intervention_transaction")
+    require_equal(errors, "I7 fully resolved plan", actions.get("fully_resolved_plan"), "GameCore_transaction_consumes_plan_without_selector_formula_branch_or_target_re_evaluation")
+    require_equal(errors, "I7 stale precondition", actions.get("stale_precondition"), "precondition_game_state_fingerprint_mismatch_rejected_before_candidate_swap")
+
+    timing = contract.get("receipt_timing", {})
+    preflight = timing.get("preflight_receipt", {})
+    resolved = timing.get("resolved_decision_receipt", {})
+    require_equal(errors, "I7 preflight receipt storage", preflight.get("status"), "transient_active_combat_session_only")
+    require_equal(errors, "I7 preflight receipt timing", preflight.get("timing"), "immediately_after_successful_preflight_before_gamestate_mutation")
+    require_equal(errors, "I7 resolved receipt storage", resolved.get("status"), "durable_after_successful_atomic_commit")
+    require_equal(errors, "I7 resolved receipt timing", resolved.get("timing"), "finalized_with_action_receipts_and_cached_commit_result_in_candidate_before_swap_becomes_durable_with_atomic_swap_before_next_segment_continuation")
+
+    durable = contract.get("durable_state", {})
+    ledger = durable.get("ledger", {})
+    require_equal(errors, "I7 ledger type", ledger.get("name"), "CombatInterventionLedger")
+    require_equal(errors, "I7 ledger location", ledger.get("location"), "GameState.combat_intervention_ledger")
+    require_equal(errors, "I7 durable ledger fields", ledger.get("fields"), ["committed_response_results_by_transaction_id", "applied_action_ids", "unresolved_loot_entitlements_by_id", "loot_claim_receipts_by_action_id", "applied_claim_action_ids"])
+    require_equal(errors, "I7 cross-session durable location", durable.get("cross_session_durable"), "GameState.combat_intervention_ledger")
+    require_equal(errors, "I7 active checkpoint location", durable.get("active_session_checkpoint"), "SaveEnvelope.combat_checkpoint")
+    require_equal(errors, "I7 checkpoint serialization", durable.get("checkpoint_serialization"), "allowed_for_paused_session_restart")
+    require_equal(errors, "I7 checkpoint disposal", durable.get("checkpoint_disposal"), "terminal_or_forced_stop_discarded_and_never_promoted_to_ledger")
+    forbidden = set(durable.get("forbidden_serialized_fields", []))
+    if not {"transaction_scratch", "partial_working_copy", "renderer_state"}.issubset(forbidden):
+        errors.append("I7 forbidden serialized transient fields are incomplete")
+
+    save_boundary = contract.get("save_version_boundary", {})
+    require_equal(errors, "I7 observed SaveEnvelope schema", save_boundary.get("observed_current_save_schema_version"), 1)
+    require_equal(errors, "I7 observed SaveEnvelope type", save_boundary.get("observed_current_save_type"), "SaveEnvelope")
+    require_equal(errors, "I7 target save schema", save_boundary.get("i7b_target_save_schema_version"), 2)
+    require_equal(errors, "I7 v1 backward load", save_boundary.get("v1_backward_load"), "missing_combat_intervention_ledger_defaults_to_empty_CombatInterventionLedger")
+    require_equal(errors, "I7 migration boundary", save_boundary.get("migration_boundary"), "load_time_only")
+    require_equal(errors, "I7 migration scope", save_boundary.get("migration_scaffolding"), "only_empty_defaults_and_one_version_gate")
+    require_equal(errors, "I7 checkpoint current schema", save_boundary.get("checkpoint_schema_version_current"), 1)
+    require_equal(errors, "I7 checkpoint target schema", save_boundary.get("checkpoint_schema_version_i2b_i7a_target"), 2)
+    require_equal(errors, "I7 checkpoint v1 provenance policy", save_boundary.get("checkpoint_v1_provenance_missing"), "explicit_reject")
+
+    statuses = contract.get("transaction_statuses", {})
+    for name in I7_STATUS_NAMES:
+        if not isinstance(statuses.get(name), str) or not statuses[name].strip():
+            errors.append(f"I7 transaction status missing: {name}")
+    require_equal(errors, "I7 partial status", statuses.get("partial"), "forbidden")
+    require_equal(errors, "I7 response statuses", contract.get("status_surface", {}).get("response_result"), ["applied", "already_applied", "rejected"])
+    require_equal(errors, "I7 action receipt statuses", contract.get("status_surface", {}).get("outcome_action_receipt"), ["applied", "already_applied", "pending_claim"])
+    require_equal(errors, "I7 claim result statuses", contract.get("status_surface", {}).get("claim_result"), ["applied", "already_applied", "rejected"])
+    require_equal(errors, "I7 terminal policy rejection", contract.get("status_surface", {}).get("terminal_policy_reject"), "inventory_grant_zero_durable_denial_receipt_unresolved_entitlement_removed_claim_idempotency_recorded")
+
+    rollback = contract.get("rollback_contract", {})
+    require_equal(errors, "I7 rollback preflight order", rollback.get("preflight_order"), ["validation", "selector_resolution", "formula_resolution", "both_branch_effect_target_compatibility", "precondition_game_state_fingerprint"])
+    require_equal(errors, "I7 rollback candidate", rollback.get("candidate_state"), "clone_GameState_and_ledger_apply_entire_plan")
+    require_equal(errors, "I7 rollback commit", rollback.get("commit"), "swap_candidate_only_after_all_operations_and_receipts_succeed")
+    require_equal(errors, "I7 rollback failure", rollback.get("failure"), "discard_candidate_original_state_ledger_history_cost_unchanged_pause_retained")
+    require_equal(errors, "I7 rollback partial apply", rollback.get("partial_apply"), "forbidden")
+    require_equal(errors, "I7 stale rollback", rollback.get("stale_precondition"), "response_result_rejected_zero_candidate_swap_ledger_history_cost_mutation_pause_retained")
+    require_equal(errors, "I7 no rejudgement", rollback.get("no_rejudgement"), "GameCore_transaction_does_not_re_evaluate_selector_formula_branch_or_target")
+    receipt_seed = contract.get("receipt_seed_order", {})
+    require_equal(errors, "I7 candidate receipt seed order", receipt_seed.get("candidate_contains_before_swap"), ["decision_receipt", "action_receipts", "committed_response_results_by_transaction_id", "deterministic_next_segment_seed"])
+    require_equal(errors, "I7 receipt seed cache", receipt_seed.get("next_segment_seed"), "plan_deterministic_next_segment_seed_copied_to_commit_result_and_cache")
+    require_equal(errors, "I7 transaction retry equality", receipt_seed.get("retry_result"), "cached_CombatInterventionCommitResult_equality")
+    require_equal(errors, "I7 lifecycle receipt running paused", contract.get("lifecycle_receipts", {}).get("running_to_paused"), "preflight_context_is_active_session_only")
+    require_equal(errors, "I7 lifecycle receipt paused running", contract.get("lifecycle_receipts", {}).get("paused_to_running"), "resolved_decision_receipt_written_only_after_commit")
+    require_equal(errors, "I7 lifecycle receipt paused terminal", contract.get("lifecycle_receipts", {}).get("paused_to_terminal"), "terminal_claim_is_separate_transaction")
+    require_equal(errors, "I7 lifecycle receipt forced stop", contract.get("lifecycle_receipts", {}).get("forced_stop"), "invalidates_pause_and_rejects_pending_response")
+    require_equal(errors, "I7 handoff next action", contract.get("handoff_next_action"), "implement_I2b_then_I7a_with_new_transaction_module_and_ledger_types_and_no_runtime_changes_in_this_design_slice")
+
+    work_packages = contract.get("work_packages", [])
+    required_work_package_tests = {
+        "I2b": {"same_tick_ko_acceptance", "stable_id_order_independence", "rng_tuple_replay", "both_branch_target_compatibility_preflight"},
+        "I7a": {"preflight_zero_mutation", "transaction_retry_equal_result", "action_collision_rollback", "same_item_distinct_actions"},
+        "I7b": {"restart_exactly_once", "claim_denial_retry", "checkpoint_v1_policy"},
+        "I7c": {"same_tick_ko_intervention_before_settlement", "stale_response", "terminal_claim_policy"},
+    }
+    for item in work_packages:
+        expected_tests = required_work_package_tests.get(item.get("id"), set())
+        if not expected_tests.issubset(set(item.get("tests", []))):
+            errors.append(f"I7 {item.get('id')} core acceptance tests are incomplete")
+
+    require_equal(errors, "I7 I2b status", contract.get("runtime_delta_i2b", {}).get("status"), "separate_prerequisite_work_package")
+    required_i2b = set(contract.get("runtime_delta_i2b", {}).get("required", []))
+    if not {"same_tick_ko_provenance", "any_capable_stable_id", "rng_semantic_domain_tuple", "effect_target_selector_canonicalization_and_source_provenance"}.issubset(required_i2b):
+        errors.append("I7 I2b runtime delta is incomplete")
+    require_equal(errors, "I7 work package order", [item.get("id") for item in work_packages], ["I2b", "I7a", "I7b", "I7c"])
+    for item in work_packages:
+        for field in ("inputs", "outputs", "tests"):
+            if not item.get(field):
+                errors.append(f"I7 {item.get('id')} {field} must be explicit")
+    require_equal(errors, "I7 implementation order", contract.get("implementation_order"), ["I2b", "I7a", "I7b", "I7c"])
 
 def validate_canonical_semantics(value, errors):
     semantics = value.get("canonical_semantics", {})
@@ -898,6 +1030,7 @@ def validate(root: Path, authoring_payload: Path | None = None):
         validate_effect_target_preflight(intervention, errors)
         validate_canonical_semantics(intervention, errors)
         validate_intervention(intervention, errors)
+        validate_i7_contract(intervention, errors)
         if runtime_version is not None:
             require_equal(
                 errors,

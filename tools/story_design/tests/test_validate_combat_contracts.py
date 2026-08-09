@@ -546,6 +546,52 @@ def test_response_payload_requires_composite_presence_contract(tmp_path):
     assert_invalid(root, "response minimum payload")
 
 
+def test_i7_contract_is_complete_and_ordered(tmp_path):
+    result = run(fixture(tmp_path))
+    assert result.returncode == 0, result.stdout
+
+
+@pytest.mark.parametrize(
+    ("path", "value", "message"),
+    [
+        (("owner_modules", "atomic_mutation", "module"), "crates/escape-core/src/lib.rs", "I7 atomic mutation owner module"),
+        (("dto_contract", "plan", "status"), "existing_type", "I7 plan DTO status"),
+        (("dto_contract", "entitlement", "fields"), ["item_id"], "I7 entitlement DTO fields"),
+        (("action_semantics", "grant_item"), "inventory_append", "I7 grant_item semantics"),
+        (("receipt_timing", "preflight_receipt", "status"), "durable", "I7 preflight receipt storage"),
+        (("durable_state", "checkpoint_serialization"), "forbidden", "I7 checkpoint serialization"),
+        (("save_version_boundary", "v1_backward_load"), "reject", "I7 v1 backward load"),
+        (("plan_boundary", "never_persisted_to"), ["GameState.combat_intervention_ledger"], "I7 plan draft persistence exclusion"),
+        (("receipt_timing", "resolved_decision_receipt", "timing"), "old_timing", "I7 resolved receipt timing"),
+        (("receipt_seed_order", "candidate_contains_before_swap"), ["decision_receipt_draft", "decision_receipt", "action_receipts", "committed_response_results_by_transaction_id", "deterministic_next_segment_seed"], "I7 candidate receipt seed order"),
+        (("status_surface", "claim_result"), ["applied"], "I7 claim result statuses"),
+        (("rollback_contract", "partial_apply"), "allowed", "I7 rollback partial apply"),
+        (("implementation_order",), ["I7a", "I2b", "I7b", "I7c"], "I7 implementation order"),
+    ],
+)
+def test_i7_contract_mutations_are_rejected(tmp_path, path, value, message):
+    root = fixture(tmp_path)
+
+    def change(data):
+        target = data["i7_contract"]
+        for part in path[:-1]:
+            target = target[part]
+        target[path[-1]] = value
+
+    mutate(root / "contracts/intervention.yml", change)
+    assert_invalid(root, message)
+
+
+def test_i7_work_package_unknown_key_is_rejected_by_schema(tmp_path):
+    root = fixture(tmp_path)
+
+    def add_unknown(data):
+        data["i7_contract"]["work_packages"][0]["unexpected"] = True
+
+    mutate(root / "contracts/intervention.yml", add_unknown)
+    assert_invalid(root, "unknown property 'unexpected'")
+
+
 @pytest.mark.parametrize("legacy_id", ["self", "target", "observer", "opponent", "any"])
 def test_legacy_selector_aliases_are_migration_only(tmp_path, legacy_id):
     root = fixture(tmp_path)

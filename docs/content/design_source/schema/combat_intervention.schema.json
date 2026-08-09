@@ -9,7 +9,7 @@
     "contract_id", "status", "effective_date", "runtime_status", "schemas", "owners",
     "response_payload", "canonical_semantics", "transaction", "registry", "legacy_migration", "special_effect",
     "strategy_modifier", "lifecycle", "checkpoint_and_receipt", "provenance_and_logs",
-    "runtime_handoff"
+    "runtime_handoff", "i7_contract"
   ],
   "properties": {
     "contract_id": {"const": "combat_intervention_response"},
@@ -35,7 +35,7 @@
     "owners": {
       "const": {
         "response_resolution": "combat_core",
-        "atomic_application": "gamecore",
+        "atomic_application": "combat_intervention_transaction",
         "authoring_validation": "design_validator",
         "presentation": "renderer"
       }
@@ -228,8 +228,8 @@
         "outcome_action_kinds": {"const": ["set_flag", "create_loot_entitlement", "grant_item"]},
         "outcome_action_fields": {"const": {"authored_common": ["kind"], "set_flag": ["flag_id"], "create_loot_entitlement": ["item_id", "source_selector_id", "claim_policy"], "grant_item": ["item_id"]}},
         "action_plan_owner": {"const": "combat_core"},
-        "application_owner": {"const": "gamecore"},
-        "exactly_once": {"const": {"id_generation_owner": {"action_id": "combat_core", "entitlement_id": "combat_core", "response_application_transaction_id": "gamecore", "claim_action_id": "gamecore", "claim_application_transaction_id": "gamecore"}, "deterministic_inputs": {"action_id": ["decision_receipt_fingerprint", "outcome_branch", "action_index"], "entitlement_id": ["action_id"], "response_application_transaction_id": ["pause_id", "decision_receipt_fingerprint"], "claim_action_id": ["entitlement_id", "terminal_facts_fingerprint"], "claim_application_transaction_id": ["combat_id", "terminal_facts_fingerprint"]}, "ledgers": {"response_actions": "decision_receipt.action_receipts", "applied_action_ids": "compact_checkpoint.applied_action_ids", "entitlements": "compact_checkpoint.unresolved_loot_entitlements", "claims": "terminal_receipt.loot_claim_receipts", "applied_claim_action_ids": "compact_checkpoint.applied_claim_action_ids"}, "retry": {"response_action": "matching_action_id_returns_already_applied_without_mutation", "entitlement_creation": "matching_entitlement_id_returns_existing_entitlement", "entitlement_claim": "matching_claim_action_id_returns_already_applied_without_mutation"}, "transaction_separation": {"response_application": "response_application_transaction_id", "terminal_loot_claim": "claim_application_transaction_id", "same_transaction_id": "forbidden"}}},
+        "application_owner": {"const": "combat_intervention_transaction"},
+        "exactly_once": {"const": {"id_generation_owner": {"action_id": "combat_core", "entitlement_id": "combat_core", "response_application_transaction_id": "gamecore", "claim_action_id": "gamecore", "claim_application_transaction_id": "gamecore"}, "deterministic_inputs": {"action_id": ["decision_receipt_fingerprint", "outcome_branch", "action_index"], "entitlement_id": ["action_id"], "response_application_transaction_id": ["pause_id", "decision_receipt_fingerprint"], "claim_action_id": ["entitlement_id", "terminal_facts_fingerprint"], "claim_application_transaction_id": ["combat_id", "terminal_facts_fingerprint"]}, "ledgers": {"response_actions": "GameState.combat_intervention_ledger.applied_action_ids", "committed_response_results": "GameState.combat_intervention_ledger.committed_response_results_by_transaction_id", "applied_action_ids": "GameState.combat_intervention_ledger.applied_action_ids", "entitlements": "GameState.combat_intervention_ledger.unresolved_loot_entitlements_by_id", "claims": "GameState.combat_intervention_ledger.loot_claim_receipts_by_action_id", "applied_claim_action_ids": "GameState.combat_intervention_ledger.applied_claim_action_ids"}, "retry": {"response_action": "matching_action_id_returns_already_applied_without_mutation", "entitlement_creation": "matching_entitlement_id_returns_existing_entitlement", "entitlement_claim": "matching_claim_action_id_returns_already_applied_without_mutation"}, "transaction_separation": {"response_application": "response_application_transaction_id", "terminal_loot_claim": "claim_application_transaction_id", "same_transaction_id": "forbidden"}}},
         "direct_grant": {"const": {"timing": "immediate_atomic_commit", "inventory_result": "acquired"}},
         "loot_entitlement": {"const": {"timing": "create_on_outcome_claim_on_terminal", "default_claimable_results": ["victory", "objective"], "default_denied_results": ["escape", "defeat", "surrender", "capture", "forced_stop"], "default_denied_reasons": ["both_sides_defeated"], "explicit_override": "allowed"}}
       }
@@ -325,6 +325,32 @@
         "renderer_aggregation": {"const": "non_groupable_preserve_sequence_and_receipt_reference"}
       }
     },
+    "i7_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision_status", "scope", "owner_modules", "dto_contract", "plan_boundary", "action_semantics", "receipt_timing", "durable_state", "save_version_boundary", "transaction_statuses", "status_surface", "rollback_contract", "vector_mutation", "receipt_seed_order", "lifecycle_receipts", "runtime_delta_i2b", "work_packages", "implementation_order", "handoff_next_action"],
+      "properties": {
+        "decision_status": {"const": "all_open_questions_closed"},
+        "scope": {"const": "response_transaction_and_durable_exactly_once_ledger"},
+        "owner_modules": {"type": "object", "additionalProperties": false, "required": ["response_plan", "atomic_mutation", "entry_boundary", "persistence_boundary"], "properties": {"response_plan": {"type": "object", "additionalProperties": false, "required": ["existing_owner_module", "owner_boundary"], "properties": {"existing_owner_module": {"const": "crates/escape-core/src/combat_runtime.rs"}, "owner_boundary": {"type": "string"}}}, "atomic_mutation": {"type": "object", "additionalProperties": false, "required": ["module", "status", "owner_boundary"], "properties": {"module": {"const": "crates/escape-core/src/combat_intervention_transaction.rs"}, "status": {"const": "new_required_module"}, "owner_boundary": {"type": "string"}}}, "entry_boundary": {"type": "object", "additionalProperties": false, "required": ["existing_owner_module", "owner_boundary"], "properties": {"existing_owner_module": {"const": "crates/escape-core/src/lib.rs"}, "owner_boundary": {"type": "string"}}}, "persistence_boundary": {"type": "object", "additionalProperties": false, "required": ["existing_owner_module", "owner_boundary"], "properties": {"existing_owner_module": {"const": "crates/escape-core/src/save.rs"}, "owner_boundary": {"type": "string"}}}}},
+        "dto_contract": {"type": "object", "additionalProperties": false, "required": ["input", "plan", "output", "claim_input", "claim_output", "entitlement"], "properties": {"input": {"$ref": "#/$defs/newRequiredDto"}, "plan": {"$ref": "#/$defs/newRequiredDto"}, "output": {"$ref": "#/$defs/newRequiredDto"}, "claim_input": {"$ref": "#/$defs/newRequiredDto"}, "claim_output": {"$ref": "#/$defs/newRequiredDto"}, "entitlement": {"$ref": "#/$defs/newRequiredDto"}}},
+        "plan_boundary": {"type": "object", "additionalProperties": false, "required": ["input_only_plan_fields", "candidate_use", "never_persisted_to", "durable_replacement"], "properties": {"input_only_plan_fields": {"const": ["decision_receipt_draft"]}, "candidate_use": {"type": "string"}, "never_persisted_to": {"const": ["GameState.combat_intervention_ledger", "SaveEnvelope.combat_checkpoint"]}, "durable_replacement": {"const": "decision_receipt"}}},
+        "action_semantics": {"type": "object", "additionalProperties": false, "required": ["set_flag", "grant_item", "create_loot_entitlement", "action_plan_owner", "atomic_commit_owner", "fully_resolved_plan", "stale_precondition"], "properties": {"set_flag": {"type": "string"}, "grant_item": {"type": "string"}, "create_loot_entitlement": {"type": "string"}, "action_plan_owner": {"const": "combat_core"}, "atomic_commit_owner": {"const": "combat_intervention_transaction"}, "fully_resolved_plan": {"type": "string"}, "stale_precondition": {"type": "string"}}},
+        "receipt_timing": {"type": "object", "additionalProperties": false, "required": ["preflight_receipt", "resolved_decision_receipt"], "properties": {"preflight_receipt": {"type": "object", "additionalProperties": false, "required": ["status", "timing", "failure"], "properties": {"status": {"type": "string"}, "timing": {"type": "string"}, "failure": {"type": "string"}}}, "resolved_decision_receipt": {"type": "object", "additionalProperties": false, "required": ["status", "timing", "contains"], "properties": {"status": {"type": "string"}, "timing": {"type": "string"}, "contains": {"type": "array", "minItems": 1}}}}},
+        "durable_state": {"type": "object", "additionalProperties": false, "required": ["ledger", "cross_session_durable", "active_session_checkpoint", "transient_session_only", "checkpoint_serialization", "checkpoint_disposal", "forbidden_serialized_fields", "ledgers"], "properties": {"ledger": {"type": "object", "additionalProperties": false, "required": ["name", "status", "location", "fields"], "properties": {"name": {"const": "CombatInterventionLedger"}, "status": {"const": "new_required_type"}, "location": {"const": "GameState.combat_intervention_ledger"}, "fields": {"type": "array", "minItems": 1, "uniqueItems": true}}}, "cross_session_durable": {"const": "GameState.combat_intervention_ledger"}, "active_session_checkpoint": {"const": "SaveEnvelope.combat_checkpoint"}, "transient_session_only": {"type": "array", "minItems": 1, "uniqueItems": true}, "checkpoint_serialization": {"type": "string"}, "checkpoint_disposal": {"type": "string"}, "forbidden_serialized_fields": {"type": "array", "minItems": 1, "uniqueItems": true}, "ledgers": {"type": "object", "additionalProperties": false, "required": ["committed_responses", "response_actions", "unresolved_entitlements", "claims", "claim_idempotency"], "properties": {"committed_responses": {"type": "string"}, "response_actions": {"type": "string"}, "unresolved_entitlements": {"type": "string"}, "claims": {"type": "string"}, "claim_idempotency": {"type": "string"}}}}},
+        "save_version_boundary": {"type": "object", "additionalProperties": false, "required": ["observed_current_save_schema_version", "observed_current_save_type", "i7b_target_save_schema_version", "bump_only_when", "v1_backward_load", "v1_selection_history", "migration_boundary", "migration_scaffolding", "combat_checkpoint", "checkpoint_schema_version_current", "checkpoint_schema_version_i2b_i7a_target", "checkpoint_v1_provenance_missing"], "properties": {"observed_current_save_schema_version": {"const": 1}, "observed_current_save_type": {"const": "SaveEnvelope"}, "i7b_target_save_schema_version": {"const": 2}, "bump_only_when": {"type": "string"}, "v1_backward_load": {"type": "string"}, "v1_selection_history": {"type": "string"}, "migration_boundary": {"const": "load_time_only"}, "migration_scaffolding": {"type": "string"}, "combat_checkpoint": {"type": "string"}, "checkpoint_schema_version_current": {"const": 1}, "checkpoint_schema_version_i2b_i7a_target": {"const": 2}, "checkpoint_v1_provenance_missing": {"const": "explicit_reject"}}},
+        "transaction_statuses": {"type": "object", "additionalProperties": false, "required": ["applied", "already_applied", "pending_claim", "rejected", "partial", "retry_rule"], "properties": {"applied": {"type": "string"}, "already_applied": {"type": "string"}, "pending_claim": {"type": "string"}, "rejected": {"type": "string"}, "partial": {"const": "forbidden"}, "retry_rule": {"type": "string"}}},
+        "status_surface": {"type": "object", "additionalProperties": false, "required": ["response_result", "outcome_action_receipt", "claim_result", "terminal_policy_reject"], "properties": {"response_result": {"type": "array", "minItems": 1, "uniqueItems": true}, "outcome_action_receipt": {"type": "array", "minItems": 1, "uniqueItems": true}, "claim_result": {"type": "array", "minItems": 1, "uniqueItems": true}, "terminal_policy_reject": {"type": "string"}}},
+        "rollback_contract": {"type": "object", "additionalProperties": false, "required": ["preflight_order", "candidate_state", "commit", "failure", "stale_precondition", "no_rejudgement", "partial_apply"], "properties": {"preflight_order": {"type": "array", "minItems": 1}, "candidate_state": {"type": "string"}, "commit": {"type": "string"}, "failure": {"type": "string"}, "stale_precondition": {"type": "string"}, "no_rejudgement": {"type": "string"}, "partial_apply": {"const": "forbidden"}}},
+        "vector_mutation": {"type": "object", "additionalProperties": false, "required": ["set_flag", "grant_item", "entitlement"], "properties": {"set_flag": {"type": "string"}, "grant_item": {"type": "string"}, "entitlement": {"type": "string"}}},
+        "receipt_seed_order": {"type": "object", "additionalProperties": false, "required": ["candidate_contains_before_swap", "next_segment_seed", "retry_result"], "properties": {"candidate_contains_before_swap": {"type": "array", "minItems": 1, "uniqueItems": true}, "next_segment_seed": {"type": "string"}, "retry_result": {"type": "string"}}},
+        "lifecycle_receipts": {"type": "object", "additionalProperties": false, "required": ["running_to_paused", "paused_to_running", "paused_to_terminal", "forced_stop"], "properties": {"running_to_paused": {"type": "string"}, "paused_to_running": {"type": "string"}, "paused_to_terminal": {"type": "string"}, "forced_stop": {"type": "string"}}},
+        "runtime_delta_i2b": {"type": "object", "additionalProperties": false, "required": ["status", "required"], "properties": {"status": {"type": "string"}, "required": {"type": "array", "minItems": 1, "uniqueItems": true}}},
+        "work_packages": {"type": "array", "minItems": 4, "uniqueItems": true, "items": {"type": "object", "additionalProperties": false, "required": ["id", "title", "inputs", "outputs", "tests"], "properties": {"id": {"type": "string", "minLength": 1}, "title": {"type": "string", "minLength": 1}, "inputs": {"type": "array", "minItems": 1, "uniqueItems": true}, "outputs": {"type": "array", "minItems": 1, "uniqueItems": true}, "tests": {"type": "array", "minItems": 1, "uniqueItems": true}}}},
+        "implementation_order": {"const": ["I2b", "I7a", "I7b", "I7c"]},
+        "handoff_next_action": {"type": "string", "minLength": 1}
+      }
+    },
     "runtime_handoff": {
       "type": "object",
       "additionalProperties": false,
@@ -333,6 +359,19 @@
         "current_runtime_simulation_version": {"const": "v3"},
         "implementation_complete": {"const": false},
         "required_work_packages": {"type": "array", "minItems": 1, "uniqueItems": true}
+      }
+    }
+  },
+  "$defs": {
+    "newRequiredDto": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "status", "owner", "fields"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "status": {"const": "new_required_type"},
+        "owner": {"type": "string", "minLength": 1},
+        "fields": {"type": "array", "minItems": 1, "uniqueItems": true}
       }
     }
   }

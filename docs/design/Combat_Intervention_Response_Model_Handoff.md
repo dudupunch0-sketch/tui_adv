@@ -159,3 +159,17 @@ Save schema와 combat checkpoint는 v2로 올리고 receipt schema는 v1로 시�
 - consumer가 success/terminal/timeout을 재판정하지 않음
 
 이 acceptance가 모두 runtime 테스트로 고정되기 전에는 구현 완료로 표시하지 않는다.
+
+## WP-I7 결정 완료 handoff
+
+실제 owner는 `combat_runtime.rs`의 response/preflight planning, 새 `combat_intervention_transaction.rs`(`new_required_module`)의 candidate GameState atomic commit/swap으로 나눈다. `lib.rs`는 public export/entry facade이고, `save.rs`는 현재 `SaveEnvelope`와 `SAVE_SCHEMA_VERSION = 1`을 제공한다. 아래 타입은 모두 구현자가 추가해야 하는 `new required type`이다: `CombatInterventionResponseInput`, `CombatInterventionResponsePlan`, `CombatInterventionCommitResult`, `CombatLootClaimInput`, `CombatLootClaimResult`, `CombatLootEntitlement`.
+
+`CombatInterventionResponsePlan`은 fully resolved plan이며 정확한 필드는 `response_application_transaction_id`, `pause_id`, `evaluation_fingerprint`, `precondition_game_state_fingerprint`, `resolved_executor_id`, `resolved_target_ids`, `resolved_outcome`, `strategy_overlay_plan`, `effect_application_plan`, `outcome_action_plan`, `formula_receipt`, `decision_receipt_draft`, `deterministic_next_segment_seed`, `provenance`다. `decision_receipt_draft`는 plan input-only이며 최종 `decision_receipt` 생성에만 사용하고 `GameState.combat_intervention_ledger`/`SaveEnvelope.combat_checkpoint`에 저장하지 않는다. GameCore transaction은 selector/formula/branch/target을 재판정하지 않는다. stale precondition fingerprint는 response `rejected`, zero candidate swap/ledger/history/cost mutation, pause retained다.
+
+Action semantics는 `set_flag`=authored order append-if-absent, `grant_item`=item 전역 dedupe 없는 action-ID exact-once grant, `create_loot_entitlement`=inventory mutation 없는 unique-ID map insert로 확정한다. response commit과 terminal claim은 서로 다른 transaction ID/ledger를 쓴다. response result는 `applied|already_applied|rejected`, action receipt는 `applied|already_applied|pending_claim`, claim result는 `applied|already_applied|rejected`이며 partial apply는 없다. 동일 transaction/action/claim ID retry는 equal result를 반환한다.
+
+Preflight receipt는 성공 직후 GameState mutation 전에 만든다. `SaveEnvelope.combat_checkpoint`/`CombatRuntimeCheckpoint`는 paused session restart를 위해 serialize할 수 있고 terminal/forced stop 뒤 폐기한다. cross-session durable source는 단일 `GameState.combat_intervention_ledger`이며 checkpoint를 ledger로 승격하지 않는다. transaction scratch, partial working copy, renderer state는 절대 serialize하지 않는다. validation/selector/formula/branch compatibility와 candidate 전체 적용이 모두 성공한 뒤 receipt/action receipts/transaction cache/seed를 candidate에 넣고 swap한다.
+
+현재 SaveEnvelope는 v1이다. I7b가 `CombatInterventionLedger`를 GameState에 추가할 때만 v2로 올리고 v1 load는 빈 ledger로 default한다. checkpoint v1→v2는 별도 gate이며 checkpoint 필드 변경 시 `COMBAT_RUNTIME_CHECKPOINT_SCHEMA_VERSION`도 v2로 올린다. provenance 없는 v1 paused checkpoint는 explicit reject한다.
+
+착수 순서는 I2b(runtime delta: same-tick KO provenance, stable `any_capable`, RNG semantic/domain tuple, effect target selector/source provenance) → I7a(transaction adapter) → I7b(persistence/claim ledger) → I7c(lifecycle/terminal E2E)다. 각 WP의 input/output/test acceptance는 `contracts/intervention.yml:i7_contract.work_packages`와 `combat_contract_handoff.md`를 따른다.

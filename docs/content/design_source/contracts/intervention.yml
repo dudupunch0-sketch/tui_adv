@@ -14,6 +14,80 @@ owners:
   authoring_validation: design_validator
   presentation: renderer
 
+canonical_semantics:
+  selected_target:
+    cardinality: exactly_one
+    binding: immutable_bound_target_from_pause_opportunity_provenance
+    accepted_when:
+      - active_at_pause_snapshot
+      - active_at_triggering_tick_start_and_ko_during_that_same_tick
+    rejected_when: [previously_ko, fled, departed, captured]
+    departed_meaning: non_flee_departure
+    provenance_fields: [bound_target_ids, bound_target_tick, bound_target_state_at_tick_start, trigger_tick]
+    resolution: no_re_evaluation_against_later_state_within_atomic_transaction
+  executor:
+    observer:
+      opportunity_observer: exact
+      requires: [can_act, required_capabilities]
+      mapping: exactly_one_active_combatant_with_hp_greater_than_zero
+      otherwise: preflight_error
+    any_capable:
+      candidates: all_pause_snapshot_observers_satisfying_can_act_and_required_capabilities
+      candidate_mapping: exactly_one_active_combatant_with_hp_greater_than_zero_per_candidate
+      selection: stable_combatant_id_ascending_first
+      zero_candidates: preflight_error
+      ordering_source: stable_combatant_id_not_vector_or_insertion_order
+  effect_target_compatibility:
+    source_registry: pause_snapshot_bound_CombatEffectCatalog.effects
+    branches: [success, failure]
+    effect_ids: all_authored_effect_ids_in_both_branches
+    unknown_effect_id: preflight_error
+    definition_target_selector: canonical_target_selector_id_required
+    compatibility_rule: effect_target_selector_exactly_matches_response_special_effect_target_selector_id
+    validate_before_rng: [success_branch, failure_branch]
+    incompatibility: preflight_error
+    rejection_mutations: {state: 0, cost: 0, rng: 0, history: 0}
+    static_authoring_validator_without_catalog: do_not_guess_combinations
+    runtime_preflight: mandatory_machine_contract
+  multi_target:
+    resolved_target_ids: stable_combatant_id_ascending
+    authored_effect_ids: unique_and_authored_order_is_semantic
+    application_order: effect-major, then target stable ascending
+    exactly_once_per_effect_target_pair: true
+    atomic_rejection: {state_mutations: 0, cost_mutations: 0, rng_draws: 0}
+  lowest_health:
+    population: active_same_side_combatants_including_executor
+    required_snapshot_invariant: every_candidate_max_hp_greater_than_zero
+    invalid_snapshot: corrupted_snapshot_preflight_error
+    comparison: integer_rational_cross_multiplication_no_float
+    tie_break: stable_combatant_id_ascending
+  surrounded:
+    neighborhood: six_adjacent_hexes_intersecting_candidate_anchor
+    counts: distinct_occupied_hexes_not_combatants
+    ally_count: exclude_entire_candidate_footprint
+    active_footprints_only: true
+  strategy_scope:
+    allowed: [combatants, role, all_allies]
+    all_allies_resolution: executor_side_all_allies_side_overlay
+    unsupported_authoring_scope: side
+    precedence: [combatant, role, all_allies_side, baseline]
+  formula_fingerprint:
+    semantic_tag: combat.formula.v1.fixed_chance
+    namespace: actual_combat
+    tuple_prefix: [combat.formula.v1.fixed_chance, actual_combat]
+    encoding: utf_8_compact_canonical_json_array
+    object_keys: BTreeMap_lexicographic
+    hash: FNV-1a_64
+    input_fingerprint: lowercase_16_hex_of_fnv_result
+    sub_seed: same_64_bit_fnv_result
+    draw_zero_roll: sub_seed_mod_100
+    deterministic_0_or_100: fingerprint_and_sub_seed_derived_but_no_draw_or_roll
+    algorithm_change: simulation_version_bump_required
+  registry_membership: unknown_ids_are_preflight_or_validator_errors
+  outcome_resolution:
+    action_source_selectors: resolve_in_pause_preflight_and_record_provenance
+    target_ordering: deterministic
+
 response_payload:
   optional_fields: [strategy_modifier, special_effect]
   minimum_present: 1
@@ -61,6 +135,8 @@ transaction:
     source: deterministic_sub_seed
     provenance_required: true
     canonical_sub_seed_inputs:
+      - formula_semantic_tag
+      - rng_namespace
       - effective_segment_seed
       - simulation_version
       - manifest_fingerprint
@@ -80,7 +156,10 @@ transaction:
       object_key_order: lexicographic
       integer_encoding: decimal
       normalized_formula_parameters_key_order: lexicographic
-      sub_seed_derivation_hash: simulation_version_owned_deterministic_rng_primitive
+      sub_seed_derivation_hash: fnv_1a_64_current_v3
+      input_fingerprint: lowercase_16_hex_of_fnv_result
+      sub_seed: same_64_bit_fnv_result
+      draw_zero_roll: sub_seed_mod_100
     draw_index: 0
     forbidden_inputs: [wall_clock, frame, renderer, forecast]
 
@@ -96,26 +175,26 @@ registry:
   response_selector_resolution: once_from_pause_snapshot
   dynamic_strategy_targeting: reevaluate_each_tick_from_canonical_snapshot
   opportunity_provenance:
-    required_fields: [bound_target_ids]
+    required_fields: [bound_target_ids, bound_target_tick, bound_target_state_at_tick_start, trigger_tick]
     bound_target_ids: immutable_single_bound_target_ids_or_empty
     source: pause_snapshot
   selector_definitions:
     executor_self:
       resolves: executor_combatant_exactly_one
     selected_target:
-      resolves: immutable_single_bound_target_from_pause_opportunity_provenance
+      resolves: exactly_one_immutable_bound_target; active_at_pause_or_active_at_trigger_tick_start_then_ko_same_tick_only
       ai_current_target_fallback: forbidden
     nearest_active_enemy:
       candidate_set: active_enemy_combatants_opposite_side
       ordering: minimum_occupied_footprint_hex_distance_between_executor_and_candidate_ascending_then_stable_id
     lowest_health_active_ally:
       candidate_set: active_same_side_combatants_including_executor
-      ordering: current_hp_divided_by_max_hp_ascending_then_stable_id
+      ordering: exact_integer_rational_cross_multiplication_current_hp_over_max_hp_ascending_then_stable_id
     surrounded_active_ally:
       candidate_set: active_same_side_combatants_including_executor
       neighborhood: six_adjacent_hexes
-      predicate: enemy_occupancy_at_least_3_and_ally_occupancy_zero
-      candidate_self_occupancy: excluded_from_ally_occupancy_count
+      predicate: distinct_enemy_occupied_hexes_at_least_3_and_distinct_ally_occupied_hexes_zero
+      candidate_self_occupancy: entire_candidate_footprint_excluded_from_ally_occupancy_count
       exclusions: [ko, departed, captured]
       ordering: enemy_count_descending_then_stable_id
       terrain_and_boundary_inputs: excluded
@@ -248,7 +327,8 @@ strategy_modifier:
     disjoint_fields: coexist
     additive_numeric: forbidden
     arbitrary_json_patch: forbidden
-  precedence: [combatant, role, side, baseline]
+  precedence: [combatant, role, all_allies_side, baseline]
+  unsupported_authoring_scope: side
   clear_override_result: restore_baseline
   invalid_target:
     first: canonical_fallback
@@ -313,6 +393,7 @@ checkpoint_and_receipt:
   receipt_optional_fields: [formula_receipt]
   formula_receipt_rules:
     strategy_only: absent
+    special_effect_present: required
     deterministic_zero_or_one_hundred:
       rng_namespace: actual_combat
       rng_draw_index: null

@@ -44,6 +44,14 @@ describe('combatThreeAdapter', () => {
     expect(codes(adaptCombatForThree(combat({ frames: [{ tick: 0, pieces: [{ id: 'a', side: 'ally', position: nestedPosition, facing: { q: 1, r: 0 }, active: true, cues: [] }] }] }), options))).toEqual(['INVALID_POSITION@$.view.frames[0].pieces[0].position']);
   });
 
+  it('keeps invalid bounds first while accumulating payload diagnostics', () => {
+    expect(codes(adaptCombatForThree([], { boardBounds: { minQ: 4, maxQ: 1, minR: 0, maxR: 5 } }))).toEqual(['INVALID_BOARD_BOUNDS@$options.boardBounds', 'INVALID_COMBAT_OBJECT@$']);
+    expect(codes(adaptCombatForThree({ view: [] }, { boardBounds: { minQ: 4, maxQ: 1, minR: 0, maxR: 5 } }))).toEqual(['INVALID_BOARD_BOUNDS@$options.boardBounds', 'INVALID_VIEW_OBJECT@$.view']);
+    expect(codes(adaptCombatForThree(combat({ simulation_version: '', resolution_fingerprint: '', fingerprint: '', tick_millis: 0 }), { boardBounds: { minQ: 4, maxQ: 1, minR: 0, maxR: 5 } }))).toEqual([
+      'INVALID_BOARD_BOUNDS@$options.boardBounds', 'INVALID_SIMULATION_VERSION@$.view.simulation_version', 'INVALID_RESOLUTION_FINGERPRINT@$.view.resolution_fingerprint', 'INVALID_VIEW_FINGERPRINT@$.view.fingerprint', 'INVALID_TICK_MILLIS@$.view.tick_millis',
+    ]);
+  });
+
   it('diagnoses sparse frame, piece, and cue holes', () => {
     const frames: unknown[] = []; frames.length = 1;
     const pieces: unknown[] = []; pieces.length = 1;
@@ -239,6 +247,20 @@ describe('combatThreeAdapter', () => {
     expect(codes(adaptCombatForThree(combat({ frames: trap([]) }), options))).toContain('INVALID_FRAMES@$.view.frames');
     expect(codes(adaptCombatForThree(combat({ frames: [{ tick: 0, pieces: trap([]) }] }), options))).toContain('INVALID_PIECES@$.view.frames[0].pieces');
     expect(codes(adaptCombatForThree(combat({ frames: [{ tick: 0, pieces: [{ id: 'a', side: 'ally', position: { q: 1, r: 0 }, facing: { q: 1, r: 0 }, active: true, cues: trap([]) }] }] }), options))).toContain('INVALID_CUES@$.view.frames[0].pieces[0].cues');
+  });
+
+  it('reads pieces and cues descriptors once', () => {
+    let pieceDescriptorReads = 0;
+    const frame = { tick: 0, get pieces() { pieceDescriptorReads += 1; return 'bad'; } };
+    const pieceResult = adaptCombatForThree(combat({ frames: [frame] }), options);
+    expect(codes(pieceResult)).toEqual(['INVALID_PIECES@$.view.frames[0].pieces']);
+    expect(pieceDescriptorReads).toBe(1);
+
+    let cueDescriptorReads = 0;
+    const piece = { id: 'a', side: 'ally', position: { q: 1, r: 0 }, facing: { q: 1, r: 0 }, active: true, get cues() { cueDescriptorReads += 1; return 'bad'; } };
+    const cueResult = adaptCombatForThree(combat({ frames: [{ tick: 0, pieces: [piece] }] }), options);
+    expect(codes(cueResult)).toEqual(['INVALID_CUES@$.view.frames[0].pieces[0].cues']);
+    expect(cueDescriptorReads).toBe(1);
   });
 
   it('reads stateful consumed getters exactly once', () => {

@@ -100,6 +100,15 @@ function validBounds(value: unknown): value is CombatBoardBounds {
     && value.minQ <= value.maxQ && value.minR <= value.maxR;
 }
 
+function snapshotBounds(value: unknown): unknown {
+  try {
+    if (!isRecord(value)) return undefined;
+    return { minQ: value.minQ, maxQ: value.maxQ, minR: value.minR, maxR: value.maxR };
+  } catch {
+    return undefined;
+  }
+}
+
 function validCoord(value: unknown): value is NormalizedCombatCoord {
   return isRecord(value) && isSafeInteger(value.q) && isSafeInteger(value.r);
 }
@@ -130,7 +139,7 @@ export function axialToWorld(coord: Readonly<NormalizedCombatCoord>, size: numbe
   };
 }
 
-function adaptCombatForThreeUnsafe(combat: unknown, options: CombatAdapterOptions): CombatAdapterResult {
+function adaptCombatForThreeUnsafe(combat: unknown, options: { boardBounds: unknown }): CombatAdapterResult {
   if (combat === undefined || combat === null) return { kind: 'absent', diagnostics: [] };
 
   const diagnostics: CombatAdapterDiagnostic[] = [];
@@ -138,7 +147,7 @@ function adaptCombatForThreeUnsafe(combat: unknown, options: CombatAdapterOption
   const addError = (code: CombatAdapterDiagnosticCode, path: string) => addDiagnostic(diagnostics, seenDiagnostics, code, 'error', path);
   const addWarning = (code: CombatAdapterDiagnosticCode, path: string) => addDiagnostic(diagnostics, seenDiagnostics, code, 'warning', path);
 
-  const boundsValid = validBounds(options?.boardBounds);
+  const boundsValid = validBounds(options.boardBounds);
   if (!boundsValid) addError('INVALID_BOARD_BOUNDS', '$options.boardBounds');
   if (!isRecord(combat)) {
     addError('INVALID_COMBAT_OBJECT', '$');
@@ -230,6 +239,7 @@ function adaptCombatForThreeUnsafe(combat: unknown, options: CombatAdapterOption
   }
 
   if (boundsValid && Array.isArray(rawFrames)) {
+    const boardBounds = options.boardBounds as CombatBoardBounds;
     for (let frameIndex = 0; frameIndex < rawFrames.length; frameIndex += 1) {
       const rawFrame = rawFrames[frameIndex];
       if (!isRecord(rawFrame) || !Array.isArray(rawFrame.pieces)) continue;
@@ -238,7 +248,7 @@ function adaptCombatForThreeUnsafe(combat: unknown, options: CombatAdapterOption
         if (!isRecord(rawPiece) || !validCoord(rawPiece.position)) return;
         const positionPath = `$.view.frames[${frameIndex}].pieces[${pieceIndex}].position`;
         const key = `${rawPiece.position.q},${rawPiece.position.r}`;
-        if (rawPiece.position.q < options.boardBounds.minQ || rawPiece.position.q > options.boardBounds.maxQ || rawPiece.position.r < options.boardBounds.minR || rawPiece.position.r > options.boardBounds.maxR) addWarning('OUT_OF_BOUNDS', positionPath);
+        if (rawPiece.position.q < boardBounds.minQ || rawPiece.position.q > boardBounds.maxQ || rawPiece.position.r < boardBounds.minR || rawPiece.position.r > boardBounds.maxR) addWarning('OUT_OF_BOUNDS', positionPath);
         if (occupancy.has(key)) addWarning('DUPLICATE_OCCUPANCY', positionPath);
         occupancy.add(key);
       });
@@ -291,7 +301,9 @@ function snapshotCombat(input: unknown): SnapshotResult {
           boundary = "frame";
           const copy: RecordValue = {};
           try { copy.tick = frameObject.tick; } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_FRAME_TICK', severity: 'error', path: `$.view.frames[${i}].tick` }] }; }
-          let pieces: unknown; try { pieces = Object.prototype.hasOwnProperty.call(frameObject, 'pieces') ? frameObject.pieces : undefined; } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_PIECES', severity: 'error', path: `$.view.frames[${i}].pieces` }] }; }
+          let pieces: unknown;
+          let hasPieces = false;
+          try { hasPieces = Object.prototype.hasOwnProperty.call(frameObject, 'pieces'); pieces = hasPieces ? frameObject.pieces : undefined; } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_PIECES', severity: 'error', path: `$.view.frames[${i}].pieces` }] }; }
           let piecesArray = false;
           try { piecesArray = pieces !== undefined && Array.isArray(pieces); } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_PIECES', severity: 'error', path: `$.view.frames[${i}].pieces` }] }; }
           if (piecesArray) {
@@ -308,14 +320,16 @@ function snapshotCombat(input: unknown): SnapshotResult {
               boundary = "piece";
               for (const field of ['id', 'side', 'active'] as const) { try { pc[field] = pieceObject[field]; } catch { const code = field === 'id' ? 'INVALID_PIECE_ID' : field === 'side' ? 'INVALID_SIDE' : 'INVALID_ACTIVE'; return { kind: 'fallback', diagnostics: [{ code, severity: 'error', path: `$.view.frames[${i}].pieces[${j}].${field}` }] }; } }
               for (const field of ['position', 'facing'] as const) { try { const coord = pieceObject[field]; if (isRecord(coord)) pc[field] = { q: coord.q, r: coord.r }; else pc[field] = coord; } catch { return { kind: 'fallback', diagnostics: [{ code: field === 'position' ? 'INVALID_POSITION' : 'INVALID_FACING', severity: 'error', path: `$.view.frames[${i}].pieces[${j}].${field}` }] }; } }
-              let cues: unknown; try { cues = Object.prototype.hasOwnProperty.call(pieceObject, 'cues') ? pieceObject.cues : undefined; } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_CUES', severity: 'error', path: `$.view.frames[${i}].pieces[${j}].cues` }] }; }
+              let cues: unknown;
+              let hasCues = false;
+              try { hasCues = Object.prototype.hasOwnProperty.call(pieceObject, 'cues'); cues = hasCues ? pieceObject.cues : undefined; } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_CUES', severity: 'error', path: `$.view.frames[${i}].pieces[${j}].cues` }] }; }
               let cuesArray = false;
               try { cuesArray = cues !== undefined && Array.isArray(cues); } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_CUES', severity: 'error', path: `$.view.frames[${i}].pieces[${j}].cues` }] }; }
-              if (cuesArray) { const cuesArrayValue = cues as unknown[]; let cueLength: number; try { cueLength = cuesArrayValue.length; } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_CUES', severity: 'error', path: `$.view.frames[${i}].pieces[${j}].cues` }] }; } const cc: unknown[] = new Array(cueLength); for (let k = 0; k < cueLength; k += 1) { try { cc[k] = cuesArrayValue[k]; } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_CUE', severity: 'error', path: `$.view.frames[${i}].pieces[${j}].cues[${k}]` }] }; } } pc.cues = cc; } else if (Object.prototype.hasOwnProperty.call(pieceObject, 'cues')) pc.cues = cues;
+              if (cuesArray) { const cuesArrayValue = cues as unknown[]; let cueLength: number; try { cueLength = cuesArrayValue.length; } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_CUES', severity: 'error', path: `$.view.frames[${i}].pieces[${j}].cues` }] }; } const cc: unknown[] = new Array(cueLength); for (let k = 0; k < cueLength; k += 1) { try { cc[k] = cuesArrayValue[k]; } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_CUE', severity: 'error', path: `$.view.frames[${i}].pieces[${j}].cues[${k}]` }] }; } } pc.cues = cc; } else if (hasCues) pc.cues = cues;
               pieceCopy[j] = pc;
             }
             copy.pieces = pieceCopy;
-          } else if (Object.prototype.hasOwnProperty.call(frameObject, 'pieces')) copy.pieces = pieces;
+          } else if (hasPieces) copy.pieces = pieces;
           frameCopy[i] = copy;
         }
         outView.frames = frameCopy;
@@ -329,11 +343,14 @@ function snapshotCombat(input: unknown): SnapshotResult {
 export function adaptCombatForThree(combat: unknown, options: CombatAdapterOptions): CombatAdapterResult {
   if (combat === undefined || combat === null) return { kind: 'absent', diagnostics: [] };
   try {
-    let boardBounds: CombatBoardBounds;
-    try { const raw = options?.boardBounds; if (raw === null || typeof raw !== "object") return { kind: "fallback", diagnostics: [{ code: "INVALID_BOARD_BOUNDS", severity: "error", path: "$options.boardBounds" }] }; const minQ = raw.minQ; const maxQ = raw.maxQ; const minR = raw.minR; const maxR = raw.maxR; if (!isSafeInteger(minQ) || !isSafeInteger(maxQ) || !isSafeInteger(minR) || !isSafeInteger(maxR) || minQ > maxQ || minR > maxR) return { kind: "fallback", diagnostics: [{ code: "INVALID_BOARD_BOUNDS", severity: "error", path: "$options.boardBounds" }] }; boardBounds = { minQ, maxQ, minR, maxR }; } catch { return { kind: "fallback", diagnostics: [{ code: "INVALID_BOARD_BOUNDS", severity: "error", path: "$options.boardBounds" }] }; }
+    let rawBoardBounds: unknown;
+    try { rawBoardBounds = snapshotBounds(options?.boardBounds); } catch { rawBoardBounds = undefined; }
+    const boundsDiagnostic: CombatAdapterDiagnostic = { code: 'INVALID_BOARD_BOUNDS', severity: 'error', path: '$options.boardBounds' };
+    let boundsValid = false;
+    try { boundsValid = validBounds(rawBoardBounds); } catch { boundsValid = false; }
     const snapshot = snapshotCombat(combat);
-    if (snapshot.kind === 'fallback') return snapshot;
-    return adaptCombatForThreeUnsafe(snapshot.value, { boardBounds });
+    if (snapshot.kind === 'fallback') return boundsValid ? snapshot : { kind: 'fallback', diagnostics: [boundsDiagnostic, ...snapshot.diagnostics] };
+    return adaptCombatForThreeUnsafe(snapshot.value, { boardBounds: rawBoardBounds });
   } catch {
     return { kind: 'fallback', diagnostics: [{ code: 'INVALID_COMBAT_OBJECT', severity: 'error', path: '$' }] };
   }

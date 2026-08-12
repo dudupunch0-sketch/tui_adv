@@ -1,0 +1,39 @@
+schema_version: 1
+kind: chapter_script_companion
+script_id: guestpass_act3_chapter_21
+event_ref: wuxia_route_return_scent_clue
+slot: 3/21
+title: 귀환 냄새의 기록
+status: authoring_draft
+review_status: authoring_review_required
+runtime_status: not_implemented
+referenced_event_runtime_status: design_only_imported
+companion_runtime_sync: not_synced
+canonical_bridge: {source_gap: true, source_ref: events/imported/wuxia_route_return_scent_clue.yml, required_flags: [guestpass_route_to_next_movement_trace_opened], common_emits: [guestpass_return_scent_clue_resolved], next_gate: guestpass_return_scent_clue_resolved, next_event_ref: wuxia_black_serpent_old_hood, note: 현대 냄새·물건은 포털이나 귀환 증명이 아니다}
+entry_conditions: {required_flags: [guestpass_route_to_next_movement_trace_opened]}
+reentry_recap: 객패의 다음 이동 흔적이 열렸지만 목적지는 비어 있다. 주인공은 현대 몸과 출근복, 사원증을 그대로 지닌 채 낯익은 냄새를 맡았고, 그 감각이 귀환을 증명하기보다 잃어버린 일상을 건드렸다.
+stable_opening: 비가 그친 오후, 객잔의 젖은 나무와 출근복 소매의 세제 냄새가 겹친다. 서하린은 사원증을 만지는 주인공을 보고도 대신 해석하지 않는다. 오늘은 감정이 흔들린 방을 정리하는 일이다.
+local_urgent_conflict: 익숙한 냄새와 현대 물건의 잔상이 장내를 불안하게 한다. 기록·탐색·회피 중 하나로 감정을 정리하되 즉시 귀환이나 포털을 만들지 않는다.
+beats_and_dialogue:
+  - {beat: 젖은 소매의 냄새, scene: 객잔 주인이 낯선 세제 냄새를 묻고 주인공은 출근복 소매를 확인한다., dialogue: '객잔 주인: “이 고을 냄새는 아닌데, 그렇다고 길이 열린 냄새도 아니오.”'}
+  - {beat: 사원증의 모서리, scene: 사원증과 가방끈이 젖은 탁자에 닿고 몸이 집을 찾는 듯한 반응을 보인다., dialogue: '주인공: “이건 증거라기보다 제가 아직 같은 사람이라는 표식에 가깝습니다.”'}
+  - {beat: 서하린의 거리, scene: 서하린은 냄새를 단정하지 않고 물을 내온다. 둘은 공동 노동과 증언으로만 상태를 확인한다., dialogue: '서하린: “돌아갈 수 있다는 말은 안 할게요. 지금 여기서 숨을 고를 수 있다는 말은 할 수 있어요.”'}
+  - {beat: 객잔 바닥 정리, scene: 흩어진 짐과 젖은 장작을 치우며 감정 동요를 업무 순서로 바꾼다., dialogue: '객잔 주인: “냄새를 쫓기 전에 바닥부터 닦읍시다.”'}
+  - {beat: 세 가지 기록법, scene: 냄새의 강도·사라진 물건·몸의 반응을 나누어 적고 남길 기록을 고른다., dialogue: '주인공: “귀환은 결론이 아니라 무엇이 흔들렸는지부터 적는 일일지도 모릅니다.”'}
+  - {beat: 저녁의 정상화, scene: 식사와 빨래, 사원증을 말리며 냄새가 약해진다., dialogue: '서하린: “오늘 해결한 건 길이 아니라 방이에요. 그래도 내일 길을 볼 수 있게 됐죠.”'}
+choices:
+  - {id: record_the_scent, label: 냄새를 기록한다, immediate_result: 출근복·객잔 세제·젖은 나무의 차이와 시각·장소·몸 반응을 적는다., success: 냄새와 객패 흔적이 겹친 시간대는 좁혀지지만 귀환 좌표나 포털은 확인되지 않는다., failure: 기록이 감정 반복 확인으로 번지지만 서하린과 사실·반응을 다시 나눈다., relationship_directions: {people: {seo_harin: testimony_shared_without_interpretation, innkeeper: practical_care_trusted}, factions: {guestpass_network: sensory_trace_logged_not_proof}}, reward_candidate: {id: return_scent_log, name: 세탁물 사이의 냄새표, type: sensory_record, concept: 현대 냄새와 객잔 냄새를 시간·장소·몸 반응으로 나눈 표}, quest_clue: {name: 젖은 나무의 빈 시각, type: route_clue, concept: 냄새와 객패 흔적이 겹치는 시간대}, flags: {always: [guestpass_return_scent_clue_resolved, modern_body_continuity_kept, return_scent_not_portal], success: [return_scent_time_logged], failure: [return_scent_emotion_sorted_later]}}
+  - {id: search_for_the_object, label: 물건을 찾는다, immediate_result: 가방·주머니·창고에서 현대 물건의 위치를 확인하고 잃어버린 것과 원래 가진 것을 구분한다., success: 사원증 케이스의 긁힘을 보존하지만 객패와의 연결은 보류한다., failure: 손님 짐을 건드릴 뻔해 멈추고 공동 확인표를 작성한다., relationship_directions: {people: {seo_harin: consent_before_search_respected, innkeeper: guest_belongings_protected}, factions: {guestpass_network: object_trace_preserved_not_claimed}}, reward_candidate: {id: scratched_id_case, name: 긁힌 사원증 케이스, type: keepsake, concept: 귀환을 증명하지 않지만 현대 몸과 일상의 연속성을 보존하는 물건}, quest_clue: {name: 케이스 안쪽의 젖은 섬유, type: physical_clue, concept: 다음 대조할 섬유 조각}, flags: {always: [guestpass_return_scent_clue_resolved, modern_body_continuity_kept, return_scent_not_portal], success: [modern_object_trace_preserved], failure: [guest_belongings_search_repaired]}}
+  - {id: try_to_forget_the_scent, label: 잊으려 한다, immediate_result: 사원증과 출근복을 덮고 설거지와 식사에 집중한다., success: 현재의 피로와 배고픔을 다시 구분한다., failure: 억누른 감정이 밤에 되돌아와 짧은 메모 한 줄만 남는다., relationship_directions: {people: {seo_harin: space_given_without_abandonment, innkeeper: ordinary_work_shared}, factions: {guestpass_network: return_grief_deferred_not_lost}}, reward_candidate: {id: quiet_commute_breath, name: 퇴근 없는 숨 고르기, type: coping_practice, concept: 식사·수면·노동으로 감각 동요를 낮추는 습관}, quest_clue: {name: 덮어 둔 사원증의 모서리, type: emotional_clue, concept: 귀환 감정이 물건보다 몸의 기억에 먼저 반응한다는 단서}, flags: {always: [guestpass_return_scent_clue_resolved, modern_body_continuity_kept, return_scent_not_portal], success: [return_grief_stabilized], failure: [return_grief_deferred]}}
+  - {id: compare_scent_with_witnesses, label: 다른 사람의 증언과 대조한다, immediate_result: 객잔 주인과 서하린의 관찰을 주인공 감각과 분리해 적는다., success: 주인공만 현대적으로 느꼈고 다른 사람은 젖은 천과 약초로 읽었다는 차이를 확보한다., failure: 귀환 소문이 커져 사실과 추측을 칠판에서 지운다., relationship_directions: {people: {seo_harin: witness_boundary_respected, innkeeper: rumor_control_shared}, factions: {guestpass_network: sensory_difference_recorded}}, reward_candidate: {id: split_witness_card, name: 두 감각의 증언패, type: testimony_record, concept: 같은 냄새를 현대 기억과 이 세계 물질로 나눈 증언}, quest_clue: {name: 약초로 읽힌 흔적, type: witness_clue, concept: 귀환 감각은 객관적 문이 아니라 기억과 결합해 달라진다는 단서}, flags: {always: [guestpass_return_scent_clue_resolved, modern_body_continuity_kept, return_scent_not_portal], success: [sensory_witnesses_divided], failure: [inn_rumor_quieted]}}
+relationship_directions: {people: {seo_harin: shared_testimony_and_space_no_romance_lock, innkeeper: ordinary_work_restores_room, protagonist: modern_body_clothing_id_continuity}, factions: {guestpass_network: return_sensation_recorded_not_proven, qingliu: guest_room_stabilized}}
+rewards: [{id: return_scent_log, name: 세탁물 사이의 냄새표, type: sensory_record, concept: 감각 기록}, {id: scratched_id_case, name: 긁힌 사원증 케이스, type: keepsake, concept: 현대 신분 연속성}, {id: quiet_commute_breath, name: 퇴근 없는 숨 고르기, type: coping_practice, concept: 동요 정리 습관}, {id: split_witness_card, name: 두 감각의 증언패, type: testimony_record, concept: 감각 차이 기록}]
+quest_clues: [{name: 귀환 냄새의 이중 기록, type: main_quest_clue, concept: 현대 감각과 객잔 물질은 겹치지만 귀환 증명은 아니다}, {name: 젖은 나무의 빈 시각, type: route_clue, concept: 다음 이동 흔적과 냄새가 만나는 시간대}]
+flags: {always: [guestpass_return_scent_clue_resolved, modern_body_continuity_kept, return_scent_not_portal, permanent_return_not_decided], success: [return_scent_clue_stabilized], failure: [return_scent_clue_needs_revisit], follow_up: [black_serpent_old_hood_ready, return_emotion_can_be_reentered]}
+local_closure: 객잔은 정리되고 사원증과 출근복은 말라 보관된다. 냄새의 감정은 기록되거나 미뤄졌을 뿐 포털·귀환·추격은 시작되지 않는다.
+interlude_safe_state: 식사·수면·빨래·사원증 보관·객패 대조가 가능하며 side 1~2개와 random 약 7개를 삽입할 수 있다.
+low_pressure_hook: 창고 선반에 젖은 검은 천 조각이 남아 있지만 흑사방 물건인지 단정하지 않는다.
+next_reentry_trigger: guestpass_return_scent_clue_resolved와 장내 정리, 다음 이동 흔적이 확인되고 하루 이상의 휴식 또는 기록 시간이 지나면 3/22가 열린다.
+cadence_audit: {time: rainy_afternoon_to_next_day_rest, place: inn_washroom_guest_room_storage, companions: protagonist_seoharin_innkeeper, injury: existing_wrist_respected, information: sensory_trace_and_object_continuity, hostile_pressure: none_room_stabilization_only}
+scene_context: {location: 청류문 인근 객잔 세면터·객실·창고, cast: [주인공, 서하린, 객잔 주인, 손님들], emotional_state: 익숙한 감각이 귀환 욕구와 상실감을 건드리지만 현재의 몸·옷·신분을 붙드는 상태}
+convergence: {meaningful_exclusive_outcomes: 냄새 기록·물건 보존·감정 유예·증언 대조, common_minimum_facts: [guestpass_return_scent_clue_resolved, modern_body_continuity_kept, return_scent_not_portal], local_closure: 객잔과 감정 동요가 정리됨, exact_state_bridge: 젖은 검은 천 조각과 귀환 감각 기록이 다음 흑사방 두건 장면의 단서가 됨, next_slot: 3/22, next_event_ref: wuxia_black_serpent_old_hood, terminal: false}

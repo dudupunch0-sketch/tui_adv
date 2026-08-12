@@ -1,0 +1,143 @@
+schema_version: 1
+kind: chapter_script_companion
+script_id: guestpass_act3_chapter_19
+event_ref: wuxia_guestpass_qingliu_empty_room_seizure_defense
+slot: 3/19
+title: 청류문 빈방 압류 방어
+entry_conditions:
+  required_flags: [guestpass_inn_inheritance_resolved, qingliu_empty_room_known, qingliu_empty_room_seizure_notice_received]
+  optional_flags: [black_serpent_debt_trace_opened, seoharin_shared_burden]
+status: authoring_draft
+review_status: authoring_review_required
+runtime_status: not_implemented
+reward_policy:
+  mode: mutually_exclusive_by_choice
+  unique_group: guestpass_act3_ch19_empty_room_reward
+  hidden_route_exception_only: true
+  unchosen_evidence_recovery: true
+canonical_bridge:
+  source_gap: true
+  source_refs: [wuxia_guestpass_qingliu_empty_room_seizure_defense]
+  required_flags: [guestpass_inn_inheritance_resolved, qingliu_empty_room_known, qingliu_empty_room_seizure_notice_received]
+  common_emits: [guestpass_qingliu_empty_room_resolved, qingliu_absent_name_preserved, black_serpent_ledger_mark_seen, guestpass_route_to_baesan_opened]
+  next_gate: guestpass_route_to_baesan_opened
+  next_event_ref: wuxia_guestpass_one_eye_mountain_bearer_passage
+  note: authored 원본의 4 choice ID와 결과를 보존한다. 압류 현장은 장 안에서 닫히며, 부재한 사람의 이름은 소유물이나 채무 담보로 바뀌지 않는다.
+reentry_recap: 고현묵의 객패와 청류문의 책임은 계승되었지만, 빈방의 주인은 아직 돌아오지 않았다. 주인공과 서하린은 그 방이 비어 있다는 이유만으로 사람의 자리와 이름이 채무 담보가 되는지 확인하러 돌아온다.
+stable_opening: 며칠의 수리 당번과 식사를 지난 오전, 낡은 출근복 차림의 주인공은 서하린과 함께 청류문 안쪽 빈방 앞에 선다. 문에는 압류 통고가 붙었고, 청우진은 문패와 객패 기록을 탁자에 펼쳐 두었다.
+local_urgent_conflict: 흑사방을 대신해 온 채권 대리인이 방의 물품·문패·부재자의 기억까지 채무 목록에 넣으려 한다. 오늘의 목표는 빚의 존재를 지우는 것이 아니라 방과 이름을 담보로 넘기지 않고 압류 절차를 현장에서 종결하는 것이다.
+beats_and_dialogue:
+  - beat: 압류 통고가 붙은 문
+    scene: 채권 대리인은 치료비와 수리비를 한 줄로 묶어 빈방 전체를 회수하겠다고 선언한다. 주인공은 사원증과 출근복을 내려다보다가 계약서의 빈 칸을 먼저 확인한다.
+    dialogue: '채권 대리인: “사람이 없으면 방이 곧 담보요. 이름도 값이 있으니 목록에서 뺄 수 없소.”'
+  - beat: 역할을 나누는 두 사람
+    scene: 청우진은 문패·장부·통고문의 날인을 대조하고, 서하린은 구경꾼과 부상자의 동선을 비워 압류 현장이 몸싸움으로 번지지 않게 한다.
+    dialogue: '서하린: “먼저 복도에서 사람을 빼요. 물건보다 다칠 사람이 없는 게 우선이고, 그다음에 어떤 줄이 거짓인지 봐요.”'
+  - beat: 빈방의 값싼 물건들
+    scene: 방 안에는 낡은 담요, 깨진 찻잔, 이름이 지워진 나무 상자만 있다. 문패 뒷면의 검은 긁힘과 압류 목록의 기호가 같은 기록 체계를 가리키지만, 완전한 원장부는 아니다.
+    dialogue: '청우진: “빚이 있다는 사실과 사람의 자리를 압류할 권리는 같은 문장이 아니오.”'
+  - beat: 부재한 이름을 다루는 법
+    scene: 서하린은 돌아오지 않은 사람의 이름을 크게 읽지 않는다. 주인공은 현대 회사에서 익숙했던 책임 전가와 여기의 채무 문법이 닮았음을 느끼며, 무엇을 공개할지 선택한다.
+    dialogue: '주인공: “없는 사람 대신 말할 수는 있어도, 없는 사람의 이름을 우리가 가져갈 수는 없어요.”'
+  - beat: 압류 현장의 네 갈래
+    scene: 공개 대조, 이웃 증언, 물품 이동, 제한부 채무 인수 중 하나를 택한다. 어느 길이든 대리인이 방 안에 오래 머물 수 없도록 문서와 사람의 안전을 함께 통제한다.
+    dialogue: '채권 대리인: “오늘 서명하지 않으면 내일은 더 많은 값을 매기겠소.”'
+  - beat: 남는 물리 흔적
+    scene: 문패 뒷면의 검은 봉랍 가루, 뜯긴 목록의 섬유, 비정상적인 날인 순서가 혈월교의 공격이 아니라 이미 파괴된 전달망의 물리적 흔적으로 분리 기록된다. 흑사방의 채무선과 섞어 단정하지 않는다.
+    dialogue: '서하린: “이 검은 가루가 누군가의 이름을 말해 주진 않아요. 다만 누가 어떤 표식을 뜯었는지는 남길 수 있어요.”'
+  - beat: 현장 종결과 닫히는 문
+    scene: 압류 통고는 철회·임시 유예·제한부 기록 중 하나로 현장에서 종결된다. 방은 기록함에 봉인되고, 부재한 이름은 빈칸으로 보존되며, 누구도 추격을 시작하지 않는다.
+    dialogue: '청우진: “오늘 지킨 것은 빈방의 소유권이 아니라, 돌아올 사람의 자리를 함부로 대신 쓰지 않는 규칙이오.”'
+choices:
+  - id: compare_ledger_and_nameplate
+    label: 장부와 문패를 공개 대조한다
+    immediate_result: 청우진이 문패 뒷면과 압류 문서의 날인·기호를 사람들 앞에서 대조해 대리인의 압류 절차를 즉시 멈춘다.
+    success: 문패 뒷면 표식과 문서 계보가 맞아 흑사방 원장부 표식으로 이어질 신뢰도 높은 위치 단서를 남긴다. 방은 압류되지 않고 현장 절차가 종결된다.
+    failure: 문서 일부가 훼손되어 방은 임시 봉인되지만 위조된 날인 순서와 검은 표식은 보존된다. 완전한 원장부의 위치를 안다고 과장하지 않는다.
+    relationship_directions:
+      people: {cheong_ujin: positive_trust_in_method, seo_harin: positive_reliable_partner}
+      factions: {qingliu: positive_public_legitimacy, black_serpent: debt_document_line_exposed_without_pursuit}
+    reward_candidate: {id: guestpass_act3_ch19_reward_inkline_witness, name: 먹줄의 증인, type: title, concept: 사람의 자리를 지키기 위해 계약의 문장을 끝까지 읽어낸 자, selected_flag: guestpass_act3_ch19_reward_inkline_witness_selected, recorded_flag: guestpass_act3_ch19_reward_inkline_witness_recorded}
+    quest_clue: {id: guestpass_act3_ch19_clue_empty_room_nameplate_mark, name: 빈방 문패 뒷면 표식, type: investigation_clue, concept: 압류 대상의 이름과 흑사방 원장부 기호가 같은 체계에서 기록됐다는 물리적 증거, selected_flag: guestpass_act3_ch19_clue_empty_room_nameplate_mark_selected, recorded_flag: guestpass_act3_ch19_clue_empty_room_nameplate_mark_recorded}
+    flags:
+      always: [black_serpent_ledger_mark_seen, qingliu_absent_name_preserved, guestpass_qingliu_empty_room_resolved]
+      success: [qingliu_empty_room_defended_by_evidence, qingliu_seizure_notice_withdrawn]
+      failure: [qingliu_empty_room_temporarily_sealed, qingliu_damaged_document_trace_preserved]
+  - id: gather_witnesses_for_the_absent
+    label: 가족과 이웃의 증언을 모은다
+    immediate_result: 서하린이 복도의 사람을 안전하게 정리하고, 가족·이웃·행상인의 기억을 한 사람씩 받아 압류를 늦춘다.
+    success: 서로 독립된 증언이 빈방 주인을 관계를 가진 사람으로 되돌려 압류 명분을 약화한다. 귀로객망을 이용했던 행상인의 이동 습관도 후속 질문으로 열린다.
+    failure: 증언이 엇갈려 방 일부는 임시 봉인되지만, 누가 증언자를 겁주었는지와 빈방을 먼저 지우려 한 순서가 기록된다.
+    relationship_directions:
+      people: {cheong_ujin: neutral_respects_non_documentary_proof, seo_harin: strong_positive_people_first}
+      factions: {qingliu: strong_positive_community_trust, guestpass_network: witness_route_opened_carefully}
+    reward_candidate: {id: guestpass_act3_ch19_reward_people_first_ledger, name: 사람이 먼저인 장부, type: authored_insight, concept: 숫자가 맞아도 사람의 사정이 빠지면 기록은 완전하지 않다는 깨달음, selected_flag: guestpass_act3_ch19_reward_people_first_ledger_selected, recorded_flag: guestpass_act3_ch19_reward_people_first_ledger_recorded}
+    quest_clue: {id: guestpass_act3_ch19_clue_hospitality_debt_testimonies, name: 환대의 빚 증언 묶음, type: quest_clue, concept: 같은 방에서 밥과 잠자리를 빌렸던 사람들이 남긴 서로 다른 기억, selected_flag: guestpass_act3_ch19_clue_hospitality_debt_testimonies_selected, recorded_flag: guestpass_act3_ch19_clue_hospitality_debt_testimonies_recorded}
+    flags:
+      always: [guestpass_network_witness_opened, qingliu_absent_name_preserved, guestpass_qingliu_empty_room_resolved]
+      success: [qingliu_empty_room_defended_by_witness, qingliu_witnesses_agreed]
+      failure: [witness_intimidation_trace_opened, qingliu_partial_testimony_preserved]
+  - id: move_goods_before_seizure
+    label: 압류품을 빼돌려 시간을 번다
+    immediate_result: 주인공과 서하린이 사람을 먼저 내보낸 뒤 문패·낡은 상자·압류 목록 일부를 기록함으로 옮긴다. 주인공은 압류 방해의 책임을 명시적으로 떠안는다.
+    success: 대리인은 빈손으로 물러나고 방의 사람 기록은 안전해진다. 추적선은 주인공에게 집중되지만 그 자리에서 더 이상의 충돌은 없다.
+    failure: 일부 물품을 빼앗기지만 뜯긴 압류 목록 귀퉁이를 확보해 흑사방이 값비싼 물건보다 이름 적힌 문패를 먼저 회수하려 했음을 읽는다.
+    relationship_directions:
+      people: {cheong_ujin: mixed_concern_about_procedure, seo_harin: positive_shared_field_risk}
+      factions: {qingliu: conditional_positive_if_people_safe, black_serpent: recovery_order_exposed_without_direct_confrontation}
+    reward_candidate: {id: guestpass_act3_ch19_reward_door_gap_swap, name: 문틈 바꾸기, type: authored_skill, concept: 정면 승부 대신 사람과 물건의 위치를 먼저 바꿔 위험의 초점을 흘리는 요령, selected_flag: guestpass_act3_ch19_reward_door_gap_swap_selected, recorded_flag: guestpass_act3_ch19_reward_door_gap_swap_recorded}
+    quest_clue: {id: guestpass_act3_ch19_clue_torn_seizure_order, name: 뜯긴 압류 목록 귀퉁이, type: investigation_clue, concept: 값비싼 물건보다 이름 적힌 문패를 먼저 회수하라는 이상한 우선순위, selected_flag: guestpass_act3_ch19_clue_torn_seizure_order_selected, recorded_flag: guestpass_act3_ch19_clue_torn_seizure_order_recorded}
+    flags:
+      always: [protagonist_marked_as_seizure_obstructor, qingliu_absent_name_preserved, guestpass_qingliu_empty_room_resolved]
+      success: [qingliu_empty_room_defended_by_delay, qingliu_people_and_nameplate_safe]
+      failure: [black_serpent_recovery_order_seen, qingliu_partial_goods_lost]
+  - id: assume_part_of_the_debt
+    label: 빚 일부를 내 이름으로 떠안는다
+    immediate_result: 주인공은 현대식 계약 감각으로 상환 범위와 기한을 직접 적으려 한다. 압류는 멈추지만 이름이 흑사방 채무선에 올라가고 서하린은 혼자 결정한 희생을 경계한다.
+    success: 제한부 조항이 인정되어 방과 사람 기록을 보존하고 협상 문서 사본을 얻는다. 빚을 없앴다고 하지 않고 비용 있는 책임으로 남긴다.
+    failure: 불리한 조항이 남아 후속 추심 위험이 커지지만 원장부 대조에 필요한 납인 흔적은 확보한다. 서하린과 책임 분담을 다시 합의할 여지를 남긴다.
+    relationship_directions:
+      people: {cheong_ujin: mixed_respects_commitment_questions_cost, seo_harin: mixed_care_and_disagreement}
+      factions: {qingliu: positive_debt_shared_not_erased, black_serpent: coercive_contract_language_exposed}
+    reward_candidate: {id: guestpass_act3_ch19_reward_seoharin_empty_room_key, name: 서하린이 맡긴 빈방 열쇠, type: relationship_token, concept: 소유권이 아니라 다시 돌아올 사람의 자리를 잠시 지킬 권한과 책임, selected_flag: guestpass_act3_ch19_reward_seoharin_empty_room_key_selected, recorded_flag: guestpass_act3_ch19_reward_seoharin_empty_room_key_recorded}
+    quest_clue: {id: guestpass_act3_ch19_clue_limited_debt_assumption, name: 제한부 채무 인수서, type: quest_item, concept: 방을 지킨 대가와 흑사방의 거래 문법이 동시에 적힌 문서, selected_flag: guestpass_act3_ch19_clue_limited_debt_assumption_selected, recorded_flag: guestpass_act3_ch19_clue_limited_debt_assumption_recorded}
+    flags:
+      always: [seoharin_shared_burden, protagonist_black_serpent_debt_named, qingliu_absent_name_preserved, guestpass_qingliu_empty_room_resolved]
+      success: [qingliu_empty_room_defended_by_assumption, qingliu_limited_debt_terms_recorded]
+      failure: [black_serpent_debt_collection_risk_opened, qingliu_unfavorable_clause_preserved]
+relationship_directions:
+  people: {seo_harin: agency_and_shared_burden, cheong_ujin: method_or_people_first_trust, absent_room_owner: name_preserved_without_speaking_for_them}
+  factions: {qingliu: hospitality_as_non_seizure, black_serpent: debt_system_seen_as_pressure_not_personal_villainy, bloodmoon_cult: physical_trace_only_no_present_actor}
+rewards:
+  - {id: guestpass_act3_ch19_reward_inkline_witness, name: 먹줄의 증인, type: title, concept: 공개 대조 경로의 고유 보상; runtime effect deferred}
+  - {id: guestpass_act3_ch19_reward_seoharin_empty_room_key, name: 돌아올 사람의 빈칸, type: authored_insight, concept: 부재한 이름을 대신 소유하지 않는 기록 원칙}
+quest_clues:
+  - {name: 압류 문서와 빈방의 검은 표식, type: main_quest_clue, concept: 혈월교가 남긴 물리적 훼손 흔적과 흑사방 채무 문서를 분리해 다음 산길의 추적 조건으로 넘기는 단서}
+flags:
+  always: [guestpass_qingliu_empty_room_resolved, qingliu_absent_name_preserved, bloodmoon_physical_trace_preserved, sado_not_present, no_fixed_countdown_started]
+  success: [guestpass_route_to_baesan_opened, qingliu_empty_room_defense_closed]
+  failure: [guestpass_route_to_baesan_opened, qingliu_empty_room_cost_recorded]
+  follow_up: [empty_room_owner_absent_name_still_unknown, black_serpent_full_ledger_unconfirmed, no_direct_pursuit_started]
+local_closure: 채권 대리인은 압류 철회·임시 봉인·제한부 유예 중 하나로 현장을 떠난다. 청류문은 빈방을 즉시 되찾았다고 과장하지 않으며, 부재한 이름과 확보한 물리 흔적을 기록함으로써 방어를 끝낸다.
+interlude_safe_state: 며칠 동안 수면·식사·재건 당번, 증언 기록 정리, 서하린과 채무 책임 대화, 문패와 객패 대조를 삽입할 수 있다. 추심 추적이나 전투는 자동 시작하지 않는다.
+low_pressure_hook: 다음 이동 전에 문패의 검은 표식과 객패의 방향을 대조할지, 증언자의 익명성을 지키며 한 번 더 들을지, 제한부 채무 조항을 서하린과 다시 나눌지 선택할 수 있다.
+next_reentry_trigger: 며칠의 회복과 기록 정리가 끝나고 청류문이 산길 통행 책임을 맡을 준비가 되면 guestpass_route_to_baesan_opened가 재진입을 열어 준다.
+cadence_audit:
+  time: several_days_after_inn_inheritance_morning_to_noon
+  place: qingliu_empty_room_corridor_and_record_room
+  companions: protagonist_seoharin_cheong_ujin_credit_representative_neighbors
+  injury: survivors_and_bystanders_kept_clear; seoharin_not_reinjured
+  information: absent_name_preserved; physical_bloodmoon_trace_and_black_serpent_debt_document_separated; full_ledger_unknown
+  hostile_pressure: in-room_seizure_and_social_coercion_only; no_pursuit_no_countdown_no_sado
+scene_context:
+  location: 청류문 안쪽 빈방과 복도 기록 탁자
+  cast: [주인공, 서하린, 청우진, 채권 대리인, 가족과 이웃]
+  emotional_state: 사람의 자리를 지키고 싶지만 남의 이름을 대신 짊어지지 않으려는 긴장과 책임감
+convergence:
+  meaningful_exclusive_outcomes: 공개 대조는 절차적 정당성, 증언은 공동체 기억, 물품 이동은 현장 안전, 채무 인수는 제한된 책임을 보상한다.
+  common_minimum_facts: [guestpass_qingliu_empty_room_resolved, qingliu_absent_name_preserved, black_serpent_ledger_mark_seen, bloodmoon_physical_trace_preserved, guestpass_route_to_baesan_opened]
+  local_closure: 압류 현장은 장 안에서 종결되고, 부재한 이름은 보존되며, 혈월교 물리흔적·흑사방 채무·사도의 부재가 분리 기록된다.
+  exact_state_bridge: 모든 분기는 빈방을 완전히 소유했다고 선언하지 않고 며칠의 안전한 interlude 뒤 외안배산귀 통과로 연결된다.
+  next_slot: 3/20
+  next_event_ref: wuxia_guestpass_one_eye_mountain_bearer_passage
+  terminal: false

@@ -261,6 +261,15 @@ describe('combatThreeAdapter', () => {
     const cueResult = adaptCombatForThree(combat({ frames: [{ tick: 0, pieces: [piece] }] }), options);
     expect(codes(cueResult)).toEqual(['INVALID_CUES@$.view.frames[0].pieces[0].cues']);
     expect(cueDescriptorReads).toBe(1);
+
+    let trappedPieceDescriptorReads = 0;
+    const trappedFrame = new Proxy({ tick: 0, pieces: 'bad' }, { getOwnPropertyDescriptor(target, key) { if (key === 'pieces') trappedPieceDescriptorReads += 1; return Reflect.getOwnPropertyDescriptor(target, key); } });
+    expect(codes(adaptCombatForThree(combat({ frames: [trappedFrame] }), options))).toEqual(['INVALID_PIECES@$.view.frames[0].pieces']);
+    expect(trappedPieceDescriptorReads).toBe(1);
+    let trappedCueDescriptorReads = 0;
+    const trappedPiece = new Proxy({ id: 'a', side: 'ally', position: { q: 1, r: 0 }, facing: { q: 1, r: 0 }, active: true, cues: 'bad' }, { getOwnPropertyDescriptor(target, key) { if (key === 'cues') trappedCueDescriptorReads += 1; return Reflect.getOwnPropertyDescriptor(target, key); } });
+    expect(codes(adaptCombatForThree(combat({ frames: [{ tick: 0, pieces: [trappedPiece] }] }), options))).toEqual(['INVALID_CUES@$.view.frames[0].pieces[0].cues']);
+    expect(trappedCueDescriptorReads).toBe(1);
   });
 
   it('reads stateful consumed getters exactly once', () => {

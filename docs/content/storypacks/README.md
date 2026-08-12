@@ -46,6 +46,10 @@ Machine-readable mirror는 `docs/content/storypack_db/storypacks.json`에 둔다
 
 [무협 독립 장편 서브퀘스트 Volume 2](../design_source/arcs/wuxia_independent_sidequests_volume_2.md)는 서로 독립된 SQ 5개·20장의 장간 교차형 authoring blueprint이며 runtime 미구현 상태다.
 
+[무협 독립 랜덤 인카운터 Volume 3](../design_source/arcs/wuxia_random_encounters_volume_3.md)는 주제 빈칸 기반 신규 RI 20개 blueprint이며 메인 비의존·runtime 미구현 상태다.
+
+무협 독립 장편 서브퀘스트 Volume 3은 [3-A](../design_source/arcs/wuxia_independent_sidequests_volume_3_a.md)와 [3-B](../design_source/arcs/wuxia_independent_sidequests_volume_3_b.md)에 SQ 5개·20장을 나눠 둔 authoring blueprint이며 runtime 미구현 상태다.
+
 나머지 팩은 다음 조건을 만족할 때 별도 문서로 승격한다.
 
 1. 해당 팩의 후보 encounter situation card가 최소 6개 있다.

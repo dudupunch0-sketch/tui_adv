@@ -1,0 +1,37 @@
+schema_version: 1
+kind: chapter_script_companion
+script_id: guestpass_act4_chapter_25
+event_ref: wuxia_guestpass_huangquan_waterway_testimony
+slot: 4/25
+title: 황천수맥과 최초 소유자 마지막 기록
+status: authoring_draft
+review_status: authoring_review_required
+runtime_status: not_implemented
+canonical_bridge: {source_ref: events/authored/wuxia_guestpass_huangquan_waterway_testimony.yml, preserved_choices: [speak_first_owners_name, acknowledge_unpaid_hospitality_debt, offer_a_memory_of_commute, reconstruct_route_without_toll], required_flags: [guestpass_route_to_huangquan_opened, qingliu_first_reply_received], common_emits: [guestpass_huangquan_testimony_resolved, guestpass_first_owner_route_testimony_recovered, guestpass_hq_and_return_branch_direction_retained, guestpass_route_to_mumyeong_confrontation_opened], next_gate: guestpass_route_to_mumyeong_confrontation_opened, next_event_ref: wuxia_mumyeong_first_confrontation}
+entry_conditions: {required_flags: [guestpass_route_to_huangquan_opened, qingliu_first_reply_received]}
+reward_policy: {mode: mutually_exclusive_by_choice, common_progression_separate: true}
+reentry_recap: 첫 답장은 사적 구명 요청으로 봉인되었고 물때와 객패가 황천수맥을 열었다.
+stable_opening: 주인공은 현대 몸·출근복·사원증과 객패를 확인하고 서하린과 수맥 입구에 선다. 맹인 노백운은 물소리·돌 촉감·과거 통행 기억만 대조한다.
+local_urgent_conflict: 수맥은 예언 없이 경로의 잔향만 보인다. 최초 소유자 마지막 경로를 회수하고 장내 조사를 닫는다.
+beats_and_dialogue:
+- {beat: 협곡, scene: 이름이 긁힌 벽과 스미는 물, dialogue: '서하린: “누가 남겨졌는지부터 확인해요.”'}
+- {beat: 발판, scene: 노백운이 지팡이로 돌과 물방울을 센다, dialogue: '노백운: “나는 보지 못하오. 소리와 촉감만 맞추오.”'}
+- {beat: 신분, scene: 사원증·출근복·객패를 분리 기록한다, dialogue: '주인공: “이건 귀환 정답이 아니라 제 연속성이에요.”'}
+- {beat: 네 문턱, scene: 이름·빚·출근길 기억·물리 흔적 중 하나가 잔향을 연다, dialogue: '노백운: “무엇을 내놓든 길 전체는 열리지 않소.”'}
+- {beat: 증언, scene: 객패 각인과 물결이 버린 길과 멈춘 지점을 보인다, dialogue: '잔향: “이름… 멈춤… 발판…”'}
+- {beat: 대조, scene: 서하린이 물리 단서와 불확실성을 나눈다, dialogue: '서하린: “맞은 것만 기록해요.”'}
+- {beat: 종결, scene: 기록을 봉인하고 쉼터로 나온다, dialogue: '주인공: “정답이 아니라 확인 가능한 경로를 회수했어요.”'}
+choices:
+- {id: speak_first_owners_name, label: 최초 소유자의 이름을 물 위에 남긴다, immediate_result: 이름 획과 물가 자국을 대조한다., success: 마지막 중계 지점을 확인한다., failure: 지점은 흐려도 감춘 이름을 기록한다., relationship_directions: {people: {no_baekun: named_memory, seo_harin: bounded_testimony}, factions: {qingliu: names_preserved, guestpass_network: route_memory}}, reward_candidate: {id: guestpass_act4_ch25_reward_name_crossing, name: 이름을 건너는 자, type: authored_insight, concept: 이름을 소유하지 않고 마지막 중계 경로를 건너는 증언}, quest_clue: {id: guestpass_act4_ch25_clue_name_scale_imprint, name: 물비늘 이름 탁본}, flags: {always: [first_owner_name_carried_forward], success: [guestpass_last_relay_confirmed_by_name], failure: [first_owner_protected_another_name_seen]}}
+- {id: acknowledge_unpaid_hospitality_debt, label: 미처 갚지 못한 환대의 빚을 인정한다, immediate_result: 빚을 사람·객잔·길로 나눈다., success: 환대 빚과 흑사방 채무가 다름을 증명한다., failure: 임시 채무와 원장부 문구를 얻는다., relationship_directions: {people: {no_baekun: limited_commitment, seo_harin: boundary}, factions: {qingliu: risk, guestpass_network: debt_not_priced, black_serpent: debt_trace}}, reward_candidate: {id: guestpass_act4_ch25_reward_debt_owner_question, name: 빚의 주인을 묻는 법, type: authored_insight, concept: 환대·사람·길의 빚 주체를 분리해 묻는 관점}, quest_clue: {id: guestpass_act4_ch25_clue_unpaid_hospitality_knot, name: 미납 매듭}, flags: {always: [hospitality_debt_categories_seen], success: [black_serpent_debt_model_contradicted], failure: [protagonist_temporary_huangquan_debt]}}
+- {id: offer_a_memory_of_commute, label: 나의 출근길 기억을 잠시 내어놓는다, immediate_result: 안내음과 불빛이 귀환 분기와 공명한다., success: 경로 분기점을 확인한다., failure: 세부 기억이 흐려져도 반응 물품을 안다., relationship_directions: {people: {no_baekun: warns_overpayment, seo_harin: boundary}, factions: {qingliu: personal_cost, guestpass_network: return_resonance}}, reward_candidate: {id: guestpass_act4_ch25_reward_return_route_echo, name: 돌아갈 길의 잔상, type: return_evidence, concept: 출근길 기억과 귀환 경로의 분기 잔향}, quest_clue: {id: guestpass_act4_ch25_clue_wet_employee_badge_echo, name: 젖은 사원증의 잔상}, flags: {always: [modern_return_clue_resonance_seen], success: [modern_return_branch_direction_confirmed], failure: [commute_memory_temporarily_blurred]}}
+- {id: reconstruct_route_without_toll, label: 대가를 거부하고 물리 흔적만으로 길을 복원한다, immediate_result: 노백운 기억·물소리·객패·돌 마모를 대조한다., success: 마지막 경로를 인간 조사로 복원한다., failure: 쇠못으로 흑사방 회수선을 잇는다., relationship_directions: {people: {no_baekun: method_not_oracle, seo_harin: fieldwork_trust}, factions: {qingliu: human_judgment, guestpass_network: physical_route, bloodmoon_cult: physical_trace}}, reward_candidate: {id: guestpass_act4_ch25_reward_water_sound_wayfinding, name: 물소리로 세는 길, type: route_evidence, concept: 물소리·물리 흔적으로 마지막 경로를 복원하는 조사법}, quest_clue: {id: guestpass_act4_ch25_clue_waterlogged_tracker_nail, name: 물먹은 추적 쇠못}, flags: {always: [huangquan_route_physically_investigated], success: [first_owner_route_reconstructed_without_toll], failure: [black_serpent_waterway_pursuit_trace_seen]}}
+relationship_directions: {people: {seo_harin: agency_not_substitute, no_baekun: blind_witness_not_oracle, protagonist: modern_continuity}, factions: {bloodmoon_cult: physical_destruction_only, black_serpent: debt_trace_only, sado: later_calculation}}
+rewards: [{id: guestpass_act4_ch25_reward_name_crossing, name: 이름을 건너는 자, type: authored_insight, concept: 이름을 소유하지 않고 마지막 중계 경로를 건너는 증언}, {id: guestpass_act4_ch25_reward_debt_owner_question, name: 빚의 주인을 묻는 법, type: authored_insight, concept: 환대·사람·길의 빚 주체를 분리해 묻는 관점}, {id: guestpass_act4_ch25_reward_return_route_echo, name: 돌아갈 길의 잔상, type: return_evidence, concept: 출근길 기억과 귀환 경로의 분기 잔향}, {id: guestpass_act4_ch25_reward_water_sound_wayfinding, name: 물소리로 세는 길, type: route_evidence, concept: 물소리·물리 흔적으로 마지막 경로를 복원하는 조사법}]
+flags: {always: [guestpass_huangquan_testimony_resolved, guestpass_first_owner_route_testimony_recovered, guestpass_hq_and_return_branch_direction_retained, guestpass_route_to_mumyeong_confrontation_opened, huangquan_investigation_closed, immediate_deployment_forbidden], success: [guestpass_last_route_recovered_with_high_confidence], failure: [guestpass_last_route_recovered_with_cost_or_uncertainty], follow_up: [mumyeong_confrontation_ready]}
+local_closure: 최초 소유자 마지막 경로와 장내 조사를 봉인하고 닫는다.
+interlude_safe_state: 쉼터에서 사원증·객패·답장을 말리고 손목 휴식·식사·수면·기록 복사가 가능하다.
+low_pressure_hook: 무명과 같은 보폭의 발자국 하나를 남기되 추적·전투하지 않는다.
+next_reentry_trigger: 공통 flags 기록과 하루 휴식 뒤 다음 대치가 열린다.
+cadence_audit: {time: morning_to_evening_with_meal_and_sleep, place: huangquan_waterway_and_safe_shelter, companions: protagonist_seoharin_no_baekun, injury: wrist_rest, information: last_route_and_homecoming_branch, hostile_pressure: trace_only_no_battle}
+convergence: {meaningful_exclusive_outcomes: [name, debt, commute_memory, physical_route], common_minimum_facts: [guestpass_huangquan_testimony_resolved, guestpass_first_owner_route_testimony_recovered, guestpass_route_to_mumyeong_confrontation_opened], next_slot: 4/26, next_event_ref: wuxia_mumyeong_first_confrontation, terminal: false}

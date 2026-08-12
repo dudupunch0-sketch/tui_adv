@@ -1,6 +1,6 @@
-# 객패귀 1~3막 챕터 대본 companion
+# 객패귀 1~4막 챕터 대본 companion
 
-이 디렉터리는 기존 event 정본을 수정하지 않고, 48개 메인 슬롯(1/01~3/24)의 장면·선택·cadence를 상세화하는 저작용 companion source다. 현재 companion은 24개(1~3막)이며, 목표 event 수 48개와 canonical event 수는 보존한다.
+이 디렉터리는 기존 event 정본을 수정하지 않고, 48개 메인 슬롯(1/01~4/32)의 장면·선택·cadence를 상세화하는 저작용 companion source다. 현재 companion은 32개(1~4막)이며, 목표 event 수 48개와 canonical event 수는 보존한다.
 
 ## 형식과 canonical 관계
 
@@ -10,12 +10,14 @@
 - 기존 authored 1/08 `wuxia_guestpass_burnt_token_last_route_record.yml`는 원형을 보존한다. 1/08의 cadence 보강은 이 companion에서만 한다.
 - 모든 수치·희귀도·실제 runtime 효과는 `deferred`; 모든 레코드는 `authoring_review_required` / `not_implemented`다.
 
-### 3막 등록 범위와 provenance
+### 3~4막 등록 범위와 provenance
 
 - Act3 companion은 `guestpass_act3_chapter_17.yml`~`guestpass_act3_chapter_24.yml`이며, manifest의 scope는 acts `[1, 2, 3]`, slots `1/01`~`3/24`다.
 - 3/17은 imported 원본의 4선택 요약을 바탕으로 한 design-only 보강이고, 3/18은 authored design source를 참조한다. 3/19~3/20은 source gap을 companion에서 보강한다.
 - 3/21~3/22와 3/24는 `design_only_imported` / `companion_runtime_sync: not_synced`다. 3/23은 referenced event만 `implemented_preview`이고 companion은 `not_synced`다.
 - 3막도 상태는 `authoring_draft`, 검토는 `authoring_review_required`, companion runtime은 `not_implemented`다. 위 provenance는 구현·승인 완료 선언이 아니다.
+- Act4 companion은 guestpass_act4_chapter_25.yml~guestpass_act4_chapter_32.yml이며 4/25~4/32와 event ref 8개를 manifest에 등록한다. 4/25·4/29~4/30은 authored design source, 4/27~4/28·4/31은 design_only_imported source, 4/26은 referenced event implemented_preview지만 companion은 not_synced다.
+- 4/32는 imported_runtime_semantic_conflict다. 원본 runtime의 death/resurrection 선택을 companion에서 사용하지 않고 세 증거 eligibility gate로 재기능화했으며, companion은 not_synced다. 이 semantic conflict는 해결 선언이 아니다.
 
 ## 필수 필드 계약
 
@@ -25,7 +27,7 @@
 
 금지되는 것은 장 밖으로 즉시 이어지는 추격·전투·붕괴·카운트다운, 곧바로 다음 필수 사건을 강제하는 전달, 짧은 시간창 의존이다. terminal ending만 예외다.
 
-검증 기대사항: 선택지별 literal 검증에서는 Act3 32개 선택지(누적 97개)의 immediate_result, success, failure, relationship_directions, reward_candidate, quest_clue, flags(always/success/failure)를 확인하고, 8개 챕터 모두의 scene_context와 convergence도 확인한다. choice ID와 reward name은 각각 누적 97개가 유일해야 한다. YAML inventory는 24 files / 97 choices를 기록하되, generated validation과 최종 테스트 결과는 별도 확인 전까지 선언하지 않는다.
+검증 기대사항: 선택지별 literal 검증에서는 Act4 33개 선택지를 포함한 누적 130개 선택지의 immediate_result, success, failure, relationship_directions, reward_candidate, quest_clue, flags(always/success/failure)를 확인하고, 8개 챕터 모두의 scene_context와 convergence도 확인한다. choice ID와 reward name은 각각 누적 130개가 유일해야 한다. YAML inventory는 32 files / 130 choices를 기록하며, YAML parse·100KB·diff-check를 완료했으며 design validator PASS, pytest 129 passed, git diff-check PASS, independent Act4 audit PASS다.
 
 ## 사용법
 

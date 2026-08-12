@@ -1,0 +1,94 @@
+schema_version: 1
+kind: chapter_script_companion
+script_id: guestpass_act4_chapter_28
+event_ref: wuxia_heuksa_bang_debt_bargain
+slot: 4/28
+title: 사람을 빚으로 세는 장부 앞에서
+status: authoring_draft
+review_status: authoring_review_required
+runtime_status: not_implemented
+referenced_event_runtime_status: design_only_imported
+reward_policy:
+  mode: mutually_exclusive_by_choice
+  unique_group: guestpass_act4_ch28_debt_bargain_evidence
+  common_progression_separate: true
+  unchosen_evidence_recovery: true
+canonical_bridge:
+  source_gap: true
+  source_ref: events/imported/wuxia_heuksa_bang_debt_bargain.yml
+  runtime_provenance: imported_unreviewed_design_only_three_choice_summary
+  preserved_preview_choice_ids: [take_the_debt, investigate_the_debt, refuse_the_bargain]
+  source_choice_ids: [take_the_debt, investigate_the_debt, refuse_the_bargain]
+  fourth_choice: separate_terms_before_witnessed_bargain
+  imported_mapping: original_substitute_investigate_refuse_meaning_preserved_with_public_terms_choice
+  semantic_note: 흑사방 보스의 사람·환대·치료비 채무 거래를 체험하되 사도의 세 요소 계산과 통제는 이 거래에 귀속하지 않는다.
+  required_flags: [black_serpent_master_ledger_location_lead]
+  common_emits: [black_serpent_boss_bargain_resolved, black_serpent_debt_model_exposed, guestpass_route_records_at_risk]
+  next_gate: black_serpent_boss_bargain_resolved
+  next_event_ref: wuxia_guestpass_ledger_delay_stratagem
+entry_conditions:
+  required_flags: [black_serpent_master_ledger_location_lead]
+  optional_context_flags: [guestpass_master_ledger_location_confirmed, guestpass_master_ledger_location_partial, guestpass_ledger_location_trace_resolved]
+reentry_recap: 4/27에 원장부의 위치·보관자·대조 경로를 확인했지만, 원장부를 손에 넣지는 않았다. 흑사방 보스는 그 경로를 이용해 사람을 데려온 값, 머물게 한 환대, 치료비를 하나의 빚으로 묶어 거래하자고 기다린다.
+stable_opening: 다음 날 늦은 오전, 주인공은 현대 출근복과 사원증을 숨기지 않은 채 흑사방의 작은 거래방에 들어선다. 서하린은 손목을 받친 채 문 옆에 앉고, 보스는 차와 약값 영수선, 사람의 이름을 같은 탁자에 올린다.
+local_urgent_conflict: 보스는 환대와 치료를 베푼 일을 채무로 바꾸고, 그 채무를 대신 질 사람·내역을 들여다볼 사람·거절할 사람을 고르라고 압박한다. 거래는 방 안에서 끝내며, 협상 실패는 관계·정보·기록 일부의 손실일 뿐 탈출 불가나 즉시 전투가 아니다.
+beats_and_dialogue:
+  - {beat: 같은 탁자의 세 가격, scene: 보스가 숙박한 밤 수·받은 식사·서하린의 치료 약재를 각각 숫자로 적고 한 장의 빚으로 묶는다., dialogue: '흑사방 보스: “사람을 숨긴 밤도, 내어 준 밥도, 붙여 준 약도 공짜가 아니오. 은혜를 계산하면 거래가 되지.”'}
+  - {beat: 사원증은 담보가 아니다, scene: 주인공은 사원증을 꺼내 보이되 맡기지 않고 출근복 주머니에 다시 넣는다. 보스의 하인은 낯선 물건도 환대의 값으로 세려 한다., dialogue: '주인공: “이건 제가 누구인지 보여 주는 표식이지, 당신 장부에 사람을 더하는 담보가 아닙니다.”'}
+  - {beat: 서하린의 치료비, scene: 서하린은 자신이 받은 치료를 빚으로 인정할지 직접 말하고, 자신의 이름을 대신 담보로 내놓지 않을 선을 정한다., dialogue: '서하린: “치료받았다는 사실과 제가 누구에게 복종한다는 건 달라요. 제 이름으로 새 채무를 만들지 마세요.”'}
+  - {beat: 보스의 환대 논리, scene: 보스는 청류문과 객패를 보호한 대가라며 사람의 이동과 다음 도움을 함께 요구한다. 빚의 내역에는 원장부 대조 경로가 압박 카드로 끼워져 있다., dialogue: '흑사방 보스: “길을 알려 준 손님은 길값을 갚아야 하오. 원장부로 가는 길도 그 값에 포함되지.”'}
+  - {beat: 네 가지 대응표, scene: 대신 빚을 지기·내역 조사·거절·조건을 분리해 증인과 확인하기를 각각 다른 위험과 기록으로 나눈다., dialogue: '주인공: “사람의 값, 머문 값, 약값을 한 줄로 서명하지 않겠습니다. 무엇을 거래하는지 먼저 나누죠.”'}
+  - {beat: 장내의 마지막 압박, scene: 보스가 서하린의 침묵과 주인공의 사원증을 각각 동의로 해석하려 하지만, 서하린은 중단 여부를 직접 말하고 객잔 증인은 말의 순서를 적는다., dialogue: '서하린: “침묵은 동의가 아니에요. 오늘 거래가 끝나도, 제 선택을 당신 장부의 빈칸으로 쓰지 못합니다.”'}
+  - {beat: 거래의 종결, scene: 선택 결과에 따라 채무표·조사 메모·거절 영수선·증인 대조표 중 하나를 봉인한다. 보스는 물러나지만 다음 원장부 지연책의 가능성만 남는다., dialogue: '흑사방 보스: “좋소. 오늘의 대답은 받았소. 다만 길을 늦추는 손도 거래의 일부라는 걸 기억하시오.”'}
+choices:
+  - id: take_the_debt
+    label: 다른 사람의 빚을 대신 진다
+    immediate_result: 사람의 이름을 담보로 넘기지 않는 대신, 주인공이 숙박·식사·치료비 중 합의된 금액을 제한적으로 책임진다는 영수선을 받는다.
+    success: 서하린과 청류문 사람에게 채무를 전가하지 않고, 금액·기한·추가 환대 금지 조건을 보스의 말로 확정한다.
+    failure: 보스가 추가 이자를 끼워 넣어 완전한 면책은 얻지 못하지만, 서하린의 이름과 원장부 경로는 채무표에서 제외된다.
+    relationship_directions: {people: {seo_harin: debt_not_imposed_without_consent, protagonist: modern_identity_not_used_as_collateral, black_serpent_boss: limited_liability_acknowledged}, factions: {black_serpent: bargain_logic_experienced_without_submission, qingliu: companions_not_transferred_as_debt, bloodmoon_cult: physical_role_absent, sado: three_element_calculation_not_used}}
+    reward_candidate: {id: guestpass_act4_ch28_limited_debt_receipt, name: 제한 채무 영수패, type: bargain_record, concept: 사람 대신 일부 비용만 책임지고 금액·기한·추가 청구 금지를 확정한 기록}
+    quest_clue: {name: 환대의 상한선, type: debt_model_clue, concept: 흑사방은 숙박·식사·치료를 묶어 채무화하지만 항목과 상한을 분리하면 압박을 제한할 수 있다는 단서}
+    flags: {always: [black_serpent_boss_bargain_resolved, black_serpent_debt_model_exposed, guestpass_route_records_at_risk], success: [guestpass_limited_debt_accepted, seoharin_debt_excluded], failure: [guestpass_debt_terms_partially_contested]}
+  - id: investigate_the_debt
+    label: 빚의 내역을 조사한다
+    immediate_result: 보스의 영수선에서 사람의 이름은 가리고 숙박일·환대 물자·치료 약재의 출처와 계산 방식을 항목별로 대조한다.
+    success: 빚이 실제 비용과 흑사방의 보호료를 섞어 부풀려졌음을 확인하고, 원장부 경로를 늦출 수 있는 압박 항목을 따로 표시한다.
+    failure: 보스의 부하가 조사 메모 일부를 빼앗지만, 사람·환대·치료비가 분리되지 않았다는 핵심 구조와 증인 진술은 남는다.
+    relationship_directions: {people: {seo_harin: evidence_scope_chosen_together, protagonist: office_like_audit_adapted_without_ownership, black_serpent_boss: model_exposed_not_defeated}, factions: {black_serpent: debt_structure_mapped, qingliu: route_records_protected_as_possible, bloodmoon_cult: no_fire_or_destruction_claim, sado: arithmetic_control_reserved_for_separate_actor}}
+    reward_candidate: {id: guestpass_act4_ch28_three_column_debt_audit, name: 세 칸 채무 대조표, type: investigation_record, concept: 사람·환대·치료비와 흑사방의 추가 압박을 분리한 조사 기록}
+    quest_clue: {name: 부풀린 환대비의 규칙, type: debt_model_clue, concept: 흑사방은 실제 비용과 보호 명목을 합산해 사람의 이동을 통제한다는 단서}
+    flags: {always: [black_serpent_boss_bargain_resolved, black_serpent_debt_model_exposed, guestpass_route_records_at_risk], success: [guestpass_debt_model_audited, guestpass_route_delay_pressure_identified], failure: [guestpass_debt_audit_partial, guestpass_route_records_partially_exposed]}
+  - id: refuse_the_bargain
+    label: 거래를 거절한다
+    immediate_result: 사람·환대·치료비를 하나의 채무로 인정하지 않는다는 거절 영수선을 요구하고, 방을 나갈 수 있는 최소한의 통행 조건만 확인한다.
+    success: 보스의 요구를 청류문이나 서하린에게 넘기지 않고, 거래 거절과 원장부 경로 보호를 별개의 기록으로 남긴다.
+    failure: 보스가 객패 경로 기록 일부를 붙잡아 다음 위치 확인을 늦추지만, 거절은 장내에서 종결되고 추격이나 즉시 전투는 발생하지 않는다.
+    relationship_directions: {people: {seo_harin: refusal_supported_as_her_choice, protagonist: bodily_exit_limit_respected, black_serpent_boss: boundary_registered_without_personal_duel}, factions: {black_serpent: coercive_debt_refused, qingliu: no_new_debt_assigned, bloodmoon_cult: physical_threat_not_invoked, sado: calculation_not_collapsed_into_refusal}}
+    reward_candidate: {id: guestpass_act4_ch28_refusal_receipt, name: 채무 거래 거절 영수패, type: boundary_record, concept: 사람·환대·치료비를 대신 지거나 양도하지 않았다는 장내 기록}
+    quest_clue: {name: 거절 뒤의 지연손, type: route_risk_clue, concept: 흑사방은 거래가 성립하지 않아도 객패·원장부 경로 기록을 늦추는 방식으로 압박할 수 있다는 단서}
+    flags: {always: [black_serpent_boss_bargain_resolved, black_serpent_debt_model_exposed, guestpass_route_records_at_risk], success: [guestpass_debt_bargain_refused, guestpass_route_boundary_kept], failure: [guestpass_refusal_costs_route_delay]}
+  - id: separate_terms_before_witnessed_bargain
+    label: 세 항목을 나눠 증인 앞에서 조건을 확인한다
+    immediate_result: 사람의 책임·환대 비용·치료비를 세 장의 확인선으로 나누고, 서하린과 객잔 증인이 각 항목의 동의·불동의를 따로 기록한다.
+    success: 보스가 어느 항목으로 무엇을 요구하는지 공개된 말로 확정하고, 사람을 담보로 삼지 않는 제한 거래 또는 거절을 증인 기록으로 남긴다.
+    failure: 보스가 한 항목의 증인을 내보내 조건이 완전히 맞지 않지만, 섞인 채무를 그대로 승인하지 않았다는 중단 기록과 다음 지연 위험은 보존된다.
+    relationship_directions: {people: {seo_harin: agency_and_stop_authority, protagonist: modern_body_and_id_not_pledged, innkeeper: witness_not_debtor, black_serpent_boss: terms_exposed_without_personal_humiliation}, factions: {black_serpent: debt_model_publicly_bounded, qingliu: hospitality_and_treatment_not_surrendered, bloodmoon_cult: physical_destruction_separate, sado: no_three_element_control_claim}}
+    reward_candidate: {id: guestpass_act4_ch28_witnessed_term_split, name: 증인 앞 세 항목 거래표, type: witness_bargain_record, concept: 사람·환대·치료비를 분리해 거래 조건과 중단 권한을 남긴 기록}
+    quest_clue: {name: 사람을 담보로 삼지 않는 분리선, type: debt_model_clue, concept: 흑사방의 거래는 항목을 섞을 때 통제가 강해지며 증인과 중단선을 세우면 다음 지연책만 분리해 볼 수 있다는 단서}
+    flags: {always: [black_serpent_boss_bargain_resolved, black_serpent_debt_model_exposed, guestpass_route_records_at_risk], success: [guestpass_debt_terms_witnessed, guestpass_person_not_collateralized], failure: [guestpass_witnessed_terms_incomplete]}
+relationship_directions: {people: {seo_harin: agency_and_consent_preserved, protagonist: modern_body_work_clothes_and_id_continuity, black_serpent_boss: coercive_logic_named_without_combat, innkeeper: witness_protected_not_billed}, factions: {black_serpent: people_hospitality_treatment_debt_only, qingliu: no_companion_transfer, bloodmoon_cult: physical_destruction_only, sado: separate_three_element_calculation_and_control}}
+rewards:
+  - {id: guestpass_act4_ch28_limited_debt_receipt, name: 제한 채무 영수패, type: bargain_record, concept: 비용·기한·추가 청구 금지}
+  - {id: guestpass_act4_ch28_three_column_debt_audit, name: 세 칸 채무 대조표, type: investigation_record, concept: 사람·환대·치료비 분리}
+  - {id: guestpass_act4_ch28_refusal_receipt, name: 채무 거래 거절 영수패, type: boundary_record, concept: 채무 양도 거절과 경로 보호}
+  - {id: guestpass_act4_ch28_witnessed_term_split, name: 증인 앞 세 항목 거래표, type: witness_bargain_record, concept: 세 항목·동의·중단 권한}
+quest_clues: [{name: 흑사방의 사람 빚 모델, type: main_quest_clue, concept: 사람·환대·치료비를 하나의 채무로 묶어 이동과 도움을 통제하는 거래 구조}, {name: 객패 경로의 지연 위험, type: route_risk_clue, concept: 거래가 끝나도 흑사방이 원장부·객패 기록을 늦추는 압박을 남길 수 있음}]
+flags: {always: [black_serpent_boss_bargain_resolved, black_serpent_debt_model_exposed, guestpass_route_records_at_risk, fixed_countdown_absent, immediate_next_combat_forbidden], success: [guestpass_bargain_closed_with_boundary], failure: [guestpass_bargain_closed_with_route_cost], follow_up: [wuxia_guestpass_ledger_delay_stratagem_ready]}
+local_closure: 네 선택 모두 흑사방 보스의 거래를 장내에서 종결한다. 일부 비용을 제한적으로 지거나, 내역을 조사하거나, 거절하거나, 증인 앞에서 항목을 나눈 결과 중 하나만 남으며, 실패해도 원장부 경로가 늦어질 뿐 터미널 상태나 즉시 전투로 가지 않는다.
+interlude_safe_state: 객잔으로 돌아와 식사·수면·서하린 손목 휴식·거래 영수선 대조·사원증과 출근복 정리를 할 수 있다. 객패와 원장부 경로 기록은 하루 이상 재확인하며, 흑사방을 즉시 추적하지 않는다.
+low_pressure_hook: 보스가 마지막에 남긴 지연 표시는 원장부를 빼앗았다는 뜻이 아니라, 다음 확인 시각과 전달 순서를 늦출 수 있다는 경고다.
+next_reentry_trigger: black_serpent_boss_bargain_resolved와 black_serpent_debt_model_exposed가 기록되고 식사·휴식 뒤 guestpass_route_records_at_risk를 대조하면 wuxia_guestpass_ledger_delay_stratagem이 열린다.
+cadence_audit: {time: next_day_late_morning_to_evening_with_meal_and_rest, place: black_serpent_bargain_room_and_safe_inn_record_room, companions: protagonist_seoharin_black_serpent_boss_optional_innkeeper_witness, injury: seoharin_wrist_limit_respected, information: people_hospitality_treatment_debt_model_and_route_delay_risk, hostile_pressure: in_room_coercive_bargain_only_no_pursuit_countdown_or_combat}
+scene_context: {location: 흑사방 거래방·객잔 기록방, cast: [주인공, 서하린, 흑사방 보스, 보스의 서기, 객잔 증인], emotional_state: 도움을 받은 사실을 부정하지 않으면서도 사람을 빚으로 넘기지 않으려는 팽팽한 경계}
+convergence: {meaningful_exclusive_outcomes: [limited_debt_accepted, debt_model_audited, bargain_refused, terms_witnessed_and_split], common_minimum_facts: [black_serpent_boss_bargain_resolved, black_serpent_debt_model_exposed, guestpass_route_records_at_risk, fixed_countdown_absent, immediate_next_combat_forbidden], local_closure: 흑사방 보스의 사람·환대·치료비 거래를 장내에서 닫고 비터미널 경로 위험만 남김, exact_state_bridge: 채무 거래와 사도식 세 요소 계산을 분리한 뒤 객패·원장부 지연책을 확인하는 다음 장으로 연결, next_slot: 4/29, next_event_ref: wuxia_guestpass_ledger_delay_stratagem, terminal: false}

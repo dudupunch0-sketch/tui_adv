@@ -1,0 +1,99 @@
+schema_version: 1
+kind: chapter_script_companion
+script_id: guestpass_act4_chapter_32
+event_ref: wuxia_collapse_gate
+slot: 4/32
+title: Three Evidence Eligibility Gate
+status: authoring_draft
+review_status: authoring_review_required
+runtime_status: not_implemented
+companion_runtime_sync: not_synced
+referenced_event_runtime_status: imported_runtime_semantic_conflict
+source_runtime_semantic_conflict:
+  source_ref: events/imported/wuxia_collapse_gate.yml
+  conflict: imported runtime has death/resurrection choices; companion does not use them.
+  refunctionalization: wuxia_collapse_gate is an explicit eligibility chamber for three evidence elements.
+  excluded_runtime_choices: [death, resurrection, sacrifice_to_continue]
+  authoring_rule: no fixed countdown or immediate next combat.
+canonical_bridge:
+  source_gap: true
+  source_ref: events/imported/wuxia_collapse_gate.yml
+  runtime_provenance: imported_runtime_semantic_conflict_reauthored_as_three_element_eligibility_gate
+  required_flags: [guestpass_three_element_evidence_partial_or_complete]
+  required_evidence_flag: guestpass_three_element_evidence_partial_or_complete
+  common_emits: [guestpass_gate_eligibility_reviewed, guestpass_three_element_gate_requirement_confirmed, guestpass_hq_infiltration_lead_retained, guestpass_network_headquarters_entry_opened]
+  next_gate: guestpass_three_element_gate_requirement_confirmed
+  next_event_ref: wuxia_guestpass_network_headquarters_infiltration
+entry_conditions:
+  required_flags: [guestpass_three_element_evidence_partial_or_complete]
+  optional_context_flags: [guestpass_ledger_recovery_route_opened, guestpass_gate_reentry_ready]
+reentry_recap: 4/31 records separated Bloodmoon Cult physical destruction from Black Serpent debt. The protagonist and Seo Harin approach the gate with incomplete evidence allowed.
+stable_opening: The protagonist remains in a modern body, work clothes, and employee ID. Seo Harin checks the threshold and separates opening a door from earning entry eligibility.
+local_urgent_conflict: This is not a death test. It separately checks guestpass responsibility, master-ledger debt origin, and modern return possibility. Missing evidence leaves a recovery route and safe reentry.
+beats_and_dialogue:
+  - {beat: gate_refunctionalization, scene: The broken seal reveals a records checkpoint, not a death altar., dialogue: 'Seo Harin: "Nobody has to die here. It asks what you can prove."'}
+  - {beat: modern_continuity, scene: The protagonist records stiff shoes, work clothes, and employee-ID continuity., dialogue: 'Protagonist: "This ID proves I have not forgotten who I am."'}
+  - {beat: guestpass_responsibility, scene: Issuer, holder, and purpose are checked separately., dialogue: 'Gate record: "Explain responsibility before you pass."'}
+  - {beat: master_ledger_evidence, scene: The herbalist copy is compared with Black Serpent debt marks without theft or infiltration., dialogue: 'Seo Harin: "Debt belongs to Black Serpent records; physical destruction belongs to Bloodmoon Cult."'}
+  - {beat: return_clue, scene: Modern-object reactions are separated from Sado calculation and not consumed., dialogue: 'Sado: "Calculation does not open a door."'}
+  - {beat: safe_ruling, scene: Seo Harin can stop the ruling and records a recovery person, place, and next condition., dialogue: 'Seo Harin: "Name the missing column; today is not the end."'}
+choices:
+  - id: enter_the_gate
+    label: Compare all three elements and request an eligibility ruling
+    immediate_result: Place guestpass, master-ledger evidence, and modern-return clue in separate columns.
+    success: All three are explained and headquarters entry eligibility opens.
+    failure: Entry stays closed; missing-element recovery and reentry conditions are recorded.
+    relationship_directions: {people: {seo_harin: agency_led_stop_and_consent, protagonist: modern_identity_preserved, sado: calculation_observer}, factions: {bloodmoon_cult: physical_destruction_only, black_serpent: debt_ledger_only, guestpass_network: eligibility_protocol}}
+    reward_candidate: {id: guestpass_act4_ch32_three_element_eligibility_seal, name: Three Element Eligibility Seal, type: gate_eligibility_record, concept: Independent evidence questions confirmed}
+    quest_clue: {name: Headquarters Entry Order, type: canonical_gate_clue, concept: Responsibility, debt origin, and return possibility stay separate}
+    flags: {always: [guestpass_three_element_evidence_partial_or_complete, guestpass_gate_eligibility_reviewed, immediate_next_combat_forbidden, fixed_countdown_absent], success: [guestpass_network_headquarters_entry_opened, guestpass_three_element_evidence_complete], failure: [guestpass_gate_missing_evidence_route_recorded, guestpass_gate_reentry_ready]}
+  - id: verify_guestpass_responsibility
+    label: Recheck the guestpass responsibility chain
+    immediate_result: Record issuer, current holder, and purpose in three sentences.
+    success: Guestpass is accepted as traceable passage evidence, not identity ownership.
+    failure: Holder and next station remain even if issuer is unclear.
+    relationship_directions: {people: {seo_harin: witness_not_proxy, protagonist: agency_over_guestpass_use, sado: no_identity_authority}, factions: {guestpass_network: responsibility_chain_opened, bloodmoon_cult: no_physical_claim, black_serpent: no_debt_on_pass}}
+    reward_candidate: {id: guestpass_act4_ch32_guestpass_custody_token, name: Guestpass Responsibility Receipt, type: custody_record, concept: Custody responsibility without debt}
+    quest_clue: {name: Missing Issuer Link, type: guestpass_clue, concept: Issuer and last lawful holder to verify}
+    flags: {always: [guestpass_three_element_evidence_partial_or_complete, guestpass_gate_eligibility_reviewed], success: [guestpass_guestpass_responsibility_confirmed], failure: [guestpass_guestpass_issuer_trace_missing, guestpass_gate_missing_evidence_route_recorded]}
+  - id: reconcile_master_ledger_evidence
+    label: Reconcile the master-ledger debt origin
+    immediate_result: Compare protected copy and Black Serpent mark in place; defer removal and infiltration.
+    success: Debt origin and recovery route fill the second eligibility column.
+    failure: A missing line still leaves a noncombat recovery route and safe comparison place.
+    relationship_directions: {people: {seo_harin: evidence_scope_coauthored, herbalist: source_protected, protagonist: debt_not_assumed}, factions: {black_serpent: debt_origin_separated, bloodmoon_cult: physical_role_separate, sado: arithmetic_not_authority}}
+    reward_candidate: {id: guestpass_act4_ch32_master_ledger_eligibility_rubbing, name: Master Ledger Eligibility Rubbing, type: evidence_record, concept: Debt-origin comparison without reducing a person to debt}
+    quest_clue: {name: Next Ledger Knot, type: recovery_route_clue, concept: Safe route and comparison order for the missing line}
+    flags: {always: [guestpass_three_element_evidence_partial_or_complete, guestpass_gate_eligibility_reviewed], success: [guestpass_master_ledger_evidence_qualified], failure: [guestpass_master_ledger_recovery_route_pending, guestpass_gate_missing_evidence_route_recorded]}
+  - id: test_modern_return_trace
+    label: Safely recheck the modern return clue
+    immediate_result: Record employee ID, work clothes, and modern-object memory separately from Sado calculation.
+    success: Conditions and limits for modern-body return fill the third eligibility column.
+    failure: Modern ownership and continuity remain, with a place and witness for recheck.
+    relationship_directions: {people: {seo_harin: modern_trace_witness_with_consent, protagonist: bodily_continuity_preserved, sado: calculation_limited}, factions: {guestpass_network: return_trace_preserved, bloodmoon_cult: no_ritual_substitution, black_serpent: no_return_debt}}
+    reward_candidate: {id: guestpass_act4_ch32_modern_return_trace_card, name: Modern Return Trace Card, type: return_evidence, concept: Modern body, work clothes, and employee-ID continuity}
+    quest_clue: {name: Return Door Question, type: return_clue, concept: Return requires modern continuity, not calculation or ritual}
+    flags: {always: [guestpass_three_element_evidence_partial_or_complete, guestpass_gate_eligibility_reviewed], success: [guestpass_modern_return_trace_qualified], failure: [guestpass_modern_return_trace_unverified, guestpass_gate_missing_evidence_route_recorded]}
+reward_policy:
+  exclusive_by_choice: true
+  exclusive_reward_rule: Only the selected reward_candidate is granted; other rewards are not automatic.
+  common_progression: [guestpass_three_element_evidence_partial_or_complete, guestpass_gate_eligibility_reviewed]
+  common_progression_rule: Eligibility review and missing-evidence route are common progression.
+relationship_directions: {people: {seo_harin: agency_preserved_with_stop_authority, protagonist: modern_body_and_work_clothes_canonical, sado: calculation_role_separate}, factions: {bloodmoon_cult: physical_destruction_only, black_serpent: debt_and_ledger_only, guestpass_network: eligibility_and_entry_protocol}}
+rewards:
+  - {id: guestpass_act4_ch32_three_element_eligibility_seal, name: Three Element Eligibility Seal, type: gate_eligibility_record, concept: Independent clue questions}
+  - {id: guestpass_act4_ch32_guestpass_custody_token, name: Guestpass Responsibility Receipt, type: custody_record, concept: Guestpass responsibility}
+  - {id: guestpass_act4_ch32_master_ledger_eligibility_rubbing, name: Master Ledger Eligibility Rubbing, type: evidence_record, concept: Debt-origin comparison}
+  - {id: guestpass_act4_ch32_modern_return_trace_card, name: Modern Return Trace Card, type: return_evidence, concept: Modern continuity}
+quest_clues:
+  - {name: Three Eligibility Questions, type: main_quest_clue, concept: Guestpass proves responsibility, ledger debt origin, modern clue return possibility}
+  - {name: Missing Evidence Recovery Route, type: reentry_clue, concept: Each missing proof has a safe place and witness}
+flags: {always: [guestpass_three_element_evidence_partial_or_complete, guestpass_gate_eligibility_reviewed, immediate_next_combat_forbidden, fixed_countdown_absent], success: [guestpass_network_headquarters_entry_opened], failure: [guestpass_gate_missing_evidence_route_recorded, guestpass_gate_reentry_ready], follow_up: [guestpass_network_headquarters_entry_opened]}
+local_closure: Complete evidence opens only headquarters entry eligibility. Missing evidence leaves a recovery route; there is no immediate infiltration, pursuit, or combat.
+interlude_safe_state: Eat, sleep, wash work clothes, check the employee ID, rest Seo Harin wrist, or investigate the ledger route at the inn. Entry resumes only after preparation and recheck.
+low_pressure_hook: The seal beyond the threshold is a result marker, not an invitation to infiltrate. Recover missing evidence first.
+state_reentry: {partial: guestpass_gate_reentry_ready, complete: guestpass_network_headquarters_entry_opened, missing_evidence: [guestpass_guestpass_issuer_trace_missing, guestpass_master_ledger_recovery_route_pending, guestpass_modern_return_trace_unverified], reentry_rule: Recover and recheck missing elements at this threshold; never transition through a terminal choice.}
+next_reentry_trigger: After guestpass_three_element_evidence_partial_or_complete, complete opens guestpass_network_headquarters_entry_opened and partial reenters through the recorded recovery route.
+scene_context: {location: Collapsed evidence-check gate and safe inn, cast: [protagonist, seo_harin, sado], emotional_state: Death fear replaced by accountable ruling and return possibility}
+cadence_audit: {time: late_afternoon_to_next_day_after_rest, place: collapsed_gate_and_safe_inn_room, companions: protagonist_seoharin_sado, injury: seoharin_wrist_rest_required, information: three_element_eligibility_and_missing_evidence_routes, hostile_pressure: sealed_gate_only_no_pursuit}
+convergence: {meaningful_exclusive_outcomes: [three_elements_qualified, guestpass_responsibility_reviewed, master_ledger_evidence_reviewed, modern_return_trace_reviewed], common_minimum_facts: [guestpass_three_element_evidence_partial_or_complete, guestpass_gate_eligibility_reviewed], guestpass_three_element_gate_requirement_confirmed, guestpass_hq_infiltration_lead_retained, guestpass_master_ledger_recovery_route_opened, sado_first_calculation_bargain_resolved, local_closure: Eligibility ruling and recovery route sealed, exact_state_bridge: complete opens headquarters entry and partial returns to this gate, next_slot: 5/33, next_event_ref: wuxia_guestpass_network_headquarters_infiltration, terminal: false}

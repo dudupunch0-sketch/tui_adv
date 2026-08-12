@@ -1,0 +1,104 @@
+schema_version: 1
+kind: chapter_script_companion
+script_id: guestpass_act4_chapter_26
+event_ref: wuxia_mumyeong_first_confrontation
+slot: 4/26
+title: 이름을 묻는 자와 버티는 거리
+status: authoring_draft
+review_status: authoring_review_required
+runtime_status: not_implemented
+referenced_event_runtime_status: implemented_preview
+companion_runtime_sync: not_synced
+reward_policy:
+  mode: mutually_exclusive_by_choice
+  unique_group: guestpass_act4_ch26_mumyeong_confrontation_reward
+  common_progression_separate: true
+  unchosen_evidence_recovery: true
+canonical_bridge:
+  source_gap: true
+  source_ref: events/imported/wuxia_mumyeong_first_confrontation.yml
+  runtime_provenance: imported_preview_exists_authoring_companion_not_synced
+  preserved_preview_choice_ids: [face_mumyeong, hold_the_line, read_seo_harin_response, read_mumyeong_form, do_not_provoke]
+  source_choice_ids: [face_mumyeong, hold_the_line, read_seo_harin_response, read_mumyeong_form, do_not_provoke]
+  imported_mapping: original_face_endure_harin_reaction_form_reading_and_nonprovocation_meanings_preserved
+  required_flags: [guestpass_route_to_mumyeong_confrontation_opened]
+  common_emits: [guestpass_mumyeong_name_confrontation_resolved, guestpass_name_claim_tested, guestpass_ledger_location_lead_opened]
+  next_gate: guestpass_ledger_location_lead_opened
+  next_event_ref: wuxia_black_serpent_ledger_trace
+  note: preview runtime exists, but this authoring companion remains unsynced until runtime mapping review.
+entry_conditions:
+  required_flags: [guestpass_route_to_mumyeong_confrontation_opened]
+  optional_context_flags: [mumyeong_first_sighting_only, seoharin_agency_reentry, stolen_flow_crossed_with_debt_route]
+reentry_recap: 외원에서 청류문식 흐름을 훔쳐 쓴 무명을 목격했지만 이름과 목적은 확인하지 못했다. 이번에는 무명이 먼저 길을 막고, 주인공보다 조금 빠르고 강한 몸으로 이름을 요구한다. 서하린은 함께 있지만 대신 싸우거나 대신 대답하지 않는다.
+stable_opening: 해 질 무렵, 주인공은 현대 출근복과 사원증을 그대로 지닌 채 물길 창고 뒤 좁은 마당에 선다. 무명은 퇴로를 완전히 막지 않고 한 걸음 비켜 서서, 주인공의 옷과 사원증을 낯선 문파 표식처럼 살핀다.
+local_urgent_conflict: 무명이 주인공의 이름과 청류문에서 얻은 흐름의 출처를 묻는다. 완승·처치·추격은 목표가 아니며, 약간 우세한 라이벌의 압박 속에서 버티고 분석한 뒤 안전하게 이탈해야 한다. 서하린의 반응은 그녀가 직접 선택한다.
+beats_and_dialogue:
+  - {beat: 물길 창고의 막힌 길, scene: 무명이 한 번의 보법으로 주인공 앞을 가로막지만 칼끝은 내리지 않는다. 주인공은 젖은 출근복 소매와 구두의 미끄러움을 먼저 확인한다., dialogue: '무명: “이름도 길도 빌린 사람이, 왜 내 흐름을 보았지?”'}
+  - {beat: 조금 빠른 상대, scene: 주인공이 한 발 늦게 물러나고 무명의 손등이 사원증 끈을 스친다. 서하린은 끼어들지 않고, 어디까지 개입할지 자신의 손목을 감싸며 판단한다., dialogue: '서하린: “제가 대신 말하지 않을게요. 하지만 멈추라고 하면 멈춰야 해요.”'}
+  - {beat: 이름의 무게, scene: 무명은 이름을 밝히면 길을 열어 주겠다고 하지만, 그 말은 청류문과 흑사방 사이의 채무선과도 닿아 있다., dialogue: '주인공: “이름을 말하는 것과 당신이 그 이름의 주인이 되는 건 다른 일입니다.”'}
+  - {beat: 다섯 갈래의 거리, scene: 맞서기·버티기·서하린의 반응 살피기·초식 읽기·도발하지 않기를 짧은 호흡 안에서 나눈다., dialogue: '서하린: “지금 필요한 건 이기는 장면이 아니라, 누가 무엇을 선택했는지 남기는 일입니다.”'}
+  - {beat: 복사된 초식의 빈자리, scene: 무명의 흐름은 청류문식 모양을 닮았지만 마지막 디딤과 호흡의 연결이 비어 있다. 주인공은 그 약점을 이용해 끝내려 하지 않고 이탈 각도만 계산한다., dialogue: '주인공: “모양은 앞서지만, 중심이 한 박자 늦습니다. 그걸로 당신을 쓰러뜨릴 생각은 없습니다.”'}
+  - {beat: 이름을 되찾는 반응, scene: 서하린은 무명의 질문에 침묵할지, 주인공의 이탈을 도울지 직접 말한다. 무명은 그 선택을 동료의 약점으로 만들려 하지만, 서하린은 자신의 선을 분명히 한다., dialogue: '서하린: “내가 본 것과 내가 말할 것은 내가 정해요. 누구의 빚도 대신 증언하지 않겠습니다.”'}
+  - {beat: 마당을 벗어나는 발걸음, scene: 짧은 대치가 끝나고 무명은 다음 만남의 가능성만 남긴다. 주인공과 서하린은 창고 안으로 들어가지 않고 객잔 쪽 안전한 길로 돌아간다., dialogue: '무명: “오늘은 네가 버텼다고 해 두지. 다음에는 네 이름이 네 것인지 다시 묻겠다.”'}
+choices:
+  - id: face_mumyeong
+    label: 무명에게 정면으로 맞선다
+    immediate_result: 주인공은 이름을 즉시 넘기지 않고 한 번의 합을 받아내며, 현대 몸의 균형과 사원증 끈을 지키는 짧은 방어선을 세운다.
+    success: 무명의 우세를 인정하면서도 두 걸음의 퇴로를 확보하고, 이름을 요구받아도 자신의 대답 시점을 스스로 정한다.
+    failure: 어깨가 밀리고 사원증 끈이 끊어질 뻔하지만 서하린의 중단 신호를 받아 물러나며, 무명이 완전히 제압하지 못했다는 사실은 남는다.
+    relationship_directions: {people: {seo_harin: stop_signal_respected, protagonist: modern_body_limit_acknowledged, mumyeong: rival_distance_registered}, factions: {qingliu: companion_not_used_as_shield, black_serpent: route_pressure_not_personalized, bloodmoon_cult: no_physical_destruction, sado: no_calculation_control}}
+    reward_candidate: {id: guestpass_act4_ch26_name_boundary_mark, name: 이름 경계의 손등표, type: relationship_record, concept: 우세한 상대 앞에서도 이름을 넘기는 시점을 스스로 정한 대치 기록}
+    quest_clue: {name: 두 걸음의 퇴로, type: confrontation_clue, concept: 무명은 강하지만 압도적 벽은 아니며 물길 창고 뒤에서 안전하게 빠질 틈이 있다는 단서}
+    flags: {always: [guestpass_mumyeong_name_confrontation_resolved, guestpass_name_claim_tested, guestpass_ledger_location_lead_opened], success: [guestpass_mumyeong_stood_face_to_face, guestpass_name_boundary_kept], failure: [guestpass_mumyeong_pushback_survived]}
+  - id: hold_the_line
+    label: 무리하지 않고 버틴다
+    immediate_result: 공격 대신 발을 고정하고 무명의 세 번의 압박을 흘려, 출근복과 굳은 구두의 한계를 인정한 채 시간을 번다.
+    success: 무명의 우세한 속도와 힘을 견디며 그의 호흡이 흐트러지는 순간을 확인하고 안전하게 이탈한다.
+    failure: 한 번 넘어지지만 서하린이 정한 거리 안에서 일어나며, 완패하지 않고 버틴 시간과 상대의 호흡 흔적을 기록한다.
+    relationship_directions: {people: {seo_harin: agency_supported_without_rescue, protagonist: bodily_limit_and_recovery_respected, mumyeong: strength_difference_acknowledged}, factions: {qingliu: no_rash_counterattack, black_serpent: confrontation_not_escalated, bloodmoon_cult: physical_role_absent, sado: calculation_not_implied}}
+    reward_candidate: {id: guestpass_act4_ch26_three_breaths_record, name: 세 번의 호흡 버팀기록, type: combat_analysis, concept: 약간 우세한 무명의 압박을 견디며 호흡과 이탈 시간을 기록한 분석표}
+    quest_clue: {name: 늦어지는 마지막 호흡, type: form_clue, concept: 무명은 청류문식 외형을 빌렸지만 마지막 전환에서 호흡이 늦어진다는 단서}
+    flags: {always: [guestpass_mumyeong_name_confrontation_resolved, guestpass_name_claim_tested, guestpass_ledger_location_lead_opened], success: [guestpass_mumyeong_endurance_confirmed, guestpass_mumyeong_exit_opened], failure: [guestpass_mumyeong_endurance_cost_recorded]}
+  - id: read_seo_harin_response
+    label: 서하린의 반응과 선택을 먼저 살핀다
+    immediate_result: 무명과 거리를 유지하며 서하린이 침묵할지, 중단을 요구할지, 이탈선을 가리킬지 먼저 기다린다.
+    success: 서하린이 자신의 목소리로 대치 종료와 이탈 방향을 정하고, 무명도 그녀의 선택을 주인공의 약점으로만 소비하지 못한다.
+    failure: 기다리는 동안 무명의 손이 가까워지지만, 서하린이 직접 중단을 선언해 대치가 장내에서 닫히고 그녀의 판단이 기록된다.
+    relationship_directions: {people: {seo_harin: agency_and_consent_foregrounded, protagonist: partner_not_controller, mumyeong: seoharin_boundary_heard}, factions: {qingliu: companion_voice_protected, black_serpent: no_debt_claim_over_seoharin, bloodmoon_cult: no_destruction, sado: no_three_element_role}}
+    reward_candidate: {id: guestpass_act4_ch26_seoharin_stop_witness, name: 서하린의 멈춤 증언패, type: companion_record, concept: 서하린이 대치의 중단과 이탈 시점을 직접 결정한 증언}
+    quest_clue: {name: 동료의 이름은 동의로만 열린다, type: agency_clue, concept: 서하린의 반응은 무명의 정보가 아니라 그녀가 허락한 범위에서만 다음 기록이 된다는 원칙}
+    flags: {always: [guestpass_mumyeong_name_confrontation_resolved, guestpass_name_claim_tested, guestpass_ledger_location_lead_opened], success: [guestpass_seoharin_agency_reclaimed, guestpass_mumyeong_confrontation_stopped_by_choice], failure: [guestpass_seoharin_stop_under_pressure_recorded]}
+  - id: read_mumyeong_form
+    label: 무명의 초식을 읽는다
+    immediate_result: 맞받아치지 않고 발끝·어깨·호흡의 순서를 관찰해 청류문식과 닮은 외형, 비어 있는 중심, 이탈 가능한 모서리를 구분한다.
+    success: 무명이 주인공보다 조금 빠르고 강하다는 사실과 마지막 전환의 빈틈을 분석해, 다음 만남에서 버틸 기준과 원장부 경로로 이어질 관찰 질문을 얻는다.
+    failure: 두 동작을 놓치지만 초식의 출처를 확정하지 않고, 무명이 일부러 보여 준 것일 가능성까지 포함한 제한적 분석을 남긴다.
+    relationship_directions: {people: {seo_harin: analysis_scope_shared, protagonist: observation_over_ego, mumyeong: rival_as_subject_not_target}, factions: {qingliu: form_respected_without_claiming_lineage, black_serpent: copied_flow_not_debt_proof, bloodmoon_cult: physical_clue_separate, sado: calculation_and_control_not_attributed}}
+    reward_candidate: {id: guestpass_act4_ch26_borrowed_form_gap, name: 빌린 초식의 빈자리표, type: movement_record, concept: 무명의 복사된 초식과 호흡 전환의 빈틈을 이탈용으로 기록한 분석표}
+    quest_clue: {name: 흐름에서 원장부로 이어진 물길, type: route_clue, concept: 무명의 질문과 흑사방의 장부 경로가 물길 창고에서 겹치지만 동일한 목적이라고 단정할 수 없다는 단서}
+    flags: {always: [guestpass_mumyeong_name_confrontation_resolved, guestpass_name_claim_tested, guestpass_ledger_location_lead_opened], success: [guestpass_mumyeong_form_read, guestpass_ledger_route_question_opened], failure: [guestpass_mumyeong_form_partial]}
+  - id: do_not_provoke
+    label: 무명을 도발하지 않고 이탈한다
+    immediate_result: 이름·출신·청류문 이야기를 미끼로 던지지 않고 사원증을 가린 뒤, 서하린이 확인한 안전한 길로 천천히 물러난다.
+    success: 무명이 쫓아오지 않는 선에서 대치를 끝내고, 그가 원하는 것은 즉시 싸움보다 이름과 경로의 확인이라는 사실을 제한적으로 남긴다.
+    failure: 무명이 한 걸음 따라와 객패 경로의 기록 한 줄을 흔들지만, 주인공과 서하린은 창고 안으로 끌려가지 않고 안전한 장소로 돌아온다.
+    relationship_directions: {people: {seo_harin: exit_plan_coauthored, protagonist: restraint_and_identity_protected, mumyeong: nonprovocation_boundary_set}, factions: {qingliu: safe_return_prioritized, black_serpent: route_overlap_not_conflated, bloodmoon_cult: no_physical_pressure, sado: no_control_model}}
+    reward_candidate: {id: guestpass_act4_ch26_quiet_exit_token, name: 말없이 빠져나온 이탈패, type: restraint_record, concept: 도발과 이름 공개를 거절하고 대치를 안전하게 닫은 이탈 표식}
+    quest_clue: {name: 이름보다 경로를 묻는 라이벌, type: intention_clue, concept: 무명은 아직 처치나 완전한 승리를 노리기보다 주인공의 이름과 흑사방 경로의 연결을 시험한다는 단서}
+    flags: {always: [guestpass_mumyeong_name_confrontation_resolved, guestpass_name_claim_tested, guestpass_ledger_location_lead_opened], success: [guestpass_mumyeong_quiet_exit, guestpass_route_lead_preserved], failure: [guestpass_mumyeong_followed_briefly_but_escaped]}
+relationship_directions: {people: {seo_harin: agency_preserved_no_romance_lock, protagonist: modern_body_work_clothes_and_id_continuity, mumyeong: slightly_stronger_rival_not_boss}, factions: {qingliu: companion_and_route_protected, black_serpent: ledger_route_question_opened_without_claim, bloodmoon_cult: physical_destruction_only, sado: three_element_calculation_and_control_separate}}
+rewards:
+  - {id: guestpass_act4_ch26_name_boundary_mark, name: 이름 경계의 손등표, type: relationship_record, concept: 이름을 넘기는 시점을 스스로 정한 대치 기록}
+  - {id: guestpass_act4_ch26_three_breaths_record, name: 세 번의 호흡 버팀기록, type: combat_analysis, concept: 우세한 상대의 호흡과 이탈 시간}
+  - {id: guestpass_act4_ch26_seoharin_stop_witness, name: 서하린의 멈춤 증언패, type: companion_record, concept: 서하린이 정한 대치 중단선}
+  - {id: guestpass_act4_ch26_borrowed_form_gap, name: 빌린 초식의 빈자리표, type: movement_record, concept: 복사된 초식과 전환 빈틈}
+  - {id: guestpass_act4_ch26_quiet_exit_token, name: 말없이 빠져나온 이탈패, type: restraint_record, concept: 도발 없이 대치를 닫은 이탈}
+quest_clues: [{name: 무명의 이름 시험, type: main_quest_clue, concept: 무명은 주인공보다 약간 강하지만 완승을 노리기보다 이름·초식·경로의 연결을 시험함}, {name: 초식과 장부 경로의 겹침, type: route_clue, concept: 무명의 복사 초식과 흑사방 원장부 경로가 같은 물길에서 만났으나 동일 세력의 최종 증거는 아님}]
+flags: {always: [guestpass_mumyeong_name_confrontation_resolved, guestpass_name_claim_tested, guestpass_ledger_location_lead_opened, fixed_countdown_absent, immediate_next_combat_forbidden], success: [guestpass_mumyeong_confrontation_stabilized], failure: [guestpass_mumyeong_confrontation_closed_with_cost], follow_up: [wuxia_black_serpent_ledger_trace_ready]}
+local_closure: 다섯 선택 모두 무명과의 대치를 마당 안에서 종결한다. 주인공은 완승하거나 무명을 처치하지 않고 버티기·분석·이탈 중 하나의 성과를 남기며, 서하린은 자신의 중단·침묵·이탈 권한을 행사한다.
+interlude_safe_state: 객잔으로 돌아와 식사·수면·서하린 손목 휴식·사원증 끈 수선·출근복 정리·초식 기록 대조가 가능하다. 흑사방 원장부 경로는 다음 날 재확인하며 무명을 즉시 추격하지 않는다.
+low_pressure_hook: 무명이 남긴 이름 질문과 물길 창고의 장부 경로가 겹치지만, 그가 흑사방의 보스나 사도의 계산자라는 결론은 아직 열리지 않는다.
+next_reentry_trigger: guestpass_mumyeong_name_confrontation_resolved와 guestpass_name_claim_tested가 기록되고 하루의 식사·휴식 및 기록 대조가 지나면 guestpass_ledger_location_lead_opened를 통해 wuxia_black_serpent_ledger_trace가 열린다.
+cadence_audit: {time: next_day_late_afternoon_to_evening_with_rest, place: waterway_storehouse_backyard_and_safe_inn_record_room, companions: protagonist_seoharin_mumyeong_optional_innkeeper_witness, injury: protagonist_minor_bruise_and_seoharin_wrist_limit_respected, information: rival_form_name_claim_and_ledger_route_overlap, hostile_pressure: contained_rival_confrontation_without_pursuit_countdown_or_combat_chain}
+scene_context: {location: 물길 창고 뒤 마당·객잔 기록방, cast: [주인공, 서하린, 무명, 객잔 증인], emotional_state: 약간 강한 라이벌 앞에서 이름과 동료의 선택을 지키며 물러나는 긴장과 존중}
+convergence: {meaningful_exclusive_outcomes: [mumyeong_faced_and_boundary_kept, mumyeong_endured_and_exit_opened, seoharin_choice_witnessed, mumyeong_form_analyzed, quiet_exit_preserved], common_minimum_facts: [guestpass_mumyeong_name_confrontation_resolved, guestpass_name_claim_tested, guestpass_ledger_location_lead_opened, fixed_countdown_absent, immediate_next_combat_forbidden], local_closure: 무명과의 첫 대치를 비터미널로 닫고 이름·서하린 agency·장부 경로의 최소 사실을 보존, exact_state_bridge: 무명의 이름 시험과 물길 경로가 흑사방 원장부 흔적 조사로 이어짐, next_slot: 4/27, next_event_ref: wuxia_black_serpent_ledger_trace, terminal: false}

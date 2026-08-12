@@ -402,7 +402,7 @@ export function clothUpTo(view, targetIndex, cache) {
  * `charScale` is expressed in hex radii so the figures keep their relation to
  * the board whatever size the board ends up.
  */
-export function drawFighters(ctx, view, frameIndex, layout, robeCache, charHeightInHexRadii = 2.05) {
+export function drawFighters(ctx, view, frameIndex, layout, robeCache, charHeightInHexRadii = 2.05, features = true) {
   const frame = view.frames[frameIndex];
   const prev = frameIndex > 0 ? view.frames[frameIndex - 1] : null;
   const cloth = clothUpTo(view, frameIndex, robeCache);
@@ -433,6 +433,7 @@ export function drawFighters(ctx, view, frameIndex, layout, robeCache, charHeigh
       hair: cloth.hairs.get(piece.id),
       signals,
       phase,
+      features,
       seed: fnv1a(piece.id) % 97,
       trailJoints,
     });

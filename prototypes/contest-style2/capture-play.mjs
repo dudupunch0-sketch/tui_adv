@@ -83,6 +83,26 @@ try {
     shots.push(file);
   }
 
+  // The faceless variant, from the same page with one query flag flipped, so
+  // the comparison differs in exactly the thing being compared.
+  const bare = await browser.newPage({ viewport: { width: 960, height: 1000 }, deviceScaleFactor: 2 });
+  await bare.goto(`http://127.0.0.1:${port}/playscreen.html?faces=0`, { waitUntil: 'load' });
+  await bare.waitForFunction(() => window.__READY__ === true, null, { timeout: 30000 });
+  for (const [id, name] of [
+    ['screen-t4', 'style2-faceless-t4-exchange'],
+    ['screen-t8', 'style2-faceless-t8-decision'],
+  ]) {
+    const file = path.join(outDir, `${name}.png`);
+    await bare.locator(`#${id}`).screenshot({ path: file });
+    shots.push(file);
+  }
+  const bareZoom = await browser.newPage({ viewport: { width: 960, height: 1000 }, deviceScaleFactor: 4 });
+  await bareZoom.goto(`http://127.0.0.1:${port}/playscreen.html?faces=0`, { waitUntil: 'load' });
+  await bareZoom.waitForFunction(() => window.__READY__ === true, null, { timeout: 30000 });
+  const bz = path.join(outDir, 'zoom-faceless-t4-board.png');
+  await bareZoom.locator('#screen-t4 .stage').screenshot({ path: bz });
+  shots.push(bz);
+
   // A 4× pass over the board alone. Reviewing a 3D pose inside a 412px-wide
   // phone frame is how a backwards limb survives three capture rounds; the
   // zoom exists so the figures can actually be judged.

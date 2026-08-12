@@ -128,6 +128,31 @@
          duel, useless for reading a face — so the identity strip carries its own
          render of the head, framed three-quarter front and large enough that the
          expression survives at phone scale. */
+      /* Faceless variant: the identity strip drops to a faction sigil. If the
+         board carries no expression, a portrait cut-in carrying one is the only
+         face on the screen and it stops being a HUD element and starts being
+         the subject. */
+      .sigil {
+        position: relative; width: 56px; height: 56px; flex: none;
+        display: grid; place-items: center;
+        background: var(--ink-800);
+        border: 1px solid var(--line);
+      }
+      .sigil.ally { border-color: var(--ally-deep); }
+      .sigil.enemy { border-color: var(--enemy-deep); }
+      .sigil .glyph {
+        font-family: var(--serif); font-size: 21px; line-height: 1;
+        color: var(--ink-950);
+        width: 34px; height: 34px; display: grid; place-items: center;
+      }
+      .sigil.ally .glyph { background: var(--ally); clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%); }
+      .sigil.enemy .glyph { background: var(--enemy); clip-path: polygon(0 0, 66% 0, 100% 50%, 66% 100%, 0 100%, 34% 50%); }
+      .sigil.downed { opacity: 0.5; }
+      .sigil.downed::after {
+        content: ''; position: absolute; left: 6px; right: 6px; top: 50%;
+        border-top: 1px solid var(--enemy); transform: rotate(-18deg);
+      }
+
       .cutin {
         position: relative; width: 56px; height: 56px; flex: none;
         background: var(--ink-800);
@@ -378,6 +403,7 @@
         createPortraitCamera,
         setDepthSign,
         tuneForCamera,
+        clearFace3D,
         updateFace3D,
       } from './rig3d.js';
 
@@ -428,6 +454,15 @@
       // ---------------------------------------------------------------------
       // Scene assembly
       // ---------------------------------------------------------------------
+
+      /**
+       * `?faces=0` renders the board figures with no facial features at all.
+       *
+       * Not a separate page: the whole point of the comparison is that the two
+       * variants differ in exactly one thing. Everything else — poses, cloth,
+       * weapons, board, log, chrome — is the same code on the same data.
+       */
+      const FACES = new URLSearchParams(location.search).get('faces') !== '0';
 
       const HEX = 30;
       const BOARD_CENTER = { q: 2, r: 0 };
@@ -525,9 +560,17 @@
 
           character.root.updateMatrixWorld(true);
           const headWorld = character.groups.head.getWorldPosition(new THREE.Vector3());
-          const ht = headTurnFor(yaw, headWorld, camera);
+          // With no face to show, the head-turn cheat has nothing to buy. Let
+          // the head sit where the body put it: both fighters look straight
+          // down the engagement row at each other, which is where a fighter
+          // would actually be looking.
+          const ht = FACES ? headTurnFor(yaw, headWorld, camera) : { turn: 0, gaze: 0 };
           applyHeadTurn(character, ht.turn, s.down ? 0.16 : 0.03);
-          updateFace3D(character, expressionFor(s, PHASE, IDENTITY[piece.side].persona), ht.gaze);
+          if (FACES) {
+            updateFace3D(character, expressionFor(s, PHASE, IDENTITY[piece.side].persona), ht.gaze);
+          } else {
+            clearFace3D(character);
+          }
           scene.add(character.root);
 
           const shadow = buildContactShadow(s.down ? 20 : 11.5);
@@ -638,14 +681,20 @@
           const idn = IDENTITY[piece.side];
           const row = el('div', `fighter ${piece.side === 'enemy' ? 'enemy-row' : ''}`);
           const downed = piece.cues.includes('incapacitated');
-          const cutin = el('div', `cutin ${piece.side} ${downed ? 'downed' : ''}`);
-          const cutinCv = document.createElement('canvas');
-          cutinCv.width = CUTIN * DPR;
-          cutinCv.height = CUTIN * DPR;
-          cutin.appendChild(cutinCv);
-          cutin.appendChild(el('span', 'pip'));
-          row.appendChild(cutin);
-          cutIns.push({ canvas: cutinCv, side: piece.side, piece });
+          if (FACES) {
+            const cutin = el('div', `cutin ${piece.side} ${downed ? 'downed' : ''}`);
+            const cutinCv = document.createElement('canvas');
+            cutinCv.width = CUTIN * DPR;
+            cutinCv.height = CUTIN * DPR;
+            cutin.appendChild(cutinCv);
+            cutin.appendChild(el('span', 'pip'));
+            row.appendChild(cutin);
+            cutIns.push({ canvas: cutinCv, side: piece.side, piece });
+          } else {
+            const sigil = el('div', `sigil ${piece.side} ${downed ? 'downed' : ''}`);
+            sigil.appendChild(el('span', 'glyph', idn.mark));
+            row.appendChild(sigil);
+          }
           const who = el('div', 'who');
           who.appendChild(el('div', 'name', `${idn.name} <span style="color:var(--dim);font-size:10px">${idn.role}</span>`));
           who.appendChild(el('div', 'school', idn.school));

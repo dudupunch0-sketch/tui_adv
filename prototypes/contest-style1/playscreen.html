@@ -283,6 +283,11 @@
       } from './playscreen.js';
 
       const DPR = 3;
+      // `?faces=0` renders the same screen with every facial feature removed —
+      // board heads keep shape, hair and headwear, and the HUD cut-ins drop to
+      // flat shadow busts. One page, two variants, so nothing but the faces
+      // can differ between the two captures.
+      const FACES = new URLSearchParams(location.search).get('faces') !== '0';
       const combat = await (await fetch('./combat-frames.json')).json();
       const view = combat.view;
       const field = buildField(view, 2);
@@ -478,7 +483,11 @@
           p.canvas.height = ph * DPR;
           const pctx = p.canvas.getContext('2d');
           pctx.scale(DPR, DPR);
-          drawPortrait2D(pctx, pw, ph, p.side, expr, { mirror: p.side === 'enemy' });
+          drawPortrait2D(pctx, pw, ph, p.side, expr, {
+            mirror: p.side === 'enemy',
+            features: FACES,
+            silhouette: FACES ? null : (p.side === 'ally' ? '#06181a' : '#100609'),
+          });
         }
 
         // canvas -------------------------------------------------------
@@ -496,7 +505,7 @@
           focus: { q: 2.5, r: -0.46 },
         });
         drawBoard(ctx, area, field, layout, frame, view);
-        const placed = drawFighters(ctx, view, frameIndex, layout, robeCache, 2.5);
+        const placed = drawFighters(ctx, view, frameIndex, layout, robeCache, 2.5, FACES);
         drawClashIfAny(ctx, placed, layout);
         drawEdgeFade(ctx, area);
         drawVignette(ctx, area);
@@ -520,7 +529,7 @@
         const area = { x: 0, y: 0, w: W, h: H };
         const layout = layoutBoard(field, area, 0.6, { fit: 'cover', zoom: 1.05, focus: { q: 2.5, r: -0.25 } });
         drawBoard(ctx, area, field, layout, view.frames[frameIndex], view);
-        const placed = drawFighters(ctx, view, frameIndex, layout, robeCache, 2.5);
+        const placed = drawFighters(ctx, view, frameIndex, layout, robeCache, 2.5, FACES);
         drawClashIfAny(ctx, placed, layout);
         drawEdgeFade(ctx, area);
         drawVignette(ctx, area);

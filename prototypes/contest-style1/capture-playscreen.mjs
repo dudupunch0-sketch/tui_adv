@@ -89,6 +89,22 @@ try {
   const pair = path.join(outDir, 'style1-playscreen-pair.png');
   await page.screenshot({ path: pair, fullPage: true });
   shots.push(pair);
+
+  // Faceless variant: the same page with `?faces=0`. Same poses, cloth, hair,
+  // weapons, board, log and chrome — only the facial features are subtracted,
+  // so the two sets of shots are directly comparable.
+  await page.goto(`http://127.0.0.1:${port}/playscreen.html?faces=0`, { waitUntil: 'load' });
+  await page.waitForFunction(() => window.__READY__ === true, null, { timeout: 30000 });
+  await page.evaluate(() => document.fonts.ready);
+  for (const [id, name] of [
+    ['#phone-t4', 'style1-faceless-t4.png'],
+    ['#phone-t8', 'style1-faceless-t8.png'],
+    ['#detail-t4', 'faceless-detail-t4.png'],
+  ]) {
+    const file = path.join(outDir, name);
+    await page.locator(id).screenshot({ path: file });
+    shots.push(file);
+  }
 } finally {
   await browser.close();
   server.close();

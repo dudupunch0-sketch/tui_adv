@@ -458,6 +458,19 @@ export function updateFace3D(character, expression, gazeLateral) {
 }
 
 /**
+ * Wipe the decal, leaving a plain skin-toned head.
+ *
+ * The head material composites the face *under* its lighting, so an empty
+ * decal is not a stub — it is the same shader with nothing drawn on it, and
+ * the head keeps its shape, its outline and its soft warm ramp.
+ */
+export function clearFace3D(character) {
+  const { ctx, canvas } = character.face;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  character.face.texture.needsUpdate = true;
+}
+
+/**
  * Turn the head toward the viewer.
  *
  * The board is watched from a fixed seat and both fighters face along the

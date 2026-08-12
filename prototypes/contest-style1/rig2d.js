@@ -284,7 +284,7 @@ export function drawCharacter2D(ctx, opts) {
   drawArm(ctx, joints, pal, side, 'Near');
   if (signals.down) drawDroppedBlade(ctx, pal, side, seed);
   else drawBlade(ctx, joints, pal, side);
-  drawHead(ctx, joints, pal, side, expr);
+  drawHead(ctx, joints, pal, side, expr, opts.features !== false);
 
   ctx.restore();
 }
@@ -1129,7 +1129,7 @@ function drawMouth(ctx, pal, e, shape, detail) {
  * terminator diagonally across the cheek and every face came back reading as a
  * mask lit from stage left.
  */
-function fillSkin(ctx, pal) {
+function fillSkin(ctx, pal, blush = true) {
   skullPath(ctx);
   ctx.fillStyle = pal.skin;
   ctx.fill();
@@ -1152,15 +1152,17 @@ function fillSkin(ctx, pal) {
   ctx.fillStyle = b;
   ctx.fillRect(-10, 5, 22, 8);
 
-  ctx.globalAlpha = 0.2;
-  ctx.fillStyle = pal.blush;
-  ctx.beginPath();
-  ctx.ellipse(3.2, -1.5, 4.2, 1.7, -0.12, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.globalAlpha = 0.12;
-  ctx.beginPath();
-  ctx.ellipse(7.2, 0.1, 1.6, 1.2, 0, 0, Math.PI * 2);
-  ctx.fill();
+  if (blush) {
+    ctx.globalAlpha = 0.2;
+    ctx.fillStyle = pal.blush;
+    ctx.beginPath();
+    ctx.ellipse(3.2, -1.5, 4.2, 1.7, -0.12, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 0.12;
+    ctx.beginPath();
+    ctx.ellipse(7.2, 0.1, 1.6, 1.2, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
   ctx.globalAlpha = 1;
   ctx.restore();
 }
@@ -1308,7 +1310,7 @@ function drawHairEnemyFront(ctx, pal, detail) {
  * escaped strands. It never changes a shape, so the 18 px board head and the
  * portrait are the same face rather than two drawings that resemble each other.
  */
-export function drawFace2D(ctx, pal, side, e, detail = 'full') {
+export function drawFace2D(ctx, pal, side, e, detail = 'full', features = true) {
   const shape = FACE_SHAPE[side];
 
   ctx.beginPath();
@@ -1322,7 +1324,7 @@ export function drawFace2D(ctx, pal, side, e, detail = 'full') {
 
   if (side === 'enemy') drawHairEnemyBack(ctx, pal);
 
-  fillSkin(ctx, pal);
+  fillSkin(ctx, pal, features);
 
   ctx.beginPath();
   ctx.ellipse(-6.4, -1.2, 1.05, 1.7, -0.22, 0, Math.PI * 2);
@@ -1338,16 +1340,18 @@ export function drawFace2D(ctx, pal, side, e, detail = 'full') {
   // Features clipped to the skull: this is what sells the three-quarter turn,
   // because the far eye is *cut* by the front contour instead of floating
   // clear of it.
-  ctx.save();
-  skullPath(ctx);
-  ctx.clip();
-  if (detail === 'full') drawNose(ctx, pal);
-  drawEye(ctx, pal, e, EYES.far, shape, detail);
-  drawEye(ctx, pal, e, EYES.near, shape, detail);
-  drawBrow(ctx, pal, e, EYES.far, shape);
-  drawBrow(ctx, pal, e, EYES.near, shape);
-  drawMouth(ctx, pal, e, shape, detail);
-  ctx.restore();
+  if (features) {
+    ctx.save();
+    skullPath(ctx);
+    ctx.clip();
+    if (detail === 'full') drawNose(ctx, pal);
+    drawEye(ctx, pal, e, EYES.far, shape, detail);
+    drawEye(ctx, pal, e, EYES.near, shape, detail);
+    drawBrow(ctx, pal, e, EYES.far, shape);
+    drawBrow(ctx, pal, e, EYES.near, shape);
+    drawMouth(ctx, pal, e, shape, detail);
+    ctx.restore();
+  }
 
   if (side === 'ally') drawHairAlly(ctx, pal, detail);
   else drawHairEnemyFront(ctx, pal, detail);
@@ -1358,7 +1362,7 @@ export function drawFace2D(ctx, pal, side, e, detail = 'full') {
  * and scaled into the head bone's, so one geometry serves the ~18 px board
  * figure and the portrait card.
  */
-function drawHead(ctx, joints, pal, side, expr) {
+function drawHead(ctx, joints, pal, side, expr, features) {
   const head = joints[BONE_INDEX.head];
   const d = dirOf(head);
   const cx = head.baseX + d.x * 4.2;
@@ -1368,7 +1372,7 @@ function drawHead(ctx, joints, pal, side, expr) {
   ctx.rotate(-d.a);
   const k = 5.6 / FACE_UNIT;
   ctx.scale(k, k);
-  drawFace2D(ctx, pal, side, expr, 'small');
+  drawFace2D(ctx, pal, side, expr, 'small', features);
   ctx.restore();
 }
 
@@ -1382,18 +1386,58 @@ function drawHead(ctx, joints, pal, side, expr) {
  * head are the same function fed the same channels.
  */
 export function drawPortrait2D(ctx, w, h, side, expr, opts = {}) {
-  const { mirror = false } = opts;
+  const { mirror = false, features = true, silhouette = null } = opts;
   const pal = PAL2D[side];
   ctx.save();
   ctx.beginPath();
   ctx.rect(0, 0, w, h);
   ctx.clip();
 
+  // A shadow bust needs a lit ground behind it. The first faceless capture
+  // put a near-black silhouette on the lit portrait's own dark backdrop and
+  // both cards came back reading as broken images.
   const bg = ctx.createLinearGradient(0, 0, 0, h);
-  bg.addColorStop(0, side === 'ally' ? '#25403c' : '#33222e');
-  bg.addColorStop(1, side === 'ally' ? '#101d1e' : '#150e13');
+  if (silhouette) {
+    bg.addColorStop(0, side === 'ally' ? '#57a294' : '#a15f6d');
+    bg.addColorStop(1, side === 'ally' ? '#22514c' : '#43222e');
+  } else {
+    bg.addColorStop(0, side === 'ally' ? '#25403c' : '#33222e');
+    bg.addColorStop(1, side === 'ally' ? '#101d1e' : '#150e13');
+  }
   ctx.fillStyle = bg;
   ctx.fillRect(0, 0, w, h);
+
+  // Silhouette mode: draw the bust to an offscreen buffer and flatten every
+  // painted pixel to one colour with `source-in`. Faceless *and* featureless
+  // at once — a blank skin-toned face at portrait size reads as an unfinished
+  // asset, whereas a flat shadow bust reads as a deliberate 그림자 초상 and
+  // still carries the whole side signal: loose hair against bound hair, hat
+  // on the back against none.
+  if (silhouette) {
+    const t = ctx.getTransform();
+    const off = ctx.canvas.ownerDocument.createElement('canvas');
+    off.width = Math.max(1, Math.ceil(w * t.a));
+    off.height = Math.max(1, Math.ceil(h * t.d));
+    const octx = off.getContext('2d');
+    octx.scale(t.a, t.d);
+    drawBust(octx, w, h, side, expr, mirror, false);
+    octx.globalCompositeOperation = 'source-in';
+    octx.fillStyle = silhouette;
+    octx.fillRect(0, 0, w, h);
+    ctx.drawImage(off, 0, 0, w, h);
+    ctx.restore();
+    return;
+  }
+
+  drawBust(ctx, w, h, side, expr, mirror, features);
+  ctx.restore();
+}
+
+/** Shoulders plus head, in portrait framing. Shared by the lit portrait and
+ *  the flattened silhouette so the two cannot drift apart. */
+function drawBust(ctx, w, h, side, expr, mirror, features) {
+  const pal = PAL2D[side];
+  ctx.save();
 
   // Frame on the head, not on the canvas: the visible head spans about 30
   // units and wants ~78% of the frame with its midpoint centred.
@@ -1429,7 +1473,7 @@ export function drawPortrait2D(ctx, w, h, side, expr, opts = {}) {
   ctx.stroke();
   ctx.globalAlpha = 1;
 
-  drawFace2D(ctx, pal, side, expr, 'full');
+  drawFace2D(ctx, pal, side, expr, 'full', features);
   ctx.restore();
 }
 

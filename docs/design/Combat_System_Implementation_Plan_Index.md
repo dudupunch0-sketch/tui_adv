@@ -1,7 +1,7 @@
 # 전투 시스템 구현 계획 인덱스
 
-status: wave3-step1d2-complete
-기준일: 2026-08-02
+status: wave3-step1d2-complete, threejs-wp1-active
+기준일: 2026-08-12
 
 > **전투 Web visual 갱신 (2026-08-12).** 이 문서에 남은 CSS/DOM 체스말 보드,
 > code-only·faceless 말, 2D motion 구현 보고는 migration history다. 새 구현 기준은
@@ -19,6 +19,28 @@ status: wave3-step1d2-complete
 - 하위 설계 provenance: 00~13 문서. current design records와 충돌하면 local design source를 우선하고, 필요하면 mirror 검수만 수행한다.
 - 저장소 truth: `crates/escape-core` → `ScenePage`/WASM JSON → Web Storybook·SuperLightTUI.
 - 기존 `docs/design/Combat_System_Auto_Brawl.md`는 이전 schema-less 방향의 설계 기록이다. 새 구현 계약은 local design source와 runtime schema를 우선하되, 기존 renderer-neutral 원칙과 non-goal은 유지한다.
+
+### ACTIVE Web renderer track: Three.js WP1
+
+Three.js WP1 pure adapter contract를 ACTIVE로 승격한다. 이 작업은 Rust I2b/I7 및 다른
+game/content track과 독립적이라 병렬 진행할 수 있다. 이 승격은 기존 트랙의 우선순위를
+대체하지 않고 WP2를 승인하지 않는다.
+
+구현 read order는 다음과 같다.
+
+1. `docs/dev/Development_Plan.md`의 ACTIVE Web renderer track
+2. [Three.js 전투 비주얼 아키텍처](ThreeJS_Combat_Visual_Architecture.md) §3~4,
+   §10.1~11.1
+3. 이 절의 범위와 stop condition
+
+WP1은 `web/src/ui/storybook/combat/combatThreeAdapter.ts`,
+`combatThreeAdapter.test.ts`, producer-owned fixture
+`crates/escape-core/fixtures/combat/wuxia_combat_spectator_preview_bout.seed-2.combat.json`,
+Rust byte golden test만 소유한다. exact adapter API, seed serialization/hash, malformed
+policy, fixture 명령/SHA와 acceptance는 아키텍처 정본에 적힌 값을 그대로 따른다.
+`main.ts`, `render.ts`, `renderCombatStage.ts`, `types.ts`, CSS, package/lock, Rust gameplay
+code, Three dependency/canvas를 수정하지 않는다. 기존 DOM 관전 표면을 유지한다. WP1
+acceptance를 실행한 뒤 멈추고 review를 기다린다.
 
 ## 현재 코드와 정본의 경계
 
@@ -129,6 +151,7 @@ Wave 3 Step 1b는 정본 13이 금지하는 전략 수행 평가·핵심 전환�
 
 | 단계 문서 | 한 번의 구현 단위 | 핵심 non-goal |
 | --- | --- | --- |
+| **ACTIVE Three.js WP1** (`ThreeJS_Combat_Visual_Architecture.md` §11.1) | pure combat adapter, exact visual seed golden, producer fixture와 Rust byte golden test | `main.ts` integration, DOM/CSS/types 변경, Three.js/canvas, WP2+, Rust gameplay logic |
 | `fable_combat_wave1_step1_2607261845.md` | 결정론 계약 primitive와 manifest fingerprint | 실제 전투 진행·UI·밸런스 |
 | `fable_combat_wave1_step2_2607261845.md` | 전투원 상태·effect catalog·전투 전 투영 | tick resolver·콘텐츠 확장 |
 | `fable_combat_wave1_step3_2607261845.md` | opportunity/response 후보와 0~3 개입 예산 | renderer·실시간 시뮬레이션 |

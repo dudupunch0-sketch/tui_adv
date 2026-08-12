@@ -1,6 +1,6 @@
 # 전투 투자자 데모 Tier-1 일반 플레이 경로·후속 진행 계약
 
-Status: canonical implementation contract / not implemented
+Status: canonical implementation contract / implementation blocked on combat display-name identity contract + end-to-end implementation
 Baseline: `origin/main` `411d0f939ca4098dec64fbd739091b968b5de4ca`
 Scope: ordinary-play systemic combat entry, existing authored post-combat continuation, production Web/WASM evidence
 Primary storypack: `wuxia_jianghu_pack` / **이구학지 — 천기록**
@@ -17,9 +17,10 @@ outcome persistence, claim/entitlement, strategy-only/fixed-chance 응답을 보
 
 핵심 결정은 다음과 같다.
 
-1. 기존 `wuxia_cheongryu_chore_sparring`의 네 정상 선택 결과가 기존 플래그
-   `combat_spectator_preview_unlocked`를 추가한다. 테스트나 UI가 플래그를 직접 주입하지
-   않는다.
+1. canonical combat display name/fallback이 Rust `ScenePage.combat` producer부터 DOM
+   text/label/a11y까지 먼저 구현·검증된 뒤에만, 기존 `wuxia_cheongryu_chore_sparring`의 네
+   정상 선택 결과가 기존 플래그 `combat_spectator_preview_unlocked`를 추가한다. 테스트나
+   UI가 플래그를 직접 주입하지 않는다.
 2. core의 명시적 early-courtyard encounter 순서가 이 플래그가 생긴 직후 기존
    `wuxia_combat_spectator_preview_bout`을 선택한다.
 3. 대련이 화면에 있는 동안 `CombatConclusionReport`의 outcome/reason/fingerprint와 frame/log
@@ -37,22 +38,27 @@ outcome persistence, claim/entitlement, strategy-only/fixed-chance 응답을 보
 
 1. `docs/dev/Development_Plan.md`의 active priority와 병렬 작업 경계
 2. `docs/content/design_source/contracts/combat_contract_index.md`
-3. `docs/content/design_source/contracts/intervention.yml`
-4. `docs/content/design_source/handoffs/combat_contract_handoff.md`의 필수 구현 순서
+3. `docs/content/design_source/contracts/identity.yml`과
+   `docs/content/design_source/handoffs/combat_contract_handoff.md`의 표시 이름 계약
+4. `docs/content/design_source/contracts/intervention.yml`
+5. `docs/content/design_source/handoffs/combat_contract_handoff.md`의 필수 구현 순서
    **I2b → I7a → I7b → I7c**
-5. 이 문서 — Tier-1 일반 진입과 기존 authored 후속 진행 증거의 정본
-6. `docs/design/Combat_System_Implementation_Plan_Index.md` — 현재 구현 inventory와 gap
-7. `docs/design/ThreeJS_Combat_Visual_Architecture.md` — Web combat renderer의 truth/fallback
-8. 실제 Rust/YAML/TS 코드와 테스트 — 현재 capability 증거
+6. `docs/design/Combat_System_Implementation_Plan_Index.md`의 Step 1d-4 display-name gate
+7. 이 문서 — Tier-1 일반 진입과 기존 authored 후속 진행 증거의 정본
+8. `docs/design/ThreeJS_Combat_Visual_Architecture.md` — Web combat renderer의 truth/fallback
+9. 실제 Rust/YAML/TS 코드와 테스트 — 현재 capability 증거
 
 GameCore가 판정, outcome/reason, fingerprint, 좌표, cue/log 순서를 소유한다. Content
 authoring은 진입 조건과 선택 보상·플래그·목적지를 소유한다. Web은 이 사실을 표시하고
 정상 action id만 전달한다. Tier-1은 outcome을 persistent state나 authored reward로
 재해석하지 않는다.
 
-이 계약은 baseline main만으로 구현해야 한다. open PR `#217`, `#219`, `#220`, `#221`
-중 어느 것도 선행 조건으로 두지 않는다. 그 PR의 타입, fixture, Three.js adapter 또는
-mount가 없어도 모든 Tier-1 content/Web acceptance가 통과해야 한다.
+이 **계약 문서의 작성과 리뷰**는 open PR `#217`, `#219`, `#220`, `#221`과 독립적이다.
+DOM 기반 Tier-1에 PR `#217`/`#220`의 Three.js 작업은 필요하지 않다. 그러나 Slice A의
+코드 활성화는 baseline main에서 바로 시작할 수 없다. canonical combat identity가 먼저
+merge되어 Rust producer/`ScenePage.combat` wire와 DOM text/label/a11y에 end-to-end 도달하고,
+user-visible 표면에서 internal stable ID가 0건임을 검증해야 한다. identity 구현이 별도 PR에
+있다면 그 PR은 Slice A의 hard prerequisite다.
 
 ## 3. baseline에서 확인한 사실과 gap
 
@@ -88,8 +94,31 @@ mount가 없어도 모든 Tier-1 content/Web acceptance가 통과해야 한다.
   outcome별 플래그가 아니며 그렇게 재라벨링하면 안 된다.
 - action 적용 후 encounter를 떠나면 `CombatConclusionReport`의 outcome/reason/fingerprint를
   보존하는 canonical persistent fact가 없다.
+- 현재 `CombatSpectatorPiece`/`CombatCombatantReport`에는 canonical display name이 없고,
+  DOM board/report는 `wuxia_spectator_bout_ally`와
+  `wuxia_spectator_bout_challenger` 같은 internal stable ID를 사용자 텍스트와 접근성 표면에
+  노출한다. `Combat_System_Implementation_Plan_Index.md`는 이 결함 때문에 gate를 Step
+  1d-4까지 유지하도록 이미 결정했다.
 
-### 3.3 canonical persistence 경계
+### 3.3 ordinary activation의 선행 identity gate
+
+Slice A 전에 별도 identity owner가 다음을 모두 merge해야 한다.
+
+- canonical identity registry 또는 encounter alias가 두 combatant의 authored display name을
+  제공한다.
+- Rust systemic producer가 display name/fallback을 `ScenePage.combat`의 piece와 report
+  consumer가 사용할 renderer-neutral 형태로 전달한다.
+- fallback 순서는 combat handoff대로 encounter alias → canonical name → declared generic role
+  label → localized unknown combatant이며, internal ID를 fallback label로 쓰지 않는다.
+- DOM board, report, log의 사용자 문장, semantic table/list, `aria-label`, alt/assistive text가
+  display name/fallback을 사용한다.
+- `wuxia_spectator_bout_ally`, `wuxia_spectator_bout_challenger`와 그 밖의 internal stable ID가
+  debug-only 표면 밖의 사용자 텍스트·label·a11y에 0건이다.
+
+이 identity gate가 pass하기 전에는 ordinary choice에
+`combat_spectator_preview_unlocked`를 추가하거나 encounter priority를 활성화하지 않는다.
+
+### 3.4 canonical persistence 경계
 
 `combat_contract_handoff.md`는 response/preflight delta를 I2b, atomic transaction을 I7a,
 durable ledger·claim·SaveEnvelope v2를 I7b, lifecycle/terminal E2E를 I7c에 배정한다.
@@ -130,9 +159,11 @@ Tier-1의 reload evidence는 기존 GameState가 아직 같은 encounter/stage�
 
 ### 4.2 선택한 entry mechanism
 
-`wuxia_cheongryu_chore_sparring`의 기존 네 choice outcome의 `add_flags`에
+§3.3 identity gate가 merge되고 end-to-end acceptance를 통과한 **같은 slice 또는 그 이후
+slice에서만** `wuxia_cheongryu_chore_sparring`의 기존 네 choice outcome의 `add_flags`에
 `combat_spectator_preview_unlocked`를 additive하게 추가한다. 기존 resource delta, clue,
-experience 15, log, destination은 그대로 유지한다.
+experience 15, log, destination은 그대로 유지한다. identity와 gate 변경이 같은 slice라면
+identity verification이 먼저 실패하도록 test ordering을 둔다.
 
 `current_content_encounter`의 현재 reward-pipeline 우선순위를 이름이 목적에 맞는
 early-courtyard 순서로 좁게 정리하고, `wuxia_combat_spectator_preview_bout`을
@@ -157,8 +188,8 @@ condition 때문에 다시 선택되지 않고, 기존 조건이 충족된
 | `MutualDefeat` | core report를 그대로 표시·reload 비교 | 기존 A/B outcome 그대로 | 없음 |
 | `Stalemate` | core report를 그대로 표시·reload 비교 | 기존 A/B outcome 그대로 | 없음 |
 
-Tier-1은 outcome을 reward 분기로 매핑하지 않는다. 기존 A/B 선택은 관찰 방식이며 combat
-outcome과 독립적이다. 선택 A는 기존 경험치 5, 공통 completion flag, A flag, 기존 log,
+기존 A/B 선택은 관찰 방식이며 combat outcome과 독립적이다. 선택 A는 기존 경험치 5,
+공통 completion flag, A flag, 기존 log,
 `cheongryu_outer_courtyard`를 적용한다. 선택 B도 기존 경험치 5, 공통 completion flag,
 B flag, 기존 log, 같은 destination을 적용한다.
 
@@ -199,6 +230,8 @@ mutation을 사용하지 않는다.
    `wuxia_combat_spectator_preview_bout`인지 확인한다.
 7. `data-region="combat"`, board/log, `data-region="combat-report"`, terminal outcome/reason,
    non-empty fingerprints가 실제 DOM에 있는지 확인한다.
+   두 전투원은 canonical display name/fallback으로 표시되어야 하며 internal stable ID는
+   visible text, semantic board/report/log, `aria-label`과 접근성 이름에 없어야 한다.
 8. post-combat choice 전 `window.location.reload()`하고 report/fingerprint/ordered log parity를
    확인한다.
 9. `watch_the_bout_closely`를 선택한다. experience가 정확히 기존 값 5만큼 증가하고,
@@ -221,7 +254,9 @@ mutation을 사용하지 않는다.
 
 ### Slice A — ordinary route, priority, generated artifacts
 
-선행: 없음. I2b/I7 및 PR #217/#219/#220/#221 불필요.
+선행: canonical combat display-name identity contract와 end-to-end Rust
+producer/`ScenePage.combat`/DOM label+a11y 구현이 merge되고 §3.3 acceptance를 통과해야 한다.
+I2b/I7과 Three.js PR #217/#220은 이 DOM Tier-1의 prerequisite가 아니다.
 최대 owned files: 7.
 
 - source YAML `src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml`
@@ -233,6 +268,10 @@ mutation을 사용하지 않는다.
 
 Acceptance:
 
+- identity prerequisite test가 두 authored display name/fallback의 Rust→WASM→DOM 도달을
+  증명한다.
+- visible text, semantic board/report/log, `aria-label`, accessibility name에서
+  `wuxia_spectator_bout_ally`와 `wuxia_spectator_bout_challenger` 노출은 0건이다.
 - 네 chore choice 모두 기존 outcome을 유지하면서 기존 gate flag만 추가한다.
 - gate 없는 state에서는 bout가 선택되지 않는다.
 - ordinary chore choice 직후 bout가 선택되고 `ScenePage.combat.report`가 terminal이다.
@@ -243,7 +282,8 @@ Acceptance:
 - 새 GameState field, save/checkpoint schema, settlement/receipt/claim 코드는 0개다.
 
 Stop condition: exact route를 보장하려고 새 location/encounter/choice ID, balance/reward 값,
-terminal persistence를 만들어야 하면 중단한다.
+terminal persistence를 만들어야 하거나, identity schema/producer/renderer 중 하나라도
+merge되어 있지 않거나 internal stable ID가 user-visible text/label/a11y에 남으면 중단한다.
 
 ### Slice B — production browser route/reload evidence
 
@@ -300,6 +340,7 @@ Pass evidence:
 
 - normal story action trace와 direct flag/state injection 0건
 - combat region, ordered log, terminal report
+- canonical combatant display names/fallback과 user-visible internal stable ID 0건
 - encounter 안 pre-choice reload의 report/fingerprint parity
 - 기존 XP5/result flags/destination/result stage의 post-choice reload parity
 - exact next encounter와 reload parity
@@ -312,6 +353,9 @@ Pass evidence:
 - `GameState.combat_settlements` 또는 다른 terminal result 저장 경로 추가
 - I2b→I7a→I7b→I7c 전에 terminal fact, receipt, ledger, claim, paused persistence 구현
 - 테스트, query string, dev menu, localStorage 편집으로 gate flag 직접 주입
+- display-name identity end-to-end verification 전에 ordinary gate flag를 authoring하거나
+  priority를 활성화
+- internal stable ID를 user-visible text, DOM label, semantic table/list, a11y fallback으로 사용
 - `new_game_from_content_at` 뒤 state에 flag를 push한 것만으로 ordinary-path PASS 선언
 - synthetic `ScenePage`, direct renderer import, 임시 HTML harness를 production browser 증거로 사용
 - `CombatConclusionOutcome`을 Web/terminal에서 다시 판정
@@ -338,7 +382,6 @@ Pass evidence:
 - strategy-only intervention과 fixed-chance special effect
 - mixed/scripted authoring과 pause UI
 - Three.js WP1 이후 board/stage/mount, GLB, VFX, context-loss integration
-- display-name identity registry와 internal-ID 제거
 - combat caching, 축 관통/AI·collision 수정, authored balance 확정
 - PC performance benchmark와 mobile optimization
 
@@ -350,6 +393,8 @@ choice branch flag는 향후 I7c terminal truth의 대체물이 아니다.
 다음 중 하나가 확인되면 숫자나 ID를 발명하지 않고 해당 owner 결정 전 중단한다.
 
 - 기존 chore choice 뒤 exact bout/next-event 순서를 narrow priority로 보장할 수 없다.
+- canonical identity schema, Rust producer/`ScenePage.combat`, DOM renderer/a11y 중 하나라도
+  merge되어 있지 않거나 internal stable ID 노출이 남는다.
 - 같은 encounter state reload에서 deterministic report/fingerprint parity가 깨진다.
 - production browser가 실제 WASM/bundle이 아니라 fallback/synthetic path를 사용한다.
 - existing authored reward/destination/flag semantics를 바꿔야만 route가 이어진다.

@@ -11,8 +11,10 @@
 - 핵심 자원: 체력, 정신력, 배터리, 허기, 갈증
 - 주요 목표: 탈출, 정복, 진실 발견, 히든 현실 연결 루트
 - 특별 요소: 게임 속 단서를 통해 실제 사무실에 숨겨진 메모/보물 위치를 자연스럽게 안내하는 ARG식 현실 연결
-- 활성 렌더러 방향: Rust GameCore 공통 + Web Storybook/GlyphFX primary UX + Rust terminal play/smoke fallback
+- 활성 렌더러 방향: Rust GameCore 공통 + Web Storybook shell/GlyphFX story·UI 효과 + Three.js 고정 카메라 3D hex 전투 + Rust terminal play/smoke fallback
 - 주의: 기존 Python/Textual, TypeScript mirror core, browser fake-TUI는 전환기 legacy/parity surface이며 새 게임 규칙의 장기 소유자는 아니다.
+
+시각 작업은 `Development_Plan.md`의 active priority를 먼저 읽고, shell/story UI는 `TUI_Storybook_GlyphFX_Concept.md`, 전투 renderer는 `ThreeJS_Combat_Visual_Architecture.md`를 정본으로 읽는다. `Mobile_Ink_Storybook_UI.md`는 모바일 텍스트RPG layout/gamefeel 기록에만 사용하며 폐기된 수묵 art direction을 되살리는 근거로 쓰지 않는다.
 
 ## 현재 구현 지표
 
@@ -56,7 +58,9 @@ docs/
     Map.md                          # 사무실 위치, 연결, 구역별 역할
     UI_Rules.md                     # 사내 시스템형 TUI, 글리치, 선택지 오염 규칙
     TUI_Storybook_GlyphFX_Concept.md # Web primary UX로 채택한 TUI풍 스토리북 + GlyphFX 방향
-    Mobile_Ink_Storybook_UI.md       # 모바일 세로형 수묵 서책 board UI contract (활성)
+    ThreeJS_Combat_Visual_Architecture.md # PC-first 고정 카메라 3D hex 전투 renderer 정본
+    references/threejs_combat/README.md # 구현 예시 이미지·외부 repo·기준 commit
+    Mobile_Ink_Storybook_UI.md       # 모바일 텍스트RPG layout/gamefeel 기록 (수묵 방향 superseded)
     Mobile_Pixel_Storybook_UI.md     # (superseded) 구 픽셀 게임북 board contract 포인터
     Progression_and_Title_Model.md   # 경험치·레벨링·기연·아이템 상세 및 캐릭터 특성(칭호) 모델 설계
 
@@ -148,6 +152,7 @@ private/
 - `docs/design/Map.md`
 - `docs/design/UI_Rules.md`
 - `docs/design/TUI_Storybook_GlyphFX_Concept.md`
+- `docs/design/ThreeJS_Combat_Visual_Architecture.md`
 - `docs/design/Mobile_Ink_Storybook_UI.md`
 - `docs/design/Mobile_Pixel_Storybook_UI.md`
 - `docs/design/Progression_and_Title_Model.md` — 경험치/레벨링, 기연(판정 보정), 아이템 상세, 칭호 및 CheckResolution 확장 계약

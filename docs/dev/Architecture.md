@@ -11,7 +11,7 @@
 
 ```text
 Rust GameCore
-  ├─ Web Storybook + GlyphFX renderer
+  ├─ Web Storybook shell + GlyphFX + Three.js combat renderer
   │   └─ primary player UX
   └─ SuperLightTUI terminal renderer
       └─ terminal-native fallback / horror edition
@@ -20,7 +20,9 @@ Rust GameCore
 확정 기준:
 
 - `crates/escape-core`가 상태, 콘텐츠, 선택 가능 action, 결과, 엔딩, 업적, save schema, `EffectCue`/`ScenePage`의 truth를 소유한다.
-- Web Storybook + GlyphFX가 플레이어용 primary UX 후보다. 이미지/장면 컷, 대화 내역, 읽기 중심 선택지, Canvas/GlyphFX는 이 경로에서 먼저 구현한다.
+- Web Storybook이 shell·ordered story UI를, GlyphFX가 text/anomaly/UI effect를,
+  Three.js가 Web 전투 보드 scene을 소유한다. 전투 세부 계약은
+  [`ThreeJS_Combat_Visual_Architecture.md`](../design/ThreeJS_Combat_Visual_Architecture.md)를 따른다.
 - Rust terminal 경로는 SuperLightTUI 기반 renderer로 유지한다. terminal은 fallback이지만 단순 `println!` debug dump가 아니라 terminal-native horror edition이어야 한다.
 - 기존 Python/Textual과 TypeScript mirror core는 당분간 legacy/parity oracle로 유지한다. 새 게임 규칙은 TypeScript나 renderer에서 늘리지 않는다.
 - 세부 기준은 `docs/dev/Rust_Core_Dual_Renderer_Architecture.md`를 따른다.
@@ -44,7 +46,7 @@ Textual을 유지하는 이유(legacy/parity):
 
 주의:
 
-- `escape-core`는 SuperLightTUI, Textual, DOM, Canvas, CSS를 import하지 않는다.
+- `escape-core`는 SuperLightTUI, Textual, DOM, Canvas, CSS, Three.js, WebGL을 import하지 않는다.
 - renderer 없이도 테스트와 headless 실행이 가능해야 한다.
 - YAML 로더와 데이터 검증은 앱 시작 전에 독립적으로 실행 가능해야 한다.
 - 브라우저/러스트 앱은 공개 YAML을 직접 수정하지 않고 `scripts/export_web_data.py`로 생성한 JSON/bundle을 읽는다.
@@ -143,8 +145,10 @@ legacy Python/Textual + TypeScript mirror remain temporary parity/oracle surface
 
 금지 방향:
 
-- `escape-core`가 SuperLightTUI/crossterm, wasm-bindgen/web-sys, DOM/Canvas/CSS를 import하지 않는다.
+- `escape-core`가 SuperLightTUI/crossterm, wasm-bindgen/web-sys, DOM/Canvas/CSS,
+  Three.js/WebGL을 import하지 않는다.
 - renderer가 action eligibility, outcome, ending, achievement를 재계산하지 않는다.
+- `ScenePage`에 Three object, camera parameter, shader/WebGL command를 넣지 않는다.
 - `game/`이 `tui/`를 import하지 않는다.
 - `game/`이 Textual/Rich 스타일 객체를 만들지 않는다.
 - 데이터 파일이 Python/Rust/TypeScript 코드를 실행하지 않는다.

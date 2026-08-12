@@ -104,10 +104,12 @@ cursor에서 추측하지 않고 bundle index 단계에서 validation error로 �
 | `content.bundle.json` | exporter output | Rust/Web 공통 runtime input | no |
 | `TurnView` | `escape-core` | low-level runner/debug compatibility | no |
 | `ScenePage` | `escape-core` | renderer-ready semantic page | no |
-| Web visual catalog | `web/src/ui/storybook/*` | `visual_id` -> DOM/CSS/SVG/Canvas/image | yes |
+| Web visual catalog | `web/src/ui/storybook/*` | `visual_id` -> DOM/CSS/SVG/Canvas/image/Three.js/WebGL | yes |
 | Terminal visual catalog | `crates/escape-terminal/*` | `visual_id` -> ASCII/Unicode/ANSI/SuperLightTUI cells | yes |
 
-`ScenePage`와 `content.bundle.json`에는 CSS class, pixel coordinate, Canvas command, terminal color object, SuperLightTUI type, DOM selector, image file path를 넣지 않는다.
+`ScenePage`와 `content.bundle.json`에는 CSS class, pixel coordinate, Canvas/WebGL command,
+Three.js object·camera·shader 설정, terminal color object, SuperLightTUI type, DOM selector,
+image file path를 넣지 않는다.
 
 ## Presentation metadata
 
@@ -417,6 +419,11 @@ Save/load 규칙:
 
 ### `ScenePage.combat` — 전투 관전 boundary (Wave 3 Step 1c, producer는 Step 2a)
 
+Web 표현 정본은
+[`ThreeJS_Combat_Visual_Architecture.md`](../design/ThreeJS_Combat_Visual_Architecture.md)다.
+Three.js는 보드 scene과 camera/shared-rig 표현만 소유하고 Rust core의 axial 좌표·점유·판정을
+바꾸지 않는다. DOM semantic table은 접근성 mirror와 WebGL failure fallback으로 유지한다.
+
 `combat`은 core가 만든 관전 view(`CombatSpectatorView`)와 종료 보고서(`CombatConclusionReport`)를
 renderer 경계 밖으로 내보내는 `Option<CombatSpectatorPage>` 필드다.
 
@@ -504,7 +511,7 @@ History 규칙:
 
 - `intensity`는 `0.0`부터 `1.0`까지의 float로 시작한다.
 - `stable_terms`는 public-safe clue terms만 담는다.
-- Web은 Canvas/GlyphFX로 해석할 수 있다.
+- Web은 text/anomaly/UI cue를 Canvas/GlyphFX로, combat visual cue를 Three.js 재사용 primitive로 해석할 수 있다.
 - Terminal은 SuperLightTUI cell/ASCII/ANSI effect로 해석할 수 있다.
 - Reduced-motion, no-canvas, plain SSH/WSL fallback에서도 `fallback_text`나 final stable terms를 읽을 수 있어야 한다.
 

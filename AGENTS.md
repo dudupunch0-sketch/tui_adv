@@ -6,8 +6,8 @@
 
 - 한국어 storypack/world 기반 선택지 생존 게임 프로젝트다. 현재 메인/default storypack은 `wuxia_jianghu_pack` / **이구학지 — 천기록**이다. 전제는 현대 회사원이 본인 몸과 출근복장 그대로 무협 세계에 전이되는 것이다.
 - 회사-아포칼립스(`escape from the office`)는 기존 기준팩/legacy content로 남아 있지만, 새 UI/UX와 Web player 기본 경로는 이구학지를 우선한다. 엔진/renderer/문서 설계는 특정 세계관에 고정하지 않고, office surface와 무협 surface 양쪽에서 설명 가능한 형태를 유지한다.
-- 시각 정체성은 TUI/fake-terminal 분위기를 유지하되, 현재 활성 방향은 Web Storybook + GlyphFX primary UX이다.
-- 특수 효과는 Web Storybook의 Canvas/GlyphFX 쪽으로 흡수한다. 기존 browser fake-TUI는 legacy/parity fallback으로만 취급한다.
+- 시각 정체성은 TUI/fake-terminal 분위기를 유지하되, Web Storybook은 shell/HUD, GlyphFX는 story/UI 효과를 담당한다. 전투 보드의 primary renderer는 Three.js 고정 카메라 3D hex auto-battler다.
+- 스토리/UI 특수 효과는 Web Storybook의 Canvas/GlyphFX가 소유하고, 전투 보드 VFX는 Three.js가 소유할 수 있다. 기존 browser fake-TUI는 legacy/parity fallback으로만 취급한다.
 - 실제 사용자의 메모/사적 노트는 공개 산출물로 옮기지 않는다.
 
 ## 로컬 작업 위치와 실행 환경
@@ -22,17 +22,21 @@
 
 ## Subagent 모델 tier (작업 위임 규칙)
 
-이 프로젝트는 작업을 모델 tier로 나눠 처리한다. (2026-06-14 사용자 지시)
+메인 agent는 전체 오케스트레이션, 설계 판단, 범위·우선순위·충돌 해결과 최종 직접 검증을 맡는다.
+subagent 생성과 model/effort 선택에는 매번 사용자 승인을 다시 받지 않아도 되며, 비용과 실패 비용을
+함께 고려해 다음 tier를 기본값으로 쓴다. (2026-08-12 사용자 지시)
 
-- **Opus = 메인 오케스트레이터.** 설계/플랜 판단, 슬라이스 분해, 우선순위·범위 결정, 충돌 해결, 위임 지시만 한다. 큰 문서 정독·대량 코드 탐색을 메인에서 직접 하지 말고 subagent에 위임해 메인 컨텍스트를 가볍게 유지한다.
-- **Sonnet subagent = 코드 구현.** 이미 계획된 슬라이스의 실제 구현(인카운터 YAML, Rust/TS 코드, 번들 재생성, 테스트 작성/수정, doc-sync).
-- **Haiku subagent = 가벼운 작업.** 분류, 추출, 빠른 요약, 테스트벤치/명령 실행, 단순 조회 등 실시간 응답이 필요하지만 가벼운 작업.
+- **GPT-5.6 Luna Low/Medium = 가벼운 작업과 범위가 명확한 실행.** 분류, 추출, 빠른 조회,
+  테스트벤치 실행, 단순 문서 동기화, 이미 결정된 작은 구현.
+- **GPT-5.6 Terra Medium = 일반 구현.** 여러 파일에 걸치지만 계약과 acceptance가 명확한 코드 작업.
+- **GPT-5.6 Sol Medium = 맥락·설계 판단.** 큰 문서 정독, 아키텍처, 정합성 감사, 충돌 해결,
+  복잡한 리뷰. High 이상은 실패 비용이 큰 핵심 결정에만 제한한다.
 
 적용:
 
-- subagent를 띄울 때 작업 성격에 맞는 model을 명시한다(가벼움→haiku, 코드 구현→sonnet).
-- read-only 조사/탐색은 subagent(haiku 또는 Explore)로 돌리고 결론만 받는다.
-- 한 슬라이스 완료마다 아주 짧게 보고한다. plan(Opus) ↔ 구현(subagent) 단계를 구분한다.
+- subagent를 띄울 때 작업 성격에 맞는 model/effort를 명시한다.
+- read-only 조사/탐색은 Luna 또는 Explorer로 돌리되, 넓은 맥락 판단이 필요하면 Sol Medium을 쓴다.
+- 한 슬라이스 완료마다 아주 짧게 보고한다. plan/orchestration ↔ 구현(subagent) 단계를 구분한다.
 
 ### 검증 신뢰 원칙 (필수)
 
@@ -68,7 +72,11 @@
 
 - **수묵/먹선은 폐기됐다 (2026-08 사용자 지시).** 이 줄은 오랫동안 "수묵 천기록 — SVG 먹 실루엣 + 한지 토큰만 사용"을 확정 방향으로 지시하고 있었으나 실제로는 이미 버려진 컨셉이었다. 폐기가 전파되지 않은 이유는 기록해 둔다: 아트 트랙이 2026-07-17 이후 멈췄고(`web/src/ui/storybook/ink|art`, `web/public/assets/art` 마지막 커밋 `5ab25cb`), **먹선 SVG가 폴백 경로라 절대 실패하지 않기 때문이다** — 등록 안 된 `visual_id`는 조용히 SVG로 떨어지고(번들에 `placeholder: true` 47개), 그럴듯한 뭔가가 나오니 버그 리포트가 생기지 않는다. 폴백은 조용하다.
 - **토큰 규율은 유효하다**: 신규 색상 리터럴 금지, 색은 모듈당 팔레트 테이블 한 곳에만. 기존 CSS 커스텀 프로퍼티를 계속 쓰되 `--ink`/`--paper*` 같은 이름은 수묵 유산이며 이름이 방향을 지시하지 않는다.
-- **전투 표면 시각 방향 (2026-08 절차적 그래픽 연구 결론, `fable_procedural_combat_graphics_step1_2608121125.md`)**: 보드 캐릭터는 **얼굴 없이** 자세·실루엣·머리 모양·무기로 읽힌다(폰에서 두상 18~20px — 이목구비는 정보가 아니라 노이즈다). 감정 표현이 필요하면 **HUD 초상 컷인**이 유일한 자리이며, 초상은 절차적 생성이 아니라 **직접 제작**한다(등장인물 수로 수량 상한이 걸린다). 자세·모션·천·이펙트는 절차적으로 만든다. 진영은 색이 아니라 **형태**로 구분한다.
+- **전투 표면 시각 방향 (현재 canonical)**: 전투는 Three.js **고정 카메라 3D axial hex auto-battler**가 primary다. Rust core가 게임 truth를 소유하고 renderer는 presentation-only로 동작하며, 결정적 replay를 보장한다. 보드 캐릭터는 절대적으로 얼굴을 배제하지 않으며, **shared-rig modular semi-SD GLB 캐릭터**를 우선한다. 상태 얼굴은 존재할 수 있지만 비의미적(non-semantic) 장식이며, 감정과 서사는 authored 2D portrait가 담당한다. 진영은 색만이 아니라 shape-first 규칙으로 읽히게 한다. 기존 2D combat-primary 및 absolute faceless/code-generated-only 제약은 폐기·대체한다. 상세 계약은 docs/design/ThreeJS_Combat_Visual_Architecture.md를 정본으로 삼는다.
+- **접근성 및 폴백**: reduced motion, forced colors, DOM fallback을 계속 지원한다. Three.js 전투 연출은 이 조건들에서도 핵심 정보와 조작을 잃지 않아야 한다.
+- **PC-first 3D 성능/품질 기준**: 현재 3D 작업의 대표 타깃은 1080p/60fps의 중급형 Windows PC다. 최종 성능 예산을 먼저 고정하지 않고 시각 품질 탐색을 우선하며, 측정 결과를 바탕으로 예산을 확정한다. 모바일 최적화와 품질 tier는 후속 작업이다. 모바일 우선 성능 제한이나 영구적인 no-shadows/no-postprocessing 규칙을 두지 않는다. 다만 아키텍처 수준의 효율성, reduced motion·forced colors·DOM fallback은 계속 보존한다.
+- **비공개 학습 레퍼런스 정책**: 이 비공개 프로젝트에서는 외부 레퍼런스 코드·에셋을 직접 연구하고 필요하면 적용할 수 있다. 사용한 출처와 적용 범위는 최소한의 provenance note로 남기며, 공개·배포 전에 라이선스/유사성/권리 리스크를 다시 감사한다.
+- Three.js 전투의 예시 이미지·외부 저장소·기준 commit은 `docs/design/references/threejs_combat/README.md`에 고정한다. 캐릭터·VFX·화면 구성 WP는 정본 다음에 이 팩을 읽는다.
 - **게임필 (2026-07-12 사용자 인터뷰 확정)**: 모바일 텍스트RPG 게임 프레임. 엄격한 3분할(상단바 장소·장/턴 / 스크롤 뷰포트 / 하단바 체력·정신력·천기 게이지) — 본문이 바 영역을 침범하면 회귀다. 카드형 선택지, 판정은 주사위+成/敗 도장 연출, 타자기식 본문 출력(탭으로 완성), 행동 결과는 선택한 화면에서 결과 비트로 먼저 표시 후 전환(시간 자동넘김 없음).
 - 용어: 자원은 **체력/정신력**으로 통일 (몸/마음 표기는 폐기됨).
 - 모든 애니메이션은 reduced-motion에서 최종 프레임이 올바른 정지 상태여야 한다 (fill-mode both, 지속 루프는 `prefers-reduced-motion: no-preference` 블록으로 분리).

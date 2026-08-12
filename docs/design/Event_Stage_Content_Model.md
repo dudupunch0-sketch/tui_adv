@@ -2,6 +2,11 @@
 
 Status: canonical content grammar. Event 내부 서사 진행 단위와 표현 순서의 의미는 이 문서가 소유한다. 저장 형식은 `docs/dev/Data_Schema.md`, 화면 배치는 `docs/design/Mobile_Ink_Storybook_UI.md`가 소유한다.
 
+`visual_id`는 renderer-neutral 의미만 담는다. Web renderer는 story illustration을 DOM/CSS/SVG/Canvas/image로,
+전투 보드를 Three.js/WebGL로 매핑할 수 있지만 Event, ContentBlock, `ScenePage`에는 Three object,
+camera/shader 설정, renderer command를 넣지 않는다. 전투 표현은
+[Three.js 전투 비주얼 아키텍처](ThreeJS_Combat_Visual_Architecture.md)를 따른다.
+
 ## 목적
 
 플레이 화면을 `제목 / 천기록 / 결과 / 일러스트 / 선택지`라는 고정 칸으로 해석하지 않는다. 하나의 사건은 여러 이야기, 선택, 결과와 그림이 시간 순서대로 이어지는 흐름이며, renderer는 그 순서를 보존한다.

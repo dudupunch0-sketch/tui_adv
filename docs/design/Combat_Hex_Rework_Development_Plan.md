@@ -4,6 +4,9 @@ status: draft
 기준일: 2026-08-06
 baseline: `6f28160` (docs: define combat contract ownership, #194)
 
+Web 전투 표현의 정본은 [Three.js 전투 비주얼 아키텍처](ThreeJS_Combat_Visual_Architecture.md)다.
+이 플랜의 core 좌표·점유 계약은 그대로이며 T9/T10의 Web 표현만 그 정본을 따른다.
+
 ## 0. 이 문서의 위치
 
 이 문서는 **개발 플랜**이다. 방향, 트랙 분해, 트랙 간 의존, 결정 항목을 소유한다.
@@ -399,24 +402,31 @@ core가 tick 0..k 실행 → opportunity 감지로 "k에서 정지"를 결정론
 
 **완료 판단.** 렌더러가 어떤 판정도 추측하지 않는다. 2분 전투의 core log가 읽을 수 있는 분량이다.
 
-### T9. 표현 레이어 교체 가능성
+### T9. Three.js 전투 scene
 
-**목적.** 결정 4 — 나중에 픽셀아트로 갈아끼울 수 있게 한다.
+**목적.** Web 전투 보드 표현을 Three.js 정본으로 이전한다.
 
 **범위.**
-- **고정 타일 메트릭 투영.** 현재 web은 전 프레임 min/max로 정규화해 %로 투영한다.
-  이 방식은 아트 에셋·격자와 정렬이 불가능하다. 타일 폭/높이/세로 압축률 기반 투영으로 바꾼다.
-- **말 외형의 단일 교체 지점.** 현재 `renderCombatStage.ts`가 실루엣 마크업을 직접 뿜는다.
-- **크기와 점유의 분리.** 레퍼런스 실측(메카는 스프라이트가 크지만 1타일, 보스는 2타일 이상)이
-  그대로 계약이 된다. core는 점유(규칙)만 소유하고 스프라이트 크기는 렌더러 소관이다.
+- **scene과 camera 소유권.** Three.js가 7×6 flat-top board projection, 고정
+  `OrthographicCamera`, board 중심과 zoom을 소유한다. 동적 camera와 camera shake는 쓰지 않는다.
+- **shared-rig character kit.** semi-SD low-poly GLB, 공용 humanoid skeleton, common animation,
+  modular body/clothing/weapon part를 단일 asset 경계로 둔다. code-only·faceless 체스말과 2D
+  renderer 계획은 migration history다.
+- **크기와 점유의 분리.** core는 axial 좌표와 다칸 점유를 계속 소유한다. Three.js transform,
+  mesh 크기, shared rig와 animation-local motion은 표현이며 발 anchor와 core occupancy를 바꾸지 않는다.
+- **접근성 mirror.** DOM semantic table은 Three canvas와 병행하고 WebGL 실패 시 보드·portrait·log
+  fallback으로 사용한다.
 
-**완료 판단.** core 데이터 변경 없이 외형 모듈 교체만으로 시각이 바뀐다.
+**완료 판단.** core 좌표·점유 변경 없이 같은 `ScenePage.combat`으로 Three scene과 DOM fallback이
+같은 전투 의미를 표시한다.
 
 ### T10. HUD
 
 **목적.** 결정 17의 적 카운트와 파티 카드.
 
 **범위.** `위험 개체 n/m`(고정 분모), 파티 카드(초상화·체력·스킬 게이지·상태 아이콘).
+Storybook shell이 읽기·조작 UI를 소유하고, Three scene은 core 좌표에 투영된 world marker와
+전투원 anchor만 소유한다. HUD가 점유나 판정을 역산하지 않는다.
 **`LV`와 경험치는 제외한다**(결정 1 — 메타 성장 비차용).
 
 ### T11. 콘텐츠와 밸런스
@@ -472,7 +482,7 @@ T2(타일 배정 해소)는 T3보다 뒤로 미룬다 — T1-c가 넣은 "경합
 - 상점, 드래프트, 웨이브 사이 성장, 메타 진행, 영구 강화
 - 전투 중 실시간 경험치·레벨업, 골드
 - 시너지 태그와 등급 표기(전투부 II 등)
-- 픽셀아트 전환 자체 (T9는 **전환을 가능하게** 할 뿐 전환하지 않는다)
+- 과거 픽셀아트·2D 전환안 재개. T9는 Three.js 정본을 구현한다.
 - 전투를 메인 루프로 승격하는 것 — 전투는 인카운터 계열로 남는다
 - 정본 13이 금지한 UI(불변식 9)
 
@@ -489,7 +499,7 @@ T2(타일 배정 해소)는 T3보다 뒤로 미룬다 — T1-c가 넣은 "경합
 | ~~4~~ | ~~대형 유닛 형태 카탈로그 범위~~ | ~~T1~~ | **결정됨 (2026-08-07): 대칭 형태만 쓴다.** 아래 참조 |
 | 5 | 배속 단계 (0.8x 포함 여부) | T0 | 재생 레이어라 결정론 무관 |
 | 6 | 밀어내기 힘의 기준 스탯 | T2 | 해소 단계 구조가 먼저다 |
-| 7 | 동적 카메라 채택 여부 | T9 | 수묵 톤에서 값이 있는지 실화면 확인 후 |
+| ~~7~~ | ~~동적 카메라 채택 여부~~ | ~~T9~~ | **결정됨 (2026-08-12): 고정 `OrthographicCamera`, 고정 각도·중심·zoom.** |
 | 8 | I9의 애니메이션 속성 허용 목록에 `rotate`를 넣을 것인가 | T8 | 2026-08-07 T1-b2 검수에서 발견. `combatMotion.ts`가 `balance_broken` cue에 `rotate`를 쓰는데 I9는 `translate`/`opacity`/`filter`만 허용한다 — 둘 중 하나가 물러나야 한다. 모듈 주석은 사실을 적도록 고쳤고, 결정은 cue 문법을 소유하는 T8이 한다. 그때까지 tilt를 조용히 지우지도, 주석을 옛 주장으로 되돌리지도 않는다 |
 
 ## 10. 구현 플랜 분할 지침

@@ -4,11 +4,14 @@
 
 이 문서는 2026-05-22 기준 활성 렌더러 방향을 고정한다.
 
+Web 전투 보드의 세부 정본은
+[`docs/design/ThreeJS_Combat_Visual_Architecture.md`](../design/ThreeJS_Combat_Visual_Architecture.md)다.
+
 현재 체크인된 코드는 Python/Textual, TypeScript mirror core, Rust `escape-core`, Web Storybook renderer, `escape-wasm` JSON boundary, SuperLightTUI 기반 `escape-terminal` snapshot/play renderer를 함께 포함한다. Python/Textual과 TypeScript mirror는 구현 이력과 전환기 parity/fallback scaffold다. 목표 아키텍처는 다음이다.
 
 ```text
 Rust GameCore
-  ├─ Web Storybook + GlyphFX renderer
+  ├─ Web Storybook shell + GlyphFX + Three.js combat renderer
   │   └─ primary player UX
   └─ SuperLightTUI terminal renderer
       └─ terminal-native fallback / horror edition, not a debug dump
@@ -24,7 +27,8 @@ Wire schema의 canonical source는 `docs/dev/Data_Schema.md`다. 이 문서는 c
 
 ## 절대 잊지 말아야 할 방향
 
-- Web Storybook + GlyphFX를 플레이어가 실제로 보게 될 primary UX로 먼저 만든다.
+- Web Storybook shell을 플레이어가 실제로 보게 될 primary UX로 만든다. GlyphFX는 story/UI 효과,
+  Three.js는 Web 전투 보드와 공간 VFX를 소유한다.
 - Rust terminal 경로는 계속 유지하되, 반드시 SuperLightTUI 기반 renderer로 전환한다.
 - terminal renderer는 우선순위와 배포 표면에서는 fallback이지만 품질 면에서 fallback이 아니다. layout, input, snapshot, GlyphFX-style cell effects를 갖춘 terminal-native horror edition이어야 한다.
 - 현재 `cargo run -p escape-terminal -- ... --play` 출력은 SuperLightTUI snapshot 기반 content renderer이며, `--app`은 full-screen SuperLightTUI app loop를 연다. `--app-smoke --tick`은 tick/raw-draw capability를 쓰는 app smoke와 full-screen loop renderer를 headless로 검증한다.
@@ -51,20 +55,25 @@ Wire schema의 canonical source는 `docs/dev/Data_Schema.md`다. 이 문서는 c
 - SuperLightTUI or crossterm
 - wasm-bindgen or web-sys
 - DOM, Canvas, CSS, browser APIs
+- Three.js, WebGL, GPU renderer commands
 - terminal color/style objects
 
 ### `web/` + `crates/escape-wasm`
 
 Primary player UX다.
 
-- mobile/narrow Storybook layout
+- Storybook shell과 ordered story UI
 - readable dialogue/body/history presentation
 - important scene visual cards
-- core effect cue를 Canvas/GlyphFX로 해석
+- text/anomaly/UI effect cue를 Canvas/GlyphFX로 해석
+- `ScenePage.combat`을 Three.js scene, 고정 `OrthographicCamera`, shared-rig GLB로 표시
+- DOM semantic combat table과 WebGL failure fallback 유지
 - touch/click/keyboard selection
 - core save JSON에 기반한 localStorage save surface
 
 Web renderer는 Rust/WASM에서 semantic state를 받고 mood를 렌더링한다. 어떤 action이 가능한지, outcome을 어떻게 적용하는지 직접 다시 계산하지 않는다.
+전투 prototype은 대표 PC의 1920×1080 60fps를 먼저 목표로 계측한다. draw call, triangle,
+texture, particle 최종 hard budget은 측정 뒤 확정하며 모바일 전투 최적화는 후속 WP다.
 
 ### `crates/escape-terminal`
 
@@ -154,6 +163,7 @@ ScenePage
 - `ScenePage.visual.id`는 semantic id이며 file path가 아니다.
 - renderer가 `visual.id`를 실제 visual output으로 매핑한다.
 - effect는 의미를 설명하고, 정확한 pixel/cell은 renderer가 결정한다.
+- `ScenePage`에는 Three.js object, camera 설정, shader/WebGL command를 넣지 않는다.
 
 세부 field type, example JSON, fallback visual id policy, action id contract는 `docs/dev/Data_Schema.md`의 `ScenePage JSON contract`와 `Action ID contract`가 기준이다. Architecture 문서 안에서 임의로 field를 늘리지 않는다.
 

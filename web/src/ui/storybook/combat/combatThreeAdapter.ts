@@ -259,6 +259,54 @@ function adaptCombatForThreeUnsafe(combat: unknown, options: CombatAdapterOption
   };
 }
 
+type SnapshotResult = { kind: 'ready'; value: RecordValue } | { kind: 'fallback'; diagnostics: readonly CombatAdapterDiagnostic[] };
+function snapshotCombat(input: unknown): SnapshotResult {
+  try {
+    if (!isRecord(input)) return { kind: 'fallback', diagnostics: [{ code: 'INVALID_COMBAT_OBJECT', severity: 'error', path: '$' }] };
+    let view: unknown;
+    try { view = input.view; } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_VIEW_OBJECT', severity: 'error', path: '$.view' }] }; }
+    try { if (!isRecord(view)) return { kind: 'fallback', diagnostics: [{ code: 'INVALID_VIEW_OBJECT', severity: 'error', path: '$.view' }] }; } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_VIEW_OBJECT', severity: 'error', path: '$.view' }] }; }
+    const viewObject = view as RecordValue;
+    const outView: RecordValue = {};
+    for (const field of ['simulation_version', 'resolution_fingerprint', 'fingerprint', 'tick_millis'] as const) {
+      try { outView[field] = viewObject[field]; } catch { const code = field === 'simulation_version' ? 'INVALID_SIMULATION_VERSION' : field === 'resolution_fingerprint' ? 'INVALID_RESOLUTION_FINGERPRINT' : field === 'fingerprint' ? 'INVALID_VIEW_FINGERPRINT' : 'INVALID_TICK_MILLIS'; return { kind: 'fallback', diagnostics: [{ code, severity: 'error', path: `$.view.${field}` }] }; }
+    }
+    let frames: unknown;
+    let hasFrames = false;
+    try { hasFrames = Object.prototype.hasOwnProperty.call(viewObject, 'frames'); frames = hasFrames ? viewObject.frames : undefined; } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_FRAMES', severity: 'error', path: '$.view.frames' }] }; }
+    if (hasFrames) {
+      if (!Array.isArray(frames)) { outView.frames = frames; }
+      else {
+        const frameCopy: unknown[] = new Array(frames.length);
+        for (let i = 0; i < frames.length; i += 1) {
+          let frame: unknown; try { frame = frames[i]; } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_FRAME', severity: 'error', path: `$.view.frames[${i}]` }] }; }
+          if (!isRecord(frame)) { frameCopy[i] = frame; continue; }
+          const copy: RecordValue = {};
+          try { copy.tick = frame.tick; } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_FRAME_TICK', severity: 'error', path: `$.view.frames[${i}].tick` }] }; }
+          let pieces: unknown; try { pieces = Object.prototype.hasOwnProperty.call(frame, 'pieces') ? frame.pieces : undefined; } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_PIECES', severity: 'error', path: `$.view.frames[${i}].pieces` }] }; }
+          if (pieces !== undefined && Array.isArray(pieces)) {
+            const pieceCopy: unknown[] = new Array(pieces.length);
+            for (let j = 0; j < pieces.length; j += 1) {
+              let piece: unknown; try { piece = pieces[j]; } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_PIECE', severity: 'error', path: `$.view.frames[${i}].pieces[${j}]` }] }; }
+              if (!isRecord(piece)) { pieceCopy[j] = piece; continue; }
+              const pc: RecordValue = {};
+              for (const field of ['id', 'side', 'active'] as const) { try { pc[field] = piece[field]; } catch { const code = field === 'id' ? 'INVALID_PIECE_ID' : field === 'side' ? 'INVALID_SIDE' : 'INVALID_ACTIVE'; return { kind: 'fallback', diagnostics: [{ code, severity: 'error', path: `$.view.frames[${i}].pieces[${j}].${field}` }] }; } }
+              for (const field of ['position', 'facing'] as const) { try { const coord = piece[field]; if (isRecord(coord)) pc[field] = { q: coord.q, r: coord.r }; else pc[field] = coord; } catch { return { kind: 'fallback', diagnostics: [{ code: field === 'position' ? 'INVALID_POSITION' : 'INVALID_FACING', severity: 'error', path: `$.view.frames[${i}].pieces[${j}].${field}` }] }; } }
+              let cues: unknown; try { cues = Object.prototype.hasOwnProperty.call(piece, 'cues') ? piece.cues : undefined; } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_CUES', severity: 'error', path: `$.view.frames[${i}].pieces[${j}].cues` }] }; }
+              if (cues !== undefined && Array.isArray(cues)) { const cc: unknown[] = new Array(cues.length); for (let k = 0; k < cues.length; k += 1) { try { cc[k] = cues[k]; } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_CUE', severity: 'error', path: `$.view.frames[${i}].pieces[${j}].cues[${k}]` }] }; } } pc.cues = cc; } else if (Object.prototype.hasOwnProperty.call(piece, 'cues')) pc.cues = cues;
+              pieceCopy[j] = pc;
+            }
+            copy.pieces = pieceCopy;
+          } else if (Object.prototype.hasOwnProperty.call(frame, 'pieces')) copy.pieces = pieces;
+          frameCopy[i] = copy;
+        }
+        outView.frames = frameCopy;
+      }
+    }
+    return { kind: 'ready', value: { view: outView } };
+  } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_COMBAT_OBJECT', severity: 'error', path: '$' }] }; }
+}
+
 /** Public boundary: hostile JSON-like objects must never escape an exception. */
 export function adaptCombatForThree(combat: unknown, options: CombatAdapterOptions): CombatAdapterResult {
   if (combat === undefined || combat === null) return { kind: 'absent', diagnostics: [] };
@@ -266,6 +314,11 @@ export function adaptCombatForThree(combat: unknown, options: CombatAdapterOptio
     let boardBounds: CombatBoardBounds;
     try { boardBounds = options?.boardBounds; } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_BOARD_BOUNDS', severity: 'error', path: '$options.boardBounds' }] }; }
     try { if (!validBounds(boardBounds)) return { kind: 'fallback', diagnostics: [{ code: 'INVALID_BOARD_BOUNDS', severity: 'error', path: '$options.boardBounds' }] }; } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_BOARD_BOUNDS', severity: 'error', path: '$options.boardBounds' }] }; }
+    const snapshot = snapshotCombat(combat);
+    if (snapshot.kind === 'fallback') return snapshot;
+    return adaptCombatForThreeUnsafe(snapshot.value, { boardBounds });
+    /* legacy guarded traversal retained below as a final defensive fallback */
+    /* istanbul ignore next */
     try { if (!isRecord(combat)) return adaptCombatForThreeUnsafe(combat, { boardBounds }); } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_COMBAT_OBJECT', severity: 'error', path: '$' }] }; }
     let view: unknown;
     try { view = (combat as RecordValue).view; } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_VIEW_OBJECT', severity: 'error', path: '$.view' }] }; }

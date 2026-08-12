@@ -1,7 +1,7 @@
 # 전투 시스템 구현 계획 인덱스
 
-status: wave3-step1d2-complete, threejs-wp1-active
-기준일: 2026-08-12
+status: wave3-step1d2-complete, threejs-wp2-active-blocked-on-wp1-merge-review
+기준일: 2026-08-13
 
 > **전투 Web visual 갱신 (2026-08-12).** 이 문서에 남은 CSS/DOM 체스말 보드,
 > code-only·faceless 말, 2D motion 구현 보고는 migration history다. 새 구현 기준은
@@ -20,27 +20,36 @@ status: wave3-step1d2-complete, threejs-wp1-active
 - 저장소 truth: `crates/escape-core` → `ScenePage`/WASM JSON → Web Storybook·SuperLightTUI.
 - 기존 `docs/design/Combat_System_Auto_Brawl.md`는 이전 schema-less 방향의 설계 기록이다. 새 구현 계약은 local design source와 runtime schema를 우선하되, 기존 renderer-neutral 원칙과 non-goal은 유지한다.
 
-### ACTIVE Web renderer track: Three.js WP1
+### ACTIVE Web renderer track: Three.js WP2 board
 
-Three.js WP1 pure adapter contract를 ACTIVE로 승격한다. 이 작업은 Rust I2b/I7 및 다른
-game/content track과 독립적이라 병렬 진행할 수 있다. 이 승격은 기존 트랙의 우선순위를
-대체하지 않고 WP2를 승인하지 않는다.
+WP2 board contract를 ACTIVE로 승격한다. 단, PR #217의 WP1은 open·green이지만
+unreviewed/unmerged이므로 **WP2 구현은 review와 main merge까지 blocked**다. 이 작업은 Rust
+I2b/I7 및 다른 game/content track과 독립적이라 병렬 진행할 수 있고 기존 트랙의 우선순위를
+대체하지 않는다.
 
 구현 read order는 다음과 같다.
 
 1. `docs/dev/Development_Plan.md`의 ACTIVE Web renderer track
 2. [Three.js 전투 비주얼 아키텍처](ThreeJS_Combat_Visual_Architecture.md) §3~4,
-   §10.1~11.1
+   §10.2와 §11.2
 3. 이 절의 범위와 stop condition
 
-WP1은 `web/src/ui/storybook/combat/combatThreeAdapter.ts`,
-`combatThreeAdapter.test.ts`, producer-owned fixture
-`crates/escape-core/fixtures/combat/wuxia_combat_spectator_preview_bout.seed-2.combat.json`,
-Rust byte golden test만 소유한다. exact adapter API, seed serialization/hash, malformed
-policy, fixture 명령/SHA와 acceptance는 아키텍처 정본에 적힌 값을 그대로 따른다.
-`main.ts`, `render.ts`, `renderCombatStage.ts`, `types.ts`, CSS, package/lock, Rust gameplay
-code, Three dependency/canvas를 수정하지 않는다. 기존 DOM 관전 표면을 유지한다. WP1
-acceptance를 실행한 뒤 멈추고 review를 기다린다.
+다음 액션 순서는 고정한다.
+
+1. PR #217 review와 main merge
+2. merge SHA에서 WP1 public API, diagnostic order, fixture SHA
+   `3ecfb08390379fa3cea7f2bc802ab47dc164695ffdb0af5cc54222c9af3fd53a` 재대조
+3. 한 implementation subagent가 §11.2의 exact 8 files만 한 logical commit으로 구현
+4. 별도 reviewer가 dependency/lock, lifecycle disposal, malformed/DOM fallback, browser evidence,
+   정적 board 계측을 직접 검증
+
+WP2는 Web-owned `{ q: 0..6, r: 0..5 }` preset, `three@0.185.1`, fixed
+`OrthographicCamera`, 42-tile board와 final-frame 임시 anchor marker, context-loss/forced-colors
+DOM fallback, start/game/fatal replacement lifecycle만 소유한다. `render.ts`, WP1 adapter/test와
+producer fixture, `types.ts`, Rust/GameCore/schema/YAML/generated/WASM/terminal, GLB/rig/clip,
+cue VFX/playback, shadow/postprocessing, gate flag는 수정하지 않는다. exact API, owned file 목록,
+카메라/frustum, malformed behavior, acceptance, browser/performance evidence, originality와 stop
+condition은 아키텍처 정본 §11.2를 중복 없이 따른다.
 
 ## 현재 코드와 정본의 경계
 
@@ -151,7 +160,8 @@ Wave 3 Step 1b는 정본 13이 금지하는 전략 수행 평가·핵심 전환�
 
 | 단계 문서 | 한 번의 구현 단위 | 핵심 non-goal |
 | --- | --- | --- |
-| **ACTIVE Three.js WP1** (`ThreeJS_Combat_Visual_Architecture.md` §11.1) | pure combat adapter, exact visual seed golden, producer fixture와 Rust byte golden test | `main.ts` integration, DOM/CSS/types 변경, Three.js/canvas, WP2+, Rust gameplay logic |
+| Three.js WP1 review prerequisite (`ThreeJS_Combat_Visual_Architecture.md` §11.1) | PR #217 pure combat adapter, exact visual seed golden, producer fixture와 Rust byte golden test의 review/main merge | review 전 WP2 구현, WP1 API/fixture 임의 변경 |
+| **ACTIVE Three.js WP2 board** (`ThreeJS_Combat_Visual_Architecture.md` §11.2) | merge된 WP1 소비, fixed orthographic 7×6 board, anchor marker, fail-soft DOM fallback, mount/dispose lifecycle | `render.ts`, Rust/schema/fixture, GLB/VFX/playback, shadow/postprocess, gate 해제 |
 | `fable_combat_wave1_step1_2607261845.md` | 결정론 계약 primitive와 manifest fingerprint | 실제 전투 진행·UI·밸런스 |
 | `fable_combat_wave1_step2_2607261845.md` | 전투원 상태·effect catalog·전투 전 투영 | tick resolver·콘텐츠 확장 |
 | `fable_combat_wave1_step3_2607261845.md` | opportunity/response 후보와 0~3 개입 예산 | renderer·실시간 시뮬레이션 |

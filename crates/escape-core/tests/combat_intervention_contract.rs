@@ -150,7 +150,7 @@ fn fixed_chance_and_typed_validation() {
 }
 #[test]
 fn strict_nested_and_empty_id_validation() {
-    let mut effect = special();
+    let effect = special();
     let raw = serde_json::to_value(&effect).unwrap();
     let mut obj = raw.as_object().unwrap().clone();
     obj.insert("extra".into(), json!(true));

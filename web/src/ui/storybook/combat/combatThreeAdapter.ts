@@ -130,7 +130,7 @@ export function axialToWorld(coord: Readonly<NormalizedCombatCoord>, size: numbe
   };
 }
 
-export function adaptCombatForThree(combat: unknown, options: CombatAdapterOptions): CombatAdapterResult {
+function adaptCombatForThreeUnsafe(combat: unknown, options: CombatAdapterOptions): CombatAdapterResult {
   if (combat === undefined || combat === null) return { kind: 'absent', diagnostics: [] };
 
   const diagnostics: CombatAdapterDiagnostic[] = [];
@@ -167,11 +167,12 @@ export function adaptCombatForThree(combat: unknown, options: CombatAdapterOptio
   const frames: NormalizedCombatFrame[] = [];
   let previousValidTick: number | undefined;
   if (Array.isArray(rawFrames)) {
-    rawFrames.forEach((rawFrame, frameIndex) => {
+    for (let frameIndex = 0; frameIndex < rawFrames.length; frameIndex += 1) {
+      const rawFrame = rawFrames[frameIndex];
       const framePath = `$.view.frames[${frameIndex}]`;
       if (!isRecord(rawFrame)) {
         addError('INVALID_FRAME', framePath);
-        return;
+        continue;
       }
       const tick = isSafeInteger(rawFrame.tick) && rawFrame.tick >= 0 ? rawFrame.tick : undefined;
       if (tick === undefined) addError('INVALID_FRAME_TICK', `${framePath}.tick`);
@@ -181,15 +182,16 @@ export function adaptCombatForThree(combat: unknown, options: CombatAdapterOptio
       const rawPieces = Object.prototype.hasOwnProperty.call(rawFrame, 'pieces') ? rawFrame.pieces : [];
       if (!Array.isArray(rawPieces)) {
         addError('INVALID_PIECES', `${framePath}.pieces`);
-        return;
+        continue;
       }
       const pieces: NormalizedCombatPiece[] = [];
       const ids = new Set<string>();
-      rawPieces.forEach((rawPiece, pieceIndex) => {
+      for (let pieceIndex = 0; pieceIndex < rawPieces.length; pieceIndex += 1) {
+        const rawPiece = rawPieces[pieceIndex];
         const piecePath = `${framePath}.pieces[${pieceIndex}]`;
         if (!isRecord(rawPiece)) {
           addError('INVALID_PIECE', piecePath);
-          return;
+          continue;
         }
         const id = nonEmptyString(rawPiece.id) ? rawPiece.id : undefined;
         if (!id) addError('INVALID_PIECE_ID', `${piecePath}.id`);
@@ -206,29 +208,31 @@ export function adaptCombatForThree(combat: unknown, options: CombatAdapterOptio
         const rawCues = Object.prototype.hasOwnProperty.call(rawPiece, 'cues') ? rawPiece.cues : [];
         if (!Array.isArray(rawCues)) {
           addError('INVALID_CUES', `${piecePath}.cues`);
-          return;
+          continue;
         }
         const cues: NormalizedCombatCue[] = [];
-        rawCues.forEach((rawCue, cueIndex) => {
+        for (let cueIndex = 0; cueIndex < rawCues.length; cueIndex += 1) {
+          const rawCue = rawCues[cueIndex];
           const cuePath = `${piecePath}.cues[${cueIndex}]`;
           if (typeof rawCue !== 'string' || !CUES.has(rawCue as NormalizedCombatCueType)) {
             addError('INVALID_CUE', cuePath);
-            return;
+            continue;
           }
           if (simulationVersion && resolutionFingerprint && viewFingerprint && tick !== undefined && id) {
             const cueType = rawCue as NormalizedCombatCueType;
             cues.push({ type: cueType, ordinal: cueIndex, seedHex: combatVisualSeedHex([simulationVersion, resolutionFingerprint, viewFingerprint, tick, id, cueType, cueIndex]) });
           }
-        });
+        }
         if (id && position && facing && side && active !== undefined) pieces.push({ id, side, position, facing, active, cues });
-      });
+      }
       if (tick !== undefined) frames.push({ tick, pieces });
-    });
+    }
   }
 
   if (boundsValid && Array.isArray(rawFrames)) {
-    rawFrames.forEach((rawFrame, frameIndex) => {
-      if (!isRecord(rawFrame) || !Array.isArray(rawFrame.pieces)) return;
+    for (let frameIndex = 0; frameIndex < rawFrames.length; frameIndex += 1) {
+      const rawFrame = rawFrames[frameIndex];
+      if (!isRecord(rawFrame) || !Array.isArray(rawFrame.pieces)) continue;
       const occupancy = new Set<string>();
       rawFrame.pieces.forEach((rawPiece, pieceIndex) => {
         if (!isRecord(rawPiece) || !validCoord(rawPiece.position)) return;
@@ -238,7 +242,7 @@ export function adaptCombatForThree(combat: unknown, options: CombatAdapterOptio
         if (occupancy.has(key)) addWarning('DUPLICATE_OCCUPANCY', positionPath);
         occupancy.add(key);
       });
-    });
+    }
   }
 
   if (diagnostics.some((item) => item.severity === 'error')) return { kind: 'fallback', diagnostics };
@@ -253,4 +257,47 @@ export function adaptCombatForThree(combat: unknown, options: CombatAdapterOptio
     replay: { simulationVersion: replaySimulationVersion, resolutionFingerprint: replayResolutionFingerprint, viewFingerprint: replayViewFingerprint, tickMillis: replayTickMillis, frames },
     diagnostics,
   };
+}
+
+/** Public boundary: hostile JSON-like objects must never escape an exception. */
+export function adaptCombatForThree(combat: unknown, options: CombatAdapterOptions): CombatAdapterResult {
+  if (combat === undefined || combat === null) return { kind: 'absent', diagnostics: [] };
+  try {
+    let boardBounds: CombatBoardBounds;
+    try { boardBounds = options?.boardBounds; } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_BOARD_BOUNDS', severity: 'error', path: '$options.boardBounds' }] }; }
+    try { if (!isRecord(combat)) return adaptCombatForThreeUnsafe(combat, { boardBounds }); } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_COMBAT_OBJECT', severity: 'error', path: '$' }] }; }
+    let view: unknown;
+    try { view = (combat as RecordValue).view; } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_VIEW_OBJECT', severity: 'error', path: '$.view' }] }; }
+    if (isRecord(view)) {
+      let frames: unknown;
+      try { frames = Object.prototype.hasOwnProperty.call(view, 'frames') ? view.frames : undefined; } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_FRAMES', severity: 'error', path: '$.view.frames' }] }; }
+      if (frames !== undefined && frames !== null && Array.isArray(frames)) {
+        for (let i = 0; i < frames.length; i += 1) {
+          let frame: unknown;
+          try { frame = frames[i]; } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_FRAME', severity: 'error', path: `$.view.frames[${i}]` }] }; }
+          if (!isRecord(frame)) continue;
+          let pieces: unknown;
+          try { pieces = Object.prototype.hasOwnProperty.call(frame, 'pieces') ? frame.pieces : undefined; } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_PIECES', severity: 'error', path: `$.view.frames[${i}].pieces` }] }; }
+          if (pieces !== undefined && pieces !== null && Array.isArray(pieces)) {
+            for (let j = 0; j < pieces.length; j += 1) {
+              let piece: unknown;
+              try { piece = pieces[j]; } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_PIECE', severity: 'error', path: `$.view.frames[${i}].pieces[${j}]` }] }; }
+              if (!isRecord(piece)) continue;
+              try {
+                if (Object.prototype.hasOwnProperty.call(piece, 'cues')) {
+                  const cues = piece.cues;
+                  if (Array.isArray(cues)) for (let k = 0; k < cues.length; k += 1) {
+                    try { void cues[k]; } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_CUE', severity: 'error', path: `$.view.frames[${i}].pieces[${j}].cues[${k}]` }] }; }
+                  }
+                }
+              } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_CUES', severity: 'error', path: `$.view.frames[${i}].pieces[${j}].cues` }] }; }
+            }
+          }
+        }
+      }
+    }
+    return adaptCombatForThreeUnsafe(combat, { boardBounds });
+  } catch {
+    return { kind: 'fallback', diagnostics: [{ code: 'INVALID_COMBAT_OBJECT', severity: 'error', path: '$' }] };
+  }
 }

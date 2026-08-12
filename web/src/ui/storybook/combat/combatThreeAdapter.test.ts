@@ -23,6 +23,33 @@ describe('combatThreeAdapter', () => {
     expect(adaptCombatForThree(null, { boardBounds: null as never })).toEqual({ kind: 'absent', diagnostics: [] });
   });
 
+  it('contains hostile access traps at their nearest contract boundary', () => {
+    const throwingOptions = { get boardBounds(): never { throw new Error('secret'); } } as unknown as { boardBounds: typeof bounds };
+    expect(() => adaptCombatForThree(combat(), throwingOptions)).not.toThrow();
+    expect(codes(adaptCombatForThree(combat(), throwingOptions))).toEqual(['INVALID_BOARD_BOUNDS@$options.boardBounds']);
+    const throwingView = { get view(): never { throw new Error('secret'); } };
+    expect(() => adaptCombatForThree(throwingView, options)).not.toThrow();
+    expect(codes(adaptCombatForThree(throwingView, options))).toEqual(['INVALID_VIEW_OBJECT@$.view']);
+    const throwingFrames = { view: { get frames(): never { throw new Error('secret'); } } };
+    expect(codes(adaptCombatForThree(throwingFrames, options))).toEqual(['INVALID_FRAMES@$.view.frames']);
+    const throwingPieces = { view: { frames: [{ get pieces(): never { throw new Error('secret'); } }] } };
+    expect(codes(adaptCombatForThree(throwingPieces, options))).toEqual(['INVALID_PIECES@$.view.frames[0].pieces']);
+    const throwingCues = { view: { frames: [{ pieces: [{ get cues(): never { throw new Error('secret'); } }] }] } };
+    expect(codes(adaptCombatForThree(throwingCues, options))).toEqual(['INVALID_CUES@$.view.frames[0].pieces[0].cues']);
+  });
+
+  it('diagnoses sparse frame, piece, and cue holes', () => {
+    const frames: unknown[] = []; frames.length = 1;
+    const pieces: unknown[] = []; pieces.length = 1;
+    const cues: unknown[] = []; cues.length = 1;
+    const frameHole = adaptCombatForThree({ view: { ...(combat().view as Record<string, unknown>), frames } }, options);
+    expect(codes(frameHole)).toContain('INVALID_FRAME@$.view.frames[0]');
+    const pieceHole = adaptCombatForThree(combat({ frames: [{ tick: 0, pieces }] }), options);
+    expect(codes(pieceHole)).toContain('INVALID_PIECE@$.view.frames[0].pieces[0]');
+    const cueHole = adaptCombatForThree(combat({ frames: [{ tick: 0, pieces: [{ id: 'a', side: 'ally', position: { q: 1, r: 0 }, facing: { q: 1, r: 0 }, active: true, cues }] }] }), options);
+    expect(codes(cueHole)).toContain('INVALID_CUE@$.view.frames[0].pieces[0].cues[0]');
+  });
+
   it('normalizes the producer-owned fixture without changing order', () => {
     const result = adaptCombatForThree(fixture, options);
     expect(result.kind).toBe('ready');
@@ -35,6 +62,17 @@ describe('combatThreeAdapter', () => {
     expect(axialToWorld(result.replay.frames[0]?.pieces[0]?.position ?? { q: 0, r: 0 }, 1)).toEqual({ x: 1.5, z: Math.sqrt(3) / 2 });
   });
 
+  it('preserves every producer frame, participant field, cue ordinal, and projection', () => {
+    const result = adaptCombatForThree(fixture, options);
+    expect(result.kind).toBe('ready');
+    if (result.kind !== 'ready') return;
+    expect(result.replay.frames.map((frame) => ({ tick: frame.tick, pieces: frame.pieces.map((piece) => ({ id: piece.id, side: piece.side, position: piece.position, facing: piece.facing, active: piece.active, cues: piece.cues.map((cue) => ({ type: cue.type, ordinal: cue.ordinal })) })) }))).toEqual(fixture.view.frames.map((frame) => ({ tick: frame.tick, pieces: frame.pieces.map((piece) => ({ id: piece.id, side: piece.side, position: piece.position, facing: piece.facing, active: piece.active, cues: piece.cues.map((type, ordinal) => ({ type, ordinal })) })) })));
+    for (const frame of fixture.view.frames) for (const piece of frame.pieces) {
+      const normalized = result.replay.frames.find((candidate) => candidate.tick === frame.tick)?.pieces.find((candidate) => candidate.id === piece.id);
+      expect(axialToWorld(normalized?.position ?? piece.position, 1)).toEqual(axialToWorld(piece.position, 1));
+    }
+  });
+
   it('computes the canonical JSON UTF-8 FNV-1a64 golden', () => {
     const tuple = ['v3', '1978f44e79dd23d1', 'bb9240dfbc6e72b0', 1, 'wuxia_spectator_bout_ally', 'attack', 0] as const;
     expect(JSON.stringify(tuple)).toBe('["v3","1978f44e79dd23d1","bb9240dfbc6e72b0",1,"wuxia_spectator_bout_ally","attack",0]');
@@ -42,33 +80,25 @@ describe('combatThreeAdapter', () => {
     expect(combatVisualSeedHex(tuple)).toBe('fba89b551ab6959d');
   });
 
-  it('changes only the seed for the cue whose ordinal changed', () => {
-    const first = adaptCombatForThree(combat({ frames: [{ tick: 0, pieces: [
-      { id: 'ally', side: 'ally', position: { q: 1, r: 0 }, facing: { q: 1, r: 0 }, active: true, cues: ['attack'] },
-      { id: 'enemy', side: 'enemy', position: { q: 2, r: 0 }, facing: { q: -1, r: 0 }, active: true, cues: ['hit'] },
-    ] }] }), options);
-    const second = adaptCombatForThree(combat({ frames: [{ tick: 0, pieces: [
-      { id: 'ally', side: 'ally', position: { q: 1, r: 0 }, facing: { q: 1, r: 0 }, active: true, cues: ['evade', 'attack'] },
-      { id: 'enemy', side: 'enemy', position: { q: 2, r: 0 }, facing: { q: -1, r: 0 }, active: true, cues: ['hit'] },
-    ] }] }), options);
+  it('changes only the seed for the cue ordinal that changed', () => {
+    const first = adaptCombatForThree(combat({ frames: [{ tick: 0, pieces: [{ id: 'ally', side: 'ally', position: { q: 1, r: 0 }, facing: { q: 1, r: 0 }, active: true, cues: ['attack', 'hit'] }] }] }), options);
+    const second = adaptCombatForThree(combat({ frames: [{ tick: 0, pieces: [{ id: 'ally', side: 'ally', position: { q: 1, r: 0 }, facing: { q: 1, r: 0 }, active: true, cues: ['evade', 'hit'] }] }] }), options);
     expect(first.kind).toBe('ready');
     expect(second.kind).toBe('ready');
     if (first.kind !== 'ready' || second.kind !== 'ready') return;
-    const originalAttack = first.replay.frames[0]?.pieces[0]?.cues[0];
-    const shiftedAttack = second.replay.frames[0]?.pieces[0]?.cues[1];
-    const stableEnemyCue = first.replay.frames[0]?.pieces[1]?.cues[0];
-    const repeatedEnemyCue = second.replay.frames[0]?.pieces[1]?.cues[0];
-    expect(originalAttack).toMatchObject({ type: 'attack', ordinal: 0 });
-    expect(shiftedAttack).toMatchObject({ type: 'attack', ordinal: 1 });
-    expect(originalAttack?.seedHex).not.toBe(shiftedAttack?.seedHex);
-    expect(stableEnemyCue?.seedHex).toBe(repeatedEnemyCue?.seedHex);
+    const a = first.replay.frames[0]?.pieces[0]?.cues ?? [];
+    const b = second.replay.frames[0]?.pieces[0]?.cues ?? [];
+    expect(a[0]?.seedHex).not.toBe(b[0]?.seedHex);
+    expect(a[0]?.ordinal).toBe(b[0]?.ordinal);
+    expect(a[0]?.seedHex).toBe(combatVisualSeedHex(['v3', 'resolution', 'view', 0, 'ally', 'attack', 0]));
+    expect(a[1]?.seedHex).toBe(b[1]?.seedHex);
   });
 
   it('projects flat-top axial coordinates exactly', () => {
     expect(axialToWorld({ q: 2, r: 3 }, 4)).toEqual({ x: 12, z: 4 * Math.sqrt(3) * 4 });
   });
 
-  it('accumulates sibling errors in canonical input order', () => {
+  it('accumulates sibling errors in canonical input order and deduplicates', () => {
     const result = adaptCombatForThree(combat({ simulation_version: '', resolution_fingerprint: '', fingerprint: '', tick_millis: 0, frames: [{ tick: -1, pieces: [{ id: '', side: 'bad', position: { q: 1.2, r: 0 }, facing: { q: 0, r: 0 }, active: 'yes', cues: ['bad', 'bad'] }] }] }), options);
     expect(result.kind).toBe('fallback');
     expect(codes(result)).toEqual([
@@ -101,11 +131,7 @@ describe('combatThreeAdapter', () => {
   });
 
   it('ignores malformed unconsumed logs and report', () => {
-    const input = combat();
-    const rawView = input.view as Record<string, unknown>;
-    rawView.core_log = null;
-    rawView.full_log = 'bad';
-    const result = adaptCombatForThree({ ...input, report: 12 }, options);
+    const result = adaptCombatForThree({ ...combat(), core_log: null, full_log: 'bad', report: 12 }, options);
     expect(result.kind).toBe('ready');
   });
 
@@ -150,6 +176,18 @@ describe('combatThreeAdapter', () => {
     const result = adaptCombatForThree(combat({ frames: [{ tick: 0, pieces }, { tick: 1 }] }), options);
     expect(result.kind).toBe('ready');
     if (result.kind === 'ready') expect(result.replay.frames[0]?.pieces).toHaveLength(13);
+  });
+
+  it('defaults each absent frames, pieces, and cues field independently', () => {
+    const noFrames = adaptCombatForThree({ view: { simulation_version: 'v3', resolution_fingerprint: 'r', fingerprint: 'f', tick_millis: 100 } }, options);
+    expect(noFrames.kind).toBe('ready');
+    if (noFrames.kind === 'ready') expect(noFrames.replay.frames).toEqual([]);
+    const noPieces = adaptCombatForThree(combat({ frames: [{ tick: 0 }] }), options);
+    expect(noPieces.kind).toBe('ready');
+    if (noPieces.kind === 'ready') expect(noPieces.replay.frames[0]?.pieces).toEqual([]);
+    const noCues = adaptCombatForThree(combat({ frames: [{ tick: 0, pieces: [{ id: 'a', side: 'ally', position: { q: 1, r: 0 }, facing: { q: 1, r: 0 }, active: true }] }] }), options);
+    expect(noCues.kind).toBe('ready');
+    if (noCues.kind === 'ready') expect(noCues.replay.frames[0]?.pieces[0]?.cues).toEqual([]);
   });
 
   it('reports warnings last without clamping or dropping positions', () => {

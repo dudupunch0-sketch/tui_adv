@@ -1,0 +1,69 @@
+schema_version: 1
+kind: chapter_script_companion
+status: authoring_draft
+review_status: authoring_review_required
+runtime_status: not_implemented
+script_id: guestpass_act3_chapter_18
+event_ref: wuxia_guestpass_gohyeonmuk_inn_succession
+slot: 3/18
+title: 고현묵 객잔과 객패 계승
+canonical_bridge: {source_gap: false, source_ref: events/authored/wuxia_guestpass_gohyeonmuk_inn_succession.yml, runtime_provenance: authored_design_source_companion_runtime_not_implemented, note: guestpass_burnt_token_acquired is a carry-forward flag from Act 1/2; it is a required entry condition here and is not newly acquired in Act 3 chapter 18., required_flags: [guestpass_first_relay_identity_chosen, guestpass_burnt_token_acquired], common_emits: [guestpass_gohyeonmuk_inn_test_resolved, guestpass_inn_inheritance_resolved, guestpass_stewardship_accepted, gohyeonmuk_human_witness_opened, qingliu_empty_room_known, qingliu_empty_room_seizure_notice_received], next_gate: qingliu_empty_room_seizure_notice_received, next_event_ref: wuxia_guestpass_qingliu_empty_room_seizure_defense}
+entry_conditions: {required_flags: [guestpass_first_relay_identity_chosen, guestpass_burnt_token_acquired]}
+reentry_recap: 3/17 역참에서 사원증과 불탄 객패의 역할을 분리해 설명했고 서하린은 공동 증인으로 남았다.
+stable_opening: 고현묵은 객패를 알아보고도 문을 활짝 열지 않는다. 솥에는 국, 장부에는 이름 없는 빈 줄이 있다.
+local_urgent_conflict: 늦은 손님·열 오른 아이·의심받는 전령이 동시에 들어온다. 환대를 행동으로 보이고 객패를 소유 아닌 책임으로 계승한다.
+beats_and_dialogue:
+  - {beat: 문턱의 의심, scene: 고현묵이 탄 자국과 출처를 대조한다., dialogue: '고현묵: “패보다 문턱에 쓰러진 사람을 먼저 볼 수 있는지 보겠소.”'}
+  - {beat: 늦은 손님, scene: 행상인·아이·방값 모자란 나그네가 들어온다., dialogue: '서하린: “누구도 없는 사람으로 만들지는 말아요.”'}
+  - {beat: 짧은 식사, scene: 객패가 귀환권 아닌 다음 손님까지의 책임임을 말한다., dialogue: '주인공: “이건 제 것이 아니라 다음 사람이 살아서 갈 때까지 맡는 기록이에요.”'}
+  - {beat: 행동 시험, scene: 증거 공개·객잔 노동·전령 보호·책임 문장 중 하나를 택한다., dialogue: '고현묵: “말보다 손님이 남긴 자리를 치우는 일이 먼저요.”'}
+  - {beat: 수탁 매듭, scene: 새 객패 대신 불탄 객패에 임시 매듭을 묶는다., dialogue: '고현묵: “다음 손님을 포기하지 않을 때까지 네 손에 맡기는 것이오.”'}
+  - {beat: 청류 급보, scene: 빈방·문패 압류 통고가 도착하고 밤은 식사와 수면으로 닫힌다., dialogue: '서하린: “빈방의 이름이 지워지기 전에 돌아가요.”'}
+choices:
+  - id: disclose_token_and_route_record
+    label: 불탄 객패와 이동 기록을 모두 펼친다
+    immediate_result: 고현묵이 객패와 최초 소유자의 매듭을 대조한다.
+    success: 마지막 방과 방향을 좁힌다.
+    failure: 순서가 어긋나도 직접 확인할 장부를 허락받는다.
+    relationship_directions: {people: {go_hyeonmuk: evidence_trust, seo_harin: truth_shared}, factions: {guestpass_network: record_stewardship}}
+    reward_candidate: {id: guestpass_act3_ch18_reward_doubt_enduring_guest, name: 의심을 견딘 손님, type: title, concept: 불완전한 증거까지 검증받은 손님}
+    quest_clue: {name: 고현묵의 객방 배치도, type: quest_clue, concept: 최초 소유자의 마지막 동선}
+    flags: {always: [guestpass_gohyeonmuk_inn_test_resolved, guestpass_inn_inheritance_resolved, guestpass_stewardship_accepted, gohyeonmuk_human_witness_opened, qingliu_empty_room_known, qingliu_empty_room_seizure_notice_received, gohyeonmuk_token_evidence_examined], success: [first_owner_last_inn_room_narrowed], failure: [first_owner_route_order_requires_guestbook_check]}
+  - id: serve_the_unregistered_guests
+    label: 장부보다 늦은 손님의 밥부터 챙긴다
+    immediate_result: 주인공과 서하린이 솥과 자리를 나눈다.
+    success: 행상인이 다음 중계소 별칭을 말한다.
+    failure: 주인공 몫을 내주고 아이의 길매듭을 발견한다.
+    relationship_directions: {people: {go_hyeonmuk: hospitality_proven, seo_harin: shared_labor}, factions: {guestpass_network: guest_duty}}
+    reward_candidate: {id: guestpass_act3_ch18_reward_second_bowl, name: 두 번째 밥그릇, type: quest_item, concept: 아직 오지 않은 손님의 자리}
+    quest_clue: {name: 두 번째 밥그릇의 길매듭, type: quest_item, concept: 이름 전에도 자리를 남긴 매듭}
+    flags: {always: [guestpass_gohyeonmuk_inn_test_resolved, guestpass_inn_inheritance_resolved, guestpass_stewardship_accepted, gohyeonmuk_human_witness_opened, qingliu_empty_room_known, qingliu_empty_room_seizure_notice_received, guestpass_unregistered_guest_sheltered], success: [guestpass_next_relay_alias_learned], failure: [guestpass_old_route_knot_recovered]}
+  - id: shelter_the_suspected_courier
+    label: 쫓기는 전령을 뒷문으로 들인다
+    immediate_result: 서하린과 피신 동선을 나눠 전령을 숨긴다.
+    success: 전령과 봉인 조각을 지킨다.
+    failure: 추적자가 훑지만 신발 흙으로 산길을 특정한다.
+    relationship_directions: {people: {go_hyeonmuk: risk_shared, seo_harin: coordinated_protection}, factions: {guestpass_network: courier_protected}}
+    reward_candidate: {id: guestpass_act3_ch18_reward_backdoor_knot, name: 객잔 뒷문의 매듭법, type: skill, concept: 피난 동선을 섞지 않는 요령}
+    quest_clue: {name: 반쪽 귀로 봉인목, type: quest_clue, concept: 파괴된 중계소와 산길}
+    flags: {always: [guestpass_gohyeonmuk_inn_test_resolved, guestpass_inn_inheritance_resolved, guestpass_stewardship_accepted, gohyeonmuk_human_witness_opened, qingliu_empty_room_known, qingliu_empty_room_seizure_notice_received, guestpass_suspected_courier_sheltered], success: [guestpass_broken_relay_seal_recovered], failure: [guestpass_next_mountain_soil_identified]}
+  - id: accept_stewardship_not_ownership
+    label: 소유 대신 다음 손님까지의 책임을 적는다
+    immediate_result: 인수인계표를 사람 중심 문장으로 고쳐 쓴다.
+    success: 수탁 매듭과 전달 문구를 받는다.
+    failure: 서하린과 책임 범위를 다시 정한다.
+    relationship_directions: {people: {go_hyeonmuk: stewardship_acknowledged, seo_harin: shared_burden}, factions: {guestpass_network: succession_as_duty, qingliu: return_responsibility}}
+    reward_candidate: {id: guestpass_act3_ch18_reward_handoff_before_clockout, name: 인수인계는 퇴근 전에, type: insight, concept: 책임은 다음 사람이 이어받을 때 닫힌다}
+    quest_clue: {name: 객패 임시 수탁 매듭, type: quest_item, concept: 소유자가 아닌 수탁자 표식}
+    flags: {always: [guestpass_gohyeonmuk_inn_test_resolved, guestpass_inn_inheritance_resolved, guestpass_stewardship_accepted, gohyeonmuk_human_witness_opened, qingliu_empty_room_known, qingliu_empty_room_seizure_notice_received, guestpass_stewardship_terms_spoken], success: [guestpass_temporary_steward_knot_added], failure: [seoharin_stewardship_scope_rewritten]}
+relationship_directions: {people: {seo_harin: shared_labor_without_romance_lock, gohyeonmuk: human_witness_trust, protagonist: stewardship_over_ownership}, factions: {guestpass_network: hospitality_responsibility, qingliu: empty_room_notice, bloodmoon_cult: destroyed_trace_only}}
+rewards: [{id: guestpass_act3_ch18_reward_doubt_enduring_guest, name: 의심을 견딘 손님, type: title, concept: 검증받은 손님}, {id: guestpass_act3_ch18_reward_second_bowl, name: 두 번째 밥그릇, type: quest_item, concept: 다음 손님의 자리}, {id: guestpass_act3_ch18_reward_backdoor_knot, name: 객잔 뒷문의 매듭법, type: skill, concept: 안전한 피난}, {id: guestpass_act3_ch18_reward_handoff_before_clockout, name: 인수인계는 퇴근 전에, type: insight, concept: 책임 계승}]
+quest_clues: [{name: 객패 임시 수탁 매듭, type: main_quest_clue, concept: 객패는 환대 책임이라는 증거}, {name: 청류문 빈방 압류 통고, type: route_clue, concept: 다음 방어 현장}]
+flags: {always: [guestpass_gohyeonmuk_inn_test_resolved, guestpass_inn_inheritance_resolved, guestpass_stewardship_accepted, gohyeonmuk_human_witness_opened, qingliu_empty_room_known, qingliu_empty_room_seizure_notice_received], success: [inn_hospitality_test_passed], failure: [inn_hospitality_cost_recorded], follow_up: [guestpass_route_to_baesan_opened]}
+local_closure: 고현묵은 객패를 소유로 넘기지 않고 수탁 매듭으로 묶는다. 급보는 도착하지만 밤은 식사와 수면으로 닫힌다.
+interlude_safe_state: 객잔에서 장부·설거지·식사·전령 회복을 한다. side 1~2장과 random 약 7개가 가능하다.
+low_pressure_hook: 압류 문서의 빈 줄 순서가 객잔 장부와 같다.
+next_reentry_trigger: required flags와 수탁 매듭, qingliu_empty_room_seizure_notice_received가 확인되면 다음 장이 열린다.
+scene_context: {location: 고현묵 객잔 문턱·부엌·객실, cast: [주인공, 서하린, 고현묵, 손님들], emotional_state: 권리와 환대 책임의 시험}
+cadence_audit: {time: rainy_evening_to_next_morning, place: gohyeonmuk_inn, companions: protagonist_seoharin_gohyeonmuk_guests, injury: wrist_limit_respected, information: relay_witness_and_burnt_token, hostile_pressure: courier_trace_resolved_inside}
+convergence: {meaningful_exclusive_outcomes: [증거 공개, 손님 환대, 전령 보호, 수탁 작성], common_minimum_facts: [guestpass_gohyeonmuk_inn_test_resolved, guestpass_inn_inheritance_resolved, guestpass_stewardship_accepted, gohyeonmuk_human_witness_opened, qingliu_empty_room_known, qingliu_empty_room_seizure_notice_received], local_closure: 객패 책임 계승, exact_state_bridge: 빈방 방어 증거 개방, next_slot: 3/19, next_event_ref: wuxia_guestpass_qingliu_empty_room_seizure_defense, terminal: false}

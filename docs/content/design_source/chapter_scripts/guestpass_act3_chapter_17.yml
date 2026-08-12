@@ -1,0 +1,69 @@
+schema_version: 1
+kind: chapter_script_companion
+status: authoring_draft
+review_status: authoring_review_required
+runtime_status: not_implemented
+script_id: guestpass_act3_chapter_17
+event_ref: wuxia_route_explain_choice_to_seoharin
+slot: 3/17
+title: 역참 문 앞의 신분 설명
+canonical_bridge: {source_gap: true, source_ref: events/imported/wuxia_route_explain_choice_to_seoharin.yml, runtime_provenance: imported_unreviewed_design_only_companion_runtime_not_implemented, note: 원본은 4선택 요약만 제공하며 상세 결과는 authoring-owned 보강이다., required_flags: [qingliu_first_departure_cost_resolved], common_emits: [guestpass_first_relay_identity_chosen], next_gate: guestpass_first_relay_identity_chosen, next_event_ref: wuxia_guestpass_gohyeonmuk_inn_succession}
+entry_conditions: {required_flags: [qingliu_first_departure_cost_resolved]}
+reentry_recap: 2/16 청류문은 회복·당번·객패 추적 비용을 정리했고, 주인공과 서하린은 외곽 길로 나왔다.
+stable_opening: 해질 무렵 주인공은 출근복과 회사 사원증을 확인하고, 서하린은 객패와 봉인 인계장을 나눠 든다.
+local_urgent_conflict: 역참 주인이 현대 신분과 객패의 출처를 의심한다. 서하린은 공동 증인이지 선택 대행자가 아니다.
+beats_and_dialogue:
+  - {beat: 문턱의 질문, scene: 역참 주인이 탄 자국과 사원증을 번갈아 본다., dialogue: '역참 주인: “패를 가진 사람인지, 들고 온 사람인지 말해 주시오.”'}
+  - {beat: 사원증과 객패, scene: 주인공은 사원증은 원래 세계의 소속이고 객패는 맡은 기록이라고 설명한다., dialogue: '주인공: “이건 회사 이름표고, 이건 제가 주인이 아니라 전달자라는 표식입니다.”'}
+  - {beat: 공동 증언, scene: 서하린은 본 이동과 확인한 기록만 말한다., dialogue: '서하린: “무엇을 선택했는지는 그가 말해야 해요.”'}
+  - {beat: 네 선택, scene: 정당화·모름·생각 묻기·회피 중 하나를 택한다., dialogue: '역참 주인: “옆 사람이 대신 찍는 일이 아니오.”'}
+  - {beat: 의심 해소, scene: 주인공은 혈월교나 흑사방의 대리인이 아니며 현재 책임을 선택했다고 말한다., dialogue: '주인공: “파괴를 명령한 사람은 아니지만 기록을 다음 문까지 가져갈 책임은 선택했습니다.”'}
+  - {beat: 숙박, scene: 기록과 증언이 확인되어 작은 방을 얻는다., dialogue: '서하린: “오늘은 여기서 자요. 아침에 다음 책임을 확인해요.”'}
+choices:
+  - id: route_choice_justify
+    label: 선택을 정당화한다
+    immediate_result: 청류문을 떠난 이유와 객패 경로를 설명한다.
+    success: 역참 주인이 일관된 책임 선택으로 인정한다.
+    failure: 설명이 길어져도 인계장 확인 뒤 숙박을 허락한다.
+    relationship_directions: {people: {seo_harin: trust_through_owned_explanation}, factions: {guestpass_network: relay_identity_explained}}
+    reward_candidate: {id: guestpass_act3_ch17_reward_reason_note, name: 문턱에 남긴 사유서, type: investigation_record, concept: 선택 이유와 확인 사실을 분리한 기록}
+    quest_clue: {name: 탄 자국 대조, type: route_clue, concept: 다음 중계소에서 확인할 훼손 기준}
+    flags: {always: [guestpass_first_relay_identity_chosen, route_identity_question_closed], success: [route_choice_justified], failure: [route_justification_overexplained]}
+  - id: route_choice_admit_unknown
+    label: 아직 모르겠다고 말한다
+    immediate_result: 귀환·정착·청류문 어느 길도 확정하지 않고 지금 할 책임만 말한다.
+    success: 역참 주인이 정직한 미정 상태로 인정한다.
+    failure: 서하린이 출발 기록과 숙박 책임을 증언한 뒤 방을 얻는다.
+    relationship_directions: {people: {seo_harin: trust_through_uncertainty_shared}, factions: {guestpass_network: provisional_relay_identity}}
+    reward_candidate: {id: guestpass_act3_ch17_reward_unknown_path_blank, name: 모르는 길의 여백표, type: insight, concept: 결론을 빌려 신분을 꾸미지 않는 판단}
+    quest_clue: {name: 미확정 귀로 표기, type: quest_clue, concept: 목적지보다 전달 책임을 먼저 확인하는 규칙}
+    flags: {always: [guestpass_first_relay_identity_chosen, route_identity_question_closed], success: [route_uncertainty_accepted], failure: [route_uncertainty_needs_witness]}
+  - id: route_choice_ask_seoharin_view
+    label: 서하린의 생각을 묻는다
+    immediate_result: 대신 평가하지 말고 동행자로서 우려와 사실을 말해 달라고 묻는다.
+    success: 서하린이 동행 조건을 말하고 주인이 공동 증언을 인정한다.
+    failure: 질문이 회피처럼 들려도 증언의 선을 정해 숙박을 연다.
+    relationship_directions: {people: {seo_harin: companion_voice_without_choice_substitution}, factions: {qingliu: shared_witness_preserved}}
+    reward_candidate: {id: guestpass_act3_ch17_reward_two_voices_relay_mark, name: 두 목소리의 역참표, type: relationship_clue, concept: 각자의 증언을 이어 붙인 숙박 표식}
+    quest_clue: {name: 이동 조건 메모, type: route_clue, concept: 손목 부담을 다음 계획에 반영할 증언}
+    flags: {always: [guestpass_first_relay_identity_chosen, route_identity_question_closed], success: [seoharin_view_shared_without_substitution], failure: [choice_substitution_boundary_restated]}
+  - id: route_choice_avoid_conversation
+    label: 대화를 피한다
+    immediate_result: 사원증과 객패만 내놓고 설명을 미룬다.
+    success: 인계장과 숙박 책임 확인으로 최소 의심을 해소한다.
+    failure: 침묵이 숨김으로 읽혀 아침 설명 뒤 방이 열린다.
+    relationship_directions: {people: {seo_harin: boundary_respected_but_distance_visible}, factions: {guestpass_network: identity_minimally_registered}}
+    reward_candidate: {id: guestpass_act3_ch17_reward_silent_night_seal, name: 말하지 않은 밤의 봉인, type: safe_state_token, concept: 대화를 미루되 재개 조건을 남긴 증표}
+    quest_clue: {name: 아침 확인 항목 세 줄, type: quest_clue, concept: 고현묵에게 설명할 최소 질문}
+    flags: {always: [guestpass_first_relay_identity_chosen, route_identity_question_closed], success: [identity_minimum_recorded], failure: [conversation_deferred_to_morning]}
+relationship_directions: {people: {seo_harin: companion_and_cowitness_not_decision_maker, protagonist: modern_identity_distinguished}, factions: {qingliu: departure_context_honest, guestpass_network: first_relay_opened, bloodmoon_cult: physical_destruction_trace_only}}
+rewards: [{id: guestpass_act3_ch17_reward_reason_note, name: 문턱에 남긴 사유서, type: investigation_record, concept: 설명 기록}, {id: guestpass_act3_ch17_reward_unknown_path_blank, name: 모르는 길의 여백표, type: insight, concept: 미정 인정}, {id: guestpass_act3_ch17_reward_two_voices_relay_mark, name: 두 목소리의 역참표, type: relationship_clue, concept: 공동 증언}, {id: guestpass_act3_ch17_reward_silent_night_seal, name: 말하지 않은 밤의 봉인, type: safe_state_token, concept: 대화 유예}]
+quest_clues: [{name: 역참의 아침 확인 항목, type: main_quest_clue, concept: 객패 소유가 아닌 환대 책임을 설명할 질문}, {name: 불탄 객패 탄 자국, type: route_clue, concept: 다음 이동 흔적과 겹칠 기준}]
+flags: {always: [guestpass_first_relay_identity_chosen, route_identity_question_closed, permanent_return_not_decided, permanent_settlement_not_decided, seoharin_not_choice_substitute], success: [inn_shelter_granted, identity_explanation_closed], failure: [identity_explanation_repair_recorded], follow_up: [guestpass_inn_succession_ready]}
+local_closure: 역참 주인은 주인공을 파괴 세력의 대리인이 아닌 오늘 밤의 손님이자 객패 전달자로 기록한다.
+interlude_safe_state: 작은 방에서 출근복·사원증·객패 정리, 식사·수면·탄 자국 대조가 가능하다. side 1~2장과 random 약 7개가 가능하다.
+low_pressure_hook: 새벽 장부에 고현묵 객잔 별칭이 보이지만 밤중 추적은 없다.
+next_reentry_trigger: guestpass_first_relay_identity_chosen과 역참 숙박·아침 확인 후 3/18이 열린다.
+scene_context: {location: 역참 현판 아래와 작은 객실, cast: [주인공, 서하린, 역참 주인], emotional_state: 현대 신분과 객패 책임을 분리해 말하는 긴장}
+cadence_audit: {time: departure_evening_to_next_morning, place: roadside_inn_threshold_and_room, companions: protagonist_seoharin_innkeeper, injury: seoharin_wrist_stable, information: first_relay_identity_and_burnt_trace, hostile_pressure: suspicion_only_no_pursuit}
+convergence: {meaningful_exclusive_outcomes: [정당화, 모름, 공동 증언, 대화 유예], common_minimum_facts: [guestpass_first_relay_identity_chosen, route_identity_question_closed, inn_shelter_granted], local_closure: 역참 숙박으로 의심 종결, exact_state_bridge: 첫 중계 책임 설명, next_slot: 3/18, next_event_ref: wuxia_guestpass_gohyeonmuk_inn_succession, terminal: false}

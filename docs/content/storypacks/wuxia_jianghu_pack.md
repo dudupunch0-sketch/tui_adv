@@ -4,6 +4,7 @@ Status: candidate
 
 > Design source: [객패귀로 메인 스토리 통합 설계 v1.1](../design_source/arcs/guestpass_homecoming_main_story_v1_1.md)
 > Independent design source: [일리아스 파편형 독립 사이드 콘텐츠 v1](../design_source/arcs/iliad_fragmented_side_content_v1.md) — 메인 설계와 독립, runtime 미구현
+> Independent authoring source: [무협 독립 랜덤 인카운터 Volume 2](../design_source/arcs/wuxia_random_encounters_volume_2.md) — 신규 RI20 blueprint, 메인 설계와 독립, runtime 미구현
 >
 > 설계 상태: 승인된 메인 스토리 방향 / 개별 authoring 검수 필요 / runtime not implemented. 아래 Record의 기존 runtime 구현 기록은 유지하며, 새 통합 설계가 이를 supersede하거나 구현 완료를 선언하지 않는다.
 

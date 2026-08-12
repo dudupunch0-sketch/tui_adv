@@ -249,6 +249,13 @@ describe('combatThreeAdapter', () => {
     expect(codes(adaptCombatForThree(combat({ frames: [{ tick: 0, pieces: [{ id: 'a', side: 'ally', position: { q: 1, r: 0 }, facing: { q: 1, r: 0 }, active: true, cues: trap([]) }] }] }), options))).toContain('INVALID_CUES@$.view.frames[0].pieces[0].cues');
   });
 
+  it('rejects structurally invalid array lengths at each container', () => {
+    const spoofLength = (length: number) => new Proxy([], { get(target, property, receiver) { if (property === 'length') return length; return Reflect.get(target, property, receiver); } });
+    expect(codes(adaptCombatForThree(combat({ frames: spoofLength(-1) }), options))).toContain('INVALID_FRAMES@$.view.frames');
+    expect(codes(adaptCombatForThree(combat({ frames: [{ tick: 0, pieces: spoofLength(0x100000000) }] }), options))).toContain('INVALID_PIECES@$.view.frames[0].pieces');
+    expect(codes(adaptCombatForThree(combat({ frames: [{ tick: 0, pieces: [{ id: 'a', side: 'ally', position: { q: 1, r: 0 }, facing: { q: 1, r: 0 }, active: true, cues: spoofLength(-1) }] }] }), options))).toContain('INVALID_CUES@$.view.frames[0].pieces[0].cues');
+  });
+
   it('reads pieces and cues descriptors once', () => {
     let pieceDescriptorReads = 0;
     const frame = { tick: 0, get pieces() { pieceDescriptorReads += 1; return 'bad'; } };

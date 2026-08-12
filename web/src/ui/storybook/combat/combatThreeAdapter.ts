@@ -109,6 +109,10 @@ function snapshotBounds(value: unknown): unknown {
   }
 }
 
+function validArrayLength(value: number): boolean {
+  return Number.isSafeInteger(value) && value >= 0 && value <= 0xffffffff;
+}
+
 function validCoord(value: unknown): value is NormalizedCombatCoord {
   return isRecord(value) && isSafeInteger(value.q) && isSafeInteger(value.r);
 }
@@ -291,7 +295,8 @@ function snapshotCombat(input: unknown): SnapshotResult {
       let framesArray = false; try { framesArray = Array.isArray(frames); } catch { return { kind: "fallback", diagnostics: [{ code: "INVALID_FRAMES", severity: "error", path: "$.view.frames" }] }; } if (!framesArray) { outView.frames = frames; }
       else {
         const framesArrayValue = frames as unknown[];
-        let frameLength: number; try { frameLength = framesArrayValue.length; } catch { return { kind: "fallback", diagnostics: [{ code: "INVALID_FRAMES", severity: "error", path: "$.view.frames" }] }; } const frameCopy: unknown[] = new Array(frameLength);
+        let frameLength: number; try { frameLength = framesArrayValue.length; if (!validArrayLength(frameLength)) throw new RangeError('frames length'); } catch { return { kind: "fallback", diagnostics: [{ code: "INVALID_FRAMES", severity: "error", path: "$.view.frames" }] }; }
+        let frameCopy: unknown[]; try { frameCopy = new Array(frameLength); } catch { return { kind: "fallback", diagnostics: [{ code: "INVALID_FRAMES", severity: "error", path: "$.view.frames" }] }; }
         for (let i = 0; i < frameLength; i += 1) {
           let frame: unknown; try { frame = framesArrayValue[i]; } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_FRAME', severity: 'error', path: `$.view.frames[${i}]` }] }; }
           let frameRecord = false;
@@ -309,7 +314,8 @@ function snapshotCombat(input: unknown): SnapshotResult {
           if (piecesArray) {
             const piecesArrayValue = pieces as unknown[];
             boundary = "pieces";
-            let pieceLength: number; try { pieceLength = piecesArrayValue.length; } catch { return { kind: "fallback", diagnostics: [{ code: "INVALID_PIECES", severity: "error", path: "$.view.frames[" + i + "].pieces" }] }; } const pieceCopy: unknown[] = new Array(pieceLength);
+            let pieceLength: number; try { pieceLength = piecesArrayValue.length; if (!validArrayLength(pieceLength)) throw new RangeError('pieces length'); } catch { return { kind: "fallback", diagnostics: [{ code: "INVALID_PIECES", severity: "error", path: "$.view.frames[" + i + "].pieces" }] }; }
+            let pieceCopy: unknown[]; try { pieceCopy = new Array(pieceLength); } catch { return { kind: "fallback", diagnostics: [{ code: "INVALID_PIECES", severity: "error", path: "$.view.frames[" + i + "].pieces" }] }; }
             for (let j = 0; j < pieceLength; j += 1) {
               let piece: unknown; try { piece = piecesArrayValue[j]; } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_PIECE', severity: 'error', path: `$.view.frames[${i}].pieces[${j}]` }] }; }
               let pieceRecord = false;
@@ -325,7 +331,7 @@ function snapshotCombat(input: unknown): SnapshotResult {
               try { hasCues = Object.prototype.hasOwnProperty.call(pieceObject, 'cues'); cues = hasCues ? pieceObject.cues : undefined; } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_CUES', severity: 'error', path: `$.view.frames[${i}].pieces[${j}].cues` }] }; }
               let cuesArray = false;
               try { cuesArray = cues !== undefined && Array.isArray(cues); } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_CUES', severity: 'error', path: `$.view.frames[${i}].pieces[${j}].cues` }] }; }
-              if (cuesArray) { const cuesArrayValue = cues as unknown[]; let cueLength: number; try { cueLength = cuesArrayValue.length; } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_CUES', severity: 'error', path: `$.view.frames[${i}].pieces[${j}].cues` }] }; } const cc: unknown[] = new Array(cueLength); for (let k = 0; k < cueLength; k += 1) { try { cc[k] = cuesArrayValue[k]; } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_CUE', severity: 'error', path: `$.view.frames[${i}].pieces[${j}].cues[${k}]` }] }; } } pc.cues = cc; } else if (hasCues) pc.cues = cues;
+              if (cuesArray) { const cuesArrayValue = cues as unknown[]; let cueLength: number; try { cueLength = cuesArrayValue.length; if (!validArrayLength(cueLength)) throw new RangeError('cues length'); } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_CUES', severity: 'error', path: `$.view.frames[${i}].pieces[${j}].cues` }] }; } let cc: unknown[]; try { cc = new Array(cueLength); } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_CUES', severity: 'error', path: `$.view.frames[${i}].pieces[${j}].cues` }] }; } for (let k = 0; k < cueLength; k += 1) { try { cc[k] = cuesArrayValue[k]; } catch { return { kind: 'fallback', diagnostics: [{ code: 'INVALID_CUE', severity: 'error', path: `$.view.frames[${i}].pieces[${j}].cues[${k}]` }] }; } } pc.cues = cc; } else if (hasCues) pc.cues = cues;
               pieceCopy[j] = pc;
             }
             copy.pieces = pieceCopy;

@@ -1,0 +1,143 @@
+schema_version: 1
+kind: chapter_script_companion
+script_id: guestpass_act2_chapter_13
+event_ref: wuxia_cheongryu_raid_repair_first_debt
+slot: 2/13
+title: 청류문 재건과 환대의 빚
+merged_source_refs:
+  - source_ref: wuxia_cheongryu_rebuild_last_beam
+    adaptation: 마지막 들보의 초기 공동 노동 의미만 차용한다. 후반 재건 완료, 최종전 지형·대사 보정, 후일담 효과는 이 장에 수입하지 않는다.
+entry_conditions:
+  required_flags: [qingliu_survivor_names_recorded, guestpass_first_owner_decode_partial_resolved, guestpass_first_owner_route_narrowed]
+  optional_flags: [qingliu_rebuild_started, qingliu_wounded_care_open, qingliu_work_chore_token_owed, seoharin_shared_responsibility]
+status: authoring_draft
+review_status: authoring_review_required
+runtime_status: not_implemented
+reward_policy:
+  mode: mutually_exclusive_by_choice
+  unique_group: guestpass_act2_ch13_growth_reward
+  hidden_route_exception_only: true
+  unchosen_evidence_recovery: true
+canonical_bridge:
+  source_gap: true
+  source_refs: [wuxia_cheongryu_raid_repair_first_debt, wuxia_cheongryu_rebuild_last_beam]
+  required_flags: [qingliu_survivor_names_recorded, guestpass_first_owner_decode_partial_resolved, guestpass_first_owner_route_narrowed]
+  common_emits: [qingliu_rebuild_started, qingliu_wounded_care_open, qingliu_work_chore_token_owed, seoharin_shared_responsibility, qingliu_repair_hospitality_debt_resolved]
+  next_gate: qingliu_repair_hospitality_debt_resolved
+  next_event_ref: wuxia_black_serpent_ledger_trace
+  note: imported sources have prose conditions only; these authored-owned bridge IDs and runtime mapping are deferred.
+reentry_recap: 습격 뒤 생존자의 이름을 확인하고 불탄 객패의 이동 기록을 해독했다. 청류문은 살아남았지만 처마와 약재 창고와 연무장 일부가 비어 있다. 주인공은 출근 셔츠와 사원증을 지닌 채, 환대받은 자의 빚을 돈이 아닌 손으로 갚으려 한다.
+stable_opening: 며칠의 비와 경계 근무가 지나간 아침, 마당의 물받이가 다시 샌다. 서하린은 다친 사람의 붕대를 갈고 청우진은 처마·약재 선반·연무장을 오늘 할 일로 나눈다. 모든 것을 고칠 수는 없지만 한 생활 기능은 저녁 전에 되살릴 수 있다.
+local_urgent_conflict: 비를 막을 처마, 약재를 꺼낼 선반, 안전하게 디딜 연무장 중 하나를 먼저 쓸 수 있게 해야 한다. 전부 고치려 들면 부상자 돌봄과 노동이 다시 무너진다. 주인공과 서하린은 어떤 기능을 살리고 빚을 어떻게 공동으로 질지 정한다.
+beats_and_dialogue:
+  - beat: 세 줄짜리 재건표
+    scene: 청우진은 젖은 장부에 처마·약재·연무장을 적는다. 주인공은 회사의 우선순위표처럼 보이지만 사람의 몸이 숫자보다 먼저라고 말한다.
+    dialogue: '청우진: “첫 줄은 가장 크게 무너진 곳이 아니다. 사람이 다시 쉴 수 있는 곳이다.”'
+  - beat: 환대의 빚을 재는 법
+    scene: 서하린은 치료받은 사람의 이름 옆에 필요한 손과 물자를 적는다. 주인공이 사원증으로 빚을 갚겠다고 하자 그녀는 그것을 자재 누름판으로만 쓴다.
+    dialogue: '서하린: “그건 네 이름을 증명하지, 빚을 대신 갚지는 않아요. 오늘 할 수 있는 일을 해요.”'
+  - beat: 마지막 들보의 작은 의미
+    scene: 남은 들보 하나는 연무장 전체에는 모자라지만 병상 처마나 약재 선반에는 쓸 수 있다. 주인공은 독점하지 않고 나눌 가능성을 살핀다.
+    dialogue: '주인공: “완성이라 부르면 거짓말이에요. 대신 오늘 밤 비를 막을 한 칸은 만들 수 있어요.”'
+  - beat: 다친 손의 순번
+    scene: 서하린의 손목에 무리가 오자 그녀는 들어 올리는 일 대신 환자 명단과 방향을 맡는다. 주인공은 무거운 일과 기록을 교대한다.
+    dialogue: '서하린: “손 대신 눈을 빌려줄게요. 빠지는 게 책임을 내려놓는 건 아니니까.”'
+  - beat: 공동 노동의 빚표
+    scene: 청류문 사람들은 못과 약초 상자를 한 번씩 나른다. 주인공은 완료 도장을 찍지 않고 다음 당번이 이어 할 빈 칸을 남긴다.
+    dialogue: '청우진: “빚은 지워지는 게 아니라 건너간다. 빈 칸도 재건이다.”'
+  - beat: 한 기능이 돌아오는 저녁
+    scene: 선택한 공간 하나가 다시 쓰이고 나머지는 천과 표지판으로 막힌다. 서하린은 남은 자재를 다음 사람에게 넘긴다.
+    dialogue: '서하린: “끝났다고 부르지 말아요. 다음 사람이 이어 할 수 있으면 오늘의 답이에요.”'
+choices:
+  - id: qingliu_repair_roof_for_wounded
+    label: 부상자 병상 위 처마를 먼저 막는다
+    immediate_result: 주인공은 들보를 잘라 병상 위 받침을 만들고, 서하린은 붕대가 젖지 않는 방향을 확인한다. 다른 곳은 방수 천으로 임시 봉한다.
+    success: 병상 한 줄이 마르고 wounded_care가 공동 당번으로 열린다. 서하린은 손목을 아끼면서도 결정에 참여한다.
+    failure: 병상 두 칸 중 한 칸만 지켜진다. 젖은 약재를 분류해 쓸 몫을 살리고 나머지는 다음 노동으로 넘긴다.
+    relationship_directions:
+      people: {seo_harin: trust_through_shared_care_boundary, cheong_u_jin: positive_for_prioritizing_wounded}
+      factions: {qingliu: wounded_care_restored_partially}
+    reward_candidate: {id: guestpass_act2_ch13_reward_wounded_care_roster, name: 젖지 않은 붕대의 순번표, type: relationship_token, concept: 치료를 다음 당번이 잇는 공동 책임 표식, selected_flag: guestpass_act2_ch13_reward_wounded_care_roster_selected, recorded_flag: guestpass_act2_ch13_reward_wounded_care_roster_recorded}
+    quest_clue: {id: guestpass_act2_ch13_clue_beam_black_stitch, name: 들보 안쪽의 검은 실밥, type: investigation_clue, concept: 병상 쪽 자재가 먼저 빠져나간 흔적; 가해 세력은 미확정, selected_flag: guestpass_act2_ch13_clue_beam_black_stitch_selected, recorded_flag: guestpass_act2_ch13_clue_beam_black_stitch_recorded}
+    flags:
+      always: [qingliu_rebuild_started, qingliu_wounded_care_open, qingliu_work_chore_token_owed, seoharin_shared_responsibility]
+      success: [qingliu_wounded_care_function_restored, qingliu_rebuild_priority_wounded]
+      failure: [qingliu_wounded_care_partial, qingliu_rebuild_material_shortage_recorded]
+  - id: qingliu_repair_medicine_shelf_with_shared_labor
+    label: 약재 창고의 한 선반을 되살린다
+    immediate_result: 주인공은 사원증으로 젖은 종이를 누르고, 당번들과 약재를 쓰임순으로 옮긴다. 서하린은 손으로 들지 않고 분류를 맡는다.
+    success: 해열·상처 약재가 보이는 선반이 생긴다. 현대식 분류법은 청류문 방식과 함께 기록된다.
+    failure: 약재 하나를 잘못 읽어 배치가 뒤섞인다. 냄새와 색으로 재확인해 사고를 막고 모르면 묻는 규칙을 남긴다.
+    relationship_directions:
+      people: {seo_harin: respect_for_honest_uncertainty, cheong_u_jin: practical_trust_through_inventory}
+      factions: {qingliu: medicine_access_reopened}
+    reward_candidate: {id: guestpass_act2_ch13_reward_medicine_guide, name: 출근표처럼 접힌 약재 길잡이, type: authored_insight, concept: 현대식 정리와 약성 지식을 섞은 공동 분류법, selected_flag: guestpass_act2_ch13_reward_medicine_guide_selected, recorded_flag: guestpass_act2_ch13_reward_medicine_guide_recorded}
+    quest_clue: {id: guestpass_act2_ch13_clue_missing_medicine_trace, name: 비어 있는 약재 칸의 운반 흔적, type: investigation_clue, concept: 사라진 약재의 용처가 아직 비어 있는 조사 칸, selected_flag: guestpass_act2_ch13_clue_missing_medicine_trace_selected, recorded_flag: guestpass_act2_ch13_clue_missing_medicine_trace_recorded}
+    flags:
+      always: [qingliu_rebuild_started, qingliu_wounded_care_open, qingliu_work_chore_token_owed, seoharin_shared_responsibility]
+      success: [qingliu_medicine_function_restored, qingliu_rebuild_priority_medicine]
+      failure: [qingliu_medicine_sorting_error_recorded, qingliu_rebuild_inventory_needs_review]
+  - id: qingliu_repair_training_corner_for_next_hand
+    label: 연무장 한 구역을 다음 수련생 몫으로 고친다
+    immediate_result: 주인공은 날카로운 조각을 걷어내고 청우진은 낮은 경계목을 세운다. 서하린은 수련 대신 안전한 발 디딤 순서를 적는다.
+    success: 초보자가 넘어지지 않고 호흡과 발놀림을 연습할 구역이 열린다. 청류문은 다시 시작할 곳이라는 기준을 얻는다.
+    failure: 바닥이 내려앉아 한 사람만 쓸 수 있다. 대련을 막는 표지와 관찰자 순번이 남아 재부상을 피한다.
+    relationship_directions:
+      people: {seo_harin: warm_respect_for_paced_recovery, cheong_u_jin: trust_through_safe_reconstruction}
+      factions: {qingliu: training_function_reopened_cautiously}
+    reward_candidate: {id: guestpass_act2_ch13_reward_safe_footwork_gap, name: 한 칸 비워 둔 발자리, type: authored_skill, concept: 다음 사람의 발이 놓일 공간을 먼저 만드는 회복형 수련 감각, selected_flag: guestpass_act2_ch13_reward_safe_footwork_gap_selected, recorded_flag: guestpass_act2_ch13_reward_safe_footwork_gap_recorded}
+    quest_clue: {id: guestpass_act2_ch13_clue_training_double_scratch, name: 연무장 바닥의 이중 긁힘, type: investigation_clue, concept: 물건이 끌려간 두 방향의 자국; 객패 기록과 대조 예정, selected_flag: guestpass_act2_ch13_clue_training_double_scratch_selected, recorded_flag: guestpass_act2_ch13_clue_training_double_scratch_recorded}
+    flags:
+      always: [qingliu_rebuild_started, qingliu_wounded_care_open, qingliu_work_chore_token_owed, seoharin_shared_responsibility]
+      success: [qingliu_training_corner_restored, qingliu_rebuild_priority_training]
+      failure: [qingliu_training_corner_limited, qingliu_safe_observer_rule_added]
+  - id: qingliu_repair_split_beam_and_debt
+    label: 들보를 나누고 빚표를 모두에게 돌린다
+    immediate_result: 들보를 병상 처마 받침과 약재 선반 버팀목으로 나누고, 남은 일은 사람별 가능한 일로 적는다. 서하린은 손목 상태를 공개한다.
+    success: 두 기능이 완전하지 않아도 함께 돌아간다. qingliu_rebuild·wounded_care·work_chore_token이 서로를 보완한다.
+    failure: 선반은 한 칸, 처마는 한 병상만 지킨다. 누가 이어 할지 분명해져 빚이 개인에게 몰리지 않는다.
+    relationship_directions:
+      people: {seo_harin: strong_positive_shared_limits, cheong_u_jin: trust_through_distributed_debt}
+      factions: {qingliu: shared_labor_debt_acknowledged}
+    reward_candidate: {id: guestpass_act2_ch13_reward_shared_half_beam, name: 두 곳을 잇는 반쪽 들보, type: authored_token, concept: 완성품이 아니어도 생활 기능을 연결하는 재건 표식, selected_flag: guestpass_act2_ch13_reward_shared_half_beam_selected, recorded_flag: guestpass_act2_ch13_reward_shared_half_beam_recorded}
+    quest_clue: {id: guestpass_act2_ch13_clue_rebuild_empty_hand, name: 재건표 뒤에 남은 빈 손, type: main_quest_clue, concept: 습격 전 청류문 노동의 공백을 찾게 하는 단서, selected_flag: guestpass_act2_ch13_clue_rebuild_empty_hand_selected, recorded_flag: guestpass_act2_ch13_clue_rebuild_empty_hand_recorded}
+    flags:
+      always: [qingliu_rebuild_started, qingliu_wounded_care_open, qingliu_work_chore_token_owed, seoharin_shared_responsibility]
+      success: [qingliu_rebuild_shared_labor, qingliu_debt_not_personalized]
+      failure: [qingliu_rebuild_split_function_only, qingliu_debt_distribution_needs_followup]
+relationship_directions:
+  people: {seo_harin: shared_limits_and_care_respected, cheong_u_jin: trust_through_visible_labor}
+  factions: {qingliu: hospitality_debt_turned_into_shared_maintenance}
+rewards:
+  - {name: 환대의 빚을 잇는 작업 토큰, type: authored_quest_token, concept: 빚을 지우지 않고 다음 당번에게 넘기는 표식; 수치와 runtime 효과 deferred}
+  - {name: 반쪽 들보의 사용 기록, type: authored_investigation_record, concept: 살아난 기능과 남은 자재를 숨김없이 기록}
+quest_clues:
+  - {name: 복구되지 않은 세 번째 칸, type: main_quest_clue, concept: 한 기능은 회복됐지만 사라진 물자와 습격 경로는 조사 대상}
+flags:
+  always: [qingliu_rebuild_started, qingliu_work_chore_token_owed, qingliu_repair_materials_still_incomplete, seoharin_axis_branch_recorded]
+  success: [qingliu_repair_hospitality_debt_resolved, qingliu_one_life_function_restored]
+  failure: [qingliu_repair_hospitality_debt_resolved, qingliu_repair_cost_carried_by_group]
+  follow_up: [qingliu_rebuild_remains_incomplete, qingliu_next_debt_review_open, qingliu_low_pressure_recovery_allowed]
+local_closure: 저녁 종이 울릴 때 선택한 한 기능이 다시 쓰인다. 나머지 파손은 천막과 표지로 막고 재건의 빚은 다음 당번표에 남긴다. 적·추격·붕괴는 시작되지 않는다.
+interlude_safe_state: 며칠 동안 회복 식사, 약재 분류, 잡역 당번, 가벼운 수련, 서하린 손목 확인을 삽입할 수 있다. 객패 해독 기록은 기록함에 보관한다.
+low_pressure_hook: 빈 당번 칸의 주인을 찾을지, 사라진 약재 흔적을 조사할지, 서하린과 안전한 발놀림을 복기할지 고를 수 있다.
+next_reentry_trigger: 재건표의 빈칸과 객패 경로가 며칠의 생활 기록에서 같은 외부 방향을 가리키고 조사 준비가 되면 2/14가 열린다.
+cadence_audit:
+  time: several_days_after_raid_aftermath_morning_to_evening
+  place: qingliu_wet_roof_medicine_storehouse_and_training_corner
+  companions: protagonist_seoharin_cheong_u_jin_qingliu_workers
+  injury: survivors_recovering; seoharin_wrist_protected
+  information: one_life_function_restored; missing_materials_and_debt_gaps_remain
+  hostile_pressure: no_attack; unresolved_supply_trace_only
+scene_context:
+  location: 청류문 마당·병상 처마·약재 창고·연무장 가장자리
+  cast: [주인공, 서하린, 청우진, 청류문 당번들, 회복 중인 생존자들]
+  emotional_state: 환대의 빚을 갚고 싶은 조급함과 공동체가 다시 다치지 않게 속도를 늦추는 신뢰
+convergence:
+  meaningful_exclusive_outcomes: 병상 처마는 wounded_care, 약재 선반은 물자 분류, 연무장 구역은 안전한 수련, 들보 나누기는 공동 노동과 debt 축을 앞세운다.
+  common_minimum_facts: [qingliu_repair_hospitality_debt_resolved, qingliu_one_life_function_restored, qingliu_rebuild_remains_incomplete, qingliu_work_chore_token_owed]
+  local_closure: 한 생활 기능만 복구하고 나머지는 안전하게 봉인한다.
+  exact_state_bridge: 생활 기록과 객패 해독 기록이 같은 방향을 가리키면 흑사방 채무 흔적 조사 준비가 된다.
+  next_slot: 2/14
+  next_event_ref: wuxia_black_serpent_ledger_trace
+  terminal: false

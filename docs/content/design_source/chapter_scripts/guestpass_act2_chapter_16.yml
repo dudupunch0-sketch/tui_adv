@@ -1,0 +1,92 @@
+schema_version: 1
+kind: chapter_script_companion
+script_id: guestpass_act2_chapter_16
+event_ref: wuxia_cheongryu_first_departure_cost
+slot: 2/16
+title: 객패 추적 출발
+status: authoring_draft
+review_status: authoring_review_required
+runtime_status: not_implemented
+canonical_bridge:
+  source_gap: true
+  source_ref: events/imported/wuxia_cheongryu_first_departure_cost.yml
+  note: imported source에는 gate·choice ID·결과 구조가 없다. 아래 선택과 flag는 authoring-owned이며 runtime 매핑은 deferred다.
+  required_flags: [wuxia_seoharin_hides_training_injury_resolved, guestpass_partial_decode_recorded, black_serpent_ledger_trace_seen, qingliu_daily_duty_resumed, qingliu_first_departure_cost_ready]
+  common_emits: [qingliu_first_departure_cost_resolved, qingliu_departure_staging_opened, first_route_cost_recorded]
+  next_gate: qingliu_first_departure_cost_resolved
+  next_event_ref: wuxia_route_explain_choice_to_seoharin
+entry_conditions: {required_flags: [wuxia_seoharin_hides_training_injury_resolved, guestpass_partial_decode_recorded, black_serpent_ledger_trace_seen, qingliu_daily_duty_resumed, qingliu_first_departure_cost_ready]}
+reentry_recap: 청류문은 습격 뒤 부상자와 시설을 안정시켰고 객패 각인 일부와 흑사방 장부 경로를 맞췄다. 서하린의 손목은 치료와 당번 조정으로 일상에 돌아왔지만 오래된 부상은 남아 있다. 이제 출발은 가능하되 방식마다 비용이 있다.
+stable_opening: 며칠 뒤 청류문 외곽 작은 야영지에 짐 세 꾸러미와 봉인한 객패 기록이 놓인다. 주인공은 출근 가방에서 메모만 꺼내고, 서하린은 보호대를 한 채 이동 표식을 확인한다. 누구도 당장 쫓지 않는다.
+local_urgent_conflict: 다음 역참 흔적을 따라갈 사람과 청류문에 남을 사람을 정해야 한다. 시간·지원·추적의 질 중 하나를 일부 포기해야 하며, 영구 귀환·정착·이별은 결정하지 않는다.
+beats_and_dialogue:
+  - beat: 안정된 뒤의 출발
+    scene: 청우진은 치료실 명단과 수리 항목을 읽고 산문을 비워 두지 않아도 된다고 말한다.
+    dialogue: '청우진: “문이 다시 닫힐 수 있을 때 나가는 것과, 무너진 채 나가는 것은 다르다.”'
+  - beat: 반쪽 해독
+    scene: 주인공은 객패 각인을 환승 순서처럼 배열하고 흑사방 장부의 비워 둔 역참을 표시한다.
+    dialogue: '주인공: “도착지는 못 박지 못해도, 어느 길이 빚으로 비워졌는지는 보입니다.”'
+  - beat: 손목과 속도
+    scene: 서하린은 동행할 수 있지만 야간 이동은 어렵다고 말한다. 주인공은 동행을 당연한 보상처럼 계산하지 않는다.
+    dialogue: '서하린: “따라가야 한다고 정하지 말고, 제가 남는 비용도 같이 적어요.”'
+  - beat: 세 칸의 비용표
+    scene: stay_time, leave_support, trace_pursuit 세 칸 중 하나를 고른다. 고르지 않은 비용은 다음 역참에서 다시 협상할 수 있다.
+    dialogue: '청우진: “시간을 쓰면 흔적이 늦고, 사람을 데려가면 문이 가벼워지고, 흔적만 좇으면 기록이 얇아진다.”'
+  - beat: 공동 포장
+    scene: 객패 기록·약재·식량·당번 인계가 방수 천에 싸인다. 방향은 정하지만 밤길 추격은 약속하지 않는다.
+    dialogue: '주인공: “답을 찾았다는 뜻이 아니라, 답이 있는 쪽으로 갈 준비가 됐다는 뜻이죠.”'
+  - beat: 야영지의 저녁
+    scene: 두 길표와 빈 길표가 남고, 일행은 식사와 잠자리를 정한 뒤 3/17에서 신분을 고르기로 한다.
+    dialogue: '서하린: “첫 질문은 길에서 하지 말아요. 역참 문 앞에서 우리가 누구인지부터 정해요.”'
+choices:
+  - id: first_departure_stay_until_stable
+    label: 부상자들이 안정될 때까지 남는다
+    immediate_result: 며칠 더 치료·수리·장부 대조를 하고 외곽 야영지에서 출발한다.
+    success: 출발 지원과 인계가 넉넉해지지만 다음 역참 흔적은 희미해진다.
+    failure: 기다리는 동안 장부 빈칸이 늘지만 부상자와 기록은 안전하게 인계된다.
+    relationship_directions: {people: {seo_harin: duty_trusted_over_speed, cheong_u_jin: qingliu_reciprocity_strengthened}, factions: {qingliu: recovery_first_departure_support, guestpass_network: trace_delayed_not_lost}}
+    reward_candidate: {name: 닫힌 문을 확인한 표, type: route_clue, concept: 남은 사람과 기록의 안전을 확인한 출발 증표}
+    quest_clue: {name: 안정화 인계표, type: quest_clue, concept: 치료·수리·당번 인계가 다음 역참 신뢰가 되는 증거}
+    flags: {always: [qingliu_first_departure_cost_resolved, qingliu_departure_staging_opened, first_route_cost_recorded, stay_time_paid], success: [leave_support_strengthened], failure: [trace_pursuit_delayed, ledger_gap_widened]}
+  - id: first_departure_follow_outbound_support
+    label: 외부로 나갈 사람을 따라 떠난다
+    immediate_result: 외부 약재와 수리 자재를 받으러 가는 소규모 행렬에 합류하고 객패 기록은 봉인해 운반한다.
+    success: 이동 인력과 짐을 확보하고 안전한 속도로 외부 표식까지 간다. 서하린의 손목 당번은 문 안에 남는다.
+    failure: 행렬 목적지와 객패 흔적이 어긋나 추적 정보가 분산되지만 외부 신분 질문을 배운다.
+    relationship_directions: {people: {seo_harin: agency_preserved_at_departure, cheong_u_jin: practical_support_exchange}, factions: {qingliu: leave_support_spent, guestpass_network: outside_route_contact_opened}}
+    reward_candidate: {name: 세 번 접은 외출패, type: trade_token, concept: 청류문이 외부 문턱까지 책임지는 임시 통행 표}
+    quest_clue: {name: 외부 거래처의 문턱 질문, type: route_clue, concept: 이름보다 보증을 먼저 묻는 다음 역참 규칙}
+    flags: {always: [qingliu_first_departure_cost_resolved, qingliu_departure_staging_opened, first_route_cost_recorded, leave_support_spent], success: [outside_route_contact_opened], failure: [route_purpose_misaligned, station_identity_question_prepared]}
+  - id: first_departure_trace_with_seoharin
+    label: 서하린과 습격 흔적을 조사한다
+    immediate_result: 둘은 야영지의 발자국·재·장부 숫자를 대조하고 손목을 쓰지 않는 조사 역할을 정한다.
+    success: 객패와 흑사방 장부가 같은 외곽 역참을 가리켜 추적 근거가 두 겹이 된다.
+    failure: 비에 흔적이 씻겨 지점은 좁혀지지 않지만 서하린의 무리하지 않을 선이 기록된다.
+    relationship_directions: {people: {seo_harin: field_partnership_with_wrist_limit, cheong_u_jin: evidence_return_expected}, factions: {qingliu: trace_pursuit_prioritized, guestpass_network: partial_route_crosschecked}}
+    reward_candidate: {name: 두 장부 사이의 매듭, type: investigation_record, concept: 객패 각인과 흑사방 채무 이동을 묶은 조사 기록}
+    quest_clue: {name: 외곽 역참의 빈 칸, type: main_quest_clue, concept: 최초 소유자의 마지막 이동과 채무 흔적이 만날 가능성}
+    flags: {always: [qingliu_first_departure_cost_resolved, qingliu_departure_staging_opened, first_route_cost_recorded, trace_pursuit_spent], success: [first_route_partially_confirmed, seoharin_field_limit_respected], failure: [route_evidence_washed_out, wrist_care_cost_carried_forward]}
+  - id: first_departure_pack_shared_ledger
+    label: 객패·약재·당번 장부를 묶어 출발 준비한다
+    immediate_result: 세 장부를 함께 봉인해 떠나는 사람과 남는 사람의 비용을 공개한다.
+    success: 다음 역참에서 객패와 청류문 인계 기록을 같이 제시할 수 있다.
+    failure: 숫자가 맞지 않아 상태 기반 장부 대조와 정산이 지연되어 숨은 비용이 드러나 신분 선택의 tradeoff를 설명할 수 있다.
+    relationship_directions: {people: {seo_harin: care_record_trusted_not_claimed, cheong_u_jin: transparent_departure_accounting}, factions: {qingliu: shared_costs_made_visible, guestpass_network: hospitality_debt_traceable}}
+    reward_candidate: {name: 출발 비용의 세 칸, type: ledger_clue, concept: 시간·지원·추적 중 하나를 감당하는 현실적 계산표}
+    quest_clue: {name: 봉인된 출발 인계장, type: quest_item, concept: 부분 해독·장부 흔적·손목 당번·청류문 지원을 증명하는 문서}
+    flags: {always: [qingliu_first_departure_cost_resolved, qingliu_departure_staging_opened, first_route_cost_recorded, shared_departure_ledger_sealed], success: [cost_tradeoff_explicit, next_station_bridge_ready], failure: [departure_delay_for_accounting, hidden_cost_exposed]}
+relationship_directions: {people: {seo_harin: agency_preserved_and_care_cost_respected, cheong_u_jin: departure_is_reciprocal_duty, protagonist: cost_chosen_without_permanent_route}, factions: {qingliu: can_release_guest_after_stabilized_aftermath, guestpass_network: partial_trace_becomes_reason, black_serpent: ledger_trace_without_confrontation}}
+rewards:
+  - {name: 닫힌 문을 확인한 표, type: route_clue, concept: 남은 사람의 안전과 출발을 묶은 표}
+  - {name: 세 번 접은 외출패, type: trade_token, concept: 외부 문턱까지의 임시 통행 증표}
+  - {name: 두 장부 사이의 매듭, type: investigation_record, concept: 객패와 채무 흔적을 겹친 기록}
+  - {name: 출발 비용의 세 칸, type: ledger_clue, concept: stay_time·leave_support·trace_pursuit의 구체적 tradeoff}
+quest_clues: [{name: 봉인된 출발 인계장, type: main_quest_clue, concept: 부분 해독·장부 추적·손목 돌봄·청류문 duty가 출발 근거다}, {name: 외곽 역참의 빈 칸, type: route_clue, concept: 객패 최초 소유자의 마지막 경로와 채무 흔적}]
+flags: {always: [qingliu_first_departure_cost_resolved, qingliu_departure_staging_opened, first_route_cost_recorded, permanent_return_not_decided, permanent_settlement_not_decided, wrist_care_and_duty_resolved], success: [departure_cost_selected, qingliu_to_route_bridge_opened], failure: [departure_cost_repair_needed, next_station_identity_unsettled], follow_up: [route_first_identity_choice_ready, guestpass_partial_trace_carried, interlude_camp_available]}
+local_closure: 출발 비용 하나가 장부에 기록되고 일행은 청류문 밖 안정된 야영지에 머문다. 짐은 꾸려졌지만 추격·전투·영구 귀환 또는 정착은 시작되지 않는다.
+interlude_safe_state: 야영지에서 식사·수면·보조 장부·손목 보호대·역참 예절을 준비한다. 1~2개 사이드와 약 7개 랜덤 인카운터가 가능하다.
+low_pressure_hook: 두 길표 중 하나에 객패와 같은 끊긴 선이 있지만 역참 문 앞까지 어느 길인지 확정하지 않는다.
+next_reentry_trigger: 비용 하나와 봉인 인계장이 있고 야영지에서 식사·수면 또는 문턱 연습이 한 번 지나면 3/17이 열린다.
+cadence_audit: {time: several_days_after_recovery_and_repair, place: qingliu_outer_staging_camp_and_departure_road, companions: protagonist_seoharin_optional_outbound_party, injury: seoharin_wrist_stable_with_limit, information: partial_decode_and_black_serpent_ledger_trace, hostile_pressure: distant_trace_only_no_active_chase}
+scene_context: {location: 청류문 외곽 안정 야영지와 출발로 입구, cast: [주인공, 서하린, 청우진, 외부 행렬 동행자], emotional_state: 떠날 수 있다는 안도와 남겨질 책임을 함께 계산하는 결심}
+convergence: {meaningful_exclusive_outcomes: 회복 지원·외부 통행·추적 근거·투명한 비용 기록, common_minimum_facts: [qingliu_first_departure_cost_resolved, qingliu_departure_staging_opened, first_route_cost_recorded, permanent_return_not_decided, permanent_settlement_not_decided], local_closure: 추적은 야영지에서 멎고 비용만 다음 역참으로 간다, exact_state_bridge: 청류문 인계와 객패 추적 이유가 함께 남아 3/17 신분 선택을 연다, next_slot: 3/17, next_event_ref: wuxia_route_explain_choice_to_seoharin, terminal: false}

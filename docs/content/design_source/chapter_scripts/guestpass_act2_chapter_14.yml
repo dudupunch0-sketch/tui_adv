@@ -1,0 +1,143 @@
+schema_version: 1
+kind: chapter_script_companion
+script_id: guestpass_act2_chapter_14
+event_ref: wuxia_black_serpent_ledger_trace
+slot: 2/14
+title: 흑사방 채무 장부 흔적
+entry_conditions:
+  required_flags: [qingliu_repair_hospitality_debt_resolved, guestpass_first_owner_decode_partial_resolved, guestpass_first_owner_route_narrowed]
+  optional_flags: [qingliu_missing_materials_trace, qingliu_debt_distribution_needs_followup, black_serpent_debt_pressure_seen]
+status: authoring_draft
+review_status: authoring_review_required
+runtime_status: not_implemented
+reward_policy:
+  mode: mutually_exclusive_by_choice
+  unique_group: guestpass_act2_ch14_growth_reward
+  hidden_route_exception_only: true
+  unchosen_evidence_recovery: true
+canonical_bridge:
+  source_gap: true
+  source_refs: [wuxia_black_serpent_ledger_trace]
+  required_flags: [qingliu_repair_hospitality_debt_resolved, guestpass_first_owner_decode_partial_resolved, guestpass_first_owner_route_narrowed]
+  common_emits: [black_serpent_fragment_seen, black_serpent_debt_route_trace, black_serpent_coercion_named, black_serpent_fragment_trace_preserved, black_serpent_ledger_trace_resolved, black_serpent_ledger_trace_seen, qingliu_ledger_trace_opened]
+  next_gate: black_serpent_ledger_trace_resolved
+  next_event_ref: wuxia_seoharin_hides_training_injury
+  note: imported source has no canonical choice IDs or gates. The authored-owned IDs below preserve take/copy/burn/show concepts; runtime mapping is deferred. The item is a fragment, never the full master ledger.
+reentry_recap: 청류문은 한 기능을 되살렸지만 재건은 끝나지 않았다. 빈 당번 칸과 객패의 마지막 이동 방향이 흑사방이 드나들던 장터 뒤 창고와 겹친다. 주인공과 서하린은 적을 쫓지 않고, 빚으로 사람을 묶은 흔적 한 조각만 확인하러 간다.
+stable_opening: 장터가 한산한 날 두 사람은 못과 약초를 받으러 오래된 중개 창고에 들른다. 벽 틈에서 검은 비늘 모양 봉랍과 반쪽 숫자표가 떨어지고, 창고 주인은 그것을 보면 가게가 닫힌다고 낮게 말한다.
+local_urgent_conflict: 남은 것은 흑사방 채무 장부의 한 조각이다. 가져가면 채무자를 보호할 수 있지만 보복 위험이 커지고, 태우면 강압의 증거가 사라진다. 오늘 조각을 안전하게 보존하되 누구에게도 빚을 대신 약속하지 않아야 한다.
+beats_and_dialogue:
+  - beat: 숫자표와 사람의 이름
+    scene: 숫자 옆의 작은 점이 돈이 아니라 식사·운반·치료의 종류임을 알아낸다. 서하린은 이름을 소리 내지 않고 천으로 가린다.
+    dialogue: '서하린: “이름을 크게 읽으면 기록이 아니라 표적이 돼요. 먼저 살아 있는 사람의 위치부터 생각해요.”'
+  - beat: 검은 비늘의 표식
+    scene: 봉랍은 흑사방 문양이지만 장부 전체를 증명하지 않는다. 창고 주인은 외상 물자와 독촉이 한 줄에 묶였다고 말한다.
+    dialogue: '창고 주인: “원장부에서 뜯겨 나온 한 조각이오. 한 조각으로 사람을 죄인 만들진 마시오.”'
+  - beat: 강압의 문장
+    scene: ‘빌린 자는 다음 사람을 데려오라’는 압축 기호가 보인다. 혈월교의 불이나 사도의 마지막 계산은 없다. 흑사방은 빚과 전달 의무로 이동을 통제했다.
+    dialogue: '주인공: “불태운 흔적이 아니라 빚을 이어 붙인 흔적이네요.”'
+  - beat: 객패 경로와 겹친 줄
+    scene: 객패의 각인과 창고 번호를 겹치면 같은 지점이 나온다. 하지만 최초 소유자가 흑사방 편이었다고 단정할 만큼 완전하지는 않다.
+    dialogue: '서하린: “같은 길을 쓴 것과 같은 편이었다는 건 달라요.”'
+  - beat: 보여 달라는 사람들
+    scene: 창고 주인과 청류문 당번이 조각을 보여 달라고 한다. 주인공은 공개가 협박을 줄이는지, 누가 이름을 가리는지 살핀다.
+    dialogue: '주인공: “증거를 나누는 것과 빚을 나누겠다는 약속은 다릅니다.”'
+  - beat: 한 조각의 보관법
+    scene: 접으면 숫자가 사라지고 펼치면 눈에 띈다. 네 사람은 복사·봉인·소각을 비교한 뒤 원장부를 즉시 찾지 않기로 한다.
+    dialogue: '서하린: “오늘 필요한 건 완벽한 장부가 아니라 다음 사람이 확인할 흔적이에요.”'
+  - beat: 남은 빚은 물음으로
+    scene: 저녁 기록함에는 조각의 탁본과 가려진 이름 목록이 들어간다. 압박은 추격이 아니라 앞으로 물어야 할 질문으로 남는다.
+    dialogue: '청우진: “흔적을 얻었다고 빚까지 네가 진 건 아니다.”'
+choices:
+  - id: black_serpent_fragment_take_and_seal
+    label: 장부 조각을 챙겨 청류문에서 봉인한다
+    immediate_result: 조각을 천에 싸고 창고 주인에게 수령 사실을 적어 준 뒤, 이름을 가려 기록함에 넣는다.
+    success: 봉랍과 창고 번호가 보존되어 채무 전달선과 객패 경로의 겹침을 후속 조사에 넘긴다. black_serpent_fragment_trace_preserved는 추적 증거로만 기록된다.
+    failure: 조각 모서리가 깨져 이름 두 개가 흐려지지만 봉랍과 번호는 남아 안전한 추적의 최소 단서를 유지한다.
+    relationship_directions:
+      people: {seo_harin: trust_through_protective_custody, cheong_u_jin: archival_responsibility_accepted}
+      factions: {qingliu: cautious_evidence_custody, black_serpent: coercive_route_exposed_without_confrontation}
+    reward_candidate: {id: guestpass_act2_ch14_reward_black_serpent_fragment, name: 검은 비늘 장부 조각, type: quest_item, concept: 채무·강압 전달선을 보이는 반쪽 기록; 전체 원장부가 아님, selected_flag: guestpass_act2_ch14_reward_black_serpent_fragment_selected, recorded_flag: guestpass_act2_ch14_reward_black_serpent_fragment_recorded}
+    quest_clue: {id: guestpass_act2_ch14_clue_sealed_storehouse_number, name: 봉인된 창고 번호, type: main_quest_clue, concept: 객패 각인과 겹치는 중개 지점 번호, selected_flag: guestpass_act2_ch14_clue_sealed_storehouse_number_selected, recorded_flag: guestpass_act2_ch14_clue_sealed_storehouse_number_recorded}
+    flags:
+      always: [black_serpent_fragment_seen, black_serpent_debt_route_trace, black_serpent_coercion_named, black_serpent_fragment_trace_preserved, item_blackscale_ledger_fragment, black_serpent_ledger_trace_resolved, black_serpent_ledger_trace_seen, qingliu_ledger_trace_opened]
+      success: [black_serpent_fragment_sealed_at_qingliu, black_serpent_route_overlap_preserved]
+      failure: [black_serpent_fragment_damaged_but_trace_safe, black_serpent_names_obscured]
+  - id: black_serpent_fragment_copy_masked_names
+    label: 이름을 가리고 필요한 줄만 베낀다
+    immediate_result: 채무 종류·창고 번호·전달 기호만 베끼고 이름 칸은 빈 줄로 남긴 뒤 원본을 창고 주인에게 돌려준다.
+    success: 식량·약재·운반 노동으로 사람을 묶은 구조가 남고 원본 소유자의 위험은 낮아진다. 객패와 겹친 줄만 조사한다.
+    failure: 먹물이 번져 기호 하나가 흐려지지만 창고 주인의 설명과 봉랍 모양이 경로를 보완한다.
+    relationship_directions:
+      people: {seo_harin: respect_for_consent_and_anonymity, cheong_u_jin: useful_partial_report}
+      factions: {qingliu: debtor_safety_prioritized, black_serpent: coercion_structure_recorded_partially}
+    reward_candidate: {id: guestpass_act2_ch14_reward_masked_debt_route_copy, name: 이름 없는 채무선 사본, type: investigation_record, concept: 이름 없이 빚의 방식과 이동선만 보존한 발췌 기록, selected_flag: guestpass_act2_ch14_reward_masked_debt_route_copy_selected, recorded_flag: guestpass_act2_ch14_reward_masked_debt_route_copy_recorded}
+    quest_clue: {id: guestpass_act2_ch14_clue_three_turn_delivery_mark, name: 세 번 꺾인 전달 기호, type: main_quest_clue, concept: 다음 채무자를 데려오게 한 강압 규칙, selected_flag: guestpass_act2_ch14_clue_three_turn_delivery_mark_selected, recorded_flag: guestpass_act2_ch14_clue_three_turn_delivery_mark_recorded}
+    flags:
+      always: [black_serpent_fragment_seen, black_serpent_debt_route_trace, black_serpent_coercion_named, black_serpent_fragment_trace_preserved, black_serpent_ledger_trace_resolved, black_serpent_ledger_trace_seen, qingliu_ledger_trace_opened]
+      success: [black_serpent_masked_copy_made, black_serpent_debtor_safety_preserved]
+      failure: [black_serpent_copy_blurred, black_serpent_witness_statement_needed]
+  - id: black_serpent_fragment_burn_after_recording
+    label: 확인한 뒤 조각을 태워 이름을 없앤다
+    immediate_result: 창고 번호와 전달 기호를 먼저 적고 이름 부분을 불에 넣는다. 봉랍은 재가 되기 전 모양을 기억해 기록한다.
+    success: 협박에 쓸 원본은 사라지지만 채무가 사람을 이동시킨 방식과 객패 경로의 겹침은 남는다.
+    failure: 불이 빨라 번호 일부까지 잃지만 창고 주인의 증언과 현대식 배열표로 방향은 유지된다.
+    relationship_directions:
+      people: {seo_harin: cautious_respect_for_harm_reduction, cheong_u_jin: trust_tempered_by_lost_detail}
+      factions: {qingliu: debtor_names_protected, black_serpent: coercion_trace_survives_without_artifact}
+    reward_candidate: {id: guestpass_act2_ch14_reward_ash_direction_record, name: 재가 된 이름들의 방향표, type: authored_insight, concept: 이름을 소유하지 않고 강압의 방향을 기억하는 기록 윤리, selected_flag: guestpass_act2_ch14_reward_ash_direction_record_selected, recorded_flag: guestpass_act2_ch14_reward_ash_direction_record_recorded}
+    quest_clue: {id: guestpass_act2_ch14_clue_black_wax_ash_pieces, name: 검은 봉랍의 세 조각, type: quest_clue, concept: 장부 전체가 아닌 봉인 방식과 중개 순서를 남긴 잔재, selected_flag: guestpass_act2_ch14_clue_black_wax_ash_pieces_selected, recorded_flag: guestpass_act2_ch14_clue_black_wax_ash_pieces_recorded}
+    flags:
+      always: [black_serpent_fragment_seen, black_serpent_debt_route_trace, black_serpent_coercion_named, black_serpent_fragment_trace_preserved, black_serpent_ledger_trace_resolved, black_serpent_ledger_trace_seen, qingliu_ledger_trace_opened]
+      success: [black_serpent_names_burned_safely, black_serpent_route_direction_preserved]
+      failure: [black_serpent_fragment_burned_too_far, black_serpent_route_requires_witness]
+  - id: black_serpent_fragment_show_with_consent
+    label: 이름을 가린 뒤 서하린과 창고 주인에게 보여 준다
+    immediate_result: 이름 칸을 천으로 덮고 두 사람에게만 펼친다. 창고 주인은 독촉 방식과 객패가 지나간 때를 대조한다.
+    success: 창고 번호와 객패 각인이 같은 중개선을 가리킨다는 공동 확인을 얻는다. 원장부나 사도의 계산을 봤다고 주장하지 않는다.
+    failure: 창고 주인이 겁을 먹고 증언을 거두지만 봉랍 모양과 기록은 안전한 후속 질문의 방향을 남긴다.
+    relationship_directions:
+      people: {seo_harin: strong_positive_shared_consent, cheong_u_jin: transparent_evidence_trust}
+      factions: {qingliu: witness_network_opened_carefully, black_serpent: debtor_coercion_witnessed_not_invited}
+    reward_candidate: {id: guestpass_act2_ch14_reward_consent_witness_line, name: 두 사람만 읽은 검은 줄, type: relationship_clue, concept: 이름을 공개하지 않고 피해 경험을 공동 증언으로 만든 기록, selected_flag: guestpass_act2_ch14_reward_consent_witness_line_selected, recorded_flag: guestpass_act2_ch14_reward_consent_witness_line_recorded}
+    quest_clue: {id: guestpass_act2_ch14_clue_guestpass_debt_route_overlap, name: 객패와 장부의 겹친 중개선, type: main_quest_clue, concept: 환대 경로와 채무 압박 경로가 한 지점에서 겹친 제한적 단서, selected_flag: guestpass_act2_ch14_clue_guestpass_debt_route_overlap_selected, recorded_flag: guestpass_act2_ch14_clue_guestpass_debt_route_overlap_recorded}
+    flags:
+      always: [black_serpent_fragment_seen, black_serpent_debt_route_trace, black_serpent_coercion_named, black_serpent_fragment_trace_preserved, black_serpent_ledger_trace_resolved, black_serpent_ledger_trace_seen, qingliu_ledger_trace_opened]
+      success: [black_serpent_witness_pair_confirmed, black_serpent_route_overlap_preserved]
+      failure: [black_serpent_witness_withdrawn, black_serpent_memory_record_preserved]
+relationship_directions:
+  people: {seo_harin: evidence_consent_and_debtor_safety, cheong_u_jin: partial_record_trusted_without_overclaim, qingliu_storehouse_keeper: cautious_witness_relation}
+  factions: {qingliu: safe_trace_custody, black_serpent: debt_and_coercion_not_fire_or_final_calculation, guestpass_network: route_overlap_requires_verification}
+rewards:
+  - {id: guestpass_act2_ch14_reward_black_serpent_fragment, name: 검은 비늘 장부 조각, type: quest_item, concept: take 선택지만 소유하는 실제 조각; 전체 원장부가 아니며 runtime 효과 deferred}
+  - {name: 빚을 사람에게 돌려주지 않는 기록법, type: authored_insight, concept: 채무 구조는 추적하되 이름과 소유권을 수집하지 않는 조사 원칙}
+quest_clues:
+  - {name: 흑사방의 한 조각짜리 채무선, type: main_quest_clue, concept: 빚으로 사람과 물자를 중개선에 묶었다는 제한적 증거; 원장부 전체는 미확인}
+flags:
+  always: [black_serpent_fragment_seen, black_serpent_debt_route_trace, black_serpent_coercion_named, black_serpent_fragment_trace_preserved, bloodmoon_fire_not_involved, sado_final_calculation_not_involved]
+  success: [black_serpent_ledger_trace_resolved, black_serpent_safe_progression_to_2_15]
+  failure: [black_serpent_ledger_trace_resolved, black_serpent_trace_minimum_preserved]
+  follow_up: [black_serpent_full_ledger_unconfirmed, black_serpent_debtor_questions_open, black_serpent_no_direct_pursuit_started]
+local_closure: 조각은 봉인되거나 가려진 사본과 증언으로 남고, 흑사방의 채무선은 확인되지만 원장부 전체는 손에 들어오지 않는다. 청류문은 즉시 흑사방으로 가지 않고 다음 장에서 서하린의 손목과 공동 책임을 먼저 점검한다.
+interlude_safe_state: 며칠 동안 재건 당번, 익명 기록 정리, 서하린 손목 회복, 장터 물자 교환, 객패 경로와 창고 번호 대조를 삽입할 수 있다.
+low_pressure_hook: 이름을 드러내지 않고 다른 채무자의 증언을 들을지, 청류문 물자 공백과 장부선을 대조할지, 서하린에게 기록의 위험을 설명할지 고를 수 있다.
+next_reentry_trigger: 조각과 객패 경로가 안전하게 봉인되고 며칠의 회복 뒤 서하린의 손목과 공동 책임을 확인할 준비가 되면 2/15가 열린다.
+cadence_audit:
+  time: several_days_after_repair_market_day_to_evening
+  place: old_market_storehouse_and_qingliu_record_room
+  companions: protagonist_seoharin_storehouse_keeper_qingliu_witness
+  injury: seoharin_wrist_protected; survivors_recovering
+  information: fragment_only_debt_route_and_coercion_structure; full_ledger_unknown
+  hostile_pressure: black_serpent_social_coercion_and_reputational_risk_only; no_fire_or_attack
+scene_context:
+  location: 장터 뒤 오래된 중개 창고와 청류문 기록함
+  cast: [주인공, 서하린, 창고 주인, 청류문 당번]
+  emotional_state: 증거를 얻고 싶은 호기심과 이름을 또 다른 빚으로 만들지 않으려는 조심스러움
+convergence:
+  meaningful_exclusive_outcomes: 챙기기는 물적 보관, 베끼기는 익명성과 구조 분석, 태우기는 피해자 보호와 방향 기억, 보여주기는 제한된 공동 증언을 앞세운다.
+  common_minimum_facts: [black_serpent_ledger_trace_resolved, black_serpent_ledger_trace_seen, qingliu_ledger_trace_opened, black_serpent_fragment_seen, black_serpent_debt_route_trace, black_serpent_coercion_named, black_serpent_fragment_trace_preserved, black_serpent_full_ledger_unconfirmed]
+  local_closure: 흑사방은 장부·채무·강압의 세력으로만 확인되며 혈월교의 불과 사도의 최종 계산은 섞이지 않는다.
+  exact_state_bridge: 모든 선택은 원장부 전체가 아닌 안전한 최소 흔적을 남기고 2/15의 손목·공동 책임 점검으로 이어진다.
+  next_slot: 2/15
+  next_event_ref: wuxia_seoharin_hides_training_injury
+  terminal: false

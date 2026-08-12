@@ -1,0 +1,111 @@
+schema_version: 1
+kind: chapter_script_companion
+script_id: guestpass_act2_chapter_09
+event_ref: wuxia_cheongryu_raid_omen
+slot: 2/09
+title: 혈월교 습격 전조
+entry_conditions:
+  required_flags: [guestpass_burnt_token_acquired, guestpass_single_causal_chain_opened, guestpass_destroyed_network_mark_seen, guestpass_first_owner_route_notches_seen, bloodmoon_raid_omen_enabled, wuxia_cheongryu_first_breathing_lesson_resolved, cheongryu_chore_sparring_resolved]
+  blocked_by: []
+status: authoring_draft
+review_status: authoring_review_required
+runtime_status: not_implemented
+referenced_event_runtime_status: implemented_preview
+companion_runtime_sync: not_synced
+runtime_reference: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml#wuxia_cheongryu_raid_omen
+canonical_bridge:
+  source_gap: true
+  source_ref: docs/content/design_source/events/imported/wuxia_cheongryu_raid_omen.yml
+  imported_choice_concepts: 4
+  preview_runtime_choice_ids: 5
+  note: imported source는 4개의 요약 choice concept만 제공하지만 preview runtime은 omen_hidden_two_paths 확장을 포함한 5개의 정확한 choice ID와 reward contract를 가진다. source_gap은 낡은 predecessor/gate 표기만을 뜻하며 아래 authored/runtime 계약은 유지한다.
+  required_flags: [guestpass_single_causal_chain_opened, guestpass_destroyed_network_mark_seen, guestpass_first_owner_route_notches_seen, bloodmoon_raid_omen_enabled, wuxia_cheongryu_first_breathing_lesson_resolved, cheongryu_chore_sparring_resolved]
+  common_emits: [guestpass_omen_investigation_resolved, wuxia_cheongryu_raid_omen_resolved, bloodmoon_raid_omen_enabled]
+  next_gate: wuxia_cheongryu_raid_omen_resolved
+  next_event_ref: wuxia_guestpass_bloodmoon_qingliu_network_destruction
+  gate_note: bloodmoon_raid_omen_enabled는 조사 가능 상태일 뿐 습격을 발생시키지 않는다.
+reentry_recap: 청류문 기록함에는 불탄 객패의 귀로객망 표식과 최초 소유자의 마지막 각인이 함께 봉인되어 있다. 며칠 동안 산문 기록의 공백, 젖은 발자국, 낯선 재가 따로 쌓였고, 주인공은 쫓아갈 것이 아니라 청류문이 무엇을 지킬지 정해야 한다.
+stable_opening: 비가 그친 다음 날 아침, 청류문 산문에는 물기를 털지 못한 출입명부가 걸려 있다. 서하린은 약재 바구니를 내려놓고 객패 탁본과 명부를 같은 천 위에 놓으라고 한다. 출근 셔츠 소매의 꿰맨 실밥이 산문 못에 걸린다.
+local_urgent_conflict: 전조를 조사하는 동안 산문 당번을 비우면 사람과 기록을 놓치고, 휴식만 하면 이상 징후의 연결이 흐려진다. 오늘 확인할 한 가지를 정하고, 습격을 부르거나 막는 대신 며칠 유지할 준비를 끝내야 한다.
+beats_and_dialogue:
+  - {beat: 젖은 명부의 번진 이름, scene: 청우진은 마지막 두 줄이 같은 방향으로 번졌다고 말한다. 서하린은 비가 아니라 젖은 손으로 넘긴 흔적을 짚는다., dialogue: '서하린: “흔적이 크다고 적이 가까운 건 아니에요. 누군가 남길 것과 지울 것을 골랐다는 뜻이죠.”'}
+  - {beat: 세 번의 빈 산문 종, scene: 종줄에는 세 번 짧게 당긴 흔적만 남았다. 주인공은 비상벨 기록처럼 반복과 예외를 표시하고 청우진은 당번표에 적는다., dialogue: '주인공: “경보라기보다 확인 신호 같아요. 한 번에 소리 내지 못한 이유가 있었을 겁니다.”'}
+  - {beat: 약방의 사람과 약재, scene: 서하린은 붕대·해열약·빈 자리를 세고 환자 이름 옆에 필요한 돌봄만 적는다., dialogue: '서하린: “준비는 칼을 세는 일만이 아니에요. 누가 걷지 못하는지 알아야 문을 닫아도 사람을 두고 가지 않죠.”'}
+  - {beat: 폐서고의 뜯긴 매듭, scene: 낡은 순찰표의 빈칸과 객패 각인이 겹친다. 천기록은 펼치지 않고 청류문 기록만 비교한다., dialogue: '청우진: “하늘의 글보다 우리 문에 남은 손때부터 보자.”'}
+  - {beat: 이름을 서두르지 않기, scene: 붉은 가루가 발견되지만 혈월교라고 확정하지 않는다. 파괴 방식과 이동 은닉만 분리 기록한다., dialogue: '주인공: “이름을 먼저 붙이면 다음 흔적을 그 이름에 맞춰 버릴 것 같아요.”'}
+  - {beat: 준비 순번, scene: 산문 당번을 한 사람 더 세우고 기록함과 약방 열쇠를 다른 사람에게 맡긴다. 이는 며칠 유지할 생활 규칙이다., dialogue: '서하린: “오늘 밤을 넘기는 방식은 오늘 밤에 끝나야 해요. 내일 다시 밥 먹을 수 있게.”'}
+choices:
+  - id: omen_gate_register
+    label: 산문과 젖은 출입명부를 직접 확인한다
+    immediate_result: 주인공은 산문 못·명부·객패 탁본의 방향을 배치표에 옮기고 당번에게 같은 순서로 관찰해 달라 한다.
+    success: 마지막 이름의 출입 방향이 갈라져 외부에서 확인하고 물러난 흔적이 남는다.
+    failure: 번진 이름 하나가 지워지지만 산문을 비우지 않는 관찰 순번이 남는다.
+    relationship_directions: {people: {seo_harin: trust_through_shared_boundary_check, cheong_u_jin: positive_report_disciplined}, factions: {qingliu: gate_watch_prepared, guestpass_network: entry_order_preserved}}
+    reward_candidate: {id: reward_pending_wuxia_item_wet_gate_register, name: 젖은 출입명부, type: quest_item, concept: 후속 습격 조사에서 의미가 공개될, 산문 출입 순서를 보존한 기록}
+    quest_clue: {name: 젖은 출입명부의 마지막 방향, type: quest_clue, concept: 산문 확인 뒤 물러난 흔적과 객패 각인을 잇는 단서}
+    flags: {always: [raid_omen_gate_checked], success: [guestpass_omen_gate_order_recovered], failure: [guestpass_omen_gate_register_damaged]}
+  - id: omen_injured_talisman
+    label: 부상자와 약재의 자리를 먼저 점검한다
+    immediate_result: 서하린과 붕대·해열약·빈 자리를 세고, 약방 안쪽의 부상자 이름과 산문까지 옮길 순서를 작은 부적 뒷면에 적는다.
+    success: 환자 이동선과 약재 보충선이 겹치지 않는 돌봄표가 며칠 유지되고, 서하린은 문 안쪽에 걸린 생명의 부적을 떼어 건넨다.
+    failure: 약재 하나가 모자라 외부 조달이 필요하지만, 부상자의 안전한 자리를 표시한 부적을 받아 다음 당번에게 돌봄 책임을 넘긴다.
+    relationship_directions: {people: {seo_harin: strong_positive_people_first_trust, cheong_u_jin: shared_care_responsibility}, factions: {qingliu: recovery_capacity_named, guestpass_network: relay_people_protected}}
+    reward_candidate: {id: wuxia_pendant_life_talisman, name: 생명의 부적, type: pendant, concept: 전투 준비보다 살아 있는 사람의 상태와 자리를 먼저 기억하게 하는 청류문의 부적}
+    quest_clue: {name: 약방 이동선 겹침표, type: quest_clue, concept: 산문과 약방의 병목과 안전한 대피 방향}
+    flags: {always: [raid_omen_injured_talisman_checked], success: [qingliu_wounded_route_prepared], failure: [qingliu_medicine_shortage_recorded]}
+  - id: omen_archive_documents
+    label: 폐서고의 빈칸과 오래된 순찰표를 찾는다
+    immediate_result: 천기록 없이 순찰표의 뜯긴 매듭과 객패 각인을 나란히 베껴 기록함에 넣는다.
+    success: 서로 다른 날의 공백이 같은 중계 방향을 가리킨다.
+    failure: 매듭 하나가 부서져 날짜는 못 읽지만 기록함을 연 손의 습관이 단서로 남는다.
+    relationship_directions: {people: {seo_harin: respect_for_non_mystical_investigation, cheong_u_jin: archive_custodian_trust}, factions: {qingliu: local_records_reconnected, guestpass_network: route_gap_preserved}}
+    reward_candidate: {id: wuxia_insight_sort_like_documents, name: 서류처럼 정리하는 머리, type: insight, concept: 청류문 자체 기록의 빈칸과 순찰표를 문서처럼 배열해 누락의 반복을 읽는 기연}
+    quest_clue: {name: 뜯긴 순찰표의 두 공백, type: quest_clue, concept: 객패 마지막 방향과 기록 공백을 잇는 사본}
+    flags: {always: [raid_omen_archive_checked], success: [guestpass_omen_archive_gap_linked], failure: [guestpass_omen_archive_gap_unreadable]}
+  - id: omen_rest_threshold
+    label: 서하린의 지시에 따라 쉬며 안쪽 자리를 지킨다
+    immediate_result: 주인공은 물을 마시며 기록함과 약방 사이를 지키고 서하린이 외부 확인을 맡는다.
+    success: 당번 교대·식사·수면 순서가 안정되어 준비가 오래 유지된다.
+    failure: 외부 흔적 하나를 놓치지만 서하린이 같은 표식이 반복되지 않았음을 보고한다.
+    relationship_directions: {people: {seo_harin: strong_positive_trust_in_rest_judgment, cheong_u_jin: recovery_respected}, factions: {qingliu: sustainable_watch_opened, guestpass_network: relay_records_kept_safe}}
+    reward_candidate: {id: wuxia_skill_guard_the_threshold, name: 문지방 지키기, type: skill, concept: 서하린의 판단을 믿고 체력을 보존하며 문 안쪽 사람들의 자리를 지키는 경계 습관}
+    quest_clue: {name: 당번표의 빈 교대칸, type: quest_clue, concept: 전조 속에서도 일상을 지속하는 안전 교대의 공백}
+    flags: {always: [raid_omen_rest_threshold_checked], success: [qingliu_watch_sustainable], failure: [guestpass_omen_external_trace_missed]}
+  - id: omen_hidden_two_paths
+    label: 산문 조사와 기록 조사를 이어 두 길의 발자국을 겹친다
+    immediate_result: 주인공은 산문 출입명부의 번진 이름과 폐서고 순찰표의 빈칸을 각각 한 번씩 확인하고, 두 조사에서 지불한 피로와 남은 단서를 별도 줄에 기록한다.
+    success: 두 기록이 같은 중계 방향에서만 겹친다는 사실을 확인해 다음 장의 조사 우선순위를 넓힌다. runtime의 정식 보상은 강제하지 않고, 발견 가능한 단서 후보만 남긴다.
+    failure: 두 조사를 모두 끝내기 전에 몸이 먼저 지쳐 한쪽 기록만 보존하지만, 어느 길을 포기했는지가 후속 해독의 비용으로 명확해진다.
+    relationship_directions: {people: {seo_harin: respect_for_costly_two_path_investigation, cheong_u_jin: trust_in_complete_record}, factions: {qingliu: two_record_watch_understood, guestpass_network: overlapping_route_evidence}}
+    reward_candidate: {name: 두 길의 발자국, type: clue_candidate, concept: runtime 정식 보상 없이 두 조사 기록이 겹치는 순간을 발견하는 별도 단서 후보}
+    quest_clue: {name: 겹쳐진 두 길의 발자국, type: quest_clue, concept: 산문 조사와 기록 조사의 공통 방향을 보여 주는 두 장의 사본}
+    flags: {always: [raid_omen_hidden_two_paths_checked], success: [raid_omen_two_paths_overlapped], failure: [raid_omen_two_paths_cost_recorded]}
+relationship_directions: {people: {seo_harin: shared_preparation_without_panic, cheong_u_jin: evidence_and_routine_trust}, factions: {qingliu: sustainable_boundary_watch, guestpass_network: damaged_route_still_recorded, bloodmoon_cult: suspected_physical_eraser_not_confronted}}
+rewards:
+  - {id: reward_pending_wuxia_item_wet_gate_register, name: 젖은 출입명부, type: quest_item, concept: 산문 출입 순서를 후속 습격 조사로 넘기는 기록}
+  - {id: wuxia_pendant_life_talisman, name: 생명의 부적, type: pendant, concept: 부상자와 약재의 자리를 먼저 확인한 사람에게 건네는 보호 표식}
+  - {id: wuxia_insight_sort_like_documents, name: 서류처럼 정리하는 머리, type: insight, concept: 천기록 없이 청류문 기록의 빈칸을 배열하는 조사 기연}
+  - {id: wuxia_skill_guard_the_threshold, name: 문지방 지키기, type: skill, concept: 체력을 보존하며 안쪽 사람들의 자리를 지키는 경계 습관}
+  - {name: 두 길의 발자국, type: clue_candidate, concept: 히든 조건에서만 의미가 드러나는 별도 단서 후보; runtime 정식 보상은 없음}
+quest_clues:
+  - {name: 누적된 세 전조, type: main_quest_clue, concept: 젖은 명부·빈 순찰표·붉은 재가 같은 방향을 가리키지만 습격 시점은 말하지 않는 증거}
+  - {name: 혈월교 반쪽 문양의 보류 기록, type: investigation_clue, concept: 물리적 지우기 방식은 보이되 세력 전모를 확정하지 않는 단서}
+flags:
+  always: [guestpass_omen_investigation_started, guestpass_single_causal_chain_opened, guestpass_destroyed_network_mark_seen, guestpass_first_owner_route_notches_seen, bloodmoon_raid_omen_enabled]
+  success: [guestpass_omen_investigation_resolved, wuxia_cheongryu_raid_omen_resolved]
+  failure: [guestpass_omen_incomplete_record_saved, wuxia_cheongryu_raid_omen_resolved]
+  follow_up: [qingliu_preparation_window_open, guestpass_raid_damage_investigation_scheduled]
+local_closure: 산문 당번·약방 돌봄표·기록함 열쇠가 며칠 유지 가능한 순서로 정리된다. 붉은 재는 봉인되고 누구도 외부를 쫓지 않는다. 습격은 아직 시작되지 않았으며 불안은 식사와 휴식으로 닫힌다.
+interlude_safe_state: 식사·수면·약방 잡역·기록 정리·경계 교대를 삽입할 수 있다. 객패와 명부는 기록함에 있고 서하린은 당번표에 기록을 남긴다.
+low_pressure_hook: 며칠 뒤 같은 방향의 붉은 재나 이름 없는 전달끈이 돌아오면 준비표의 우선순위를 다시 고를 수 있다.
+next_reentry_trigger: 조사 완료와 며칠의 생활형 간격 뒤 산문·약방·손님채가 동시에 위협받는 징후가 확인되면 2/10이 열린다. bloodmoon_raid_omen_enabled만으로는 열리지 않는다.
+cadence_audit: {time: morning_after_accumulated_traces, place: qingliu_gate_medicine_hall_archive, companions: seo_harin_cheong_u_jin_gate_watch_medicine_helpers, injury: protagonist_recovering_no_new_wound, information: guestpass_traces_correlated_attack_timing_unknown, hostile_pressure: observation_and_preparation_only_no_raid}
+scene_context: {location: 청류문 산문·약방·폐서고 기록함, cast: [주인공, 서하린, 청우진, 산문 당번, 약방 사람들], emotional_state: 전조를 증명하려는 조급함과 오래 지키는 준비 사이의 긴장}
+convergence:
+  meaningful_exclusive_outcomes: 산문은 출입 순서, 약방은 돌봄 지속성, 폐서고는 기록 공백, 휴식은 장기 경계, 표식 지도는 중계 우선순위를 남긴다.
+  common_minimum_facts: [guestpass_omen_investigation_started, guestpass_single_causal_chain_opened, guestpass_destroyed_network_mark_seen, guestpass_first_owner_route_notches_seen, bloodmoon_raid_omen_enabled, guestpass_omen_investigation_resolved, wuxia_cheongryu_raid_omen_resolved]
+  local_closure: 습격 전조 조사는 닫히고 청류문은 생활 가능한 준비 상태에 들어간다.
+  exact_state_bridge: wuxia_cheongryu_raid_omen_resolved와 bloodmoon_raid_omen_enabled를 분리 보존한다. 후자는 공격 실행 플래그가 아니다.
+  next_slot: 2/10
+  next_event_ref: wuxia_guestpass_bloodmoon_qingliu_network_destruction
+  terminal: false

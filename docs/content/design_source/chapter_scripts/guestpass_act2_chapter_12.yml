@@ -1,0 +1,120 @@
+schema_version: 1
+kind: chapter_script_companion
+script_id: guestpass_act2_chapter_12
+event_ref: wuxia_cheongryu_survivor_ledger
+slot: 2/12
+title: 객패 표식과 최초 소유자 기록 해독
+merged_source_refs:
+  - source_ref: wuxia_cheongryu_survivor_ledger
+    provenance: imported
+    adaptation: 선택적 생존자 장부 사건을 2/12 메인 슬롯으로 흡수한다. 이름 확인 기능만 수입하고 사이드·후일담 직접 분기는 수입하지 않는다.
+  - source_ref: wuxia_cheongryu_raid_aftermath_roll_call
+    provenance: imported
+    adaptation: 습격 직후 호명 결과를 선행 게이트로 사용한다. 이름·부상·실종 기록의 사실만 잇고 원문 선택지는 수입하지 않는다.
+  - source_ref: wuxia_guestpass_burnt_token_last_route_record
+    provenance: authored
+    adaptation: authored source의 파괴된 귀로객망 표식과 최초 소유자 마지막 이동 각인을 기준물로 삼는다. 부분 해독 ID는 이 companion 소유다.
+entry_conditions:
+  required_flags: [qingliu_raid_aftermath_roll_call_resolved, guestpass_burnt_token_acquired, guestpass_destroyed_network_mark_seen, guestpass_first_owner_route_notches_seen]
+  optional_flags: [guestpass_decode_reference_preserved, qingliu_wounded_care_open, survivor_debt_named]
+  blocked_by: []
+status: authoring_draft
+review_status: authoring_review_required
+runtime_status: not_implemented
+canonical_bridge:
+  source_gap: true
+  source_refs: [wuxia_cheongryu_survivor_ledger, wuxia_cheongryu_raid_aftermath_roll_call, wuxia_guestpass_burnt_token_last_route_record]
+  required_flags: [qingliu_raid_aftermath_roll_call_resolved, guestpass_burnt_token_acquired, guestpass_destroyed_network_mark_seen, guestpass_first_owner_route_notches_seen]
+  common_emits: [guestpass_first_owner_decode_partial_resolved, guestpass_partial_decode_recorded, guestpass_first_owner_route_narrowed, qingliu_survivor_names_recorded, guestpass_destroyed_network_mark_preserved, guestpass_first_owner_route_order_partial]
+  next_gate: guestpass_first_owner_decode_partial_resolved
+  next_event_ref: wuxia_cheongryu_raid_repair_first_debt
+  note: imported facts are the survivor-ledger option, roll-call prerequisite, and names-after-raid context. Authored bridge owns choice IDs, the combined decode gate, and partial-result flags; runtime mapping is deferred. No complete network route or Tianjilu answer is produced.
+reentry_recap: 청류문 습격 뒤 남은 사람의 이름과 부상·실종 여부를 호명표에 남겼다. 불탄 객패의 파괴된 귀로객망 표식과 최초 소유자 이동 각인은 아직 따로 읽힌다.
+stable_opening: 며칠의 회복 식사와 당번 교대가 지난 오후, 청우진이 생존자 장부와 호명표를 기록함으로 가져온다. 서하린은 부상자 곁에 남고 주인공은 객패를 이름·표식·각인 세 겹으로 옮긴다. 문밖으로 나갈 이유는 없다.
+local_urgent_conflict: 이름을 먼저 확인하면 흔적 해독 시간이 줄고 표식이나 각인을 먼저 밀면 사람을 기호로 덮을 위험이 있다. 어느 순서든 이름과 두 흔적은 모두 보존하되 사용 가능한 방향은 일부만 남겨야 한다. 추적·여행·천기록 확인은 하지 않는다.
+reward_policy:
+  default: mutually_exclusive_by_choice
+  exclusive_group: guestpass_act2_chapter_12_choice_reward
+  hidden_route_exception_only: true
+  unchosen_evidence_recovery: essential names and two traces converge into common progression evidence, but the unchosen growth reward remains unavailable except through the special hidden route.
+beats_and_dialogue:
+  - {beat: 호명표와 생존자 장부, scene: 청우진은 생존·부상·실종 칸을 장부의 빈 줄 옆에 맞춘다. 이름은 숫자가 아니라 다시 불릴 목소리다., dialogue: '청우진: “이름을 세는 건 끝내는 일이 아니오. 다시 불릴 자리를 남기는 일이오.”'}
+  - {beat: 객패의 두 층, scene: 서하린은 앞면의 끊긴 표식과 가장자리 각인에 서로 다른 천을 댄다. 한쪽을 살리느라 다른 쪽을 훼손하지 않는다., dialogue: '서하린: “표식은 망이 끊긴 방식, 각인은 한 사람이 멈춘 방향을 말해요.”'}
+  - {beat: 이름 옆의 빈 줄, scene: 주인공은 이름 옆에 마지막 물건과 부상 상태를 적고 실종자를 사망자로 고정하지 않는다., dialogue: '주인공: “빈칸을 지우면 그 사람이 없었다는 뜻까지 만들어 버려요.”'}
+  - {beat: 파괴된 네트워크 표식, scene: 붉은 재와 끊긴 획을 탁본해 파괴 순서의 일부만 읽는다. 전체망과 다음 지점은 알 수 없다., dialogue: '서하린: “끊긴 매듭은 보여도 남은 길까지 대신 말해 주진 않아요.”'}
+  - {beat: 최초 소유자 경로 각인, scene: 각인과 마지막 목격 장소를 겹쳐 두 지점과 멈춤 방향만 부분 복원한다. 목적지와 생사는 확정하지 않는다., dialogue: '주인공: “끝을 목적지라고 부를 수는 없어요.”'}
+  - {beat: 공동 봉인과 저녁, scene: 이름 목록·표식 탁본·각인 배열표를 따로 봉인하고 식사·애도·수선 계획을 적는다. 천기록은 펼치지 않는다., dialogue: '서하린: “이름을 남겼으면 밥도 남겨야 해요. 오늘 떠날 필요는 없어요.”'}
+choices:
+  - id: decode_names_before_traces_authoring_owned
+    label: 생존자 이름부터 읽고 두 흔적을 대조한다
+    immediate_result: 호명표의 이름·부상·실종 상태를 확인하고 표식 탁본과 각인 배열표를 옆에 붙인다.
+    success: 이름별 마지막 목격 정보와 표식 파괴 순서 일부가 맞물리고 최초 소유자의 중단 방향 한 조각이 남는다.
+    failure: 실종자 한 명의 물건이 엇갈리지만 정정선을 남긴 채 이름·표식·각인 보존본을 봉인한다.
+    relationship_directions: {people: {seo_harin: strong_positive_names_before_symbols, cheong_u_jin: trust_through_careful_roll_call}, factions: {qingliu: survivor_names_kept_visible, guestpass_network: two_traces_preserved_without_route_claim}}
+    reward_candidate: {id: guestpass_act2_chapter_12_reward_names_three_layer_record, name: 이름 옆에 남은 세 겹 기록, type: relationship_record, concept: 생존자 이름과 두 흔적을 한 기록으로 묶은 authoring 기록}
+    quest_clue: {id: guestpass_act2_chapter_12_clue_roll_call_blank_line, name: 호명표와 객패의 겹친 빈 줄, type: main_quest_clue, concept: 이름과 두 흔적이 만나는 제한적 방향; 전체 경로 아님}
+    flags: {always: [guestpass_survivor_names_checked, guestpass_destroyed_network_mark_preserved, guestpass_first_owner_route_order_partial, guestpass_first_owner_decode_partial_resolved, guestpass_partial_decode_recorded, guestpass_first_owner_route_narrowed], selected: [guestpass_act2_chapter_12_choice_names_selected], recorded: [guestpass_act2_chapter_12_choice_names_recorded], success: [qingliu_survivor_names_recorded, guestpass_names_trace_alignment_strong], failure: [qingliu_survivor_name_correction_recorded, guestpass_names_trace_alignment_partial]}
+  - id: decode_destroyed_mark_first_authoring_owned
+    label: 파괴된 귀로객망 표식을 먼저 복원한다
+    immediate_result: 붉은 재와 끊긴 획을 탁본하고 각인 배열표와 생존자 이름을 별도 종이에 연결한다.
+    success: 끊김의 종류와 이름이 확인된 중계 담당자의 마지막 업무 방향이 부분적으로 드러난다.
+    failure: 표식 한 획이 번져 망의 범위는 모호해지지만 모든 이름과 각인 순서는 보존된다.
+    relationship_directions: {people: {seo_harin: respect_for_evidence_and_patience, cheong_u_jin: useful_partial_archive_report}, factions: {qingliu: damage_history_named_without_panic, guestpass_network: destroyed_mark_structure_preserved}}
+    reward_candidate: {id: guestpass_act2_chapter_12_reward_destroyed_knot_rubbing, name: 끊긴 매듭의 탁본첩, type: investigation_record, concept: 표식 파괴 방식과 생존자 이름을 남긴 부분 복원 기록}
+    quest_clue: {id: guestpass_act2_chapter_12_clue_red_stroke_duty_direction, name: 붉은 획과 마지막 당번의 방향, type: investigation_clue, concept: 파괴된 중계의 종류와 한 생존자의 업무 방향; 전체망 답 아님}
+    flags: {always: [guestpass_survivor_names_checked, guestpass_destroyed_network_mark_preserved, guestpass_first_owner_route_order_partial, guestpass_first_owner_decode_partial_resolved, guestpass_partial_decode_recorded, guestpass_first_owner_route_narrowed], selected: [guestpass_act2_chapter_12_choice_destroyed_mark_selected], recorded: [guestpass_act2_chapter_12_choice_destroyed_mark_recorded], success: [guestpass_destroyed_mark_structure_partial, qingliu_mark_witness_recorded], failure: [guestpass_destroyed_mark_blurred, qingliu_mark_recheck_needed]}
+  - id: decode_route_order_first_authoring_owned
+    label: 최초 소유자의 경로 각인 순서를 먼저 배열한다
+    immediate_result: 각인을 환승 기록처럼 배열하되 날짜·목적지는 추정하지 않고 마지막 목격 장소와만 대조한다.
+    success: 지나간 지점 둘과 멈춘 방향 하나의 순서가 부분 복원되고 이름과 표식 탁본이 함께 봉인된다.
+    failure: 각인 두 개를 거꾸로 읽었다가 불가능한 연결을 표시해 수정하고 이름과 두 흔적을 살린다.
+    relationship_directions: {people: {seo_harin: positive_respects_modern_method_with_limits, cheong_u_jin: trust_through_explicit_uncertainty}, factions: {qingliu: route_testimony_kept_nonfinal, guestpass_network: first_owner_order_partially_recovered}}
+    reward_candidate: {id: guestpass_act2_chapter_12_reward_stopped_direction_array, name: 멈춘 방향의 배열표, type: authored_insight, concept: 이동 순서는 읽되 행선지와 생사를 단정하지 않는 해독 습관}
+    quest_clue: {id: guestpass_act2_chapter_12_clue_two_points_one_stop, name: 두 지점과 한 번의 멈춤, type: main_quest_clue, concept: 마지막 경로 순서 일부와 이름 대조; 완전한 이동 답 아님}
+    flags: {always: [guestpass_survivor_names_checked, guestpass_destroyed_network_mark_preserved, guestpass_first_owner_route_order_partial, guestpass_first_owner_decode_partial_resolved, guestpass_partial_decode_recorded, guestpass_first_owner_route_narrowed], selected: [guestpass_act2_chapter_12_choice_route_order_selected], recorded: [guestpass_act2_chapter_12_choice_route_order_recorded], success: [guestpass_first_owner_route_partial, guestpass_route_order_witnessed], failure: [guestpass_route_order_reversed_then_corrected, guestpass_route_destination_unknown]}
+  - id: decode_with_survivor_testimony_authoring_owned
+    label: 생존자 증언을 듣고 기록을 맞춘다
+    immediate_result: 서하린이 마지막으로 본 이름과 물건만 묻고 증언을 표식 탁본·각인 배열표와 나란히 적는다.
+    success: 겹치는 이름 한 줄과 두 흔적의 공통 방향 일부를 확인한다. 증언은 천기록 정답이 아니다.
+    failure: 증언이 엇갈려 장소를 확정하지 못하지만 이름·표식·각인 순서의 불일치를 다음 질문으로 남긴다.
+    relationship_directions: {people: {seo_harin: strong_positive_survivor_consent, cheong_u_jin: trust_through_witness_care}, factions: {qingliu: survivor_testimony_respected, guestpass_network: trace_direction_held_as_partial}}
+    reward_candidate: {id: guestpass_act2_chapter_12_reward_returned_voice_testimony_thread, name: 돌아온 목소리의 증언끈, type: relationship_token, concept: 동의를 거쳐 이름과 두 흔적의 일부 방향을 묶은 기록끈}
+    quest_clue: {id: guestpass_act2_chapter_12_clue_overlapping_broken_direction, name: 두 증언이 겹친 끊긴 방향, type: main_quest_clue, concept: 이름과 표식·각인의 일부 공통 방향; 목적지와 전체망 미확정}
+    flags: {always: [guestpass_survivor_names_checked, guestpass_destroyed_network_mark_preserved, guestpass_first_owner_route_order_partial, guestpass_first_owner_decode_partial_resolved, guestpass_partial_decode_recorded, guestpass_first_owner_route_narrowed], selected: [guestpass_act2_chapter_12_choice_survivor_testimony_selected], recorded: [guestpass_act2_chapter_12_choice_survivor_testimony_recorded], success: [qingliu_survivor_testimony_crosschecked, guestpass_trace_direction_partial], failure: [qingliu_survivor_testimony_conflict_recorded, guestpass_trace_direction_unresolved_but_preserved]}
+relationship_directions:
+  people: {seo_harin: names_and_traces_shared_with_consent, cheong_u_jin: survivor_record_trusted_with_uncertainty}
+  factions: {qingliu: names_preserved_for_mourning_and_repair, guestpass_network: destroyed_mark_and_first_owner_route_only_partially_decoded, bloodmoon_cult: no_new_role_or_direct_pursuit}
+rewards:
+  - {name: 생존자 이름과 두 흔적의 봉인첩, type: main_quest_record, concept: 명단·파괴 표식·최초 소유자 각인을 함께 보존한 부분 해독 기록; runtime 효과 deferred}
+  - {name: 애도 뒤에 놓인 수선표, type: authored_quest_hook, concept: 즉시 이동보다 기록 보관·애도·청류문 수선을 계획하는 후속 표식}
+quest_clues:
+  - {name: 최초 소유자의 반쪽 방향, type: main_quest_clue, concept: 두 흔적과 이름을 대조해 얻은 부분 방향; 전체망·정확한 목적지·천기록 해답 없음}
+  - {name: 파괴 표식의 남은 획과 이름 없는 빈칸, type: investigation_clue, concept: 다음 확인 질문; 즉시 여행이나 추적을 열지 않음}
+flags:
+  always: [qingliu_raid_aftermath_roll_call_resolved, guestpass_survivor_names_checked, guestpass_destroyed_network_mark_preserved, guestpass_first_owner_route_order_partial, guestpass_first_owner_decode_partial_resolved, guestpass_partial_decode_recorded, guestpass_first_owner_route_narrowed, guestpass_tianjilu_shortcut_refused, guestpass_romance_lock_preserved]
+  success: [qingliu_survivor_names_recorded, guestpass_decode_names_and_two_traces_resolved]
+  failure: [qingliu_survivor_names_recorded, guestpass_decode_names_and_two_traces_resolved]
+  follow_up: [qingliu_mourning_plan_open, qingliu_repair_planning_open, guestpass_partial_direction_archived]
+local_closure: 이름·부상·실종 기록은 장부에 남고 파괴 표식과 최초 소유자 각인은 봉인첩에 묶인다. 해독은 부분 방향에서 멈추며 즉시 출발하지 않는다. 식사·애도·보관·수선 계획이 남는다.
+interlude_safe_state: 며칠 동안 생존자 식사와 애도, 기록함 봉인 확인, 약방 잡역, 청류문 수선 계획, 회복 훈련을 삽입할 수 있다. 객패와 봉인첩은 청류문 안에 둔다.
+low_pressure_hook: 부분 방향을 재건표와 대조하거나 생존자의 동의를 얻어 마지막 물건을 확인하거나 자재와 부상자 순번을 정리할 수 있다.
+next_reentry_trigger: 며칠의 애도·회복·보관 뒤 이름표와 부분 방향을 재건표에 안전하게 대조할 준비가 되면 2/13이 열린다. 부분 해독만으로 즉시 이동·추적하지 않는다.
+cadence_audit:
+  time: several_days_after_raid_roll_call_afternoon_to_evening
+  place: qingliu_record_room_mourning_courtyard_medicine_hall
+  companions: protagonist_seoharin_cheong_u_jin_survivors
+  injury: survivors_named_and_recovering; no_new_injury; seoharin_present_for_care
+  information: names_and_two_guestpass_traces_partially_correlated; full_network_and_destination_unknown
+  hostile_pressure: archived_damage_memory_only; no_pursuit_no_countdown_no_new_attack
+scene_context:
+  location: 청류문 기록함·애도 마당·약방 곁
+  cast: [주인공, 서하린, 청우진, 생존자들, 청류문 기록 당번]
+  emotional_state: 이름을 잊지 않으려는 애도와 흔적을 서두르지 않고 보관하려는 절제
+convergence:
+  meaningful_exclusive_outcomes: 이름 우선은 생존자 기록, 표식 우선은 파괴 탁본, 경로 우선은 순서 배열, 증언 우선은 동의 기반 교차 기록을 앞세운다. 네 분기 모두 이름·두 흔적 보존과 부분 해독을 완료한다.
+  common_minimum_facts: [qingliu_raid_aftermath_roll_call_resolved, qingliu_survivor_names_recorded, guestpass_survivor_names_checked, guestpass_destroyed_network_mark_preserved, guestpass_first_owner_route_order_partial, guestpass_first_owner_decode_partial_resolved, guestpass_partial_decode_recorded, guestpass_first_owner_route_narrowed, guestpass_decode_names_and_two_traces_resolved, guestpass_tianjilu_shortcut_refused, guestpass_romance_lock_preserved]
+  local_closure: 생존자 이름과 객패 두 흔적은 봉인되고 방향은 일부만 사용 가능하다. 장은 애도·보관·수선 계획 상태로 닫힌다.
+  exact_state_bridge: guestpass_first_owner_decode_partial_resolved는 authored bridge ID이며 imported source의 사실을 대체하지 않는다. 전체망·정확한 목적지·천기록 답은 생성하지 않고 2/13 재건으로만 연결한다.
+  next_slot: 2/13
+  next_event_ref: wuxia_cheongryu_raid_repair_first_debt
+  terminal: false

@@ -1,0 +1,82 @@
+schema_version: 1
+kind: chapter_script_companion
+script_id: guestpass_act4_chapter_29
+event_ref: wuxia_guestpass_ledger_delay_stratagem
+slot: 4/29
+title: 객패 장부 지연 계략
+status: authoring_draft
+review_status: authoring_review_required
+runtime_status: not_implemented
+referenced_event_runtime_status: not_implemented
+companion_runtime_sync: not_synced
+canonical_bridge:
+  source_gap: false
+  source_ref: events/authored/wuxia_guestpass_ledger_delay_stratagem.yml
+  runtime_provenance: authored_design_source_companion_runtime_not_implemented
+  preserved_preview_choice_ids: [reorder_delivery_after_dark, preserve_names_in_knot_code, carry_decoy_ledger, author_dual_record_together]
+  source_choice_ids: [reorder_delivery_after_dark, preserve_names_in_knot_code, carry_decoy_ledger, author_dual_record_together]
+  required_flags: [black_serpent_boss_bargain_resolved, guestpass_route_records_at_risk]
+  common_emits: [guestpass_ledger_delay_resolved, guestpass_hq_infiltration_lead_retained, sado_first_bargain_opened]
+  next_gate: sado_first_bargain_opened
+  next_event_ref: wuxia_guestpass_sado_first_calculation_bargain
+entry_conditions:
+  required_flags: [black_serpent_boss_bargain_resolved, guestpass_route_records_at_risk]
+  optional_context_flags: [black_serpent_ledger_mark_seen, guestpass_network_witness_opened, seoharin_shared_burden]
+reentry_recap: 흑사방 두목과의 흥정은 끝났지만 객패 이동 기록이 실시간 추적에 노출될 위험이 남았다. 서하린은 기록을 없애지 않고 도착 시각을 늦추는 계략을 제안한다.
+stable_opening: 낮, 주인공은 현대 몸 그대로 출근복과 사원증을 갖춘 채 장부 탁자에 앉는다. 서하린은 손목을 쉬게 하면서 감시자가 보는 낮 기록과 밤의 보호 기록을 직접 나눈다.
+local_urgent_conflict: 기록을 지우면 사람이 사라지고, 그대로 넘기면 이동자가 팔린다. 지연·암호·미끼·이중 원본 중 하나를 정하되 즉시 전투나 고정 카운트다운은 없다.
+beats_and_dialogue:
+  - {beat: 낮의 장부, scene: 서하린이 감시자 앞에서 사실에 맞는 객패 이동 기록을 쓰고 공개본과 보호본의 경계를 표시한다., dialogue: '서하린: “기록을 없애면 사람도 사라져요. 남기되, 늦게 도착하게 만들어요.”'}
+  - {beat: 회사에서 가져온 감각, scene: 주인공은 출근복 소매로 번진 먹물을 닦고 사원증 뒷면에 승인자와 전달 시각을 따로 적는다., dialogue: '주인공: “회사에서는 버전과 결재선을 나눴습니다. 여기서도 누가 언제 원본을 봤는지는 분리할 수 있어요.”'}
+  - {beat: 밤의 빈칸, scene: 두 사람은 이름·이동 순서·전달 시간을 지우지 않고 시간차와 매듭 규칙으로 늦춰 읽히게 만든다., dialogue: '서하린: “빈칸은 삭제가 아니에요. 위험이 지나갈 때까지 묶어 두는 자리예요.”'}
+  - {beat: 네 갈래 책임, scene: 순서 변경·매듭 암호·미끼 장부·이중 원본을 탁자에 놓고 서하린이 선택과 중단 권한을 주인공과 나눈다., dialogue: '서하린: “제가 혼자 희생하는 계략은 만들지 않겠어요. 무엇을 남길지 같이 정해요.”'}
+  - {beat: 사도의 계산 흔적, scene: 흑사방 감시자의 대조용 납인과 장부의 시차를 맞춰 사도가 불일치를 사람의 가격으로 환산한다는 패턴을 확인한다., dialogue: '흑사방 감시자: “늦어진 시간만큼 누군가는 값을 치르지.”'}
+  - {beat: 장내 결산, scene: 선택한 기록을 봉인하고 식사·손목 휴식·다음 확인 날짜를 남긴다., dialogue: '주인공: “오늘 확보한 건 거짓말이 아니라, 사람이 먼저 도착할 시간입니다.”'}
+choices:
+  - id: reorder_delivery_after_dark
+    label: 낮 기록을 두고 밤에 전달 순서만 바꾼다
+    immediate_result: 낮 장부는 검사를 통과하고, 추적대는 이미 비워진 역참에 한발 늦게 도착한다.
+    success: 지연 간격이 들키지 않아 안전 경로와 원장부 회수 시간이 함께 확보된다.
+    failure: 순서 변경은 발각되지만 어떤 기록 시점을 사도가 중요하게 보는지 확인한다.
+    relationship_directions: {people: {seo_harin: positive_respects_restraint, protagonist: shared_timing_responsibility}, factions: {qingliu: positive_rules_preserved, guestpass_network: positive_safe_delay, bloodmoon_cult: physical_role_separate, black_serpent: debt_pressure_only, sado: timing_logic_observed}}
+    reward_candidate: {id: guestpass_act4_ch29_night_approval_line, name: 야간 결재선, type: insight, concept: 기록을 거짓으로 만들지 않고 승인과 전달의 시차로 위험을 흘리는 관점}
+    quest_clue: {name: 세 번 접힌 전달표, type: clue, concept: 같은 사실도 전달 순서에 따라 사람을 살리거나 팔 수 있다는 표}
+    flags: {always: [guestpass_ledger_delivery_reordered, guestpass_ledger_delay_resolved, guestpass_hq_infiltration_lead_retained], success: [black_serpent_realtime_trace_delayed], failure: [sado_timing_priority_seen]}
+  - id: preserve_names_in_knot_code
+    label: 위험한 이름을 빈칸과 매듭 암호로 보존한다
+    immediate_result: 공개 장부에는 빈칸이 남고 서하린만 풀 수 있는 매듭 순서에 사람의 이름이 보존된다.
+    success: 감시자는 빈칸을 누락으로 오해하고 귀로객망은 이름과 경로를 함께 지킨다.
+    failure: 암호 존재가 드러나 추적 압박이 높아지지만 사도가 이름 자체를 통제 자산으로 본다는 증거를 얻는다.
+    relationship_directions: {people: {seo_harin: strong_positive_shared_ethic, protagonist: coauthored_boundary}, factions: {qingliu: positive_names_preserved, guestpass_network: strong_positive_identity_protected, bloodmoon_cult: physical_role_separate, black_serpent: debt_mark_not_rewritten, sado: name_asset_logic_observed}}
+    reward_candidate: {id: guestpass_act4_ch29_knot_ledger, name: 이름을 묶는 사람, type: title, concept: 타인의 이름을 소유하지 않고 위험이 지나갈 때까지 안전하게 묶어 둔 자}
+    quest_clue: {name: 밤에만 읽히는 매듭 장부, type: quest_item, concept: 빈칸을 삭제가 아니라 보존 방식으로 바꾼 대체 원본}
+    flags: {always: [night_knot_ledger_seen, other_names_preserved_in_delay, guestpass_ledger_delay_resolved, guestpass_hq_infiltration_lead_retained], success: [guestpass_names_hidden_without_erasure], failure: [sado_name_asset_logic_revealed]}
+  - id: carry_decoy_ledger
+    label: 주인공이 미끼 장부를 들고 추적선을 끈다
+    immediate_result: 추적대가 주인공을 따라 본선에서 이탈하고 서하린은 안전 경로를 재배치한다.
+    success: 미끼 장부가 원장부 회수조를 다른 길로 유도해 다음 잠입 위험을 낮춘다.
+    failure: 미끼임이 드러나 포위되지만 감시자의 대조용 납인을 빼앗거나 복제한다.
+    relationship_directions: {people: {seo_harin: mixed_trust_and_concern, protagonist: risk_consent_explicit}, factions: {qingliu: conditional_positive_if_returned, guestpass_network: positive_route_protected, bloodmoon_cult: no_physical_pursuit, black_serpent: recovery_tool_exposed, sado: calculation_pressure_seen}}
+    reward_candidate: {id: guestpass_act4_ch29_target_ledger, name: 장부를 든 표적, type: title, concept: 거짓 이름 뒤에 숨지 않고 추적의 시선을 끌어 다른 길을 비운 자}
+    quest_clue: {name: 원장부 대조용 납인, type: quest_item, concept: 미끼와 원본을 가르는 검증 도구이자 원장부 접근의 물리 단서}
+    flags: {always: [guestpass_decoy_ledger_deployed, guestpass_ledger_delay_resolved, guestpass_hq_infiltration_lead_retained], success: [black_serpent_recovery_team_misdirected], failure: [black_serpent_ledger_seal_copied, protagonist_infiltration_risk_raised]}
+  - id: author_dual_record_together
+    label: 서하린과 공동 저자로 이중 원본을 만든다
+    immediate_result: 서하린과 주인공이 서로의 기록을 검증하며 공개본과 보호본을 동시에 완성한다.
+    success: 한 원본이 압수돼도 다른 원본으로 사람과 경로를 복원할 수 있고 공동 저작 증거가 남는다.
+    failure: 필체 차이가 들켜 감시가 강화되지만 사도가 어느 원본을 우선 통제하는지 확인한다.
+    relationship_directions: {people: {seo_harin: strong_positive_coauthor_trust, protagonist: equal_shared_authority}, factions: {qingliu: positive_shared_responsibility, guestpass_network: positive_redundant_record, bloodmoon_cult: physical_role_separate, black_serpent: debt_record_separated, sado: preferred_original_observed}}
+    reward_candidate: {id: guestpass_act4_ch29_two_hand_margin, name: 두 사람의 여백, type: insight, concept: 서로가 남긴 빈칸을 함부로 지우지 않는 공동 기록의 신뢰}
+    quest_clue: {name: 두 필체의 대조본, type: quest_item, concept: 어느 한 사람의 희생이나 독점 없이 기록을 복원하는 교차 원본}
+    flags: {always: [seoharin_defensive_recording, seoharin_protagonist_coauthors, guestpass_ledger_delay_resolved, guestpass_hq_infiltration_lead_retained], success: [guestpass_dual_record_survives], failure: [sado_preferred_original_revealed]}
+relationship_directions: {people: {seo_harin: active_coauthor_and_stop_authority, protagonist: modern_body_and_work_clothes_continuity}, factions: {bloodmoon_cult: physical_destruction_only, black_serpent: debt_and_ledger_pressure_only, sado: calculation_role_only, qingliu: names_and_routes_protected, guestpass_network: records_delayed_not_destroyed}}
+rewards: [{id: guestpass_act4_ch29_night_approval_line, name: 야간 결재선, type: insight, concept: 전달 시차}, {id: guestpass_act4_ch29_knot_ledger, name: 이름을 묶는 사람, type: title, concept: 이름 보존}, {id: guestpass_act4_ch29_target_ledger, name: 장부를 든 표적, type: title, concept: 추적 분산}, {id: guestpass_act4_ch29_two_hand_margin, name: 두 사람의 여백, type: insight, concept: 공동 저작}]
+quest_clues: [{name: 지연된 기록의 세 시각, type: main_quest_clue, concept: 객패 이동 사실·전달 순서·사도 계산 시점을 분리}, {name: 원장부 대조용 납인, type: gate_clue, concept: 흑사방 채무 원장부 접근에는 별도 검증이 필요}]
+flags: {always: [guestpass_ledger_delay_resolved, guestpass_hq_infiltration_lead_retained, immediate_next_combat_forbidden, fixed_countdown_absent, sado_first_bargain_opened], success: [guestpass_delay_stratagem_success], failure: [guestpass_delay_stratagem_failure_recorded], follow_up: [sado_calculation_bargain_ready]}
+local_closure: 네 선택 중 하나의 기록 방식만 보상으로 확정하고, 장부실 안에서 원본·보호본·미끼의 책임선을 봉인한다. 기록 지연 계략은 장내에서 종료되며 다음 행동은 사도의 계산 거래로 분리한다.
+interlude_safe_state: 장부실과 안전한 객잔 방에서 식사·서하린 손목 휴식·출근복과 사원증 정리·선택한 기록 재확인이 가능하다. 다음 확인은 하루 이상의 준비 뒤 열린다.
+low_pressure_hook: 흑사방 납인에 사도가 읽은 시차 계산의 흔적이 남아 있지만, 즉시 추적이나 전투로 이어지지 않고 다음 거래의 질문으로만 남는다.
+next_reentry_trigger: guestpass_ledger_delay_resolved와 sado_first_bargain_opened가 기록된 뒤 wuxia_guestpass_sado_first_calculation_bargain으로 재진입한다.
+scene_context: {location: 귀로객망 장부실과 안전한 객잔 기록방, cast: [주인공, 서하린, 흑사방 감시자], emotional_state: 기록을 보존하면서 사람을 먼저 숨기려는 공동 책임감}
+cadence_audit: {time: late_afternoon_to_next_day_after_meal, place: guestpass_ledger_room_and_safe_inn_room, companions: protagonist_seoharin_black_serpent_observer, injury: seoharin_wrist_rest_required, information: delivery_delay_and_sado_timing_logic, hostile_pressure: ledger_inspection_only_no_pursuit}
+convergence: {meaningful_exclusive_outcomes: [delivery_reordered, names_knot_encoded, decoy_ledger_carried, dual_record_authored], common_minimum_facts: [guestpass_ledger_delay_resolved, guestpass_hq_infiltration_lead_retained, sado_first_bargain_opened], local_closure: 장부전 장내 종료와 선택 보상 하나의 배타 확정, exact_state_bridge: 선택한 지연 방식이 사도의 첫 계산 거래에서 협상 입력이 됨, next_slot: 4/30, next_event_ref: wuxia_guestpass_sado_first_calculation_bargain, terminal: false}

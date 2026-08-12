@@ -1,6 +1,6 @@
-# 객패귀 1~3막 cadence audit
+# 객패귀 1~4막 cadence audit
 
-요약: Act3 등록 후 YAML inventory는 24/48 companion slots, 총 97 choices, 고유 script/slot/event ref 24개다. 직접 검증 결과 design validator PASS, pytest 129 passed, git diff-check PASS이며, 각 장은 closure, hook, reentry, 6축(`time`, `place`, `companions`, `injury`, `information`, `hostile_pressure`)을 갖춘다.
+요약: Act4 등록 후 YAML inventory는 32/48 companion slots, 총 130 choices, 고유 script/slot/event ref 32개다. 최종 검증은 design validator PASS, pytest 129 passed, git diff-check PASS, independent Act4 audit PASS이며, 각 장은 closure, hook, reentry, 6축(`time`, `place`, `companions`, `injury`, `information`, `hostile_pressure`)을 갖춘다.
 
 ## 1막: 1/01–1/08
 
@@ -41,6 +41,28 @@
 | 3/23 | 목격은 네 방식 중 하나의 기록으로 닫히고 심부름꾼은 외원 밖으로 사라진다. 무명과의 대치·추격·출동은 보류되고 식사·손목 휴식을 먼저 선택할 수 있음 | 장작 정리·점심 식사·서하린 손목 휴식·목격 기록 봉인·객잔 장부 대조 가능. side 1~2개와 random 약 7개 가능 | 물길 쪽 젖은 돌에 청류문식 발끝과 흑사방 표식이 겹친 흔적이 남지만 사람의 이름·목적지는 미확정 | `mumyeong_first_sighting_resolved`·`midgame_continuity_started` 기록 후 하루 이상 식사·휴식·대조 뒤 3/24 젖은 봉투 사건. referenced event=`implemented_preview`, companion=`not_synced` |
 | 3/24 | 네 선택 모두 생존 답장과 개인 구조 요청을 분리한다. 봉투는 봉인·반환·제한 공개·증인 확인 중 하나로 정리되고 즉시 출동·발신자 대치는 없음 | 답장 봉인·원문 보관·객잔 장부 대조·서하린 손목 휴식·식사·수면 가능. side 1~2개와 random 약 7개 가능 | 답장 가장자리 물때가 남쪽 물길보다 깊은 지하 수맥 냄새를 품지만 물길 위치·다음 사람 이름은 미확정 | `guestpass_first_reply_to_qingliu_resolved`·`qingliu_survival_reply_sealed` 기록 후 답장·봉투를 하루 이상 보관하고 `wuxia_guestpass_huangquan_waterway_testimony`로 진입. referenced event=`design_only_imported`, companion=`not_synced` |
 
+## 4막: 4/25–4/32
+
+| 슬롯 | closure | safe state | hook | reentry |
+|---|---|---|---|---|
+| 4/25 | 최초 소유자 마지막 경로와 장내 조사를 봉인하고 닫음 | 쉼터에서 사원증·객패·답장 건조, 손목 휴식·식사·수면·기록 복사 | 무명과 같은 보폭의 발자국만 남기고 추적·전투 없음 | 공통 flags 기록과 하루 휴식 뒤 4/26 대치 |
+| 4/26 | 다섯 선택 모두 무명 대치를 마당 안에서 종결; 버티기·분석·이탈 성과와 서하린 중단 권한을 남김 | 객잔 식사·수면·손목 휴식·사원증 끈 수선·출근복 정리·초식 대조; 즉시 추격 없음 | 이름 질문과 물길 창고 장부 경로가 겹치지만 보스·계산자 결론은 유보 | guestpass_mumyeong_name_confrontation_resolved·guestpass_name_claim_tested 후 4/27 |
+| 4/27 | 원장부를 재소유하지 않고 위치·보관자·대조 경로의 최소 증거를 남김; 채무·물리 파괴·계산을 분리 | 객잔 기록방 식사·수면·손목 휴식·사원증/출근복 정리·세 칸 대조; 즉시 전투 없음 | 봉인 자국이 보관함 위치를 가리키나 보관자·대조 경로 우선 | guestpass_ledger_location_lead_opened·guestpass_master_ledger_location_lead 후 4/28 |
+| 4/28 | 네 선택 모두 보스 거래를 장내 종결; 제한 채무·조사·거절·증인 항목화 중 하나만 남기고 즉시 전투 없음 | 객잔 식사·수면·손목 휴식·영수선 대조·사원증/출근복 정리; 즉시 추적 없음 | 지연 표시는 원장부 탈취가 아니라 다음 확인 시각·전달 순서 경고 | black_serpent_boss_bargain_resolved·black_serpent_debt_model_exposed 후 4/29 |
+| 4/29 | 네 기록 방식 중 하나를 확정하고 원본·보호본·미끼 책임선을 장부실에서 봉인 | 장부실/객잔에서 식사·손목 휴식·출근복/사원증 정리·기록 재확인; 하루 준비 | 납인에 사도의 시차 계산 흔적만 남고 추적·전투 없음 | guestpass_ledger_delay_resolved·sado_first_bargain_opened 후 4/30 |
+| 4/30 | 네 분기 모두 세 요소 분리 통제와 원장부 회수 경로를 남기고 장부실 대화를 종결 | 객실 식사·서하린 재검토·손목 휴식·출근복/사원증 정리·증거 재확인 | 세 요소 문턱 전조만 드러나며 즉시 대결 없이 회수 자격 확인 | guestpass_master_ledger_recovery_route_opened 후 4/31 |
+| 4/31 | 약초꾼 거래와 흑사방 채무를 분리 기록하고 회수 경로/부족분을 봉인; 추적·잠입·전투 없음 | 창고 식사·약재 정리·손목 휴식·보호본 재확인; 하루 준비·증언 대조 | 검은 재·봉인 실밥이 본거지 문턱을 가리키나 세 요소 자격은 미확정 | guestpass_three_element_evidence_partial_or_complete 후 부족분 확인, 4/32 |
+| 4/32 | 완전 증거는 본부 진입 eligibility만 열고, 부족하면 recovery route를 남김; 즉시 잠입·추격·전투 없음 | 여관 식사·수면·출근복 세탁·사원증 확인·손목 휴식·장부 경로 조사; 준비·재확인 후 재개 | 문턱 봉인은 침투 초대가 아닌 결과 표지이며 부족한 증거를 먼저 회수 | partial/complete flag 후 complete는 guestpass_network_headquarters_entry_opened, partial은 recovery route로 재진입 |
+
+### Act4 source/runtime provenance
+
+- 4/25: authored design source, companion not_implemented.
+- 4/26: referenced event implemented_preview, companion not_synced.
+- 4/27~4/28: referenced event design_only_imported, companion not_synced.
+- 4/29~4/30: authored design source, companion not_implemented.
+- 4/31: referenced event design_only_imported, companion not_synced.
+- 4/32: referenced event imported_runtime_semantic_conflict; original runtime has death/resurrection choices while companion is a three-element eligibility gate, companion not_synced.
+
 ### Act3 source/runtime provenance
 
 - 3/17: imported 원본, `imported_unreviewed_design_only_companion_runtime_not_implemented`.
@@ -60,7 +82,9 @@
 
 ## 검증 근거
 
-- final validation: design validator PASS; pytest 129 passed.
+- final validation: design validator PASS.
+- tests: pytest 129 passed.
 - canonical validator는 companions를 스캔하지 않는다.
 - diff-check: PASS.
-- YAML inventory: 24 files / 97 choices / 97 unique choice IDs / 97 unique reward names.
+- independent Act4 audit: PASS.
+- YAML inventory: 32 files / 130 choices / 130 unique choice IDs / 130 unique reward names.

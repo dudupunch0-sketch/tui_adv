@@ -1,0 +1,83 @@
+schema_version: 1
+kind: chapter_script_companion
+script_id: guestpass_act4_chapter_30
+event_ref: wuxia_guestpass_sado_first_calculation_bargain
+slot: 4/30
+title: 사도의 첫 거래와 계산 논리
+status: authoring_draft
+review_status: authoring_review_required
+runtime_status: not_implemented
+referenced_event_runtime_status: not_implemented
+companion_runtime_sync: not_synced
+canonical_bridge:
+  source_gap: false
+  source_ref: events/authored/wuxia_guestpass_sado_first_calculation_bargain.yml
+  runtime_provenance: authored_design_source_companion_runtime_not_implemented
+  preserved_preview_choice_ids: [accept_limited_access_trade, reverse_question_the_price, feed_the_decoy_record, place_names_outside_the_price]
+  source_choice_ids: [accept_limited_access_trade, reverse_question_the_price, feed_the_decoy_record, place_names_outside_the_price]
+  required_flags: [sado_first_bargain_opened]
+  common_emits: [sado_first_calculation_bargain_resolved, sado_three_element_control_exposed, sado_role_calculation_control_locked, guestpass_master_ledger_recovery_route_opened, guestpass_three_element_gate_requirement_foreshadowed]
+  next_gate: guestpass_master_ledger_recovery_route_opened
+  next_event_ref: wuxia_chain_herbalist_second_ledger
+  note: authored 원본의 4선택·결과·flags를 보존하며, 모든 분기는 원장부 회수 경로를 유지한다.
+entry_conditions:
+  required_flags: [sado_first_bargain_opened]
+  optional_context_flags: [guestpass_ledger_delay_resolved, sado_timing_priority_seen, sado_name_asset_logic_revealed, sado_preferred_original_revealed]
+reentry_recap: 객패 장부의 지연 계략으로 기록은 사라지지 않고 늦게 도착하게 되었다. 서하린과 주인공은 사도의 첫 거래 자리에서, 통행권·원장부·귀환 단서가 각각 다른 가격표에 놓인다는 사실과 마주한다.
+stable_opening: 낮의 장부실 옆 빈 객실, 주인공은 현대 몸과 출근복을 그대로 둔 채 사원증을 뒤집어 탁자에 놓는다. 서하린은 사도의 세 상자를 직접 확인하고, 어느 것도 대신 결정하지 않겠다는 선을 긋는다.
+local_urgent_conflict: 사도는 객패 통행권, 흑사방 원장부 접근권, 현대 귀환 단서를 한꺼번에 주지 않고 분리 가격화한다. 거래를 수락해도 사람·이름·관계를 담보로 넘기지 않으며 최종전·물리파괴·채무 거래 반복은 없다.
+beats_and_dialogue:
+  - {beat: 세 개의 상자, scene: 사도가 통행권·원장부 열람패·귀환 단서 표식을 서로 다른 상자에 둔다., dialogue: '사도: “통행은 길의 값이고, 원장부는 빚의 값이며, 귀환은 네가 돌아갈 자유의 값이지.”'}
+  - {beat: 가격표의 분리, scene: 객패 통행권은 이동 권리, 원장부는 접근 권리, 귀환 단서는 방향 정보로 각각 분리되어 있음을 확인한다., dialogue: '주인공: “권한을 세 종류로 나누면, 하나를 얻고 나머지를 잃는 계약이 되겠군요.”'}
+  - {beat: 서하린의 독립 판단, scene: 서하린은 자신의 신뢰와 이름을 담보로 계산하지 않고, 각 제안의 숨은 통제자를 따로 표시한다., dialogue: '서하린: “제가 동의할 수 있는 것과, 누구도 제 이름으로 결정할 수 없는 것은 따로예요.”'}
+  - {beat: 현대인의 역질문, scene: 주인공은 회사의 결재선·접근권·버전 기록 감각으로 가격을 정하는 자와 검증하는 자를 구분한다., dialogue: '주인공: “가격표가 있다고 소유권이 생기는 건 아닙니다. 누가 검증할 권한을 가졌는지부터 보죠.”'}
+  - {beat: 계산표의 틈, scene: 거래 수락·역질문·미끼·가격 밖 선언 중 하나로 사도의 검증 순서와 원장부 회수 경로의 한 층을 드러낸다., dialogue: '사도: “거절해도 다음 비용은 내가 정한다. 네가 가진 선택도 계산 안에 있으니까.”'}
+  - {beat: 장내 결산, scene: 선택한 패찰·산식표·역탁본·이름표를 봉인하고 식사와 휴식 뒤 원장부 회수 준비를 정한다., dialogue: '서하린: “오늘 끝난 건 거래의 승패가 아니에요. 무엇을 가격에 올리지 않을지 정한 일이에요.”'}
+choices:
+  - id: accept_limited_access_trade
+    label: 원장부 열람권만 한시적으로 거래한다
+    immediate_result: 사도는 원본이 아닌 열람 장소와 시간을 적은 패찰을 주고 주인공의 객패에 임시 봉인을 요구한다.
+    success: 봉인의 범위를 제한해 객패 소유권을 지키면서 원장부 보관 층과 교대 시각을 얻는다.
+    failure: 열람 시간이 짧아지지만 사도가 객패를 직접 가져가지 못하고 접근권만 묶으려 한다는 한계를 확인한다.
+    relationship_directions: {people: {seo_harin: mixed_respects_limit_questions_trade, protagonist: negotiated_scope_not_total_surrender}, factions: {qingliu: neutral_no_person_offered, guestpass_network: conditional_token_access_temporarily_bound, bloodmoon_cult: physical_role_excluded, black_serpent: prior_debt_bargain_not_repeated, sado: access_price_control_exposed}}
+    reward_candidate: {id: guestpass_act4_ch30_limited_ledger_access_pass, name: 세 시진짜리 원장부 열람패, type: quest_item, concept: 원장부 소유가 아닌 제한 접근과 보관 층·교대 시각을 드러내는 패찰}
+    quest_clue: {name: 열람 층과 교대 시각, type: ledger_route_clue, concept: 원장부 회수조가 비는 짧은 회수 창구}
+    flags: {always: [sado_limited_ledger_access_offered, sado_first_calculation_bargain_resolved, sado_three_element_control_exposed, sado_role_calculation_control_locked, guestpass_master_ledger_recovery_route_opened, guestpass_three_element_gate_requirement_foreshadowed], success: [black_serpent_master_ledger_shift_known], failure: [sado_guestpass_access_limit_exposed]}
+  - id: reverse_question_the_price
+    label: 가격표의 산식과 소유자를 되묻는다
+    immediate_result: 사도는 거래를 재촉하는 대신 자신의 계산표를 설명해야 하고, 서하린은 답이 바뀌는 항목을 따로 표시한다.
+    success: 같은 이름에 서로 다른 가격을 붙인 모순에서 원장부의 진짜 대조 열쇠를 찾는다.
+    failure: 사도가 대화를 끊지만 감추려 한 검증 순서와 귀환 단서의 별도 보관 사실이 드러난다.
+    relationship_directions: {people: {seo_harin: strong_positive_shared_logical_resistance, protagonist: modern_contract_logic_used, sado: calculation_challenged_not_fought}, factions: {qingliu: positive_people_not_reduced_to_cost, guestpass_network: positive_ownership_claim_questioned, bloodmoon_cult: physical_role_excluded, black_serpent: debt_role_not_repeated}}
+    reward_candidate: {id: guestpass_act4_ch30_price_authority_reverse_sum, name: 값을 묻는 자의 역산, type: insight, concept: 숫자보다 가격을 정할 권한과 숨은 전제를 먼저 추적하는 시선}
+    quest_clue: {name: 값이 두 번 바뀐 산식표, type: quest_clue, concept: 사도의 가격이 객관적 계산이 아니라 통제 목적에 따라 바뀐다는 물증}
+    flags: {always: [sado_price_authority_questioned, sado_first_calculation_bargain_resolved, sado_three_element_control_exposed, sado_role_calculation_control_locked, guestpass_master_ledger_recovery_route_opened, guestpass_three_element_gate_requirement_foreshadowed], success: [black_serpent_master_ledger_crosscheck_key_seen], failure: [sado_return_clue_separate_storage_seen]}
+  - id: feed_the_decoy_record
+    label: 밤 장부의 미끼 한 줄을 진짜처럼 건넨다
+    immediate_result: 사도는 미끼의 사람 이름보다 이동 시각과 원장부 납인을 먼저 대조하며 검증 우선순위를 노출한다.
+    success: 미끼가 한 차례 통과해 원장부 회수조를 빈 보관함으로 유도할 시간이 생긴다.
+    failure: 미끼임을 간파당하지만 사도가 사용한 원장부 대조 납인의 흠집을 복제한다.
+    relationship_directions: {people: {seo_harin: positive_coauthored_ruse_used_with_consent, protagonist: prior_delay_record_owned, sado: negative_deception_detected_or_suspected}, factions: {qingliu: conditional_positive_if_names_remain_safe, guestpass_network: positive_real_routes_protected, bloodmoon_cult: physical_role_excluded, black_serpent: recovery_tool_not_debt_trade}}
+    reward_candidate: {id: guestpass_act4_ch30_sado_counterseal_rubbing, name: 사도 대조납인의 역탁본, type: quest_clue, concept: 미끼를 검증할 때 눌린 반대 모양으로 원장부 봉인 순서를 추적하는 단서}
+    quest_clue: {name: 검증 우선순위의 흠집, type: ledger_route_clue, concept: 사도는 사람 이름보다 이동 시각과 납인을 먼저 통제한다는 증거}
+    flags: {always: [guestpass_delay_ledger_used_against_sado, sado_first_calculation_bargain_resolved, sado_three_element_control_exposed, sado_role_calculation_control_locked, guestpass_master_ledger_recovery_route_opened, guestpass_three_element_gate_requirement_foreshadowed], success: [black_serpent_master_ledger_recovery_window_opened], failure: [sado_master_seal_imprint_copied]}
+  - id: place_names_outside_the_price
+    label: 사람의 이름과 관계는 거래표에서 지운다
+    immediate_result: 주인공과 서하린이 서로의 이름을 거래 권한 밖의 공동 증언으로 선언하고 사도의 가격표 한 칸을 비워 둔다.
+    success: 사도가 이름 없이 세 요소를 묶을 계산식을 완성하지 못해 원장부 회수 경비를 재배치한다.
+    failure: 협박 수위가 높아지지만 이름을 담보로 삼지 않은 공개 거절이 이후 자격 시험의 증거로 남는다.
+    relationship_directions: {people: {seo_harin: strong_positive_name_and_relation_not_for_sale, protagonist: shared_noncollateral_boundary, sado: strong_negative_unpriced_choice_declared}, factions: {qingliu: strong_positive_community_outside_price, guestpass_network: strong_positive_other_names_not_collateral, bloodmoon_cult: physical_role_excluded, black_serpent: debt_role_not_repeated}}
+    reward_candidate: {id: guestpass_act4_ch30_unpriced_name_tag, name: 무가명, type: title, concept: 누구도 값을 매길 권리가 없다고 선언한 이름}
+    quest_clue: {name: 값이 적히지 않은 이름표, type: quest_item, concept: 이름을 담보에서 제외한 두 사람의 공동 증언 표}
+    flags: {always: [sado_name_collateral_refused, sado_first_calculation_bargain_resolved, sado_three_element_control_exposed, sado_role_calculation_control_locked, guestpass_master_ledger_recovery_route_opened, guestpass_three_element_gate_requirement_foreshadowed], success: [sado_calculation_missing_name_operand], failure: [unpriced_name_public_refusal_recorded]}
+relationship_directions: {people: {seo_harin: independent_judgment_and_stop_authority, protagonist: modern_body_work_clothes_badge_continuity, sado: calculation_controller_not_final_battle}, factions: {bloodmoon_cult: physical_destruction_excluded, black_serpent: prior_debt_bargain_distinct, sado: access_and_price_control_only, qingliu: people_outside_price, guestpass_network: recovery_route_preserved}}
+rewards: [{id: guestpass_act4_ch30_limited_ledger_access_pass, name: 세 시진짜리 원장부 열람패, type: quest_item, concept: 제한된 원장부 접근}, {id: guestpass_act4_ch30_price_authority_reverse_sum, name: 값을 묻는 자의 역산, type: insight, concept: 가격 권한 추적}, {id: guestpass_act4_ch30_sado_counterseal_rubbing, name: 사도 대조납인의 역탁본, type: quest_clue, concept: 봉인 순서 추적}, {id: guestpass_act4_ch30_unpriced_name_tag, name: 무가명, type: title, concept: 이름의 비담보 선언}]
+quest_clues: [{name: 세 요소의 세 가격표, type: main_quest_clue, concept: 객패 통행권·원장부 접근권·현대 귀환 단서는 서로 다른 소유·접근 조건을 가진다}, {name: 사도의 계산 통제, type: gate_clue, concept: 사도는 세 요소를 분리해 통제하며 사람의 이름과 관계를 가격 항목으로 만들려 한다}]
+flags: {always: [sado_first_calculation_bargain_resolved, sado_three_element_control_exposed, sado_role_calculation_control_locked, guestpass_master_ledger_recovery_route_opened, guestpass_three_element_gate_requirement_foreshadowed, immediate_next_combat_forbidden, fixed_countdown_absent], success: [sado_first_calculation_bargain_success], failure: [sado_first_calculation_bargain_failure_recorded], follow_up: [herbalist_second_ledger_ready]}
+local_closure: 네 분기 모두 사도의 세 요소 분리 통제와 원장부 회수 경로를 남긴다. 선택한 거래 결과와 배타 보상 하나를 장내에서 봉인하고, 최종전·물리파괴·채무 재거래 없이 장부실의 대화를 종료한다.
+interlude_safe_state: 장부실 옆 객실에서 식사·서하린의 독립 재검토·손목 휴식·출근복과 사원증 정리·선택한 패찰 또는 증거 재확인이 가능하다. 원장부 회수는 준비와 재검증 뒤 재개된다.
+low_pressure_hook: 세 요소를 모두 요구하는 문턱의 전조가 드러났지만, 사도와 즉시 대결하지 않고 원장부 회수 자격을 먼저 확인해야 한다.
+next_reentry_trigger: guestpass_master_ledger_recovery_route_opened 기록 후 wuxia_chain_herbalist_second_ledger로 재진입한다.
+scene_context: {location: 사도의 임시 계산실과 장부실 옆 객실, cast: [주인공, 서하린, 사도], emotional_state: 사람을 가격표에서 지키면서도 통제 구조를 읽어 내는 긴장된 냉정함}
+cadence_audit: {time: next_morning_to_evening_with_meal_and_rest, place: sado_calculation_room_guestpass_ledger_room_safe_guest_room, companions: protagonist_seoharin_sado, injury: seoharin_wrist_limit_respected, information: three_element_price_control_and_ledger_route, hostile_pressure: verbal_bargain_only_no_final_battle}
+convergence: {meaningful_exclusive_outcomes: [limited_access_traded, price_authority_questioned, decoy_record_fed, names_placed_outside_price], common_minimum_facts: [sado_first_calculation_bargain_resolved, sado_three_element_control_exposed, sado_role_calculation_control_locked, guestpass_master_ledger_recovery_route_opened, guestpass_three_element_gate_requirement_foreshadowed], local_closure: 장내 거래 종료와 배타 보상 하나의 봉인, exact_state_bridge: 원장부 회수 경로와 세 요소 자격 전조가 약초꾼 두 번째 장부로 연결됨, next_slot: 4/31, next_event_ref: wuxia_chain_herbalist_second_ledger, terminal: false}

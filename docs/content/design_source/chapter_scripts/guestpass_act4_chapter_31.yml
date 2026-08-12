@@ -1,0 +1,84 @@
+schema_version: 1
+kind: chapter_script_companion
+script_id: guestpass_act4_chapter_31
+event_ref: wuxia_chain_herbalist_second_ledger
+slot: 4/31
+title: 약초꾼의 두 번째 장부와 원장부의 그림자
+status: authoring_draft
+review_status: authoring_review_required
+runtime_status: not_implemented
+referenced_event_runtime_status: design_only_imported
+companion_runtime_sync: not_synced
+canonical_bridge:
+  source_gap: true
+  source_ref: events/imported/wuxia_chain_herbalist_second_ledger.yml
+  runtime_provenance: imported_unreviewed_design_only_three_choice_summary
+  preserved_preview_choice_ids: [return_the_ledger, copy_the_ledger, burn_the_ledger]
+  source_choice_ids: [return_the_ledger, copy_the_ledger, burn_the_ledger]
+  fourth_choice: compare_against_master_ledger_trace
+  semantic_note: 원본의 약재 거래 책임 확인과 3선택 요약을 보존하고, 원장부 회수 경로와 세 요소 증거를 authoring-owned로 확장한다.
+  required_flags: [sado_first_calculation_bargain_resolved, guestpass_master_ledger_recovery_route_opened]
+  common_emits: [guestpass_three_element_evidence_partial_or_complete, guestpass_ledger_recovery_route_opened]
+  next_gate: guestpass_three_element_evidence_partial_or_complete
+  next_event_ref: wuxia_collapse_gate
+entry_conditions:
+  required_flags: [sado_first_calculation_bargain_resolved, guestpass_master_ledger_recovery_route_opened]
+  optional_context_flags: [guestpass_sado_first_bargain_resolved, herbalist_counting_seed_seen, black_serpent_master_ledger_trace_seen, guestpass_dual_record_survives]
+reentry_recap: 4/30 사도는 사람·객패·빚을 서로 다른 가격표로 나눠 보겠다고 제안했다. 주인공과 서하린은 거래를 확정하지 않고, 약초꾼의 두 번째 장부가 흑사방 원장부와 맞닿는다는 단서를 들고 돌아왔다.
+stable_opening: 비가 그친 낮, 약초꾼 창고에서 주인공은 출근복 소매의 흙을 털고 사원증을 안쪽으로 돌려 단다. 서하린은 손목을 쉬게 하면서 장부의 끈과 약재 봉투 봉인을 먼저 살핀다.
+local_urgent_conflict: 반환은 약초꾼을 보호하지만 원장부 대조선이 약해지고, 복사는 증거를 남기지만 채무자의 위치를 노출하며, 소각은 추적을 끊지만 회수 경로를 어렵게 한다. 즉시 잠입·전투·카운트다운은 없다.
+beats_and_dialogue:
+  - {beat: 말린 약재 사이, scene: 약초 봉투의 무게와 장부 숫자가 맞지 않는 한 줄을 발견한다., dialogue: '약초꾼: “두 번째 장부는 내 계산이고, 원장부는 내 이름을 빌린 계산이오.”'}
+  - {beat: 현대 몸의 불편, scene: 주인공은 젖은 출근복과 굳은 구두로 좁은 창고를 오가며 수량을 종이에 옮긴다., dialogue: '주인공: “회사에서는 복사하면 끝이었는데, 여기서는 복사하는 순간 누가 빚을 지는지까지 따라옵니다.”'}
+  - {beat: 서하린의 선, scene: 서하린은 결정을 대신하지 않고 보호·공개 범위를 자신의 말로 정한다., dialogue: '서하린: “제가 보호할 수는 있어요. 하지만 제 이름을 허락 없이 증거로 쓰지는 마세요.”'}
+  - {beat: 세 갈래 원본, scene: 반환·복사·소각과 원장부 대조라는 네 방식이 장부 위에 놓인다., dialogue: '약초꾼: “돌려주면 숨고, 베끼면 들키고, 태우면 다시 찾을 길이 끊기오.”'}
+  - {beat: 역할 분리, scene: 봉인 실밥에서 원장부 회수 표식을 확인한다., dialogue: '서하린: “혈월교는 물리 파괴, 흑사방은 채무, 사도는 계산이에요. 같은 적으로 합치면 안 돼요.”'}
+  - {beat: 저녁 결산, scene: 선택한 기록을 봉인하고 식사·손목 휴식·다음 확인 날짜를 남긴다., dialogue: '주인공: “확보한 건 완성된 답이 아니라 세 요소를 대조할 자격의 일부입니다.”'}
+choices:
+  - id: return_the_ledger
+    label: 두 번째 장부를 돌려준다
+    immediate_result: 원본을 다시 봉인하고 반환 영수선과 확인한 수량 차이만 별도 메모로 남긴다.
+    success: 약초꾼이 보호되고 원장부 회수 장소의 시간대가 확인된다.
+    failure: 회수 표식은 미확정이지만 이름과 빚을 외부에 노출하지 않고 재대조 날짜를 확보한다.
+    relationship_directions: {people: {seo_harin: privacy_boundary_shared, herbalist: protected_without_ownership}, factions: {qingliu: medicine_route_preserved, black_serpent: debt_trace_deferred, bloodmoon_cult: physical_role_not_attributed}}
+    reward_candidate: {id: guestpass_act4_ch31_return_receipt, name: 약초꾼의 반환 영수패, type: custody_record, concept: 원본을 소유하지 않고 책임 있게 되돌린 보관 증명}
+    quest_clue: {name: 약재 수량의 한 줄 차이, type: master_ledger_clue, concept: 원장부와 대조할 날짜·수량의 불일치}
+    flags: {always: [guestpass_three_element_evidence_partial_or_complete, guestpass_ledger_recovery_route_opened, herbalist_second_ledger_resolved], success: [guestpass_ledger_returned_with_receipt, herbalist_protected], failure: [guestpass_master_ledger_trace_deferred]}
+  - id: copy_the_ledger
+    label: 두 번째 장부를 복사한다
+    immediate_result: 원본은 두고 수량·채무자 표기·봉인 모양을 세 칸으로 베낀 보호본을 만든다.
+    success: 원장부의 중복 채무와 회수 담당자의 이동 순서를 확인한다.
+    failure: 일부 필체가 번져도 이름을 가린 보호본과 다음 대조 위치는 남는다.
+    relationship_directions: {people: {seo_harin: coauthored_evidence_and_agency, herbalist: informed_consent_respected}, factions: {qingliu: medicine_evidence_shareable, black_serpent: debt_network_exposed_partially, bloodmoon_cult: physical_destruction_separate}}
+    reward_candidate: {id: guestpass_act4_ch31_three_column_ledger_copy, name: 세 칸 보호 장부, type: evidence_record, concept: 약재 사실·채무 책임·공개 제한을 분리한 대조본}
+    quest_clue: {name: 회수 담당자의 매듭 순서, type: recovery_route_clue, concept: 원장부를 빼앗지 않고 다음 보관자를 찾는 이동 규칙}
+    flags: {always: [guestpass_three_element_evidence_partial_or_complete, guestpass_ledger_recovery_route_opened, herbalist_second_ledger_resolved], success: [guestpass_dual_record_survives, guestpass_master_ledger_recovery_window_opened], failure: [guestpass_protective_copy_partial]}
+  - id: burn_the_ledger
+    label: 두 번째 장부를 태운다
+    immediate_result: 약초꾼 동의 아래 원본을 태우고 봉인 실밥·기억 가능한 수량을 증언으로 기록한다.
+    success: 약초꾼의 직접 노출과 즉시 추적을 끊고 재에서 원장부 표식의 색과 매듭을 판독한다.
+    failure: 재 일부가 흩어져 표식 하나를 잃어도 약초꾼 보호와 비공개 처리는 지킨다.
+    relationship_directions: {people: {seo_harin: difficult_consent_respected, herbalist: immediate_safety_prioritized}, factions: {qingliu: medicine_route_private, black_serpent: recovery_route_harder_not_erased, bloodmoon_cult: no_physical_pursuit_triggered}}
+    reward_candidate: {id: guestpass_act4_ch31_ash_seal_memory, name: 재에 남은 봉인 기억, type: protected_testimony, concept: 원본을 없애도 책임과 회수 단서를 허위로 만들지 않는 증언}
+    quest_clue: {name: 검은 재의 세 매듭, type: trace_clue, concept: 원장부 보관함을 가리키나 직접 회수는 자격 확인 뒤로 미루는 표식}
+    flags: {always: [guestpass_three_element_evidence_partial_or_complete, guestpass_ledger_recovery_route_opened, herbalist_second_ledger_resolved], success: [guestpass_ledger_burned_by_consent, herbalist_trace_sheltered], failure: [guestpass_master_ledger_recovery_harder]}
+  - id: compare_against_master_ledger_trace
+    label: 원장부 흔적과 먼저 대조한다
+    immediate_result: 원본을 반출하지 않고 봉인 실밥·수량·회수 매듭을 현장에서 맞춰 회수 경로만 특정한다.
+    success: 원장부 보관 지점, 객패 표식, 귀환 단서와의 연결 순서를 확인한다.
+    failure: 장소는 두 곳으로 남지만 약초꾼을 노출하지 않고 두 경로를 안전한 탐문 대상으로 기록한다.
+    relationship_directions: {people: {seo_harin: equal_risk_and_stop_authority, herbalist: protected_as_source_not_asset}, factions: {qingliu: evidence_chain_kept, black_serpent: debt_structure_read_not_personalized, bloodmoon_cult: physical_destruction_role_kept_distinct, guestpass_network: recovery_protocol_partially_recovered}}
+    reward_candidate: {id: guestpass_act4_ch31_master_ledger_waybill, name: 원장부 대조 운송표, type: route_record, concept: 객패·원장부·귀환 단서를 서로 다른 검문으로 대조할 회수 경로표}
+    quest_clue: {name: 세 요소 대조 순서, type: three_element_clue, concept: 객패는 책임선, 원장부는 채무 출처, 귀환 단서는 나갈 자유를 확인한다는 규칙}
+    flags: {always: [guestpass_three_element_evidence_partial_or_complete, guestpass_ledger_recovery_route_opened, herbalist_second_ledger_resolved], success: [guestpass_master_ledger_recovery_route_opened, guestpass_three_element_evidence_complete], failure: [guestpass_three_element_evidence_partial, guestpass_two_recovery_sites_recorded]}
+relationship_directions: {people: {seo_harin: agency_preserved_and_shared_stop, protagonist: modern_identity_distinguished, herbalist: source_protected_not_owned}, factions: {bloodmoon_cult: physical_destruction_only, black_serpent: debt_and_master_ledger_only, sado: calculation_observed_not_reproduced, qingliu: medicine_chain_preserved}}
+rewards: [{id: guestpass_act4_ch31_return_receipt, name: 약초꾼의 반환 영수패, type: custody_record, concept: 원본 반환}, {id: guestpass_act4_ch31_three_column_ledger_copy, name: 세 칸 보호 장부, type: evidence_record, concept: 대조 보호본}, {id: guestpass_act4_ch31_ash_seal_memory, name: 재에 남은 봉인 기억, type: protected_testimony, concept: 소각 증언}, {id: guestpass_act4_ch31_master_ledger_waybill, name: 원장부 대조 운송표, type: route_record, concept: 회수 경로}]
+quest_clues: [{name: 약재 거래 책임선, type: main_quest_clue, concept: 약초꾼 기록과 흑사방 원장부를 분리 대조}, {name: 세 요소의 서로 다른 질문, type: gate_clue, concept: 객패·원장부·귀환 단서는 같은 열쇠가 아님}]
+flags: {always: [guestpass_three_element_evidence_partial_or_complete, guestpass_ledger_recovery_route_opened, herbalist_second_ledger_resolved, immediate_next_combat_forbidden, fixed_countdown_absent], success: [guestpass_master_ledger_recovery_window_opened], failure: [guestpass_recovery_requires_additional_witness], follow_up: [guestpass_collapse_gate_reentry_ready]}
+local_closure: 약초꾼 거래와 흑사방 채무 구조를 분리 기록하고 원장부 회수 경로 또는 부족분을 봉인한다. 밤중 추적·즉시 잠입·전투는 없다.
+interlude_safe_state: 창고에서 식사·약재 정리·서하린 손목 휴식·보호본 재확인이 가능하며, 회수는 하루 이상의 준비와 증언 대조 뒤 재개된다.
+low_pressure_hook: 검은 재와 봉인 실밥이 같은 본거지 문턱을 가리키지만 세 요소가 모두 자격을 얻었다는 뜻은 아니다.
+next_reentry_trigger: guestpass_three_element_evidence_partial_or_complete 기록 후 부족분을 확인하면 wuxia_collapse_gate가 세 요소 자격 확인으로 재진입한다.
+scene_context: {location: 약초꾼의 말린 약재 창고와 작은 기록 탁자, cast: [주인공, 서하린, 약초꾼], emotional_state: 원본 보호와 구조 확인 사이의 신중한 책임감}
+cadence_audit: {time: rainy_afternoon_to_next_day_after_meal, place: herbalist_storehouse_and_safe_inn_room, companions: protagonist_seoharin_herbalist, injury: seoharin_wrist_rest_required, information: second_ledger_and_master_ledger_protocol, hostile_pressure: debt_trace_only_no_pursuit}
+convergence: {meaningful_exclusive_outcomes: [ledger_returned, ledger_copied, ledger_burned, master_trace_compared], common_minimum_facts: [guestpass_three_element_evidence_partial_or_complete, guestpass_ledger_recovery_route_opened, herbalist_second_ledger_resolved], local_closure: 약초꾼 보호와 원장부 회수 경로를 분리 봉인, exact_state_bridge: 객패·원장부·귀환 단서의 자격 질문이 남음, next_slot: 4/32, next_event_ref: wuxia_collapse_gate, terminal: false}

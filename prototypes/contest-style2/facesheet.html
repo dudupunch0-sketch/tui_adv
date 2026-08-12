@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <title>인물 · 표정 리그 — 스타일 2</title>
+    <script type="importmap">
+      { "imports": { "three": "./node_modules/three/build/three.module.js" } }
+    </script>
+    <style>
+      :root {
+        --ink-950: #0a0d13;
+        --ink-900: #10141d;
+        --ink-850: #161c28;
+        --line: #29344a;
+        --text: #eaeff7;
+        --muted: #93a0b6;
+        --dim: #5d6a80;
+        --ally: #6fb3a8;
+        --enemy: #c26a7c;
+        --gold: #d7b884;
+        --paper: #cdc7bd;
+        --serif: 'Noto Serif CJK KR', serif;
+        --sans: 'Noto Sans CJK KR', system-ui, sans-serif;
+        --mono: 'Noto Sans Mono CJK KR', ui-monospace, monospace;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; padding: 26px; background: #3f444e; font-family: var(--sans); }
+
+      #sheet { width: 1180px; background: var(--ink-950); color: var(--text); padding: 26px 28px 30px; border-radius: 8px; }
+      h1 { font-family: var(--serif); font-size: 21px; margin: 0 0 5px; letter-spacing: 0.03em; }
+      .sub { font-family: var(--mono); font-size: 11px; color: var(--dim); margin-bottom: 22px; line-height: 1.65; }
+      .sub b { color: var(--muted); font-weight: 400; }
+
+      .band { margin-bottom: 26px; }
+      .bandhead { display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px; }
+      .bandhead .mark { width: 20px; height: 20px; align-self: center; }
+      .mark.ally { background: var(--ally); clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%); }
+      .mark.enemy { background: var(--enemy); clip-path: polygon(0 0, 66% 0, 100% 50%, 66% 100%, 0 100%, 34% 50%); }
+      .bandhead h2 { font-family: var(--serif); font-size: 15px; margin: 0; font-weight: 500; }
+      .bandhead .who { font-size: 11px; color: var(--dim); letter-spacing: 0.06em; }
+
+      .row { display: flex; gap: 10px; }
+      figure { margin: 0; flex: 1 1 0; }
+      .tile { position: relative; border: 1px solid var(--line); overflow: hidden; }
+      .tile.lit { background: linear-gradient(180deg, #151a26 0%, #1e2433 62%, #2b3040 100%); }
+      .tile.paper { background: var(--paper); }
+      .tile canvas { display: block; width: 100%; }
+      .tile .cue {
+        position: absolute; top: 6px; left: 6px;
+        font-family: var(--mono); font-size: 8.5px; letter-spacing: 0.04em;
+        color: var(--muted); background: rgba(10, 13, 19, 0.78);
+        border: 1px solid var(--line); padding: 2px 5px;
+      }
+      .tile .src { position: absolute; top: 6px; right: 6px; font-family: var(--mono); font-size: 8.5px; padding: 2px 5px; border: 1px solid var(--line); background: rgba(10, 13, 19, 0.78); }
+      .tile .src.real { color: var(--gold); border-color: #6d5527; }
+      .tile .src.probe { color: var(--dim); }
+      figcaption { margin-top: 6px; }
+      figcaption .name { font-family: var(--serif); font-size: 12.5px; }
+      figcaption .why { font-size: 10px; color: var(--dim); line-height: 1.45; margin-top: 2px; }
+
+      .sil { display: flex; gap: 12px; align-items: flex-start; }
+      .sil .note { flex: 1 1 auto; font-size: 11.5px; color: var(--muted); line-height: 1.7; padding-top: 4px; }
+      .sil .note code { font-family: var(--mono); font-size: 10.5px; color: var(--gold); }
+      .sil figure { flex: 0 0 236px; }
+
+      .bio { display: flex; gap: 12px; margin-top: 8px; }
+      .bio div { flex: 1 1 0; font-size: 11px; color: var(--muted); line-height: 1.65; }
+      .bio b { color: var(--text); font-weight: 500; font-family: var(--serif); }
+      .bio s { text-decoration: none; color: var(--dim); }
+
+      .tex { display: flex; gap: 14px; align-items: flex-start; }
+      .tex figure { flex: 0 0 auto; }
+      .tex canvas { display: block; border: 1px solid var(--line); }
+      .tex .note { flex: 1 1 auto; font-size: 11px; color: var(--muted); line-height: 1.7; }
+      .tex .note code { font-family: var(--mono); font-size: 10px; color: var(--gold); }
+    </style>
+  </head>
+  <body>
+    <div id="sheet">
+      <h1>인물 시트 — 청류문 검수 · 흑사방 도객</h1>
+      <div class="sub" id="sub">loading…</div>
+      <div id="bands"></div>
+    </div>
+
+    <script type="module">
+      import * as THREE from 'three';
+      import { PERSONA, expressionFor, poseFor } from './rig.js';
+      import {
+        applyHeadTurn,
+        applyPose3D,
+        buildCharacter3D,
+        createBoardCamera,
+        createPortraitCamera,
+        tuneForCamera,
+        updateFace3D,
+      } from './rig3d.js';
+
+      const TILE = { w: 210, h: 240 };
+      const FIG = { w: 236, h: 400 };
+      const DPR = 3;
+      const PHASE = 0.5;
+
+      const combat = await (await fetch('./combat-frames.json')).json();
+      const view = combat.view;
+
+      const IDENTITY = {
+        ally: {
+          name: '연서린',
+          school: '청류문',
+          role: '검수',
+          persona: PERSONA.composed,
+          bio: '이십대 초반. <b>산발</b> — 묶지 않은 머리. 이목구비가 날카롭고, 표정을 거의 쓰지 않는다. 그 평정이 <s>기본값</s>이라, 베였을 때의 흔들림이 그만큼 크게 읽힌다.',
+        },
+        enemy: {
+          name: '갈여청',
+          school: '흑사방',
+          role: '도객',
+          persona: PERSONA.predatory,
+          bio: '자객. <b>높게 묶어 올린 머리</b> — 청류문과 정확히 반대. 삿갓은 끈에 걸어 등 뒤로 넘겨 얼굴을 드러낸다.',
+        },
+      };
+
+      document.getElementById('sub').innerHTML =
+        `표정은 <b>rig.js: expressionFor(signals, phase, persona)</b> — 몸 포즈와 같은 ` +
+        `<b>SIGNALS → STATES → MODIFIERS</b> 층에서 나오고, <b>persona</b>가 각 인물의 기본 표정과 진폭을 정한다. ` +
+        `그림은 <b>face.js</b>가 구면 UV 캔버스에 직접 그린다. 머리 재질은 사실상 무광이며 ` +
+        `아웃라인도 머리에서만 0.8px로 낮췄다 — 명암과 윤곽을 텍스처가 전부 가진다.<br>` +
+        `외부 에셋 없음 · 난수 시드 고정 · PBR 없음 · <b>BONES는 손대지 않았다</b>(발 IK 보존). ` +
+        `여성 체형은 전부 메시 반경으로만 조정.<br>` +
+        `<span style="color:var(--gold)">real</span> = ${view.simulation_version} 픽스처의 실제 프레임 · ` +
+        `<span style="color:var(--dim)">probe</span> = 이 픽스처가 만들지 않는 큐를 확인하기 위한 구성 입력.`;
+
+      function sig(over) {
+        return { tick: 4, t: 0.4, attack: 0, hit: 0, evade: 0, stagger: 0, down: 0, dist: 1, closing: 0, facing: 1, ...over };
+      }
+      function realSignals(frameIndex, side) {
+        const frame = view.frames[frameIndex];
+        const piece = frame.pieces.find((p) => p.side === side);
+        const cues = new Set(piece.cues);
+        return sig({
+          tick: frame.tick,
+          t: (frame.tick * view.tick_millis) / 1000,
+          attack: cues.has('attack') ? 1 : 0,
+          hit: cues.has('hit') ? 1 : 0,
+          down: cues.has('incapacitated') ? 1 : 0,
+        });
+      }
+
+      const shared = document.createElement('canvas');
+      const renderer = new THREE.WebGLRenderer({ canvas: shared, antialias: true, alpha: true });
+      renderer.setClearColor(0x000000, 0);
+      renderer.setPixelRatio(DPR);
+      const characters = { ally: buildCharacter3D('ally'), enemy: buildCharacter3D('enemy') };
+
+      function poseFor3D(side, signals, { rest = false } = {}) {
+        const character = characters[side];
+        const bodySignals = rest ? { ...signals, attack: 0, hit: 0, down: 0, stagger: 0, evade: 0 } : signals;
+        applyPose3D(character, poseFor(bodySignals, PHASE), null);
+        character.root.rotation.y = 0;
+        return character;
+      }
+
+      function blit(ctx, w, h) {
+        ctx.clearRect(0, 0, w, h);
+        ctx.drawImage(shared, 0, 0, w, h);
+      }
+
+      function renderPortrait(ctx, side, signals) {
+        const character = poseFor3D(side, signals, { rest: false });
+        applyHeadTurn(character, 0.12, 0.03);
+        // Portrait framing: the `hit` recoil throws the head far enough back
+        // that the tile becomes a study of the underside of a jaw.
+        character.groups.neck.rotation.z *= 0.35;
+        character.groups.head.rotation.z *= 0.35;
+        // The collapse pose also rolls the hips, and that roll propagates all
+        // the way to the skull: the t8 tile captured as a portrait of someone
+        // lying on the floor.
+        character.groups.hips.rotation.z *= 0.25;
+        character.groups.spine.rotation.z *= 0.4;
+        character.groups.chest.rotation.z *= 0.4;
+        updateFace3D(character, expressionFor(signals, PHASE, IDENTITY[side].persona), -0.18);
+
+        const scene = new THREE.Scene();
+        scene.add(character.root);
+        const camera = createPortraitCamera(TILE.w, TILE.h, character, {
+          dist: 58,
+          fov: 19,
+          yawOffsetDeg: 32,
+          pitchDeg: 3,
+          lift: 4.2,
+        });
+        tuneForCamera(camera, TILE.h * DPR);
+        renderer.setSize(TILE.w, TILE.h, false);
+        renderer.render(scene, camera);
+        scene.remove(character.root);
+        blit(ctx, TILE.w, TILE.h);
+      }
+
+      /**
+       * Full figure, and the same figure as a flat silhouette.
+       *
+       * `scene.overrideMaterial` collapses every mesh — cel surfaces, inverted
+       * hulls, hair cards — to one flat fill, which is the only honest way to
+       * check the accessibility contract: side must be readable by shape with
+       * colour removed.
+       */
+      function renderFigure(ctx, side, signals, { silhouette = false } = {}) {
+        const character = poseFor3D(side, signals);
+        character.root.rotation.y = -0.42;
+        applyHeadTurn(character, 0.34, 0.02);
+        updateFace3D(character, expressionFor(signals, PHASE, IDENTITY[side].persona), -0.3);
+
+        const scene = new THREE.Scene();
+        scene.add(character.root);
+        if (silhouette) scene.overrideMaterial = new THREE.MeshBasicMaterial({ color: new THREE.Color(0x121016) });
+
+        const camera = createBoardCamera({
+          width: FIG.w,
+          height: FIG.h,
+          target: { x: 0, y: 48, z: 0 },
+          yawDeg: 6,
+          pitchDeg: 6,
+          dist: 300,
+          fov: 26,
+        });
+        tuneForCamera(camera, FIG.h * DPR);
+        renderer.setSize(FIG.w, FIG.h, false);
+        renderer.render(scene, camera);
+        scene.overrideMaterial = null;
+        scene.remove(character.root);
+        blit(ctx, FIG.w, FIG.h);
+      }
+
+      function el(tag, cls, html) {
+        const n = document.createElement(tag);
+        if (cls) n.className = cls;
+        if (html != null) n.innerHTML = html;
+        return n;
+      }
+      function tile(parent, cls, w, h, draw) {
+        const fig = el('figure');
+        const box = el('div', `tile ${cls}`);
+        const cv = document.createElement('canvas');
+        cv.width = w * DPR;
+        cv.height = h * DPR;
+        cv.style.height = h + 'px';
+        box.appendChild(cv);
+        fig.appendChild(box);
+        parent.appendChild(fig);
+        const ctx = cv.getContext('2d');
+        ctx.scale(DPR, DPR);
+        draw(ctx, box, fig);
+        return fig;
+      }
+
+      const bands = document.getElementById('bands');
+
+      // ---- band 1: the two fighters, and the silhouette check ---------------
+      const b1 = el('section', 'band');
+      b1.appendChild(el('div', 'bandhead', '<h2>인물</h2><span class="who">전신 · 색을 뺀 실루엣 대조</span>'));
+      const silRow = el('div', 'sil');
+      const guard = sig({});
+      for (const side of ['ally', 'enemy']) {
+        tile(silRow, 'lit', FIG.w, FIG.h, (ctx) => renderFigure(ctx, side, guard));
+      }
+      for (const side of ['ally', 'enemy']) {
+        tile(silRow, 'paper', FIG.w, FIG.h, (ctx) => renderFigure(ctx, side, guard, { silhouette: true }));
+      }
+      silRow.appendChild(
+        el(
+          'div',
+          'note',
+          `색을 지워도 갈라지는가 — 접근성 계약은 <code>색이 아니라 형태</code>다.<br><br>
+           <b style="color:var(--ally)">청류문</b>: 풀어헤친 <code>산발</code>이 어깨 밖으로 삐져나오고,
+           긴 치맛단이 발목까지 내려간다. 곧은 <code>검</code>.<br><br>
+           <b style="color:var(--enemy)">흑사방</b>: 정수리에 <code>높게 묶은 머리</code> 하나가 뒤로 뻗고,
+           단은 무릎 위에서 끊기며 정강이에 감발이 보인다. 등 뒤에 걸린 <code>삿갓</code>의 원반,
+           그리고 휜 <code>도</code>.<br><br>
+           체형은 둘 다 비슷하다 — 그래서 구분은 전적으로 머리·단 길이·등의 원반·날의 곡률이 진다.`,
+        ),
+      );
+      b1.appendChild(silRow);
+      const bio = el('div', 'bio');
+      for (const side of ['ally', 'enemy']) {
+        const i = IDENTITY[side];
+        bio.appendChild(
+          el(
+            'div',
+            null,
+            `<span class="mark ${side}" style="display:inline-block;vertical-align:-3px;margin-right:6px"></span>` +
+              `<b>${i.school} ${i.name}</b> <span style="color:var(--dim)">${i.role}</span><br>${i.bio}`,
+          ),
+        );
+      }
+      b1.appendChild(bio);
+      bands.appendChild(b1);
+
+      // ---- band 2/3: expression grids --------------------------------------
+      const CASES = [
+        { name: '평정', why: '기본값. 인물마다 다르다 — persona가 정한다.', cue: 'cues: —', src: 'probe', signals: () => sig({}) },
+        { name: '발도', why: '집중. 눈썹 안쪽 하강 + 아래눈꺼풀 상승.', cue: 'cues: attack', src: 'probe', signals: () => sig({ attack: 1 }) },
+        { name: '피격', why: '수정자. 눈을 감아 조이고 입이 벌어진다.', cue: 'cues: hit', src: 'probe', signals: () => sig({ hit: 1 }) },
+        { name: '교전 t4', why: '공격과 피격이 같은 tick에 겹친 실제 프레임.', cue: 'cues: attack·hit', src: 'real', signals: (side) => realSignals(3, side) },
+        { name: '결착 t8', why: '전투불능이 다른 상태를 덮어쓴다.', cue: 'cues: attack·hit·incapacitated', src: 'real', signals: (side) => realSignals(view.frames.length - 1, side) },
+      ];
+
+      for (const side of ['ally', 'enemy']) {
+        const i = IDENTITY[side];
+        const band = el('section', 'band');
+        band.appendChild(
+          el(
+            'div',
+            'bandhead',
+            `<span class="mark ${side}"></span><h2>${i.school} ${i.name}</h2>` +
+              `<span class="who">${i.role} · side=${side} · persona=${side === 'ally' ? 'composed' : 'predatory'}</span>`,
+          ),
+        );
+        const row = el('div', 'row');
+        for (const c of CASES) {
+          const fig = tile(row, 'lit', TILE.w, TILE.h, (ctx, box) => {
+            renderPortrait(ctx, side, c.signals(side));
+            box.insertAdjacentHTML('beforeend', `<span class="cue">${c.cue}</span><span class="src ${c.src}">${c.src}</span>`);
+          });
+          fig.insertAdjacentHTML('beforeend', `<figcaption><div class="name">${c.name}</div><div class="why">${c.why}</div></figcaption>`);
+        }
+        band.appendChild(row);
+        bands.appendChild(band);
+      }
+
+      // ---- band 4: the generated texture -----------------------------------
+      const b4 = el('section', 'band');
+      b4.appendChild(el('div', 'bandhead', '<h2>생성된 얼굴 텍스처</h2><span class="who">face.js · 1024×512 구면 UV · 캔버스 2D</span>'));
+      const tex = el('div', 'tex');
+      for (const side of ['ally', 'enemy']) {
+        renderPortrait(document.createElement('canvas').getContext('2d'), side, sig({ attack: 1 }));
+        const src = characters[side].face.canvas;
+        const W = 290;
+        const H = 222;
+        const fig = el('figure');
+        const cv = document.createElement('canvas');
+        cv.width = W * 2;
+        cv.height = H * 2;
+        cv.style.width = W + 'px';
+        cv.style.height = H + 'px';
+        const c2 = cv.getContext('2d');
+        c2.fillStyle = side === 'ally' ? '#d8b393' : '#ceac8e';
+        c2.fillRect(0, 0, W * 2, H * 2);
+        c2.drawImage(src, 362, 198, 300, 230, 0, 0, W * 2, H * 2);
+        fig.appendChild(cv);
+        fig.insertAdjacentHTML('beforeend', `<figcaption><div class="why">${side} · 발도 · 실제 살빛 위에 합성</div></figcaption>`);
+        tex.appendChild(fig);
+      }
+      tex.insertAdjacentHTML(
+        'beforeend',
+        `<div class="note">눈은 분리해 그린다 — <code>부드러운 윗속눈썹</code>(예전 판은 너무 굵어 선화처럼 읽혔다),
+         <code>위는 뚜껑 그림자로 어둡고 아래로 밝아지는 홍채</code>,
+         <code>홍채 아래 가장자리를 따르는 밝은 테</code>,
+         <code>안쪽 위의 단단한 하이라이트 + 반대편 아래의 작은 것</code>,
+         닫히지 않는 아래꺼풀 선, 그리고 그 위 멀찍이 <code>쌍꺼풀 선</code>.<br><br>
+         눈꼬리는 <code>바깥으로 들어올린다</code>(EYE.tilt) — 인형 같은 얼굴과 날카로운 얼굴을 가르는 게 대부분 이것이다.<br><br>
+         턱 아래·앞머리 그늘·관자놀이는 전부 텍스처가 칠한다. 머리 재질이 NdotL을 거의 쓰지 않으므로
+         셀 밴드가 뺨을 가로질러 눈매를 자르는 일이 없고, 아웃라인도 머리에서만 얇다.<br><br>
+         아래눈꺼풀 밑 <code>홍조</code>와 아랫입술 <code>하이라이트</code> 한 점이 가면과 살의 차이를 만든다.</div>`,
+      );
+      b4.appendChild(tex);
+      bands.appendChild(b4);
+
+      window.__READY__ = true;
+    </script>
+  </body>
+</html>

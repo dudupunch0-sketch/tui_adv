@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <title>전투 관전 화면 — 스타일 1 (2D 본 리그 / 잉크 실루엣)</title>
+    <style>
+      /* ---------------------------------------------------------------
+         One palette table for the chrome. The canvas keeps its own
+         (playscreen.js STAGE / rig2d.js PAL2D) — no colour literal is
+         written at a draw site in either.
+         --------------------------------------------------------------- */
+      :root {
+        --app-bg: #07080c;
+        --panel: #10131b;
+        --panel-lit: #171c26;
+        --line: rgba(158,176,200,0.14);
+        --line-hard: rgba(158,176,200,0.28);
+        --text: #e9eef5;
+        --text-dim: #97a3b4;
+        --text-faint: #626e7e;
+        --gold: #d8b26a;
+        --gold-dim: rgba(216,178,106,0.30);
+        --ally: #63c8b2;
+        --enemy: #d1566a;
+        --decisive: #e0687a;
+        --important: #cfd8e3;
+        --routine: #7c8798;
+        --serif: 'Noto Serif CJK KR', 'Noto Serif KR', serif;
+        --sans: 'Noto Sans CJK KR', 'Noto Sans KR', system-ui, sans-serif;
+        --mono: 'Noto Sans Mono CJK KR', ui-monospace, monospace;
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        background: #1b1e25;
+        font-family: var(--sans);
+        display: flex;
+        gap: 34px;
+        padding: 34px;
+        align-items: flex-start;
+      }
+
+      .phone {
+        width: 390px;
+        height: 844px;
+        background: var(--app-bg);
+        color: var(--text);
+        border-radius: 30px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        box-shadow: 0 24px 70px rgba(0,0,0,0.6);
+      }
+
+      /* ---- status bar -------------------------------------------------- */
+      .statusbar {
+        height: 34px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+        color: var(--text);
+        flex: none;
+      }
+      .statusbar .glyphs { display: flex; gap: 5px; align-items: center; }
+      .bars { display: flex; gap: 2px; align-items: flex-end; height: 9px; }
+      .bars i { width: 2.5px; background: var(--text); border-radius: 1px; }
+      .batt {
+        width: 20px; height: 10px; border: 1px solid var(--text-dim);
+        border-radius: 3px; position: relative; padding: 1.5px;
+      }
+      .batt::after {
+        content: ''; position: absolute; right: -3px; top: 3px;
+        width: 2px; height: 4px; background: var(--text-dim); border-radius: 0 1px 1px 0;
+      }
+      .batt i { display: block; height: 100%; width: 72%; background: var(--text); border-radius: 1px; }
+
+      /* ---- app bar ----------------------------------------------------- */
+      .appbar {
+        display: grid;
+        grid-template-columns: 26px 1fr auto;
+        align-items: center;
+        gap: 10px;
+        padding: 4px 16px 10px;
+        flex: none;
+      }
+      .back {
+        font-size: 22px; line-height: 1; color: var(--text-dim);
+        font-family: var(--sans);
+      }
+      .titles { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+      .titles .ep {
+        font-family: var(--serif); font-size: 15px; font-weight: 600;
+        letter-spacing: 0.4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      .titles .scene { font-size: 10.5px; color: var(--text-faint); letter-spacing: 0.3px; }
+      .chip {
+        font-size: 10px; letter-spacing: 1.4px; color: var(--gold);
+        border: 1px solid var(--gold-dim); border-radius: 3px;
+        padding: 3px 7px 2px; white-space: nowrap;
+      }
+
+      /* ---- duelist cards ----------------------------------------------- */
+      .duelists {
+        display: grid; grid-template-columns: 1fr 22px 1fr;
+        align-items: stretch; gap: 6px; padding: 0 14px 10px; flex: none;
+      }
+      .card {
+        background: var(--panel); border: 1px solid var(--line);
+        border-radius: 8px; padding: 8px 9px 9px;
+        display: flex; flex-direction: column; gap: 6px; min-width: 0;
+      }
+      .card.enemy { align-items: flex-end; text-align: right; }
+      .card .who { display: flex; align-items: center; gap: 8px; min-width: 0; }
+      .card.enemy .who { flex-direction: row-reverse; }
+      /* Portrait cut-in. The board head is ~18px tall at this width, which is
+         far too small for an expression to survive — this is the same face
+         function fed the same channels, at a size that can carry one. */
+      .portrait { position: relative; flex: none; width: 52px; height: 61px; border-radius: 5px; overflow: hidden; }
+      .portrait canvas { display: block; width: 100%; height: 100%; }
+      /* Shape, not colour: a plain plate against a corner-notched one, and
+         both keep the 我/敵 glyph. Colour is the third, redundant signal. */
+      .portrait::after { content: ''; position: absolute; inset: 0; border-radius: 5px; pointer-events: none; }
+      .portrait.ally::after { box-shadow: inset 0 0 0 1.5px var(--ally); }
+      .portrait.enemy::after {
+        box-shadow: inset 0 0 0 1.5px var(--enemy);
+        clip-path: polygon(0 0, 100% 0, 100% 70%, 70% 100%, 0 100%);
+      }
+      .portrait .glyph {
+        position: absolute; inset-block-end: 0; inset-inline-start: 0;
+        font-family: var(--serif); font-size: 9.5px; line-height: 1; padding: 2px 3px;
+      }
+      .portrait.ally .glyph { background: var(--ally); color: #06231f; }
+      .portrait.enemy .glyph { background: var(--enemy); color: #1a060a; }
+      .card .names { min-width: 0; }
+      .card .nm { font-family: var(--serif); font-size: 13.5px; font-weight: 600; white-space: nowrap; }
+      .card .house { font-size: 9.5px; color: var(--text-faint); letter-spacing: 1.2px; }
+      .vital { display: flex; flex-direction: column; gap: 3px; width: 100%; }
+      .vital .row {
+        display: flex; justify-content: space-between; align-items: baseline;
+        font-family: var(--mono); font-size: 9.5px; color: var(--text-faint);
+      }
+      .card.enemy .vital .row { flex-direction: row-reverse; }
+      .vital .row b { color: var(--text-dim); font-weight: 600; font-size: 10.5px; }
+      .bar { height: 4px; background: rgba(255,255,255,0.07); border-radius: 2px; overflow: hidden; }
+      .bar i { display: block; height: 100%; border-radius: 2px; }
+      .card.ally .bar i { background: linear-gradient(90deg, #3f9d8a, var(--ally)); }
+      .card.enemy .bar i { background: linear-gradient(90deg, var(--enemy), #8e3141); margin-left: auto; }
+      .cues { display: flex; gap: 4px; flex-wrap: wrap; }
+      .cue {
+        font-size: 9px; letter-spacing: 0.6px; padding: 2px 5px 1px;
+        border-radius: 3px; border: 1px solid var(--line-hard); color: var(--text-dim);
+      }
+      .cue.attack { color: var(--gold); border-color: var(--gold-dim); }
+      .cue.hit { color: var(--decisive); border-color: rgba(224,104,122,0.34); }
+      .cue.incap { color: var(--text-faint); border-color: var(--line); text-decoration: line-through; }
+      .versus {
+        display: grid; place-items: center; font-family: var(--serif);
+        font-size: 13px; color: var(--text-faint);
+      }
+
+      /* ---- stage: board 70 / log 30 ------------------------------------ */
+      .stage {
+        flex: 1 1 auto; min-height: 0;
+        display: grid; grid-template-rows: minmax(0, 70fr) minmax(0, 30fr);
+        gap: 8px; padding: 0 14px 8px;
+      }
+      .board {
+        position: relative; min-height: 0; border-radius: 8px; overflow: hidden;
+        border: 1px solid var(--line);
+      }
+      .board canvas { display: block; width: 100%; height: 100%; }
+      .board .tickbadge {
+        position: absolute; left: 10px; top: 9px;
+        font-family: var(--mono); font-size: 10px; letter-spacing: 0.6px;
+        color: var(--text-dim); background: rgba(7,8,12,0.62);
+        border: 1px solid var(--line); border-radius: 4px; padding: 3px 7px 2px;
+      }
+      .board .cellbadge {
+        position: absolute; right: 10px; top: 9px;
+        font-family: var(--mono); font-size: 9.5px; color: var(--text-faint);
+        background: rgba(7,8,12,0.62); border: 1px solid var(--line);
+        border-radius: 4px; padding: 3px 7px 2px; text-align: right; line-height: 1.5;
+      }
+      .board .cellbadge b { color: var(--ally); font-weight: 600; }
+      .board .cellbadge b.e { color: var(--enemy); }
+      .outcome {
+        position: absolute; left: 0; right: 0; bottom: 0;
+        padding: 12px 14px 11px;
+        background: linear-gradient(0deg, rgba(7,8,12,0.94), rgba(7,8,12,0.72) 62%, rgba(7,8,12,0));
+        display: flex; align-items: flex-end; justify-content: space-between; gap: 10px;
+      }
+      .outcome .big {
+        font-family: var(--serif); font-size: 19px; font-weight: 700; letter-spacing: 2px;
+        color: var(--gold);
+      }
+      .outcome .sub { font-size: 10px; color: var(--text-dim); letter-spacing: 0.4px; margin-top: 3px; }
+      .outcome .meta { font-family: var(--mono); font-size: 9px; color: var(--text-faint); text-align: right; line-height: 1.6; }
+
+      /* ---- log --------------------------------------------------------- */
+      .log {
+        min-height: 0; display: flex; flex-direction: column; gap: 5px;
+        background: var(--panel); border: 1px solid var(--line);
+        border-radius: 8px; padding: 8px 10px 9px; overflow: hidden;
+      }
+      .log .head {
+        display: flex; align-items: baseline; justify-content: space-between;
+        border-bottom: 1px solid var(--line); padding-bottom: 5px;
+      }
+      .log .head h2 { font-family: var(--serif); font-size: 11.5px; font-weight: 600; letter-spacing: 1.6px; color: var(--text-dim); }
+      .log .head .src { font-family: var(--mono); font-size: 8.5px; color: var(--text-faint); letter-spacing: 0.2px; }
+      .log ol { list-style: none; display: flex; flex-direction: column; gap: 1px; overflow: hidden; }
+      .log li {
+        display: grid; grid-template-columns: 26px 6px 1fr; gap: 6px; align-items: baseline;
+        font-size: 11px; line-height: 1.55; padding: 1.5px 0;
+      }
+      .log li .t { font-family: var(--mono); font-size: 9px; color: var(--text-faint); }
+      .log li .mk { width: 5px; height: 5px; border-radius: 1px; align-self: center; }
+      .log li.routine   { color: var(--routine); }
+      .log li.important { color: var(--important); }
+      .log li.decisive  { color: var(--text); }
+      .log li.routine   .mk { background: rgba(124,135,152,0.4); }
+      .log li.important .mk { background: var(--gold-dim); box-shadow: inset 0 0 0 1px var(--gold); }
+      .log li.decisive  .mk { background: var(--decisive); }
+      .log li.decisive  .s { font-family: var(--serif); }
+      .log li em { font-style: normal; color: var(--gold); }
+
+      /* ---- transport --------------------------------------------------- */
+      .transport {
+        flex: none; padding: 6px 16px 14px;
+        display: flex; flex-direction: column; gap: 8px;
+      }
+      .scrub { display: flex; align-items: center; gap: 4px; }
+      .scrub .pip {
+        flex: 1; height: 3px; border-radius: 2px; background: rgba(255,255,255,0.09);
+        position: relative;
+      }
+      .scrub .pip.past { background: var(--gold-dim); }
+      .scrub .pip.now  { background: var(--gold); box-shadow: 0 0 8px rgba(216,178,106,0.55); }
+      .scrub .pip.decisive::after {
+        content: ''; position: absolute; left: 50%; top: -5px; translate: -50% 0;
+        width: 4px; height: 4px; border-radius: 50%; background: var(--decisive);
+      }
+      .controls { display: flex; align-items: center; justify-content: space-between; }
+      .controls .keys { display: flex; align-items: center; gap: 14px; }
+      .controls .key {
+        width: 30px; height: 30px; border-radius: 50%;
+        border: 1px solid var(--line-hard); display: grid; place-items: center;
+        color: var(--text-dim); font-size: 11px;
+      }
+      .controls .key.main { background: var(--gold); border-color: var(--gold); color: #191307; width: 36px; height: 36px; font-size: 13px; }
+      .controls .clock { font-family: var(--mono); font-size: 10px; color: var(--text-faint); letter-spacing: 0.4px; }
+      .controls .clock b { color: var(--text-dim); }
+      .home {
+        position: absolute; bottom: 7px; left: 50%; translate: -50% 0;
+        width: 118px; height: 4px; border-radius: 2px; background: rgba(233,238,245,0.28);
+      }
+
+      .caption {
+        width: 390px; text-align: center; color: #9aa4b2; font-size: 11px;
+        font-family: var(--mono); margin-top: 12px;
+      }
+      .col { display: flex; flex-direction: column; align-items: center; }
+    </style>
+  </head>
+  <body>
+    <div class="col"><div id="shot-t4"></div><div class="caption">t4 · 교전</div></div>
+    <div class="col"><div id="shot-t8"></div><div class="caption">t8 · 결착</div></div>
+    <div class="col">
+      <div id="detail-4"></div><div class="caption">detail t4</div>
+      <div id="detail-8" style="margin-top:24px"></div><div class="caption">detail t8</div>
+    </div>
+
+    <script type="module">
+      import { expressionFor, signalsFor } from './rig.js';
+      import { FACE_BIAS, drawPortrait2D } from './rig2d.js';
+      import {
+        COMBATANT_NAMES, buildField, drawBoard, drawClashIfAny, drawEdgeFade, drawFighters,
+        drawVignette, layoutBoard, logSentence, logWindow, phaseFor, vitalsAt,
+      } from './playscreen.js';
+
+      const DPR = 3;
+      const combat = await (await fetch('./combat-frames.json')).json();
+      const view = combat.view;
+      const field = buildField(view, 2);
+      const robeCache = new Map();
+
+      const CUE_LABEL = {
+        attack: '공격', hit: '피격', evade: '회피',
+        balance_broken: '균형 붕괴', incapacitated: '전투불능',
+      };
+      const CUE_CLASS = { attack: 'attack', hit: 'hit', incapacitated: 'incap' };
+
+      function el(tag, cls, text) {
+        const n = document.createElement(tag);
+        if (cls) n.className = cls;
+        if (text !== undefined) n.textContent = text;
+        return n;
+      }
+
+      function buildScreen(host, frameIndex) {
+        const frame = view.frames[frameIndex];
+        const tick = frame.tick;
+        const isEnd = frameIndex === view.frames.length - 1;
+        const vitals = vitalsAt(combat, tick);
+
+        const phone = el('div', 'phone');
+        phone.id = `phone-t${tick}`;
+        const portraits = [];
+
+        // status bar ---------------------------------------------------
+        const sb = el('div', 'statusbar');
+        sb.appendChild(el('span', null, '21:40'));
+        const glyphs = el('div', 'glyphs');
+        const bars = el('div', 'bars');
+        [4, 6, 8, 9].forEach((h) => {
+          const i = el('i');
+          i.style.height = h + 'px';
+          bars.appendChild(i);
+        });
+        glyphs.appendChild(bars);
+        glyphs.appendChild(el('span', null, 'LTE'));
+        const batt = el('div', 'batt');
+        batt.appendChild(el('i'));
+        glyphs.appendChild(batt);
+        sb.appendChild(glyphs);
+        phone.appendChild(sb);
+
+        // app bar ------------------------------------------------------
+        const bar = el('header', 'appbar');
+        bar.appendChild(el('div', 'back', '‹'));
+        const titles = el('div', 'titles');
+        titles.appendChild(el('span', 'ep', '이구학지 — 천기록'));
+        titles.appendChild(el('span', 'scene', `청류문 × 흑사방 · 전투 ${view.simulation_version} · ${combat.report.duration_millis}ms`));
+        bar.appendChild(titles);
+        bar.appendChild(el('span', 'chip', '관전'));
+        phone.appendChild(bar);
+
+        // duelist cards ------------------------------------------------
+        const duelists = el('section', 'duelists');
+        const ordered = ['wuxia_spectator_bout_ally', 'wuxia_spectator_bout_challenger'];
+        const cards = ordered.map((id) => {
+          const piece = frame.pieces.find((p) => p.id === id);
+          const meta = COMBATANT_NAMES[id];
+          const v = vitals.get(id);
+          const card = el('div', `card ${meta.side}`);
+
+          const who = el('div', 'who');
+          const port = el('div', `portrait ${meta.side}`);
+          const pcv = document.createElement('canvas');
+          port.appendChild(pcv);
+          port.appendChild(el('span', 'glyph', meta.side === 'ally' ? '我' : '敵'));
+          who.appendChild(port);
+          portraits.push({ canvas: pcv, side: meta.side, piece });
+          const names = el('div', 'names');
+          names.appendChild(el('div', 'nm', meta.name));
+          names.appendChild(el('div', 'house', meta.house));
+          who.appendChild(names);
+          card.appendChild(who);
+
+          const vital = el('div', 'vital');
+          const row = el('div', 'row');
+          row.appendChild(el('span', null, '기력'));
+          const num = el('span');
+          num.innerHTML = `<b>${v.remain}</b> / ${v.max}`;
+          row.appendChild(num);
+          vital.appendChild(row);
+          const barEl = el('div', 'bar');
+          const fill = el('i');
+          fill.style.width = (v.ratio * 100).toFixed(1) + '%';
+          barEl.appendChild(fill);
+          vital.appendChild(barEl);
+          card.appendChild(vital);
+
+          const cues = el('div', 'cues');
+          for (const cue of piece.cues) {
+            cues.appendChild(el('span', `cue ${CUE_CLASS[cue] ?? ''}`, CUE_LABEL[cue] ?? cue));
+          }
+          card.appendChild(cues);
+          return card;
+        });
+        duelists.appendChild(cards[0]);
+        duelists.appendChild(el('div', 'versus', '對'));
+        duelists.appendChild(cards[1]);
+        phone.appendChild(duelists);
+
+        // stage --------------------------------------------------------
+        const stage = el('section', 'stage');
+        const board = el('div', 'board');
+        const canvas = document.createElement('canvas');
+        board.appendChild(canvas);
+        board.appendChild(el('div', 'tickbadge', `TICK ${String(tick).padStart(2, '0')} / ${view.frames.length}`));
+
+        const cellbadge = el('div', 'cellbadge');
+        const ally = frame.pieces.find((p) => p.side === 'ally');
+        const enemy = frame.pieces.find((p) => p.side === 'enemy');
+        cellbadge.innerHTML =
+          `<b>我</b> q${ally.position.q} r${ally.position.r}<br><b class="e">敵</b> q${enemy.position.q} r${enemy.position.r}`;
+        board.appendChild(cellbadge);
+
+        if (isEnd) {
+          const out = el('div', 'outcome');
+          const left = el('div');
+          left.appendChild(el('div', 'big', '相 討 · 상호 패배'));
+          left.appendChild(el('div', 'sub', '양측 모두 쓰러졌다 — 살아남은 자 없음'));
+          out.appendChild(left);
+          const meta = el('div', 'meta');
+          meta.innerHTML = `결착 t${combat.report.decisive_tick}<br>${combat.report.duration_millis}ms<br>${combat.report.reason}`;
+          out.appendChild(meta);
+          board.appendChild(out);
+        }
+        stage.appendChild(board);
+
+        // log ----------------------------------------------------------
+        const log = el('div', 'log');
+        const head = el('div', 'head');
+        head.appendChild(el('h2', null, '전 투 기 록'));
+        head.appendChild(el('span', 'src', `core ${view.core_log.length} · full ${view.full_log.length}`));
+        log.appendChild(head);
+        const ol = el('ol');
+        for (const entry of logWindow(view, tick, 5)) {
+          const li = el('li', entry.importance);
+          li.appendChild(el('span', 't', `t${entry.tick}`));
+          li.appendChild(el('span', 'mk'));
+          const s = el('span', 's');
+          const sentence = logSentence(entry);
+          s.innerHTML = sentence.replace(/기력 (\d+)/, '기력 <em>$1</em>');
+          li.appendChild(s);
+          ol.appendChild(li);
+        }
+        log.appendChild(ol);
+        stage.appendChild(log);
+        phone.appendChild(stage);
+
+        // transport ----------------------------------------------------
+        const transport = el('footer', 'transport');
+        const scrub = el('div', 'scrub');
+        view.frames.forEach((f, i) => {
+          let cls = 'pip';
+          if (i < frameIndex) cls += ' past';
+          if (i === frameIndex) cls += ' now';
+          if (f.tick === combat.report.decisive_tick) cls += ' decisive';
+          scrub.appendChild(el('div', cls));
+        });
+        transport.appendChild(scrub);
+
+        const controls = el('div', 'controls');
+        const clock = el('div', 'clock');
+        clock.innerHTML = `<b>${tick * view.tick_millis}ms</b> / ${combat.report.duration_millis}ms`;
+        controls.appendChild(clock);
+        const keys = el('div', 'keys');
+        keys.appendChild(el('div', 'key', '⏮'));
+        keys.appendChild(el('div', 'key main', isEnd ? '↺' : '⏸'));
+        keys.appendChild(el('div', 'key', '⏭'));
+        controls.appendChild(keys);
+        controls.appendChild(el('div', 'clock', '×1.0'));
+        transport.appendChild(controls);
+        phone.appendChild(transport);
+
+        phone.appendChild(el('div', 'home'));
+        host.appendChild(phone);
+
+        // portraits ----------------------------------------------------
+        // The same expression channels the board figure's own head is drawn
+        // from: `drawCharacter2D` calls `expressionFor` with this exact bias,
+        // so the cut-in cannot drift out of sync with the figure it labels.
+        for (const p of portraits) {
+          const prevF = frameIndex > 0 ? view.frames[frameIndex - 1] : null;
+          const signals = signalsFor(p.piece, frame, prevF, view);
+          const expr = expressionFor(signals, phaseFor(view, tick, p.piece.id), FACE_BIAS[p.side]);
+          const r = p.canvas.getBoundingClientRect();
+          const pw = Math.round(r.width);
+          const ph = Math.round(r.height);
+          p.canvas.width = pw * DPR;
+          p.canvas.height = ph * DPR;
+          const pctx = p.canvas.getContext('2d');
+          pctx.scale(DPR, DPR);
+          drawPortrait2D(pctx, pw, ph, p.side, expr, { mirror: p.side === 'enemy' });
+        }
+
+        // canvas -------------------------------------------------------
+        const rect = board.getBoundingClientRect();
+        const W = Math.round(rect.width);
+        const H = Math.round(rect.height);
+        canvas.width = W * DPR;
+        canvas.height = H * DPR;
+        const ctx = canvas.getContext('2d');
+        ctx.scale(DPR, DPR);
+        const area = { x: 0, y: 0, w: W, h: H };
+        const layout = layoutBoard(field, { x: 0, y: H * 0.02, w: W, h: H * 0.94 }, 0.6, {
+          fit: 'cover',
+          zoom: 1.30,
+          focus: { q: 2.5, r: -0.46 },
+        });
+        drawBoard(ctx, area, field, layout, frame, view);
+        const placed = drawFighters(ctx, view, frameIndex, layout, robeCache, 2.5);
+        drawClashIfAny(ctx, placed, layout);
+        drawEdgeFade(ctx, area);
+        drawVignette(ctx, area);
+      }
+
+      /** A working view, not a deliverable: the same board and the same rigs
+       *  at three times the size, so a capture can be judged at the level the
+       *  phone shot cannot show. */
+      function buildDetail(host, frameIndex) {
+        const W = 760;
+        const H = 460;
+        const canvas = document.createElement('canvas');
+        canvas.width = W * DPR;
+        canvas.height = H * DPR;
+        canvas.style.width = W + 'px';
+        canvas.style.height = H + 'px';
+        canvas.id = `detail-t${view.frames[frameIndex].tick}`;
+        host.appendChild(canvas);
+        const ctx = canvas.getContext('2d');
+        ctx.scale(DPR, DPR);
+        const area = { x: 0, y: 0, w: W, h: H };
+        const layout = layoutBoard(field, area, 0.6, { fit: 'cover', zoom: 1.05, focus: { q: 2.5, r: -0.25 } });
+        drawBoard(ctx, area, field, layout, view.frames[frameIndex], view);
+        const placed = drawFighters(ctx, view, frameIndex, layout, robeCache, 2.5);
+        drawClashIfAny(ctx, placed, layout);
+        drawEdgeFade(ctx, area);
+        drawVignette(ctx, area);
+      }
+
+      buildScreen(document.getElementById('shot-t4'), 3);
+      buildScreen(document.getElementById('shot-t8'), 7);
+      buildDetail(document.getElementById('detail-4'), 3);
+      buildDetail(document.getElementById('detail-8'), 7);
+      window.__READY__ = true;
+    </script>
+  </body>
+</html>

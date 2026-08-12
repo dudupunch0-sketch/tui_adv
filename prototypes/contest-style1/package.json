@@ -1,0 +1,15 @@
+{
+  "name": "combat-board-prototype",
+  "private": true,
+  "type": "module",
+  "description": "Style prototypes for the combat spectator board. Not shipped.",
+  "scripts": {
+    "shots": "node capture.mjs"
+  },
+  "devDependencies": {
+    "playwright-chromium": "^1.60.0"
+  },
+  "dependencies": {
+    "three": "^0.185.1"
+  }
+}

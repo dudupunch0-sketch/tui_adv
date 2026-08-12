@@ -1,5 +1,3 @@
-import type { CombatSpectatorCue, HexCoord } from '../../../core/types';
-
 export interface CombatBoardBounds {
   minQ: number;
   maxQ: number;
@@ -26,7 +24,7 @@ export interface CombatAdapterDiagnostic {
   path: string;
 }
 
-export type NormalizedCombatCueType = CombatSpectatorCue;
+export type NormalizedCombatCueType = 'attack' | 'hit' | 'evade' | 'balance_broken' | 'incapacitated';
 export interface NormalizedCombatCoord { q: number; r: number }
 export interface NormalizedCombatCue {
   type: NormalizedCombatCueType;
@@ -102,11 +100,11 @@ function validBounds(value: unknown): value is CombatBoardBounds {
     && value.minQ <= value.maxQ && value.minR <= value.maxR;
 }
 
-function validCoord(value: unknown): value is HexCoord {
+function validCoord(value: unknown): value is NormalizedCombatCoord {
   return isRecord(value) && isSafeInteger(value.q) && isSafeInteger(value.r);
 }
 
-function validFacing(value: unknown): value is HexCoord {
+function validFacing(value: unknown): value is NormalizedCombatCoord {
   return validCoord(value) && FACING_DIRECTIONS.has(`${value.q},${value.r}`);
 }
 
@@ -161,7 +159,7 @@ export function adaptCombatForThree(combat: unknown, options: CombatAdapterOptio
   const tickMillis = isSafeInteger(view.tick_millis) && view.tick_millis > 0 ? view.tick_millis : undefined;
   if (tickMillis === undefined) addError('INVALID_TICK_MILLIS', '$.view.tick_millis');
 
-  const rawFrames = view.frames === undefined ? [] : view.frames;
+  const rawFrames = Object.prototype.hasOwnProperty.call(view, 'frames') ? view.frames : [];
   if (!Array.isArray(rawFrames)) {
     addError('INVALID_FRAMES', '$.view.frames');
   }
@@ -180,7 +178,7 @@ export function adaptCombatForThree(combat: unknown, options: CombatAdapterOptio
       else if (previousValidTick !== undefined && tick <= previousValidTick) addError('NON_MONOTONIC_FRAME_TICK', `${framePath}.tick`);
       else if (tick !== undefined) previousValidTick = tick;
 
-      const rawPieces = rawFrame.pieces === undefined ? [] : rawFrame.pieces;
+      const rawPieces = Object.prototype.hasOwnProperty.call(rawFrame, 'pieces') ? rawFrame.pieces : [];
       if (!Array.isArray(rawPieces)) {
         addError('INVALID_PIECES', `${framePath}.pieces`);
         return;
@@ -205,7 +203,7 @@ export function adaptCombatForThree(combat: unknown, options: CombatAdapterOptio
         if (!side) addError('INVALID_SIDE', `${piecePath}.side`);
         const active = typeof rawPiece.active === 'boolean' ? rawPiece.active : undefined;
         if (active === undefined) addError('INVALID_ACTIVE', `${piecePath}.active`);
-        const rawCues = rawPiece.cues === undefined ? [] : rawPiece.cues;
+        const rawCues = Object.prototype.hasOwnProperty.call(rawPiece, 'cues') ? rawPiece.cues : [];
         if (!Array.isArray(rawCues)) {
           addError('INVALID_CUES', `${piecePath}.cues`);
           return;
@@ -228,8 +226,6 @@ export function adaptCombatForThree(combat: unknown, options: CombatAdapterOptio
     });
   }
 
-  if (diagnostics.some((item) => item.severity === 'error')) return { kind: 'fallback', diagnostics };
-
   if (boundsValid && Array.isArray(rawFrames)) {
     rawFrames.forEach((rawFrame, frameIndex) => {
       if (!isRecord(rawFrame) || !Array.isArray(rawFrame.pieces)) return;
@@ -244,6 +240,8 @@ export function adaptCombatForThree(combat: unknown, options: CombatAdapterOptio
       });
     });
   }
+
+  if (diagnostics.some((item) => item.severity === 'error')) return { kind: 'fallback', diagnostics };
 
   const replaySimulationVersion = simulationVersion as string;
   const replayResolutionFingerprint = resolutionFingerprint as string;

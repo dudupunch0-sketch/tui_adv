@@ -1,6 +1,6 @@
 # Three.js 전투 비주얼 아키텍처
 
-Status: approved canonical direction, WP1 ACTIVE, 2026-08-12
+Status: approved canonical direction, WP2 ACTIVE (blocked on WP1 merge/review), 2026-08-13
 Scope: `ScenePage.combat` Web renderer contract
 Primary storypack: `wuxia_jianghu_pack` / **이구학지 — 천기록**
 Compatibility: `escape from the office` legacy surface
@@ -168,8 +168,9 @@ safe integer bounds여야 하며 invalid config도 throw하지 않고 fallback d
 반환한다. WP1 test는 test-local constant
 `{ minQ: 0, maxQ: 6, minR: 0, maxR: 5 }`를 명시적으로 넘긴다. 이는 첫 3D stage가
 검증할 **의도된 board preset**이며 producer JSON에서 나온 값이나 production default가
-아니다. adapter는 piece 좌표에서 bounds를 추론하지 않는다. production bounds의 host/schema
-소유자는 WP2 시작 전 별도 정본 결정으로 남긴다. `axialToWorld`는 flat-top 공식을
+아니다. adapter는 piece 좌표에서 bounds를 추론하지 않는다. 첫 production bounds는 §11.2의
+Web host preset이 소유하고, content-defined bounds는 후속 additive schema 결정으로 남긴다.
+`axialToWorld`는 flat-top 공식을
 그대로 쓴다: `x = size * 1.5 * q`, `z = size * sqrt(3) * (r + q / 2)`.
 
 ### 3.2 malformed input policy
@@ -182,7 +183,7 @@ Storybook 본문과 user actions를 유지하고 combat 영역에는 안전한 l
 semantic board/log/report를 억지로 만들지 않는다. UI에는 raw payload나 internal stack을
 넣지 않는다. integration caller가 추가되는 WP에서는 반환된 첫 error의 `code`와 `path`만
 한 번 sanitized log로 남긴다. WP1 pure adapter 자체는 console이나 telemetry side effect를
-만들지 않는다. 이 fail-soft wiring은 WP2 이후 범위이며 WP1에는 사용자 표면 변화가 없다.
+만들지 않는다. 이 fail-soft wiring은 WP2 범위이며 WP1에는 사용자 표면 변화가 없다.
 
 hard malformed 범위는 non-object combat/view, 비어 있는
 `simulation_version`/`resolution_fingerprint`/view `fingerprint`, invalid
@@ -368,13 +369,13 @@ WP1은 다음 adapter/fixture 증거만 만든다.
 
 각 WP는 자기 타입·fixture·테스트를 포함하고, 다음 WP 없이도 main에서 build/test가 통과해야 한다. feature flag 또는 additive-optional 경계 뒤로 병합하며 선행되지 않은 자산은 placeholder로 대체한다. WP 완료는 코드 존재가 아니라 표의 결과와 해당 acceptance 증거가 함께 남은 상태다.
 
-### 11.1 ACTIVE WP1 실행 경계
+### 11.1 WP1 review/merge prerequisite
 
 읽기 순서는 다음과 같다.
 
 1. `docs/dev/Development_Plan.md`의 ACTIVE Web renderer track과 병렬 작업 경계
 2. 이 문서 §3~4의 adapter, seed, malformed, projection 계약과 §10.1 acceptance
-3. `docs/design/Combat_System_Implementation_Plan_Index.md`의 ACTIVE Three.js WP1 항목
+3. `docs/design/Combat_System_Implementation_Plan_Index.md`의 ACTIVE Three.js WP2 항목
 
 WP1이 소유하는 구현 파일은 아래 네 종류뿐이다.
 
@@ -388,14 +389,196 @@ WP1은 pure adapter contract slice다. `web/src/main.ts`, `web/src/ui/storybook/
 `package.json`, lockfile, Rust gameplay/production logic을 수정하지 않는다. Three.js dependency,
 canvas host, renderer mount도 추가하지 않는다. 기존 `renderCombatStage` DOM이 현재 visible
 surface로 남는다. WP1 acceptance를 통과하면 멈추고 review를 기다린다. 이 승격은 WP2를
-승인하지 않는다.
+자동 승인하지 않았지만, 이후 §11.2의 별도 정본 결정으로 WP2 board 계약이 승인됐다.
 
-WP2 이후 lifecycle acceptance는 미리 다음처럼 고정한다. game/start/fatal 경로에서
+WP2부터 lifecycle acceptance는 다음처럼 고정한다. game/start/fatal 경로에서
 `appRoot.innerHTML`을 실제 교체하기 직전 기존 Three stage를 즉시 dispose하고, 교체가 끝난
 뒤 새 host에 mount한다. transition이 있으면 outgoing stage를 transition 종료까지 유지한 뒤
 그 replacement 직전에 dispose한다. 진행 중인 GLB async load에는 generation/abort guard를
 두어 이전 mount의 stale completion이 새 scene에 attach되지 않게 한다. 이 항목들은 WP1
 구현 범위가 아니다.
+
+### 11.2 ACTIVE WP2 board 계약
+
+WP2 정본은 승인됐지만 **구현 착수는 WP1 PR #217이 review 후 main에 merge된 뒤**다. WP1의
+공개 API나 진단 순서가 review에서 바뀌면 이 절을 먼저 다시 대조한다. WP2는 첫 실제 Three.js
+surface를 붙이는 독립 board slice다. investor demo에 실재하는 3D 공간·고정 카메라·결정적
+core replay 연결을 제공하되 캐릭터/애니메이션/VFX/최종 품질을 선점하지 않는다.
+
+#### 결정과 근거
+
+1. production board bounds는 새 Rust/`ScenePage` schema가 아니라 Web host preset
+   `COMBAT_THREE_BOARD_BOUNDS = { minQ: 0, maxQ: 6, minR: 0, maxR: 5 }`가 소유한다.
+   현재 producer fixture에는 bounds가 없고 WP1 adapter가 bounds를 필수 option으로 받으므로,
+   첫 test board의 표현 설정을 gameplay truth에 올리는 것보다 이 방식이 작고 되돌릴 수 있다.
+   후속 content-defined board가 승인되면 별도 additive schema WP에서 교체한다. piece 좌표로
+   bounds를 추론하지 않는다.
+2. 공식 `three` package `0.185.1`을 정확한 버전으로 추가하고 lockfile을 함께 갱신한다.
+   `@types/three`, renderer wrapper, React, physics, postprocessing dependency는 추가하지 않는다.
+   Three.js 공식 API의 `WebGLRenderer`, `OrthographicCamera`, `ResizeObserver`, 명시적 resource
+   `dispose()`만 사용한다. dependency 설치 결과가 이 exact version과 다르면 멈춘다.
+3. WP2 scene은 42개 hex tile과 final normalized frame의 **임시 anchor marker**만 그린다.
+   marker는 ally/enemy를 원형/각진 base shape로 구별하고 foot anchor를 칸 중심에 둔다.
+   이것은 캐릭터 art가 아니며 WP3의 modular GLB가 교체한다. GLB, rig, clip, portrait, cue VFX,
+   shadow map, postprocessing, bloom, outline, texture asset은 만들지 않는다. baseline light는 ambient
+   + 한 개 directional light, shadow는 꺼진 상태다.
+4. 카메라는 `OrthographicCamera`, yaw 30°, elevation 48°, board bounds의 기하 중심을 고정
+   target으로 삼는다. 42칸의 여섯 꼭짓점을 camera basis에 투영한 bounds에 8% padding을 더하고
+   host aspect ratio에 맞춰 frustum만 refit한다. near/far는 `0.1/100`, DPR은
+   `min(window.devicePixelRatio, 2)`다. resize는 buffer와 frustum만 바꾸며 pose, target, board
+   center, q축 의미를 바꾸지 않는다. RTL도 같은 world transform을 쓴다. 사용자
+   pan/rotate/zoom, adaptive yaw, camera shake는 없다.
+5. tile 중심은 WP1 `axialToWorld(coord, 1)`의 `(x,z)`를 그대로 쓴다. 별도 projection 수식,
+   좌표 clamp, occupancy 수정, piece sort, AI/판정 재실행을 만들지 않는다. out-of-bounds marker는
+   원 좌표에 두고 DOM warning이 의미를 보존한다. duplicate occupancy는 첫 marker 하나와
+   non-semantic collision marker 하나만 그리며 두 전투원은 semantic DOM 표에 모두 남긴다.
+6. WP2는 static final-frame board다. cue의 `seedHex`와 input order를 보존해 받지만 cue visual을
+   만들지 않으므로 seed를 PRNG, 위치 jitter, 색, marker 변형에 소비하지 않는다.
+   `Math.random()`, wall clock, viewport, DPR, GPU를 visual input으로 쓰지 않는다. 같은 ready
+   replay와 viewport는 scene graph transform, geometry/material 수, `renderer.info`가 같다.
+   tick playback과 seeded cue primitive는 WP6 소유다.
+
+가까운 대안은 bounds를 `ScenePage.combat`에 추가하는 것이었다. 여러 board size를 authoring하는
+시점에는 맞지만 현재 단일 7×6 preset 때문에 Rust producer, serde, WASM, TS schema를 함께 여는
+비용이 더 크므로 채택하지 않는다. 기존 Canvas/CSS board를 3D처럼 꾸미는 최소안도 dependency와
+lifecycle을 미룰 뿐 primary renderer 방향을 검증하지 못하므로 채택하지 않는다.
+
+#### 공개 API와 소유 파일
+
+신규 `web/src/ui/storybook/combat/combatThreeStage.ts`의 public surface는 다음 이름과 result
+판별자를 고정한다. 세부 readonly 표기는 더 엄격해질 수 있다.
+
+```ts
+export const COMBAT_THREE_BOARD_BOUNDS: CombatBoardBounds;
+export interface CombatThreeMetrics {
+  calls: number; triangles: number; geometries: number; textures: number;
+}
+export interface CombatThreeStageHandle {
+  resize(): void;
+  metrics(): CombatThreeMetrics;
+  dispose(): void;
+}
+export type CombatThreeStageDiagnosticCode =
+  | CombatAdapterDiagnosticCode
+  | "MISSING_HOST" | "ZERO_SIZE_HOST" | "WEBGL_UNAVAILABLE" | "CONTEXT_LOST";
+export interface CombatThreeStageDiagnostic {
+  code: CombatThreeStageDiagnosticCode;
+  severity: "error" | "warning";
+  path: string;
+}
+export type CombatThreeMountResult =
+  | { kind: "absent"; diagnostics: readonly [] }
+  | { kind: "fallback"; diagnostics: readonly CombatThreeStageDiagnostic[] }
+  | { kind: "mounted"; handle: CombatThreeStageHandle; diagnostics: readonly CombatThreeStageDiagnostic[] };
+export function mountCombatThreeStage(host: HTMLElement | null, combat: unknown): CombatThreeMountResult;
+```
+
+stage-owned diagnostic path는 각각 `$host`, `$host.size`, `$webgl`, `$webgl.context`로 고정하고
+offending value나 exception text를 담지 않는다. adapter diagnostic은 순서와 path를 그대로
+앞에 보존한다. ready payload에서 host/WebGL error가 생기면 그 뒤에 stage diagnostic 하나를
+붙여 fallback한다. context loss는 mount 뒤 event이므로 host state와 sanitized one-time log에
+`CONTEXT_LOST@$webgl.context`를 사용한다.
+
+`dispose()`는 idempotent다. animation loop가 생기지 않는 WP2에서도 `setAnimationLoop(null)`,
+observer/listener 해제, scene traversal을 통한 owned geometry/material/texture dispose,
+`renderer.dispose()` 순서를 지킨다. test용 `forceContextLoss()`를 production dispose의 필수
+동작으로 사용하지 않는다. `metrics()`는 계측용이며 gameplay/HUD에 노출하지 않는다.
+
+WP2 implementation subagent의 **수정 가능 파일은 정확히 아래 8개**다.
+
+- `web/package.json`
+- `web/package-lock.json`
+- `web/src/main.ts`
+- `web/src/ui/storybook/combat/combatThreeStage.ts` (new)
+- `web/src/ui/storybook/combat/combatThreeStage.test.ts` (new)
+- `web/src/ui/storybook/combat/renderCombatStage.ts`
+- `web/src/ui/storybook/combat/renderCombatStage.test.ts`
+- `web/src/styles/storybook.css`
+
+`web/src/ui/storybook/render.ts`는 이미 `renderCombatStage(page.combat)`을 호출하므로 **수정하지
+않는다**. `web/src/core/types.ts`, `combatThreeAdapter.ts`와 그 test, `combatMotion.ts`, Rust
+crate/source/test/fixture, YAML/generated bundle, WASM, terminal, story shell/HUD CSS, save key,
+route graph는 전부 금지 파일이다. 금지 파일에서 부족함을 발견하면 범위를 넓히지 말고 멈춘다.
+
+`renderCombatStage.ts`는 ready일 때 기존 semantic board 안에
+`[data-combat-three-host]`를 만들고 DOM board/table/log/report를 유지한다. mounted canvas만
+visual DOM board 위에 놓이며 semantic table은 계속 접근 가능하다. absent는 기존처럼 combat
+markup 0개다. adapter fallback이면 raw payload를 기존 formatter로 넘기지 않고 localized
+"전투 화면을 표시할 수 없습니다" surface와 첫 error의 sanitized `code`/`path` data만 만든다.
+ready warning은 input order 그대로 `.combat-stage__diagnostics` semantic list에 "보드 범위 밖 위치" 또는
+"한 칸 중복 점유"와 sanitized path를 표시한다. 두 경우 모두 piece를 clamp/drop/reorder하지 않는다.
+`main.ts`는 replacement 뒤 그 값을 읽어 같은 `code|path`를 mount generation당 한 번만
+`console.warn`하고 raw value, exception, stack을 출력하지 않는다.
+
+WebGL palette는 mount 시 host의 computed CSS custom property만 읽는다: tile base/alternate는
+`--paper-deep`/`--paper-lit`, edge는 `--ink-faded`, ally/enemy marker는 `--jade`/`--seal-red`,
+collision marker는 `--gold-leaf`, clear alpha는 0이다. CSS 값을 읽을 수 없는 test environment의
+fallback literal은 `combatThreeStage.ts`의 단일 palette table에만 둔다. 다른 module이나 shader에
+색상 literal을 흩뜨리지 않는다.
+
+#### scene lifecycle과 실패 정책
+
+`main.ts`는 module-level active handle 하나만 가진다. `renderGamePage`, `renderStart`,
+`renderFatalPlayerError`에서 `appRoot.innerHTML`을 실제 교체하기 **직전** active handle을 dispose하고
+null로 만든다. `renderGamePage` replacement 뒤 새 host에 mount한다. 현재 transition controller가
+outgoing DOM을 유지하는 동안은 stage도 유지하고, 최종 replacement 직전에만 dispose한다.
+동일 handle의 double dispose, no-combat page, empty frames/pieces는 throw하지 않는다.
+
+WebGL2 미지원/renderer constructor 실패/zero-size host는 fallback result를 내고 canvas를
+ready로 표시하지 않는다. `webglcontextlost`에서는 `preventDefault()`, render 중단, canvas 숨김,
+`data-three-state="fallback"` 전환으로 기존 DOM board/log/report를 즉시 드러낸다. 자동 context
+restore나 GameCore 진행 중단은 하지 않는다. WP2에는 async GLB load가 없으므로 abort/generation
+guard 대상도 없다. WP3이 asset load를 추가할 때 이 handle에 guard를 추가하며 stale completion은
+폐기한다. forced-colors에서는 canvas를 숨기고 DOM board를 primary로 한다. reduced-motion은
+정적 final frame이라 normal과 같은 resting transform이며 loop를 만들지 않는다.
+
+#### acceptance, evidence, performance boundary
+
+unit/integration acceptance:
+
+1. canonical 7×6 bounds가 42개 unique tile을 만들고 네 corner `(0,0)`, `(6,0)`, `(0,5)`,
+   `(6,5)`와 중앙 표본의 center가 WP1 `axialToWorld` exact 값과 일치한다.
+2. PR #217 producer fixture가 `mounted`가 되고 final frame marker id/order/position이 normalized
+   replay와 같으며 core fixture, input, adapter output은 mutate하지 않는다. 같은 replay/host size의
+   두 mount는 mocked Three scene matrix 배열과 geometry/material/marker 수가 exact match한다.
+3. absent는 host/canvas/diagnostic 0개, malformed는 throw 없이 localized fallback이며 첫
+   diagnostic만 sanitized log된다. warning-only ready는 mount되고 원 좌표와 DOM warning을 보존한다.
+4. empty frames/pieces는 빈 42-tile board, 13명은 hard reject 없음, duplicate occupancy는 marker
+   overlap 없이 DOM에 두 id가 남는다.
+5. resize 전후 camera pose/target/q축은 같고 frustum만 refit하며 RTL transform이 동일하다.
+6. mount → dispose → dispose와 10회 replacement에서 observer/listener/canvas가 남지 않고
+   geometry/texture count가 증가 추세를 보이지 않는다. start/fatal/no-combat 전환도 같은 gate다.
+7. synthetic `webglcontextlost` 뒤 canvas가 숨고 semantic board/log가 남으며 user action button은
+   동작한다. forced-colors/reduced-motion에서도 같은 정보와 final position이 남는다.
+8. `render.ts`, Rust/GameCore/schema/fixture와 기존 gameplay 기대값은 byte diff 0이다.
+
+browser evidence는 실제 WASM player 또는 같은 production mount 함수를 쓰는 fixture harness에서
+남긴다. 1920×1080 DPR 1 normal screenshot, existing Storybook 5 viewport QA, reduced-motion,
+forced-colors, context-loss 후 screenshot을 scratch artifact로 보존하고 commit하지 않는다. 캡처에는
+42칸, four corners, final two markers, 기존 DOM log/report, context-loss 뒤 DOM fallback이 보여야
+한다. production mount를 호출하지 않는 별도 mock canvas 캡처는 증거가 아니다.
+
+WP2 성능은 budget 결정 단계가 아니다. 1920×1080 DPR 1 warm 상태에서 정적 board 120 render의
+CPU frame p50/p95/p99와 `renderer.info.render.calls/triangles`,
+`renderer.info.memory.geometries/textures`, 10회 mount/dispose 전후 값을 기록한다. 평균 FPS 하나,
+GPU timer, shader hitch, 12명 worst-cue, shadow/postprocess 비교, hard draw/triangle/memory budget은
+WP4/5/8로 남긴다. 측정값이 나쁘더라도 테스트 기대값을 완화하지 말고 원자료와 환경을 보고한다.
+
+#### originality와 review gate
+
+레퍼런스 팩의 autobattler 이미지는 "고정 시점에서 보드 전체가 읽힘"만, Wave-Racer는 resource
+ownership/disposal과 deterministic capture 방식만 참고한다. 고유 tile pattern, 캐릭터 IP,
+상점/벤치/HUD 배치, 색 조합, 로고, shader/code를 복제하지 않는다. WP2의 육각 tile과 anchor
+marker는 프로젝트 palette token(`--paper*`, `--ink*`, `--jade`, `--seal-red`)과 기본 geometry로
+독자 구성한다. 외부 코드/asset을 실제로 가져오게 되면 stop하고 source/commit/adapted 범위를
+provenance에 먼저 추가한다.
+
+구현자는 다음 중 하나면 즉시 멈춘다: WP1 merge SHA/API/fixture SHA가 정본과 다름, baseline
+test 수치나 existing expectation이 바뀜, `render.ts`/Rust/schema/금지 파일 수정이 필요함,
+WebGL fallback이 DOM 의미를 보존하지 못함, 두 가지로 읽히는 lifecycle, exact `three` version
+설치 실패, fixture fingerprint/bytes 변경. 구현 완료 뒤 별도 reviewer가 owned-file diff,
+dependency/lock, lifecycle disposal, raw payload 비노출, browser screenshots와 직접 재실행한 test
+출력을 검수해야 한다. 그 review가 통과하기 전 WP3를 ACTIVE로 올리거나 gate flag를 해제하지 않는다.
 
 | WP | 결과 | non-goal |
 | --- | --- | --- |

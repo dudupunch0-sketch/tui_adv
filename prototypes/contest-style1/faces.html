@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <title>표정 리그 — 스타일 1 (전투 신호가 얼굴을 움직인다)</title>
+    <style>
+      :root {
+        --bg: #0b0d12;
+        --panel: #12151d;
+        --line: rgba(158,176,200,0.14);
+        --text: #e9eef5;
+        --dim: #97a3b4;
+        --faint: #626e7e;
+        --gold: #d8b26a;
+        --ally: #63c8b2;
+        --enemy: #d1566a;
+        --serif: 'Noto Serif CJK KR', serif;
+        --sans: 'Noto Sans CJK KR', system-ui, sans-serif;
+        --mono: 'Noto Sans Mono CJK KR', ui-monospace, monospace;
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body { background: var(--bg); color: var(--text); font-family: var(--sans); padding: 26px; }
+      #sheet { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 22px 24px 24px; width: 1180px; }
+      h1 { font-family: var(--serif); font-size: 19px; font-weight: 700; letter-spacing: 1px; }
+      .sub { font-family: var(--mono); font-size: 11px; color: var(--faint); margin-top: 5px; letter-spacing: 0.2px; }
+      .legend { font-size: 11.5px; color: var(--dim); margin-top: 10px; line-height: 1.6; }
+      .legend b { color: var(--gold); font-weight: 600; }
+      .grid { display: grid; grid-template-columns: 92px repeat(4, 1fr); gap: 12px; margin-top: 18px; align-items: start; }
+      .rowhead { padding-top: 46px; }
+      .rowhead .nm { font-family: var(--serif); font-size: 14px; font-weight: 600; }
+      .rowhead .hs { font-size: 10px; letter-spacing: 1.4px; color: var(--faint); margin-top: 3px; }
+      .rowhead.ally .nm { color: var(--ally); }
+      .rowhead.enemy .nm { color: var(--enemy); }
+      .colhead { text-align: center; }
+      .colhead .t { font-family: var(--serif); font-size: 13px; font-weight: 600; }
+      .colhead .c { font-family: var(--mono); font-size: 9.5px; color: var(--faint); margin-top: 3px; }
+      .colhead .src { font-family: var(--mono); font-size: 9px; margin-top: 4px; letter-spacing: 0.3px; }
+      .colhead .src.real { color: var(--gold); }
+      .colhead .src.authored { color: var(--faint); }
+      figure { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+      canvas.port { display: block; border-radius: 7px; border: 1px solid var(--line); }
+      .chan { font-family: var(--mono); font-size: 8.5px; color: var(--faint); line-height: 1.55; text-align: center; }
+      .chan b { color: var(--dim); font-weight: 500; }
+      .scalebar { margin-top: 22px; border-top: 1px solid var(--line); padding-top: 14px; }
+      .scalebar h2 { font-family: var(--serif); font-size: 13px; font-weight: 600; letter-spacing: 1px; color: var(--dim); }
+      .scalebar p { font-size: 11px; color: var(--faint); margin-top: 4px; line-height: 1.6; }
+      .scalerow { display: flex; gap: 18px; align-items: flex-end; margin-top: 12px; }
+      .scalerow figure { gap: 5px; }
+      .scalerow figcaption { font-family: var(--mono); font-size: 9px; color: var(--faint); }
+      canvas.tiny { display: block; background: #232c38; border-radius: 4px; }
+      canvas.sil { background: #cfd6de; }
+    </style>
+  </head>
+  <body>
+    <div id="sheet">
+      <h1>표정 리그 — 전투 신호가 얼굴을 움직인다</h1>
+      <div class="sub" id="meta">loading…</div>
+      <div class="legend">
+        얼굴은 몸과 <b>같은 SIGNALS</b>를 읽는다. <b>STATES</b>(alert · focus · evade · strain · slack)를 가중 혼합하고,
+        <b>MODIFIER</b>로 <b>flinch(hit)</b>를 더한다 — 피격이 상태가 아니라 수정자인 이유는 몸과 같다:
+        이 픽스처에서 두 전투원은 <b>때리는 그 tick에 맞는다</b>. 아래 채널값은 렌더러가 받은 실제 숫자다.
+      </div>
+      <div class="grid" id="grid"></div>
+      <div class="scalebar">
+        <h2>실제 크기에서는 이렇게 보인다</h2>
+        <p>
+          390px 폭 화면에서 보드 위 머리는 세로 18px 안팎이다. 같은 얼굴 함수·같은 채널값이지만
+          서브픽셀이 되는 요소(보조 하이라이트 · 아랫눈꺼풀 선 · 코 그림자 · 머리 하이라이트 밴드)는 빠진다.
+          형태는 하나도 바뀌지 않는다. 그래서 HUD에 초상 컷인을 둔다 — 표정을 읽을 수 있는 유일한 크기다.
+        </p>
+        <div class="scalerow" id="scalerow"></div>
+      </div>
+      <div class="scalebar">
+        <h2>색을 빼도 진영이 구분되는가</h2>
+        <p>
+          접근성 계약은 <b>색이 아니라 형태</b>로 진영이 구분되어야 한다고 요구한다. 확인하는 방법은
+          하나뿐이다 — 색을 빼고 렌더해 보는 것. 풀어헤친 산발(들쭉날쭉한 윤곽 + 삐져나온 가닥)과
+          바짝 묶은 머리(매끈한 두개골 + 뒤로 뻗은 꼬리 하나)는 순수 먹으로도 갈라진다.
+        </p>
+        <div class="scalerow" id="silrow"></div>
+      </div>
+    </div>
+
+    <script type="module">
+      import { expressionFor } from './rig.js';
+      import { FACE_BIAS, PAL2D, drawFace2D, drawPortrait2D, silhouettePalette } from './rig2d.js';
+
+      const DPR = 3;
+      const combat = await (await fetch('./combat-frames.json')).json();
+      document.getElementById('meta').textContent =
+        `실제 ScenePage.combat · sim=${combat.view.simulation_version} · fp=${combat.view.fingerprint} · ` +
+        `cue: attack · hit · incapacitated`;
+
+      // Signal sets. Three of the four are cue combinations this fixture
+      // actually produces; `guard` is the neutral baseline the bout never
+      // shows, and it is labelled as such rather than passed off as data.
+      const CASES = [
+        { key: 'guard', title: '대기', cues: '(cue 없음)', src: 'authored', real: false,
+          s: { attack: 0, hit: 0, evade: 0, stagger: 0, down: 0 }, phase: 0.5 },
+        { key: 'attack', title: '공격', cues: 'attack', src: 'authored', real: false,
+          s: { attack: 1, hit: 0, evade: 0, stagger: 0, down: 0 }, phase: 0.6 },
+        { key: 'both', title: '공격 + 피격', cues: 'attack · hit', src: 't1–t8 실측', real: true,
+          s: { attack: 1, hit: 1, evade: 0, stagger: 0, down: 0 }, phase: 0.6 },
+        { key: 'down', title: '전투불능', cues: 'attack · hit · incapacitated', src: 't8 실측', real: true,
+          s: { attack: 1, hit: 1, evade: 0, stagger: 0, down: 1 }, phase: 0.62 },
+      ];
+      const SIDES = [
+        { side: 'ally', name: '청류문 검수', house: '청류문' },
+        { side: 'enemy', name: '흑사방 도객', house: '흑사방' },
+      ];
+
+      function el(tag, cls, text) {
+        const n = document.createElement(tag);
+        if (cls) n.className = cls;
+        if (text !== undefined) n.textContent = text;
+        return n;
+      }
+      function canvas(parent, w, h, cls) {
+        const cv = document.createElement('canvas');
+        cv.width = w * DPR;
+        cv.height = h * DPR;
+        cv.style.width = w + 'px';
+        cv.style.height = h + 'px';
+        cv.className = cls;
+        parent.appendChild(cv);
+        const ctx = cv.getContext('2d');
+        ctx.scale(DPR, DPR);
+        return ctx;
+      }
+      const f2 = (v) => (v >= 0 ? '+' : '') + v.toFixed(2);
+
+      const grid = document.getElementById('grid');
+      grid.appendChild(el('div'));
+      for (const c of CASES) {
+        const h = el('div', 'colhead');
+        h.appendChild(el('div', 't', c.title));
+        h.appendChild(el('div', 'c', c.cues));
+        h.appendChild(el('div', `src ${c.src === 'authored' ? 'authored' : 'real'}`, c.src));
+        grid.appendChild(h);
+      }
+
+      const PW = 224;
+      const PH = 236;
+      for (const s of SIDES) {
+        const rh = el('div', `rowhead ${s.side}`);
+        rh.appendChild(el('div', 'nm', s.name));
+        rh.appendChild(el('div', 'hs', s.house));
+        grid.appendChild(rh);
+        for (const c of CASES) {
+          const fig = el('figure');
+          const ctx = canvas(fig, PW, PH, 'port');
+          const e = expressionFor(c.s, c.phase, FACE_BIAS[s.side]);
+          drawPortrait2D(ctx, PW, PH, s.side, e, { mirror: s.side === 'enemy' });
+          const chan = el('div', 'chan');
+          chan.innerHTML =
+            `brow <b>${f2(e.browInner)}</b>/<b>${f2(e.browOuter)}</b> · lid <b>${e.lid.toFixed(2)}</b><br>` +
+            `squint <b>${e.squint.toFixed(2)}</b> · mouth <b>${e.mouthOpen.toFixed(2)}</b> · jaw <b>${e.jaw.toFixed(2)}</b>`;
+          fig.appendChild(chan);
+          grid.appendChild(fig);
+        }
+      }
+
+      // Real-scale strip: the board head at the size it actually ships at,
+      // beside a 4× blow-up of the same pixels' geometry.
+      const row = document.getElementById('scalerow');
+      for (const s of SIDES) {
+        for (const c of [CASES[2], CASES[3]]) {
+          for (const [px, label] of [[26, '보드 실제 크기'], [104, '같은 얼굴 4×']]) {
+            const fig = el('figure');
+            const ctx = canvas(fig, px, px * 1.15, 'tiny');
+            const e = expressionFor(c.s, c.phase, FACE_BIAS[s.side]);
+            ctx.save();
+            ctx.translate(px * 0.5, px * 0.66);
+            const k = (px * 0.041) * (s.side === 'enemy' ? -1 : 1);
+            ctx.scale(k, -px * 0.041);
+            drawFace2D(ctx, PAL2D[s.side], s.side, e, 'small', { brimLift: 0 });
+            ctx.restore();
+            fig.appendChild(el('figcaption', null, `${s.side === 'ally' ? '我' : '敵'} ${c.title} · ${label}`));
+            row.appendChild(fig);
+          }
+        }
+      }
+
+      // Silhouette check: side has to survive colour being removed. Same
+      // figures, one flat ink, at board scale and at 3x.
+      const sil = document.getElementById('silrow');
+      for (const s of SIDES) {
+        for (const [px, label] of [[30, '보드 실제 크기'], [92, '3×']]) {
+          const fig = el('figure');
+          const ctx = canvas(fig, px, px * 1.15, 'tiny sil');
+          const e = expressionFor(CASES[2].s, CASES[2].phase, FACE_BIAS[s.side]);
+          ctx.save();
+          ctx.translate(px * 0.5, px * 0.68);
+          const k = px * 0.043;
+          ctx.scale(s.side === 'enemy' ? -k : k, -k);
+          drawFace2D(ctx, silhouettePalette(), s.side, e, 'small');
+          ctx.restore();
+          fig.appendChild(el('figcaption', null, `${s.side === 'ally' ? '我 산발' : '敵 묶은 머리'} · ${label}`));
+          sil.appendChild(fig);
+        }
+      }
+
+      window.__READY__ = true;
+    </script>
+  </body>
+</html>

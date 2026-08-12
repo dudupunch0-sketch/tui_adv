@@ -1,0 +1,859 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <title>전투 관전 — 플레이 화면 목업 (스타일 2)</title>
+    <script type="importmap">
+      { "imports": { "three": "./node_modules/three/build/three.module.js" } }
+    </script>
+    <style>
+      /* ---------------------------------------------------------------
+         UI palette. One table; nothing below writes a colour literal.
+         --------------------------------------------------------------- */
+      :root {
+        --ink-950: #090b11;
+        --ink-900: #0e1219;
+        --ink-850: #131824;
+        --ink-800: #182031;
+        --ink-750: #1e2739;
+        --line: #2b364b;
+        --line-soft: #202a3c;
+        --text: #eaeff7;
+        --muted: #93a0b6;
+        --dim: #5d6a80;
+
+        --ally: #56c4b3;
+        --ally-deep: #1c6d64;
+        --ally-glow: #a4ede1;
+        --enemy: #dd6076;
+        --enemy-deep: #7d2233;
+        --enemy-glow: #f5a6b3;
+
+        --gold: #e0bc7d;
+        --gold-deep: #8a6c33;
+
+        --sky-top: #10131d;
+        --sky-mid: #1b2131;
+        --sky-horizon: #3a3a4d;
+
+        --shadow: rgba(0, 0, 0, 0.55);
+
+        --serif: 'Noto Serif CJK KR', 'Noto Serif KR', serif;
+        --sans: 'Noto Sans CJK KR', 'Noto Sans KR', system-ui, sans-serif;
+        --mono: 'Noto Sans Mono CJK KR', ui-monospace, monospace;
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        padding: 30px;
+        background: #4c525d;
+        color: var(--text);
+        font-family: var(--sans);
+        display: flex;
+        gap: 34px;
+        align-items: flex-start;
+      }
+
+      /* --------------------------------------------------------------- */
+
+      .phone {
+        width: 412px;
+        height: 892px;
+        background: var(--ink-950);
+        border-radius: 30px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        box-shadow: 0 26px 60px rgba(0, 0, 0, 0.45);
+      }
+
+      /* --- app chrome -------------------------------------------------- */
+      .topbar {
+        flex: 0 0 auto;
+        padding: 13px 16px 11px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--ink-900);
+        border-bottom: 1px solid var(--line-soft);
+      }
+      .back {
+        width: 22px; height: 22px; flex: none;
+        border-left: 2px solid var(--muted);
+        border-bottom: 2px solid var(--muted);
+        transform: rotate(45deg) scale(0.5);
+        margin-right: -4px;
+      }
+      .title-block { flex: 1 1 auto; min-width: 0; }
+      .storypack {
+        font-family: var(--serif);
+        font-size: 15px;
+        letter-spacing: 0.04em;
+        line-height: 1.15;
+      }
+      .chapter {
+        font-size: 10.5px;
+        color: var(--dim);
+        letter-spacing: 0.06em;
+        margin-top: 3px;
+      }
+      .simtag {
+        font-family: var(--mono);
+        font-size: 9px;
+        color: var(--dim);
+        border: 1px solid var(--line);
+        border-radius: 3px;
+        padding: 3px 5px;
+        white-space: nowrap;
+      }
+
+      /* --- combatant strip --------------------------------------------- */
+      .versus {
+        flex: 0 0 auto;
+        background: var(--ink-850);
+        border-bottom: 1px solid var(--line-soft);
+        padding: 10px 14px 11px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .fighter { display: flex; align-items: center; gap: 9px; }
+      .fighter.enemy-row { flex-direction: row-reverse; text-align: right; }
+
+      /* Side reads by SHAPE first: the ally mark is a level hexagon, the
+         enemy mark a forward-raked chevron. Colour only agrees with it. */
+      /* Portrait cut-in. The board camera is broadside — correct for reading a
+         duel, useless for reading a face — so the identity strip carries its own
+         render of the head, framed three-quarter front and large enough that the
+         expression survives at phone scale. */
+      /* Faceless variant: the identity strip drops to a faction sigil. If the
+         board carries no expression, a portrait cut-in carrying one is the only
+         face on the screen and it stops being a HUD element and starts being
+         the subject. */
+      .sigil {
+        position: relative; width: 56px; height: 56px; flex: none;
+        display: grid; place-items: center;
+        background: var(--ink-800);
+        border: 1px solid var(--line);
+      }
+      .sigil.ally { border-color: var(--ally-deep); }
+      .sigil.enemy { border-color: var(--enemy-deep); }
+      .sigil .glyph {
+        font-family: var(--serif); font-size: 21px; line-height: 1;
+        color: var(--ink-950);
+        width: 34px; height: 34px; display: grid; place-items: center;
+      }
+      .sigil.ally .glyph { background: var(--ally); clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%); }
+      .sigil.enemy .glyph { background: var(--enemy); clip-path: polygon(0 0, 66% 0, 100% 50%, 66% 100%, 0 100%, 34% 50%); }
+      .sigil.downed { opacity: 0.5; }
+      .sigil.downed::after {
+        content: ''; position: absolute; left: 6px; right: 6px; top: 50%;
+        border-top: 1px solid var(--enemy); transform: rotate(-18deg);
+      }
+
+      .cutin {
+        position: relative; width: 56px; height: 56px; flex: none;
+        background: var(--ink-800);
+        border: 1px solid var(--line);
+        overflow: hidden;
+      }
+      .cutin canvas { display: block; width: 56px; height: 56px; }
+      .cutin.ally { border-color: var(--ally-deep); }
+      .cutin.enemy { border-color: var(--enemy-deep); }
+      .cutin .pip {
+        position: absolute; right: -1px; bottom: -1px; width: 14px; height: 14px;
+      }
+      .cutin.ally .pip { background: var(--ally); clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%); }
+      .cutin.enemy .pip { background: var(--enemy); clip-path: polygon(0 0, 66% 0, 100% 50%, 66% 100%, 0 100%, 34% 50%); }
+      .cutin.downed::after {
+        content: ''; position: absolute; inset: 0;
+        background: rgba(9, 11, 17, 0.5);
+        border-top: 1px solid var(--enemy);
+        transform: rotate(-18deg) scaleY(0.02) translateY(-1px);
+        transform-origin: center;
+      }
+
+      .mark {
+        width: 26px; height: 26px; flex: none;
+        display: grid; place-items: center;
+        font-family: var(--serif);
+        font-size: 12px;
+        color: var(--ink-950);
+        font-weight: 700;
+      }
+      .mark.ally {
+        background: var(--ally);
+        clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+      }
+      .mark.enemy {
+        background: var(--enemy);
+        clip-path: polygon(0 0, 66% 0, 100% 50%, 66% 100%, 0 100%, 34% 50%);
+      }
+
+      .who { flex: 0 0 auto; min-width: 96px; }
+      .who .name { font-family: var(--serif); font-size: 13px; line-height: 1.2; }
+      .who .school { font-size: 9.5px; color: var(--dim); letter-spacing: 0.08em; margin-top: 2px; }
+
+      .gauge { flex: 1 1 auto; }
+      .gauge .rail {
+        height: 9px;
+        background: var(--ink-750);
+        border: 1px solid var(--line);
+        position: relative;
+        overflow: hidden;
+      }
+      /* Ally fill is solid; enemy fill is hatched. Two people who cannot tell
+         teal from rose still read two different bars. */
+      .gauge .fill { position: absolute; inset: 0 auto 0 0; }
+      .fighter.enemy-row .gauge .fill { inset: 0 0 0 auto; }
+      .gauge.ally .fill { background: var(--ally-deep); box-shadow: inset 0 0 0 1px var(--ally); }
+      .gauge.enemy .fill {
+        background: repeating-linear-gradient(115deg, var(--enemy-deep) 0 4px, var(--ink-800) 4px 7px);
+        box-shadow: inset 0 0 0 1px var(--enemy);
+      }
+      .gauge .ticks { position: absolute; inset: 0; display: flex; }
+      .gauge .ticks i { flex: 1 1 0; border-right: 1px solid var(--ink-900); }
+      .gauge .ticks i:last-child { border-right: 0; }
+      .gauge .read {
+        display: flex; justify-content: space-between;
+        font-family: var(--mono); font-size: 9px; color: var(--muted);
+        margin-top: 3px; letter-spacing: 0.02em;
+      }
+      .fighter.enemy-row .gauge .read { flex-direction: row-reverse; }
+      .gauge .read .down { color: var(--enemy); }
+
+      /* --- stage -------------------------------------------------------- */
+      .stage {
+        position: relative;
+        flex: 70 1 0;
+        min-height: 0;
+        background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 46%, var(--sky-horizon) 88%, var(--ink-850) 100%);
+        overflow: hidden;
+      }
+      .stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+      /* A soft vignette keeps the eye on the two figures without touching the
+         3D pass — the shading itself stays hard-banded. */
+      .stage .vignette {
+        position: absolute; inset: 0; pointer-events: none;
+        background: radial-gradient(115% 68% at 50% 44%, rgba(0,0,0,0) 42%, rgba(0,0,0,0.42) 100%);
+      }
+
+      .tickchip {
+        position: absolute; top: 11px; left: 12px;
+        display: flex; align-items: baseline; gap: 6px;
+        padding: 5px 9px 5px 8px;
+        background: rgba(9, 11, 17, 0.72);
+        border: 1px solid var(--line);
+        border-left: 2px solid var(--gold);
+      }
+      .tickchip b { font-family: var(--mono); font-size: 15px; letter-spacing: 0.02em; }
+      .tickchip span { font-family: var(--mono); font-size: 9px; color: var(--muted); }
+
+      .phasechip {
+        position: absolute; top: 11px; right: 12px;
+        padding: 5px 8px;
+        font-family: var(--serif); font-size: 11px; letter-spacing: 0.12em;
+        background: rgba(9, 11, 17, 0.72);
+        border: 1px solid var(--line);
+        color: var(--gold);
+      }
+
+      /* Nameplates are positioned from the projected head joint, so they track
+         the actual figure instead of being pinned to a guessed corner. */
+      .plate {
+        position: absolute; transform: translate(-50%, -100%);
+        display: flex; align-items: center; gap: 5px;
+        padding: 3px 7px 3px 4px;
+        background: rgba(9, 11, 17, 0.78);
+        border: 1px solid var(--line);
+        white-space: nowrap;
+      }
+      .plate .pip { width: 10px; height: 10px; flex: none; }
+      .plate.ally .pip { background: var(--ally); clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%); }
+      .plate.enemy .pip { background: var(--enemy); clip-path: polygon(0 0, 66% 0, 100% 50%, 66% 100%, 0 100%, 34% 50%); }
+      .plate .pname { font-family: var(--serif); font-size: 10.5px; }
+      .plate .cell { font-family: var(--mono); font-size: 8.5px; color: var(--dim); }
+      .plate.below { transform: translate(-50%, 54px); }
+      .plate.downed { border-color: var(--enemy-deep); }
+      .plate.downed .pname { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 1px; }
+
+      .outcome {
+        position: absolute; left: 0; right: 0; top: 21%;
+        display: flex; flex-direction: column; align-items: center; gap: 6px;
+        pointer-events: none;
+      }
+      .outcome .rule { width: 168px; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+      .outcome .word {
+        font-family: var(--serif); font-size: 33px; letter-spacing: 0.30em;
+        text-indent: 0.30em; color: var(--gold);
+        text-shadow: 0 3px 18px rgba(0, 0, 0, 0.9);
+      }
+      .outcome .sub { font-size: 10.5px; letter-spacing: 0.16em; color: var(--muted); }
+
+      /* --- timeline ------------------------------------------------------ */
+      .timeline {
+        position: absolute; left: 0; right: 0; bottom: 0;
+        padding: 9px 12px 10px;
+        background: linear-gradient(180deg, rgba(9,11,17,0) 0%, rgba(9,11,17,0.82) 52%);
+      }
+      .timeline .row { display: flex; align-items: center; gap: 8px; }
+      .transport { display: flex; gap: 5px; flex: none; }
+      .transport b {
+        width: 20px; height: 20px; display: grid; place-items: center;
+        border: 1px solid var(--line); background: rgba(19, 24, 36, 0.9);
+      }
+      .transport b i { width: 0; height: 0; border-left: 6px solid var(--muted); border-top: 4px solid transparent; border-bottom: 4px solid transparent; }
+      .transport b.pause i { width: 6px; height: 8px; border: 0; border-left: 2px solid var(--text); border-right: 2px solid var(--text); }
+      .transport b.prev i { transform: rotate(180deg); }
+
+      .track { flex: 1 1 auto; display: flex; gap: 2px; }
+      .track s {
+        flex: 1 1 0; height: 5px; background: var(--ink-750);
+        border-top: 1px solid var(--line); text-decoration: none;
+      }
+      .track s.past { background: var(--gold-deep); border-top-color: var(--gold); }
+      .track s.now { background: var(--gold); border-top-color: var(--gold); }
+      .track s.decisive { position: relative; }
+      .track s.decisive::after {
+        content: ''; position: absolute; left: 50%; top: -6px;
+        width: 5px; height: 5px; background: var(--gold);
+        transform: translateX(-50%) rotate(45deg);
+      }
+      .clock { flex: none; font-family: var(--mono); font-size: 9.5px; color: var(--muted); }
+
+      /* --- log ------------------------------------------------------------ */
+      .log {
+        flex: 30 1 0;
+        min-height: 0;
+        background: var(--ink-900);
+        border-top: 1px solid var(--line);
+        display: flex; flex-direction: column;
+      }
+      .log header {
+        display: flex; align-items: center; gap: 8px;
+        padding: 8px 14px 7px;
+        border-bottom: 1px solid var(--line-soft);
+      }
+      .log header h2 { margin: 0; font-family: var(--serif); font-size: 12px; letter-spacing: 0.1em; font-weight: 500; }
+      .log header .filters { margin-left: auto; display: flex; gap: 4px; }
+      .log header .filters u {
+        text-decoration: none; font-size: 9px; letter-spacing: 0.06em;
+        padding: 2px 6px; color: var(--dim); border: 1px solid var(--line-soft);
+      }
+      .log header .filters u.on { color: var(--gold); border-color: var(--gold-deep); }
+
+      .lines { flex: 1 1 auto; overflow: hidden; padding: 4px 0 2px; }
+      .line {
+        display: grid; grid-template-columns: 34px 1fr;
+        gap: 8px; padding: 4.5px 14px 4.5px 12px;
+        align-items: baseline;
+      }
+      .line .t { font-family: var(--mono); font-size: 9px; color: var(--dim); text-align: right; }
+      .line .txt { font-size: 11.5px; line-height: 1.42; color: var(--muted); }
+      .line em { font-style: normal; }
+      .line.ally em { color: var(--ally); }
+      .line.enemy em { color: var(--enemy); }
+      .line.important .txt { color: var(--text); }
+      .line.decisive {
+        border-left: 2px solid var(--gold);
+        padding-left: 10px;
+        background: linear-gradient(90deg, rgba(224, 188, 125, 0.07), transparent 62%);
+      }
+      .line.decisive .txt { color: var(--text); }
+      .line.decisive .val { font-family: var(--mono); color: var(--gold); font-size: 11px; }
+      .line.head { padding-top: 7px; }
+
+      /* --- tab bar --------------------------------------------------------- */
+      .tabs {
+        flex: 0 0 auto;
+        display: flex; border-top: 1px solid var(--line);
+        background: var(--ink-950);
+        padding: 7px 0 11px;
+      }
+      .tabs div { flex: 1 1 0; text-align: center; font-size: 9.5px; color: var(--dim); letter-spacing: 0.08em; }
+      .tabs div.on { color: var(--text); }
+      .tabs div i { display: block; width: 16px; height: 16px; margin: 0 auto 4px; border: 1.5px solid currentColor; }
+      .tabs div:nth-child(2) i { border-radius: 50%; }
+      .tabs div:nth-child(3) i { clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+      .tabs div:nth-child(4) i { transform: rotate(45deg) scale(0.82); }
+
+      .caption {
+        width: 412px; color: #dfe4ec; font-size: 11.5px; line-height: 1.6;
+        font-family: var(--mono);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="screens"></div>
+
+    <script type="module">
+      import * as THREE from 'three';
+      import { PERSONA, expressionFor, poseFor, signalsFor } from './rig.js';
+      import {
+        applyHeadTurn,
+        applyPose3D,
+        axialToWorld,
+        buildBackdrop3D,
+        buildBoard3D,
+        buildCharacter3D,
+        buildContactShadow,
+        createBoardCamera,
+        createPortraitCamera,
+        setDepthSign,
+        tuneForCamera,
+        clearFace3D,
+        updateFace3D,
+      } from './rig3d.js';
+
+      // ---------------------------------------------------------------------
+      // Data. Everything below is read from the real capture; nothing is
+      // invented. The only authored content is the Korean prose attached to
+      // each of the four `template_id`s the fixture actually emits.
+      // ---------------------------------------------------------------------
+
+      const combat = await (await fetch('./combat-frames.json')).json();
+      const view = combat.view;
+      const report = combat.report;
+
+      const SIDE_OF = new Map();
+      for (const p of view.frames[0].pieces) SIDE_OF.set(p.id, p.side);
+
+      const IDENTITY = {
+        ally: { name: '연서린', school: '청류문', role: '검수', mark: '靑', persona: PERSONA.composed },
+        enemy: { name: '갈여청', school: '흑사방', role: '도객', mark: '黑', persona: PERSONA.predatory },
+      };
+
+      /** Total damage each side ends up taking — the fixture kills both. */
+      const MAX_VIGOR = Math.max(...report.combatants.map((c) => c.damage_taken_hundredths)) / 100;
+
+      function vigorAt(id, tick) {
+        const taken = view.full_log
+          .filter((e) => e.template_id === 'combat.log.damage_applied' && e.target_id === id && e.tick <= tick)
+          .reduce((sum, e) => sum + e.value_hundredths / 100, 0);
+        return Math.max(0, MAX_VIGOR - taken);
+      }
+
+      const shortName = (id) => IDENTITY[SIDE_OF.get(id)].school;
+
+      /**
+       * One sentence per template the core actually emits. The wording is
+       * authored; the *occurrence* is not — a line exists only where the log
+       * has an entry, and the number comes straight off `value_hundredths`.
+       */
+      const TEMPLATES = {
+        'combat.log.target_selection': (e) =>
+          `<em>${shortName(e.actor_id)}</em>이 <em class="o">${shortName(e.target_id)}</em>의 중심선을 잡는다`,
+        'combat.log.collision': () => `병장기가 맞물리고 간격이 무너진다`,
+        'combat.log.move_intent': (e) => `<em>${shortName(e.actor_id)}</em>, 반 보 파고들어 초식을 편다`,
+        'combat.log.damage_applied': (e) =>
+          `<em>${shortName(e.actor_id)}</em>의 일격이 들어간다 — 기력 <span class="val">−${(e.value_hundredths / 100).toFixed(2)}</span>`,
+      };
+
+      // ---------------------------------------------------------------------
+      // Scene assembly
+      // ---------------------------------------------------------------------
+
+      /**
+       * `?faces=0` renders the board figures with no facial features at all.
+       *
+       * Not a separate page: the whole point of the comparison is that the two
+       * variants differ in exactly one thing. Everything else — poses, cloth,
+       * weapons, board, log, chrome — is the same code on the same data.
+       */
+      const FACES = new URLSearchParams(location.search).get('faces') !== '0';
+
+      const HEX = 30;
+      const BOARD_CENTER = { q: 2, r: 0 };
+      const BOARD_RADIUS = 2;
+      const PHASE = 0.44;
+
+      /** Every cell either fighter stands on across all eight ticks. */
+      const PATH = new Set();
+      for (const f of view.frames) for (const p of f.pieces) PATH.add(`${p.position.q},${p.position.r}`);
+
+      function facingYaw(facing) {
+        const d = axialToWorld(facing.q, facing.r, 1);
+        const len = Math.hypot(d.x, d.z) || 1;
+        return Math.atan2(-d.z / len, d.x / len);
+      }
+
+      function wrapPi(a) {
+        while (a > Math.PI) a -= Math.PI * 2;
+        while (a < -Math.PI) a += Math.PI * 2;
+        return a;
+      }
+
+      /**
+       * How far to swing a head toward the seat.
+       *
+       * Both fighters face along the engagement row and the camera sits square
+       * to it, which puts both faces in exact profile — the one angle at which
+       * a face is invisible. The head takes a clamped share of the difference,
+       * and the eyes take the remainder back the other way so the fighter is
+       * still looking at the fighter it is fighting.
+       */
+      function headTurnFor(bodyYaw, headWorld, camera) {
+        const dx = camera.position.x - headWorld.x;
+        const dz = camera.position.z - headWorld.z;
+        const camYaw = Math.atan2(-dz, dx);
+        const delta = wrapPi(camYaw - bodyYaw);
+        const turn = Math.max(-0.6, Math.min(0.6, delta * 0.66));
+        return { turn, gaze: -turn * 0.72 };
+      }
+
+      function buildStage(frameIndex, canvas, cssW, cssH) {
+        const frame = view.frames[frameIndex];
+        const prev = frameIndex > 0 ? view.frames[frameIndex - 1] : null;
+
+        const occupied = new Map();
+        for (const p of frame.pieces) occupied.set(`${p.position.q},${p.position.r}`, p.side);
+
+        const scene = new THREE.Scene();
+        const board = buildBoard3D({
+          size: HEX,
+          center: BOARD_CENTER,
+          radius: BOARD_RADIUS,
+          occupied,
+          path: PATH,
+        });
+        scene.add(board.group);
+        scene.add(buildBackdrop3D({ center: BOARD_CENTER, size: HEX }));
+
+        // Camera looks broadside-ish down the engagement row: the row runs at
+        // 30° in world space because axial +q is (1.5, √3/2), so a yaw of −30
+        // is exactly perpendicular. Backing off to −16 keeps most of that
+        // profile while giving the board some three-quarter depth.
+        const mid = axialToWorld(2.5, 0, HEX);
+        const target = { x: mid.x, y: 64, z: mid.z };
+        const camera = createBoardCamera({
+          width: cssW,
+          height: cssH,
+          target,
+          yawDeg: -30,
+          pitchDeg: 27,
+          dist: 500,
+          fov: 22,
+        });
+        tuneForCamera(camera, cssH * DPR);
+
+        const camDir = new THREE.Vector3().subVectors(camera.position, new THREE.Vector3(target.x, target.y, target.z)).normalize();
+
+        const plates = [];
+        for (const piece of frame.pieces) {
+          const s = signalsFor(piece, frame, prev, view);
+          const character = CHARACTERS[piece.side];
+          character.root.userData.placed = true;
+
+          const yaw = facingYaw(piece.facing);
+          character.root.rotation.y = yaw;
+          const localZ = new THREE.Vector3(Math.sin(yaw), 0, Math.cos(yaw));
+          setDepthSign(character, localZ.dot(camDir) >= 0 ? 1 : -1);
+
+          const cellKey = `${piece.position.q},${piece.position.r}`;
+          const top = board.tops.get(cellKey);
+          character.root.position.set(top.x, top.y, top.z);
+
+          const pose = poseFor(s, PHASE);
+          applyPose3D(character, pose, null);
+
+          character.root.updateMatrixWorld(true);
+          const headWorld = character.groups.head.getWorldPosition(new THREE.Vector3());
+          // With no face to show, the head-turn cheat has nothing to buy. Let
+          // the head sit where the body put it: both fighters look straight
+          // down the engagement row at each other, which is where a fighter
+          // would actually be looking.
+          const ht = FACES ? headTurnFor(yaw, headWorld, camera) : { turn: 0, gaze: 0 };
+          applyHeadTurn(character, ht.turn, s.down ? 0.16 : 0.03);
+          if (FACES) {
+            updateFace3D(character, expressionFor(s, PHASE, IDENTITY[piece.side].persona), ht.gaze);
+          } else {
+            clearFace3D(character);
+          }
+          scene.add(character.root);
+
+          const shadow = buildContactShadow(s.down ? 20 : 11.5);
+          shadow.position.set(top.x, top.y + 0.4, top.z);
+          scene.add(shadow);
+
+
+          plates.push({ piece, signals: s, cell: cellKey, top, headWorld });
+        }
+
+
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+        renderer.setClearColor(0x000000, 0);
+        renderer.setPixelRatio(DPR);
+        renderer.setSize(cssW, cssH, false);
+        renderer.render(scene, camera);
+
+        for (const c of Object.values(CHARACTERS)) scene.remove(c.root);
+        return { camera, plates, board };
+      }
+
+      const DPR = 3;
+      const CUTIN = 56;
+      const CHARACTERS = { ally: buildCharacter3D('ally'), enemy: buildCharacter3D('enemy') };
+
+      // One offscreen renderer for every cut-in on the page: a WebGL context per
+      // 46px thumbnail would blow past the browser's context limit before the
+      // second screen was built.
+      const cutinCanvas = document.createElement('canvas');
+      const cutinRenderer = new THREE.WebGLRenderer({ canvas: cutinCanvas, antialias: true, alpha: true });
+      cutinRenderer.setClearColor(0x000000, 0);
+      cutinRenderer.setPixelRatio(DPR);
+
+      /**
+       * Draw one head into a cut-in.
+       *
+       * Deliberately re-poses the character rather than reusing the board pose:
+       * a portrait wants the fighter facing the lens and roughly level, and the
+       * board wants the full recoil. Both come from the same signals.
+       */
+      function renderCutIn(ctx, side, signals) {
+        const character = CHARACTERS[side];
+        // Rest pose for the body, real signals for the face. Feeding the
+        // fighting pose in rolled the head thirty degrees and the thumbnail
+        // read as a portrait of someone lying down.
+        const restSignals = { ...signals, attack: 0, hit: 0, down: 0, stagger: 0, evade: 0 };
+        applyPose3D(character, poseFor(restSignals, 0.5), null);
+        character.root.rotation.y = 0;
+        applyHeadTurn(character, 0.16, signals.down ? 0.16 : 0.05);
+        character.groups.neck.rotation.z = 0;
+        character.groups.head.rotation.z = 0;
+        character.groups.hips.rotation.z = 0;
+        updateFace3D(character, expressionFor(signals, PHASE, IDENTITY[side].persona), -0.2);
+
+        const scene = new THREE.Scene();
+        scene.add(character.root);
+        const camera = createPortraitCamera(CUTIN, CUTIN, character, {
+          dist: 70,
+          fov: 13,
+          yawOffsetDeg: 28,
+          pitchDeg: 2,
+          lift: 4.6,
+        });
+        tuneForCamera(camera, CUTIN * DPR);
+        cutinRenderer.setSize(CUTIN, CUTIN, false);
+        cutinRenderer.render(scene, camera);
+        scene.remove(character.root);
+
+        ctx.clearRect(0, 0, CUTIN, CUTIN);
+        ctx.drawImage(cutinCanvas, 0, 0, CUTIN, CUTIN);
+      }
+
+      // ---------------------------------------------------------------------
+      // Screen
+      // ---------------------------------------------------------------------
+
+      function el(tag, cls, html) {
+        const n = document.createElement(tag);
+        if (cls) n.className = cls;
+        if (html != null) n.innerHTML = html;
+        return n;
+      }
+
+      const OUTCOME_WORD = { mutual_defeat: '同歸於盡' };
+      const OUTCOME_SUB = { both_sides_defeated: '양측 모두 쓰러졌다 · 동귀어진' };
+
+      function buildScreen({ id, frameIndex, phaseLabel, showOutcome }) {
+        const frame = view.frames[frameIndex];
+        const elapsed = ((frame.tick * view.tick_millis) / 1000).toFixed(1);
+
+        const phone = el('div', 'phone');
+        phone.id = id;
+
+        // -- top bar
+        const top = el('div', 'topbar');
+        top.appendChild(el('div', 'back'));
+        const tb = el('div', 'title-block');
+        tb.appendChild(el('div', 'storypack', '이구학지 <span style="color:var(--dim)">·</span> 천기록'));
+        tb.appendChild(el('div', 'chapter', '제3장 — 청류 나루의 매복 · 관전'));
+        top.appendChild(tb);
+        top.appendChild(el('div', 'simtag', `sim ${view.simulation_version}<br>${view.fingerprint.slice(0, 8)}`));
+        phone.appendChild(top);
+
+        // -- combatant strip
+        const versus = el('div', 'versus');
+        const cutIns = [];
+        for (const piece of [...frame.pieces].sort((a) => (a.side === 'ally' ? -1 : 1))) {
+          const idn = IDENTITY[piece.side];
+          const row = el('div', `fighter ${piece.side === 'enemy' ? 'enemy-row' : ''}`);
+          const downed = piece.cues.includes('incapacitated');
+          if (FACES) {
+            const cutin = el('div', `cutin ${piece.side} ${downed ? 'downed' : ''}`);
+            const cutinCv = document.createElement('canvas');
+            cutinCv.width = CUTIN * DPR;
+            cutinCv.height = CUTIN * DPR;
+            cutin.appendChild(cutinCv);
+            cutin.appendChild(el('span', 'pip'));
+            row.appendChild(cutin);
+            cutIns.push({ canvas: cutinCv, side: piece.side, piece });
+          } else {
+            const sigil = el('div', `sigil ${piece.side} ${downed ? 'downed' : ''}`);
+            sigil.appendChild(el('span', 'glyph', idn.mark));
+            row.appendChild(sigil);
+          }
+          const who = el('div', 'who');
+          who.appendChild(el('div', 'name', `${idn.name} <span style="color:var(--dim);font-size:10px">${idn.role}</span>`));
+          who.appendChild(el('div', 'school', idn.school));
+          row.appendChild(who);
+
+          const v = vigorAt(piece.id, frame.tick);
+          const pct = (v / MAX_VIGOR) * 100;
+          const gauge = el('div', `gauge ${piece.side}`);
+          const rail = el('div', 'rail');
+          const fill = el('div', 'fill');
+          fill.style.width = `${pct.toFixed(1)}%`;
+          rail.appendChild(fill);
+          const ticks = el('div', 'ticks');
+          for (let i = 0; i < 8; i += 1) ticks.appendChild(el('i'));
+          rail.appendChild(ticks);
+          gauge.appendChild(rail);
+          const down = piece.cues.includes('incapacitated');
+          gauge.appendChild(
+            el(
+              'div',
+              'read',
+              `<span>기력</span><span class="${down ? 'down' : ''}">${down ? '전투불능' : `${v.toFixed(2)} / ${MAX_VIGOR.toFixed(2)}`}</span>`,
+            ),
+          );
+          row.appendChild(gauge);
+          versus.appendChild(row);
+        }
+        phone.appendChild(versus);
+
+        // -- stage
+        const stage = el('div', 'stage');
+        const canvas = document.createElement('canvas');
+        stage.appendChild(canvas);
+        stage.appendChild(el('div', 'vignette'));
+        stage.appendChild(el('div', 'tickchip', `<b>t${frame.tick}</b><span>/ ${view.frames.length} · ${elapsed}초</span>`));
+        stage.appendChild(el('div', 'phasechip', phaseLabel));
+
+        if (showOutcome) {
+          const out = el('div', 'outcome');
+          out.appendChild(el('div', 'rule'));
+          out.appendChild(el('div', 'word', OUTCOME_WORD[report.outcome] ?? report.outcome));
+          out.appendChild(el('div', 'sub', OUTCOME_SUB[report.reason] ?? report.reason));
+          out.appendChild(el('div', 'rule'));
+          stage.appendChild(out);
+        }
+
+        const timeline = el('div', 'timeline');
+        const trow = el('div', 'row');
+        const transport = el('div', 'transport');
+        transport.appendChild(el('b', 'prev', '<i></i>'));
+        transport.appendChild(el('b', 'pause', '<i></i>'));
+        transport.appendChild(el('b', 'next', '<i></i>'));
+        trow.appendChild(transport);
+        const track = el('div', 'track');
+        for (const f of view.frames) {
+          const cls = [f.tick < frame.tick ? 'past' : '', f.tick === frame.tick ? 'now' : '', f.tick === report.decisive_tick ? 'decisive' : '']
+            .filter(Boolean)
+            .join(' ');
+          track.appendChild(el('s', cls));
+        }
+        trow.appendChild(track);
+        trow.appendChild(el('div', 'clock', `${elapsed}s / ${(report.duration_millis / 1000).toFixed(1)}s`));
+        timeline.appendChild(trow);
+        stage.appendChild(timeline);
+        phone.appendChild(stage);
+
+        // -- log
+        const log = el('div', 'log');
+        const head = el('header');
+        head.appendChild(el('h2', null, '전투 기록'));
+        const filters = el('div', 'filters');
+        filters.appendChild(el('u', 'on', '핵심'));
+        filters.appendChild(el('u', null, `전체 ${view.full_log.length}`));
+        head.appendChild(filters);
+        log.appendChild(head);
+
+        const lines = el('div', 'lines');
+        const window_ = view.full_log.filter((e) => e.tick <= frame.tick).slice(-6);
+        let lastTick = null;
+        for (const e of window_) {
+          const side = SIDE_OF.get(e.actor_id);
+          const line = el('div', `line ${e.importance} ${side} ${e.tick !== lastTick ? 'head' : ''}`);
+          line.appendChild(el('div', 't', e.tick !== lastTick ? `t${e.tick}` : ''));
+          line.appendChild(el('div', 'txt', TEMPLATES[e.template_id](e)));
+          lines.appendChild(line);
+          lastTick = e.tick;
+        }
+        log.appendChild(lines);
+        phone.appendChild(log);
+
+        // -- tab bar
+        const tabs = el('div', 'tabs');
+        for (const [label, on] of [
+          ['이야기', false],
+          ['관전', true],
+          ['인물', false],
+          ['서고', false],
+        ]) {
+          tabs.appendChild(el('div', on ? 'on' : '', `<i></i>${label}`));
+        }
+        phone.appendChild(tabs);
+
+        document.getElementById('screens').appendChild(phone);
+
+        // Canvas has to be measured after layout: the stage is a flex child and
+        // its height is only known once the phone is in the document.
+        const rect = stage.getBoundingClientRect();
+        const cssW = Math.round(rect.width);
+        const cssH = Math.round(rect.height);
+        canvas.width = cssW * DPR;
+        canvas.height = cssH * DPR;
+        canvas.style.width = `${cssW}px`;
+        canvas.style.height = `${cssH}px`;
+
+        const { camera, plates } = buildStage(frameIndex, canvas, cssW, cssH);
+
+        const prevFrame = frameIndex > 0 ? view.frames[frameIndex - 1] : null;
+        for (const c of cutIns) {
+          const ctx2 = c.canvas.getContext('2d');
+          ctx2.scale(DPR, DPR);
+          renderCutIn(ctx2, c.side, signalsFor(c.piece, frame, prevFrame, view));
+        }
+
+        // Nameplates, projected from the actual head joint.
+        for (const p of plates) {
+          const idn = IDENTITY[p.piece.side];
+          const world = new THREE.Vector3();
+          CHARACTERS[p.piece.side].root.updateMatrixWorld(true);
+          if (p.signals.down) {
+            world.set(p.top.x, p.top.y, p.top.z);
+          } else {
+            CHARACTERS[p.piece.side].groups.head.getWorldPosition(world);
+            world.y += 22;
+          }
+          const proj = world.clone().project(camera);
+          const plate = el(
+            'div',
+            `plate ${p.piece.side} ${p.signals.down ? 'downed' : ''}`,
+            `<span class="pip"></span><span class="pname">${idn.school} ${idn.name}</span><span class="cell">${p.cell}</span>`,
+          );
+          const nudge = p.piece.side === 'ally' ? (p.signals.down ? -52 : -26) : p.signals.down ? 52 : 26;
+          plate.style.left = `${Math.min(cssW - 8, Math.max(8, ((proj.x + 1) / 2) * cssW + nudge))}px`;
+          // Clamped top and bottom: the tick chip owns the first 56px and the
+          // transport owns the last 76px, and a nameplate that drifts into
+          // either reads as a layout bug rather than as a label.
+          const rawTop = ((1 - proj.y) / 2) * cssH - (p.piece.side === 'ally' ? 16 : 0);
+          plate.style.top = `${Math.min(cssH - (p.signals.down ? 118 : 76), Math.max(56, rawTop))}px`;
+          if (p.signals.down) plate.classList.add('below');
+          stage.appendChild(plate);
+        }
+
+        return phone;
+      }
+
+      document.body.style.display = 'flex';
+      buildScreen({ id: 'screen-t4', frameIndex: 3, phaseLabel: '교 전', showOutcome: false });
+      buildScreen({ id: 'screen-t8', frameIndex: view.frames.length - 1, phaseLabel: '결 착', showOutcome: true });
+
+      window.__READY__ = true;
+    </script>
+  </body>
+</html>

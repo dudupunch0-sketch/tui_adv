@@ -1,0 +1,7 @@
+# Installed by `npm install`; the prototype pins Three via package-lock.json.
+node_modules/
+
+# Capture output. Regenerate with `node capture-play.mjs` — the harness is
+# deterministic, so the PNGs are reproducible rather than source.
+shots/
+shots-play/

@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <title>배치 검증 — 고정 카메라 헥스 보드 (스타일 2)</title>
+    <script type="importmap">
+      { "imports": { "three": "./node_modules/three/build/three.module.js" } }
+    </script>
+    <style>
+      :root {
+        --ink-950: #0a0d13;
+        --ink-900: #10141d;
+        --ink-850: #161c28;
+        --ink-800: #182031;
+        --line: #29344a;
+        --line-soft: #202a3c;
+        --text: #eaeff7;
+        --muted: #93a0b6;
+        --dim: #5d6a80;
+        --ally: #56c4b3;
+        --ally-deep: #1c6d64;
+        --enemy: #dd6076;
+        --enemy-deep: #7d2233;
+        --gold: #e0bc7d;
+        --warn: #e08a5a;
+        --sky-top: #10131d;
+        --sky-mid: #1b2131;
+        --sky-horizon: #3a3a4d;
+        --serif: 'Noto Serif CJK KR', serif;
+        --sans: 'Noto Sans CJK KR', system-ui, sans-serif;
+        --mono: 'Noto Sans Mono CJK KR', ui-monospace, monospace;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; padding: 26px; background: #3f444e; font-family: var(--sans); }
+
+      #sheet {
+        width: 1348px;
+        background: var(--ink-950);
+        color: var(--text);
+        padding: 26px 28px 30px;
+        border-radius: 8px;
+      }
+      h1 { font-family: var(--serif); font-size: 21px; margin: 0 0 5px; letter-spacing: 0.03em; }
+      .sub { font-family: var(--mono); font-size: 11px; color: var(--dim); margin-bottom: 20px; line-height: 1.65; }
+      .sub b { color: var(--muted); font-weight: 400; }
+      .sub .probe { color: var(--warn); }
+      .sub .fixture { color: var(--gold); }
+
+      .grid { display: flex; flex-wrap: wrap; gap: 14px; }
+      figure { margin: 0; width: 412px; }
+
+      /* The tile is the real play screen's board region, to the pixel: 412×445
+         measured off `.combat-stage` in `playscreen.html`. Judging placement at
+         any other size would be judging a different product. */
+      .stage {
+        position: relative;
+        width: 412px;
+        height: 445px;
+        background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 46%, var(--sky-horizon) 88%, var(--ink-850) 100%);
+        overflow: hidden;
+        border: 1px solid var(--line);
+      }
+      .stage canvas { position: absolute; inset: 0; width: 412px; height: 445px; display: block; }
+      .stage .vignette {
+        position: absolute; inset: 0; pointer-events: none;
+        background: radial-gradient(115% 68% at 50% 44%, rgba(0,0,0,0) 42%, rgba(0,0,0,0.42) 100%);
+      }
+      .badge {
+        position: absolute; top: 8px; left: 8px;
+        font-family: var(--mono); font-size: 9px; letter-spacing: 0.05em;
+        padding: 3px 6px; border: 1px solid var(--line);
+        background: rgba(10, 13, 19, 0.8);
+      }
+      .badge.probe { color: var(--warn); border-color: #6b4630; }
+      .badge.fixture { color: var(--gold); border-color: #6d5527; }
+      .scalechip {
+        position: absolute; top: 8px; right: 8px;
+        font-family: var(--mono); font-size: 9px; color: var(--muted);
+        padding: 3px 6px; border: 1px solid var(--line);
+        background: rgba(10, 13, 19, 0.8);
+      }
+
+      .plate {
+        position: absolute; transform: translate(-50%, -100%);
+        display: flex; align-items: center; gap: 4px;
+        padding: 2px 5px 2px 3px;
+        background: rgba(9, 11, 17, 0.78);
+        border: 1px solid var(--line);
+        white-space: nowrap;
+      }
+      .plate .pip { width: 9px; height: 9px; flex: none; }
+      .plate.ally .pip { background: var(--ally); clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%); }
+      .plate.enemy .pip { background: var(--enemy); clip-path: polygon(0 0, 66% 0, 100% 50%, 66% 100%, 0 100%, 34% 50%); }
+      .plate .pname { font-family: var(--serif); font-size: 9.5px; }
+      .plate .cell { font-family: var(--mono); font-size: 8px; color: var(--dim); }
+
+      figcaption { margin-top: 7px; }
+      figcaption .name { font-family: var(--serif); font-size: 13px; }
+      figcaption .cells { font-family: var(--mono); font-size: 9.5px; color: var(--dim); margin-top: 2px; }
+      figcaption .verdict { font-size: 10.5px; line-height: 1.5; margin-top: 4px; color: var(--muted); }
+      figcaption .verdict.bad { color: var(--warn); }
+    </style>
+  </head>
+  <body>
+    <div id="sheet">
+      <h1>배치 검증 — 고정 카메라 헥스 보드</h1>
+      <div class="sub" id="sub">loading…</div>
+      <div class="grid" id="grid"></div>
+    </div>
+
+    <script type="module">
+      import * as THREE from 'three';
+      import { poseFor, signalsFor } from './rig.js';
+      import {
+        applyHeadTurn,
+        applyPose3D,
+        axialToWorld,
+        buildBackdrop3D,
+        buildBoard3D,
+        buildCharacter3D,
+        buildContactShadow,
+        clearFace3D,
+        createBoardCamera,
+        hexDistanceAxial,
+        setDepthSign,
+        tuneForCamera,
+      } from './rig3d.js';
+
+      const TILE = { w: 412, h: 445 };
+      const DPR = 3;
+      const HEX = 30;
+      const PHASE = 0.44;
+
+      // ---------------------------------------------------------------------
+      // Synthetic views
+      //
+      // These are `CombatSpectatorView`-shaped payloads with placements the
+      // real fixture never produces. They test a *renderer* property —
+      // placement, overlap, occlusion, legibility — not game logic, so
+      // synthetic input is the only way to reach them. Every tile built from
+      // one is stamped `probe` on the sheet; the one built from the real
+      // capture is stamped `fixture`.
+      // ---------------------------------------------------------------------
+
+      const F = {
+        east: { q: 1, r: 0 },
+        west: { q: -1, r: 0 },
+        ne: { q: 1, r: -1 },
+        sw: { q: -1, r: 1 },
+        se: { q: 0, r: 1 },
+        nw: { q: 0, r: -1 },
+      };
+
+      function piece(id, side, q, r, facing, cues) {
+        return { id, side, position: { q, r }, facing, active: true, cues: cues ?? ['attack', 'hit'] };
+      }
+
+      function synthView(pieces) {
+        return { tick_millis: 100, frames: [{ tick: 4, pieces }] };
+      }
+
+      const ARRANGEMENTS = [
+        {
+          name: '기준 — 같은 행 인접',
+          note: '실제 픽스처 t4. 나머지 타일의 비교 기준.',
+          src: 'fixture',
+          pieces: [
+            piece('a', 'ally', 2, 0, F.east),
+            piece('b', 'enemy', 3, 0, F.west),
+          ],
+        },
+        {
+          name: '원거리 — q=0 / q=7',
+          note: '보드가 넓어질 때 인물이 읽히는 크기로 남는가.',
+          src: 'probe',
+          pieces: [
+            piece('a', 'ally', 0, 0, F.east),
+            piece('b', 'enemy', 7, 0, F.west),
+          ],
+        },
+        {
+          name: '대각 인접 — Δr ≠ 0',
+          note: '축좌표 전단(shear)이 화면에서 어떻게 보이는가.',
+          src: 'probe',
+          pieces: [
+            piece('a', 'ally', 2, 0, F.ne),
+            piece('b', 'enemy', 3, -1, F.sw),
+          ],
+        },
+        {
+          name: '세로 겹침 — 같은 q, 다른 r',
+          note: '고정 브로드사이드 카메라에서 두 인물이 깊이 방향으로 정렬된다.',
+          src: 'probe',
+          pieces: [
+            piece('a', 'ally', 2, 0, F.se),
+            piece('b', 'enemy', 2, 1, F.nw),
+          ],
+        },
+        {
+          name: '3인 일렬',
+          note: '같은 행에 셋. 중앙 인물이 양쪽에 가려지는가.',
+          src: 'probe',
+          pieces: [
+            piece('a', 'ally', 1, 0, F.east),
+            piece('b', 'ally', 2, 0, F.east),
+            piece('c', 'enemy', 3, 0, F.west),
+          ],
+        },
+        {
+          name: '포위 — 1 대 3',
+          note: '아군 하나를 세 방향에서 둘러싼다.',
+          src: 'probe',
+          pieces: [
+            piece('a', 'ally', 2, 0, F.east),
+            piece('b', 'enemy', 3, 0, F.west),
+            piece('c', 'enemy', 2, -1, F.se),
+            piece('d', 'enemy', 1, 1, F.east),
+          ],
+        },
+        {
+          name: '혼전 — 6인',
+          note: '두 행에 여섯. 최악의 밀집도.',
+          src: 'probe',
+          pieces: [
+            piece('a', 'ally', 1, 0, F.east),
+            piece('b', 'ally', 2, 0, F.east),
+            piece('c', 'ally', 1, 1, F.east),
+            piece('d', 'enemy', 3, 0, F.west),
+            piece('e', 'enemy', 4, 0, F.west),
+            piece('f', 'enemy', 3, 1, F.west),
+          ],
+        },
+      ];
+
+      // ---------------------------------------------------------------------
+      // Board auto-fit
+      //
+      // The play screen hard-codes a centre, a radius and a distance because
+      // its fixture never leaves one row. Anything that ships has to derive all
+      // three from the occupied set, so that derivation is part of what this
+      // probe is testing.
+      //
+      // The framing rule is calibrated against the shipped screen rather than
+      // invented: fitting the board's whole circumscribed circle into the
+      // frustum — the obvious first guess — put the baseline at 74px per figure
+      // where the real screen reads ~180px, and every tile came out as a small
+      // hexagon adrift in dead sky. The real screen deliberately lets the board
+      // bleed off frame and frames the *combatants*, so that is what this does:
+      // distance is proportional to the combatants' screen-space spread,
+      // normalised so the baseline arrangement reproduces the shipped
+      // `dist: 500` exactly.
+      // ---------------------------------------------------------------------
+
+      const BASE_DIST = 500;
+      const BASE_HALF_SPREAD = 26; // half of one hex step, projected — the baseline
+      const FIGURE_PAD = 55; // half a figure's width plus breathing room
+
+      /**
+       * Screen-right in world XZ for the fixed yaw.
+       *
+       * The camera sits at `(sin yaw, ·, cos yaw) · dist` from the target, so
+       * forward is the negation of that and right is `(-f.z, 0, f.x)` —
+       * i.e. `(cos yaw, 0, −sin yaw)`. Getting that `z` sign wrong halves every
+       * measured spread, which is exactly what let the distant arrangement pull
+       * its two combatants clean off the left and right edges of the first
+       * capture while the fit reported everything as comfortable.
+       */
+      const YAW = -30 * (Math.PI / 180);
+      const RIGHT = { x: Math.cos(YAW), z: -Math.sin(YAW) };
+      const TAN_H = Math.tan((22 * Math.PI) / 360) * (TILE.w / TILE.h);
+
+      function boardFitFor(pieces) {
+        const cq = pieces.reduce((s, p) => s + p.position.q, 0) / pieces.length;
+        const cr = pieces.reduce((s, p) => s + p.position.r, 0) / pieces.length;
+        const center = { q: Math.round(cq), r: Math.round(cr) };
+        const reach = Math.max(...pieces.map((p) => hexDistanceAxial(p.position, center)));
+        const radius = Math.max(2, reach + 1);
+
+        // Widest horizontal gap between any two combatants, measured along the
+        // camera's screen-right axis — the axis a portrait frame runs out of
+        // first.
+        let spread = 0;
+        const world = pieces.map((p) => axialToWorld(p.position.q, p.position.r, HEX));
+        for (const a of world) {
+          for (const b of world) {
+            spread = Math.max(spread, Math.abs((a.x - b.x) * RIGHT.x + (a.z - b.z) * RIGHT.z));
+          }
+        }
+        // Two constraints, and the probe reports whichever binds. The
+        // calibrated term reproduces the shipped framing; the hard term is the
+        // distance below which a combatant is simply outside the frustum. When
+        // the hard term wins, the arrangement is telling you the fixed camera
+        // has run out of frame and is paying for it in figure size.
+        const calibrated = (BASE_DIST * (spread / 2 + FIGURE_PAD)) / (BASE_HALF_SPREAD + FIGURE_PAD);
+        const hardFit = (spread / 2 + FIGURE_PAD) / TAN_H;
+        const dist = Math.max(460, calibrated, hardFit);
+        return {
+          center,
+          radius,
+          dist,
+          spread: Math.round(spread),
+          bound: hardFit > calibrated ? 'frustum' : 'framing',
+        };
+      }
+
+      // ---------------------------------------------------------------------
+
+      const shared = document.createElement('canvas');
+      const renderer = new THREE.WebGLRenderer({ canvas: shared, antialias: true, alpha: true });
+      renderer.setClearColor(0x000000, 0);
+      renderer.setPixelRatio(DPR);
+
+      /** Character instances are expensive to build, so they are pooled per side. */
+      const POOL = { ally: [], enemy: [] };
+      function takeCharacter(side, index) {
+        while (POOL[side].length <= index) {
+          const c = buildCharacter3D(side);
+          clearFace3D(c);
+          POOL[side].push(c);
+        }
+        return POOL[side][index];
+      }
+
+      const NAMES = { ally: '청류문', enemy: '흑사방' };
+
+      function renderArrangement(arr, ctx) {
+        const view = synthView(arr.pieces);
+        const frame = view.frames[0];
+
+        const occupied = new Map();
+        for (const p of frame.pieces) occupied.set(`${p.position.q},${p.position.r}`, p.side);
+        const path = new Set(occupied.keys());
+
+        // A camera identical to the play screen's except for distance, which
+        // auto-fit supplies. Same yaw, same pitch, same lens.
+        const fit = boardFitFor(frame.pieces);
+
+        const scene = new THREE.Scene();
+        const board = buildBoard3D({
+          size: HEX,
+          center: fit.center,
+          radius: fit.radius,
+          occupied,
+          path,
+        });
+        scene.add(board.group);
+        scene.add(buildBackdrop3D({ center: fit.center, size: HEX }));
+
+        const c = axialToWorld(fit.center.q, fit.center.r, HEX);
+        const target = { x: c.x, y: 64, z: c.z };
+        const camera = createBoardCamera({
+          width: TILE.w,
+          height: TILE.h,
+          target,
+          yawDeg: -30,
+          pitchDeg: 27,
+          dist: fit.dist,
+          fov: 22,
+        });
+        tuneForCamera(camera, TILE.h * DPR);
+
+        const camDir = new THREE.Vector3()
+          .subVectors(camera.position, new THREE.Vector3(target.x, target.y, target.z))
+          .normalize();
+
+        const counts = { ally: 0, enemy: 0 };
+        const used = [];
+        const plates = [];
+
+        for (const p of frame.pieces) {
+          const character = takeCharacter(p.side, counts[p.side]);
+          counts[p.side] += 1;
+          used.push(character);
+
+          const s = signalsFor(p, frame, null, view);
+          character.root.userData.placed = true;
+          const yaw = Math.atan2(
+            -axialToWorld(p.facing.q, p.facing.r, 1).z,
+            axialToWorld(p.facing.q, p.facing.r, 1).x,
+          );
+          character.root.rotation.y = yaw;
+          const localZ = new THREE.Vector3(Math.sin(yaw), 0, Math.cos(yaw));
+          setDepthSign(character, localZ.dot(camDir) >= 0 ? 1 : -1);
+
+          const key = `${p.position.q},${p.position.r}`;
+          const top = board.tops.get(key);
+          character.root.position.set(top.x, top.y, top.z);
+          applyPose3D(character, poseFor(s, PHASE), null);
+          applyHeadTurn(character, 0, s.down ? 0.16 : 0.03);
+          scene.add(character.root);
+
+          const shadow = buildContactShadow(11.5);
+          shadow.position.set(top.x, top.y + 0.4, top.z);
+          scene.add(shadow);
+
+          character.root.updateMatrixWorld(true);
+          const headWorld = character.groups.head.getWorldPosition(new THREE.Vector3());
+          plates.push({ side: p.side, cell: key, headWorld });
+        }
+
+        renderer.setSize(TILE.w, TILE.h, false);
+        renderer.render(scene, camera);
+        for (const ch of used) scene.remove(ch.root);
+
+        ctx.clearRect(0, 0, TILE.w, TILE.h);
+        ctx.drawImage(shared, 0, 0, TILE.w, TILE.h);
+
+        // Figure height in screen pixels, measured rather than asserted: the
+        // question "does board scale collapse the figures" wants a number.
+        const foot = new THREE.Vector3(plates[0].headWorld.x, 0, plates[0].headWorld.z).project(camera);
+        const head = plates[0].headWorld.clone().project(camera);
+        const figurePx = Math.abs((head.y - foot.y) * 0.5 * TILE.h);
+
+        return { plates, camera, figurePx, fit };
+      }
+
+      const grid = document.getElementById('grid');
+      const results = [];
+
+      for (const arr of ARRANGEMENTS) {
+        const fig = document.createElement('figure');
+        const stage = document.createElement('div');
+        stage.className = 'stage';
+        const cv = document.createElement('canvas');
+        cv.width = TILE.w * DPR;
+        cv.height = TILE.h * DPR;
+        stage.appendChild(cv);
+        stage.insertAdjacentHTML('beforeend', '<div class="vignette"></div>');
+        fig.appendChild(stage);
+        grid.appendChild(fig);
+
+        const ctx = cv.getContext('2d');
+        ctx.scale(DPR, DPR);
+        const out = renderArrangement(arr, ctx);
+        results.push({ arr, out });
+
+        stage.insertAdjacentHTML(
+          'beforeend',
+          `<span class="badge ${arr.src}">${arr.src}</span>` +
+            `<span class="scalechip">r=${out.fit.radius} · d=${Math.round(out.fit.dist)} · 인물 ${Math.round(out.figurePx)}px</span>`,
+        );
+
+        for (const pl of out.plates) {
+          const world = pl.headWorld.clone();
+          world.y += 22;
+          const proj = world.project(out.camera);
+          const plate = document.createElement('div');
+          plate.className = `plate ${pl.side}`;
+          plate.innerHTML = `<span class="pip"></span><span class="pname">${NAMES[pl.side]}</span><span class="cell">${pl.cell}</span>`;
+          plate.style.left = `${Math.min(TILE.w - 6, Math.max(6, ((proj.x + 1) / 2) * TILE.w))}px`;
+          plate.style.top = `${Math.max(24, ((1 - proj.y) / 2) * TILE.h)}px`;
+          stage.appendChild(plate);
+        }
+
+        const cells = arr.pieces.map((p) => `${p.side[0]}(${p.position.q},${p.position.r})`).join(' ');
+        fig.insertAdjacentHTML(
+          'beforeend',
+          `<figcaption><div class="name">${arr.name}</div>` +
+            `<div class="cells">${cells}</div>` +
+            `<div class="verdict">${arr.note}</div></figcaption>`,
+        );
+      }
+
+      document.getElementById('sub').innerHTML =
+        `보드 타일은 실제 플레이 화면의 <b>.combat-stage</b> 크기 그대로 — 412×445 — 이며, 카메라 각도(yaw −30° / pitch 27° / fov 22)는 플레이 화면과 동일하다. ` +
+        `중심·반지름·거리만 점유 셀에서 자동으로 유도한다.<br>` +
+        `<span class="fixture">fixture</span> = combat-frames.json의 실제 t4 · ` +
+        `<span class="probe">probe</span> = 이 픽스처가 만들지 않는 배치를 확인하기 위해 구성한 합성 입력(렌더러 속성 검증용, 게임 로직 아님).<br>` +
+        `얼굴 없음 변형 사용. 인물 px = 발끝에서 머리까지의 화면 높이 측정값.`;
+
+      window.__PROBE__ = results.map((r) => ({
+        name: r.arr.name,
+        radius: r.out.fit.radius,
+        spread: r.out.fit.spread,
+        bound: r.out.fit.bound,
+        dist: Math.round(r.out.fit.dist),
+        figurePx: Math.round(r.out.figurePx),
+      }));
+      window.__READY__ = true;
+    </script>
+  </body>
+</html>

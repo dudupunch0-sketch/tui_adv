@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <title>배치 프로브 — 합성 입력으로 보드 렌더러 검증</title>
+    <style>
+      :root {
+        --bg: #0b0d12;
+        --panel: #12151d;
+        --line: rgba(158,176,200,0.14);
+        --text: #e9eef5;
+        --dim: #97a3b4;
+        --faint: #626e7e;
+        --gold: #d8b26a;
+        --warn: #e0687a;
+        --ally: #63c8b2;
+        --enemy: #d1566a;
+        --serif: 'Noto Serif CJK KR', serif;
+        --sans: 'Noto Sans CJK KR', system-ui, sans-serif;
+        --mono: 'Noto Sans Mono CJK KR', ui-monospace, monospace;
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body { background: var(--bg); color: var(--text); font-family: var(--sans); padding: 24px; }
+      #sheet { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 20px 22px 22px; width: 1580px; }
+      h1 { font-family: var(--serif); font-size: 18px; font-weight: 700; letter-spacing: 0.8px; }
+      .sub { font-family: var(--mono); font-size: 11px; color: var(--faint); margin-top: 5px; }
+      .warnbar {
+        margin-top: 12px; padding: 9px 12px; border-radius: 6px;
+        border: 1px solid rgba(224,104,122,0.4); background: rgba(224,104,122,0.08);
+        font-size: 12px; line-height: 1.65; color: var(--dim);
+      }
+      .warnbar b { color: var(--warn); font-weight: 700; letter-spacing: 0.6px; }
+      .warnbar em { font-style: normal; color: var(--gold); }
+      .grid { display: grid; grid-template-columns: repeat(4, 362px); gap: 16px 18px; margin-top: 18px; }
+      figure { display: flex; flex-direction: column; gap: 6px; }
+      .cap { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+      .cap .t { font-family: var(--serif); font-size: 13px; font-weight: 600; }
+      .cap .tag {
+        font-family: var(--mono); font-size: 8.5px; letter-spacing: 1.2px;
+        color: var(--warn); border: 1px solid rgba(224,104,122,0.42);
+        border-radius: 3px; padding: 2px 5px 1px; white-space: nowrap;
+      }
+      .cap .tag.real { color: var(--gold); border-color: rgba(216,178,106,0.42); }
+      .coords { font-family: var(--mono); font-size: 9px; color: var(--faint); line-height: 1.55; }
+      .coords b { color: var(--ally); font-weight: 600; }
+      .coords b.e { color: var(--enemy); }
+      canvas { display: block; border: 1px solid var(--line); border-radius: 8px; }
+      .cam { font-family: var(--mono); font-size: 8.5px; color: var(--faint); }
+    </style>
+  </head>
+  <body>
+    <div id="sheet">
+      <h1>배치 프로브 — 보드 렌더러 검증</h1>
+      <div class="sub" id="meta">loading…</div>
+      <div class="warnbar">
+        <b>PROBE · 합성 입력</b> — 아래 배치 중 <em>기준(실측)</em> 하나를 뺀 전부는
+        <b>코어가 만든 적 없는 좌표</b>다. <code>combat-frames.json</code>은 한 줄(<code>r=0</code>)에서
+        인접하는 2인만 만든다. 여기서 검증하는 것은 게임 로직이 아니라 <em>렌더러 속성</em>
+        (배치 · 겹침 · 가독성 · 그리기 순서)이며, 그래서 합성 입력이 정당하다 — 단, 합성임을 반드시 표시한다.
+        카메라는 <em>자동</em>(점유 칸 무게중심 focus + contain fit)이다. 출고 화면은 이 픽스처 하나에 맞춘
+        상수 카메라(<code>zoom 1.30 · focus q2.5 r−0.46</code>)를 쓰며, 그 상수는 다른 배치에서 성립하지 않는다.
+      </div>
+      <div class="grid" id="grid"></div>
+    </div>
+
+    <script type="module">
+      import {
+        axialToScreen, buildField, drawBoard, drawClashIfAny, drawEdgeFade,
+        drawFighters, drawVignette, layoutBoard,
+      } from './playscreen.js';
+
+      const DPR = 3;
+      // The real phone board box: 390px viewport − 28px stage padding = 362
+      // wide, and 70fr of the stage row gives ~409 tall. Every cell below is
+      // rendered at exactly that size, so nothing here is flattered by scale.
+      const BW = 362;
+      const BH = 409;
+      const A = 'probe_ally';
+      const E = 'probe_enemy';
+
+      const real = await (await fetch('./combat-frames.json')).json();
+      document.getElementById('meta').textContent =
+        `기준 1개는 실제 ScenePage.combat (sim=${real.view.simulation_version}, fp=${real.view.fingerprint}) · ` +
+        `나머지 7개는 합성 · 보드 실크기 ${BW}×${BH}px · DPR ${DPR}`;
+
+      /** A synthetic single-tick view in `CombatSpectatorView` shape. */
+      function probeView(units) {
+        const pieces = units.map((u, i) => ({
+          id: `${u.side === 'ally' ? A : E}_${i}`,
+          side: u.side,
+          position: { q: u.q, r: u.r },
+          facing: { q: u.face ?? 1, r: 0 },
+          active: true,
+          cues: u.cues ?? ['attack', 'hit'],
+        }));
+        // `phaseFor` reads actor order out of `core_log`; without one every
+        // figure samples the same phase and the whole board mirrors itself.
+        const core_log = pieces.map((p, i) => ({
+          tick: 4, sequence: i + 1, template_id: 'combat.log.move_intent',
+          importance: 'important', actor_id: p.id, target_id: null,
+          value_hundredths: null, effect_id: null,
+        }));
+        return {
+          simulation_version: 'probe',
+          tick_millis: 100,
+          frames: [{ tick: 4, pieces }],
+          core_log,
+          full_log: core_log,
+        };
+      }
+
+      /** Face each unit toward the nearest unit of the other side. */
+      function autoFace(view) {
+        const ps = view.frames[0].pieces;
+        for (const p of ps) {
+          const foes = ps.filter((o) => o.side !== p.side);
+          if (!foes.length) continue;
+          const me = axialToScreen(p.position.q, p.position.r);
+          let best = null;
+          let bestD = Infinity;
+          for (const f of foes) {
+            const s = axialToScreen(f.position.q, f.position.r);
+            const d = Math.hypot(s.x - me.x, s.y - me.y);
+            if (d < bestD) { bestD = d; best = s; }
+          }
+          p.facing = { q: best.x >= me.x ? 1 : -1, r: 0 };
+        }
+        return view;
+      }
+
+      const PROBES = [
+        {
+          key: 'baseline-real', title: '1 · 기준 (실측)', real: true,
+          note: '한 줄 인접 2인 — 픽스처가 실제로 만드는 유일한 배치',
+          view: real.view, frameIndex: 3,
+        },
+        {
+          key: 'distant', title: '2 · 원거리', note: 'q0 ↔ q7 — 보드 축척이 인물을 뭉개는지',
+          view: autoFace(probeView([{ side: 'ally', q: 0, r: 0 }, { side: 'enemy', q: 7, r: 0 }])),
+        },
+        {
+          key: 'diagonal', title: '3 · 대각 인접', note: 'r이 다른 이웃 — axial→screen 전단 검증',
+          view: autoFace(probeView([{ side: 'ally', q: 2, r: 0 }, { side: 'enemy', q: 3, r: -1 }])),
+        },
+        {
+          key: 'stacked', title: '4 · 수직 인접', note: '같은 q, 다른 r — 세로 투영과 앞뒤 가림',
+          view: autoFace(probeView([{ side: 'ally', q: 2, r: 0 }, { side: 'enemy', q: 2, r: 1 }])),
+        },
+        {
+          key: 'three', title: '5 · 3인 일렬', note: '아군 1 · 적군 2',
+          view: autoFace(probeView([
+            { side: 'ally', q: 1, r: 0 }, { side: 'enemy', q: 2, r: 0 }, { side: 'enemy', q: 3, r: 0 },
+          ])),
+        },
+        {
+          key: 'surrounded', title: '6 · 포위', note: '아군 1을 적군 3이 둘러쌈',
+          view: autoFace(probeView([
+            { side: 'ally', q: 3, r: 0 },
+            { side: 'enemy', q: 2, r: 0 }, { side: 'enemy', q: 3, r: -1 }, { side: 'enemy', q: 3, r: 1 },
+          ])),
+        },
+        {
+          key: 'crowded', title: '7 · 혼전 6인', note: '3 대 3',
+          view: autoFace(probeView([
+            { side: 'ally', q: 1, r: 0 }, { side: 'ally', q: 2, r: -1 }, { side: 'ally', q: 2, r: 1 },
+            { side: 'enemy', q: 3, r: 0 }, { side: 'enemy', q: 4, r: -1 }, { side: 'enemy', q: 4, r: 1 },
+          ])),
+        },
+        {
+          key: 'baseline-shipped', title: '8 · 기준 (출고 카메라)', real: true,
+          note: '같은 실측 프레임을 상수 카메라로 — 자동 카메라와의 차이',
+          view: real.view, frameIndex: 3, shippedCamera: true,
+        },
+      ];
+
+      function el(tag, cls, text) {
+        const n = document.createElement(tag);
+        if (cls) n.className = cls;
+        if (text !== undefined) n.textContent = text;
+        return n;
+      }
+
+      const grid = document.getElementById('grid');
+      for (const probe of PROBES) {
+        const view = probe.view;
+        const frameIndex = probe.frameIndex ?? 0;
+        const frame = view.frames[frameIndex];
+
+        const fig = el('figure');
+        const cap = el('div', 'cap');
+        cap.appendChild(el('span', 't', probe.title));
+        cap.appendChild(el('span', `tag ${probe.real ? 'real' : ''}`, probe.real ? '실측' : 'PROBE 합성'));
+        fig.appendChild(cap);
+
+        const coords = el('div', 'coords');
+        coords.innerHTML =
+          frame.pieces
+            .map((p) => `<b class="${p.side === 'ally' ? '' : 'e'}">${p.side === 'ally' ? '我' : '敵'}</b> q${p.position.q} r${p.position.r}`)
+            .join(' · ') + `<br>${probe.note}`;
+        fig.appendChild(coords);
+
+        const cv = document.createElement('canvas');
+        cv.width = BW * DPR;
+        cv.height = BH * DPR;
+        cv.style.width = BW + 'px';
+        cv.style.height = BH + 'px';
+        cv.id = `probe-${probe.key}`;
+        fig.appendChild(cv);
+        const ctx = cv.getContext('2d');
+        ctx.scale(DPR, DPR);
+
+        const field = buildField(view, 2);
+        const area = { x: 0, y: 0, w: BW, h: BH };
+        let layout;
+        if (probe.shippedCamera) {
+          layout = layoutBoard(field, { x: 0, y: BH * 0.02, w: BW, h: BH * 0.94 }, 0.6, {
+            fit: 'cover', zoom: 1.3, focus: { q: 2.5, r: -0.46 },
+          });
+        } else {
+          // Auto camera: centroid of the occupied cells, `contain` so nothing
+          // can leave the board. Any figure that comes out unreadably small is
+          // then a genuine scale failure, not a framing choice.
+          const cq = frame.pieces.reduce((a, p) => a + p.position.q, 0) / frame.pieces.length;
+          const cr = frame.pieces.reduce((a, p) => a + p.position.r, 0) / frame.pieces.length;
+          layout = layoutBoard(field, { x: 0, y: BH * 0.02, w: BW, h: BH * 0.94 }, 0.6, {
+            fit: 'contain', zoom: 1, focus: { q: cq, r: cr },
+          });
+        }
+
+        drawBoard(ctx, area, field, layout, frame, view);
+        const placed = drawFighters(ctx, view, frameIndex, layout, new Map(), 2.5, false);
+        drawClashIfAny(ctx, placed, layout);
+        drawEdgeFade(ctx, area);
+        drawVignette(ctx, area);
+
+        fig.appendChild(el('div', 'cam',
+          `hex s=${layout.s.toFixed(1)}px · 인물 높이 ≈ ${(layout.s * 2.5).toFixed(0)}px · ` +
+          `${probe.shippedCamera ? 'cover zoom1.30 (상수)' : 'contain (자동)'}`));
+        grid.appendChild(fig);
+      }
+
+      window.__READY__ = true;
+    </script>
+  </body>
+</html>

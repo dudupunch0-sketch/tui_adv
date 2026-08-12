@@ -1,0 +1,1323 @@
+{
+  "view": {
+    "simulation_version": "v3",
+    "resolution_fingerprint": "1978f44e79dd23d1",
+    "tick_millis": 100,
+    "frames": [
+      {
+        "tick": 1,
+        "pieces": [
+          {
+            "id": "wuxia_spectator_bout_ally",
+            "side": "ally",
+            "position": {
+              "q": 1,
+              "r": 0
+            },
+            "facing": {
+              "q": 1,
+              "r": 0
+            },
+            "active": true,
+            "cues": [
+              "attack",
+              "hit"
+            ]
+          },
+          {
+            "id": "wuxia_spectator_bout_challenger",
+            "side": "enemy",
+            "position": {
+              "q": 4,
+              "r": 0
+            },
+            "facing": {
+              "q": -1,
+              "r": 0
+            },
+            "active": true,
+            "cues": [
+              "attack",
+              "hit"
+            ]
+          }
+        ]
+      },
+      {
+        "tick": 2,
+        "pieces": [
+          {
+            "id": "wuxia_spectator_bout_ally",
+            "side": "ally",
+            "position": {
+              "q": 2,
+              "r": 0
+            },
+            "facing": {
+              "q": 1,
+              "r": 0
+            },
+            "active": true,
+            "cues": [
+              "attack",
+              "hit"
+            ]
+          },
+          {
+            "id": "wuxia_spectator_bout_challenger",
+            "side": "enemy",
+            "position": {
+              "q": 3,
+              "r": 0
+            },
+            "facing": {
+              "q": -1,
+              "r": 0
+            },
+            "active": true,
+            "cues": [
+              "attack",
+              "hit"
+            ]
+          }
+        ]
+      },
+      {
+        "tick": 3,
+        "pieces": [
+          {
+            "id": "wuxia_spectator_bout_ally",
+            "side": "ally",
+            "position": {
+              "q": 2,
+              "r": 0
+            },
+            "facing": {
+              "q": 1,
+              "r": 0
+            },
+            "active": true,
+            "cues": [
+              "attack",
+              "hit"
+            ]
+          },
+          {
+            "id": "wuxia_spectator_bout_challenger",
+            "side": "enemy",
+            "position": {
+              "q": 3,
+              "r": 0
+            },
+            "facing": {
+              "q": -1,
+              "r": 0
+            },
+            "active": true,
+            "cues": [
+              "attack",
+              "hit"
+            ]
+          }
+        ]
+      },
+      {
+        "tick": 4,
+        "pieces": [
+          {
+            "id": "wuxia_spectator_bout_ally",
+            "side": "ally",
+            "position": {
+              "q": 2,
+              "r": 0
+            },
+            "facing": {
+              "q": 1,
+              "r": 0
+            },
+            "active": true,
+            "cues": [
+              "attack",
+              "hit"
+            ]
+          },
+          {
+            "id": "wuxia_spectator_bout_challenger",
+            "side": "enemy",
+            "position": {
+              "q": 3,
+              "r": 0
+            },
+            "facing": {
+              "q": -1,
+              "r": 0
+            },
+            "active": true,
+            "cues": [
+              "attack",
+              "hit"
+            ]
+          }
+        ]
+      },
+      {
+        "tick": 5,
+        "pieces": [
+          {
+            "id": "wuxia_spectator_bout_ally",
+            "side": "ally",
+            "position": {
+              "q": 2,
+              "r": 0
+            },
+            "facing": {
+              "q": 1,
+              "r": 0
+            },
+            "active": true,
+            "cues": [
+              "attack",
+              "hit"
+            ]
+          },
+          {
+            "id": "wuxia_spectator_bout_challenger",
+            "side": "enemy",
+            "position": {
+              "q": 3,
+              "r": 0
+            },
+            "facing": {
+              "q": -1,
+              "r": 0
+            },
+            "active": true,
+            "cues": [
+              "attack",
+              "hit"
+            ]
+          }
+        ]
+      },
+      {
+        "tick": 6,
+        "pieces": [
+          {
+            "id": "wuxia_spectator_bout_ally",
+            "side": "ally",
+            "position": {
+              "q": 2,
+              "r": 0
+            },
+            "facing": {
+              "q": 1,
+              "r": 0
+            },
+            "active": true,
+            "cues": [
+              "attack",
+              "hit"
+            ]
+          },
+          {
+            "id": "wuxia_spectator_bout_challenger",
+            "side": "enemy",
+            "position": {
+              "q": 3,
+              "r": 0
+            },
+            "facing": {
+              "q": -1,
+              "r": 0
+            },
+            "active": true,
+            "cues": [
+              "attack",
+              "hit"
+            ]
+          }
+        ]
+      },
+      {
+        "tick": 7,
+        "pieces": [
+          {
+            "id": "wuxia_spectator_bout_ally",
+            "side": "ally",
+            "position": {
+              "q": 2,
+              "r": 0
+            },
+            "facing": {
+              "q": 1,
+              "r": 0
+            },
+            "active": true,
+            "cues": [
+              "attack",
+              "hit"
+            ]
+          },
+          {
+            "id": "wuxia_spectator_bout_challenger",
+            "side": "enemy",
+            "position": {
+              "q": 3,
+              "r": 0
+            },
+            "facing": {
+              "q": -1,
+              "r": 0
+            },
+            "active": true,
+            "cues": [
+              "attack",
+              "hit"
+            ]
+          }
+        ]
+      },
+      {
+        "tick": 8,
+        "pieces": [
+          {
+            "id": "wuxia_spectator_bout_ally",
+            "side": "ally",
+            "position": {
+              "q": 2,
+              "r": 0
+            },
+            "facing": {
+              "q": 1,
+              "r": 0
+            },
+            "active": true,
+            "cues": [
+              "attack",
+              "hit",
+              "incapacitated"
+            ]
+          },
+          {
+            "id": "wuxia_spectator_bout_challenger",
+            "side": "enemy",
+            "position": {
+              "q": 3,
+              "r": 0
+            },
+            "facing": {
+              "q": -1,
+              "r": 0
+            },
+            "active": true,
+            "cues": [
+              "attack",
+              "hit",
+              "incapacitated"
+            ]
+          }
+        ]
+      }
+    ],
+    "core_log": [
+      {
+        "tick": 1,
+        "sequence": 1,
+        "template_id": "combat.log.move_intent",
+        "importance": "important",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 1,
+        "sequence": 2,
+        "template_id": "combat.log.damage_applied",
+        "importance": "decisive",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": 1333,
+        "effect_id": null
+      },
+      {
+        "tick": 1,
+        "sequence": 3,
+        "template_id": "combat.log.move_intent",
+        "importance": "important",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 1,
+        "sequence": 5,
+        "template_id": "combat.log.damage_applied",
+        "importance": "decisive",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": 1333,
+        "effect_id": null
+      },
+      {
+        "tick": 2,
+        "sequence": 1,
+        "template_id": "combat.log.move_intent",
+        "importance": "important",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 2,
+        "sequence": 2,
+        "template_id": "combat.log.damage_applied",
+        "importance": "decisive",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": 1333,
+        "effect_id": null
+      },
+      {
+        "tick": 2,
+        "sequence": 3,
+        "template_id": "combat.log.move_intent",
+        "importance": "important",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 2,
+        "sequence": 5,
+        "template_id": "combat.log.damage_applied",
+        "importance": "decisive",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": 1333,
+        "effect_id": null
+      },
+      {
+        "tick": 3,
+        "sequence": 1,
+        "template_id": "combat.log.move_intent",
+        "importance": "important",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 3,
+        "sequence": 2,
+        "template_id": "combat.log.damage_applied",
+        "importance": "decisive",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": 1333,
+        "effect_id": null
+      },
+      {
+        "tick": 3,
+        "sequence": 3,
+        "template_id": "combat.log.move_intent",
+        "importance": "important",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 3,
+        "sequence": 5,
+        "template_id": "combat.log.damage_applied",
+        "importance": "decisive",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": 1333,
+        "effect_id": null
+      },
+      {
+        "tick": 4,
+        "sequence": 1,
+        "template_id": "combat.log.move_intent",
+        "importance": "important",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 4,
+        "sequence": 2,
+        "template_id": "combat.log.damage_applied",
+        "importance": "decisive",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": 1333,
+        "effect_id": null
+      },
+      {
+        "tick": 4,
+        "sequence": 3,
+        "template_id": "combat.log.move_intent",
+        "importance": "important",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 4,
+        "sequence": 5,
+        "template_id": "combat.log.damage_applied",
+        "importance": "decisive",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": 1333,
+        "effect_id": null
+      },
+      {
+        "tick": 5,
+        "sequence": 1,
+        "template_id": "combat.log.move_intent",
+        "importance": "important",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 5,
+        "sequence": 2,
+        "template_id": "combat.log.damage_applied",
+        "importance": "decisive",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": 1333,
+        "effect_id": null
+      },
+      {
+        "tick": 5,
+        "sequence": 3,
+        "template_id": "combat.log.move_intent",
+        "importance": "important",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 5,
+        "sequence": 5,
+        "template_id": "combat.log.damage_applied",
+        "importance": "decisive",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": 1333,
+        "effect_id": null
+      },
+      {
+        "tick": 6,
+        "sequence": 1,
+        "template_id": "combat.log.move_intent",
+        "importance": "important",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 6,
+        "sequence": 2,
+        "template_id": "combat.log.damage_applied",
+        "importance": "decisive",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": 1333,
+        "effect_id": null
+      },
+      {
+        "tick": 6,
+        "sequence": 3,
+        "template_id": "combat.log.move_intent",
+        "importance": "important",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 6,
+        "sequence": 5,
+        "template_id": "combat.log.damage_applied",
+        "importance": "decisive",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": 1333,
+        "effect_id": null
+      },
+      {
+        "tick": 7,
+        "sequence": 1,
+        "template_id": "combat.log.move_intent",
+        "importance": "important",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 7,
+        "sequence": 2,
+        "template_id": "combat.log.damage_applied",
+        "importance": "decisive",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": 1333,
+        "effect_id": null
+      },
+      {
+        "tick": 7,
+        "sequence": 3,
+        "template_id": "combat.log.move_intent",
+        "importance": "important",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 7,
+        "sequence": 5,
+        "template_id": "combat.log.damage_applied",
+        "importance": "decisive",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": 1333,
+        "effect_id": null
+      },
+      {
+        "tick": 8,
+        "sequence": 1,
+        "template_id": "combat.log.move_intent",
+        "importance": "important",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 8,
+        "sequence": 2,
+        "template_id": "combat.log.damage_applied",
+        "importance": "decisive",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": 1333,
+        "effect_id": null
+      },
+      {
+        "tick": 8,
+        "sequence": 3,
+        "template_id": "combat.log.move_intent",
+        "importance": "important",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 8,
+        "sequence": 5,
+        "template_id": "combat.log.damage_applied",
+        "importance": "decisive",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": 1333,
+        "effect_id": null
+      }
+    ],
+    "full_log": [
+      {
+        "tick": 1,
+        "sequence": 0,
+        "template_id": "combat.log.target_selection",
+        "importance": "routine",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 1,
+        "sequence": 0,
+        "template_id": "combat.log.collision",
+        "importance": "routine",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 1,
+        "sequence": 1,
+        "template_id": "combat.log.move_intent",
+        "importance": "important",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 1,
+        "sequence": 2,
+        "template_id": "combat.log.target_selection",
+        "importance": "routine",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 1,
+        "sequence": 2,
+        "template_id": "combat.log.damage_applied",
+        "importance": "decisive",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": 1333,
+        "effect_id": null
+      },
+      {
+        "tick": 1,
+        "sequence": 3,
+        "template_id": "combat.log.move_intent",
+        "importance": "important",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 1,
+        "sequence": 3,
+        "template_id": "combat.log.collision",
+        "importance": "routine",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 1,
+        "sequence": 5,
+        "template_id": "combat.log.damage_applied",
+        "importance": "decisive",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": 1333,
+        "effect_id": null
+      },
+      {
+        "tick": 2,
+        "sequence": 0,
+        "template_id": "combat.log.target_selection",
+        "importance": "routine",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 2,
+        "sequence": 0,
+        "template_id": "combat.log.collision",
+        "importance": "routine",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 2,
+        "sequence": 1,
+        "template_id": "combat.log.move_intent",
+        "importance": "important",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 2,
+        "sequence": 2,
+        "template_id": "combat.log.target_selection",
+        "importance": "routine",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 2,
+        "sequence": 2,
+        "template_id": "combat.log.damage_applied",
+        "importance": "decisive",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": 1333,
+        "effect_id": null
+      },
+      {
+        "tick": 2,
+        "sequence": 3,
+        "template_id": "combat.log.move_intent",
+        "importance": "important",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 2,
+        "sequence": 3,
+        "template_id": "combat.log.collision",
+        "importance": "routine",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 2,
+        "sequence": 5,
+        "template_id": "combat.log.damage_applied",
+        "importance": "decisive",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": 1333,
+        "effect_id": null
+      },
+      {
+        "tick": 3,
+        "sequence": 0,
+        "template_id": "combat.log.target_selection",
+        "importance": "routine",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 3,
+        "sequence": 0,
+        "template_id": "combat.log.collision",
+        "importance": "routine",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 3,
+        "sequence": 1,
+        "template_id": "combat.log.move_intent",
+        "importance": "important",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 3,
+        "sequence": 2,
+        "template_id": "combat.log.target_selection",
+        "importance": "routine",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 3,
+        "sequence": 2,
+        "template_id": "combat.log.damage_applied",
+        "importance": "decisive",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": 1333,
+        "effect_id": null
+      },
+      {
+        "tick": 3,
+        "sequence": 3,
+        "template_id": "combat.log.move_intent",
+        "importance": "important",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 3,
+        "sequence": 3,
+        "template_id": "combat.log.collision",
+        "importance": "routine",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 3,
+        "sequence": 5,
+        "template_id": "combat.log.damage_applied",
+        "importance": "decisive",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": 1333,
+        "effect_id": null
+      },
+      {
+        "tick": 4,
+        "sequence": 0,
+        "template_id": "combat.log.target_selection",
+        "importance": "routine",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 4,
+        "sequence": 0,
+        "template_id": "combat.log.collision",
+        "importance": "routine",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 4,
+        "sequence": 1,
+        "template_id": "combat.log.move_intent",
+        "importance": "important",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 4,
+        "sequence": 2,
+        "template_id": "combat.log.target_selection",
+        "importance": "routine",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 4,
+        "sequence": 2,
+        "template_id": "combat.log.damage_applied",
+        "importance": "decisive",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": 1333,
+        "effect_id": null
+      },
+      {
+        "tick": 4,
+        "sequence": 3,
+        "template_id": "combat.log.move_intent",
+        "importance": "important",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 4,
+        "sequence": 3,
+        "template_id": "combat.log.collision",
+        "importance": "routine",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 4,
+        "sequence": 5,
+        "template_id": "combat.log.damage_applied",
+        "importance": "decisive",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": 1333,
+        "effect_id": null
+      },
+      {
+        "tick": 5,
+        "sequence": 0,
+        "template_id": "combat.log.target_selection",
+        "importance": "routine",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 5,
+        "sequence": 0,
+        "template_id": "combat.log.collision",
+        "importance": "routine",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 5,
+        "sequence": 1,
+        "template_id": "combat.log.move_intent",
+        "importance": "important",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 5,
+        "sequence": 2,
+        "template_id": "combat.log.target_selection",
+        "importance": "routine",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 5,
+        "sequence": 2,
+        "template_id": "combat.log.damage_applied",
+        "importance": "decisive",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": 1333,
+        "effect_id": null
+      },
+      {
+        "tick": 5,
+        "sequence": 3,
+        "template_id": "combat.log.move_intent",
+        "importance": "important",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 5,
+        "sequence": 3,
+        "template_id": "combat.log.collision",
+        "importance": "routine",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 5,
+        "sequence": 5,
+        "template_id": "combat.log.damage_applied",
+        "importance": "decisive",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": 1333,
+        "effect_id": null
+      },
+      {
+        "tick": 6,
+        "sequence": 0,
+        "template_id": "combat.log.target_selection",
+        "importance": "routine",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 6,
+        "sequence": 0,
+        "template_id": "combat.log.collision",
+        "importance": "routine",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 6,
+        "sequence": 1,
+        "template_id": "combat.log.move_intent",
+        "importance": "important",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 6,
+        "sequence": 2,
+        "template_id": "combat.log.target_selection",
+        "importance": "routine",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 6,
+        "sequence": 2,
+        "template_id": "combat.log.damage_applied",
+        "importance": "decisive",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": 1333,
+        "effect_id": null
+      },
+      {
+        "tick": 6,
+        "sequence": 3,
+        "template_id": "combat.log.move_intent",
+        "importance": "important",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 6,
+        "sequence": 3,
+        "template_id": "combat.log.collision",
+        "importance": "routine",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 6,
+        "sequence": 5,
+        "template_id": "combat.log.damage_applied",
+        "importance": "decisive",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": 1333,
+        "effect_id": null
+      },
+      {
+        "tick": 7,
+        "sequence": 0,
+        "template_id": "combat.log.target_selection",
+        "importance": "routine",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 7,
+        "sequence": 0,
+        "template_id": "combat.log.collision",
+        "importance": "routine",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 7,
+        "sequence": 1,
+        "template_id": "combat.log.move_intent",
+        "importance": "important",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 7,
+        "sequence": 2,
+        "template_id": "combat.log.target_selection",
+        "importance": "routine",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 7,
+        "sequence": 2,
+        "template_id": "combat.log.damage_applied",
+        "importance": "decisive",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": 1333,
+        "effect_id": null
+      },
+      {
+        "tick": 7,
+        "sequence": 3,
+        "template_id": "combat.log.move_intent",
+        "importance": "important",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 7,
+        "sequence": 3,
+        "template_id": "combat.log.collision",
+        "importance": "routine",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 7,
+        "sequence": 5,
+        "template_id": "combat.log.damage_applied",
+        "importance": "decisive",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": 1333,
+        "effect_id": null
+      },
+      {
+        "tick": 8,
+        "sequence": 0,
+        "template_id": "combat.log.target_selection",
+        "importance": "routine",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 8,
+        "sequence": 0,
+        "template_id": "combat.log.collision",
+        "importance": "routine",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 8,
+        "sequence": 1,
+        "template_id": "combat.log.move_intent",
+        "importance": "important",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 8,
+        "sequence": 2,
+        "template_id": "combat.log.target_selection",
+        "importance": "routine",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 8,
+        "sequence": 2,
+        "template_id": "combat.log.damage_applied",
+        "importance": "decisive",
+        "actor_id": "wuxia_spectator_bout_ally",
+        "target_id": "wuxia_spectator_bout_challenger",
+        "value_hundredths": 1333,
+        "effect_id": null
+      },
+      {
+        "tick": 8,
+        "sequence": 3,
+        "template_id": "combat.log.move_intent",
+        "importance": "important",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 8,
+        "sequence": 3,
+        "template_id": "combat.log.collision",
+        "importance": "routine",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": null,
+        "effect_id": null
+      },
+      {
+        "tick": 8,
+        "sequence": 5,
+        "template_id": "combat.log.damage_applied",
+        "importance": "decisive",
+        "actor_id": "wuxia_spectator_bout_challenger",
+        "target_id": "wuxia_spectator_bout_ally",
+        "value_hundredths": 1333,
+        "effect_id": null
+      }
+    ],
+    "fingerprint": "bb9240dfbc6e72b0"
+  },
+  "report": {
+    "resolution_fingerprint": "1978f44e79dd23d1",
+    "outcome": "mutual_defeat",
+    "reason": "both_sides_defeated",
+    "decisive_tick": 8,
+    "active_allies": 1,
+    "active_enemies": 1,
+    "survivor_ids": [],
+    "defeated_ids": [
+      "wuxia_spectator_bout_ally",
+      "wuxia_spectator_bout_challenger"
+    ],
+    "removed_combat_effect_ids": [],
+    "retained_effect_ids": [],
+    "duration_millis": 900,
+    "combatants": [
+      {
+        "id": "wuxia_spectator_bout_ally",
+        "damage_dealt_hundredths": 10664,
+        "damage_taken_hundredths": 10664,
+        "kills": 1,
+        "incapacitated": true
+      },
+      {
+        "id": "wuxia_spectator_bout_challenger",
+        "damage_dealt_hundredths": 10664,
+        "damage_taken_hundredths": 10664,
+        "kills": 1,
+        "incapacitated": true
+      }
+    ],
+    "top_damage_dealt_id": "wuxia_spectator_bout_ally",
+    "top_damage_taken_id": "wuxia_spectator_bout_ally",
+    "fingerprint": "3aa80aa7286695e7"
+  }
+}

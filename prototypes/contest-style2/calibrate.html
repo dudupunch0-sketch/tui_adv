@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>colour pipeline probe</title>
+    <script type="importmap">
+      { "imports": { "three": "./node_modules/three/build/three.module.js" } }
+    </script>
+  </head>
+  <body>
+    <pre id="o">wait</pre>
+    <script type="module">
+      // Which of the four candidate encodings actually round-trips an authored
+      // sRGB hex to the same pixel? Guessing this from the docs is how the
+      // first two capture rounds came out half a stop dark.
+      import * as THREE from 'three';
+      const cv = document.createElement('canvas');
+      cv.width = cv.height = 8;
+      const r = new THREE.WebGLRenderer({ canvas: cv });
+      r.setSize(8, 8, false);
+      const sc = new THREE.Scene();
+      const cam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 10);
+      cam.position.z = 1;
+      const g = new THREE.PlaneGeometry(2, 2);
+      const gl = r.getContext();
+      function probe(mat) {
+        const m = new THREE.Mesh(g, mat);
+        sc.add(m);
+        r.render(sc, cam);
+        const px = new Uint8Array(4);
+        gl.readPixels(4, 4, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px);
+        sc.remove(m);
+        return [px[0], px[1], px[2]];
+      }
+      const V = 0x808080;
+      const vs = 'void main(){gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}';
+      const srgbFn =
+        'vec3 t(vec3 x){return mix(pow(x,vec3(0.41666))*1.055-0.055,x*12.92,step(x,vec3(0.0031308)));}';
+      const shader = (frag, col) =>
+        new THREE.ShaderMaterial({ uniforms: { c: { value: col } }, vertexShader: vs, fragmentShader: frag });
+      const out = {
+        outputColorSpace: r.outputColorSpace,
+        colorManagement: THREE.ColorManagement.enabled,
+        basic: probe(new THREE.MeshBasicMaterial({ color: V })),
+        basicPreLin: probe(new THREE.MeshBasicMaterial({ color: new THREE.Color(V).convertSRGBToLinear() })),
+        shaderRaw: probe(shader('uniform vec3 c;void main(){gl_FragColor=vec4(c,1.0);}', new THREE.Color(V))),
+        shaderSrgbOut: probe(
+          shader(srgbFn + 'uniform vec3 c;void main(){gl_FragColor=vec4(t(c),1.0);}', new THREE.Color(V)),
+        ),
+        shaderSrgbOutPreLin: probe(
+          shader(
+            srgbFn + 'uniform vec3 c;void main(){gl_FragColor=vec4(t(c),1.0);}',
+            new THREE.Color(V).convertSRGBToLinear(),
+          ),
+        ),
+      };
+      document.getElementById('o').textContent = JSON.stringify(out, null, 1);
+      window.__READY__ = true;
+    </script>
+  </body>
+</html>

@@ -611,13 +611,15 @@ i7_contract:
       - CombatOpportunityCandidate_and_pause_copy_exact_instance_bound_target_provenance
       - evaluation_and_pause_fingerprints_include_bound_target_ids_and_bound_target_tick
       - CombatObserver_has_explicit_combatant_id_mapping_observer_id_equality_is_not_identity
-      - CombatOpportunityContext_combatant_ids_is_public_BTreeSet_of_the_full_static_participant_roster
-      - raw_roster_rejects_blank_and_duplicate_before_BTreeSet_construction_and_typed_context_rejects_empty_or_blank_member
+      - CombatOpportunityContext_combatant_ids_is_public_Vec_of_the_full_static_participant_roster_and_preserves_duplicate_evidence
+      - evaluate_context_validation_rejects_empty_blank_or_duplicate_roster_before_canonicalization_without_silent_dedupe
       - context_combatant_ids_is_not_an_active_or_hp_filter_and_must_exactly_equal_the_combat_request_participant_roster
       - observer_mapping_rejects_blank_unknown_or_duplicate_combatant_mapping
       - observer_combatant_id_must_be_a_member_of_context_combatant_ids
-      - candidate_does_not_copy_the_full_roster_but_evaluation_and_pause_fingerprint_include_context_combatant_ids_stable_order
+      - exact_roster_comparison_and_evaluation_pause_fingerprint_use_a_validated_stable_id_sorted_clone
+      - candidate_does_not_copy_the_full_roster
       - combatant_roster_input_order_is_fingerprint_independent_and_membership_change_changes_fingerprint
+      - runtime_constructors_supply_canonical_sorted_roster_but_public_API_accepts_order_variation
       - any_capable_filters_observer_capability_and_can_act_then_mapped_pause_active_hp_positive_combatant_and_orders_by_combatant_id
       - selected_target_requires_exactly_one_bound_target_and_never_uses_ai_current_target_or_last_move_fallback
       - non_selected_target_selectors_ignore_bound_target_ids_and_resolve_only_from_the_pause_snapshot
@@ -634,7 +636,7 @@ i7_contract:
       title: runtime_delta_split_into_sequential_S1a_S1b_S2_S3
       inputs: [existing_combat_opportunity_evaluation, CombatOpportunityContext_combatant_ids_full_static_roster, existing_combat_runtime_pause, trigger_tick_start_combatant_state, CombatEffectCatalog, current_simulation_v3]
       outputs: [I2b-S1a_immutable_bound_target_and_observer_mapping_carriers, I2b-S1b_trigger_snapshot_and_paused_checkpoint_v2, I2b-S2_canonical_rng_tuple_and_formula_receipt, I2b-S3_canonical_target_resolution_and_effect_source_provenance]
-      tests: [same_tick_ko_acceptance, stable_id_order_independence, rng_tuple_replay, both_branch_target_compatibility_preflight, bound_target_and_observer_mapping_contract, context_roster_validation_and_fingerprint, selected_target_exact_one_and_checkpoint_v2]
+      tests: [same_tick_ko_acceptance, stable_id_order_independence, rng_tuple_replay, both_branch_target_compatibility_preflight, bound_target_and_observer_mapping_contract, context_roster_empty_blank_duplicate_reject_without_dedupe, context_roster_order_independent_and_membership_sensitive_fingerprint, selected_target_exact_one_and_checkpoint_v2]
     - id: I7a
       title: atomic_response_transaction_adapter
       inputs: [CombatInterventionResponseInput, CombatInterventionResponsePlan, GameState]

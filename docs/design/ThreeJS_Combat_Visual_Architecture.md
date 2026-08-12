@@ -413,10 +413,13 @@ core replay 연결을 제공하되 캐릭터/애니메이션/VFX/최종 품질�
    첫 test board의 표현 설정을 gameplay truth에 올리는 것보다 이 방식이 작고 되돌릴 수 있다.
    후속 content-defined board가 승인되면 별도 additive schema WP에서 교체한다. piece 좌표로
    bounds를 추론하지 않는다.
-2. 공식 `three` package `0.185.1`을 정확한 버전으로 추가하고 lockfile을 함께 갱신한다.
-   `@types/three`, renderer wrapper, React, physics, postprocessing dependency는 추가하지 않는다.
+2. 공식 `three` package `0.185.1`을 exact runtime dependency로, `@types/three` package
+   `0.185.4`를 exact devDependency로 추가하고 lockfile을 함께 갱신한다. `three@0.185.1`의 npm
+   metadata에는 bundled `types`/`typings`가 없고 현재 Web TypeScript는 `strict: true`이므로 이
+   type package는 선택 사항이 아니라 compile prerequisite다. renderer wrapper, React, physics,
+   postprocessing dependency는 추가하지 않는다.
    Three.js 공식 API의 `WebGLRenderer`, `OrthographicCamera`, `ResizeObserver`, 명시적 resource
-   `dispose()`만 사용한다. dependency 설치 결과가 이 exact version과 다르면 멈춘다.
+   `dispose()`만 사용한다. dependency 설치 결과가 이 exact version pair와 다르면 멈춘다.
 3. WP2 scene은 42개 hex tile과 final normalized frame의 **임시 anchor marker**만 그린다.
    marker는 ally/enemy를 원형/각진 base shape로 구별하고 foot anchor를 칸 중심에 둔다.
    이것은 캐릭터 art가 아니며 WP3의 modular GLB가 교체한다. GLB, rig, clip, portrait, cue VFX,
@@ -575,8 +578,9 @@ provenance에 먼저 추가한다.
 
 구현자는 다음 중 하나면 즉시 멈춘다: WP1 merge SHA/API/fixture SHA가 정본과 다름, baseline
 test 수치나 existing expectation이 바뀜, `render.ts`/Rust/schema/금지 파일 수정이 필요함,
-WebGL fallback이 DOM 의미를 보존하지 못함, 두 가지로 읽히는 lifecycle, exact `three` version
-설치 실패, fixture fingerprint/bytes 변경. 구현 완료 뒤 별도 reviewer가 owned-file diff,
+WebGL fallback이 DOM 의미를 보존하지 못함, 두 가지로 읽히는 lifecycle, exact
+`three@0.185.1` + `@types/three@0.185.4` pair 설치 실패, fixture fingerprint/bytes 변경. 구현 완료
+뒤 별도 reviewer가 owned-file diff,
 dependency/lock, lifecycle disposal, raw payload 비노출, browser screenshots와 직접 재실행한 test
 출력을 검수해야 한다. 그 review가 통과하기 전 WP3를 ACTIVE로 올리거나 gate flag를 해제하지 않는다.
 

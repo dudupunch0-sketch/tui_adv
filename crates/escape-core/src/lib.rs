@@ -2,6 +2,7 @@ mod combat_conclusion;
 mod combat_contract;
 mod combat_execution;
 mod combat_hex;
+mod combat_intervention;
 mod combat_opportunity;
 mod combat_resolution;
 mod combat_runtime;
@@ -33,6 +34,11 @@ pub use combat_execution::{
 };
 pub use combat_hex::{
     line, range, ring, HexCoord, HexError, HexOccupancy, HexShape, MAX_LINE_LENGTH,
+};
+pub use combat_intervention::{
+    CombatClaimPolicy, CombatEffectBranch, CombatInterventionError, CombatInterventionPayload,
+    CombatOutcomeAction, CombatSpecialEffect, CombatStrategyModifier, StrategyDuration,
+    StrategyOperation, StrategyScope,
 };
 pub use combat_opportunity::{
     CombatDetectionLevel, CombatDetectionThresholds, CombatInterventionBudget, CombatObserver,

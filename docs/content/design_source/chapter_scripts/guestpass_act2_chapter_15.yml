@@ -1,0 +1,96 @@
+schema_version: 1
+kind: chapter_script_companion
+script_id: guestpass_act2_chapter_15
+event_ref: wuxia_seoharin_hides_training_injury
+slot: 2/15
+title: 서하린 손목 부상과 공동 책임
+status: authoring_draft
+review_status: authoring_review_required
+runtime_status: not_implemented
+referenced_event_runtime_status: implemented_preview
+companion_runtime_sync: not_synced
+canonical_bridge:
+  source_gap: true
+  source_ref: events/imported/wuxia_seoharin_hides_training_injury.yml
+  runtime_reference: src/tui_adv/storypack-previews/wuxia_jianghu_pack/encounters.yaml#wuxia_seoharin_hides_training_injury
+  note: source_gap은 Act2 승격 및 upstream 연결 브리지다. 참조된 preview에는 runtime choice contract가 구현되어 있으며, 아래 authoring-owned 상세 결과는 그 choice/reward 계약을 보존한다. companion 동기화는 아직 완료되지 않았다.
+  required_flags: [wuxia_cheongryu_training_first_failure_resolved, guestpass_partial_decode_recorded, black_serpent_ledger_trace_seen, qingliu_ledger_trace_opened]
+  common_emits: [wuxia_seoharin_hides_training_injury_resolved, seoharin_wrist_care_closed, qingliu_daily_duty_resumed, qingliu_first_departure_cost_ready]
+  next_gate: qingliu_first_departure_cost_ready
+  next_event_ref: wuxia_cheongryu_first_departure_cost
+entry_conditions:
+  required_flags: [wuxia_cheongryu_training_first_failure_resolved, guestpass_partial_decode_recorded, black_serpent_ledger_trace_seen, black_serpent_ledger_trace_resolved, qingliu_ledger_trace_opened]
+reentry_recap: 2/14 흑사방 채무 장부에서 객패의 이동 흔적과 다음 역참의 빈칸을 확인했다. 청류문은 다시 일상을 세우고 있고, 주인공은 장부 대조를 거들며 서하린이 늘 먼저 연무장에 나오는 이유를 눈치챘다.
+stable_opening: 해가 뜨기 전 세면터에서 서하린은 왼손으로 물동이를 옮긴다. 손목을 숨긴 소매에서 물이 한 번 기울고 장부의 먹선이 번진다. 오늘의 일은 부상을 해결하고, 누구도 대신 결정하지 않는 것이다.
+local_urgent_conflict: 오래된 손목 부상이 장부와 당번을 방해한다. 걱정을 핑계로 서하린의 선택권을 빼앗거나, 침묵으로 부담을 떠넘길 수 있다. 치료는 이 장면에서 시작되고 일상으로 닫히며, 치유 기적과 romance lock은 없다.
+beats_and_dialogue:
+  - beat: 물동이의 기울기
+    scene: 서하린은 괜찮다고 말하지만 주인공은 손목보다 오늘 맡을 수 있는 일을 묻는다.
+    dialogue: '서하린: “다친 건 오래됐어요. 오늘 갑자기 생긴 일처럼 말하지 마요.”'
+  - beat: 장부와 붕대
+    scene: 객패 경로를 옮겨 적던 종이에 약재 가루가 묻는다. 둘은 장부를 접고 흔적을 따로 보존한다.
+    dialogue: '주인공: “기록은 남길게요. 이 손목을 기록 때문에 더 쓰게 하진 않을게요.”'
+  - beat: 선택권의 반환
+    scene: 주인공은 누구에게 알릴지 정하지 않고 서하린에게 묻는다. 그녀는 당번 교대, 약초, 보고 중 원하는 범위를 고른다.
+    dialogue: '서하린: “도와준다는 말로 제 일정을 가져가지는 말아요.”'
+  - beat: 공동 당번표
+    scene: 청우진은 이름을 지우지 않고 물동이·장부·산문 당번을 세 칸으로 나눈다.
+    dialogue: '청우진: “책임은 이름을 지우는 일이 아니다. 감당할 몫을 다시 나누는 일이지.”'
+  - beat: 손목을 쓰지 않는 연습
+    scene: 서하린은 붕대 매듭을 가르치고 주인공은 그녀의 손을 붙잡지 않은 채 자기 손으로 묶는다.
+    dialogue: '서하린: “제가 할 수 있게 옆에서 멈춰 주는 거예요.”'
+  - beat: 미완성 장부
+    scene: 손목은 고정되고 장부는 절반만 정리된다. 저녁 식사와 다음날 회복이 확정된다.
+    dialogue: '주인공: “같이 책임진다는 건 같은 속도로 움직인다는 뜻은 아니군요.”'
+choices:
+  - id: wrist_look_away_presence
+    label: 못 본 척하기
+    immediate_result: 주인공은 캐묻지 않되 당번표의 무거운 칸을 공동 작업으로 표시한다.
+    success: 서하린이 자기 상태를 말할 자리를 얻고 손목을 쓰지 않는 당번으로 교대한다.
+    failure: 침묵이 방치로 읽혀 서하린이 무리한다. 저녁에 당번표를 함께 고친다.
+    relationship_directions: {people: {seo_harin: boundary_respected_without_romance, cheong_u_jin: shared_duty_visible}, factions: {qingliu: quiet_care_protocol_opened}}
+    reward_candidate: {id: wuxia_skill_cut_the_presence, name: 기척 끊기, type: skill, concept: 경계를 존중하며 필요한 움직임만 줄이는 관찰 습관}
+    quest_clue: {name: 손목 당번표의 빈 칸, type: quest_clue, concept: 부상일과 객패 장부의 끊긴 날짜를 다음 대조에서 확인할 표식}
+    flags: {always: [wuxia_seoharin_hides_training_injury_resolved, seoharin_wrist_care_closed, qingliu_daily_duty_resumed, seoharin_boundary_respected], success: [wrist_silence_agreed], failure: [wrist_silence_misread, duty_table_repaired]}
+  - id: wrist_ointment_handkerchief
+    label: 약초 연고를 가져오기
+    immediate_result: 약재함의 남은 연고와 사용법을 확인해 서하린이 선택하도록 건넨다.
+    success: 서하린이 무리한 당번을 내려놓고 다음날 낡은 손수건을 돌려준다. 돌봄은 빚이 되지 않는다.
+    failure: 연고는 한 번뿐이다. 치료는 시작되지만 약재 부족과 비용이 장부에 남는다.
+    relationship_directions: {people: {seo_harin: mutual_care_recognized_with_agency, cheong_u_jin: medicine_shortage_reported}, factions: {qingliu: care_debt_made_explicit}}
+    reward_candidate: {id: wuxia_pendant_seoharin_handkerchief, name: 서하린의 손수건, type: pendant, concept: 대신 살아 주지 않고 필요한 순간의 손을 닦은 뒤 돌려받는 공동 책임의 물건}
+    quest_clue: {name: 비어 가는 약재함, type: supply_clue, concept: 치료와 습격 후 회복으로 줄어든 약재가 출발 비용이 된다는 단서}
+    flags: {always: [wuxia_seoharin_hides_training_injury_resolved, seoharin_wrist_care_closed, qingliu_daily_duty_resumed, medicine_shortage_seen], success: [reward_pending_wuxia_pendant_seoharin_handkerchief, wrist_care_cost_shared], failure: [ointment_single_dose_spent, qingliu_medicine_debt_recorded]}
+  - id: wrist_ask_read
+    label: 손목을 직접 묻기
+    immediate_result: 명령하지 않고 서하린이 말할 범위와 맡을 일을 차례로 묻는다.
+    success: 서하린이 오래된 부상과 최근 무리를 구분해 설명하고 잠깐 손목을 내어 보인다.
+    failure: 질문이 심문처럼 들려 손목을 거둔다. 주인공은 식사 뒤 다시 말할 선택권을 남긴다.
+    relationship_directions: {people: {seo_harin: trust_through_consent_not_romance, cheong_u_jin: injury_limit_shared}, factions: {qingliu: care_without_healing_miracle}}
+    reward_candidate: {id: wuxia_insight_read_the_wrist, name: 손목의 맥, type: insight, concept: 부상을 지배하지 않고 말·움직임·휴식의 차이를 읽는 관찰}
+    quest_clue: {name: 오래된 부상과 새 무리의 구분, type: investigation_clue, concept: 출발 전 회복·당번·장부 운반을 따로 계획해야 한다는 정보}
+    flags: {always: [wuxia_seoharin_hides_training_injury_resolved, seoharin_wrist_care_closed, qingliu_daily_duty_resumed, seoharin_injury_limit_named], success: [wuxia_insight_read_the_wrist, consented_wrist_observation], failure: [question_felt_like_interrogation, consent_repair_meal_opened]}
+  - id: wrist_report_faction
+    label: 장문인에게 알리기
+    immediate_result: 서하린 곁에서 청우진에게 손목 상태와 당번 부담을 함께 보고한다.
+    success: 치료와 당번 조정이 시작되고 청류문 규율 안에서 안전을 확보한다. 잠시 거리가 생겨도 책임은 공동 기록이 된다.
+    failure: 통제권을 빼앗은 것으로 남아 서하린이 며칠 거리를 둔다. 치료는 계속되고 동의 보완 기록을 남긴다.
+    relationship_directions: {people: {seo_harin: care_with_distance_and_agency, cheong_u_jin: qingliu_duty_trust}, factions: {qingliu: treatment_protocol_prioritized}}
+    reward_candidate: {id: relationship_faction_cheongryu_affection, name: 청류문 치료 당번표, type: faction_relationship, concept: 부상자를 숨기지 않되 이름을 지우지 않는 공동 책임 기록}
+    quest_clue: {name: 약재와 당번의 공동 장부, type: quest_clue, concept: 치료비·약재·출발 인력을 함께 계산할 문서}
+    flags: {always: [wuxia_seoharin_hides_training_injury_resolved, seoharin_wrist_care_closed, qingliu_daily_duty_resumed, qingliu_treatment_protocol_opened], success: [relationship_faction_cheongryu_affection, seoharin_shared_burden], failure: [seoharin_distance_after_report, consent_repair_required]}
+relationship_directions: {people: {seo_harin: mutual_care_recognition_with_agency_no_romance_lock, cheong_u_jin: duty_shared_through_records, protagonist: support_without_control}, factions: {qingliu: injury_care_and_duty_reconciled, guestpass_network: ledger_care_cost_accounted}}
+rewards:
+  - {id: wuxia_insight_read_the_wrist, name: 손목의 맥, type: insight, concept: 손목을 소유하지 않고 상태를 읽는 관찰의 언어}
+  - {id: wuxia_pendant_seoharin_handkerchief, name: 서하린의 손수건, type: pendant, concept: 서하린의 agency가 남는 돌봄의 물건}
+  - {id: wuxia_skill_cut_the_presence, name: 기척 끊기, type: skill, concept: 경계를 존중하며 움직임을 줄이는 기술}
+  - {id: relationship_faction_cheongryu_affection, name: 청류문 치료 당번표, type: faction_relationship, concept: 치료를 공동 책임으로 남기는 기록}
+quest_clues: [{name: 약재와 당번의 공동 장부, type: main_quest_clue, concept: 손목 치료와 객패 추적을 같은 비용표에 놓는다}, {name: 비워 둔 손목 당번, type: route_clue, concept: 다음 출발의 인력 조건}]
+flags: {always: [wuxia_seoharin_hides_training_injury_resolved, seoharin_wrist_care_closed, qingliu_daily_duty_resumed, seoharin_agency_preserved, no_healing_miracle, no_romance_lock], success: [wrist_care_and_duty_resolved, departure_cost_can_be_discussed], failure: [wrist_care_repair_recorded, departure_cost_delayed_by_recovery], follow_up: [qingliu_departure_staging_opened, guestpass_trace_and_care_cost_linked, qingliu_first_departure_cost_ready]}
+local_closure: 손목은 붕대와 당번 조정으로 안정되고 서하린은 자기 방식으로 저녁 식사에 참여한다. 장부는 절반만 정리한 채 봉인된다.
+interlude_safe_state: 서하린은 가벼운 기록·식사·대화만 맡고 주인공은 약재·세탁·장부·산문 당번을 나눈다. 회복일과 1~2개 사이드, 약 7개 랜덤 인카운터가 가능하다.
+low_pressure_hook: 약재함 뒤 객패 장부와 같은 날짜의 빈 먹점이 보이지만 지금 열지 않아도 된다.
+next_reentry_trigger: 치료·당번 조정과 객패 부분 해독·흑사방 장부 흔적·약재 비용이 함께 확인되어 qingliu_first_departure_cost_ready가 세워지면 2/16이 열린다.
+cadence_audit: {time: dawn_to_evening_with_recovery_day, place: qingliu_wash_court_training_yard_medicine_store, companions: seo_harin_cheong_u_jin_protagonist, injury: old_wrist_injury_stabilized_not_cured, information: care_cost_and_partial_ledger_trace, hostile_pressure: none_inside_chapter_external_trace_only}
+scene_context: {location: 청류문 세면터·약재함·기록방, cast: [주인공, 서하린, 청우진, 약재 담당], emotional_state: 돕고 싶지만 대신 결정하고 싶지는 않은 마음과 혼자 버티려는 습관의 충돌}
+convergence: {meaningful_exclusive_outcomes: 경계 합의·물자 비용·동의 기반 관찰·문파 치료 규율, common_minimum_facts: [wuxia_seoharin_hides_training_injury_resolved, seoharin_wrist_care_closed, qingliu_daily_duty_resumed, seoharin_agency_preserved, guestpass_partial_decode_recorded, black_serpent_ledger_trace_seen, qingliu_first_departure_cost_ready], local_closure: 부상은 치료와 당번 조정으로 닫힌다, exact_state_bridge: qingliu_first_departure_cost_ready가 사람·약재·장부 비용을 확인한 뒤 2/16 출발 비용 선택을 연다, next_slot: 2/16, next_event_ref: wuxia_cheongryu_first_departure_cost, terminal: false}

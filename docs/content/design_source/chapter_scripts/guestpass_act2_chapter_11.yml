@@ -1,0 +1,101 @@
+schema_version: 1
+kind: chapter_script_companion
+script_id: guestpass_act2_chapter_11
+event_ref: wuxia_cheongryu_raid_aftermath_roll_call
+slot: 2/11
+title: 부상자·실종자·파괴 시설 확인
+entry_conditions:
+  required_flags: [bloodmoon_qingliu_network_destruction_resolved, qingliu_physical_losses_confirmed_pending_roll_call]
+  optional_context_flags: [emergency_injuries_stabilized, qingliu_damage_assessment_ready, revenge_pursuit_not_opened, qingliu_patient_roll_preserved, guestpass_outpost_blast_order_testimony, guestpass_decode_reference_preserved]
+  blocked_by: [active_raid, immediate_pursuit, unmarked_emergency_injury]
+status: authoring_draft
+review_status: authoring_review_required
+runtime_status: not_implemented
+canonical_bridge:
+  source_gap: true
+  source_refs:
+    imported: [docs/content/design_source/events/imported/wuxia_cheongryu_raid_aftermath_roll_call.yml]
+    authored_predecessor: [docs/content/design_source/events/authored/wuxia_guestpass_bloodmoon_qingliu_network_destruction.yml]
+  note: imported 원문은 사건 메모와 선택 방향만 제공하며 정확한 게이트·선택지·완료 ID는 없다. required_flags와 아래 qingliu_raid_aftermath_* ID는 저작 브리지이며 imported 사실이나 runtime 구현 ID가 아니다.
+  imported_facts: [습격을 승패가 아닌 생존자·부상자·실종자의 문제로 확인, 부상자 돌봄·증거 상태·생존자 부채 중 일부가 선택에 따라 강조됨]
+  authoring_bridge_ids: [qingliu_raid_aftermath_roll_call_resolved, wounded_care_state_recorded, evidence_state_recorded, survivor_debt_named_or_deferred]
+  required_flags: [bloodmoon_qingliu_network_destruction_resolved, qingliu_physical_losses_confirmed_pending_roll_call]
+  common_emits: [qingliu_raid_aftermath_roll_call_resolved, wounded_care_state_recorded, evidence_state_recorded, survivor_debt_named_or_deferred]
+  next_gate: qingliu_raid_aftermath_roll_call_resolved
+  next_event_ref: wuxia_cheongryu_survivor_ledger
+  gate_note: 최소 호명은 네 축 모두의 현재 상태를 남기지만, 2/12의 객패 해독은 별도 재진입 조건과 시간 경과 뒤에 열린다.
+reentry_recap: 며칠 전 혈월교의 불길은 꺼졌고 청류문과 귀로객망 중계초의 표식은 물리적으로 무너졌다. 응급 부상자는 안정되었지만, 누가 살아 돌아왔고 누가 아직 비어 있는지와 무엇이 다시 쓸 수 없는지는 아직 이름으로 묶이지 않았다.
+stable_opening: 아침 죽과 물이 한 차례 돌고 돌봄 당번이 교대된 뒤, 청우진이 불탄 문패와 빈 들것을 마당에 놓는다. 서하린은 환자 옆 기록을 들고, 주인공은 출근 때 쓰던 체크표 습관을 접어 사람 이름부터 부르는 자리에 선다.
+local_urgent_conflict: 응급 처치는 이미 안정된 상태지만, 흩어진 메모와 파괴 시설을 한 번에 확인해야 한다. 부상자를 다시 움직여 확인할 수 없고, 실종자를 사망자로 단정할 수도 없으며, 기록을 찾는 동안 살아 있는 사람의 돌봄과 이름을 놓칠 수 있다.
+beats_and_dialogue:
+  - {beat: 빈 들것의 수, scene: 청류문 사람들은 들것을 세지만 들것 수를 사람 수로 바꾸지 않는다. 서하린은 이미 안정된 환자의 상태만 침상에서 확인하고 이동을 금한다., dialogue: '서하린: “안정됐다는 건 끝났다는 뜻이 아니에요. 오늘은 다시 다치지 않게 이름과 돌봄을 붙이는 날이에요.”'}
+  - {beat: 살아 돌아온 이름, scene: 청우진은 산문 당번과 약방 사람들의 목소리를 받아 적고, 서로 다른 호칭은 같은 사람인지 본인 확인을 거쳐 합친다., dialogue: '청우진: “부른 이름이 다르면 지운 게 아니라 다시 물어야 한다. 사람을 종이 한 줄로 줄이지 마라.”'}
+  - {beat: 아직 비어 있는 자리, scene: 빈 문패와 마지막으로 본 시각을 별도 칸에 남긴다. 실종은 생사 판정이 아니라 다음 확인을 맡을 사람과 장소로 기록한다., dialogue: '주인공: “빈칸을 결론처럼 채우지 않겠습니다. 누가 언제 어디서 찾을지까지 적어야 해요.”'}
+  - {beat: 파괴 시설의 이름, scene: 약방 문·기록함·산문 표식 기둥·중계초를 안전·부분 사용·봉인으로 나누고 잔해 안쪽에는 들어가지 않는다., dialogue: '청우진: “무너진 것은 건물만이 아니다. 다시 쓸 수 없는 자리를 알아야 남은 자리를 지킬 수 있다.”'}
+  - {beat: 돌봄과 기록의 교대, scene: 서하린은 붕대와 물의 다음 순번을 정하고 주인공은 기록 담당을 교대시킨다. 누구도 부상자에게 기억을 강요하지 않는다., dialogue: '서하린: “기억을 내놓는 일이 치료보다 앞설 수는 없어요. 돌봄표가 먼저 서면 이름은 기다릴 수 있어요.”'}
+  - {beat: 빚을 이름으로 부르기, scene: 생존자들이 잃은 물건·미뤄진 일·찾아야 할 사람을 적되 보상 약속으로 바꾸지 않는다. 감당할 수 없는 항목은 유예 책임자로 남긴다., dialogue: '주인공: “빚을 없앴다고 쓰지 않을게요. 누가 기억하고 언제 다시 묻는지만 숨기지 않겠습니다.”'}
+  - {beat: 봉인과 인계, scene: 네 상태표를 한 장의 호명 장부에 묶고, 식사·수면·약방 돌봄과 잔해 기록을 다음 당번에게 넘긴다., dialogue: '서하린: “오늘 확인할 만큼 확인했어요. 이제 살아 있는 사람들이 먹고 자고, 내일 다시 이어야 해요.”'}
+choices:
+  - id: prioritize_wounded_care_roll_call_authoring_owned
+    label: 부상자와 돌봄 순번부터 확인한다
+    immediate_result: 서하린과 침상 곁에서 안정된 환자의 이름·현재 제한·다음 붕대 시간을 확인하고, 실종자와 시설 확인은 다른 기록 담당에게 분리한다.
+    success: 부상자별 돌봄 순번과 보호자가 일치하고, 움직이지 않아도 확인 가능한 생존자 명단이 호명 장부에 남는다.
+    failure: 한 환자의 보호자 교대가 비어 다시 확인해야 하지만, 재이동 없이 돌봄 공백과 다음 책임자가 기록된다.
+    relationship_directions: {people: {seo_harin: strong_positive_shared_care_accountability, cheong_u_jin: trust_through_wounded_roll_call}, factions: {qingliu: wounded_care_named_before_repair, guestpass_network: survivor_names_protected}}
+    reward_candidate: {name: 붕대 끝의 다음 이름, type: authored_care_record, concept: 부상자의 상태와 다음 돌봄 책임을 한 사람씩 이어 주는 기록}
+    quest_clue: {name: 멈춘 들것의 교대표, type: authored_quest_clue, concept: 응급 안정 뒤 누가 어느 침상을 맡았는지와 비어 있는 교대칸을 보여 주는 단서}
+    flags: {always: [qingliu_raid_aftermath_roll_call_resolved, wounded_care_state_recorded, evidence_state_recorded, survivor_debt_named_or_deferred, qingliu_wounded_priority_recorded], success: [qingliu_wounded_care_complete], failure: [qingliu_wounded_care_followup_needed]}
+  - id: prioritize_missing_survivor_names_authoring_owned
+    label: 실종자와 마지막 목격 이름부터 확인한다
+    immediate_result: 마지막으로 본 사람·시간·장소를 두 명씩 대조하고, 생존 여부를 추정하지 않은 채 찾을 범위와 다음 확인자를 적는다.
+    success: 빈 문패와 마지막 목격 기록이 겹쳐 실종자별 확인 구역과 연락 책임자가 생긴다.
+    failure: 이름 하나가 다른 호칭으로 남아 위치를 좁히지 못하지만, 동일 인물로 단정하지 않는 보류 기록과 재확인자가 남는다.
+    relationship_directions: {people: {seo_harin: respect_for_patient_name_work, cheong_u_jin: shared_survivor_accountability}, factions: {qingliu: missing_people_not_erased, guestpass_network: route_witnesses_preserved}}
+    reward_candidate: {name: 비어 있어도 부르는 명단, type: authored_name_record, concept: 실종을 결론으로 지우지 않고 다음 사람에게 확인 책임을 넘기는 명단}
+    quest_clue: {name: 세 번 바뀐 마지막 목격지, type: authored_quest_clue, concept: 산문·손님채·중계초 사이에서 사람과 파괴 순서가 어긋난 위치 기록}
+    flags: {always: [qingliu_raid_aftermath_roll_call_resolved, wounded_care_state_recorded, evidence_state_recorded, survivor_debt_named_or_deferred, qingliu_missing_names_recorded], success: [qingliu_survivor_names_recorded], failure: [qingliu_missing_name_recheck_open]}
+  - id: prioritize_destroyed_facilities_evidence_authoring_owned
+    label: 파괴 시설과 남은 증거부터 확인한다
+    immediate_result: 안전선 밖에서 약방·기록함·산문 표식 기둥·중계초를 사용 가능·부분 사용·봉인으로 분류하고 잔해의 물증 위치를 표시한다.
+    success: 파괴 순서와 시설 상태가 사람 명단에 연결되어, 2/12 해독에 넘길 증거 봉투와 접근 금지선이 함께 보존된다.
+    failure: 젖은 기록 한 묶음이 더 번져 원문은 잃지만, 시설별 손실과 남은 눌림 자국을 보존해 후속 복구가 가능하다.
+    relationship_directions: {people: {seo_harin: trust_through_no_reentry_safety, cheong_u_jin: strong_positive_archive_custodian_trust}, factions: {qingliu: damage_boundaries_named, guestpass_network: evidence_chain_kept_without_chasing}}
+    reward_candidate: {name: 봉인선 안의 네 자리, type: authored_evidence_record, concept: 사람이 다시 들어가기 전에 파괴 시설과 보존 물증을 나눈 안전 도면}
+    quest_clue: {name: 표식 기둥 뒤의 눌린 연락첩, type: authored_quest_clue, concept: 중계초 연락 흔적과 청류문 파괴 순서를 대조할 수 있는 후속 해독 단서}
+    flags: {always: [qingliu_raid_aftermath_roll_call_resolved, wounded_care_state_recorded, evidence_state_recorded, survivor_debt_named_or_deferred, qingliu_facility_states_recorded], success: [qingliu_evidence_chain_preserved], failure: [qingliu_evidence_recovery_deferred]}
+  - id: prioritize_survivor_debts_and_names_authoring_owned
+    label: 생존자의 미해결 부채와 이름을 함께 적는다
+    immediate_result: 잃은 물건·미뤄진 약속·찾을 사람을 당사자의 말로 받아 적고, 지금 감당할 일과 유예할 일을 구분한다. 빚은 돈이나 즉시 노동으로 환산하지 않는다.
+    success: 각 미해결 항목에 이름 있는 책임자와 다시 묻는 시점이 붙고, 생존자들이 자신의 기록을 확인한다.
+    failure: 한 항목의 책임자를 정하지 못하지만 당사자 동의 없이 닫지 않고 유예 사유와 다음 회의 자리를 남긴다.
+    relationship_directions: {people: {seo_harin: strong_positive_survivor_voice_respected, cheong_u_jin: trust_through_named_debt_register}, factions: {qingliu: hospitality_debt_shared_not_extracted, guestpass_network: names_and_obligations_preserved}}
+    reward_candidate: {name: 아직 갚지 않은 이름표, type: authored_relationship_token, concept: 환대와 생존자의 약속을 지우지 않고 공동체가 다시 물을 수 있게 하는 표식}
+    quest_clue: {name: 유예된 약속 세 줄, type: authored_quest_clue, concept: 실종자 확인·약재 보충·시설 복구가 서로 얽힌 후속 책임의 목록}
+    flags: {always: [qingliu_raid_aftermath_roll_call_resolved, wounded_care_state_recorded, evidence_state_recorded, survivor_debt_named_or_deferred, qingliu_survivor_debt_register_opened], success: [survivor_debt_named], failure: [survivor_debt_deferred_without_erasure]}
+relationship_directions: {people: {seo_harin: shared_care_and_survivor_accountability, cheong_u_jin: trust_through_named_records}, factions: {qingliu: people_facilities_and_debts_distinguished, guestpass_network: route_evidence_preserved, bloodmoon_cult: physical_terror_evidence_recorded_not_confronted}}
+rewards:
+  - {name: 오늘의 호명 장부, type: authored_main_record, concept: 부상자·실종자·시설·생존자 부채를 한데 지우지 않고 서로 다른 상태로 보존한 장부}
+  - {name: 식기 옆의 돌봄표, type: authored_care_token, concept: 회복과 식사를 다음 당번의 실제 책임으로 이어 주는 생활 표식}
+  - {name: 봉인선 안의 증언, type: authored_evidence_record, concept: 추격 없이 파괴 흔적과 사람의 이름을 함께 후속 조사로 넘기는 기록}
+quest_clues:
+  - {name: 네 칸으로 나뉜 피해 장부, type: main_quest_clue, concept: 사람·돌봄·시설·부채를 섞지 않아 2/12 해독과 2/13 재건이 정확히 이어지는 상태표}
+  - {name: 비어 있는 문패와 눌린 연락첩, type: investigation_clue, concept: 실종자의 마지막 목격과 귀로객망 파괴 순서를 대조할 수 있는 후속 단서}
+flags:
+  always: [qingliu_raid_aftermath_roll_call_resolved, wounded_care_state_recorded, evidence_state_recorded, survivor_debt_named_or_deferred, emergency_injuries_stabilized, revenge_pursuit_not_opened, qingliu_roll_call_minimum_complete]
+  success: [qingliu_survivor_names_recorded, qingliu_wounded_care_complete, qingliu_evidence_chain_preserved, survivor_debt_named]
+  failure: [qingliu_followup_records_open, qingliu_unresolved_debt_carried_without_erasure]
+  follow_up: [qingliu_recovery_archive_open, qingliu_survivor_ledger_reentry_ready, qingliu_place_not_romance, qingliu_no_immediate_route_departure]
+local_closure: 네 선택 모두 부상자·실종자·파괴 시설·생존자 부채의 최소 상태를 호명 장부에 남긴다. 성공과 실패는 돌봄의 완결도, 증거 보존량, 책임자의 명확성만 바꾸며 생존자 확인은 닫히고 추격이나 즉시 출발은 시작되지 않는다.
+interlude_safe_state: 저녁 식사와 수면, 안정된 부상자 돌봄, 잔해 주변 잡역, 봉인 기록 보관, 서하린과의 교대 확인을 넣을 수 있다. 기록 담당은 다음 날 바뀔 수 있고, 실종자 확인과 시설 복구는 생활 간격 뒤에 이어진다.
+low_pressure_hook: 다음 며칠 동안 빈 문패의 마지막 목격을 다시 물을지, 눌린 연락첩을 말릴지, 돌봄표와 유예된 부채를 정리할지 선택할 수 있다.
+next_reentry_trigger: qingliu_raid_aftermath_roll_call_resolved와 qingliu_roll_call_minimum_complete 이후 회복·식사·기록 보관 interlude를 지나면 wuxia_cheongryu_survivor_ledger가 재진입한다. qingliu_place_not_romance는 청류문 정착·돌봄 축을 연애 진행으로 바꾸지 않는다.
+cadence_audit: {time: several_days_after_raid_after_care_shift_morning_to_evening, place: qingliu_survivor_court_medicine_hall_burned_guest_quarters, companions: seo_harin_cheong_u_jin_qingliu_survivors_care_keepers, injury: emergency_injuries_stabilized_no_reinjury_allowed, information: survivor_names_care_facility_evidence_and_debt_states_recorded, hostile_pressure: raid_closed_no_pursuit_only_residual_damage_evidence}
+scene_context: {location: 청류문 마당·약방·불탄 손님채 앞의 안전선, cast: [주인공, 서하린, 청우진, 청류문 생존자들, 돌봄 당번, 기록 담당], emotional_state: 살아남았다는 안도와 비어 있는 자리의 무게 사이에서 사람을 먼저 정확히 부르려는 침착한 책임감}
+convergence:
+  meaningful_exclusive_outcomes: 부상자 우선은 돌봄 순번, 실종자 우선은 마지막 목격과 확인 책임, 시설 우선은 봉인선과 증거 보존, 부채 우선은 생존자의 이름과 유예 책임을 강화한다.
+  common_minimum_facts: [bloodmoon_qingliu_network_destruction_resolved, qingliu_physical_losses_confirmed_pending_roll_call, qingliu_raid_aftermath_roll_call_resolved, wounded_care_state_recorded, evidence_state_recorded, survivor_debt_named_or_deferred, qingliu_roll_call_minimum_complete, emergency_injuries_stabilized]
+  local_closure: formal roll call이 완료되고 청류문은 사람을 쉬게 하며 2/12 해독을 위한 안전한 기록 상태에 들어간다.
+  exact_state_bridge: imported 사건의 사람 중심 문제를 authoring_bridge_ids로 구체화했다. 네 축은 모두 완료되지만 성공·실패는 보존량과 후속 책임만 다르게 하며, qingliu_place_not_romance는 관계를 연애 게이트로 바꾸지 않는다.
+  next_slot: 2/12
+  next_event_ref: wuxia_cheongryu_survivor_ledger
+  terminal: false

@@ -1,0 +1,94 @@
+schema_version: 1
+kind: chapter_script_companion
+script_id: guestpass_act2_chapter_10
+event_ref: wuxia_guestpass_bloodmoon_qingliu_network_destruction
+slot: 2/10
+title: 혈월교의 청류문·귀로객망 물리 파괴
+entry_conditions:
+  required_flags: [wuxia_cheongryu_raid_omen_resolved, bloodmoon_raid_omen_enabled, guestpass_burnt_token_acquired]
+  optional_context_flags: [guestpass_omen_gate_order_recovered, qingliu_wounded_route_prepared, guestpass_decode_reference_preserved]
+  blocked_by: []
+status: authoring_draft
+review_status: authoring_review_required
+runtime_status: not_implemented
+canonical_bridge:
+  source_gap: false
+  source_ref: docs/content/design_source/events/authored/wuxia_guestpass_bloodmoon_qingliu_network_destruction.yml
+  required_flags: [wuxia_cheongryu_raid_omen_resolved, bloodmoon_raid_omen_enabled, guestpass_burnt_token_acquired]
+  common_emits: [bloodmoon_qingliu_network_destruction_resolved, qingliu_physical_losses_confirmed_pending_roll_call, guestpass_outpost_physically_destroyed, bloodmoon_role_physical_terror_locked, guestpass_route_to_damage_roll_call_opened]
+  next_gate: bloodmoon_qingliu_network_destruction_resolved
+  next_event_ref: wuxia_cheongryu_raid_aftermath_roll_call
+  gate_note: 2/11 authoring bridge는 습격 완료 뒤 부상자·실종자·파괴 시설 확인으로 이어진다.
+reentry_recap: 청류문은 며칠 동안 산문 당번과 약방 돌봄표를 유지했고 객패의 붉은 재는 봉인되어 있었다. 전조는 공격을 시작하지 않았다. 이제 평범한 아침의 자리가 실제 불과 무너지는 목재에 덮인다.
+stable_opening: 죽을 데우던 솥, 연무장 목검, 손님채의 젖은 이불이 제자리에 있다. 서하린이 약방 창을 여는 순간 인근 귀로객망 중계초에서 붉은 불빛이 솟고 표식 기둥이 먼저 갈라진다.
+local_urgent_conflict: 혈월교가 청류문과 중계소를 물리적으로 부수며 사람과 기록을 위협한다. 주인공은 방어·구조·퇴각선 확인·객패 기록 보호 중 한 축만 맡아 습격을 이 장 안에서 끝낸다. 혈월교는 거래·채무·계산을 제안하지 않는다.
+beats_and_dialogue:
+  - {beat: 익숙한 물건이 먼저 불탄다, scene: 솥·손님채 천·출근 셔츠가 보존되되 연기에 그을리고 가려지고 불이 통로와 기둥을 끊는다., dialogue: '서하린: “사람부터 안쪽으로! 이름은 나중에 부를 수 있어요. 지금은 걸을 길을 남겨요!”'}
+  - {beat: 물리적 공포, scene: 습격자들은 붉은 파문쐐기로 표식 기둥을 쪼개고 횃불을 던진 뒤 머물지 않는다., dialogue: '혈월교 습격자: “길을 잇는 표식부터 태워라. 다음 집이 없으면 돌아갈 사람도 없다.”'}
+  - {beat: 한 축의 대가, scene: 선택은 모든 손실을 없애지 못한다. 성공은 물증·사람·시간 중 하나를 더 보존하고 실패도 살아 있는 증언이나 구조선을 남긴다., dialogue: '주인공: “전부 막을 수는 없어. 그래도 비우지 않을 자리는 지금 정해야 해.”'}
+  - {beat: 불길 뒤의 퇴각, scene: 중계초가 무너진 뒤 습격자들은 표식이 끊긴 산길로 빠진다. 청류문은 추격하지 않는다., dialogue: '서하린: “쫓지 마요. 오늘은 살아남은 사람과 무너진 자리를 먼저 세요.”'}
+  - {beat: 응급 안정, scene: 들것 끈을 묶고 연기 먹은 목과 베인 팔을 안정시킨다. 정식 호명과 복수 추격은 다음 장 이후다., dialogue: '서하린: “습격은 끝났어요. 오늘 밤은 다친 몸을 먼저 눕혀요.”'}
+choices:
+  - id: hold_gate_with_seoharin
+    label: 서하린과 산문에 파진을 세운다
+    immediate_result: 둘이 산문 양쪽을 나눠 지켜 청류문 사람들이 환자와 기록을 옮길 시간을 번다.
+    success: 선두 화공대를 밀어내고 표식 기둥을 가른 혈월의 붉은 파문쐐기를 회수한다.
+    failure: 산문을 내주며 다치지만 서하린이 후퇴선을 열어 화공대의 진입 순서를 기억한다.
+    relationship_directions: {people: {seo_harin: strong_positive_shared_combat_line}, factions: {qingliu: strong_positive_defense_bought_time, guestpass_network: positive_relics_evacuated}}
+    reward_candidate: {name: 청류 파진보, type: skill, concept: 쓰러뜨리기보다 자리를 지켜 시간을 만드는 방어 보법}
+    quest_clue: {name: 혈월의 붉은 파문쐐기, type: quest_clue, concept: 귀로객망 표식 기둥부터 가른 파괴 도구}
+    flags: {always: [bloodmoon_gate_assault_witnessed], success: [bloodmoon_destruction_wedge_recovered], failure: [protagonist_raid_wound_requires_care]}
+  - id: open_medicine_hall_escape
+    label: 약방의 사람부터 불길 밖으로 옮긴다
+    immediate_result: 막힌 약방 통로를 열고 들것 행렬로 환자와 수련생을 먼저 옮긴다.
+    success: 약방 사람들과 환자 명부를 구해 다음 장에서 바로 호명한다.
+    failure: 약재와 명부 일부를 잃지만 구조된 수련생이 중계소 쪽 폭발 순서를 증언한다.
+    relationship_directions: {people: {seo_harin: strong_positive_people_first_trust}, factions: {qingliu: strong_positive_members_rescued, guestpass_network: neutral_route_testimony_saved}}
+    reward_candidate: {name: 불길 속 빈자리, type: title, concept: 구한 사람과 아직 돌아오지 않은 사람의 자리를 함께 기억하는 호명}
+    quest_clue: {name: 그을린 들것의 이름끈, type: quest_item, concept: 구조자와 실종자를 중복 없이 호명하는 천끈}
+    flags: {always: [qingliu_raid_rescue_line_opened], success: [qingliu_patient_roll_preserved], failure: [guestpass_outpost_blast_order_testimony]}
+  - id: trace_the_raiders_retreat
+    label: 연기 속 퇴각선을 역산한다
+    immediate_result: 무너진 담장과 불붙지 않은 길을 이어 혈월교의 퇴로를 표시한다.
+    success: 청류문과 중계소를 친 뒤 합류하는 퇴각 지점을 찾아 다음 추적 위험을 낮춘다.
+    failure: 추적조에 발각되어 돌아오지만 공포용 흔적과 실제 퇴로가 다름을 안다.
+    relationship_directions: {people: {seo_harin: mixed_concern_and_respect_for_independent_risk}, factions: {qingliu: positive_countertrack_opened, guestpass_network: positive_next_destroyed_relay_narrowed}}
+    reward_candidate: {name: 야근자의 비상동선, type: insight, concept: 막힌 길에서 사람의 흐름과 빈 통로로 탈출 순서를 짜는 현대인의 습관}
+    quest_clue: {name: 재 위에 겹친 퇴각선, type: clue, concept: 위협용 발자국과 실제 이동을 분리한 산길 약도}
+    flags: {always: [bloodmoon_retreat_trace_opened], success: [bloodmoon_retreat_convergence_found], failure: [bloodmoon_fear_trail_decoy_identified]}
+  - id: protect_token_and_guest_records
+    label: 객패와 손님 기록을 불에서 건져낸다
+    immediate_result: 무너지는 손님채에서 객패 싸개와 기록함을 사람들과 이어 나른다.
+    success: 객패의 두 흔적과 중계소 연락을 보존해 2/12 해독 기준을 얻는다.
+    failure: 기록함 일부가 타지만 젖은 종이의 눌린 자국으로 중계소 이름을 복원할 여지를 남긴다.
+    relationship_directions: {people: {seo_harin: positive_understands_why_memory_matters}, factions: {qingliu: positive_guest_records_preserved, guestpass_network: strong_positive_names_protected}}
+    reward_candidate: {name: 불타지 않은 약속, type: insight, concept: 건물은 잃어도 다음 사람을 살려 보내겠다는 환대 기록을 잇는 판단}
+    quest_clue: {name: 물에 젖은 중계소 연락첩, type: quest_clue, concept: 지워진 지점과 마지막 연락이 눌린 흔적}
+    flags: {always: [guestpass_relics_evacuated_from_raid], success: [guestpass_decode_reference_preserved], failure: [guestpass_contact_imprint_requires_recovery]}
+relationship_directions: {people: {seo_harin: shared_defense_and_emergency_care, cheong_u_jin: trust_through_survivor_accounting}, factions: {qingliu: physical_loss_survived_together, guestpass_network: relay_names_protected, bloodmoon_cult: physical_terror_role_locked}}
+rewards:
+  - {name: 청류 파진보, type: skill, concept: 방어선에서 시간을 만드는 몸의 습관}
+  - {name: 불길 속 빈자리, type: title, concept: 생존자와 실종자의 자리를 함께 기억하는 호명}
+  - {name: 불타지 않은 약속, type: insight, concept: 파괴된 시설 너머 환대 기록을 이어가는 선택}
+quest_clues:
+  - {name: 혈월의 붉은 파문쐐기와 그을린 들것, type: main_quest_clue, concept: 표식 기둥을 먼저 파괴하고 이름을 흩뜨린 물리 공격의 증거}
+  - {name: 중계소 연락첩의 눌린 자국, type: investigation_clue, concept: 피해 확인과 객패 해독에서 복구할 마지막 연결}
+flags:
+  always: [bloodmoon_qingliu_network_destruction_resolved, qingliu_physical_losses_confirmed_pending_roll_call, guestpass_outpost_physically_destroyed, bloodmoon_role_physical_terror_locked, guestpass_route_to_damage_roll_call_opened]
+  success: [bloodmoon_destruction_wedge_recovered, qingliu_patient_roll_preserved, bloodmoon_retreat_convergence_found, guestpass_decode_reference_preserved]
+  failure: [protagonist_raid_wound_requires_care, guestpass_outpost_blast_order_testimony, bloodmoon_fear_trail_decoy_identified, guestpass_contact_imprint_requires_recovery]
+  follow_up: [emergency_injuries_stabilized, qingliu_damage_assessment_ready, revenge_pursuit_not_opened]
+local_closure: 혈월교의 습격은 불길이 꺼지고 퇴각선이 닫히면서 이 장 안에서 끝난다. 청류문과 중계소는 물리적 손실을 입고 응급 부상은 안정된다. 복수 추격은 시작되지 않으며 이름·시설·기록은 다음 interlude 뒤에 다룬다.
+interlude_safe_state: 부상자 눕히기, 물과 죽 나누기, 잔해 안전선, 젖은 기록 말리기, 서하린과 교대하기가 가능하다. formal roll call 전 하루 이상의 회복·생활과 랜덤 인카운터를 삽입할 수 있다.
+low_pressure_hook: 불탄 중계초의 벽돌과 젖은 연락첩이 같은 손님의 이름을 가리킨다. 지금 쫓지 않고 다음 호명 자리에서 먼저 확인할 사람을 고를 수 있다.
+next_reentry_trigger: emergency_injuries_stabilized와 qingliu_damage_assessment_ready, 회복·식사·잔해 정리 interlude 뒤 formal roll call을 열기로 하면 2/11이 재진입한다. 실패도 동일한 피해 확인으로 진행한다.
+cadence_audit: {time: morning_to_afternoon_raid_then_recovery, place: qingliu_gate_medicine_hall_guest_quarters_guestpass_outpost, companions: seo_harin_cheong_u_jin_qingliu_members_survivors, injury: emergency_injuries_stabilized_no_new_pursuit_wound, information: destruction_order_retreat_trace_partial_records, hostile_pressure: raid_active_then_closed_physical_damage_only}
+scene_context: {location: 불타는 청류문 산문·약방·손님채와 귀로객망 중계초, cast: [주인공, 서하린, 청우진, 청류문 수련생, 환자, 혈월교 습격자], emotional_state: 평범한 생활이 무너지는 공포 속에서 한 사람과 한 자리를 책임지려는 결심}
+convergence:
+  meaningful_exclusive_outcomes: 산문은 파괴 도구와 시간, 약방은 사람과 호명, 퇴각선은 이동 방향, 객패 보호는 환대 기록과 해독 기준을 남긴다.
+  common_minimum_facts: [bloodmoon_qingliu_network_destruction_resolved, qingliu_physical_losses_confirmed_pending_roll_call, guestpass_outpost_physically_destroyed, bloodmoon_role_physical_terror_locked, guestpass_route_to_damage_roll_call_opened, emergency_injuries_stabilized, revenge_pursuit_not_opened]
+  local_closure: 습격과 불길은 닫히고 부상자는 안정되며 피해 확인 가능한 interlude가 열린다.
+  exact_state_bridge: 실패도 qingliu_damage_assessment_ready를 남긴다. 습격 완료는 복수 추격이나 terminal defeat를 뜻하지 않는다.
+  next_slot: 2/11
+  next_event_ref: wuxia_cheongryu_raid_aftermath_roll_call
+  terminal: false

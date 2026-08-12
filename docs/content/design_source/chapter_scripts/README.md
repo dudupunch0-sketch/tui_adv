@@ -18,5 +18,4 @@
 
 금지되는 것은 장 밖으로 즉시 이어지는 추격·전투·붕괴·카운트다운, 곧바로 다음 필수 사건을 강제하는 전달, 짧은 시간창 의존이다. terminal ending만 예외다.
 
-
-검증 기대사항: 선택지별 literal 검증은 32개 선택지의 immediate_result, success, ailure, elationship_directions, eward_candidate, quest_clue, lags(always/success/failure)를 확인하고, 8개 챕터 모두의 scene_context와 convergence도 확인한다. 이 문서는 generated validation 결과를 선언하지 않는다.
+검증 기대사항: 선택지별 literal 검증에서는 32개 선택지의 immediate_result, success, failure, relationship_directions, reward_candidate, quest_clue, flags(always/success/failure)를 확인하고, 8개 챕터 모두의 scene_context와 convergence도 확인한다. 이 문서는 generated validation 결과를 선언하지 않는다.

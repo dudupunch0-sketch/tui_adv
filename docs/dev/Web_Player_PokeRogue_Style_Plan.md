@@ -5,6 +5,12 @@
 > 작성 기준: 2026-05-24, `main` 최신 확인 기준: `7c38217 web_play_like_pokerogue.md 만들기`
 > 목적: `escape from the office`를 포켓로그처럼 “주소만 열면 바로 플레이되는 웹 게임”으로 완성·배포하기 위한 개발자용 구현 문서
 
+> **전투 visual 계약 갱신 (2026-08-12).** 이 문서의 모바일 portrait story shell 목표는
+> 유지한다. CSS/DOM 체스말, code-only·faceless 캐릭터, 2D 전투 renderer 계획은
+> superseded이며 새 Web 전투 기준은
+> [`ThreeJS_Combat_Visual_Architecture.md`](../design/ThreeJS_Combat_Visual_Architecture.md)다.
+> 전투 prototype은 PC 1920×1080 60fps를 먼저 계측하고 모바일 최적화와 최종 budget은 후속으로 둔다.
+
 ---
 
 ## 1. 결론
@@ -151,7 +157,8 @@ Core owns truth. Renderer owns mood.
 ```
 
 - 게임 규칙, 선택 가능 여부, 결과, 엔딩, 업적, 자원 변화는 Rust GameCore가 소유한다.
-- Web renderer는 `ScenePage`를 받아 DOM/CSS/Canvas/GlyphFX로 표시한다.
+- Web renderer는 `ScenePage`를 받아 Storybook DOM/CSS shell, Canvas/GlyphFX text effect,
+  Three.js/WebGL combat scene으로 표시한다. DOM semantic combat table은 접근성/failure fallback이다.
 - Web renderer는 “이 선택지가 가능한가?”를 다시 계산하지 않는다.
 - TypeScript mirror core는 fallback/parity oracle로만 유지하고, 새 gameplay rule을 추가하지 않는다.
 - production player는 가능한 한 Rust/WASM path를 기본이자 필수 path로 둔다.
@@ -180,7 +187,7 @@ escape-core GameState / ScenePage / ActionResult
 web/src/ui/storybook/render.ts
         │
         ▼
-DOM + CSS + Canvas/GlyphFX + localStorage
+DOM + CSS + Canvas/GlyphFX + Three.js/WebGL + localStorage
 ```
 
 ### 4.3 Web runtime 책임
@@ -695,7 +702,8 @@ Unknown visual id 정책:
 `docs/design/Mobile_Ink_Storybook_UI.md`다.
 
 - 외부 이미지를 production asset으로 import하지 않는다.
-- 필요한 시각 요소는 전부 코드(CSS/DOM/SVG)로 저작한다.
+- 일반 story UI의 CSS/DOM/SVG 저작 원칙은 유지한다. code-only·faceless 전투원 규칙은
+  superseded이며 전투 자산은 authored portrait와 shared-rig semi-SD low-poly GLB를 사용한다.
 
 ---
 

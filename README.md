@@ -8,12 +8,12 @@ TUI 기반 랜덤 인카운터 선택지 생존 게임 엔진/콘텐츠 프로�
 
 **Rust GameCore 정본화 완료** (2026-06, §0.88). 게임 규칙의 단일 truth는 이제 Rust GameCore(`crates/escape-core`) 하나다. 과거의 Python/Textual 게임 로직(`src/tui_adv/game/`, `src/tui_adv/tui/`)과 TypeScript mirror core(`web/src/game/`)는 **삭제**됐다. `python -m tui_adv`는 deprecation stub이며(`--version`만 유효), `web/src/main.ts`는 WASM-only다.
 
-현재 구조는 **Rust GameCore 공통 + Web Storybook/GlyphFX primary UX + Rust Terminal play/smoke fallback**이다.
+현재 구조는 **Rust GameCore 공통 + Web Storybook shell/GlyphFX story·UI 효과 + Three.js 전투 보드 + Rust Terminal play/smoke fallback**이다.
 
 중요한 기준:
 
-- Web Storybook + GlyphFX가 플레이어용 메인 UX다. 이미지/장면 컷, 대화 내역, 읽기 중심 선택지, Canvas/GlyphFX는 이 경로에서 먼저 구현한다. Web player는 `escape-wasm` JSON boundary를 통해 Rust GameCore의 `ScenePage`/`ActionResult`를 소비한다.
-- Web Storybook의 현재 시각 기준은 `docs/design/Mobile_Ink_Storybook_UI.md`다. 웹에서 실행되더라도 generic web dashboard가 아니라 모바일 세로형 수묵 서책 board — 플레이어에 대해 쓰이고 있는 기록책(천기록)의 한 쪽 — 로 보이게 한다. (구 픽셀 게임북 계약 `docs/design/Mobile_Pixel_Storybook_UI.md`는 superseded.)
+- Web Storybook이 플레이어용 shell/HUD를, GlyphFX가 story/UI 효과를, Three.js가 `ScenePage.combat` 전투 보드와 공간 VFX를 담당한다. Web player는 `escape-wasm` JSON boundary를 통해 Rust GameCore의 `ScenePage`/`ActionResult`를 소비하며 gameplay truth를 재계산하지 않는다.
+- 전체 게임필은 기존 **모바일 텍스트RPG 게임 프레임**과 3분할 layout을 유지한다. 전투 성능만 PC-first 1080p/60 대표 타깃으로 검증한다. `docs/design/Mobile_Ink_Storybook_UI.md`의 layout/gamefeel 기록은 유지하되 폐기된 수묵 art direction은 새 구현 기준이 아니다. 전투 시각 정본은 `docs/design/ThreeJS_Combat_Visual_Architecture.md`다.
 - Rust terminal 경로는 버리지 않는다. `escape-terminal`의 content 경로는 TUI snapshot/play renderer를 제공하며, visual card/GlyphFX/input 안내 polish로 terminal-native 기준을 갖춘다. terminal은 fallback이지만 debug dump가 아니다.
 - 남은 Python은 **게임 로직이 아니라** 콘텐츠 파이프라인/계약 검증용이다: `scripts/export_web_data.py`(YAML→content bundle export/check), 그리고 contract/docs/web 테스트(`tests/`).
 
@@ -135,7 +135,7 @@ npm run preview:player
 ## 핵심 설정
 
 - 기본 storypack: `wuxia_jianghu_pack` / **이구학지 — 천기록**
-- 프로젝트 방향: storypack/world 기반 TUI 선택지 생존 게임 + Web Storybook/GlyphFX primary UX + Rust Terminal
+- 프로젝트 방향: storypack/world 기반 선택지 생존 게임 + Web Storybook shell/GlyphFX story·UI 효과 + Three.js 전투 + Rust Terminal
 - 기본 톤: 출근복 현대인이 강호에 떨어지는 무협 생존/성장극. 기존 블랙코미디 회사 괴담 + 코스믹 호러 톤은 legacy office content에 남긴다.
 - office-family 후보팩: `yageunmong_pack` / **야근몽**. 전제는 “회사에서 잠깐 잠든 주인공이 자각몽 상태의 회사 악몽에서 업무 완료가 아니라 깨어나기를 목표로 한다”이며, 기본 office runtime을 대체하지 않는다.
 - 현재 기본 개발 기준팩: `wuxia_jianghu_pack` / **이구학지 — 천기록**. 전제는 “현대 회사원이 본인 몸과 출근복장 그대로 무협 세계 시장에 전이되고, 천기록/천외편린 성장 구조를 경험한다”. 현재 Web/terminal default storypack이며, runtime은 arrival/first fight/first fragment부터 `wuxia_sado_final_battle` container까지 구현됐다. 사도 최종전 container는 required battle opening/stance/phase-1 bridge만 열고, 1/2/3페이즈는 combat resolver 없이 장부/약점/계산식 밖 선택을 final-state seed로 남긴다. 보스/무명/서하린·청류문/천기록 결산과 흑사방 후일담은 route/후속 epilogue candidate seed를 남긴다. `wuxia_final_epilogue_renderer_contract`는 이 seed를 Rust GameCore-owned structured `ScenePage.body_blocks`로 소비해 후일담 결과/카드/억제 기록을 출력하고, `wuxia_return_settlement_epilogue_contract`는 서하린 late trigger seed를 귀환/정착/불확실성/닫힌 문 위험 branch cards로 소비한다. `wuxia_battle_loss_epilogue_contract`는 explicit battle-loss seed를 loss/corruption afterword bundle로 소비하고 optimistic victory cards를 suppress한다. `wuxia_final_state_canonical_collapse_contract`는 `epilogue_state_audit` body block으로 기존 `final_*_seeded` flags를 canonical final state labels로 collapse한다. Latest next handoff: `wuxia_sado_final_battle_container_followup_handoff`. full return/settlement schema, HP 숫자전, playable defeat route, relation/debt/faction ledger, reward/ability, `told_seoharin_truth`, 천기록 정체 reveal은 아직 열지 않았다.
@@ -145,7 +145,7 @@ npm run preview:player
 - 핵심 자원: 체력, 정신력, 배터리, 허기, 갈증
 - 판정 능력치: 논리, 공감, 의지, 침착, 인터페이스, 신체
 - 주요 루트: 탈출, 정복, 진실 발견, 히든 현실 연결
-- 렌더러 방향: Rust GameCore가 게임 규칙의 truth를 소유하고, Web Storybook/GlyphFX가 primary UX, Rust terminal이 terminal-native fallback을 담당한다. 과거 TypeScript mirror core와 fake-TUI 패널은 전환기 parity 구현이었고 §0.88에서 삭제됐다.
+- 렌더러 방향: Rust GameCore가 게임 규칙의 truth를 소유한다. Web Storybook은 shell/HUD, GlyphFX는 story/UI 효과, Three.js는 고정 OrthographicCamera 전투 보드를 담당하고 Rust terminal은 terminal-native fallback을 맡는다. 과거 TypeScript mirror core와 fake-TUI 패널은 전환기 parity 구현이었고 §0.88에서 삭제됐다.
 
 ## 문서
 
@@ -168,7 +168,9 @@ npm run preview:player
 - `docs/design/Map.md`: 1차 맵 설계
 - `docs/design/UI_Rules.md`: 사내 시스템형 TUI, 글리치, 선택지 오염 규칙
 - `docs/design/TUI_Storybook_GlyphFX_Concept.md`: Web primary UX로 채택한 TUI풍 스토리북 + GlyphFX 방향
-- `docs/design/Mobile_Ink_Storybook_UI.md`: Web Storybook의 모바일 세로형 수묵 서책 board 시각 contract
+- `docs/design/ThreeJS_Combat_Visual_Architecture.md`: PC-first Three.js 3D hex 전투 renderer canonical contract
+- `docs/design/references/threejs_combat/README.md`: 전투 구현 이미지·외부 코드 레퍼런스 팩
+- `docs/design/Mobile_Ink_Storybook_UI.md`: 모바일 텍스트RPG layout/gamefeel 기록. 수묵 art direction은 superseded
 - `docs/design/Mobile_Pixel_Storybook_UI.md`: (superseded) 구 픽셀 게임북 board contract 포인터
 - `docs/dev/Development_Plan.md`: canonical main plan. 현재 방향, 다음 작업, 우선순위의 source of truth
 - `docs/dev/Checklist.md`: 단계별 완료 여부 추적용 체크리스트

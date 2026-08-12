@@ -19,10 +19,14 @@
 ## 활성 renderer UX contract
 
 2026-05-22 이후 새 UI 작업은 다음 renderer 분담을 따른다.
+Web 전투 보드 세부 계약은
+[Three.js 전투 비주얼 아키텍처](ThreeJS_Combat_Visual_Architecture.md)가 소유한다.
 
 ```text
 Rust GameCore: state/action/result/effect cue의 truth
-Web Storybook + GlyphFX: primary player UX
+Web Storybook: shell과 ordered story UI
+GlyphFX: text/anomaly/UI effects
+Three.js: Web combat-board presentation
 SuperLightTUI terminal renderer: terminal-native fallback / horror edition
 ```
 
@@ -32,7 +36,9 @@ SuperLightTUI terminal renderer: terminal-native fallback / horror edition
 - Renderer는 action eligibility, outcome, ending, achievement를 재계산하지 않는다.
 - 선택지는 shell command가 아니라 `SceneAction.id`에 매핑된 서술형 행동이다.
 - 표시 번호나 단축키는 renderer-local이며, 실제 실행은 `choice:*`, `move:*`, `use:*` action id로 한다.
-- `visual_id`는 semantic id다. Web은 CSS/SVG/Canvas/image card로, terminal은 ASCII/Unicode/ANSI/SuperLightTUI cell card로 매핑한다.
+- `visual_id`는 semantic id다. Web은 CSS/SVG/Canvas/image card와 Three.js/WebGL 전투
+  scene으로, terminal은 ASCII/Unicode/ANSI/SuperLightTUI cell card로 매핑한다. `ScenePage`에는
+  renderer command, Three object, camera/shader 설정을 넣지 않는다.
 - Unknown visual id는 빈 화면이 아니라 alt/title 기반 placeholder를 표시한다.
 - `EffectCue`는 core가 발행한다. Renderer가 encounter 제목이나 문자열을 보고 효과를 추측하지 않는다.
 - `stable_terms`와 핵심 단서는 Web animation, terminal GlyphFX, reduced-motion, no-canvas fallback 모두에서 읽을 수 있어야 한다.
@@ -40,10 +46,12 @@ SuperLightTUI terminal renderer: terminal-native fallback / horror edition
 Web Storybook primary UX:
 
 - 시각 계약은 `docs/design/Mobile_Ink_Storybook_UI.md`(수묵 서책)를 따른다.
-- 모바일 세로형/narrow browser를 1차 기준으로 한다.
+- 일반 story shell은 모바일 세로형/narrow browser를 1차 기준으로 한다. 전투 board prototype은
+  PC 1920×1080 60fps가 먼저이며 최종 budget은 계측 뒤 정하고 모바일 최적화는 후속 WP로 둔다.
 - 화면 region은 최소 `status/location`, `visual`, `body/dialogue`, `choices`, `history/drawer`를 가진다.
 - 선택지는 버튼과 숫자키로 실행한다. `cd`, `ls`, `grep` 같은 shell command 입력을 요구하지 않는다.
 - WASM/bundle 오류는 사용자-facing error panel로 보여준다.
+- 전투 canvas와 별도로 DOM semantic table을 유지하고 WebGL 실패 시 board·portrait·log fallback을 보여준다.
 
 SuperLightTUI terminal renderer:
 

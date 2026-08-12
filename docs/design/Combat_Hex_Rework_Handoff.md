@@ -6,6 +6,10 @@ status: active
 방식은 [Implementation_Slice_Discipline.md](../dev/Implementation_Slice_Discipline.md) §8
 인계 시점 코드: PR #197 (T1-c · T1-d · T3) 기준. 그 앞은 main에 머지됨 (#195, #196)
 
+Web 전투 표현은 [Three.js 전투 비주얼 아키텍처](ThreeJS_Combat_Visual_Architecture.md)가
+정본이다. 이 인계 문서의 core 좌표·점유 내용은 유지한다. CSS/DOM 체스말, faceless
+code-only 말, 2D 전환안은 migration history이며 DOM semantic table만 접근성/WebGL fallback으로 남는다.
+
 이 문서 하나로 맥락을 잡을 수 있게 쓴다. 세부는 링크로 넘긴다.
 
 ---
@@ -77,11 +81,12 @@ status: active
 | 3 | 개입 중 시간이 완전히 정지하는가, 감속인가 | T8 |
 | 5 | 배속 단계 (0.8x 포함 여부) | T4 |
 | 6 | 밀어내기 힘의 기준 스탯 | T2 |
-| 7 | 동적 카메라 채택 여부 | T9 |
 | 8 | I9 애니메이션 허용 목록에 `rotate` 추가 여부 | T8 |
 
 8번은 이번 세션에서 발견됐다 — `combatMotion.ts`가 `balance_broken` cue에 `rotate`를 쓰는데
 I9는 `translate`/`opacity`/`filter`만 허용한다. 주석은 사실대로 고쳤고 결정은 T8이 한다.
+7번은 2026-08-12에 닫혔다. Three.js가 고정 `OrthographicCamera`, 고정 각도·보드 중심·zoom을
+소유하며 동적 camera와 camera shake는 쓰지 않는다.
 
 ---
 
@@ -209,8 +214,8 @@ core가 tick 0..k 실행 → opportunity 감지로 "k에서 정지"를 결정론
 | T6 | 배치 단계 — 배치 구역 데이터화, 적 선배치, 배치 검증 | T1 |
 | T7 | 오브젝트 조작 — `EnvironmentState`를 시뮬레이션이 소비하게 | T4 후 |
 | T8 | 관전 표현 문법 — 스킬명·스택·피해 범주·연쇄 처치·AoE·대시 경로, **로그 도배 방지** | T5 |
-| T9 | 표현 레이어 교체 가능성 — 고정 타일 메트릭 투영, 말 외형 교체 지점 | T1 |
-| T10 | HUD — 위험 개체 카운터, 파티 카드(LV/경험치 제외) | T8과 함께 |
+| T9 | Three.js scene — 고정 orthographic camera, 7×6 projection, shared rig/modular GLB, DOM fallback. core 점유 무변경 | T1 |
+| T10 | HUD — Storybook shell의 위험 개체 카운터·파티 카드, Three world anchor. LV/경험치 제외 | T8과 함께 |
 | T11 | 콘텐츠·밸런스 — 2분 전투, 개입 간격, 표준 전투원 재설정, 게이트 해제 | 전부 후 |
 
 **T2가 T3 뒤로 밀린 이유** (2026-08-07 결정): T1-c가 넣은 "목적지 경합 시 둘 다 제자리"가

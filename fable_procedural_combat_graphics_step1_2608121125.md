@@ -2,6 +2,11 @@
 
 작성: 2026-08-12 · 작성자: Fable(Claude) · 인수: Codex
 
+> **Superseded direction note (2026-08-12).** 이 보고서의 2D 우선 판단, faceless/code-only
+> 전투원, 2D↔3D 미결정 상태는 조사 당시 기록으로 보존한다. 현재 Web 전투 visual 정본은
+> [`docs/design/ThreeJS_Combat_Visual_Architecture.md`](docs/design/ThreeJS_Combat_Visual_Architecture.md)다.
+> Three.js가 보드 scene을 소유하고, Rust core의 좌표·점유 truth와 DOM semantic fallback은 유지한다.
+
 > **이 문서의 목적**
 > Fable의 토큰이 소진되어 `AGENTS.md`의 「협업 루프」 조항대로 **플랜/설계 역할까지 Codex가 이어받는다.**
 > 따라서 이 문서는 "구현 지시서"가 아니라 **Codex가 계획을 세울 수 있는 근거 묶음**이다.

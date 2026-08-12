@@ -6,6 +6,10 @@ Concept version: **v2 — text-first illustrated TUI adventure**
 
 Status: **adopted as the Web Storybook/GlyphFX primary UX direction**. The Rust terminal counterpart is **SuperLightTUI-based terminal-native renderer/fallback**, not a plain debug terminal.
 
+Web 전투 보드는 [Three.js 전투 비주얼 아키텍처](ThreeJS_Combat_Visual_Architecture.md)를
+따른다. Storybook은 shell/story UI, GlyphFX는 text/anomaly/UI effect, Three.js는 combat-board
+presentation, Rust core는 truth를 소유한다.
+
 ## 1. 한 줄 정의
 
 겉으로는 정적인 텍스트 어드벤처/스토리북 UI처럼 보이지만, 특정 사건이 발생하면 글자, 문단, 선택지, 그림 일부가 살아 움직이는 TUI풍 인터랙티브 게임이다.
@@ -27,7 +31,9 @@ Status: **adopted as the Web Storybook/GlyphFX primary UX direction**. The Rust 
 
 ```text
 Rust GameCore: 상태/선택지/결과/엔딩/EffectCue의 truth
-Web Storybook + GlyphFX: primary player UX, 이미지/장면 컷/대화 내역/Canvas 효과
+Web Storybook: primary shell, 이미지/장면 컷/대화 내역
+GlyphFX: text/anomaly/UI Canvas 효과
+Three.js: Web combat-board scene
 SuperLightTUI terminal renderer: terminal-native fallback, ASCII/Unicode visual card와 cell-based GlyphFX
 ```
 
@@ -480,6 +486,10 @@ ls archive
 Primary:
   Web / mobile portrait first
 
+Combat prototype exception:
+  PC 1920×1080 / 60fps first, measure before final budgets
+  mobile combat optimization later
+
 Later:
   Tauri or Electron desktop build
 
@@ -511,6 +521,10 @@ GlyphFX Layer:
 Illustration:
   이미지 또는 Canvas
   픽셀풍 장면 컷, 그림 속 텍스트 애니메이션
+
+Combat Board:
+  Three.js / WebGL
+  고정 OrthographicCamera, shared-rig GLB, DOM semantic fallback
 ```
 
 모든 글자를 처음부터 Canvas로만 그릴 필요는 없다. 일반 상태에서는 HTML/CSS가 안정적이다. 효과가 발생하는 순간에는 해당 텍스트 블록을 GlyphFX 레이어로 넘겨 글자별 애니메이션을 처리한다.
@@ -559,7 +573,7 @@ GameCore:
   story state and choices
 
 Renderer:
-  page UI and visual output
+  Storybook page UI and Three.js combat visual output
 ```
 
 Pretext는 게임 그 자체가 아니라 텍스트를 연출 가능한 상태로 만드는 기술적 기반이다.
@@ -796,8 +810,8 @@ MVP에서 만들지 않아도 되는 것:
 
 기술:
   Rust GameCore가 state/action/result/EffectCue truth를 소유
-  Web Storybook이 primary renderer
-  HTML/CSS static story UI + Canvas GlyphFX overlay
+  Web Storybook이 primary shell/story renderer
+  HTML/CSS static story UI + Canvas GlyphFX overlay + Three.js combat scene
   ScenePage / visual_id / WASM JSON boundary로 core와 연결
   SuperLightTUI terminal renderer는 terminal-native fallback/horror edition
 

@@ -3,6 +3,12 @@
 status: wave3-step1d2-complete
 기준일: 2026-08-02
 
+> **전투 Web visual 갱신 (2026-08-12).** 이 문서에 남은 CSS/DOM 체스말 보드,
+> code-only·faceless 말, 2D motion 구현 보고는 migration history다. 새 구현 기준은
+> [Three.js 전투 비주얼 아키텍처](ThreeJS_Combat_Visual_Architecture.md)다. Rust core의
+> 전투 truth와 점유, `ScenePage.combat` 경계는 유지하며 DOM semantic table도 접근성 및
+> WebGL failure fallback으로 남긴다.
+
 이 문서는 보존된 Notion `전투 시스템` 허브와 local design source의 관련 canonical 문서를 Rust GameCore 구현 순서로 쪼갠 인덱스다. 각 단계 문서는 한 번의 coding subagent 작업으로 완료할 수 있는 크기를 목표로 한다.
 
 육각 타일 레퍼런스를 기준으로 한 다음 방향(좌표계 교체, 행동 주기, 세그먼트 실행과 개입, 표현 문법 확장)은 [Combat_Hex_Rework_Development_Plan.md](Combat_Hex_Rework_Development_Plan.md)가 소유한다. 그 문서는 트랙과 결정 항목만 정의하며, 각 트랙의 구현 plan은 종전대로 `fable_<주제>_step1_<YYMMDDHHMM>.md`로 따로 만든다.

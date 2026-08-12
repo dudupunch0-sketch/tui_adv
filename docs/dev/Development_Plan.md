@@ -4,6 +4,8 @@
 >
 > 이 문서는 처음 작성된 구현 전 기준점도 포함하므로, 충돌이 있으면 상단의 최신 방향/다음 액션을 우선한다. `README.md`는 요약/실행법, `docs/dev/Checklist.md`는 완료 여부 추적, 아키텍처/스키마 문서는 계약 참조, `idea_box/`는 active plan이 없을 때 보는 backlog다. `.hermes/plans/`는 세션용 작업 계획이며 canonical source가 아니다.
 >
+> 전투 작업 read order: 이 파일의 active priority → [combat contract index](../content/design_source/contracts/combat_contract_index.md)와 관련 handoff → gameplay 시뮬레이션은 해당 Rust contract, Web 전투 표현은 [Three.js 전투 비주얼 아키텍처](../design/ThreeJS_Combat_Visual_Architecture.md)를 따른다. Storybook shell/story UI 효과는 [TUI Storybook + GlyphFX](../design/TUI_Storybook_GlyphFX_Concept.md)가 소유한다.
+>
 > 아이디어-설계 흐름은 local design-source 우선이다. `docs/content/design_source/`의 Git-tracked normalized records가 current design records의 정본이며, Notion은 역사적 provenance와 읽기·검수 미러다. 새 변경은 local design source → review → 필요 시 runtime handoff/구현 → Notion mirror 순서로 운영한다.
 > 객패귀로 메인 스토리 방향: [통합 설계 v1.1](../content/design_source/arcs/guestpass_homecoming_main_story_v1_1.md)은 승인된 메인 스토리 방향이며, 개별 authoring 검수가 필요하고 runtime에는 아직 구현되지 않았다. 이 링크는 현재 최우선 코드/runtime 작업 순서나 완료 상태를 변경하지 않는다.
 
@@ -23,7 +25,7 @@
 
 1. `docs/dev/Development_Plan.md`: 단일 메인 플랜. 현재 방향, 다음 작업, 우선순위, phase 순서를 여기서 판단한다.
 2. `docs/dev/Checklist.md`: 완료 여부 추적용 체크리스트. 독립적인 다음 계획을 두지 않는다.
-3. `docs/dev/Rust_Core_Dual_Renderer_Architecture.md`, `docs/dev/Data_Schema.md`, `docs/design/UI_Rules.md`, `docs/dev/TUI_Layout.md`: 설계 계약/참조 문서. 작업 순서의 source of truth가 아니다.
+3. `docs/dev/Rust_Core_Dual_Renderer_Architecture.md`, `docs/dev/Data_Schema.md`, `docs/design/ThreeJS_Combat_Visual_Architecture.md`, `docs/design/UI_Rules.md`, `docs/dev/TUI_Layout.md`: 설계 계약/참조 문서. 작업 순서의 source of truth가 아니다.
 4. `README.md`: 사람용 빠른 안내와 실행법. 긴 다음 작업 목록은 이 파일로 복제하지 않는다.
 5. `idea_box/`: active plan/todo가 없거나 사용자가 명시적으로 요청했을 때 처리하는 backlog. Notion-origin entry는 보존된 provenance를 참고하되 current design records는 local design source를 기준으로 삼는다.
 6. `.hermes/plans/`: 일회성 세션 artifact. 완료되었거나 이 파일에 흡수된 계획은 정리한다.
@@ -58,13 +60,15 @@
 
 ```text
 Rust GameCore
-  ├─ Web Storybook + GlyphFX renderer
-  │   └─ primary player UX
+  ├─ Web Storybook shell / DOM HUD
+  │   ├─ GlyphFX: story·UI effects
+  │   └─ Three.js: ScenePage.combat 3D hex / combat VFX
   └─ SuperLightTUI terminal renderer
       └─ terminal-native fallback / horror edition
 ```
 
-- Web Storybook + GlyphFX가 플레이어용 메인 UX 후보다. 이미지/장면 컷, 대화 내역, 읽기 중심 선택지, Canvas/GlyphFX는 이 경로에서 먼저 구현한다.
+- Web Storybook이 플레이어용 shell/HUD다. GlyphFX는 이미지/장면 컷, 대화, 텍스트 등 story/UI 효과를 맡고 Three.js는 `ScenePage.combat` 전투 보드와 공간 VFX를 맡는다.
+- 전투 renderer는 고정 `OrthographicCamera`, flat-top axial 3D hex, semi-SD modular GLB 방향이다. 7×6 보드와 12명은 첫 검증 fixture이며 영구 gameplay cap이 아니다. PC-first 1080p/60은 전투 성능 기준이고 기존 모바일 텍스트RPG 게임 프레임을 desktop layout으로 교체하지 않는다.
 - Rust terminal 경로는 SuperLightTUI 기반 renderer로 유지한다. fallback은 우선순위/환경 호환성의 의미이며, 단순 debug dump를 뜻하지 않는다.
 - Python/Textual과 TypeScript mirror core는 전환기 legacy/parity oracle이다. 새 게임 규칙을 그쪽에 계속 복제하지 않는다.
 - 세부 아키텍처는 `docs/dev/Rust_Core_Dual_Renderer_Architecture.md`를 따른다.
@@ -79,9 +83,7 @@ Rust GameCore
 
 - (게임루프 트랙) **완료·review-fixed** — Game Loop Expansion, Slice 3 (Leveling·Insights·Item Details). 기준 구현 `c33fc75` 이후 RF1 `3230df5`, RF2 `256aa4f`, RF3 `2f39cd2`에서 terminal training guard, ordered insight dedupe, optional inventory fallback, 390/414 HUD geometry gate를 보정했다. RF4 문서 closeout까지 완료 후 다음 active work는 Event/Stage/ContentBlock 전환으로 유지한다. 계획의 `.story-progress-mini` 명칭과 실제 renderer/QA contract의 `.story-progress-rail`은 naming deviation으로 기록한다.
 - (게임루프 트랙) **완료** — 이구학지 게임 루프 2차 확장 (Slice 2: Content-owned labels, Check resolution reveal, Collapse gate & second wind).
-- (UI 트랙) Web Storybook UI/UX 개선 사이클 진행 중 — 방향은
-  `docs/design/Mobile_Ink_Storybook_UI.md`(수묵 서책 + 정보 드로어), 작업
-  지시서는 `fable_ui_step1_2607111330.md` (Rev 2).
+- (UI 트랙) Web Storybook shell/GlyphFX story·UI 효과와 Three.js 전투 renderer를 분리한다. 전투 시각 정본은 `docs/design/ThreeJS_Combat_Visual_Architecture.md`다. `docs/design/Mobile_Ink_Storybook_UI.md`는 모바일 텍스트RPG layout/gamefeel 기록만 유지하며 수묵 art direction은 superseded다. 과거 작업 지시서 `fable_ui_step1_2607111330.md` (Rev 2)의 완료 이력은 보존한다.
 
 1. 무협 storypack preview/main의 다음 작업은 `wuxia_sado_battle_loss_route_bridge_implementation` runtime slice다. `wuxia_sado_final_battle_container_followup_handoff`가 playable defeat-route bridge / battle-loss route UX를 다음 runtime 후보로 선택했으므로, 기존 encounter schema로 `final_combat_result_battle_loss_seeded`를 실제 플레이 경로에서 만들고 기존 Rust final epilogue battle-loss consumer로 넘긴다. `docs/design/Wuxia_Final_State_Routing.md`가 canonical final inputs/result priority/alias policy/final epilogue seed-consumption contract와 return/settlement/battle-loss/final-state-collapse/final-battle-container/follow-up handoff를 소유한다.
    - 현재 Web/terminal default storypack은 `wuxia_jianghu_pack` / **이구학지 — 천기록**이다.

@@ -1,18 +1,26 @@
 # Mobile Ink Storybook UI Contract (수묵 서책)
 
-Status: active Web Storybook visual contract. 2026-07-11부터
-`docs/design/Mobile_Pixel_Storybook_UI.md`(픽셀 게임북 board contract)를 대체한다.
+Status: **layout/gamefeel contract only**. 2026-07-11부터
+`docs/design/Mobile_Pixel_Storybook_UI.md`의 story flow와 mobile shell 계약을 대체했다.
+수묵/먹선 art direction과 아래의 2D 전투 표현은 현재 활성 미술 정본이 아니며 역사적 맥락으로만
+보존한다. 현재 전투 미술·렌더링 결정과 충돌하면 Three.js 전투 비주얼 아키텍처가 우선한다.
+
+전투 보드에는 예외 계약이 적용된다. Web 전투 보드의 현재 정본은
+[Three.js 전투 비주얼 아키텍처](ThreeJS_Combat_Visual_Architecture.md)이며,
+Three.js가 보드 표현을 소유한다. Storybook은 shell과 ordered story UI, GlyphFX는
+텍스트·anomaly·UI 효과를 맡는다. 전투 prototype은 PC 1920×1080 60fps를 먼저
+검증하고 최종 resource budget은 계측 뒤 확정한다. 모바일 전투 최적화는 후속 WP다.
 
 ## Goal
 
-Web Storybook은 게임 HUD가 달린 앱처럼 보이면 안 된다. 기본 화면은
-**ordered story flow가 놓이는 오래된 수묵 서책의 한 쪽**이며, `천기록`은 실제
-세계관 장치가 개입하는 특수 block/surface에서만 표시한다. 모든 그림은
-본문 흐름에 놓이는 수묵 삽화다. 화면 문법은 특정 상용 게임의 template을 따라 하지
-않는다 — 이 문서가 유일한 기준이다. 미감/토큰/삽화 규칙의 상세는
-`fable_ui_step1_2607111330.md` §2(수묵 천기록 디자인 언어)를 따른다.
+Web Storybook은 게임 HUD가 달린 dashboard처럼 보이면 안 된다. 기본 화면은
+**ordered story flow가 놓이는 세로형 서책의 한 쪽**이며, `천기록`은 실제
+세계관 장치가 개입하는 특수 block/surface에서만 표시한다. 화면 문법은 특정 상용
+게임의 template을 따르지 않는다. 이 문서는 **Storybook shell의 layout/gamefeel**만
+소유하며 전투 미술·3D scene을 소유하지 않는다. 아래 수묵 미감·토큰·삽화 문장은
+구현 이력이며 새 art direction의 근거로 사용하지 않는다.
 
-시각 정체성 한 줄: **모바일 세로형 수묵 서책 board**.
+레이아웃 정체성 한 줄: **모바일 세로형 서책 board와 ordered story flow**.
 
 ## Core screen grammar — 서책 몰입형 + 정보 드로어
 
@@ -85,11 +93,13 @@ Web Storybook은 게임 HUD가 달린 앱처럼 보이면 안 된다. 기본 화
 ## Renderer boundary
 
 - Rust GameCore가 action eligibility, outcome, ending, achievement의 truth다.
-- `ScenePage`에는 CSS class, pixel coordinate, DOM selector, Canvas command,
-  image path를 넣지 않는다.
-- 외부 이미지/타사 게임 asset을 참조하거나 도입하지 않는다. 삽화는 전부
-  코드(inline SVG)로 저작하며, 인물은 이목구비 없는 먹 실루엣으로 그린다.
-  변주는 visual id 해시 시드로만 만든다 (`Math.random()` 금지).
+- `ScenePage`에는 CSS class, pixel coordinate, DOM selector, Canvas/WebGL/Three.js
+  renderer command, image path를 넣지 않는다.
+- 외부 이미지/타사 게임 asset을 참조하거나 도입하지 않는다. 일반 story 삽화의
+  현행 inline SVG fallback은 유지한다. 전투 캐릭터를 code-only·무표정 먹 실루엣으로
+  제한하던 규칙은 superseded이며, 전투 자산은 Three.js 정본의 authored portrait,
+  semi-SD low-poly GLB, shared rig 계약을 따른다. 결정론적 변주는 canonical visual
+  seed만 사용한다 (`Math.random()` 금지).
 - public UI/docs/generated data에는 실제 회사명/개인정보/private hint를 넣지 않는다.
 
 ## 일러스트 에셋과 밀도 계약
@@ -116,6 +126,11 @@ Web Storybook은 게임 HUD가 달린 앱처럼 보이면 안 된다. 기본 화
 - **모바일 간격**: 560px 이하 해상도에서 본문 폰트 `1rem/1.7`, 문단 간격 `0.7em`, 선택지 `min-height: 48px` 및 padding 축소로 조밀한 밀도를 확보한다.
 
 ## 전투 관전 표면 (Combat Spectator Surface, Wave 3 Step 1d-2·1d-3)
+
+> **Superseded implementation history.** 아래 CSS/DOM 체스말 보드와 2D motion 설명은
+> 기존 구현의 migration 기록이다. 새 Web 전투 보드는 Three.js scene과 고정
+> `OrthographicCamera`를 사용한다. 단, 기존 semantic table은 접근성 mirror와 WebGL
+> 실패 fallback으로 유지하며 core 좌표·점유를 재계산하지 않는다.
 
 `page.combat`(`CombatSpectatorPage`)이 있을 때만 `.storybook-page` 안에
 `renderCombatStage()`가 조립하는 별도 block이다. 없으면(기존 52개 인카운터)

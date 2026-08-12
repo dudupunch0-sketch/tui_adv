@@ -9,6 +9,11 @@ TUI는 플레이어가 현재 상황, 자원 압박, 선택지를 한눈에 읽�
 
 이 문서는 기존 Python/Textual 및 legacy 패널형 TUI의 레이아웃 기록이다. 앞으로 terminal renderer 작업은 이 패널 구성을 그대로 늘리는 것이 아니라 `docs/dev/Rust_Core_Dual_Renderer_Architecture.md`의 **SuperLightTUI terminal renderer** 방향을 따른다. 즉, terminal은 fallback이지만 단순 debug dump가 아니라 `ScenePage`를 SuperLightTUI layout, ASCII/Unicode visual card, terminal-native GlyphFX로 표시하는 별도 renderer다.
 
+Web combat-board의 Three.js 전환은 terminal 계약을 바꾸지 않는다. Web은
+[`ThreeJS_Combat_Visual_Architecture.md`](../design/ThreeJS_Combat_Visual_Architecture.md)를 따르고,
+SuperLightTUI는 같은 core truth를 읽는 terminal fallback으로 남는다. 아래 체스말 텍스트 보드는
+Web visual 기준이 아니라 terminal-native 표현이다.
+
 따라서 화면은 명확한 패널과 로그 중심의 장점을 유지하되, 새 terminal 구현은 Web Storybook과 같은 semantic page contract를 공유해야 한다. 상태/선택지/알림은 사내 시스템, 진단 로그, 내부망 메시지처럼 표현한다.
 구체적인 글리치, 선택지 오염, 입력 왜곡 규칙은 `docs/design/UI_Rules.md`와 `docs/design/TUI_Storybook_GlyphFX_Concept.md`를 따른다.
 

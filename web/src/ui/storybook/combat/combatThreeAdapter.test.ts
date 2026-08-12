@@ -216,4 +216,38 @@ describe('combatThreeAdapter', () => {
     adaptCombatForThree(input, options);
     expect(JSON.stringify(input)).toBe(before);
   });
+
+
+  it('handles revoked containers at exact boundaries', () => {
+    const revoked = (value: object) => { const r = Proxy.revocable(value, {}); r.revoke(); return r.proxy; };
+    const cases: Array<[unknown, string]> = [
+      [{ view: { ...combat().view as Record<string, unknown>, frames: revoked([]) } }, 'INVALID_FRAMES@$.view.frames'],
+      [{ view: { ...combat().view as Record<string, unknown>, frames: [revoked({})] } }, 'INVALID_FRAME@$.view.frames[0]'],
+      [combat({ frames: [{ tick: 0, pieces: revoked([]) }] }), 'INVALID_PIECES@$.view.frames[0].pieces'],
+      [combat({ frames: [{ tick: 0, pieces: [revoked({})] }] }), 'INVALID_PIECE@$.view.frames[0].pieces[0]'],
+      [combat({ frames: [{ tick: 0, pieces: [{ id: 'a', side: 'ally', position: { q: 1, r: 0 }, facing: { q: 1, r: 0 }, active: true, cues: revoked([]) }] }] }), 'INVALID_CUES@$.view.frames[0].pieces[0].cues'],
+    ];
+    for (const [input, expected] of cases) {
+      const result = adaptCombatForThree(input, options);
+      expect(result.kind).toBe('fallback');
+      expect(codes(result)).toContain(expected);
+    }
+  });
+
+  it('maps array length traps to container diagnostics', () => {
+    const trap = (value: object) => new Proxy(value, { get(target, property, receiver) { if (property === 'length') throw new Error('length'); return Reflect.get(target, property, receiver); } });
+    expect(codes(adaptCombatForThree(combat({ frames: trap([]) }), options))).toContain('INVALID_FRAMES@$.view.frames');
+    expect(codes(adaptCombatForThree(combat({ frames: [{ tick: 0, pieces: trap([]) }] }), options))).toContain('INVALID_PIECES@$.view.frames[0].pieces');
+    expect(codes(adaptCombatForThree(combat({ frames: [{ tick: 0, pieces: [{ id: 'a', side: 'ally', position: { q: 1, r: 0 }, facing: { q: 1, r: 0 }, active: true, cues: trap([]) }] }] }), options))).toContain('INVALID_CUES@$.view.frames[0].pieces[0].cues');
+  });
+
+  it('reads stateful consumed getters exactly once', () => {
+    let minQReads = 0; let versionReads = 0; let positionReads = 0; let qReads = 0;
+    const board = { get minQ() { if (++minQReads > 1) throw new Error(); return 0; }, maxQ: 6, minR: 0, maxR: 5 };
+    const position = { get q() { if (++qReads > 1) throw new Error(); return 1; }, r: 0 };
+    const input = { view: { get simulation_version() { if (++versionReads > 1) throw new Error(); return 'v3'; }, resolution_fingerprint: 'r', fingerprint: 'f', tick_millis: 100, frames: [{ tick: 0, pieces: [{ id: 'a', side: 'ally', get position() { if (++positionReads > 1) throw new Error(); return position; }, facing: { q: 1, r: 0 }, active: true, cues: [] }] }] } };
+    const result = adaptCombatForThree(input, { boardBounds: board });
+    expect(result.kind).toBe('ready');
+    expect(minQReads).toBe(1); expect(versionReads).toBe(1); expect(positionReads).toBe(1); expect(qReads).toBe(1);
+  });
 });
